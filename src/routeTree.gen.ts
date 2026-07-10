@@ -9,38 +9,100 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as authedRouteRouteImport } from './routes/(authed)/route'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as authedManageRouteImport } from './routes/(authed)/manage'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
 
+const authedRouteRoute = authedRouteRouteImport.update({
+  id: '/(authed)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authRouteRoute = authRouteRouteImport.update({
+  id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authedManageRoute = authedManageRouteImport.update({
+  id: '/manage',
+  path: '/manage',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authedManageUsersRoute = authedManageUsersRouteImport.update({
+  id: '/manage_/users',
+  path: '/manage/users',
+  getParentRoute: () => authedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof authLoginRoute
+  '/manage': typeof authedManageRoute
+  '/manage/users': typeof authedManageUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof authLoginRoute
+  '/manage': typeof authedManageRoute
+  '/manage/users': typeof authedManageUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/(auth)': typeof authRouteRouteWithChildren
+  '/(authed)': typeof authedRouteRouteWithChildren
+  '/(auth)/login': typeof authLoginRoute
+  '/(authed)/manage': typeof authedManageRoute
+  '/(authed)/manage_/users': typeof authedManageUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/login' | '/manage' | '/manage/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/login' | '/manage' | '/manage/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/(auth)'
+    | '/(authed)'
+    | '/(auth)/login'
+    | '/(authed)/manage'
+    | '/(authed)/manage_/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  authRouteRoute: typeof authRouteRouteWithChildren
+  authedRouteRoute: typeof authedRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(authed)': {
+      id: '/(authed)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)': {
+      id: '/(auth)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +110,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(authed)/manage': {
+      id: '/(authed)/manage'
+      path: '/manage'
+      fullPath: '/manage'
+      preLoaderRoute: typeof authedManageRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(authed)/manage_/users': {
+      id: '/(authed)/manage_/users'
+      path: '/manage/users'
+      fullPath: '/manage/users'
+      preLoaderRoute: typeof authedManageUsersRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
   }
 }
 
+interface authRouteRouteChildren {
+  authLoginRoute: typeof authLoginRoute
+}
+
+const authRouteRouteChildren: authRouteRouteChildren = {
+  authLoginRoute: authLoginRoute,
+}
+
+const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
+  authRouteRouteChildren,
+)
+
+interface authedRouteRouteChildren {
+  authedManageRoute: typeof authedManageRoute
+  authedManageUsersRoute: typeof authedManageUsersRoute
+}
+
+const authedRouteRouteChildren: authedRouteRouteChildren = {
+  authedManageRoute: authedManageRoute,
+  authedManageUsersRoute: authedManageUsersRoute,
+}
+
+const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(
+  authedRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  authRouteRoute: authRouteRouteWithChildren,
+  authedRouteRoute: authedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

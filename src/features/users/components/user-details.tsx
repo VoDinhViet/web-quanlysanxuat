@@ -1,0 +1,205 @@
+import { Edit3 } from "lucide-react"
+import type { ReactNode } from "react"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import { StatusBadge } from "@/features/users/components/status-badge"
+import type { User } from "@/features/users/types/user.type"
+import { cn } from "@/lib/utils"
+
+export function UserDetails({
+  user,
+  trigger,
+}: {
+  user: User
+  trigger: ReactNode
+}) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
+      <SheetContent
+        side="right"
+        className="gap-0 overflow-y-auto p-0 data-[side=right]:w-full sm:max-w-md"
+      >
+        <SheetHeader className="border-b border-border px-4 py-4">
+          <SheetTitle>Chi tiết nhân sự</SheetTitle>
+          <SheetDescription>{user.name}</SheetDescription>
+        </SheetHeader>
+        <Tabs defaultValue="info" className="h-full gap-0">
+          <div className="border-b border-border px-4 pt-4">
+            <TabsList
+              variant="line"
+              className="h-10 w-full justify-start gap-6 rounded-none p-0"
+            >
+              <TabsTrigger
+                value="info"
+                className="h-10 flex-none px-0 text-xs font-medium text-muted-foreground data-active:text-foreground"
+              >
+                Thông tin chi tiết
+              </TabsTrigger>
+              <TabsTrigger
+                value="history"
+                className="h-10 flex-none px-0 text-xs font-medium text-muted-foreground data-active:text-foreground"
+              >
+                Lịch sử hoạt động
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="info" className="m-0 outline-none">
+            <div className="border-b border-border px-4 py-5">
+              <div className="flex items-start gap-4">
+                <Avatar size="lg" className="size-20">
+                  <AvatarImage src={user.avatarFallbackSrc} alt={user.name} />
+                  <AvatarFallback
+                    className={cn(
+                      "bg-linear-to-br text-base font-medium",
+                      user.avatarClassName
+                    )}
+                  >
+                    {user.initials}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1 pt-0.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <h2 className="truncate text-base font-semibold text-foreground">
+                      {user.name}
+                    </h2>
+                    <StatusBadge status={user.status} />
+                  </div>
+                  <p className="mt-1 text-xs font-medium text-foreground">
+                    Trưởng phòng Kinh doanh
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-muted-foreground">
+                    Kinh doanh
+                  </p>
+                  <div className="mt-3 space-y-1 text-xs font-medium text-foreground">
+                    <p>{user.email}</p>
+                    <p>{user.phone}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DetailsSection title="Thông tin chung" editable>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                <DetailItem label="Mã nhân viên" value="NV001" />
+                <DetailItem label="Ngày sinh" value="15/05/1990" />
+                <DetailItem label="Giới tính" value="Nam" />
+                <DetailItem label="Ngày vào làm" value="01/01/2023" />
+                <DetailItem label="Số CCCD" value="001090123456" />
+                <DetailItem label="Nơi cấp" value="Cục CSQLHC về TTXH" />
+              </div>
+              <DetailItem
+                className="mt-4"
+                label="Địa chỉ"
+                value="123 Đường số 1, P. An Phú, TP. Thuận An, Bình Dương"
+              />
+              <div className="mt-5 space-y-4">
+                <FormPreview label="Phòng ban" value="Kinh doanh" />
+                <FormPreview required label="Chức vụ" value="Trưởng phòng KD" />
+              </div>
+            </DetailsSection>
+
+            <DetailsSection title="Ghi chú" editable>
+              <Textarea
+                readOnly
+                value="-"
+                className="min-h-24 resize-none border-0 bg-transparent px-0 py-0 text-xs font-medium text-muted-foreground shadow-none focus-visible:ring-0"
+              />
+            </DetailsSection>
+          </TabsContent>
+
+          <TabsContent value="history" className="m-0 outline-none">
+            <div className="px-4 py-6 text-xs font-medium text-muted-foreground">
+              Chưa có lịch sử hoạt động.
+            </div>
+          </TabsContent>
+        </Tabs>
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+function DetailsSection({
+  title,
+  editable,
+  children,
+}: {
+  title: string
+  editable?: boolean
+  children: ReactNode
+}) {
+  return (
+    <section className="border-b border-border px-4 py-4 last:border-b-0">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+          {title}
+        </h3>
+        {editable ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-xs"
+            className="bg-background text-foreground"
+            aria-label={`Chỉnh sửa ${title.toLowerCase()}`}
+          >
+            <Edit3 className="size-3.5" />
+          </Button>
+        ) : null}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function DetailItem({
+  label,
+  value,
+  className,
+}: {
+  label: string
+  value: string
+  className?: string
+}) {
+  return (
+    <div className={cn("min-w-0 space-y-1", className)}>
+      <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
+      <p className="text-xs font-medium break-words text-foreground">{value}</p>
+    </div>
+  )
+}
+
+function FormPreview({
+  label,
+  value,
+  required,
+}: {
+  label: string
+  value: string
+  required?: boolean
+}) {
+  return (
+    <label className="block space-y-1.5">
+      <span className="text-xs font-medium text-foreground">
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </span>
+      <Input
+        readOnly
+        value={value}
+        className="h-9 bg-background text-xs font-medium"
+      />
+    </label>
+  )
+}
