@@ -1,39 +1,45 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.0.0 → 1.1.0
+Version change: 1.1.0 → 1.2.0
 Bump rationale: MAJOR is excluded — no principle was removed or redefined, and no
-previously compliant code becomes non-compliant. PATCH is too weak — this is not a
-wording fix. Quality gates 1-3 moved from "aspirational, MUST NOT be claimed as
-passing" to tooling-enforced obligations, and the code standards section gained a
-concrete formatting contract. That is materially expanded guidance → MINOR.
+previously compliant code becomes non-compliant. PATCH is too weak — the UI-kit
+workflow rules and the lint-gate error/warning distinction are new obligations, not
+rewording. Materially expanded guidance → MINOR.
 
 Modified sections:
-  - Development Workflow and Quality Gates: the "Current gate status" block is removed;
-    TODO(TOOLCHAIN_SETUP) is resolved. Gates now name the commands that enforce them.
-  - Technology and Code Standards: ESLint and Prettier added to the stack; the Prettier
-    formatting contract (no semicolons, double quotes, 2-space, 80 cols) is now stated.
+  - Principle I (Layered Architecture): the canonical directory layout is now stated
+    as an explicit tree — src/routes/ with (auth)/(authed) route groups, src/features/
+    per-domain folders, src/components/{ui,shared}/, src/lib/ — per user request.
+  - Technology and Code Standards: shadcn/ui (radix-vega preset, Radix primitives,
+    Tabler icons, Geist font) added to the stack; a "UI components" block now states
+    how components are added and what may be edited in generated files.
+  - Development Workflow and Quality Gates: "lint is clean" is now defined as zero
+    errors; warnings are tolerated only inside generated src/components/ui/ files and
+    MUST NOT be introduced in hand-written code.
 
 Added sections: none
-Removed sections: none (a status block within an existing section was deleted)
+Removed sections: none
 
 Templates requiring updates:
   ✅ .specify/templates/plan-template.md — "Constitution Check" uses a dynamic gate
      placeholder resolved per-plan; no edit needed, compatible as written.
   ✅ .specify/templates/spec-template.md — mandatory sections align; no constitution
      rule adds or removes a required section.
-  ✅ .specify/templates/tasks-template.md — task phases align; Principle V is satisfied
-     by the existing "Polish & Cross-Cutting Concerns" phase.
+  ✅ .specify/templates/tasks-template.md — task phases align; no new task category
+     is introduced by this amendment.
   ✅ .specify/templates/checklist-template.md — no principle-driven changes required.
   ✅ No .specify/templates/commands/ directory exists (skills-mode install); no
      agent-specific references found anywhere under .specify/templates/.
   ⚠ README.md — still the unmodified TanStack Start starter text. Does not contradict
      this constitution, but describes none of it. Rewrite when the app takes shape.
 
-Resolved in 1.1.0:
-  - TODO(TOOLCHAIN_SETUP): ESLint 10 (@tanstack/eslint-config), Prettier 3 with
-    prettier-plugin-tailwindcss, and a `typecheck` script are installed. All three
-    gates were executed and pass against the current tree.
+Known constitution-vs-reality gaps (not placeholders, tracked here):
+  - Zod is named in the stack and required by Principle III, but is not yet in
+    package.json. It is installed with the first feature that validates input; a plan
+    whose feature touches forms or server functions MUST add it.
+  - src/lib/server-action.ts (ActionResult) and src/lib/http.ts do not exist yet; they
+    are created by the first feature that needs a server function, per Principle III.
 
 Deferred / follow-up TODOs:
   - TODO(RATIFICATION_DATE): Recorded as the date this constitution was first written
@@ -53,6 +59,19 @@ code and identifiers are English.
 Routes declare; features implement. A file under `src/routes/` MUST contain only
 `createFileRoute`, `validateSearch`, `beforeLoad`, `loader`, and a `component` that points at a
 page in `src/features/`. Business logic in a route file is a violation, not a shortcut.
+
+The canonical layout:
+
+```text
+src/routes/       # Route declarations ONLY. No business logic.
+  (auth)/         # Route group — login layout
+  (authed)/       # Route group — sidebar layout
+src/features/     # All business logic, one folder per domain
+  <feature>/{components,pages,schemas,server-functions,types}/
+src/components/ui/      # shadcn-generated. Do not add business logic.
+src/components/shared/  # Cross-feature components
+src/lib/          # http, session, utils
+```
 
 - Each domain owns one folder under `src/features/<feature>/`, internally organized as
   `{components,pages,schemas,server-functions,types}/`.
@@ -128,9 +147,15 @@ was asked. Only execution distinguishes the two.
 
 ## Technology and Code Standards
 
-Stack: TanStack Start (React 19, TypeScript, Vite 8), Tailwind CSS v4, Zod for validation,
+Stack: TanStack Start (React 19, TypeScript, Vite 8), Tailwind CSS v4, shadcn/ui
+(radix-vega preset, Radix primitives, Tabler icons, Geist font), Zod for validation,
 pnpm as the package manager, Vitest for tests, ESLint and Prettier for the toolchain.
 
+- **UI components come from the shadcn registry.** Add one with
+  `pnpm exec shadcn add <name> -y`, then run `pnpm exec eslint --fix` on the generated
+  files. Manual edits to `src/components/ui/` are limited to lint compliance — never
+  styling forks or business logic (Principle I). Do not hand-write a primitive the
+  registry already provides.
 - **Formatting is not a discussion.** Prettier owns it: no semicolons, double quotes,
   2-space indent, 80 columns, LF endings. Class ordering is handled by
   `prettier-plugin-tailwindcss`. Do not hand-format around it.
@@ -178,6 +203,11 @@ Gates 1–3 are enforceable today and MUST NOT be reported as passing without be
 repo-wide `pnpm lint` is currently clean, so a scoped `pnpm exec eslint <file>` is a
 convenience, never an excuse: a failure anywhere in the tree blocks the change.
 
+"Lint is clean" means zero errors. Warnings are tolerated only inside generated
+`src/components/ui/` files, where they arrive with the registry code; hand-written code
+MUST NOT introduce new warnings. A warning that `eslint --fix` can resolve is resolved,
+not tolerated.
+
 Generated files are excluded from the gates by configuration, not by ignoring their output:
 `src/routeTree.gen.ts` is listed in both `eslint.config.js` and `.prettierignore`.
 
@@ -210,4 +240,4 @@ and why. Complexity MUST be justified, never assumed.
 **Runtime guidance.** Day-to-day development guidance belongs in `CLAUDE.md` at the repository
 root. That file elaborates; this file governs.
 
-**Version**: 1.1.0 | **Ratified**: 2026-07-10 | **Last Amended**: 2026-07-10
+**Version**: 1.2.0 | **Ratified**: 2026-07-10 | **Last Amended**: 2026-07-10
