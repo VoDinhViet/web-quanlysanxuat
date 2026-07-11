@@ -1,52 +1,49 @@
-import * as React from "react"
-import { Activity, useTransition } from "react"
+import { Activity, useState, useTransition } from "react"
 import { useForm } from "@tanstack/react-form"
-import { useSearch } from "@tanstack/react-router"
+import { useNavigate, useRouter, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { AlertOctagon, Eye, EyeOff, Loader2, LogIn } from "lucide-react"
+import { AlertOctagon, Loader2, LogIn } from "lucide-react"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import { FieldGroup } from "@/components/ui/field"
+import { LoginEmailField } from "@/features/auth/components/login-email-field"
+import { LoginFormHeader } from "@/features/auth/components/login-form-header"
+import { LoginKeepSignedInField } from "@/features/auth/components/login-keep-signed-in-field"
+import { LoginPasswordField } from "@/features/auth/components/login-password-field"
 import { loginWithEmailPassword } from "@/features/auth/server-functions/login-with-email-password"
 import { loginSchema } from "@/features/auth/schemas/login.schema"
+import { resolveInternalRedirect } from "@/lib/redirect"
 import type { LoginSchema } from "@/features/auth/schemas/login.schema"
 
 export function LoginForm() {
-  // ---------------------------------------LOCAL STATE---------------------------------
   const [isPending, startTransition] = useTransition()
-  const [showPassword, setShowPassword] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  // ---------------------------------------ROUTE STATE---------------------------------
   const { redirectTo } = useSearch({ from: "/(auth)/login" })
+  const navigate = useNavigate()
+  const router = useRouter()
 
-  // ---------------------------------------SERVER ACTIONS---------------------------------
   const loginWithEmailPasswordFn = useServerFn(loginWithEmailPassword)
 
-  // ---------------------------------------HANDLERS---------------------------------
   const handleSubmit = (value: LoginSchema) => {
     setError(null)
 
     startTransition(async () => {
-      const result = await loginWithEmailPasswordFn({
-        data: { ...value, redirectTo },
-      })
+      const result = await loginWithEmailPasswordFn({ data: value })
 
       if (!result.success) {
         setError(result.message)
+        return
       }
+
+      // The session cookie only exists after the server function resolves, so the
+      // (authed) guard must re-run against it before we navigate into that layout.
+      await router.invalidate()
+      await navigate({ href: resolveInternalRedirect(redirectTo) })
     })
   }
 
-  // ---------------------------------------FORM SETUP---------------------------------
   const form = useForm({
     defaultValues: {
       email: "",
@@ -61,19 +58,7 @@ export function LoginForm() {
 
   return (
     <div>
-      <div className="mb-10">
-        <div className="mb-2 flex items-end gap-4">
-          <p className="text-xs font-semibold tracking-widest text-primary uppercase">
-            Cổng xác thực
-          </p>
-        </div>
-        <h1 className="text-4xl font-bold tracking-tight text-foreground">
-          Đăng nhập
-        </h1>
-        <p className="mt-4 text-base leading-6 text-muted-foreground">
-          Xác thực tài khoản để truy cập hệ thống quản lý sản xuất.
-        </p>
-      </div>
+      <LoginFormHeader />
 
       <form
         onSubmit={(event) => {
@@ -93,105 +78,48 @@ export function LoginForm() {
 
         <FieldGroup className="gap-5">
           <form.Field name="email">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && field.state.meta.errors.length > 0
-
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel
-                    htmlFor={field.name}
-                    className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
-                  >
-                    Email
-                  </FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    type="email"
-                    placeholder="Nhập email"
-                    autoComplete="email"
-                    className="h-12 pr-10"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    aria-invalid={isInvalid}
-                    disabled={isPending}
-                  />
-                  <FieldError errors={field.state.meta.errors} />
-                </Field>
-              )
-            }}
+            {(field) => (
+              <LoginEmailField
+                name={field.name}
+                value={field.state.value}
+                errors={field.state.meta.errors}
+                isInvalid={
+                  field.state.meta.isTouched &&
+                  field.state.meta.errors.length > 0
+                }
+                disabled={isPending}
+                onBlur={field.handleBlur}
+                onChange={field.handleChange}
+              />
+            )}
           </form.Field>
 
           <form.Field name="password">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && field.state.meta.errors.length > 0
-
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel
-                    htmlFor={field.name}
-                    className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
-                  >
-                    Mật khẩu
-                  </FieldLabel>
-                  <div className="relative">
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      autoComplete="current-password"
-                      className="h-12 pr-10"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      aria-invalid={isInvalid}
-                      disabled={isPending}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      className="absolute top-1/2 right-2 -translate-y-1/2"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={
-                        showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
-                      }
-                    >
-                      {showPassword ? <EyeOff /> : <Eye />}
-                    </Button>
-                  </div>
-                  <FieldError errors={field.state.meta.errors} />
-                </Field>
-              )
-            }}
+            {(field) => (
+              <LoginPasswordField
+                name={field.name}
+                value={field.state.value}
+                errors={field.state.meta.errors}
+                isInvalid={
+                  field.state.meta.isTouched &&
+                  field.state.meta.errors.length > 0
+                }
+                disabled={isPending}
+                onBlur={field.handleBlur}
+                onChange={field.handleChange}
+              />
+            )}
           </form.Field>
 
           <form.Field name="keepSignedIn">
             {(field) => (
-              <Field orientation="horizontal">
-                <Checkbox
-                  id={field.name}
-                  name={field.name}
-                  checked={field.state.value}
-                  onCheckedChange={(checked) =>
-                    field.handleChange(checked === true)
-                  }
-                  onBlur={field.handleBlur}
-                  disabled={isPending}
-                />
-                <FieldLabel
-                  htmlFor={field.name}
-                  className="cursor-pointer text-sm font-normal text-muted-foreground hover:text-foreground"
-                >
-                  Ghi nhớ phiên đăng nhập
-                </FieldLabel>
-              </Field>
+              <LoginKeepSignedInField
+                name={field.name}
+                checked={field.state.value}
+                disabled={isPending}
+                onBlur={field.handleBlur}
+                onChange={field.handleChange}
+              />
             )}
           </form.Field>
 

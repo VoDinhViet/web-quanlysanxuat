@@ -6,10 +6,6 @@ export const loginSchema = z.object({
   keepSignedIn: z.boolean(),
 })
 
-export const loginActionSchema = loginSchema.extend({
-  redirectTo: z.string().optional(),
-})
-
 export const loginSearchSchema = z.object({
   redirectTo: z.string().optional().catch(undefined),
 })
