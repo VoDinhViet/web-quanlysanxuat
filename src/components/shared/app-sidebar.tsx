@@ -1,5 +1,5 @@
 import { Image } from "@unpic/react"
-import { useLocation } from "@tanstack/react-router"
+import { Link, useLocation } from "@tanstack/react-router"
 import {
   ArrowDownToLine,
   Boxes,
@@ -36,14 +36,15 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { isKnownRoute } from "@/lib/known-routes"
 
-interface MenuItem {
+type MenuItem = {
   label: string
   icon: LucideIcon
   href?: string
 }
 
-interface MenuGroup {
+type MenuGroup = {
   label: string
   items: MenuItem[]
 }
@@ -51,7 +52,9 @@ interface MenuGroup {
 const menuGroups: MenuGroup[] = [
   {
     label: "Tổng quan",
-    items: [{ label: "Bảng điều khiển", icon: LayoutDashboard, href: "/manage" }],
+    items: [
+      { label: "Bảng điều khiển", icon: LayoutDashboard, href: "/manage" },
+    ],
   },
   {
     label: "Quản lý bán hàng",
@@ -60,11 +63,6 @@ const menuGroups: MenuGroup[] = [
       { label: "Báo giá (RFQ)", icon: FileText },
       { label: "Giao hàng (DO)", icon: Truck },
       { label: "Khách hàng", icon: UserRound, href: "/manage/clients" },
-      {
-        label: "Sản phẩm & Dịch vụ",
-        icon: PackageSearch,
-        href: "/manage/products",
-      },
     ],
   },
   {
@@ -79,6 +77,7 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Quản lý sản xuất",
     items: [
+      { label: "Sản phẩm", icon: PackageSearch, href: "/manage/products" },
       { label: "Lệnh sản xuất (Job)", icon: Factory },
       { label: "Quản lý sản xuất", icon: GitBranch },
       { label: "Công đoạn sản xuất", icon: GitBranch },
@@ -97,7 +96,7 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Hệ thống",
     items: [
-      { label: "Nhân sự", icon: Users, href: "/manage/users" },
+      { label: "Nhân sự", icon: UserRound, href: "/manage/users" },
       { label: "Phân quyền", icon: ShieldCheck },
       { label: "Cài đặt", icon: Settings },
       { label: "Nhật ký hệ thống", icon: History },
@@ -120,9 +119,9 @@ export function AppSidebar() {
               size="lg"
               asChild
               tooltip="Cơ khí Tiến Huy"
-              className="h-auto w-full justify-center p-0 hover:bg-transparent "
+              className="h-auto w-full justify-center p-0 hover:bg-transparent"
             >
-              <a href="/manage/users" className="flex w-full min-w-0 justify-center">
+              <Link to="/manage" className="flex w-full min-w-0 justify-center">
                 <SidebarBrand />
                 <span className="hidden size-10 items-center justify-center group-data-[collapsible=icon]:flex">
                   <Image
@@ -134,7 +133,7 @@ export function AppSidebar() {
                     loading="eager"
                   />
                 </span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -218,7 +217,12 @@ function MenuButton({ item, pathname }: { item: MenuItem; pathname: string }) {
         className={menuButtonClass}
         type={item.href ? undefined : "button"}
       >
-        {item.href ? (
+        {item.href && isKnownRoute(item.href) ? (
+          <Link to={item.href}>
+            <Icon />
+            <span>{item.label}</span>
+          </Link>
+        ) : item.href ? (
           <a href={item.href}>
             <Icon />
             <span>{item.label}</span>
