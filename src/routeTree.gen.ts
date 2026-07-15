@@ -15,6 +15,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as authedManageRouteImport } from './routes/(authed)/manage'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
+import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
+import { Route as authedManageUsersAddRouteImport } from './routes/(authed)/manage_/users_/add'
 
 const authedRouteRoute = authedRouteRouteImport.update({
   id: '/(authed)',
@@ -44,18 +46,32 @@ const authedManageUsersRoute = authedManageUsersRouteImport.update({
   path: '/manage/users',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManageProductsRoute = authedManageProductsRouteImport.update({
+  id: '/manage_/products',
+  path: '/manage/products',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageUsersAddRoute = authedManageUsersAddRouteImport.update({
+  id: '/manage_/users_/add',
+  path: '/manage/users/add',
+  getParentRoute: () => authedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
+  '/manage/products': typeof authedManageProductsRoute
   '/manage/users': typeof authedManageUsersRoute
+  '/manage/users/add': typeof authedManageUsersAddRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
+  '/manage/products': typeof authedManageProductsRoute
   '/manage/users': typeof authedManageUsersRoute
+  '/manage/users/add': typeof authedManageUsersAddRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -64,13 +80,27 @@ export interface FileRoutesById {
   '/(authed)': typeof authedRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(authed)/manage': typeof authedManageRoute
+  '/(authed)/manage_/products': typeof authedManageProductsRoute
   '/(authed)/manage_/users': typeof authedManageUsersRoute
+  '/(authed)/manage_/users_/add': typeof authedManageUsersAddRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/manage' | '/manage/users'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/manage'
+    | '/manage/products'
+    | '/manage/users'
+    | '/manage/users/add'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/manage' | '/manage/users'
+  to:
+    | '/'
+    | '/login'
+    | '/manage'
+    | '/manage/products'
+    | '/manage/users'
+    | '/manage/users/add'
   id:
     | '__root__'
     | '/'
@@ -78,7 +108,9 @@ export interface FileRouteTypes {
     | '/(authed)'
     | '/(auth)/login'
     | '/(authed)/manage'
+    | '/(authed)/manage_/products'
     | '/(authed)/manage_/users'
+    | '/(authed)/manage_/users_/add'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,6 +163,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageUsersRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/products': {
+      id: '/(authed)/manage_/products'
+      path: '/manage/products'
+      fullPath: '/manage/products'
+      preLoaderRoute: typeof authedManageProductsRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/users_/add': {
+      id: '/(authed)/manage_/users_/add'
+      path: '/manage/users/add'
+      fullPath: '/manage/users/add'
+      preLoaderRoute: typeof authedManageUsersAddRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
   }
 }
 
@@ -148,12 +194,16 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 
 interface authedRouteRouteChildren {
   authedManageRoute: typeof authedManageRoute
+  authedManageProductsRoute: typeof authedManageProductsRoute
   authedManageUsersRoute: typeof authedManageUsersRoute
+  authedManageUsersAddRoute: typeof authedManageUsersAddRoute
 }
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageRoute: authedManageRoute,
+  authedManageProductsRoute: authedManageProductsRoute,
   authedManageUsersRoute: authedManageUsersRoute,
+  authedManageUsersAddRoute: authedManageUsersAddRoute,
 }
 
 const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(
