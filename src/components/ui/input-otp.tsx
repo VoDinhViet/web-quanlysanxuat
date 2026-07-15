@@ -76,8 +76,7 @@ function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
       role="separator"
       {...props}
     >
-      <IconMinus
-      />
+      <IconMinus />
     </div>
   )
 }
