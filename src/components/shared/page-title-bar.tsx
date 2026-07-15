@@ -1,4 +1,7 @@
 import { Fragment } from "react"
+import { Link, useRouter } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import {
   Bell,
   ChevronDown,
@@ -28,6 +31,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
+import { getCurrentProfile } from "@/features/auth/server-functions/get-current-profile"
+import { logout } from "@/features/auth/server-functions/logout"
+import { isKnownRoute } from "@/lib/known-routes"
+import { getInitials } from "@/lib/utils"
+
+const FALLBACK_USER_NAME = "--"
 
 type PageTitleBreadcrumb = {
   label: string
@@ -38,20 +47,146 @@ type PageTitleBarProps = {
   title: string
   breadcrumbs: PageTitleBreadcrumb[]
   notificationCount?: number
-  userName?: string
-  userRole?: string
   userAvatarSrc?: string
+}
+
+type PageBreadcrumbsProps = {
+  breadcrumbs: PageTitleBreadcrumb[]
+}
+
+function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
+  const lastIndex = breadcrumbs.length - 1
+
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        {breadcrumbs.map((breadcrumb, index) => (
+          <Fragment key={`${breadcrumb.label}-${index}`}>
+            <BreadcrumbItem>
+              {index === lastIndex ? (
+                <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  {breadcrumb.href && isKnownRoute(breadcrumb.href) ? (
+                    <Link to={breadcrumb.href}>{breadcrumb.label}</Link>
+                  ) : (
+                    <a href={breadcrumb.href ?? "#"}>{breadcrumb.label}</a>
+                  )}
+                </BreadcrumbLink>
+              )}
+            </BreadcrumbItem>
+
+            {index < lastIndex ? <BreadcrumbSeparator /> : null}
+          </Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+
+type UserMenuProps = {
+  fullName: string
+  userAvatarSrc?: string
+  isLoggingOut: boolean
+  onLogout: () => void
+}
+
+function UserMenu({
+  fullName,
+  userAvatarSrc,
+  isLoggingOut,
+  onLogout,
+}: UserMenuProps) {
+  const initials = getInitials(fullName)
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          className="h-auto gap-3 px-1.5 py-1"
+          aria-label="Tài khoản người dùng"
+        >
+          <Avatar size="lg">
+            <AvatarImage src={userAvatarSrc} alt={fullName} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+
+          <span className="hidden min-w-0 text-left lg:block">
+            <span className="block truncate text-sm font-bold">{fullName}</span>
+          </span>
+
+          <ChevronDown className="hidden lg:block" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
+        <DropdownMenuItem className="py-3">
+          <Avatar>
+            <AvatarImage src={userAvatarSrc} alt={fullName} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">{fullName}</p>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <User />
+          Hồ sơ cá nhân
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Settings />
+          Cài đặt tài khoản
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <CircleHelp />
+          Trợ giúp
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          variant="destructive"
+          disabled={isLoggingOut}
+          onSelect={onLogout}
+        >
+          <LogOut />
+          Đăng xuất
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 export function PageTitleBar({
   title,
   breadcrumbs,
   notificationCount = 0,
-  userName = "Admin ERP",
-  userRole = "Quản trị hệ thống",
   userAvatarSrc,
 }: PageTitleBarProps) {
   const { toggleSidebar } = useSidebar()
+  const router = useRouter()
+  const logoutFn = useServerFn(logout)
+  const getCurrentProfileFn = useServerFn(getCurrentProfile)
+
+  const profileQuery = useQuery({
+    queryKey: ["current-profile"],
+    queryFn: () => getCurrentProfileFn(),
+  })
+  const fullName = profileQuery.data?.fullName ?? FALLBACK_USER_NAME
+
+  const logoutMutation = useMutation({
+    mutationFn: () => logoutFn(),
+    // Always navigate away regardless of outcome — a failed backend revoke
+    // shouldn't strand the user on an authenticated page.
+    onSettled: async () => {
+      await router.invalidate()
+      await router.navigate({ to: "/login" })
+    },
+  })
+
+  const isLoggingOut = logoutMutation.isPending
+  const handleLogout = () => logoutMutation.mutate()
 
   return (
     <header className="flex min-h-22 w-full items-center justify-between gap-4 bg-card px-4 py-4 text-card-foreground shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:px-6">
@@ -67,35 +202,11 @@ export function PageTitleBar({
         </Button>
 
         <div className="min-w-0 space-y-2">
-          <h1 className="truncate text-xl font-bold leading-6 sm:text-2xl">
+          <h1 className="truncate text-xl leading-6 font-bold sm:text-2xl">
             {title}
           </h1>
 
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbs.map((breadcrumb, index) => {
-                const isLast = index === breadcrumbs.length - 1
-
-                return (
-                  <Fragment key={`${breadcrumb.label}-${index}`}>
-                    <BreadcrumbItem>
-                      {isLast ? (
-                        <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink asChild>
-                          <a href={breadcrumb.href ?? "#"}>
-                            {breadcrumb.label}
-                          </a>
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-
-                    {!isLast ? <BreadcrumbSeparator /> : null}
-                  </Fragment>
-                )
-              })}
-            </BreadcrumbList>
-          </Breadcrumb>
+          <PageBreadcrumbs breadcrumbs={breadcrumbs} />
         </div>
       </div>
 
@@ -109,7 +220,7 @@ export function PageTitleBar({
         >
           <Bell />
           {notificationCount > 0 ? (
-            <span className="absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-white ring-2 ring-card">
+            <span className="absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold text-white ring-2 ring-card">
               {notificationCount > 9 ? "9+" : notificationCount}
             </span>
           ) : null}
@@ -125,65 +236,12 @@ export function PageTitleBar({
           <CircleHelp />
         </Button>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-auto gap-3 px-1.5 py-1"
-              aria-label="Tài khoản người dùng"
-            >
-              <Avatar size="lg">
-                <AvatarImage src={userAvatarSrc} alt={userName} />
-                <AvatarFallback>AE</AvatarFallback>
-              </Avatar>
-
-              <span className="hidden min-w-0 text-left lg:block">
-                <span className="block truncate text-sm font-bold">
-                  {userName}
-                </span>
-                <span className="block truncate text-[10px] font-semibold text-muted-foreground">
-                  {userRole}
-                </span>
-              </span>
-
-              <ChevronDown className="hidden lg:block" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64">
-            <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
-            <DropdownMenuItem className="py-3">
-              <Avatar>
-                <AvatarImage src={userAvatarSrc} alt={userName} />
-                <AvatarFallback>AE</AvatarFallback>
-              </Avatar>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{userName}</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {userRole}
-                </p>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User />
-              Hồ sơ cá nhân
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings />
-              Cài đặt tài khoản
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <CircleHelp />
-              Trợ giúp
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
-              <LogOut />
-              Đăng xuất
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <UserMenu
+          fullName={fullName}
+          userAvatarSrc={userAvatarSrc}
+          isLoggingOut={isLoggingOut}
+          onLogout={handleLogout}
+        />
       </div>
     </header>
   )
