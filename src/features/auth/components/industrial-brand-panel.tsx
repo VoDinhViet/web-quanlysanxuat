@@ -9,18 +9,18 @@ export function IndustrialBrandPanel() {
             <Factory className="size-8" />
           </div>
           <div>
-            <p className="text-3xl font-bold leading-10 tracking-tight">
+            <p className="text-3xl leading-10 font-bold tracking-tight">
               Công Ty TNHH Cơ Khí
               <span className="block text-amber-200">Khuôn Mẫu Tiến Huy</span>
             </p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-primary-foreground/75">
+            <p className="mt-2 text-xs font-semibold tracking-widest text-primary-foreground/75 uppercase">
               Hệ thống quản trị sản xuất
             </p>
           </div>
         </div>
 
         <div className="border-l-2 border-primary-foreground/25 pl-10">
-          <p className="text-xl font-medium leading-8 text-primary-foreground/80">
+          <p className="text-xl leading-8 font-medium text-primary-foreground/80">
             Tối ưu vận hành sản xuất bằng dữ liệu chính xác và quy trình có kiểm
             soát.
           </p>

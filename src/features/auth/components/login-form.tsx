@@ -1,13 +1,19 @@
-import { Activity, useState, useTransition } from "react"
+import { Activity } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useNavigate, useRouter, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
+import { useMutation } from "@tanstack/react-query"
 import { AlertOctagon, Loader2, LogIn } from "lucide-react"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { FieldGroup } from "@/components/ui/field"
-import { LoginEmailField } from "@/features/auth/components/login-email-field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import { LoginFormHeader } from "@/features/auth/components/login-form-header"
 import { LoginKeepSignedInField } from "@/features/auth/components/login-keep-signed-in-field"
 import { LoginPasswordField } from "@/features/auth/components/login-password-field"
@@ -17,43 +23,36 @@ import { resolveInternalRedirect } from "@/lib/redirect"
 import type { LoginSchema } from "@/features/auth/schemas/login.schema"
 
 export function LoginForm() {
-  const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
-
   const { redirectTo } = useSearch({ from: "/(auth)/login" })
   const navigate = useNavigate()
   const router = useRouter()
 
   const loginWithEmailPasswordFn = useServerFn(loginWithEmailPassword)
 
-  const handleSubmit = (value: LoginSchema) => {
-    setError(null)
-
-    startTransition(async () => {
-      const result = await loginWithEmailPasswordFn({ data: value })
-
-      if (!result.success) {
-        setError(result.message)
-        return
-      }
-
+  const loginMutation = useMutation({
+    mutationFn: (value: LoginSchema) =>
+      loginWithEmailPasswordFn({ data: value }),
+    onSuccess: async () => {
       // The session cookie only exists after the server function resolves, so the
       // (authed) guard must re-run against it before we navigate into that layout.
       await router.invalidate()
       await navigate({ href: resolveInternalRedirect(redirectTo) })
-    })
-  }
+    },
+  })
+
+  const isPending = loginMutation.isPending
+  const error = loginMutation.error?.message ?? null
 
   const form = useForm({
     defaultValues: {
-      email: "",
+      identifier: "",
       password: "",
       keepSignedIn: false,
     },
     validators: {
       onSubmit: loginSchema,
     },
-    onSubmit: ({ value }) => handleSubmit(value),
+    onSubmit: ({ value }) => loginMutation.mutate(value),
   })
 
   return (
@@ -77,21 +76,36 @@ export function LoginForm() {
         </Activity>
 
         <FieldGroup className="gap-5">
-          <form.Field name="email">
-            {(field) => (
-              <LoginEmailField
-                name={field.name}
-                value={field.state.value}
-                errors={field.state.meta.errors}
-                isInvalid={
-                  field.state.meta.isTouched &&
-                  field.state.meta.errors.length > 0
-                }
-                disabled={isPending}
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-              />
-            )}
+          <form.Field name="identifier">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel
+                    htmlFor={field.name}
+                    className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
+                  >
+                    Email hoặc tên đăng nhập
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="text"
+                    placeholder="Nhập email hoặc tên đăng nhập"
+                    autoComplete="username"
+                    className="h-12 pr-10"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                    disabled={isPending}
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )
+            }}
           </form.Field>
 
           <form.Field name="password">
