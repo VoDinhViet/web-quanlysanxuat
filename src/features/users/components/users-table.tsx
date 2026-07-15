@@ -8,7 +8,7 @@ import type { Column } from "@tanstack/react-table"
 import { Edit3, Eye, ShieldCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -21,7 +21,7 @@ import {
 import { StatusBadge } from "@/features/users/components/status-badge"
 import { UserDetails } from "@/features/users/components/user-details"
 import type { User } from "@/features/users/types/user.type"
-import { cn } from "@/lib/utils"
+import { cn, getInitials } from "@/lib/utils"
 
 const userColumnHelper = createColumnHelper<User>()
 
@@ -31,42 +31,35 @@ const userColumns = [
     header: "#",
     cell: ({ row }) => row.index + 1,
   }),
-  userColumnHelper.accessor("id", {
+  userColumnHelper.accessor("code", {
     header: "Mã nhân viên",
   }),
-  userColumnHelper.accessor("name", {
+  userColumnHelper.accessor("fullName", {
     header: "Họ và tên",
     cell: ({ row }) => {
       const user = row.original
+      const displayName = user.fullName ?? user.username
 
       return (
         <div className="flex min-w-0 items-center gap-3">
           <Avatar size="sm">
-            <AvatarImage src={user.avatarFallbackSrc} alt={user.name} />
-            <AvatarFallback
-              className={cn(
-                "bg-linear-to-br text-[10px] font-medium",
-                user.avatarClassName
-              )}
-            >
-              {user.initials}
+            <AvatarFallback className="bg-linear-to-br from-slate-200 to-slate-500 text-[10px] font-medium text-slate-950">
+              {getInitials(displayName)}
             </AvatarFallback>
           </Avatar>
           <span className="truncate text-xs font-medium text-foreground">
-            {user.name}
+            {displayName}
           </span>
         </div>
       )
     },
   }),
-  userColumnHelper.accessor("department", {
-    header: "Phòng ban",
-  }),
-  userColumnHelper.accessor("position", {
-    header: "Chức vụ",
-  }),
   userColumnHelper.accessor("email", {
     header: "Email",
+  }),
+  userColumnHelper.accessor("phoneNumber", {
+    header: "Số điện thoại",
+    cell: ({ getValue }) => getValue() ?? "—",
   }),
   userColumnHelper.accessor("status", {
     header: "Trạng thái",
@@ -154,11 +147,10 @@ function getUserHeaderClassName(column: Column<User>) {
   return cn(
     "px-4 text-xs font-semibold text-foreground",
     column.id === "index" && "w-12 text-center",
-    column.id === "id" && "min-w-24",
-    column.id === "name" && "min-w-44",
-    column.id === "department" && "min-w-32",
-    column.id === "position" && "min-w-40",
+    column.id === "code" && "min-w-24",
+    column.id === "fullName" && "min-w-44",
     column.id === "email" && "min-w-52",
+    column.id === "phoneNumber" && "min-w-32",
     column.id === "status" && "min-w-28 text-center",
     column.id === "actions" && "min-w-32 text-center"
   )
@@ -168,7 +160,7 @@ function getUserCellClassName(column: Column<User>) {
   return cn(
     "px-4 py-0 text-xs font-medium text-foreground",
     column.id === "index" && "text-center",
-    column.id === "name" && "font-normal",
+    column.id === "fullName" && "font-normal",
     column.id === "status" && "text-center",
     column.id === "actions" && "font-normal"
   )

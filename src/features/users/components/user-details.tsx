@@ -1,7 +1,7 @@
 import { Edit3 } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -15,8 +15,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { StatusBadge } from "@/features/users/components/status-badge"
+import { USER_GENDER_LABELS } from "@/features/users/types/user.type"
 import type { User } from "@/features/users/types/user.type"
-import { cn } from "@/lib/utils"
+import { cn, getInitials } from "@/lib/utils"
 
 export function UserDetails({
   user,
@@ -25,6 +26,12 @@ export function UserDetails({
   user: User
   trigger: ReactNode
 }) {
+  const displayName = user.fullName ?? user.username
+  const dateOfBirth = user.dateOfBirth
+    ? new Date(user.dateOfBirth).toLocaleDateString("vi-VN")
+    : "—"
+  const gender = user.gender ? USER_GENDER_LABELS[user.gender] : "—"
+
   return (
     <Sheet>
       <SheetTrigger asChild>{trigger}</SheetTrigger>
@@ -34,7 +41,7 @@ export function UserDetails({
       >
         <SheetHeader className="border-b border-border px-4 py-4">
           <SheetTitle>Chi tiết nhân sự</SheetTitle>
-          <SheetDescription>{user.name}</SheetDescription>
+          <SheetDescription>{displayName}</SheetDescription>
         </SheetHeader>
         <Tabs defaultValue="info" className="h-full gap-0">
           <div className="border-b border-border px-4 pt-4">
@@ -61,20 +68,14 @@ export function UserDetails({
             <div className="border-b border-border px-4 py-5">
               <div className="flex items-start gap-4">
                 <Avatar size="lg" className="size-20">
-                  <AvatarImage src={user.avatarFallbackSrc} alt={user.name} />
-                  <AvatarFallback
-                    className={cn(
-                      "bg-linear-to-br text-base font-medium",
-                      user.avatarClassName
-                    )}
-                  >
-                    {user.initials}
+                  <AvatarFallback className="bg-linear-to-br from-slate-200 to-slate-500 text-base font-medium text-slate-950">
+                    {getInitials(displayName)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1 pt-0.5">
                   <div className="flex items-start justify-between gap-2">
                     <h2 className="truncate text-base font-semibold text-foreground">
-                      {user.name}
+                      {displayName}
                     </h2>
                     <StatusBadge status={user.status} />
                   </div>
@@ -86,7 +87,7 @@ export function UserDetails({
                   </p>
                   <div className="mt-3 space-y-1 text-xs font-medium text-foreground">
                     <p>{user.email}</p>
-                    <p>{user.phone}</p>
+                    <p>{user.phoneNumber ?? "—"}</p>
                   </div>
                 </div>
               </div>
@@ -94,9 +95,9 @@ export function UserDetails({
 
             <DetailsSection title="Thông tin chung" editable>
               <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                <DetailItem label="Mã nhân viên" value="NV001" />
-                <DetailItem label="Ngày sinh" value="15/05/1990" />
-                <DetailItem label="Giới tính" value="Nam" />
+                <DetailItem label="Mã nhân viên" value={user.code} />
+                <DetailItem label="Ngày sinh" value={dateOfBirth} />
+                <DetailItem label="Giới tính" value={gender} />
                 <DetailItem label="Ngày vào làm" value="01/01/2023" />
                 <DetailItem label="Số CCCD" value="001090123456" />
                 <DetailItem label="Nơi cấp" value="Cục CSQLHC về TTXH" />

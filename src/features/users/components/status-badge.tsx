@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge"
+import { USER_STATUS_LABELS } from "@/features/users/types/user.type"
 import { cn } from "@/lib/utils"
 import type { UserStatus } from "@/features/users/types/user.type"
 
 export function StatusBadge({ status }: { status: UserStatus }) {
-  const isActive = status === "Hoạt động"
+  const isActive = status === "ACTIVE"
 
   return (
     <Badge
@@ -15,7 +16,7 @@ export function StatusBadge({ status }: { status: UserStatus }) {
           : "bg-orange-100 text-orange-700"
       )}
     >
-      {status}
+      {USER_STATUS_LABELS[status]}
     </Badge>
   )
 }
