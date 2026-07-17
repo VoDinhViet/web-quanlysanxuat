@@ -50,9 +50,13 @@ src/
   hooks/                    # shared hooks
 ```
 
-Files are kebab-case (`login-form.tsx`, `users-search.schema.ts`). Zod schema files end in
-`.schema.ts`, domain type files end in `.type.ts`. Components export PascalCase. Path
-alias `@/*` resolves to `src/*`.
+Component and page files are PascalCase, named after their main export
+(`LoginForm.tsx`, `UsersPage.tsx`, `TablePagination.tsx`). Everything else —
+schemas, types, server functions, hooks, lib, routes — stays kebab-case
+(`users-search.schema.ts`, `create-user.ts`, `use-app-form.ts`). Zod schema files end in
+`.schema.ts`, domain type files end in `.type.ts`. Exception: `src/components/ui/` is
+shadcn-generated and keeps shadcn's kebab-case names. Path alias `@/*` resolves to
+`src/*`.
 
 ## Layer boundaries (non-negotiable)
 
@@ -127,6 +131,16 @@ export const doThing = createServerFn({ method: "POST" })
   `AxiosError`/`errorCode` shape — that logic must not leak into route loaders or
   components.
 - Use the shared `http` client (`src/lib/http.ts`). No ad-hoc axios instances.
+- Wire-payload mapping happens in the server function, not the Zod schema: form
+  schemas hold the raw form shape (no `.transform`), and the handler builds the
+  backend payload with a local `to<Thing>Payload(data)` helper — empty optional
+  strings become `undefined` via `toOptional` (`src/lib/utils.ts`), date-picker
+  strings become ISO datetimes via luxon. See
+  `src/features/users/server-functions/create-user.ts`.
+- Dates use **luxon** (`DateTime.fromISO(...).toFormat("dd/MM/yyyy")` for
+  display, `.toFormat("yyyy-MM-dd")` for date-picker values) directly at call
+  sites — no date wrapper helpers in `src/lib/utils.ts`, and no second date
+  library.
 
 ## Loaders don't catch — errors bubble to a shared `errorComponent`
 
@@ -150,7 +164,7 @@ export const doThing = createServerFn({ method: "POST" })
   (bound via `useServerFn`) directly as `mutationFn` — no wrapper needed, since it
   already throws on failure. Read `mutation.isPending` for pending UI and
   `mutation.error?.message` for the Vietnamese error string (see
-  `src/features/auth/components/login-form.tsx`).
+  `src/features/auth/components/LoginForm.tsx`).
 - `QueryClient` is created once, in `src/router.tsx`, and wired to the router via
   `@tanstack/react-router-ssr-query`'s `setupRouterSsrQueryIntegration`. Don't create a
   second `QueryClient` instance anywhere else.
@@ -189,7 +203,18 @@ export const doThing = createServerFn({ method: "POST" })
 - TanStack Form + Zod as the single schema source: `noValidate` on `<form>`, manual
   `preventDefault`/`stopPropagation` in the submit handler, derive form types with
   `z.infer<typeof schema>`, gate error styling on `field.state.meta.isTouched` (see
-  `src/features/auth/components/login-form.tsx`).
+  `src/features/auth/components/LoginForm.tsx`).
+- Form schemas mirror the backend DTO's shape, including nested optional objects
+  (e.g. `credential: createCredentialSchema.optional()` in
+  `create-user.schema.ts`) — a toggle-gated section stores the nested object or
+  `undefined`, not parallel flat fields.
+- Multi-section forms use `useAppForm`/`withForm` (`src/hooks/use-app-form.ts`) with
+  the shared field components in `src/components/shared/AppFormFields.tsx`. In
+  `withForm` `props` defaults, type empty arrays with `[] as X[]` — a bare `[]`
+  infers `never[]` and breaks the caller (a justified cast).
+- Select options come from label maps via `buildOptionsFromLabels` or from
+  `{id, name}` reference rows fetched in the route loader (`Promise.all` for several
+  lists) — see `src/routes/(authed)/manage_/users_/create.tsx`.
 - Shareable state — filters, pagination, active tab — belongs in Zod-validated URL search
   params via a route's `validateSearch`, not `useState`. Give every optional search param
   a `.catch(...)` default so a malformed URL never crashes the route.
@@ -199,7 +224,11 @@ export const doThing = createServerFn({ method: "POST" })
   `"/(authed)/manage_/users"`); `useNavigate`'s `from` takes the resolved URL path instead
   (e.g. `"/manage/users"`) — the two intentionally differ. Pass the literal strings
   directly at each call site (no intermediate constants) — see
-  `src/features/users/pages/users-page.tsx`.
+  `src/features/users/pages/UsersPage.tsx`.
+- List pages reuse the shared `TablePagination`
+  (`src/components/shared/TablePagination.tsx`) — it patches the current route's
+  `page`/`limit` search params itself via `navigate({ to: "." })`; callers only pass
+  `pagination` and layout `className`.
 
 ## Styling & accessibility
 
