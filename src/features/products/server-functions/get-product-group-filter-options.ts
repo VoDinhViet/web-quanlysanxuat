@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { http, logHttpError } from "@/lib/http"
-import { useAppSession } from "@/lib/session"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { ProductFilterOption } from "@/features/products/types/product.type"
@@ -25,15 +24,9 @@ export const getProductGroupFilterOptions = createServerFn({
   method: "GET",
 }).handler(async (): Promise<ProductFilterOption[]> => {
   try {
-    const session = await useAppSession()
-    const { accessToken } = session.data
-
     const response = await http.get<PaginatedResponse<ProductFilterOption>>(
       "/api/product-groups",
-      {
-        params: { limit: FILTER_OPTIONS_LIMIT },
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-      }
+      { params: { limit: FILTER_OPTIONS_LIMIT } }
     )
 
     return response.data.data

@@ -1,8 +1,8 @@
 import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router"
 
-import { PageTitleBar } from "@/components/shared/page-title-bar"
-import { ProductsTable } from "@/features/products/components/products-table"
-import { ProductsTableFilter } from "@/features/products/components/products-table-filter"
+import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { ProductsTable } from "@/features/products/components/ProductsTable"
+import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 
 export function ProductsPage() {

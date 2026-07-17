@@ -16,7 +16,8 @@ import { Route as authedManageRouteImport } from './routes/(authed)/manage'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
 import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
-import { Route as authedManageUsersAddRouteImport } from './routes/(authed)/manage_/users_/add'
+import { Route as authedManageUsersCreateRouteImport } from './routes/(authed)/manage_/users_/create'
+import { Route as authedManageUsersUserIdEditRouteImport } from './routes/(authed)/manage_/users_/$userId.edit'
 
 const authedRouteRoute = authedRouteRouteImport.update({
   id: '/(authed)',
@@ -51,11 +52,17 @@ const authedManageProductsRoute = authedManageProductsRouteImport.update({
   path: '/manage/products',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageUsersAddRoute = authedManageUsersAddRouteImport.update({
-  id: '/manage_/users_/add',
-  path: '/manage/users/add',
+const authedManageUsersCreateRoute = authedManageUsersCreateRouteImport.update({
+  id: '/manage_/users_/create',
+  path: '/manage/users/create',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManageUsersUserIdEditRoute =
+  authedManageUsersUserIdEditRouteImport.update({
+    id: '/manage_/users_/$userId/edit',
+    path: '/manage/users/$userId/edit',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -63,7 +70,8 @@ export interface FileRoutesByFullPath {
   '/manage': typeof authedManageRoute
   '/manage/products': typeof authedManageProductsRoute
   '/manage/users': typeof authedManageUsersRoute
-  '/manage/users/add': typeof authedManageUsersAddRoute
+  '/manage/users/create': typeof authedManageUsersCreateRoute
+  '/manage/users/$userId/edit': typeof authedManageUsersUserIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -71,7 +79,8 @@ export interface FileRoutesByTo {
   '/manage': typeof authedManageRoute
   '/manage/products': typeof authedManageProductsRoute
   '/manage/users': typeof authedManageUsersRoute
-  '/manage/users/add': typeof authedManageUsersAddRoute
+  '/manage/users/create': typeof authedManageUsersCreateRoute
+  '/manage/users/$userId/edit': typeof authedManageUsersUserIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -82,7 +91,8 @@ export interface FileRoutesById {
   '/(authed)/manage': typeof authedManageRoute
   '/(authed)/manage_/products': typeof authedManageProductsRoute
   '/(authed)/manage_/users': typeof authedManageUsersRoute
-  '/(authed)/manage_/users_/add': typeof authedManageUsersAddRoute
+  '/(authed)/manage_/users_/create': typeof authedManageUsersCreateRoute
+  '/(authed)/manage_/users_/$userId/edit': typeof authedManageUsersUserIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -92,7 +102,8 @@ export interface FileRouteTypes {
     | '/manage'
     | '/manage/products'
     | '/manage/users'
-    | '/manage/users/add'
+    | '/manage/users/create'
+    | '/manage/users/$userId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,7 +111,8 @@ export interface FileRouteTypes {
     | '/manage'
     | '/manage/products'
     | '/manage/users'
-    | '/manage/users/add'
+    | '/manage/users/create'
+    | '/manage/users/$userId/edit'
   id:
     | '__root__'
     | '/'
@@ -110,7 +122,8 @@ export interface FileRouteTypes {
     | '/(authed)/manage'
     | '/(authed)/manage_/products'
     | '/(authed)/manage_/users'
-    | '/(authed)/manage_/users_/add'
+    | '/(authed)/manage_/users_/create'
+    | '/(authed)/manage_/users_/$userId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -170,11 +183,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageProductsRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/users_/add': {
-      id: '/(authed)/manage_/users_/add'
-      path: '/manage/users/add'
-      fullPath: '/manage/users/add'
-      preLoaderRoute: typeof authedManageUsersAddRouteImport
+    '/(authed)/manage_/users_/create': {
+      id: '/(authed)/manage_/users_/create'
+      path: '/manage/users/create'
+      fullPath: '/manage/users/create'
+      preLoaderRoute: typeof authedManageUsersCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/users_/$userId/edit': {
+      id: '/(authed)/manage_/users_/$userId/edit'
+      path: '/manage/users/$userId/edit'
+      fullPath: '/manage/users/$userId/edit'
+      preLoaderRoute: typeof authedManageUsersUserIdEditRouteImport
       parentRoute: typeof authedRouteRoute
     }
   }
@@ -196,14 +216,16 @@ interface authedRouteRouteChildren {
   authedManageRoute: typeof authedManageRoute
   authedManageProductsRoute: typeof authedManageProductsRoute
   authedManageUsersRoute: typeof authedManageUsersRoute
-  authedManageUsersAddRoute: typeof authedManageUsersAddRoute
+  authedManageUsersCreateRoute: typeof authedManageUsersCreateRoute
+  authedManageUsersUserIdEditRoute: typeof authedManageUsersUserIdEditRoute
 }
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageRoute: authedManageRoute,
   authedManageProductsRoute: authedManageProductsRoute,
   authedManageUsersRoute: authedManageUsersRoute,
-  authedManageUsersAddRoute: authedManageUsersAddRoute,
+  authedManageUsersCreateRoute: authedManageUsersCreateRoute,
+  authedManageUsersUserIdEditRoute: authedManageUsersUserIdEditRoute,
 }
 
 const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(

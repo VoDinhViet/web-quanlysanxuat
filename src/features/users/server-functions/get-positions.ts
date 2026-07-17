@@ -2,11 +2,12 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { http, logHttpError } from "@/lib/http"
-import { useAppSession } from "@/lib/session"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Position } from "@/features/users/types/organization.type"
+import type { PaginatedResponse } from "@/lib/types/pagination.type"
+import type { PositionOption } from "@/features/users/types/user.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
+const OPTIONS_LIMIT = 100
 
 function resolveGetPositionsErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
@@ -20,16 +21,14 @@ function resolveGetPositionsErrorMessage(error: unknown): string {
 }
 
 export const getPositions = createServerFn({ method: "GET" }).handler(
-  async (): Promise<Position[]> => {
+  async (): Promise<PositionOption[]> => {
     try {
-      const session = await useAppSession()
-      const { accessToken } = session.data
+      const response = await http.get<PaginatedResponse<PositionOption>>(
+        "/api/positions",
+        { params: { limit: OPTIONS_LIMIT } }
+      )
 
-      const response = await http.get<Position[]>("/api/positions", {
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-      })
-
-      return response.data
+      return response.data.data
     } catch (error) {
       logHttpError(error, "getPositions")
 

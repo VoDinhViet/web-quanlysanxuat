@@ -6,7 +6,7 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { AppSidebar } from "@/components/shared/app-sidebar"
+import { AppSidebar } from "@/components/shared/AppSidebar"
 import { requireSession } from "@/features/auth/guard"
 
 export const Route = createFileRoute("/(authed)")({

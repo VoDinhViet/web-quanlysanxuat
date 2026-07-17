@@ -11,14 +11,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { USER_STATUS_LABELS } from "@/features/users/types/user.type"
+import {
+  EMPLOYEE_STATUS_LABELS,
+  EmployeeStatus,
+} from "@/features/users/types/user.type"
 import type { UsersSearchSchema } from "@/features/users/schemas/users-search.schema"
-import type { UserStatus } from "@/features/users/types/user.type"
 
-const STATUS_FILTER_OPTIONS: { value: UserStatus | "all"; label: string }[] = [
+const STATUS_FILTER_OPTIONS: {
+  value: EmployeeStatus | "all"
+  label: string
+}[] = [
   { value: "all", label: "Tất cả" },
-  { value: "ACTIVE", label: USER_STATUS_LABELS.ACTIVE },
-  { value: "INACTIVE", label: USER_STATUS_LABELS.INACTIVE },
+  { value: EmployeeStatus.WORKING, label: EMPLOYEE_STATUS_LABELS.WORKING },
+  { value: EmployeeStatus.RESIGNED, label: EMPLOYEE_STATUS_LABELS.RESIGNED },
 ]
 
 type UsersTableFilterProps = {
@@ -69,7 +74,7 @@ export function UsersTableFilter({
               value={search.status ?? "all"}
               onValueChange={(next) =>
                 onFilterChange({
-                  status: next === "all" ? undefined : (next as UserStatus),
+                  status: next === "all" ? undefined : (next as EmployeeStatus),
                 })
               }
             >
@@ -102,7 +107,7 @@ export function UsersTableFilter({
             Export
           </Button>
           <Button asChild className="text-xs">
-            <Link to="/manage/users/add">
+            <Link to="/manage/users/create">
               <Plus className="size-4" />
               Thêm nhân sự
             </Link>

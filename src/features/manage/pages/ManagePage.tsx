@@ -1,4 +1,4 @@
-import { PageTitleBar } from "@/components/shared/page-title-bar"
+import { PageTitleBar } from "@/components/shared/PageTitleBar"
 
 export function ManagePage() {
   return (

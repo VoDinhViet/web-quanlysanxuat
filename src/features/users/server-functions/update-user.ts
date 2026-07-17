@@ -1,37 +1,37 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
-import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
+import { updateUserSchema } from "@/features/users/schemas/update-user.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { User } from "@/features/users/types/user.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
-function resolveGetUsersErrorMessage(error: unknown): string {
+function resolveUpdateUserErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
     return GENERIC_ERROR_MESSAGE
   }
 
   switch (error.response?.data.errorCode) {
+    case "user.error.not_found":
+      return "Không tìm thấy nhân viên."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
-export const getUsers = createServerFn({ method: "GET" })
-  .validator(usersSearchSchema)
-  .handler(async ({ data }): Promise<PaginatedResponse<User>> => {
+export const updateUser = createServerFn({ method: "POST" })
+  .validator(updateUserSchema)
+  .handler(async ({ data }): Promise<User> => {
     try {
-      const response = await http.get<PaginatedResponse<User>>("/api/users", {
-        params: data,
-      })
+      const { userId, ...payload } = data
+      const response = await http.put<User>(`/api/users/${userId}`, payload)
 
       return response.data
     } catch (error) {
-      logHttpError(error, "getUsers")
+      logHttpError(error, "updateUser")
 
-      throw new Error(resolveGetUsersErrorMessage(error))
+      throw new Error(resolveUpdateUserErrorMessage(error))
     }
   })

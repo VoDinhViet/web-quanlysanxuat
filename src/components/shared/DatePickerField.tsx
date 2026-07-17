@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { format, parseISO } from "date-fns"
+import { DateTime } from "luxon"
 import { CalendarIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
-type CreateUserDateFieldProps = {
+type DatePickerFieldProps = {
   id: string
   label: string
   required?: boolean
@@ -25,7 +25,7 @@ type CreateUserDateFieldProps = {
   disabled?: boolean
 }
 
-export function CreateUserDateField({
+export function DatePickerField({
   id,
   label,
   required,
@@ -35,9 +35,10 @@ export function CreateUserDateField({
   isInvalid,
   errors,
   disabled,
-}: CreateUserDateFieldProps) {
+}: DatePickerFieldProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const selectedDate = value.length > 0 ? parseISO(value) : undefined
+  const selectedDate =
+    value.length > 0 ? DateTime.fromISO(value).toJSDate() : undefined
 
   return (
     <Field data-invalid={isInvalid}>
@@ -65,7 +66,9 @@ export function CreateUserDateField({
               !selectedDate && "text-muted-foreground"
             )}
           >
-            {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "dd/mm/yyyy"}
+            {selectedDate
+              ? DateTime.fromJSDate(selectedDate).toFormat("dd/MM/yyyy")
+              : "dd/mm/yyyy"}
             <CalendarIcon className="size-4" />
           </Button>
         </PopoverTrigger>
@@ -75,7 +78,9 @@ export function CreateUserDateField({
             captionLayout="dropdown"
             selected={selectedDate}
             onSelect={(date) => {
-              onChange(date ? format(date, "yyyy-MM-dd") : "")
+              onChange(
+                date ? DateTime.fromJSDate(date).toFormat("yyyy-MM-dd") : ""
+              )
               setIsOpen(false)
               onBlur()
             }}

@@ -1,76 +1,127 @@
+import { DateTime } from "luxon"
 import { z } from "zod"
 
-import {
-  EMPLOYMENT_STATUSES,
-  USER_GENDERS,
-} from "@/features/users/types/user.type"
+import { EmployeeStatus, USER_GENDERS } from "@/features/users/types/user.type"
+
+// Wire contract for POST /api/users' `credential` field — matches the backend's
+// CreateCredentialReqDto.
+export const createCredentialSchema = z.object({
+  username: z.string().trim().min(1, "Vui lòng nhập tên đăng nhập"),
+  email: z.email("Vui lòng nhập email đăng nhập hợp lệ"),
+  password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
+})
+
+// Wire contract for the `credential` field when updating an employee who
+// already has an ERP account — password is left blank to keep it unchanged.
+export const updateCredentialSchema = z.object({
+  username: z.string().trim().min(1, "Vui lòng nhập tên đăng nhập"),
+  email: z.email("Vui lòng nhập email đăng nhập hợp lệ"),
+  password: z
+    .string()
+    .refine((value) => value.length === 0 || value.length >= 6, {
+      message: "Mật khẩu tối thiểu 6 ký tự",
+    }),
+})
+
+// A blank form input means "not provided" — the wire payload should omit the
+// field rather than send an empty string.
+function emptyToUndefined(value: string): string | undefined {
+  return value.length > 0 ? value : undefined
+}
+
+// Raw form fields shared by the create and update user schemas. Optional
+// fields transform "" straight to undefined here, so every schema built from
+// this object gets wire-ready values for free — no separate mapping step.
+export const userProfileFields = {
+  fullName: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng nhập họ và tên")
+    .max(255, "Họ và tên tối đa 255 ký tự"),
+  gender: z.enum(USER_GENDERS),
+  dateOfBirth: z
+    .string()
+    .trim()
+    .transform((value) =>
+      value.length > 0
+        ? DateTime.fromISO(value).toJSDate().toISOString()
+        : undefined
+    ),
+  idNumber: z
+    .string()
+    .trim()
+    .max(20, "Số CCCD/CMND tối đa 20 ký tự")
+    .transform(emptyToUndefined),
+  phoneNumber: z
+    .string()
+    .trim()
+    .max(30, "Số điện thoại tối đa 30 ký tự")
+    .transform(emptyToUndefined),
+  email: z.string().trim().transform(emptyToUndefined),
+  address: z
+    .string()
+    .trim()
+    .max(500, "Địa chỉ tối đa 500 ký tự")
+    .transform(emptyToUndefined),
+  avatarUrl: z
+    .string()
+    .trim()
+    .max(500, "Đường dẫn ảnh tối đa 500 ký tự")
+    .transform(emptyToUndefined),
+  departmentId: z.string().trim().min(1, "Vui lòng chọn phòng ban"),
+  positionId: z.string().trim().min(1, "Vui lòng chọn chức vụ"),
+  hireDate: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng chọn ngày vào làm")
+    .transform((value) => DateTime.fromISO(value).toJSDate().toISOString()),
+  note: z
+    .string()
+    .trim()
+    .max(1000, "Ghi chú tối đa 1000 ký tự")
+    .transform(emptyToUndefined),
+  status: z.enum(EmployeeStatus),
+}
+
+// The personal email is optional, so it only needs a format check when filled
+// (email is already transformed to undefined-when-empty by userProfileFields
+// by the time this runs).
+export function refinePersonalEmail(
+  value: { email?: string },
+  ctx: z.RefinementCtx
+): void {
+  if (value.email && !z.email().safeParse(value.email).success) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["email"],
+      message: "Email không đúng định dạng",
+    })
+  }
+}
 
 export const createUserSchema = z
   .object({
-    fullName: z.string().trim().min(1, "Vui lòng nhập họ và tên"),
-    gender: z.enum(USER_GENDERS),
-    dateOfBirth: z.string().trim(),
-    idNumber: z.string().trim(),
-    phoneNumber: z.string().trim(),
-    email: z.string().trim(),
-    address: z.string().trim(),
-    avatarUrl: z.string().trim(),
-    departmentId: z.string().trim().min(1, "Vui lòng chọn phòng ban"),
-    positionId: z.string().trim(),
-    hireDate: z.string().trim().min(1, "Vui lòng chọn ngày vào làm"),
-    note: z.string().trim(),
-    employmentStatus: z.enum(EMPLOYMENT_STATUSES),
-    accountEnabled: z.boolean(),
-    accountUsername: z.string().trim(),
-    accountEmail: z.string().trim(),
-    accountPassword: z.string(),
-    accountConfirmPassword: z.string(),
-    accountActive: z.boolean(),
+    ...userProfileFields,
+    credential: createCredentialSchema.optional(),
   })
-  .superRefine((value, ctx) => {
-    if (value.email.length > 0 && !z.email().safeParse(value.email).success) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["email"],
-        message: "Email không đúng định dạng",
-      })
-    }
+  .superRefine(refinePersonalEmail)
 
-    if (!value.accountEnabled) {
-      return
-    }
+// Raw form-field shape — used for defaultValues/form typing.
+export type CreateUserSchema = z.input<typeof createUserSchema>
 
-    if (value.accountUsername.length === 0) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["accountUsername"],
-        message: "Vui lòng nhập tên đăng nhập",
-      })
-    }
-
-    if (!z.email().safeParse(value.accountEmail).success) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["accountEmail"],
-        message: "Vui lòng nhập email đăng nhập hợp lệ",
-      })
-    }
-
-    if (value.accountPassword.length < 6) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["accountPassword"],
-        message: "Mật khẩu tối thiểu 6 ký tự",
-      })
-    }
-
-    if (value.accountPassword !== value.accountConfirmPassword) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["accountConfirmPassword"],
-        message: "Mật khẩu xác nhận không khớp",
-      })
-    }
-  })
-
-export type CreateUserSchema = z.infer<typeof createUserSchema>
+export const CREATE_USER_DEFAULT_VALUES: CreateUserSchema = {
+  fullName: "",
+  gender: "MALE",
+  dateOfBirth: "",
+  idNumber: "",
+  phoneNumber: "",
+  email: "",
+  address: "",
+  avatarUrl: "",
+  departmentId: "",
+  positionId: "",
+  hireDate: "",
+  note: "",
+  status: EmployeeStatus.WORKING,
+  credential: undefined,
+}

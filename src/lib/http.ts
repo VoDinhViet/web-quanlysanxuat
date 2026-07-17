@@ -1,6 +1,8 @@
 import axios from "axios"
 import type { AxiosRequestConfig } from "axios"
 
+import { useAppSession } from "@/lib/session"
+
 const DEFAULT_TIMEOUT = 30_000
 const DEFAULT_BASE_URL = ""
 
@@ -38,6 +40,20 @@ export function createHttpClient(config: AxiosRequestConfig = {}) {
 }
 
 export const http = createHttpClient()
+
+// Every server function talks to the backend through this instance, so the access
+// token is attached here once instead of being read from the session and passed as
+// headers at every call site.
+http.interceptors.request.use(async (config) => {
+  const session = await useAppSession()
+  const { accessToken } = session.data
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
+  }
+
+  return config
+})
 
 export function logHttpError(error: unknown, context: string) {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {

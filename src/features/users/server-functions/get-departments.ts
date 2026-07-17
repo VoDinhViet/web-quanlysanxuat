@@ -2,11 +2,12 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { http, logHttpError } from "@/lib/http"
-import { useAppSession } from "@/lib/session"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Department } from "@/features/users/types/organization.type"
+import type { PaginatedResponse } from "@/lib/types/pagination.type"
+import type { DepartmentOption } from "@/features/users/types/user.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
+const OPTIONS_LIMIT = 100
 
 function resolveGetDepartmentsErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
@@ -20,16 +21,14 @@ function resolveGetDepartmentsErrorMessage(error: unknown): string {
 }
 
 export const getDepartments = createServerFn({ method: "GET" }).handler(
-  async (): Promise<Department[]> => {
+  async (): Promise<DepartmentOption[]> => {
     try {
-      const session = await useAppSession()
-      const { accessToken } = session.data
+      const response = await http.get<PaginatedResponse<DepartmentOption>>(
+        "/api/departments",
+        { params: { limit: OPTIONS_LIMIT } }
+      )
 
-      const response = await http.get<Department[]>("/api/departments", {
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-      })
-
-      return response.data
+      return response.data.data
     } catch (error) {
       logHttpError(error, "getDepartments")
 

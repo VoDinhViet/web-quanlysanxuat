@@ -1,4 +1,5 @@
 import { Activity } from "react"
+import { DateTime } from "luxon"
 import { useNavigate, useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
@@ -7,50 +8,88 @@ import { AlertOctagon, Loader2, Save } from "lucide-react"
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
-import { UserCredentialSection } from "@/features/users/components/UserCredentialSection"
 import { CreateUserJobInfoSection } from "@/features/users/components/CreateUserJobInfoSection"
 import { CreateUserInfoSection } from "@/features/users/components/CreateUserInfoSection"
-import {
-  CREATE_USER_DEFAULT_VALUES,
-  createUserSchema,
-} from "@/features/users/schemas/create-user.schema"
-import { createUser } from "@/features/users/server-functions/create-user"
+import { UserCredentialSection } from "@/features/users/components/UserCredentialSection"
+import { createUserSchema } from "@/features/users/schemas/create-user.schema"
+import { editUserWithCredentialSchema } from "@/features/users/schemas/update-user.schema"
+import { updateUser } from "@/features/users/server-functions/update-user"
 import type { CreateUserSchema } from "@/features/users/schemas/create-user.schema"
 import type {
   DepartmentOption,
   PositionOption,
+  User,
 } from "@/features/users/types/user.type"
 
-type CreateUserFormProps = {
+// User → raw form values: nullable fields become "", ISO datetimes become the
+// yyyy-MM-dd strings the date pickers work with. When the employee already
+// has an ERP account, its username/email are prefilled and editable, with
+// password left blank (blank = keep the current password).
+function buildDefaultValues(user: User): CreateUserSchema {
+  const credential = user.credential
+    ? {
+        username: user.credential.username,
+        email: user.credential.email,
+        password: "",
+      }
+    : undefined
+
+  return {
+    fullName: user.fullName,
+    gender: user.gender,
+    dateOfBirth: user.dateOfBirth
+      ? DateTime.fromISO(user.dateOfBirth).toFormat("yyyy-MM-dd")
+      : "",
+    idNumber: user.idNumber ?? "",
+    phoneNumber: user.phoneNumber ?? "",
+    email: user.email ?? "",
+    address: user.address ?? "",
+    avatarUrl: user.avatarUrl ?? "",
+    departmentId: user.department.id,
+    positionId: user.position.id,
+    hireDate: DateTime.fromISO(user.hireDate).toFormat("yyyy-MM-dd"),
+    note: user.note ?? "",
+    status: user.status,
+    credential,
+  }
+}
+
+type EditUserFormProps = {
+  myUser: User
   departments: DepartmentOption[]
   positions: PositionOption[]
 }
 
-export function CreateUserForm({
+export function EditUserForm({
+  myUser,
   departments,
   positions,
-}: CreateUserFormProps) {
-  const navigate = useNavigate({ from: "/manage/users/create" })
+}: EditUserFormProps) {
+  const navigate = useNavigate({ from: "/manage/users/$userId/edit" })
   const router = useRouter()
-  const createUserFn = useServerFn(createUser)
+  const updateUserFn = useServerFn(updateUser)
 
-  const createUserMutation = useMutation({
-    mutationFn: (value: CreateUserSchema) => createUserFn({ data: value }),
+  const {
+    mutate: update,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: (value: CreateUserSchema) =>
+      updateUserFn({ data: { ...value, userId: myUser.id } }),
     onSuccess: async () => {
       await router.invalidate()
       await navigate({ to: "/manage/users", search: { page: 1, limit: 10 } })
     },
   })
 
-  const isPending = createUserMutation.isPending
-  const error = createUserMutation.error?.message ?? null
-
   const form = useAppForm({
-    defaultValues: CREATE_USER_DEFAULT_VALUES,
+    defaultValues: buildDefaultValues(myUser),
     validators: {
-      onSubmit: createUserSchema,
+      onSubmit: myUser.credential
+        ? editUserWithCredentialSchema
+        : createUserSchema,
     },
-    onSubmit: ({ value }) => createUserMutation.mutate(value),
+    onSubmit: ({ value }) => update(value),
   })
 
   return (
@@ -66,7 +105,7 @@ export function CreateUserForm({
       <Activity mode={error ? "visible" : "hidden"}>
         <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
           <AlertOctagon className="size-4" />
-          <AlertTitle>{error}</AlertTitle>
+          <AlertTitle>{error?.message}</AlertTitle>
         </Alert>
       </Activity>
 
@@ -78,10 +117,11 @@ export function CreateUserForm({
           departments={departments}
           positions={positions}
         />
+
         <UserCredentialSection
           form={form}
           disabled={isPending}
-          hasExistingCredential={false}
+          hasExistingCredential={myUser.credential != null}
         />
 
         <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-4 py-4 sm:px-5">
@@ -97,9 +137,6 @@ export function CreateUserForm({
             }
           >
             Hủy
-          </Button>
-          <Button type="button" variant="outline">
-            Lưu nháp
           </Button>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -117,7 +154,7 @@ export function CreateUserForm({
                 ) : (
                   <>
                     <Save />
-                    Lưu nhân viên
+                    Lưu thay đổi
                   </>
                 )}
               </Button>

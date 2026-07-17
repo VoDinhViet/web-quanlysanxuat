@@ -8,7 +8,7 @@
 const KNOWN_ROUTES = [
   "/manage",
   "/manage/users",
-  "/manage/users/add",
+  "/manage/users/create",
   "/manage/products",
 ] as const
 

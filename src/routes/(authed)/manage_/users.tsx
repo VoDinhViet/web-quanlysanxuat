@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { UsersPage } from "@/features/users/pages/users-page"
+import { UsersPage } from "@/features/users/pages/UsersPage"
 import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
 import { getUsers } from "@/features/users/server-functions/get-users"
 

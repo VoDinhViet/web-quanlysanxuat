@@ -1,7 +1,9 @@
+import { DateTime } from "luxon"
 import { Edit3 } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -14,8 +16,11 @@ import {
 } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import { StatusBadge } from "@/features/users/components/status-badge"
-import { USER_GENDER_LABELS } from "@/features/users/types/user.type"
+import {
+  EMPLOYEE_STATUS_LABELS,
+  EmployeeStatus,
+  USER_GENDER_LABELS,
+} from "@/features/users/types/user.type"
 import type { User } from "@/features/users/types/user.type"
 import { cn, getInitials } from "@/lib/utils"
 
@@ -26,11 +31,13 @@ export function UserDetails({
   user: User
   trigger: ReactNode
 }) {
-  const displayName = user.fullName ?? user.username
+  const displayName = user.fullName
   const dateOfBirth = user.dateOfBirth
-    ? new Date(user.dateOfBirth).toLocaleDateString("vi-VN")
+    ? DateTime.fromISO(user.dateOfBirth).toFormat("dd/MM/yyyy")
     : "—"
-  const gender = user.gender ? USER_GENDER_LABELS[user.gender] : "—"
+  const hireDate = DateTime.fromISO(user.hireDate).toFormat("dd/MM/yyyy")
+  const gender = USER_GENDER_LABELS[user.gender]
+  const isWorking = user.status === EmployeeStatus.WORKING
 
   return (
     <Sheet>
@@ -77,16 +84,26 @@ export function UserDetails({
                     <h2 className="truncate text-base font-semibold text-foreground">
                       {displayName}
                     </h2>
-                    <StatusBadge status={user.status} />
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "h-5 border-transparent px-2 text-[10px] font-medium",
+                        isWorking
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-orange-100 text-orange-700"
+                      )}
+                    >
+                      {EMPLOYEE_STATUS_LABELS[user.status]}
+                    </Badge>
                   </div>
                   <p className="mt-1 text-xs font-medium text-foreground">
-                    Trưởng phòng Kinh doanh
+                    {user.position.name}
                   </p>
                   <p className="mt-1 text-xs font-medium text-muted-foreground">
-                    Kinh doanh
+                    {user.department.name}
                   </p>
                   <div className="mt-3 space-y-1 text-xs font-medium text-foreground">
-                    <p>{user.email}</p>
+                    <p>{user.email ?? "—"}</p>
                     <p>{user.phoneNumber ?? "—"}</p>
                   </div>
                 </div>
@@ -98,25 +115,32 @@ export function UserDetails({
                 <DetailItem label="Mã nhân viên" value={user.code} />
                 <DetailItem label="Ngày sinh" value={dateOfBirth} />
                 <DetailItem label="Giới tính" value={gender} />
-                <DetailItem label="Ngày vào làm" value="01/01/2023" />
-                <DetailItem label="Số CCCD" value="001090123456" />
-                <DetailItem label="Nơi cấp" value="Cục CSQLHC về TTXH" />
+                <DetailItem label="Ngày vào làm" value={hireDate} />
+                <DetailItem label="Số CCCD" value={user.idNumber ?? "—"} />
+                <DetailItem
+                  label="Tên đăng nhập"
+                  value={user.credential?.username ?? "—"}
+                />
               </div>
               <DetailItem
                 className="mt-4"
                 label="Địa chỉ"
-                value="123 Đường số 1, P. An Phú, TP. Thuận An, Bình Dương"
+                value={user.address ?? "—"}
               />
               <div className="mt-5 space-y-4">
-                <FormPreview label="Phòng ban" value="Kinh doanh" />
-                <FormPreview required label="Chức vụ" value="Trưởng phòng KD" />
+                <FormPreview label="Phòng ban" value={user.department.name} />
+                <FormPreview
+                  required
+                  label="Chức vụ"
+                  value={user.position.name}
+                />
               </div>
             </DetailsSection>
 
             <DetailsSection title="Ghi chú" editable>
               <Textarea
                 readOnly
-                value="-"
+                value={user.note ?? "-"}
                 className="min-h-24 resize-none border-0 bg-transparent px-0 py-0 text-xs font-medium text-muted-foreground shadow-none focus-visible:ring-0"
               />
             </DetailsSection>

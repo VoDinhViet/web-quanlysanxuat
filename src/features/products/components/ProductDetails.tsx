@@ -1,6 +1,7 @@
 import { Package } from "lucide-react"
 import type { ReactNode } from "react"
 
+import { Badge } from "@/components/ui/badge"
 import {
   Sheet,
   SheetContent,
@@ -9,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { StatusBadge } from "@/features/products/components/status-badge"
+import { PRODUCT_STATUS_LABELS } from "@/features/products/types/product.type"
 import type { Product } from "@/features/products/types/product.type"
 import { cn } from "@/lib/utils"
 
@@ -52,7 +53,17 @@ export function ProductDetails({
                 <h2 className="truncate text-base font-semibold text-foreground">
                   {product.name}
                 </h2>
-                <StatusBadge status={product.status} />
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "h-5 border-transparent px-2 text-[10px] font-medium",
+                    product.status === "ACTIVE"
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-red-100 text-red-700"
+                  )}
+                >
+                  {PRODUCT_STATUS_LABELS[product.status]}
+                </Badge>
               </div>
               <p className="mt-1 text-xs font-medium text-muted-foreground">
                 {product.code}

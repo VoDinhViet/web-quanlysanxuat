@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { ProductsPage } from "@/features/products/pages/products-page"
+import { ProductsPage } from "@/features/products/pages/ProductsPage"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import { getProductGroupFilterOptions } from "@/features/products/server-functions/get-product-group-filter-options"
 import { getProducts } from "@/features/products/server-functions/get-products"
