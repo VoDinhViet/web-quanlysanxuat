@@ -11,10 +11,34 @@ import {
 } from "web-qlsx-start"
 
 const ORDERS = [
-  { code: "LSX-2026-0341", product: "Trục thép C45 Ø40", qty: "500", status: "Đang sản xuất", tone: "default" },
-  { code: "LSX-2026-0342", product: "Bánh răng côn xoắn M4", qty: "120", status: "Chờ vật tư", tone: "secondary" },
-  { code: "LSX-2026-0339", product: "Mặt bích DN100", qty: "300", status: "Hoàn thành", tone: "outline" },
-  { code: "LSX-2026-0337", product: "Khớp nối trục Ø55", qty: "80", status: "Tạm dừng", tone: "destructive" },
+  {
+    code: "LSX-2026-0341",
+    product: "Trục thép C45 Ø40",
+    qty: "500",
+    status: "Đang sản xuất",
+    tone: "default",
+  },
+  {
+    code: "LSX-2026-0342",
+    product: "Bánh răng côn xoắn M4",
+    qty: "120",
+    status: "Chờ vật tư",
+    tone: "secondary",
+  },
+  {
+    code: "LSX-2026-0339",
+    product: "Mặt bích DN100",
+    qty: "300",
+    status: "Hoàn thành",
+    tone: "outline",
+  },
+  {
+    code: "LSX-2026-0337",
+    product: "Khớp nối trục Ø55",
+    qty: "80",
+    status: "Tạm dừng",
+    tone: "destructive",
+  },
 ] as const
 
 export const ProductionOrders = () => (

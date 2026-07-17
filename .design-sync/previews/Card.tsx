@@ -14,7 +14,9 @@ export const ProductSummary = () => (
   <Card className="w-96">
     <CardHeader>
       <CardTitle>Trục thép C45 Ø40</CardTitle>
-      <CardDescription>Mã sản phẩm: SP-2024-0158 · Nhóm: Trục cơ khí</CardDescription>
+      <CardDescription>
+        Mã sản phẩm: SP-2024-0158 · Nhóm: Trục cơ khí
+      </CardDescription>
       <CardAction>
         <Badge>Đang sản xuất</Badge>
       </CardAction>

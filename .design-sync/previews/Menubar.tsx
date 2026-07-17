@@ -1,8 +1,4 @@
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-} from "web-qlsx-start"
+import { Menubar, MenubarMenu, MenubarTrigger } from "web-qlsx-start"
 
 export const Bar = () => (
   <Menubar>

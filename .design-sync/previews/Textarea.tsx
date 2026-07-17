@@ -18,7 +18,12 @@ export const States = () => (
       <Label htmlFor="note-disabled" className="opacity-50">
         Ghi chú hệ thống
       </Label>
-      <Textarea id="note-disabled" defaultValue="Tự động tạo bởi hệ thống." disabled rows={2} />
+      <Textarea
+        id="note-disabled"
+        defaultValue="Tự động tạo bởi hệ thống."
+        disabled
+        rows={2}
+      />
     </div>
   </div>
 )
