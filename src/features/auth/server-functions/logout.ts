@@ -10,9 +10,7 @@ export const logout = createServerFn({ method: "POST" }).handler(
 
     if (accessToken) {
       try {
-        await http.post("/api/auth/logout", undefined, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        })
+        await http.post("/api/auth/logout")
       } catch (error) {
         // A failed backend revoke shouldn't strand the user signed in
         // locally — the session is cleared below regardless.

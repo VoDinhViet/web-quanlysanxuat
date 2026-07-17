@@ -40,9 +40,9 @@ export function LoginPasswordField({
           id={name}
           name={name}
           type={showPassword ? "text" : "password"}
-          placeholder="••••••••"
+          placeholder="Nhập mật khẩu"
           autoComplete="current-password"
-          className="h-12 pr-10"
+          className="h-12 pr-11"
           value={value}
           onBlur={onBlur}
           onChange={(event) => onChange(event.target.value)}

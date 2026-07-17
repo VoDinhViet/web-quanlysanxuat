@@ -30,7 +30,7 @@ export function LoginKeepSignedInField({
         htmlFor={name}
         className="cursor-pointer text-sm font-normal text-muted-foreground hover:text-foreground"
       >
-        Ghi nhớ phiên đăng nhập
+        Ghi nhớ đăng nhập
       </FieldLabel>
     </Field>
   )

@@ -14,9 +14,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { LoginFormHeader } from "@/features/auth/components/login-form-header"
-import { LoginKeepSignedInField } from "@/features/auth/components/login-keep-signed-in-field"
-import { LoginPasswordField } from "@/features/auth/components/login-password-field"
+import { LoginKeepSignedInField } from "@/features/auth/components/LoginKeepSignedInField"
+import { LoginPasswordField } from "@/features/auth/components/LoginPasswordField"
 import { loginWithEmailPassword } from "@/features/auth/server-functions/login-with-email-password"
 import { loginSchema } from "@/features/auth/schemas/login.schema"
 import { resolveInternalRedirect } from "@/lib/redirect"
@@ -57,7 +56,17 @@ export function LoginForm() {
 
   return (
     <div>
-      <LoginFormHeader />
+      <div className="mb-9">
+        <p className="mb-3.5 text-xs font-bold tracking-[0.2em] text-primary uppercase">
+          Cổng xác thực
+        </p>
+        <h1 className="text-[40px] font-extrabold tracking-tight text-foreground">
+          Chào mừng trở lại
+        </h1>
+        <p className="mt-3.5 text-base leading-[1.55] text-muted-foreground">
+          Đăng nhập tài khoản để truy cập hệ thống quản lý sản xuất.
+        </p>
+      </div>
 
       <form
         onSubmit={(event) => {
@@ -75,7 +84,7 @@ export function LoginForm() {
           </Alert>
         </Activity>
 
-        <FieldGroup className="gap-5">
+        <FieldGroup className="gap-6">
           <form.Field name="identifier">
             {(field) => {
               const isInvalid =
@@ -95,7 +104,8 @@ export function LoginForm() {
                     type="text"
                     placeholder="Nhập email hoặc tên đăng nhập"
                     autoComplete="username"
-                    className="h-12 pr-10"
+                    autoFocus
+                    className="h-12"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value)}
@@ -144,7 +154,7 @@ export function LoginForm() {
               <Button
                 type="submit"
                 size="lg"
-                className="h-12 w-full tracking-widest uppercase"
+                className="h-13 w-full text-base font-semibold tracking-[0.04em]"
                 disabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (

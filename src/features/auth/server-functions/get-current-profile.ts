@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { http, logHttpError } from "@/lib/http"
-import { useAppSession } from "@/lib/session"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { AuthUserProfile } from "@/features/auth/types/login.type"
 
@@ -22,12 +21,7 @@ function resolveGetCurrentProfileErrorMessage(error: unknown): string {
 export const getCurrentProfile = createServerFn({ method: "GET" }).handler(
   async (): Promise<AuthUserProfile> => {
     try {
-      const session = await useAppSession()
-      const { accessToken } = session.data
-
-      const response = await http.get<AuthUserProfile>("/api/users/me", {
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-      })
+      const response = await http.get<AuthUserProfile>("/api/users/me")
 
       return response.data
     } catch (error) {
