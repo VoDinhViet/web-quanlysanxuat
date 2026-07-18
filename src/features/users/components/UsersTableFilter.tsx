@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
-import { Download, Filter, Plus, Search } from "lucide-react"
+import { Filter, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -40,6 +39,11 @@ export function UsersTableFilter({
   const commitSearch = () => {
     const trimmed = q.trim()
     onFilterChange({ q: trimmed.length > 0 ? trimmed : undefined })
+  }
+
+  const resetFilters = () => {
+    setQ("")
+    onFilterChange({ q: undefined, status: undefined })
   }
 
   return (
@@ -102,15 +106,14 @@ export function UsersTableFilter({
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-          <Button type="button" variant="outline" className="text-xs">
-            <Download className="size-4" />
-            Export
-          </Button>
-          <Button asChild className="text-xs">
-            <Link to="/manage/users/create">
-              <Plus className="size-4" />
-              Thêm nhân sự
-            </Link>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-4" />
+            Làm mới
           </Button>
         </div>
       </div>

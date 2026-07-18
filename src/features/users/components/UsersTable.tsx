@@ -13,11 +13,18 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { TablePagination } from "@/components/shared/TablePagination"
 import { userColumns } from "@/features/users/components/UsersTableColumns"
 import type { User } from "@/features/users/types/user.type"
 import { cn } from "@/lib/utils"
+import type { Pagination } from "@/lib/types/pagination.type"
 
-export function UsersTable({ rows }: { rows: User[] }) {
+type UsersTableProps = {
+  rows: User[]
+  pagination: Pagination
+}
+
+export function UsersTable({ rows, pagination }: UsersTableProps) {
   const table = useReactTable({
     data: rows,
     columns: userColumns,
@@ -79,6 +86,8 @@ export function UsersTable({ rows }: { rows: User[] }) {
           </TableBody>
         </Table>
       </div>
+
+      <TablePagination pagination={pagination} className="pt-4" />
     </div>
   )
 }
