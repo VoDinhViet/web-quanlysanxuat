@@ -1,13 +1,13 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
+import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { ProductFilterOption } from "@/features/products/types/product.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
-const FILTER_OPTIONS_LIMIT = 100
 
 function resolveGetFilterOptionsErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
