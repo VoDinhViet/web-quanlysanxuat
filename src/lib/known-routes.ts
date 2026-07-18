@@ -12,6 +12,7 @@ const KNOWN_ROUTES = [
   "/manage/products",
   "/manage/suppliers",
   "/manage/clients",
+  "/manage/clients/create",
 ] as const
 
 export type KnownRoute = (typeof KNOWN_ROUTES)[number]

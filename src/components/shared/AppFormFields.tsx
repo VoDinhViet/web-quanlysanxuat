@@ -25,6 +25,10 @@ type TextFieldProps = {
   placeholder?: string
   type?: ComponentProps<typeof Input>["type"]
   disabled?: boolean
+  // Override the input's `id`/label `htmlFor` (defaults to the field name). Use
+  // this when two forms on the same page share field names — e.g. a dialog form
+  // rendered alongside the page form — to avoid duplicate DOM ids.
+  id?: string
 }
 
 export function TextField({
@@ -33,21 +37,23 @@ export function TextField({
   placeholder,
   type = "text",
   disabled,
+  id,
 }: TextFieldProps) {
   const field = useFieldContext<string>()
+  const inputId = id ?? field.name
   const isInvalid =
     field.state.meta.isTouched && field.state.meta.errors.length > 0
 
   return (
     <Field data-invalid={isInvalid}>
       <FieldLabel
-        htmlFor={field.name}
+        htmlFor={inputId}
         className="text-xs font-medium text-foreground"
       >
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Input
-        id={field.name}
+        id={inputId}
         name={field.name}
         type={type}
         placeholder={placeholder}
@@ -69,6 +75,8 @@ type TextareaFieldProps = {
   placeholder?: string
   disabled?: boolean
   className?: string
+  // See `TextFieldProps.id` — overrides the textarea id/label htmlFor.
+  id?: string
 }
 
 export function TextareaField({
@@ -77,19 +85,21 @@ export function TextareaField({
   placeholder,
   disabled,
   className,
+  id,
 }: TextareaFieldProps) {
   const field = useFieldContext<string>()
+  const inputId = id ?? field.name
 
   return (
     <Field className={className}>
       <FieldLabel
-        htmlFor={field.name}
+        htmlFor={inputId}
         className="text-xs font-medium text-foreground"
       >
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Textarea
-        id={field.name}
+        id={inputId}
         name={field.name}
         placeholder={placeholder}
         className="min-h-20 resize-none bg-background text-xs"

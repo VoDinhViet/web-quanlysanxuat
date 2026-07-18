@@ -1,8 +1,14 @@
-import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router"
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useSearch,
+} from "@tanstack/react-router"
 import { Download, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ClientsTable } from "@/features/clients/components/ClientsTable"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
 import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
@@ -48,10 +54,14 @@ export function ClientsPage() {
                     <Download className="size-4" />
                     Export
                   </Button>
-                  <Button type="button" className="text-xs">
-                    <Plus className="size-4" />
-                    Tạo khách hàng
-                  </Button>
+                  <PermissionGate permission="clients:create">
+                    <Button asChild className="text-xs">
+                      <Link to="/manage/clients/create">
+                        <Plus className="size-4" />
+                        Tạo khách hàng
+                      </Link>
+                    </Button>
+                  </PermissionGate>
                 </div>
               </div>
 
