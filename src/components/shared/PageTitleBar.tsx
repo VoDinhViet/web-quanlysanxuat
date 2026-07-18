@@ -202,7 +202,7 @@ export function PageTitleBar({
         </Button>
 
         <div className="min-w-0 space-y-2">
-          <h1 className="truncate text-xl leading-6 font-bold sm:text-2xl">
+          <h1 className="truncate text-xl leading-6 font-bold capitalize sm:text-2xl">
             {title}
           </h1>
 

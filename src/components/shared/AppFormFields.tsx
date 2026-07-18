@@ -65,6 +65,7 @@ export function TextField({
 
 type TextareaFieldProps = {
   label: string
+  required?: boolean
   placeholder?: string
   disabled?: boolean
   className?: string
@@ -72,6 +73,7 @@ type TextareaFieldProps = {
 
 export function TextareaField({
   label,
+  required,
   placeholder,
   disabled,
   className,
@@ -84,7 +86,7 @@ export function TextareaField({
         htmlFor={field.name}
         className="text-xs font-medium text-foreground"
       >
-        {label}
+        {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Textarea
         id={field.name}
