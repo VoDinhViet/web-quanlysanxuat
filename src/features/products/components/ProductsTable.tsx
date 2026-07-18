@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { TablePagination } from "@/components/shared/TablePagination"
 import { productColumns } from "@/features/products/components/ProductsTableColumns"
 import type { Product } from "@/features/products/types/product.type"
@@ -57,21 +58,31 @@ export function ProductsTable({ rows, pagination }: ProductsTableProps) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/20">
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={cn(
-                      "px-4 py-0 text-xs font-medium text-foreground",
-                      cell.column.columnDef.meta?.cellClassName
-                    )}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            {table.getRowModel().rows.length === 0 ? (
+              <TableEmptyRow colSpan={productColumns.length} />
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="h-14 bg-card hover:bg-muted/20"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "px-4 py-0 text-xs font-medium text-foreground",
+                        cell.column.columnDef.meta?.cellClassName
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

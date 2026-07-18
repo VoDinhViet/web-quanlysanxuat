@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { userColumns } from "@/features/users/components/UsersTableColumns"
 import type { User } from "@/features/users/types/user.type"
 import { cn } from "@/lib/utils"
@@ -50,21 +51,31 @@ export function UsersTable({ rows }: { rows: User[] }) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/20">
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={cn(
-                      "px-4 py-0 text-xs font-medium text-foreground",
-                      cell.column.columnDef.meta?.cellClassName
-                    )}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            {table.getRowModel().rows.length === 0 ? (
+              <TableEmptyRow colSpan={userColumns.length} />
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="h-14 bg-card hover:bg-muted/20"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "px-4 py-0 text-xs font-medium text-foreground",
+                        cell.column.columnDef.meta?.cellClassName
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
