@@ -4,7 +4,6 @@ import type { ReactNode } from "react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Sheet,
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { IconButton } from "@/components/shared/IconButton"
 import {
   EMPLOYEE_STATUS_LABELS,
   EmployeeStatus,
@@ -173,15 +173,13 @@ function DetailsSection({
           {title}
         </h3>
         {editable ? (
-          <Button
-            type="button"
-            variant="outline"
+          <IconButton
             size="icon-xs"
             className="bg-background text-foreground"
-            aria-label={`Chỉnh sửa ${title.toLowerCase()}`}
+            label={`Chỉnh sửa ${title.toLowerCase()}`}
           >
             <Edit3 className="size-3.5" />
-          </Button>
+          </IconButton>
         ) : null}
       </div>
       {children}

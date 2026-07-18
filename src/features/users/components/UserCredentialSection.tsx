@@ -15,20 +15,15 @@ export const UserCredentialSection = withForm({
   render: function Render({ form, disabled, hasExistingCredential }) {
     return (
       <div>
-        <div className="flex items-center gap-3 px-4 py-4 sm:px-5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-            3
-          </span>
-          <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
-              Tài khoản ERP
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {hasExistingCredential
-                ? "Nhân viên này đã có quyền đăng nhập hệ thống"
-                : "Tùy chọn — cấp quyền đăng nhập hệ thống"}
-            </p>
-          </div>
+        <div className="px-4 py-4 sm:px-5">
+          <h2 className="font-heading text-base font-semibold text-foreground">
+            Tài khoản ERP
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {hasExistingCredential
+              ? "Nhân viên này đã có quyền đăng nhập hệ thống"
+              : "Tùy chọn — cấp quyền đăng nhập hệ thống"}
+          </p>
         </div>
 
         <div className="space-y-5 px-4 pb-5 sm:px-5">

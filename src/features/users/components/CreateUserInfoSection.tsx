@@ -15,19 +15,14 @@ export const CreateUserInfoSection = withForm({
   },
   render: function Render({ form, disabled }) {
     return (
-      <div className="border-b border-border">
-        <div className="flex items-center gap-3 px-4 py-4 sm:px-5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-            1
-          </span>
-          <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
-              Thông tin cá nhân
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Thông tin định danh cơ bản của nhân sự
-            </p>
-          </div>
+      <div>
+        <div className="px-4 py-4 sm:px-5">
+          <h2 className="font-heading text-base font-semibold text-foreground">
+            Thông tin cá nhân
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Thông tin định danh cơ bản của nhân sự
+          </p>
         </div>
 
         <div className="px-4 pb-5 sm:px-5">

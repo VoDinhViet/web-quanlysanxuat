@@ -27,19 +27,14 @@ export const CreateUserJobInfoSection = withForm({
   },
   render: function Render({ form, disabled, departments, positions }) {
     return (
-      <div className="border-b border-border">
-        <div className="flex items-center gap-3 px-4 py-4 sm:px-5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-            2
-          </span>
-          <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
-              Thông tin công việc
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Phân công và tình trạng làm việc
-            </p>
-          </div>
+      <div>
+        <div className="px-4 py-4 sm:px-5">
+          <h2 className="font-heading text-base font-semibold text-foreground">
+            Thông tin công việc
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Phân công và tình trạng làm việc
+          </p>
         </div>
 
         <div className="px-4 pb-5 sm:px-5">
