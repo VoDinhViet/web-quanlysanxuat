@@ -3,6 +3,7 @@ import { Link, useLocation } from "@tanstack/react-router"
 import {
   ArrowDownToLine,
   Boxes,
+  Building2,
   ClipboardList,
   Factory,
   FileText,
@@ -19,7 +20,6 @@ import {
   ShoppingCart,
   Truck,
   UserRound,
-  Users,
   Warehouse,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -70,7 +70,7 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: "Đề xuất mua hàng", icon: ClipboardList },
       { label: "Đơn mua hàng (PO)", icon: ReceiptText },
-      { label: "Nhà cung cấp", icon: Users, href: "/manage/suppliers" },
+      { label: "Nhà cung cấp", icon: Building2, href: "/manage/suppliers" },
       { label: "Nhập hàng", icon: ArrowDownToLine },
     ],
   },
