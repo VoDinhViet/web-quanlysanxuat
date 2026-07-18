@@ -1,12 +1,14 @@
-import { Activity } from "react"
+import { Activity, useEffect, useRef } from "react"
 import { useNavigate, useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
-import { AlertOctagon, Loader2, Save } from "lucide-react"
+import { AlertOctagon, FileText, Loader2, RotateCcw, Save } from "lucide-react"
+import { toast } from "sonner"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
+import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { CreateSupplierInfoSection } from "@/features/suppliers/components/CreateSupplierInfoSection"
 import { CreateSupplierOtherSection } from "@/features/suppliers/components/CreateSupplierOtherSection"
 import { CreateSupplierPaymentSection } from "@/features/suppliers/components/CreateSupplierPaymentSection"
@@ -34,10 +36,16 @@ export function CreateSupplierForm({
   const router = useRouter()
   const createSupplierFn = useServerFn(createSupplier)
 
+  const { draft, saveDraft, clearDraft } = useFormDraft<CreateSupplierSchema>(
+    "qlsx:draft:create-supplier"
+  )
+  const draftRestoredRef = useRef(false)
+
   const createSupplierMutation = useMutation({
     mutationFn: (value: CreateSupplierSchema) =>
       createSupplierFn({ data: value }),
     onSuccess: async () => {
+      clearDraft()
       await router.invalidate()
       await navigate({
         to: "/manage/suppliers",
@@ -56,6 +64,14 @@ export function CreateSupplierForm({
     },
     onSubmit: ({ value }) => createSupplierMutation.mutate(value),
   })
+
+  // Auto-restore a saved draft into the form once, after localStorage hydrates.
+  useEffect(() => {
+    if (!draftRestoredRef.current && draft) {
+      draftRestoredRef.current = true
+      restoreFormDraft(form, draft)
+    }
+  }, [draft, form])
 
   return (
     <form
@@ -87,10 +103,11 @@ export function CreateSupplierForm({
           <CreateSupplierOtherSection form={form} disabled={isPending} />
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-4 py-4 sm:px-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
+            className="text-muted-foreground hover:text-foreground"
             disabled={isPending}
             onClick={() =>
               void navigate({
@@ -101,31 +118,55 @@ export function CreateSupplierForm({
           >
             Hủy
           </Button>
-          <Button type="button" variant="outline">
-            Lưu nháp
-          </Button>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
-            {([canSubmit, isSubmitting]) => (
-              <Button
-                type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
-              >
-                {isSubmitting || isPending ? (
-                  <>
-                    <Loader2 className="animate-spin" />
-                    Đang lưu
-                  </>
-                ) : (
-                  <>
-                    <Save />
-                    Lưu nhà cung cấp
-                  </>
-                )}
-              </Button>
-            )}
-          </form.Subscribe>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={isPending}
+              onClick={() => {
+                form.reset()
+                restoreFormDraft(form, CREATE_SUPPLIER_DEFAULT_VALUES)
+                clearDraft()
+              }}
+            >
+              <RotateCcw className="size-4" />
+              Đặt lại
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isPending}
+              onClick={() => {
+                saveDraft(form.state.values)
+                toast.success("Đã lưu nháp")
+              }}
+            >
+              <FileText className="size-4" />
+              Lưu nháp
+            </Button>
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+            >
+              {([canSubmit, isSubmitting]) => (
+                <Button
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting || isPending}
+                >
+                  {isSubmitting || isPending ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      Đang lưu
+                    </>
+                  ) : (
+                    <>
+                      <Save />
+                      Lưu nhà cung cấp
+                    </>
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+          </div>
         </div>
       </div>
     </form>
