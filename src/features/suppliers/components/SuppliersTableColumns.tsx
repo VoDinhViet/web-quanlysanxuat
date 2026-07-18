@@ -6,6 +6,7 @@ import { Edit3, Eye, Trash2 } from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import {
   SUPPLIER_STATUS_LABELS,
   SupplierStatus,
@@ -159,17 +160,21 @@ export const supplierColumns = [
         <IconButton label="Xem chi tiết">
           <Eye className="size-3.5" />
         </IconButton>
-        <IconButton label="Chỉnh sửa" asChild>
-          <Link
-            to="/manage/suppliers/$supplierId/edit"
-            params={{ supplierId: row.original.id }}
-          >
-            <Edit3 className="size-3.5" />
-          </Link>
-        </IconButton>
-        <IconButton label="Xóa">
-          <Trash2 className="size-3.5" />
-        </IconButton>
+        <PermissionGate permission="suppliers:update">
+          <IconButton label="Chỉnh sửa" asChild>
+            <Link
+              to="/manage/suppliers/$supplierId/edit"
+              params={{ supplierId: row.original.id }}
+            >
+              <Edit3 className="size-3.5" />
+            </Link>
+          </IconButton>
+        </PermissionGate>
+        <PermissionGate permission="suppliers:delete">
+          <IconButton label="Xóa">
+            <Trash2 className="size-3.5" />
+          </IconButton>
+        </PermissionGate>
       </div>
     ),
   }),

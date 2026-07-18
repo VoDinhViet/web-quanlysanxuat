@@ -16,6 +16,8 @@ function resolveUpdateUserErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "user.error.not_found":
       return "Không tìm thấy nhân viên."
+    case "auth.error.forbidden":
+      return "Bạn không có quyền thực hiện thao tác này."
     default:
       return GENERIC_ERROR_MESSAGE
   }

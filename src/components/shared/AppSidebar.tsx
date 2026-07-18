@@ -36,12 +36,17 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { hasPermission } from "@/features/auth/permissions"
+import { usePermissions } from "@/hooks/use-permissions"
 import { isKnownRoute } from "@/lib/known-routes"
+import type { PermissionCode } from "@/features/auth/types/permission.type"
 
 type MenuItem = {
   label: string
   icon: LucideIcon
   href?: string
+  // When set, the item is hidden unless the user holds this permission.
+  permission?: PermissionCode
 }
 
 type MenuGroup = {
@@ -59,10 +64,20 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Quản lý bán hàng",
     items: [
-      { label: "Đơn hàng (SO)", icon: ShoppingCart, href: "/manage/orders" },
+      {
+        label: "Đơn hàng (SO)",
+        icon: ShoppingCart,
+        href: "/manage/orders",
+        permission: "orders:read",
+      },
       { label: "Báo giá (RFQ)", icon: FileText },
       { label: "Giao hàng (DO)", icon: Truck },
-      { label: "Khách hàng", icon: UserRound, href: "/manage/clients" },
+      {
+        label: "Khách hàng",
+        icon: UserRound,
+        href: "/manage/clients",
+        permission: "clients:read",
+      },
     ],
   },
   {
@@ -70,14 +85,24 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: "Đề xuất mua hàng", icon: ClipboardList },
       { label: "Đơn mua hàng (PO)", icon: ReceiptText },
-      { label: "Nhà cung cấp", icon: Building2, href: "/manage/suppliers" },
+      {
+        label: "Nhà cung cấp",
+        icon: Building2,
+        href: "/manage/suppliers",
+        permission: "suppliers:read",
+      },
       { label: "Nhập hàng", icon: ArrowDownToLine },
     ],
   },
   {
     label: "Quản lý sản xuất",
     items: [
-      { label: "Sản phẩm", icon: PackageSearch, href: "/manage/products" },
+      {
+        label: "Sản phẩm",
+        icon: PackageSearch,
+        href: "/manage/products",
+        permission: "products:read",
+      },
       { label: "Lệnh sản xuất (Job)", icon: Factory },
       { label: "Quản lý sản xuất", icon: GitBranch },
       { label: "Công đoạn sản xuất", icon: GitBranch },
@@ -96,8 +121,13 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Hệ thống",
     items: [
-      { label: "Nhân sự", icon: UserRound, href: "/manage/users" },
-      { label: "Phân quyền", icon: ShieldCheck },
+      {
+        label: "Nhân sự",
+        icon: UserRound,
+        href: "/manage/users",
+        permission: "users:update",
+      },
+      { label: "Phân quyền", icon: ShieldCheck, permission: "roles:manage" },
       { label: "Cài đặt", icon: Settings },
       { label: "Nhật ký hệ thống", icon: History },
     ],
@@ -109,6 +139,18 @@ const menuButtonClass =
 
 export function AppSidebar() {
   const location = useLocation()
+  const permissions = usePermissions()
+
+  // Hide items the user lacks permission for, then drop any group left empty.
+  const visibleGroups = menuGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) =>
+          !item.permission || hasPermission(permissions, item.permission)
+      ),
+    }))
+    .filter((group) => group.items.length > 0)
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
@@ -140,7 +182,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="gap-3 px-2.5 py-4">
-        {menuGroups.map((group) => (
+        {visibleGroups.map((group) => (
           <MenuGroup
             key={group.label}
             group={group}

@@ -3,6 +3,7 @@ import { Edit3, Eye, MoreHorizontal } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import {
   CLIENT_STATUS_LABELS,
   ClientStatus,
@@ -100,9 +101,11 @@ export const clientColumns = [
         <IconButton label="Xem chi tiết">
           <Eye className="size-3.5" />
         </IconButton>
-        <IconButton label="Chỉnh sửa">
-          <Edit3 className="size-3.5" />
-        </IconButton>
+        <PermissionGate permission="clients:update">
+          <IconButton label="Chỉnh sửa">
+            <Edit3 className="size-3.5" />
+          </IconButton>
+        </PermissionGate>
         <IconButton label="Thao tác khác">
           <MoreHorizontal className="size-3.5" />
         </IconButton>

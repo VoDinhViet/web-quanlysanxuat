@@ -10,8 +10,13 @@ export type AuthLoginResponse = {
   tokenType: string
 }
 
-/** The subset of GET /users/me (UserResDto) used to resolve a display name. */
+/**
+ * The subset of GET /users/me used by the app: a display name plus the RBAC
+ * fields (role + effective permissions) that drive permission-based UI.
+ */
 export type AuthUserProfile = {
   fullName: string | null
   username: string
+  role: { code: string; name: string } | null
+  permissions: string[]
 }

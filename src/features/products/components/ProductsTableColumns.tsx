@@ -6,6 +6,7 @@ import { Copy, Edit3, Eye, Trash2 } from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ProductDetails } from "@/features/products/components/ProductDetails"
 import { PRODUCT_STATUS_LABELS } from "@/features/products/types/product.type"
 import type { Product } from "@/features/products/types/product.type"
@@ -124,15 +125,21 @@ export const productColumns = [
               </IconButton>
             }
           />
-          <IconButton label="Chỉnh sửa">
-            <Edit3 className="size-3.5" />
-          </IconButton>
-          <IconButton label="Nhân bản">
-            <Copy className="size-3.5" />
-          </IconButton>
-          <IconButton label="Xóa">
-            <Trash2 className="size-3.5" />
-          </IconButton>
+          <PermissionGate permission="products:update">
+            <IconButton label="Chỉnh sửa">
+              <Edit3 className="size-3.5" />
+            </IconButton>
+          </PermissionGate>
+          <PermissionGate permission="products:copy">
+            <IconButton label="Nhân bản">
+              <Copy className="size-3.5" />
+            </IconButton>
+          </PermissionGate>
+          <PermissionGate permission="products:delete">
+            <IconButton label="Xóa">
+              <Trash2 className="size-3.5" />
+            </IconButton>
+          </PermissionGate>
         </div>
       )
     },

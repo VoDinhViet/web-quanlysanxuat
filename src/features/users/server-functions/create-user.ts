@@ -16,6 +16,8 @@ function resolveCreateUserErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "user.error.username_or_email_exists":
       return "Tên đăng nhập hoặc email đã tồn tại."
+    case "auth.error.forbidden":
+      return "Bạn không có quyền thực hiện thao tác này."
     default:
       return GENERIC_ERROR_MESSAGE
   }

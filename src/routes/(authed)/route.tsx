@@ -5,15 +5,22 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppSidebar } from "@/components/shared/AppSidebar"
+import { currentUserQueryOptions } from "@/features/auth/current-user.query"
 import { requireSession } from "@/features/auth/guard"
 
 export const Route = createFileRoute("/(authed)")({
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async ({ location, context }) => {
     const user = await requireSession(location)
+    // Load the profile + effective permissions once (cached) so every nested
+    // route guard and component can read them without refetching.
+    const profile = await context.queryClient.ensureQueryData(
+      currentUserQueryOptions
+    )
 
-    return { user }
+    return { user, permissions: profile.permissions }
   },
   component: AuthedLayout,
   errorComponent: AuthedErrorFallback,
@@ -57,6 +64,7 @@ function AuthedLayout() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      <Toaster />
     </TooltipProvider>
   )
 }

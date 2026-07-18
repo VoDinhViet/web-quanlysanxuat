@@ -5,6 +5,7 @@ import { Edit3, Eye, ShieldCheck } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { UserDetails } from "@/features/users/components/UserDetails"
 import {
   EMPLOYEE_STATUS_LABELS,
@@ -101,14 +102,21 @@ export const userColumns = [
               </IconButton>
             }
           />
-          <IconButton label="Chỉnh sửa" asChild>
-            <Link to="/manage/users/$userId/edit" params={{ userId: user.id }}>
-              <Edit3 className="size-3.5" />
-            </Link>
-          </IconButton>
-          <IconButton label="Phân quyền">
-            <ShieldCheck className="size-3.5" />
-          </IconButton>
+          <PermissionGate permission="users:update">
+            <IconButton label="Chỉnh sửa" asChild>
+              <Link
+                to="/manage/users/$userId/edit"
+                params={{ userId: user.id }}
+              >
+                <Edit3 className="size-3.5" />
+              </Link>
+            </IconButton>
+          </PermissionGate>
+          <PermissionGate permission="roles:manage">
+            <IconButton label="Phân quyền">
+              <ShieldCheck className="size-3.5" />
+            </IconButton>
+          </PermissionGate>
         </div>
       )
     },

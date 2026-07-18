@@ -18,6 +18,8 @@ function resolveCreateSupplierErrorMessage(error: unknown): string {
       return "Mã số thuế đã tồn tại."
     case "supplier.error.code_exists":
       return "Mã nhà cung cấp đã tồn tại."
+    case "auth.error.forbidden":
+      return "Bạn không có quyền thực hiện thao tác này."
     default:
       return GENERIC_ERROR_MESSAGE
   }

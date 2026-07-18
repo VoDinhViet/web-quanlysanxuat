@@ -12,6 +12,8 @@ function resolveUploadUserAvatarErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
+    case "auth.error.forbidden":
+      return "Bạn không có quyền thực hiện thao tác này."
     default:
       return GENERIC_ERROR_MESSAGE
   }

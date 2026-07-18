@@ -16,6 +16,8 @@ function resolveUploadSupplierLogoErrorMessage(error: unknown): string {
       return "Định dạng ảnh không hợp lệ."
     case "upload.error.file_too_large":
       return "Kích thước ảnh vượt quá giới hạn cho phép."
+    case "auth.error.forbidden":
+      return "Bạn không có quyền thực hiện thao tác này."
     default:
       return GENERIC_ERROR_MESSAGE
   }

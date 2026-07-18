@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { requirePermission } from "@/features/auth/guard"
 import { SuppliersPage } from "@/features/suppliers/pages/SuppliersPage"
 import { suppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 import { getCountryFilterOptions } from "@/features/suppliers/server-functions/get-countries"
@@ -8,6 +9,8 @@ import { getSupplierStats } from "@/features/suppliers/server-functions/get-supp
 import { getSuppliers } from "@/features/suppliers/server-functions/get-suppliers"
 
 export const Route = createFileRoute("/(authed)/manage_/suppliers")({
+  beforeLoad: ({ context }) =>
+    requirePermission(context.permissions, "suppliers:read"),
   validateSearch: suppliersSearchSchema,
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {

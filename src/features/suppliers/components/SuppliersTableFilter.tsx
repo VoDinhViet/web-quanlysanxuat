@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { SUPPLIER_STATUS_LABELS } from "@/features/suppliers/types/supplier.type"
 import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 import type {
@@ -166,12 +167,14 @@ export function SuppliersTableFilter({
             <RotateCw className="size-4" />
             Làm mới
           </Button>
-          <Button asChild className="text-xs">
-            <Link to="/manage/suppliers/create">
-              <Plus className="size-4" />
-              Thêm nhà cung cấp
-            </Link>
-          </Button>
+          <PermissionGate permission="suppliers:create">
+            <Button asChild className="text-xs">
+              <Link to="/manage/suppliers/create">
+                <Plus className="size-4" />
+                Thêm nhà cung cấp
+              </Link>
+            </Button>
+          </PermissionGate>
         </div>
       </div>
     </div>
