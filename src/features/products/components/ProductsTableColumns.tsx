@@ -1,7 +1,9 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { Image } from "@unpic/react"
 import { DateTime } from "luxon"
-import { Copy, Edit3, Eye, Package, Trash2 } from "lucide-react"
+import { Copy, Edit3, Eye, Trash2 } from "lucide-react"
 
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { ProductDetails } from "@/features/products/components/ProductDetails"
@@ -20,17 +22,26 @@ export const productColumns = [
       const product = row.original
 
       return (
-        <div className="flex size-10 items-center justify-center rounded-md border border-border bg-muted/40">
+        <AspectRatio
+          ratio={1}
+          className="size-10 shrink-0 overflow-hidden rounded-lg bg-muted/40"
+        >
           {product.imageUrl ? (
-            <img
+            <Image
               src={product.imageUrl}
               alt={product.name}
-              className="size-full rounded-md object-cover"
+              layout="fullWidth"
+              objectFit="cover"
+              className="size-full"
             />
           ) : (
-            <Package className="size-4 text-muted-foreground" />
+            <img
+              src="/empty-image.svg"
+              alt=""
+              className="size-full object-contain p-2"
+            />
           )}
-        </div>
+        </AspectRatio>
       )
     },
   }),
