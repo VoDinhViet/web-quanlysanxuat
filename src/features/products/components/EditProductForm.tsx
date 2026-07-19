@@ -1,7 +1,7 @@
 import { Activity } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, Loader2, Save } from "lucide-react"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
@@ -36,17 +36,15 @@ type EditProductFormProps = {
   product: Product
   unitOptions: ProductFilterOption[]
   productGroupOptions: ProductFilterOption[]
-  clientOptions: ProductFilterOption[]
 }
 
 export function EditProductForm({
   product,
   unitOptions,
   productGroupOptions,
-  clientOptions,
 }: EditProductFormProps) {
   const navigate = useNavigate({ from: "/manage/products/$productId/edit" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const updateProductFn = useServerFn(updateProduct)
 
   const {
@@ -57,7 +55,7 @@ export function EditProductForm({
     mutationFn: (value: CreateProductSchema) =>
       updateProductFn({ data: { ...value, productId: product.id } }),
     onSuccess: async () => {
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["products"] })
       await navigate({
         to: "/manage/products",
         search: { page: 1, limit: 10 },
@@ -96,7 +94,11 @@ export function EditProductForm({
           disabled={isPending}
           unitOptions={unitOptions}
           productGroupOptions={productGroupOptions}
-          clientOptions={clientOptions}
+          selectedClient={
+            product.client
+              ? { value: product.client.id, label: product.client.name }
+              : undefined
+          }
         />
 
         <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-4 py-4 sm:px-5">

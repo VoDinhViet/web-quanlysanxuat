@@ -1,10 +1,13 @@
 import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
+import { ComboboxField } from "@/components/shared/ComboboxField"
 import { ProductImageField } from "@/features/products/components/ProductImageField"
 import { CREATE_PRODUCT_DEFAULT_VALUES } from "@/features/products/schemas/create-product.schema"
+import { useGetClientOptions } from "@/features/products/hooks/use-get-client-options"
 import { PRODUCT_STATUS_LABELS } from "@/features/products/types/product.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
+import type { ComboboxOption } from "@/components/shared/ComboboxField"
 import type { ProductFilterOption } from "@/features/products/types/product.type"
 
 const STATUS_OPTIONS = buildOptionsFromLabels(PRODUCT_STATUS_LABELS)
@@ -15,24 +18,22 @@ export const CreateProductInfoSection = withForm({
     disabled: false,
     unitOptions: [] as ProductFilterOption[],
     productGroupOptions: [] as ProductFilterOption[],
-    clientOptions: [] as ProductFilterOption[],
+    selectedClient: undefined as ComboboxOption | undefined,
   },
   render: function Render({
     form,
     disabled,
     unitOptions,
     productGroupOptions,
-    clientOptions,
+    selectedClient,
   }) {
+    const client = useGetClientOptions()
+
     const unitSelectOptions = unitOptions.map((option) => ({
       value: option.id,
       label: option.name,
     }))
     const productGroupSelectOptions = productGroupOptions.map((option) => ({
-      value: option.id,
-      label: option.name,
-    }))
-    const clientSelectOptions = clientOptions.map((option) => ({
       value: option.id,
       label: option.name,
     }))
@@ -100,16 +101,29 @@ export const CreateProductInfoSection = withForm({
                 )}
               </form.AppField>
 
-              <form.AppField name="clientId">
+              <form.Field name="clientId">
                 {(field) => (
-                  <field.SelectField
+                  <ComboboxField
+                    id={field.name}
                     label="Khách hàng"
                     placeholder="Chọn khách hàng"
-                    options={clientSelectOptions}
+                    value={field.state.value || undefined}
+                    onValueChange={(next) => field.handleChange(next ?? "")}
+                    onBlur={field.handleBlur}
+                    isInvalid={
+                      field.state.meta.isTouched &&
+                      field.state.meta.errors.length > 0
+                    }
+                    errors={field.state.meta.errors}
+                    options={client.options}
+                    onSearchChange={client.onSearchChange}
+                    isLoading={client.isFetching}
+                    initialOption={selectedClient}
+                    emptyMessage="Không tìm thấy khách hàng"
                     disabled={disabled}
                   />
                 )}
-              </form.AppField>
+              </form.Field>
 
               <form.AppField name="revision">
                 {(field) => (

@@ -42,6 +42,8 @@ export function ProductsTable({
         <div className="rounded-md border border-dashed border-border/70 bg-card">
           <ProductsEmptyState isFiltered={isFiltered} />
         </div>
+
+        <TablePagination pagination={pagination} className="pt-4" />
       </div>
     )
   }

@@ -1,18 +1,28 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useParams } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { EditMaterialForm } from "@/features/materials/components/EditMaterialForm"
+import {
+  materialGroupOptionsQueryOptions,
+  materialQueryOptions,
+  supplierOptionsQueryOptions,
+  unitOptionsQueryOptions,
+} from "@/features/materials/materials.query"
 
 export function EditMaterialPage() {
-  const {
-    material,
-    unitOptions,
-    materialGroupOptions,
-    clientOptions,
-    supplierOptions,
-  } = useLoaderData({
+  const { materialId } = useParams({
     from: "/(authed)/manage_/materials_/$materialId/edit",
   })
+
+  const { data: material } = useSuspenseQuery(materialQueryOptions(materialId))
+  const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
+  const { data: materialGroupOptions } = useSuspenseQuery(
+    materialGroupOptionsQueryOptions()
+  )
+  const { data: supplierOptions } = useSuspenseQuery(
+    supplierOptionsQueryOptions()
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -32,7 +42,6 @@ export function EditMaterialPage() {
           material={material}
           unitOptions={unitOptions}
           materialGroupOptions={materialGroupOptions}
-          clientOptions={clientOptions}
           supplierOptions={supplierOptions}
         />
       </div>

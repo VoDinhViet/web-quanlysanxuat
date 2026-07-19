@@ -1,7 +1,7 @@
 import { Activity, useEffect, useRef } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -33,7 +33,7 @@ export function CreateUserForm({
   positions,
 }: CreateUserFormProps) {
   const navigate = useNavigate({ from: "/manage/users/create" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const createUserFn = useServerFn(createUser)
 
   // The credential (password) is never persisted — only non-secret draft fields.
@@ -46,7 +46,7 @@ export function CreateUserForm({
     mutationFn: (value: CreateUserSchema) => createUserFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["users"] })
       await navigate({ to: "/manage/users", search: { page: 1, limit: 10 } })
     },
   })

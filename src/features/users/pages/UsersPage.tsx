@@ -1,9 +1,5 @@
-import {
-  Link,
-  useLoaderData,
-  useNavigate,
-  useSearch,
-} from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { Download, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -11,13 +7,15 @@ import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
+import { usersQueryOptions } from "@/features/users/users.query"
 import type { UsersSearchSchema } from "@/features/users/schemas/users-search.schema"
 
 export function UsersPage() {
-  // useSearch/useLoaderData key off the file-based route id; useNavigate's `from`
-  // keys off the resolved URL path instead — the two intentionally differ.
+  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
+  // resolved URL path instead — the two intentionally differ. The loader
+  // prefetched this query, so useSuspenseQuery resolves synchronously.
   const search = useSearch({ from: "/(authed)/manage_/users" })
-  const usersResult = useLoaderData({ from: "/(authed)/manage_/users" })
+  const { data: usersResult } = useSuspenseQuery(usersQueryOptions(search))
   const navigate = useNavigate({ from: "/manage/users" })
 
   const handleFilterChange = (patch: Partial<UsersSearchSchema>) => {

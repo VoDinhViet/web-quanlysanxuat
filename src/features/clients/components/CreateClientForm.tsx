@@ -1,7 +1,7 @@
 import { Activity, useEffect, useRef } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
   AlertOctagon,
   ArrowRight,
@@ -33,7 +33,7 @@ export function CreateClientForm({
   clientGroupOptions,
 }: CreateClientFormProps) {
   const navigate = useNavigate({ from: "/manage/clients/create" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const createClientFn = useServerFn(createClient)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateClientSchema>(
@@ -45,7 +45,7 @@ export function CreateClientForm({
     mutationFn: (value: CreateClientSchema) => createClientFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["clients"] })
       await navigate({ to: "/manage/clients", search: { page: 1, limit: 10 } })
     },
   })

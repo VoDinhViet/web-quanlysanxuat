@@ -3,14 +3,17 @@ import { Boxes } from "lucide-react"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
+import { ComboboxField } from "@/components/shared/ComboboxField"
 import { MaterialImageField } from "@/features/materials/components/MaterialImageField"
 import { CREATE_MATERIAL_DEFAULT_VALUES } from "@/features/materials/schemas/create-material.schema"
+import { useGetClientOptions } from "@/features/materials/hooks/use-get-client-options"
 import {
   MATERIAL_STATUS_LABELS,
   MATERIAL_TYPE_LABELS,
   MaterialType,
 } from "@/features/materials/types/material.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
+import type { ComboboxOption } from "@/components/shared/ComboboxField"
 import type { MaterialRef } from "@/features/materials/types/material.type"
 
 const MATERIAL_TYPE_OPTIONS = buildOptionsFromLabels(MATERIAL_TYPE_LABELS)
@@ -22,24 +25,22 @@ export const CreateMaterialInfoSection = withForm({
     disabled: false,
     unitOptions: [] as MaterialRef[],
     materialGroupOptions: [] as MaterialRef[],
-    clientOptions: [] as MaterialRef[],
+    selectedClient: undefined as ComboboxOption | undefined,
   },
   render: function Render({
     form,
     disabled,
     unitOptions,
     materialGroupOptions,
-    clientOptions,
+    selectedClient,
   }) {
+    const client = useGetClientOptions()
+
     const unitSelectOptions = unitOptions.map((option) => ({
       value: option.id,
       label: option.name,
     }))
     const materialGroupSelectOptions = materialGroupOptions.map((option) => ({
-      value: option.id,
-      label: option.name,
-    }))
-    const clientSelectOptions = clientOptions.map((option) => ({
       value: option.id,
       label: option.name,
     }))
@@ -127,17 +128,30 @@ export const CreateMaterialInfoSection = withForm({
 
               <form.Subscribe selector={(state) => state.values.type}>
                 {(type) => (
-                  <form.AppField name="clientId">
+                  <form.Field name="clientId">
                     {(field) => (
-                      <field.SelectField
+                      <ComboboxField
+                        id={field.name}
                         label="Khách hàng"
                         required={type === MaterialType.CLIENT}
                         placeholder="Chọn khách hàng"
-                        options={clientSelectOptions}
+                        value={field.state.value || undefined}
+                        onValueChange={(next) => field.handleChange(next ?? "")}
+                        onBlur={field.handleBlur}
+                        isInvalid={
+                          field.state.meta.isTouched &&
+                          field.state.meta.errors.length > 0
+                        }
+                        errors={field.state.meta.errors}
+                        options={client.options}
+                        onSearchChange={client.onSearchChange}
+                        isLoading={client.isFetching}
+                        initialOption={selectedClient}
+                        emptyMessage="Không tìm thấy khách hàng"
                         disabled={disabled || type !== MaterialType.CLIENT}
                       />
                     )}
-                  </form.AppField>
+                  </form.Field>
                 )}
               </form.Subscribe>
 

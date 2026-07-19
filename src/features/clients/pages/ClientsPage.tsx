@@ -1,9 +1,5 @@
-import {
-  Link,
-  useLoaderData,
-  useNavigate,
-  useSearch,
-} from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { Download, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -11,16 +7,23 @@ import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ClientsTable } from "@/features/clients/components/ClientsTable"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
+import {
+  clientGroupOptionsQueryOptions,
+  clientsQueryOptions,
+} from "@/features/clients/clients.query"
 import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
 
 export function ClientsPage() {
-  // useSearch/useLoaderData key off the file-based route id; useNavigate's `from`
-  // keys off the resolved URL path instead — the two intentionally differ.
+  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
+  // resolved URL path instead — the two intentionally differ. The loader
+  // prefetched these queries, so useSuspenseQuery resolves synchronously.
   const search = useSearch({ from: "/(authed)/manage_/clients" })
-  const result = useLoaderData({ from: "/(authed)/manage_/clients" })
   const navigate = useNavigate({ from: "/manage/clients" })
 
-  const { clients, clientGroupOptions } = result
+  const { data: clients } = useSuspenseQuery(clientsQueryOptions(search))
+  const { data: clientGroupOptions } = useSuspenseQuery(
+    clientGroupOptionsQueryOptions()
+  )
 
   const handleFilterChange = (patch: Partial<ClientsSearchSchema>) => {
     void navigate({ search: (prev) => ({ ...prev, ...patch, page: 1 }) })

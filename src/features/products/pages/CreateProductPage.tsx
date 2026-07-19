@@ -1,12 +1,17 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { CreateProductForm } from "@/features/products/components/CreateProductForm"
+import {
+  productGroupOptionsQueryOptions,
+  unitOptionsQueryOptions,
+} from "@/features/products/products.query"
 
 export function CreateProductPage() {
-  const { unitOptions, productGroupOptions, clientOptions } = useLoaderData({
-    from: "/(authed)/manage_/products_/create",
-  })
+  const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
+  const { data: productGroupOptions } = useSuspenseQuery(
+    productGroupOptionsQueryOptions()
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -24,7 +29,6 @@ export function CreateProductPage() {
         <CreateProductForm
           unitOptions={unitOptions}
           productGroupOptions={productGroupOptions}
-          clientOptions={clientOptions}
         />
       </div>
     </main>

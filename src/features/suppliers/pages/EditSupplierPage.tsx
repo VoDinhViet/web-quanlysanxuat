@@ -1,12 +1,26 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useParams } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { EditSupplierForm } from "@/features/suppliers/components/EditSupplierForm"
+import {
+  countryOptionsQueryOptions,
+  supplierGroupOptionsQueryOptions,
+  supplierQueryOptions,
+} from "@/features/suppliers/suppliers.query"
 
 export function EditSupplierPage() {
-  const { supplier, supplierGroupOptions, countryOptions } = useLoaderData({
+  const { supplierId } = useParams({
     from: "/(authed)/manage_/suppliers_/$supplierId/edit",
   })
+
+  const { data: supplier } = useSuspenseQuery(supplierQueryOptions(supplierId))
+  const { data: supplierGroupOptions } = useSuspenseQuery(
+    supplierGroupOptionsQueryOptions()
+  )
+  const { data: countryOptions } = useSuspenseQuery(
+    countryOptionsQueryOptions()
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">

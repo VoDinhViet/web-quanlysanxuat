@@ -1,18 +1,22 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
-import { Edit3, Eye, ShieldCheck } from "lucide-react"
+import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { UserDetails } from "@/features/users/components/UserDetails"
 import {
   EMPLOYEE_STATUS_LABELS,
   EmployeeStatus,
 } from "@/features/users/types/user.type"
 import type { User } from "@/features/users/types/user.type"
 import { cn, getInitials } from "@/lib/utils"
+
+const STATUS_BADGE_CLASSNAME: Record<EmployeeStatus, string> = {
+  [EmployeeStatus.WORKING]: "bg-emerald-100 text-emerald-700",
+  [EmployeeStatus.RESIGNED]: "bg-slate-100 text-slate-600",
+}
 
 const userColumnHelper = createColumnHelper<User>()
 
@@ -36,6 +40,10 @@ export const userColumns = [
       return (
         <div className="flex min-w-0 items-center gap-3">
           <Avatar size="sm">
+            <AvatarImage
+              src={user.avatarUrl ?? undefined}
+              alt={user.fullName}
+            />
             <AvatarFallback className="bg-linear-to-br from-slate-200 to-slate-500 text-[10px] font-medium text-slate-950">
               {getInitials(user.fullName)}
             </AvatarFallback>
@@ -47,15 +55,26 @@ export const userColumns = [
       )
     },
   }),
+  userColumnHelper.accessor((row) => row.department.name, {
+    id: "department",
+    header: "Phòng ban",
+    meta: { headerClassName: "min-w-32" },
+    cell: ({ getValue }) => (
+      <span className="text-muted-foreground">{getValue()}</span>
+    ),
+  }),
+  userColumnHelper.accessor((row) => row.position.name, {
+    id: "position",
+    header: "Chức vụ",
+    meta: { headerClassName: "min-w-32" },
+    cell: ({ getValue }) => (
+      <span className="text-muted-foreground">{getValue()}</span>
+    ),
+  }),
   userColumnHelper.accessor("email", {
     header: "Email",
     cell: ({ getValue }) => getValue() ?? "—",
     meta: { headerClassName: "min-w-52" },
-  }),
-  userColumnHelper.accessor("phoneNumber", {
-    header: "Số điện thoại",
-    cell: ({ getValue }) => getValue() ?? "—",
-    meta: { headerClassName: "min-w-32" },
   }),
   userColumnHelper.accessor("status", {
     header: "Trạng thái",
@@ -65,16 +84,13 @@ export const userColumns = [
     },
     cell: ({ getValue }) => {
       const status = getValue()
-      const isWorking = status === EmployeeStatus.WORKING
 
       return (
         <Badge
           variant="outline"
           className={cn(
-            "h-5 border-transparent px-2 text-[10px] font-medium",
-            isWorking
-              ? "bg-emerald-100 text-emerald-700"
-              : "bg-orange-100 text-orange-700"
+            "h-5 rounded-full border-transparent px-2.5 text-[10px] font-medium",
+            STATUS_BADGE_CLASSNAME[status]
           )}
         >
           {EMPLOYEE_STATUS_LABELS[status]}
@@ -94,14 +110,6 @@ export const userColumns = [
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <UserDetails
-            user={user}
-            trigger={
-              <IconButton label="Xem chi tiết">
-                <Eye className="size-3.5" />
-              </IconButton>
-            }
-          />
           <PermissionGate permission="users:update">
             <IconButton label="Chỉnh sửa" asChild>
               <Link
@@ -117,6 +125,9 @@ export const userColumns = [
               <ShieldCheck className="size-3.5" />
             </IconButton>
           </PermissionGate>
+          <IconButton label="Thao tác khác">
+            <MoreHorizontal className="size-3.5" />
+          </IconButton>
         </div>
       )
     },

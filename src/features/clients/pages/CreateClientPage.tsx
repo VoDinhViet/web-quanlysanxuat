@@ -1,12 +1,13 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { CreateClientForm } from "@/features/clients/components/CreateClientForm"
+import { clientGroupOptionsQueryOptions } from "@/features/clients/clients.query"
 
 export function CreateClientPage() {
-  const { clientGroupOptions } = useLoaderData({
-    from: "/(authed)/manage_/clients_/create",
-  })
+  const { data: clientGroupOptions } = useSuspenseQuery(
+    clientGroupOptionsQueryOptions()
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">

@@ -1,12 +1,22 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useParams } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { EditUserForm } from "@/features/users/components/EditUserForm"
+import {
+  departmentsQueryOptions,
+  positionsQueryOptions,
+  userQueryOptions,
+} from "@/features/users/users.query"
 
 export function EditUserPage() {
-  const { user, departments, positions } = useLoaderData({
+  const { userId } = useParams({
     from: "/(authed)/manage_/users_/$userId/edit",
   })
+
+  const { data: user } = useSuspenseQuery(userQueryOptions(userId))
+  const { data: departments } = useSuspenseQuery(departmentsQueryOptions())
+  const { data: positions } = useSuspenseQuery(positionsQueryOptions())
 
   return (
     <main className="min-h-svh bg-background text-foreground">

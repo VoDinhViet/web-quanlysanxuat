@@ -1,12 +1,19 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { CreateSupplierForm } from "@/features/suppliers/components/CreateSupplierForm"
+import {
+  countryOptionsQueryOptions,
+  supplierGroupOptionsQueryOptions,
+} from "@/features/suppliers/suppliers.query"
 
 export function CreateSupplierPage() {
-  const { supplierGroupOptions, countryOptions } = useLoaderData({
-    from: "/(authed)/manage_/suppliers_/create",
-  })
+  const { data: supplierGroupOptions } = useSuspenseQuery(
+    supplierGroupOptionsQueryOptions()
+  )
+  const { data: countryOptions } = useSuspenseQuery(
+    countryOptionsQueryOptions()
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">

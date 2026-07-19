@@ -31,7 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
-import { getCurrentProfile } from "@/features/auth/server-functions/get-current-profile"
+import { currentUserQueryOptions } from "@/features/auth/current-user.query"
 import { logout } from "@/features/auth/server-functions/logout"
 import { isKnownRoute } from "@/lib/known-routes"
 import { getInitials } from "@/lib/utils"
@@ -167,12 +167,9 @@ export function PageTitleBar({
   const { toggleSidebar } = useSidebar()
   const router = useRouter()
   const logoutFn = useServerFn(logout)
-  const getCurrentProfileFn = useServerFn(getCurrentProfile)
 
-  const profileQuery = useQuery({
-    queryKey: ["current-profile"],
-    queryFn: () => getCurrentProfileFn(),
-  })
+  // Reads the profile the `(authed)` beforeLoad already cached — no extra fetch.
+  const profileQuery = useQuery(currentUserQueryOptions)
   const fullName = profileQuery.data?.fullName ?? FALLBACK_USER_NAME
 
   const logoutMutation = useMutation({

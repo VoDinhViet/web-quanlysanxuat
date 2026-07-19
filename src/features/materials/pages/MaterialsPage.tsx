@@ -1,19 +1,33 @@
-import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { MaterialStatCards } from "@/features/materials/components/MaterialStatCards"
 import { MaterialsTable } from "@/features/materials/components/MaterialsTable"
 import { MaterialsTableFilter } from "@/features/materials/components/MaterialsTableFilter"
+import {
+  clientOptionsQueryOptions,
+  materialGroupOptionsQueryOptions,
+  materialStatsQueryOptions,
+  materialsQueryOptions,
+} from "@/features/materials/materials.query"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 
 export function MaterialsPage() {
-  // useSearch/useLoaderData key off the file-based route id; useNavigate's `from`
-  // keys off the resolved URL path instead — the two intentionally differ.
+  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
+  // resolved URL path instead — the two intentionally differ. The loader
+  // prefetched these queries, so useSuspenseQuery resolves synchronously.
   const search = useSearch({ from: "/(authed)/manage_/materials" })
-  const result = useLoaderData({ from: "/(authed)/manage_/materials" })
   const navigate = useNavigate({ from: "/manage/materials" })
 
-  const { materials, stats, materialGroupOptions, clientOptions } = result
+  const { data: materials } = useSuspenseQuery(materialsQueryOptions(search))
+  const { data: stats } = useSuspenseQuery(materialStatsQueryOptions())
+  const { data: materialGroupOptions } = useSuspenseQuery(
+    materialGroupOptionsQueryOptions()
+  )
+  const { data: clientOptions } = useSuspenseQuery(
+    clientOptionsQueryOptions("")
+  )
 
   const isFiltered = Boolean(
     search.q ||

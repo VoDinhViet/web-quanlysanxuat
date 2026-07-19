@@ -1,11 +1,21 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { CreateMaterialForm } from "@/features/materials/components/CreateMaterialForm"
+import {
+  materialGroupOptionsQueryOptions,
+  supplierOptionsQueryOptions,
+  unitOptionsQueryOptions,
+} from "@/features/materials/materials.query"
 
 export function CreateMaterialPage() {
-  const { unitOptions, materialGroupOptions, clientOptions, supplierOptions } =
-    useLoaderData({ from: "/(authed)/manage_/materials_/create" })
+  const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
+  const { data: materialGroupOptions } = useSuspenseQuery(
+    materialGroupOptionsQueryOptions()
+  )
+  const { data: supplierOptions } = useSuspenseQuery(
+    supplierOptionsQueryOptions()
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -24,7 +34,6 @@ export function CreateMaterialPage() {
         <CreateMaterialForm
           unitOptions={unitOptions}
           materialGroupOptions={materialGroupOptions}
-          clientOptions={clientOptions}
           supplierOptions={supplierOptions}
         />
       </div>

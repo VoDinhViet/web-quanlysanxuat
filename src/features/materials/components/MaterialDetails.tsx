@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { DateTime } from "luxon"
-import { useServerFn } from "@tanstack/react-start"
 import { useQuery } from "@tanstack/react-query"
 import {
   FileText,
@@ -28,8 +27,10 @@ import {
   MaterialStatusBadge,
   MaterialTypeBadge,
 } from "@/features/materials/components/MaterialBadges"
-import { getMaterial } from "@/features/materials/server-functions/get-material"
-import { getMaterialLogs } from "@/features/materials/server-functions/get-material-logs"
+import {
+  materialLogsQueryOptions,
+  materialQueryOptions,
+} from "@/features/materials/materials.query"
 import type { Material } from "@/features/materials/types/material.type"
 import { cn } from "@/lib/utils"
 
@@ -69,15 +70,12 @@ export function MaterialDetails({
 }) {
   const [open, setOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("info")
-  const getMaterialFn = useServerFn(getMaterial)
-  const getMaterialLogsFn = useServerFn(getMaterialLogs)
 
   // List rows omit preferredSupplier/attachments (the backend only loads those
   // relations on GET /api/materials/:id), so the full detail is fetched lazily
   // when the sheet opens; the row fills the frame until it arrives.
   const detailQuery = useQuery({
-    queryKey: ["material", row.id],
-    queryFn: () => getMaterialFn({ data: { materialId: row.id } }),
+    ...materialQueryOptions(row.id),
     enabled: open,
   })
   const material = detailQuery.data ?? row
@@ -85,11 +83,7 @@ export function MaterialDetails({
 
   // Fetched lazily — only once the history tab is actually opened.
   const logsQuery = useQuery({
-    queryKey: ["material-logs", row.id],
-    queryFn: () =>
-      getMaterialLogsFn({
-        data: { materialId: row.id, page: 1, limit: LOGS_PAGE_LIMIT },
-      }),
+    ...materialLogsQueryOptions(row.id, 1, LOGS_PAGE_LIMIT),
     enabled: open && activeTab === "history",
   })
 

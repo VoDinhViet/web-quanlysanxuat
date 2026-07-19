@@ -3,26 +3,26 @@ import { createFileRoute } from "@tanstack/react-router"
 import { requirePermission } from "@/features/auth/guard"
 import { SuppliersPage } from "@/features/suppliers/pages/SuppliersPage"
 import { suppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
-import { getCountryFilterOptions } from "@/features/suppliers/server-functions/get-countries"
-import { getSupplierGroupFilterOptions } from "@/features/suppliers/server-functions/get-supplier-groups"
-import { getSupplierStats } from "@/features/suppliers/server-functions/get-supplier-stats"
-import { getSuppliers } from "@/features/suppliers/server-functions/get-suppliers"
+import {
+  countryOptionsQueryOptions,
+  supplierGroupOptionsQueryOptions,
+  supplierStatsQueryOptions,
+  suppliersQueryOptions,
+} from "@/features/suppliers/suppliers.query"
 
 export const Route = createFileRoute("/(authed)/manage_/suppliers")({
   beforeLoad: ({ context }) =>
     requirePermission(context.permissions, "suppliers:read"),
   validateSearch: suppliersSearchSchema,
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
-    const [suppliers, stats, supplierGroupOptions, countryOptions] =
-      await Promise.all([
-        getSuppliers({ data: deps }),
-        getSupplierStats(),
-        getSupplierGroupFilterOptions(),
-        getCountryFilterOptions(),
-      ])
-
-    return { suppliers, stats, supplierGroupOptions, countryOptions }
-  },
+  // Prefetch into the query cache (SSR); the page reads the same options via
+  // useSuspenseQuery — see .claude/rules/architecture.md.
+  loader: ({ context, deps }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(suppliersQueryOptions(deps)),
+      context.queryClient.ensureQueryData(supplierStatsQueryOptions()),
+      context.queryClient.ensureQueryData(supplierGroupOptionsQueryOptions()),
+      context.queryClient.ensureQueryData(countryOptionsQueryOptions()),
+    ]),
   component: SuppliersPage,
 })

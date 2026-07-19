@@ -11,7 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { ComboboxField } from "@/components/shared/ComboboxField"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { useGetClientOptions } from "@/features/materials/hooks/use-get-client-options"
 import {
   MATERIAL_STATUS_LABELS,
   MATERIAL_TYPE_LABELS,
@@ -41,6 +43,11 @@ export function MaterialsTableFilter({
   clientOptions,
 }: MaterialsTableFilterProps) {
   const [q, setQ] = useState(search.q ?? "")
+
+  const client = useGetClientOptions()
+  const selectedClient = clientOptions.find(
+    (option) => option.id === search.clientId
+  )
 
   const commitSearch = () => {
     const trimmed = q.trim()
@@ -139,24 +146,21 @@ export function MaterialsTableFilter({
             <span className="block text-[11px] font-medium text-muted-foreground">
               Khách hàng
             </span>
-            <Select
-              value={search.clientId ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({ clientId: next === "all" ? undefined : next })
+            <ComboboxField
+              value={search.clientId}
+              onValueChange={(next) => onFilterChange({ clientId: next })}
+              options={client.options}
+              onSearchChange={client.onSearchChange}
+              isLoading={client.isFetching}
+              initialOption={
+                selectedClient
+                  ? { value: selectedClient.id, label: selectedClient.name }
+                  : undefined
               }
-            >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                {clientOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {option.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              emptyMessage="Không tìm thấy khách hàng"
+              placeholder="Tìm khách hàng..."
+              className="text-xs"
+            />
           </label>
 
           <label className="space-y-1.5">

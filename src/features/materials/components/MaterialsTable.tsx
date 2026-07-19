@@ -42,6 +42,8 @@ export function MaterialsTable({
         <div className="rounded-md border border-dashed border-border/70 bg-card">
           <MaterialsEmptyState isFiltered={isFiltered} />
         </div>
+
+        <TablePagination pagination={pagination} className="pt-4" />
       </div>
     )
   }

@@ -2,27 +2,27 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { requirePermission } from "@/features/auth/guard"
 import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
+import {
+  clientOptionsQueryOptions,
+  materialGroupOptionsQueryOptions,
+  materialStatsQueryOptions,
+  materialsQueryOptions,
+} from "@/features/materials/materials.query"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
-import { getClientOptions } from "@/features/materials/server-functions/get-client-options"
-import { getMaterialGroupOptions } from "@/features/materials/server-functions/get-material-group-options"
-import { getMaterialStats } from "@/features/materials/server-functions/get-material-stats"
-import { getMaterials } from "@/features/materials/server-functions/get-materials"
 
 export const Route = createFileRoute("/(authed)/manage_/materials")({
   beforeLoad: ({ context }) =>
     requirePermission(context.permissions, "materials:read"),
   validateSearch: materialsSearchSchema,
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
-    const [materials, stats, materialGroupOptions, clientOptions] =
-      await Promise.all([
-        getMaterials({ data: deps }),
-        getMaterialStats(),
-        getMaterialGroupOptions(),
-        getClientOptions(),
-      ])
-
-    return { materials, stats, materialGroupOptions, clientOptions }
-  },
+  // Prefetch into the query cache (SSR); the page reads the same options via
+  // useSuspenseQuery — see .claude/rules/architecture.md.
+  loader: ({ context, deps }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(materialsQueryOptions(deps)),
+      context.queryClient.ensureQueryData(materialStatsQueryOptions()),
+      context.queryClient.ensureQueryData(materialGroupOptionsQueryOptions()),
+      context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
+    ]),
   component: MaterialsPage,
 })

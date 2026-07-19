@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import type { ReactNode } from "react"
 
@@ -32,7 +32,7 @@ export function CopyProductDialog({
 }: CopyProductDialogProps) {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const copyProductFn = useServerFn(copyProduct)
 
   const mutation = useMutation({
@@ -40,7 +40,7 @@ export function CopyProductDialog({
     onSuccess: async (created) => {
       setOpen(false)
       toast.success(`Đã nhân bản thành ${created.code}`)
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["products"] })
       await navigate({
         to: "/manage/products/$productId/edit",
         params: { productId: created.id },

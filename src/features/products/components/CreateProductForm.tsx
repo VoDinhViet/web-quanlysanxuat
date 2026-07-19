@@ -1,7 +1,7 @@
 import { Activity, useEffect, useRef } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -21,16 +21,14 @@ import type { ProductFilterOption } from "@/features/products/types/product.type
 type CreateProductFormProps = {
   unitOptions: ProductFilterOption[]
   productGroupOptions: ProductFilterOption[]
-  clientOptions: ProductFilterOption[]
 }
 
 export function CreateProductForm({
   unitOptions,
   productGroupOptions,
-  clientOptions,
 }: CreateProductFormProps) {
   const navigate = useNavigate({ from: "/manage/products/create" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const createProductFn = useServerFn(createProduct)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateProductSchema>(
@@ -43,7 +41,7 @@ export function CreateProductForm({
       createProductFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["products"] })
       await navigate({
         to: "/manage/products",
         search: { page: 1, limit: 10 },
@@ -93,7 +91,7 @@ export function CreateProductForm({
           disabled={isPending}
           unitOptions={unitOptions}
           productGroupOptions={productGroupOptions}
-          clientOptions={clientOptions}
+          selectedClient={undefined}
         />
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">

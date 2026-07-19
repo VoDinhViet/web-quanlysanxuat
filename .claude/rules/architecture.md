@@ -90,10 +90,12 @@ maximumFractionDigits: 2 }).format(value)`) directly at call sites — not
 
 ## Loaders don't catch — errors bubble to a shared `errorComponent`
 
-- A route `loader` calls its server function directly (`loader: ({deps}) =>
-getUsers({data: deps})`) and does **not** wrap it in try/catch. If the server
-  function throws, TanStack Router bubbles the error to the nearest ancestor route
-  that defines an `errorComponent` — same as a React error boundary.
+- A route `loader` prefetches into the query cache
+  (`loader: ({context, deps}) => context.queryClient.ensureQueryData(usersQueryOptions(deps))`,
+  see "Reads flow through React Query" below) and does **not** wrap it in try/catch. If the
+  underlying server function throws, `ensureQueryData` rejects, the loader rejects, and
+  TanStack Router bubbles the error to the nearest ancestor route that defines an
+  `errorComponent` — same as a React error boundary.
 - There is one shared `errorComponent` for the whole authenticated app, defined on
   `src/routes/(authed)/route.tsx`. It replaces the entire authed shell (including the
   sidebar) with a Vietnamese error screen and a "Thử lại" button that calls
@@ -113,7 +115,34 @@ getUsers({data: deps})`) and does **not** wrap it in try/catch. If the server
   `src/features/auth/components/LoginForm.tsx`).
 - `QueryClient` is created once, in `src/router.tsx`, and wired to the router via
   `@tanstack/react-router-ssr-query`'s `setupRouterSsrQueryIntegration`. Don't create a
-  second `QueryClient` instance anywhere else.
-- Route loaders (`createServerFn` + `useLoaderData`) remain the primary SSR data
-  source for list/detail pages — don't replace a loader with `useQuery` unless there's
-  a concrete client-only need (polling, infinite scroll) that a loader can't cover.
+  second `QueryClient` instance anywhere else. Its `defaultOptions.queries` set
+  `staleTime: 60_000` and `retry: 1`; reference-option factories override `staleTime` longer.
+- After an entity write, invalidate the feature's cache with
+  `queryClient.invalidateQueries({ queryKey: [<feature>] })` (bound via `useQueryClient`) —
+  **not** `router.invalidate()`, which re-runs every loader on the page. Login/logout keep
+  `router.invalidate()` (session/permissions change is a router concern, not a query-cache
+  one); uploads (image/logo/avatar/document) invalidate nothing — they return a URL into
+  form state, not cached data.
+
+## Reads flow through React Query (loader prefetch + query cache)
+
+- Every read has a `queryOptions` factory co-located per feature in
+  `src/features/<domain>/<domain>.query.ts` (like `src/features/auth/current-user.query.ts`).
+  The `queryFn` calls the server function directly (no `useServerFn` — factories aren't
+  hooks). Features still **must not** import another feature's `*.query.ts` or server
+  functions; each feature owns its own.
+- **Query key convention:** `[<feature>]` is the root, with `[<feature>, "list", search]`,
+  `[<feature>, "stats"]`, `[<feature>, "detail", id]`, and reference-option keys like
+  `[<feature>, "unit-options"]` / `[<feature>, "client-options", q]` beneath it — so a single
+  `invalidateQueries({ queryKey: [<feature>] })` refreshes the whole feature.
+- **Loaders prefetch, don't return:** a route `loader` calls
+  `context.queryClient.ensureQueryData(<thing>QueryOptions(...))` (several via `Promise.all`)
+  to warm the cache for SSR; it no longer returns data or uses `useLoaderData`.
+- **Components read via `useSuspenseQuery(<thing>QueryOptions(...))`** for loader-prefetched
+  data — it resolves synchronously (data always defined, like `useLoaderData` did), so no
+  Suspense boundary is needed. `useSearch`/`useParams` supply the same args the loader keyed
+  off. Pages read the queries and pass results down to presentational children as props.
+- **Client-interactive reads that a loader can't prefetch** — the combobox search
+  (debounced `q`, `keepPreviousData`, `select` to map to `{value,label}`, see
+  `use-get-client-options.ts`) and the lazy `MaterialDetails` sheet/logs (`enabled: open`) —
+  use plain `useQuery`, spreading the factory and adding the observer-only options.

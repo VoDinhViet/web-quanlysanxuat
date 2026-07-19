@@ -1,19 +1,33 @@
-import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { SupplierStatCards } from "@/features/suppliers/components/SupplierStatCards"
 import { SuppliersTable } from "@/features/suppliers/components/SuppliersTable"
 import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersTableFilter"
+import {
+  countryOptionsQueryOptions,
+  supplierGroupOptionsQueryOptions,
+  supplierStatsQueryOptions,
+  suppliersQueryOptions,
+} from "@/features/suppliers/suppliers.query"
 import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 
 export function SuppliersPage() {
-  // useSearch/useLoaderData key off the file-based route id; useNavigate's `from`
-  // keys off the resolved URL path instead — the two intentionally differ.
+  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
+  // resolved URL path instead — the two intentionally differ. The loader
+  // prefetched these queries, so useSuspenseQuery resolves synchronously.
   const search = useSearch({ from: "/(authed)/manage_/suppliers" })
-  const result = useLoaderData({ from: "/(authed)/manage_/suppliers" })
   const navigate = useNavigate({ from: "/manage/suppliers" })
 
-  const { suppliers, stats, supplierGroupOptions, countryOptions } = result
+  const { data: suppliers } = useSuspenseQuery(suppliersQueryOptions(search))
+  const { data: stats } = useSuspenseQuery(supplierStatsQueryOptions())
+  const { data: supplierGroupOptions } = useSuspenseQuery(
+    supplierGroupOptionsQueryOptions()
+  )
+  const { data: countryOptions } = useSuspenseQuery(
+    countryOptionsQueryOptions()
+  )
 
   const handleFilterChange = (patch: Partial<SuppliersSearchSchema>) => {
     void navigate({ search: (prev) => ({ ...prev, ...patch, page: 1 }) })

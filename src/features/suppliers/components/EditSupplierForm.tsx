@@ -1,8 +1,8 @@
 import { Activity } from "react"
 import { DateTime } from "luxon"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, Loader2, Save } from "lucide-react"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
@@ -80,7 +80,7 @@ export function EditSupplierForm({
   countryOptions,
 }: EditSupplierFormProps) {
   const navigate = useNavigate({ from: "/manage/suppliers/$supplierId/edit" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const updateSupplierFn = useServerFn(updateSupplier)
 
   const {
@@ -91,7 +91,7 @@ export function EditSupplierForm({
     mutationFn: (value: CreateSupplierSchema) =>
       updateSupplierFn({ data: { ...value, supplierId: supplier.id } }),
     onSuccess: async () => {
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["suppliers"] })
       await navigate({
         to: "/manage/suppliers",
         search: { page: 1, limit: 10 },

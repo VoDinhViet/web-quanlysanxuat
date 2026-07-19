@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 
 import {
@@ -32,7 +31,7 @@ export function ToggleMaterialStatusDialog({
   trigger,
 }: ToggleMaterialStatusDialogProps) {
   const [open, setOpen] = useState(false)
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const updateMaterialStatusFn = useServerFn(updateMaterialStatus)
   const isDeactivating = material.status === MaterialStatus.ACTIVE
   const nextStatus = isDeactivating
@@ -46,7 +45,7 @@ export function ToggleMaterialStatusDialog({
       }),
     onSuccess: async () => {
       setOpen(false)
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["materials"] })
     },
   })
 

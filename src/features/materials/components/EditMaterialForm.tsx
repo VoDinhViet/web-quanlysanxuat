@@ -1,7 +1,7 @@
 import { Activity } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, Loader2, Save } from "lucide-react"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
@@ -51,7 +51,6 @@ type EditMaterialFormProps = {
   material: Material
   unitOptions: MaterialRef[]
   materialGroupOptions: MaterialRef[]
-  clientOptions: MaterialRef[]
   supplierOptions: MaterialRef[]
 }
 
@@ -59,11 +58,10 @@ export function EditMaterialForm({
   material,
   unitOptions,
   materialGroupOptions,
-  clientOptions,
   supplierOptions,
 }: EditMaterialFormProps) {
   const navigate = useNavigate({ from: "/manage/materials/$materialId/edit" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const updateMaterialFn = useServerFn(updateMaterial)
 
   const {
@@ -74,7 +72,7 @@ export function EditMaterialForm({
     mutationFn: (value: CreateMaterialSchema) =>
       updateMaterialFn({ data: { ...value, materialId: material.id } }),
     onSuccess: async () => {
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["materials"] })
       await navigate({
         to: "/manage/materials",
         search: { page: 1, limit: 10 },
@@ -113,7 +111,11 @@ export function EditMaterialForm({
           disabled={isPending}
           unitOptions={unitOptions}
           materialGroupOptions={materialGroupOptions}
-          clientOptions={clientOptions}
+          selectedClient={
+            material.client
+              ? { value: material.client.id, label: material.client.name }
+              : undefined
+          }
         />
 
         <div className="border-t border-border">

@@ -1,12 +1,15 @@
-import { useLoaderData } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { CreateUserForm } from "@/features/users/components/CreateUserForm"
+import {
+  departmentsQueryOptions,
+  positionsQueryOptions,
+} from "@/features/users/users.query"
 
 export function CreateUserPage() {
-  const { departments, positions } = useLoaderData({
-    from: "/(authed)/manage_/users_/create",
-  })
+  const { data: departments } = useSuspenseQuery(departmentsQueryOptions())
+  const { data: positions } = useSuspenseQuery(positionsQueryOptions())
 
   return (
     <main className="min-h-svh bg-background text-foreground">

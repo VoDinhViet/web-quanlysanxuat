@@ -1,7 +1,7 @@
 import { Activity, useEffect, useRef } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -22,18 +22,16 @@ import type { MaterialRef } from "@/features/materials/types/material.type"
 type CreateMaterialFormProps = {
   unitOptions: MaterialRef[]
   materialGroupOptions: MaterialRef[]
-  clientOptions: MaterialRef[]
   supplierOptions: MaterialRef[]
 }
 
 export function CreateMaterialForm({
   unitOptions,
   materialGroupOptions,
-  clientOptions,
   supplierOptions,
 }: CreateMaterialFormProps) {
   const navigate = useNavigate({ from: "/manage/materials/create" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const createMaterialFn = useServerFn(createMaterial)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateMaterialSchema>(
@@ -46,7 +44,7 @@ export function CreateMaterialForm({
       createMaterialFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["materials"] })
       await navigate({
         to: "/manage/materials",
         search: { page: 1, limit: 10 },
@@ -96,7 +94,7 @@ export function CreateMaterialForm({
           disabled={isPending}
           unitOptions={unitOptions}
           materialGroupOptions={materialGroupOptions}
-          clientOptions={clientOptions}
+          selectedClient={undefined}
         />
 
         <div className="border-t border-border">

@@ -1,19 +1,33 @@
-import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { ProductStatCards } from "@/features/products/components/ProductStatCards"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
+import {
+  clientOptionsQueryOptions,
+  productGroupOptionsQueryOptions,
+  productStatsQueryOptions,
+  productsQueryOptions,
+} from "@/features/products/products.query"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 
 export function ProductsPage() {
-  // useSearch/useLoaderData key off the file-based route id; useNavigate's `from`
-  // keys off the resolved URL path instead — the two intentionally differ.
+  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
+  // resolved URL path instead — the two intentionally differ. The loader
+  // prefetched these queries, so useSuspenseQuery resolves synchronously.
   const search = useSearch({ from: "/(authed)/manage_/products" })
-  const result = useLoaderData({ from: "/(authed)/manage_/products" })
   const navigate = useNavigate({ from: "/manage/products" })
 
-  const { products, stats, productGroupOptions, clientOptions } = result
+  const { data: products } = useSuspenseQuery(productsQueryOptions(search))
+  const { data: stats } = useSuspenseQuery(productStatsQueryOptions())
+  const { data: productGroupOptions } = useSuspenseQuery(
+    productGroupOptionsQueryOptions()
+  )
+  const { data: clientOptions } = useSuspenseQuery(
+    clientOptionsQueryOptions("")
+  )
 
   const isFiltered = Boolean(
     search.q || search.status || search.clientId || search.productGroupId

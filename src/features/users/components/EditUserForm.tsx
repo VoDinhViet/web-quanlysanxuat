@@ -1,8 +1,8 @@
 import { Activity } from "react"
 import { DateTime } from "luxon"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, Loader2, Save } from "lucide-react"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
@@ -66,7 +66,7 @@ export function EditUserForm({
   positions,
 }: EditUserFormProps) {
   const navigate = useNavigate({ from: "/manage/users/$userId/edit" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const updateUserFn = useServerFn(updateUser)
 
   const {
@@ -77,7 +77,7 @@ export function EditUserForm({
     mutationFn: (value: CreateUserSchema) =>
       updateUserFn({ data: { ...value, userId: myUser.id } }),
     onSuccess: async () => {
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["users"] })
       await navigate({ to: "/manage/users", search: { page: 1, limit: 10 } })
     },
   })

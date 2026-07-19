@@ -1,7 +1,7 @@
 import { Activity, useEffect, useRef } from "react"
-import { useNavigate, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AlertOctagon, FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -33,7 +33,7 @@ export function CreateSupplierForm({
   countryOptions,
 }: CreateSupplierFormProps) {
   const navigate = useNavigate({ from: "/manage/suppliers/create" })
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const createSupplierFn = useServerFn(createSupplier)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateSupplierSchema>(
@@ -46,7 +46,7 @@ export function CreateSupplierForm({
       createSupplierFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await router.invalidate()
+      await queryClient.invalidateQueries({ queryKey: ["suppliers"] })
       await navigate({
         to: "/manage/suppliers",
         search: { page: 1, limit: 10 },
