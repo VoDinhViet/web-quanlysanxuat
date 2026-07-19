@@ -3,7 +3,9 @@ import { createFileRoute } from "@tanstack/react-router"
 import { requirePermission } from "@/features/auth/guard"
 import { ProductsPage } from "@/features/products/pages/ProductsPage"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
+import { getClientOptions } from "@/features/products/server-functions/get-client-options"
 import { getProductGroupFilterOptions } from "@/features/products/server-functions/get-product-group-filter-options"
+import { getProductStats } from "@/features/products/server-functions/get-product-stats"
 import { getProducts } from "@/features/products/server-functions/get-products"
 
 export const Route = createFileRoute("/(authed)/manage_/products")({
@@ -12,12 +14,15 @@ export const Route = createFileRoute("/(authed)/manage_/products")({
   validateSearch: productsSearchSchema,
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
-    const [products, productGroupOptions] = await Promise.all([
-      getProducts({ data: deps }),
-      getProductGroupFilterOptions(),
-    ])
+    const [products, stats, productGroupOptions, clientOptions] =
+      await Promise.all([
+        getProducts({ data: deps }),
+        getProductStats(),
+        getProductGroupFilterOptions(),
+        getClientOptions(),
+      ])
 
-    return { products, productGroupOptions }
+    return { products, stats, productGroupOptions, clientOptions }
   },
   component: ProductsPage,
 })

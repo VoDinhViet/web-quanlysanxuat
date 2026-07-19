@@ -1,0 +1,73 @@
+import { Factory, UserRound } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+
+import {
+  MATERIAL_STATUS_LABELS,
+  MATERIAL_TYPE_LABELS,
+  MaterialStatus,
+  MaterialType,
+} from "@/features/materials/types/material.type"
+import { cn } from "@/lib/utils"
+
+const badgeBase =
+  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ring-1 ring-inset whitespace-nowrap"
+
+const TYPE_STYLE: Record<
+  MaterialType,
+  { className: string; icon: LucideIcon }
+> = {
+  [MaterialType.INTERNAL]: {
+    className: "bg-indigo-50 text-indigo-700 ring-indigo-600/15",
+    icon: Factory,
+  },
+  [MaterialType.CLIENT]: {
+    className: "bg-sky-50 text-sky-700 ring-sky-600/15",
+    icon: UserRound,
+  },
+}
+
+export function MaterialTypeBadge({
+  type,
+  className,
+}: {
+  type: MaterialType
+  className?: string
+}) {
+  const { className: styleClassName, icon: Icon } = TYPE_STYLE[type]
+
+  return (
+    <span className={cn(badgeBase, styleClassName, className)}>
+      <Icon className="size-3" />
+      {MATERIAL_TYPE_LABELS[type]}
+    </span>
+  )
+}
+
+const STATUS_STYLE: Record<MaterialStatus, { className: string; dot: string }> =
+  {
+    [MaterialStatus.ACTIVE]: {
+      className: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
+      dot: "bg-emerald-500",
+    },
+    [MaterialStatus.INACTIVE]: {
+      className: "bg-muted text-muted-foreground ring-border",
+      dot: "bg-muted-foreground/50",
+    },
+  }
+
+export function MaterialStatusBadge({
+  status,
+  className,
+}: {
+  status: MaterialStatus
+  className?: string
+}) {
+  const { className: styleClassName, dot } = STATUS_STYLE[status]
+
+  return (
+    <span className={cn(badgeBase, styleClassName, className)}>
+      <span className={cn("size-1.5 rounded-full", dot)} />
+      {MATERIAL_STATUS_LABELS[status]}
+    </span>
+  )
+}

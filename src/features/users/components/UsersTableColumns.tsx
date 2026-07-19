@@ -112,7 +112,7 @@ export const userColumns = [
               </Link>
             </IconButton>
           </PermissionGate>
-          <PermissionGate permission="roles:manage">
+          <PermissionGate permission="roles:update">
             <IconButton label="Phân quyền">
               <ShieldCheck className="size-3.5" />
             </IconButton>

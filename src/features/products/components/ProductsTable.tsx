@@ -12,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { TablePagination } from "@/components/shared/TablePagination"
+import { ProductsEmptyState } from "@/features/products/components/ProductsEmptyState"
 import { productColumns } from "@/features/products/components/ProductsTableColumns"
 import type { Product } from "@/features/products/types/product.type"
 import { cn } from "@/lib/utils"
@@ -22,14 +22,29 @@ import type { Pagination } from "@/lib/types/pagination.type"
 type ProductsTableProps = {
   rows: Product[]
   pagination: Pagination
+  isFiltered: boolean
 }
 
-export function ProductsTable({ rows, pagination }: ProductsTableProps) {
+export function ProductsTable({
+  rows,
+  pagination,
+  isFiltered,
+}: ProductsTableProps) {
   const table = useReactTable({
     data: rows,
     columns: productColumns,
     getCoreRowModel: getCoreRowModel(),
   })
+
+  if (rows.length === 0) {
+    return (
+      <div className="min-w-0 flex-1 px-4 pb-4 lg:px-5">
+        <div className="rounded-md border border-dashed border-border/70 bg-card">
+          <ProductsEmptyState isFiltered={isFiltered} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-w-0 flex-1 overflow-hidden px-4 pb-4 lg:px-5">
@@ -37,12 +52,12 @@ export function ProductsTable({ rows, pagination }: ProductsTableProps) {
         <Table className="text-xs [&_td]:border-r [&_td]:border-border/40 [&_td:last-child]:border-r-0 [&_th]:border-r [&_th]:border-border/40 [&_th:last-child]:border-r-0">
           <TableHeader className="bg-muted/45">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="h-13 hover:bg-muted/45">
+              <TableRow key={headerGroup.id} className="h-12 hover:bg-muted/45">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     className={cn(
-                      "px-4 text-xs font-semibold text-foreground",
+                      "px-4 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase",
                       header.column.columnDef.meta?.headerClassName
                     )}
                   >
@@ -58,31 +73,21 @@ export function ProductsTable({ rows, pagination }: ProductsTableProps) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length === 0 ? (
-              <TableEmptyRow colSpan={productColumns.length} />
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="h-14 bg-card hover:bg-muted/20"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        "px-4 py-0 text-xs font-medium text-foreground",
-                        cell.column.columnDef.meta?.cellClassName
-                      )}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            )}
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cn(
+                      "px-4 py-0 text-xs font-medium text-foreground",
+                      cell.column.columnDef.meta?.cellClassName
+                    )}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

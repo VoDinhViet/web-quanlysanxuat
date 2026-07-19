@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "@tanstack/react-router"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { PRODUCT_STATUS_LABELS } from "@/features/products/types/product.type"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import type {
@@ -30,12 +38,14 @@ type ProductsTableFilterProps = {
   search: ProductsSearchSchema
   onFilterChange: (patch: Partial<ProductsSearchSchema>) => void
   productGroupOptions: ProductFilterOption[]
+  clientOptions: ProductFilterOption[]
 }
 
 export function ProductsTableFilter({
   search,
   onFilterChange,
   productGroupOptions,
+  clientOptions,
 }: ProductsTableFilterProps) {
   const [q, setQ] = useState(search.q ?? "")
 
@@ -49,6 +59,7 @@ export function ProductsTableFilter({
     onFilterChange({
       q: undefined,
       status: undefined,
+      clientId: undefined,
       productGroupId: undefined,
       order: undefined,
     })
@@ -57,8 +68,8 @@ export function ProductsTableFilter({
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-3 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)]">
-          <label className="space-y-1.5 sm:col-span-3 lg:col-span-1">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)]">
+          <label className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <span className="sr-only">Tìm kiếm sản phẩm</span>
             <div className="relative">
               <Input
@@ -76,6 +87,30 @@ export function ProductsTableFilter({
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
+          </label>
+
+          <label className="space-y-1.5">
+            <span className="block text-[11px] font-medium text-muted-foreground">
+              Khách hàng
+            </span>
+            <Select
+              value={search.clientId ?? "all"}
+              onValueChange={(next) =>
+                onFilterChange({ clientId: next === "all" ? undefined : next })
+              }
+            >
+              <SelectTrigger className="w-full text-xs">
+                <SelectValue placeholder="Tìm khách hàng..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                {clientOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label className="space-y-1.5">
@@ -131,10 +166,24 @@ export function ProductsTableFilter({
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-          <Button type="button" variant="outline" className="text-xs">
-            <Download className="size-4" />
-            Xuất Excel
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span tabIndex={0}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="pointer-events-none text-xs"
+                    disabled
+                  >
+                    <Download className="size-4" />
+                    Xuất Excel
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Tính năng xuất Excel sắp có</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Button
             type="button"
             variant="outline"
@@ -144,10 +193,14 @@ export function ProductsTableFilter({
             <RotateCw className="size-4" />
             Làm mới
           </Button>
-          <Button type="button" className="text-xs">
-            <Plus className="size-4" />
-            Thêm sản phẩm
-          </Button>
+          <PermissionGate permission="products:create">
+            <Button asChild className="text-xs">
+              <Link to="/manage/products/create">
+                <Plus className="size-4" />
+                Thêm sản phẩm
+              </Link>
+            </Button>
+          </PermissionGate>
         </div>
       </div>
     </div>

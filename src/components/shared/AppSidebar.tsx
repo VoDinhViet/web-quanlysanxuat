@@ -10,6 +10,7 @@ import {
   GitBranch,
   History,
   LayoutDashboard,
+  Layers,
   ListChecks,
   PackageMinus,
   PackagePlus,
@@ -64,12 +65,7 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Quản lý bán hàng",
     items: [
-      {
-        label: "Đơn hàng (SO)",
-        icon: ShoppingCart,
-        href: "/manage/orders",
-        permission: "orders:read",
-      },
+      { label: "Đơn hàng (SO)", icon: ShoppingCart },
       { label: "Báo giá (RFQ)", icon: FileText },
       { label: "Giao hàng (DO)", icon: Truck },
       {
@@ -103,6 +99,12 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/products",
         permission: "products:read",
       },
+      {
+        label: "Vật tư",
+        icon: Layers,
+        href: "/manage/materials",
+        permission: "materials:read",
+      },
       { label: "Lệnh sản xuất (Job)", icon: Factory },
       { label: "Quản lý sản xuất", icon: GitBranch },
       { label: "Công đoạn sản xuất", icon: GitBranch },
@@ -127,7 +129,7 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/users",
         permission: "users:update",
       },
-      { label: "Phân quyền", icon: ShieldCheck, permission: "roles:manage" },
+      { label: "Phân quyền", icon: ShieldCheck, permission: "roles:read" },
       { label: "Cài đặt", icon: Settings },
       { label: "Nhật ký hệ thống", icon: History },
     ],
