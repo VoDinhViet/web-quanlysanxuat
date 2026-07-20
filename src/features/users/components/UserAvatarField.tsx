@@ -4,21 +4,24 @@ import { useMutation } from "@tanstack/react-query"
 import { Camera, Loader2, UserRound } from "lucide-react"
 import { ErrorCode, useDropzone } from "react-dropzone"
 
-import { uploadUserAvatar } from "@/features/users/server-functions/upload-user-avatar"
+import { resolveFileUrl } from "@/lib/file-url"
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_IMAGE_SIZE_BYTES,
+} from "@/lib/types/file.type"
+import { uploadFile } from "@/lib/upload-file"
+import type { FileFieldValue } from "@/lib/file-field.schema"
 import { cn } from "@/lib/utils"
 import type { FileRejection } from "react-dropzone"
-
-const MAX_AVATAR_SIZE_BYTES = 2 * 1024 * 1024
-const ACCEPTED_AVATAR_TYPES = { "image/jpeg": [], "image/png": [] }
 
 function resolveDropRejectionMessage(
   rejections: FileRejection[]
 ): string | null {
   switch (rejections[0]?.errors[0]?.code) {
     case ErrorCode.FileInvalidType:
-      return "Chỉ chấp nhận định dạng JPG, PNG."
+      return "Chỉ chấp nhận định dạng JPG, PNG, WEBP, GIF."
     case ErrorCode.FileTooLarge:
-      return "Kích thước ảnh tối đa 2MB."
+      return "Kích thước ảnh tối đa 5MB."
     case ErrorCode.TooManyFiles:
       return "Chỉ được chọn 1 ảnh."
     default:
@@ -27,8 +30,8 @@ function resolveDropRejectionMessage(
 }
 
 type UserAvatarFieldProps = {
-  value: string
-  onChange: (url: string) => void
+  value: FileFieldValue | null
+  onChange: (value: FileFieldValue | null) => void
   disabled?: boolean
 }
 
@@ -38,7 +41,7 @@ export function UserAvatarField({
   disabled,
 }: UserAvatarFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
-  const uploadAvatarFn = useServerFn(uploadUserAvatar)
+  const uploadAvatarFn = useServerFn(uploadFile)
 
   const {
     mutate: upload,
@@ -48,14 +51,20 @@ export function UserAvatarField({
     mutationFn: (file: File) => {
       const formData = new FormData()
       formData.append("file", file)
+      formData.append("type", "USER_AVATAR")
       return uploadAvatarFn({ data: formData })
     },
-    onSuccess: (result) => onChange(result.url),
+    onSuccess: (result) =>
+      onChange({
+        id: result.id,
+        url: result.url,
+        originalName: result.originalName,
+      }),
   })
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ACCEPTED_AVATAR_TYPES,
-    maxSize: MAX_AVATAR_SIZE_BYTES,
+    accept: ACCEPTED_IMAGE_TYPES,
+    maxSize: MAX_IMAGE_SIZE_BYTES,
     multiple: false,
     disabled,
     onDropAccepted: ([file]) => {
@@ -92,11 +101,16 @@ export function UserAvatarField({
             isDragActive && "border-primary bg-primary/5"
           )}
         >
-          {value.length > 0 ? (
+          {value ? (
             <img
-              src={value}
+              src={resolveFileUrl(value.url)}
               alt="Ảnh đại diện"
               className="size-full object-cover"
+              // The signed URL expires after ~1h; fall back rather than showing
+              // a broken-image glyph.
+              onError={(event) => {
+                event.currentTarget.style.display = "none"
+              }}
             />
           ) : (
             <UserRound className="size-14 text-muted-foreground/60" />
@@ -119,7 +133,7 @@ export function UserAvatarField({
 
       <p className="text-[11px] text-muted-foreground">
         Kéo thả hoặc bấm <Camera className="inline size-3 -translate-y-px" /> ·
-        JPG, PNG · tối đa 2MB
+        JPG, PNG, WEBP, GIF · tối đa 5MB
       </p>
 
       {errorMessage ? (

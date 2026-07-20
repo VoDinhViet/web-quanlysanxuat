@@ -185,7 +185,7 @@ export const CreateSupplierInfoSection = withForm({
               </form.AppField>
             </div>
 
-            <form.Field name="logoUrl">
+            <form.Field name="logo">
               {(field) => (
                 <SupplierLogoField
                   value={field.state.value}

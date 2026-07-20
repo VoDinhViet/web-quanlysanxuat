@@ -178,7 +178,7 @@ export const CreateMaterialInfoSection = withForm({
               </form.AppField>
             </div>
 
-            <form.Field name="imageUrl">
+            <form.Field name="image">
               {(field) => (
                 <MaterialImageField
                   value={field.state.value}

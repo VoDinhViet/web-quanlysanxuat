@@ -1,6 +1,8 @@
 import { DateTime } from "luxon"
 import { z } from "zod"
 
+import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+
 import {
   PaymentMethod,
   PaymentTerm,
@@ -98,7 +100,7 @@ export const supplierProfileFields = {
     .trim()
     .max(1000, "Ghi chú tối đa 1000 ký tự")
     .transform(emptyToUndefined),
-  logoUrl: z.string().trim().transform(emptyToUndefined),
+  logo: imageFieldSchema,
   countryId: z.string().trim().transform(emptyToUndefined),
   status: z.enum(SupplierStatus),
   internalNote: z
@@ -106,14 +108,7 @@ export const supplierProfileFields = {
     .trim()
     .max(1000, "Ghi chú nội bộ tối đa 1000 ký tự")
     .transform(emptyToUndefined),
-  attachments: z.array(
-    z.object({
-      url: z.string(),
-      filename: z.string(),
-      mimetype: z.string().nullable(),
-      size: z.number().nullable(),
-    })
-  ),
+  attachments: z.array(fileFieldSchema),
 }
 
 export const createSupplierSchema = z
@@ -136,7 +131,7 @@ export const CREATE_SUPPLIER_DEFAULT_VALUES: CreateSupplierSchema = {
   representativePhone: "",
   address: "",
   note: "",
-  logoUrl: "",
+  logo: null,
   countryId: "",
   status: SupplierStatus.ACTIVE,
   internalNote: "",

@@ -1,10 +1,25 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
+import type { z } from "zod"
 
 import { createMaterialSchema } from "@/features/materials/schemas/create-material.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { Material } from "@/features/materials/types/material.type"
+
+type ValidatedCreate = z.output<typeof createMaterialSchema>
+
+// `image`/`attachments` carry display URLs the backend has no field for — only
+// the file ids go on the wire, so they are destructured out rather than spread.
+function toCreateMaterialPayload(data: ValidatedCreate) {
+  const { image, attachments, ...rest } = data
+
+  return {
+    ...rest,
+    imageFileId: image?.id,
+    attachmentFileIds: attachments.map((attachment) => attachment.id),
+  }
+}
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -18,8 +33,12 @@ function resolveCreateMaterialErrorMessage(error: unknown): string {
       return "Mã vật tư đã tồn tại."
     case "material.error.client_required":
       return "Vui lòng chọn khách hàng khi loại vật tư là Khách hàng."
+    case "file.error.not_found":
+      return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "unit.error.not_found":
       return "Đơn vị tính không tồn tại."
+    case "unit.error.scope_mismatch":
+      return "Đơn vị tính không dùng được cho loại này."
     case "material_group.error.not_found":
       return "Nhóm vật tư không tồn tại."
     case "client.error.not_found":
@@ -37,7 +56,10 @@ export const createMaterial = createServerFn({ method: "POST" })
   .validator(createMaterialSchema)
   .handler(async ({ data }): Promise<Material> => {
     try {
-      const response = await http.post<Material>("/api/materials", data)
+      const response = await http.post<Material>(
+        "/api/materials",
+        toCreateMaterialPayload(data)
+      )
 
       return response.data
     } catch (error) {

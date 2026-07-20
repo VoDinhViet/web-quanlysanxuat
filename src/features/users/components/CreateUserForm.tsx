@@ -21,16 +21,19 @@ import type { CreateUserSchema } from "@/features/users/schemas/create-user.sche
 import type {
   DepartmentOption,
   PositionOption,
+  RoleOption,
 } from "@/features/users/types/user.type"
 
 type CreateUserFormProps = {
   departments: DepartmentOption[]
   positions: PositionOption[]
+  roles: RoleOption[]
 }
 
 export function CreateUserForm({
   departments,
   positions,
+  roles,
 }: CreateUserFormProps) {
   const navigate = useNavigate({ from: "/manage/users/create" })
   const queryClient = useQueryClient()
@@ -90,17 +93,20 @@ export function CreateUserForm({
 
       <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
         <CreateUserInfoSection form={form} disabled={isPending} />
-        <CreateUserJobInfoSection
-          form={form}
-          disabled={isPending}
-          departments={departments}
-          positions={positions}
-        />
-        <UserCredentialSection
-          form={form}
-          disabled={isPending}
-          hasExistingCredential={false}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          <CreateUserJobInfoSection
+            form={form}
+            disabled={isPending}
+            departments={departments}
+            positions={positions}
+          />
+          <UserCredentialSection
+            form={form}
+            disabled={isPending}
+            roles={roles}
+            hasExistingCredential={false}
+          />
+        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button

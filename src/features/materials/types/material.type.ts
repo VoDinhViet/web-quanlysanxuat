@@ -1,3 +1,5 @@
+import type { FileResource } from "@/lib/types/file.type"
+
 export enum MaterialType {
   INTERNAL = "INTERNAL",
   CLIENT = "CLIENT",
@@ -33,24 +35,11 @@ export type MaterialCreator = {
   username: string
 }
 
-/** Mirrors the backend's MaterialAttachmentResDto. */
+/** Mirrors the backend's MaterialAttachmentResDto — a join row carrying the
+ *  registry file it points at. */
 export type MaterialAttachment = {
   id: string
-  url: string
-  filename: string
-  mimetype: string | null
-  size: number | null
-  createdAt: string
-}
-
-/** Attachment item shape when creating/updating a material (no `id`/`createdAt`
- *  yet — the backend assigns those only once the file is attached to a saved
- *  material). */
-export type MaterialAttachmentInput = {
-  url: string
-  filename: string
-  mimetype: string | null
-  size: number | null
+  file: FileResource
 }
 
 /** Mirrors the backend's MaterialResDto (GET /api/materials, GET /api/materials/:id).
@@ -65,7 +54,7 @@ export type Material = {
   unit: MaterialRef
   group: MaterialRef
   client: MaterialRef | null
-  imageUrl: string | null
+  image: FileResource | null
   note: string | null
   // Extended information (all optional)
   materialGrade: string | null
@@ -103,15 +92,4 @@ export type MaterialLog = {
   changes: Record<string, MaterialLogChangeValue>
   changer: MaterialCreator | null
   createdAt: string
-}
-
-/** Aggregate counts for the list page's summary stat cards. There is no backend
- *  stats endpoint for materials, so these are derived from filtered count
- *  queries (see get-material-stats.ts). */
-export type MaterialStats = {
-  total: number
-  active: number
-  inactive: number
-  internal: number
-  client: number
 }

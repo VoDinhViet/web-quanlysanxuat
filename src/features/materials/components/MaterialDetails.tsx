@@ -31,8 +31,9 @@ import {
   materialLogsQueryOptions,
   materialQueryOptions,
 } from "@/features/materials/materials.query"
-import type { Material } from "@/features/materials/types/material.type"
+import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
+import type { Material } from "@/features/materials/types/material.type"
 
 const LOGS_PAGE_LIMIT = 20
 
@@ -102,9 +103,9 @@ export function MaterialDetails({
 
           <div className="flex items-start gap-4">
             <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm">
-              {material.imageUrl ? (
+              {material.image ? (
                 <img
-                  src={material.imageUrl}
+                  src={resolveFileUrl(material.image.url)}
                   alt={material.name}
                   className="size-full object-cover"
                 />
@@ -245,7 +246,7 @@ export function MaterialDetails({
                     {attachments.map((attachment) => (
                       <li key={attachment.id}>
                         <a
-                          href={attachment.url}
+                          href={resolveFileUrl(attachment.file.url)}
                           target="_blank"
                           rel="noreferrer"
                           className="flex items-center gap-2.5 rounded-lg border border-border bg-background px-3 py-2.5 transition-colors hover:border-primary/40 hover:bg-muted/40"
@@ -254,7 +255,7 @@ export function MaterialDetails({
                             <FileText className="size-4" />
                           </span>
                           <span className="truncate text-xs font-medium text-foreground">
-                            {attachment.filename}
+                            {attachment.file.originalName}
                           </span>
                         </a>
                       </li>

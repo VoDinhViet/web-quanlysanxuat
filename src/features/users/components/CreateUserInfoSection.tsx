@@ -112,7 +112,7 @@ export const CreateUserInfoSection = withForm({
               </form.AppField>
             </div>
 
-            <form.Field name="avatarUrl">
+            <form.Field name="avatar">
               {(field) => (
                 <UserAvatarField
                   value={field.state.value}

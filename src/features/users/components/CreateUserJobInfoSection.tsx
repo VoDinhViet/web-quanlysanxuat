@@ -1,22 +1,13 @@
 import { withForm } from "@/hooks/use-app-form"
 import { CREATE_USER_DEFAULT_VALUES } from "@/features/users/schemas/create-user.schema"
 import { EMPLOYEE_STATUS_LABELS } from "@/features/users/types/user.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type {
   DepartmentOption,
   PositionOption,
 } from "@/features/users/types/user.type"
 
 const EMPLOYEE_STATUS_OPTIONS = buildOptionsFromLabels(EMPLOYEE_STATUS_LABELS)
-
-type SelectOptionItem = {
-  id: string
-  name: string
-}
-
-function buildSelectOptions(items: SelectOptionItem[]) {
-  return items.map((item) => ({ value: item.id, label: item.name }))
-}
 
 export const CreateUserJobInfoSection = withForm({
   defaultValues: CREATE_USER_DEFAULT_VALUES,
@@ -38,7 +29,7 @@ export const CreateUserJobInfoSection = withForm({
         </div>
 
         <div className="px-4 pb-5 sm:px-5">
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+          <div className="space-y-5">
             <form.AppField name="departmentId">
               {(field) => (
                 <field.SelectField
@@ -90,7 +81,6 @@ export const CreateUserJobInfoSection = withForm({
                   required
                   options={EMPLOYEE_STATUS_OPTIONS}
                   disabled={disabled}
-                  className="sm:col-span-2"
                 />
               )}
             </form.AppField>

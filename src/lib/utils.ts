@@ -6,12 +6,20 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getInitials(name: string): string {
-  const words = name.trim().split(/\s+/)
-  const first = words.at(0)?.[0] ?? ""
-  const last = words.length > 1 ? (words.at(-1)?.[0] ?? "") : ""
+type SelectOptionItem = {
+  id: string
+  name: string
+}
 
-  return `${first}${last}`.toUpperCase()
+type SelectOption = {
+  value: string
+  label: string
+}
+
+// Turns `{id, name}` reference rows (departments, positions, roles) into
+// select options.
+export function buildSelectOptions(items: SelectOptionItem[]): SelectOption[] {
+  return items.map((item) => ({ value: item.id, label: item.name }))
 }
 
 // Turns a domain label map ({ WORKING: "Đang làm việc" }) into select/radio

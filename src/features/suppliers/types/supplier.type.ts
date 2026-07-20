@@ -1,3 +1,5 @@
+import type { FileResource } from "@/lib/types/file.type"
+
 export enum SupplierStatus {
   ACTIVE = "ACTIVE",
   PAUSED = "PAUSED",
@@ -88,22 +90,11 @@ export type SupplierPayment = {
   creditLimitStartDate: string | null
 }
 
-/** Mirrors the backend's SupplierAttachmentResDto. */
+/** Mirrors the backend's SupplierAttachmentResDto — a join row carrying the
+ *  registry file it points at. */
 export type SupplierAttachment = {
   id: string
-  url: string
-  filename: string
-  mimetype: string | null
-  size: number | null
-}
-
-/** Attachment item shape when creating/updating a supplier (no `id` yet — the
- *  backend assigns one only after the file is attached to a saved supplier). */
-export type SupplierAttachmentInput = {
-  url: string
-  filename: string
-  mimetype: string | null
-  size: number | null
+  file: FileResource
 }
 
 /** Mirrors the backend's SupplierResDto (GET /api/suppliers, GET /api/suppliers/:id). */
@@ -119,7 +110,7 @@ export type Supplier = {
   representatives: SupplierRepresentative[]
   address: string
   note: string | null
-  logoUrl: string | null
+  logo: FileResource | null
   country: CountryRef | null
   payment: SupplierPayment
   rating: number | null

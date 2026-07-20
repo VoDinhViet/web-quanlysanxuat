@@ -1,6 +1,8 @@
 import { DateTime } from "luxon"
 import { z } from "zod"
 
+import { imageFieldSchema } from "@/lib/file-field.schema"
+
 import { EmployeeStatus, USER_GENDERS } from "@/features/users/types/user.type"
 
 // Wire contract for POST /api/users' `credential` field — matches the backend's
@@ -9,6 +11,7 @@ export const createCredentialSchema = z.object({
   username: z.string().trim().min(1, "Vui lòng nhập tên đăng nhập"),
   email: z.email("Vui lòng nhập email đăng nhập hợp lệ"),
   password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
+  roleId: z.string().trim().min(1, "Vui lòng chọn vai trò"),
 })
 
 // Wire contract for the `credential` field when updating an employee who
@@ -21,6 +24,7 @@ export const updateCredentialSchema = z.object({
     .refine((value) => value.length === 0 || value.length >= 6, {
       message: "Mật khẩu tối thiểu 6 ký tự",
     }),
+  roleId: z.string().trim().min(1, "Vui lòng chọn vai trò"),
 })
 
 // A blank form input means "not provided" — the wire payload should omit the
@@ -63,11 +67,7 @@ export const userProfileFields = {
     .trim()
     .max(500, "Địa chỉ tối đa 500 ký tự")
     .transform(emptyToUndefined),
-  avatarUrl: z
-    .string()
-    .trim()
-    .max(500, "Đường dẫn ảnh tối đa 500 ký tự")
-    .transform(emptyToUndefined),
+  avatar: imageFieldSchema,
   departmentId: z.string().trim().min(1, "Vui lòng chọn phòng ban"),
   positionId: z.string().trim().min(1, "Vui lòng chọn chức vụ"),
   hireDate: z
@@ -117,7 +117,7 @@ export const CREATE_USER_DEFAULT_VALUES: CreateUserSchema = {
   phoneNumber: "",
   email: "",
   address: "",
-  avatarUrl: "",
+  avatar: null,
   departmentId: "",
   positionId: "",
   hireDate: "",

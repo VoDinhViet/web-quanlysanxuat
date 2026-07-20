@@ -1,3 +1,5 @@
+import type { FileResource } from "@/lib/types/file.type"
+
 export const USER_GENDERS = ["MALE", "FEMALE", "OTHER"] as const
 export type UserGender = (typeof USER_GENDERS)[number]
 
@@ -31,11 +33,21 @@ export type PositionOption = {
   name: string
 }
 
+/** Mirrors the backend's role rows (GET /api/roles). */
+export type RoleOption = {
+  id: string
+  code: string
+  name: string
+}
+
 /** Mirrors the credential summary nested in the backend's UserResDto. */
 export type UserCredential = {
   id: string
   username: string
   email: string
+  /** Optional until the backend ships it inside UserResDto's credential —
+   *  EditUserForm prefills the role select from it once present. */
+  role?: RoleOption | null
 }
 
 /** Mirrors the backend's UserResDto (GET /users, GET /users/:userId). */
@@ -49,7 +61,7 @@ export type User = {
   phoneNumber: string | null
   email: string | null
   address: string | null
-  avatarUrl: string | null
+  avatar: FileResource | null
   department: DepartmentOption
   position: PositionOption
   hireDate: string

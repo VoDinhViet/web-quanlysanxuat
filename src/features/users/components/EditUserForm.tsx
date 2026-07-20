@@ -18,6 +18,7 @@ import type { CreateUserSchema } from "@/features/users/schemas/create-user.sche
 import type {
   DepartmentOption,
   PositionOption,
+  RoleOption,
   User,
 } from "@/features/users/types/user.type"
 
@@ -31,6 +32,7 @@ function buildDefaultValues(user: User): CreateUserSchema {
         username: user.credential.username,
         email: user.credential.email,
         password: "",
+        roleId: user.credential.role?.id ?? "",
       }
     : undefined
 
@@ -44,7 +46,7 @@ function buildDefaultValues(user: User): CreateUserSchema {
     phoneNumber: user.phoneNumber ?? "",
     email: user.email ?? "",
     address: user.address ?? "",
-    avatarUrl: user.avatarUrl ?? "",
+    avatar: user.avatar,
     departmentId: user.department.id,
     positionId: user.position.id,
     hireDate: DateTime.fromISO(user.hireDate).toFormat("yyyy-MM-dd"),
@@ -58,12 +60,14 @@ type EditUserFormProps = {
   myUser: User
   departments: DepartmentOption[]
   positions: PositionOption[]
+  roles: RoleOption[]
 }
 
 export function EditUserForm({
   myUser,
   departments,
   positions,
+  roles,
 }: EditUserFormProps) {
   const navigate = useNavigate({ from: "/manage/users/$userId/edit" })
   const queryClient = useQueryClient()
@@ -111,18 +115,20 @@ export function EditUserForm({
 
       <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
         <CreateUserInfoSection form={form} disabled={isPending} />
-        <CreateUserJobInfoSection
-          form={form}
-          disabled={isPending}
-          departments={departments}
-          positions={positions}
-        />
-
-        <UserCredentialSection
-          form={form}
-          disabled={isPending}
-          hasExistingCredential={myUser.credential != null}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          <CreateUserJobInfoSection
+            form={form}
+            disabled={isPending}
+            departments={departments}
+            positions={positions}
+          />
+          <UserCredentialSection
+            form={form}
+            disabled={isPending}
+            roles={roles}
+            hasExistingCredential={myUser.credential != null}
+          />
+        </div>
 
         <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button

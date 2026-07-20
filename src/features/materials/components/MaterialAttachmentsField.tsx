@@ -5,28 +5,22 @@ import { ErrorCode, useDropzone } from "react-dropzone"
 import { FileText, Loader2, Paperclip, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { uploadMaterialDocument } from "@/features/materials/server-functions/upload-material-document"
+import { resolveFileUrl } from "@/lib/file-url"
+import {
+  ACCEPTED_DOCUMENT_TYPES,
+  MAX_DOCUMENT_SIZE_BYTES,
+} from "@/lib/types/file.type"
+import { uploadFile } from "@/lib/upload-file"
 import { cn } from "@/lib/utils"
-import type { MaterialAttachmentInput } from "@/features/materials/types/material.type"
+import type { FileFieldValue } from "@/lib/file-field.schema"
 import type { FileRejection } from "react-dropzone"
-
-const MAX_DOCUMENT_SIZE_BYTES = 10 * 1024 * 1024
-const ACCEPTED_DOCUMENT_TYPES = {
-  "application/pdf": [],
-  "application/msword": [],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
-  "application/vnd.ms-excel": [],
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
-  "image/jpeg": [],
-  "image/png": [],
-}
 
 function resolveDropRejectionMessage(
   rejections: FileRejection[]
 ): string | null {
   switch (rejections[0]?.errors[0]?.code) {
     case ErrorCode.FileInvalidType:
-      return "Chỉ chấp nhận PDF, DOC, DOCX, XLS, XLSX, JPG, PNG."
+      return "Chỉ chấp nhận PDF, DOCX, XLSX."
     case ErrorCode.FileTooLarge:
       return "Kích thước file tối đa 10MB."
     default:
@@ -35,8 +29,8 @@ function resolveDropRejectionMessage(
 }
 
 type MaterialAttachmentsFieldProps = {
-  value: MaterialAttachmentInput[]
-  onChange: (value: MaterialAttachmentInput[]) => void
+  value: FileFieldValue[]
+  onChange: (value: FileFieldValue[]) => void
   disabled?: boolean
 }
 
@@ -46,7 +40,7 @@ export function MaterialAttachmentsField({
   disabled,
 }: MaterialAttachmentsFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
-  const uploadDocumentFn = useServerFn(uploadMaterialDocument)
+  const uploadFileFn = useServerFn(uploadFile)
 
   const {
     mutateAsync: upload,
@@ -56,7 +50,8 @@ export function MaterialAttachmentsField({
     mutationFn: (file: File) => {
       const formData = new FormData()
       formData.append("file", file)
-      return uploadDocumentFn({ data: formData })
+      formData.append("type", "MATERIAL_DOCUMENT")
+      return uploadFileFn({ data: formData })
     },
   })
 
@@ -81,10 +76,9 @@ export function MaterialAttachmentsField({
         onChange([
           ...value,
           ...uploaded.map((doc) => ({
+            id: doc.id,
             url: doc.url,
-            filename: doc.filename,
-            mimetype: doc.mimetype,
-            size: doc.size,
+            originalName: doc.originalName,
           })),
         ])
       }
@@ -100,8 +94,10 @@ export function MaterialAttachmentsField({
       setClientError(resolveDropRejectionMessage(rejections)),
   })
 
-  const removeAttachment = (url: string) => {
-    onChange(value.filter((attachment) => attachment.url !== url))
+  // Keyed and removed by `id`, not `url`: the URL now carries a per-response
+  // signature, so the same file renders as two different strings across reads.
+  const removeAttachment = (id: string) => {
+    onChange(value.filter((attachment) => attachment.id !== id))
   }
 
   const errorMessage = clientError ?? error?.message ?? null
@@ -139,7 +135,7 @@ export function MaterialAttachmentsField({
             <span className="font-medium text-primary">chọn file</span>
           </p>
           <p className="text-[11px] text-muted-foreground">
-            Hỗ trợ: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (tối đa 10MB)
+            Hỗ trợ: PDF, DOCX, XLSX (tối đa 10MB)
           </p>
 
           {isPending ? (
@@ -158,20 +154,25 @@ export function MaterialAttachmentsField({
         <ul className="space-y-1.5">
           {value.map((attachment) => (
             <li
-              key={attachment.url}
+              key={attachment.id}
               className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-3 py-2"
             >
-              <span className="flex min-w-0 items-center gap-2 text-xs text-foreground">
+              <a
+                href={resolveFileUrl(attachment.url)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex min-w-0 items-center gap-2 text-xs text-foreground hover:text-primary hover:underline"
+              >
                 <FileText className="size-4 shrink-0 text-muted-foreground" />
-                <span className="truncate">{attachment.filename}</span>
-              </span>
+                <span className="truncate">{attachment.originalName}</span>
+              </a>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon-sm"
                 disabled={disabled}
-                aria-label={`Xóa ${attachment.filename}`}
-                onClick={() => removeAttachment(attachment.url)}
+                aria-label={`Xóa ${attachment.originalName}`}
+                onClick={() => removeAttachment(attachment.id)}
               >
                 <X className="size-3.5" />
               </Button>

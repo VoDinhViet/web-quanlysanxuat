@@ -1,10 +1,9 @@
 import axios from "axios"
-import type { AxiosRequestConfig } from "axios"
+import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios"
 
+import { refreshAccessToken } from "@/lib/auth-token"
+import { API_BASE_URL, HTTP_TIMEOUT_MS } from "@/lib/constants"
 import { useAppSession } from "@/lib/session"
-
-const DEFAULT_TIMEOUT = 30_000
-const DEFAULT_BASE_URL = ""
 
 export type ApiErrorDetail = {
   property: string
@@ -24,12 +23,10 @@ export type ApiErrorResponse = {
   details?: ApiErrorDetail[]
 }
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || DEFAULT_BASE_URL
-
 export function createHttpClient(config: AxiosRequestConfig = {}) {
   return axios.create({
     baseURL: API_BASE_URL,
-    timeout: DEFAULT_TIMEOUT,
+    timeout: HTTP_TIMEOUT_MS,
     withCredentials: true,
     headers: {
       Accept: "application/json",
@@ -53,6 +50,53 @@ http.interceptors.request.use(async (config) => {
   }
 
   return config
+})
+
+// Tracks configs already replayed once, so a request that 401s again after a
+// refresh gives up instead of looping. A WeakSet keeps this off the config
+// object itself — no axios type augmentation, no stray field on the wire.
+const replayedRequests = new WeakSet<InternalAxiosRequestConfig>()
+
+// The auth endpoints manage tokens themselves; a 401 from them is the answer,
+// not something a refresh could fix.
+function isAuthEndpoint(url?: string): boolean {
+  return url?.startsWith("/api/auth/") ?? false
+}
+
+// The access token can lapse mid-session, long after the route guard's
+// proactive refresh ran. Renew and replay once so the caller never sees it.
+http.interceptors.response.use(undefined, async (error: unknown) => {
+  if (!axios.isAxiosError(error)) {
+    throw error
+  }
+
+  const config = error.config
+
+  if (
+    error.response?.status !== 401 ||
+    !config ||
+    isAuthEndpoint(config.url) ||
+    replayedRequests.has(config)
+  ) {
+    throw error
+  }
+
+  replayedRequests.add(config)
+
+  try {
+    await refreshAccessToken()
+  } catch (refreshError) {
+    logHttpError(refreshError, "refreshAccessToken")
+
+    // Surface the original 401, not the refresh failure: each server function
+    // maps its own errors to a Vietnamese message, and the route guard is what
+    // redirects to /login on the next navigation.
+    throw error
+  }
+
+  // The request interceptor re-reads the session, so the replay carries the
+  // freshly issued access token.
+  return http.request(config)
 })
 
 export function logHttpError(error: unknown, context: string) {

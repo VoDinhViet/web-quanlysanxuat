@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+
 import {
   MaterialStatus,
   MaterialType,
@@ -42,7 +44,7 @@ export const materialProfileFields = {
   materialGroupId: z.string().trim().min(1, "Vui lòng chọn nhóm vật tư"),
   type: z.enum(MaterialType),
   clientId: z.string().trim().transform(emptyToUndefined),
-  imageUrl: z.string().trim().transform(emptyToUndefined),
+  image: imageFieldSchema,
   status: z.enum(MaterialStatus),
   note: z
     .string()
@@ -95,14 +97,7 @@ export const materialProfileFields = {
     .trim()
     .max(100, "Thời gian giao hàng tối đa 100 ký tự")
     .transform(emptyToUndefined),
-  attachments: z.array(
-    z.object({
-      url: z.string(),
-      filename: z.string(),
-      mimetype: z.string().nullable(),
-      size: z.number().nullable(),
-    })
-  ),
+  attachments: z.array(fileFieldSchema),
 }
 
 export const createMaterialSchema = z
@@ -117,7 +112,7 @@ export const CREATE_MATERIAL_DEFAULT_VALUES: CreateMaterialSchema = {
   materialGroupId: "",
   type: MaterialType.INTERNAL,
   clientId: "",
-  imageUrl: "",
+  image: null,
   status: MaterialStatus.ACTIVE,
   note: "",
   materialGrade: "",

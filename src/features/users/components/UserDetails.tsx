@@ -1,8 +1,10 @@
 import { DateTime } from "luxon"
+import { Icon } from "@iconify/react"
+import userBold from "@iconify-icons/solar/user-bold"
 import { Edit3 } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import {
@@ -22,7 +24,8 @@ import {
   USER_GENDER_LABELS,
 } from "@/features/users/types/user.type"
 import type { User } from "@/features/users/types/user.type"
-import { cn, getInitials } from "@/lib/utils"
+import { resolveFileUrl } from "@/lib/file-url"
+import { cn } from "@/lib/utils"
 
 export function UserDetails({
   user,
@@ -74,9 +77,15 @@ export function UserDetails({
           <TabsContent value="info" className="m-0 outline-none">
             <div className="border-b border-border px-4 py-5">
               <div className="flex items-start gap-4">
-                <Avatar size="lg" className="size-20">
-                  <AvatarFallback className="bg-linear-to-br from-slate-200 to-slate-500 text-base font-medium text-slate-950">
-                    {getInitials(displayName)}
+                <Avatar className="size-20">
+                  <AvatarImage
+                    src={
+                      user.avatar ? resolveFileUrl(user.avatar.url) : undefined
+                    }
+                    alt={displayName}
+                  />
+                  <AvatarFallback>
+                    <Icon icon={userBold} className="size-3/5" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1 pt-0.5">

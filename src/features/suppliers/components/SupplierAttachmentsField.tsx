@@ -5,26 +5,22 @@ import { ErrorCode, useDropzone } from "react-dropzone"
 import { FileText, Loader2, Paperclip, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { uploadSupplierDocument } from "@/features/suppliers/server-functions/upload-supplier-document"
+import { resolveFileUrl } from "@/lib/file-url"
+import {
+  ACCEPTED_DOCUMENT_TYPES,
+  MAX_DOCUMENT_SIZE_BYTES,
+} from "@/lib/types/file.type"
+import { uploadFile } from "@/lib/upload-file"
 import { cn } from "@/lib/utils"
-import type { SupplierAttachmentInput } from "@/features/suppliers/types/supplier.type"
+import type { FileFieldValue } from "@/lib/file-field.schema"
 import type { FileRejection } from "react-dropzone"
-
-const MAX_DOCUMENT_SIZE_BYTES = 10 * 1024 * 1024
-const ACCEPTED_DOCUMENT_TYPES = {
-  "application/pdf": [],
-  "application/msword": [],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
-  "application/vnd.ms-excel": [],
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
-}
 
 function resolveDropRejectionMessage(
   rejections: FileRejection[]
 ): string | null {
   switch (rejections[0]?.errors[0]?.code) {
     case ErrorCode.FileInvalidType:
-      return "Chỉ chấp nhận PDF, DOC, DOCX, XLS, XLSX."
+      return "Chỉ chấp nhận PDF, DOCX, XLSX."
     case ErrorCode.FileTooLarge:
       return "Kích thước file tối đa 10MB."
     default:
@@ -33,8 +29,8 @@ function resolveDropRejectionMessage(
 }
 
 type SupplierAttachmentsFieldProps = {
-  value: SupplierAttachmentInput[]
-  onChange: (value: SupplierAttachmentInput[]) => void
+  value: FileFieldValue[]
+  onChange: (value: FileFieldValue[]) => void
   disabled?: boolean
 }
 
@@ -44,7 +40,7 @@ export function SupplierAttachmentsField({
   disabled,
 }: SupplierAttachmentsFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
-  const uploadDocumentFn = useServerFn(uploadSupplierDocument)
+  const uploadFileFn = useServerFn(uploadFile)
 
   const {
     mutateAsync: upload,
@@ -54,7 +50,8 @@ export function SupplierAttachmentsField({
     mutationFn: (file: File) => {
       const formData = new FormData()
       formData.append("file", file)
-      return uploadDocumentFn({ data: formData })
+      formData.append("type", "SUPPLIER_DOCUMENT")
+      return uploadFileFn({ data: formData })
     },
   })
 
@@ -65,23 +62,42 @@ export function SupplierAttachmentsField({
     disabled,
     onDropAccepted: async (files) => {
       setClientError(null)
-      const uploaded = await Promise.all(files.map((file) => upload(file)))
-      onChange([
-        ...value,
-        ...uploaded.map((doc) => ({
-          url: doc.url,
-          filename: doc.filename,
-          mimetype: doc.mimetype,
-          size: doc.size,
-        })),
-      ])
+      // allSettled so one failed file doesn't discard the ones that made it —
+      // react-dropzone doesn't await this callback, so a rejection here would
+      // also surface as an unhandled promise error.
+      const results = await Promise.allSettled(
+        files.map((file) => upload(file))
+      )
+      const uploaded = results
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value)
+
+      if (uploaded.length > 0) {
+        onChange([
+          ...value,
+          ...uploaded.map((doc) => ({
+            id: doc.id,
+            url: doc.url,
+            originalName: doc.originalName,
+          })),
+        ])
+      }
+
+      const failedCount = results.length - uploaded.length
+      if (failedCount > 0) {
+        setClientError(
+          `${failedCount} file tải lên thất bại. Vui lòng thử lại.`
+        )
+      }
     },
     onDropRejected: (rejections) =>
       setClientError(resolveDropRejectionMessage(rejections)),
   })
 
-  const removeAttachment = (url: string) => {
-    onChange(value.filter((attachment) => attachment.url !== url))
+  // Keyed and removed by `id`, not `url`: the URL now carries a per-response
+  // signature, so the same file renders as two different strings across reads.
+  const removeAttachment = (id: string) => {
+    onChange(value.filter((attachment) => attachment.id !== id))
   }
 
   const errorMessage = clientError ?? error?.message ?? null
@@ -91,6 +107,9 @@ export function SupplierAttachmentsField({
       <span className="block text-xs font-medium text-foreground">
         Tài liệu đính kèm
       </span>
+      <p className="text-[11px] text-muted-foreground">
+        Hợp đồng, báo giá, chứng nhận chất lượng...
+      </p>
 
       <div
         {...getRootProps({
@@ -116,7 +135,7 @@ export function SupplierAttachmentsField({
             <span className="font-medium text-primary">chọn file</span>
           </p>
           <p className="text-[11px] text-muted-foreground">
-            Hỗ trợ: PDF, DOC, DOCX, XLS, XLSX (tối đa 10MB)
+            Hỗ trợ: PDF, DOCX, XLSX (tối đa 10MB)
           </p>
 
           {isPending ? (
@@ -135,20 +154,25 @@ export function SupplierAttachmentsField({
         <ul className="space-y-1.5">
           {value.map((attachment) => (
             <li
-              key={attachment.url}
+              key={attachment.id}
               className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-3 py-2"
             >
-              <span className="flex min-w-0 items-center gap-2 text-xs text-foreground">
+              <a
+                href={resolveFileUrl(attachment.url)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex min-w-0 items-center gap-2 text-xs text-foreground hover:text-primary hover:underline"
+              >
                 <FileText className="size-4 shrink-0 text-muted-foreground" />
-                <span className="truncate">{attachment.filename}</span>
-              </span>
+                <span className="truncate">{attachment.originalName}</span>
+              </a>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon-sm"
                 disabled={disabled}
-                aria-label={`Xóa ${attachment.filename}`}
-                onClick={() => removeAttachment(attachment.url)}
+                aria-label={`Xóa ${attachment.originalName}`}
+                onClick={() => removeAttachment(attachment.id)}
               >
                 <X className="size-3.5" />
               </Button>

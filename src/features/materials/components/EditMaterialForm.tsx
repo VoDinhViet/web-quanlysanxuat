@@ -26,7 +26,7 @@ function buildMaterialDefaultValues(material: Material): CreateMaterialSchema {
     materialGroupId: material.group.id,
     type: material.type,
     clientId: material.client?.id ?? "",
-    imageUrl: material.imageUrl ?? "",
+    image: material.image,
     status: material.status,
     note: material.note ?? "",
     materialGrade: material.materialGrade ?? "",
@@ -39,10 +39,9 @@ function buildMaterialDefaultValues(material: Material): CreateMaterialSchema {
     preferredSupplierId: material.preferredSupplier?.id ?? "",
     leadTime: material.leadTime ?? "",
     attachments: (material.attachments ?? []).map((attachment) => ({
-      url: attachment.url,
-      filename: attachment.filename,
-      mimetype: attachment.mimetype,
-      size: attachment.size,
+      id: attachment.file.id,
+      url: attachment.file.url,
+      originalName: attachment.file.originalName,
     })),
   }
 }
