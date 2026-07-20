@@ -13,6 +13,7 @@ import {
 import { MaterialDetails } from "@/features/materials/components/MaterialDetails"
 import { ToggleMaterialStatusDialog } from "@/features/materials/components/ToggleMaterialStatusDialog"
 import { MaterialStatus } from "@/features/materials/types/material.type"
+import { resolveFileUrl } from "@/lib/file-url"
 import type { Material } from "@/features/materials/types/material.type"
 
 const materialColumnHelper = createColumnHelper<Material>()
@@ -39,9 +40,9 @@ export const materialColumns = [
       return (
         <div className="flex min-w-0 items-center gap-3 py-1">
           <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
-            {material.imageUrl ? (
+            {material.image ? (
               <Image
-                src={material.imageUrl}
+                src={resolveFileUrl(material.image.url)}
                 alt={material.name}
                 layout="fullWidth"
                 objectFit="cover"

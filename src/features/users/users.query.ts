@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query"
 
 import { getDepartments } from "@/features/users/server-functions/get-departments"
 import { getPositions } from "@/features/users/server-functions/get-positions"
+import { getRoles } from "@/features/users/server-functions/get-roles"
 import { getUser } from "@/features/users/server-functions/get-user"
 import { getUsers } from "@/features/users/server-functions/get-users"
 import type { UsersSearchSchema } from "@/features/users/schemas/users-search.schema"
@@ -36,5 +37,12 @@ export const positionsQueryOptions = () =>
   queryOptions({
     queryKey: ["users", "positions"],
     queryFn: () => getPositions(),
+    staleTime: REFERENCE_STALE_TIME,
+  })
+
+export const rolesQueryOptions = () =>
+  queryOptions({
+    queryKey: ["users", "roles"],
+    queryFn: () => getRoles(),
     staleTime: REFERENCE_STALE_TIME,
   })

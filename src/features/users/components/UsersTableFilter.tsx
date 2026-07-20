@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Filter, RotateCw, Search } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import { Download, Filter, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,6 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import {
   EMPLOYEE_STATUS_LABELS,
   EmployeeStatus,
@@ -106,6 +114,24 @@ export function UsersTableFilter({
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span tabIndex={0}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="pointer-events-none text-xs"
+                    disabled
+                  >
+                    <Download className="size-4" />
+                    Xuất Excel
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Tính năng xuất Excel sắp có</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Button
             type="button"
             variant="outline"
@@ -115,6 +141,14 @@ export function UsersTableFilter({
             <RotateCw className="size-4" />
             Làm mới
           </Button>
+          <PermissionGate permission="users:create">
+            <Button asChild className="text-xs">
+              <Link to="/manage/users/create">
+                <Plus className="size-4" />
+                Thêm nhân sự
+              </Link>
+            </Button>
+          </PermissionGate>
         </div>
       </div>
     </div>

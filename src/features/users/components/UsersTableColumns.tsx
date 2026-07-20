@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router"
+import { Icon } from "@iconify/react"
+import userBold from "@iconify-icons/solar/user-bold"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
 
@@ -11,7 +13,8 @@ import {
   EmployeeStatus,
 } from "@/features/users/types/user.type"
 import type { User } from "@/features/users/types/user.type"
-import { cn, getInitials } from "@/lib/utils"
+import { resolveFileUrl } from "@/lib/file-url"
+import { cn } from "@/lib/utils"
 
 const STATUS_BADGE_CLASSNAME: Record<EmployeeStatus, string> = {
   [EmployeeStatus.WORKING]: "bg-emerald-100 text-emerald-700",
@@ -39,13 +42,13 @@ export const userColumns = [
 
       return (
         <div className="flex min-w-0 items-center gap-3">
-          <Avatar size="sm">
+          <Avatar className="size-9">
             <AvatarImage
-              src={user.avatarUrl ?? undefined}
+              src={user.avatar ? resolveFileUrl(user.avatar.url) : undefined}
               alt={user.fullName}
             />
-            <AvatarFallback className="bg-linear-to-br from-slate-200 to-slate-500 text-[10px] font-medium text-slate-950">
-              {getInitials(user.fullName)}
+            <AvatarFallback>
+              <Icon icon={userBold} className="size-3/5" />
             </AvatarFallback>
           </Avatar>
           <span className="truncate text-xs font-medium text-foreground">

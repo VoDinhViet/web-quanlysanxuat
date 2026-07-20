@@ -2,13 +2,11 @@ import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { ProductStatCards } from "@/features/products/components/ProductStatCards"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
 import {
   clientOptionsQueryOptions,
   productGroupOptionsQueryOptions,
-  productStatsQueryOptions,
   productsQueryOptions,
 } from "@/features/products/products.query"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
@@ -21,7 +19,6 @@ export function ProductsPage() {
   const navigate = useNavigate({ from: "/manage/products" })
 
   const { data: products } = useSuspenseQuery(productsQueryOptions(search))
-  const { data: stats } = useSuspenseQuery(productStatsQueryOptions())
   const { data: productGroupOptions } = useSuspenseQuery(
     productGroupOptionsQueryOptions()
   )
@@ -50,10 +47,8 @@ export function ProductsPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <ProductStatCards stats={stats} />
-
         <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)] ring-1 ring-foreground/6">
-          <div className="flex min-h-[calc(100svh-22rem)] min-w-0 flex-col">
+          <div className="flex min-h-[calc(100svh-13rem)] min-w-0 flex-col">
             <ProductsTableFilter
               search={search}
               onFilterChange={handleFilterChange}

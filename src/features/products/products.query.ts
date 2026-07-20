@@ -3,7 +3,6 @@ import { queryOptions } from "@tanstack/react-query"
 import { getClientOptions } from "@/features/products/server-functions/get-client-options"
 import { getProduct } from "@/features/products/server-functions/get-product"
 import { getProductGroupFilterOptions } from "@/features/products/server-functions/get-product-group-filter-options"
-import { getProductStats } from "@/features/products/server-functions/get-product-stats"
 import { getProducts } from "@/features/products/server-functions/get-products"
 import { getUnitOptions } from "@/features/products/server-functions/get-unit-options"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
@@ -14,17 +13,11 @@ const REFERENCE_STALE_TIME = 5 * 60_000
 
 // Query key convention (see .claude/rules/architecture.md): `["products"]` is the
 // feature root, so `invalidateQueries({ queryKey: ["products"] })` after a write
-// refreshes list + stats + detail in one call.
+// refreshes list + detail in one call.
 export const productsQueryOptions = (search: ProductsSearchSchema) =>
   queryOptions({
     queryKey: ["products", "list", search],
     queryFn: () => getProducts({ data: search }),
-  })
-
-export const productStatsQueryOptions = () =>
-  queryOptions({
-    queryKey: ["products", "stats"],
-    queryFn: () => getProductStats(),
   })
 
 export const productQueryOptions = (productId: string) =>

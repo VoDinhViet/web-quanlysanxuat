@@ -9,13 +9,12 @@ import {
 } from "@/features/materials/types/material.type"
 import { cn } from "@/lib/utils"
 
-const badgeBase =
-  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ring-1 ring-inset whitespace-nowrap"
+type TypeBadgeStyle = {
+  className: string
+  icon: LucideIcon
+}
 
-const TYPE_STYLE: Record<
-  MaterialType,
-  { className: string; icon: LucideIcon }
-> = {
+const TYPE_STYLE: Record<MaterialType, TypeBadgeStyle> = {
   [MaterialType.INTERNAL]: {
     className: "bg-indigo-50 text-indigo-700 ring-indigo-600/15",
     icon: Factory,
@@ -36,24 +35,34 @@ export function MaterialTypeBadge({
   const { className: styleClassName, icon: Icon } = TYPE_STYLE[type]
 
   return (
-    <span className={cn(badgeBase, styleClassName, className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
+        styleClassName,
+        className
+      )}
+    >
       <Icon className="size-3" />
       {MATERIAL_TYPE_LABELS[type]}
     </span>
   )
 }
 
-const STATUS_STYLE: Record<MaterialStatus, { className: string; dot: string }> =
-  {
-    [MaterialStatus.ACTIVE]: {
-      className: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
-      dot: "bg-emerald-500",
-    },
-    [MaterialStatus.INACTIVE]: {
-      className: "bg-muted text-muted-foreground ring-border",
-      dot: "bg-muted-foreground/50",
-    },
-  }
+type StatusBadgeStyle = {
+  className: string
+  dot: string
+}
+
+const STATUS_STYLE: Record<MaterialStatus, StatusBadgeStyle> = {
+  [MaterialStatus.ACTIVE]: {
+    className: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
+    dot: "bg-emerald-500",
+  },
+  [MaterialStatus.INACTIVE]: {
+    className: "bg-muted text-muted-foreground ring-border",
+    dot: "bg-muted-foreground/50",
+  },
+}
 
 export function MaterialStatusBadge({
   status,
@@ -65,7 +74,13 @@ export function MaterialStatusBadge({
   const { className: styleClassName, dot } = STATUS_STYLE[status]
 
   return (
-    <span className={cn(badgeBase, styleClassName, className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
+        styleClassName,
+        className
+      )}
+    >
       <span className={cn("size-1.5 rounded-full", dot)} />
       {MATERIAL_STATUS_LABELS[status]}
     </span>

@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { RotateCw, Search } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import { Download, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,6 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { CLIENT_STATUS_LABELS } from "@/features/clients/types/client.type"
 import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
 import type {
@@ -141,6 +149,24 @@ export function ClientsTableFilter({
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span tabIndex={0}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="pointer-events-none text-xs"
+                    disabled
+                  >
+                    <Download className="size-4" />
+                    Xuất Excel
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Tính năng xuất Excel sắp có</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Button
             type="button"
             variant="outline"
@@ -150,6 +176,14 @@ export function ClientsTableFilter({
             <RotateCw className="size-4" />
             Làm mới
           </Button>
+          <PermissionGate permission="clients:create">
+            <Button asChild className="text-xs">
+              <Link to="/manage/clients/create">
+                <Plus className="size-4" />
+                Tạo khách hàng
+              </Link>
+            </Button>
+          </PermissionGate>
         </div>
       </div>
     </div>

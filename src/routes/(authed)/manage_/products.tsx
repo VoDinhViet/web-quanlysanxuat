@@ -5,7 +5,6 @@ import { ProductsPage } from "@/features/products/pages/ProductsPage"
 import {
   clientOptionsQueryOptions,
   productGroupOptionsQueryOptions,
-  productStatsQueryOptions,
   productsQueryOptions,
 } from "@/features/products/products.query"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
@@ -20,7 +19,6 @@ export const Route = createFileRoute("/(authed)/manage_/products")({
   loader: ({ context, deps }) =>
     Promise.all([
       context.queryClient.ensureQueryData(productsQueryOptions(deps)),
-      context.queryClient.ensureQueryData(productStatsQueryOptions()),
       context.queryClient.ensureQueryData(productGroupOptionsQueryOptions()),
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),

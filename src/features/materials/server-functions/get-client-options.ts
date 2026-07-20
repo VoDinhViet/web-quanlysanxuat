@@ -28,7 +28,9 @@ export const getClientOptions = createServerFn({ method: "GET" })
     try {
       const response = await http.get<PaginatedResponse<MaterialRef>>(
         "/api/clients",
-        { params: { q: data.q, limit: FILTER_OPTIONS_LIMIT } }
+        // Omit `q` when empty — the backend requires `q` to be >= 1 char when
+        // present (422 otherwise), but an absent `q` returns the first page.
+        { params: { q: data.q || undefined, limit: FILTER_OPTIONS_LIMIT } }
       )
 
       return response.data.data

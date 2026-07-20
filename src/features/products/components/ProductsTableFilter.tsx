@@ -20,20 +20,20 @@ import {
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetClientOptions } from "@/features/products/hooks/use-get-client-options"
-import { PRODUCT_STATUS_LABELS } from "@/features/products/types/product.type"
-import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
-import type {
-  ProductFilterOption,
+import {
+  PRODUCT_STATUS_LABELS,
   ProductStatus,
 } from "@/features/products/types/product.type"
+import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
+import type { ProductFilterOption } from "@/features/products/types/product.type"
 
 const STATUS_FILTER_OPTIONS: {
   value: ProductStatus | "all"
   label: string
 }[] = [
   { value: "all", label: "Tất cả" },
-  { value: "ACTIVE", label: PRODUCT_STATUS_LABELS.ACTIVE },
-  { value: "INACTIVE", label: PRODUCT_STATUS_LABELS.INACTIVE },
+  { value: ProductStatus.ACTIVE, label: PRODUCT_STATUS_LABELS.ACTIVE },
+  { value: ProductStatus.INACTIVE, label: PRODUCT_STATUS_LABELS.INACTIVE },
 ]
 
 type ProductsTableFilterProps = {

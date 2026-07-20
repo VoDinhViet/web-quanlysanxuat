@@ -1,10 +1,7 @@
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Download, Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
 import { usersQueryOptions } from "@/features/users/users.query"
@@ -38,27 +35,6 @@ export function UsersPage() {
         <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
           <div className="grid min-h-[calc(100svh-13rem)] grid-cols-1">
             <div className="flex min-w-0 flex-col border-border">
-              <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 lg:px-5">
-                <h2 className="text-base font-bold tracking-wide text-primary uppercase">
-                  Quản lý nhân sự
-                </h2>
-
-                <div className="flex items-center gap-2">
-                  <Button type="button" variant="outline" className="text-xs">
-                    <Download className="size-4" />
-                    Export
-                  </Button>
-                  <PermissionGate permission="users:create">
-                    <Button asChild className="text-xs">
-                      <Link to="/manage/users/create">
-                        <Plus className="size-4" />
-                        Thêm nhân sự
-                      </Link>
-                    </Button>
-                  </PermissionGate>
-                </div>
-              </div>
-
               <UsersTableFilter
                 search={search}
                 onFilterChange={handleFilterChange}

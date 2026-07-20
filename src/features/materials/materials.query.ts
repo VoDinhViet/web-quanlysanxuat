@@ -4,7 +4,6 @@ import { getClientOptions } from "@/features/materials/server-functions/get-clie
 import { getMaterial } from "@/features/materials/server-functions/get-material"
 import { getMaterialGroupOptions } from "@/features/materials/server-functions/get-material-group-options"
 import { getMaterialLogs } from "@/features/materials/server-functions/get-material-logs"
-import { getMaterialStats } from "@/features/materials/server-functions/get-material-stats"
 import { getMaterials } from "@/features/materials/server-functions/get-materials"
 import { getSupplierOptions } from "@/features/materials/server-functions/get-supplier-options"
 import { getUnitOptions } from "@/features/materials/server-functions/get-unit-options"
@@ -16,17 +15,11 @@ const REFERENCE_STALE_TIME = 5 * 60_000
 
 // Query key convention (see .claude/rules/architecture.md): `["materials"]` is
 // the feature root, so `invalidateQueries({ queryKey: ["materials"] })` after a
-// write refreshes list + stats + detail in one call.
+// write refreshes list + detail in one call.
 export const materialsQueryOptions = (search: MaterialsSearchSchema) =>
   queryOptions({
     queryKey: ["materials", "list", search],
     queryFn: () => getMaterials({ data: search }),
-  })
-
-export const materialStatsQueryOptions = () =>
-  queryOptions({
-    queryKey: ["materials", "stats"],
-    queryFn: () => getMaterialStats(),
   })
 
 export const materialQueryOptions = (materialId: string) =>

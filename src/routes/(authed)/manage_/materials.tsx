@@ -5,7 +5,6 @@ import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
 import {
   clientOptionsQueryOptions,
   materialGroupOptionsQueryOptions,
-  materialStatsQueryOptions,
   materialsQueryOptions,
 } from "@/features/materials/materials.query"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
@@ -20,7 +19,6 @@ export const Route = createFileRoute("/(authed)/manage_/materials")({
   loader: ({ context, deps }) =>
     Promise.all([
       context.queryClient.ensureQueryData(materialsQueryOptions(deps)),
-      context.queryClient.ensureQueryData(materialStatsQueryOptions()),
       context.queryClient.ensureQueryData(materialGroupOptionsQueryOptions()),
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),

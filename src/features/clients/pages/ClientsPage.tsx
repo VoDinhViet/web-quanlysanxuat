@@ -1,10 +1,7 @@
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Download, Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ClientsTable } from "@/features/clients/components/ClientsTable"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
 import {
@@ -45,29 +42,6 @@ export function ClientsPage() {
         <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
           <div className="grid min-h-[calc(100svh-13rem)] grid-cols-1">
             <div className="flex min-w-0 flex-col border-border">
-              <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 lg:px-5">
-                <h2 className="text-base font-bold tracking-wide text-primary uppercase">
-                  Quản lý khách hàng
-                </h2>
-
-                {/* Export/create are visual placeholders — no export endpoint
-                    and no create page exist yet (wired in a later CRUD pass). */}
-                <div className="flex items-center gap-2">
-                  <Button type="button" variant="outline" className="text-xs">
-                    <Download className="size-4" />
-                    Export
-                  </Button>
-                  <PermissionGate permission="clients:create">
-                    <Button asChild className="text-xs">
-                      <Link to="/manage/clients/create">
-                        <Plus className="size-4" />
-                        Tạo khách hàng
-                      </Link>
-                    </Button>
-                  </PermissionGate>
-                </div>
-              </div>
-
               <ClientsTableFilter
                 search={search}
                 onFilterChange={handleFilterChange}
