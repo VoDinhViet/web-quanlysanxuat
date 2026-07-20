@@ -1,6 +1,7 @@
 import { z } from "zod"
 
-import { PRODUCT_STATUSES } from "@/features/products/types/product.type"
+import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+import { ProductStatus } from "@/features/products/types/product.type"
 
 // A blank form input means "not provided" — the wire payload should omit the
 // field rather than send an empty string (the backend then auto-generates the
@@ -30,8 +31,9 @@ export const productProfileFields = {
     .trim()
     .max(50, "Rev tối đa 50 ký tự")
     .transform(emptyToUndefined),
-  imageUrl: z.string().trim().transform(emptyToUndefined),
-  status: z.enum(PRODUCT_STATUSES),
+  image: imageFieldSchema,
+  attachments: z.array(fileFieldSchema),
+  status: z.enum(ProductStatus),
   note: z
     .string()
     .trim()
@@ -50,7 +52,8 @@ export const CREATE_PRODUCT_DEFAULT_VALUES: CreateProductSchema = {
   productGroupId: "",
   clientId: "",
   revision: "",
-  imageUrl: "",
-  status: "ACTIVE",
+  image: null,
+  attachments: [],
+  status: ProductStatus.ACTIVE,
   note: "",
 }

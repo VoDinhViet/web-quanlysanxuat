@@ -1,11 +1,13 @@
-// Const-tuple so the same values feed both the type and z.enum(PRODUCT_STATUSES) in
-// products-search.schema.ts, instead of duplicating the literals.
-export const PRODUCT_STATUSES = ["ACTIVE", "INACTIVE"] as const
-export type ProductStatus = (typeof PRODUCT_STATUSES)[number]
+import type { FileResource } from "@/lib/types/file.type"
+
+export enum ProductStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+}
 
 export const PRODUCT_STATUS_LABELS: Record<ProductStatus, string> = {
-  ACTIVE: "Đang sử dụng",
-  INACTIVE: "Ngừng sử dụng",
+  [ProductStatus.ACTIVE]: "Đang sử dụng",
+  [ProductStatus.INACTIVE]: "Ngừng sử dụng",
 }
 
 /** Mirrors the backend's nested unit/group/client relation (ProductRefResDto). */
@@ -26,17 +28,25 @@ export type ProductCreator = {
  * List rows and the detail endpoint eager-load the same relations, so a row
  * already carries everything the detail drawer needs — no lazy detail fetch.
  */
+/** Mirrors the backend's ProductAttachmentResDto — a join row carrying the
+ *  registry file it points at. */
+export type ProductAttachment = {
+  id: string
+  file: FileResource
+}
+
 export type Product = {
   id: string
   code: string
   name: string
-  imageUrl: string | null
+  image: FileResource | null
   revision: string
   status: ProductStatus
   note: string | null
   unit: ProductRef
   group: ProductRef | null
   client: ProductRef | null
+  attachments: ProductAttachment[]
   creator: ProductCreator | null
   createdAt: string
   updatedAt: string
@@ -47,14 +57,4 @@ export type Product = {
 export type ProductFilterOption = {
   id: string
   name: string
-}
-
-/** Aggregate counts for the list page's summary stat cards. There is no backend
- *  stats endpoint for products, so these are derived from filtered count queries
- *  (see get-product-stats.ts). */
-export type ProductStats = {
-  total: number
-  active: number
-  inactive: number
-  groupCount: number
 }

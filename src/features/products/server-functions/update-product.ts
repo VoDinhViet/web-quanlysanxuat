@@ -15,11 +15,16 @@ type ValidatedUpdate = Omit<z.output<typeof updateProductSchema>, "productId">
 // `code`/`revision`/`name` are left as-is (undefined ⇒ dropped ⇒ unchanged);
 // only the nullable relations/text below are cleared with null.
 function toUpdateProductPayload(data: ValidatedUpdate) {
+  // `image` carries a display URL the backend has no field for — only the file
+  // id goes on the wire, so it is destructured out rather than spread.
+  const { image, attachments, ...rest } = data
+
   return {
-    ...data,
+    ...rest,
+    attachmentFileIds: attachments.map((attachment) => attachment.id),
     clientId: data.clientId ?? null,
     productGroupId: data.productGroupId ?? null,
-    imageUrl: data.imageUrl ?? null,
+    imageFileId: image?.id ?? null,
     note: data.note ?? null,
   }
 }
@@ -36,8 +41,12 @@ function resolveUpdateProductErrorMessage(error: unknown): string {
       return "Không tìm thấy sản phẩm."
     case "product.error.code_exists":
       return "Mã sản phẩm đã tồn tại."
+    case "file.error.not_found":
+      return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "unit.error.not_found":
       return "Đơn vị tính không tồn tại."
+    case "unit.error.scope_mismatch":
+      return "Đơn vị tính không dùng được cho loại này."
     case "product_group.error.not_found":
       return "Nhóm sản phẩm không tồn tại."
     case "client.error.not_found":

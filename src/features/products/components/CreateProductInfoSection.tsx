@@ -2,6 +2,7 @@ import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/ComboboxField"
+import { ProductAttachmentsField } from "@/features/products/components/ProductAttachmentsField"
 import { ProductImageField } from "@/features/products/components/ProductImageField"
 import { CREATE_PRODUCT_DEFAULT_VALUES } from "@/features/products/schemas/create-product.schema"
 import { useGetClientOptions } from "@/features/products/hooks/use-get-client-options"
@@ -40,7 +41,7 @@ export const CreateProductInfoSection = withForm({
 
     return (
       <div>
-        <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
+        <div className="flex items-center gap-3 border-b border-border px-4 py-4 sm:px-5">
           <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <PackageSearch className="size-5" />
           </div>
@@ -158,9 +159,21 @@ export const CreateProductInfoSection = withForm({
               </form.AppField>
             </div>
 
-            <form.Field name="imageUrl">
+            <form.Field name="image">
               {(field) => (
                 <ProductImageField
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  disabled={disabled}
+                />
+              )}
+            </form.Field>
+          </div>
+
+          <div className="mt-6 border-t border-border pt-5">
+            <form.Field name="attachments">
+              {(field) => (
+                <ProductAttachmentsField
                   value={field.state.value}
                   onChange={field.handleChange}
                   disabled={disabled}

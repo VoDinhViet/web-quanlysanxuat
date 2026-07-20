@@ -25,7 +25,7 @@ type CopyProductDialogProps = {
 }
 
 // Duplicates the product on the backend (POST /:id/copy → a fresh SPxxxx) and
-// jumps straight to the copy's edit page so the user can tweak it right away.
+// jumps straight to the copy's detail page so the user can tweak it right away.
 export function CopyProductDialog({
   product,
   trigger,
@@ -42,8 +42,9 @@ export function CopyProductDialog({
       toast.success(`Đã nhân bản thành ${created.code}`)
       await queryClient.invalidateQueries({ queryKey: ["products"] })
       await navigate({
-        to: "/manage/products/$productId/edit",
+        to: "/manage/products/$productId",
         params: { productId: created.id },
+        search: { tab: "info" },
       })
     },
   })
@@ -62,7 +63,7 @@ export function CopyProductDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Nhân bản sản phẩm này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Tạo một bản sao của "${product.name}" (${product.code}) với mã mới. Bạn sẽ được chuyển tới trang chỉnh sửa bản sao ngay sau đó.`}
+            {`Tạo một bản sao của "${product.name}" (${product.code}) với mã mới. Bạn sẽ được chuyển tới trang chi tiết bản sao ngay sau đó.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

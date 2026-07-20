@@ -39,12 +39,15 @@ export function CreateProductForm({
   const createProductMutation = useMutation({
     mutationFn: (value: CreateProductSchema) =>
       createProductFn({ data: value }),
-    onSuccess: async () => {
+    // Land on the new product's detail screen rather than the list: creating the
+    // profile is step one, and the structure/BOM tabs there need a real id.
+    onSuccess: async (created) => {
       clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["products"] })
       await navigate({
-        to: "/manage/products",
-        search: { page: 1, limit: 10 },
+        to: "/manage/products/$productId",
+        params: { productId: created.id },
+        search: { tab: "structure" },
       })
     },
   })
