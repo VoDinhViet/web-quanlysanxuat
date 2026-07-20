@@ -5,6 +5,7 @@ import { CreateUserPage } from "@/features/users/pages/CreateUserPage"
 import {
   departmentsQueryOptions,
   positionsQueryOptions,
+  rolesQueryOptions,
 } from "@/features/users/users.query"
 
 export const Route = createFileRoute("/(authed)/manage_/users_/create")({
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/(authed)/manage_/users_/create")({
     Promise.all([
       context.queryClient.ensureQueryData(departmentsQueryOptions()),
       context.queryClient.ensureQueryData(positionsQueryOptions()),
+      context.queryClient.ensureQueryData(rolesQueryOptions()),
     ]),
   component: CreateUserPage,
 })

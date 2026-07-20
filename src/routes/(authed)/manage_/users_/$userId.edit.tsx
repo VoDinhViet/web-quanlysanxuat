@@ -5,6 +5,7 @@ import { EditUserPage } from "@/features/users/pages/EditUserPage"
 import {
   departmentsQueryOptions,
   positionsQueryOptions,
+  rolesQueryOptions,
   userQueryOptions,
 } from "@/features/users/users.query"
 
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/(authed)/manage_/users_/$userId/edit")({
       context.queryClient.ensureQueryData(userQueryOptions(params.userId)),
       context.queryClient.ensureQueryData(departmentsQueryOptions()),
       context.queryClient.ensureQueryData(positionsQueryOptions()),
+      context.queryClient.ensureQueryData(rolesQueryOptions()),
     ]),
   component: EditUserPage,
 })

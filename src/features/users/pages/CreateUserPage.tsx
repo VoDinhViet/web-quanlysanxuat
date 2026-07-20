@@ -5,11 +5,13 @@ import { CreateUserForm } from "@/features/users/components/CreateUserForm"
 import {
   departmentsQueryOptions,
   positionsQueryOptions,
+  rolesQueryOptions,
 } from "@/features/users/users.query"
 
 export function CreateUserPage() {
   const { data: departments } = useSuspenseQuery(departmentsQueryOptions())
   const { data: positions } = useSuspenseQuery(positionsQueryOptions())
+  const { data: roles } = useSuspenseQuery(rolesQueryOptions())
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -25,7 +27,11 @@ export function CreateUserPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <CreateUserForm departments={departments} positions={positions} />
+        <CreateUserForm
+          departments={departments}
+          positions={positions}
+          roles={roles}
+        />
       </div>
     </main>
   )

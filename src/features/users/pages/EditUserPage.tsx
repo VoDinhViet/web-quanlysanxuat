@@ -6,6 +6,7 @@ import { EditUserForm } from "@/features/users/components/EditUserForm"
 import {
   departmentsQueryOptions,
   positionsQueryOptions,
+  rolesQueryOptions,
   userQueryOptions,
 } from "@/features/users/users.query"
 
@@ -17,6 +18,7 @@ export function EditUserPage() {
   const { data: user } = useSuspenseQuery(userQueryOptions(userId))
   const { data: departments } = useSuspenseQuery(departmentsQueryOptions())
   const { data: positions } = useSuspenseQuery(positionsQueryOptions())
+  const { data: roles } = useSuspenseQuery(rolesQueryOptions())
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -36,6 +38,7 @@ export function EditUserPage() {
           myUser={user}
           departments={departments}
           positions={positions}
+          roles={roles}
         />
       </div>
     </main>
