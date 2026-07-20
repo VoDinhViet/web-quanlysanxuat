@@ -39,7 +39,7 @@ export function TextField({
   disabled,
   id,
 }: TextFieldProps) {
-  const field = useFieldContext<string>()
+  const field = useFieldContext<string | undefined>()
   const inputId = id ?? field.name
   const isInvalid =
     field.state.meta.isTouched && field.state.meta.errors.length > 0
@@ -58,7 +58,7 @@ export function TextField({
         type={type}
         placeholder={placeholder}
         className="h-9 bg-background text-xs"
-        value={field.state.value}
+        value={field.state.value ?? ""}
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
         aria-invalid={isInvalid}
@@ -124,7 +124,7 @@ export function PasswordField({
   placeholder,
   disabled,
 }: PasswordFieldProps) {
-  const field = useFieldContext<string>()
+  const field = useFieldContext<string | undefined>()
   const [showPassword, setShowPassword] = useState(false)
   const isInvalid =
     field.state.meta.isTouched && field.state.meta.errors.length > 0
@@ -145,7 +145,7 @@ export function PasswordField({
           placeholder={placeholder}
           autoComplete="new-password"
           className="h-9 bg-background pr-9 text-xs"
-          value={field.state.value}
+          value={field.state.value ?? ""}
           onBlur={field.handleBlur}
           onChange={(event) => field.handleChange(event.target.value)}
           aria-invalid={isInvalid}
@@ -192,7 +192,7 @@ export function SelectField({
   options,
   disabled,
 }: SelectFieldProps) {
-  const field = useFieldContext<string>()
+  const field = useFieldContext<string | undefined>()
   const isInvalid =
     field.state.meta.isTouched && field.state.meta.errors.length > 0
 
@@ -205,7 +205,7 @@ export function SelectField({
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Select
-        value={field.state.value}
+        value={field.state.value ?? ""}
         onValueChange={field.handleChange}
         disabled={disabled}
       >

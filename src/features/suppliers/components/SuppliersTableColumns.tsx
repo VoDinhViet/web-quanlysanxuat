@@ -11,6 +11,7 @@ import {
   SUPPLIER_STATUS_LABELS,
   SupplierStatus,
 } from "@/features/suppliers/types/supplier.type"
+import { resolveFileUrl } from "@/lib/file-url"
 import type { Supplier } from "@/features/suppliers/types/supplier.type"
 import { cn } from "@/lib/utils"
 
@@ -45,9 +46,9 @@ export const supplierColumns = [
           ratio={1}
           className="size-9 shrink-0 overflow-hidden rounded-lg bg-muted/40"
         >
-          {supplier.logoUrl ? (
+          {supplier.logo ? (
             <Image
-              src={supplier.logoUrl}
+              src={resolveFileUrl(supplier.logo.url)}
               alt={supplier.name}
               layout="fullWidth"
               objectFit="cover"

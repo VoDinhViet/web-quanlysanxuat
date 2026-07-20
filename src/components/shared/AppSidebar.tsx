@@ -65,7 +65,12 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Quản lý bán hàng",
     items: [
-      { label: "Đơn hàng (SO)", icon: ShoppingCart },
+      {
+        label: "Đơn hàng (SO)",
+        icon: ShoppingCart,
+        href: "/manage/orders",
+        permission: "orders:read",
+      },
       { label: "Báo giá (RFQ)", icon: FileText },
       { label: "Giao hàng (DO)", icon: Truck },
       {

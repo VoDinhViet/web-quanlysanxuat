@@ -1,4 +1,6 @@
 import { Fragment } from "react"
+import { Icon } from "@iconify/react"
+import userBold from "@iconify-icons/solar/user-bold"
 import { Link, useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -12,7 +14,7 @@ import {
   User,
 } from "lucide-react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +36,6 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { currentUserQueryOptions } from "@/features/auth/current-user.query"
 import { logout } from "@/features/auth/server-functions/logout"
 import { isKnownRoute } from "@/lib/known-routes"
-import { getInitials } from "@/lib/utils"
 
 const FALLBACK_USER_NAME = "--"
 
@@ -47,7 +48,6 @@ type PageTitleBarProps = {
   title: string
   breadcrumbs: PageTitleBreadcrumb[]
   notificationCount?: number
-  userAvatarSrc?: string
 }
 
 type PageBreadcrumbsProps = {
@@ -86,19 +86,11 @@ function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
 
 type UserMenuProps = {
   fullName: string
-  userAvatarSrc?: string
   isLoggingOut: boolean
   onLogout: () => void
 }
 
-function UserMenu({
-  fullName,
-  userAvatarSrc,
-  isLoggingOut,
-  onLogout,
-}: UserMenuProps) {
-  const initials = getInitials(fullName)
-
+function UserMenu({ fullName, isLoggingOut, onLogout }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -108,9 +100,10 @@ function UserMenu({
           className="h-auto gap-3 px-1.5 py-1"
           aria-label="Tài khoản người dùng"
         >
-          <Avatar size="lg">
-            <AvatarImage src={userAvatarSrc} alt={fullName} />
-            <AvatarFallback>{initials}</AvatarFallback>
+          <Avatar className="size-10">
+            <AvatarFallback>
+              <Icon icon={userBold} className="size-3/5" />
+            </AvatarFallback>
           </Avatar>
 
           <span className="hidden min-w-0 text-left lg:block">
@@ -123,9 +116,10 @@ function UserMenu({
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
         <DropdownMenuItem className="py-3">
-          <Avatar>
-            <AvatarImage src={userAvatarSrc} alt={fullName} />
-            <AvatarFallback>{initials}</AvatarFallback>
+          <Avatar className="size-8">
+            <AvatarFallback>
+              <Icon icon={userBold} className="size-3/5" />
+            </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">{fullName}</p>
@@ -162,7 +156,6 @@ export function PageTitleBar({
   title,
   breadcrumbs,
   notificationCount = 0,
-  userAvatarSrc,
 }: PageTitleBarProps) {
   const { toggleSidebar } = useSidebar()
   const router = useRouter()
@@ -235,7 +228,6 @@ export function PageTitleBar({
 
         <UserMenu
           fullName={fullName}
-          userAvatarSrc={userAvatarSrc}
           isLoggingOut={isLoggingOut}
           onLogout={handleLogout}
         />
