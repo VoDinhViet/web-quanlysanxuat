@@ -35,6 +35,9 @@
 - Compose class names with `cn()` (`src/lib/utils.ts`), and use semantic Tailwind tokens
   (`text-foreground`, `bg-card`, `text-sidebar-foreground`) rather than raw color
   utilities.
+- Pass a class string straight into `cn()` instead of parking it in an intermediate
+  `const` first — see the badge base classes in
+  `src/features/products/components/ProductBadges.tsx`.
 - Icon-only buttons need `aria-label`; invalid form inputs need `aria-invalid`; every
   `<label>` pairs `htmlFor` with the input's `id`; every `<button>` inside a `<form>` has
   an explicit `type` so it can't accidentally submit.

@@ -121,8 +121,11 @@ maximumFractionDigits: 2 }).format(value)`) directly at call sites — not
   `queryClient.invalidateQueries({ queryKey: [<feature>] })` (bound via `useQueryClient`) —
   **not** `router.invalidate()`, which re-runs every loader on the page. Login/logout keep
   `router.invalidate()` (session/permissions change is a router concern, not a query-cache
-  one); uploads (image/logo/avatar/document) invalidate nothing — they return a URL into
-  form state, not cached data.
+  one); uploads (`uploadFile` in `src/lib/upload-file.ts`) invalidate nothing — they return
+  a file id plus a short-lived display URL into form state, not cached data. Only the id
+  reaches the backend on the entity's own create/update (`imageFileId`, `avatarFileId`,
+  `attachmentFileIds`); the URL is signed, expires in ~1h, and is host-relative, so every
+  `<img src>` / `<a href>` goes through `resolveFileUrl` (`src/lib/file-url.ts`).
 
 ## Reads flow through React Query (loader prefetch + query cache)
 
