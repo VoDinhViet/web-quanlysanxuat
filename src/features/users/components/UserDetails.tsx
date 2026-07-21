@@ -98,8 +98,8 @@ export function UserDetails({
                       className={cn(
                         "h-5 border-transparent px-2 text-[10px] font-medium",
                         isWorking
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-orange-100 text-orange-700"
+                          ? "bg-success/15 text-success"
+                          : "bg-muted text-muted-foreground"
                       )}
                     >
                       {EMPLOYEE_STATUS_LABELS[user.status]}

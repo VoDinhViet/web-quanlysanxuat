@@ -33,7 +33,7 @@ export function ManageStatCards() {
                 <p
                   className={cn(
                     "flex items-center gap-1 text-[11px]",
-                    stat.trend.direction === "up" && "text-emerald-600",
+                    stat.trend.direction === "up" && "text-success",
                     stat.trend.direction === "down" && "text-destructive",
                     !stat.trend.direction && "text-muted-foreground"
                   )}

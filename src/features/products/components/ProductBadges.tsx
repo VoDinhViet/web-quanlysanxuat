@@ -11,8 +11,8 @@ type StatusBadgeStyle = {
 
 const STATUS_STYLE: Record<ProductStatus, StatusBadgeStyle> = {
   [ProductStatus.ACTIVE]: {
-    className: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
-    dot: "bg-emerald-500",
+    className: "bg-success/10 text-success ring-success/20",
+    dot: "bg-success",
   },
   [ProductStatus.INACTIVE]: {
     className: "bg-muted text-muted-foreground ring-border",
@@ -32,7 +32,7 @@ export function ProductStatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
+        "inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
         styleClassName,
         className
       )}

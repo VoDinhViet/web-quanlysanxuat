@@ -20,7 +20,7 @@ export const CreateMaterialExtendedSection = withForm({
     return (
       <div>
         <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warning/15 text-warning">
             <SlidersHorizontal className="size-5" />
           </div>
           <div className="min-w-0">

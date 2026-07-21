@@ -16,7 +16,6 @@ import { TablePagination } from "@/components/shared/TablePagination"
 import { ProductsEmptyState } from "@/features/products/components/ProductsEmptyState"
 import { productColumns } from "@/features/products/components/ProductsTableColumns"
 import type { Product } from "@/features/products/types/product.type"
-import { cn } from "@/lib/utils"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 type ProductsTableProps = {
@@ -51,17 +50,14 @@ export function ProductsTable({
   return (
     <div className="min-w-0 flex-1 overflow-hidden px-4 pb-4 lg:px-5">
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">
-        <Table className="text-xs [&_td]:border-r [&_td]:border-border/40 [&_td:last-child]:border-r-0 [&_th]:border-r [&_th]:border-border/40 [&_th:last-child]:border-r-0">
-          <TableHeader className="bg-muted/45">
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="h-12 hover:bg-muted/45">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className={cn(
-                      "px-4 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase",
-                      header.column.columnDef.meta?.headerClassName
-                    )}
+                    className={header.column.columnDef.meta?.headerClassName}
                   >
                     {header.isPlaceholder
                       ? null
@@ -80,10 +76,7 @@ export function ProductsTable({
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className={cn(
-                      "px-4 py-0 text-xs font-medium text-foreground",
-                      cell.column.columnDef.meta?.cellClassName
-                    )}
+                    className={cell.column.columnDef.meta?.cellClassName}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

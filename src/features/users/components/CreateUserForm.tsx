@@ -91,7 +91,7 @@ export function CreateUserForm({
         </Alert>
       </Activity>
 
-      <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+      <section className="overflow-hidden rounded-lg bg-card shadow-card">
         <CreateUserInfoSection form={form} disabled={isPending} />
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <CreateUserJobInfoSection

@@ -8,8 +8,8 @@ import {
 import type { ChartConfig } from "@/components/ui/chart"
 import { QC_RATE_POINTS } from "@/features/manage/mock/manage-dashboard.mock"
 
-const IQC_COLOR = "#3b82f6"
-const OQC_COLOR = "#22c55e"
+const IQC_COLOR = "var(--color-chart-1)"
+const OQC_COLOR = "var(--color-chart-2)"
 
 const chartConfig: ChartConfig = {
   iqcPassRate: { label: "IQC đạt (%)", color: IQC_COLOR },

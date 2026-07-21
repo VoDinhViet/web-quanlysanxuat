@@ -18,7 +18,7 @@ const currencyFormatter = new Intl.NumberFormat("vi-VN")
 
 const DELIVERY_TONE_CLASSNAME: Record<DeliveryTone, string> = {
   overdue: "text-destructive",
-  "near-due": "text-orange-600",
+  "near-due": "text-warning",
   normal: "text-foreground",
 }
 

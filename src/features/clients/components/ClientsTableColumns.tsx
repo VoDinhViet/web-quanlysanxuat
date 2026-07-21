@@ -12,8 +12,8 @@ import type { Client } from "@/features/clients/types/client.type"
 import { cn } from "@/lib/utils"
 
 const STATUS_BADGE_CLASSNAME: Record<ClientStatus, string> = {
-  [ClientStatus.ACTIVE]: "bg-emerald-100 text-emerald-700",
-  [ClientStatus.PAUSED]: "bg-amber-100 text-amber-700",
+  [ClientStatus.ACTIVE]: "bg-success/15 text-success",
+  [ClientStatus.PAUSED]: "bg-warning/15 text-warning",
 }
 
 const clientColumnHelper = createColumnHelper<Client>()
@@ -98,15 +98,24 @@ export const clientColumns = [
     // View/edit/more are placeholders until a detail/edit CRUD pass exists.
     cell: () => (
       <div className="flex items-center justify-center gap-1.5">
-        <IconButton label="Xem chi tiết">
+        <IconButton
+          label="Xem chi tiết"
+          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+        >
           <Eye className="size-3.5" />
         </IconButton>
         <PermissionGate permission="clients:update">
-          <IconButton label="Chỉnh sửa">
+          <IconButton
+            label="Chỉnh sửa"
+            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+          >
             <Edit3 className="size-3.5" />
           </IconButton>
         </PermissionGate>
-        <IconButton label="Thao tác khác">
+        <IconButton
+          label="Thao tác khác"
+          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+        >
           <MoreHorizontal className="size-3.5" />
         </IconButton>
       </div>

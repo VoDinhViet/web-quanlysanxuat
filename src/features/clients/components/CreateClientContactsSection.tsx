@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { IconButton } from "@/components/shared/IconButton"
 import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { withForm } from "@/hooks/use-app-form"
 import { ClientContactDialog } from "@/features/clients/components/ClientContactDialog"
@@ -73,28 +74,16 @@ export const CreateClientContactsSection = withForm({
               </div>
 
               <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
-                <Table className="text-xs [&_td]:border-r [&_td]:border-border/40 [&_td:last-child]:border-r-0 [&_th]:border-r [&_th]:border-border/40 [&_th:last-child]:border-r-0">
-                  <TableHeader className="bg-muted/45">
-                    <TableRow className="h-13 hover:bg-muted/45">
-                      <TableHead className="w-12 px-4 text-xs font-semibold text-foreground">
-                        #
-                      </TableHead>
-                      <TableHead className="px-4 text-xs font-semibold text-foreground">
-                        Họ và tên
-                      </TableHead>
-                      <TableHead className="px-4 text-xs font-semibold text-foreground">
-                        Chức vụ
-                      </TableHead>
-                      <TableHead className="px-4 text-xs font-semibold text-foreground">
-                        Điện thoại
-                      </TableHead>
-                      <TableHead className="px-4 text-xs font-semibold text-foreground">
-                        Email
-                      </TableHead>
-                      <TableHead className="px-4 text-xs font-semibold text-foreground">
-                        Ghi chú
-                      </TableHead>
-                      <TableHead className="w-24 px-4 text-right text-xs font-semibold text-foreground">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="h-12 hover:bg-muted/45">
+                      <TableHead className="w-12">#</TableHead>
+                      <TableHead>Họ và tên</TableHead>
+                      <TableHead>Chức vụ</TableHead>
+                      <TableHead>Điện thoại</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Ghi chú</TableHead>
+                      <TableHead className="w-24 text-right">
                         Thao tác
                       </TableHead>
                     </TableRow>
@@ -109,50 +98,36 @@ export const CreateClientContactsSection = withForm({
                       contacts.map((contact, index) => (
                         <TableRow
                           key={index}
-                          className="h-14 bg-card hover:bg-muted/20"
+                          className="h-14 bg-card hover:bg-muted/25"
                         >
-                          <TableCell className="px-4 py-0 text-xs font-medium text-muted-foreground">
+                          <TableCell className="text-muted-foreground">
                             {index + 1}
                           </TableCell>
-                          <TableCell className="px-4 py-0 text-xs font-medium text-foreground">
-                            {contact.name}
-                          </TableCell>
-                          <TableCell className="px-4 py-0 text-xs font-medium text-foreground">
-                            {contact.position || "—"}
-                          </TableCell>
-                          <TableCell className="px-4 py-0 text-xs font-medium text-foreground">
-                            {contact.phoneNumber || "—"}
-                          </TableCell>
-                          <TableCell className="px-4 py-0 text-xs font-medium text-foreground">
-                            {contact.email || "—"}
-                          </TableCell>
-                          <TableCell className="max-w-48 truncate px-4 py-0 text-xs font-medium text-foreground">
+                          <TableCell>{contact.name}</TableCell>
+                          <TableCell>{contact.position || "—"}</TableCell>
+                          <TableCell>{contact.phoneNumber || "—"}</TableCell>
+                          <TableCell>{contact.email || "—"}</TableCell>
+                          <TableCell className="max-w-48 truncate">
                             {contact.note || "—"}
                           </TableCell>
-                          <TableCell className="px-4 py-0 text-right">
-                            <div className="flex justify-end gap-1">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="text-muted-foreground hover:text-primary"
-                                aria-label={`Sửa người liên hệ ${index + 1}`}
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-1.5">
+                              <IconButton
+                                label={`Sửa người liên hệ ${index + 1}`}
+                                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
                                 disabled={disabled}
                                 onClick={() => openEdit(index)}
                               >
                                 <Pencil className="size-3.5" />
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                className="text-muted-foreground hover:text-destructive"
-                                aria-label={`Xóa người liên hệ ${index + 1}`}
+                              </IconButton>
+                              <IconButton
+                                label={`Xóa người liên hệ ${index + 1}`}
+                                className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
                                 disabled={disabled}
                                 onClick={() => contactsField.removeValue(index)}
                               >
                                 <Trash2 className="size-3.5" />
-                              </Button>
+                              </IconButton>
                             </div>
                           </TableCell>
                         </TableRow>

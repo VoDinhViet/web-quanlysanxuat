@@ -288,8 +288,8 @@ export function MaterialDetails({
                           className={cn(
                             "absolute top-0.5 -left-[1.6rem] flex size-6 items-center justify-center rounded-full ring-4 ring-card",
                             isCreate
-                              ? "bg-emerald-100 text-emerald-700"
-                              : "bg-blue-100 text-blue-700"
+                              ? "bg-success/15 text-success"
+                              : "bg-info/15 text-info"
                           )}
                         >
                           {isCreate ? (

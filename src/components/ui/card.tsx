@@ -13,7 +13,7 @@ function Card({
       data-size={size}
       className={cn(
         "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-lg bg-card py-(--card-spacing) text-sm text-card-foreground",
-        "shadow-[0_8px_24px_rgba(15,23,42,0.04)] ring-1 ring-foreground/6 dark:ring-foreground/12",
+        "shadow-card ring-1 ring-foreground/6 dark:ring-foreground/12",
         "[--card-spacing:--spacing(6)] data-[size=sm]:[--card-spacing:--spacing(4)]",
         "has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg",
         className

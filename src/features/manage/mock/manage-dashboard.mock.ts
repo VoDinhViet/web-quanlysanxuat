@@ -74,7 +74,8 @@ export const STAT_CARDS: StatCard[] = [
     value: 42,
     unit: "đơn",
     icon: deliveryBold,
-    iconClassName: "bg-blue-100 text-blue-700",
+    iconClassName:
+      "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
     trend: { direction: "up", text: "12% so với tuần trước" },
   },
   {
@@ -82,7 +83,7 @@ export const STAT_CARDS: StatCard[] = [
     value: 5,
     unit: "đơn",
     icon: clockCircleBold,
-    iconClassName: "bg-red-100 text-red-700",
+    iconClassName: "bg-destructive/15 text-destructive",
     trend: { direction: "up", text: "2 so với hôm qua" },
   },
   {
@@ -90,7 +91,8 @@ export const STAT_CARDS: StatCard[] = [
     value: 12,
     unit: "đơn",
     icon: boxBold,
-    iconClassName: "bg-amber-100 text-amber-700",
+    iconClassName:
+      "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
     trend: { text: "Trong 3 ngày tới" },
   },
   {
@@ -98,7 +100,7 @@ export const STAT_CARDS: StatCard[] = [
     value: 25,
     unit: "job",
     icon: buildings2Bold,
-    iconClassName: "bg-emerald-100 text-emerald-700",
+    iconClassName: "bg-success/15 text-success",
     trend: { direction: "up", text: "8 so với hôm qua" },
   },
   {
@@ -106,7 +108,8 @@ export const STAT_CARDS: StatCard[] = [
     value: 5,
     unit: "job",
     icon: magniferBold,
-    iconClassName: "bg-indigo-100 text-indigo-700",
+    iconClassName:
+      "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
     trend: { direction: "up", text: "1 so với hôm qua" },
   },
   {
@@ -114,7 +117,8 @@ export const STAT_CARDS: StatCard[] = [
     value: 7,
     unit: "ncr",
     icon: dangerTriangleBold,
-    iconClassName: "bg-rose-100 text-rose-700",
+    iconClassName:
+      "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
     trend: { direction: "down", text: "2 so với hôm qua" },
   },
 ]
@@ -125,8 +129,8 @@ export const ALERT_ITEMS: AlertItem[] = [
     count: 5,
     icon: dangerTriangleBold,
     cardClassName:
-      "border border-l-4 border-red-300 border-l-red-500 bg-red-50",
-    accentClassName: "text-red-600",
+      "border border-l-4 border-destructive/30 border-l-destructive bg-destructive/10",
+    accentClassName: "text-destructive",
     subtitle: null,
   },
   {
@@ -134,8 +138,8 @@ export const ALERT_ITEMS: AlertItem[] = [
     count: 12,
     icon: boxBold,
     cardClassName:
-      "border border-l-4 border-amber-300 border-l-amber-500 bg-amber-50",
-    accentClassName: "text-amber-600",
+      "border border-l-4 border-warning/30 border-l-warning bg-warning/10",
+    accentClassName: "text-warning",
     subtitle: null,
   },
   {
@@ -143,8 +147,8 @@ export const ALERT_ITEMS: AlertItem[] = [
     count: 3,
     icon: deliveryBold,
     cardClassName:
-      "border border-l-4 border-orange-300 border-l-orange-500 bg-orange-50",
-    accentClassName: "text-orange-600",
+      "border border-l-4 border-destructive/30 border-l-destructive bg-destructive/10",
+    accentClassName: "text-destructive",
     subtitle: null,
   },
   {
@@ -152,8 +156,8 @@ export const ALERT_ITEMS: AlertItem[] = [
     count: 7,
     icon: documentTextBold,
     cardClassName:
-      "border border-l-4 border-rose-300 border-l-rose-500 bg-rose-50",
-    accentClassName: "text-rose-600",
+      "border border-l-4 border-rose-300 border-l-rose-500 bg-rose-50 dark:border-rose-800/40 dark:border-l-rose-500 dark:bg-rose-500/10",
+    accentClassName: "text-rose-600 dark:text-rose-400",
     subtitle: null,
   },
   {
@@ -161,23 +165,23 @@ export const ALERT_ITEMS: AlertItem[] = [
     count: 8,
     icon: deliveryBold,
     cardClassName:
-      "border border-l-4 border-blue-300 border-l-blue-500 bg-blue-50",
-    accentClassName: "text-blue-600",
+      "border border-l-4 border-blue-300 border-l-blue-500 bg-blue-50 dark:border-blue-800/40 dark:border-l-blue-500 dark:bg-blue-500/10",
+    accentClassName: "text-blue-600 dark:text-blue-400",
     subtitle: "Trong 3 ngày tới",
   },
 ]
 
-// Fixed categorical palette (job-status hues) — the theme's --chart-1..5
-// tokens are all blue-ish, so a donut split by status needs distinct colors
-// the design system doesn't provide. Hex values are Tailwind's *-500 steps.
+// Fixed categorical palette (job-status hues) — a donut split by status needs
+// 7 distinct colors, so this draws straight from the theme's --chart-1..7
+// tokens (each dark-mode-aware) instead of hardcoded hex.
 export const PRODUCTION_PROGRESS: ProductionProgressSlice[] = [
-  { label: "Đang sản xuất", value: 25, colorVar: "#3b82f6" },
-  { label: "Chờ vật tư", value: 4, colorVar: "#f97316" },
-  { label: "Chờ OS", value: 3, colorVar: "#8b5cf6" },
-  { label: "Chờ QC", value: 5, colorVar: "#f59e0b" },
-  { label: "Làm lại", value: 2, colorVar: "#ef4444" },
-  { label: "Hoàn thành", value: 18, colorVar: "#22c55e" },
-  { label: "Đã hủy", value: 3, colorVar: "#9ca3af" },
+  { label: "Đang sản xuất", value: 25, colorVar: "var(--color-chart-1)" },
+  { label: "Chờ vật tư", value: 4, colorVar: "var(--color-chart-6)" },
+  { label: "Chờ OS", value: 3, colorVar: "var(--color-chart-4)" },
+  { label: "Chờ QC", value: 5, colorVar: "var(--color-chart-3)" },
+  { label: "Làm lại", value: 2, colorVar: "var(--color-chart-5)" },
+  { label: "Hoàn thành", value: 18, colorVar: "var(--color-chart-2)" },
+  { label: "Đã hủy", value: 3, colorVar: "var(--color-muted-foreground)" },
 ]
 
 // Total jobs shown in the donut center. Mirrors the design mock: the 7 slices
@@ -339,56 +343,65 @@ export const QUICK_ACTIONS: QuickAction[] = [
   {
     label: "Tạo LSX (Job)",
     icon: clipboardAddBold,
-    accentClassName: "text-emerald-600",
-    tileClassName: "border-emerald-200 bg-emerald-50 hover:bg-emerald-100",
+    accentClassName: "text-emerald-600 dark:text-emerald-400",
+    tileClassName:
+      "border-emerald-200 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-800/40 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20",
   },
   {
     label: "Tạo DO",
     icon: deliveryBold,
-    accentClassName: "text-blue-600",
-    tileClassName: "border-blue-200 bg-blue-50 hover:bg-blue-100",
+    accentClassName: "text-blue-600 dark:text-blue-400",
+    tileClassName:
+      "border-blue-200 bg-blue-50 hover:bg-blue-100 dark:border-blue-800/40 dark:bg-blue-500/10 dark:hover:bg-blue-500/20",
   },
   {
     label: "Tạo NCR",
     icon: documentAddBold,
-    accentClassName: "text-red-600",
-    tileClassName: "border-red-200 bg-red-50 hover:bg-red-100",
+    accentClassName: "text-red-600 dark:text-red-400",
+    tileClassName:
+      "border-red-200 bg-red-50 hover:bg-red-100 dark:border-red-800/40 dark:bg-red-500/10 dark:hover:bg-red-500/20",
   },
   {
     label: "Đề xuất mua",
     icon: cartLarge2Bold,
-    accentClassName: "text-amber-600",
-    tileClassName: "border-amber-200 bg-amber-50 hover:bg-amber-100",
+    accentClassName: "text-amber-600 dark:text-amber-400",
+    tileClassName:
+      "border-amber-200 bg-amber-50 hover:bg-amber-100 dark:border-amber-800/40 dark:bg-amber-500/10 dark:hover:bg-amber-500/20",
   },
   {
     label: "Nhập OS về",
     icon: inboxInBold,
-    accentClassName: "text-indigo-600",
-    tileClassName: "border-indigo-200 bg-indigo-50 hover:bg-indigo-100",
+    accentClassName: "text-indigo-600 dark:text-indigo-400",
+    tileClassName:
+      "border-indigo-200 bg-indigo-50 hover:bg-indigo-100 dark:border-indigo-800/40 dark:bg-indigo-500/10 dark:hover:bg-indigo-500/20",
   },
   {
     label: "Nhập kho",
     icon: boxBold,
-    accentClassName: "text-teal-600",
-    tileClassName: "border-teal-200 bg-teal-50 hover:bg-teal-100",
+    accentClassName: "text-teal-600 dark:text-teal-400",
+    tileClassName:
+      "border-teal-200 bg-teal-50 hover:bg-teal-100 dark:border-teal-800/40 dark:bg-teal-500/10 dark:hover:bg-teal-500/20",
   },
   {
     label: "Xuất kho",
     icon: inboxOutBold,
-    accentClassName: "text-cyan-600",
-    tileClassName: "border-cyan-200 bg-cyan-50 hover:bg-cyan-100",
+    accentClassName: "text-cyan-600 dark:text-cyan-400",
+    tileClassName:
+      "border-cyan-200 bg-cyan-50 hover:bg-cyan-100 dark:border-cyan-800/40 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20",
   },
   {
     label: "Báo giá (RFQ)",
     icon: billListBold,
-    accentClassName: "text-violet-600",
-    tileClassName: "border-violet-200 bg-violet-50 hover:bg-violet-100",
+    accentClassName: "text-violet-600 dark:text-violet-400",
+    tileClassName:
+      "border-violet-200 bg-violet-50 hover:bg-violet-100 dark:border-violet-800/40 dark:bg-violet-500/10 dark:hover:bg-violet-500/20",
   },
   {
     label: "PO mua hàng",
     icon: bag4Bold,
-    accentClassName: "text-slate-600",
-    tileClassName: "border-slate-200 bg-slate-50 hover:bg-slate-100",
+    accentClassName: "text-slate-600 dark:text-slate-400",
+    tileClassName:
+      "border-slate-200 bg-slate-50 hover:bg-slate-100 dark:border-slate-700/40 dark:bg-slate-500/10 dark:hover:bg-slate-500/20",
   },
 ]
 

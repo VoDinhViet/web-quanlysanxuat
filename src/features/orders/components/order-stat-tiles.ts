@@ -87,8 +87,9 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Tổng đơn hàng",
     icon: ClipboardList,
-    iconClassName: "bg-blue-100 text-blue-700",
-    accentClassName: "before:bg-blue-500",
+    iconClassName:
+      "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+    accentClassName: "before:bg-blue-500 dark:before:bg-blue-400",
     selectValue: (stats) => `${currencyFormatter.format(stats.totalCount)} đơn`,
     selectSubtitle: (stats) =>
       formatCountDelta(
@@ -100,8 +101,9 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Tổng giá trị",
     icon: Coins,
-    iconClassName: "bg-indigo-100 text-indigo-700",
-    accentClassName: "before:bg-indigo-500",
+    iconClassName:
+      "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
+    accentClassName: "before:bg-indigo-500 dark:before:bg-indigo-400",
     selectValue: (stats) => `${currencyFormatter.format(stats.totalValue)} VND`,
     selectSubtitle: (stats) =>
       formatValueDelta(
@@ -113,8 +115,9 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Đã giao",
     icon: Truck,
-    iconClassName: "bg-sky-100 text-sky-700",
-    accentClassName: "before:bg-sky-500",
+    iconClassName:
+      "bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400",
+    accentClassName: "before:bg-sky-500 dark:before:bg-sky-400",
     selectValue: (stats) =>
       `${currencyFormatter.format(stats.deliveredValue)} VND`,
     selectSubtitle: (stats) =>
@@ -127,8 +130,9 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Đang thực hiện",
     icon: Loader,
-    iconClassName: "bg-amber-100 text-amber-700",
-    accentClassName: "before:bg-amber-500",
+    iconClassName:
+      "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+    accentClassName: "before:bg-amber-500 dark:before:bg-amber-400",
     selectValue: (stats) =>
       `${currencyFormatter.format(stats.inProgressCount)} đơn`,
     selectSubtitle: (stats) =>
@@ -141,8 +145,8 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Trễ hạn",
     icon: AlertTriangle,
-    iconClassName: "bg-red-100 text-red-700",
-    accentClassName: "before:bg-red-500",
+    iconClassName: "bg-destructive/15 text-destructive",
+    accentClassName: "before:bg-destructive",
     selectValue: (stats) =>
       `${currencyFormatter.format(stats.overdueCount)} đơn`,
     selectSubtitle: (stats) =>
@@ -155,8 +159,8 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Hoàn thành",
     icon: CircleCheck,
-    iconClassName: "bg-emerald-100 text-emerald-700",
-    accentClassName: "before:bg-emerald-500",
+    iconClassName: "bg-success/15 text-success",
+    accentClassName: "before:bg-success",
     selectValue: (stats) =>
       `${currencyFormatter.format(stats.completedCount)} đơn`,
     selectSubtitle: (stats) =>

@@ -16,14 +16,17 @@ import {
 import { cn } from "@/lib/utils"
 
 const NCR_STATUS_BADGE_CLASSNAME: Record<NcrStatus, string> = {
-  [NcrStatus.REWORK]: "bg-amber-100 text-amber-700",
-  [NcrStatus.SCRAP]: "bg-red-100 text-red-700",
-  [NcrStatus.PENDING]: "bg-blue-100 text-blue-700",
+  [NcrStatus.REWORK]:
+    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  [NcrStatus.SCRAP]: "bg-destructive/15 text-destructive",
+  [NcrStatus.PENDING]:
+    "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
 }
 
 const DO_STATUS_BADGE_CLASSNAME: Record<DoStatus, string> = {
   [DoStatus.NOT_EXPORTED]: "bg-muted text-muted-foreground",
-  [DoStatus.PREPARING]: "bg-blue-100 text-blue-700",
+  [DoStatus.PREPARING]:
+    "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
 }
 
 /** Mockup row: "Gia công ngoài trễ hạn" + "NCR chưa xử lý" + "DO sắp giao". */

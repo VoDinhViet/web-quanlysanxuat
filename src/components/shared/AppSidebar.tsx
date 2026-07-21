@@ -73,12 +73,6 @@ const menuGroups: MenuGroup[] = [
       },
       { label: "Báo giá (RFQ)", icon: FileText },
       { label: "Giao hàng (DO)", icon: Truck },
-      {
-        label: "Khách hàng",
-        icon: UserRound,
-        href: "/manage/clients",
-        permission: "clients:read",
-      },
     ],
   },
   {
@@ -86,30 +80,12 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: "Đề xuất mua hàng", icon: ClipboardList },
       { label: "Đơn mua hàng (PO)", icon: ReceiptText },
-      {
-        label: "Nhà cung cấp",
-        icon: Building2,
-        href: "/manage/suppliers",
-        permission: "suppliers:read",
-      },
       { label: "Nhập hàng", icon: ArrowDownToLine },
     ],
   },
   {
     label: "Quản lý sản xuất",
     items: [
-      {
-        label: "Sản phẩm",
-        icon: PackageSearch,
-        href: "/manage/products",
-        permission: "products:read",
-      },
-      {
-        label: "Vật tư",
-        icon: Layers,
-        href: "/manage/materials",
-        permission: "materials:read",
-      },
       { label: "Lệnh sản xuất (Job)", icon: Factory },
       { label: "Quản lý sản xuất", icon: GitBranch },
       { label: "Công đoạn sản xuất", icon: GitBranch },
@@ -123,6 +99,35 @@ const menuGroups: MenuGroup[] = [
       { label: "Xuất kho", icon: PackageMinus },
       { label: "Tồn kho vật tư", icon: Warehouse },
       { label: "Tồn kho thành phẩm", icon: Boxes },
+    ],
+  },
+  {
+    label: "Danh mục",
+    items: [
+      {
+        label: "Khách hàng",
+        icon: UserRound,
+        href: "/manage/clients",
+        permission: "clients:read",
+      },
+      {
+        label: "Nhà cung cấp",
+        icon: Building2,
+        href: "/manage/suppliers",
+        permission: "suppliers:read",
+      },
+      {
+        label: "Sản phẩm",
+        icon: PackageSearch,
+        href: "/manage/products",
+        permission: "products:read",
+      },
+      {
+        label: "Vật tư",
+        icon: Layers,
+        href: "/manage/materials",
+        permission: "materials:read",
+      },
     ],
   },
   {
@@ -142,7 +147,7 @@ const menuGroups: MenuGroup[] = [
 ]
 
 const menuButtonClass =
-  "h-9 px-3 text-[13px] font-medium text-sidebar-foreground/82 hover:bg-sidebar-accent hover:text-sidebar-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-white data-[active=true]:shadow-[0_8px_18px_rgba(20,61,255,0.24)] data-[active=true]:[&_svg]:text-white [&_svg]:size-[17px]"
+  "h-9 px-3 text-[13px] font-medium text-sidebar-foreground/82 hover:bg-sidebar-accent hover:text-sidebar-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-[0_8px_18px_-2px_color-mix(in_oklch,var(--sidebar-primary)_45%,transparent)] data-[active=true]:[&_svg]:text-sidebar-primary-foreground [&_svg]:size-[17px]"
 
 export function AppSidebar() {
   const location = useLocation()

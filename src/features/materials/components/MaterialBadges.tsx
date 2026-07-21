@@ -16,11 +16,13 @@ type TypeBadgeStyle = {
 
 const TYPE_STYLE: Record<MaterialType, TypeBadgeStyle> = {
   [MaterialType.INTERNAL]: {
-    className: "bg-indigo-50 text-indigo-700 ring-indigo-600/15",
+    className:
+      "bg-indigo-50 text-indigo-700 ring-indigo-600/15 dark:bg-indigo-500/10 dark:text-indigo-400 dark:ring-indigo-500/20",
     icon: Factory,
   },
   [MaterialType.CLIENT]: {
-    className: "bg-sky-50 text-sky-700 ring-sky-600/15",
+    className:
+      "bg-sky-50 text-sky-700 ring-sky-600/15 dark:bg-sky-500/10 dark:text-sky-400 dark:ring-sky-500/20",
     icon: UserRound,
   },
 }
@@ -37,7 +39,7 @@ export function MaterialTypeBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
+        "inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
         styleClassName,
         className
       )}
@@ -55,8 +57,8 @@ type StatusBadgeStyle = {
 
 const STATUS_STYLE: Record<MaterialStatus, StatusBadgeStyle> = {
   [MaterialStatus.ACTIVE]: {
-    className: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
-    dot: "bg-emerald-500",
+    className: "bg-success/10 text-success ring-success/20",
+    dot: "bg-success",
   },
   [MaterialStatus.INACTIVE]: {
     className: "bg-muted text-muted-foreground ring-border",
@@ -76,7 +78,7 @@ export function MaterialStatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
+        "inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
         styleClassName,
         className
       )}

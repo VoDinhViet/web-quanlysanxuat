@@ -27,13 +27,13 @@ export function ManageTable({ title, headers, children }: ManageTableProps) {
         <ManageCardTitle>{title}</ManageCardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col px-0">
-        <Table className="[&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:first:pl-4 [&_th]:last:pr-4">
-          <TableHeader>
+        <Table className="[&_td]:border-r-0 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:first:pl-4 [&_th]:last:pr-4">
+          <TableHeader className="bg-transparent">
             <TableRow className="hover:bg-transparent">
               {headers.map((header) => (
                 <TableHead
                   key={header}
-                  className="text-[11px] text-muted-foreground uppercase"
+                  className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
                 >
                   {header}
                 </TableHead>

@@ -88,7 +88,7 @@ export function CreateMaterialForm({
         </Alert>
       </Activity>
 
-      <div className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+      <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <CreateMaterialInfoSection
           form={form}
           disabled={isPending}

@@ -147,8 +147,8 @@ export const materialColumns = [
                   label={isActive ? "Ngừng sử dụng" : "Kích hoạt lại"}
                   className={
                     isActive
-                      ? "text-muted-foreground hover:border-amber-300 hover:text-amber-600"
-                      : "text-muted-foreground hover:border-emerald-300 hover:text-emerald-600"
+                      ? "text-muted-foreground hover:border-warning/40 hover:text-warning"
+                      : "text-muted-foreground hover:border-success/40 hover:text-success"
                   }
                 >
                   {isActive ? (

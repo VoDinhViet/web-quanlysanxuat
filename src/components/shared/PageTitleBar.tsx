@@ -14,7 +14,8 @@ import {
   User,
 } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,13 +29,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
+import { ThemeToggle } from "@/components/shared/ThemeToggle"
 import { currentUserQueryOptions } from "@/features/auth/current-user.query"
 import { logout } from "@/features/auth/server-functions/logout"
+import { resolveFileUrl } from "@/lib/file-url"
 import { isKnownRoute } from "@/lib/known-routes"
 
 const FALLBACK_USER_NAME = "--"
@@ -86,11 +88,27 @@ function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
 
 type UserMenuProps = {
   fullName: string
+  username: string
+  email: string
+  roleName: string | null
+  avatarUrl: string | null
   isLoggingOut: boolean
   onLogout: () => void
 }
 
-function UserMenu({ fullName, isLoggingOut, onLogout }: UserMenuProps) {
+function UserMenu({
+  fullName,
+  username,
+  email,
+  roleName,
+  avatarUrl,
+  isLoggingOut,
+  onLogout,
+}: UserMenuProps) {
+  const avatarImage = avatarUrl ? (
+    <AvatarImage src={resolveFileUrl(avatarUrl)} alt={fullName} />
+  ) : null
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -101,30 +119,56 @@ function UserMenu({ fullName, isLoggingOut, onLogout }: UserMenuProps) {
           aria-label="Tài khoản người dùng"
         >
           <Avatar className="size-10">
+            {avatarImage}
             <AvatarFallback>
               <Icon icon={userBold} className="size-3/5" />
             </AvatarFallback>
           </Avatar>
 
           <span className="hidden min-w-0 text-left lg:block">
-            <span className="block truncate text-sm font-bold">{fullName}</span>
+            <span className="block truncate text-sm leading-tight font-bold">
+              {fullName}
+            </span>
+            {roleName ? (
+              <span className="block truncate text-xs leading-tight text-muted-foreground">
+                {roleName}
+              </span>
+            ) : null}
           </span>
 
           <ChevronDown className="hidden lg:block" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
-        <DropdownMenuItem className="py-3">
-          <Avatar className="size-8">
+        <div className="flex items-start gap-3 px-2 py-1.5">
+          <Avatar className="size-10">
+            {avatarImage}
             <AvatarFallback>
               <Icon icon={userBold} className="size-3/5" />
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{fullName}</p>
+
+          <div className="min-w-0 space-y-1">
+            <p className="truncate text-sm leading-tight font-semibold">
+              {fullName}
+            </p>
+            {username ? (
+              <p className="truncate text-xs leading-tight text-muted-foreground">
+                @{username}
+              </p>
+            ) : null}
+            {email ? (
+              <p className="truncate text-xs leading-tight text-muted-foreground">
+                {email}
+              </p>
+            ) : null}
+            {roleName ? (
+              <Badge variant="secondary" className="mt-1 max-w-full">
+                <span className="truncate">{roleName}</span>
+              </Badge>
+            ) : null}
           </div>
-        </DropdownMenuItem>
+        </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <User />
@@ -163,7 +207,8 @@ export function PageTitleBar({
 
   // Reads the profile the `(authed)` beforeLoad already cached — no extra fetch.
   const profileQuery = useQuery(currentUserQueryOptions)
-  const fullName = profileQuery.data?.fullName ?? FALLBACK_USER_NAME
+  const profile = profileQuery.data
+  const fullName = profile?.fullName ?? FALLBACK_USER_NAME
 
   const logoutMutation = useMutation({
     mutationFn: () => logoutFn(),
@@ -179,7 +224,7 @@ export function PageTitleBar({
   const handleLogout = () => logoutMutation.mutate()
 
   return (
-    <header className="flex min-h-22 w-full items-center justify-between gap-4 bg-card px-4 py-4 text-card-foreground shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:px-6">
+    <header className="flex min-h-22 w-full items-center justify-between gap-4 bg-card px-4 py-4 text-card-foreground shadow-card sm:px-6">
       <div className="flex min-w-0 items-center gap-4">
         <Button
           type="button"
@@ -210,7 +255,7 @@ export function PageTitleBar({
         >
           <Bell />
           {notificationCount > 0 ? (
-            <span className="absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold text-white ring-2 ring-card">
+            <span className="text-destructive-foreground absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold ring-2 ring-card">
               {notificationCount > 9 ? "9+" : notificationCount}
             </span>
           ) : null}
@@ -226,8 +271,14 @@ export function PageTitleBar({
           <CircleHelp />
         </Button>
 
+        <ThemeToggle />
+
         <UserMenu
           fullName={fullName}
+          username={profile?.username ?? ""}
+          email={profile?.email ?? ""}
+          roleName={profile?.role?.name ?? null}
+          avatarUrl={profile?.avatar ?? null}
           isLoggingOut={isLoggingOut}
           onLogout={handleLogout}
         />

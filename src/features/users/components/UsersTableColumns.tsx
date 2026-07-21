@@ -17,8 +17,8 @@ import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 
 const STATUS_BADGE_CLASSNAME: Record<EmployeeStatus, string> = {
-  [EmployeeStatus.WORKING]: "bg-emerald-100 text-emerald-700",
-  [EmployeeStatus.RESIGNED]: "bg-slate-100 text-slate-600",
+  [EmployeeStatus.WORKING]: "bg-success/15 text-success",
+  [EmployeeStatus.RESIGNED]: "bg-muted text-muted-foreground",
 }
 
 const userColumnHelper = createColumnHelper<User>()
@@ -114,7 +114,11 @@ export const userColumns = [
       return (
         <div className="flex items-center justify-center gap-1.5">
           <PermissionGate permission="users:update">
-            <IconButton label="Chỉnh sửa" asChild>
+            <IconButton
+              label="Chỉnh sửa"
+              asChild
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+            >
               <Link
                 to="/manage/users/$userId/edit"
                 params={{ userId: user.id }}
@@ -124,11 +128,17 @@ export const userColumns = [
             </IconButton>
           </PermissionGate>
           <PermissionGate permission="roles:update">
-            <IconButton label="Phân quyền">
+            <IconButton
+              label="Phân quyền"
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+            >
               <ShieldCheck className="size-3.5" />
             </IconButton>
           </PermissionGate>
-          <IconButton label="Thao tác khác">
+          <IconButton
+            label="Thao tác khác"
+            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+          >
             <MoreHorizontal className="size-3.5" />
           </IconButton>
         </div>

@@ -47,7 +47,7 @@ export function ProductsPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)] ring-1 ring-foreground/6">
+        <section className="overflow-hidden rounded-lg bg-card shadow-card ring-1 ring-foreground/6">
           <div className="flex min-h-[calc(100svh-13rem)] min-w-0 flex-col">
             <ProductsTableFilter
               search={search}

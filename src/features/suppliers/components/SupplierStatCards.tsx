@@ -32,28 +32,28 @@ function buildStatTiles(stats: SupplierStats): StatTile[] {
       value: stats.total,
       subtitle: "Tất cả",
       icon: Building2,
-      iconClassName: "bg-blue-100 text-blue-700",
+      iconClassName: "bg-info/15 text-info",
     },
     {
       label: "Đang hoạt động",
       value: stats.active,
       subtitle: formatPercent(stats.active, stats.total),
       icon: CheckCircle2,
-      iconClassName: "bg-emerald-100 text-emerald-700",
+      iconClassName: "bg-success/15 text-success",
     },
     {
       label: "Tạm ngưng",
       value: stats.paused,
       subtitle: formatPercent(stats.paused, stats.total),
       icon: PauseCircle,
-      iconClassName: "bg-amber-100 text-amber-700",
+      iconClassName: "bg-warning/15 text-warning",
     },
     {
       label: "Đã ngừng hợp tác",
       value: stats.stopped,
       subtitle: formatPercent(stats.stopped, stats.total),
       icon: XCircle,
-      iconClassName: "bg-red-100 text-red-700",
+      iconClassName: "bg-destructive/15 text-destructive",
     },
   ]
 }

@@ -16,9 +16,9 @@ import type { Supplier } from "@/features/suppliers/types/supplier.type"
 import { cn } from "@/lib/utils"
 
 const STATUS_BADGE_CLASSNAME: Record<SupplierStatus, string> = {
-  [SupplierStatus.ACTIVE]: "bg-emerald-100 text-emerald-700",
-  [SupplierStatus.PAUSED]: "bg-amber-100 text-amber-700",
-  [SupplierStatus.STOPPED]: "bg-red-100 text-red-700",
+  [SupplierStatus.ACTIVE]: "bg-success/15 text-success",
+  [SupplierStatus.PAUSED]: "bg-warning/15 text-warning",
+  [SupplierStatus.STOPPED]: "bg-destructive/15 text-destructive",
 }
 
 const supplierColumnHelper = createColumnHelper<Supplier>()
@@ -158,11 +158,18 @@ export const supplierColumns = [
     cell: ({ row }) => (
       // View/delete are placeholders until there's a detail/delete CRUD pass.
       <div className="flex items-center justify-center gap-1.5">
-        <IconButton label="Xem chi tiết">
+        <IconButton
+          label="Xem chi tiết"
+          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+        >
           <Eye className="size-3.5" />
         </IconButton>
         <PermissionGate permission="suppliers:update">
-          <IconButton label="Chỉnh sửa" asChild>
+          <IconButton
+            label="Chỉnh sửa"
+            asChild
+            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+          >
             <Link
               to="/manage/suppliers/$supplierId/edit"
               params={{ supplierId: row.original.id }}
@@ -172,7 +179,10 @@ export const supplierColumns = [
           </IconButton>
         </PermissionGate>
         <PermissionGate permission="suppliers:delete">
-          <IconButton label="Xóa">
+          <IconButton
+            label="Xóa"
+            className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+          >
             <Trash2 className="size-3.5" />
           </IconButton>
         </PermissionGate>

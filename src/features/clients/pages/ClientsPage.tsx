@@ -39,7 +39,7 @@ export function ClientsPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+        <section className="overflow-hidden rounded-lg bg-card shadow-card">
           <div className="grid min-h-[calc(100svh-13rem)] grid-cols-1">
             <div className="flex min-w-0 flex-col border-border">
               <ClientsTableFilter

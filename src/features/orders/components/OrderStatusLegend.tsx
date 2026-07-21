@@ -31,7 +31,7 @@ const LEGEND_DESCRIPTIONS: Record<OrderBadgeTone, string> = {
 
 export function OrderStatusLegend() {
   return (
-    <section className="rounded-lg bg-card px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.04)] lg:px-5">
+    <section className="rounded-lg bg-card px-4 py-4 shadow-card lg:px-5">
       <h2 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground uppercase">
         <Info className="size-4 text-muted-foreground" />
         Chú thích trạng thái
