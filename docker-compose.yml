@@ -20,9 +20,17 @@ services:
       # Compose errors out if it is unset or empty.
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env (a long random string)}
       NODE_ENV: production
-    ports:
-      # Host port is configurable (WEB_PORT); the container always listens on 3000.
-      - "${WEB_PORT:-3000}:3000"
+    # Not mapped to a host port: the app is reached only over the internal Docker
+    # network (by the platform's reverse proxy / another service on the same
+    # network), so it is never bound to 0.0.0.0 on the host — no clash with
+    # whatever already holds port 3000, and nothing is exposed directly to the
+    # outside world. The proxy connects to `web:3000` over the compose network.
+    expose:
+      - "3000"
+    # For local testing WITHOUT a proxy, publish to loopback only (never 0.0.0.0)
+    # by uncommenting — reachable at http://localhost:${WEB_PORT} on this machine:
+    #   ports:
+    #     - "127.0.0.1:${WEB_PORT:-3000}:3000"
     restart: unless-stopped
     healthcheck:
       # node:22 ships a global fetch; treat any non-5xx from /login as healthy.
