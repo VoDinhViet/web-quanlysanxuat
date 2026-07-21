@@ -29,19 +29,19 @@ ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 RUN pnpm build
 
-# ---- Runner: serve the built SSR app ----
-# `vite preview` re-runs the tanstackStart + router plugins on startup: it resolves
-# the router entry from src/ and regenerates src/routeTree.gen.ts. So the runner
-# needs the FULL built project (src, config files, node_modules) — not just dist —
-# and that tree must be writable, hence --chown to the non-root `node` user. The
-# whole /app from the build stage is copied as one layer to guarantee parity with
-# what actually built. Run vite DIRECTLY via node (never `pnpm exec`): pnpm would
-# run as `node`, pick its own corepack version instead of the pinned one, and write
-# a temp file into /app for its deps-status check — which fails with EACCES.
+# ---- Runner: serve the built SSR app with a plain Node server ----
+# `server.mjs` serves dist/client statically and forwards everything else to the
+# built dist/server fetch handler. Deliberately NOT `vite preview`: preview re-runs
+# the build plugins at startup (needs src/, regenerates routeTree.gen.ts) and
+# enforces a Host allowlist that breaks behind a reverse proxy. This needs only
+# dist/, the runtime node_modules the server bundle imports, and package.json
+# (its "type":"module" makes dist/**/*.js and server.mjs load as ESM).
 FROM base AS runner
 ENV NODE_ENV=production
-COPY --from=build --chown=node:node /app ./
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/dist ./dist
+COPY --chown=node:node package.json server.mjs ./
 USER node
 EXPOSE 3000
 # SESSION_SECRET is injected at runtime (see docker-compose.yml), never baked in.
-CMD ["node", "node_modules/vite/bin/vite.js", "preview", "--host", "0.0.0.0", "--port", "3000", "--strictPort"]
+CMD ["node", "server.mjs"]
