@@ -30,18 +30,17 @@ ENV VITE_API_URL=$VITE_API_URL
 RUN pnpm build
 
 # ---- Runner: serve the built SSR app ----
-# Run vite DIRECTLY via node, never through pnpm. `pnpm exec` runs as the non-root
-# `node` user, and pnpm (a) picks its own corepack version instead of the pinned
-# one and (b) writes a temp file into the project dir for its deps-status check —
-# which fails with EACCES because /app is root-owned. Calling node on vite's bin
-# skips pnpm entirely. --chown gives `node` ownership of the copied tree so vite's
-# own reads/caches never hit a permission wall. vite preview loads vite.config.ts,
-# so node_modules + the config files must be present.
+# `vite preview` re-runs the tanstackStart + router plugins on startup: it resolves
+# the router entry from src/ and regenerates src/routeTree.gen.ts. So the runner
+# needs the FULL built project (src, config files, node_modules) — not just dist —
+# and that tree must be writable, hence --chown to the non-root `node` user. The
+# whole /app from the build stage is copied as one layer to guarantee parity with
+# what actually built. Run vite DIRECTLY via node (never `pnpm exec`): pnpm would
+# run as `node`, pick its own corepack version instead of the pinned one, and write
+# a temp file into /app for its deps-status check — which fails with EACCES.
 FROM base AS runner
 ENV NODE_ENV=production
-COPY --from=deps --chown=node:node /app/node_modules ./node_modules
-COPY --from=build --chown=node:node /app/dist ./dist
-COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml vite.config.ts tsconfig.json ./
+COPY --from=build --chown=node:node /app ./
 USER node
 EXPOSE 3000
 # SESSION_SECRET is injected at runtime (see docker-compose.yml), never baked in.
