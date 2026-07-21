@@ -13,8 +13,10 @@ import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
+import { ProductRevisionSwitcher } from "@/features/products/components/ProductRevisionSwitcher"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductDetailTab } from "@/features/products/schemas/product-detail-search.schema"
+import type { ProductRevision } from "@/features/products/types/product-revision.type"
 import type { Product } from "@/features/products/types/product.type"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -23,6 +25,10 @@ type ProductDetailHeaderProps = {
   activeTab: ProductDetailTab
   isSaving: boolean
   onSave: () => void
+  revisions: ProductRevision[]
+  activeRevision: ProductRevision
+  onOpenRevisionHistory: () => void
+  onOpenCreateRevision: () => void
 }
 
 // Identity, the facts the form doesn't edit, and the tab strip read as one unit,
@@ -32,6 +38,10 @@ export function ProductDetailHeader({
   activeTab,
   isSaving,
   onSave,
+  revisions,
+  activeRevision,
+  onOpenRevisionHistory,
+  onOpenCreateRevision,
 }: ProductDetailHeaderProps) {
   return (
     <>
@@ -39,14 +49,14 @@ export function ProductDetailHeader({
         <div className="flex min-w-0 items-center gap-3">
           <Button
             type="button"
-            variant="outline"
-            size="icon-sm"
-            className="bg-background text-foreground"
+            variant="ghost"
+            className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
             aria-label="Quay lại danh sách sản phẩm"
             asChild
           >
             <Link to="/manage/products" search={{ page: 1, limit: 10 }}>
               <Icon icon={altArrowLeftBold} className="size-4" />
+              <span className="hidden sm:inline">Quay lại</span>
             </Link>
           </Button>
 
@@ -75,11 +85,11 @@ export function ProductDetailHeader({
 
           <div className="flex shrink-0 items-center gap-2">
             <ProductStatusBadge status={product.status} />
-            {product.revision ? (
-              <span className="rounded-full bg-muted px-2.5 py-0.5 font-mono text-[11px] font-medium whitespace-nowrap text-muted-foreground ring-1 ring-border ring-inset">
-                {product.revision}
-              </span>
-            ) : null}
+            <ProductRevisionSwitcher
+              revisions={revisions}
+              activeRevision={activeRevision}
+              onOpenHistory={onOpenRevisionHistory}
+            />
           </div>
         </div>
 
@@ -109,10 +119,16 @@ export function ProductDetailHeader({
             </p>
           )}
 
-          <Button type="button" variant="outline" disabled>
-            <Icon icon={branchingPathsUpBold} className="size-4" />
-            Tạo revision mới
-          </Button>
+          <PermissionGate permission="products:update">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onOpenCreateRevision}
+            >
+              <Icon icon={branchingPathsUpBold} className="size-4" />
+              Tạo Revision mới
+            </Button>
+          </PermissionGate>
 
           <Button
             type="button"

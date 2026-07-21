@@ -1,5 +1,11 @@
 import { Fragment } from "react"
+import { Icon } from "@iconify/react"
+import boxBold from "@iconify-icons/solar/box-bold"
+import clipboardListBold from "@iconify-icons/solar/clipboard-list-bold"
+import historyBold from "@iconify-icons/solar/history-bold"
+import layersBold from "@iconify-icons/solar/layers-bold"
 import { Lock } from "lucide-react"
+import type { IconifyIcon } from "@iconify/types"
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -13,16 +19,22 @@ import { cn } from "@/lib/utils"
 type ProductDetailTabItem = {
   value: ProductDetailTab
   label: string
+  icon: IconifyIcon
 }
 
 const PRODUCT_DETAIL_TAB_ITEMS: ProductDetailTabItem[] = [
-  { value: "info", label: "1. Thông tin sản phẩm" },
-  { value: "structure", label: "2. Cấu trúc sản phẩm & Công đoạn" },
-  { value: "materials", label: "3. Thành phần vật tư" },
+  { value: "info", label: "Thông tin sản phẩm", icon: boxBold },
+  { value: "structure", label: "Cấu trúc & Công đoạn", icon: layersBold },
+  {
+    value: "materials",
+    label: "Thành phần vật tư",
+    icon: clipboardListBold,
+  },
+  { value: "revisions", label: "Lịch sử Revision", icon: historyBold },
 ]
 
 type ProductDetailTabsProps = {
-  // Tabs the current screen can't reach yet. The create page locks 2 and 3
+  // Tabs the current screen can't reach yet. The create page locks 2, 3 and 4
   // because they need a saved product id.
   lockedTabs?: ProductDetailTab[]
   lockedHint?: string
@@ -53,13 +65,24 @@ export function ProductDetailTabs({
               value={item.value}
               disabled={isLocked}
               className={cn(
-                "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground hover:text-foreground",
+                "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
                 // Every override below has to repeat the primitive's own
-                // variant chain verbatim. tailwind-merge only dedupes classes
-                // whose chains match, so `data-active:bg-transparent` clears
-                // the primitive's `data-active:bg-background` while the
-                // line-variant's chain-mismatched `...:bg-transparent` cannot.
-                "data-active:bg-transparent data-active:text-primary",
+                // variant chain verbatim — tailwind-merge only dedupes classes
+                // whose chains match exactly. The primitive sets the active
+                // background twice: a plain `data-active:bg-background` and a
+                // line-variant-scoped `group-data-[variant=line]/tabs-list:
+                // data-active:bg-transparent` that wins for this list
+                // (variant="line"). Both chains have to be matched here, or
+                // the second one silently keeps the background transparent
+                // regardless of what the first override says.
+                "data-active:bg-primary/5 data-active:text-primary",
+                "group-data-[variant=line]/tabs-list:data-active:bg-primary/5",
+                // Hovering an active tab: without this, `hover:bg-muted/40`
+                // above and the active tint are equal-specificity single-variant
+                // rules, so which one paints is generation-order luck. This
+                // compound variant is strictly more specific than either,
+                // so the active tint reliably wins over the neutral hover.
+                "data-active:hover:bg-primary/5",
                 // Indicator: the primitive parks it at `bottom-[-5px]`, sized
                 // for the list's default `p-[3px]`. This list is `p-0`, so drop
                 // it to -1px — the 2px bar then covers the wrapper's 1px bottom
@@ -68,7 +91,11 @@ export function ProductDetailTabs({
                 isLocked && "cursor-not-allowed opacity-60"
               )}
             >
-              {isLocked ? <Lock className="size-3.5" /> : null}
+              {isLocked ? (
+                <Lock className="size-3.5" />
+              ) : (
+                <Icon icon={item.icon} className="size-3.5" />
+              )}
               {item.label}
             </TabsTrigger>
           )

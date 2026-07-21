@@ -11,6 +11,9 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { ProductDetailHeader } from "@/features/products/components/ProductDetailHeader"
 import { ProductDetailSidebar } from "@/features/products/components/ProductDetailSidebar"
+import { ProductRevisionDialogs } from "@/features/products/components/ProductRevisionDialogs"
+import { ProductRevisionsTab } from "@/features/products/components/ProductRevisionsTab"
+import { ProductStructureTab } from "@/features/products/components/ProductStructureTab"
 import { ProductTabPlaceholder } from "@/features/products/components/ProductTabPlaceholder"
 import {
   ProductInfoTab,
@@ -20,6 +23,7 @@ import { createProductSchema } from "@/features/products/schemas/create-product.
 import { PRODUCT_DETAIL_TABS } from "@/features/products/schemas/product-detail-search.schema"
 import { updateProduct } from "@/features/products/server-functions/update-product"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useProductRevisions } from "@/features/products/hooks/use-product-revisions"
 import {
   productGroupOptionsQueryOptions,
   productQueryOptions,
@@ -63,6 +67,8 @@ export function ProductDetailPage() {
     onSubmit: ({ value }) => update(value),
   })
 
+  const productRevisions = useProductRevisions(product)
+
   // Radix widens onValueChange to `string`; `find` narrows it back without a
   // cast, and an unrecognised value simply doesn't navigate.
   const handleTabChange = (value: string) => {
@@ -88,13 +94,17 @@ export function ProductDetailPage() {
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         {/* One continuous panel like the list page: header, tab strip, content
             and sidebar are separated by rules rather than by gaps. */}
-        <section className="overflow-hidden rounded-lg bg-card shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+        <section className="overflow-hidden rounded-lg bg-card shadow-card">
           <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
             <ProductDetailHeader
               product={product}
               activeTab={tab}
               isSaving={isPending}
               onSave={() => void form.handleSubmit()}
+              revisions={productRevisions.revisions}
+              activeRevision={productRevisions.activeRevision}
+              onOpenRevisionHistory={() => handleTabChange("revisions")}
+              onOpenCreateRevision={() => productRevisions.openCreateDialog()}
             />
 
             {/* `minmax(0,1fr)` (not `1fr`) so a wide table scrolls inside its own
@@ -126,10 +136,7 @@ export function ProductDetailPage() {
                 </TabsContent>
 
                 <TabsContent value="structure" className="m-0 outline-none">
-                  <ProductTabPlaceholder
-                    title="Cấu trúc sản phẩm & Công đoạn"
-                    description="Cây bản vẽ/part và công đoạn theo từng part sẽ có sau khi API cấu trúc sản phẩm hoàn thiện."
-                  />
+                  <ProductStructureTab product={product} />
                 </TabsContent>
 
                 <TabsContent value="materials" className="m-0 outline-none">
@@ -138,17 +145,36 @@ export function ProductDetailPage() {
                     description="Bảng định mức vật tư (BOM) sẽ có sau khi API thành phần vật tư hoàn thiện."
                   />
                 </TabsContent>
+
+                <TabsContent value="revisions" className="m-0 outline-none">
+                  <ProductRevisionsTab
+                    revisions={productRevisions.revisions}
+                    onEdit={productRevisions.setEditingRevisionId}
+                    onPromote={productRevisions.setDefaultRevisionId}
+                    onDuplicate={(revision) =>
+                      productRevisions.openCreateDialog({
+                        sourceRevisionId: revision.id,
+                        setAsCurrent: false,
+                      })
+                    }
+                  />
+                </TabsContent>
               </div>
 
               {/* A grid item stretches by default, so the rule runs the full
                   height of the row instead of stopping at the content. */}
               <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
-                <ProductDetailSidebar product={product} />
+                <ProductDetailSidebar
+                  product={product}
+                  activeRevision={productRevisions.activeRevision}
+                />
               </aside>
             </div>
           </Tabs>
         </section>
       </div>
+
+      <ProductRevisionDialogs revisions={productRevisions} />
     </main>
   )
 }

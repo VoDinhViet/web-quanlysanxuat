@@ -3,6 +3,7 @@ import { queryOptions } from "@tanstack/react-query"
 import { getClientOptions } from "@/features/products/server-functions/get-client-options"
 import { getProduct } from "@/features/products/server-functions/get-product"
 import { getProductGroupFilterOptions } from "@/features/products/server-functions/get-product-group-filter-options"
+import { getProductRevisions } from "@/features/products/server-functions/get-product-revisions"
 import { getProducts } from "@/features/products/server-functions/get-products"
 import { getUnitOptions } from "@/features/products/server-functions/get-unit-options"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
@@ -24,6 +25,12 @@ export const productQueryOptions = (productId: string) =>
   queryOptions({
     queryKey: ["products", "detail", productId],
     queryFn: () => getProduct({ data: { productId } }),
+  })
+
+export const productRevisionsQueryOptions = (productId: string) =>
+  queryOptions({
+    queryKey: ["products", "detail", productId, "revisions"],
+    queryFn: () => getProductRevisions({ data: { productId } }),
   })
 
 export const productGroupOptionsQueryOptions = () =>

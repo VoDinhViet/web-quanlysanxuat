@@ -10,6 +10,17 @@
   `<html lang="vi">`, the document `<title>`, and the root `notFoundComponent`
   (`src/routes/__root.tsx`) too. Don't leave template-default English in place.
 
+## Naming
+
+- An `id`-shaped function parameter or callback prop names the entity it identifies
+  (`revisionId`, `userId`, `productId`) instead of the bare `id` — e.g.
+  `onEdit: (revisionId: string) => void`, not `onEdit: (id: string) => void`. A call site
+  like `onEdit(revision.id)` should be self-documenting from the type alone, without
+  checking the component that defines it. Exception: a component's own `id` prop for a
+  single obvious subject (e.g. `type UserRowProps = { id: string }`) can stay `id` — the
+  rule is about disambiguating _which_ id once a component or callback deals with more
+  than one kind of entity.
+
 ## Simplicity
 
 - Don't introduce an abstraction until the third use.

@@ -6,6 +6,7 @@ import { productDetailSearchSchema } from "@/features/products/schemas/product-d
 import {
   productGroupOptionsQueryOptions,
   productQueryOptions,
+  productRevisionsQueryOptions,
   unitOptionsQueryOptions,
 } from "@/features/products/products.query"
 
@@ -19,6 +20,9 @@ export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
     Promise.all([
       context.queryClient.ensureQueryData(
         productQueryOptions(params.productId)
+      ),
+      context.queryClient.ensureQueryData(
+        productRevisionsQueryOptions(params.productId)
       ),
       context.queryClient.ensureQueryData(unitOptionsQueryOptions()),
       context.queryClient.ensureQueryData(productGroupOptionsQueryOptions()),

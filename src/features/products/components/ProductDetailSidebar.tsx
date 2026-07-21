@@ -21,17 +21,23 @@ import type { IconifyIcon } from "@iconify/types"
 import type { ReactNode } from "react"
 
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
+import { ProductRevisionBadge } from "@/features/products/components/ProductRevisionBadge"
 import { resolveFileUrl } from "@/lib/file-url"
+import type { ProductRevision } from "@/features/products/types/product-revision.type"
 import type { Product } from "@/features/products/types/product.type"
 import type { FileResource } from "@/lib/types/file.type"
 
 type ProductDetailSidebarProps = {
   product: Product
+  activeRevision: ProductRevision
 }
 
 // Keeps the product's key facts, image and documents in view while the user
 // works in the structure and BOM tabs, where the info form isn't rendered.
-export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
+export function ProductDetailSidebar({
+  product,
+  activeRevision,
+}: ProductDetailSidebarProps) {
   return (
     <>
       {/* Code and name aren't repeated — the header already shows them large. */}
@@ -55,8 +61,12 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
           <SummaryRow
             icon={branchingPathsUpBold}
             label="Revision"
-            value={product.revision || "—"}
-            mono
+            value={
+              <span className="flex items-center gap-2">
+                <span className="font-mono">{activeRevision.revisionNo}</span>
+                <ProductRevisionBadge isActive={activeRevision.isActive} />
+              </span>
+            }
           />
           <SummaryRow
             icon={recordCircleBold}

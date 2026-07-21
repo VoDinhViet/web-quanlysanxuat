@@ -1,7 +1,12 @@
 import { z } from "zod"
 
 // Tab order matches the numbered labels in the UI ("1. Thông tin sản phẩm", …).
-export const PRODUCT_DETAIL_TABS = ["info", "structure", "materials"] as const
+export const PRODUCT_DETAIL_TABS = [
+  "info",
+  "structure",
+  "materials",
+  "revisions",
+] as const
 
 export type ProductDetailTab = (typeof PRODUCT_DETAIL_TABS)[number]
 
