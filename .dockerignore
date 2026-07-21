@@ -1,0 +1,32 @@
+# Never send these into the build context (keeps the image small and secrets out).
+node_modules
+dist
+dist-ssr
+.output
+.vinxi
+.wrangler
+.tanstack
+
+# Secrets / local env — VITE_API_URL is passed as a build arg, SESSION_SECRET at runtime.
+.env
+.env.*
+!.env.example
+*.local
+
+# VCS / tooling / docs — not needed to build or serve.
+.git
+.gitignore
+.claude
+.codegraph
+.design-sync
+.ds-sync
+ds-bundle
+docs
+do
+README.md
+*.tsbuildinfo
+npm-debug.log*
+.DS_Store
+Dockerfile
+.dockerignore
+docker-compose.yml

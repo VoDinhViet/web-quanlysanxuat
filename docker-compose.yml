@@ -1,0 +1,37 @@
+# Web QLSX frontend (TanStack Start SSR). This compose covers the web app only;
+# the backend (be-quanlysanxuat) is a separate service — point VITE_API_URL at
+# wherever it is reachable from the BROWSER.
+#
+# Values are read from a local .env (see .env.example). Run with:
+#   docker compose up --build
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Public API base URL. Baked into the client bundle at BUILD time, so it
+        # must be reachable from the user's browser (NOT an internal compose
+        # hostname like http://backend:8000). Rebuild the image to change it.
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    environment:
+      # Server-only secret used to sign the session cookie — required at runtime.
+      # Compose errors out if it is unset or empty.
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env (a long random string)}
+      NODE_ENV: production
+    ports:
+      # Host port is configurable (WEB_PORT); the container always listens on 3000.
+      - "${WEB_PORT:-3000}:3000"
+    restart: unless-stopped
+    healthcheck:
+      # node:22 ships a global fetch; treat any non-5xx from /login as healthy.
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/login').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
