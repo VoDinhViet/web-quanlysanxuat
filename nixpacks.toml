@@ -16,12 +16,11 @@
 #   SESSION_SECRET - server-only, signs the session cookie, required at runtime.
 
 [phases.setup]
-# The nixpkgs archive Nixpacks pins doesn't have a `nodejs_24` attribute yet
-# (only goes up to nodejs_23, an EOL non-LTS release) — nodejs_22 is the
-# newest LTS actually available there. The Dockerfile still targets Node 24
-# via the official `node:24-bookworm-slim` image, which is unaffected by
-# this nixpkgs snapshot's package set.
-nixPkgs = ["nodejs_22"]
+# Nixpacks' default nixpkgs pin only ships up to nodejs_23 (and its nodejs_22 is
+# 22.11.0, too old for pnpm 11.4.0 which needs >= 22.13). Pin a nixpkgs archive
+# that has nodejs_24 (24.11.1), matching the Dockerfile (node:24) and local dev.
+nixpkgsArchive = "3e3f3c7f9977dc123c23ee21e8085ed63daf8c37"
+nixPkgs = ["nodejs_24"]
 
 [phases.install]
 cmds = [
