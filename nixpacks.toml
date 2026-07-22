@@ -16,12 +16,12 @@
 #   SESSION_SECRET - server-only, signs the session cookie, required at runtime.
 
 [phases.setup]
-nixPkgs = ["nodejs_22"]
+nixPkgs = ["nodejs_24"]
 
 [phases.install]
 cmds = [
   "corepack enable",
-  "corepack prepare pnpm@9.15.9 --activate",
+  "corepack prepare pnpm@11.4.0 --activate",
   "pnpm install --frozen-lockfile --prefer-offline",
 ]
 

@@ -5,14 +5,14 @@
 # server output, so the production server is `vite preview`, which serves the
 # built SSR bundle and the server-function RPC endpoints on a port.
 #
-# node:22 (glibc, not alpine/musl) — Vite 8 / rolldown ship native binaries that
-# are less troublesome on glibc.
+# node:24 (glibc, not alpine/musl) — Vite 8 / rolldown ship native binaries that
+# are less troublesome on glibc. Matches local dev's Node version.
 
 # ---- Base: pin pnpm to match the lockfile (v9) ----
-FROM node:22-bookworm-slim AS base
+FROM node:24-bookworm-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
+RUN corepack enable && corepack prepare pnpm@11.4.0 --activate
 WORKDIR /app
 
 # ---- Dependencies: full install (devDeps included — vite is needed to serve) ----
