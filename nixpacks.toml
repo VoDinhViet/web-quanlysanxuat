@@ -25,7 +25,11 @@ nixPkgs = ["nodejs_22"]
 
 [phases.install]
 cmds = [
+  # The corepack bundled with this nixpkgs snapshot's Node build predates
+  # npm's registry key rotation, so it can't verify pnpm 11.4.0's signature
+  # ("Cannot find matching keyid") — update corepack itself first.
   "corepack enable",
+  "npm install -g corepack@latest",
   "corepack prepare pnpm@11.4.0 --activate",
   "pnpm install --frozen-lockfile --prefer-offline",
 ]
