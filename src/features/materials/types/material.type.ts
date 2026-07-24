@@ -1,4 +1,5 @@
 import type { FileResource } from "@/lib/types/file.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 export enum MaterialType {
   INTERNAL = "INTERNAL",
@@ -20,9 +21,10 @@ export const MATERIAL_STATUS_LABELS: Record<MaterialStatus, string> = {
   [MaterialStatus.INACTIVE]: "Ngừng sử dụng",
 }
 
-/** Mirrors the backend's nested unit/group/client/preferredSupplier relation
+/** Mirrors the backend's nested group/client/preferredSupplier relation
  *  (MaterialRefResDto), and doubles as the shape for each ref-list's options
- *  (GET /api/units, /api/material-groups, /api/clients, /api/suppliers). */
+ *  (GET /api/units, /api/material-groups, /api/clients, /api/suppliers). The
+ *  unit relation uses the shared `Unit` type (@/lib/types/unit.type) instead. */
 export type MaterialRef = {
   id: string
   code: string
@@ -51,7 +53,7 @@ export type Material = {
   name: string
   type: MaterialType
   status: MaterialStatus
-  unit: MaterialRef
+  unit: Unit
   group: MaterialRef
   client: MaterialRef | null
   image: FileResource | null

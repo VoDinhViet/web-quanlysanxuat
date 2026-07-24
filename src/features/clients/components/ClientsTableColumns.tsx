@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { cva } from "class-variance-authority"
 import { Edit3, Eye, MoreHorizontal } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -9,12 +10,15 @@ import {
   ClientStatus,
 } from "@/features/clients/types/client.type"
 import type { Client } from "@/features/clients/types/client.type"
-import { cn } from "@/lib/utils"
 
-const STATUS_BADGE_CLASSNAME: Record<ClientStatus, string> = {
-  [ClientStatus.ACTIVE]: "bg-success/15 text-success",
-  [ClientStatus.PAUSED]: "bg-warning/15 text-warning",
-}
+const statusBadgeVariants = cva("", {
+  variants: {
+    status: {
+      [ClientStatus.ACTIVE]: "bg-success/15 text-success",
+      [ClientStatus.PAUSED]: "bg-warning/15 text-warning",
+    },
+  },
+})
 
 const clientColumnHelper = createColumnHelper<Client>()
 
@@ -76,13 +80,7 @@ export const clientColumns = [
       const status = getValue()
 
       return (
-        <Badge
-          variant="outline"
-          className={cn(
-            "h-5 rounded-full border-transparent px-2.5 text-[10px] font-medium",
-            STATUS_BADGE_CLASSNAME[status]
-          )}
-        >
+        <Badge variant="outline" className={statusBadgeVariants({ status })}>
           {CLIENT_STATUS_LABELS[status]}
         </Badge>
       )

@@ -31,7 +31,7 @@ type ComboboxFieldProps = Pick<
   options: ComboboxOption[]
   onSearchChange: (query: string) => void
   isLoading?: boolean
-  // Seed the label for an already-selected `value` (edit form / filter URL) so
+  // Seed the label for an already-selected `value` (update form / filter URL) so
   // the trigger shows a name before any option has been fetched.
   initialOption?: ComboboxOption
   emptyMessage?: string

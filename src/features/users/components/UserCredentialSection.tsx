@@ -1,11 +1,11 @@
 import { Switch } from "@/components/ui/switch"
 import { withForm } from "@/hooks/use-app-form"
-import { CREATE_USER_DEFAULT_VALUES } from "@/features/users/schemas/create-user.schema"
+import { USER_FORM_DEFAULT_VALUES } from "@/features/users/schemas/user-form.schema"
 import type { RoleOption } from "@/features/users/types/user.type"
 import { buildSelectOptions } from "@/lib/utils"
 
 export const UserCredentialSection = withForm({
-  defaultValues: CREATE_USER_DEFAULT_VALUES,
+  defaultValues: USER_FORM_DEFAULT_VALUES,
   props: {
     disabled: false,
     // True when editing an employee who already has an ERP account: the

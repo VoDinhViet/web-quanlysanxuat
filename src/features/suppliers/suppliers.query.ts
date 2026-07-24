@@ -8,7 +8,7 @@ import { getSuppliers } from "@/features/suppliers/server-functions/get-supplier
 import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 
 // Reference lists change rarely — cache them longer so moving between
-// list/create/edit doesn't refetch on every navigation.
+// list/create/update doesn't refetch on every navigation.
 const REFERENCE_STALE_TIME = 5 * 60_000
 
 // Query key convention (see .claude/rules/architecture.md): `["suppliers"]` is

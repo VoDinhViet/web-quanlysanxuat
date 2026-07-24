@@ -1,12 +1,15 @@
 import type { FileResource } from "@/lib/types/file.type"
 
-export const USER_GENDERS = ["MALE", "FEMALE", "OTHER"] as const
-export type UserGender = (typeof USER_GENDERS)[number]
+export enum UserGender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  OTHER = "OTHER",
+}
 
 export const USER_GENDER_LABELS: Record<UserGender, string> = {
-  MALE: "Nam",
-  FEMALE: "Nữ",
-  OTHER: "Khác",
+  [UserGender.MALE]: "Nam",
+  [UserGender.FEMALE]: "Nữ",
+  [UserGender.OTHER]: "Khác",
 }
 
 export enum EmployeeStatus {
@@ -46,7 +49,7 @@ export type UserCredential = {
   username: string
   email: string
   /** Optional until the backend ships it inside UserResDto's credential —
-   *  EditUserForm prefills the role select from it once present. */
+   *  UpdateUserForm prefills the role select from it once present. */
   role?: RoleOption | null
 }
 

@@ -9,15 +9,15 @@ import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { CreateSupplierInfoSection } from "@/features/suppliers/components/CreateSupplierInfoSection"
-import { CreateSupplierOtherSection } from "@/features/suppliers/components/CreateSupplierOtherSection"
-import { CreateSupplierPaymentSection } from "@/features/suppliers/components/CreateSupplierPaymentSection"
+import { SupplierInfoSection } from "@/features/suppliers/components/SupplierInfoSection"
+import { SupplierOtherSection } from "@/features/suppliers/components/SupplierOtherSection"
+import { SupplierPaymentSection } from "@/features/suppliers/components/SupplierPaymentSection"
 import {
-  CREATE_SUPPLIER_DEFAULT_VALUES,
-  createSupplierSchema,
-} from "@/features/suppliers/schemas/create-supplier.schema"
+  SUPPLIER_FORM_DEFAULT_VALUES,
+  supplierFormSchema,
+} from "@/features/suppliers/schemas/supplier-form.schema"
 import { createSupplier } from "@/features/suppliers/server-functions/create-supplier"
-import type { CreateSupplierSchema } from "@/features/suppliers/schemas/create-supplier.schema"
+import type { SupplierFormSchema } from "@/features/suppliers/schemas/supplier-form.schema"
 import type {
   CountryRef,
   SupplierGroupRef,
@@ -36,13 +36,13 @@ export function CreateSupplierForm({
   const queryClient = useQueryClient()
   const createSupplierFn = useServerFn(createSupplier)
 
-  const { draft, saveDraft, clearDraft } = useFormDraft<CreateSupplierSchema>(
+  const { draft, saveDraft, clearDraft } = useFormDraft<SupplierFormSchema>(
     "qlsx:draft:create-supplier"
   )
   const draftRestoredRef = useRef(false)
 
   const createSupplierMutation = useMutation({
-    mutationFn: (value: CreateSupplierSchema) =>
+    mutationFn: (value: SupplierFormSchema) =>
       createSupplierFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
@@ -58,9 +58,9 @@ export function CreateSupplierForm({
   const error = createSupplierMutation.error?.message ?? null
 
   const form = useAppForm({
-    defaultValues: CREATE_SUPPLIER_DEFAULT_VALUES,
+    defaultValues: SUPPLIER_FORM_DEFAULT_VALUES,
     validators: {
-      onSubmit: createSupplierSchema,
+      onSubmit: supplierFormSchema,
     },
     onSubmit: ({ value }) => createSupplierMutation.mutate(value),
   })
@@ -91,7 +91,7 @@ export function CreateSupplierForm({
       </Activity>
 
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <CreateSupplierInfoSection
+        <SupplierInfoSection
           form={form}
           disabled={isPending}
           supplierGroupOptions={supplierGroupOptions}
@@ -99,8 +99,8 @@ export function CreateSupplierForm({
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2">
-          <CreateSupplierPaymentSection form={form} disabled={isPending} />
-          <CreateSupplierOtherSection form={form} disabled={isPending} />
+          <SupplierPaymentSection form={form} disabled={isPending} />
+          <SupplierOtherSection form={form} disabled={isPending} />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
@@ -125,7 +125,7 @@ export function CreateSupplierForm({
               disabled={isPending}
               onClick={() => {
                 form.reset()
-                restoreFormDraft(form, CREATE_SUPPLIER_DEFAULT_VALUES)
+                restoreFormDraft(form, SUPPLIER_FORM_DEFAULT_VALUES)
                 clearDraft()
               }}
             >

@@ -4,7 +4,7 @@ import {
   refineSupplierEmail,
   supplierPaymentFields,
   supplierProfileFields,
-} from "@/features/suppliers/schemas/create-supplier.schema"
+} from "@/features/suppliers/schemas/supplier-form.schema"
 
 // Wire contract for PATCH /api/suppliers/:id — same profile/payment fields
 // as create (supplierProfileFields/supplierPaymentFields already leave every

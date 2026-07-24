@@ -22,8 +22,17 @@ export function ClientsPage() {
     clientGroupOptionsQueryOptions()
   )
 
-  const handleFilterChange = (patch: Partial<ClientsSearchSchema>) => {
-    void navigate({ search: (prev) => ({ ...prev, ...patch, page: 1 }) })
+  // `replace` is for the search box: it commits on every debounced keystroke, and
+  // pushing each one would bury the pre-search page under a dozen history entries.
+  // Discrete filters (the selects) stay on push so Back undoes them one by one.
+  const handleFilterChange = (
+    patch: Partial<ClientsSearchSchema>,
+    options?: { replace?: boolean }
+  ) => {
+    void navigate({
+      search: (prev) => ({ ...prev, ...patch, page: 1 }),
+      replace: options?.replace,
+    })
   }
 
   return (

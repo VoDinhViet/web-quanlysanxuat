@@ -1,4 +1,5 @@
 import type { FileResource } from "@/lib/types/file.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 export enum ProductStatus {
   ACTIVE = "ACTIVE",
@@ -10,7 +11,16 @@ export const PRODUCT_STATUS_LABELS: Record<ProductStatus, string> = {
   [ProductStatus.INACTIVE]: "Ngừng sử dụng",
 }
 
-/** Mirrors the backend's nested unit/group/client relation (ProductRefResDto). */
+/** Mirrors the backend's ProductType. FINISHED_GOOD (thành phẩm) is a sellable
+ *  end product and the root of its own BOM; WORK_IN_PROGRESS (bán thành phẩm) is
+ *  referenced as a child node in another product's BOM tree. */
+export enum ProductType {
+  FINISHED_GOOD = "FINISHED_GOOD",
+  WORK_IN_PROGRESS = "WORK_IN_PROGRESS",
+}
+
+/** Mirrors the backend's nested group/client relation (ProductRefResDto). The
+ *  unit relation uses the shared `Unit` type (@/lib/types/unit.type) instead. */
 export type ProductRef = {
   id: string
   code: string
@@ -40,12 +50,14 @@ export type Product = {
   code: string
   name: string
   image: FileResource | null
-  revision: string
   status: ProductStatus
   note: string | null
-  unit: ProductRef
+  unit: Unit
   group: ProductRef | null
   client: ProductRef | null
+  // The product this one was cloned from (POST /:id/copy); null for an
+  // originally-created product.
+  source: ProductRef | null
   attachments: ProductAttachment[]
   creator: ProductCreator | null
   createdAt: string

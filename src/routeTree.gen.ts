@@ -26,9 +26,9 @@ import { Route as authedManageProductsCreateRouteImport } from './routes/(authed
 import { Route as authedManageProductsProductIdRouteImport } from './routes/(authed)/manage_/products_/$productId'
 import { Route as authedManageMaterialsCreateRouteImport } from './routes/(authed)/manage_/materials_/create'
 import { Route as authedManageClientsCreateRouteImport } from './routes/(authed)/manage_/clients_/create'
-import { Route as authedManageUsersUserIdEditRouteImport } from './routes/(authed)/manage_/users_/$userId.edit'
-import { Route as authedManageSuppliersSupplierIdEditRouteImport } from './routes/(authed)/manage_/suppliers_/$supplierId.edit'
-import { Route as authedManageMaterialsMaterialIdEditRouteImport } from './routes/(authed)/manage_/materials_/$materialId.edit'
+import { Route as authedManageUsersUserIdUpdateRouteImport } from './routes/(authed)/manage_/users_/$userId.update'
+import { Route as authedManageSuppliersSupplierIdUpdateRouteImport } from './routes/(authed)/manage_/suppliers_/$supplierId.update'
+import { Route as authedManageMaterialsMaterialIdUpdateRouteImport } from './routes/(authed)/manage_/materials_/$materialId.update'
 
 const authedRouteRoute = authedRouteRouteImport.update({
   id: '/(authed)',
@@ -118,22 +118,22 @@ const authedManageClientsCreateRoute =
     path: '/manage/clients/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageUsersUserIdEditRoute =
-  authedManageUsersUserIdEditRouteImport.update({
-    id: '/manage_/users_/$userId/edit',
-    path: '/manage/users/$userId/edit',
+const authedManageUsersUserIdUpdateRoute =
+  authedManageUsersUserIdUpdateRouteImport.update({
+    id: '/manage_/users_/$userId/update',
+    path: '/manage/users/$userId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageSuppliersSupplierIdEditRoute =
-  authedManageSuppliersSupplierIdEditRouteImport.update({
-    id: '/manage_/suppliers_/$supplierId/edit',
-    path: '/manage/suppliers/$supplierId/edit',
+const authedManageSuppliersSupplierIdUpdateRoute =
+  authedManageSuppliersSupplierIdUpdateRouteImport.update({
+    id: '/manage_/suppliers_/$supplierId/update',
+    path: '/manage/suppliers/$supplierId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageMaterialsMaterialIdEditRoute =
-  authedManageMaterialsMaterialIdEditRouteImport.update({
-    id: '/manage_/materials_/$materialId/edit',
-    path: '/manage/materials/$materialId/edit',
+const authedManageMaterialsMaterialIdUpdateRoute =
+  authedManageMaterialsMaterialIdUpdateRouteImport.update({
+    id: '/manage_/materials_/$materialId/update',
+    path: '/manage/materials/$materialId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
 
@@ -153,9 +153,9 @@ export interface FileRoutesByFullPath {
   '/manage/products/create': typeof authedManageProductsCreateRoute
   '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
   '/manage/users/create': typeof authedManageUsersCreateRoute
-  '/manage/materials/$materialId/edit': typeof authedManageMaterialsMaterialIdEditRoute
-  '/manage/suppliers/$supplierId/edit': typeof authedManageSuppliersSupplierIdEditRoute
-  '/manage/users/$userId/edit': typeof authedManageUsersUserIdEditRoute
+  '/manage/materials/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
+  '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
+  '/manage/users/$userId/update': typeof authedManageUsersUserIdUpdateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -173,9 +173,9 @@ export interface FileRoutesByTo {
   '/manage/products/create': typeof authedManageProductsCreateRoute
   '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
   '/manage/users/create': typeof authedManageUsersCreateRoute
-  '/manage/materials/$materialId/edit': typeof authedManageMaterialsMaterialIdEditRoute
-  '/manage/suppliers/$supplierId/edit': typeof authedManageSuppliersSupplierIdEditRoute
-  '/manage/users/$userId/edit': typeof authedManageUsersUserIdEditRoute
+  '/manage/materials/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
+  '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
+  '/manage/users/$userId/update': typeof authedManageUsersUserIdUpdateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -196,9 +196,9 @@ export interface FileRoutesById {
   '/(authed)/manage_/products_/create': typeof authedManageProductsCreateRoute
   '/(authed)/manage_/suppliers_/create': typeof authedManageSuppliersCreateRoute
   '/(authed)/manage_/users_/create': typeof authedManageUsersCreateRoute
-  '/(authed)/manage_/materials_/$materialId/edit': typeof authedManageMaterialsMaterialIdEditRoute
-  '/(authed)/manage_/suppliers_/$supplierId/edit': typeof authedManageSuppliersSupplierIdEditRoute
-  '/(authed)/manage_/users_/$userId/edit': typeof authedManageUsersUserIdEditRoute
+  '/(authed)/manage_/materials_/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
+  '/(authed)/manage_/suppliers_/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
+  '/(authed)/manage_/users_/$userId/update': typeof authedManageUsersUserIdUpdateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -218,9 +218,9 @@ export interface FileRouteTypes {
     | '/manage/products/create'
     | '/manage/suppliers/create'
     | '/manage/users/create'
-    | '/manage/materials/$materialId/edit'
-    | '/manage/suppliers/$supplierId/edit'
-    | '/manage/users/$userId/edit'
+    | '/manage/materials/$materialId/update'
+    | '/manage/suppliers/$supplierId/update'
+    | '/manage/users/$userId/update'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -238,9 +238,9 @@ export interface FileRouteTypes {
     | '/manage/products/create'
     | '/manage/suppliers/create'
     | '/manage/users/create'
-    | '/manage/materials/$materialId/edit'
-    | '/manage/suppliers/$supplierId/edit'
-    | '/manage/users/$userId/edit'
+    | '/manage/materials/$materialId/update'
+    | '/manage/suppliers/$supplierId/update'
+    | '/manage/users/$userId/update'
   id:
     | '__root__'
     | '/'
@@ -260,9 +260,9 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/products_/create'
     | '/(authed)/manage_/suppliers_/create'
     | '/(authed)/manage_/users_/create'
-    | '/(authed)/manage_/materials_/$materialId/edit'
-    | '/(authed)/manage_/suppliers_/$supplierId/edit'
-    | '/(authed)/manage_/users_/$userId/edit'
+    | '/(authed)/manage_/materials_/$materialId/update'
+    | '/(authed)/manage_/suppliers_/$supplierId/update'
+    | '/(authed)/manage_/users_/$userId/update'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -392,25 +392,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageClientsCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/users_/$userId/edit': {
-      id: '/(authed)/manage_/users_/$userId/edit'
-      path: '/manage/users/$userId/edit'
-      fullPath: '/manage/users/$userId/edit'
-      preLoaderRoute: typeof authedManageUsersUserIdEditRouteImport
+    '/(authed)/manage_/users_/$userId/update': {
+      id: '/(authed)/manage_/users_/$userId/update'
+      path: '/manage/users/$userId/update'
+      fullPath: '/manage/users/$userId/update'
+      preLoaderRoute: typeof authedManageUsersUserIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/suppliers_/$supplierId/edit': {
-      id: '/(authed)/manage_/suppliers_/$supplierId/edit'
-      path: '/manage/suppliers/$supplierId/edit'
-      fullPath: '/manage/suppliers/$supplierId/edit'
-      preLoaderRoute: typeof authedManageSuppliersSupplierIdEditRouteImport
+    '/(authed)/manage_/suppliers_/$supplierId/update': {
+      id: '/(authed)/manage_/suppliers_/$supplierId/update'
+      path: '/manage/suppliers/$supplierId/update'
+      fullPath: '/manage/suppliers/$supplierId/update'
+      preLoaderRoute: typeof authedManageSuppliersSupplierIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/materials_/$materialId/edit': {
-      id: '/(authed)/manage_/materials_/$materialId/edit'
-      path: '/manage/materials/$materialId/edit'
-      fullPath: '/manage/materials/$materialId/edit'
-      preLoaderRoute: typeof authedManageMaterialsMaterialIdEditRouteImport
+    '/(authed)/manage_/materials_/$materialId/update': {
+      id: '/(authed)/manage_/materials_/$materialId/update'
+      path: '/manage/materials/$materialId/update'
+      fullPath: '/manage/materials/$materialId/update'
+      preLoaderRoute: typeof authedManageMaterialsMaterialIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
   }
@@ -442,9 +442,9 @@ interface authedRouteRouteChildren {
   authedManageProductsCreateRoute: typeof authedManageProductsCreateRoute
   authedManageSuppliersCreateRoute: typeof authedManageSuppliersCreateRoute
   authedManageUsersCreateRoute: typeof authedManageUsersCreateRoute
-  authedManageMaterialsMaterialIdEditRoute: typeof authedManageMaterialsMaterialIdEditRoute
-  authedManageSuppliersSupplierIdEditRoute: typeof authedManageSuppliersSupplierIdEditRoute
-  authedManageUsersUserIdEditRoute: typeof authedManageUsersUserIdEditRoute
+  authedManageMaterialsMaterialIdUpdateRoute: typeof authedManageMaterialsMaterialIdUpdateRoute
+  authedManageSuppliersSupplierIdUpdateRoute: typeof authedManageSuppliersSupplierIdUpdateRoute
+  authedManageUsersUserIdUpdateRoute: typeof authedManageUsersUserIdUpdateRoute
 }
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
@@ -461,11 +461,11 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageProductsCreateRoute: authedManageProductsCreateRoute,
   authedManageSuppliersCreateRoute: authedManageSuppliersCreateRoute,
   authedManageUsersCreateRoute: authedManageUsersCreateRoute,
-  authedManageMaterialsMaterialIdEditRoute:
-    authedManageMaterialsMaterialIdEditRoute,
-  authedManageSuppliersSupplierIdEditRoute:
-    authedManageSuppliersSupplierIdEditRoute,
-  authedManageUsersUserIdEditRoute: authedManageUsersUserIdEditRoute,
+  authedManageMaterialsMaterialIdUpdateRoute:
+    authedManageMaterialsMaterialIdUpdateRoute,
+  authedManageSuppliersSupplierIdUpdateRoute:
+    authedManageSuppliersSupplierIdUpdateRoute,
+  authedManageUsersUserIdUpdateRoute: authedManageUsersUserIdUpdateRoute,
 }
 
 const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(

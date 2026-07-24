@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { Icon } from "@iconify/react"
 import userBold from "@iconify-icons/solar/user-bold"
 import { createColumnHelper } from "@tanstack/react-table"
+import { cva } from "class-variance-authority"
 import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -14,12 +15,15 @@ import {
 } from "@/features/users/types/user.type"
 import type { User } from "@/features/users/types/user.type"
 import { resolveFileUrl } from "@/lib/file-url"
-import { cn } from "@/lib/utils"
 
-const STATUS_BADGE_CLASSNAME: Record<EmployeeStatus, string> = {
-  [EmployeeStatus.WORKING]: "bg-success/15 text-success",
-  [EmployeeStatus.RESIGNED]: "bg-muted text-muted-foreground",
-}
+const statusBadgeVariants = cva("", {
+  variants: {
+    status: {
+      [EmployeeStatus.WORKING]: "bg-success/15 text-success",
+      [EmployeeStatus.RESIGNED]: "bg-muted text-muted-foreground",
+    },
+  },
+})
 
 const userColumnHelper = createColumnHelper<User>()
 
@@ -89,13 +93,7 @@ export const userColumns = [
       const status = getValue()
 
       return (
-        <Badge
-          variant="outline"
-          className={cn(
-            "h-5 rounded-full border-transparent px-2.5 text-[10px] font-medium",
-            STATUS_BADGE_CLASSNAME[status]
-          )}
-        >
+        <Badge variant="outline" className={statusBadgeVariants({ status })}>
           {EMPLOYEE_STATUS_LABELS[status]}
         </Badge>
       )
@@ -120,7 +118,7 @@ export const userColumns = [
               className="text-muted-foreground hover:border-primary/30 hover:text-primary"
             >
               <Link
-                to="/manage/users/$userId/edit"
+                to="/manage/users/$userId/update"
                 params={{ userId: user.id }}
               >
                 <Edit3 className="size-3.5" />

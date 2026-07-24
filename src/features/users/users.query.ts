@@ -8,7 +8,7 @@ import { getUsers } from "@/features/users/server-functions/get-users"
 import type { UsersSearchSchema } from "@/features/users/schemas/users-search.schema"
 
 // Reference lists change rarely — cache them longer so moving between
-// list/create/edit doesn't refetch on every navigation.
+// list/create/update doesn't refetch on every navigation.
 const REFERENCE_STALE_TIME = 5 * 60_000
 
 // Query key convention (see .claude/rules/architecture.md): `["users"]` is the

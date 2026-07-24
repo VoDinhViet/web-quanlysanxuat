@@ -11,7 +11,7 @@ import { ThemeProvider } from "@/components/shared/ThemeProvider"
 // Side-effect import (not `?url`) so Start attaches the CSS to the route
 // manifest and inlines it into the SSR <head> — no separate blocking
 // stylesheet request, which is what caused the flash of unstyled content.
-import "../styles.css"
+import appCss from "../styles.css?url"
 
 type RouterContext = {
   queryClient: QueryClient
@@ -31,6 +31,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         title: "Web QLSX - Cơ khí Tiến Huy",
       },
     ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   notFoundComponent: () => (
     <main className="container mx-auto p-4 pt-16">

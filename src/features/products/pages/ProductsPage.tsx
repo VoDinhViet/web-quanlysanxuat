@@ -4,11 +4,9 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
-import {
-  clientOptionsQueryOptions,
-  productGroupOptionsQueryOptions,
-  productsQueryOptions,
-} from "@/features/products/products.query"
+import { clientOptionsQueryOptions } from "@/features/products/queries/client-options.query"
+import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
+import { productsQueryOptions } from "@/features/products/queries/products.query"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 
 export function ProductsPage() {
@@ -30,8 +28,17 @@ export function ProductsPage() {
     search.q || search.status || search.clientId || search.productGroupId
   )
 
-  const handleFilterChange = (patch: Partial<ProductsSearchSchema>) => {
-    void navigate({ search: (prev) => ({ ...prev, ...patch, page: 1 }) })
+  // `replace` is for the search box: it commits on every debounced keystroke, and
+  // pushing each one would bury the pre-search page under a dozen history entries.
+  // Discrete filters (the selects) stay on push so Back undoes them one by one.
+  const handleFilterChange = (
+    patch: Partial<ProductsSearchSchema>,
+    options?: { replace?: boolean }
+  ) => {
+    void navigate({
+      search: (prev) => ({ ...prev, ...patch, page: 1 }),
+      replace: options?.replace,
+    })
   }
 
   return (

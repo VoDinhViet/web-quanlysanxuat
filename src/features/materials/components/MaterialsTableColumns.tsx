@@ -132,7 +132,7 @@ export const materialColumns = [
               className="text-muted-foreground hover:border-primary/30 hover:text-primary"
             >
               <Link
-                to="/manage/materials/$materialId/edit"
+                to="/manage/materials/$materialId/update"
                 params={{ materialId: material.id }}
               >
                 <Edit3 className="size-3.5" />

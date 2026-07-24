@@ -43,7 +43,7 @@ export function DeliveryDateCell({ order }: { order: Order }) {
   )
 }
 
-// Create/detail/edit screens don't exist yet. A <Link> to an unregistered route
+// Create/detail/update screens don't exist yet. A <Link> to an unregistered route
 // wouldn't typecheck and a raw <a> would 404, so these say what's true: the
 // feature is coming. The <span tabIndex={0}> wrapper is required — a disabled
 // button swallows pointer events and the tooltip would never fire.

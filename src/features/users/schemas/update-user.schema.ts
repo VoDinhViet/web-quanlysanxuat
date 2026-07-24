@@ -4,15 +4,15 @@ import {
   refinePersonalEmail,
   updateCredentialSchema,
   userProfileFields,
-} from "@/features/users/schemas/create-user.schema"
+} from "@/features/users/schemas/user-form.schema"
 
 // Wire contract for PUT /api/users/:userId — same profile fields as create;
 // userProfileFields' field-level transforms already leave every value
 // wire-ready, so no object-level mapping step is needed. `credential`
 // provisions a new ERP account when the employee doesn't have one yet, or
-// updates the existing one otherwise (see EditUserForm) — its own transform
+// updates the existing one otherwise (see UpdateUserForm) — its own transform
 // (chained here, not on the shared updateCredentialSchema export) leaves a
-// blank password as undefined so an edit can omit it to keep it unchanged.
+// blank password as undefined so an update can omit it to keep it unchanged.
 // Password is passed through untrimmed — unlike other optional fields,
 // trimming could silently alter a password the user intentionally typed with
 // leading/trailing spaces.
@@ -32,13 +32,13 @@ export const updateUserSchema = z
 
 export type UpdateUserSchema = z.input<typeof updateUserSchema>
 
-// Client-side validator for EditUserForm when the employee already has an
+// Client-side validator for UpdateUserForm when the employee already has an
 // ERP account — its password may be left blank. Uses the untransformed
 // updateCredentialSchema (not updateUserSchema's own credential above) so its
-// type structurally matches createUserSchema's, letting EditUserForm pick
+// type structurally matches userFormSchema's, letting UpdateUserForm pick
 // between the two for onSubmit validation. This only runs for pre-submit UX
 // validation — the actual payload comes from updateUserSchema.
-export const editUserWithCredentialSchema = z
+export const updateUserWithCredentialSchema = z
   .object({
     ...userProfileFields,
     credential: updateCredentialSchema.optional(),

@@ -5,7 +5,6 @@ import { Loader2 } from "lucide-react"
 import { Icon } from "@iconify/react"
 import altArrowLeftBold from "@iconify-icons/solar/alt-arrow-left-bold"
 import boxBold from "@iconify-icons/solar/box-bold"
-import branchingPathsUpBold from "@iconify-icons/solar/branching-paths-up-bold"
 import disketteBold from "@iconify-icons/solar/diskette-bold"
 import printerBold from "@iconify-icons/solar/printer-bold"
 
@@ -13,10 +12,8 @@ import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
-import { ProductRevisionSwitcher } from "@/features/products/components/ProductRevisionSwitcher"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductDetailTab } from "@/features/products/schemas/product-detail-search.schema"
-import type { ProductRevision } from "@/features/products/types/product-revision.type"
 import type { Product } from "@/features/products/types/product.type"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -25,10 +22,6 @@ type ProductDetailHeaderProps = {
   activeTab: ProductDetailTab
   isSaving: boolean
   onSave: () => void
-  revisions: ProductRevision[]
-  activeRevision: ProductRevision
-  onOpenRevisionHistory: () => void
-  onOpenCreateRevision: () => void
 }
 
 // Identity, the facts the form doesn't edit, and the tab strip read as one unit,
@@ -38,10 +31,6 @@ export function ProductDetailHeader({
   activeTab,
   isSaving,
   onSave,
-  revisions,
-  activeRevision,
-  onOpenRevisionHistory,
-  onOpenCreateRevision,
 }: ProductDetailHeaderProps) {
   return (
     <>
@@ -75,6 +64,22 @@ export function ProductDetailHeader({
               <span>{product.group?.name ?? "Chưa phân nhóm"}</span>
               <Dot />
               <span>ĐVT: {product.unit.name}</span>
+              {product.source ? (
+                <>
+                  <Dot />
+                  <span>
+                    Sao chép từ{" "}
+                    <Link
+                      to="/manage/products/$productId"
+                      params={{ productId: product.source.id }}
+                      search={{ tab: "info" }}
+                      className="font-mono font-medium text-primary hover:underline"
+                    >
+                      {product.source.code}
+                    </Link>
+                  </span>
+                </>
+              ) : null}
               <Dot />
               <span>
                 Cập nhật{" "}
@@ -85,11 +90,6 @@ export function ProductDetailHeader({
 
           <div className="flex shrink-0 items-center gap-2">
             <ProductStatusBadge status={product.status} />
-            <ProductRevisionSwitcher
-              revisions={revisions}
-              activeRevision={activeRevision}
-              onOpenHistory={onOpenRevisionHistory}
-            />
           </div>
         </div>
 
@@ -118,17 +118,6 @@ export function ProductDetailHeader({
               Thay đổi ở tab này được lưu ngay
             </p>
           )}
-
-          <PermissionGate permission="products:update">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onOpenCreateRevision}
-            >
-              <Icon icon={branchingPathsUpBold} className="size-4" />
-              Tạo Revision mới
-            </Button>
-          </PermissionGate>
 
           <Button
             type="button"

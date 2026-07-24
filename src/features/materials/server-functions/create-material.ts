@@ -2,12 +2,12 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 import type { z } from "zod"
 
-import { createMaterialSchema } from "@/features/materials/schemas/create-material.schema"
+import { materialFormSchema } from "@/features/materials/schemas/material-form.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { Material } from "@/features/materials/types/material.type"
 
-type ValidatedCreate = z.output<typeof createMaterialSchema>
+type ValidatedCreate = z.output<typeof materialFormSchema>
 
 // `image`/`attachments` carry display URLs the backend has no field for — only
 // the file ids go on the wire, so they are destructured out rather than spread.
@@ -53,7 +53,7 @@ function resolveCreateMaterialErrorMessage(error: unknown): string {
 }
 
 export const createMaterial = createServerFn({ method: "POST" })
-  .validator(createMaterialSchema)
+  .validator(materialFormSchema)
   .handler(async ({ data }): Promise<Material> => {
     try {
       const response = await http.post<Material>(

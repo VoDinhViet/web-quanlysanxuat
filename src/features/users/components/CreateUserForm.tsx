@@ -10,14 +10,14 @@ import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { UserCredentialSection } from "@/features/users/components/UserCredentialSection"
-import { CreateUserJobInfoSection } from "@/features/users/components/CreateUserJobInfoSection"
-import { CreateUserInfoSection } from "@/features/users/components/CreateUserInfoSection"
+import { UserJobInfoSection } from "@/features/users/components/UserJobInfoSection"
+import { UserInfoSection } from "@/features/users/components/UserInfoSection"
 import {
-  CREATE_USER_DEFAULT_VALUES,
-  createUserSchema,
-} from "@/features/users/schemas/create-user.schema"
+  USER_FORM_DEFAULT_VALUES,
+  userFormSchema,
+} from "@/features/users/schemas/user-form.schema"
 import { createUser } from "@/features/users/server-functions/create-user"
-import type { CreateUserSchema } from "@/features/users/schemas/create-user.schema"
+import type { UserFormSchema } from "@/features/users/schemas/user-form.schema"
 import type {
   DepartmentOption,
   PositionOption,
@@ -41,12 +41,12 @@ export function CreateUserForm({
 
   // The credential (password) is never persisted — only non-secret draft fields.
   const { draft, saveDraft, clearDraft } = useFormDraft<
-    Omit<CreateUserSchema, "credential">
+    Omit<UserFormSchema, "credential">
   >("qlsx:draft:create-user")
   const draftRestoredRef = useRef(false)
 
   const createUserMutation = useMutation({
-    mutationFn: (value: CreateUserSchema) => createUserFn({ data: value }),
+    mutationFn: (value: UserFormSchema) => createUserFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["users"] })
@@ -58,9 +58,9 @@ export function CreateUserForm({
   const error = createUserMutation.error?.message ?? null
 
   const form = useAppForm({
-    defaultValues: CREATE_USER_DEFAULT_VALUES,
+    defaultValues: USER_FORM_DEFAULT_VALUES,
     validators: {
-      onSubmit: createUserSchema,
+      onSubmit: userFormSchema,
     },
     onSubmit: ({ value }) => createUserMutation.mutate(value),
   })
@@ -70,7 +70,7 @@ export function CreateUserForm({
   useEffect(() => {
     if (!draftRestoredRef.current && draft) {
       draftRestoredRef.current = true
-      restoreFormDraft(form, { ...CREATE_USER_DEFAULT_VALUES, ...draft })
+      restoreFormDraft(form, { ...USER_FORM_DEFAULT_VALUES, ...draft })
     }
   }, [draft, form])
 
@@ -92,9 +92,9 @@ export function CreateUserForm({
       </Activity>
 
       <section className="overflow-hidden rounded-lg bg-card shadow-card">
-        <CreateUserInfoSection form={form} disabled={isPending} />
+        <UserInfoSection form={form} disabled={isPending} />
         <div className="grid grid-cols-1 lg:grid-cols-2">
-          <CreateUserJobInfoSection
+          <UserJobInfoSection
             form={form}
             disabled={isPending}
             departments={departments}
@@ -130,7 +130,7 @@ export function CreateUserForm({
               disabled={isPending}
               onClick={() => {
                 form.reset()
-                restoreFormDraft(form, CREATE_USER_DEFAULT_VALUES)
+                restoreFormDraft(form, USER_FORM_DEFAULT_VALUES)
                 clearDraft()
               }}
             >

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
+import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -30,7 +31,10 @@ const STATUS_OPTIONS = buildOptionsFromLabels(CLIENT_STATUS_LABELS)
 
 type ClientsTableFilterProps = {
   search: ClientsSearchSchema
-  onFilterChange: (patch: Partial<ClientsSearchSchema>) => void
+  onFilterChange: (
+    patch: Partial<ClientsSearchSchema>,
+    options?: { replace?: boolean }
+  ) => void
   clientGroupOptions: ClientGroupRef[]
 }
 
@@ -41,12 +45,21 @@ export function ClientsTableFilter({
 }: ClientsTableFilterProps) {
   const [q, setQ] = useState(search.q ?? "")
 
-  const commitSearch = () => {
-    const trimmed = q.trim()
-    onFilterChange({ q: trimmed.length > 0 ? trimmed : undefined })
-  }
+  // Filters as the user types, 300ms after the last keystroke — the same delay the
+  // combobox option hooks use. An empty term becomes `undefined` so the search
+  // schema's `.optional()` drops `q` from the URL entirely.
+  const handleSearch = useDebounceCallback((term: string) => {
+    const trimmed = term.trim()
+    onFilterChange(
+      { q: trimmed.length > 0 ? trimmed : undefined },
+      { replace: true }
+    )
+  }, 300)
 
   const resetFilters = () => {
+    // Cancel first: a debounced call still in flight would re-apply the term the
+    // user just cleared, ~300ms after the box goes blank.
+    handleSearch.cancel()
     setQ("")
     onFilterChange({
       q: undefined,
@@ -66,12 +79,14 @@ export function ClientsTableFilter({
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
                 placeholder="Tìm kiếm theo mã KH, tên, MST, SĐT, email..."
                 value={q}
-                onChange={(event) => setQ(event.target.value)}
-                onBlur={commitSearch}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  handleSearch(event.target.value)
+                }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
                     event.preventDefault()
-                    commitSearch()
+                    handleSearch.flush()
                   }
                 }}
               />

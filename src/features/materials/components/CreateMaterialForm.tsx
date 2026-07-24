@@ -9,14 +9,14 @@ import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { CreateMaterialExtendedSection } from "@/features/materials/components/CreateMaterialExtendedSection"
-import { CreateMaterialInfoSection } from "@/features/materials/components/CreateMaterialInfoSection"
+import { MaterialExtendedSection } from "@/features/materials/components/MaterialExtendedSection"
+import { MaterialInfoSection } from "@/features/materials/components/MaterialInfoSection"
 import {
-  CREATE_MATERIAL_DEFAULT_VALUES,
-  createMaterialSchema,
-} from "@/features/materials/schemas/create-material.schema"
+  MATERIAL_FORM_DEFAULT_VALUES,
+  materialFormSchema,
+} from "@/features/materials/schemas/material-form.schema"
 import { createMaterial } from "@/features/materials/server-functions/create-material"
-import type { CreateMaterialSchema } from "@/features/materials/schemas/create-material.schema"
+import type { MaterialFormSchema } from "@/features/materials/schemas/material-form.schema"
 import type { MaterialRef } from "@/features/materials/types/material.type"
 
 type CreateMaterialFormProps = {
@@ -34,13 +34,13 @@ export function CreateMaterialForm({
   const queryClient = useQueryClient()
   const createMaterialFn = useServerFn(createMaterial)
 
-  const { draft, saveDraft, clearDraft } = useFormDraft<CreateMaterialSchema>(
+  const { draft, saveDraft, clearDraft } = useFormDraft<MaterialFormSchema>(
     "qlsx:draft:create-material"
   )
   const draftRestoredRef = useRef(false)
 
   const createMaterialMutation = useMutation({
-    mutationFn: (value: CreateMaterialSchema) =>
+    mutationFn: (value: MaterialFormSchema) =>
       createMaterialFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
@@ -56,9 +56,9 @@ export function CreateMaterialForm({
   const error = createMaterialMutation.error?.message ?? null
 
   const form = useAppForm({
-    defaultValues: CREATE_MATERIAL_DEFAULT_VALUES,
+    defaultValues: MATERIAL_FORM_DEFAULT_VALUES,
     validators: {
-      onSubmit: createMaterialSchema,
+      onSubmit: materialFormSchema,
     },
     onSubmit: ({ value }) => createMaterialMutation.mutate(value),
   })
@@ -89,7 +89,7 @@ export function CreateMaterialForm({
       </Activity>
 
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <CreateMaterialInfoSection
+        <MaterialInfoSection
           form={form}
           disabled={isPending}
           unitOptions={unitOptions}
@@ -98,7 +98,7 @@ export function CreateMaterialForm({
         />
 
         <div className="border-t border-border">
-          <CreateMaterialExtendedSection
+          <MaterialExtendedSection
             form={form}
             disabled={isPending}
             supplierOptions={supplierOptions}
@@ -127,7 +127,7 @@ export function CreateMaterialForm({
               disabled={isPending}
               onClick={() => {
                 form.reset()
-                restoreFormDraft(form, CREATE_MATERIAL_DEFAULT_VALUES)
+                restoreFormDraft(form, MATERIAL_FORM_DEFAULT_VALUES)
                 clearDraft()
               }}
             >

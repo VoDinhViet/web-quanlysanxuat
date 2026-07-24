@@ -4,10 +4,8 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { CreateProductForm } from "@/features/products/components/CreateProductForm"
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
-import {
-  productGroupOptionsQueryOptions,
-  unitOptionsQueryOptions,
-} from "@/features/products/products.query"
+import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
+import { unitOptionsQueryOptions } from "@/features/products/queries/unit-options.query"
 
 const LOCKED_TABS_HINT =
   "Lưu thông tin sản phẩm trước để mở khoá bước này — cấu trúc và vật tư cần mã sản phẩm đã tạo."
@@ -36,7 +34,7 @@ export function CreateProductPage() {
             instead of the save jumping to a screen that looks unrelated. */}
         <Tabs value="info" className="gap-0">
           <ProductDetailTabs
-            lockedTabs={["structure", "materials", "revisions"]}
+            lockedTabs={["structure", "materials"]}
             lockedHint={LOCKED_TABS_HINT}
           />
 

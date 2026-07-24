@@ -22,6 +22,15 @@ export function buildSelectOptions(items: SelectOptionItem[]): SelectOption[] {
   return items.map((item) => ({ value: item.id, label: item.name }))
 }
 
+// One-value counterpart of `buildSelectOptions`: maps a single optional
+// `{id, name}` reference to a select/combobox option, or `undefined` when
+// absent — for a preselected value handed to `ComboboxField`.
+export function buildSelectOption(
+  item: SelectOptionItem | null | undefined
+): SelectOption | undefined {
+  return item ? { value: item.id, label: item.name } : undefined
+}
+
 // Turns a domain label map ({ WORKING: "Đang làm việc" }) into select/radio
 // options. Object.keys returns string[], so the cast restores the key type.
 export function buildOptionsFromLabels<T extends string>(

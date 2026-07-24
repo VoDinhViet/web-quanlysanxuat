@@ -25,6 +25,7 @@ type TextFieldProps = {
   placeholder?: string
   type?: ComponentProps<typeof Input>["type"]
   disabled?: boolean
+  className?: string
   // Override the input's `id`/label `htmlFor` (defaults to the field name). Use
   // this when two forms on the same page share field names — e.g. a dialog form
   // rendered alongside the page form — to avoid duplicate DOM ids.
@@ -37,6 +38,7 @@ export function TextField({
   placeholder,
   type = "text",
   disabled,
+  className,
   id,
 }: TextFieldProps) {
   const field = useFieldContext<string | undefined>()
@@ -45,7 +47,7 @@ export function TextField({
     field.state.meta.isTouched && field.state.meta.errors.length > 0
 
   return (
-    <Field data-invalid={isInvalid}>
+    <Field className={className} data-invalid={isInvalid}>
       <FieldLabel
         htmlFor={inputId}
         className="text-xs font-medium text-foreground"

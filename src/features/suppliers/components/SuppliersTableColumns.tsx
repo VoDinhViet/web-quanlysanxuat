@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import { cva } from "class-variance-authority"
 import { Image } from "@unpic/react"
 import { Edit3, Eye, Trash2 } from "lucide-react"
 
@@ -13,13 +14,16 @@ import {
 } from "@/features/suppliers/types/supplier.type"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Supplier } from "@/features/suppliers/types/supplier.type"
-import { cn } from "@/lib/utils"
 
-const STATUS_BADGE_CLASSNAME: Record<SupplierStatus, string> = {
-  [SupplierStatus.ACTIVE]: "bg-success/15 text-success",
-  [SupplierStatus.PAUSED]: "bg-warning/15 text-warning",
-  [SupplierStatus.STOPPED]: "bg-destructive/15 text-destructive",
-}
+const statusBadgeVariants = cva("", {
+  variants: {
+    status: {
+      [SupplierStatus.ACTIVE]: "bg-success/15 text-success",
+      [SupplierStatus.PAUSED]: "bg-warning/15 text-warning",
+      [SupplierStatus.STOPPED]: "bg-destructive/15 text-destructive",
+    },
+  },
+})
 
 const supplierColumnHelper = createColumnHelper<Supplier>()
 
@@ -136,13 +140,7 @@ export const supplierColumns = [
       const status = getValue()
 
       return (
-        <Badge
-          variant="outline"
-          className={cn(
-            "h-5 rounded-full border-transparent px-2.5 text-[10px] font-medium",
-            STATUS_BADGE_CLASSNAME[status]
-          )}
-        >
+        <Badge variant="outline" className={statusBadgeVariants({ status })}>
           {SUPPLIER_STATUS_LABELS[status]}
         </Badge>
       )
@@ -171,7 +169,7 @@ export const supplierColumns = [
             className="text-muted-foreground hover:border-primary/30 hover:text-primary"
           >
             <Link
-              to="/manage/suppliers/$supplierId/edit"
+              to="/manage/suppliers/$supplierId/update"
               params={{ supplierId: row.original.id }}
             >
               <Edit3 className="size-3.5" />

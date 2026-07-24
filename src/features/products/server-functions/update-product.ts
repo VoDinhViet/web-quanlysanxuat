@@ -9,11 +9,11 @@ import type { Product } from "@/features/products/types/product.type"
 
 type ValidatedUpdate = Omit<z.output<typeof updateProductSchema>, "productId">
 
-// The edit form always submits the complete form state, so a clearable field
+// The update form always submits the complete form state, so a clearable field
 // that validated to undefined was emptied by the user. On PATCH a missing key
 // means "no change" — send an explicit null so the backend actually clears it.
-// `code`/`revision`/`name` are left as-is (undefined ⇒ dropped ⇒ unchanged);
-// only the nullable relations/text below are cleared with null.
+// `code`/`name` are left as-is (undefined ⇒ dropped ⇒ unchanged); only the
+// nullable relations/text below are cleared with null.
 function toUpdateProductPayload(data: ValidatedUpdate) {
   // `image` carries a display URL the backend has no field for — only the file
   // id goes on the wire, so it is destructured out rather than spread.

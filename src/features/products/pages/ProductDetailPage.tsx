@@ -11,25 +11,21 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { ProductDetailHeader } from "@/features/products/components/ProductDetailHeader"
 import { ProductDetailSidebar } from "@/features/products/components/ProductDetailSidebar"
-import { ProductRevisionDialogs } from "@/features/products/components/ProductRevisionDialogs"
-import { ProductRevisionsTab } from "@/features/products/components/ProductRevisionsTab"
-import { ProductStructureTab } from "@/features/products/components/ProductStructureTab"
+import { ProductBomTab } from "@/features/products/components/ProductBomTab"
 import { ProductTabPlaceholder } from "@/features/products/components/ProductTabPlaceholder"
 import {
   ProductInfoTab,
   buildProductDefaultValues,
 } from "@/features/products/components/ProductInfoTab"
-import { createProductSchema } from "@/features/products/schemas/create-product.schema"
+import { productFormSchema } from "@/features/products/schemas/product-form.schema"
 import { PRODUCT_DETAIL_TABS } from "@/features/products/schemas/product-detail-search.schema"
 import { updateProduct } from "@/features/products/server-functions/update-product"
+import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
+import { productQueryOptions } from "@/features/products/queries/product.query"
+import { unitOptionsQueryOptions } from "@/features/products/queries/unit-options.query"
 import { useAppForm } from "@/hooks/use-app-form"
-import { useProductRevisions } from "@/features/products/hooks/use-product-revisions"
-import {
-  productGroupOptionsQueryOptions,
-  productQueryOptions,
-  unitOptionsQueryOptions,
-} from "@/features/products/products.query"
-import type { CreateProductSchema } from "@/features/products/schemas/create-product.schema"
+import { buildSelectOption } from "@/lib/utils"
+import type { ProductFormSchema } from "@/features/products/schemas/product-form.schema"
 
 export function ProductDetailPage() {
   const { productId } = useParams({
@@ -51,7 +47,7 @@ export function ProductDetailPage() {
     isPending,
     error,
   } = useMutation({
-    mutationFn: (value: CreateProductSchema) =>
+    mutationFn: (value: ProductFormSchema) =>
       updateProductFn({ data: { ...value, productId } }),
     // Stay on the page: this is a multi-tab authoring screen, so saving one tab
     // is no reason to navigate away.
@@ -63,11 +59,9 @@ export function ProductDetailPage() {
 
   const form = useAppForm({
     defaultValues: buildProductDefaultValues(product),
-    validators: { onSubmit: createProductSchema },
+    validators: { onSubmit: productFormSchema },
     onSubmit: ({ value }) => update(value),
   })
-
-  const productRevisions = useProductRevisions(product)
 
   // Radix widens onValueChange to `string`; `find` narrows it back without a
   // cast, and an unrecognised value simply doesn't navigate.
@@ -101,10 +95,6 @@ export function ProductDetailPage() {
               activeTab={tab}
               isSaving={isPending}
               onSave={() => void form.handleSubmit()}
-              revisions={productRevisions.revisions}
-              activeRevision={productRevisions.activeRevision}
-              onOpenRevisionHistory={() => handleTabChange("revisions")}
-              onOpenCreateRevision={() => productRevisions.openCreateDialog()}
             />
 
             {/* `minmax(0,1fr)` (not `1fr`) so a wide table scrolls inside its own
@@ -124,39 +114,18 @@ export function ProductDetailPage() {
                     errorMessage={error?.message}
                     unitOptions={unitOptions}
                     productGroupOptions={productGroupOptions}
-                    selectedClient={
-                      product.client
-                        ? {
-                            value: product.client.id,
-                            label: product.client.name,
-                          }
-                        : undefined
-                    }
+                    selectedClient={buildSelectOption(product.client)}
                   />
                 </TabsContent>
 
                 <TabsContent value="structure" className="m-0 outline-none">
-                  <ProductStructureTab product={product} />
+                  <ProductBomTab product={product} />
                 </TabsContent>
 
                 <TabsContent value="materials" className="m-0 outline-none">
                   <ProductTabPlaceholder
                     title="Thành phần vật tư"
-                    description="Bảng định mức vật tư (BOM) sẽ có sau khi API thành phần vật tư hoàn thiện."
-                  />
-                </TabsContent>
-
-                <TabsContent value="revisions" className="m-0 outline-none">
-                  <ProductRevisionsTab
-                    revisions={productRevisions.revisions}
-                    onEdit={productRevisions.setEditingRevisionId}
-                    onPromote={productRevisions.setDefaultRevisionId}
-                    onDuplicate={(revision) =>
-                      productRevisions.openCreateDialog({
-                        sourceRevisionId: revision.id,
-                        setAsCurrent: false,
-                      })
-                    }
+                    description="Tính năng đang được phát triển."
                   />
                 </TabsContent>
               </div>
@@ -164,17 +133,12 @@ export function ProductDetailPage() {
               {/* A grid item stretches by default, so the rule runs the full
                   height of the row instead of stopping at the content. */}
               <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
-                <ProductDetailSidebar
-                  product={product}
-                  activeRevision={productRevisions.activeRevision}
-                />
+                <ProductDetailSidebar product={product} />
               </aside>
             </div>
           </Tabs>
         </section>
       </div>
-
-      <ProductRevisionDialogs revisions={productRevisions} />
     </main>
   )
 }

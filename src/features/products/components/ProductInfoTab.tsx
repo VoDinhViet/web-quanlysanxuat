@@ -3,10 +3,10 @@ import { AlertOctagon } from "lucide-react"
 
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { withForm } from "@/hooks/use-app-form"
-import { CreateProductInfoSection } from "@/features/products/components/CreateProductInfoSection"
-import { CREATE_PRODUCT_DEFAULT_VALUES } from "@/features/products/schemas/create-product.schema"
+import { ProductInfoSection } from "@/features/products/components/ProductInfoSection"
+import { PRODUCT_FORM_DEFAULT_VALUES } from "@/features/products/schemas/product-form.schema"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
-import type { CreateProductSchema } from "@/features/products/schemas/create-product.schema"
+import type { ProductFormSchema } from "@/features/products/schemas/product-form.schema"
 import type {
   Product,
   ProductFilterOption,
@@ -14,16 +14,13 @@ import type {
 
 // Product → raw form values: nullable relations/text become "", the nested
 // unit/group/client refs collapse to their id for the selects.
-export function buildProductDefaultValues(
-  product: Product
-): CreateProductSchema {
+export function buildProductDefaultValues(product: Product): ProductFormSchema {
   return {
     code: product.code,
     name: product.name,
     unitId: product.unit.id,
     productGroupId: product.group?.id ?? "",
     clientId: product.client?.id ?? "",
-    revision: product.revision,
     image: product.image,
     attachments: product.attachments.map((attachment) => ({
       id: attachment.file.id,
@@ -38,7 +35,7 @@ export function buildProductDefaultValues(
 // The form instance is owned by ProductDetailPage, because the header's "Lưu"
 // button sits outside this panel and submits the same form.
 export const ProductInfoTab = withForm({
-  defaultValues: CREATE_PRODUCT_DEFAULT_VALUES,
+  defaultValues: PRODUCT_FORM_DEFAULT_VALUES,
   props: {
     isSaving: false,
     errorMessage: undefined as string | undefined,
@@ -73,7 +70,7 @@ export const ProductInfoTab = withForm({
           </div>
         </Activity>
 
-        <CreateProductInfoSection
+        <ProductInfoSection
           form={form}
           disabled={isSaving}
           unitOptions={unitOptions}

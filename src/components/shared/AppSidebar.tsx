@@ -88,7 +88,6 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: "Lệnh sản xuất (Job)", icon: Factory },
       { label: "Quản lý sản xuất", icon: GitBranch },
-      { label: "Công đoạn sản xuất", icon: GitBranch },
       { label: "BOM & Định mức", icon: ListChecks },
     ],
   },

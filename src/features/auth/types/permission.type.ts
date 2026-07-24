@@ -30,6 +30,7 @@ export const PERMISSION_CODES = [
   "products:update",
   "products:delete",
   "products:copy",
+  "products:bom-manage",
 
   "materials:read",
   "materials:create",

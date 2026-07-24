@@ -10,7 +10,7 @@ import { getUnitOptions } from "@/features/materials/server-functions/get-unit-o
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 
 // Reference lists change rarely — cache them longer so moving between
-// list/create/edit doesn't refetch on every navigation.
+// list/create/update doesn't refetch on every navigation.
 const REFERENCE_STALE_TIME = 5 * 60_000
 
 // Query key convention (see .claude/rules/architecture.md): `["materials"]` is

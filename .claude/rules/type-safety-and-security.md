@@ -3,8 +3,13 @@
 - No `any`, `@ts-ignore`, `@ts-expect-error`, or non-null `!`. Every `as` cast must be
   justified by something the type checker genuinely cannot know.
 - Type-only imports use `import type` (`verbatimModuleSyntax` is on).
-- Prefer `type` over `interface` (exception: `src/routeTree.gen.ts` is generated —
-  don't hand-edit it to match this).
+- Use `type` or `interface` per the case — neither is banned. Reach for `interface`
+  on a named, object-shaped public contract meant to be read or extended (e.g. a hook's
+  `UseXResult`, `declare`-merged globals); use `type` for unions, intersections,
+  mapped/utility types, and function or primitive aliases, which `interface` can't
+  express. When both fit, follow the surrounding code (most of the repo uses `type`) so a
+  single concept doesn't mix the two. (Exception: `src/routeTree.gen.ts` is generated —
+  don't hand-edit it to match this.)
 - Name an object type and declare it above its use rather than inlining it in a generic
   argument or parameter annotation — `type StatusBadgeStyle = {...}` then
   `Record<ProductStatus, StatusBadgeStyle>`, not

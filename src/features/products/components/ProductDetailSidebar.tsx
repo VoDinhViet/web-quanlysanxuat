@@ -1,11 +1,12 @@
 import { useState } from "react"
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Icon } from "@iconify/react"
 import boxBold from "@iconify-icons/solar/box-bold"
-import branchingPathsUpBold from "@iconify-icons/solar/branching-paths-up-bold"
 import buildings2Bold from "@iconify-icons/solar/buildings-2-bold"
 import calendarAddBold from "@iconify-icons/solar/calendar-add-bold"
 import clockCircleBold from "@iconify-icons/solar/clock-circle-bold"
+import copyBold from "@iconify-icons/solar/copy-bold"
 import documentsBold from "@iconify-icons/solar/documents-bold"
 import fileTextBold from "@iconify-icons/solar/file-text-bold"
 import galleryBold from "@iconify-icons/solar/gallery-bold"
@@ -21,23 +22,17 @@ import type { IconifyIcon } from "@iconify/types"
 import type { ReactNode } from "react"
 
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
-import { ProductRevisionBadge } from "@/features/products/components/ProductRevisionBadge"
 import { resolveFileUrl } from "@/lib/file-url"
-import type { ProductRevision } from "@/features/products/types/product-revision.type"
 import type { Product } from "@/features/products/types/product.type"
 import type { FileResource } from "@/lib/types/file.type"
 
 type ProductDetailSidebarProps = {
   product: Product
-  activeRevision: ProductRevision
 }
 
 // Keeps the product's key facts, image and documents in view while the user
 // works in the structure and BOM tabs, where the info form isn't rendered.
-export function ProductDetailSidebar({
-  product,
-  activeRevision,
-}: ProductDetailSidebarProps) {
+export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
   return (
     <>
       {/* Code and name aren't repeated — the header already shows them large. */}
@@ -58,16 +53,22 @@ export function ProductDetailSidebar({
             label="Đơn vị tính"
             value={product.unit.name}
           />
-          <SummaryRow
-            icon={branchingPathsUpBold}
-            label="Revision"
-            value={
-              <span className="flex items-center gap-2">
-                <span className="font-mono">{activeRevision.revisionNo}</span>
-                <ProductRevisionBadge isActive={activeRevision.isActive} />
-              </span>
-            }
-          />
+          {product.source ? (
+            <SummaryRow
+              icon={copyBold}
+              label="Sao chép từ"
+              value={
+                <Link
+                  to="/manage/products/$productId"
+                  params={{ productId: product.source.id }}
+                  search={{ tab: "info" }}
+                  className="font-mono text-primary hover:underline"
+                >
+                  {product.source.code}
+                </Link>
+              }
+            />
+          ) : null}
           <SummaryRow
             icon={recordCircleBold}
             label="Trạng thái"

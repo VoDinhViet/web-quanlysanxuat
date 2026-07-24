@@ -76,13 +76,6 @@ export const productColumns = [
       <span className="text-muted-foreground">{getValue()}</span>
     ),
   }),
-  productColumnHelper.accessor("revision", {
-    header: "Rev",
-    meta: {
-      headerClassName: "w-16 text-center",
-      cellClassName: "text-center font-mono text-muted-foreground",
-    },
-  }),
   productColumnHelper.accessor((row) => row.unit.name, {
     id: "unit",
     header: "ĐVT",

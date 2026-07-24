@@ -1,3 +1,5 @@
+import { cva } from "class-variance-authority"
+
 import { Badge } from "@/components/ui/badge"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { ManageTable } from "@/features/manage/components/ManageTable"
@@ -13,21 +15,28 @@ import {
   NCR_STATUS_LABELS,
   NcrStatus,
 } from "@/features/manage/types/manage.type"
-import { cn } from "@/lib/utils"
 
-const NCR_STATUS_BADGE_CLASSNAME: Record<NcrStatus, string> = {
-  [NcrStatus.REWORK]:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-  [NcrStatus.SCRAP]: "bg-destructive/15 text-destructive",
-  [NcrStatus.PENDING]:
-    "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-}
+const ncrStatusBadgeVariants = cva("", {
+  variants: {
+    status: {
+      [NcrStatus.REWORK]:
+        "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+      [NcrStatus.SCRAP]: "bg-destructive/15 text-destructive",
+      [NcrStatus.PENDING]:
+        "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+    },
+  },
+})
 
-const DO_STATUS_BADGE_CLASSNAME: Record<DoStatus, string> = {
-  [DoStatus.NOT_EXPORTED]: "bg-muted text-muted-foreground",
-  [DoStatus.PREPARING]:
-    "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-}
+const doStatusBadgeVariants = cva("", {
+  variants: {
+    status: {
+      [DoStatus.NOT_EXPORTED]: "bg-muted text-muted-foreground",
+      [DoStatus.PREPARING]:
+        "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+    },
+  },
+})
 
 /** Mockup row: "Gia công ngoài trễ hạn" + "NCR chưa xử lý" + "DO sắp giao". */
 export function ManageOperationsRow() {
@@ -67,10 +76,7 @@ export function ManageOperationsRow() {
             <TableCell>
               <Badge
                 variant="outline"
-                className={cn(
-                  "border-transparent text-[10px] font-medium",
-                  NCR_STATUS_BADGE_CLASSNAME[ncr.status]
-                )}
+                className={ncrStatusBadgeVariants({ status: ncr.status })}
               >
                 {NCR_STATUS_LABELS[ncr.status]}
               </Badge>
@@ -95,10 +101,7 @@ export function ManageOperationsRow() {
             <TableCell>
               <Badge
                 variant="outline"
-                className={cn(
-                  "border-transparent text-[10px] font-medium",
-                  DO_STATUS_BADGE_CLASSNAME[delivery.status]
-                )}
+                className={doStatusBadgeVariants({ status: delivery.status })}
               >
                 {DO_STATUS_LABELS[delivery.status]}
               </Badge>

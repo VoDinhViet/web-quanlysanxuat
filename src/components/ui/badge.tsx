@@ -15,8 +15,13 @@ const badgeVariants = cva(
           "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
         destructive:
           "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+        // Deliberately borderless, unlike stock shadcn: every status badge in the
+        // app used `outline` purely to inherit the base sizing, then killed the
+        // border again with `border-transparent`. The base already supplies
+        // `border border-transparent`, so this keeps that. Regenerating this file
+        // with the shadcn CLI will silently restore `border-border`.
         outline:
-          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+          "text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",

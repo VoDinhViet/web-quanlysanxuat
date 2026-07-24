@@ -3,6 +3,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { useRouterState } from "@tanstack/react-router"
 
 import {
   Table,
@@ -15,6 +16,7 @@ import {
 import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { TablePagination } from "@/components/shared/TablePagination"
 import { userColumns } from "@/features/users/components/UsersTableColumns"
+import { cn } from "@/lib/utils"
 import type { User } from "@/features/users/types/user.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
@@ -30,8 +32,18 @@ export function UsersTable({ rows, pagination }: UsersTableProps) {
     getCoreRowModel: getCoreRowModel(),
   })
 
+  // Search-as-you-type re-runs the route loader on every debounced keystroke. Dim
+  // the previous rows while the next page loads instead of blanking the table —
+  // the filter input above must stay mounted or the caret jumps out mid-word.
+  const isLoading = useRouterState({ select: (state) => state.isLoading })
+
   return (
-    <div className="min-w-0 flex-1 overflow-hidden px-4 pb-4 lg:px-5">
+    <div
+      className={cn(
+        "min-w-0 flex-1 overflow-hidden px-4 pb-4 transition-opacity lg:px-5",
+        isLoading && "pointer-events-none opacity-50"
+      )}
+    >
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">
         <Table>
           <TableHeader>

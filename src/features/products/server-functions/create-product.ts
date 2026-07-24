@@ -2,12 +2,12 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 import type { z } from "zod"
 
-import { createProductSchema } from "@/features/products/schemas/create-product.schema"
+import { productFormSchema } from "@/features/products/schemas/product-form.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { Product } from "@/features/products/types/product.type"
 
-type ValidatedCreate = z.output<typeof createProductSchema>
+type ValidatedCreate = z.output<typeof productFormSchema>
 
 // The form holds the whole uploaded-file object so it can render a preview; the
 // backend only wants the file id.
@@ -49,7 +49,7 @@ function resolveCreateProductErrorMessage(error: unknown): string {
 }
 
 export const createProduct = createServerFn({ method: "POST" })
-  .validator(createProductSchema)
+  .validator(productFormSchema)
   .handler(async ({ data }): Promise<Product> => {
     try {
       const response = await http.post<Product>(

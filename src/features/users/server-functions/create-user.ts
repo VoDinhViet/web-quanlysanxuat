@@ -2,12 +2,12 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 import type { z } from "zod"
 
-import { createUserSchema } from "@/features/users/schemas/create-user.schema"
+import { userFormSchema } from "@/features/users/schemas/user-form.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { User } from "@/features/users/types/user.type"
 
-type ValidatedCreate = z.output<typeof createUserSchema>
+type ValidatedCreate = z.output<typeof userFormSchema>
 
 // The form holds the whole uploaded-file object so it can render a preview; the
 // backend only wants the file id.
@@ -37,7 +37,7 @@ function resolveCreateUserErrorMessage(error: unknown): string {
 }
 
 export const createUser = createServerFn({ method: "POST" })
-  .validator(createUserSchema)
+  .validator(userFormSchema)
   .handler(async ({ data }): Promise<User> => {
     try {
       const response = await http.post<User>(

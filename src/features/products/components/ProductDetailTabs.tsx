@@ -2,7 +2,6 @@ import { Fragment } from "react"
 import { Icon } from "@iconify/react"
 import boxBold from "@iconify-icons/solar/box-bold"
 import clipboardListBold from "@iconify-icons/solar/clipboard-list-bold"
-import historyBold from "@iconify-icons/solar/history-bold"
 import layersBold from "@iconify-icons/solar/layers-bold"
 import { Lock } from "lucide-react"
 import type { IconifyIcon } from "@iconify/types"
@@ -30,7 +29,6 @@ const PRODUCT_DETAIL_TAB_ITEMS: ProductDetailTabItem[] = [
     label: "Thành phần vật tư",
     icon: clipboardListBold,
   },
-  { value: "revisions", label: "Lịch sử Revision", icon: historyBold },
 ]
 
 type ProductDetailTabsProps = {

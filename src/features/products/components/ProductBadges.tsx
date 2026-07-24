@@ -1,44 +1,46 @@
+import { cva } from "class-variance-authority"
+
+import { Badge } from "@/components/ui/badge"
 import {
   PRODUCT_STATUS_LABELS,
   ProductStatus,
 } from "@/features/products/types/product.type"
 import { cn } from "@/lib/utils"
 
-type StatusBadgeStyle = {
-  className: string
-  dot: string
+const statusBadgeVariants = cva("", {
+  variants: {
+    status: {
+      [ProductStatus.ACTIVE]: "bg-success/10 text-success",
+      [ProductStatus.INACTIVE]: "bg-muted text-muted-foreground",
+    },
+  },
+})
+
+// The dot tints a child element rather than the badge itself, so it stays a
+// plain map instead of being folded into the cva above.
+const STATUS_DOT_CLASSNAME: Record<ProductStatus, string> = {
+  [ProductStatus.ACTIVE]: "bg-success",
+  [ProductStatus.INACTIVE]: "bg-muted-foreground/50",
 }
 
-const STATUS_STYLE: Record<ProductStatus, StatusBadgeStyle> = {
-  [ProductStatus.ACTIVE]: {
-    className: "bg-success/10 text-success ring-success/20",
-    dot: "bg-success",
-  },
-  [ProductStatus.INACTIVE]: {
-    className: "bg-muted text-muted-foreground ring-border",
-    dot: "bg-muted-foreground/50",
-  },
+type ProductStatusBadgeProps = {
+  status: ProductStatus
+  className?: string
 }
 
 export function ProductStatusBadge({
   status,
   className,
-}: {
-  status: ProductStatus
-  className?: string
-}) {
-  const { className: styleClassName, dot } = STATUS_STYLE[status]
-
+}: ProductStatusBadgeProps) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ring-1 ring-inset",
-        styleClassName,
-        className
-      )}
+    <Badge
+      variant="outline"
+      className={cn(statusBadgeVariants({ status }), className)}
     >
-      <span className={cn("size-1.5 rounded-full", dot)} />
+      <span
+        className={cn("size-1.5 rounded-full", STATUS_DOT_CLASSNAME[status])}
+      />
       {PRODUCT_STATUS_LABELS[status]}
-    </span>
+    </Badge>
   )
 }

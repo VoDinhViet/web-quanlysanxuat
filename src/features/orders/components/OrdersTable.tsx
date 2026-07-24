@@ -3,6 +3,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { useRouterState } from "@tanstack/react-router"
 
 import {
   Table,
@@ -15,6 +16,7 @@ import {
 import { TablePagination } from "@/components/shared/TablePagination"
 import { OrdersEmptyState } from "@/features/orders/components/OrdersEmptyState"
 import { orderColumns } from "@/features/orders/components/OrdersTableColumns"
+import { cn } from "@/lib/utils"
 import type { Order } from "@/features/orders/types/order.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
@@ -35,9 +37,19 @@ export function OrdersTable({
     getCoreRowModel: getCoreRowModel(),
   })
 
+  // Search-as-you-type re-runs the route loader on every debounced keystroke. Dim
+  // the previous rows while the next page loads instead of blanking the table —
+  // the filter input above must stay mounted or the caret jumps out mid-word.
+  const isLoading = useRouterState({ select: (state) => state.isLoading })
+
   if (rows.length === 0) {
     return (
-      <div className="min-w-0 flex-1 px-4 pb-4 lg:px-5">
+      <div
+        className={cn(
+          "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
+          isLoading && "pointer-events-none opacity-50"
+        )}
+      >
         <div className="rounded-md border border-dashed border-border/70 bg-card">
           <OrdersEmptyState isFiltered={isFiltered} />
         </div>
@@ -48,7 +60,12 @@ export function OrdersTable({
   }
 
   return (
-    <div className="min-w-0 flex-1 px-4 pb-4 lg:px-5">
+    <div
+      className={cn(
+        "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
+        isLoading && "pointer-events-none opacity-50"
+      )}
+    >
       {/* `overflow-x-auto`, unlike the products table's `overflow-hidden`: 11
           columns including three wide money columns overflow a 1440px laptop
           with the sidebar open, and they must scroll inside the card. */}

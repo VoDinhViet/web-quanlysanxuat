@@ -10,7 +10,7 @@ type PermissionGateProps = {
 
 /**
  * Renders `children` only when the signed-in user holds `permission` (superadmin
- * passes all). Use for permission-gated action buttons (create/edit/delete). The
+ * passes all). Use for permission-gated action buttons (create/update/delete). The
  * backend still enforces authorization — this only hides UI the user can't use.
  */
 export function PermissionGate({ permission, children }: PermissionGateProps) {

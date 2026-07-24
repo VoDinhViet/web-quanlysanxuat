@@ -9,13 +9,13 @@ import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { CreateProductInfoSection } from "@/features/products/components/CreateProductInfoSection"
+import { ProductInfoSection } from "@/features/products/components/ProductInfoSection"
 import {
-  CREATE_PRODUCT_DEFAULT_VALUES,
-  createProductSchema,
-} from "@/features/products/schemas/create-product.schema"
+  PRODUCT_FORM_DEFAULT_VALUES,
+  productFormSchema,
+} from "@/features/products/schemas/product-form.schema"
 import { createProduct } from "@/features/products/server-functions/create-product"
-import type { CreateProductSchema } from "@/features/products/schemas/create-product.schema"
+import type { ProductFormSchema } from "@/features/products/schemas/product-form.schema"
 import type { ProductFilterOption } from "@/features/products/types/product.type"
 
 type CreateProductFormProps = {
@@ -31,14 +31,13 @@ export function CreateProductForm({
   const queryClient = useQueryClient()
   const createProductFn = useServerFn(createProduct)
 
-  const { draft, saveDraft, clearDraft } = useFormDraft<CreateProductSchema>(
+  const { draft, saveDraft, clearDraft } = useFormDraft<ProductFormSchema>(
     "qlsx:draft:create-product"
   )
   const draftRestoredRef = useRef(false)
 
   const createProductMutation = useMutation({
-    mutationFn: (value: CreateProductSchema) =>
-      createProductFn({ data: value }),
+    mutationFn: (value: ProductFormSchema) => createProductFn({ data: value }),
     // Land on the new product's detail screen rather than the list: creating the
     // profile is step one, and the structure/BOM tabs there need a real id.
     onSuccess: async (created) => {
@@ -56,9 +55,9 @@ export function CreateProductForm({
   const error = createProductMutation.error?.message ?? null
 
   const form = useAppForm({
-    defaultValues: CREATE_PRODUCT_DEFAULT_VALUES,
+    defaultValues: PRODUCT_FORM_DEFAULT_VALUES,
     validators: {
-      onSubmit: createProductSchema,
+      onSubmit: productFormSchema,
     },
     onSubmit: ({ value }) => createProductMutation.mutate(value),
   })
@@ -89,7 +88,7 @@ export function CreateProductForm({
       </Activity>
 
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <CreateProductInfoSection
+        <ProductInfoSection
           form={form}
           disabled={isPending}
           unitOptions={unitOptions}
@@ -119,7 +118,7 @@ export function CreateProductForm({
               disabled={isPending}
               onClick={() => {
                 form.reset()
-                restoreFormDraft(form, CREATE_PRODUCT_DEFAULT_VALUES)
+                restoreFormDraft(form, PRODUCT_FORM_DEFAULT_VALUES)
                 clearDraft()
               }}
             >
