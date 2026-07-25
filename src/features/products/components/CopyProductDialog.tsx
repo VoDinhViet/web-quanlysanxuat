@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { Copy } from "lucide-react"
 import type { ReactNode } from "react"
 
 import {
@@ -13,11 +14,12 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { copyProduct } from "@/features/products/server-functions/copy-product"
-import type { Product } from "@/features/products/types/product.type"
+import type { Product } from "@/lib/types/product.type"
 
 type CopyProductDialogProps = {
   product: Product
@@ -59,8 +61,11 @@ export function CopyProductDialog({
       }}
     >
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent size="sm">
+      <AlertDialogContent>
         <AlertDialogHeader>
+          <AlertDialogMedia>
+            <Copy />
+          </AlertDialogMedia>
           <AlertDialogTitle>Nhân bản sản phẩm này?</AlertDialogTitle>
           <AlertDialogDescription>
             {`Tạo một bản sao của "${product.name}" (${product.code}) với mã mới. Bạn sẽ được chuyển tới trang chi tiết bản sao ngay sau đó.`}
@@ -82,7 +87,7 @@ export function CopyProductDialog({
               mutation.mutate()
             }}
           >
-            {mutation.isPending ? "Đang nhân bản..." : "Nhân bản"}
+            {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

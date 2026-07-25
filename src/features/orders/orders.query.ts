@@ -2,8 +2,8 @@ import { queryOptions } from "@tanstack/react-query"
 
 import { getOrderStats } from "@/features/orders/server-functions/get-order-stats"
 import { getOrders } from "@/features/orders/server-functions/get-orders"
-import { getSalesRepOptions } from "@/features/orders/server-functions/get-sales-rep-options"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
+import { getSalesRepOptions } from "@/lib/server-functions/get-sales-rep-options"
 
 // Reference lists change rarely — cache them longer so moving around the module
 // doesn't refetch them on every navigation.

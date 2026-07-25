@@ -4,7 +4,7 @@ import axios from "axios"
 import { createClientSchema } from "@/features/clients/schemas/create-client.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Client } from "@/features/clients/types/client.type"
+import type { Client } from "@/lib/types/client.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 

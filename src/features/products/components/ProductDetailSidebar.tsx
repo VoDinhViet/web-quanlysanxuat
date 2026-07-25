@@ -23,7 +23,7 @@ import type { ReactNode } from "react"
 
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
-import type { Product } from "@/features/products/types/product.type"
+import type { Product } from "@/lib/types/product.type"
 import type { FileResource } from "@/lib/types/file.type"
 
 type ProductDetailSidebarProps = {

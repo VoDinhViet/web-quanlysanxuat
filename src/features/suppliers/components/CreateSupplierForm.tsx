@@ -18,10 +18,7 @@ import {
 } from "@/features/suppliers/schemas/supplier-form.schema"
 import { createSupplier } from "@/features/suppliers/server-functions/create-supplier"
 import type { SupplierFormSchema } from "@/features/suppliers/schemas/supplier-form.schema"
-import type {
-  CountryRef,
-  SupplierGroupRef,
-} from "@/features/suppliers/types/supplier.type"
+import type { CountryRef, SupplierGroupRef } from "@/lib/types/supplier.type"
 
 type CreateSupplierFormProps = {
   supplierGroupOptions: SupplierGroupRef[]

@@ -1,10 +1,7 @@
 import { cva } from "class-variance-authority"
 
 import { Badge } from "@/components/ui/badge"
-import {
-  PRODUCT_STATUS_LABELS,
-  ProductStatus,
-} from "@/features/products/types/product.type"
+import { PRODUCT_STATUS_LABELS, ProductStatus } from "@/lib/types/product.type"
 import { cn } from "@/lib/utils"
 
 const statusBadgeVariants = cva("", {

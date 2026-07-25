@@ -1,25 +1,24 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import type { z } from "zod"
 
 import { materialFormSchema } from "@/features/materials/schemas/material-form.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Material } from "@/features/materials/types/material.type"
-
-type ValidatedCreate = z.output<typeof materialFormSchema>
+import {
+  resolveAttachmentFileIds,
+  resolveFileFieldId,
+} from "@/lib/file-field.schema"
+import type { Material } from "@/lib/types/material.type"
 
 // `image`/`attachments` carry display URLs the backend has no field for — only
 // the file ids go on the wire, so they are destructured out rather than spread.
-function toCreateMaterialPayload(data: ValidatedCreate) {
-  const { image, attachments, ...rest } = data
-
-  return {
+const createMaterialPayloadSchema = materialFormSchema.transform(
+  ({ image, attachments, ...rest }) => ({
     ...rest,
-    imageFileId: image?.id,
-    attachmentFileIds: attachments.map((attachment) => attachment.id),
-  }
-}
+    imageFileId: resolveFileFieldId(image, "create"),
+    attachmentFileIds: resolveAttachmentFileIds(attachments),
+  })
+)
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -53,13 +52,10 @@ function resolveCreateMaterialErrorMessage(error: unknown): string {
 }
 
 export const createMaterial = createServerFn({ method: "POST" })
-  .validator(materialFormSchema)
+  .validator(createMaterialPayloadSchema)
   .handler(async ({ data }): Promise<Material> => {
     try {
-      const response = await http.post<Material>(
-        "/api/materials",
-        toCreateMaterialPayload(data)
-      )
+      const response = await http.post<Material>("/api/materials", data)
 
       return response.data
     } catch (error) {

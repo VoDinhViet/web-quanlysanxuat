@@ -3,12 +3,9 @@ import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
 import { SupplierLogoField } from "@/features/suppliers/components/SupplierLogoField"
 import { SUPPLIER_FORM_DEFAULT_VALUES } from "@/features/suppliers/schemas/supplier-form.schema"
-import { SUPPLIER_TYPE_LABELS } from "@/features/suppliers/types/supplier.type"
+import { SUPPLIER_TYPE_LABELS } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
-import type {
-  CountryRef,
-  SupplierGroupRef,
-} from "@/features/suppliers/types/supplier.type"
+import type { CountryRef, SupplierGroupRef } from "@/lib/types/supplier.type"
 
 const SUPPLIER_TYPE_OPTIONS = buildOptionsFromLabels(SUPPLIER_TYPE_LABELS)
 

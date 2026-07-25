@@ -18,16 +18,13 @@ import {
 } from "@/features/users/schemas/user-form.schema"
 import { createUser } from "@/features/users/server-functions/create-user"
 import type { UserFormSchema } from "@/features/users/schemas/user-form.schema"
-import type {
-  DepartmentOption,
-  PositionOption,
-  RoleOption,
-} from "@/features/users/types/user.type"
+import type { Department, Position } from "@/lib/types/user.type"
+import type { Role } from "@/lib/types/role.type"
 
 type CreateUserFormProps = {
-  departments: DepartmentOption[]
-  positions: PositionOption[]
-  roles: RoleOption[]
+  departments: Department[]
+  positions: Position[]
+  roles: Role[]
 }
 
 export function CreateUserForm({

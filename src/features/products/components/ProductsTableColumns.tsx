@@ -10,7 +10,7 @@ import { CopyProductDialog } from "@/features/products/components/CopyProductDia
 import { DeleteProductDialog } from "@/features/products/components/DeleteProductDialog"
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
-import type { Product } from "@/features/products/types/product.type"
+import type { Product } from "@/lib/types/product.type"
 
 const productColumnHelper = createColumnHelper<Product>()
 

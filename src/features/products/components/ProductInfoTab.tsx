@@ -7,10 +7,8 @@ import { ProductInfoSection } from "@/features/products/components/ProductInfoSe
 import { PRODUCT_FORM_DEFAULT_VALUES } from "@/features/products/schemas/product-form.schema"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
 import type { ProductFormSchema } from "@/features/products/schemas/product-form.schema"
-import type {
-  Product,
-  ProductFilterOption,
-} from "@/features/products/types/product.type"
+import type { Product, ProductGroupRef } from "@/lib/types/product.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 // Product → raw form values: nullable relations/text become "", the nested
 // unit/group/client refs collapse to their id for the selects.
@@ -39,8 +37,8 @@ export const ProductInfoTab = withForm({
   props: {
     isSaving: false,
     errorMessage: undefined as string | undefined,
-    unitOptions: [] as ProductFilterOption[],
-    productGroupOptions: [] as ProductFilterOption[],
+    unitOptions: [] as Unit[],
+    productGroupOptions: [] as ProductGroupRef[],
     selectedClient: undefined as ComboboxOption | undefined,
   },
   render: function Render({

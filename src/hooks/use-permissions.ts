@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { currentUserQueryOptions } from "@/features/auth/current-user.query"
 import { hasPermission } from "@/features/auth/permissions"
-import type { PermissionCode } from "@/features/auth/types/permission.type"
+import type { PermissionCode } from "@/lib/types/permission.type"
 
 /** The signed-in user's effective permission codes (empty until loaded). */
 export function usePermissions(): string[] {

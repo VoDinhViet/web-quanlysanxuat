@@ -38,13 +38,17 @@ src/
     pages/                   # route-level composition
     schemas/                 # *.schema.ts — zod schemas + z.infer types
     server-functions/        # createServerFn handlers
-    types/                   # *.type.ts — domain types + label maps
   components/
     ui/                     # shadcn primitives — no business logic
     shared/                  # cross-feature components (sidebar, page chrome)
-  lib/                      # http, session, utils, redirect (+ types/)
+  lib/                      # http, session, utils, redirect, types/
   hooks/                    # shared hooks
 ```
+
+Domain types live globally in `src/lib/types/*.type.ts` — one file per domain (e.g.
+`material.type.ts`, `user.type.ts`), holding the domain's types, enums, and label maps
+together (not split per feature). Features import them via `@/lib/types/<name>.type`;
+`src/lib` itself never imports from `src/features`.
 
 Component and page files are PascalCase, named after their main export
 (`LoginForm.tsx`, `UsersPage.tsx`, `TablePagination.tsx`). Everything else —

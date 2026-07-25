@@ -3,9 +3,10 @@ import axios from "axios"
 import { z } from "zod"
 
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
+import { resolveFileFieldId } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { BomItemNode } from "@/features/products/types/bom-item.type"
+import type { BomItemNode } from "@/lib/types/bom-item.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -42,6 +43,7 @@ function toUpdateBomItemPayload(
     sortOrder: sortOrder === "" ? undefined : Number(sortOrder),
     // Empty clears the note (null); a value updates it.
     note: note === "" ? null : note,
+    drawingFileId: resolveFileFieldId(data.drawing, "update"),
   }
 }
 

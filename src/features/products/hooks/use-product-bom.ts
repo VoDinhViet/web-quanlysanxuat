@@ -9,7 +9,7 @@ import { deleteBomItem } from "@/features/products/server-functions/delete-bom-i
 import { updateBomItem } from "@/features/products/server-functions/update-bom-item"
 import type { CreateBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
-import type { BomItem } from "@/features/products/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
 
 export type BomItemDialogState =
   | { mode: "closed" }

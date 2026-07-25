@@ -12,7 +12,7 @@ import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { ProductDetailHeader } from "@/features/products/components/ProductDetailHeader"
 import { ProductDetailSidebar } from "@/features/products/components/ProductDetailSidebar"
 import { ProductBomTab } from "@/features/products/components/ProductBomTab"
-import { ProductTabPlaceholder } from "@/features/products/components/ProductTabPlaceholder"
+import { ProductMaterialsTab } from "@/features/products/components/ProductMaterialsTab"
 import {
   ProductInfoTab,
   buildProductDefaultValues,
@@ -123,10 +123,7 @@ export function ProductDetailPage() {
                 </TabsContent>
 
                 <TabsContent value="materials" className="m-0 outline-none">
-                  <ProductTabPlaceholder
-                    title="Thành phần vật tư"
-                    description="Tính năng đang được phát triển."
-                  />
+                  <ProductMaterialsTab product={product} />
                 </TabsContent>
               </div>
 

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Icon } from "@iconify/react"
 import boxMinimalisticBold from "@iconify-icons/solar/box-minimalistic-bold"
 import checkCircleBold from "@iconify-icons/solar/check-circle-bold"
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
+import { BomItemDrawingField } from "@/features/products/components/BomItemDrawingField"
 import { useGetBomMaterialOptions } from "@/features/products/hooks/use-get-bom-material-options"
 import { useGetBomProductOptions } from "@/features/products/hooks/use-get-bom-product-options"
 import {
@@ -24,10 +26,8 @@ import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item
 import type { CreateBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
 import type { BomItemDialogState } from "@/features/products/hooks/use-product-bom"
-import type {
-  BomItem,
-  BomItemType,
-} from "@/features/products/types/bom-item.type"
+import { BomItemType } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
 import { cn } from "@/lib/utils"
 
 type BomItemFormDialogProps = {
@@ -45,11 +45,19 @@ export function BomItemFormDialog({
   onUpdate,
   isSaving,
 }: BomItemFormDialogProps) {
+  // The BomItemPicker combobox portals its popup into this node instead of
+  // `<body>` — see BomItemPicker's `container` doc for why.
+  const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
+
   return (
     <Dialog open={dialog.mode !== "closed"} onOpenChange={onOpenChange}>
-      <DialogContent className="shadow-lg ring-0 sm:max-w-lg">
+      <DialogContent
+        ref={setContentNode}
+        className="shadow-lg ring-0 sm:max-w-lg"
+      >
         {dialog.mode === "create" ? (
           <CreateBomItemForm
+            container={contentNode}
             onSubmit={(value) => onCreate(value, dialog.parentId)}
             onCancel={() => onOpenChange(false)}
             isSaving={isSaving}
@@ -74,6 +82,7 @@ type BomItemPickerProps = {
   onBlur: () => void
   isInvalid: boolean
   errors: React.ComponentProps<typeof ComboboxField>["errors"]
+  container: HTMLDivElement | null
 }
 
 // Both option hooks run (hook rules); only the one matching `itemType` is shown.
@@ -84,21 +93,23 @@ function BomItemPicker({
   onBlur,
   isInvalid,
   errors,
+  container,
 }: BomItemPickerProps) {
   const productOptions = useGetBomProductOptions()
   const materialOptions = useGetBomMaterialOptions()
-  const source = itemType === "PRODUCT" ? productOptions : materialOptions
+  const source =
+    itemType === BomItemType.PRODUCT ? productOptions : materialOptions
 
   return (
     <ComboboxField
       label={
-        itemType === "PRODUCT"
+        itemType === BomItemType.PRODUCT
           ? "Chọn Bán thành phẩm (WIP)"
           : "Chọn Vật tư / Linh kiện"
       }
       required
       placeholder={
-        itemType === "PRODUCT"
+        itemType === BomItemType.PRODUCT
           ? "Tìm mã hoặc tên sản phẩm..."
           : "Tìm mã hoặc tên vật tư..."
       }
@@ -110,17 +121,23 @@ function BomItemPicker({
       isLoading={source.isFetching}
       isInvalid={isInvalid}
       errors={errors}
+      // Rendered inside BomItemFormDialog's Radix Dialog — portal the popup
+      // into the dialog's own DOM subtree (see ComboboxField's `container`
+      // doc) so the option click commits instead of being swallowed.
+      container={container}
     />
   )
 }
 
 type CreateBomItemFormProps = {
+  container: HTMLDivElement | null
   onSubmit: (value: CreateBomItemSchema) => void
   onCancel: () => void
   isSaving: boolean
 }
 
 function CreateBomItemForm({
+  container,
   onSubmit,
   onCancel,
   isSaving,
@@ -163,12 +180,12 @@ function CreateBomItemForm({
                 <button
                   type="button"
                   onClick={() => {
-                    field.handleChange("MATERIAL")
+                    field.handleChange(BomItemType.MATERIAL)
                     form.setFieldValue("itemId", "")
                   }}
                   className={cn(
                     "flex cursor-pointer flex-col items-start gap-1.5 rounded-lg border p-3 text-left transition-all",
-                    field.state.value === "MATERIAL"
+                    field.state.value === BomItemType.MATERIAL
                       ? "border-primary bg-primary/5 ring-1 ring-primary/30"
                       : "border-border/70 bg-card hover:border-border hover:bg-muted/40"
                   )}
@@ -179,14 +196,14 @@ function CreateBomItemForm({
                         icon={boxMinimalisticBold}
                         className={cn(
                           "size-4",
-                          field.state.value === "MATERIAL"
+                          field.state.value === BomItemType.MATERIAL
                             ? "text-primary"
                             : "text-muted-foreground"
                         )}
                       />
                       Vật tư / Linh kiện
                     </span>
-                    {field.state.value === "MATERIAL" ? (
+                    {field.state.value === BomItemType.MATERIAL ? (
                       <Icon
                         icon={checkCircleBold}
                         className="size-4 text-primary"
@@ -202,12 +219,12 @@ function CreateBomItemForm({
                 <button
                   type="button"
                   onClick={() => {
-                    field.handleChange("PRODUCT")
+                    field.handleChange(BomItemType.PRODUCT)
                     form.setFieldValue("itemId", "")
                   }}
                   className={cn(
                     "flex cursor-pointer flex-col items-start gap-1.5 rounded-lg border p-3 text-left transition-all",
-                    field.state.value === "PRODUCT"
+                    field.state.value === BomItemType.PRODUCT
                       ? "border-primary bg-primary/5 ring-1 ring-primary/30"
                       : "border-border/70 bg-card hover:border-border hover:bg-muted/40"
                   )}
@@ -218,14 +235,14 @@ function CreateBomItemForm({
                         icon={layersBold}
                         className={cn(
                           "size-4",
-                          field.state.value === "PRODUCT"
+                          field.state.value === BomItemType.PRODUCT
                             ? "text-primary"
                             : "text-muted-foreground"
                         )}
                       />
                       Sản phẩm (WIP)
                     </span>
-                    {field.state.value === "PRODUCT" ? (
+                    {field.state.value === BomItemType.PRODUCT ? (
                       <Icon
                         icon={checkCircleBold}
                         className="size-4 text-primary"
@@ -255,6 +272,7 @@ function CreateBomItemForm({
                     field.state.meta.errors.length > 0
                   }
                   errors={field.state.meta.errors}
+                  container={container}
                 />
               )}
             </form.AppField>
@@ -279,6 +297,16 @@ function CreateBomItemForm({
               id="bom-item-note"
               label="Ghi chú thành phần"
               placeholder="Ghi chú quy cách hoặc thông tin thêm (nếu có)..."
+            />
+          )}
+        </form.AppField>
+
+        <form.AppField name="drawing">
+          {(field) => (
+            <BomItemDrawingField
+              value={field.state.value}
+              onChange={field.handleChange}
+              disabled={isSaving}
             />
           )}
         </form.AppField>
@@ -315,12 +343,15 @@ function UpdateBomItemForm({
   onCancel,
   isSaving,
 }: UpdateBomItemFormProps) {
+  const defaultValues: UpdateBomItemSchema = {
+    quantity: node.quantity,
+    sortOrder: String(node.sortOrder),
+    note: node.note ?? "",
+    drawing: node.drawing,
+  }
+
   const form = useAppForm({
-    defaultValues: {
-      quantity: node.quantity,
-      sortOrder: String(node.sortOrder),
-      note: node.note ?? "",
-    },
+    defaultValues,
     validators: { onSubmit: updateBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
@@ -375,6 +406,16 @@ function UpdateBomItemForm({
             id="edit-bom-item-note"
             label="Ghi chú"
             placeholder="Ghi chú (nếu có)..."
+          />
+        )}
+      </form.AppField>
+
+      <form.AppField name="drawing">
+        {(field) => (
+          <BomItemDrawingField
+            value={field.state.value}
+            onChange={field.handleChange}
+            disabled={isSaving}
           />
         )}
       </form.AppField>

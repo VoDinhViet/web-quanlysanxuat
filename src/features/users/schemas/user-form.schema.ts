@@ -3,7 +3,7 @@ import { z } from "zod"
 
 import { imageFieldSchema } from "@/lib/file-field.schema"
 
-import { EmployeeStatus, UserGender } from "@/features/users/types/user.type"
+import { EmployeeStatus, UserGender } from "@/lib/types/user.type"
 
 // Wire contract for POST /api/users' `credential` field — matches the backend's
 // CreateCredentialReqDto.
@@ -48,7 +48,7 @@ export const userProfileFields = {
     .trim()
     .transform((value) =>
       value.length > 0
-        ? DateTime.fromISO(value).toJSDate().toISOString()
+        ? DateTime.fromISO(value, { zone: "utc" }).toJSDate().toISOString()
         : undefined
     ),
   idNumber: z
@@ -74,7 +74,9 @@ export const userProfileFields = {
     .string()
     .trim()
     .min(1, "Vui lòng chọn ngày vào làm")
-    .transform((value) => DateTime.fromISO(value).toJSDate().toISOString()),
+    .transform((value) =>
+      DateTime.fromISO(value, { zone: "utc" }).toJSDate().toISOString()
+    ),
   note: z
     .string()
     .trim()

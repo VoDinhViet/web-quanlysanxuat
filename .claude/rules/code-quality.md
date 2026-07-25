@@ -2,7 +2,7 @@
 
 - Domain values are language-neutral in code (`"active"`, not `"Hoạt động"`) and mapped
   to Vietnamese labels at the display edge via a `Record<Enum, string>` — see
-  `USER_STATUS_LABELS`-style maps in feature `types/*.type.ts` files.
+  `USER_STATUS_LABELS`-style maps in `src/lib/types/*.type.ts` files.
 - Server-function error messages are Vietnamese strings written directly in each
   `resolve<Thing>ErrorMessage` switch (see `login-with-email-password.ts`); never
   surface a raw backend/HTTP error string to the UI.

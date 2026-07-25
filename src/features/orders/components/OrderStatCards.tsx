@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { buildOrderStatTiles } from "@/features/orders/components/order-stat-tiles"
-import type { OrderStats } from "@/features/orders/types/order.type"
+import type { OrderStats } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
 type OrderStatCardsProps = {

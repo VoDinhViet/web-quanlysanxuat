@@ -1,11 +1,8 @@
 import { withForm } from "@/hooks/use-app-form"
 import { USER_FORM_DEFAULT_VALUES } from "@/features/users/schemas/user-form.schema"
-import { EMPLOYEE_STATUS_LABELS } from "@/features/users/types/user.type"
+import { EMPLOYEE_STATUS_LABELS } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
-import type {
-  DepartmentOption,
-  PositionOption,
-} from "@/features/users/types/user.type"
+import type { Department, Position } from "@/lib/types/user.type"
 
 const EMPLOYEE_STATUS_OPTIONS = buildOptionsFromLabels(EMPLOYEE_STATUS_LABELS)
 
@@ -13,8 +10,8 @@ export const UserJobInfoSection = withForm({
   defaultValues: USER_FORM_DEFAULT_VALUES,
   props: {
     disabled: false,
-    departments: [] as DepartmentOption[],
-    positions: [] as PositionOption[],
+    departments: [] as Department[],
+    positions: [] as Position[],
   },
   render: function Render({ form, disabled, departments, positions }) {
     return (

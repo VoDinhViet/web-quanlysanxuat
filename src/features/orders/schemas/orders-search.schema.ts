@@ -5,7 +5,7 @@ import {
   OVERDUE_FILTER_VALUE,
   OrderStatus,
   PaymentTerm,
-} from "@/features/orders/types/order.type"
+} from "@/lib/types/order.type"
 import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 // A plain `^\d{4}-\d{2}-\d{2}$` regex would accept 2025-13-45, so validity is

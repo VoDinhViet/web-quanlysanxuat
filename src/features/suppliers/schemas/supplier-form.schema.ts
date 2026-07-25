@@ -8,7 +8,7 @@ import {
   PaymentTerm,
   SupplierStatus,
   SupplierType,
-} from "@/features/suppliers/types/supplier.type"
+} from "@/lib/types/supplier.type"
 
 // A blank form input means "not provided" — the wire payload should omit the
 // field rather than send an empty string.
@@ -38,6 +38,9 @@ export const supplierPaymentFields = {
     .string()
     .trim()
     .transform(emptyToUndefinedNumber)
+    .refine((value) => value === undefined || Number.isInteger(value), {
+      message: "Hạn mức công nợ phải là số nguyên",
+    })
     .refine((value) => value === undefined || value >= 0, {
       message: "Hạn mức công nợ không được âm",
     }),
@@ -119,6 +122,25 @@ export const supplierFormSchema = z
   .superRefine(refineSupplierEmail)
 
 export type SupplierFormSchema = z.input<typeof supplierFormSchema>
+
+export type SupplierRepresentativePayload = {
+  name: string
+  phoneNumber?: string
+  isPrimary: boolean
+}
+
+// The form only exposes one flat representative (name + phone) — mapped here
+// to the backend's `representatives[]` shape, shared by both create and
+// update server functions. An empty name means "no representative", mapped
+// to `[]` rather than omitted: the backend replaces the full representatives
+// list on both create (no-op on an empty array) and update (clears any
+// existing representative instead of leaving it untouched).
+export function buildRepresentativesPayload(
+  name?: string,
+  phoneNumber?: string
+): SupplierRepresentativePayload[] {
+  return name ? [{ name, phoneNumber, isPrimary: true }] : []
+}
 
 export const SUPPLIER_FORM_DEFAULT_VALUES: SupplierFormSchema = {
   name: "",

@@ -18,13 +18,14 @@ import { useGetClientOptions } from "@/features/materials/hooks/use-get-client-o
 import {
   MATERIAL_STATUS_LABELS,
   MATERIAL_TYPE_LABELS,
-} from "@/features/materials/types/material.type"
+} from "@/lib/types/material.type"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
+import type { Client } from "@/lib/types/client.type"
 import type {
-  MaterialRef,
+  MaterialGroupRef,
   MaterialStatus,
   MaterialType,
-} from "@/features/materials/types/material.type"
+} from "@/lib/types/material.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
 
 const TYPE_OPTIONS = buildOptionsFromLabels(MATERIAL_TYPE_LABELS)
@@ -36,8 +37,8 @@ type MaterialsTableFilterProps = {
     patch: Partial<MaterialsSearchSchema>,
     options?: { replace?: boolean }
   ) => void
-  materialGroupOptions: MaterialRef[]
-  clientOptions: MaterialRef[]
+  materialGroupOptions: MaterialGroupRef[]
+  clientOptions: Client[]
 }
 
 export function MaterialsTableFilter({

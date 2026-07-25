@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { SupplierStatus } from "@/features/suppliers/types/supplier.type"
+import { SupplierStatus } from "@/lib/types/supplier.type"
 import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 // Mirrors the backend's GetSuppliersReqDto (page, limit, q, order inherited from

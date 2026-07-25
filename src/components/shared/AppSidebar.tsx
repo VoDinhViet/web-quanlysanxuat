@@ -40,7 +40,7 @@ import {
 import { hasPermission } from "@/features/auth/permissions"
 import { usePermissions } from "@/hooks/use-permissions"
 import { isKnownRoute } from "@/lib/known-routes"
-import type { PermissionCode } from "@/features/auth/types/permission.type"
+import type { PermissionCode } from "@/lib/types/permission.type"
 
 type MenuItem = {
   label: string

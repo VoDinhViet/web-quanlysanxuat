@@ -9,7 +9,16 @@ import homeBold from "@iconify-icons/solar/home-bold"
 import routeBold from "@iconify-icons/solar/route-bold"
 import trashBinTrashBold from "@iconify-icons/solar/trash-bin-trash-bold"
 import { cva } from "class-variance-authority"
-import { ChevronRight, ImageOff, Pencil, Plus, Trash2 } from "lucide-react"
+import {
+  ChevronRight,
+  CornerDownRight,
+  FileText,
+  ImageOff,
+  LayersPlus,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react"
 import type { IconifyIcon } from "@iconify/types"
 
 import { Badge } from "@/components/ui/badge"
@@ -31,17 +40,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { IconButton } from "@/components/shared/IconButton"
 import { useGetOperationOptions } from "@/features/products/hooks/use-get-operation-options"
 import { useProductOperations } from "@/features/products/hooks/use-product-operations"
-import type { BomItem } from "@/features/products/types/bom-item.type"
-import { formatOperationSequence } from "@/features/products/types/operation.type"
+import { BomItemType } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
+import { formatOperationSequence } from "@/lib/types/operation.type"
 import type {
   OperationType,
   ProductOperation,
-} from "@/features/products/types/operation.type"
-import type { Product } from "@/features/products/types/product.type"
+} from "@/lib/types/operation.type"
+import type { Product } from "@/lib/types/product.type"
 import { useHasPermission } from "@/hooks/use-permissions"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
@@ -95,7 +111,13 @@ function flattenNodes(
  * Cấp 1: Blue dot (● 1)
  * Cấp 2: Yellow/Amber dot (● 2) for PRODUCT, Grey dot for MATERIAL/hardware
  */
-function LevelBadge({ level, itemType }: { level: number; itemType?: string }) {
+function LevelBadge({
+  level,
+  itemType,
+}: {
+  level: number
+  itemType?: BomItemType
+}) {
   if (level === 0) {
     return (
       <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-400">
@@ -110,7 +132,7 @@ function LevelBadge({ level, itemType }: { level: number; itemType?: string }) {
       </span>
     )
   }
-  if (itemType === "MATERIAL") {
+  if (itemType === BomItemType.MATERIAL) {
     return (
       <span className="inline-flex items-center gap-1.5 font-semibold text-slate-500">
         <span className="size-2 rounded-full bg-slate-400" />
@@ -394,28 +416,59 @@ function ProductOperationsPanel({
   )
 }
 
+// Add entry point — a "+" per row. A PRODUCT row can host children, so it
+// offers a menu (con / cùng cấp); a MATERIAL row cannot (backend rejects with
+// `bom_item.error.parent_is_material`), so its "+" only adds a sibling.
 function BomRowActions({
   node,
-  actions,
+  onAddChild,
+  onAddSibling,
+  onUpdate,
+  onDelete,
 }: {
   node: BomItem
-  actions: BomTableActions
+  onAddChild: () => void
+  onAddSibling: () => void
+  onUpdate: (node: BomItem) => void
+  onDelete: (node: BomItem) => void
 }) {
   return (
     <>
-      {node.itemType === "PRODUCT" ? (
+      {node.itemType === BomItemType.PRODUCT ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              label="Thêm thành phần"
+              className="border border-border/60 hover:bg-muted"
+            >
+              <Plus className="size-3.5" />
+            </IconButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {/* "Thêm" is already implied by the "+" trigger — just say where. */}
+            <DropdownMenuItem onSelect={onAddChild}>
+              <CornerDownRight />
+              Cấp con
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={onAddSibling}>
+              <LayersPlus />
+              Cùng cấp
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
         <IconButton
-          label="Thêm thành phần con"
-          onClick={() => actions.onCreate(node.id)}
+          label="Thêm cùng cấp"
+          onClick={onAddSibling}
           className="border border-border/60 hover:bg-muted"
         >
           <Plus className="size-3.5" />
         </IconButton>
-      ) : null}
+      )}
 
       <IconButton
         label="Sửa thành phần"
-        onClick={() => actions.onUpdate(node)}
+        onClick={() => onUpdate(node)}
         className="border border-border/60 hover:bg-muted"
       >
         <Pencil className="size-3.5" />
@@ -424,7 +477,7 @@ function BomRowActions({
       <IconButton
         label="Xoá thành phần"
         className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
-        onClick={() => actions.onDelete(node)}
+        onClick={() => onDelete(node)}
       >
         <Trash2 className="size-3.5" />
       </IconButton>
@@ -495,7 +548,6 @@ export function ProductBomTable({
           <Button
             type="button"
             size="sm"
-            variant="outline"
             className="gap-1.5 text-xs"
             onClick={() => actions.onCreate(null)}
           >
@@ -658,6 +710,18 @@ export function ProductBomTable({
                         <span className="font-mono font-bold text-foreground">
                           {node.code}
                         </span>
+                        {node.drawing ? (
+                          <a
+                            href={resolveFileUrl(node.drawing.url)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-muted-foreground hover:text-foreground"
+                            aria-label="Xem bản vẽ"
+                            title="Xem bản vẽ"
+                          >
+                            <FileText className="size-3.5" />
+                          </a>
+                        ) : null}
                       </div>
                     </TableCell>
                     <TableCell
@@ -681,14 +745,14 @@ export function ProductBomTable({
                     <TableCell
                       className="max-w-64 truncate"
                       title={
-                        node.itemType === "PRODUCT"
+                        node.itemType === BomItemType.PRODUCT
                           ? formatOperationSequence(
                               operationsByProductId[node.itemId].operations
                             )
                           : undefined
                       }
                     >
-                      {node.itemType === "PRODUCT" ? (
+                      {node.itemType === BomItemType.PRODUCT ? (
                         <OperationSummaryText
                           operations={
                             operationsByProductId[node.itemId].operations
@@ -705,20 +769,36 @@ export function ProductBomTable({
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        {node.itemType === "PRODUCT" ? (
+                        {node.itemType === BomItemType.PRODUCT ? (
                           <OperationsToggleButton
                             isExpanded={isOperationsExpanded}
                             onToggle={() => toggleOperationsExpanded(node.id)}
                           />
                         ) : null}
                         {showActions ? (
-                          <BomRowActions node={node} actions={actions} />
+                          <BomRowActions
+                            node={node}
+                            onAddChild={() => {
+                              // A leaf PRODUCT row starts collapsed (no
+                              // children yet) with no expand chevron — expand
+                              // it now so the newly-added child is visible
+                              // once the dialog closes and the tree refetches.
+                              setExpandedIds((prev) =>
+                                new Set(prev).add(node.id)
+                              )
+                              actions.onCreate(node.id)
+                            }}
+                            onAddSibling={() => actions.onCreate(node.parentId)}
+                            onUpdate={actions.onUpdate}
+                            onDelete={actions.onDelete}
+                          />
                         ) : null}
                       </div>
                     </TableCell>
                   </TableRow>
 
-                  {node.itemType === "PRODUCT" && isOperationsExpanded ? (
+                  {node.itemType === BomItemType.PRODUCT &&
+                  isOperationsExpanded ? (
                     <TableRow className="bg-muted/10 hover:bg-muted/10">
                       <TableCell colSpan={columnCount} className="p-0">
                         <ProductOperationsPanel

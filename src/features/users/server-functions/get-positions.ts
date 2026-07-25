@@ -5,7 +5,7 @@ import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { PositionOption } from "@/features/users/types/user.type"
+import type { Position } from "@/lib/types/user.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -21,9 +21,9 @@ function resolveGetPositionsErrorMessage(error: unknown): string {
 }
 
 export const getPositions = createServerFn({ method: "GET" }).handler(
-  async (): Promise<PositionOption[]> => {
+  async (): Promise<Position[]> => {
     try {
-      const response = await http.get<PaginatedResponse<PositionOption>>(
+      const response = await http.get<PaginatedResponse<Position>>(
         "/api/positions",
         { params: { limit: FILTER_OPTIONS_LIMIT } }
       )

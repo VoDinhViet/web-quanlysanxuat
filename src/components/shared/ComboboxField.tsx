@@ -40,6 +40,19 @@ type ComboboxFieldProps = Pick<
   onBlur?: () => void
   isInvalid?: boolean
   errors?: ComponentProps<typeof FieldError>["errors"]
+  // DOM node to portal the popup into, forwarded to base-ui's Combobox.Portal.
+  // Pass the enclosing Radix Dialog's content node when this field is
+  // rendered inside one: base-ui's popup portals to `<body>` by default,
+  // outside the dialog's DOM subtree, so Radix's FocusScope/DismissableLayer
+  // treat an option click as "outside" the dialog and swallow it before
+  // base-ui's own click handler commits the selection (confirmed: base-ui's
+  // `modal` prop on Combobox.Root does NOT fix this — it only changes the
+  // popup's own internal focus trap, not its position in the DOM relative to
+  // Radix's boundary checks). Rendering the popup as a DOM descendant of the
+  // dialog via `container` puts it inside both libraries' "is this outside"
+  // checks, resolving the conflict at the source. Default undefined — table
+  // filters and non-dialog forms portal to `<body>` as normal.
+  container?: HTMLElement | null
 }
 
 export function ComboboxField({
@@ -59,6 +72,7 @@ export function ComboboxField({
   placeholder,
   disabled,
   className,
+  container,
 }: ComboboxFieldProps) {
   // Local label cache for the current selection — seeded from `initialOption`
   // and updated on pick, so the selected option renders even when it's outside
@@ -131,7 +145,7 @@ export function ComboboxField({
           showClear={Boolean(selectedOption) && !disabled}
           className={cn("w-full", className)}
         />
-        <ComboboxContent>
+        <ComboboxContent container={container}>
           <ComboboxEmpty>
             {isLoading ? "Đang tìm..." : emptyMessage}
           </ComboboxEmpty>

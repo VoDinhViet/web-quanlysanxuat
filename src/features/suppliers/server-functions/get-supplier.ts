@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Supplier } from "@/features/suppliers/types/supplier.type"
+import type { Supplier } from "@/lib/types/supplier.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 

@@ -19,7 +19,7 @@ import {
   JobStatus,
   NcrSource,
   NcrStatus,
-} from "@/features/manage/types/manage.type"
+} from "@/lib/types/manage.type"
 import type {
   AlertItem,
   InventoryAlertPoint,
@@ -33,7 +33,7 @@ import type {
   QuickAction,
   StatCard,
   UpcomingDeliveryRow,
-} from "@/features/manage/types/manage.type"
+} from "@/lib/types/manage.type"
 
 // Mock data for the Dashboard UI — no backend endpoint exists for these
 // widgets yet. Seeded so the layout stays stable across reloads; replace

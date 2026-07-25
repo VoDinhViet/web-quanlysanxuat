@@ -1,11 +1,11 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { getCountryFilterOptions } from "@/features/suppliers/server-functions/get-countries"
 import { getSupplier } from "@/features/suppliers/server-functions/get-supplier"
-import { getSupplierGroupFilterOptions } from "@/features/suppliers/server-functions/get-supplier-groups"
 import { getSupplierStats } from "@/features/suppliers/server-functions/get-supplier-stats"
-import { getSuppliers } from "@/features/suppliers/server-functions/get-suppliers"
 import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
+import { getCountries } from "@/lib/server-functions/get-countries"
+import { getSupplierGroups } from "@/lib/server-functions/get-supplier-groups"
+import { getSuppliers } from "@/lib/server-functions/get-suppliers"
 
 // Reference lists change rarely — cache them longer so moving between
 // list/create/update doesn't refetch on every navigation.
@@ -35,13 +35,13 @@ export const supplierQueryOptions = (supplierId: string) =>
 export const supplierGroupOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["suppliers", "group-options"],
-    queryFn: () => getSupplierGroupFilterOptions(),
+    queryFn: () => getSupplierGroups(),
     staleTime: REFERENCE_STALE_TIME,
   })
 
 export const countryOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["suppliers", "country-options"],
-    queryFn: () => getCountryFilterOptions(),
+    queryFn: () => getCountries(),
     staleTime: REFERENCE_STALE_TIME,
   })

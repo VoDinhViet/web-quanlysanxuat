@@ -10,6 +10,7 @@ export const UPLOAD_TYPES = [
   "PRODUCT_DOCUMENT",
   "SUPPLIER_LOGO",
   "SUPPLIER_DOCUMENT",
+  "BOM_ITEM_DRAWING",
 ] as const
 
 export type UploadType = (typeof UPLOAD_TYPES)[number]
@@ -55,4 +56,11 @@ export const ACCEPTED_DOCUMENT_TYPES = {
   "application/pdf": [],
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
+}
+
+// BOM_ITEM_DRAWING shares the backend's DOCUMENT policy (pdf/docx/xlsx allowed server-side), but
+// a bản vẽ is narrowed to PDF-only client-side — same pattern as ProductImageField narrowing the
+// shared IMAGE policy.
+export const ACCEPTED_DRAWING_TYPES = {
+  "application/pdf": [],
 }

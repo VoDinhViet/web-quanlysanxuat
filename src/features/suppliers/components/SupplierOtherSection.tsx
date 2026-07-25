@@ -1,7 +1,7 @@
 import { withForm } from "@/hooks/use-app-form"
 import { SupplierAttachmentsField } from "@/features/suppliers/components/SupplierAttachmentsField"
 import { SUPPLIER_FORM_DEFAULT_VALUES } from "@/features/suppliers/schemas/supplier-form.schema"
-import { SUPPLIER_STATUS_LABELS } from "@/features/suppliers/types/supplier.type"
+import { SUPPLIER_STATUS_LABELS } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const STATUS_OPTIONS = buildOptionsFromLabels(SUPPLIER_STATUS_LABELS)

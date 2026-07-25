@@ -1,4 +1,5 @@
 import type { FileResource } from "@/lib/types/file.type"
+import type { RoleRef } from "@/lib/types/role.type"
 
 export enum UserGender {
   MALE = "MALE",
@@ -23,24 +24,18 @@ export const EMPLOYEE_STATUS_LABELS: Record<EmployeeStatus, string> = {
 }
 
 /** Mirrors the backend's department rows (GET /api/departments). */
-export type DepartmentOption = {
+export type Department = {
   id: string
   code: string
   name: string
 }
 
 /** Mirrors the backend's position rows (GET /api/positions). */
-export type PositionOption = {
+export type Position = {
   id: string
   code: string
   name: string
-}
-
-/** Mirrors the backend's role rows (GET /api/roles). */
-export type RoleOption = {
-  id: string
-  code: string
-  name: string
+  department: Department
 }
 
 /** Mirrors the credential summary nested in the backend's UserResDto. */
@@ -48,9 +43,8 @@ export type UserCredential = {
   id: string
   username: string
   email: string
-  /** Optional until the backend ships it inside UserResDto's credential —
-   *  UpdateUserForm prefills the role select from it once present. */
-  role?: RoleOption | null
+  /** Role assigned to this login identity, or null if none. */
+  role: RoleRef | null
 }
 
 /** Mirrors the backend's UserResDto (GET /users, GET /users/:userId). */
@@ -65,8 +59,8 @@ export type User = {
   email: string | null
   address: string | null
   avatar: FileResource | null
-  department: DepartmentOption
-  position: PositionOption
+  department: Department
+  position: Position
   hireDate: string
   note: string | null
   status: EmployeeStatus

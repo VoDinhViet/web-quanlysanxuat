@@ -18,7 +18,7 @@ import type {
   CountryRef,
   Supplier,
   SupplierGroupRef,
-} from "@/features/suppliers/types/supplier.type"
+} from "@/lib/types/supplier.type"
 
 // Supplier → raw form values: nullable fields become "", numbers/dates become
 // the strings the payment section's inputs work with. `representatives` is

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 
 import { useHasPermission } from "@/hooks/use-permissions"
-import type { PermissionCode } from "@/features/auth/types/permission.type"
+import type { PermissionCode } from "@/lib/types/permission.type"
 
 type PermissionGateProps = {
   permission: PermissionCode | PermissionCode[]

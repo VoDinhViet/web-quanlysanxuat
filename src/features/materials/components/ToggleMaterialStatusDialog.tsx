@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { CircleCheck, CirclePause } from "lucide-react"
 import type { ReactNode } from "react"
 
 import {
@@ -11,12 +12,13 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { updateMaterialStatus } from "@/features/materials/server-functions/update-material-status"
-import { MaterialStatus } from "@/features/materials/types/material.type"
-import type { Material } from "@/features/materials/types/material.type"
+import { MaterialStatus } from "@/lib/types/material.type"
+import type { Material } from "@/lib/types/material.type"
 
 type ToggleMaterialStatusDialogProps = {
   material: Material
@@ -26,6 +28,24 @@ type ToggleMaterialStatusDialogProps = {
 // One dialog for both directions of the ACTIVE/INACTIVE toggle — the two
 // confirmations only differ in copy, not behavior, so a status-derived branch
 // here beats near-duplicate "deactivate"/"activate" dialog components.
+function getStatusConfig(material: Material) {
+  if (material.status === MaterialStatus.ACTIVE) {
+    return {
+      nextStatus: MaterialStatus.INACTIVE,
+      icon: CirclePause,
+      title: "Ngừng sử dụng vật tư này?",
+      description: `"${material.name}" sẽ chuyển sang trạng thái Ngừng sử dụng và không thể chọn khi tạo giao dịch mới.`,
+    }
+  }
+
+  return {
+    nextStatus: MaterialStatus.ACTIVE,
+    icon: CircleCheck,
+    title: "Kích hoạt lại vật tư này?",
+    description: `"${material.name}" sẽ chuyển về trạng thái Đang sử dụng.`,
+  }
+}
+
 export function ToggleMaterialStatusDialog({
   material,
   trigger,
@@ -33,10 +53,12 @@ export function ToggleMaterialStatusDialog({
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
   const updateMaterialStatusFn = useServerFn(updateMaterialStatus)
-  const isDeactivating = material.status === MaterialStatus.ACTIVE
-  const nextStatus = isDeactivating
-    ? MaterialStatus.INACTIVE
-    : MaterialStatus.ACTIVE
+  const {
+    nextStatus,
+    icon: Icon,
+    title,
+    description,
+  } = getStatusConfig(material)
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -59,18 +81,13 @@ export function ToggleMaterialStatusDialog({
       }}
     >
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent size="sm">
+      <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {isDeactivating
-              ? "Ngừng sử dụng vật tư này?"
-              : "Kích hoạt lại vật tư này?"}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {isDeactivating
-              ? `"${material.name}" sẽ chuyển sang trạng thái Ngừng sử dụng và không thể chọn khi tạo giao dịch mới.`
-              : `"${material.name}" sẽ chuyển về trạng thái Đang sử dụng.`}
-          </AlertDialogDescription>
+          <AlertDialogMedia>
+            <Icon />
+          </AlertDialogMedia>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
 
         {mutation.error ? (

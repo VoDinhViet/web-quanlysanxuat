@@ -1,9 +1,6 @@
 import { z } from "zod"
 
-import {
-  MaterialStatus,
-  MaterialType,
-} from "@/features/materials/types/material.type"
+import { MaterialStatus, MaterialType } from "@/lib/types/material.type"
 import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 // Mirrors the backend's GetMaterialsReqDto (page, limit, q, order inherited from

@@ -16,11 +16,12 @@ import {
 } from "@/features/products/schemas/product-form.schema"
 import { createProduct } from "@/features/products/server-functions/create-product"
 import type { ProductFormSchema } from "@/features/products/schemas/product-form.schema"
-import type { ProductFilterOption } from "@/features/products/types/product.type"
+import type { ProductGroupRef } from "@/lib/types/product.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 type CreateProductFormProps = {
-  unitOptions: ProductFilterOption[]
-  productGroupOptions: ProductFilterOption[]
+  unitOptions: Unit[]
+  productGroupOptions: ProductGroupRef[]
 }
 
 export function CreateProductForm({

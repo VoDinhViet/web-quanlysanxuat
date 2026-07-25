@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { ClientStatus } from "@/features/clients/types/client.type"
+import { ClientStatus } from "@/lib/types/client.type"
 
 // A blank form input means "not provided" — the wire payload should omit the
 // field rather than send an empty string.

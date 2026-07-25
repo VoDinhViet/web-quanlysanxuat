@@ -19,12 +19,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { CLIENT_STATUS_LABELS } from "@/features/clients/types/client.type"
+import { CLIENT_STATUS_LABELS } from "@/lib/types/client.type"
 import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
-import type {
-  ClientGroupRef,
-  ClientStatus,
-} from "@/features/clients/types/client.type"
+import type { ClientGroupRef, ClientStatus } from "@/lib/types/client.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const STATUS_OPTIONS = buildOptionsFromLabels(CLIENT_STATUS_LABELS)

@@ -1,25 +1,59 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import type { z } from "zod"
 
+import { buildRepresentativesPayload } from "@/features/suppliers/schemas/supplier-form.schema"
 import { updateSupplierSchema } from "@/features/suppliers/schemas/update-supplier.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Supplier } from "@/features/suppliers/types/supplier.type"
+import {
+  resolveAttachmentFileIds,
+  resolveFileFieldId,
+} from "@/lib/file-field.schema"
+import type { Supplier } from "@/lib/types/supplier.type"
 
-type ValidatedUpdate = Omit<z.output<typeof updateSupplierSchema>, "supplierId">
-
-// Same id-only mapping as create. On PATCH a missing key means "no change", so
-// an explicitly cleared logo is sent as null.
-function toUpdateSupplierPayload(data: ValidatedUpdate) {
-  const { logo, attachments, ...rest } = data
-
-  return {
+// Same id-only + representatives mapping as create. On PATCH a missing key
+// means "no change", so a cleared logo is sent as null — and so is every
+// other optional field the shared form schema can blank out. The update form
+// always resubmits every field's current value (it's not a partial diff), so
+// a blank optional field always means "the user cleared it": the shared
+// schema's emptyToUndefined transform (built for create's "omit = not
+// provided" semantics) would otherwise leave the old value untouched.
+const updateSupplierPayloadSchema = updateSupplierSchema.transform(
+  ({
+    logo,
+    attachments,
+    representativeName,
+    representativePhone,
+    email,
+    note,
+    countryId,
+    internalNote,
+    payment,
+    ...rest
+  }) => ({
     ...rest,
-    logoFileId: logo?.id ?? null,
-    attachmentFileIds: attachments.map((attachment) => attachment.id),
-  }
-}
+    logoFileId: resolveFileFieldId(logo, "update"),
+    attachmentFileIds: resolveAttachmentFileIds(attachments),
+    representatives: buildRepresentativesPayload(
+      representativeName,
+      representativePhone
+    ),
+    email: email ?? null,
+    note: note ?? null,
+    countryId: countryId ?? null,
+    internalNote: internalNote ?? null,
+    payment: {
+      bankName: payment.bankName ?? null,
+      bankAccountNumber: payment.bankAccountNumber ?? null,
+      bankAccountHolder: payment.bankAccountHolder ?? null,
+      bankBranch: payment.bankBranch ?? null,
+      defaultPaymentMethod: payment.defaultPaymentMethod ?? null,
+      defaultPaymentTerm: payment.defaultPaymentTerm ?? null,
+      creditLimit: payment.creditLimit ?? null,
+      creditLimitStartDate: payment.creditLimitStartDate ?? null,
+    },
+  })
+)
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -45,13 +79,13 @@ function resolveUpdateSupplierErrorMessage(error: unknown): string {
 }
 
 export const updateSupplier = createServerFn({ method: "POST" })
-  .validator(updateSupplierSchema)
+  .validator(updateSupplierPayloadSchema)
   .handler(async ({ data }): Promise<Supplier> => {
     try {
       const { supplierId, ...payload } = data
       const response = await http.patch<Supplier>(
         `/api/suppliers/${supplierId}`,
-        toUpdateSupplierPayload(payload)
+        payload
       )
 
       return response.data

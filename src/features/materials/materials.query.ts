@@ -1,13 +1,13 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { getClientOptions } from "@/features/materials/server-functions/get-client-options"
 import { getMaterial } from "@/features/materials/server-functions/get-material"
-import { getMaterialGroupOptions } from "@/features/materials/server-functions/get-material-group-options"
-import { getMaterialLogs } from "@/features/materials/server-functions/get-material-logs"
-import { getMaterials } from "@/features/materials/server-functions/get-materials"
-import { getSupplierOptions } from "@/features/materials/server-functions/get-supplier-options"
-import { getUnitOptions } from "@/features/materials/server-functions/get-unit-options"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
+import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
+import { getClients } from "@/lib/server-functions/get-clients"
+import { getMaterialGroups } from "@/lib/server-functions/get-material-groups"
+import { getMaterials } from "@/lib/server-functions/get-materials"
+import { getSuppliers } from "@/lib/server-functions/get-suppliers"
+import { getUnits } from "@/lib/server-functions/get-units"
 
 // Reference lists change rarely — cache them longer so moving between
 // list/create/update doesn't refetch on every navigation.
@@ -28,34 +28,35 @@ export const materialQueryOptions = (materialId: string) =>
     queryFn: () => getMaterial({ data: { materialId } }),
   })
 
-export const materialLogsQueryOptions = (
-  materialId: string,
-  page: number,
-  limit: 10 | 20 | 50
-) =>
-  queryOptions({
-    queryKey: ["materials", "logs", materialId, { page, limit }],
-    queryFn: () => getMaterialLogs({ data: { materialId, page, limit } }),
-  })
-
 export const materialGroupOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["materials", "group-options"],
-    queryFn: () => getMaterialGroupOptions(),
+    queryFn: () => getMaterialGroups(),
     staleTime: REFERENCE_STALE_TIME,
   })
 
 export const unitOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["materials", "unit-options"],
-    queryFn: () => getUnitOptions(),
+    queryFn: () => getUnits({ data: { scope: "MATERIAL" } }),
     staleTime: REFERENCE_STALE_TIME,
   })
 
+// `getSuppliers`/`getClients` (below) are shared with the suppliers/clients
+// list pages, where a failed fetch must throw so the errorComponent kicks in
+// — but this dropdown is non-core and, per the original design here, a
+// materials-only role may lack `suppliers:read`/`clients:read`. Both queries
+// are `ensureQueryData`'d straight from a route loader (materials list/create/
+// update), which doesn't catch — so degrading to `[]` has to happen in the
+// queryFn itself, or a missing permission would crash the whole page instead
+// of just leaving this picker empty.
 export const supplierOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["materials", "supplier-options"],
-    queryFn: () => getSupplierOptions(),
+    queryFn: () =>
+      getSuppliers({ data: { limit: FILTER_OPTIONS_LIMIT } })
+        .then((response) => response.data)
+        .catch(() => []),
     staleTime: REFERENCE_STALE_TIME,
   })
 
@@ -64,6 +65,9 @@ export const supplierOptionsQueryOptions = () =>
 export const clientOptionsQueryOptions = (q: string) =>
   queryOptions({
     queryKey: ["materials", "client-options", q],
-    queryFn: () => getClientOptions({ data: { q } }),
+    queryFn: () =>
+      getClients({ data: { q: q || undefined, limit: FILTER_OPTIONS_LIMIT } })
+        .then((response) => response.data)
+        .catch(() => []),
     staleTime: REFERENCE_STALE_TIME,
   })

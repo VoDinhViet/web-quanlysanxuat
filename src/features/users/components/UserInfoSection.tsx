@@ -1,7 +1,7 @@
 import { withForm } from "@/hooks/use-app-form"
 import { UserAvatarField } from "@/features/users/components/UserAvatarField"
 import { USER_FORM_DEFAULT_VALUES } from "@/features/users/schemas/user-form.schema"
-import { USER_GENDER_LABELS } from "@/features/users/types/user.type"
+import { USER_GENDER_LABELS } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const GENDER_OPTIONS = buildOptionsFromLabels(USER_GENDER_LABELS)

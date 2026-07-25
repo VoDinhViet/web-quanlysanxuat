@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { ProductStatus } from "@/features/products/types/product.type"
+import { ProductStatus } from "@/lib/types/product.type"
 import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 // Mirrors the backend's GetProductsReqDto (page, limit, q, order inherited from

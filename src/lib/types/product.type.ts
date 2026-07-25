@@ -1,3 +1,4 @@
+import type { ClientRef } from "@/lib/types/client.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -19,9 +20,18 @@ export enum ProductType {
   WORK_IN_PROGRESS = "WORK_IN_PROGRESS",
 }
 
-/** Mirrors the backend's nested group/client relation (ProductRefResDto). The
- *  unit relation uses the shared `Unit` type (@/lib/types/unit.type) instead. */
+/** Mirrors the backend's `source` relation (ProductRefResDto) — the product
+ *  another product was cloned from. The group/unit relations use their own
+ *  domain types (`ProductGroupRef` below, `Unit` from @/lib/types/unit.type)
+ *  instead of this one. */
 export type ProductRef = {
+  id: string
+  code: string
+  name: string
+}
+
+/** Mirrors the backend's nested product-group relation (GET /api/product-groups). */
+export type ProductGroupRef = {
   id: string
   code: string
   name: string
@@ -53,8 +63,8 @@ export type Product = {
   status: ProductStatus
   note: string | null
   unit: Unit
-  group: ProductRef | null
-  client: ProductRef | null
+  group: ProductGroupRef | null
+  client: ClientRef | null
   // The product this one was cloned from (POST /:id/copy); null for an
   // originally-created product.
   source: ProductRef | null
@@ -62,11 +72,4 @@ export type Product = {
   creator: ProductCreator | null
   createdAt: string
   updatedAt: string
-}
-
-/** Minimal option shape for the "Khách hàng" / "Nhóm sản phẩm" / "Đơn vị tính"
- *  filter and form selects (the backend refs also carry `code`, ignored here). */
-export type ProductFilterOption = {
-  id: string
-  name: string
 }

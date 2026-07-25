@@ -69,6 +69,14 @@ export type SupplierCreatorRef = {
   username: string
 }
 
+/** Lightweight reference to a supplier itself (GET /api/suppliers) — used by
+ *  other domains' nested relation (e.g. Material.preferredSupplier). */
+export type SupplierRef = {
+  id: string
+  code: string
+  name: string
+}
+
 /** Mirrors the backend's SupplierRepresentativeResDto — a supplier can have
  *  several representatives; at most one has `isPrimary: true`. */
 export type SupplierRepresentative = {

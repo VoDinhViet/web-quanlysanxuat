@@ -3,7 +3,7 @@ import { SUPPLIER_FORM_DEFAULT_VALUES } from "@/features/suppliers/schemas/suppl
 import {
   PAYMENT_METHOD_LABELS,
   PAYMENT_TERM_LABELS,
-} from "@/features/suppliers/types/supplier.type"
+} from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const PAYMENT_METHOD_OPTIONS = buildOptionsFromLabels(PAYMENT_METHOD_LABELS)

@@ -1,22 +1,21 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import type { z } from "zod"
 
 import { updateUserSchema } from "@/features/users/schemas/update-user.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { User } from "@/features/users/types/user.type"
-
-type ValidatedUpdate = Omit<z.output<typeof updateUserSchema>, "userId">
+import { resolveFileFieldId } from "@/lib/file-field.schema"
+import type { User } from "@/lib/types/user.type"
 
 // `avatar` carries a display URL the backend has no field for — only the file id
 // goes on the wire. PATCH treats a missing key as "no change", so an explicitly
 // cleared avatar is sent as null.
-function toUpdateUserPayload(data: ValidatedUpdate) {
-  const { avatar, ...rest } = data
-
-  return { ...rest, avatarFileId: avatar?.id ?? null }
-}
+const updateUserPayloadSchema = updateUserSchema.transform(
+  ({ avatar, ...rest }) => ({
+    ...rest,
+    avatarFileId: resolveFileFieldId(avatar, "update"),
+  })
+)
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -38,14 +37,11 @@ function resolveUpdateUserErrorMessage(error: unknown): string {
 }
 
 export const updateUser = createServerFn({ method: "POST" })
-  .validator(updateUserSchema)
+  .validator(updateUserPayloadSchema)
   .handler(async ({ data }): Promise<User> => {
     try {
       const { userId, ...payload } = data
-      const response = await http.patch<User>(
-        `/api/users/${userId}`,
-        toUpdateUserPayload(payload)
-      )
+      const response = await http.patch<User>(`/api/users/${userId}`, payload)
 
       return response.data
     } catch (error) {

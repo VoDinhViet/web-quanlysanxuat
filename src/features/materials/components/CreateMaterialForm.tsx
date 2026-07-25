@@ -17,12 +17,14 @@ import {
 } from "@/features/materials/schemas/material-form.schema"
 import { createMaterial } from "@/features/materials/server-functions/create-material"
 import type { MaterialFormSchema } from "@/features/materials/schemas/material-form.schema"
-import type { MaterialRef } from "@/features/materials/types/material.type"
+import type { MaterialGroupRef } from "@/lib/types/material.type"
+import type { Supplier } from "@/lib/types/supplier.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 type CreateMaterialFormProps = {
-  unitOptions: MaterialRef[]
-  materialGroupOptions: MaterialRef[]
-  supplierOptions: MaterialRef[]
+  unitOptions: Unit[]
+  materialGroupOptions: MaterialGroupRef[]
+  supplierOptions: Supplier[]
 }
 
 export function CreateMaterialForm({
@@ -97,13 +99,11 @@ export function CreateMaterialForm({
           selectedClient={undefined}
         />
 
-        <div className="border-t border-border">
-          <MaterialExtendedSection
-            form={form}
-            disabled={isPending}
-            supplierOptions={supplierOptions}
-          />
-        </div>
+        <MaterialExtendedSection
+          form={form}
+          disabled={isPending}
+          supplierOptions={supplierOptions}
+        />
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button

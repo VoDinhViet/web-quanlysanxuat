@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
-import { ProductStatus } from "@/features/products/types/product.type"
+import { ProductStatus } from "@/lib/types/product.type"
 
 // A blank form input means "not provided" — the wire payload should omit the
 // field rather than send an empty string (the backend then auto-generates the

@@ -23,7 +23,7 @@ import {
 } from "@/features/clients/schemas/create-client.schema"
 import { createClient } from "@/features/clients/server-functions/create-client"
 import type { CreateClientSchema } from "@/features/clients/schemas/create-client.schema"
-import type { ClientGroupRef } from "@/features/clients/types/client.type"
+import type { ClientGroupRef } from "@/lib/types/client.type"
 
 type CreateClientFormProps = {
   clientGroupOptions: ClientGroupRef[]

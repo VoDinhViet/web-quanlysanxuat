@@ -1,5 +1,3 @@
-import { Boxes } from "lucide-react"
-
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
@@ -11,10 +9,11 @@ import {
   MATERIAL_STATUS_LABELS,
   MATERIAL_TYPE_LABELS,
   MaterialType,
-} from "@/features/materials/types/material.type"
+} from "@/lib/types/material.type"
+import type { Unit } from "@/lib/types/unit.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
-import type { MaterialRef } from "@/features/materials/types/material.type"
+import type { MaterialGroupRef } from "@/lib/types/material.type"
 
 const MATERIAL_TYPE_OPTIONS = buildOptionsFromLabels(MATERIAL_TYPE_LABELS)
 const STATUS_OPTIONS = buildOptionsFromLabels(MATERIAL_STATUS_LABELS)
@@ -23,8 +22,8 @@ export const MaterialInfoSection = withForm({
   defaultValues: MATERIAL_FORM_DEFAULT_VALUES,
   props: {
     disabled: false,
-    unitOptions: [] as MaterialRef[],
-    materialGroupOptions: [] as MaterialRef[],
+    unitOptions: [] as Unit[],
+    materialGroupOptions: [] as MaterialGroupRef[],
     selectedClient: undefined as ComboboxOption | undefined,
   },
   render: function Render({
@@ -48,9 +47,6 @@ export const MaterialInfoSection = withForm({
     return (
       <div>
         <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Boxes className="size-5" />
-          </div>
           <div className="min-w-0">
             <h2 className="font-heading text-base font-semibold text-foreground">
               Thông tin vật tư

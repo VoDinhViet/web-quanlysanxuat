@@ -1,15 +1,13 @@
-import { SlidersHorizontal } from "lucide-react"
-
 import { withForm } from "@/hooks/use-app-form"
 import { MaterialAttachmentsField } from "@/features/materials/components/MaterialAttachmentsField"
 import { MATERIAL_FORM_DEFAULT_VALUES } from "@/features/materials/schemas/material-form.schema"
-import type { MaterialRef } from "@/features/materials/types/material.type"
+import type { Supplier } from "@/lib/types/supplier.type"
 
 export const MaterialExtendedSection = withForm({
   defaultValues: MATERIAL_FORM_DEFAULT_VALUES,
   props: {
     disabled: false,
-    supplierOptions: [] as MaterialRef[],
+    supplierOptions: [] as Supplier[],
   },
   render: function Render({ form, disabled, supplierOptions }) {
     const supplierSelectOptions = supplierOptions.map((option) => ({
@@ -20,9 +18,6 @@ export const MaterialExtendedSection = withForm({
     return (
       <div>
         <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warning/15 text-warning">
-            <SlidersHorizontal className="size-5" />
-          </div>
           <div className="min-w-0">
             <h2 className="font-heading text-base font-semibold text-foreground">
               Thông tin mở rộng
@@ -33,7 +28,7 @@ export const MaterialExtendedSection = withForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-5 px-4 py-5 sm:grid-cols-2 sm:px-5">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-5 px-4 py-5 sm:grid-cols-2 sm:px-5 lg:grid-cols-3">
           <form.AppField name="materialGrade">
             {(field) => (
               <field.TextField
@@ -122,7 +117,7 @@ export const MaterialExtendedSection = withForm({
                 label="Mô tả chi tiết"
                 placeholder="Nhập mô tả chi tiết về vật tư"
                 disabled={disabled}
-                className="sm:col-span-2"
+                className="sm:col-span-2 lg:col-span-3"
               />
             )}
           </form.AppField>

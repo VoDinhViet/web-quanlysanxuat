@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Trash2 } from "lucide-react"
 import type { ReactNode } from "react"
 
 import {
@@ -11,11 +12,12 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { deleteProduct } from "@/features/products/server-functions/delete-product"
-import type { Product } from "@/features/products/types/product.type"
+import type { Product } from "@/lib/types/product.type"
 
 type DeleteProductDialogProps = {
   product: Product
@@ -48,8 +50,11 @@ export function DeleteProductDialog({
       }}
     >
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent size="sm">
+      <AlertDialogContent>
         <AlertDialogHeader>
+          <AlertDialogMedia>
+            <Trash2 />
+          </AlertDialogMedia>
           <AlertDialogTitle>Xóa sản phẩm này?</AlertDialogTitle>
           <AlertDialogDescription>
             {`"${product.name}" (${product.code}) sẽ bị xóa khỏi danh mục sản phẩm. Bạn có thể chuyển trạng thái sang Ngừng sử dụng nếu chỉ muốn tạm ẩn.`}
@@ -72,7 +77,7 @@ export function DeleteProductDialog({
               mutation.mutate()
             }}
           >
-            {mutation.isPending ? "Đang xóa..." : "Xóa"}
+            {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

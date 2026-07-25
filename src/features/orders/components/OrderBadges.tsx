@@ -6,7 +6,7 @@ import {
   OVERDUE_FILTER_VALUE,
   OVERDUE_LABEL,
   OrderStatus,
-} from "@/features/orders/types/order.type"
+} from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
 // "Trễ hạn" is not an OrderStatus — it gets a style here so the legend and the

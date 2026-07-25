@@ -6,7 +6,7 @@ import { http, logHttpError } from "@/lib/http"
 import { decodeJwtExpiry } from "@/lib/jwt"
 import { useAppSession } from "@/lib/session"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { AuthLoginResponse } from "@/features/auth/types/login.type"
+import type { AuthLoginResponse } from "@/lib/types/login.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 

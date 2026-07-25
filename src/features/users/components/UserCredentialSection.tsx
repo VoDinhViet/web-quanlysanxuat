@@ -1,7 +1,7 @@
 import { Switch } from "@/components/ui/switch"
 import { withForm } from "@/hooks/use-app-form"
 import { USER_FORM_DEFAULT_VALUES } from "@/features/users/schemas/user-form.schema"
-import type { RoleOption } from "@/features/users/types/user.type"
+import type { Role } from "@/lib/types/role.type"
 import { buildSelectOptions } from "@/lib/utils"
 
 export const UserCredentialSection = withForm({
@@ -12,7 +12,7 @@ export const UserCredentialSection = withForm({
     // toggle is hidden (an existing account can't be un-granted here), the
     // fields are always shown, and the password becomes optional.
     hasExistingCredential: false,
-    roles: [] as RoleOption[],
+    roles: [] as Role[],
   },
   render: function Render({ form, disabled, hasExistingCredential, roles }) {
     return (

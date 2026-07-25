@@ -11,10 +11,7 @@ import {
   LOW_STOCK_MATERIALS,
   OVERDUE_JOBS,
 } from "@/features/manage/mock/manage-dashboard.mock"
-import {
-  JOB_STATUS_LABELS,
-  JobStatus,
-} from "@/features/manage/types/manage.type"
+import { JOB_STATUS_LABELS, JobStatus } from "@/lib/types/manage.type"
 
 const jobStatusBadgeVariants = cva("", {
   variants: {

@@ -8,8 +8,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { resolveDeliveryTone } from "@/features/orders/types/order.type"
-import type { DeliveryTone, Order } from "@/features/orders/types/order.type"
+import { resolveDeliveryTone } from "@/lib/types/order.type"
+import type { DeliveryTone, Order } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
 // Plain grouping, not style: "currency" — the column header already says (VND),

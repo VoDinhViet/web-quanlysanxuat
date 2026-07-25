@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useDebounceValue } from "usehooks-ts"
 
 import { operationOptionsQueryOptions } from "@/features/products/queries/operation-options.query"
-import type { OperationType } from "@/features/products/types/operation.type"
+import type { OperationType } from "@/lib/types/operation.type"
 
 // Server-searched options for the "add step" combobox: debounces the typed
 // term and reads operationOptionsQueryOptions (GET /api/operations?q=...)

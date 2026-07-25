@@ -22,12 +22,10 @@ import { ComboboxField } from "@/components/shared/ComboboxField"
 import { buildSelectOption } from "@/lib/utils"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetClientOptions } from "@/features/products/hooks/use-get-client-options"
-import {
-  PRODUCT_STATUS_LABELS,
-  ProductStatus,
-} from "@/features/products/types/product.type"
+import { PRODUCT_STATUS_LABELS, ProductStatus } from "@/lib/types/product.type"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
-import type { ProductFilterOption } from "@/features/products/types/product.type"
+import type { Client } from "@/lib/types/client.type"
+import type { ProductGroupRef } from "@/lib/types/product.type"
 
 const STATUS_FILTER_OPTIONS: {
   value: ProductStatus | "all"
@@ -44,8 +42,8 @@ type ProductsTableFilterProps = {
     patch: Partial<ProductsSearchSchema>,
     options?: { replace?: boolean }
   ) => void
-  productGroupOptions: ProductFilterOption[]
-  clientOptions: ProductFilterOption[]
+  productGroupOptions: ProductGroupRef[]
+  clientOptions: Client[]
 }
 
 export function ProductsTableFilter({

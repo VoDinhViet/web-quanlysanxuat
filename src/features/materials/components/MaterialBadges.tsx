@@ -8,7 +8,7 @@ import {
   MATERIAL_TYPE_LABELS,
   MaterialStatus,
   MaterialType,
-} from "@/features/materials/types/material.type"
+} from "@/lib/types/material.type"
 import { cn } from "@/lib/utils"
 
 const typeBadgeVariants = cva("", {

@@ -1,11 +1,13 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
+import { z } from "zod"
 
-import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import { MaterialStatus, MaterialType } from "@/lib/types/material.type"
+import type { Material } from "@/lib/types/material.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { Material } from "@/features/materials/types/material.type"
+import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -20,8 +22,24 @@ function resolveGetMaterialsErrorMessage(error: unknown): string {
   }
 }
 
+// Broader than any single caller's own search schema — see get-clients.ts for
+// why (route-facing `materialsSearchSchema` stays local to the materials
+// route, this one just needs to be wire-valid for the backend). The products
+// feature's BOM material picker is the other caller, fixing `status: ACTIVE`
+// and driving `q` from the picker's search box.
+const getMaterialsSchema = z.object({
+  page: z.number().int().min(1).optional(),
+  limit: z.number().int().min(1).optional(),
+  q: z.string().trim().min(1).optional(),
+  type: z.enum(MaterialType).optional(),
+  materialGroupId: z.string().trim().min(1).optional(),
+  clientId: z.string().trim().min(1).optional(),
+  status: z.enum(MaterialStatus).optional(),
+  order: z.enum(SORT_ORDERS).optional(),
+})
+
 export const getMaterials = createServerFn({ method: "GET" })
-  .validator(materialsSearchSchema)
+  .validator(getMaterialsSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<Material>> => {
     try {
       const response = await http.get<PaginatedResponse<Material>>(

@@ -3,7 +3,7 @@ import axios from "axios"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { SupplierStats } from "@/features/suppliers/types/supplier.type"
+import type { SupplierStats } from "@/lib/types/supplier.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 

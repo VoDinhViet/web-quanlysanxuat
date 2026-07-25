@@ -5,7 +5,7 @@ import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { User } from "@/features/users/types/user.type"
+import type { User } from "@/lib/types/user.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 

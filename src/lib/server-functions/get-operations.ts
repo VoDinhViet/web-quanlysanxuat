@@ -3,10 +3,10 @@ import { z } from "zod"
 
 import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
 import { http, logHttpError } from "@/lib/http"
-import type { OperationFilterOption } from "@/features/products/types/operation.type"
+import type { OperationFilterOption } from "@/lib/types/operation.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
-const operationOptionsSearchSchema = z.object({
+const getOperationsSchema = z.object({
   q: z.string().trim().optional(),
   type: z.enum(["INHOUSE", "OUTSOURCE"]).optional(),
 })
@@ -19,8 +19,8 @@ const operationOptionsSearchSchema = z.object({
 // Deliberate deviation from the throw-on-error rule: this dropdown is a
 // non-core picker, so a failed fetch degrades to an empty option list instead
 // of taking down the whole routing section.
-export const getOperationOptions = createServerFn({ method: "GET" })
-  .validator(operationOptionsSearchSchema)
+export const getOperations = createServerFn({ method: "GET" })
+  .validator(getOperationsSchema)
   .handler(async ({ data }): Promise<OperationFilterOption[]> => {
     try {
       const response = await http.get<PaginatedResponse<OperationFilterOption>>(
@@ -38,7 +38,7 @@ export const getOperationOptions = createServerFn({ method: "GET" })
 
       return response.data.data
     } catch (error) {
-      logHttpError(error, "getOperationOptions")
+      logHttpError(error, "getOperations")
 
       return []
     }

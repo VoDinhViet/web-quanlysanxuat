@@ -1,5 +1,5 @@
-import { SUPER_PERMISSION } from "@/features/auth/types/permission.type"
-import type { PermissionCode } from "@/features/auth/types/permission.type"
+import { SUPER_PERMISSION } from "@/lib/types/permission.type"
+import type { PermissionCode } from "@/lib/types/permission.type"
 
 /**
  * Whether `granted` satisfies `required`. Mirrors the backend guard: a superadmin

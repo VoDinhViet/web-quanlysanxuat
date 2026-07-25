@@ -3,7 +3,7 @@ import axios from "axios"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { AuthUserProfile } from "@/features/auth/types/login.type"
+import type { AuthUserProfile } from "@/lib/types/login.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 

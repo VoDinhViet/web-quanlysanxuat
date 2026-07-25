@@ -19,10 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import {
-  EMPLOYEE_STATUS_LABELS,
-  EmployeeStatus,
-} from "@/features/users/types/user.type"
+import { EMPLOYEE_STATUS_LABELS, EmployeeStatus } from "@/lib/types/user.type"
 import type { UsersSearchSchema } from "@/features/users/schemas/users-search.schema"
 
 const STATUS_FILTER_OPTIONS: {

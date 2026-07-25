@@ -5,7 +5,7 @@ import { toast } from "sonner"
 import { createProductOperation } from "@/features/products/server-functions/create-product-operation"
 import { deleteProductOperation } from "@/features/products/server-functions/delete-product-operation"
 import { updateProductOperation } from "@/features/products/server-functions/update-product-operation"
-import type { ProductOperation } from "@/features/products/types/operation.type"
+import type { ProductOperation } from "@/lib/types/operation.type"
 
 type SortOrderPair = { stepId: string; sortOrder: number }
 

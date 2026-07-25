@@ -1,25 +1,39 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import type { z } from "zod"
 
-import { supplierFormSchema } from "@/features/suppliers/schemas/supplier-form.schema"
+import {
+  buildRepresentativesPayload,
+  supplierFormSchema,
+} from "@/features/suppliers/schemas/supplier-form.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Supplier } from "@/features/suppliers/types/supplier.type"
-
-type ValidatedCreate = z.output<typeof supplierFormSchema>
+import {
+  resolveAttachmentFileIds,
+  resolveFileFieldId,
+} from "@/lib/file-field.schema"
+import type { Supplier } from "@/lib/types/supplier.type"
 
 // `logo`/`attachments` carry display URLs the backend has no field for — only
-// the file ids go on the wire, so they are destructured out rather than spread.
-function toCreateSupplierPayload(data: ValidatedCreate) {
-  const { logo, attachments, ...rest } = data
-
-  return {
+// the file ids go on the wire, so they are destructured out rather than
+// spread. `representativeName`/`representativePhone` are the form's flat
+// fields for what the backend models as a `representatives[]` array.
+const createSupplierPayloadSchema = supplierFormSchema.transform(
+  ({
+    logo,
+    attachments,
+    representativeName,
+    representativePhone,
+    ...rest
+  }) => ({
     ...rest,
-    logoFileId: logo?.id,
-    attachmentFileIds: attachments.map((attachment) => attachment.id),
-  }
-}
+    logoFileId: resolveFileFieldId(logo, "create"),
+    attachmentFileIds: resolveAttachmentFileIds(attachments),
+    representatives: buildRepresentativesPayload(
+      representativeName,
+      representativePhone
+    ),
+  })
+)
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -43,13 +57,10 @@ function resolveCreateSupplierErrorMessage(error: unknown): string {
 }
 
 export const createSupplier = createServerFn({ method: "POST" })
-  .validator(supplierFormSchema)
+  .validator(createSupplierPayloadSchema)
   .handler(async ({ data }): Promise<Supplier> => {
     try {
-      const response = await http.post<Supplier>(
-        "/api/suppliers",
-        toCreateSupplierPayload(data)
-      )
+      const response = await http.post<Supplier>("/api/suppliers", data)
 
       return response.data
     } catch (error) {

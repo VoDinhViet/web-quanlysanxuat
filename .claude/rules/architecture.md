@@ -72,12 +72,24 @@ export const doThing = createServerFn({ method: "POST" })
   `AxiosError`/`errorCode` shape — that logic must not leak into route loaders or
   components.
 - Use the shared `http` client (`src/lib/http.ts`). No ad-hoc axios instances.
-- Wire-payload mapping happens in the server function, not the Zod schema: form
-  schemas hold the raw form shape (no `.transform`), and the handler builds the
-  backend payload with a local `to<Thing>Payload(data)` helper — empty optional
-  strings become `undefined` via `toOptional` (`src/lib/utils.ts`), date-picker
-  strings become ISO datetimes via luxon. See
-  `src/features/users/server-functions/create-user.ts`.
+- Wire-payload mapping happens in the server function's `.validator()`, not the
+  shared form schema: form schemas (`*-form.schema.ts`, `update-*.schema.ts`,
+  used by both the client form and the server function's validator) hold the
+  raw form shape and stay untouched. The server function chains a local
+  `.transform()` onto that schema (e.g. `xFormSchema.transform(({avatar,
+...rest}) => ({...rest, avatarFileId: resolveFileFieldId(avatar,
+"create")}))`) and passes the transformed schema to `.validator()`, so
+  `data` inside `.handler()` is already wire-ready — no separate
+  payload-building helper called at the `http.post`/`http.patch` call site.
+  Empty optional strings become `undefined` via a local `emptyToUndefined` in
+  the form schema, date-picker strings become ISO datetimes via luxon — both
+  already field-level `.transform()`s on the form schema itself. File fields
+  (image/avatar/logo → `*FileId`, attachments → `attachmentFileIds`) use the
+  shared `resolveFileFieldId`/`resolveAttachmentFileIds`
+  (`src/lib/file-field.schema.ts`): `resolveFileFieldId` returns `undefined`
+  on create (omit the key — "no file") vs explicit `null` on update (PATCH
+  treats a missing key as "no change", so clearing needs `null`). See
+  `src/features/users/server-functions/create-user.ts` and `update-user.ts`.
 - Dates use **luxon** (`DateTime.fromISO(...).toFormat("dd/MM/yyyy")` for
   display, `.toFormat("yyyy-MM-dd")` for date-picker values) directly at call
   sites — no date wrapper helpers in `src/lib/utils.ts`, and no second date

@@ -19,3 +19,17 @@ export type FileFieldValue = z.infer<typeof fileFieldSchema>
 
 /** Single-image picker: `null` means "no image" — and on PATCH, "clear it". */
 export const imageFieldSchema = fileFieldSchema.nullable()
+
+/** Single-file field → wire id. `undefined` omits the key (create: "no file"), explicit `null`
+ *  clears it (update: PATCH treats a missing key as "no change", so clearing needs `null`). */
+export function resolveFileFieldId(
+  file: FileFieldValue | null,
+  mode: "create" | "update"
+): string | null | undefined {
+  return mode === "create" ? file?.id : (file?.id ?? null)
+}
+
+/** Attachments array → wire ids — identical shape on create and update. */
+export function resolveAttachmentFileIds(files: FileFieldValue[]): string[] {
+  return files.map((file) => file.id)
+}

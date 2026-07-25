@@ -6,10 +6,11 @@ import { ProductAttachmentsField } from "@/features/products/components/ProductA
 import { ProductImageField } from "@/features/products/components/ProductImageField"
 import { PRODUCT_FORM_DEFAULT_VALUES } from "@/features/products/schemas/product-form.schema"
 import { useGetClientOptions } from "@/features/products/hooks/use-get-client-options"
-import { PRODUCT_STATUS_LABELS } from "@/features/products/types/product.type"
+import { PRODUCT_STATUS_LABELS } from "@/lib/types/product.type"
+import type { Unit } from "@/lib/types/unit.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
-import type { ProductFilterOption } from "@/features/products/types/product.type"
+import type { ProductGroupRef } from "@/lib/types/product.type"
 
 const STATUS_OPTIONS = buildOptionsFromLabels(PRODUCT_STATUS_LABELS)
 
@@ -17,8 +18,8 @@ export const ProductInfoSection = withForm({
   defaultValues: PRODUCT_FORM_DEFAULT_VALUES,
   props: {
     disabled: false,
-    unitOptions: [] as ProductFilterOption[],
-    productGroupOptions: [] as ProductFilterOption[],
+    unitOptions: [] as Unit[],
+    productGroupOptions: [] as ProductGroupRef[],
     selectedClient: undefined as ComboboxOption | undefined,
   },
   render: function Render({

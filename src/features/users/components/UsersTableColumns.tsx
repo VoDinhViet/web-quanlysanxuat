@@ -9,11 +9,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import {
-  EMPLOYEE_STATUS_LABELS,
-  EmployeeStatus,
-} from "@/features/users/types/user.type"
-import type { User } from "@/features/users/types/user.type"
+import { EMPLOYEE_STATUS_LABELS, EmployeeStatus } from "@/lib/types/user.type"
+import type { User } from "@/lib/types/user.type"
 import { resolveFileUrl } from "@/lib/file-url"
 
 const statusBadgeVariants = cva("", {
@@ -76,6 +73,14 @@ export const userColumns = [
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
       <span className="text-muted-foreground">{getValue()}</span>
+    ),
+  }),
+  userColumnHelper.accessor((row) => row.credential?.role?.name, {
+    id: "role",
+    header: "Vai trò",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ getValue }) => (
+      <span className="text-muted-foreground">{getValue() ?? "—"}</span>
     ),
   }),
   userColumnHelper.accessor("email", {

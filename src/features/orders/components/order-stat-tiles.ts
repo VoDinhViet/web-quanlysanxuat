@@ -8,7 +8,7 @@ import {
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
-import type { OrderStats } from "@/features/orders/types/order.type"
+import type { OrderStats } from "@/lib/types/order.type"
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN")
 

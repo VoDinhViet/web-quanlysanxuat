@@ -10,11 +10,14 @@ import type { Unit } from "@/lib/types/unit.type"
  * this node links to (see `itemType`). `children` holds this same node type —
  * the tree is nested.
  */
-export type BomItemType = "PRODUCT" | "MATERIAL"
+export enum BomItemType {
+  PRODUCT = "PRODUCT",
+  MATERIAL = "MATERIAL",
+}
 
 export const BOM_ITEM_TYPE_LABELS: Record<BomItemType, string> = {
-  PRODUCT: "Sản phẩm",
-  MATERIAL: "Vật tư",
+  [BomItemType.PRODUCT]: "Sản phẩm",
+  [BomItemType.MATERIAL]: "Vật tư",
 }
 
 // The flat node — returned by the add/update endpoints (BomItemNodeResDto).
@@ -32,6 +35,9 @@ export type BomItemNode = {
   quantity: string
   sortOrder: number
   note: string | null
+  // A technical drawing (bản vẽ, PDF) specific to this node — independent of
+  // `image` above, which is coalesced from the linked product/material.
+  drawing: FileResource | null
 }
 
 // The tree node — returned by the BOM GET (BomItemResDto): a flat node plus its
@@ -48,4 +54,18 @@ export type BomEntityOption = {
   id: string
   code: string
   name: string
+}
+
+// One row of a BOM's material list, aggregated per material across the whole
+// tree — GET /api/products/:productId/bom/materials (BomMaterialResDto).
+// `totalQuantity` is a raw sum across every MATERIAL node linking to this
+// material, NOT a BOM explosion (no multiplication through a parent's own
+// quantity).
+export type BomMaterial = {
+  materialId: string
+  code: string
+  name: string
+  unit: Unit
+  image: FileResource | null
+  totalQuantity: number
 }

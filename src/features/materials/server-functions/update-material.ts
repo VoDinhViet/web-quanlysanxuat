@@ -4,7 +4,21 @@ import axios from "axios"
 import { updateMaterialSchema } from "@/features/materials/schemas/update-material.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Material } from "@/features/materials/types/material.type"
+import {
+  resolveAttachmentFileIds,
+  resolveFileFieldId,
+} from "@/lib/file-field.schema"
+import type { Material } from "@/lib/types/material.type"
+
+// `image`/`attachments` carry display URLs the backend has no field for — only
+// the file ids go on the wire, so they are destructured out rather than spread.
+const updateMaterialPayloadSchema = updateMaterialSchema.transform(
+  ({ image, attachments, ...rest }) => ({
+    ...rest,
+    imageFileId: resolveFileFieldId(image, "update"),
+    attachmentFileIds: resolveAttachmentFileIds(attachments),
+  })
+)
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -38,7 +52,7 @@ function resolveUpdateMaterialErrorMessage(error: unknown): string {
 }
 
 export const updateMaterial = createServerFn({ method: "POST" })
-  .validator(updateMaterialSchema)
+  .validator(updateMaterialPayloadSchema)
   .handler(async ({ data }): Promise<Material> => {
     try {
       const { materialId, ...payload } = data

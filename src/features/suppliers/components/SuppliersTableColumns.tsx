@@ -2,18 +2,19 @@ import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { cva } from "class-variance-authority"
 import { Image } from "@unpic/react"
-import { Edit3, Eye, Trash2 } from "lucide-react"
+import { Edit3, Trash2 } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { DeleteSupplierDialog } from "@/features/suppliers/components/DeleteSupplierDialog"
 import {
   SUPPLIER_STATUS_LABELS,
   SupplierStatus,
-} from "@/features/suppliers/types/supplier.type"
+} from "@/lib/types/supplier.type"
 import { resolveFileUrl } from "@/lib/file-url"
-import type { Supplier } from "@/features/suppliers/types/supplier.type"
+import type { Supplier } from "@/lib/types/supplier.type"
 
 const statusBadgeVariants = cva("", {
   variants: {
@@ -153,38 +154,40 @@ export const supplierColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "font-normal",
     },
-    cell: ({ row }) => (
-      // View/delete are placeholders until there's a detail/delete CRUD pass.
-      <div className="flex items-center justify-center gap-1.5">
-        <IconButton
-          label="Xem chi tiết"
-          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-        >
-          <Eye className="size-3.5" />
-        </IconButton>
-        <PermissionGate permission="suppliers:update">
-          <IconButton
-            label="Chỉnh sửa"
-            asChild
-            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-          >
-            <Link
-              to="/manage/suppliers/$supplierId/update"
-              params={{ supplierId: row.original.id }}
+    cell: ({ row }) => {
+      const supplier = row.original
+
+      return (
+        <div className="flex items-center justify-center gap-1.5">
+          <PermissionGate permission="suppliers:update">
+            <IconButton
+              label="Chỉnh sửa"
+              asChild
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
             >
-              <Edit3 className="size-3.5" />
-            </Link>
-          </IconButton>
-        </PermissionGate>
-        <PermissionGate permission="suppliers:delete">
-          <IconButton
-            label="Xóa"
-            className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-          >
-            <Trash2 className="size-3.5" />
-          </IconButton>
-        </PermissionGate>
-      </div>
-    ),
+              <Link
+                to="/manage/suppliers/$supplierId/update"
+                params={{ supplierId: supplier.id }}
+              >
+                <Edit3 className="size-3.5" />
+              </Link>
+            </IconButton>
+          </PermissionGate>
+          <PermissionGate permission="suppliers:delete">
+            <DeleteSupplierDialog
+              supplier={supplier}
+              trigger={
+                <IconButton
+                  label="Xóa"
+                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                >
+                  <Trash2 className="size-3.5" />
+                </IconButton>
+              }
+            />
+          </PermissionGate>
+        </div>
+      )
+    },
   }),
 ]

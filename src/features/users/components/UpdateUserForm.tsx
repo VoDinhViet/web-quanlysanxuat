@@ -16,12 +16,8 @@ import { userFormSchema } from "@/features/users/schemas/user-form.schema"
 import { updateUserWithCredentialSchema } from "@/features/users/schemas/update-user.schema"
 import { updateUser } from "@/features/users/server-functions/update-user"
 import type { UserFormSchema } from "@/features/users/schemas/user-form.schema"
-import type {
-  DepartmentOption,
-  PositionOption,
-  RoleOption,
-  User,
-} from "@/features/users/types/user.type"
+import type { Department, Position, User } from "@/lib/types/user.type"
+import type { Role } from "@/lib/types/role.type"
 
 // User → raw form values: nullable fields become "", ISO datetimes become the
 // yyyy-MM-dd strings the date pickers work with. When the employee already
@@ -59,9 +55,9 @@ function buildDefaultValues(user: User): UserFormSchema {
 
 type UpdateUserFormProps = {
   myUser: User
-  departments: DepartmentOption[]
-  positions: PositionOption[]
-  roles: RoleOption[]
+  departments: Department[]
+  positions: Position[]
+  roles: Role[]
 }
 
 export function UpdateUserForm({

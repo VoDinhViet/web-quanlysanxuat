@@ -12,13 +12,13 @@ import { MaterialInfoSection } from "@/features/materials/components/MaterialInf
 import { materialFormSchema } from "@/features/materials/schemas/material-form.schema"
 import { updateMaterial } from "@/features/materials/server-functions/update-material"
 import type { MaterialFormSchema } from "@/features/materials/schemas/material-form.schema"
-import type {
-  Material,
-  MaterialRef,
-} from "@/features/materials/types/material.type"
+import type { Material, MaterialGroupRef } from "@/lib/types/material.type"
+import type { Supplier } from "@/lib/types/supplier.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 // Material → raw form values: nullable fields become "", specificWeight
-// (string | null on the wire) falls straight through to the text input.
+// (number | null on the wire, a Drizzle `numeric` column) becomes a string
+// for the text input.
 function buildMaterialDefaultValues(material: Material): MaterialFormSchema {
   return {
     name: material.name,
@@ -32,7 +32,8 @@ function buildMaterialDefaultValues(material: Material): MaterialFormSchema {
     materialGrade: material.materialGrade ?? "",
     technicalStandard: material.technicalStandard ?? "",
     dimensions: material.dimensions ?? "",
-    specificWeight: material.specificWeight ?? "",
+    specificWeight:
+      material.specificWeight === null ? "" : String(material.specificWeight),
     colorSurface: material.colorSurface ?? "",
     description: material.description ?? "",
     origin: material.origin ?? "",
@@ -48,9 +49,9 @@ function buildMaterialDefaultValues(material: Material): MaterialFormSchema {
 
 type UpdateMaterialFormProps = {
   material: Material
-  unitOptions: MaterialRef[]
-  materialGroupOptions: MaterialRef[]
-  supplierOptions: MaterialRef[]
+  unitOptions: Unit[]
+  materialGroupOptions: MaterialGroupRef[]
+  supplierOptions: Supplier[]
 }
 
 export function UpdateMaterialForm({
@@ -117,13 +118,11 @@ export function UpdateMaterialForm({
           }
         />
 
-        <div className="border-t border-border">
-          <MaterialExtendedSection
-            form={form}
-            disabled={isPending}
-            supplierOptions={supplierOptions}
-          />
-        </div>
+        <MaterialExtendedSection
+          form={form}
+          disabled={isPending}
+          supplierOptions={supplierOptions}
+        />
 
         <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button

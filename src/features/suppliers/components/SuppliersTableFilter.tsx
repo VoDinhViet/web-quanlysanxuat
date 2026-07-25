@@ -13,13 +13,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { SUPPLIER_STATUS_LABELS } from "@/features/suppliers/types/supplier.type"
+import { SUPPLIER_STATUS_LABELS } from "@/lib/types/supplier.type"
 import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 import type {
   CountryRef,
   SupplierGroupRef,
   SupplierStatus,
-} from "@/features/suppliers/types/supplier.type"
+} from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const STATUS_OPTIONS = buildOptionsFromLabels(SUPPLIER_STATUS_LABELS)

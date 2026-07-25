@@ -2,14 +2,10 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { ordersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
-import { OVERDUE_FILTER_VALUE } from "@/features/orders/types/order.type"
+import { OVERDUE_FILTER_VALUE } from "@/lib/types/order.type"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type {
-  Order,
-  OrderStatus,
-  PaymentTerm,
-} from "@/features/orders/types/order.type"
+import type { Order, OrderStatus, PaymentTerm } from "@/lib/types/order.type"
 import type { PaginatedResponse, SortOrder } from "@/lib/types/pagination.type"
 
 type OrdersQueryParams = {

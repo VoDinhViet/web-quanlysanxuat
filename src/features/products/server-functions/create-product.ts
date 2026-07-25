@@ -1,25 +1,24 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import type { z } from "zod"
 
 import { productFormSchema } from "@/features/products/schemas/product-form.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Product } from "@/features/products/types/product.type"
-
-type ValidatedCreate = z.output<typeof productFormSchema>
+import {
+  resolveAttachmentFileIds,
+  resolveFileFieldId,
+} from "@/lib/file-field.schema"
+import type { Product } from "@/lib/types/product.type"
 
 // The form holds the whole uploaded-file object so it can render a preview; the
 // backend only wants the file id.
-function toCreateProductPayload(data: ValidatedCreate) {
-  const { image, attachments, ...rest } = data
-
-  return {
+const createProductPayloadSchema = productFormSchema.transform(
+  ({ image, attachments, ...rest }) => ({
     ...rest,
-    imageFileId: image?.id,
-    attachmentFileIds: attachments.map((attachment) => attachment.id),
-  }
-}
+    imageFileId: resolveFileFieldId(image, "create"),
+    attachmentFileIds: resolveAttachmentFileIds(attachments),
+  })
+)
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -49,13 +48,10 @@ function resolveCreateProductErrorMessage(error: unknown): string {
 }
 
 export const createProduct = createServerFn({ method: "POST" })
-  .validator(productFormSchema)
+  .validator(createProductPayloadSchema)
   .handler(async ({ data }): Promise<Product> => {
     try {
-      const response = await http.post<Product>(
-        "/api/products",
-        toCreateProductPayload(data)
-      )
+      const response = await http.post<Product>("/api/products", data)
 
       return response.data
     } catch (error) {

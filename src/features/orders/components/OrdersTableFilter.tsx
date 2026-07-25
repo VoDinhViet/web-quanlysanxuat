@@ -17,13 +17,10 @@ import {
   OVERDUE_FILTER_VALUE,
   OVERDUE_LABEL,
   PAYMENT_TERM_LABELS,
-} from "@/features/orders/types/order.type"
+} from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
-import type {
-  OrderFilterOption,
-  PaymentTerm,
-} from "@/features/orders/types/order.type"
+import type { OrderFilterOption, PaymentTerm } from "@/lib/types/order.type"
 
 const ALL_VALUE = "all"
 

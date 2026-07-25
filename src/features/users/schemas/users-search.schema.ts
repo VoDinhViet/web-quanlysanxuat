@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { EmployeeStatus } from "@/features/users/types/user.type"
+import { EmployeeStatus } from "@/lib/types/user.type"
 import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 // Mirrors the backend's GetUsersReqDto (page, limit, q, order inherited from

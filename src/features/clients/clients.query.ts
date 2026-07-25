@@ -1,8 +1,8 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { getClientGroupFilterOptions } from "@/features/clients/server-functions/get-client-groups"
-import { getClients } from "@/features/clients/server-functions/get-clients"
 import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
+import { getClientGroups } from "@/lib/server-functions/get-client-groups"
+import { getClients } from "@/lib/server-functions/get-clients"
 
 // Reference lists change rarely — cache them longer so moving between
 // list/create doesn't refetch on every navigation.
@@ -20,6 +20,6 @@ export const clientsQueryOptions = (search: ClientsSearchSchema) =>
 export const clientGroupOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["clients", "group-options"],
-    queryFn: () => getClientGroupFilterOptions(),
+    queryFn: () => getClientGroups(),
     staleTime: REFERENCE_STALE_TIME,
   })

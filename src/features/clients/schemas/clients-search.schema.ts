@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { ClientStatus } from "@/features/clients/types/client.type"
+import { ClientStatus } from "@/lib/types/client.type"
 
 // Mirrors the backend's GetClientsReqDto (page, limit, q inherited from
 // PageOptionsDto; status/clientGroupId are client-specific filters). The backend

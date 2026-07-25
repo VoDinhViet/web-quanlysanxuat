@@ -9,7 +9,7 @@ import {
   OVERDUE_DESCRIPTION,
   OVERDUE_FILTER_VALUE,
   OrderStatus,
-} from "@/features/orders/types/order.type"
+} from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 import type { OrderBadgeTone } from "@/features/orders/components/OrderBadges"
 

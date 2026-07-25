@@ -2,10 +2,7 @@ import { z } from "zod"
 
 import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
 
-import {
-  MaterialStatus,
-  MaterialType,
-} from "@/features/materials/types/material.type"
+import { MaterialStatus, MaterialType } from "@/lib/types/material.type"
 
 // A blank form input means "not provided" — the wire payload should omit the
 // field rather than send an empty string.

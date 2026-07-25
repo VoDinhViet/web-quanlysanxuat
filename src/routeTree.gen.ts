@@ -9,73 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as authedRouteRouteImport } from './routes/(authed)/route'
-import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as authedManageRouteImport } from './routes/(authed)/manage'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
+import { Route as authedRouteRouteImport } from './routes/(authed)/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
-import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
-import { Route as authedManageSuppliersRouteImport } from './routes/(authed)/manage_/suppliers'
-import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
-import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage_/orders'
-import { Route as authedManageMaterialsRouteImport } from './routes/(authed)/manage_/materials'
+import { Route as authedManageRouteImport } from './routes/(authed)/manage'
 import { Route as authedManageClientsRouteImport } from './routes/(authed)/manage_/clients'
-import { Route as authedManageUsersCreateRouteImport } from './routes/(authed)/manage_/users_/create'
-import { Route as authedManageSuppliersCreateRouteImport } from './routes/(authed)/manage_/suppliers_/create'
-import { Route as authedManageProductsCreateRouteImport } from './routes/(authed)/manage_/products_/create'
-import { Route as authedManageProductsProductIdRouteImport } from './routes/(authed)/manage_/products_/$productId'
-import { Route as authedManageMaterialsCreateRouteImport } from './routes/(authed)/manage_/materials_/create'
+import { Route as authedManageMaterialsRouteImport } from './routes/(authed)/manage_/materials'
+import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage_/orders'
+import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
+import { Route as authedManageSuppliersRouteImport } from './routes/(authed)/manage_/suppliers'
+import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
 import { Route as authedManageClientsCreateRouteImport } from './routes/(authed)/manage_/clients_/create'
-import { Route as authedManageUsersUserIdUpdateRouteImport } from './routes/(authed)/manage_/users_/$userId.update'
-import { Route as authedManageSuppliersSupplierIdUpdateRouteImport } from './routes/(authed)/manage_/suppliers_/$supplierId.update'
+import { Route as authedManageMaterialsCreateRouteImport } from './routes/(authed)/manage_/materials_/create'
+import { Route as authedManageProductsProductIdRouteImport } from './routes/(authed)/manage_/products_/$productId'
+import { Route as authedManageProductsCreateRouteImport } from './routes/(authed)/manage_/products_/create'
+import { Route as authedManageSuppliersCreateRouteImport } from './routes/(authed)/manage_/suppliers_/create'
+import { Route as authedManageUsersCreateRouteImport } from './routes/(authed)/manage_/users_/create'
 import { Route as authedManageMaterialsMaterialIdUpdateRouteImport } from './routes/(authed)/manage_/materials_/$materialId.update'
+import { Route as authedManageSuppliersSupplierIdUpdateRouteImport } from './routes/(authed)/manage_/suppliers_/$supplierId.update'
+import { Route as authedManageUsersUserIdUpdateRouteImport } from './routes/(authed)/manage_/users_/$userId.update'
 
-const authedRouteRoute = authedRouteRouteImport.update({
-  id: '/(authed)',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const authedRouteRoute = authedRouteRouteImport.update({
+  id: '/(authed)',
   getParentRoute: () => rootRouteImport,
-} as any)
-const authedManageRoute = authedManageRouteImport.update({
-  id: '/manage',
-  path: '/manage',
-  getParentRoute: () => authedRouteRoute,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => authRouteRoute,
 } as any)
-const authedManageUsersRoute = authedManageUsersRouteImport.update({
-  id: '/manage_/users',
-  path: '/manage/users',
-  getParentRoute: () => authedRouteRoute,
-} as any)
-const authedManageSuppliersRoute = authedManageSuppliersRouteImport.update({
-  id: '/manage_/suppliers',
-  path: '/manage/suppliers',
-  getParentRoute: () => authedRouteRoute,
-} as any)
-const authedManageProductsRoute = authedManageProductsRouteImport.update({
-  id: '/manage_/products',
-  path: '/manage/products',
-  getParentRoute: () => authedRouteRoute,
-} as any)
-const authedManageOrdersRoute = authedManageOrdersRouteImport.update({
-  id: '/manage_/orders',
-  path: '/manage/orders',
-  getParentRoute: () => authedRouteRoute,
-} as any)
-const authedManageMaterialsRoute = authedManageMaterialsRouteImport.update({
-  id: '/manage_/materials',
-  path: '/manage/materials',
+const authedManageRoute = authedManageRouteImport.update({
+  id: '/manage',
+  path: '/manage',
   getParentRoute: () => authedRouteRoute,
 } as any)
 const authedManageClientsRoute = authedManageClientsRouteImport.update({
@@ -83,27 +58,35 @@ const authedManageClientsRoute = authedManageClientsRouteImport.update({
   path: '/manage/clients',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageUsersCreateRoute = authedManageUsersCreateRouteImport.update({
-  id: '/manage_/users_/create',
-  path: '/manage/users/create',
+const authedManageMaterialsRoute = authedManageMaterialsRouteImport.update({
+  id: '/manage_/materials',
+  path: '/manage/materials',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageSuppliersCreateRoute =
-  authedManageSuppliersCreateRouteImport.update({
-    id: '/manage_/suppliers_/create',
-    path: '/manage/suppliers/create',
-    getParentRoute: () => authedRouteRoute,
-  } as any)
-const authedManageProductsCreateRoute =
-  authedManageProductsCreateRouteImport.update({
-    id: '/manage_/products_/create',
-    path: '/manage/products/create',
-    getParentRoute: () => authedRouteRoute,
-  } as any)
-const authedManageProductsProductIdRoute =
-  authedManageProductsProductIdRouteImport.update({
-    id: '/manage_/products_/$productId',
-    path: '/manage/products/$productId',
+const authedManageOrdersRoute = authedManageOrdersRouteImport.update({
+  id: '/manage_/orders',
+  path: '/manage/orders',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageProductsRoute = authedManageProductsRouteImport.update({
+  id: '/manage_/products',
+  path: '/manage/products',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageSuppliersRoute = authedManageSuppliersRouteImport.update({
+  id: '/manage_/suppliers',
+  path: '/manage/suppliers',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageUsersRoute = authedManageUsersRouteImport.update({
+  id: '/manage_/users',
+  path: '/manage/users',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageClientsCreateRoute =
+  authedManageClientsCreateRouteImport.update({
+    id: '/manage_/clients_/create',
+    path: '/manage/clients/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
 const authedManageMaterialsCreateRoute =
@@ -112,16 +95,33 @@ const authedManageMaterialsCreateRoute =
     path: '/manage/materials/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageClientsCreateRoute =
-  authedManageClientsCreateRouteImport.update({
-    id: '/manage_/clients_/create',
-    path: '/manage/clients/create',
+const authedManageProductsProductIdRoute =
+  authedManageProductsProductIdRouteImport.update({
+    id: '/manage_/products_/$productId',
+    path: '/manage/products/$productId',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageUsersUserIdUpdateRoute =
-  authedManageUsersUserIdUpdateRouteImport.update({
-    id: '/manage_/users_/$userId/update',
-    path: '/manage/users/$userId/update',
+const authedManageProductsCreateRoute =
+  authedManageProductsCreateRouteImport.update({
+    id: '/manage_/products_/create',
+    path: '/manage/products/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageSuppliersCreateRoute =
+  authedManageSuppliersCreateRouteImport.update({
+    id: '/manage_/suppliers_/create',
+    path: '/manage/suppliers/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageUsersCreateRoute = authedManageUsersCreateRouteImport.update({
+  id: '/manage_/users_/create',
+  path: '/manage/users/create',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageMaterialsMaterialIdUpdateRoute =
+  authedManageMaterialsMaterialIdUpdateRouteImport.update({
+    id: '/manage_/materials_/$materialId/update',
+    path: '/manage/materials/$materialId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
 const authedManageSuppliersSupplierIdUpdateRoute =
@@ -130,10 +130,10 @@ const authedManageSuppliersSupplierIdUpdateRoute =
     path: '/manage/suppliers/$supplierId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageMaterialsMaterialIdUpdateRoute =
-  authedManageMaterialsMaterialIdUpdateRouteImport.update({
-    id: '/manage_/materials_/$materialId/update',
-    path: '/manage/materials/$materialId/update',
+const authedManageUsersUserIdUpdateRoute =
+  authedManageUsersUserIdUpdateRouteImport.update({
+    id: '/manage_/users_/$userId/update',
+    path: '/manage/users/$userId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
 
@@ -273,11 +273,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/(authed)': {
-      id: '/(authed)'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof authedRouteRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)': {
@@ -287,19 +287,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/(authed)': {
+      id: '/(authed)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authedRouteRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/(authed)/manage': {
-      id: '/(authed)/manage'
-      path: '/manage'
-      fullPath: '/manage'
-      preLoaderRoute: typeof authedManageRouteImport
-      parentRoute: typeof authedRouteRoute
     }
     '/(auth)/login': {
       id: '/(auth)/login'
@@ -308,39 +301,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof authRouteRoute
     }
-    '/(authed)/manage_/users': {
-      id: '/(authed)/manage_/users'
-      path: '/manage/users'
-      fullPath: '/manage/users'
-      preLoaderRoute: typeof authedManageUsersRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
-    '/(authed)/manage_/suppliers': {
-      id: '/(authed)/manage_/suppliers'
-      path: '/manage/suppliers'
-      fullPath: '/manage/suppliers'
-      preLoaderRoute: typeof authedManageSuppliersRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
-    '/(authed)/manage_/products': {
-      id: '/(authed)/manage_/products'
-      path: '/manage/products'
-      fullPath: '/manage/products'
-      preLoaderRoute: typeof authedManageProductsRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
-    '/(authed)/manage_/orders': {
-      id: '/(authed)/manage_/orders'
-      path: '/manage/orders'
-      fullPath: '/manage/orders'
-      preLoaderRoute: typeof authedManageOrdersRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
-    '/(authed)/manage_/materials': {
-      id: '/(authed)/manage_/materials'
-      path: '/manage/materials'
-      fullPath: '/manage/materials'
-      preLoaderRoute: typeof authedManageMaterialsRouteImport
+    '/(authed)/manage': {
+      id: '/(authed)/manage'
+      path: '/manage'
+      fullPath: '/manage'
+      preLoaderRoute: typeof authedManageRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/clients': {
@@ -350,39 +315,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageClientsRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/users_/create': {
-      id: '/(authed)/manage_/users_/create'
-      path: '/manage/users/create'
-      fullPath: '/manage/users/create'
-      preLoaderRoute: typeof authedManageUsersCreateRouteImport
+    '/(authed)/manage_/materials': {
+      id: '/(authed)/manage_/materials'
+      path: '/manage/materials'
+      fullPath: '/manage/materials'
+      preLoaderRoute: typeof authedManageMaterialsRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/suppliers_/create': {
-      id: '/(authed)/manage_/suppliers_/create'
-      path: '/manage/suppliers/create'
-      fullPath: '/manage/suppliers/create'
-      preLoaderRoute: typeof authedManageSuppliersCreateRouteImport
+    '/(authed)/manage_/orders': {
+      id: '/(authed)/manage_/orders'
+      path: '/manage/orders'
+      fullPath: '/manage/orders'
+      preLoaderRoute: typeof authedManageOrdersRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/products_/create': {
-      id: '/(authed)/manage_/products_/create'
-      path: '/manage/products/create'
-      fullPath: '/manage/products/create'
-      preLoaderRoute: typeof authedManageProductsCreateRouteImport
+    '/(authed)/manage_/products': {
+      id: '/(authed)/manage_/products'
+      path: '/manage/products'
+      fullPath: '/manage/products'
+      preLoaderRoute: typeof authedManageProductsRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/products_/$productId': {
-      id: '/(authed)/manage_/products_/$productId'
-      path: '/manage/products/$productId'
-      fullPath: '/manage/products/$productId'
-      preLoaderRoute: typeof authedManageProductsProductIdRouteImport
+    '/(authed)/manage_/suppliers': {
+      id: '/(authed)/manage_/suppliers'
+      path: '/manage/suppliers'
+      fullPath: '/manage/suppliers'
+      preLoaderRoute: typeof authedManageSuppliersRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/materials_/create': {
-      id: '/(authed)/manage_/materials_/create'
-      path: '/manage/materials/create'
-      fullPath: '/manage/materials/create'
-      preLoaderRoute: typeof authedManageMaterialsCreateRouteImport
+    '/(authed)/manage_/users': {
+      id: '/(authed)/manage_/users'
+      path: '/manage/users'
+      fullPath: '/manage/users'
+      preLoaderRoute: typeof authedManageUsersRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/clients_/create': {
@@ -392,11 +357,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageClientsCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/users_/$userId/update': {
-      id: '/(authed)/manage_/users_/$userId/update'
-      path: '/manage/users/$userId/update'
-      fullPath: '/manage/users/$userId/update'
-      preLoaderRoute: typeof authedManageUsersUserIdUpdateRouteImport
+    '/(authed)/manage_/materials_/create': {
+      id: '/(authed)/manage_/materials_/create'
+      path: '/manage/materials/create'
+      fullPath: '/manage/materials/create'
+      preLoaderRoute: typeof authedManageMaterialsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/products_/$productId': {
+      id: '/(authed)/manage_/products_/$productId'
+      path: '/manage/products/$productId'
+      fullPath: '/manage/products/$productId'
+      preLoaderRoute: typeof authedManageProductsProductIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/products_/create': {
+      id: '/(authed)/manage_/products_/create'
+      path: '/manage/products/create'
+      fullPath: '/manage/products/create'
+      preLoaderRoute: typeof authedManageProductsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/suppliers_/create': {
+      id: '/(authed)/manage_/suppliers_/create'
+      path: '/manage/suppliers/create'
+      fullPath: '/manage/suppliers/create'
+      preLoaderRoute: typeof authedManageSuppliersCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/users_/create': {
+      id: '/(authed)/manage_/users_/create'
+      path: '/manage/users/create'
+      fullPath: '/manage/users/create'
+      preLoaderRoute: typeof authedManageUsersCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/materials_/$materialId/update': {
+      id: '/(authed)/manage_/materials_/$materialId/update'
+      path: '/manage/materials/$materialId/update'
+      fullPath: '/manage/materials/$materialId/update'
+      preLoaderRoute: typeof authedManageMaterialsMaterialIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/suppliers_/$supplierId/update': {
@@ -406,11 +406,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageSuppliersSupplierIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/materials_/$materialId/update': {
-      id: '/(authed)/manage_/materials_/$materialId/update'
-      path: '/manage/materials/$materialId/update'
-      fullPath: '/manage/materials/$materialId/update'
-      preLoaderRoute: typeof authedManageMaterialsMaterialIdUpdateRouteImport
+    '/(authed)/manage_/users_/$userId/update': {
+      id: '/(authed)/manage_/users_/$userId/update'
+      path: '/manage/users/$userId/update'
+      fullPath: '/manage/users/$userId/update'
+      preLoaderRoute: typeof authedManageUsersUserIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
   }

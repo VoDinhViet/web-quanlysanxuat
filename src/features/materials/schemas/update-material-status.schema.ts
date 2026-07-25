@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { MaterialStatus } from "@/features/materials/types/material.type"
+import { MaterialStatus } from "@/lib/types/material.type"
 
 // Lightweight wire contract for the row-level "Ngừng sử dụng" / "Kích hoạt lại"
 // quick action — a partial PATCH /api/materials/:id with only `status` (the

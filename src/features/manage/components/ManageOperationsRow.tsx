@@ -14,7 +14,7 @@ import {
   NCR_SOURCE_LABELS,
   NCR_STATUS_LABELS,
   NcrStatus,
-} from "@/features/manage/types/manage.type"
+} from "@/lib/types/manage.type"
 
 const ncrStatusBadgeVariants = cva("", {
   variants: {

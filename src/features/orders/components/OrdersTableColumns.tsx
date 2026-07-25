@@ -7,8 +7,8 @@ import {
   MoneyCell,
   OrderActionsCell,
 } from "@/features/orders/components/OrderTableCells"
-import { PAYMENT_TERM_LABELS } from "@/features/orders/types/order.type"
-import type { Order } from "@/features/orders/types/order.type"
+import { PAYMENT_TERM_LABELS } from "@/lib/types/order.type"
+import type { Order } from "@/lib/types/order.type"
 
 const MONEY_COLUMN_META = {
   headerClassName: "min-w-36 text-right",

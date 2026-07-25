@@ -9,12 +9,18 @@ export type ProductDetailTab = (typeof PRODUCT_DETAIL_TABS)[number]
 // useState (see .claude/rules/forms-and-ui.md). `.catch` keeps a hand-mangled
 // `?tab=` from crashing the route.
 //
-// The BOM tab's `page`/`limit` params are deliberately NOT declared yet — that
-// tab is a placeholder until its backend lands, and carrying dead pagination in
-// every link to this route would be noise. They use those exact names when
-// added so the shared TablePagination drops in unchanged.
+// `page`/`limit`/`q` back the "materials" tab's list (GET .../bom/materials) —
+// the only tab with pagination. They stay `.optional()` (no concrete default)
+// so the other two tabs' links don't carry dead pagination noise; the
+// materials tab defaults them itself when reading `useSearch()`.
 export const productDetailSearchSchema = z.object({
   tab: z.enum(PRODUCT_DETAIL_TABS).catch("info"),
+  page: z.number().int().min(1).optional().catch(undefined),
+  limit: z
+    .union([z.literal(10), z.literal(20), z.literal(50)])
+    .optional()
+    .catch(undefined),
+  q: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type ProductDetailSearchSchema = z.infer<

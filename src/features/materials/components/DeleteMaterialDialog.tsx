@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Trash2 } from "lucide-react"
 import type { ReactNode } from "react"
 
 import {
@@ -11,11 +12,12 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { deleteMaterial } from "@/features/materials/server-functions/delete-material"
-import type { Material } from "@/features/materials/types/material.type"
+import type { Material } from "@/lib/types/material.type"
 
 type DeleteMaterialDialogProps = {
   material: Material
@@ -51,8 +53,11 @@ export function DeleteMaterialDialog({
       }}
     >
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent size="sm">
+      <AlertDialogContent>
         <AlertDialogHeader>
+          <AlertDialogMedia>
+            <Trash2 />
+          </AlertDialogMedia>
           <AlertDialogTitle>Xóa vật tư này?</AlertDialogTitle>
           <AlertDialogDescription>
             {`"${material.name}" (${material.code}) sẽ bị xóa vĩnh viễn. Chỉ có thể xóa khi vật tư chưa phát sinh giao dịch nào (BOM, PO, nhập/xuất kho...).`}
@@ -75,7 +80,7 @@ export function DeleteMaterialDialog({
               mutation.mutate()
             }}
           >
-            {mutation.isPending ? "Đang xóa..." : "Xóa"}
+            {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

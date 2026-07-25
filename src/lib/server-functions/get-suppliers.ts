@@ -1,11 +1,13 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
+import { z } from "zod"
 
-import { suppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { Supplier } from "@/features/suppliers/types/supplier.type"
+import { SORT_ORDERS } from "@/lib/types/pagination.type"
+import { SupplierStatus } from "@/lib/types/supplier.type"
+import type { Supplier } from "@/lib/types/supplier.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -20,8 +22,21 @@ function resolveGetSuppliersErrorMessage(error: unknown): string {
   }
 }
 
+// Broader than any single caller's own search schema — see get-clients.ts for
+// why (route-facing `suppliersSearchSchema` stays local to the suppliers
+// route, this one just needs to be wire-valid for the backend).
+const getSuppliersSchema = z.object({
+  page: z.number().int().min(1).optional(),
+  limit: z.number().int().min(1).optional(),
+  q: z.string().trim().min(1).optional(),
+  status: z.enum(SupplierStatus).optional(),
+  supplierGroupId: z.string().trim().min(1).optional(),
+  countryId: z.string().trim().min(1).optional(),
+  order: z.enum(SORT_ORDERS).optional(),
+})
+
 export const getSuppliers = createServerFn({ method: "GET" })
-  .validator(suppliersSearchSchema)
+  .validator(getSuppliersSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<Supplier>> => {
     try {
       const response = await http.get<PaginatedResponse<Supplier>>(

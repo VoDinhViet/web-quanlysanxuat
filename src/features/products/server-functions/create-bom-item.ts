@@ -3,9 +3,10 @@ import axios from "axios"
 import { z } from "zod"
 
 import { createBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
+import { resolveFileFieldId } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { BomItemNode } from "@/features/products/types/bom-item.type"
+import type { BomItemNode } from "@/lib/types/bom-item.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -52,6 +53,7 @@ function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "productId">) {
     quantity: Number(data.quantity),
     sortOrder: data.sortOrder,
     note: note === "" ? undefined : note,
+    drawingFileId: resolveFileFieldId(data.drawing, "create"),
   }
 }
 

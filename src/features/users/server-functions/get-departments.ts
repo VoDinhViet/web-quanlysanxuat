@@ -5,7 +5,7 @@ import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { DepartmentOption } from "@/features/users/types/user.type"
+import type { Department } from "@/lib/types/user.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -21,9 +21,9 @@ function resolveGetDepartmentsErrorMessage(error: unknown): string {
 }
 
 export const getDepartments = createServerFn({ method: "GET" }).handler(
-  async (): Promise<DepartmentOption[]> => {
+  async (): Promise<Department[]> => {
     try {
-      const response = await http.get<PaginatedResponse<DepartmentOption>>(
+      const response = await http.get<PaginatedResponse<Department>>(
         "/api/departments",
         { params: { limit: FILTER_OPTIONS_LIMIT } }
       )

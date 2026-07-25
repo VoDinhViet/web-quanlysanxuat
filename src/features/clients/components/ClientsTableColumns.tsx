@@ -5,11 +5,8 @@ import { Edit3, Eye, MoreHorizontal } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import {
-  CLIENT_STATUS_LABELS,
-  ClientStatus,
-} from "@/features/clients/types/client.type"
-import type { Client } from "@/features/clients/types/client.type"
+import { CLIENT_STATUS_LABELS, ClientStatus } from "@/lib/types/client.type"
+import type { Client } from "@/lib/types/client.type"
 
 const statusBadgeVariants = cva("", {
   variants: {

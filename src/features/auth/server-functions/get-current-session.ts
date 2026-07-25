@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start"
 import { isAccessTokenExpired, refreshAccessToken } from "@/lib/auth-token"
 import { logHttpError } from "@/lib/http"
 import { useAppSession } from "@/lib/session"
-import type { CurrentSession } from "@/features/auth/types/login.type"
+import type { CurrentSession } from "@/lib/types/login.type"
 
 export const getCurrentSession = createServerFn({ method: "GET" }).handler(
   async (): Promise<CurrentSession> => {

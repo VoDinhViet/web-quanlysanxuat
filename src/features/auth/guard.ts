@@ -2,8 +2,8 @@ import { redirect } from "@tanstack/react-router"
 
 import { hasPermission } from "@/features/auth/permissions"
 import { getCurrentSession } from "@/features/auth/server-functions/get-current-session"
-import type { CurrentSession } from "@/features/auth/types/login.type"
-import type { PermissionCode } from "@/features/auth/types/permission.type"
+import type { CurrentSession } from "@/lib/types/login.type"
+import type { PermissionCode } from "@/lib/types/permission.type"
 
 /**
  * The single place that decides whether a protected route may render. Called from the

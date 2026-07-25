@@ -1,4 +1,6 @@
+import type { ClientRef } from "@/lib/types/client.type"
 import type { FileResource } from "@/lib/types/file.type"
+import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 
 export enum MaterialType {
@@ -21,11 +23,8 @@ export const MATERIAL_STATUS_LABELS: Record<MaterialStatus, string> = {
   [MaterialStatus.INACTIVE]: "Ngừng sử dụng",
 }
 
-/** Mirrors the backend's nested group/client/preferredSupplier relation
- *  (MaterialRefResDto), and doubles as the shape for each ref-list's options
- *  (GET /api/units, /api/material-groups, /api/clients, /api/suppliers). The
- *  unit relation uses the shared `Unit` type (@/lib/types/unit.type) instead. */
-export type MaterialRef = {
+/** Mirrors the backend's nested material-group relation (GET /api/material-groups). */
+export type MaterialGroupRef = {
   id: string
   code: string
   name: string
@@ -54,44 +53,22 @@ export type Material = {
   type: MaterialType
   status: MaterialStatus
   unit: Unit
-  group: MaterialRef
-  client: MaterialRef | null
+  group: MaterialGroupRef
+  client: ClientRef | null
   image: FileResource | null
   note: string | null
   // Extended information (all optional)
   materialGrade: string | null
   technicalStandard: string | null
   dimensions: string | null
-  specificWeight: string | null
+  specificWeight: number | null
   colorSurface: string | null
   description: string | null
   origin: string | null
-  preferredSupplier?: MaterialRef | null
+  preferredSupplier?: SupplierRef | null
   leadTime: string | null
   attachments?: MaterialAttachment[]
   creator: MaterialCreator | null
   createdAt: string
   updatedAt: string
-}
-
-// Recursive JSON-safe value — `changes` is free-form audit data, but a bare
-// `Record<string, unknown>` fails createServerFn's serializability check
-// (unknown can't be proven JSON-safe across the RPC boundary), so it's
-// narrowed to this closed union instead.
-export type MaterialLogChangeValue =
-  | string
-  | number
-  | boolean
-  | null
-  | MaterialLogChangeValue[]
-  | { [key: string]: MaterialLogChangeValue }
-
-/** Mirrors the backend's MaterialLogResDto (GET /api/materials/:id/logs). `changes`
- *  holds `{ field: { from, to } }` for UPDATE and the initial snapshot for CREATE. */
-export type MaterialLog = {
-  id: string
-  action: string
-  changes: Record<string, MaterialLogChangeValue>
-  changer: MaterialCreator | null
-  createdAt: string
 }

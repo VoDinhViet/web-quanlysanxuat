@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 
 import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
 import { http, logHttpError } from "@/lib/http"
-import type { OrderFilterOption } from "@/features/orders/types/order.type"
+import type { OrderFilterOption } from "@/lib/types/order.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
 // A dedicated endpoint readable with `orders:read`, rather than reusing

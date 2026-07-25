@@ -1,3 +1,5 @@
+import { Trash2 } from "lucide-react"
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -6,9 +8,10 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import type { BomItem } from "@/features/products/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
 
 type DeleteBomItemDialogProps = {
   node: BomItem | null
@@ -23,8 +26,11 @@ export function DeleteBomItemDialog({
 }: DeleteBomItemDialogProps) {
   return (
     <AlertDialog open={node !== null} onOpenChange={onOpenChange}>
-      <AlertDialogContent size="sm">
+      <AlertDialogContent>
         <AlertDialogHeader>
+          <AlertDialogMedia>
+            <Trash2 />
+          </AlertDialogMedia>
           <AlertDialogTitle>Xoá thành phần này?</AlertDialogTitle>
           <AlertDialogDescription>
             {node
@@ -35,7 +41,7 @@ export function DeleteBomItemDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Hủy</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={onConfirm}>
-            Xoá
+            Xác nhận
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

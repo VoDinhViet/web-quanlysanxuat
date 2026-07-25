@@ -11,8 +11,9 @@ import { useProductBom } from "@/features/products/hooks/use-product-bom"
 import { productBomQueryOptions } from "@/features/products/queries/product-bom.query"
 import { productOperationsQueryOptions } from "@/features/products/queries/product-operations.query"
 import type { OperationsByProductId } from "@/features/products/components/ProductBomTable"
-import type { BomItem } from "@/features/products/types/bom-item.type"
-import type { Product } from "@/features/products/types/product.type"
+import { BomItemType } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
+import type { Product } from "@/lib/types/product.type"
 
 type ProductBomTabProps = {
   product: Product
@@ -26,7 +27,7 @@ function collectProductItemIds(nodes: BomItem[]): string[] {
 
   function visit(list: BomItem[]) {
     list.forEach((node) => {
-      if (node.itemType === "PRODUCT") ids.push(node.itemId)
+      if (node.itemType === BomItemType.PRODUCT) ids.push(node.itemId)
       if (node.children.length > 0) visit(node.children)
     })
   }

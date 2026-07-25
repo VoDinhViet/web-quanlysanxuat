@@ -4,7 +4,7 @@ import axios from "axios"
 import { updateMaterialStatusSchema } from "@/features/materials/schemas/update-material-status.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Material } from "@/features/materials/types/material.type"
+import type { Material } from "@/lib/types/material.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
