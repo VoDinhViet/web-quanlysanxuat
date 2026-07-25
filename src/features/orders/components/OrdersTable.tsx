@@ -3,7 +3,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useRouterState } from "@tanstack/react-router"
 
 import {
   Table,
@@ -17,42 +16,31 @@ import { TablePagination } from "@/components/shared/TablePagination"
 import { OrdersEmptyState } from "@/features/orders/components/OrdersEmptyState"
 import { orderColumns } from "@/features/orders/components/OrdersTableColumns"
 import { cn } from "@/lib/utils"
-import type { Order } from "@/features/orders/types/order.type"
+import type { Order } from "@/lib/types/order.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 type OrdersTableProps = {
   rows: Order[]
   pagination: Pagination
-  isFiltered: boolean
+  isPending: boolean
 }
 
-export function OrdersTable({
-  rows,
-  pagination,
-  isFiltered,
-}: OrdersTableProps) {
+export function OrdersTable({ rows, pagination, isPending }: OrdersTableProps) {
   const table = useReactTable({
     data: rows,
     columns: orderColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
-  // Search-as-you-type re-runs the route loader on every debounced keystroke. Dim
-  // the previous rows while the next page loads instead of blanking the table —
-  // the filter input above must stay mounted or the caret jumps out mid-word.
-  const isLoading = useRouterState({ select: (state) => state.isLoading })
-
   if (rows.length === 0) {
     return (
       <div
         className={cn(
           "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
-          isLoading && "pointer-events-none opacity-50"
+          isPending && "pointer-events-none opacity-50"
         )}
       >
-        <div className="rounded-md border border-dashed border-border/70 bg-card">
-          <OrdersEmptyState isFiltered={isFiltered} />
-        </div>
+        <OrdersEmptyState />
 
         <TablePagination pagination={pagination} className="pt-4" />
       </div>
@@ -63,7 +51,7 @@ export function OrdersTable({
     <div
       className={cn(
         "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
-        isLoading && "pointer-events-none opacity-50"
+        isPending && "pointer-events-none opacity-50"
       )}
     >
       {/* `overflow-x-auto`, unlike the products table's `overflow-hidden`: 11

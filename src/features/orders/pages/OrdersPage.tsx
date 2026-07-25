@@ -1,7 +1,12 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { OrderStatCards } from "@/features/orders/components/OrderStatCards"
 import { OrderStatusLegend } from "@/features/orders/components/OrderStatusLegend"
 import { OrdersTable } from "@/features/orders/components/OrdersTable"
@@ -16,23 +21,19 @@ import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search
 export function OrdersPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries, so useSuspenseQuery resolves synchronously.
+  // prefetched these queries; the reference lists resolve synchronously via
+  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
+  // pagination changes only update the table, not the whole route.
   const search = useSearch({ from: "/(authed)/manage_/orders" })
   const navigate = useNavigate({ from: "/manage/orders" })
 
-  const { data: orders } = useSuspenseQuery(ordersQueryOptions(search))
+  const ordersQuery = useQuery({
+    ...ordersQueryOptions(search),
+    placeholderData: keepPreviousData,
+  })
   const { data: stats } = useSuspenseQuery(orderStatsQueryOptions())
   const { data: salesRepOptions } = useSuspenseQuery(
     salesRepOptionsQueryOptions()
-  )
-
-  const isFiltered = Boolean(
-    search.q ||
-    search.status ||
-    search.paymentTerm ||
-    search.salesRepId ||
-    search.orderDateFrom ||
-    search.orderDateTo
   )
 
   // `replace` is for the search box: it commits on every debounced keystroke, and
@@ -71,11 +72,21 @@ export function OrdersPage() {
               salesRepOptions={salesRepOptions}
             />
 
-            <OrdersTable
-              rows={orders.data}
-              pagination={orders.pagination}
-              isFiltered={isFiltered}
-            />
+            {ordersQuery.isPending ? (
+              <TableQueryFallback status="pending" />
+            ) : ordersQuery.isError ? (
+              <TableQueryFallback
+                status="error"
+                error={ordersQuery.error.message}
+                onRetry={() => void ordersQuery.refetch()}
+              />
+            ) : (
+              <OrdersTable
+                rows={ordersQuery.data.data}
+                pagination={ordersQuery.data.pagination}
+                isPending={ordersQuery.isFetching}
+              />
+            )}
           </div>
         </section>
 

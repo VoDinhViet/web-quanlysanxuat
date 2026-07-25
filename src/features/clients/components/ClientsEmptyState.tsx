@@ -1,22 +1,22 @@
 import { Link } from "@tanstack/react-router"
-import { PackageOpen, Plus } from "lucide-react"
+import { Plus, UserRound } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { TableEmptyState } from "@/components/shared/TableEmptyState"
 
-export function ProductsEmptyState() {
+export function ClientsEmptyState() {
   return (
     <TableEmptyState
-      icon={PackageOpen}
-      title="Chưa có sản phẩm nào"
-      description="Bắt đầu bằng cách thêm sản phẩm đầu tiên vào danh mục của bạn."
+      icon={UserRound}
+      title="Chưa có khách hàng nào"
+      description="Bắt đầu bằng cách thêm khách hàng đầu tiên vào danh sách của bạn."
       action={
-        <PermissionGate permission="products:create">
+        <PermissionGate permission="clients:create">
           <Button asChild size="sm" className="text-xs">
-            <Link to="/manage/products/create">
+            <Link to="/manage/clients/create">
               <Plus className="size-4" />
-              Thêm sản phẩm
+              Tạo khách hàng
             </Link>
           </Button>
         </PermissionGate>

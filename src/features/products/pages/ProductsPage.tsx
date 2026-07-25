@@ -1,7 +1,12 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
 import { clientOptionsQueryOptions } from "@/features/products/queries/client-options.query"
@@ -12,20 +17,21 @@ import type { ProductsSearchSchema } from "@/features/products/schemas/products-
 export function ProductsPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries, so useSuspenseQuery resolves synchronously.
+  // prefetched these queries; the reference lists resolve synchronously via
+  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
+  // pagination changes only update the table, not the whole route.
   const search = useSearch({ from: "/(authed)/manage_/products" })
   const navigate = useNavigate({ from: "/manage/products" })
 
-  const { data: products } = useSuspenseQuery(productsQueryOptions(search))
+  const productsQuery = useQuery({
+    ...productsQueryOptions(search),
+    placeholderData: keepPreviousData,
+  })
   const { data: productGroupOptions } = useSuspenseQuery(
     productGroupOptionsQueryOptions()
   )
   const { data: clientOptions } = useSuspenseQuery(
     clientOptionsQueryOptions("")
-  )
-
-  const isFiltered = Boolean(
-    search.q || search.status || search.clientId || search.productGroupId
   )
 
   // `replace` is for the search box: it commits on every debounced keystroke, and
@@ -63,11 +69,21 @@ export function ProductsPage() {
               clientOptions={clientOptions}
             />
 
-            <ProductsTable
-              rows={products.data}
-              pagination={products.pagination}
-              isFiltered={isFiltered}
-            />
+            {productsQuery.isPending ? (
+              <TableQueryFallback status="pending" />
+            ) : productsQuery.isError ? (
+              <TableQueryFallback
+                status="error"
+                error={productsQuery.error.message}
+                onRetry={() => void productsQuery.refetch()}
+              />
+            ) : (
+              <ProductsTable
+                rows={productsQuery.data.data}
+                pagination={productsQuery.data.pagination}
+                isPending={productsQuery.isFetching}
+              />
+            )}
           </div>
         </section>
       </div>

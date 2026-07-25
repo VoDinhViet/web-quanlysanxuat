@@ -1,7 +1,8 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
 import { usersQueryOptions } from "@/features/users/users.query"
@@ -10,9 +11,14 @@ import type { UsersSearchSchema } from "@/features/users/schemas/users-search.sc
 export function UsersPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched this query, so useSuspenseQuery resolves synchronously.
+  // prefetched this query for the first paint; the filtered list is a plain
+  // useQuery so filter/pagination changes only update the table, not the
+  // whole route.
   const search = useSearch({ from: "/(authed)/manage_/users" })
-  const { data: usersResult } = useSuspenseQuery(usersQueryOptions(search))
+  const usersQuery = useQuery({
+    ...usersQueryOptions(search),
+    placeholderData: keepPreviousData,
+  })
   const navigate = useNavigate({ from: "/manage/users" })
 
   // `replace` is for the search box: it commits on every debounced keystroke, and
@@ -49,10 +55,21 @@ export function UsersPage() {
                 onFilterChange={handleFilterChange}
               />
 
-              <UsersTable
-                rows={usersResult.data}
-                pagination={usersResult.pagination}
-              />
+              {usersQuery.isPending ? (
+                <TableQueryFallback status="pending" />
+              ) : usersQuery.isError ? (
+                <TableQueryFallback
+                  status="error"
+                  error={usersQuery.error.message}
+                  onRetry={() => void usersQuery.refetch()}
+                />
+              ) : (
+                <UsersTable
+                  rows={usersQuery.data.data}
+                  pagination={usersQuery.data.pagination}
+                  isPending={usersQuery.isFetching}
+                />
+              )}
             </div>
           </div>
         </section>

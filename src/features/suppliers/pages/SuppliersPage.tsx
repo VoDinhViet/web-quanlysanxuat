@@ -1,7 +1,12 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { SupplierStatCards } from "@/features/suppliers/components/SupplierStatCards"
 import { SuppliersTable } from "@/features/suppliers/components/SuppliersTable"
 import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersTableFilter"
@@ -16,11 +21,16 @@ import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/supplie
 export function SuppliersPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries, so useSuspenseQuery resolves synchronously.
+  // prefetched these queries; the reference lists resolve synchronously via
+  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
+  // pagination changes only update the table, not the whole route.
   const search = useSearch({ from: "/(authed)/manage_/suppliers" })
   const navigate = useNavigate({ from: "/manage/suppliers" })
 
-  const { data: suppliers } = useSuspenseQuery(suppliersQueryOptions(search))
+  const suppliersQuery = useQuery({
+    ...suppliersQueryOptions(search),
+    placeholderData: keepPreviousData,
+  })
   const { data: stats } = useSuspenseQuery(supplierStatsQueryOptions())
   const { data: supplierGroupOptions } = useSuspenseQuery(
     supplierGroupOptionsQueryOptions()
@@ -67,10 +77,21 @@ export function SuppliersPage() {
                 countryOptions={countryOptions}
               />
 
-              <SuppliersTable
-                rows={suppliers.data}
-                pagination={suppliers.pagination}
-              />
+              {suppliersQuery.isPending ? (
+                <TableQueryFallback status="pending" />
+              ) : suppliersQuery.isError ? (
+                <TableQueryFallback
+                  status="error"
+                  error={suppliersQuery.error.message}
+                  onRetry={() => void suppliersQuery.refetch()}
+                />
+              ) : (
+                <SuppliersTable
+                  rows={suppliersQuery.data.data}
+                  pagination={suppliersQuery.data.pagination}
+                  isPending={suppliersQuery.isFetching}
+                />
+              )}
             </div>
           </div>
         </section>

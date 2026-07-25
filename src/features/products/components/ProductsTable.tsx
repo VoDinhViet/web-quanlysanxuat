@@ -3,7 +3,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useRouterState } from "@tanstack/react-router"
 
 import {
   Table,
@@ -17,19 +16,19 @@ import { TablePagination } from "@/components/shared/TablePagination"
 import { ProductsEmptyState } from "@/features/products/components/ProductsEmptyState"
 import { productColumns } from "@/features/products/components/ProductsTableColumns"
 import { cn } from "@/lib/utils"
-import type { Product } from "@/features/products/types/product.type"
+import type { Product } from "@/lib/types/product.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 type ProductsTableProps = {
   rows: Product[]
   pagination: Pagination
-  isFiltered: boolean
+  isPending: boolean
 }
 
 export function ProductsTable({
   rows,
   pagination,
-  isFiltered,
+  isPending,
 }: ProductsTableProps) {
   const table = useReactTable({
     data: rows,
@@ -37,22 +36,15 @@ export function ProductsTable({
     getCoreRowModel: getCoreRowModel(),
   })
 
-  // Search-as-you-type re-runs the route loader on every debounced keystroke. Dim
-  // the previous rows while the next page loads instead of blanking the table —
-  // the filter input above must stay mounted or the caret jumps out mid-word.
-  const isLoading = useRouterState({ select: (state) => state.isLoading })
-
   if (rows.length === 0) {
     return (
       <div
         className={cn(
           "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
-          isLoading && "pointer-events-none opacity-50"
+          isPending && "pointer-events-none opacity-50"
         )}
       >
-        <div className="rounded-md border border-dashed border-border/70 bg-card">
-          <ProductsEmptyState isFiltered={isFiltered} />
-        </div>
+        <ProductsEmptyState />
 
         <TablePagination pagination={pagination} className="pt-4" />
       </div>
@@ -63,7 +55,7 @@ export function ProductsTable({
     <div
       className={cn(
         "min-w-0 flex-1 overflow-hidden px-4 pb-4 transition-opacity lg:px-5",
-        isLoading && "pointer-events-none opacity-50"
+        isPending && "pointer-events-none opacity-50"
       )}
     >
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">

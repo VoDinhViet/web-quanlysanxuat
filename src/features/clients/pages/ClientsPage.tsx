@@ -1,7 +1,12 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { ClientsTable } from "@/features/clients/components/ClientsTable"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
 import {
@@ -13,11 +18,16 @@ import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-sea
 export function ClientsPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries, so useSuspenseQuery resolves synchronously.
+  // prefetched these queries; the reference list resolves synchronously via
+  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
+  // pagination changes only update the table, not the whole route.
   const search = useSearch({ from: "/(authed)/manage_/clients" })
   const navigate = useNavigate({ from: "/manage/clients" })
 
-  const { data: clients } = useSuspenseQuery(clientsQueryOptions(search))
+  const clientsQuery = useQuery({
+    ...clientsQueryOptions(search),
+    placeholderData: keepPreviousData,
+  })
   const { data: clientGroupOptions } = useSuspenseQuery(
     clientGroupOptionsQueryOptions()
   )
@@ -57,10 +67,21 @@ export function ClientsPage() {
                 clientGroupOptions={clientGroupOptions}
               />
 
-              <ClientsTable
-                rows={clients.data}
-                pagination={clients.pagination}
-              />
+              {clientsQuery.isPending ? (
+                <TableQueryFallback status="pending" />
+              ) : clientsQuery.isError ? (
+                <TableQueryFallback
+                  status="error"
+                  error={clientsQuery.error.message}
+                  onRetry={() => void clientsQuery.refetch()}
+                />
+              ) : (
+                <ClientsTable
+                  rows={clientsQuery.data.data}
+                  pagination={clientsQuery.data.pagination}
+                  isPending={clientsQuery.isFetching}
+                />
+              )}
             </div>
           </div>
         </section>
