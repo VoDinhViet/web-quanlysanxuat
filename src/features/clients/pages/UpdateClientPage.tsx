@@ -1,0 +1,41 @@
+import { useParams } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+
+import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { UpdateClientForm } from "@/features/clients/components/UpdateClientForm"
+import {
+  clientGroupOptionsQueryOptions,
+  clientQueryOptions,
+} from "@/features/clients/clients.query"
+
+export function UpdateClientPage() {
+  const { clientId } = useParams({
+    from: "/(authed)/manage_/clients_/$clientId/update",
+  })
+
+  const { data: client } = useSuspenseQuery(clientQueryOptions(clientId))
+  const { data: clientGroupOptions } = useSuspenseQuery(
+    clientGroupOptionsQueryOptions()
+  )
+
+  return (
+    <main className="min-h-svh bg-background text-foreground">
+      <PageTitleBar
+        title="Chỉnh sửa khách hàng"
+        breadcrumbs={[
+          { label: "Dashboard", href: "/manage" },
+          { label: "Khách hàng", href: "/manage/clients" },
+          { label: "Chỉnh sửa khách hàng" },
+        ]}
+        notificationCount={5}
+      />
+
+      <div className="w-full p-4 sm:p-5 lg:p-6">
+        <UpdateClientForm
+          client={client}
+          clientGroupOptions={clientGroupOptions}
+        />
+      </div>
+    </main>
+  )
+}

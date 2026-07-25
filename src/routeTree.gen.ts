@@ -26,6 +26,7 @@ import { Route as authedManageProductsProductIdRouteImport } from './routes/(aut
 import { Route as authedManageProductsCreateRouteImport } from './routes/(authed)/manage_/products_/create'
 import { Route as authedManageSuppliersCreateRouteImport } from './routes/(authed)/manage_/suppliers_/create'
 import { Route as authedManageUsersCreateRouteImport } from './routes/(authed)/manage_/users_/create'
+import { Route as authedManageClientsClientIdUpdateRouteImport } from './routes/(authed)/manage_/clients_/$clientId.update'
 import { Route as authedManageMaterialsMaterialIdUpdateRouteImport } from './routes/(authed)/manage_/materials_/$materialId.update'
 import { Route as authedManageSuppliersSupplierIdUpdateRouteImport } from './routes/(authed)/manage_/suppliers_/$supplierId.update'
 import { Route as authedManageUsersUserIdUpdateRouteImport } from './routes/(authed)/manage_/users_/$userId.update'
@@ -118,6 +119,12 @@ const authedManageUsersCreateRoute = authedManageUsersCreateRouteImport.update({
   path: '/manage/users/create',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManageClientsClientIdUpdateRoute =
+  authedManageClientsClientIdUpdateRouteImport.update({
+    id: '/manage_/clients_/$clientId/update',
+    path: '/manage/clients/$clientId/update',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageMaterialsMaterialIdUpdateRoute =
   authedManageMaterialsMaterialIdUpdateRouteImport.update({
     id: '/manage_/materials_/$materialId/update',
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/manage/products/create': typeof authedManageProductsCreateRoute
   '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
   '/manage/users/create': typeof authedManageUsersCreateRoute
+  '/manage/clients/$clientId/update': typeof authedManageClientsClientIdUpdateRoute
   '/manage/materials/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
   '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
   '/manage/users/$userId/update': typeof authedManageUsersUserIdUpdateRoute
@@ -173,6 +181,7 @@ export interface FileRoutesByTo {
   '/manage/products/create': typeof authedManageProductsCreateRoute
   '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
   '/manage/users/create': typeof authedManageUsersCreateRoute
+  '/manage/clients/$clientId/update': typeof authedManageClientsClientIdUpdateRoute
   '/manage/materials/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
   '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
   '/manage/users/$userId/update': typeof authedManageUsersUserIdUpdateRoute
@@ -196,6 +205,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/products_/create': typeof authedManageProductsCreateRoute
   '/(authed)/manage_/suppliers_/create': typeof authedManageSuppliersCreateRoute
   '/(authed)/manage_/users_/create': typeof authedManageUsersCreateRoute
+  '/(authed)/manage_/clients_/$clientId/update': typeof authedManageClientsClientIdUpdateRoute
   '/(authed)/manage_/materials_/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
   '/(authed)/manage_/suppliers_/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
   '/(authed)/manage_/users_/$userId/update': typeof authedManageUsersUserIdUpdateRoute
@@ -218,6 +228,7 @@ export interface FileRouteTypes {
     | '/manage/products/create'
     | '/manage/suppliers/create'
     | '/manage/users/create'
+    | '/manage/clients/$clientId/update'
     | '/manage/materials/$materialId/update'
     | '/manage/suppliers/$supplierId/update'
     | '/manage/users/$userId/update'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
     | '/manage/products/create'
     | '/manage/suppliers/create'
     | '/manage/users/create'
+    | '/manage/clients/$clientId/update'
     | '/manage/materials/$materialId/update'
     | '/manage/suppliers/$supplierId/update'
     | '/manage/users/$userId/update'
@@ -260,6 +272,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/products_/create'
     | '/(authed)/manage_/suppliers_/create'
     | '/(authed)/manage_/users_/create'
+    | '/(authed)/manage_/clients_/$clientId/update'
     | '/(authed)/manage_/materials_/$materialId/update'
     | '/(authed)/manage_/suppliers_/$supplierId/update'
     | '/(authed)/manage_/users_/$userId/update'
@@ -392,6 +405,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageUsersCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/clients_/$clientId/update': {
+      id: '/(authed)/manage_/clients_/$clientId/update'
+      path: '/manage/clients/$clientId/update'
+      fullPath: '/manage/clients/$clientId/update'
+      preLoaderRoute: typeof authedManageClientsClientIdUpdateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/manage_/materials_/$materialId/update': {
       id: '/(authed)/manage_/materials_/$materialId/update'
       path: '/manage/materials/$materialId/update'
@@ -442,6 +462,7 @@ interface authedRouteRouteChildren {
   authedManageProductsCreateRoute: typeof authedManageProductsCreateRoute
   authedManageSuppliersCreateRoute: typeof authedManageSuppliersCreateRoute
   authedManageUsersCreateRoute: typeof authedManageUsersCreateRoute
+  authedManageClientsClientIdUpdateRoute: typeof authedManageClientsClientIdUpdateRoute
   authedManageMaterialsMaterialIdUpdateRoute: typeof authedManageMaterialsMaterialIdUpdateRoute
   authedManageSuppliersSupplierIdUpdateRoute: typeof authedManageSuppliersSupplierIdUpdateRoute
   authedManageUsersUserIdUpdateRoute: typeof authedManageUsersUserIdUpdateRoute
@@ -461,6 +482,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageProductsCreateRoute: authedManageProductsCreateRoute,
   authedManageSuppliersCreateRoute: authedManageSuppliersCreateRoute,
   authedManageUsersCreateRoute: authedManageUsersCreateRoute,
+  authedManageClientsClientIdUpdateRoute:
+    authedManageClientsClientIdUpdateRoute,
   authedManageMaterialsMaterialIdUpdateRoute:
     authedManageMaterialsMaterialIdUpdateRoute,
   authedManageSuppliersSupplierIdUpdateRoute:

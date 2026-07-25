@@ -24,7 +24,7 @@ export function refineClientEmail(
   }
 }
 
-const clientProfileFields = {
+export const clientProfileFields = {
   name: z
     .string()
     .trim()
@@ -69,7 +69,7 @@ const clientContactFields = {
   note: z.string().trim().transform(emptyToUndefined),
 }
 
-const clientContactsSchema = z
+export const clientContactsSchema = z
   .array(z.object(clientContactFields))
   .transform((contacts) =>
     contacts.map((contact, index) => ({ ...contact, isPrimary: index === 0 }))

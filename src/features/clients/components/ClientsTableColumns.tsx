@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { cva } from "class-variance-authority"
 import { Edit3, Eye, MoreHorizontal } from "lucide-react"
@@ -90,30 +91,40 @@ export const clientColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "font-normal",
     },
-    // View/edit/more are placeholders until a detail/edit CRUD pass exists.
-    cell: () => (
-      <div className="flex items-center justify-center gap-1.5">
-        <IconButton
-          label="Xem chi tiết"
-          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-        >
-          <Eye className="size-3.5" />
-        </IconButton>
-        <PermissionGate permission="clients:update">
+    // View/more are placeholders until a detail CRUD pass exists.
+    cell: ({ row }) => {
+      const client = row.original
+
+      return (
+        <div className="flex items-center justify-center gap-1.5">
           <IconButton
-            label="Chỉnh sửa"
+            label="Xem chi tiết"
             className="text-muted-foreground hover:border-primary/30 hover:text-primary"
           >
-            <Edit3 className="size-3.5" />
+            <Eye className="size-3.5" />
           </IconButton>
-        </PermissionGate>
-        <IconButton
-          label="Thao tác khác"
-          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-        >
-          <MoreHorizontal className="size-3.5" />
-        </IconButton>
-      </div>
-    ),
+          <PermissionGate permission="clients:update">
+            <IconButton
+              label="Chỉnh sửa"
+              asChild
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+            >
+              <Link
+                to="/manage/clients/$clientId/update"
+                params={{ clientId: client.id }}
+              >
+                <Edit3 className="size-3.5" />
+              </Link>
+            </IconButton>
+          </PermissionGate>
+          <IconButton
+            label="Thao tác khác"
+            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+          >
+            <MoreHorizontal className="size-3.5" />
+          </IconButton>
+        </div>
+      )
+    },
   }),
 ]
