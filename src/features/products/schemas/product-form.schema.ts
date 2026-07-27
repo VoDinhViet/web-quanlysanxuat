@@ -1,14 +1,8 @@
 import { z } from "zod"
 
 import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+import { emptyToUndefined } from "@/lib/zod-transforms"
 import { ProductStatus } from "@/lib/types/product.type"
-
-// A blank form input means "not provided" — the wire payload should omit the
-// field rather than send an empty string (the backend then auto-generates the
-// code).
-function emptyToUndefined(value: string): string | undefined {
-  return value.length > 0 ? value : undefined
-}
 
 // Wire contract for POST /api/products. `code` is editable (backend allows it,
 // re-checks uniqueness) — leave it blank to let the backend generate SPxxxx.

@@ -1,10 +1,8 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
-import {
-  buildRepresentativesPayload,
-  supplierFormSchema,
-} from "@/features/suppliers/schemas/supplier-form.schema"
+import { buildRepresentativesPayload } from "@/features/suppliers/schemas/supplier-form.schema"
+import { createSupplierSchema } from "@/features/suppliers/schemas/create-supplier.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import {
@@ -17,7 +15,7 @@ import type { Supplier } from "@/lib/types/supplier.type"
 // the file ids go on the wire, so they are destructured out rather than
 // spread. `representativeName`/`representativePhone` are the form's flat
 // fields for what the backend models as a `representatives[]` array.
-const createSupplierPayloadSchema = supplierFormSchema.transform(
+const createSupplierPayloadSchema = createSupplierSchema.transform(
   ({
     logo,
     attachments,

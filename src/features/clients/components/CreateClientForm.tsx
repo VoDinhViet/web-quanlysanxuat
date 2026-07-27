@@ -1,28 +1,21 @@
-import { Activity, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import {
-  AlertOctagon,
-  ArrowRight,
-  FileText,
-  Loader2,
-  RotateCcw,
-} from "lucide-react"
+import { ArrowRight, FileText, Loader2, RotateCcw } from "lucide-react"
 import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { CreateClientContactsSection } from "@/features/clients/components/CreateClientContactsSection"
 import { CreateClientInfoSection } from "@/features/clients/components/CreateClientInfoSection"
 import {
-  CREATE_CLIENT_DEFAULT_VALUES,
-  createClientSchema,
-} from "@/features/clients/schemas/create-client.schema"
+  CLIENT_FORM_DEFAULT_VALUES,
+  clientFormSchema,
+} from "@/features/clients/schemas/client-form.schema"
 import { createClient } from "@/features/clients/server-functions/create-client"
-import type { CreateClientSchema } from "@/features/clients/schemas/create-client.schema"
+import type { ClientFormSchema } from "@/features/clients/schemas/client-form.schema"
 import type { ClientGroupRef } from "@/lib/types/client.type"
 
 type CreateClientFormProps = {
@@ -36,29 +29,27 @@ export function CreateClientForm({
   const queryClient = useQueryClient()
   const createClientFn = useServerFn(createClient)
 
-  const { draft, saveDraft, clearDraft } = useFormDraft<CreateClientSchema>(
+  const { draft, saveDraft, clearDraft } = useFormDraft<ClientFormSchema>(
     "qlsx:draft:create-client"
   )
   const draftRestoredRef = useRef(false)
 
-  const createClientMutation = useMutation({
-    mutationFn: (value: CreateClientSchema) => createClientFn({ data: value }),
+  const { mutate: create, isPending } = useMutation({
+    mutationFn: (value: ClientFormSchema) => createClientFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["clients"] })
       await navigate({ to: "/manage/clients", search: { page: 1, limit: 10 } })
     },
+    onError: (error) => toast.error(error.message),
   })
 
-  const isPending = createClientMutation.isPending
-  const error = createClientMutation.error?.message ?? null
-
   const form = useAppForm({
-    defaultValues: CREATE_CLIENT_DEFAULT_VALUES,
+    defaultValues: CLIENT_FORM_DEFAULT_VALUES,
     validators: {
-      onSubmit: createClientSchema,
+      onSubmit: clientFormSchema,
     },
-    onSubmit: ({ value }) => createClientMutation.mutate(value),
+    onSubmit: ({ value }) => create(value),
   })
 
   // Auto-restore a saved draft into the form once, after localStorage hydrates.
@@ -79,13 +70,6 @@ export function CreateClientForm({
       noValidate
       className="space-y-6"
     >
-      <Activity mode={error ? "visible" : "hidden"}>
-        <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-          <AlertOctagon className="size-4" />
-          <AlertTitle>{error}</AlertTitle>
-        </Alert>
-      </Activity>
-
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <CreateClientInfoSection
           form={form}
@@ -117,7 +101,7 @@ export function CreateClientForm({
               disabled={isPending}
               onClick={() => {
                 form.reset()
-                restoreFormDraft(form, CREATE_CLIENT_DEFAULT_VALUES)
+                restoreFormDraft(form, CLIENT_FORM_DEFAULT_VALUES)
                 clearDraft()
               }}
             >

@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
-import { userFormSchema } from "@/features/users/schemas/user-form.schema"
+import { createUserSchema } from "@/features/users/schemas/create-user.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import { resolveFileFieldId } from "@/lib/file-field.schema"
@@ -9,7 +9,7 @@ import type { User } from "@/lib/types/user.type"
 
 // The form holds the whole uploaded-file object so it can render a preview; the
 // backend only wants the file id.
-const createUserPayloadSchema = userFormSchema.transform(
+const createUserPayloadSchema = createUserSchema.transform(
   ({ avatar, ...rest }) => ({
     ...rest,
     avatarFileId: resolveFileFieldId(avatar, "create"),

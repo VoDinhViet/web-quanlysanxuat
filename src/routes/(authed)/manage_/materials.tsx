@@ -3,11 +3,11 @@ import { createFileRoute } from "@tanstack/react-router"
 import { requirePermission } from "@/features/auth/guard"
 import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
 import {
-  clientOptionsQueryOptions,
   materialGroupOptionsQueryOptions,
   materialsQueryOptions,
 } from "@/features/materials/materials.query"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
+import { searchClientsQueryOptions } from "@/hooks/use-get-client-options"
 
 export const Route = createFileRoute("/(authed)/manage_/materials")({
   beforeLoad: ({ context }) =>
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/(authed)/manage_/materials")({
         materialsQueryOptions(materialsSearchSchema.parse(location.search))
       ),
       context.queryClient.ensureQueryData(materialGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
+      context.queryClient.ensureQueryData(searchClientsQueryOptions("")),
     ]),
   component: MaterialsPage,
 })

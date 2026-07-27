@@ -1,7 +1,11 @@
-import { DateTime } from "luxon"
 import { z } from "zod"
 
 import { imageFieldSchema } from "@/lib/file-field.schema"
+import {
+  emptyToUndefined,
+  emptyToUndefinedIsoDate,
+  toIsoDate,
+} from "@/lib/zod-transforms"
 
 import { EmployeeStatus, UserGender } from "@/lib/types/user.type"
 
@@ -27,12 +31,6 @@ export const updateCredentialSchema = z.object({
   roleId: z.string().trim().min(1, "Vui lòng chọn vai trò"),
 })
 
-// A blank form input means "not provided" — the wire payload should omit the
-// field rather than send an empty string.
-function emptyToUndefined(value: string): string | undefined {
-  return value.length > 0 ? value : undefined
-}
-
 // Raw form fields shared by the create and update user schemas. Optional
 // fields transform "" straight to undefined here, so every schema built from
 // this object gets wire-ready values for free — no separate mapping step.
@@ -43,14 +41,7 @@ export const userProfileFields = {
     .min(1, "Vui lòng nhập họ và tên")
     .max(255, "Họ và tên tối đa 255 ký tự"),
   gender: z.enum(UserGender),
-  dateOfBirth: z
-    .string()
-    .trim()
-    .transform((value) =>
-      value.length > 0
-        ? DateTime.fromISO(value, { zone: "utc" }).toJSDate().toISOString()
-        : undefined
-    ),
+  dateOfBirth: z.string().trim().transform(emptyToUndefinedIsoDate),
   idNumber: z
     .string()
     .trim()
@@ -74,9 +65,7 @@ export const userProfileFields = {
     .string()
     .trim()
     .min(1, "Vui lòng chọn ngày vào làm")
-    .transform((value) =>
-      DateTime.fromISO(value, { zone: "utc" }).toJSDate().toISOString()
-    ),
+    .transform(toIsoDate),
   note: z
     .string()
     .trim()

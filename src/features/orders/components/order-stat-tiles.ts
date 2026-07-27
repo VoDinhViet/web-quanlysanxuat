@@ -1,180 +1,200 @@
-import {
-  AlertTriangle,
-  CircleCheck,
-  ClipboardList,
-  Coins,
-  Loader,
-  Truck,
-} from "lucide-react"
-import type { LucideIcon } from "lucide-react"
+import billListBold from "@iconify-icons/solar/bill-list-bold"
+import checkCircleBold from "@iconify-icons/solar/check-circle-bold"
+import dangerTriangleBold from "@iconify-icons/solar/danger-triangle-bold"
+import deliveryBold from "@iconify-icons/solar/delivery-bold"
+import refreshBold from "@iconify-icons/solar/refresh-bold"
+import walletMoneyBold from "@iconify-icons/solar/wallet-money-bold"
+import type { IconifyIcon } from "@iconify/types"
 
 import type { OrderStats } from "@/lib/types/order.type"
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN")
 
+// Backend values are already ×100 (e.g. 36.5 means "36.5%") — plain number format + "%",
+// not Intl's `style: "percent"` (which expects a 0–1 fraction and would show 3650%).
 const percentFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "percent",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
+  maximumFractionDigits: 1,
 })
 
-function formatRatio(
-  part: number,
-  whole: number,
-  suffix: string
-): string | null {
-  if (whole === 0) {
-    return null
-  }
-
-  return `${percentFormatter.format(part / whole)} ${suffix}`
+function formatPercentValue(value: number): string {
+  return `${percentFormatter.format(value)}%`
 }
 
-// Period-over-period deltas need history the FE has no access to, so they render
-// only when the backend supplied the comparison figure. A null subtitle renders
-// nothing — never a placeholder, never an invented number.
-function formatCountDelta(
-  current: number,
-  previous: number | null,
-  period: string
-): string | null {
-  if (previous === null) {
+export type OrderStatTrendDirection = "up" | "down"
+export type OrderStatTrendTone = "positive" | "negative" | "neutral"
+
+export type OrderStatTrend = {
+  text: string
+  direction: OrderStatTrendDirection | null
+  tone: OrderStatTrendTone
+}
+
+type TrendResult = {
+  text: string;
+  direction: OrderStatTrendDirection | null
+}
+
+// diff = 0 → "Không đổi"; khác 0 → dấu (lên/xuống) + độ lớn đã format. `diff: null` (chỉ
+// xảy ra ở 2 field *TrendPercent — không có kỳ trước để so sánh) → ẩn hẳn dòng trend.
+function formatSignedTrend(
+  diff: number | null,
+  period: string,
+  formatMagnitude: (absValue: number) => string
+): TrendResult | null {
+  if (diff === null) {
     return null
   }
-
-  const diff = current - previous
 
   if (diff === 0) {
-    return `Không đổi so với ${period}`
+    return { text: `Không đổi so với ${period}`, direction: null }
   }
 
-  return `${diff > 0 ? "↑" : "↓"}${Math.abs(diff)} so với ${period}`
+  return {
+    text: `${formatMagnitude(Math.abs(diff))} so với ${period}`,
+    direction: diff > 0 ? "up" : "down",
+  }
 }
 
-function formatValueDelta(
-  current: number,
-  previous: number | null,
-  period: string
-): string | null {
-  if (previous === null || previous === 0) {
-    return null
-  }
-
-  const ratio = (current - previous) / previous
-
-  return `${ratio > 0 ? "+" : ""}${percentFormatter.format(ratio)} so với ${period}`
+// Plain share-of-total, pre-computed by the backend — no better/worse direction.
+function formatShareOfTotal(percent: number, suffix: string): TrendResult {
+  return { text: `${formatPercentValue(percent)} ${suffix}`, direction: null }
 }
 
 export type OrderStatTile = {
   label: string
   value: string
-  subtitle: string | null
-  icon: LucideIcon
+  unit: string
+  trend: OrderStatTrend | null
+  icon: IconifyIcon
   iconClassName: string
-  accentClassName: string
+  valueSizeClassName: string
 }
 
 type OrderStatTileDef = {
   label: string
-  icon: LucideIcon
+  icon: IconifyIcon
   iconClassName: string
-  accentClassName: string
+  valueSizeClassName: string
+  unit: string
+  // Which trend direction counts as good news for this tile — `null` when the
+  // trend is a plain share-of-total ratio with no "better" direction.
+  positiveDirection: OrderStatTrendDirection | null
   selectValue: (stats: OrderStats) => string
-  selectSubtitle: (stats: OrderStats) => string | null
+  selectTrend: (stats: OrderStats) => TrendResult | null
+}
+
+function resolveTone(
+  direction: OrderStatTrendDirection | null,
+  positiveDirection: OrderStatTrendDirection | null
+): OrderStatTrendTone {
+  if (direction === null || positiveDirection === null) {
+    return "neutral"
+  }
+
+  return direction === positiveDirection ? "positive" : "negative"
 }
 
 const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Tổng đơn hàng",
-    icon: ClipboardList,
-    iconClassName:
-      "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-    accentClassName: "before:bg-blue-500 dark:before:bg-blue-400",
-    selectValue: (stats) => `${currencyFormatter.format(stats.totalCount)} đơn`,
-    selectSubtitle: (stats) =>
-      formatCountDelta(
-        stats.totalCount,
-        stats.previousMonth?.totalCount ?? null,
-        "tháng trước"
+    icon: billListBold,
+    iconClassName: "bg-info/15 text-info",
+    valueSizeClassName: "text-2xl",
+    unit: "đơn",
+    positiveDirection: "up",
+    selectValue: (stats) => currencyFormatter.format(stats.totalOrders),
+    selectTrend: (stats) =>
+      formatSignedTrend(
+        stats.totalOrdersTrendPercent,
+        "tháng trước",
+        formatPercentValue
       ),
   },
   {
     label: "Tổng giá trị",
-    icon: Coins,
-    iconClassName:
-      "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
-    accentClassName: "before:bg-indigo-500 dark:before:bg-indigo-400",
-    selectValue: (stats) => `${currencyFormatter.format(stats.totalValue)} VND`,
-    selectSubtitle: (stats) =>
-      formatValueDelta(
-        stats.totalValue,
-        stats.previousMonth?.totalValue ?? null,
-        "tháng trước"
+    icon: walletMoneyBold,
+    iconClassName: "bg-success/15 text-success",
+    valueSizeClassName: "text-lg",
+    unit: "VND",
+    positiveDirection: "up",
+    selectValue: (stats) => currencyFormatter.format(stats.totalValue),
+    selectTrend: (stats) =>
+      formatSignedTrend(
+        stats.totalValueTrendPercent,
+        "tháng trước",
+        formatPercentValue
       ),
   },
   {
     label: "Đã giao",
-    icon: Truck,
+    icon: deliveryBold,
     iconClassName:
-      "bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400",
-    accentClassName: "before:bg-sky-500 dark:before:bg-sky-400",
-    selectValue: (stats) =>
-      `${currencyFormatter.format(stats.deliveredValue)} VND`,
-    selectSubtitle: (stats) =>
-      formatRatio(
-        stats.deliveredValue,
-        stats.totalValue,
+      "bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-400",
+    valueSizeClassName: "text-lg",
+    unit: "VND",
+    positiveDirection: null,
+    selectValue: (stats) => currencyFormatter.format(stats.completedValue),
+    selectTrend: (stats) =>
+      formatShareOfTotal(
+        stats.completedValuePercentOfTotal,
         "so với tổng giá trị"
       ),
   },
   {
     label: "Đang thực hiện",
-    icon: Loader,
-    iconClassName:
-      "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-    accentClassName: "before:bg-amber-500 dark:before:bg-amber-400",
-    selectValue: (stats) =>
-      `${currencyFormatter.format(stats.inProgressCount)} đơn`,
-    selectSubtitle: (stats) =>
-      formatRatio(
-        stats.inProgressCount,
-        stats.totalCount,
-        "so với tổng số đơn"
-      ),
+    icon: refreshBold,
+    iconClassName: "bg-warning/15 text-warning",
+    valueSizeClassName: "text-2xl",
+    unit: "đơn",
+    positiveDirection: null,
+    selectValue: (stats) => currencyFormatter.format(stats.inProgress),
+    selectTrend: (stats) =>
+      formatShareOfTotal(stats.inProgressPercentOfTotal, "so với tổng số đơn"),
   },
   {
     label: "Trễ hạn",
-    icon: AlertTriangle,
+    icon: dangerTriangleBold,
     iconClassName: "bg-destructive/15 text-destructive",
-    accentClassName: "before:bg-destructive",
-    selectValue: (stats) =>
-      `${currencyFormatter.format(stats.overdueCount)} đơn`,
-    selectSubtitle: (stats) =>
-      formatCountDelta(
-        stats.overdueCount,
-        stats.previousWeekOverdueCount,
-        "tuần trước"
-      ),
+    valueSizeClassName: "text-2xl",
+    unit: "đơn",
+    // A drop in overdue orders is good news — tone follows meaning, not the
+    // raw arrow direction.
+    positiveDirection: "down",
+    selectValue: (stats) => currencyFormatter.format(stats.expired),
+    selectTrend: (stats) =>
+      formatSignedTrend(stats.expiredTrendCount, "tuần trước", String),
   },
   {
     label: "Hoàn thành",
-    icon: CircleCheck,
+    icon: checkCircleBold,
     iconClassName: "bg-success/15 text-success",
-    accentClassName: "before:bg-success",
-    selectValue: (stats) =>
-      `${currencyFormatter.format(stats.completedCount)} đơn`,
-    selectSubtitle: (stats) =>
-      formatRatio(stats.completedCount, stats.totalCount, "so với tổng số đơn"),
+    valueSizeClassName: "text-2xl",
+    unit: "đơn",
+    positiveDirection: null,
+    selectValue: (stats) => currencyFormatter.format(stats.completed),
+    selectTrend: (stats) =>
+      formatShareOfTotal(stats.completedPercentOfTotal, "so với tổng số đơn"),
   },
 ]
 
 export function buildOrderStatTiles(stats: OrderStats): OrderStatTile[] {
-  return ORDER_STAT_TILE_DEFS.map((def) => ({
-    label: def.label,
-    value: def.selectValue(stats),
-    subtitle: def.selectSubtitle(stats),
-    icon: def.icon,
-    iconClassName: def.iconClassName,
-    accentClassName: def.accentClassName,
-  }))
+  return ORDER_STAT_TILE_DEFS.map((def) => {
+    const trend = def.selectTrend(stats)
+
+    return {
+      label: def.label,
+      value: def.selectValue(stats),
+      unit: def.unit,
+      trend: trend
+        ? {
+          text: trend.text,
+          direction: trend.direction,
+          tone: resolveTone(trend.direction, def.positiveDirection),
+        }
+        : null,
+      icon: def.icon,
+      iconClassName: def.iconClassName,
+      valueSizeClassName: def.valueSizeClassName,
+    }
+  })
 }

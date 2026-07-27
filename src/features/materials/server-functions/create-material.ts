@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
-import { materialFormSchema } from "@/features/materials/schemas/material-form.schema"
+import { createMaterialSchema } from "@/features/materials/schemas/create-material.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import {
@@ -12,7 +12,7 @@ import type { Material } from "@/lib/types/material.type"
 
 // `image`/`attachments` carry display URLs the backend has no field for — only
 // the file ids go on the wire, so they are destructured out rather than spread.
-const createMaterialPayloadSchema = materialFormSchema.transform(
+const createMaterialPayloadSchema = createMaterialSchema.transform(
   ({ image, attachments, ...rest }) => ({
     ...rest,
     imageFileId: resolveFileFieldId(image, "create"),

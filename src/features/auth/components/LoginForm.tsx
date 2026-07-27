@@ -1,11 +1,10 @@
-import { Activity } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useNavigate, useRouter, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
-import { AlertOctagon, Loader2, LogIn } from "lucide-react"
+import { Loader2, LogIn } from "lucide-react"
+import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -28,7 +27,7 @@ export function LoginForm() {
 
   const loginWithEmailPasswordFn = useServerFn(loginWithEmailPassword)
 
-  const loginMutation = useMutation({
+  const { mutate: login, isPending } = useMutation({
     mutationFn: (value: LoginSchema) =>
       loginWithEmailPasswordFn({ data: value }),
     onSuccess: async () => {
@@ -37,10 +36,8 @@ export function LoginForm() {
       await router.invalidate()
       await navigate({ href: resolveInternalRedirect(redirectTo) })
     },
+    onError: (error) => toast.error(error.message),
   })
-
-  const isPending = loginMutation.isPending
-  const error = loginMutation.error?.message ?? null
 
   const form = useForm({
     defaultValues: {
@@ -51,7 +48,7 @@ export function LoginForm() {
     validators: {
       onSubmit: loginSchema,
     },
-    onSubmit: ({ value }) => loginMutation.mutate(value),
+    onSubmit: ({ value }) => login(value),
   })
 
   return (
@@ -77,13 +74,6 @@ export function LoginForm() {
         noValidate
         className="space-y-6"
       >
-        <Activity mode={error ? "visible" : "hidden"}>
-          <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-            <AlertOctagon className="size-4" />
-            <AlertTitle>{error}</AlertTitle>
-          </Alert>
-        </Activity>
-
         <FieldGroup className="gap-6">
           <form.Field name="identifier">
             {(field) => {

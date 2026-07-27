@@ -1,11 +1,10 @@
-import { Activity } from "react"
 import { DateTime } from "luxon"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AlertOctagon, Loader2, Save } from "lucide-react"
+import { Loader2, Save } from "lucide-react"
+import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { SupplierInfoSection } from "@/features/suppliers/components/SupplierInfoSection"
@@ -82,11 +81,7 @@ export function UpdateSupplierForm({
   const queryClient = useQueryClient()
   const updateSupplierFn = useServerFn(updateSupplier)
 
-  const {
-    mutate: update,
-    isPending,
-    error,
-  } = useMutation({
+  const { mutate: update, isPending } = useMutation({
     mutationFn: (value: SupplierFormSchema) =>
       updateSupplierFn({ data: { ...value, supplierId: supplier.id } }),
     onSuccess: async () => {
@@ -96,6 +91,7 @@ export function UpdateSupplierForm({
         search: { page: 1, limit: 10 },
       })
     },
+    onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
@@ -116,13 +112,6 @@ export function UpdateSupplierForm({
       noValidate
       className="space-y-6"
     >
-      <Activity mode={error ? "visible" : "hidden"}>
-        <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-          <AlertOctagon className="size-4" />
-          <AlertTitle>{error?.message}</AlertTitle>
-        </Alert>
-      </Activity>
-
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <SupplierInfoSection
           form={form}

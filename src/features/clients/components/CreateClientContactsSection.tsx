@@ -14,11 +14,11 @@ import { IconButton } from "@/components/shared/IconButton"
 import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { withForm } from "@/hooks/use-app-form"
 import { ClientContactDialog } from "@/features/clients/components/ClientContactDialog"
-import { CREATE_CLIENT_DEFAULT_VALUES } from "@/features/clients/schemas/create-client.schema"
-import type { ClientContactInput } from "@/features/clients/schemas/create-client.schema"
+import { CLIENT_FORM_DEFAULT_VALUES } from "@/features/clients/schemas/client-form.schema"
+import type { ClientContactInput } from "@/features/clients/schemas/client-form.schema"
 
 export const CreateClientContactsSection = withForm({
-  defaultValues: CREATE_CLIENT_DEFAULT_VALUES,
+  defaultValues: CLIENT_FORM_DEFAULT_VALUES,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [dialogOpen, setDialogOpen] = useState(false)

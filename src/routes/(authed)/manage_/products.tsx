@@ -2,10 +2,10 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { requirePermission } from "@/features/auth/guard"
 import { ProductsPage } from "@/features/products/pages/ProductsPage"
-import { clientOptionsQueryOptions } from "@/features/products/queries/client-options.query"
 import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
 import { productsQueryOptions } from "@/features/products/queries/products.query"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
+import { searchClientsQueryOptions } from "@/hooks/use-get-client-options"
 
 export const Route = createFileRoute("/(authed)/manage_/products")({
   beforeLoad: ({ context }) =>
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/(authed)/manage_/products")({
         productsQueryOptions(productsSearchSchema.parse(location.search))
       ),
       context.queryClient.ensureQueryData(productGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
+      context.queryClient.ensureQueryData(searchClientsQueryOptions("")),
     ]),
   component: ProductsPage,
 })

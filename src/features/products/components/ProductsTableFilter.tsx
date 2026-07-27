@@ -21,7 +21,7 @@ import {
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { buildSelectOption } from "@/lib/utils"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { useGetClientOptions } from "@/features/products/hooks/use-get-client-options"
+import { useGetClientOptions } from "@/hooks/use-get-client-options"
 import { PRODUCT_STATUS_LABELS, ProductStatus } from "@/lib/types/product.type"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import type { Client } from "@/lib/types/client.type"

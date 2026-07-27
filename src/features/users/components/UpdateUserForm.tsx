@@ -1,12 +1,10 @@
-import { Activity } from "react"
 import { DateTime } from "luxon"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AlertOctagon, ArrowLeft, Loader2, Save } from "lucide-react"
+import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { UserJobInfoSection } from "@/features/users/components/UserJobInfoSection"
@@ -70,11 +68,7 @@ export function UpdateUserForm({
   const queryClient = useQueryClient()
   const updateUserFn = useServerFn(updateUser)
 
-  const {
-    mutate: update,
-    isPending,
-    error,
-  } = useMutation({
+  const { mutate: update, isPending } = useMutation({
     mutationFn: (value: UserFormSchema) =>
       updateUserFn({ data: { ...value, userId: myUser.id } }),
     // Stay on the page: editing an employee is often several passes over the
@@ -84,6 +78,7 @@ export function UpdateUserForm({
       await queryClient.invalidateQueries({ queryKey: ["users"] })
       toast.success("Đã cập nhật nhân sự")
     },
+    onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
@@ -106,13 +101,6 @@ export function UpdateUserForm({
       noValidate
       className="space-y-6"
     >
-      <Activity mode={error ? "visible" : "hidden"}>
-        <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-          <AlertOctagon className="size-4" />
-          <AlertTitle>{error?.message}</AlertTitle>
-        </Alert>
-      </Activity>
-
       <section className="overflow-hidden rounded-lg bg-card shadow-card">
         <div className="border-b border-border px-4 py-3 sm:px-5">
           <Button

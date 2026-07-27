@@ -10,11 +10,11 @@ import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { MaterialsTable } from "@/features/materials/components/MaterialsTable"
 import { MaterialsTableFilter } from "@/features/materials/components/MaterialsTableFilter"
 import {
-  clientOptionsQueryOptions,
   materialGroupOptionsQueryOptions,
   materialsQueryOptions,
 } from "@/features/materials/materials.query"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
+import { searchClientsQueryOptions } from "@/hooks/use-get-client-options"
 
 export function MaterialsPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
@@ -33,7 +33,7 @@ export function MaterialsPage() {
     materialGroupOptionsQueryOptions()
   )
   const { data: clientOptions } = useSuspenseQuery(
-    clientOptionsQueryOptions("")
+    searchClientsQueryOptions("")
   )
 
   // `replace` is for the search box: it commits on every debounced keystroke, and

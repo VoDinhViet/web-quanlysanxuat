@@ -9,10 +9,10 @@ import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
-import { clientOptionsQueryOptions } from "@/features/products/queries/client-options.query"
 import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
 import { productsQueryOptions } from "@/features/products/queries/products.query"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
+import { searchClientsQueryOptions } from "@/hooks/use-get-client-options"
 
 export function ProductsPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
@@ -31,7 +31,7 @@ export function ProductsPage() {
     productGroupOptionsQueryOptions()
   )
   const { data: clientOptions } = useSuspenseQuery(
-    clientOptionsQueryOptions("")
+    searchClientsQueryOptions("")
   )
 
   // `replace` is for the search box: it commits on every debounced keystroke, and

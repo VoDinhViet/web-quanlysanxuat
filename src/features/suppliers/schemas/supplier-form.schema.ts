@@ -1,7 +1,11 @@
-import { DateTime } from "luxon"
 import { z } from "zod"
 
 import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+import {
+  emptyToUndefined,
+  emptyToUndefinedIsoDate,
+  emptyToUndefinedNumber,
+} from "@/lib/zod-transforms"
 
 import {
   PaymentMethod,
@@ -9,16 +13,6 @@ import {
   SupplierStatus,
   SupplierType,
 } from "@/lib/types/supplier.type"
-
-// A blank form input means "not provided" — the wire payload should omit the
-// field rather than send an empty string.
-function emptyToUndefined(value: string): string | undefined {
-  return value.length > 0 ? value : undefined
-}
-
-function emptyToUndefinedNumber(value: string): number | undefined {
-  return value.length > 0 ? Number(value) : undefined
-}
 
 // Wire contract for POST /api/suppliers' `payment` field — matches the
 // backend's nested payment DTO. Always sent (the form always shows this
@@ -44,14 +38,7 @@ export const supplierPaymentFields = {
     .refine((value) => value === undefined || value >= 0, {
       message: "Hạn mức công nợ không được âm",
     }),
-  creditLimitStartDate: z
-    .string()
-    .trim()
-    .transform((value) =>
-      value.length > 0
-        ? DateTime.fromISO(value).toJSDate().toISOString()
-        : undefined
-    ),
+  creditLimitStartDate: z.string().trim().transform(emptyToUndefinedIsoDate),
 }
 
 const createSupplierPaymentSchema = z.object(supplierPaymentFields)

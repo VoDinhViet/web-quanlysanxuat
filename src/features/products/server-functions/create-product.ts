@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
-import { productFormSchema } from "@/features/products/schemas/product-form.schema"
+import { createProductSchema } from "@/features/products/schemas/create-product.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import {
@@ -12,7 +12,7 @@ import type { Product } from "@/lib/types/product.type"
 
 // The form holds the whole uploaded-file object so it can render a preview; the
 // backend only wants the file id.
-const createProductPayloadSchema = productFormSchema.transform(
+const createProductPayloadSchema = createProductSchema.transform(
   ({ image, attachments, ...rest }) => ({
     ...rest,
     imageFileId: resolveFileFieldId(image, "create"),

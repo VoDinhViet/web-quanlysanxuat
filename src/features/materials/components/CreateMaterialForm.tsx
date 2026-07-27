@@ -1,11 +1,10 @@
-import { Activity, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AlertOctagon, FileText, Loader2, RotateCcw, Save } from "lucide-react"
+import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
@@ -41,7 +40,7 @@ export function CreateMaterialForm({
   )
   const draftRestoredRef = useRef(false)
 
-  const createMaterialMutation = useMutation({
+  const { mutate: create, isPending } = useMutation({
     mutationFn: (value: MaterialFormSchema) =>
       createMaterialFn({ data: value }),
     onSuccess: async () => {
@@ -52,17 +51,15 @@ export function CreateMaterialForm({
         search: { page: 1, limit: 10 },
       })
     },
+    onError: (error) => toast.error(error.message),
   })
-
-  const isPending = createMaterialMutation.isPending
-  const error = createMaterialMutation.error?.message ?? null
 
   const form = useAppForm({
     defaultValues: MATERIAL_FORM_DEFAULT_VALUES,
     validators: {
       onSubmit: materialFormSchema,
     },
-    onSubmit: ({ value }) => createMaterialMutation.mutate(value),
+    onSubmit: ({ value }) => create(value),
   })
 
   // Auto-restore a saved draft into the form once, after localStorage hydrates.
@@ -83,13 +80,6 @@ export function CreateMaterialForm({
       noValidate
       className="space-y-6"
     >
-      <Activity mode={error ? "visible" : "hidden"}>
-        <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-          <AlertOctagon className="size-4" />
-          <AlertTitle>{error}</AlertTitle>
-        </Alert>
-      </Activity>
-
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <MaterialInfoSection
           form={form}

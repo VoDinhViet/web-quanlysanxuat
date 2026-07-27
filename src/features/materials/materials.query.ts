@@ -3,7 +3,6 @@ import { queryOptions } from "@tanstack/react-query"
 import { getMaterial } from "@/features/materials/server-functions/get-material"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
-import { getClients } from "@/lib/server-functions/get-clients"
 import { getMaterialGroups } from "@/lib/server-functions/get-material-groups"
 import { getMaterials } from "@/lib/server-functions/get-materials"
 import { getSuppliers } from "@/lib/server-functions/get-suppliers"
@@ -42,31 +41,19 @@ export const unitOptionsQueryOptions = () =>
     staleTime: REFERENCE_STALE_TIME,
   })
 
-// `getSuppliers`/`getClients` (below) are shared with the suppliers/clients
-// list pages, where a failed fetch must throw so the errorComponent kicks in
-// — but this dropdown is non-core and, per the original design here, a
-// materials-only role may lack `suppliers:read`/`clients:read`. Both queries
-// are `ensureQueryData`'d straight from a route loader (materials list/create/
-// update), which doesn't catch — so degrading to `[]` has to happen in the
-// queryFn itself, or a missing permission would crash the whole page instead
-// of just leaving this picker empty.
+// `getSuppliers` (below) is shared with the suppliers list page, where a
+// failed fetch must throw so the errorComponent kicks in — but this dropdown
+// is non-core and, per the original design here, a materials-only role may
+// lack `suppliers:read`. This query is `ensureQueryData`'d straight from a
+// route loader (materials list/create/update), which doesn't catch — so
+// degrading to `[]` has to happen in the queryFn itself, or a missing
+// permission would crash the whole page instead of just leaving this picker
+// empty.
 export const supplierOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["materials", "supplier-options"],
     queryFn: () =>
       getSuppliers({ data: { limit: FILTER_OPTIONS_LIMIT } })
-        .then((response) => response.data)
-        .catch(() => []),
-    staleTime: REFERENCE_STALE_TIME,
-  })
-
-// `q` is the combobox search term; the loader prefetches `q === ""` (initial
-// page) and the combobox hook keys off the debounced term for later lookups.
-export const clientOptionsQueryOptions = (q: string) =>
-  queryOptions({
-    queryKey: ["materials", "client-options", q],
-    queryFn: () =>
-      getClients({ data: { q: q || undefined, limit: FILTER_OPTIONS_LIMIT } })
         .then((response) => response.data)
         .catch(() => []),
     staleTime: REFERENCE_STALE_TIME,

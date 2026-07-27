@@ -11,6 +11,7 @@ export const UPLOAD_TYPES = [
   "SUPPLIER_LOGO",
   "SUPPLIER_DOCUMENT",
   "BOM_ITEM_DRAWING",
+  "ORDER_DOCUMENT",
 ] as const
 
 export type UploadType = (typeof UPLOAD_TYPES)[number]

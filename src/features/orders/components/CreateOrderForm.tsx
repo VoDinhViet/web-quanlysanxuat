@@ -8,53 +8,41 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { SupplierInfoSection } from "@/features/suppliers/components/SupplierInfoSection"
-import { SupplierOtherSection } from "@/features/suppliers/components/SupplierOtherSection"
-import { SupplierPaymentSection } from "@/features/suppliers/components/SupplierPaymentSection"
+import { OrderAttachmentsField } from "@/features/orders/components/OrderAttachmentsField"
+import { OrderInfoSection } from "@/features/orders/components/OrderInfoSection"
+import { OrderItemsSection } from "@/features/orders/components/OrderItemsSection"
+import { OrderTotalsSummary } from "@/features/orders/components/OrderTotalsSummary"
 import {
-  SUPPLIER_FORM_DEFAULT_VALUES,
-  supplierFormSchema,
-} from "@/features/suppliers/schemas/supplier-form.schema"
-import { createSupplier } from "@/features/suppliers/server-functions/create-supplier"
-import type { SupplierFormSchema } from "@/features/suppliers/schemas/supplier-form.schema"
-import type { CountryRef, SupplierGroupRef } from "@/lib/types/supplier.type"
+  ORDER_FORM_DEFAULT_VALUES,
+  orderFormSchema,
+} from "@/features/orders/schemas/order-form.schema"
+import { createOrder } from "@/features/orders/server-functions/create-order"
+import type { OrderFormSchema } from "@/features/orders/schemas/order-form.schema"
 
-type CreateSupplierFormProps = {
-  supplierGroupOptions: SupplierGroupRef[]
-  countryOptions: CountryRef[]
-}
-
-export function CreateSupplierForm({
-  supplierGroupOptions,
-  countryOptions,
-}: CreateSupplierFormProps) {
-  const navigate = useNavigate({ from: "/manage/suppliers/create" })
+export function CreateOrderForm() {
+  const navigate = useNavigate({ from: "/manage/orders/create" })
   const queryClient = useQueryClient()
-  const createSupplierFn = useServerFn(createSupplier)
+  const createOrderFn = useServerFn(createOrder)
 
-  const { draft, saveDraft, clearDraft } = useFormDraft<SupplierFormSchema>(
-    "qlsx:draft:create-supplier"
+  const { draft, saveDraft, clearDraft } = useFormDraft<OrderFormSchema>(
+    "qlsx:draft:create-order"
   )
   const draftRestoredRef = useRef(false)
 
   const { mutate: create, isPending } = useMutation({
-    mutationFn: (value: SupplierFormSchema) =>
-      createSupplierFn({ data: value }),
+    mutationFn: (value: OrderFormSchema) => createOrderFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await queryClient.invalidateQueries({ queryKey: ["suppliers"] })
-      await navigate({
-        to: "/manage/suppliers",
-        search: { page: 1, limit: 10 },
-      })
+      await queryClient.invalidateQueries({ queryKey: ["orders"] })
+      await navigate({ to: "/manage/orders", search: { page: 1, limit: 10 } })
     },
     onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
-    defaultValues: SUPPLIER_FORM_DEFAULT_VALUES,
+    defaultValues: ORDER_FORM_DEFAULT_VALUES,
     validators: {
-      onSubmit: supplierFormSchema,
+      onSubmit: orderFormSchema,
     },
     onSubmit: ({ value }) => create(value),
   })
@@ -78,16 +66,24 @@ export function CreateSupplierForm({
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <SupplierInfoSection
-          form={form}
-          disabled={isPending}
-          supplierGroupOptions={supplierGroupOptions}
-          countryOptions={countryOptions}
-        />
+        <OrderInfoSection form={form} disabled={isPending} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2">
-          <SupplierPaymentSection form={form} disabled={isPending} />
-          <SupplierOtherSection form={form} disabled={isPending} />
+        <div className="border-t border-border">
+          <OrderItemsSection form={form} disabled={isPending} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 border-t border-border px-4 py-5 sm:px-5 lg:grid-cols-[minmax(0,1fr)_26rem]">
+          <form.Field name="attachments">
+            {(field) => (
+              <OrderAttachmentsField
+                value={field.state.value}
+                onChange={field.handleChange}
+                disabled={isPending}
+              />
+            )}
+          </form.Field>
+
+          <OrderTotalsSummary form={form} disabled={isPending} />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
@@ -98,7 +94,7 @@ export function CreateSupplierForm({
             disabled={isPending}
             onClick={() =>
               void navigate({
-                to: "/manage/suppliers",
+                to: "/manage/orders",
                 search: { page: 1, limit: 10 },
               })
             }
@@ -112,7 +108,7 @@ export function CreateSupplierForm({
               disabled={isPending}
               onClick={() => {
                 form.reset()
-                restoreFormDraft(form, SUPPLIER_FORM_DEFAULT_VALUES)
+                restoreFormDraft(form, ORDER_FORM_DEFAULT_VALUES)
                 clearDraft()
               }}
             >
@@ -147,7 +143,7 @@ export function CreateSupplierForm({
                   ) : (
                     <>
                       <Save />
-                      Lưu nhà cung cấp
+                      Tạo đơn hàng
                     </>
                   )}
                 </Button>

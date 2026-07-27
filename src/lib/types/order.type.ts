@@ -1,27 +1,26 @@
 import { DateTime } from "luxon"
 
+// Mirrors the backend's OrderStatus exactly — no DRAFT: an order is CONFIRMED the
+// moment it's created (see be-quanlysanxuat/src/database/schemas/orders.ts).
 export enum OrderStatus {
-  PENDING_CONFIRMATION = "PENDING_CONFIRMATION",
-  PENDING_PRODUCTION = "PENDING_PRODUCTION",
-  PENDING_OUTSOURCING = "PENDING_OUTSOURCING",
+  CONFIRMED = "CONFIRMED",
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
 }
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  [OrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận",
-  [OrderStatus.PENDING_PRODUCTION]: "Chờ sản xuất",
-  [OrderStatus.PENDING_OUTSOURCING]: "Chờ OS",
+  [OrderStatus.CONFIRMED]: "Đã xác nhận",
   [OrderStatus.IN_PROGRESS]: "Đang thực hiện",
   [OrderStatus.COMPLETED]: "Hoàn thành",
+  [OrderStatus.CANCELLED]: "Đã hủy",
 }
 
 export const ORDER_STATUS_DESCRIPTIONS: Record<OrderStatus, string> = {
-  [OrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận đơn hàng",
-  [OrderStatus.PENDING_PRODUCTION]: "Đang chờ lập kế hoạch sản xuất",
-  [OrderStatus.PENDING_OUTSOURCING]: "Đang chờ gia công ngoài",
+  [OrderStatus.CONFIRMED]: "Đơn hàng đã xác nhận, chờ xử lý",
   [OrderStatus.IN_PROGRESS]: "Đơn hàng đang được xử lý",
-  [OrderStatus.COMPLETED]: "Đã giao đủ, kết thúc đơn hàng",
+  [OrderStatus.COMPLETED]: "Đã hoàn thành, kết thúc đơn hàng",
+  [OrderStatus.CANCELLED]: "Đơn hàng đã bị hủy",
 }
 
 // Derived pseudo-status. `isOverdue` is a backend-computed flag on every row,
@@ -47,6 +46,48 @@ export const PAYMENT_TERM_LABELS: Record<PaymentTerm, string> = {
   [PaymentTerm.NET_15]: "TT 15 ngày",
   [PaymentTerm.NET_30]: "TT 30 ngày",
   [PaymentTerm.NET_60]: "TT 60 ngày",
+}
+
+export enum Currency {
+  VND = "VND",
+  USD = "USD",
+  EUR = "EUR",
+  JPY = "JPY",
+  CNY = "CNY",
+  KRW = "KRW",
+}
+
+export const CURRENCY_LABELS: Record<Currency, string> = {
+  [Currency.VND]: "VND",
+  [Currency.USD]: "USD",
+  [Currency.EUR]: "EUR",
+  [Currency.JPY]: "JPY",
+  [Currency.CNY]: "CNY",
+  [Currency.KRW]: "KRW",
+}
+
+// "Chiết khấu đơn" applies to either the whole order (PERCENT of subtotal, or a flat
+// AMOUNT) — see OrdersService.recalculateTotals.
+export enum OrderDiscountType {
+  PERCENT = "PERCENT",
+  AMOUNT = "AMOUNT",
+}
+
+export const ORDER_DISCOUNT_TYPE_LABELS: Record<OrderDiscountType, string> = {
+  [OrderDiscountType.PERCENT]: "%",
+  [OrderDiscountType.AMOUNT]: "Số tiền",
+}
+
+// "Bình thường" / "Đã hủy" on a single order line — a cancelled line is excluded
+// from `subtotal` server-side.
+export enum OrderItemStatus {
+  NORMAL = "NORMAL",
+  CANCELLED = "CANCELLED",
+}
+
+export const ORDER_ITEM_STATUS_LABELS: Record<OrderItemStatus, string> = {
+  [OrderItemStatus.NORMAL]: "Bình thường",
+  [OrderItemStatus.CANCELLED]: "Đã hủy",
 }
 
 export type OrderClientRef = {
@@ -85,24 +126,23 @@ export type Order = {
   updatedAt: string
 }
 
-export type OrderStatsPeriod = {
-  totalCount: number
-  totalValue: number
-}
-
+// Mirrors the backend's OrderStatsResDto exactly (the 6 dashboard cards). Trend/ratio
+// math is fully backend-computed — the FE only formats and colors what it's given.
 export type OrderStats = {
-  totalCount: number
+  totalOrders: number
+  totalOrdersTrendPercent: number | null
   totalValue: number
-  deliveredValue: number
-  remainingValue: number
-  inProgressCount: number
-  overdueCount: number
-  completedCount: number
-  // Same aggregates for the previous calendar month so the UI can format a real
-  // delta instead of inventing one. Null when there is no prior-period data.
-  previousMonth: OrderStatsPeriod | null
-  // Overdue count as of 7 days ago — the only weekly comparison the UI needs.
-  previousWeekOverdueCount: number | null
+  totalValueTrendPercent: number | null
+  // "Đã giao" — proxy until real delivery/DO tracking exists: sum(total) of COMPLETED orders.
+  completedValue: number
+  completedValuePercentOfTotal: number
+  inProgress: number
+  inProgressPercentOfTotal: number
+  expired: number
+  // expired now minus expired 7 days ago (approximated against today's status).
+  expiredTrendCount: number
+  completed: number
+  completedPercentOfTotal: number
 }
 
 export type OrderFilterOption = {

@@ -4,7 +4,7 @@ import {
   clientContactsSchema,
   clientProfileFields,
   refineClientEmail,
-} from "@/features/clients/schemas/create-client.schema"
+} from "@/features/clients/schemas/client-form.schema"
 
 // Wire contract for PATCH /api/clients/:id — same profile/contacts fields as
 // create (clientProfileFields/clientContactsSchema already leave every value

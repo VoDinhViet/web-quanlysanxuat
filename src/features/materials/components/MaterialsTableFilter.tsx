@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { useGetClientOptions } from "@/features/materials/hooks/use-get-client-options"
+import { useGetClientOptions } from "@/hooks/use-get-client-options"
 import {
   MATERIAL_STATUS_LABELS,
   MATERIAL_TYPE_LABELS,

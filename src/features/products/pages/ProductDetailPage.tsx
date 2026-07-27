@@ -42,11 +42,7 @@ export function ProductDetailPage() {
     productGroupOptionsQueryOptions()
   )
 
-  const {
-    mutate: update,
-    isPending,
-    error,
-  } = useMutation({
+  const { mutate: update, isPending } = useMutation({
     mutationFn: (value: ProductFormSchema) =>
       updateProductFn({ data: { ...value, productId } }),
     // Stay on the page: this is a multi-tab authoring screen, so saving one tab
@@ -55,6 +51,7 @@ export function ProductDetailPage() {
       await queryClient.invalidateQueries({ queryKey: ["products"] })
       toast.success("Đã lưu thông tin sản phẩm")
     },
+    onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
@@ -111,7 +108,6 @@ export function ProductDetailPage() {
                   <ProductInfoTab
                     form={form}
                     isSaving={isPending}
-                    errorMessage={error?.message}
                     unitOptions={unitOptions}
                     productGroupOptions={productGroupOptions}
                     selectedClient={buildSelectOption(product.client)}

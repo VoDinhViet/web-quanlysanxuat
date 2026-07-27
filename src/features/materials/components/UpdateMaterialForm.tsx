@@ -1,10 +1,9 @@
-import { Activity } from "react"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AlertOctagon, Loader2, Save } from "lucide-react"
+import { Loader2, Save } from "lucide-react"
+import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { MaterialExtendedSection } from "@/features/materials/components/MaterialExtendedSection"
@@ -64,11 +63,7 @@ export function UpdateMaterialForm({
   const queryClient = useQueryClient()
   const updateMaterialFn = useServerFn(updateMaterial)
 
-  const {
-    mutate: update,
-    isPending,
-    error,
-  } = useMutation({
+  const { mutate: update, isPending } = useMutation({
     mutationFn: (value: MaterialFormSchema) =>
       updateMaterialFn({ data: { ...value, materialId: material.id } }),
     onSuccess: async () => {
@@ -78,6 +73,7 @@ export function UpdateMaterialForm({
         search: { page: 1, limit: 10 },
       })
     },
+    onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
@@ -98,13 +94,6 @@ export function UpdateMaterialForm({
       noValidate
       className="space-y-6"
     >
-      <Activity mode={error ? "visible" : "hidden"}>
-        <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-          <AlertOctagon className="size-4" />
-          <AlertTitle>{error?.message}</AlertTitle>
-        </Alert>
-      </Activity>
-
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <MaterialInfoSection
           form={form}

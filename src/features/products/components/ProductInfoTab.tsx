@@ -1,7 +1,3 @@
-import { Activity } from "react"
-import { AlertOctagon } from "lucide-react"
-
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { withForm } from "@/hooks/use-app-form"
 import { ProductInfoSection } from "@/features/products/components/ProductInfoSection"
 import { PRODUCT_FORM_DEFAULT_VALUES } from "@/features/products/schemas/product-form.schema"
@@ -36,7 +32,6 @@ export const ProductInfoTab = withForm({
   defaultValues: PRODUCT_FORM_DEFAULT_VALUES,
   props: {
     isSaving: false,
-    errorMessage: undefined as string | undefined,
     unitOptions: [] as Unit[],
     productGroupOptions: [] as ProductGroupRef[],
     selectedClient: undefined as ComboboxOption | undefined,
@@ -44,7 +39,6 @@ export const ProductInfoTab = withForm({
   render: function Render({
     form,
     isSaving,
-    errorMessage,
     unitOptions,
     productGroupOptions,
     selectedClient,
@@ -58,16 +52,6 @@ export const ProductInfoTab = withForm({
         }}
         noValidate
       >
-        {/* Padded on its own: the form is now flush inside the page panel. */}
-        <Activity mode={errorMessage ? "visible" : "hidden"}>
-          <div className="px-4 pt-4 sm:px-5">
-            <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-              <AlertOctagon className="size-4" />
-              <AlertTitle>{errorMessage}</AlertTitle>
-            </Alert>
-          </div>
-        </Activity>
-
         <ProductInfoSection
           form={form}
           disabled={isSaving}

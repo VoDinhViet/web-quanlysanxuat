@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { Download, Plus, RotateCw } from "lucide-react"
 import type { ReactNode } from "react"
 
@@ -32,14 +33,12 @@ export function OrdersFilterActions({ onReset }: OrdersFilterActionsProps) {
       </Button>
 
       <PermissionGate permission="orders:create">
-        <PendingAction
-          label="Tạo đơn hàng"
-          hint="Chức năng tạo đơn hàng sắp có"
-          isPrimary
-        >
-          <Plus className="size-4" />
-          Tạo đơn hàng
-        </PendingAction>
+        <Button asChild className="text-xs">
+          <Link to="/manage/orders/create">
+            <Plus className="size-4" />
+            Tạo đơn hàng
+          </Link>
+        </Button>
       </PermissionGate>
     </div>
   )
@@ -48,7 +47,6 @@ export function OrdersFilterActions({ onReset }: OrdersFilterActionsProps) {
 type PendingActionProps = {
   label: string
   hint: string
-  isPrimary?: boolean
   children: ReactNode
 }
 
@@ -56,19 +54,14 @@ type PendingActionProps = {
 // route wouldn't typecheck and a raw <a> would 404, so it stays disabled and
 // says so. The <span tabIndex={0}> wrapper is load-bearing: a disabled button
 // swallows pointer events, so the tooltip would never fire without it.
-function PendingAction({
-  label,
-  hint,
-  isPrimary,
-  children,
-}: PendingActionProps) {
+function PendingAction({ label, hint, children }: PendingActionProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <span tabIndex={0}>
           <Button
             type="button"
-            variant={isPrimary ? "default" : "outline"}
+            variant="outline"
             className="pointer-events-none text-xs"
             aria-label={label}
             disabled

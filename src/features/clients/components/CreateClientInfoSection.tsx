@@ -1,7 +1,7 @@
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
-import { CREATE_CLIENT_DEFAULT_VALUES } from "@/features/clients/schemas/create-client.schema"
+import { CLIENT_FORM_DEFAULT_VALUES } from "@/features/clients/schemas/client-form.schema"
 import { CLIENT_STATUS_LABELS } from "@/lib/types/client.type"
 import type { ClientGroupRef } from "@/lib/types/client.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -9,7 +9,7 @@ import { buildOptionsFromLabels } from "@/lib/utils"
 const CLIENT_STATUS_OPTIONS = buildOptionsFromLabels(CLIENT_STATUS_LABELS)
 
 export const CreateClientInfoSection = withForm({
-  defaultValues: CREATE_CLIENT_DEFAULT_VALUES,
+  defaultValues: CLIENT_FORM_DEFAULT_VALUES,
   props: {
     disabled: false,
     clientGroupOptions: [] as ClientGroupRef[],

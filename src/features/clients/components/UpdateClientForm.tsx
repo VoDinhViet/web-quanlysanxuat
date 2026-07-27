@@ -1,23 +1,22 @@
-import { Activity } from "react"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AlertOctagon, Loader2, Save } from "lucide-react"
+import { Loader2, Save } from "lucide-react"
+import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { CreateClientContactsSection } from "@/features/clients/components/CreateClientContactsSection"
 import { CreateClientInfoSection } from "@/features/clients/components/CreateClientInfoSection"
-import { createClientSchema } from "@/features/clients/schemas/create-client.schema"
+import { clientFormSchema } from "@/features/clients/schemas/client-form.schema"
 import { updateClient } from "@/features/clients/server-functions/update-client"
-import type { CreateClientSchema } from "@/features/clients/schemas/create-client.schema"
+import type { ClientFormSchema } from "@/features/clients/schemas/client-form.schema"
 import type { Client, ClientGroupRef } from "@/lib/types/client.type"
 
 // Client → raw form values: nullable fields become "", contacts drop the
 // server-assigned id/isPrimary back down to the editable shape (isPrimary is
 // re-derived from array order on submit, see clientContactsSchema).
-function buildClientDefaultValues(client: Client): CreateClientSchema {
+function buildClientDefaultValues(client: Client): ClientFormSchema {
   return {
     name: client.name,
     clientGroupId: client.group.id,
@@ -50,23 +49,20 @@ export function UpdateClientForm({
   const queryClient = useQueryClient()
   const updateClientFn = useServerFn(updateClient)
 
-  const {
-    mutate: update,
-    isPending,
-    error,
-  } = useMutation({
-    mutationFn: (value: CreateClientSchema) =>
+  const { mutate: update, isPending } = useMutation({
+    mutationFn: (value: ClientFormSchema) =>
       updateClientFn({ data: { ...value, clientId: client.id } }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["clients"] })
       await navigate({ to: "/manage/clients", search: { page: 1, limit: 10 } })
     },
+    onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
     defaultValues: buildClientDefaultValues(client),
     validators: {
-      onSubmit: createClientSchema,
+      onSubmit: clientFormSchema,
     },
     onSubmit: ({ value }) => update(value),
   })
@@ -81,13 +77,6 @@ export function UpdateClientForm({
       noValidate
       className="space-y-6"
     >
-      <Activity mode={error ? "visible" : "hidden"}>
-        <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-          <AlertOctagon className="size-4" />
-          <AlertTitle>{error?.message}</AlertTitle>
-        </Alert>
-      </Activity>
-
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <CreateClientInfoSection
           form={form}

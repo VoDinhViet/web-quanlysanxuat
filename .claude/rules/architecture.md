@@ -122,8 +122,12 @@ maximumFractionDigits: 2 }).format(value)`) directly at call sites — not
 - Every imperative write (login, logout, and future create/update/delete actions)
   uses `useMutation` from `@tanstack/react-query`, calling the server function
   (bound via `useServerFn`) directly as `mutationFn` — no wrapper needed, since it
-  already throws on failure. Read `mutation.isPending` for pending UI and
-  `mutation.error?.message` for the Vietnamese error string (see
+  already throws on failure. Destructure `const { mutate, isPending } =
+useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
+  `mutate: update` / `mutate: login`) rather than keeping the whole mutation
+  object around. Wire `onError: (error) => toast.error(error.message)` on the
+  `useMutation` call itself — a mutation error surfaces as a `sonner` toast, not
+  an inline `Alert` — and read `isPending` for pending UI (see
   `src/features/auth/components/LoginForm.tsx`).
 - `QueryClient` is created once, in `src/router.tsx`, and wired to the router via
   `@tanstack/react-router-ssr-query`'s `setupRouterSsrQueryIntegration`. Don't create a
@@ -148,8 +152,12 @@ maximumFractionDigits: 2 }).format(value)`) directly at call sites — not
   functions; each feature owns its own.
 - **Query key convention:** `[<feature>]` is the root, with `[<feature>, "list", search]`,
   `[<feature>, "stats"]`, `[<feature>, "detail", id]`, and reference-option keys like
-  `[<feature>, "unit-options"]` / `[<feature>, "client-options", q]` beneath it — so a single
-  `invalidateQueries({ queryKey: [<feature>] })` refreshes the whole feature.
+  `[<feature>, "unit-options"]` beneath it — so a single `invalidateQueries({ queryKey:
+[<feature>] })` refreshes the whole feature. A reference query genuinely shared across
+  3+ features (e.g. client search, `src/hooks/use-get-client-options.ts`) instead lives
+  in `src/hooks/` with a flat, feature-less key — it isn't owned by any one feature's
+  invalidation and a write to the underlying entity doesn't invalidate it from any
+  feature today regardless.
 - **Loaders prefetch, don't return:** a route `loader` calls
   `context.queryClient.ensureQueryData(<thing>QueryOptions(...))` (several via `Promise.all`)
   to warm the cache for SSR; it no longer returns data or uses `useLoaderData`.

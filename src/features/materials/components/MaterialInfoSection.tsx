@@ -4,7 +4,7 @@ import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { MaterialImageField } from "@/features/materials/components/MaterialImageField"
 import { MATERIAL_FORM_DEFAULT_VALUES } from "@/features/materials/schemas/material-form.schema"
-import { useGetClientOptions } from "@/features/materials/hooks/use-get-client-options"
+import { useGetClientOptions } from "@/hooks/use-get-client-options"
 import {
   MATERIAL_STATUS_LABELS,
   MATERIAL_TYPE_LABELS,

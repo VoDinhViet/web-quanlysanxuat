@@ -1,18 +1,9 @@
 import { z } from "zod"
 
 import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+import { emptyToUndefined, emptyToUndefinedNumber } from "@/lib/zod-transforms"
 
 import { MaterialStatus, MaterialType } from "@/lib/types/material.type"
-
-// A blank form input means "not provided" — the wire payload should omit the
-// field rather than send an empty string.
-function emptyToUndefined(value: string): string | undefined {
-  return value.length > 0 ? value : undefined
-}
-
-function emptyToUndefinedNumber(value: string): number | undefined {
-  return value.length > 0 ? Number(value) : undefined
-}
 
 // type=CLIENT requires a client — mirrors the backend's resolveClientLink rule
 // (MaterialsService, error code material.error.client_required).

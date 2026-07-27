@@ -1,11 +1,10 @@
-import { Activity, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AlertOctagon, FileText, Loader2, RotateCcw, Save } from "lucide-react"
+import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
-import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
@@ -42,24 +41,22 @@ export function CreateUserForm({
   >("qlsx:draft:create-user")
   const draftRestoredRef = useRef(false)
 
-  const createUserMutation = useMutation({
+  const { mutate: create, isPending } = useMutation({
     mutationFn: (value: UserFormSchema) => createUserFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["users"] })
       await navigate({ to: "/manage/users", search: { page: 1, limit: 10 } })
     },
+    onError: (error) => toast.error(error.message),
   })
-
-  const isPending = createUserMutation.isPending
-  const error = createUserMutation.error?.message ?? null
 
   const form = useAppForm({
     defaultValues: USER_FORM_DEFAULT_VALUES,
     validators: {
       onSubmit: userFormSchema,
     },
-    onSubmit: ({ value }) => createUserMutation.mutate(value),
+    onSubmit: ({ value }) => create(value),
   })
 
   // Auto-restore a saved draft into the form once, after localStorage hydrates.
@@ -81,13 +78,6 @@ export function CreateUserForm({
       noValidate
       className="space-y-6"
     >
-      <Activity mode={error ? "visible" : "hidden"}>
-        <Alert className="border-destructive/20 bg-destructive/10 text-destructive">
-          <AlertOctagon className="size-4" />
-          <AlertTitle>{error}</AlertTitle>
-        </Alert>
-      </Activity>
-
       <section className="overflow-hidden rounded-lg bg-card shadow-card">
         <UserInfoSection form={form} disabled={isPending} />
         <div className="grid grid-cols-1 lg:grid-cols-2">
