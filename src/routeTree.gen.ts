@@ -22,6 +22,7 @@ import { Route as authedManageSuppliersRouteImport } from './routes/(authed)/man
 import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
 import { Route as authedManageClientsCreateRouteImport } from './routes/(authed)/manage_/clients_/create'
 import { Route as authedManageMaterialsCreateRouteImport } from './routes/(authed)/manage_/materials_/create'
+import { Route as authedManageOrdersOrderIdRouteImport } from './routes/(authed)/manage_/orders_/$orderId'
 import { Route as authedManageOrdersCreateRouteImport } from './routes/(authed)/manage_/orders_/create'
 import { Route as authedManageProductsProductIdRouteImport } from './routes/(authed)/manage_/products_/$productId'
 import { Route as authedManageProductsCreateRouteImport } from './routes/(authed)/manage_/products_/create'
@@ -97,6 +98,12 @@ const authedManageMaterialsCreateRoute =
     path: '/manage/materials/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageOrdersOrderIdRoute =
+  authedManageOrdersOrderIdRouteImport.update({
+    id: '/manage_/orders_/$orderId',
+    path: '/manage/orders/$orderId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageOrdersCreateRoute =
   authedManageOrdersCreateRouteImport.update({
     id: '/manage_/orders_/create',
@@ -163,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/manage/users': typeof authedManageUsersRoute
   '/manage/clients/create': typeof authedManageClientsCreateRoute
   '/manage/materials/create': typeof authedManageMaterialsCreateRoute
+  '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
   '/manage/orders/create': typeof authedManageOrdersCreateRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
   '/manage/products/create': typeof authedManageProductsCreateRoute
@@ -185,6 +193,7 @@ export interface FileRoutesByTo {
   '/manage/users': typeof authedManageUsersRoute
   '/manage/clients/create': typeof authedManageClientsCreateRoute
   '/manage/materials/create': typeof authedManageMaterialsCreateRoute
+  '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
   '/manage/orders/create': typeof authedManageOrdersCreateRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
   '/manage/products/create': typeof authedManageProductsCreateRoute
@@ -210,6 +219,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/users': typeof authedManageUsersRoute
   '/(authed)/manage_/clients_/create': typeof authedManageClientsCreateRoute
   '/(authed)/manage_/materials_/create': typeof authedManageMaterialsCreateRoute
+  '/(authed)/manage_/orders_/$orderId': typeof authedManageOrdersOrderIdRoute
   '/(authed)/manage_/orders_/create': typeof authedManageOrdersCreateRoute
   '/(authed)/manage_/products_/$productId': typeof authedManageProductsProductIdRoute
   '/(authed)/manage_/products_/create': typeof authedManageProductsCreateRoute
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/manage/users'
     | '/manage/clients/create'
     | '/manage/materials/create'
+    | '/manage/orders/$orderId'
     | '/manage/orders/create'
     | '/manage/products/$productId'
     | '/manage/products/create'
@@ -256,6 +267,7 @@ export interface FileRouteTypes {
     | '/manage/users'
     | '/manage/clients/create'
     | '/manage/materials/create'
+    | '/manage/orders/$orderId'
     | '/manage/orders/create'
     | '/manage/products/$productId'
     | '/manage/products/create'
@@ -280,6 +292,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/users'
     | '/(authed)/manage_/clients_/create'
     | '/(authed)/manage_/materials_/create'
+    | '/(authed)/manage_/orders_/$orderId'
     | '/(authed)/manage_/orders_/create'
     | '/(authed)/manage_/products_/$productId'
     | '/(authed)/manage_/products_/create'
@@ -390,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageMaterialsCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/orders_/$orderId': {
+      id: '/(authed)/manage_/orders_/$orderId'
+      path: '/manage/orders/$orderId'
+      fullPath: '/manage/orders/$orderId'
+      preLoaderRoute: typeof authedManageOrdersOrderIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/manage_/orders_/create': {
       id: '/(authed)/manage_/orders_/create'
       path: '/manage/orders/create'
@@ -478,6 +498,7 @@ interface authedRouteRouteChildren {
   authedManageUsersRoute: typeof authedManageUsersRoute
   authedManageClientsCreateRoute: typeof authedManageClientsCreateRoute
   authedManageMaterialsCreateRoute: typeof authedManageMaterialsCreateRoute
+  authedManageOrdersOrderIdRoute: typeof authedManageOrdersOrderIdRoute
   authedManageOrdersCreateRoute: typeof authedManageOrdersCreateRoute
   authedManageProductsProductIdRoute: typeof authedManageProductsProductIdRoute
   authedManageProductsCreateRoute: typeof authedManageProductsCreateRoute
@@ -499,6 +520,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageUsersRoute: authedManageUsersRoute,
   authedManageClientsCreateRoute: authedManageClientsCreateRoute,
   authedManageMaterialsCreateRoute: authedManageMaterialsCreateRoute,
+  authedManageOrdersOrderIdRoute: authedManageOrdersOrderIdRoute,
   authedManageOrdersCreateRoute: authedManageOrdersCreateRoute,
   authedManageProductsProductIdRoute: authedManageProductsProductIdRoute,
   authedManageProductsCreateRoute: authedManageProductsCreateRoute,

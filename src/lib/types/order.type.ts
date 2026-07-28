@@ -1,5 +1,8 @@
 import { DateTime } from "luxon"
 
+import type { FileResource } from "@/lib/types/file.type"
+import type { Unit } from "@/lib/types/unit.type"
+
 // Mirrors the backend's OrderStatus exactly — no DRAFT: an order is CONFIRMED the
 // moment it's created (see be-quanlysanxuat/src/database/schemas/orders.ts).
 export enum OrderStatus {
@@ -102,7 +105,9 @@ export type OrderSalesRepRef = {
   fullName: string
 }
 
-// Mirrors the backend's OrderResDto.
+// Mirrors the backend's OrderResDto. There is no per-order delivered/remaining
+// amount on the wire yet (only the dashboard stats have a "Đã giao" proxy) —
+// don't add those fields back until the backend actually computes them.
 export type Order = {
   id: string
   code: string
@@ -110,20 +115,79 @@ export type Order = {
   contactName: string | null
   contactPhone: string | null
   orderDate: string
-  deliveryDate: string
-  totalValue: number
-  deliveredValue: number
-  // Backend-authoritative: cancelled lines, credit notes and rounding on
-  // partial deliveries all move it, so it is not `total - delivered`.
-  remainingValue: number
+  dueDate: string | null
+  totalVnd: number
   status: OrderStatus
-  // Backend-computed: deliveryDate has passed and the order is not finished.
+  // Backend-computed: dueDate has passed and the order is not finished.
   // Kept off OrderStatus so a row can be both IN_PROGRESS and overdue.
-  isOverdue: boolean
-  paymentTerm: PaymentTerm
-  salesRep: OrderSalesRepRef | null
+  expired: boolean
+  paymentTerm: PaymentTerm | null
+  staff: OrderSalesRepRef | null
   createdAt: string
   updatedAt: string
+}
+
+/** Mirrors the backend's nested product relation on an order line (OrderItemProductRefResDto). */
+export type OrderItemProductRef = {
+  id: string
+  code: string
+  name: string
+  unit: Unit
+  image: FileResource | null
+}
+
+/** Mirrors the backend's OrderItemResDto — one line of an order's product list. */
+export type OrderItem = {
+  id: string
+  quantity: number
+  unitPrice: number
+  discountPercent: number
+  // Server-computed: quantity * unitPrice * (1 - discountPercent / 100).
+  lineTotal: number
+  note: string | null
+  status: OrderItemStatus
+  sortOrder: number
+  product: OrderItemProductRef
+}
+
+/** Mirrors the backend's OrderAttachmentResDto — a join row carrying the registry file it points at. */
+export type OrderAttachment = {
+  id: string
+  file: FileResource
+}
+
+/** Mirrors the backend's nested creator relation (OrderCreatorResDto). */
+export type OrderCreator = {
+  id: string
+  username: string
+}
+
+// Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
+// endpoint (GET /api/orders, `Order` above) intentionally skips items/attachments
+// for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
+// extends `Order` rather than folding everything onto one shared type.
+export type OrderDetail = Order & {
+  contactEmail: string | null
+  deliveryAddress: string | null
+  currency: Currency
+  exchangeRate: number
+  // Tổng tiền hàng — server-computed sum of non-cancelled line totals.
+  subtotal: number
+  discountType: OrderDiscountType
+  discountValue: number
+  // Chiết khấu đơn quy đổi ra tiền — server-computed.
+  discountAmount: number
+  vatPercent: number
+  // Tiền thuế VAT — server-computed.
+  vatAmount: number
+  shippingFee: number
+  // TỔNG THANH TOÁN — server-computed: subtotal - discountAmount + vatAmount + shippingFee.
+  total: number
+  note: string | null
+  internalNote: string | null
+  items: OrderItem[]
+  attachments: OrderAttachment[]
+  creator: OrderCreator | null
 }
 
 // Mirrors the backend's OrderStatsResDto exactly (the 6 dashboard cards). Trend/ratio
@@ -152,7 +216,7 @@ export type OrderFilterOption = {
 
 export type DeliveryTone = "overdue" | "near-due" | "normal"
 
-// Days before deliveryDate at which the date turns orange. Presentation-only.
+// Days before dueDate at which the date turns orange. Presentation-only.
 const NEAR_DUE_DAYS = 3
 
 // `overdue` comes straight off the row because deriving it here would run once
@@ -160,15 +224,15 @@ const NEAR_DUE_DAYS = 3
 // hydration mismatch on a red class. Only the softer "near-due" tone is derived,
 // where a one-render disagreement is cosmetically harmless.
 export function resolveDeliveryTone(order: Order): DeliveryTone {
-  if (order.isOverdue) {
+  if (order.expired) {
     return "overdue"
   }
 
-  if (order.status === OrderStatus.COMPLETED) {
+  if (order.status === OrderStatus.COMPLETED || order.dueDate === null) {
     return "normal"
   }
 
-  const daysLeft = DateTime.fromISO(order.deliveryDate)
+  const daysLeft = DateTime.fromISO(order.dueDate)
     .startOf("day")
     .diff(DateTime.now().startOf("day"), "days").days
 

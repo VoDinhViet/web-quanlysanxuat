@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
 import {
   DateCell,
-  DeliveryDateCell,
+  DueDateCell,
   MoneyCell,
   OrderActionsCell,
 } from "@/features/orders/components/OrderTableCells"
@@ -38,26 +38,16 @@ export const orderColumns = [
     },
     cell: ({ getValue }) => <DateCell value={getValue()} />,
   }),
-  orderColumnHelper.accessor("deliveryDate", {
+  orderColumnHelper.accessor("dueDate", {
     header: "Ngày giao hàng",
     meta: {
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ row }) => <DeliveryDateCell order={row.original} />,
+    cell: ({ row }) => <DueDateCell order={row.original} />,
   }),
-  orderColumnHelper.accessor("totalValue", {
+  orderColumnHelper.accessor("totalVnd", {
     header: "Tổng giá trị (VND)",
-    meta: MONEY_COLUMN_META,
-    cell: ({ getValue }) => <MoneyCell value={getValue()} />,
-  }),
-  orderColumnHelper.accessor("deliveredValue", {
-    header: "Đã giao (VND)",
-    meta: MONEY_COLUMN_META,
-    cell: ({ getValue }) => <MoneyCell value={getValue()} />,
-  }),
-  orderColumnHelper.accessor("remainingValue", {
-    header: "Còn lại (VND)",
     meta: MONEY_COLUMN_META,
     cell: ({ getValue }) => <MoneyCell value={getValue()} />,
   }),
@@ -72,13 +62,16 @@ export const orderColumns = [
   orderColumnHelper.accessor("paymentTerm", {
     header: "Điều khoản TT",
     meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => (
-      <span className="text-muted-foreground">
-        {PAYMENT_TERM_LABELS[getValue()]}
-      </span>
-    ),
+    cell: ({ getValue }) => {
+      const paymentTerm = getValue()
+      return (
+        <span className="text-muted-foreground">
+          {paymentTerm ? PAYMENT_TERM_LABELS[paymentTerm] : "—"}
+        </span>
+      )
+    },
   }),
-  orderColumnHelper.accessor((row) => row.salesRep?.fullName ?? "—", {
+  orderColumnHelper.accessor((row) => row.staff?.fullName ?? "—", {
     id: "salesRep",
     header: "NV kinh doanh",
     meta: { headerClassName: "min-w-32" },
@@ -93,6 +86,6 @@ export const orderColumns = [
       headerClassName: "min-w-24 text-center",
       cellClassName: "font-normal",
     },
-    cell: () => <OrderActionsCell />,
+    cell: ({ row }) => <OrderActionsCell orderId={row.original.id} />,
   }),
 ]

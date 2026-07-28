@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
 import type { ReactNode } from "react"
@@ -8,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { IconButton } from "@/components/shared/IconButton"
 import { resolveDeliveryTone } from "@/lib/types/order.type"
 import type { DeliveryTone, Order } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
@@ -30,7 +32,7 @@ export function DateCell({ value }: { value: string }) {
   return <>{DateTime.fromISO(value).toFormat("dd/MM/yyyy")}</>
 }
 
-export function DeliveryDateCell({ order }: { order: Order }) {
+export function DueDateCell({ order }: { order: Order }) {
   return (
     <span
       className={cn(
@@ -38,21 +40,30 @@ export function DeliveryDateCell({ order }: { order: Order }) {
         DELIVERY_TONE_CLASSNAME[resolveDeliveryTone(order)]
       )}
     >
-      {DateTime.fromISO(order.deliveryDate).toFormat("dd/MM/yyyy")}
+      {order.dueDate === null
+        ? "—"
+        : DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")}
     </span>
   )
 }
 
-// Create/detail/update screens don't exist yet. A <Link> to an unregistered route
-// wouldn't typecheck and a raw <a> would 404, so these say what's true: the
-// feature is coming. The <span tabIndex={0}> wrapper is required — a disabled
-// button swallows pointer events and the tooltip would never fire.
-export function OrderActionsCell() {
+// The detail screen exists now; there's no update-order screen yet, so
+// "Chỉnh sửa" stays disabled — a <Link> to an unregistered route wouldn't
+// typecheck and a raw <a> would 404. The <span tabIndex={0}> wrapper on the
+// disabled action is required — a disabled button swallows pointer events
+// and the tooltip would never fire.
+export function OrderActionsCell({ orderId }: { orderId: string }) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <DisabledAction label="Xem chi tiết">
-        <Eye className="size-3.5" />
-      </DisabledAction>
+      <IconButton label="Xem chi tiết" asChild>
+        <Link
+          to="/manage/orders/$orderId"
+          params={{ orderId }}
+          search={{ tab: "info" }}
+        >
+          <Eye className="size-3.5" />
+        </Link>
+      </IconButton>
       <DisabledAction label="Chỉnh sửa">
         <Pencil className="size-3.5" />
       </DisabledAction>
