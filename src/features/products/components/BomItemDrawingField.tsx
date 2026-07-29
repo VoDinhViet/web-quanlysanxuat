@@ -59,11 +59,7 @@ export function BomItemDrawingField({
       return uploadFileFn({ data: formData })
     },
     onSuccess: (result) => {
-      onChange({
-        id: result.id,
-        url: result.url,
-        originalName: result.originalName,
-      })
+      onChange(result)
     },
   })
 

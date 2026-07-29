@@ -6,7 +6,7 @@ import {
   departmentsQueryOptions,
   positionsQueryOptions,
   rolesQueryOptions,
-} from "@/features/users/users.query"
+} from "@/features/users/api/users.options"
 
 export const Route = createFileRoute("/(authed)/manage_/users_/create")({
   beforeLoad: ({ context }) =>

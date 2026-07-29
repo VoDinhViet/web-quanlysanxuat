@@ -6,6 +6,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// Rounds to 2 decimal places — matches the backend's own round(..., 2) at every money
+// computation step (see OrdersService.recalculateTotals), so client-side previews of order
+// totals/item lines/currency conversions never drift from what the server stores.
+export function roundMoney(value: number): number {
+  return Math.round(value * 100) / 100
+}
+
 type SelectOptionItem = {
   id: string
   name: string

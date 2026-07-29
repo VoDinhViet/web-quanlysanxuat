@@ -1,7 +1,7 @@
 import { redirect } from "@tanstack/react-router"
 
 import { hasPermission } from "@/features/auth/permissions"
-import { getCurrentSession } from "@/features/auth/server-functions/get-current-session"
+import { getCurrentSession } from "@/features/auth/api/server-functions/get-current-session.api"
 import type { CurrentSession } from "@/lib/types/login.type"
 import type { PermissionCode } from "@/lib/types/permission.type"
 

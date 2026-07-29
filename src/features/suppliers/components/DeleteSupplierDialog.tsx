@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteSupplier } from "@/features/suppliers/server-functions/delete-supplier"
+import { deleteSupplier } from "@/features/suppliers/api/server-functions/delete-supplier.api"
 import type { Supplier } from "@/lib/types/supplier.type"
 
 type DeleteSupplierDialogProps = {

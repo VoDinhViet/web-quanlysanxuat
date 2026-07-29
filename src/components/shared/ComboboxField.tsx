@@ -30,7 +30,7 @@ type ComboboxFieldProps = Pick<
   onValueChange: (value: string | undefined) => void
   options: ComboboxOption[]
   onSearchChange: (query: string) => void
-  isLoading?: boolean
+  isPending?: boolean
   // Seed the label for an already-selected `value` (update form / filter URL) so
   // the trigger shows a name before any option has been fetched.
   initialOption?: ComboboxOption
@@ -60,7 +60,7 @@ export function ComboboxField({
   onValueChange,
   options,
   onSearchChange,
-  isLoading,
+  isPending,
   initialOption,
   emptyMessage = "Không tìm thấy kết quả",
   label,
@@ -147,7 +147,7 @@ export function ComboboxField({
         />
         <ComboboxContent container={container}>
           <ComboboxEmpty>
-            {isLoading ? "Đang tìm..." : emptyMessage}
+            {isPending ? "Đang tìm..." : emptyMessage}
           </ComboboxEmpty>
           <ComboboxList>
             {items.map((option) => (

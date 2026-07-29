@@ -2,10 +2,8 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { requirePermission } from "@/features/auth/guard"
 import { CreateSupplierPage } from "@/features/suppliers/pages/CreateSupplierPage"
-import {
-  countryOptionsQueryOptions,
-  supplierGroupOptionsQueryOptions,
-} from "@/features/suppliers/suppliers.query"
+import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/suppliers.options"
+import { countryOptionsQueryOptions } from "@/features/countries/api"
 
 export const Route = createFileRoute("/(authed)/manage_/suppliers_/create")({
   beforeLoad: ({ context }) =>

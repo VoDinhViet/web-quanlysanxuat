@@ -2,10 +2,11 @@ import { useNavigate, useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { Surface } from "@/components/shared/Surface"
 import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
-import { usersQueryOptions } from "@/features/users/users.query"
+import { usersQueryOptions } from "@/features/users/api/users.options"
 import type { UsersSearchSchema } from "@/features/users/schemas/users-search.schema"
 
 export function UsersPage() {
@@ -47,32 +48,28 @@ export function UsersPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <section className="overflow-hidden rounded-lg bg-card shadow-card">
-          <div className="grid min-h-[calc(100svh-13rem)] grid-cols-1">
-            <div className="flex min-w-0 flex-col border-border">
-              <UsersTableFilter
-                search={search}
-                onFilterChange={handleFilterChange}
-              />
+        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+          <UsersTableFilter
+            search={search}
+            onFilterChange={handleFilterChange}
+          />
 
-              {usersQuery.isPending ? (
-                <TableQueryFallback status="pending" />
-              ) : usersQuery.isError ? (
-                <TableQueryFallback
-                  status="error"
-                  error={usersQuery.error.message}
-                  onRetry={() => void usersQuery.refetch()}
-                />
-              ) : (
-                <UsersTable
-                  rows={usersQuery.data.data}
-                  pagination={usersQuery.data.pagination}
-                  isPending={usersQuery.isFetching}
-                />
-              )}
-            </div>
-          </div>
-        </section>
+          {usersQuery.isPending ? (
+            <TableQueryFallback status="pending" />
+          ) : usersQuery.isError ? (
+            <TableQueryFallback
+              status="error"
+              error={usersQuery.error.message}
+              onRetry={() => void usersQuery.refetch()}
+            />
+          ) : (
+            <UsersTable
+              rows={usersQuery.data.data}
+              pagination={usersQuery.data.pagination}
+              isPending={usersQuery.isFetching}
+            />
+          )}
+        </Surface>
       </div>
     </main>
   )

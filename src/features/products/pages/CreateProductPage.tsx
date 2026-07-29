@@ -1,21 +1,12 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
-
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { CreateProductForm } from "@/features/products/components/CreateProductForm"
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
-import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
-import { unitOptionsQueryOptions } from "@/features/products/queries/unit-options.query"
 
 const LOCKED_TABS_HINT =
   "Lưu thông tin sản phẩm trước để mở khoá bước này — cấu trúc và vật tư cần mã sản phẩm đã tạo."
 
 export function CreateProductPage() {
-  const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
-  const { data: productGroupOptions } = useSuspenseQuery(
-    productGroupOptionsQueryOptions()
-  )
-
   return (
     <main className="min-h-svh bg-background text-foreground">
       <PageTitleBar
@@ -44,10 +35,7 @@ export function CreateProductPage() {
               phần vật tư.
             </p>
 
-            <CreateProductForm
-              unitOptions={unitOptions}
-              productGroupOptions={productGroupOptions}
-            />
+            <CreateProductForm />
           </TabsContent>
         </Tabs>
       </div>

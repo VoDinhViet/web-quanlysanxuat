@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { copyProduct } from "@/features/products/server-functions/copy-product"
+import { copyProduct } from "@/features/products/api/server-functions/copy-product.api"
 import type { Product } from "@/lib/types/product.type"
 
 type CopyProductDialogProps = {

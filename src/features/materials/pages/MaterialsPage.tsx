@@ -6,15 +6,16 @@ import {
 } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { Surface } from "@/components/shared/Surface"
 import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { MaterialsTable } from "@/features/materials/components/MaterialsTable"
 import { MaterialsTableFilter } from "@/features/materials/components/MaterialsTableFilter"
 import {
   materialGroupOptionsQueryOptions,
   materialsQueryOptions,
-} from "@/features/materials/materials.query"
+} from "@/features/materials/api/materials.options"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
-import { searchClientsQueryOptions } from "@/hooks/use-get-client-options"
+import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export function MaterialsPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
@@ -33,7 +34,7 @@ export function MaterialsPage() {
     materialGroupOptionsQueryOptions()
   )
   const { data: clientOptions } = useSuspenseQuery(
-    searchClientsQueryOptions("")
+    clientOptionsQueryOptions("")
   )
 
   // `replace` is for the search box: it commits on every debounced keystroke, and
@@ -62,32 +63,30 @@ export function MaterialsPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <section className="overflow-hidden rounded-lg bg-card shadow-card ring-1 ring-foreground/6">
-          <div className="flex min-h-[calc(100svh-13rem)] min-w-0 flex-col">
-            <MaterialsTableFilter
-              search={search}
-              onFilterChange={handleFilterChange}
-              materialGroupOptions={materialGroupOptions}
-              clientOptions={clientOptions}
-            />
+        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+          <MaterialsTableFilter
+            search={search}
+            onFilterChange={handleFilterChange}
+            materialGroupOptions={materialGroupOptions}
+            clientOptions={clientOptions}
+          />
 
-            {materialsQuery.isPending ? (
-              <TableQueryFallback status="pending" />
-            ) : materialsQuery.isError ? (
-              <TableQueryFallback
-                status="error"
-                error={materialsQuery.error.message}
-                onRetry={() => void materialsQuery.refetch()}
-              />
-            ) : (
-              <MaterialsTable
-                rows={materialsQuery.data.data}
-                pagination={materialsQuery.data.pagination}
-                isPending={materialsQuery.isFetching}
-              />
-            )}
-          </div>
-        </section>
+          {materialsQuery.isPending ? (
+            <TableQueryFallback status="pending" />
+          ) : materialsQuery.isError ? (
+            <TableQueryFallback
+              status="error"
+              error={materialsQuery.error.message}
+              onRetry={() => void materialsQuery.refetch()}
+            />
+          ) : (
+            <MaterialsTable
+              rows={materialsQuery.data.data}
+              pagination={materialsQuery.data.pagination}
+              isPending={materialsQuery.isFetching}
+            />
+          )}
+        </Surface>
       </div>
     </main>
   )

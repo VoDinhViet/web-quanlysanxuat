@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { currentUserQueryOptions } from "@/features/auth/current-user.query"
+import { currentUserQueryOptions } from "@/features/auth/api/auth.options"
 import { hasPermission } from "@/features/auth/permissions"
 import type { PermissionCode } from "@/lib/types/permission.type"
 

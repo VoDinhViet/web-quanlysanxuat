@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteProduct } from "@/features/products/server-functions/delete-product"
+import { deleteProduct } from "@/features/products/api/server-functions/delete-product.api"
 import type { Product } from "@/lib/types/product.type"
 
 type DeleteProductDialogProps = {

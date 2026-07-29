@@ -17,11 +17,7 @@ export type ClientGroupRef = {
 
 /** Lightweight reference to a client itself (GET /api/clients) — used by other
  *  domains' nested `client` relation (e.g. Material.client, Product.client). */
-export type ClientRef = {
-  id: string
-  code: string
-  name: string
-}
+export type ClientRef = Pick<Client, "id" | "code" | "name">
 
 /** Mirrors the backend's ClientContactResDto — a client can have several
  *  contacts; at most one has `isPrimary: true`. */

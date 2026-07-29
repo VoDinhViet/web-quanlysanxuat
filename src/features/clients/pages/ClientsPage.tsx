@@ -6,13 +6,14 @@ import {
 } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { Surface } from "@/components/shared/Surface"
 import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { ClientsTable } from "@/features/clients/components/ClientsTable"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
 import {
   clientGroupOptionsQueryOptions,
   clientsQueryOptions,
-} from "@/features/clients/clients.query"
+} from "@/features/clients/api/clients.options"
 import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
 
 export function ClientsPage() {
@@ -58,33 +59,29 @@ export function ClientsPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <section className="overflow-hidden rounded-lg bg-card shadow-card">
-          <div className="grid min-h-[calc(100svh-13rem)] grid-cols-1">
-            <div className="flex min-w-0 flex-col border-border">
-              <ClientsTableFilter
-                search={search}
-                onFilterChange={handleFilterChange}
-                clientGroupOptions={clientGroupOptions}
-              />
+        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+          <ClientsTableFilter
+            search={search}
+            onFilterChange={handleFilterChange}
+            clientGroupOptions={clientGroupOptions}
+          />
 
-              {clientsQuery.isPending ? (
-                <TableQueryFallback status="pending" />
-              ) : clientsQuery.isError ? (
-                <TableQueryFallback
-                  status="error"
-                  error={clientsQuery.error.message}
-                  onRetry={() => void clientsQuery.refetch()}
-                />
-              ) : (
-                <ClientsTable
-                  rows={clientsQuery.data.data}
-                  pagination={clientsQuery.data.pagination}
-                  isPending={clientsQuery.isFetching}
-                />
-              )}
-            </div>
-          </div>
-        </section>
+          {clientsQuery.isPending ? (
+            <TableQueryFallback status="pending" />
+          ) : clientsQuery.isError ? (
+            <TableQueryFallback
+              status="error"
+              error={clientsQuery.error.message}
+              onRetry={() => void clientsQuery.refetch()}
+            />
+          ) : (
+            <ClientsTable
+              rows={clientsQuery.data.data}
+              pagination={clientsQuery.data.pagination}
+              isPending={clientsQuery.isFetching}
+            />
+          )}
+        </Surface>
       </div>
     </main>
   )

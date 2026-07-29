@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { LoginKeepSignedInField } from "@/features/auth/components/LoginKeepSignedInField"
 import { LoginPasswordField } from "@/features/auth/components/LoginPasswordField"
-import { loginWithEmailPassword } from "@/features/auth/server-functions/login-with-email-password"
+import { loginWithEmailPassword } from "@/features/auth/api/server-functions/login-with-email-password.api"
 import { loginSchema } from "@/features/auth/schemas/login.schema"
 import { resolveInternalRedirect } from "@/lib/redirect"
 import type { LoginSchema } from "@/features/auth/schemas/login.schema"

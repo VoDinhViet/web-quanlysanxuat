@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { requirePermission } from "@/features/auth/guard"
 import { UsersPage } from "@/features/users/pages/UsersPage"
 import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
-import { usersQueryOptions } from "@/features/users/users.query"
+import { usersQueryOptions } from "@/features/users/api/users.options"
 
 export const Route = createFileRoute("/(authed)/manage_/users")({
   beforeLoad: ({ context }) =>

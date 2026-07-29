@@ -2,21 +2,22 @@
 // `type` is a required query param on POST /api/files and picks the MIME
 // allowlist and size cap server-side. Every member here must have a matching
 // backend enum value — an unknown one is rejected before Multer runs.
-export const UPLOAD_TYPES = [
-  "USER_AVATAR",
-  "MATERIAL_IMAGE",
-  "MATERIAL_DOCUMENT",
-  "PRODUCT_IMAGE",
-  "PRODUCT_DOCUMENT",
-  "SUPPLIER_LOGO",
-  "SUPPLIER_DOCUMENT",
-  "BOM_ITEM_DRAWING",
-  "ORDER_DOCUMENT",
-] as const
+export enum UploadType {
+  USER_AVATAR = "USER_AVATAR",
+  MATERIAL_IMAGE = "MATERIAL_IMAGE",
+  MATERIAL_DOCUMENT = "MATERIAL_DOCUMENT",
+  PRODUCT_IMAGE = "PRODUCT_IMAGE",
+  PRODUCT_DOCUMENT = "PRODUCT_DOCUMENT",
+  SUPPLIER_LOGO = "SUPPLIER_LOGO",
+  SUPPLIER_DOCUMENT = "SUPPLIER_DOCUMENT",
+  BOM_ITEM_DRAWING = "BOM_ITEM_DRAWING",
+  ORDER_DOCUMENT = "ORDER_DOCUMENT",
+}
 
-export type UploadType = (typeof UPLOAD_TYPES)[number]
-
-export type FileKind = "IMAGE" | "DOCUMENT"
+export enum FileKind {
+  IMAGE = "IMAGE",
+  DOCUMENT = "DOCUMENT",
+}
 
 /**
  * Mirrors the backend's FileResDto — returned by POST /api/files and embedded in

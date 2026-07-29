@@ -6,13 +6,16 @@ import {
 } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { Surface } from "@/components/shared/Surface"
 import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
-import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
-import { productsQueryOptions } from "@/features/products/queries/products.query"
+import {
+  productGroupOptionsQueryOptions,
+  productsQueryOptions,
+} from "@/features/products/api/products.options"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
-import { searchClientsQueryOptions } from "@/hooks/use-get-client-options"
+import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export function ProductsPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
@@ -31,7 +34,7 @@ export function ProductsPage() {
     productGroupOptionsQueryOptions()
   )
   const { data: clientOptions } = useSuspenseQuery(
-    searchClientsQueryOptions("")
+    clientOptionsQueryOptions("")
   )
 
   // `replace` is for the search box: it commits on every debounced keystroke, and
@@ -60,32 +63,30 @@ export function ProductsPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <section className="overflow-hidden rounded-lg bg-card shadow-card ring-1 ring-foreground/6">
-          <div className="flex min-h-[calc(100svh-13rem)] min-w-0 flex-col">
-            <ProductsTableFilter
-              search={search}
-              onFilterChange={handleFilterChange}
-              productGroupOptions={productGroupOptions}
-              clientOptions={clientOptions}
-            />
+        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+          <ProductsTableFilter
+            search={search}
+            onFilterChange={handleFilterChange}
+            productGroupOptions={productGroupOptions}
+            clientOptions={clientOptions}
+          />
 
-            {productsQuery.isPending ? (
-              <TableQueryFallback status="pending" />
-            ) : productsQuery.isError ? (
-              <TableQueryFallback
-                status="error"
-                error={productsQuery.error.message}
-                onRetry={() => void productsQuery.refetch()}
-              />
-            ) : (
-              <ProductsTable
-                rows={productsQuery.data.data}
-                pagination={productsQuery.data.pagination}
-                isPending={productsQuery.isFetching}
-              />
-            )}
-          </div>
-        </section>
+          {productsQuery.isPending ? (
+            <TableQueryFallback status="pending" />
+          ) : productsQuery.isError ? (
+            <TableQueryFallback
+              status="error"
+              error={productsQuery.error.message}
+              onRetry={() => void productsQuery.refetch()}
+            />
+          ) : (
+            <ProductsTable
+              rows={productsQuery.data.data}
+              pagination={productsQuery.data.pagination}
+              isPending={productsQuery.isFetching}
+            />
+          )}
+        </Surface>
       </div>
     </main>
   )

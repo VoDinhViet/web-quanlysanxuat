@@ -8,8 +8,10 @@ import { BomItemFormDialog } from "@/features/products/components/BomItemFormDia
 import { DeleteBomItemDialog } from "@/features/products/components/DeleteBomItemDialog"
 import { ProductBomTable } from "@/features/products/components/ProductBomTable"
 import { useProductBom } from "@/features/products/hooks/use-product-bom"
-import { productBomQueryOptions } from "@/features/products/queries/product-bom.query"
-import { productOperationsQueryOptions } from "@/features/products/queries/product-operations.query"
+import {
+  productBomQueryOptions,
+  productOperationsQueryOptions,
+} from "@/features/products/api/products.options"
 import type { OperationsByProductId } from "@/features/products/components/ProductBomTable"
 import { BomItemType } from "@/lib/types/bom-item.type"
 import type { BomItem } from "@/lib/types/bom-item.type"

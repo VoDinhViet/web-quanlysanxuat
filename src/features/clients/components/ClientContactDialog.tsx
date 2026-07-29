@@ -10,8 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useAppForm } from "@/hooks/use-app-form"
-import { clientContactFormSchema } from "@/features/clients/schemas/client-form.schema"
-import type { ClientContactInput } from "@/features/clients/schemas/client-form.schema"
+import { clientContactFormSchema } from "@/features/clients/schemas/client-contact.schema"
+import type { ClientContactInput } from "@/features/clients/schemas/client-contact.schema"
 
 export const EMPTY_CONTACT: ClientContactInput = {
   name: "",

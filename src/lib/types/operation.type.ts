@@ -1,4 +1,12 @@
-export type OperationType = "INHOUSE" | "OUTSOURCE"
+export enum OperationType {
+  INHOUSE = "INHOUSE",
+  OUTSOURCE = "OUTSOURCE",
+}
+
+export enum OperationStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+}
 
 export const OPERATION_TYPE_LABELS: Record<OperationType, string> = {
   INHOUSE: "Inhouse",
@@ -19,28 +27,21 @@ export type OperationRef = {
  * routing (GET/POST/PATCH /api/products/:productId/operations). Routing is
  * scoped to the whole product, not to individual BOM lines.
  */
-export type ProductOperation = {
+export type Operation = {
   id: string
   sortOrder: number
   note: string | null
+  type: OperationType
   operation: OperationRef
   createdAt: string
   updatedAt: string
-}
-
-/** Narrowed option shape for the operation-picker combobox. */
-export type OperationFilterOption = {
-  id: string
-  name: string
 }
 
 /**
  * Format a routing's steps into a single line, e.g.
  * "1. Tiện CNC → 2. Phay CNC".
  */
-export function formatOperationSequence(
-  operations: ProductOperation[]
-): string {
+export function formatOperationSequence(operations: Operation[]): string {
   if (operations.length === 0) return "—"
   return operations
     .map((step, idx) => `${idx + 1}. ${step.operation.name}`)

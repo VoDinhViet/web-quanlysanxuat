@@ -1,6 +1,7 @@
-// Reference list for a <select> — assumed to stay well under 100 rows, so
-// fetched in one page instead of exposing pagination on a dropdown.
-export const FILTER_OPTIONS_LIMIT = 100
+// Reference lists (units, groups, options dropdowns, ...) change rarely — cache
+// them longer than the default `staleTime` so moving between list/create/update
+// doesn't refetch them on every navigation.
+export const REFERENCE_STALE_TIME = 5 * 60_000
 
 // Backend base URL and request timeout. They live here rather than in `http.ts`
 // so `auth-token.ts` (which builds its own interceptor-free client for the

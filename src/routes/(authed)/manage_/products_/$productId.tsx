@@ -3,9 +3,11 @@ import { createFileRoute } from "@tanstack/react-router"
 import { requirePermission } from "@/features/auth/guard"
 import { ProductDetailPage } from "@/features/products/pages/ProductDetailPage"
 import { productDetailSearchSchema } from "@/features/products/schemas/product-detail-search.schema"
-import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
-import { productQueryOptions } from "@/features/products/queries/product.query"
-import { unitOptionsQueryOptions } from "@/features/products/queries/unit-options.query"
+import {
+  productGroupOptionsQueryOptions,
+  productQueryOptions,
+} from "@/features/products/api/products.options"
+import { unitOptionsQueryOptions } from "@/features/units/api"
 
 // Guarded on `products:read`, not `products:update`: a read-only viewer should
 // reach this screen. The write actions gate themselves with PermissionGate.
@@ -18,7 +20,7 @@ export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
       context.queryClient.ensureQueryData(
         productQueryOptions(params.productId)
       ),
-      context.queryClient.ensureQueryData(unitOptionsQueryOptions()),
+      context.queryClient.ensureQueryData(unitOptionsQueryOptions("PRODUCT")),
       context.queryClient.ensureQueryData(productGroupOptionsQueryOptions()),
     ]),
   component: ProductDetailPage,

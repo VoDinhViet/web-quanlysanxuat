@@ -4,11 +4,11 @@ import { requirePermission } from "@/features/auth/guard"
 import { SuppliersPage } from "@/features/suppliers/pages/SuppliersPage"
 import { suppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 import {
-  countryOptionsQueryOptions,
   supplierGroupOptionsQueryOptions,
   supplierStatsQueryOptions,
   suppliersQueryOptions,
-} from "@/features/suppliers/suppliers.query"
+} from "@/features/suppliers/api/suppliers.options"
+import { countryOptionsQueryOptions } from "@/features/countries/api"
 
 export const Route = createFileRoute("/(authed)/manage_/suppliers")({
   beforeLoad: ({ context }) =>

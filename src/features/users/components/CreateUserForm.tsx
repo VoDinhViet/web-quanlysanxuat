@@ -8,41 +8,29 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { UserCredentialSection } from "@/features/users/components/UserCredentialSection"
-import { UserJobInfoSection } from "@/features/users/components/UserJobInfoSection"
-import { UserInfoSection } from "@/features/users/components/UserInfoSection"
+import { CreateUserCredentialSection } from "@/features/users/components/CreateUserCredentialSection"
+import { CreateUserJobInfoSection } from "@/features/users/components/CreateUserJobInfoSection"
+import { CreateUserInfoSection } from "@/features/users/components/CreateUserInfoSection"
 import {
-  USER_FORM_DEFAULT_VALUES,
-  userFormSchema,
-} from "@/features/users/schemas/user-form.schema"
-import { createUser } from "@/features/users/server-functions/create-user"
-import type { UserFormSchema } from "@/features/users/schemas/user-form.schema"
-import type { Department, Position } from "@/lib/types/user.type"
-import type { Role } from "@/lib/types/role.type"
+  createUserFormDefaultValues,
+  createUserSchema,
+} from "@/features/users/schemas/create-user.schema"
+import { createUser } from "@/features/users/api/server-functions/create-user.api"
+import type { CreateUserSchema } from "@/features/users/schemas/create-user.schema"
 
-type CreateUserFormProps = {
-  departments: Department[]
-  positions: Position[]
-  roles: Role[]
-}
-
-export function CreateUserForm({
-  departments,
-  positions,
-  roles,
-}: CreateUserFormProps) {
+export function CreateUserForm() {
   const navigate = useNavigate({ from: "/manage/users/create" })
   const queryClient = useQueryClient()
   const createUserFn = useServerFn(createUser)
 
   // The credential (password) is never persisted — only non-secret draft fields.
   const { draft, saveDraft, clearDraft } = useFormDraft<
-    Omit<UserFormSchema, "credential">
+    Omit<CreateUserSchema, "credential">
   >("qlsx:draft:create-user")
   const draftRestoredRef = useRef(false)
 
   const { mutate: create, isPending } = useMutation({
-    mutationFn: (value: UserFormSchema) => createUserFn({ data: value }),
+    mutationFn: (value: CreateUserSchema) => createUserFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["users"] })
@@ -52,9 +40,9 @@ export function CreateUserForm({
   })
 
   const form = useAppForm({
-    defaultValues: USER_FORM_DEFAULT_VALUES,
+    defaultValues: createUserFormDefaultValues,
     validators: {
-      onSubmit: userFormSchema,
+      onSubmit: createUserSchema,
     },
     onSubmit: ({ value }) => create(value),
   })
@@ -64,7 +52,7 @@ export function CreateUserForm({
   useEffect(() => {
     if (!draftRestoredRef.current && draft) {
       draftRestoredRef.current = true
-      restoreFormDraft(form, { ...USER_FORM_DEFAULT_VALUES, ...draft })
+      restoreFormDraft(form, { ...createUserFormDefaultValues, ...draft })
     }
   }, [draft, form])
 
@@ -79,20 +67,10 @@ export function CreateUserForm({
       className="space-y-6"
     >
       <section className="overflow-hidden rounded-lg bg-card shadow-card">
-        <UserInfoSection form={form} disabled={isPending} />
+        <CreateUserInfoSection form={form} disabled={isPending} />
         <div className="grid grid-cols-1 lg:grid-cols-2">
-          <UserJobInfoSection
-            form={form}
-            disabled={isPending}
-            departments={departments}
-            positions={positions}
-          />
-          <UserCredentialSection
-            form={form}
-            disabled={isPending}
-            roles={roles}
-            hasExistingCredential={false}
-          />
+          <CreateUserJobInfoSection form={form} disabled={isPending} />
+          <CreateUserCredentialSection form={form} disabled={isPending} />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
@@ -117,7 +95,7 @@ export function CreateUserForm({
               disabled={isPending}
               onClick={() => {
                 form.reset()
-                restoreFormDraft(form, USER_FORM_DEFAULT_VALUES)
+                restoreFormDraft(form, createUserFormDefaultValues)
                 clearDraft()
               }}
             >

@@ -1,20 +1,7 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
-
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { CreateSupplierForm } from "@/features/suppliers/components/CreateSupplierForm"
-import {
-  countryOptionsQueryOptions,
-  supplierGroupOptionsQueryOptions,
-} from "@/features/suppliers/suppliers.query"
+import { CreateSupplierForm } from "@/features/suppliers/components/create/CreateSupplierForm"
 
 export function CreateSupplierPage() {
-  const { data: supplierGroupOptions } = useSuspenseQuery(
-    supplierGroupOptionsQueryOptions()
-  )
-  const { data: countryOptions } = useSuspenseQuery(
-    countryOptionsQueryOptions()
-  )
-
   return (
     <main className="min-h-svh bg-background text-foreground">
       <PageTitleBar
@@ -29,10 +16,7 @@ export function CreateSupplierPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <CreateSupplierForm
-          supplierGroupOptions={supplierGroupOptions}
-          countryOptions={countryOptions}
-        />
+        <CreateSupplierForm />
       </div>
     </main>
   )

@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router"
 import { requirePermission } from "@/features/auth/guard"
 import { UpdateSupplierPage } from "@/features/suppliers/pages/UpdateSupplierPage"
 import {
-  countryOptionsQueryOptions,
   supplierGroupOptionsQueryOptions,
   supplierQueryOptions,
-} from "@/features/suppliers/suppliers.query"
+} from "@/features/suppliers/api/suppliers.options"
+import { countryOptionsQueryOptions } from "@/features/countries/api"
 
 export const Route = createFileRoute(
   "/(authed)/manage_/suppliers_/$supplierId/update"

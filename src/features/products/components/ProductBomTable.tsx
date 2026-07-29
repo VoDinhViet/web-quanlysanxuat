@@ -48,15 +48,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { IconButton } from "@/components/shared/IconButton"
-import { useGetOperationOptions } from "@/features/products/hooks/use-get-operation-options"
+import { useGetOperationOptions } from "@/features/operations/api"
 import { useProductOperations } from "@/features/products/hooks/use-product-operations"
 import { BomItemType } from "@/lib/types/bom-item.type"
 import type { BomItem } from "@/lib/types/bom-item.type"
-import { formatOperationSequence } from "@/lib/types/operation.type"
-import type {
+import {
+  formatOperationSequence,
   OperationType,
-  ProductOperation,
 } from "@/lib/types/operation.type"
+import type { Operation } from "@/lib/types/operation.type"
 import type { Product } from "@/lib/types/product.type"
 import { useHasPermission } from "@/hooks/use-permissions"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -68,7 +68,7 @@ import { cn } from "@/lib/utils"
 // separate routing).
 export type OperationsByProductId = Record<
   string,
-  { operations: ProductOperation[]; isPending: boolean }
+  { operations: Operation[]; isPending: boolean }
 >
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -191,7 +191,7 @@ function OperationSummaryText({
   operations,
   isPending,
 }: {
-  operations: ProductOperation[]
+  operations: Operation[]
   isPending: boolean
 }) {
   if (isPending) {
@@ -244,7 +244,7 @@ function ProductOperationsPanel({
   canManage,
 }: {
   productId: string
-  operations: ProductOperation[]
+  operations: Operation[]
   isPending: boolean
   canManage: boolean
 }) {
@@ -252,7 +252,9 @@ function ProductOperationsPanel({
     productId,
     operations
   )
-  const [typeFilter, setTypeFilter] = useState<OperationType>("INHOUSE")
+  const [typeFilter, setTypeFilter] = useState<OperationType>(
+    OperationType.INHOUSE
+  )
   const operationPicker = useGetOperationOptions(typeFilter)
   const [selectedOperationId, setSelectedOperationId] = useState<
     string | undefined
@@ -368,7 +370,7 @@ function ProductOperationsPanel({
                   onValueChange={setSelectedOperationId}
                   options={operationPicker.options}
                   onSearchChange={operationPicker.onSearchChange}
-                  isLoading={operationPicker.isFetching}
+                  isPending={operationPicker.isFetching}
                   emptyMessage="Không tìm thấy công đoạn"
                   placeholder="Chọn công đoạn..."
                 />

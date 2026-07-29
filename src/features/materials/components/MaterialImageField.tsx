@@ -59,11 +59,7 @@ export function MaterialImageField({
     },
     onSuccess: (result) => {
       setIsPreviewBroken(false)
-      onChange({
-        id: result.id,
-        url: result.url,
-        originalName: result.originalName,
-      })
+      onChange(result)
     },
   })
 

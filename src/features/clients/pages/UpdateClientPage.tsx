@@ -2,11 +2,8 @@ import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { UpdateClientForm } from "@/features/clients/components/UpdateClientForm"
-import {
-  clientGroupOptionsQueryOptions,
-  clientQueryOptions,
-} from "@/features/clients/clients.query"
+import { UpdateClientForm } from "@/features/clients/components/update/UpdateClientForm"
+import { clientQueryOptions } from "@/features/clients/api/clients.options"
 
 export function UpdateClientPage() {
   const { clientId } = useParams({
@@ -14,9 +11,6 @@ export function UpdateClientPage() {
   })
 
   const { data: client } = useSuspenseQuery(clientQueryOptions(clientId))
-  const { data: clientGroupOptions } = useSuspenseQuery(
-    clientGroupOptionsQueryOptions()
-  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -31,10 +25,7 @@ export function UpdateClientPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <UpdateClientForm
-          client={client}
-          clientGroupOptions={clientGroupOptions}
-        />
+        <UpdateClientForm client={client} />
       </div>
     </main>
   )

@@ -5,9 +5,9 @@ import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
 import {
   materialGroupOptionsQueryOptions,
   materialsQueryOptions,
-} from "@/features/materials/materials.query"
+} from "@/features/materials/api/materials.options"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
-import { searchClientsQueryOptions } from "@/hooks/use-get-client-options"
+import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export const Route = createFileRoute("/(authed)/manage_/materials")({
   beforeLoad: ({ context }) =>
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/(authed)/manage_/materials")({
         materialsQueryOptions(materialsSearchSchema.parse(location.search))
       ),
       context.queryClient.ensureQueryData(materialGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(searchClientsQueryOptions("")),
+      context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),
   component: MaterialsPage,
 })

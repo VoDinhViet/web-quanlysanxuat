@@ -1,22 +1,7 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
-
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { CreateMaterialForm } from "@/features/materials/components/CreateMaterialForm"
-import {
-  materialGroupOptionsQueryOptions,
-  supplierOptionsQueryOptions,
-  unitOptionsQueryOptions,
-} from "@/features/materials/materials.query"
+import { CreateMaterialForm } from "@/features/materials/components/create/CreateMaterialForm"
 
 export function CreateMaterialPage() {
-  const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
-  const { data: materialGroupOptions } = useSuspenseQuery(
-    materialGroupOptionsQueryOptions()
-  )
-  const { data: supplierOptions } = useSuspenseQuery(
-    supplierOptionsQueryOptions()
-  )
-
   return (
     <main className="min-h-svh bg-background text-foreground">
       <PageTitleBar
@@ -31,11 +16,7 @@ export function CreateMaterialPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <CreateMaterialForm
-          unitOptions={unitOptions}
-          materialGroupOptions={materialGroupOptions}
-          supplierOptions={supplierOptions}
-        />
+        <CreateMaterialForm />
       </div>
     </main>
   )

@@ -54,12 +54,7 @@ export function UserAvatarField({
       formData.append("type", "USER_AVATAR")
       return uploadAvatarFn({ data: formData })
     },
-    onSuccess: (result) =>
-      onChange({
-        id: result.id,
-        url: result.url,
-        originalName: result.originalName,
-      }),
+    onSuccess: (result) => onChange(result),
   })
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

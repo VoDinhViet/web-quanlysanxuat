@@ -5,9 +5,9 @@ import { UpdateMaterialPage } from "@/features/materials/pages/UpdateMaterialPag
 import {
   materialGroupOptionsQueryOptions,
   materialQueryOptions,
-  supplierOptionsQueryOptions,
-  unitOptionsQueryOptions,
-} from "@/features/materials/materials.query"
+} from "@/features/materials/api/materials.options"
+import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
+import { unitOptionsQueryOptions } from "@/features/units/api"
 
 export const Route = createFileRoute(
   "/(authed)/manage_/materials_/$materialId/update"
@@ -19,7 +19,7 @@ export const Route = createFileRoute(
       context.queryClient.ensureQueryData(
         materialQueryOptions(params.materialId)
       ),
-      context.queryClient.ensureQueryData(unitOptionsQueryOptions()),
+      context.queryClient.ensureQueryData(unitOptionsQueryOptions("MATERIAL")),
       context.queryClient.ensureQueryData(materialGroupOptionsQueryOptions()),
       context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
     ]),

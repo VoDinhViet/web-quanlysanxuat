@@ -118,7 +118,7 @@ function BomItemPicker({
       onBlur={onBlur}
       options={source.options}
       onSearchChange={source.onSearchChange}
-      isLoading={source.isFetching}
+      isPending={source.isFetching}
       isInvalid={isInvalid}
       errors={errors}
       // Rendered inside BomItemFormDialog's Radix Dialog — portal the popup

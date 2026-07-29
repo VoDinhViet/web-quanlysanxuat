@@ -2,10 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useServerFn } from "@tanstack/react-start"
 import { toast } from "sonner"
 
-import { createProductOperation } from "@/features/products/server-functions/create-product-operation"
-import { deleteProductOperation } from "@/features/products/server-functions/delete-product-operation"
-import { updateProductOperation } from "@/features/products/server-functions/update-product-operation"
-import type { ProductOperation } from "@/lib/types/operation.type"
+import { createProductOperation } from "@/features/products/api/server-functions/create-product-operation.api"
+import { deleteProductOperation } from "@/features/products/api/server-functions/delete-product-operation.api"
+import { updateProductOperation } from "@/features/products/api/server-functions/update-product-operation.api"
+import type { Operation } from "@/lib/types/operation.type"
 
 type SortOrderPair = { stepId: string; sortOrder: number }
 
@@ -78,7 +78,7 @@ export interface UseProductOperationsResult {
  */
 export function useProductOperations(
   productId: string,
-  operations: ProductOperation[]
+  operations: Operation[]
 ): UseProductOperationsResult {
   const create = useCreateOperation(productId)
   const move = useMoveOperation(productId)

@@ -21,10 +21,10 @@ import {
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { buildSelectOption } from "@/lib/utils"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { useGetClientOptions } from "@/hooks/use-get-client-options"
+import { useGetClientOptions } from "@/features/clients/api"
 import { PRODUCT_STATUS_LABELS, ProductStatus } from "@/lib/types/product.type"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
-import type { Client } from "@/lib/types/client.type"
+import type { ClientRef } from "@/lib/types/client.type"
 import type { ProductGroupRef } from "@/lib/types/product.type"
 
 const STATUS_FILTER_OPTIONS: {
@@ -43,7 +43,7 @@ type ProductsTableFilterProps = {
     options?: { replace?: boolean }
   ) => void
   productGroupOptions: ProductGroupRef[]
-  clientOptions: Client[]
+  clientOptions: ClientRef[]
 }
 
 export function ProductsTableFilter({
@@ -119,7 +119,7 @@ export function ProductsTableFilter({
               onValueChange={(next) => onFilterChange({ clientId: next })}
               options={client.options}
               onSearchChange={client.onSearchChange}
-              isLoading={client.isFetching}
+              isPending={client.isFetching}
               initialOption={buildSelectOption(selectedClient)}
               emptyMessage="Không tìm thấy khách hàng"
               placeholder="Tìm khách hàng..."

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { ProductMaterialsTable } from "@/features/products/components/ProductMaterialsTable"
 import { ProductMaterialsTableFilter } from "@/features/products/components/ProductMaterialsTableFilter"
-import { bomMaterialsQueryOptions } from "@/features/products/queries/product-bom-materials.query"
+import { bomMaterialsQueryOptions } from "@/features/products/api/products.options"
 import type { Product } from "@/lib/types/product.type"
 
 type ProductMaterialsTabProps = {

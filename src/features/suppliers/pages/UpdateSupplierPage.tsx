@@ -2,12 +2,8 @@ import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { UpdateSupplierForm } from "@/features/suppliers/components/UpdateSupplierForm"
-import {
-  countryOptionsQueryOptions,
-  supplierGroupOptionsQueryOptions,
-  supplierQueryOptions,
-} from "@/features/suppliers/suppliers.query"
+import { UpdateSupplierForm } from "@/features/suppliers/components/update/UpdateSupplierForm"
+import { supplierQueryOptions } from "@/features/suppliers/api/suppliers.options"
 
 export function UpdateSupplierPage() {
   const { supplierId } = useParams({
@@ -15,12 +11,6 @@ export function UpdateSupplierPage() {
   })
 
   const { data: supplier } = useSuspenseQuery(supplierQueryOptions(supplierId))
-  const { data: supplierGroupOptions } = useSuspenseQuery(
-    supplierGroupOptionsQueryOptions()
-  )
-  const { data: countryOptions } = useSuspenseQuery(
-    countryOptionsQueryOptions()
-  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -36,11 +26,7 @@ export function UpdateSupplierPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <UpdateSupplierForm
-          supplier={supplier}
-          supplierGroupOptions={supplierGroupOptions}
-          countryOptions={countryOptions}
-        />
+        <UpdateSupplierForm supplier={supplier} />
       </div>
     </main>
   )

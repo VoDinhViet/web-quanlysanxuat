@@ -13,19 +13,32 @@ import { ProductDetailHeader } from "@/features/products/components/ProductDetai
 import { ProductDetailSidebar } from "@/features/products/components/ProductDetailSidebar"
 import { ProductBomTab } from "@/features/products/components/ProductBomTab"
 import { ProductMaterialsTab } from "@/features/products/components/ProductMaterialsTab"
-import {
-  ProductInfoTab,
-  buildProductDefaultValues,
-} from "@/features/products/components/ProductInfoTab"
-import { productFormSchema } from "@/features/products/schemas/product-form.schema"
+import { ProductInfoTab } from "@/features/products/components/ProductInfoTab"
+import { updateProductSchema } from "@/features/products/schemas/update-product.schema"
 import { PRODUCT_DETAIL_TABS } from "@/features/products/schemas/product-detail-search.schema"
-import { updateProduct } from "@/features/products/server-functions/update-product"
-import { productGroupOptionsQueryOptions } from "@/features/products/queries/product-group-options.query"
-import { productQueryOptions } from "@/features/products/queries/product.query"
-import { unitOptionsQueryOptions } from "@/features/products/queries/unit-options.query"
+import { updateProduct } from "@/features/products/api/server-functions/update-product.api"
+import { productQueryOptions } from "@/features/products/api/products.options"
 import { useAppForm } from "@/hooks/use-app-form"
 import { buildSelectOption } from "@/lib/utils"
-import type { ProductFormSchema } from "@/features/products/schemas/product-form.schema"
+import type { UpdateProductSchema } from "@/features/products/schemas/update-product.schema"
+import type { Product } from "@/lib/types/product.type"
+
+// Product → raw form values: nullable relations/text become "", the nested
+// unit/group/client refs collapse to their id for the selects.
+function buildProductDefaultValues(product: Product): UpdateProductSchema {
+  return {
+    productId: product.id,
+    code: product.code,
+    name: product.name,
+    unitId: product.unit.id,
+    productGroupId: product.group?.id ?? "",
+    clientId: product.client?.id ?? "",
+    image: product.image,
+    attachments: product.attachments.map((attachment) => attachment.file),
+    status: product.status,
+    note: product.note ?? "",
+  }
+}
 
 export function ProductDetailPage() {
   const { productId } = useParams({
@@ -37,14 +50,10 @@ export function ProductDetailPage() {
   const updateProductFn = useServerFn(updateProduct)
 
   const { data: product } = useSuspenseQuery(productQueryOptions(productId))
-  const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
-  const { data: productGroupOptions } = useSuspenseQuery(
-    productGroupOptionsQueryOptions()
-  )
 
   const { mutate: update, isPending } = useMutation({
-    mutationFn: (value: ProductFormSchema) =>
-      updateProductFn({ data: { ...value, productId } }),
+    mutationFn: (value: UpdateProductSchema) =>
+      updateProductFn({ data: value }),
     // Stay on the page: this is a multi-tab authoring screen, so saving one tab
     // is no reason to navigate away.
     onSuccess: async () => {
@@ -56,7 +65,7 @@ export function ProductDetailPage() {
 
   const form = useAppForm({
     defaultValues: buildProductDefaultValues(product),
-    validators: { onSubmit: productFormSchema },
+    validators: { onSubmit: updateProductSchema },
     onSubmit: ({ value }) => update(value),
   })
 
@@ -108,8 +117,6 @@ export function ProductDetailPage() {
                   <ProductInfoTab
                     form={form}
                     isSaving={isPending}
-                    unitOptions={unitOptions}
-                    productGroupOptions={productGroupOptions}
                     selectedClient={buildSelectOption(product.client)}
                   />
                 </TabsContent>

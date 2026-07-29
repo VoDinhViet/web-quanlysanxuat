@@ -73,14 +73,7 @@ export function MaterialAttachmentsField({
         .map((result) => result.value)
 
       if (uploaded.length > 0) {
-        onChange([
-          ...value,
-          ...uploaded.map((doc) => ({
-            id: doc.id,
-            url: doc.url,
-            originalName: doc.originalName,
-          })),
-        ])
+        onChange([...value, ...uploaded])
       }
 
       const failedCount = results.length - uploaded.length

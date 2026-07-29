@@ -2,9 +2,9 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { http, logHttpError } from "@/lib/http"
-import { UPLOAD_TYPES } from "@/lib/types/file.type"
+import { UploadType } from "@/lib/types/file.type"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { FileResource, UploadType } from "@/lib/types/file.type"
+import type { FileResource } from "@/lib/types/file.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -14,7 +14,7 @@ type UploadFileInput = {
 }
 
 function isUploadType(value: unknown): value is UploadType {
-  return UPLOAD_TYPES.some((uploadType) => uploadType === value)
+  return Object.values(UploadType).some((uploadType) => uploadType === value)
 }
 
 // A File can only cross the createServerFn RPC boundary inside FormData, so the

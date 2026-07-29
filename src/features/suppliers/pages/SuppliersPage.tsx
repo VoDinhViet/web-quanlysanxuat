@@ -6,16 +6,17 @@ import {
 } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { Surface } from "@/components/shared/Surface"
 import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
 import { SupplierStatCards } from "@/features/suppliers/components/SupplierStatCards"
 import { SuppliersTable } from "@/features/suppliers/components/SuppliersTable"
 import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersTableFilter"
 import {
-  countryOptionsQueryOptions,
   supplierGroupOptionsQueryOptions,
   supplierStatsQueryOptions,
   suppliersQueryOptions,
-} from "@/features/suppliers/suppliers.query"
+} from "@/features/suppliers/api/suppliers.options"
+import { countryOptionsQueryOptions } from "@/features/countries/api"
 import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 
 export function SuppliersPage() {
@@ -67,34 +68,30 @@ export function SuppliersPage() {
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <SupplierStatCards stats={stats} />
 
-        <section className="overflow-hidden rounded-lg bg-card shadow-card">
-          <div className="grid min-h-[calc(100svh-19rem)] grid-cols-1">
-            <div className="flex min-w-0 flex-col border-border">
-              <SuppliersTableFilter
-                search={search}
-                onFilterChange={handleFilterChange}
-                supplierGroupOptions={supplierGroupOptions}
-                countryOptions={countryOptions}
-              />
+        <Surface contentClassName="min-h-[calc(100svh-19rem)]">
+          <SuppliersTableFilter
+            search={search}
+            onFilterChange={handleFilterChange}
+            supplierGroupOptions={supplierGroupOptions}
+            countryOptions={countryOptions}
+          />
 
-              {suppliersQuery.isPending ? (
-                <TableQueryFallback status="pending" />
-              ) : suppliersQuery.isError ? (
-                <TableQueryFallback
-                  status="error"
-                  error={suppliersQuery.error.message}
-                  onRetry={() => void suppliersQuery.refetch()}
-                />
-              ) : (
-                <SuppliersTable
-                  rows={suppliersQuery.data.data}
-                  pagination={suppliersQuery.data.pagination}
-                  isPending={suppliersQuery.isFetching}
-                />
-              )}
-            </div>
-          </div>
-        </section>
+          {suppliersQuery.isPending ? (
+            <TableQueryFallback status="pending" />
+          ) : suppliersQuery.isError ? (
+            <TableQueryFallback
+              status="error"
+              error={suppliersQuery.error.message}
+              onRetry={() => void suppliersQuery.refetch()}
+            />
+          ) : (
+            <SuppliersTable
+              rows={suppliersQuery.data.data}
+              pagination={suppliersQuery.data.pagination}
+              isPending={suppliersQuery.isFetching}
+            />
+          )}
+        </Surface>
       </div>
     </main>
   )

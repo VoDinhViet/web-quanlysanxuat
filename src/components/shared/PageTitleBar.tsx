@@ -34,8 +34,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
-import { currentUserQueryOptions } from "@/features/auth/current-user.query"
-import { logout } from "@/features/auth/server-functions/logout"
+import { currentUserQueryOptions } from "@/features/auth/api/auth.options"
+import { logout } from "@/features/auth/api/server-functions/logout.api"
 import { resolveFileUrl } from "@/lib/file-url"
 import { isKnownRoute } from "@/lib/known-routes"
 
@@ -255,7 +255,7 @@ export function PageTitleBar({
         >
           <Bell />
           {notificationCount > 0 ? (
-            <span className="text-destructive-foreground absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold ring-2 ring-card">
+            <span className="absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold text-destructive-foreground ring-2 ring-card">
               {notificationCount > 9 ? "9+" : notificationCount}
             </span>
           ) : null}

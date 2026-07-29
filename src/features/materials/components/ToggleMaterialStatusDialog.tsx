@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { updateMaterialStatus } from "@/features/materials/server-functions/update-material-status"
+import { updateMaterialStatus } from "@/features/materials/api/server-functions/update-material-status.api"
 import { MaterialStatus } from "@/lib/types/material.type"
 import type { Material } from "@/lib/types/material.type"
 

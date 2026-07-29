@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteMaterial } from "@/features/materials/server-functions/delete-material"
+import { deleteMaterial } from "@/features/materials/api/server-functions/delete-material.api"
 import type { Material } from "@/lib/types/material.type"
 
 type DeleteMaterialDialogProps = {

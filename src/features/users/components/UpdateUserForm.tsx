@@ -7,70 +7,25 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
-import { UserJobInfoSection } from "@/features/users/components/UserJobInfoSection"
-import { UserInfoSection } from "@/features/users/components/UserInfoSection"
-import { UserCredentialSection } from "@/features/users/components/UserCredentialSection"
-import { userFormSchema } from "@/features/users/schemas/user-form.schema"
-import { updateUserWithCredentialSchema } from "@/features/users/schemas/update-user.schema"
-import { updateUser } from "@/features/users/server-functions/update-user"
-import type { UserFormSchema } from "@/features/users/schemas/user-form.schema"
-import type { Department, Position, User } from "@/lib/types/user.type"
-import type { Role } from "@/lib/types/role.type"
-
-// User → raw form values: nullable fields become "", ISO datetimes become the
-// yyyy-MM-dd strings the date pickers work with. When the employee already
-// has an ERP account, its username/email are prefilled and editable, with
-// password left blank (blank = keep the current password).
-function buildDefaultValues(user: User): UserFormSchema {
-  const credential = user.credential
-    ? {
-        username: user.credential.username,
-        email: user.credential.email,
-        password: "",
-        roleId: user.credential.role?.id ?? "",
-      }
-    : undefined
-
-  return {
-    fullName: user.fullName,
-    gender: user.gender,
-    dateOfBirth: user.dateOfBirth
-      ? DateTime.fromISO(user.dateOfBirth).toFormat("yyyy-MM-dd")
-      : "",
-    idNumber: user.idNumber ?? "",
-    phoneNumber: user.phoneNumber ?? "",
-    email: user.email ?? "",
-    address: user.address ?? "",
-    avatar: user.avatar,
-    departmentId: user.department.id,
-    positionId: user.position.id,
-    hireDate: DateTime.fromISO(user.hireDate).toFormat("yyyy-MM-dd"),
-    note: user.note ?? "",
-    status: user.status,
-    credential,
-  }
-}
+import { UpdateUserJobInfoSection } from "@/features/users/components/UpdateUserJobInfoSection"
+import { UpdateUserInfoSection } from "@/features/users/components/UpdateUserInfoSection"
+import { UpdateUserCredentialSection } from "@/features/users/components/UpdateUserCredentialSection"
+import { updateUser } from "@/features/users/api/server-functions/update-user.api"
+import { updateUserSchema } from "@/features/users/schemas/update-user.schema"
+import type { UpdateUserSchema } from "@/features/users/schemas/update-user.schema"
+import type { User } from "@/lib/types/user.type"
 
 type UpdateUserFormProps = {
   myUser: User
-  departments: Department[]
-  positions: Position[]
-  roles: Role[]
 }
 
-export function UpdateUserForm({
-  myUser,
-  departments,
-  positions,
-  roles,
-}: UpdateUserFormProps) {
+export function UpdateUserForm({ myUser }: UpdateUserFormProps) {
   const navigate = useNavigate({ from: "/manage/users/$userId/update" })
   const queryClient = useQueryClient()
   const updateUserFn = useServerFn(updateUser)
 
   const { mutate: update, isPending } = useMutation({
-    mutationFn: (value: UserFormSchema) =>
-      updateUserFn({ data: { ...value, userId: myUser.id } }),
+    mutationFn: (value: UpdateUserSchema) => updateUserFn({ data: value }),
     // Stay on the page: editing an employee is often several passes over the
     // same record, so a save is no reason to bounce back to the list. The
     // "Quay lại" button above the form is the way out.
@@ -81,12 +36,42 @@ export function UpdateUserForm({
     onError: (error) => toast.error(error.message),
   })
 
+  // User → raw form values: nullable fields become "", ISO datetimes become the yyyy-MM-dd
+  // strings the date pickers work with. `credential` carries the existing ERP account's id
+  // — updateCredentialSchema reads it to allow a blank password (blank = keep the current
+  // password); an employee with no account yet gets undefined.
+  const defaultValues: UpdateUserSchema = {
+    userId: myUser.id,
+    fullName: myUser.fullName,
+    gender: myUser.gender,
+    dateOfBirth: myUser.dateOfBirth
+      ? DateTime.fromISO(myUser.dateOfBirth).toFormat("yyyy-MM-dd")
+      : "",
+    idNumber: myUser.idNumber ?? "",
+    phoneNumber: myUser.phoneNumber ?? "",
+    email: myUser.email ?? "",
+    address: myUser.address ?? "",
+    avatar: myUser.avatar,
+    departmentId: myUser.department.id,
+    positionId: myUser.position.id,
+    hireDate: DateTime.fromISO(myUser.hireDate).toFormat("yyyy-MM-dd"),
+    note: myUser.note ?? "",
+    status: myUser.status,
+    credential: myUser.credential
+      ? {
+          credentialId: myUser.credential.id,
+          username: myUser.credential.username,
+          email: myUser.credential.email,
+          password: "",
+          roleId: myUser.credential.role?.id ?? "",
+        }
+      : undefined,
+  }
+
   const form = useAppForm({
-    defaultValues: buildDefaultValues(myUser),
+    defaultValues,
     validators: {
-      onSubmit: myUser.credential
-        ? updateUserWithCredentialSchema
-        : userFormSchema,
+      onSubmit: updateUserSchema,
     },
     onSubmit: ({ value }) => update(value),
   })
@@ -116,18 +101,12 @@ export function UpdateUserForm({
           </Button>
         </div>
 
-        <UserInfoSection form={form} disabled={isPending} />
+        <UpdateUserInfoSection form={form} disabled={isPending} />
         <div className="grid grid-cols-1 lg:grid-cols-2">
-          <UserJobInfoSection
+          <UpdateUserJobInfoSection form={form} disabled={isPending} />
+          <UpdateUserCredentialSection
             form={form}
             disabled={isPending}
-            departments={departments}
-            positions={positions}
-          />
-          <UserCredentialSection
-            form={form}
-            disabled={isPending}
-            roles={roles}
             hasExistingCredential={myUser.credential != null}
           />
         </div>

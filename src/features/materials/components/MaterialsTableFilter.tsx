@@ -14,13 +14,13 @@ import {
 } from "@/components/ui/select"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { useGetClientOptions } from "@/hooks/use-get-client-options"
+import { useGetClientOptions } from "@/features/clients/api"
 import {
   MATERIAL_STATUS_LABELS,
   MATERIAL_TYPE_LABELS,
 } from "@/lib/types/material.type"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
-import type { Client } from "@/lib/types/client.type"
+import type { ClientRef } from "@/lib/types/client.type"
 import type {
   MaterialGroupRef,
   MaterialStatus,
@@ -38,7 +38,7 @@ type MaterialsTableFilterProps = {
     options?: { replace?: boolean }
   ) => void
   materialGroupOptions: MaterialGroupRef[]
-  clientOptions: Client[]
+  clientOptions: ClientRef[]
 }
 
 export function MaterialsTableFilter({
@@ -167,7 +167,7 @@ export function MaterialsTableFilter({
               onValueChange={(next) => onFilterChange({ clientId: next })}
               options={client.options}
               onSearchChange={client.onSearchChange}
-              isLoading={client.isFetching}
+              isPending={client.isFetching}
               initialOption={buildSelectOption(selectedClient)}
               emptyMessage="Không tìm thấy khách hàng"
               placeholder="Tìm khách hàng..."

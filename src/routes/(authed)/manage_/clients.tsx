@@ -4,7 +4,7 @@ import { requirePermission } from "@/features/auth/guard"
 import {
   clientGroupOptionsQueryOptions,
   clientsQueryOptions,
-} from "@/features/clients/clients.query"
+} from "@/features/clients/api/clients.options"
 import { ClientsPage } from "@/features/clients/pages/ClientsPage"
 import { clientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
 
