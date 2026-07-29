@@ -19,6 +19,11 @@ export const PERMISSION_CODES = [
   "orders:create",
   "orders:update",
   "orders:delete",
+  "orders:approve",
+
+  "production:read",
+  "production:create",
+  "production:update",
 
   "clients:read",
   "clients:create",

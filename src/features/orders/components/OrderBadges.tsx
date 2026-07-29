@@ -16,8 +16,12 @@ export type OrderBadgeTone = OrderStatus | typeof OVERDUE_FILTER_VALUE
 const orderBadgeVariants = cva("", {
   variants: {
     tone: {
-      [OrderStatus.CONFIRMED]:
+      // Dashed + transparent — "not sent yet", distinct from CANCELLED's solid muted tone.
+      [OrderStatus.DRAFT]: "border-dashed bg-transparent text-muted-foreground",
+      [OrderStatus.PENDING_CONFIRMATION]:
         "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+      [OrderStatus.AWAITING_PRODUCTION]:
+        "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
       [OrderStatus.IN_PROGRESS]:
         "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
       [OrderStatus.COMPLETED]: "bg-success/10 text-success",
@@ -32,7 +36,9 @@ const orderBadgeVariants = cva("", {
 // The dot tints a child element rather than the badge itself, so it stays a
 // plain map — OrderStatusLegend renders it on its own, without a badge.
 export const ORDER_BADGE_DOT_CLASSNAME: Record<OrderBadgeTone, string> = {
-  [OrderStatus.CONFIRMED]: "bg-amber-500 dark:bg-amber-400",
+  [OrderStatus.DRAFT]: "bg-muted-foreground/60",
+  [OrderStatus.PENDING_CONFIRMATION]: "bg-amber-500 dark:bg-amber-400",
+  [OrderStatus.AWAITING_PRODUCTION]: "bg-violet-500",
   [OrderStatus.IN_PROGRESS]: "bg-blue-500 dark:bg-blue-400",
   [OrderStatus.COMPLETED]: "bg-success",
   [OrderStatus.CANCELLED]: "bg-muted-foreground",

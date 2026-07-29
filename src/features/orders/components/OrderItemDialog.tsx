@@ -10,18 +10,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useGetProductOptions } from "@/features/orders/hooks/use-get-product-options"
 import {
   ORDER_ITEM_DEFAULT_VALUE,
   orderItemFormSchema,
-} from "@/features/orders/schemas/order-form.schema"
-import type { OrderItemFormValue } from "@/features/orders/schemas/order-form.schema"
+} from "@/features/orders/schemas/order-item-form.schema"
+import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
+import { vndFormatter } from "@/lib/currency"
 import {
+  Currency,
   ORDER_ITEM_STATUS_LABELS,
   OrderItemStatus,
 } from "@/lib/types/order.type"
+import { roundMoney } from "@/lib/utils"
 
 const ORDER_ITEM_STATUS_OPTIONS = Object.values(OrderItemStatus).map(
   (status) => ({ value: status, label: ORDER_ITEM_STATUS_LABELS[status] })
@@ -33,6 +43,11 @@ type OrderItemDialogProps = {
   // `null` = add mode; a row value = edit mode.
   initialValue: OrderItemFormValue | null
   onSubmit: (value: OrderItemFormValue) => void
+  // The order's own currency/exchangeRate — a line has no currency of its own,
+  // `unitPrice` is always entered in the order's currency (see order-item.req.dto.ts
+  // on the backend: no per-line currency column).
+  currency: Currency
+  exchangeRate: string
 }
 
 export function OrderItemDialog({
@@ -40,6 +55,8 @@ export function OrderItemDialog({
   onOpenChange,
   initialValue,
   onSubmit,
+  currency,
+  exchangeRate,
 }: OrderItemDialogProps) {
   // The product combobox must portal its popup inside this dialog's own DOM
   // subtree (see ComboboxField's `container` doc), same pattern as
@@ -59,6 +76,8 @@ export function OrderItemDialog({
           initialValue={initialValue}
           onSubmit={onSubmit}
           onCancel={() => onOpenChange(false)}
+          currency={currency}
+          exchangeRate={exchangeRate}
         />
       </DialogContent>
     </Dialog>
@@ -70,6 +89,8 @@ type OrderItemDialogFormProps = {
   initialValue: OrderItemFormValue | null
   onSubmit: (value: OrderItemFormValue) => void
   onCancel: () => void
+  currency: Currency
+  exchangeRate: string
 }
 
 function OrderItemDialogForm({
@@ -77,6 +98,8 @@ function OrderItemDialogForm({
   initialValue,
   onSubmit,
   onCancel,
+  currency,
+  exchangeRate,
 }: OrderItemDialogFormProps) {
   const isEditing = initialValue !== null
   const product = useGetProductOptions()
@@ -132,7 +155,7 @@ function OrderItemDialogForm({
                 errors={field.state.meta.errors}
                 options={product.options}
                 onSearchChange={product.onSearchChange}
-                isLoading={product.isFetching}
+                isPending={product.isFetching}
                 initialOption={
                   initialValue?.productId
                     ? {
@@ -160,15 +183,45 @@ function OrderItemDialogForm({
           )}
         </form.AppField>
 
+        {/* Built manually (not `field.TextField`) to fit the live "≈ ... VND"
+            conversion hint below the input — the shared TextField has no slot
+            for it. Label/input/error otherwise mirror TextField exactly. */}
         <form.AppField name="unitPrice">
-          {(field) => (
-            <field.TextField
-              id="order-item-unit-price"
-              label="Đơn giá (VND)"
-              type="number"
-              placeholder="0"
-            />
-          )}
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && field.state.meta.errors.length > 0
+            const vndAmount = roundMoney(
+              (Number(field.state.value) || 0) * (Number(exchangeRate) || 0)
+            )
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel
+                  htmlFor="order-item-unit-price"
+                  className="text-xs font-medium text-foreground"
+                >
+                  {`Đơn giá (${currency})`}
+                </FieldLabel>
+                <Input
+                  id="order-item-unit-price"
+                  name={field.name}
+                  type="number"
+                  placeholder="0"
+                  className="h-9 bg-background text-xs"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {currency !== Currency.VND && (
+                  <FieldDescription className="text-[11px] tabular-nums">
+                    ≈ {vndFormatter.format(vndAmount)} VND
+                  </FieldDescription>
+                )}
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )
+          }}
         </form.AppField>
 
         <form.AppField name="discountPercent">

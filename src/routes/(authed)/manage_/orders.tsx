@@ -5,8 +5,7 @@ import { OrdersPage } from "@/features/orders/pages/OrdersPage"
 import {
   orderStatsQueryOptions,
   ordersQueryOptions,
-  salesRepOptionsQueryOptions,
-} from "@/features/orders/orders.query"
+} from "@/features/orders/api/orders.options"
 import { ordersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
 
 export const Route = createFileRoute("/(authed)/manage_/orders")({
@@ -26,7 +25,6 @@ export const Route = createFileRoute("/(authed)/manage_/orders")({
         ordersQueryOptions(ordersSearchSchema.parse(location.search))
       ),
       context.queryClient.ensureQueryData(orderStatsQueryOptions()),
-      context.queryClient.ensureQueryData(salesRepOptionsQueryOptions()),
     ]),
   component: OrdersPage,
 })

@@ -1,18 +1,50 @@
+import { useEffect, useState } from "react"
+import { useStore } from "zustand"
+import { createStore } from "zustand/vanilla"
+import { persist } from "zustand/middleware"
 import type { AnyFormApi } from "@tanstack/react-form"
-import { useLocalStorage } from "usehooks-ts"
+
+type DraftStoreState<T> = {
+  draft: T | null
+  saveDraft: (value: T) => void
+  clearDraft: () => void
+}
+
+function createDraftStore<T>(storageKey: string) {
+  return createStore<DraftStoreState<T>>()(
+    persist(
+      (set) => ({
+        draft: null,
+        saveDraft: (value: T) => set({ draft: value }),
+        clearDraft: () => set({ draft: null }),
+      }),
+      // skipHydration: read from localStorage only after mount (see the
+      // `rehydrate()` call below), not synchronously at store-creation time —
+      // server and first client render both see `draft: null`, avoiding an
+      // SSR hydration mismatch.
+      { name: storageKey, skipHydration: true }
+    )
+  )
+}
 
 /**
  * Persist a create-form's values to localStorage on demand (manual "Lưu nháp")
- * so the form auto-restores on reopen. SSR-safe via usehooks-ts — server and
- * first client render both see `null`, then it hydrates.
+ * so the form auto-restores on reopen. SSR-safe: the store skips hydration
+ * until after mount, so server and first client render both see `null`, then
+ * `rehydrate()` reads the real value.
  *
  * Never store secrets (tokens, passwords) here — strip them before `saveDraft`.
  */
 export function useFormDraft<T>(storageKey: string) {
-  const [draft, saveDraft, clearDraft] = useLocalStorage<T | null>(
-    storageKey,
-    null
-  )
+  const [store] = useState(() => createDraftStore<T>(storageKey))
+
+  useEffect(() => {
+    void store.persist.rehydrate()
+  }, [store])
+
+  const draft = useStore(store, (state) => state.draft)
+  const saveDraft = useStore(store, (state) => state.saveDraft)
+  const clearDraft = useStore(store, (state) => state.clearDraft)
 
   return { draft, saveDraft, clearDraft }
 }

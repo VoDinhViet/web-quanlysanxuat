@@ -3,24 +3,31 @@ import { DateTime } from "luxon"
 import type { FileResource } from "@/lib/types/file.type"
 import type { Unit } from "@/lib/types/unit.type"
 
-// Mirrors the backend's OrderStatus exactly — no DRAFT: an order is CONFIRMED the
-// moment it's created (see be-quanlysanxuat/src/database/schemas/orders.ts).
+// Mirrors the backend's OrderStatus exactly. DRAFT → PENDING_CONFIRMATION (submit) →
+// AWAITING_PRODUCTION (director approve only, never a direct PATCH) → IN_PROGRESS →
+// COMPLETED/CANCELLED; a reject sends PENDING_CONFIRMATION back to DRAFT.
 export enum OrderStatus {
-  CONFIRMED = "CONFIRMED",
+  DRAFT = "DRAFT",
+  PENDING_CONFIRMATION = "PENDING_CONFIRMATION",
+  AWAITING_PRODUCTION = "AWAITING_PRODUCTION",
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
   CANCELLED = "CANCELLED",
 }
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  [OrderStatus.CONFIRMED]: "Đã xác nhận",
+  [OrderStatus.DRAFT]: "Nháp",
+  [OrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận",
+  [OrderStatus.AWAITING_PRODUCTION]: "Chờ sản xuất",
   [OrderStatus.IN_PROGRESS]: "Đang thực hiện",
   [OrderStatus.COMPLETED]: "Hoàn thành",
   [OrderStatus.CANCELLED]: "Đã hủy",
 }
 
 export const ORDER_STATUS_DESCRIPTIONS: Record<OrderStatus, string> = {
-  [OrderStatus.CONFIRMED]: "Đơn hàng đã xác nhận, chờ xử lý",
+  [OrderStatus.DRAFT]: "Đơn nháp, sửa tự do, chưa gửi duyệt",
+  [OrderStatus.PENDING_CONFIRMATION]: "Đã gửi, chờ Giám đốc duyệt",
+  [OrderStatus.AWAITING_PRODUCTION]: "Đã duyệt, chờ đưa vào sản xuất",
   [OrderStatus.IN_PROGRESS]: "Đơn hàng đang được xử lý",
   [OrderStatus.COMPLETED]: "Đã hoàn thành, kết thúc đơn hàng",
   [OrderStatus.CANCELLED]: "Đơn hàng đã bị hủy",
@@ -105,6 +112,12 @@ export type OrderSalesRepRef = {
   fullName: string
 }
 
+/** Mirrors the backend's nested creator relation (OrderCreatorResDto). */
+export type OrderCreator = {
+  id: string
+  username: string
+}
+
 // Mirrors the backend's OrderResDto. There is no per-order delivered/remaining
 // amount on the wire yet (only the dashboard stats have a "Đã giao" proxy) —
 // don't add those fields back until the backend actually computes them.
@@ -123,6 +136,7 @@ export type Order = {
   expired: boolean
   paymentTerm: PaymentTerm | null
   staff: OrderSalesRepRef | null
+  creator: OrderCreator | null
   createdAt: string
   updatedAt: string
 }
@@ -156,12 +170,6 @@ export type OrderAttachment = {
   file: FileResource
 }
 
-/** Mirrors the backend's nested creator relation (OrderCreatorResDto). */
-export type OrderCreator = {
-  id: string
-  username: string
-}
-
 // Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
 // endpoint (GET /api/orders, `Order` above) intentionally skips items/attachments
 // for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
@@ -187,7 +195,13 @@ export type OrderDetail = Order & {
   internalNote: string | null
   items: OrderItem[]
   attachments: OrderAttachment[]
-  creator: OrderCreator | null
+  // Approval flow (see OrderStatus doc comment) — only the most recent approve/reject is
+  // kept, no history table. `approver`/`rejecter` share the same shape as `creator`.
+  approver: OrderCreator | null
+  approvedAt: string | null
+  rejecter: OrderCreator | null
+  rejectedAt: string | null
+  rejectionReason: string | null
 }
 
 // Mirrors the backend's OrderStatsResDto exactly (the 6 dashboard cards). Trend/ratio
@@ -237,4 +251,71 @@ export function resolveDeliveryTone(order: Order): DeliveryTone {
     .diff(DateTime.now().startOf("day"), "days").days
 
   return daysLeft <= NEAR_DUE_DAYS ? "near-due" : "normal"
+}
+
+// Built by src/features/orders/order-timeline.ts from real OrderDetail fields
+// (createdAt/creator, approvedAt/approver, rejectedAt/rejecter, updatedAt) — no mock data.
+export type OrderTimelineStepState =
+  | "done"
+  | "current"
+  | "upcoming"
+  | "cancelled"
+
+export type OrderTimelineStep = {
+  key: string
+  label: string
+  state: OrderTimelineStepState
+  timestamp: string | null
+  actor: string | null
+  detail: string | null
+}
+
+// ---- UI-only mock scaffolding ----
+// The 3 types below describe placeholder data built by
+// src/features/orders/mock/order-detail.mock.ts for concepts the backend has
+// no table for yet: per-order delivered/remaining, delivery history and
+// payment history. Delete these alongside that file once DO tracking and a
+// payments ledger actually exist.
+
+export type OrderMockDeliveryProgress = {
+  deliveredPercent: number
+  deliveredQuantity: number
+  remainingQuantity: number
+  deliveredVnd: number
+  remainingVnd: number
+}
+
+export type OrderMockDeliveryRow = {
+  code: string
+  deliveredAt: string
+  quantity: number
+  valueVnd: number
+  vehicle: string
+}
+
+export type OrderMockPaymentRow = {
+  paidAt: string
+  amountVnd: number
+  method: string
+  collectedBy: string
+}
+
+export type OrderMockPaymentStatus = "unpaid" | "partially_paid" | "paid"
+
+export const ORDER_MOCK_PAYMENT_STATUS_LABELS: Record<
+  OrderMockPaymentStatus,
+  string
+> = {
+  unpaid: "Chưa thanh toán",
+  partially_paid: "Thanh toán một phần",
+  paid: "Đã thanh toán",
+}
+
+// Client-profile facts the reference layout shows but that don't exist
+// anywhere on `OrderClientRef`/`OrderDetail` yet (no billing address, tax
+// code, or delivery-term field on the wire).
+export type OrderMockClientProfile = {
+  address: string
+  taxCode: string
+  deliveryTerm: string
 }

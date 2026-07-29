@@ -2,31 +2,20 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { createOrderSchema } from "@/features/orders/schemas/create-order.schema"
-import { resolveAttachmentFileIds } from "@/lib/file-field.schema"
+import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import { emptyToUndefined } from "@/lib/zod-transforms"
 
-// Header fields are already wire-ready — every empty->undefined and
-// string->number/date mapping happens field-by-field on `orderFields` itself
-// (order-form.schema.ts). Only `items`/`attachments` need reshaping here:
-// `productLabel`/`productUnit` are UI-only (re-displayed in the items table
-// without a second product fetch) and stripped before the payload goes out;
-// `attachments` collapses to the wire's `attachmentFileIds`.
+// Every field is already wire-ready by the time this runs — string->number
+// mapping happens field-by-field on createOrderSchema/orderItemFormFields, and
+// the two UI-only item fields are already dropped by orderItemFormSchema's own
+// transform (order-item-form.schema.ts). All that's left is collapsing attachments
+// into attachmentFileIds — kept here, not on the schema, matching every other
+// feature's file-field handling (see "Server functions" in architecture.md).
 const createOrderPayloadSchema = createOrderSchema.transform(
-  ({ items, attachments, ...rest }) => ({
+  ({ attachments, ...rest }) => ({
     ...rest,
-    items: items.map(
-      ({ productId, quantity, unitPrice, discountPercent, note, status }) => ({
-        productId,
-        quantity: Number(quantity),
-        unitPrice: Number(unitPrice),
-        discountPercent: Number(discountPercent),
-        note: emptyToUndefined(note),
-        status,
-      })
-    ),
-    attachmentFileIds: resolveAttachmentFileIds(attachments),
+    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
   })
 )
 

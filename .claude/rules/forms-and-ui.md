@@ -20,6 +20,14 @@
   a `.catch(...)` default so a malformed URL never crashes the route.
 - TanStack Table `columns` are defined at module scope or memoized with `useMemo`, never
   recreated inline on every render.
+- A presentational component's loading prop is always named `isPending` — it doesn't need to
+  know whether the parent is on its first load or refetching, just whether to show the
+  pending treatment. What the caller binds to it varies by situation: `query.isPending` for a
+  first-load skeleton or disabling a form, `query.isFetching` for dimming a table on
+  filter/page change or showing a combobox's "Đang tìm..." state while the user types (see
+  `ComboboxField`, and any `<XTable isPending={xQuery.isFetching} />` next to
+  `xQuery.isPending ? <TableQueryFallback /> : ...` on the same list page). `useMutation`'s own
+  `isPending` ("request in flight") is unrelated and unaffected by this convention.
 - `useSearch`/`useLoaderData`'s `from` takes the file-based route id (e.g.
   `"/(authed)/manage_/users"`); `useNavigate`'s `from` takes the resolved URL path instead
   (e.g. `"/manage/users"`) — the two intentionally differ. Pass the literal strings

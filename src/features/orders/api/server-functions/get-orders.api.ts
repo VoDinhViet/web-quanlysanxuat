@@ -16,24 +16,39 @@ type OrdersQueryParams = {
   overdue?: true
   paymentTerm?: PaymentTerm
   salesRepId?: string
-  orderDateFrom?: string
-  orderDateTo?: string
+  fromDate?: string
+  toDate?: string
   order?: SortOrder
 }
 
 // "Trễ hạn" is one entry in the status select, but on the wire it is a separate
 // `overdue` flag rather than a `status` value. Empty `q` has to drop out
 // entirely too — the backend 422s on a present-but-empty `q` (see
-// get-client-options.ts).
+// get-client-options.ts). `orderDateFrom`/`orderDateTo` rename to `fromDate`/
+// `toDate` here — GetOrdersReqDto's field names, which filter on `dueDate`, not
+// `orderDate` (the URL param names stay as-is so existing shared links keep
+// working; only the wire shape changes).
 //
 // This transform hangs off a derived schema, NOT off `ordersSearchSchema`
 // itself: the route's validateSearch needs the raw shape so `useSearch()`
 // returns `status: "OVERDUE"` for the filter select to show the right option.
 const getOrdersParamsSchema = ordersSearchSchema.transform(
-  ({ status, q, ...rest }): OrdersQueryParams =>
+  ({ status, q, orderDateFrom, orderDateTo, ...rest }): OrdersQueryParams =>
     status === OVERDUE_FILTER_VALUE
-      ? { ...rest, q: q || undefined, overdue: true }
-      : { ...rest, q: q || undefined, status }
+      ? {
+          ...rest,
+          q: q || undefined,
+          overdue: true,
+          fromDate: orderDateFrom,
+          toDate: orderDateTo,
+        }
+      : {
+          ...rest,
+          q: q || undefined,
+          status,
+          fromDate: orderDateFrom,
+          toDate: orderDateTo,
+        }
 )
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."

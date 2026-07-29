@@ -86,7 +86,12 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Quản lý sản xuất",
     items: [
-      { label: "Lệnh sản xuất (Job)", icon: Factory },
+      {
+        label: "Lệnh sản xuất (LSX)",
+        icon: Factory,
+        href: "/manage/production-orders",
+        permission: "orders:read",
+      },
       { label: "Quản lý sản xuất", icon: GitBranch },
       { label: "BOM & Định mức", icon: ListChecks },
     ],

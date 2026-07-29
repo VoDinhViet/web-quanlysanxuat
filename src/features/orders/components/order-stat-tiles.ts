@@ -6,9 +6,13 @@ import refreshBold from "@iconify-icons/solar/refresh-bold"
 import walletMoneyBold from "@iconify-icons/solar/wallet-money-bold"
 import type { IconifyIcon } from "@iconify/types"
 
+import { vndFormatter } from "@/lib/currency"
 import type { OrderStats } from "@/lib/types/order.type"
 
-const currencyFormatter = new Intl.NumberFormat("vi-VN")
+// Plain order counts (not money) — totalOrders/inProgress/expired/completed below all read
+// through this, so it stays separate from the shared `vndFormatter` used for the two actual
+// money tiles (totalValue/completedValue).
+const countFormatter = new Intl.NumberFormat("vi-VN")
 
 // Backend values are already ×100 (e.g. 36.5 means "36.5%") — plain number format + "%",
 // not Intl's `style: "percent"` (which expects a 0–1 fraction and would show 3650%).
@@ -30,7 +34,7 @@ export type OrderStatTrend = {
 }
 
 type TrendResult = {
-  text: string;
+  text: string
   direction: OrderStatTrendDirection | null
 }
 
@@ -102,7 +106,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
     valueSizeClassName: "text-2xl",
     unit: "đơn",
     positiveDirection: "up",
-    selectValue: (stats) => currencyFormatter.format(stats.totalOrders),
+    selectValue: (stats) => countFormatter.format(stats.totalOrders),
     selectTrend: (stats) =>
       formatSignedTrend(
         stats.totalOrdersTrendPercent,
@@ -117,7 +121,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
     valueSizeClassName: "text-lg",
     unit: "VND",
     positiveDirection: "up",
-    selectValue: (stats) => currencyFormatter.format(stats.totalValue),
+    selectValue: (stats) => vndFormatter.format(stats.totalValue),
     selectTrend: (stats) =>
       formatSignedTrend(
         stats.totalValueTrendPercent,
@@ -133,7 +137,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
     valueSizeClassName: "text-lg",
     unit: "VND",
     positiveDirection: null,
-    selectValue: (stats) => currencyFormatter.format(stats.completedValue),
+    selectValue: (stats) => vndFormatter.format(stats.completedValue),
     selectTrend: (stats) =>
       formatShareOfTotal(
         stats.completedValuePercentOfTotal,
@@ -147,7 +151,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
     valueSizeClassName: "text-2xl",
     unit: "đơn",
     positiveDirection: null,
-    selectValue: (stats) => currencyFormatter.format(stats.inProgress),
+    selectValue: (stats) => countFormatter.format(stats.inProgress),
     selectTrend: (stats) =>
       formatShareOfTotal(stats.inProgressPercentOfTotal, "so với tổng số đơn"),
   },
@@ -160,7 +164,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
     // A drop in overdue orders is good news — tone follows meaning, not the
     // raw arrow direction.
     positiveDirection: "down",
-    selectValue: (stats) => currencyFormatter.format(stats.expired),
+    selectValue: (stats) => countFormatter.format(stats.expired),
     selectTrend: (stats) =>
       formatSignedTrend(stats.expiredTrendCount, "tuần trước", String),
   },
@@ -171,7 +175,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
     valueSizeClassName: "text-2xl",
     unit: "đơn",
     positiveDirection: null,
-    selectValue: (stats) => currencyFormatter.format(stats.completed),
+    selectValue: (stats) => countFormatter.format(stats.completed),
     selectTrend: (stats) =>
       formatShareOfTotal(stats.completedPercentOfTotal, "so với tổng số đơn"),
   },
@@ -185,13 +189,10 @@ export function buildOrderStatTiles(stats: OrderStats): OrderStatTile[] {
       label: def.label,
       value: def.selectValue(stats),
       unit: def.unit,
-      trend: trend
-        ? {
-          text: trend.text,
-          direction: trend.direction,
-          tone: resolveTone(trend.direction, def.positiveDirection),
-        }
-        : null,
+      trend: trend && {
+        ...trend,
+        tone: resolveTone(trend.direction, def.positiveDirection),
+      },
       icon: def.icon,
       iconClassName: def.iconClassName,
       valueSizeClassName: def.valueSizeClassName,

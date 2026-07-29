@@ -1,0 +1,36 @@
+import { createFileRoute, redirect } from "@tanstack/react-router"
+
+import { requirePermission } from "@/features/auth/guard"
+import { UpdateOrderPage } from "@/features/orders/pages/UpdateOrderPage"
+import { orderQueryOptions } from "@/features/orders/api/orders.options"
+import { OrderStatus } from "@/lib/types/order.type"
+
+// The trailing underscore on `$orderId_` opts this route out of nesting under
+// `orders_/$orderId.tsx` (the detail page, which renders no <Outlet/>) while keeping the
+// same URL segment — see "Layer boundaries" in architecture.md.
+export const Route = createFileRoute(
+  "/(authed)/manage_/orders_/$orderId_/update"
+)({
+  beforeLoad: ({ context }) =>
+    requirePermission(context.permissions, "orders:update"),
+  loader: async ({ context, params }) => {
+    const order = await context.queryClient.ensureQueryData(
+      orderQueryOptions(params.orderId)
+    )
+
+    // Backend rejects a PATCH on a finished order (order.error.not_editable) — bounce to
+    // the detail page instead of showing a form that can never save. The loader still
+    // doesn't `return` anything (see "Loaders prefetch, don't return"); it only awaits to
+    // both prefetch the cache and read the status.
+    if (
+      order.status === OrderStatus.COMPLETED ||
+      order.status === OrderStatus.CANCELLED
+    ) {
+      throw redirect({
+        to: "/manage/orders/$orderId",
+        params: { orderId: params.orderId },
+      })
+    }
+  },
+  component: UpdateOrderPage,
+})

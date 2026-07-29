@@ -10,7 +10,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { IconButton } from "@/components/shared/IconButton"
-import { resolveDeliveryTone } from "@/lib/types/order.type"
+import { PermissionGate } from "@/components/shared/PermissionGate"
+import { OrderStatus, resolveDeliveryTone } from "@/lib/types/order.type"
 import type { DeliveryTone, Order } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
@@ -47,36 +48,58 @@ export function DueDateCell({ order }: { order: Order }) {
   )
 }
 
-// The detail screen exists now; there's no update-order screen yet, so
-// "Chỉnh sửa" stays disabled — a <Link> to an unregistered route wouldn't
-// typecheck and a raw <a> would 404. The <span tabIndex={0}> wrapper on the
-// disabled action is required — a disabled button swallows pointer events
-// and the tooltip would never fire.
-export function OrderActionsCell({ orderId }: { orderId: string }) {
+// A COMPLETED/CANCELLED order can't be edited (backend rejects the PATCH with
+// order.error.not_editable, and the update route's own loader redirects away) — its
+// "Chỉnh sửa" stays disabled with a status-specific hint. Otherwise it links to the update
+// screen, gated on `orders:update` same as the create button on the toolbar. The
+// <span tabIndex={0}> wrapper on the disabled action is required — a disabled button
+// swallows pointer events and the tooltip would never fire.
+export function OrderActionsCell({ order }: { order: Order }) {
+  const isEditable =
+    order.status !== OrderStatus.COMPLETED &&
+    order.status !== OrderStatus.CANCELLED
+
   return (
     <div className="flex items-center justify-center gap-1.5">
       <IconButton label="Xem chi tiết" asChild>
-        <Link
-          to="/manage/orders/$orderId"
-          params={{ orderId }}
-          search={{ tab: "info" }}
-        >
+        <Link to="/manage/orders/$orderId" params={{ orderId: order.id }}>
           <Eye className="size-3.5" />
         </Link>
       </IconButton>
-      <DisabledAction label="Chỉnh sửa">
-        <Pencil className="size-3.5" />
-      </DisabledAction>
+      {isEditable ? (
+        <PermissionGate permission="orders:update">
+          <IconButton label="Chỉnh sửa" asChild>
+            <Link
+              to="/manage/orders/$orderId/update"
+              params={{ orderId: order.id }}
+            >
+              <Pencil className="size-3.5" />
+            </Link>
+          </IconButton>
+        </PermissionGate>
+      ) : (
+        <DisabledAction
+          label="Chỉnh sửa"
+          hint="Đơn hàng đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa"
+        >
+          <Pencil className="size-3.5" />
+        </DisabledAction>
+      )}
     </div>
   )
 }
 
 type DisabledActionProps = {
   label: string
+  hint?: string
   children: ReactNode
 }
 
-function DisabledAction({ label, children }: DisabledActionProps) {
+function DisabledAction({
+  label,
+  hint = "tính năng sắp có",
+  children,
+}: DisabledActionProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -93,7 +116,7 @@ function DisabledAction({ label, children }: DisabledActionProps) {
           </Button>
         </span>
       </TooltipTrigger>
-      <TooltipContent>{`${label} — tính năng sắp có`}</TooltipContent>
+      <TooltipContent>{`${label} — ${hint}`}</TooltipContent>
     </Tooltip>
   )
 }

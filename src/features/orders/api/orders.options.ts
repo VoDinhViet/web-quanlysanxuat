@@ -1,15 +1,12 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { getOrderStats } from "@/features/orders/server-functions/get-order-stats"
-import { getOrders } from "@/features/orders/server-functions/get-orders"
+import { getClientContacts } from "@/features/orders/api/server-functions/get-client-contacts.api"
+import { getExchangeRate } from "@/features/orders/api/server-functions/get-exchange-rate.api"
+import { getOrderStats } from "@/features/orders/api/server-functions/get-order-stats.api"
+import { getOrder } from "@/features/orders/api/server-functions/get-order.api"
+import { getOrders } from "@/features/orders/api/server-functions/get-orders.api"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
-import { FILTER_OPTIONS_LIMIT } from "@/lib/constants"
-import { getProducts } from "@/lib/server-functions/get-products"
-import { getSalesRepOptions } from "@/lib/server-functions/get-sales-rep-options"
-
-// Reference lists change rarely — cache them longer so moving around the module
-// doesn't refetch them on every navigation.
-const REFERENCE_STALE_TIME = 5 * 60_000
+import type { Currency } from "@/lib/types/order.type"
 
 // Query key convention (see .claude/rules/architecture.md): `["orders"]` is the
 // feature root, so `invalidateQueries({ queryKey: ["orders"] })` after a write
@@ -26,19 +23,26 @@ export const orderStatsQueryOptions = () =>
     queryFn: () => getOrderStats(),
   })
 
-export const salesRepOptionsQueryOptions = () =>
+export const orderQueryOptions = (orderId: string) =>
   queryOptions({
-    queryKey: ["orders", "sales-rep-options"],
-    queryFn: () => getSalesRepOptions(),
-    staleTime: REFERENCE_STALE_TIME,
+    queryKey: ["orders", "detail", orderId],
+    queryFn: () => getOrder({ data: { orderId } }),
   })
 
-export const productOptionsQueryOptions = (q: string) =>
+// "Người liên hệ" picker in OrderContactSelect.tsx: contacts for whichever
+// client is currently selected, fetched only when a client is picked (see
+// the `enabled: !!clientId` at the call site).
+export const clientContactsQueryOptions = (clientId: string) =>
   queryOptions({
-    queryKey: ["orders", "product-options", q],
-    queryFn: () =>
-      getProducts({ data: { q: q || undefined, limit: FILTER_OPTIONS_LIMIT } })
-        .then((response) => response.data)
-        .catch(() => []),
-    staleTime: REFERENCE_STALE_TIME,
+    queryKey: ["orders", "client-contacts", clientId],
+    queryFn: () => getClientContacts({ data: { clientId } }),
+  })
+
+// Auto-fills "Tỷ giá quy đổi" in Create/UpdateOrderInfoSection.tsx when a non-VND currency
+// is picked (see the `enabled: currency !== Currency.VND` at the call site).
+export const exchangeRateQueryOptions = (currency: Currency) =>
+  queryOptions({
+    queryKey: ["orders", "exchange-rate", currency],
+    queryFn: () => getExchangeRate({ data: { currency } }),
+    staleTime: 60 * 60_000, // upstream refreshes ~daily; no need to refetch per render
   })

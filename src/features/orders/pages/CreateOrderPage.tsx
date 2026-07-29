@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { CreateOrderForm } from "@/features/orders/components/CreateOrderForm"
+import { CreateOrderForm } from "@/features/orders/components/create/CreateOrderForm"
 
 export function CreateOrderPage() {
   return (
@@ -15,7 +15,7 @@ export function CreateOrderPage() {
         notificationCount={5}
       />
 
-      <div className="w-full p-4 sm:p-5 lg:p-6">
+      <div className="order-drafting w-full p-4 sm:p-5 lg:p-6">
         <CreateOrderForm />
       </div>
     </main>

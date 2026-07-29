@@ -37,7 +37,7 @@ export function OrdersDateRangeFilter({
     <div className="grid grid-cols-2 gap-2">
       <DatePickerField
         id="orders-filter-date-from"
-        label="Đặt hàng từ"
+        label="Ngày giao từ"
         value={from ?? ""}
         onChange={handleFromChange}
         onBlur={() => {}}

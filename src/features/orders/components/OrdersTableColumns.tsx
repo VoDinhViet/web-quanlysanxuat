@@ -86,6 +86,6 @@ export const orderColumns = [
       headerClassName: "min-w-24 text-center",
       cellClassName: "font-normal",
     },
-    cell: ({ row }) => <OrderActionsCell orderId={row.original.id} />,
+    cell: ({ row }) => <OrderActionsCell order={row.original} />,
   }),
 ]

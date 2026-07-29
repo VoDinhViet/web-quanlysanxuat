@@ -1,0 +1,79 @@
+import { Icon } from "@iconify/react"
+import documentsBold from "@iconify-icons/solar/documents-bold"
+import fileTextBold from "@iconify-icons/solar/file-text-bold"
+import paperclipBold from "@iconify-icons/solar/paperclip-bold"
+import { DateTime } from "luxon"
+
+import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
+import { resolveFileUrl } from "@/lib/file-url"
+import type { OrderDetail } from "@/lib/types/order.type"
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(0)} KB`
+  }
+
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+type OrderDetailAttachmentsCardProps = {
+  order: OrderDetail
+}
+
+export function OrderDetailAttachmentsCard({
+  order,
+}: OrderDetailAttachmentsCardProps) {
+  return (
+    <OrderDetailSectionCard
+      icon={paperclipBold}
+      title={`Tài liệu đính kèm (${order.attachments.length})`}
+    >
+      {order.attachments.length > 0 ? (
+        <ul className="space-y-1.5">
+          {order.attachments.map((attachment) => (
+            <li key={attachment.id}>
+              {/* The download route is @Public(), so the signed URL opens in
+                  a new tab without an auth header. */}
+              <a
+                href={resolveFileUrl(attachment.file.url)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+              >
+                <Icon
+                  icon={fileTextBold}
+                  className="size-4 shrink-0 text-muted-foreground"
+                />
+                <span className="min-w-0 flex-1 truncate">
+                  {attachment.file.originalName}
+                </span>
+                <span className="shrink-0 text-muted-foreground">
+                  {formatFileSize(attachment.file.size)}
+                </span>
+                <span className="hidden shrink-0 text-muted-foreground sm:inline">
+                  {DateTime.fromISO(attachment.file.createdAt).toFormat(
+                    "dd/MM/yyyy"
+                  )}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
+          <Icon
+            icon={documentsBold}
+            className="size-7 text-muted-foreground/40"
+          />
+          <p className="text-[11px] font-medium text-muted-foreground">
+            Chưa có tài liệu đính kèm
+          </p>
+        </div>
+      )}
+    </OrderDetailSectionCard>
+  )
+}

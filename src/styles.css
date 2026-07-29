@@ -3,6 +3,15 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource/cal-sans";
+/* Create-order page only ("bản vẽ kỹ thuật" theme, see .order-drafting below) */
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-sans/700.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -170,4 +179,61 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Create-order page only — a "technical drawing" typographic identity for
+   /manage/orders/create (see CreateOrderPage.tsx), scoped entirely behind
+   this one class so every other route is untouched. Colors stay the app's
+   normal theme — only type + the title-block decoration are distinct here. */
+.order-drafting {
+  --font-heading: "Space Grotesk Variable", var(--font-sans);
+  --font-sans: "IBM Plex Sans", sans-serif;
+
+  /* Subtle drafting-paper grid texture, in the theme's own primary color. */
+  background-image:
+    linear-gradient(
+      color-mix(in oklab, var(--primary) 6%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--primary) 6%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 24px 24px;
+}
+
+.order-drafting .tabular-nums,
+.order-drafting .font-mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* Signature element: renders a section like an engineering drawing's title
+   block — corner registration marks via pseudo-elements, no extra DOM. */
+.drafting-title-block {
+  position: relative;
+  border: 1px solid var(--border);
+}
+
+.drafting-title-block::before,
+.drafting-title-block::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--primary);
+}
+
+.drafting-title-block::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.drafting-title-block::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
 }
