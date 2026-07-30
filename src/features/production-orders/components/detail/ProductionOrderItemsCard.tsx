@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useHasPermission } from "@/hooks/use-permissions"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { withForm } from "@/hooks/use-app-form"
 import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
 import { updateProductionOrderFormDefaultValues } from "@/features/production-orders/schemas/update-production-order.schema"
@@ -93,10 +93,7 @@ export const ProductionOrderItemsCard = withForm({
     isSaving: false,
   },
   render: function Render({ form, production, isSaving }) {
-    // Two separate statements, not `&&`-short-circuited — a hook can't be called conditionally.
-    const canUpdate = useHasPermission("production:update")
-    const canEdit =
-      production.status === ProductionOrderStatus.PENDING && canUpdate
+    const isPending = production.status === ProductionOrderStatus.PENDING
     const { items } = production
 
     const totalOrderQty = items.reduce((sum, item) => sum + item.orderQty, 0)
@@ -109,7 +106,6 @@ export const ProductionOrderItemsCard = withForm({
       (sum, item) => sum + item.fromStockQty,
       0
     )
-    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
 
     return (
       <form
@@ -170,34 +166,43 @@ export const ProductionOrderItemsCard = withForm({
                         item={item}
                         index={index}
                         quantityCell={
-                          canEdit ? (
-                            <form.Field name={`items[${index}].quantity`}>
-                              {(field) => (
-                                <div className="ml-auto flex w-24 flex-col items-end gap-1">
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    step="any"
-                                    value={field.state.value}
-                                    onChange={(event) =>
-                                      field.handleChange(event.target.value)
-                                    }
-                                    onBlur={field.handleBlur}
-                                    disabled={isSaving}
-                                    aria-invalid={
-                                      field.state.meta.isTouched &&
-                                      field.state.meta.errors.length > 0
-                                    }
-                                    aria-label={`Số lượng sản xuất cho ${item.product.name}`}
-                                    className="h-8 w-24 text-right text-xs tabular-nums"
-                                  />
-                                  <FieldError
-                                    errors={field.state.meta.errors}
-                                    className="text-right text-[11px]"
-                                  />
-                                </div>
-                              )}
-                            </form.Field>
+                          isPending ? (
+                            <PermissionGate
+                              permission="production:update"
+                              fallback={
+                                <ProductionOrderQuantityStatic
+                                  quantity={item.quantity}
+                                />
+                              }
+                            >
+                              <form.Field name={`items[${index}].quantity`}>
+                                {(field) => (
+                                  <div className="ml-auto flex w-24 flex-col items-end gap-1">
+                                    <Input
+                                      type="number"
+                                      min={0}
+                                      step="any"
+                                      value={field.state.value}
+                                      onChange={(event) =>
+                                        field.handleChange(event.target.value)
+                                      }
+                                      onBlur={field.handleBlur}
+                                      disabled={isSaving}
+                                      aria-invalid={
+                                        field.state.meta.isTouched &&
+                                        field.state.meta.errors.length > 0
+                                      }
+                                      aria-label={`Số lượng sản xuất cho ${item.product.name}`}
+                                      className="h-8 w-24 text-right text-xs tabular-nums"
+                                    />
+                                    <FieldError
+                                      errors={field.state.meta.errors}
+                                      className="text-right text-[11px]"
+                                    />
+                                  </div>
+                                )}
+                              </form.Field>
+                            </PermissionGate>
                           ) : (
                             <ProductionOrderQuantityStatic
                               quantity={item.quantity}
@@ -220,23 +225,19 @@ export const ProductionOrderItemsCard = withForm({
                         {quantityFormatter.format(totalAvailableQty)}
                       </TableCell>
                       <TableCell className="text-right font-medium tabular-nums">
-                        {canEdit ? (
-                          <form.Subscribe
-                            selector={(state) => state.values.items}
-                          >
-                            {(formItems) =>
-                              quantityFormatter.format(
-                                formItems.reduce(
-                                  (sum, formItem) =>
-                                    sum + (Number(formItem.quantity) || 0),
-                                  0
-                                )
+                        <form.Subscribe
+                          selector={(state) => state.values.items}
+                        >
+                          {(formItems) =>
+                            quantityFormatter.format(
+                              formItems.reduce(
+                                (sum, formItem) =>
+                                  sum + (Number(formItem.quantity) || 0),
+                                0
                               )
-                            }
-                          </form.Subscribe>
-                        ) : (
-                          quantityFormatter.format(totalQuantity)
-                        )}
+                            )
+                          }
+                        </form.Subscribe>
                       </TableCell>
                       <TableCell className="text-right font-medium tabular-nums">
                         {quantityFormatter.format(totalFromStockQty)}
@@ -255,26 +256,24 @@ export const ProductionOrderItemsCard = withForm({
                 (không âm), được tính lại sau mỗi lần lưu.
               </p>
 
-              {canEdit ? (
-                <form.Subscribe
-                  selector={(state) =>
-                    findChangedProductionQuantities(state.values, production)
-                      .length > 0
-                  }
-                >
-                  {(hasUnsavedChanges) =>
-                    hasUnsavedChanges ? (
-                      <Alert className="border-warning/30 bg-warning/10 py-2.5">
-                        <TriangleAlert className="text-warning" />
-                        <AlertDescription className="text-xs text-warning/90">
-                          Có thay đổi chưa lưu. Nhấn "Lưu thay đổi" để cập nhật
-                          số lượng sản xuất trước khi duyệt LSX.
-                        </AlertDescription>
-                      </Alert>
-                    ) : null
-                  }
-                </form.Subscribe>
-              ) : null}
+              <form.Subscribe
+                selector={(state) =>
+                  findChangedProductionQuantities(state.values, production)
+                    .length > 0
+                }
+              >
+                {(hasUnsavedChanges) =>
+                  hasUnsavedChanges ? (
+                    <Alert className="border-warning/30 bg-warning/10 py-2.5">
+                      <TriangleAlert className="text-warning" />
+                      <AlertDescription className="text-xs text-warning/90">
+                        Có thay đổi chưa lưu. Nhấn "Lưu thay đổi" để cập nhật số
+                        lượng sản xuất trước khi duyệt LSX.
+                      </AlertDescription>
+                    </Alert>
+                  ) : null
+                }
+              </form.Subscribe>
             </div>
           )}
         </div>

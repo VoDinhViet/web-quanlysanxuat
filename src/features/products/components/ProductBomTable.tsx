@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { IconButton } from "@/components/shared/IconButton"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { useProductOperations } from "@/features/products/hooks/use-product-operations"
 import { BomItemType } from "@/lib/types/bom-item.type"
@@ -241,13 +242,12 @@ function ProductOperationsPanel({
   productId,
   operations,
   isPending,
-  canManage,
 }: {
   productId: string
   operations: Operation[]
   isPending: boolean
-  canManage: boolean
 }) {
+  const canManage = useHasPermission("products:bom-manage")
   const { addOperation, moveOperation, deleteOperation } = useProductOperations(
     productId,
     operations
@@ -293,11 +293,11 @@ function ProductOperationsPanel({
               LOẠI
             </TableHead>
             <TableHead className="font-bold text-foreground">GHI CHÚ</TableHead>
-            {canManage ? (
+            <PermissionGate permission="products:bom-manage">
               <TableHead className="w-28 text-right font-bold text-foreground">
                 THAO TÁC
               </TableHead>
-            ) : null}
+            </PermissionGate>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -328,7 +328,7 @@ function ProductOperationsPanel({
                 <TableCell className="font-medium text-muted-foreground">
                   {step.note ?? "—"}
                 </TableCell>
-                {canManage ? (
+                <PermissionGate permission="products:bom-manage">
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <IconButton
@@ -356,12 +356,12 @@ function ProductOperationsPanel({
                       </IconButton>
                     </div>
                   </TableCell>
-                ) : null}
+                </PermissionGate>
               </TableRow>
             ))
           )}
 
-          {canManage ? (
+          <PermissionGate permission="products:bom-manage">
             <TableRow className="h-14 bg-card hover:bg-muted/20">
               <TableCell className="text-muted-foreground">—</TableCell>
               <TableCell>
@@ -411,7 +411,7 @@ function ProductOperationsPanel({
                 </Button>
               </TableCell>
             </TableRow>
-          ) : null}
+          </PermissionGate>
         </TableBody>
       </Table>
     </div>
@@ -500,8 +500,6 @@ export function ProductBomTable({
   actions,
   operationsByProductId,
 }: ProductBomTableProps) {
-  const canManage = useHasPermission("products:bom-manage")
-  const showActions = canManage && actions !== undefined
   // STT / MÃ BẢN VẼ / TÊN BẢN VẼ / CẤP / SỐ LƯỢNG / ĐVT / CÔNG ĐOẠN / THAO TÁC —
   // THAO TÁC always renders now since every "Sản phẩm"-type row's operations
   // toggle lives there regardless of `products:bom-manage`.
@@ -545,18 +543,20 @@ export function ProductBomTable({
 
   return (
     <div className="flex flex-col gap-2">
-      {showActions ? (
-        <div className="flex justify-end">
-          <Button
-            type="button"
-            size="sm"
-            className="gap-1.5 text-xs"
-            onClick={() => actions.onCreate(null)}
-          >
-            <Plus className="size-3.5" />
-            Thêm thành phần
-          </Button>
-        </div>
+      {actions !== undefined ? (
+        <PermissionGate permission="products:bom-manage">
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              size="sm"
+              className="gap-1.5 text-xs"
+              onClick={() => actions.onCreate(null)}
+            >
+              <Plus className="size-3.5" />
+              Thêm thành phần
+            </Button>
+          </div>
+        </PermissionGate>
       ) : null}
 
       <div className="overflow-x-auto rounded-md border border-border/60 bg-card shadow-2xs">
@@ -656,7 +656,6 @@ export function ProductBomTable({
                     productId={product.id}
                     operations={operationsByProductId[product.id].operations}
                     isPending={operationsByProductId[product.id].isPending}
-                    canManage={canManage}
                   />
                 </TableCell>
               </TableRow>
@@ -777,23 +776,27 @@ export function ProductBomTable({
                             onToggle={() => toggleOperationsExpanded(node.id)}
                           />
                         ) : null}
-                        {showActions ? (
-                          <BomRowActions
-                            node={node}
-                            onAddChild={() => {
-                              // A leaf PRODUCT row starts collapsed (no
-                              // children yet) with no expand chevron — expand
-                              // it now so the newly-added child is visible
-                              // once the dialog closes and the tree refetches.
-                              setExpandedIds((prev) =>
-                                new Set(prev).add(node.id)
-                              )
-                              actions.onCreate(node.id)
-                            }}
-                            onAddSibling={() => actions.onCreate(node.parentId)}
-                            onUpdate={actions.onUpdate}
-                            onDelete={actions.onDelete}
-                          />
+                        {actions !== undefined ? (
+                          <PermissionGate permission="products:bom-manage">
+                            <BomRowActions
+                              node={node}
+                              onAddChild={() => {
+                                // A leaf PRODUCT row starts collapsed (no
+                                // children yet) with no expand chevron — expand
+                                // it now so the newly-added child is visible
+                                // once the dialog closes and the tree refetches.
+                                setExpandedIds((prev) =>
+                                  new Set(prev).add(node.id)
+                                )
+                                actions.onCreate(node.id)
+                              }}
+                              onAddSibling={() =>
+                                actions.onCreate(node.parentId)
+                              }
+                              onUpdate={actions.onUpdate}
+                              onDelete={actions.onDelete}
+                            />
+                          </PermissionGate>
                         ) : null}
                       </div>
                     </TableCell>
@@ -811,7 +814,6 @@ export function ProductBomTable({
                           isPending={
                             operationsByProductId[node.itemId].isPending
                           }
-                          canManage={canManage}
                         />
                       </TableCell>
                     </TableRow>
