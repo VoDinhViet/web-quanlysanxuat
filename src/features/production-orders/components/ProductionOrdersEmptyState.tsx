@@ -8,13 +8,13 @@ const EMPTY_STATE_COPY: Record<
   { title: string; description: string }
 > = {
   [ProductionOrderStatus.PENDING]: {
-    title: "Không có đơn hàng nào chờ tạo LSX",
-    description: "Đơn hàng sẽ xuất hiện ở đây sau khi được Giám đốc duyệt.",
+    title: "Không có lệnh sản xuất nào chờ duyệt",
+    description: "Lệnh sản xuất được tạo tự động khi Giám đốc duyệt đơn hàng.",
   },
-  [ProductionOrderStatus.CREATED]: {
-    title: "Chưa có lệnh sản xuất nào",
+  [ProductionOrderStatus.APPROVED]: {
+    title: "Chưa có lệnh sản xuất nào được duyệt",
     description:
-      "Lệnh sản xuất sẽ xuất hiện ở đây sau khi được tạo từ đơn hàng đã duyệt.",
+      "Lệnh sản xuất sẽ xuất hiện ở đây sau khi được duyệt ở màn hình chi tiết LSX.",
   },
 }
 

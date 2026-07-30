@@ -6,20 +6,20 @@ import {
   DueDateCell,
   ProductionOrderActionsCell,
 } from "@/features/production-orders/components/ProductionOrderTableCells"
-import { resolveProductionOrderStatus } from "@/lib/types/production-order.type"
-import type { Order } from "@/lib/types/order.type"
+import type { ProductionOrder } from "@/lib/types/production-order.type"
 
-const productionOrderColumnHelper = createColumnHelper<Order>()
+const productionOrderColumnHelper = createColumnHelper<ProductionOrder>()
 
+// No "Ngày tạo"/"Người tạo" columns — ProductionOrderResDto doesn't expose createdAt/creator.
 export const productionOrderColumns = [
-  productionOrderColumnHelper.accessor("code", {
+  productionOrderColumnHelper.accessor("orderCode", {
     header: "Số đơn hàng (SO)",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
       <span className="font-mono font-semibold text-primary">{getValue()}</span>
     ),
   }),
-  productionOrderColumnHelper.accessor((row) => row.client.name, {
+  productionOrderColumnHelper.accessor((row) => row.client?.name ?? "—", {
     id: "client",
     header: "Khách hàng",
     meta: { headerClassName: "min-w-44" },
@@ -38,7 +38,7 @@ export const productionOrderColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ row }) => <DueDateCell order={row.original} />,
+    cell: ({ getValue }) => <DueDateCell dueDate={getValue()} />,
   }),
   productionOrderColumnHelper.accessor("status", {
     header: "Trạng thái",
@@ -46,22 +46,7 @@ export const productionOrderColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => (
-      <ProductionOrderStatusBadge
-        tone={resolveProductionOrderStatus(getValue())}
-      />
-    ),
-  }),
-  productionOrderColumnHelper.accessor("createdAt", {
-    header: "Ngày tạo",
-    meta: { headerClassName: "min-w-36" },
-    cell: ({ getValue }) =>
-      DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm"),
-  }),
-  productionOrderColumnHelper.accessor((row) => row.creator?.username ?? "—", {
-    id: "creator",
-    header: "Người tạo",
-    meta: { headerClassName: "min-w-28" },
+    cell: ({ getValue }) => <ProductionOrderStatusBadge tone={getValue()} />,
   }),
   productionOrderColumnHelper.display({
     id: "actions",
@@ -70,6 +55,6 @@ export const productionOrderColumns = [
       headerClassName: "min-w-24 text-center",
       cellClassName: "font-normal",
     },
-    cell: ({ row }) => <ProductionOrderActionsCell order={row.original} />,
+    cell: ({ row }) => <ProductionOrderActionsCell row={row.original} />,
   }),
 ]

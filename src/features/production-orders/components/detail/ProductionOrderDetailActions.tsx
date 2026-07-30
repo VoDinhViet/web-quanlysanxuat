@@ -1,4 +1,4 @@
-import { Loader2, Save, X } from "lucide-react"
+import { CircleCheck, Loader2, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -7,30 +7,31 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { IssueProductionOrderDialog } from "@/features/production-orders/components/detail/IssueProductionOrderDialog"
-import { ProductionOrderDecisionStatus } from "@/lib/types/production-order.type"
+import { ApproveProductionOrderDialog } from "@/features/production-orders/components/detail/ApproveProductionOrderDialog"
+import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 type ProductionOrderDetailActionsProps = {
   production: ProductionOrderDetail
+  hasUnsavedChanges: boolean
   isSaving: boolean
-  isIssuing: boolean
   onSave: () => void
-  onIssue: () => void
 }
 
-// "Lưu nháp" (production:update) và "Duyệt LSX" (production:create) chỉ còn ý nghĩa khi LSX
-// đang PENDING — một khi đã ISSUED, backend từ chối cả PATCH lẫn issue (already_issued), nên 2
-// nút này ẩn hẳn thay vì hiện disabled. "Hủy LSX" luôn hiện disabled vì backend chưa có
-// endpoint hủy — cùng idiom "tính năng sắp có" với OrderDetailActions.tsx.
+// "Lưu thay đổi" (production:update) và "Duyệt LSX" (production:approve) chỉ còn ý nghĩa khi LSX
+// đang PENDING — một khi đã APPROVED, backend từ chối cả PATCH lẫn approve (not_editable /
+// invalid_approval_state), nên 2 nút này ẩn hẳn thay vì hiện disabled. "Duyệt LSX" tự khoá (kèm
+// tooltip) khi còn thay đổi chưa lưu — approve và lưu là hai quyền khác nhau
+// (production:approve vs production:update), nên không thể tự động lưu rồi duyệt trong 1 lượt
+// bấm như trước đây. Không có nút "Hủy LSX" — backend không có endpoint hủy và cũng không có kế
+// hoạch gần nào cho tính năng này.
 export function ProductionOrderDetailActions({
   production,
+  hasUnsavedChanges,
   isSaving,
-  isIssuing,
   onSave,
-  onIssue,
 }: ProductionOrderDetailActionsProps) {
-  const isPending = production.status === ProductionOrderDecisionStatus.PENDING
+  const isPending = production.status === ProductionOrderStatus.PENDING
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
@@ -39,7 +40,7 @@ export function ProductionOrderDetailActions({
           <Button
             type="button"
             variant="outline"
-            disabled={isSaving || isIssuing}
+            disabled={isSaving || !hasUnsavedChanges}
             onClick={onSave}
           >
             {isSaving ? (
@@ -47,38 +48,44 @@ export function ProductionOrderDetailActions({
             ) : (
               <Save className="size-4" />
             )}
-            Lưu nháp
+            Lưu thay đổi
           </Button>
         </PermissionGate>
       ) : null}
 
       {isPending ? (
-        <PermissionGate permission="production:create">
-          <IssueProductionOrderDialog
-            production={production}
-            isIssuing={isIssuing}
-            onConfirm={onIssue}
-          />
+        <PermissionGate permission="production:approve">
+          {hasUnsavedChanges || isSaving ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span tabIndex={0}>
+                  <Button
+                    type="button"
+                    disabled
+                    className="pointer-events-none"
+                  >
+                    <CircleCheck className="size-4" />
+                    Duyệt LSX
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                Vui lòng lưu thay đổi trước khi duyệt LSX
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <ApproveProductionOrderDialog
+              production={production}
+              trigger={
+                <Button type="button">
+                  <CircleCheck className="size-4" />
+                  Duyệt LSX
+                </Button>
+              }
+            />
+          )}
         </PermissionGate>
       ) : null}
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span tabIndex={0}>
-            <Button
-              type="button"
-              variant="outline"
-              disabled
-              className="pointer-events-none border-destructive/30 text-destructive/60"
-              aria-label="Hủy LSX"
-            >
-              <X className="size-4" />
-              Hủy LSX
-            </Button>
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>Tính năng sắp có</TooltipContent>
-      </Tooltip>
     </div>
   )
 }

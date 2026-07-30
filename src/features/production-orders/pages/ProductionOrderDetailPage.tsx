@@ -2,7 +2,9 @@ import { useState } from "react"
 import { useParams } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import {
+  keepPreviousData,
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query"
@@ -12,10 +14,13 @@ import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { useAppForm } from "@/hooks/use-app-form"
 import { orderQueryOptions } from "@/features/orders/api"
 import { ProductionOrderDetailSummaryCard } from "@/features/production-orders/components/detail/ProductionOrderDetailSummaryCard"
-import { ProductionOrderHistoryCard } from "@/features/production-orders/components/detail/ProductionOrderHistoryCard"
 import { ProductionOrderItemsCard } from "@/features/production-orders/components/detail/ProductionOrderItemsCard"
-import { productionOrderQueryOptions } from "@/features/production-orders/api/production-orders.options"
-import { issueProductionOrder } from "@/features/production-orders/api/server-functions/issue-production-order.api"
+import { ProductionOrderLogsCard } from "@/features/production-orders/components/detail/ProductionOrderLogsCard"
+import {
+  productionOrderLogsQueryOptions,
+  productionOrderQueryOptions,
+} from "@/features/production-orders/api/production-orders.options"
+import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
 import { updateProductionOrder } from "@/features/production-orders/api/server-functions/update-production-order.api"
 import { updateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
 import type { UpdateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
@@ -27,7 +32,7 @@ function buildDefaultValues(
   production: ProductionOrderDetail
 ): UpdateProductionOrderSchema {
   return {
-    orderId: production.orderId,
+    productionOrderId: production.id,
     items: production.items.map((item) => ({
       orderItemId: item.orderItemId,
       quantity: String(item.quantity),
@@ -35,39 +40,41 @@ function buildDefaultValues(
   }
 }
 
+// The route param is the production order's own id, not the order's id (the backend detail
+// lookup key) — `production.order.id` drives the order fetch below, so that query can't run in
+// parallel with the production fetch (the loader awaits it first). Logs only need the route
+// param, so they load alongside the order fetch instead of chaining after it too — see the
+// route's loader.
 export function ProductionOrderDetailPage() {
-  const { orderId } = useParams({
-    from: "/(authed)/manage_/production-orders_/$orderId",
+  const { productionOrderId } = useParams({
+    from: "/(authed)/manage_/production-orders_/$productionOrderId",
   })
-  const [isIssuing, setIsIssuing] = useState(false)
 
   const { data: production } = useSuspenseQuery(
-    productionOrderQueryOptions(orderId)
+    productionOrderQueryOptions(productionOrderId)
   )
-  const { data: order } = useSuspenseQuery(orderQueryOptions(orderId))
+  const { data: order } = useSuspenseQuery(
+    orderQueryOptions(production.order.id)
+  )
+
+  // Client-driven, not loader-prefetched beyond page 1 — this is a secondary section on a page
+  // that otherwise has no pagination state, so switching pages doesn't touch the URL.
+  // `keepPreviousData` avoids a loading flash when flipping pages.
+  const [logsPage, setLogsPage] = useState(1)
+  const logsQuery = useQuery({
+    ...productionOrderLogsQueryOptions(productionOrderId, logsPage),
+    placeholderData: keepPreviousData,
+  })
 
   const queryClient = useQueryClient()
   const updateProductionOrderFn = useServerFn(updateProductionOrder)
-  const issueProductionOrderFn = useServerFn(issueProductionOrder)
 
-  const saveMutation = useMutation({
+  const { mutate: update, isPending } = useMutation({
     mutationFn: (value: UpdateProductionOrderSchema) =>
       updateProductionOrderFn({ data: value }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["production-orders"] })
-      toast.success("Đã lưu kế hoạch sản xuất")
-    },
-    onError: (error) => toast.error(error.message),
-  })
-
-  const issueMutation = useMutation({
-    mutationFn: () => issueProductionOrderFn({ data: { orderId } }),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["production-orders"] }),
-        queryClient.invalidateQueries({ queryKey: ["orders"] }),
-      ])
-      toast.success("Đã duyệt lệnh sản xuất")
+      toast.success("Đã lưu số lượng sản xuất")
     },
     onError: (error) => toast.error(error.message),
   })
@@ -75,24 +82,14 @@ export function ProductionOrderDetailPage() {
   const form = useAppForm({
     defaultValues: buildDefaultValues(production),
     validators: { onSubmit: updateProductionOrderSchema },
-    onSubmit: ({ value }) => saveMutation.mutate(value),
+    // Chỉ gửi dòng đã đổi — PATCH của backend là partial, dòng không gửi giữ nguyên giá trị đã
+    // lưu.
+    onSubmit: ({ value }) =>
+      update({
+        ...value,
+        items: findChangedProductionQuantities(value, production),
+      }),
   })
-
-  // "Duyệt LSX" phải lưu số lượng đang có trên form trước — backend chốt phát hành theo bản đã
-  // lưu (production_orders table), không phải theo form state chưa lưu. Xem Context trong plan.
-  // Cùng shape/validator với "Lưu nháp" (updateProductionOrderSchema chạy ở chính server
-  // function khi RPC gửi đi) — không parse lại ở client để tránh lệch type với form.state.values.
-  const handleIssue = () => {
-    setIsIssuing(true)
-    saveMutation.mutate(form.state.values, {
-      onSuccess: () => {
-        issueMutation.mutate(undefined, {
-          onSettled: () => setIsIssuing(false),
-        })
-      },
-      onError: () => setIsIssuing(false),
-    })
-  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -101,26 +98,42 @@ export function ProductionOrderDetailPage() {
         breadcrumbs={[
           { label: "Dashboard", href: "/manage" },
           { label: "Lệnh sản xuất (LSX)", href: "/manage/production-orders" },
-          { label: production.orderCode },
+          { label: order.code },
         ]}
         notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <ProductionOrderDetailSummaryCard
-          production={production}
-          order={order}
-          isSaving={saveMutation.isPending}
-          isIssuing={isIssuing}
-          onSave={() => form.handleSubmit()}
-          onIssue={handleIssue}
-        />
+        <form.Subscribe
+          selector={(state) =>
+            findChangedProductionQuantities(state.values, production).length > 0
+          }
+        >
+          {(hasUnsavedChanges) => (
+            <ProductionOrderDetailSummaryCard
+              production={production}
+              hasUnsavedChanges={hasUnsavedChanges}
+              isSaving={isPending}
+              onSave={() => void form.handleSubmit()}
+            />
+          )}
+        </form.Subscribe>
 
         <section className="overflow-hidden rounded-lg bg-card shadow-card">
-          <ProductionOrderItemsCard form={form} production={production} />
+          <ProductionOrderItemsCard
+            form={form}
+            production={production}
+            isSaving={isPending}
+          />
         </section>
 
-        <ProductionOrderHistoryCard order={order} />
+        <ProductionOrderLogsCard
+          logs={logsQuery.data?.data ?? []}
+          pagination={logsQuery.data?.pagination}
+          page={logsPage}
+          onPageChange={setLogsPage}
+          isFetching={logsQuery.isFetching}
+        />
       </div>
     </main>
   )

@@ -14,28 +14,30 @@ function resolveUpdateProductionOrderErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
+    case "production_order.error.not_found":
+      return "Không tìm thấy lệnh sản xuất."
     case "order.error.not_found":
-      return "Không tìm thấy đơn hàng."
-    case "production_order.error.order_not_approved":
-      return "Đơn hàng chưa ở trạng thái chờ sản xuất."
-    case "production_order.error.already_issued":
-      return "LSX đã được duyệt, không thể sửa."
+      return "Đơn hàng của lệnh sản xuất này không còn tồn tại."
+    case "production_order.error.not_editable":
+      return "Lệnh sản xuất đã được duyệt nên không thể sửa số lượng."
     case "production_order.error.invalid_order_item":
-      return "Có dòng sản phẩm không hợp lệ. Vui lòng tải lại trang."
+      return "Có dòng sản phẩm không thuộc lệnh sản xuất này. Vui lòng tải lại trang."
     case "auth.error.forbidden":
-      return "Bạn không có quyền lưu lệnh sản xuất này."
+      return "Bạn không có quyền sửa lệnh sản xuất này."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
+// Partial update — the backend only touches lines present in `items`, any line not sent keeps
+// its saved value. Only valid while the header is PENDING.
 export const updateProductionOrder = createServerFn({ method: "POST" })
   .validator(updateProductionOrderSchema)
   .handler(async ({ data }): Promise<ProductionOrderDetail> => {
     try {
-      const { orderId, items } = data
+      const { productionOrderId, items } = data
       const response = await http.patch<ProductionOrderDetail>(
-        `/api/production-orders/${orderId}`,
+        `/api/production-orders/${productionOrderId}`,
         { items }
       )
 

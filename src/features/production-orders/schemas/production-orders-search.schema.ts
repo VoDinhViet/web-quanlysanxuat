@@ -15,10 +15,9 @@ const isoDateFilter = z
   .optional()
   .catch(undefined)
 
-// The LSX queue is a filtered view of orders (see production-order.type.ts) —
-// `status` always has a value (default "Chờ tạo LSX") rather than being
-// optional like ordersSearchSchema's, because GET /api/orders needs exactly one
-// OrderStatus and there is no "all" that would still mean "production queue".
+// `status` always has a value (default "Chờ duyệt") rather than being optional like
+// ordersSearchSchema's, because GET /api/production-orders needs exactly one
+// ProductionOrderStatus and there is no "all" that would still mean "production queue".
 export const productionOrdersSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),

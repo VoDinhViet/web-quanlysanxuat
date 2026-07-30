@@ -118,6 +118,17 @@ export type OrderCreator = {
   username: string
 }
 
+/** Mirrors the backend's OrderRefResDto — lightweight order reference nested inside another
+ *  module's response DTO (e.g. `ProductionOrderDetail.order`). */
+export type OrderRef = {
+  id: string
+  code: string
+  client: OrderClientRef | null
+  orderDate: string
+  dueDate: string | null
+  note: string | null
+}
+
 // Mirrors the backend's OrderResDto. There is no per-order delivered/remaining
 // amount on the wire yet (only the dashboard stats have a "Đã giao" proxy) —
 // don't add those fields back until the backend actually computes them.

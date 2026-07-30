@@ -24,6 +24,7 @@ export const PERMISSION_CODES = [
   "production:read",
   "production:create",
   "production:update",
+  "production:approve",
 
   "clients:read",
   "clients:create",

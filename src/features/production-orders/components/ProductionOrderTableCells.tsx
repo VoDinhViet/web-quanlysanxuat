@@ -3,8 +3,8 @@ import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
 
 import { IconButton } from "@/components/shared/IconButton"
-import { resolveDeliveryTone } from "@/lib/types/order.type"
-import type { DeliveryTone, Order } from "@/lib/types/order.type"
+import type { DeliveryTone } from "@/lib/types/order.type"
+import type { ProductionOrder } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
 
 // Duplicated from OrderTableCells.tsx rather than imported — a feature may only
@@ -16,36 +16,64 @@ const DELIVERY_TONE_CLASSNAME: Record<DeliveryTone, string> = {
   normal: "text-foreground",
 }
 
-export function DueDateCell({ order }: { order: Order }) {
+// Days before dueDate at which the date turns orange — mirrors order.type.ts's own (unexported)
+// NEAR_DUE_DAYS. Only the date math is reproduced here, not order.type.ts's `expired`/OrderStatus
+// branches: GET /production-orders only ever returns rows whose order is
+// AWAITING_PRODUCTION/IN_PROGRESS (never COMPLETED), so a plain date compare is equivalent for
+// this list — see ProductionOrdersService.ORDERS_IN_SCOPE in the backend.
+const NEAR_DUE_DAYS = 3
+
+function resolveProductionDueDateTone(dueDate: string | null): DeliveryTone {
+  if (dueDate === null) {
+    return "normal"
+  }
+
+  const daysLeft = DateTime.fromISO(dueDate)
+    .startOf("day")
+    .diff(DateTime.now().startOf("day"), "days").days
+
+  if (daysLeft < 0) {
+    return "overdue"
+  }
+
+  return daysLeft <= NEAR_DUE_DAYS ? "near-due" : "normal"
+}
+
+export function DueDateCell({
+  dueDate,
+}: {
+  dueDate: ProductionOrder["dueDate"]
+}) {
   return (
     <span
       className={cn(
         "font-medium",
-        DELIVERY_TONE_CLASSNAME[resolveDeliveryTone(order)]
+        DELIVERY_TONE_CLASSNAME[resolveProductionDueDateTone(dueDate)]
       )}
     >
-      {order.dueDate === null
+      {dueDate === null
         ? "—"
-        : DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")}
+        : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")}
     </span>
   )
 }
 
-// "Xem" links to the order itself (thông tin đơn hàng gốc); "Sửa LSX" links to the LSX
-// decision/detail screen (số lượng sản xuất, duyệt LSX) — a different resource than the order.
-export function ProductionOrderActionsCell({ order }: { order: Order }) {
+// "Xem" links to the order itself (thông tin đơn hàng gốc), keyed by `row.orderId`; "Sửa LSX"
+// links to the LSX detail screen, keyed by `row.id` (the production order's own id) — the two ids
+// are different resources, both carried on the same list row.
+export function ProductionOrderActionsCell({ row }: { row: ProductionOrder }) {
   return (
     <div className="flex items-center justify-center gap-1.5">
       <IconButton label="Xem đơn hàng" asChild>
-        <Link to="/manage/orders/$orderId" params={{ orderId: order.id }}>
+        <Link to="/manage/orders/$orderId" params={{ orderId: row.orderId }}>
           <Eye className="size-3.5" />
         </Link>
       </IconButton>
 
       <IconButton label="Sửa LSX" asChild>
         <Link
-          to="/manage/production-orders/$orderId"
-          params={{ orderId: order.id }}
+          to="/manage/production-orders/$productionOrderId"
+          params={{ productionOrderId: row.id }}
         >
           <Pencil className="size-3.5" />
         </Link>

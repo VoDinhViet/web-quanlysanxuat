@@ -1,6 +1,10 @@
 import boxBold from "@iconify-icons/solar/box-bold"
 import { Icon } from "@iconify/react"
+import { TriangleAlert } from "lucide-react"
+import type { ReactNode } from "react"
 
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -11,22 +15,88 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useHasPermission } from "@/hooks/use-permissions"
 import { withForm } from "@/hooks/use-app-form"
+import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
 import { updateProductionOrderFormDefaultValues } from "@/features/production-orders/schemas/update-production-order.schema"
-import { ProductionOrderDecisionStatus } from "@/lib/types/production-order.type"
-import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
+import { ProductionOrderStatus } from "@/lib/types/production-order.type"
+import type {
+  ProductionOrderDetail,
+  ProductionOrderDetailItem,
+} from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
+type ProductionOrderItemRowProps = {
+  item: ProductionOrderDetailItem
+  index: number
+  // Rendered by the caller (where `form` is fully typed via `withForm`) rather than taking
+  // `form` as a prop here — `AnyFormApi` doesn't carry the `.Field` render-prop typings, only
+  // the concrete `useAppForm`/`withForm` instance does.
+  quantityCell: ReactNode
+}
+
+// Split out of ProductionOrderItemsCard's render (code-quality.md: split over ~150 lines).
+function ProductionOrderItemRow({
+  item,
+  index,
+  quantityCell,
+}: ProductionOrderItemRowProps) {
+  return (
+    <TableRow className="h-14 bg-card hover:bg-muted/25">
+      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+      <TableCell className="font-mono text-xs">{item.product.code}</TableCell>
+      <TableCell className="font-medium text-foreground">
+        {item.product.name}
+      </TableCell>
+      <TableCell className="text-right tabular-nums">
+        {quantityFormatter.format(item.orderQty)}
+      </TableCell>
+      <TableCell className="text-right font-medium text-info tabular-nums">
+        {quantityFormatter.format(item.onHandQty)}
+      </TableCell>
+      <TableCell className="text-right font-medium text-info tabular-nums">
+        {quantityFormatter.format(item.availableQty)}
+      </TableCell>
+      <TableCell className="text-right">{quantityCell}</TableCell>
+      <TableCell className="text-right text-muted-foreground tabular-nums">
+        {quantityFormatter.format(item.fromStockQty)}
+      </TableCell>
+    </TableRow>
+  )
+}
+
+type ProductionOrderQuantityStaticProps = {
+  quantity: number
+}
+
+function ProductionOrderQuantityStatic({
+  quantity,
+}: ProductionOrderQuantityStaticProps) {
+  return (
+    <span
+      className={cn(
+        "font-medium tabular-nums",
+        quantity > 0 ? "text-destructive" : "text-success"
+      )}
+    >
+      {quantityFormatter.format(quantity)}
+    </span>
+  )
+}
 
 export const ProductionOrderItemsCard = withForm({
   defaultValues: updateProductionOrderFormDefaultValues,
   props: {
     production: {} as ProductionOrderDetail,
+    isSaving: false,
   },
-  render: function Render({ form, production }) {
-    const isPending =
-      production.status === ProductionOrderDecisionStatus.PENDING
+  render: function Render({ form, production, isSaving }) {
+    // Two separate statements, not `&&`-short-circuited — a hook can't be called conditionally.
+    const canUpdate = useHasPermission("production:update")
+    const canEdit =
+      production.status === ProductionOrderStatus.PENDING && canUpdate
     const { items } = production
 
     const totalOrderQty = items.reduce((sum, item) => sum + item.orderQty, 0)
@@ -35,13 +105,21 @@ export const ProductionOrderItemsCard = withForm({
       (sum, item) => sum + item.availableQty,
       0
     )
-    const totalSuggestedQty = items.reduce(
-      (sum, item) => sum + item.quantity,
+    const totalFromStockQty = items.reduce(
+      (sum, item) => sum + item.fromStockQty,
       0
     )
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
 
     return (
-      <div>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          form.handleSubmit()
+        }}
+        noValidate
+      >
         <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
           <div className="min-w-0">
             <h2 className="flex items-center gap-2 font-heading text-base font-semibold text-foreground">
@@ -80,75 +158,57 @@ export const ProductionOrderItemsCard = withForm({
                         Tồn kho TP (Khả dụng)
                       </TableHead>
                       <TableHead className="text-right">
-                        Đề xuất sản xuất (Tự động)
-                      </TableHead>
-                      <TableHead className="text-right">
                         Số lượng sản xuất
                       </TableHead>
+                      <TableHead className="text-right">Lấy từ tồn</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {items.map((item, index) => (
-                      <TableRow
+                      <ProductionOrderItemRow
                         key={item.orderItemId}
-                        className="h-14 bg-card hover:bg-muted/25"
-                      >
-                        <TableCell className="text-muted-foreground">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {item.product.code}
-                        </TableCell>
-                        <TableCell className="font-medium text-foreground">
-                          {item.product.name}
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums">
-                          {quantityFormatter.format(item.orderQty)}
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums">
-                          {quantityFormatter.format(item.onHandQty)}
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums">
-                          {quantityFormatter.format(item.availableQty)}
-                        </TableCell>
-                        <TableCell
-                          className={cn(
-                            "text-right font-medium tabular-nums",
-                            item.quantity > 0
-                              ? "text-destructive"
-                              : "text-success"
-                          )}
-                        >
-                          {quantityFormatter.format(item.quantity)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {isPending ? (
+                        item={item}
+                        index={index}
+                        quantityCell={
+                          canEdit ? (
                             <form.Field name={`items[${index}].quantity`}>
                               {(field) => (
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  value={field.state.value}
-                                  onChange={(event) =>
-                                    field.handleChange(event.target.value)
-                                  }
-                                  onBlur={field.handleBlur}
-                                  className="ml-auto h-8 w-24 text-right text-xs tabular-nums"
-                                  aria-label={`Số lượng sản xuất cho ${item.product.name}`}
-                                />
+                                <div className="ml-auto flex w-24 flex-col items-end gap-1">
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step="any"
+                                    value={field.state.value}
+                                    onChange={(event) =>
+                                      field.handleChange(event.target.value)
+                                    }
+                                    onBlur={field.handleBlur}
+                                    disabled={isSaving}
+                                    aria-invalid={
+                                      field.state.meta.isTouched &&
+                                      field.state.meta.errors.length > 0
+                                    }
+                                    aria-label={`Số lượng sản xuất cho ${item.product.name}`}
+                                    className="h-8 w-24 text-right text-xs tabular-nums"
+                                  />
+                                  <FieldError
+                                    errors={field.state.meta.errors}
+                                    className="text-right text-[11px]"
+                                  />
+                                </div>
                               )}
                             </form.Field>
                           ) : (
-                            <span className="font-medium tabular-nums">
-                              {quantityFormatter.format(item.quantity)}
-                            </span>
-                          )}
-                        </TableCell>
-                      </TableRow>
+                            <ProductionOrderQuantityStatic
+                              quantity={item.quantity}
+                            />
+                          )
+                        }
+                      />
                     ))}
                   </TableBody>
                   <TableFooter>
-                    <TableRow>
+                    <TableRow className="h-14">
                       <TableCell colSpan={3}>Tổng cộng</TableCell>
                       <TableCell className="text-right tabular-nums">
                         {quantityFormatter.format(totalOrderQty)}
@@ -160,22 +220,26 @@ export const ProductionOrderItemsCard = withForm({
                         {quantityFormatter.format(totalAvailableQty)}
                       </TableCell>
                       <TableCell className="text-right font-medium tabular-nums">
-                        {quantityFormatter.format(totalSuggestedQty)}
+                        {canEdit ? (
+                          <form.Subscribe
+                            selector={(state) => state.values.items}
+                          >
+                            {(formItems) =>
+                              quantityFormatter.format(
+                                formItems.reduce(
+                                  (sum, formItem) =>
+                                    sum + (Number(formItem.quantity) || 0),
+                                  0
+                                )
+                              )
+                            }
+                          </form.Subscribe>
+                        ) : (
+                          quantityFormatter.format(totalQuantity)
+                        )}
                       </TableCell>
                       <TableCell className="text-right font-medium tabular-nums">
-                        <form.Subscribe
-                          selector={(state) => state.values.items}
-                        >
-                          {(formItems) =>
-                            quantityFormatter.format(
-                              formItems.reduce(
-                                (sum, formItem) =>
-                                  sum + (Number(formItem.quantity) || 0),
-                                0
-                              )
-                            )
-                          }
-                        </form.Subscribe>
+                        {quantityFormatter.format(totalFromStockQty)}
                       </TableCell>
                     </TableRow>
                   </TableFooter>
@@ -184,14 +248,37 @@ export const ProductionOrderItemsCard = withForm({
 
               <p className="text-[11px] text-muted-foreground">
                 Công thức: Khả dụng = Tồn kho TP hiện có − số đã giữ chỗ bởi LSX
-                khác. Đề xuất sản xuất = SL theo đơn hàng − Khả dụng (nếu Khả
-                dụng ≥ 0, ngược lại bằng SL theo đơn hàng). Số lượng sản xuất có
-                thể chỉnh khác với đề xuất.
+                khác. Số lượng sản xuất được điền sẵn bằng SL theo đơn hàng −
+                Khả dụng (nếu Khả dụng ≥ 0, ngược lại bằng SL theo đơn hàng) tại
+                thời điểm đơn hàng được duyệt, và có thể chỉnh lại khi LSX còn
+                chờ duyệt. Lấy từ tồn = SL theo đơn hàng − Số lượng sản xuất
+                (không âm), được tính lại sau mỗi lần lưu.
               </p>
+
+              {canEdit ? (
+                <form.Subscribe
+                  selector={(state) =>
+                    findChangedProductionQuantities(state.values, production)
+                      .length > 0
+                  }
+                >
+                  {(hasUnsavedChanges) =>
+                    hasUnsavedChanges ? (
+                      <Alert className="border-warning/30 bg-warning/10 py-2.5">
+                        <TriangleAlert className="text-warning" />
+                        <AlertDescription className="text-xs text-warning/90">
+                          Có thay đổi chưa lưu. Nhấn "Lưu thay đổi" để cập nhật
+                          số lượng sản xuất trước khi duyệt LSX.
+                        </AlertDescription>
+                      </Alert>
+                    ) : null
+                  }
+                </form.Subscribe>
+              ) : null}
             </div>
           )}
         </div>
-      </div>
+      </form>
     )
   },
 })

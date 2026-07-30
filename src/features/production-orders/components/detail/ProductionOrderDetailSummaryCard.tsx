@@ -4,30 +4,27 @@ import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { ProductionOrderDetailActions } from "@/features/production-orders/components/detail/ProductionOrderDetailActions"
-import { ProductionOrderDecisionStatusBadge } from "@/features/production-orders/components/ProductionOrderBadges"
+import { ProductionOrderStatusBadge } from "@/features/production-orders/components/ProductionOrderBadges"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
-import type { OrderDetail } from "@/lib/types/order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 type ProductionOrderDetailSummaryCardProps = {
   production: ProductionOrderDetail
-  order: OrderDetail
+  hasUnsavedChanges: boolean
   isSaving: boolean
-  isIssuing: boolean
   onSave: () => void
-  onIssue: () => void
 }
 
 // Identity + action buttons + a meta fact grid — same shell idiom as
 // OrderDetailSummaryCard (a plain <section>, not the shadcn Card component).
 export function ProductionOrderDetailSummaryCard({
   production,
-  order,
+  hasUnsavedChanges,
   isSaving,
-  isIssuing,
   onSave,
-  onIssue,
 }: ProductionOrderDetailSummaryCardProps) {
+  const { order } = production
+
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
       <div className="space-y-5 p-4 sm:p-5">
@@ -49,43 +46,53 @@ export function ProductionOrderDetailSummaryCard({
             <div className="flex min-w-0 flex-col gap-1">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <h2 className="min-w-0 truncate font-mono text-lg leading-snug font-semibold text-foreground sm:text-xl">
-                  {production.orderCode}
+                  {order.code}
                 </h2>
-                <ProductionOrderDecisionStatusBadge tone={production.status} />
+                <ProductionOrderStatusBadge tone={production.status} />
               </div>
               <p className="text-xs text-muted-foreground">
-                Lệnh sản xuất cho đơn hàng {production.orderCode}
+                Lệnh sản xuất{" "}
+                {production.code ? (
+                  <span className="font-mono">{production.code}</span>
+                ) : (
+                  "(chưa cấp mã)"
+                )}{" "}
+                cho đơn hàng {order.code}
               </p>
             </div>
           </div>
 
           <ProductionOrderDetailActions
             production={production}
+            hasUnsavedChanges={hasUnsavedChanges}
             isSaving={isSaving}
-            isIssuing={isIssuing}
             onSave={onSave}
-            onIssue={onIssue}
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <MetaField label="Số đơn hàng (SO)" value={production.orderCode} />
-          <MetaField
-            label="Khách hàng"
-            value={production.client?.name ?? "—"}
-          />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <MetaField label="Số đơn hàng (SO)" value={order.code} />
+          <MetaField label="Khách hàng" value={order.client?.name ?? "—"} />
           <MetaField
             label="Ngày đặt đơn"
-            value={DateTime.fromISO(production.orderDate).toFormat(
-              "dd/MM/yyyy"
-            )}
+            value={DateTime.fromISO(order.orderDate).toFormat("dd/MM/yyyy")}
           />
           <MetaField
             label="Ngày giao"
             value={
-              production.dueDate
-                ? DateTime.fromISO(production.dueDate).toFormat("dd/MM/yyyy")
+              order.dueDate
+                ? DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")
                 : "Chưa xác định"
+            }
+          />
+          <MetaField
+            label="Ngày duyệt LSX"
+            value={
+              production.approvedAt
+                ? DateTime.fromISO(production.approvedAt).toFormat(
+                    "dd/MM/yyyy HH:mm"
+                  )
+                : "Chưa duyệt"
             }
           />
           <MetaField label="Ghi chú SO" value={order.note || "—"} />

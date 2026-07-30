@@ -14,10 +14,8 @@ function resolveGetProductionOrderErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "order.error.not_found":
-      return "Không tìm thấy đơn hàng."
-    case "production_order.error.order_not_approved":
-      return "Đơn hàng chưa ở trạng thái chờ sản xuất."
+    case "production_order.error.not_found":
+      return "Không tìm thấy lệnh sản xuất."
     case "auth.error.forbidden":
       return "Bạn không có quyền xem lệnh sản xuất này."
     default:
@@ -26,11 +24,11 @@ function resolveGetProductionOrderErrorMessage(error: unknown): string {
 }
 
 export const getProductionOrder = createServerFn({ method: "GET" })
-  .validator(z.object({ orderId: z.uuid() }))
+  .validator(z.object({ productionOrderId: z.uuid() }))
   .handler(async ({ data }): Promise<ProductionOrderDetail> => {
     try {
       const response = await http.get<ProductionOrderDetail>(
-        `/api/production-orders/${data.orderId}`
+        `/api/production-orders/${data.productionOrderId}`
       )
 
       return response.data

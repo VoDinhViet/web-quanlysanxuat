@@ -16,12 +16,14 @@ import { TablePagination } from "@/components/shared/TablePagination"
 import { ProductionOrdersEmptyState } from "@/features/production-orders/components/ProductionOrdersEmptyState"
 import { productionOrderColumns } from "@/features/production-orders/components/ProductionOrdersTableColumns"
 import { cn } from "@/lib/utils"
-import type { ProductionOrderStatus } from "@/lib/types/production-order.type"
-import type { Order } from "@/lib/types/order.type"
+import type {
+  ProductionOrder,
+  ProductionOrderStatus,
+} from "@/lib/types/production-order.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 type ProductionOrdersTableProps = {
-  rows: Order[]
+  rows: ProductionOrder[]
   pagination: Pagination
   isPending: boolean
   status: ProductionOrderStatus
