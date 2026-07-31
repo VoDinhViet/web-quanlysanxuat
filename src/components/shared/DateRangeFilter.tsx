@@ -1,15 +1,14 @@
 import { DatePickerField } from "@/components/shared/DatePickerField"
-import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
 
-type OrdersDateRangePatch = Pick<
-  OrdersSearchSchema,
-  "orderDateFrom" | "orderDateTo"
->
+type DateRange = { from: string | undefined; to: string | undefined }
 
-type OrdersDateRangeFilterProps = {
+type DateRangeFilterProps = {
+  idPrefix: string
+  fromLabel: string
+  toLabel: string
   from: string | undefined
   to: string | undefined
-  onChange: (patch: OrdersDateRangePatch) => void
+  onChange: (range: DateRange) => void
 }
 
 // Two single pickers rather than a native <input type="date">: native date
@@ -19,25 +18,36 @@ type OrdersDateRangeFilterProps = {
 // DatePickerField is form-shaped (onBlur/isInvalid/errors are required), but its
 // sibling ComboboxField is already documented as usable in table filters, so the
 // three inert props are the accepted cost.
-export function OrdersDateRangeFilter({
+//
+// Promoted here from orders/OrdersDateRangeFilter.tsx + production-orders/
+// ProductionOrdersDateRangeFilter.tsx once production-jobs became a third,
+// identical use — see .claude/rules/code-quality.md ("no abstraction until the
+// third use"). The prop shape is deliberately `{from, to}` rather than a search
+// schema's own field names, since each caller filters a different date field
+// (orderDate / dueDate) — mapping to the caller's own patch shape happens at
+// the call site.
+export function DateRangeFilter({
+  idPrefix,
+  fromLabel,
+  toLabel,
   from,
   to,
   onChange,
-}: OrdersDateRangeFilterProps) {
+}: DateRangeFilterProps) {
   // The schema can't enforce from <= to (a .superRefine has no `.catch()`, so a
   // bad URL pair would crash the route), so the range is clamped here instead.
   const handleFromChange = (next: string) => {
-    const orderDateFrom = next || undefined
-    const clearsTo = orderDateFrom && to && orderDateFrom > to
+    const nextFrom = next || undefined
+    const clearsTo = nextFrom && to && nextFrom > to
 
-    onChange({ orderDateFrom, orderDateTo: clearsTo ? undefined : to })
+    onChange({ from: nextFrom, to: clearsTo ? undefined : to })
   }
 
   return (
     <div className="grid grid-cols-2 gap-2">
       <DatePickerField
-        id="orders-filter-date-from"
-        label="Ngày giao từ"
+        id={`${idPrefix}-filter-date-from`}
+        label={fromLabel}
         value={from ?? ""}
         onChange={handleFromChange}
         onBlur={() => {}}
@@ -45,12 +55,10 @@ export function OrdersDateRangeFilter({
         errors={[]}
       />
       <DatePickerField
-        id="orders-filter-date-to"
-        label="Đến"
+        id={`${idPrefix}-filter-date-to`}
+        label={toLabel}
         value={to ?? ""}
-        onChange={(next) =>
-          onChange({ orderDateFrom: from, orderDateTo: next || undefined })
-        }
+        onChange={(next) => onChange({ from, to: next || undefined })}
         onBlur={() => {}}
         isInvalid={false}
         errors={[]}

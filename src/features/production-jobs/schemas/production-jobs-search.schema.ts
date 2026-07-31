@@ -1,9 +1,9 @@
 import { DateTime } from "luxon"
 import { z } from "zod"
 
-import { ProductionOrderStatus } from "@/lib/types/production-order.type"
+import { ProductionJobStatus } from "@/lib/types/production-job.type"
 
-// Same shape as orders-search.schema.ts's own isoDateFilter — a plain
+// Same shape as production-orders-search.schema.ts's own isoDateFilter — a plain
 // `^\d{4}-\d{2}-\d{2}$` regex would accept 2025-13-45, so validity is checked
 // with luxon. `.catch(undefined)` swallows a hand-mangled URL instead of
 // letting validateSearch throw and take the route down.
@@ -15,15 +15,16 @@ const isoDateFilter = z
   .optional()
   .catch(undefined)
 
-export const productionOrdersSearchSchema = z.object({
+export const productionJobsSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
   q: z.string().trim().min(1).optional().catch(undefined),
-  status: z.enum(ProductionOrderStatus).optional().catch(undefined),
+  status: z.enum(ProductionJobStatus).optional().catch(undefined),
+  clientId: z.string().trim().min(1).optional().catch(undefined),
   dueDateFrom: isoDateFilter,
   dueDateTo: isoDateFilter,
 })
 
-export type ProductionOrdersSearchSchema = z.infer<
-  typeof productionOrdersSearchSchema
+export type ProductionJobsSearchSchema = z.infer<
+  typeof productionJobsSearchSchema
 >

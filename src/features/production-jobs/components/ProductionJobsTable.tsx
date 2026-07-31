@@ -13,31 +13,26 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TablePagination } from "@/components/shared/TablePagination"
-import { ProductionOrdersEmptyState } from "@/features/production-orders/components/ProductionOrdersEmptyState"
-import { productionOrderColumns } from "@/features/production-orders/components/ProductionOrdersTableColumns"
+import { ProductionJobsEmptyState } from "@/features/production-jobs/components/ProductionJobsEmptyState"
+import { productionJobColumns } from "@/features/production-jobs/components/ProductionJobsTableColumns"
 import { cn } from "@/lib/utils"
-import type {
-  ProductionOrder,
-  ProductionOrderStatus,
-} from "@/lib/types/production-order.type"
+import type { ProductionJob } from "@/lib/types/production-job.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
-type ProductionOrdersTableProps = {
-  rows: ProductionOrder[]
+type ProductionJobsTableProps = {
+  rows: ProductionJob[]
   pagination: Pagination
   isPending: boolean
-  status: ProductionOrderStatus | undefined
 }
 
-export function ProductionOrdersTable({
+export function ProductionJobsTable({
   rows,
   pagination,
   isPending,
-  status,
-}: ProductionOrdersTableProps) {
+}: ProductionJobsTableProps) {
   const table = useReactTable({
     data: rows,
-    columns: productionOrderColumns,
+    columns: productionJobColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -49,7 +44,7 @@ export function ProductionOrdersTable({
           isPending && "pointer-events-none opacity-50"
         )}
       >
-        <ProductionOrdersEmptyState status={status} />
+        <ProductionJobsEmptyState />
 
         <TablePagination pagination={pagination} className="pt-4" />
       </div>
@@ -63,7 +58,7 @@ export function ProductionOrdersTable({
         isPending && "pointer-events-none opacity-50"
       )}
     >
-      {/* `overflow-x-auto`, same reason as OrdersTable.tsx: 8 columns overflow a
+      {/* `overflow-x-auto`, same reason as OrdersTable.tsx: 11 columns overflow a
           1440px laptop with the sidebar open. */}
       <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
         <Table>

@@ -12,6 +12,7 @@ import { ThemeProvider } from "@/components/shared/ThemeProvider"
 // manifest and inlines it into the SSR <head> — no separate blocking
 // stylesheet request, which is what caused the flash of unstyled content.
 import appCss from "../styles.css?url"
+import "../styles.css"
 
 type RouterContext = {
   queryClient: QueryClient

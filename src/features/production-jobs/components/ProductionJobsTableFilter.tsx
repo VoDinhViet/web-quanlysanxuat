@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { useDebounceCallback } from "usehooks-ts"
-import { Search } from "lucide-react"
+import { RotateCw, Search } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -10,36 +11,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { ComboboxField } from "@/components/shared/ComboboxField"
 import { DateRangeFilter } from "@/components/shared/DateRangeFilter"
-import { ProductionOrdersFilterActions } from "@/features/production-orders/components/ProductionOrdersFilterActions"
-import { PRODUCTION_ORDER_STATUS_LABELS } from "@/lib/types/production-order.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
-import type { ProductionOrdersSearchSchema } from "@/features/production-orders/schemas/production-orders-search.schema"
-import type { ProductionOrderStatus } from "@/lib/types/production-order.type"
+import { useGetClientOptions } from "@/features/clients/api"
+import { PRODUCTION_JOB_STATUS_LABELS } from "@/lib/types/production-job.type"
+import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
+import type { ProductionJobsSearchSchema } from "@/features/production-jobs/schemas/production-jobs-search.schema"
+import type { ClientRef } from "@/lib/types/client.type"
+import type { ProductionJobStatus } from "@/lib/types/production-job.type"
 
 const ALL_VALUE = "all"
 
 const STATUS_FILTER_OPTIONS = [
   { value: ALL_VALUE, label: "Tất cả" },
-  ...buildOptionsFromLabels(PRODUCTION_ORDER_STATUS_LABELS),
+  ...buildOptionsFromLabels(PRODUCTION_JOB_STATUS_LABELS),
 ]
 
-type ProductionOrdersTableFilterProps = {
-  search: ProductionOrdersSearchSchema
+type ProductionJobsTableFilterProps = {
+  search: ProductionJobsSearchSchema
   onFilterChange: (
-    patch: Partial<ProductionOrdersSearchSchema>,
+    patch: Partial<ProductionJobsSearchSchema>,
     options?: { replace?: boolean }
   ) => void
+  clientOptions: ClientRef[]
 }
 
-export function ProductionOrdersTableFilter({
+export function ProductionJobsTableFilter({
   search,
   onFilterChange,
-}: ProductionOrdersTableFilterProps) {
+  clientOptions,
+}: ProductionJobsTableFilterProps) {
   const [q, setQ] = useState(search.q ?? "")
 
+  const client = useGetClientOptions()
+  const selectedClient = clientOptions.find(
+    (option) => option.id === search.clientId
+  )
+
   // Filters as the user types, 300ms after the last keystroke — same idiom as
-  // OrdersTableFilter.tsx. An empty term becomes `undefined` so the search
+  // ProductionOrdersTableFilter.tsx. An empty term becomes `undefined` so the search
   // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
@@ -57,6 +67,7 @@ export function ProductionOrdersTableFilter({
     onFilterChange({
       q: undefined,
       status: undefined,
+      clientId: undefined,
       dueDateFrom: undefined,
       dueDateTo: undefined,
     })
@@ -65,13 +76,13 @@ export function ProductionOrdersTableFilter({
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1.6fr)_minmax(16rem,1.6fr)_minmax(10rem,1fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)_minmax(16rem,1.6fr)_minmax(9rem,1fr)]">
           <label className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <span className="sr-only">Tìm kiếm lệnh sản xuất</span>
+            <span className="sr-only">Tìm kiếm Job</span>
             <div className="relative">
               <Input
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo mã đơn hàng (SO)..."
+                placeholder="Tìm PO / Job / Mã SP / Tên SP..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)
@@ -88,9 +99,26 @@ export function ProductionOrdersTableFilter({
             </div>
           </label>
 
+          <label className="space-y-1.5">
+            <span className="block text-[11px] font-medium text-muted-foreground">
+              Khách hàng
+            </span>
+            <ComboboxField
+              value={search.clientId}
+              onValueChange={(next) => onFilterChange({ clientId: next })}
+              options={client.options}
+              onSearchChange={client.onSearchChange}
+              isPending={client.isFetching}
+              initialOption={buildSelectOption(selectedClient)}
+              emptyMessage="Không tìm thấy khách hàng"
+              placeholder="Tìm khách hàng..."
+              className="text-xs"
+            />
+          </label>
+
           <div className="sm:col-span-2 xl:col-span-1">
             <DateRangeFilter
-              idPrefix="production-orders"
+              idPrefix="production-jobs"
               fromLabel="Ngày giao từ"
               toLabel="Đến"
               from={search.dueDateFrom}
@@ -115,7 +143,7 @@ export function ProductionOrdersTableFilter({
                   status:
                     next === ALL_VALUE
                       ? undefined
-                      : (next as ProductionOrderStatus),
+                      : (next as ProductionJobStatus),
                 })
               }
             >
@@ -133,7 +161,15 @@ export function ProductionOrdersTableFilter({
           </label>
         </div>
 
-        <ProductionOrdersFilterActions onReset={resetFilters} />
+        <Button
+          type="button"
+          variant="outline"
+          className="text-xs"
+          onClick={resetFilters}
+        >
+          <RotateCw className="size-4" />
+          Làm mới
+        </Button>
       </div>
     </div>
   )

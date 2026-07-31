@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { OrdersDateRangeFilter } from "@/features/orders/components/OrdersDateRangeFilter"
+import { DateRangeFilter } from "@/components/shared/DateRangeFilter"
 import { OrdersFilterActions } from "@/features/orders/components/OrdersFilterActions"
 import {
   ORDER_STATUS_LABELS,
@@ -108,10 +108,18 @@ export function OrdersTableFilter({
           </label>
 
           <div className="sm:col-span-2 xl:col-span-1">
-            <OrdersDateRangeFilter
+            <DateRangeFilter
+              idPrefix="orders"
+              fromLabel="Ngày giao từ"
+              toLabel="Đến"
               from={search.orderDateFrom}
               to={search.orderDateTo}
-              onChange={(patch) => onFilterChange(patch)}
+              onChange={(range) =>
+                onFilterChange({
+                  orderDateFrom: range.from,
+                  orderDateTo: range.to,
+                })
+              }
             />
           </div>
 

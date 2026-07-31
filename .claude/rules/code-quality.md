@@ -27,6 +27,11 @@
 - Split components over ~150 lines and functions over ~40 lines or 3 levels of nesting.
 - Delete dead code in the same change that makes it dead — don't leave unused drafts
   behind (e.g. an unused component superseded by one in `components/shared/`).
+- Conditional JSX with no real "else" branch uses `cond && <JSX />`, not
+  `cond ? <JSX /> : null` — the ternary's `: null` is dead weight once there's nothing to put in
+  its place. Keep the ternary when there's a genuine second branch to render (`cond ? <A/> : <B/>`)
+  or when `cond` isn't already a safe boolean — `count && <Badge/>` renders the literal `0` when
+  `count` is `0`; guard with `count > 0 && <Badge/>` (or an explicit ternary) instead.
 - No new dependency without approval. No inline `eslint-disable`.
 
 ## Definition of done
