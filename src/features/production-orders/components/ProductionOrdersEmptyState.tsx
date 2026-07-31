@@ -18,14 +18,21 @@ const EMPTY_STATE_COPY: Record<
   },
 }
 
+// No filter selected ("Tất cả") gets its own generic copy rather than indexing
+// EMPTY_STATE_COPY, since there's no single status to describe.
+const ALL_EMPTY_STATE_COPY = {
+  title: "Chưa có lệnh sản xuất nào",
+  description: "Lệnh sản xuất được tạo tự động khi Giám đốc duyệt đơn hàng.",
+}
+
 type ProductionOrdersEmptyStateProps = {
-  status: ProductionOrderStatus
+  status: ProductionOrderStatus | undefined
 }
 
 export function ProductionOrdersEmptyState({
   status,
 }: ProductionOrdersEmptyStateProps) {
-  const copy = EMPTY_STATE_COPY[status]
+  const copy = status ? EMPTY_STATE_COPY[status] : ALL_EMPTY_STATE_COPY
 
   return (
     <TableEmptyState

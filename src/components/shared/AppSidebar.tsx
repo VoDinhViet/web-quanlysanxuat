@@ -39,13 +39,17 @@ import {
 } from "@/components/ui/sidebar"
 import { hasPermission } from "@/features/auth/permissions"
 import { usePermissions } from "@/hooks/use-permissions"
-import { isKnownRoute } from "@/lib/known-routes"
+import type { FileRouteTypes } from "@/routeTree.gen"
 import type { PermissionCode } from "@/lib/types/permission.type"
 
 type MenuItem = {
   label: string
   icon: LucideIcon
-  href?: string
+  // Typed against the generated route tree, not a plain `string` — a href pointing at a route
+  // that doesn't exist is now a compile error instead of a silent `<a>` fallback. A domain with no
+  // page yet omits `href` entirely (see the placeholder items below) rather than pointing it at a
+  // path that isn't real yet.
+  href?: FileRouteTypes["to"]
   // When set, the item is hidden unless the user holds this permission.
   permission?: PermissionCode
 }
@@ -90,9 +94,14 @@ const menuGroups: MenuGroup[] = [
         label: "Lệnh sản xuất (LSX)",
         icon: Factory,
         href: "/manage/production-orders",
-        permission: "orders:read",
+        permission: "production:read",
       },
-      { label: "Quản lý sản xuất", icon: GitBranch },
+      {
+        label: "Quản lý sản xuất",
+        icon: GitBranch,
+        href: "/manage/production-jobs",
+        permission: "production:read",
+      },
       { label: "BOM & Định mức", icon: ListChecks },
     ],
   },
@@ -275,16 +284,11 @@ function MenuButton({ item, pathname }: { item: MenuItem; pathname: string }) {
         className={menuButtonClass}
         type={item.href ? undefined : "button"}
       >
-        {item.href && isKnownRoute(item.href) ? (
+        {item.href ? (
           <Link to={item.href}>
             <Icon />
             <span>{item.label}</span>
           </Link>
-        ) : item.href ? (
-          <a href={item.href}>
-            <Icon />
-            <span>{item.label}</span>
-          </a>
         ) : (
           <>
             <Icon />

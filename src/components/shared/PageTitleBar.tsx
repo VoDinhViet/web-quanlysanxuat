@@ -37,13 +37,15 @@ import { ThemeToggle } from "@/components/shared/ThemeToggle"
 import { currentUserQueryOptions } from "@/features/auth/api/auth.options"
 import { logout } from "@/features/auth/api/server-functions/logout.api"
 import { resolveFileUrl } from "@/lib/file-url"
-import { isKnownRoute } from "@/lib/known-routes"
+import type { FileRouteTypes } from "@/routeTree.gen"
 
 const FALLBACK_USER_NAME = "--"
 
 type PageTitleBreadcrumb = {
   label: string
-  href?: string
+  // Typed against the generated route tree — see AppSidebar.tsx's MenuItem.href for why. A
+  // href-less, non-last crumb renders as plain text (a group label, not a link) below.
+  href?: FileRouteTypes["to"]
 }
 
 type PageTitleBarProps = {
@@ -67,18 +69,16 @@ function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
             <BreadcrumbItem>
               {index === lastIndex ? (
                 <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
-              ) : (
+              ) : breadcrumb.href ? (
                 <BreadcrumbLink asChild>
-                  {breadcrumb.href && isKnownRoute(breadcrumb.href) ? (
-                    <Link to={breadcrumb.href}>{breadcrumb.label}</Link>
-                  ) : (
-                    <a href={breadcrumb.href ?? "#"}>{breadcrumb.label}</a>
-                  )}
+                  <Link to={breadcrumb.href}>{breadcrumb.label}</Link>
                 </BreadcrumbLink>
+              ) : (
+                <span>{breadcrumb.label}</span>
               )}
             </BreadcrumbItem>
 
-            {index < lastIndex ? <BreadcrumbSeparator /> : null}
+            {index < lastIndex && <BreadcrumbSeparator />}
           </Fragment>
         ))}
       </BreadcrumbList>
@@ -105,9 +105,9 @@ function UserMenu({
   isLoggingOut,
   onLogout,
 }: UserMenuProps) {
-  const avatarImage = avatarUrl ? (
+  const avatarImage = avatarUrl && (
     <AvatarImage src={resolveFileUrl(avatarUrl)} alt={fullName} />
-  ) : null
+  )
 
   return (
     <DropdownMenu>
@@ -129,11 +129,11 @@ function UserMenu({
             <span className="block truncate text-sm leading-tight font-bold">
               {fullName}
             </span>
-            {roleName ? (
+            {roleName && (
               <span className="block truncate text-xs leading-tight text-muted-foreground">
                 {roleName}
               </span>
-            ) : null}
+            )}
           </span>
 
           <ChevronDown className="hidden lg:block" />
@@ -152,21 +152,21 @@ function UserMenu({
             <p className="truncate text-sm leading-tight font-semibold">
               {fullName}
             </p>
-            {username ? (
+            {username && (
               <p className="truncate text-xs leading-tight text-muted-foreground">
                 @{username}
               </p>
-            ) : null}
-            {email ? (
+            )}
+            {email && (
               <p className="truncate text-xs leading-tight text-muted-foreground">
                 {email}
               </p>
-            ) : null}
-            {roleName ? (
+            )}
+            {roleName && (
               <Badge variant="secondary" className="mt-1 max-w-full">
                 <span className="truncate">{roleName}</span>
               </Badge>
-            ) : null}
+            )}
           </div>
         </div>
         <DropdownMenuSeparator />
@@ -254,11 +254,11 @@ export function PageTitleBar({
           aria-label="Thông báo"
         >
           <Bell />
-          {notificationCount > 0 ? (
+          {notificationCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold text-destructive-foreground ring-2 ring-card">
               {notificationCount > 9 ? "9+" : notificationCount}
             </span>
-          ) : null}
+          )}
         </Button>
 
         <Button
