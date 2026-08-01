@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { orderQueryOptions } from "@/features/orders/api"
 import {
@@ -22,14 +23,17 @@ export const Route = createFileRoute(
     const production = await context.queryClient.ensureQueryData(
       productionOrderQueryOptions(params.productionOrderId)
     )
-    await Promise.all([
-      context.queryClient.ensureQueryData(
-        orderQueryOptions(production.order.id)
-      ),
-      context.queryClient.ensureQueryData(
-        productionOrderLogsQueryOptions(params.productionOrderId, 1)
-      ),
-    ])
+
+    // Logs are a secondary section on this page — seed the cache without
+    // blocking the route on it (ProductionOrderLogsCard reads it itself).
+    void context.queryClient.prefetchQuery(
+      productionOrderLogsQueryOptions(params.productionOrderId, 1)
+    )
+
+    await context.queryClient.ensureQueryData(
+      orderQueryOptions(production.order.id)
+    )
   },
   component: ProductionOrderDetailPage,
+  pendingComponent: PageLoading,
 })

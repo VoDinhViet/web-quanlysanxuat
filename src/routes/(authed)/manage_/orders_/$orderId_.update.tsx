@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { UpdateOrderPage } from "@/features/orders/pages/UpdateOrderPage"
 import { orderQueryOptions } from "@/features/orders/api/orders.options"
@@ -33,4 +34,5 @@ export const Route = createFileRoute(
     }
   },
   component: UpdateOrderPage,
+  pendingComponent: PageLoading,
 })

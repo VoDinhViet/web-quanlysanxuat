@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/production-jobs.options"
 import { ProductionJobsPage } from "@/features/production-jobs/pages/ProductionJobsPage"
@@ -24,4 +25,5 @@ export const Route = createFileRoute("/(authed)/manage_/production-jobs")({
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),
   component: ProductionJobsPage,
+  pendingComponent: PageLoading,
 })

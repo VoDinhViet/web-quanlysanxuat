@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
@@ -196,7 +197,7 @@ function OperationSummaryText({
   isPending: boolean
 }) {
   if (isPending) {
-    return <span className="text-xs text-muted-foreground/50">…</span>
+    return <Skeleton className="h-4 w-16" />
   }
 
   return (

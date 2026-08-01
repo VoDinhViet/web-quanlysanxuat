@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { ProductsPage } from "@/features/products/pages/ProductsPage"
 import {
@@ -29,4 +30,5 @@ export const Route = createFileRoute("/(authed)/manage_/products")({
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),
   component: ProductsPage,
+  pendingComponent: PageLoading,
 })

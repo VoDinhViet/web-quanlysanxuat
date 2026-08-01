@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
 import {
@@ -29,4 +30,5 @@ export const Route = createFileRoute("/(authed)/manage_/materials")({
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),
   component: MaterialsPage,
+  pendingComponent: PageLoading,
 })

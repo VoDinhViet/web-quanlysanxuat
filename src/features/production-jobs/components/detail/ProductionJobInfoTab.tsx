@@ -3,14 +3,15 @@ import { Info, Logs, Paperclip, StickyNote } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
+import { MissingFieldValue } from "@/components/shared/MissingFieldValue"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDocumentsSection } from "@/features/production-jobs/components/detail/ProductionJobDocumentsSection"
 import { ProductionJobLogSection } from "@/features/production-jobs/components/detail/ProductionJobLogSection"
 import { ProductionJobNotesSection } from "@/features/production-jobs/components/detail/ProductionJobNotesSection"
-import type { ProductionJobMockDetail } from "@/lib/types/production-job.type"
+import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type ProductionJobInfoTabProps = {
-  detail: ProductionJobMockDetail
+  detail: ProductionJobDetail
 }
 
 // "Thông tin chung" tab — cột chính (tóm tắt + Lịch sử) và cột phụ (Tài liệu/Ghi chú) chia 2
@@ -18,9 +19,9 @@ type ProductionJobInfoTabProps = {
 // cho ProductDetailSidebar — không bịa layout mới. Trong mỗi cột, các khối tách nhau bằng đường
 // kẻ (`InfoSection`'s `not-first:border-t`) chứ không phải card lồng card. `InfoSection` chỉ lo
 // tiêu đề + đường kẻ; padding nội dung do từng khối tự quyết (xem từng call site bên dưới).
+// `lsxCode`/`clientName`/`productName`/`poNumber`/`dueDate`/`producedQty` (và `remainingQty` tính
+// từ đó) không có nguồn trên GET /production-jobs/:jobId — xem production-job.type.ts.
 export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
-  const remainingQty = detail.quantity - detail.producedQty
-
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px]">
       <div className="min-w-0">
@@ -28,15 +29,15 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
           <dl className="grid grid-cols-1 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
             <div className="divide-y divide-border">
               <SummaryRow label="Mã Job" value={detail.code} mono />
-              <SummaryRow label="LSX" value={detail.lsxCode} mono />
-              <SummaryRow label="Khách hàng" value={detail.clientName} />
-              <SummaryRow label="Sản phẩm" value={detail.productName} />
-              <SummaryRow label="PO / HĐ" value={detail.poNumber} mono />
+              <SummaryRow label="LSX" value={<MissingFieldValue />} />
+              <SummaryRow label="Khách hàng" value={<MissingFieldValue />} />
+              <SummaryRow label="Sản phẩm" value={<MissingFieldValue />} />
+              <SummaryRow label="PO / HĐ" value={<MissingFieldValue />} />
             </div>
             <div className="divide-y divide-border">
               <SummaryRow label="SL sản xuất" value={`${detail.quantity} Bộ`} />
-              <SummaryRow label="Đã nhập" value={`${detail.producedQty} Bộ`} />
-              <SummaryRow label="Còn lại" value={`${remainingQty} Bộ`} />
+              <SummaryRow label="Đã nhập" value={<MissingFieldValue />} />
+              <SummaryRow label="Còn lại" value={<MissingFieldValue />} />
               <SummaryRow
                 label="Ngày tạo"
                 value={DateTime.fromISO(detail.createdAt).toFormat(
@@ -45,7 +46,7 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
               />
               <SummaryRow
                 label="Ngày giao hàng"
-                value={DateTime.fromISO(detail.dueDate).toFormat("dd/MM/yyyy")}
+                value={<MissingFieldValue />}
               />
               <SummaryRow
                 label="Trạng thái"
@@ -56,20 +57,22 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
         </InfoSection>
 
         <InfoSection title="Lịch sử thay đổi" icon={Logs}>
-          <ProductionJobLogSection logs={detail.logs} />
+          <div className="p-4 sm:p-5">
+            <ProductionJobLogSection />
+          </div>
         </InfoSection>
       </div>
 
       <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
         <InfoSection title="Tài liệu đính kèm" icon={Paperclip}>
           <div className="p-4 sm:p-5">
-            <ProductionJobDocumentsSection documents={detail.documents} />
+            <ProductionJobDocumentsSection />
           </div>
         </InfoSection>
 
         <InfoSection title="Ghi chú" icon={StickyNote}>
           <div className="p-4 sm:p-5">
-            <ProductionJobNotesSection notes={detail.notes} />
+            <ProductionJobNotesSection />
           </div>
         </InfoSection>
       </aside>

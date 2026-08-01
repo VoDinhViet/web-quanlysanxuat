@@ -6,18 +6,20 @@ import disketteBold from "@iconify-icons/solar/diskette-bold"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
+import { MissingFieldValue } from "@/components/shared/MissingFieldValue"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/detail/ProductionJobDetailTabs"
-import type { ProductionJobMockDetail } from "@/lib/types/production-job.type"
+import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type ProductionJobDetailHeaderProps = {
-  detail: ProductionJobMockDetail
+  detail: ProductionJobDetail
 }
 
 // Identity, the header facts and the tab strip read as one unit, so they share a single block
-// like ProductDetailHeader.tsx. The "Lưu" button stays disabled — this page is UI-only (task
-// 8.2), no mutation wired up yet.
+// like ProductDetailHeader.tsx. The "Lưu" button stays disabled — no update mutation wired up
+// yet. `productName`/`poNumber`/`clientName`/`dueDate` have no source on GET
+// /production-jobs/:jobId (a deliberately unjoined DTO — see production-job.type.ts) and render
+// as MissingFieldValue instead of a real value.
 export function ProductionJobDetailHeader({
   detail,
 }: ProductionJobDetailHeaderProps) {
@@ -45,22 +47,18 @@ export function ProductionJobDetailHeader({
               {detail.code}
             </span>
             <ProductionJobStatusBadge status={detail.status} />
-            <MockDataBadge />
           </div>
 
           <dl className="grid grid-cols-1 gap-x-8 gap-y-1.5 sm:grid-cols-3">
-            <InfoField label="Sản phẩm" value={detail.productName} />
+            <InfoField label="Sản phẩm" value={<MissingFieldValue />} />
             <InfoField label="SL sản xuất" value={`${detail.quantity} Bộ`} />
-            <InfoField label="PO / HĐ" value={detail.poNumber} mono />
-            <InfoField label="Khách hàng" value={detail.clientName} />
+            <InfoField label="PO / HĐ" value={<MissingFieldValue />} />
+            <InfoField label="Khách hàng" value={<MissingFieldValue />} />
             <InfoField
               label="Ngày tạo"
               value={DateTime.fromISO(detail.createdAt).toFormat("dd/MM/yyyy")}
             />
-            <InfoField
-              label="Ngày giao hàng"
-              value={DateTime.fromISO(detail.dueDate).toFormat("dd/MM/yyyy")}
-            />
+            <InfoField label="Ngày giao hàng" value={<MissingFieldValue />} />
           </dl>
         </div>
 

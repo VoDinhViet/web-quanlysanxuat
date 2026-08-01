@@ -1,29 +1,23 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { OrderStatCards } from "@/features/orders/components/OrderStatCards"
 import { OrderStatusLegend } from "@/features/orders/components/OrderStatusLegend"
 import { OrdersTable } from "@/features/orders/components/OrdersTable"
 import { OrdersTableFilter } from "@/features/orders/components/OrdersTableFilter"
-import {
-  orderStatsQueryOptions,
-  ordersQueryOptions,
-} from "@/features/orders/api/orders.options"
+import { ordersQueryOptions } from "@/features/orders/api/orders.options"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
 
 export function OrdersPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries; the reference lists resolve synchronously via
-  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
-  // pagination changes only update the table, not the whole route.
+  // prefetches this query; the filtered list is a plain useQuery so filter/
+  // pagination changes only update the table, not the whole route. Order
+  // stats are non-critical — OrderStatCards reads and awaits them itself.
   const search = useSearch({ from: "/(authed)/manage_/orders" })
   const navigate = useNavigate({ from: "/manage/orders" })
 
@@ -31,7 +25,6 @@ export function OrdersPage() {
     ...ordersQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-  const { data: stats } = useSuspenseQuery(orderStatsQueryOptions())
 
   // `replace` is for the search box: it commits on every debounced keystroke, and
   // pushing each one would bury the pre-search page under a dozen history entries.
@@ -59,7 +52,7 @@ export function OrdersPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <OrderStatCards stats={stats} />
+        <OrderStatCards />
 
         <Surface contentClassName="min-h-[calc(100svh-25rem)]">
           <OrdersTableFilter
@@ -69,10 +62,9 @@ export function OrdersPage() {
           />
 
           {ordersQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : ordersQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={ordersQuery.error.message}
               onRetry={() => void ordersQuery.refetch()}
             />

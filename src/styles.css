@@ -1,4 +1,10 @@
-@import "tailwindcss";
+/* Explicit base path for class-name source detection (resolved relative to
+   this file, i.e. src/) — TanStack Start's client and SSR builds can run
+   with different process CWDs, and Tailwind's default (CWD-based) detection
+   then computes two different scanning roots for the two builds, producing
+   mismatched generated CSS. Anchoring to this file's own directory makes
+   both builds scan the exact same src/ tree. */
+@import "tailwindcss" source(".");
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";

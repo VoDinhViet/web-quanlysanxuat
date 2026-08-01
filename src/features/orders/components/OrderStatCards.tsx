@@ -1,11 +1,13 @@
 import { Icon } from "@iconify/react"
 import arrowDownBold from "@iconify-icons/solar/arrow-down-bold"
 import arrowUpBold from "@iconify-icons/solar/arrow-up-bold"
+import { useQuery } from "@tanstack/react-query"
 
 import { Card, CardContent } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { buildOrderStatTiles } from "@/features/orders/components/order-stat-tiles"
 import type { OrderStatTrendTone } from "@/features/orders/components/order-stat-tiles"
-import type { OrderStats } from "@/lib/types/order.type"
+import { orderStatsQueryOptions } from "@/features/orders/api/orders.options"
 import { cn } from "@/lib/utils"
 
 const trendToneClassName: Record<OrderStatTrendTone, string> = {
@@ -14,17 +16,43 @@ const trendToneClassName: Record<OrderStatTrendTone, string> = {
   neutral: "text-muted-foreground",
 }
 
-type OrderStatCardsProps = {
-  stats: OrderStats
-}
+// Six across only from 2xl up — a 200px card cannot hold a value like
+// "125.000.000.000 VND".
+const gridClassName =
+  "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6"
 
-export function OrderStatCards({ stats }: OrderStatCardsProps) {
-  const tiles = buildOrderStatTiles(stats)
+// Route loader only prefetches this (see manage_/orders.tsx) — it doesn't
+// block the route, so this component reads it itself via a plain useQuery
+// instead of useSuspenseQuery.
+export function OrderStatCards() {
+  const statsQuery = useQuery(orderStatsQueryOptions())
+
+  if (statsQuery.isPending) {
+    return (
+      <div className={gridClassName}>
+        {Array.from({ length: 6 }, (_, index) => (
+          <Card key={index} size="sm">
+            <CardContent className="flex flex-col gap-2">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-7 w-20" />
+              <Skeleton className="h-3 w-28" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
+  }
+
+  // Stats are a secondary block on this page — a failed fetch hides the row
+  // rather than replacing the whole page with an error screen.
+  if (statsQuery.isError) {
+    return null
+  }
+
+  const tiles = buildOrderStatTiles(statsQuery.data)
 
   return (
-    // Six across only from 2xl up — a 200px card cannot hold a value like
-    // "125.000.000.000 VND".
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+    <div className={gridClassName}>
       {tiles.map((tile) => (
         <Card key={tile.label} size="sm">
           <CardContent className="flex flex-col gap-2">

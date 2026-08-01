@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
   TableBody,
@@ -23,6 +24,7 @@ type ProductionOrderLogsCardProps = {
   pagination: Pagination | undefined
   page: number
   onPageChange: (page: number) => void
+  isPending: boolean
   isFetching: boolean
 }
 
@@ -38,6 +40,7 @@ export function ProductionOrderLogsCard({
   pagination,
   page,
   onPageChange,
+  isPending,
   isFetching,
 }: ProductionOrderLogsCardProps) {
   return (
@@ -63,7 +66,13 @@ export function ProductionOrderLogsCard({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {logs.length === 0 ? (
+            {isPending ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={4} className="h-40 text-center">
+                  <Spinner className="mx-auto size-6 text-muted-foreground" />
+                </TableCell>
+              </TableRow>
+            ) : logs.length === 0 ? (
               <TableEmptyRow colSpan={4} message="Chưa có dữ liệu lịch sử." />
             ) : (
               logs.map((log) => (

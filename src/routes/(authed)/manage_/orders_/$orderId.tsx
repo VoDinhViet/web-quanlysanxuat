@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage"
 import { orderQueryOptions } from "@/features/orders/api/orders.options"
@@ -15,4 +16,5 @@ export const Route = createFileRoute("/(authed)/manage_/orders_/$orderId")({
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
   component: OrderDetailPage,
+  pendingComponent: PageLoading,
 })

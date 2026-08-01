@@ -3,7 +3,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { productionOrdersQueryOptions } from "@/features/production-orders/api/production-orders.options"
 import { ProductionOrdersTable } from "@/features/production-orders/components/ProductionOrdersTable"
 import { ProductionOrdersTableFilter } from "@/features/production-orders/components/ProductionOrdersTableFilter"
@@ -53,10 +54,9 @@ export function ProductionOrdersPage() {
           />
 
           {productionOrdersQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : productionOrdersQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={productionOrdersQuery.error.message}
               onRetry={() => void productionOrdersQuery.refetch()}
             />

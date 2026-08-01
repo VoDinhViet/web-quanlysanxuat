@@ -1,4 +1,5 @@
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
@@ -7,14 +8,13 @@ import { ProductionJobBomTab } from "@/features/production-jobs/components/detai
 import { ProductionJobDetailHeader } from "@/features/production-jobs/components/detail/ProductionJobDetailHeader"
 import { ProductionJobInfoTab } from "@/features/production-jobs/components/detail/ProductionJobInfoTab"
 import { ProductionJobOperationsTab } from "@/features/production-jobs/components/detail/ProductionJobOperationsTab"
-import { PRODUCTION_JOB_MOCK_DETAIL } from "@/features/production-jobs/mock/production-job-detail.mock"
+import { productionJobQueryOptions } from "@/features/production-jobs/api/production-jobs.options"
 import { PRODUCTION_JOB_DETAIL_TABS } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
 
-// UI-only build of the Job detail screen (task 8.2) — every Job routed to here renders the same
-// hardcoded PRODUCTION_JOB_MOCK_DETAIL payload rather than reading `productionJobId` against a
-// real endpoint; the route has no loader either. Delete the mock import and wire a real
-// `useSuspenseQuery` once GET /production-jobs/:jobId ships.
 export function ProductionJobDetailPage() {
+  const { productionJobId } = useParams({
+    from: "/(authed)/manage_/production-jobs_/$productionJobId",
+  })
   const { tab } = useSearch({
     from: "/(authed)/manage_/production-jobs_/$productionJobId",
   })
@@ -22,7 +22,9 @@ export function ProductionJobDetailPage() {
     from: "/manage/production-jobs/$productionJobId",
   })
 
-  const detail = PRODUCTION_JOB_MOCK_DETAIL
+  const { data: detail } = useSuspenseQuery(
+    productionJobQueryOptions(productionJobId)
+  )
 
   // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
   // unrecognised value simply doesn't navigate.
@@ -56,11 +58,11 @@ export function ProductionJobDetailPage() {
             </TabsContent>
 
             <TabsContent value="bom" className="m-0 outline-none">
-              <ProductionJobBomTab materials={detail.materials} />
+              <ProductionJobBomTab productionJobId={productionJobId} />
             </TabsContent>
 
             <TabsContent value="operations" className="m-0 outline-none">
-              <ProductionJobOperationsTab detail={detail} />
+              <ProductionJobOperationsTab productionJobId={productionJobId} />
             </TabsContent>
           </Tabs>
         </Surface>

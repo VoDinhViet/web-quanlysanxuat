@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { OrdersPage } from "@/features/orders/pages/OrdersPage"
 import {
@@ -19,12 +20,15 @@ export const Route = createFileRoute("/(authed)/manage_/orders")({
   // already the router-validated search at runtime, but LoaderFnContext types
   // it as `{}` (loaderDeps-independent) — re-parsing it is a type-safe way to
   // recover the real shape, not an `as` cast.
-  loader: ({ context, location }) =>
-    Promise.all([
-      context.queryClient.ensureQueryData(
-        ordersQueryOptions(ordersSearchSchema.parse(location.search))
-      ),
-      context.queryClient.ensureQueryData(orderStatsQueryOptions()),
-    ]),
+  loader: ({ context, location }) => {
+    // Stats are a secondary block on this page (OrderStatCards) — seed the
+    // cache without blocking the route/table on it.
+    void context.queryClient.prefetchQuery(orderStatsQueryOptions())
+
+    return context.queryClient.ensureQueryData(
+      ordersQueryOptions(ordersSearchSchema.parse(location.search))
+    )
+  },
   component: OrdersPage,
+  pendingComponent: PageLoading,
 })

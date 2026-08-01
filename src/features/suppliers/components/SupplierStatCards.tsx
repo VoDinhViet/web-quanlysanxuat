@@ -3,8 +3,11 @@ import buildings2Bold from "@iconify-icons/solar/buildings-2-bold"
 import checkCircleBold from "@iconify-icons/solar/check-circle-bold"
 import closeCircleBold from "@iconify-icons/solar/close-circle-bold"
 import pauseCircleBold from "@iconify-icons/solar/pause-circle-bold"
+import { useQuery } from "@tanstack/react-query"
 import type { IconifyIcon } from "@iconify/types"
 
+import { Skeleton } from "@/components/ui/skeleton"
+import { supplierStatsQueryOptions } from "@/features/suppliers/api/suppliers.options"
 import type { SupplierStats } from "@/lib/types/supplier.type"
 import { cn } from "@/lib/utils"
 
@@ -61,15 +64,44 @@ function buildStatTiles(stats: SupplierStats): StatTile[] {
   ]
 }
 
-type SupplierStatCardsProps = {
-  stats: SupplierStats
-}
+const gridClassName = "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
 
-export function SupplierStatCards({ stats }: SupplierStatCardsProps) {
-  const tiles = buildStatTiles(stats)
+// Route loader only prefetches this (see manage_/suppliers.tsx) — it doesn't
+// block the route, so this component reads it itself via a plain useQuery
+// instead of useSuspenseQuery.
+export function SupplierStatCards() {
+  const statsQuery = useQuery(supplierStatsQueryOptions())
+
+  if (statsQuery.isPending) {
+    return (
+      <div className={gridClassName}>
+        {Array.from({ length: 4 }, (_, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-3 rounded-lg bg-card p-4 shadow-card"
+          >
+            <Skeleton className="size-11 shrink-0 rounded-xl" />
+            <div className="min-w-0 flex-1 space-y-1.5">
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-6 w-12" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Stats are a secondary block on this page — a failed fetch hides the row
+  // rather than replacing the whole page with an error screen.
+  if (statsQuery.isError) {
+    return null
+  }
+
+  const tiles = buildStatTiles(statsQuery.data)
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className={gridClassName}>
       {tiles.map((tile) => (
         <div
           key={tile.label}

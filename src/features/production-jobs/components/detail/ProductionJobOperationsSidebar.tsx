@@ -1,22 +1,6 @@
-import {
-  Download,
-  FileText,
-  Info,
-  Logs,
-  Pencil,
-  Send,
-  Settings,
-} from "lucide-react"
+import { Download, FileText, Logs, Pencil, Send, Settings } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
-
-import {
-  OUTSOURCE_STEP_STATUS_LABELS,
-  OutsourceStepStatus,
-  PRODUCTION_STEP_STATUS_LABELS,
-  ProductionStepStatus,
-} from "@/lib/types/production-job.type"
-import { cn } from "@/lib/utils"
 
 // Cùng idiom InfoSection của ProductionJobInfoTab.tsx (tab "Thông tin chung") — một khối nền
 // duy nhất, các mục con tách nhau bằng đường kẻ (`not-first:border-t`) thay vì mỗi mục một
@@ -41,56 +25,6 @@ function SidebarSection({
   )
 }
 
-type StatusRuleGroup = {
-  groupLabel: string
-  rules: { dotClassName: string; label: string; condition: string }[]
-}
-
-// Copy đọc thẳng từ 2 label map dùng chung với các badge trạng thái (ProductionJobStepBadges.tsx)
-// — chỉ phần "condition" là văn bản diễn giải riêng cho khối này.
-const STATUS_RULE_GROUPS: StatusRuleGroup[] = [
-  {
-    groupLabel: "Công đoạn nội bộ",
-    rules: [
-      {
-        dotClassName: "bg-muted-foreground/50",
-        label: PRODUCTION_STEP_STATUS_LABELS[ProductionStepStatus.NOT_STARTED],
-        condition: "SL hoàn thành = 0",
-      },
-      {
-        dotClassName: "bg-amber-500 dark:bg-amber-400",
-        label: PRODUCTION_STEP_STATUS_LABELS[ProductionStepStatus.IN_PROGRESS],
-        condition: "0 < SL hoàn thành < SL kế hoạch",
-      },
-      {
-        dotClassName: "bg-emerald-500 dark:bg-emerald-400",
-        label: PRODUCTION_STEP_STATUS_LABELS[ProductionStepStatus.DONE],
-        condition: "SL hoàn thành ≥ SL kế hoạch",
-      },
-    ],
-  },
-  {
-    groupLabel: "Gia công ngoài",
-    rules: [
-      {
-        dotClassName: "bg-muted-foreground/50",
-        label: OUTSOURCE_STEP_STATUS_LABELS[OutsourceStepStatus.NOT_SENT],
-        condition: "Đã gửi = 0",
-      },
-      {
-        dotClassName: "bg-amber-500 dark:bg-amber-400",
-        label: OUTSOURCE_STEP_STATUS_LABELS[OutsourceStepStatus.IN_PROGRESS],
-        condition: "Đã gửi > Đã nhận",
-      },
-      {
-        dotClassName: "bg-emerald-500 dark:bg-emerald-400",
-        label: OUTSOURCE_STEP_STATUS_LABELS[OutsourceStepStatus.DONE],
-        condition: "Đã nhận ≥ SL kế hoạch",
-      },
-    ],
-  },
-]
-
 const ACTION_ITEMS: { icon: LucideIcon; label: string }[] = [
   { icon: Pencil, label: "Cập nhật số lượng hoàn thành (nội bộ)" },
   { icon: Logs, label: "Xem lịch sử cập nhật" },
@@ -105,45 +39,14 @@ const NOTE_ITEMS = [
   "Có thể gửi/nhận nhiều lần, hệ thống tự động cộng dồn.",
 ]
 
-// Right column of the "Công đoạn sản xuất" tab: explains the two status badges rendered in the
-// table, lists the actions this tab will eventually support, and repeats the footer notes from
-// the mockup.
+// Right column of the "Công đoạn sản xuất" tab: lists the actions this tab will eventually
+// support and repeats the footer notes from the mockup. The old "Giải thích trạng thái" section
+// explained status badges derived from planned/done/sent/received quantities — that data model
+// doesn't exist on GET /production-jobs/:jobId/steps (see production-job.type.ts), so it's gone
+// rather than explaining rules with nothing left to apply them to.
 export function ProductionJobOperationsSidebar() {
   return (
     <div className="overflow-hidden rounded-md border border-border/60 bg-card">
-      <SidebarSection title="Giải thích trạng thái" icon={Info}>
-        <div className="space-y-4">
-          {STATUS_RULE_GROUPS.map((group) => (
-            <div key={group.groupLabel}>
-              <p className="mb-2 text-xs font-semibold text-foreground">
-                {group.groupLabel}
-              </p>
-              <ul className="space-y-1.5">
-                {group.rules.map((rule) => (
-                  <li
-                    key={rule.label}
-                    className="flex items-baseline gap-2 text-xs"
-                  >
-                    <span
-                      className={cn(
-                        "size-1.5 shrink-0 translate-y-[1px] rounded-full",
-                        rule.dotClassName
-                      )}
-                    />
-                    <span className="text-foreground">
-                      <span className="font-medium">{rule.label}:</span>{" "}
-                      <span className="text-muted-foreground">
-                        {rule.condition}
-                      </span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </SidebarSection>
-
       <SidebarSection title="Chức năng thao tác" icon={Settings}>
         <ul className="space-y-2.5">
           {ACTION_ITEMS.map((item) => (

@@ -7,7 +7,8 @@ import {
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { ProductionJobsTable } from "@/features/production-jobs/components/ProductionJobsTable"
 import { ProductionJobsTableFilter } from "@/features/production-jobs/components/ProductionJobsTableFilter"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/production-jobs.options"
@@ -66,10 +67,9 @@ export function ProductionJobsPage() {
           />
 
           {productionJobsQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : productionJobsQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={productionJobsQuery.error.message}
               onRetry={() => void productionJobsQuery.refetch()}
             />

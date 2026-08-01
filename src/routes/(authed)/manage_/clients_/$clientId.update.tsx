@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import {
   clientGroupOptionsQueryOptions,
@@ -18,4 +19,5 @@ export const Route = createFileRoute(
       context.queryClient.ensureQueryData(clientGroupOptionsQueryOptions()),
     ]),
   component: UpdateClientPage,
+  pendingComponent: PageLoading,
 })

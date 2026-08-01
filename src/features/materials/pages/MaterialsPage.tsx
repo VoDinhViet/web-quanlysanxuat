@@ -7,7 +7,8 @@ import {
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { MaterialsTable } from "@/features/materials/components/MaterialsTable"
 import { MaterialsTableFilter } from "@/features/materials/components/MaterialsTableFilter"
 import {
@@ -72,10 +73,9 @@ export function MaterialsPage() {
           />
 
           {materialsQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : materialsQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={materialsQuery.error.message}
               onRetry={() => void materialsQuery.refetch()}
             />

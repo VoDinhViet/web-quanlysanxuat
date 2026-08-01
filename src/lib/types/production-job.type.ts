@@ -1,4 +1,5 @@
 import type { FileResource } from "@/lib/types/file.type"
+import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef } from "@/lib/types/order.type"
 
 /** Mirrors the backend's real `production_jobs.status` column (`GET /production-jobs`,
@@ -40,138 +41,45 @@ export type ProductionJob = {
   status: ProductionJobStatus
 }
 
-// Per-step status for the Job detail screen's "Công đoạn sản xuất" tab (GET
-// /production-jobs/:jobId, not shipped yet — see production-job-detail.mock.ts). Distinct from
-// ProductionJobStatus above: that one tracks the whole Job, these track one routing step's own
-// progress, derived client-side from its planned/done quantities rather than stored as a column.
-export enum ProductionStepStatus {
-  NOT_STARTED = "NOT_STARTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE",
-}
-
-export const PRODUCTION_STEP_STATUS_LABELS: Record<
-  ProductionStepStatus,
-  string
-> = {
-  [ProductionStepStatus.NOT_STARTED]: "Chưa thực hiện",
-  [ProductionStepStatus.IN_PROGRESS]: "Đang thực hiện",
-  [ProductionStepStatus.DONE]: "Hoàn thành",
-}
-
-// An in-house step: doneQty >= plannedQty is DONE even if a keystroke briefly overshoots it.
-export function resolveProductionStepStatus(
-  plannedQty: number,
-  doneQty: number
-): ProductionStepStatus {
-  if (doneQty >= plannedQty) return ProductionStepStatus.DONE
-  if (doneQty > 0) return ProductionStepStatus.IN_PROGRESS
-  return ProductionStepStatus.NOT_STARTED
-}
-
-export enum OutsourceStepStatus {
-  NOT_SENT = "NOT_SENT",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE",
-}
-
-export const OUTSOURCE_STEP_STATUS_LABELS: Record<OutsourceStepStatus, string> =
-  {
-    [OutsourceStepStatus.NOT_SENT]: "Chưa gửi",
-    [OutsourceStepStatus.IN_PROGRESS]: "Đang gia công",
-    [OutsourceStepStatus.DONE]: "Hoàn thành",
-  }
-
-// An outsourced step: received >= planned is DONE regardless of sent; sent = 0 means it hasn't
-// left the shop yet.
-export function resolveOutsourceStepStatus(
-  plannedQty: number,
-  sentQty: number,
-  receivedQty: number
-): OutsourceStepStatus {
-  if (receivedQty >= plannedQty) return OutsourceStepStatus.DONE
-  if (sentQty > 0) return OutsourceStepStatus.IN_PROGRESS
-  return OutsourceStepStatus.NOT_SENT
-}
-
-// Placeholder data for the Job detail screen (task 8.2) — same idea as
-// src/features/orders/mock/order-detail.mock.ts, but hardcoded (not faker-seeded) to match a
-// specific approved mockup 1:1. Delete these types once the backend ships
-// GET /production-jobs/:jobId and its sub-resources.
-export type ProductionJobMockInhouseStep = {
-  id: string
-  name: string
-  plannedQty: number
-  doneQty: number
-  completedAt: string | null
-  note: string | null
-}
-
-export type ProductionJobMockPart = {
-  code: string
-  name: string
-  steps: ProductionJobMockInhouseStep[]
-}
-
-export type ProductionJobMockOutsourceRow = {
-  id: string
-  partCode: string
-  partName: string
-  operationName: string
-  plannedQty: number
-  sentQty: number
-  receivedQty: number
-  note: string | null
-}
-
-export type ProductionJobMockMaterial = {
+/** Mirrors the backend's ProductionJobDetailResDto (`GET /production-jobs/:jobId`) — a
+ *  deliberately thin, unjoined row of the `production_jobs` table (see the service's own
+ *  comment: "Không join — thông tin PO/khách hàng/sản phẩm FE lấy từ dòng tương ứng ở
+ *  getProductionJobs"). `lsxCode`/`productName`/`clientName`/`poNumber`/`dueDate`/`producedQty`
+ *  from the old UI-only mock have no source here — the detail screen renders those fields as
+ *  "Chưa có API" via MissingFieldValue instead of trying to reconstruct them from other calls. */
+export type ProductionJobDetail = {
   id: string
   code: string
-  name: string
-  unitName: string
-  normQty: number
-  requiredQty: number
-  issuedQty: number
-}
-
-export type ProductionJobMockDocument = {
-  id: string
-  name: string
-  sizeLabel: string
-  uploadedAt: string
-}
-
-export type ProductionJobMockNote = {
-  id: string
-  authorName: string
-  createdAt: string
-  content: string
-}
-
-export type ProductionJobMockLog = {
-  id: string
-  performedAt: string
-  actorName: string
-  action: string
-  content: string
-}
-
-// The Job detail screen's full hardcoded payload — one Job, matching the approved mockup.
-export type ProductionJobMockDetail = {
-  code: string
-  lsxCode: string
-  productName: string
-  clientName: string
+  productionOrderId: string
+  productId: string
   quantity: number
-  producedQty: number
-  poNumber: string
-  createdAt: string
-  dueDate: string
   status: ProductionJobStatus
-  inhouseParts: ProductionJobMockPart[]
-  outsourceRows: ProductionJobMockOutsourceRow[]
-  materials: ProductionJobMockMaterial[]
-  documents: ProductionJobMockDocument[]
-  notes: ProductionJobMockNote[]
-  logs: ProductionJobMockLog[]
+  startedBy: string | null
+  startedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+/** Mirrors the backend's ProductionJobStepResDto (`GET /production-jobs/:jobId/steps`) — the
+ *  Job's routing snapshot, one row per operation in sequence. No plannedQty/doneQty/sentQty/
+ *  receivedQty and no part grouping — `production_job_steps` only stores the operation + note. */
+export type ProductionJobStep = {
+  id: string
+  sortOrder: number
+  note: string | null
+  operation: { id: string; code: string; name: string; type: OperationType }
+  createdAt: string
+}
+
+/** Mirrors the backend's ProductionJobMaterialResDto (`GET /production-jobs/:jobId/materials`,
+ *  paginated). `issuedQty` has no equivalent here (no stock-issue linkage on this endpoint) — the
+ *  BOM tab renders that column as "Chưa có API" via MissingFieldValue. */
+export type ProductionJobMaterial = {
+  materialId: string
+  code: string
+  name: string
+  unit: { id: string; code: string; name: string }
+  image: FileResource | null
+  unitQty: number | null
+  requiredQty: number
 }

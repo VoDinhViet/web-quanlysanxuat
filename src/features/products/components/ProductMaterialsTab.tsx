@@ -1,7 +1,8 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { ProductMaterialsTable } from "@/features/products/components/ProductMaterialsTable"
 import { ProductMaterialsTableFilter } from "@/features/products/components/ProductMaterialsTableFilter"
 import { bomMaterialsQueryOptions } from "@/features/products/api/products.options"
@@ -40,10 +41,9 @@ export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
       />
 
       {materialsQuery.isPending ? (
-        <TableQueryFallback status="pending" />
+        <TableQueryLoading rows={limit} />
       ) : materialsQuery.isError ? (
-        <TableQueryFallback
-          status="error"
+        <TableQueryError
           error={materialsQuery.error.message}
           onRetry={() => void materialsQuery.refetch()}
         />
