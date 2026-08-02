@@ -1,4 +1,3 @@
-import { Icon } from "@iconify/react"
 import { ArrowDown, ArrowUp } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -17,7 +16,7 @@ export function ManageStatCards() {
                 stat.iconClassName
               )}
             >
-              <Icon icon={stat.icon} className="size-5" />
+              <stat.icon className="size-5" />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-bold text-foreground uppercase">

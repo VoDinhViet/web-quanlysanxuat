@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router"
-import { Icon } from "@iconify/react"
-import fileDownloadBold from "@iconify-icons/solar/file-download-bold"
-import menuDotsBold from "@iconify-icons/solar/menu-dots-bold"
-import penNewSquareBold from "@iconify-icons/solar/pen-new-square-bold"
-import printerBold from "@iconify-icons/solar/printer-bold"
-import type { IconifyIcon } from "@iconify/types"
+import {
+  FileDownload,
+  MenuDots,
+  PenNewSquare,
+  Printer,
+} from "@solar-icons/react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -32,8 +34,8 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
       <OrderApprovalActions order={order} />
-      <DisabledAction icon={printerBold} label="In" />
-      <DisabledAction icon={fileDownloadBold} label="Xuất Excel" />
+      <DisabledAction icon={Printer} label="In" />
+      <DisabledAction icon={FileDownload} label="Xuất Excel" />
       {isEditable ? (
         <PermissionGate permission="orders:update">
           <Button type="button" asChild>
@@ -41,14 +43,14 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
               to="/manage/orders/$orderId/update"
               params={{ orderId: order.id }}
             >
-              <Icon icon={penNewSquareBold} className="size-4" />
+              <PenNewSquare className="size-4" />
               Chỉnh sửa
             </Link>
           </Button>
         </PermissionGate>
       ) : (
         <DisabledAction
-          icon={penNewSquareBold}
+          icon={PenNewSquare}
           label="Chỉnh sửa"
           hint="Đơn hàng đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa"
         />
@@ -65,7 +67,7 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
               className="pointer-events-none text-muted-foreground"
               aria-label="Thêm tùy chọn"
             >
-              <Icon icon={menuDotsBold} className="size-4" />
+              <MenuDots className="size-4" />
             </Button>
           </span>
         </TooltipTrigger>
@@ -76,13 +78,13 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
 }
 
 type DisabledActionProps = {
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   label: string
   hint?: string
 }
 
 function DisabledAction({
-  icon,
+  icon: IconComponent,
   label,
   hint = "Tính năng sắp có",
 }: DisabledActionProps) {
@@ -96,7 +98,7 @@ function DisabledAction({
             disabled
             className="pointer-events-none text-muted-foreground"
           >
-            <Icon icon={icon} className="size-4" />
+            <IconComponent className="size-4" />
             {label}
           </Button>
         </span>

@@ -1,10 +1,8 @@
 import { Fragment } from "react"
-import { Icon } from "@iconify/react"
-import boxBold from "@iconify-icons/solar/box-bold"
-import clipboardListBold from "@iconify-icons/solar/clipboard-list-bold"
-import layersBold from "@iconify-icons/solar/layers-bold"
+import { Box, ClipboardList, Layers } from "@solar-icons/react"
 import { Lock } from "lucide-react"
-import type { IconifyIcon } from "@iconify/types"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -18,16 +16,16 @@ import { cn } from "@/lib/utils"
 type ProductDetailTabItem = {
   value: ProductDetailTab
   label: string
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
 }
 
 const PRODUCT_DETAIL_TAB_ITEMS: ProductDetailTabItem[] = [
-  { value: "info", label: "Thông tin sản phẩm", icon: boxBold },
-  { value: "structure", label: "Cấu trúc & Công đoạn", icon: layersBold },
+  { value: "info", label: "Thông tin sản phẩm", icon: Box },
+  { value: "structure", label: "Cấu trúc & Công đoạn", icon: Layers },
   {
     value: "materials",
     label: "Thành phần vật tư",
-    icon: clipboardListBold,
+    icon: ClipboardList,
   },
 ]
 
@@ -92,7 +90,7 @@ export function ProductDetailTabs({
               {isLocked ? (
                 <Lock className="size-3.5" />
               ) : (
-                <Icon icon={item.icon} className="size-3.5" />
+                <item.icon className="size-3.5" />
               )}
               {item.label}
             </TabsTrigger>

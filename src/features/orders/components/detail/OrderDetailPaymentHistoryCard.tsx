@@ -1,4 +1,4 @@
-import card2Bold from "@iconify-icons/solar/card-2-bold"
+import { Card2 } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
 import {
@@ -24,7 +24,7 @@ export function OrderDetailPaymentHistoryCard({
   const rows = buildMockPaymentHistory(order)
 
   return (
-    <OrderDetailSectionCard icon={card2Bold} title="Lịch sử thanh toán" isMock>
+    <OrderDetailSectionCard icon={Card2} title="Lịch sử thanh toán" isMock>
       {rows.length === 0 ? (
         <p className="py-6 text-center text-sm text-muted-foreground">
           Chưa có giao dịch thanh toán nào.

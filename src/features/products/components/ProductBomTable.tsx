@@ -1,13 +1,14 @@
 import { Fragment, useState } from "react"
 import { Image } from "@unpic/react"
-import { Icon } from "@iconify/react"
-import addSquareBold from "@iconify-icons/solar/add-square-bold"
-import altArrowDownBold from "@iconify-icons/solar/alt-arrow-down-bold"
-import altArrowUpBold from "@iconify-icons/solar/alt-arrow-up-bold"
-import exportBold from "@iconify-icons/solar/export-bold"
-import homeBold from "@iconify-icons/solar/home-bold"
-import routeBold from "@iconify-icons/solar/route-bold"
-import trashBinTrashBold from "@iconify-icons/solar/trash-bin-trash-bold"
+import {
+  AddSquare,
+  AltArrowDown,
+  AltArrowUp,
+  Export,
+  Home,
+  Route,
+  TrashBinTrash,
+} from "@solar-icons/react"
 import { cva } from "class-variance-authority"
 import {
   ChevronRight,
@@ -19,7 +20,8 @@ import {
   Plus,
   Trash2,
 } from "lucide-react"
-import type { IconifyIcon } from "@iconify/types"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -31,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
@@ -151,7 +154,7 @@ function LevelBadge({
 
 type OperationTypeContent = {
   label: string
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
 }
 
 // Tint recipe mirrors SuppliersTableColumns' status badges: shadcn Badge
@@ -169,15 +172,15 @@ const operationTypeBadgeVariants = cva("", {
 // Label and icon aren't badge styling, so they stay a plain map rather than
 // being folded into the cva above.
 const OPERATION_TYPE_CONTENT: Record<OperationType, OperationTypeContent> = {
-  INHOUSE: { label: "Inhouse", icon: homeBold },
-  OUTSOURCE: { label: "Outsource", icon: exportBold },
+  INHOUSE: { label: "Inhouse", icon: Home },
+  OUTSOURCE: { label: "Outsource", icon: Export },
 }
 
 function OperationTypeBadge({ type }: { type: OperationType }) {
-  const { label, icon } = OPERATION_TYPE_CONTENT[type]
+  const { label, icon: IconComponent } = OPERATION_TYPE_CONTENT[type]
   return (
     <Badge variant="outline" className={operationTypeBadgeVariants({ type })}>
-      <Icon icon={icon} className="size-3" />
+      <IconComponent className="size-3" />
       {label}
     </Badge>
   )
@@ -196,7 +199,7 @@ function OperationSummaryText({
   isPending: boolean
 }) {
   if (isPending) {
-    return <span className="text-xs text-muted-foreground/50">…</span>
+    return <Skeleton className="h-4 w-16" />
   }
 
   return (
@@ -226,7 +229,7 @@ function OperationsToggleButton({
         isExpanded && "bg-primary/10 text-primary hover:bg-primary/15"
       )}
     >
-      <Icon icon={routeBold} className="size-3.5" />
+      <Route className="size-3.5" />
     </IconButton>
   )
 }
@@ -337,7 +340,7 @@ function ProductOperationsPanel({
                         onClick={() => moveOperation(idx, "up")}
                         className="border border-border/60 hover:bg-muted"
                       >
-                        <Icon icon={altArrowUpBold} className="size-3.5" />
+                        <AltArrowUp className="size-3.5" />
                       </IconButton>
                       <IconButton
                         label="Di chuyển xuống"
@@ -345,14 +348,14 @@ function ProductOperationsPanel({
                         onClick={() => moveOperation(idx, "down")}
                         className="border border-border/60 hover:bg-muted"
                       >
-                        <Icon icon={altArrowDownBold} className="size-3.5" />
+                        <AltArrowDown className="size-3.5" />
                       </IconButton>
                       <IconButton
                         label="Xoá công đoạn"
                         onClick={() => deleteOperation(step.id)}
                         className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
-                        <Icon icon={trashBinTrashBold} className="size-3.5" />
+                        <TrashBinTrash className="size-3.5" />
                       </IconButton>
                     </div>
                   </TableCell>
@@ -406,7 +409,7 @@ function ProductOperationsPanel({
                   disabled={!selectedOperationId}
                   onClick={handleAdd}
                 >
-                  <Icon icon={addSquareBold} className="size-3.5" />
+                  <AddSquare className="size-3.5" />
                   Thêm
                 </Button>
               </TableCell>

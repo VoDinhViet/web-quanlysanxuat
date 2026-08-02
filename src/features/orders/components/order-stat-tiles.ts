@@ -1,10 +1,13 @@
-import billListBold from "@iconify-icons/solar/bill-list-bold"
-import checkCircleBold from "@iconify-icons/solar/check-circle-bold"
-import dangerTriangleBold from "@iconify-icons/solar/danger-triangle-bold"
-import deliveryBold from "@iconify-icons/solar/delivery-bold"
-import refreshBold from "@iconify-icons/solar/refresh-bold"
-import walletMoneyBold from "@iconify-icons/solar/wallet-money-bold"
-import type { IconifyIcon } from "@iconify/types"
+import {
+  BillList,
+  CheckCircle,
+  DangerTriangle,
+  Delivery,
+  Refresh,
+  WalletMoney,
+} from "@solar-icons/react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 import { vndFormatter } from "@/lib/currency"
 import type { OrderStats } from "@/lib/types/order.type"
@@ -69,14 +72,14 @@ export type OrderStatTile = {
   value: string
   unit: string
   trend: OrderStatTrend | null
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   iconClassName: string
   valueSizeClassName: string
 }
 
 type OrderStatTileDef = {
   label: string
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   iconClassName: string
   valueSizeClassName: string
   unit: string
@@ -101,7 +104,7 @@ function resolveTone(
 const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   {
     label: "Tổng đơn hàng",
-    icon: billListBold,
+    icon: BillList,
     iconClassName: "bg-info/15 text-info",
     valueSizeClassName: "text-2xl",
     unit: "đơn",
@@ -116,7 +119,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   },
   {
     label: "Tổng giá trị",
-    icon: walletMoneyBold,
+    icon: WalletMoney,
     iconClassName: "bg-success/15 text-success",
     valueSizeClassName: "text-lg",
     unit: "VND",
@@ -131,7 +134,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   },
   {
     label: "Đã giao",
-    icon: deliveryBold,
+    icon: Delivery,
     iconClassName:
       "bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-400",
     valueSizeClassName: "text-lg",
@@ -146,7 +149,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   },
   {
     label: "Đang thực hiện",
-    icon: refreshBold,
+    icon: Refresh,
     iconClassName: "bg-warning/15 text-warning",
     valueSizeClassName: "text-2xl",
     unit: "đơn",
@@ -157,7 +160,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   },
   {
     label: "Trễ hạn",
-    icon: dangerTriangleBold,
+    icon: DangerTriangle,
     iconClassName: "bg-destructive/15 text-destructive",
     valueSizeClassName: "text-2xl",
     unit: "đơn",
@@ -170,7 +173,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
   },
   {
     label: "Hoàn thành",
-    icon: checkCircleBold,
+    icon: CheckCircle,
     iconClassName: "bg-success/15 text-success",
     valueSizeClassName: "text-2xl",
     unit: "đơn",

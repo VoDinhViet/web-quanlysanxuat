@@ -132,6 +132,7 @@ export function ProductionOrderDetailPage() {
           pagination={logsQuery.data?.pagination}
           page={logsPage}
           onPageChange={setLogsPage}
+          isPending={logsQuery.isPending}
           isFetching={logsQuery.isFetching}
         />
       </div>

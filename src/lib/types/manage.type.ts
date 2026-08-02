@@ -1,4 +1,5 @@
-import type { IconifyIcon } from "@iconify/types"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 export enum JobStatus {
   IN_PROGRESS = "IN_PROGRESS",
@@ -60,7 +61,7 @@ export type StatCard = {
   label: string
   value: number
   unit: string
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   iconClassName: string
   trend: {
     direction?: TrendDirection
@@ -71,7 +72,7 @@ export type StatCard = {
 export type AlertItem = {
   label: string
   count: number
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   /** Tinted background + border for the chip card. */
   cardClassName: string
   /** Text color shared by the icon, count, and label. */
@@ -144,7 +145,7 @@ export type NcrByTypeSlice = {
 
 export type QuickAction = {
   label: string
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   /** Text color shared by the tile's icon and label. */
   accentClassName: string
   /** Tinted background + border for the tile. */

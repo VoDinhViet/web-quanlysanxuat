@@ -7,7 +7,8 @@ import {
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
 import {
@@ -72,10 +73,9 @@ export function ProductsPage() {
           />
 
           {productsQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : productsQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={productsQuery.error.message}
               onRetry={() => void productsQuery.refetch()}
             />

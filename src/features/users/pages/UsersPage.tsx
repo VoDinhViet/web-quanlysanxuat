@@ -3,7 +3,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
 import { usersQueryOptions } from "@/features/users/api/users.options"
@@ -55,10 +56,9 @@ export function UsersPage() {
           />
 
           {usersQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : usersQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={usersQuery.error.message}
               onRetry={() => void usersQuery.refetch()}
             />

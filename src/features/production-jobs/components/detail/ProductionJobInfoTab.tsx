@@ -1,16 +1,19 @@
+import { Link } from "@tanstack/react-router"
+import { useQuery } from "@tanstack/react-query"
 import { DateTime } from "luxon"
 import { Info, Logs, Paperclip, StickyNote } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
+import { productionOrderQueryOptions } from "@/features/production-orders/api"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDocumentsSection } from "@/features/production-jobs/components/detail/ProductionJobDocumentsSection"
 import { ProductionJobLogSection } from "@/features/production-jobs/components/detail/ProductionJobLogSection"
 import { ProductionJobNotesSection } from "@/features/production-jobs/components/detail/ProductionJobNotesSection"
-import type { ProductionJobMockDetail } from "@/lib/types/production-job.type"
+import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type ProductionJobInfoTabProps = {
-  detail: ProductionJobMockDetail
+  detail: ProductionJobDetail
 }
 
 // "Thông tin chung" tab — cột chính (tóm tắt + Lịch sử) và cột phụ (Tài liệu/Ghi chú) chia 2
@@ -18,8 +21,15 @@ type ProductionJobInfoTabProps = {
 // cho ProductDetailSidebar — không bịa layout mới. Trong mỗi cột, các khối tách nhau bằng đường
 // kẻ (`InfoSection`'s `not-first:border-t`) chứ không phải card lồng card. `InfoSection` chỉ lo
 // tiêu đề + đường kẻ; padding nội dung do từng khối tự quyết (xem từng call site bên dưới).
+// Không có dòng "Đã nhập"/"Còn lại" — `producedQty`/`rejectedQty` đã bị xoá khỏi
+// `production_jobs` phía backend (chưa có route báo sản lượng), không phải chỉ chưa expose.
 export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
-  const remainingQty = detail.quantity - detail.producedQty
+  // Mã LSX không có trên GET /production-jobs/:jobId (chỉ có productionOrderId dạng UUID) — đọc
+  // riêng qua production-orders, client-side, không chặn paint của tab (giống cách BOM/Operations
+  // tab tự đọc dữ liệu riêng).
+  const productionOrderQuery = useQuery(
+    productionOrderQueryOptions(detail.productionOrderId)
+  )
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px]">
@@ -28,15 +38,54 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
           <dl className="grid grid-cols-1 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
             <div className="divide-y divide-border">
               <SummaryRow label="Mã Job" value={detail.code} mono />
-              <SummaryRow label="LSX" value={detail.lsxCode} mono />
-              <SummaryRow label="Khách hàng" value={detail.clientName} />
-              <SummaryRow label="Sản phẩm" value={detail.productName} />
-              <SummaryRow label="PO / HĐ" value={detail.poNumber} mono />
+              <SummaryRow
+                label="LSX"
+                value={
+                  <Link
+                    to="/manage/production-orders/$productionOrderId"
+                    params={{ productionOrderId: detail.productionOrderId }}
+                    className="text-primary hover:underline"
+                  >
+                    {productionOrderQuery.isPending
+                      ? "…"
+                      : (productionOrderQuery.data?.code ?? "—")}
+                  </Link>
+                }
+                mono
+              />
+              <SummaryRow
+                label="Khách hàng"
+                value={detail.client?.name ?? "—"}
+              />
+              <SummaryRow
+                label="Sản phẩm"
+                value={
+                  <Link
+                    to="/manage/products/$productId"
+                    params={{ productId: detail.productId }}
+                    search={{ tab: "info" }}
+                    className="text-primary hover:underline"
+                  >
+                    {detail.product.code} — {detail.product.name}
+                  </Link>
+                }
+              />
+              <SummaryRow
+                label="PO / HĐ"
+                value={
+                  <Link
+                    to="/manage/orders/$orderId"
+                    params={{ orderId: detail.order.id }}
+                    className="text-primary hover:underline"
+                  >
+                    {detail.order.code}
+                  </Link>
+                }
+                mono
+              />
             </div>
             <div className="divide-y divide-border">
               <SummaryRow label="SL sản xuất" value={`${detail.quantity} Bộ`} />
-              <SummaryRow label="Đã nhập" value={`${detail.producedQty} Bộ`} />
-              <SummaryRow label="Còn lại" value={`${remainingQty} Bộ`} />
               <SummaryRow
                 label="Ngày tạo"
                 value={DateTime.fromISO(detail.createdAt).toFormat(
@@ -45,7 +94,13 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
               />
               <SummaryRow
                 label="Ngày giao hàng"
-                value={DateTime.fromISO(detail.dueDate).toFormat("dd/MM/yyyy")}
+                value={
+                  detail.order.dueDate === null
+                    ? "—"
+                    : DateTime.fromISO(detail.order.dueDate).toFormat(
+                        "dd/MM/yyyy"
+                      )
+                }
               />
               <SummaryRow
                 label="Trạng thái"
@@ -56,20 +111,22 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
         </InfoSection>
 
         <InfoSection title="Lịch sử thay đổi" icon={Logs}>
-          <ProductionJobLogSection logs={detail.logs} />
+          <div className="p-4 sm:p-5">
+            <ProductionJobLogSection />
+          </div>
         </InfoSection>
       </div>
 
       <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
         <InfoSection title="Tài liệu đính kèm" icon={Paperclip}>
           <div className="p-4 sm:p-5">
-            <ProductionJobDocumentsSection documents={detail.documents} />
+            <ProductionJobDocumentsSection />
           </div>
         </InfoSection>
 
         <InfoSection title="Ghi chú" icon={StickyNote}>
           <div className="p-4 sm:p-5">
-            <ProductionJobNotesSection notes={detail.notes} />
+            <ProductionJobNotesSection />
           </div>
         </InfoSection>
       </aside>

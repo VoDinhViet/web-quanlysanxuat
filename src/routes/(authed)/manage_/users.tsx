@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { UsersPage } from "@/features/users/pages/UsersPage"
 import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
@@ -23,4 +24,5 @@ export const Route = createFileRoute("/(authed)/manage_/users")({
       usersQueryOptions(usersSearchSchema.parse(location.search))
     ),
   component: UsersPage,
+  pendingComponent: PageLoading,
 })

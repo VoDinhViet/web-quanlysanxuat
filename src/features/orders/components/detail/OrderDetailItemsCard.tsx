@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import boxBold from "@iconify-icons/solar/box-bold"
+import { Box } from "@solar-icons/react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -43,7 +43,7 @@ export function OrderDetailItemsCard({ order }: OrderDetailItemsCardProps) {
 
   return (
     <OrderDetailSectionCard
-      icon={boxBold}
+      icon={Box}
       title={`Danh sách sản phẩm (${order.items.length})`}
     >
       {order.items.length === 0 ? (

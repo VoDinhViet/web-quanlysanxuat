@@ -1,23 +1,20 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
-import { Icon } from "@iconify/react"
-import altArrowLeftBold from "@iconify-icons/solar/alt-arrow-left-bold"
-import disketteBold from "@iconify-icons/solar/diskette-bold"
+import { AltArrowLeft, Diskette } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/detail/ProductionJobDetailTabs"
-import type { ProductionJobMockDetail } from "@/lib/types/production-job.type"
+import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type ProductionJobDetailHeaderProps = {
-  detail: ProductionJobMockDetail
+  detail: ProductionJobDetail
 }
 
 // Identity, the header facts and the tab strip read as one unit, so they share a single block
-// like ProductDetailHeader.tsx. The "Lưu" button stays disabled — this page is UI-only (task
-// 8.2), no mutation wired up yet.
+// like ProductDetailHeader.tsx. The "Lưu" button stays disabled — no update mutation wired up
+// yet.
 export function ProductionJobDetailHeader({
   detail,
 }: ProductionJobDetailHeaderProps) {
@@ -36,7 +33,7 @@ export function ProductionJobDetailHeader({
                 to="/manage/production-jobs"
                 search={{ page: 1, limit: 10 }}
               >
-                <Icon icon={altArrowLeftBold} className="size-4" />
+                <AltArrowLeft className="size-4" />
                 <span className="hidden sm:inline">Quay lại</span>
               </Link>
             </Button>
@@ -45,21 +42,50 @@ export function ProductionJobDetailHeader({
               {detail.code}
             </span>
             <ProductionJobStatusBadge status={detail.status} />
-            <MockDataBadge />
           </div>
 
           <dl className="grid grid-cols-1 gap-x-8 gap-y-1.5 sm:grid-cols-3">
-            <InfoField label="Sản phẩm" value={detail.productName} />
+            <InfoField
+              label="Sản phẩm"
+              value={
+                <Link
+                  to="/manage/products/$productId"
+                  params={{ productId: detail.productId }}
+                  search={{ tab: "info" }}
+                  className="text-primary hover:underline"
+                >
+                  {detail.product.code} — {detail.product.name}
+                </Link>
+              }
+            />
             <InfoField label="SL sản xuất" value={`${detail.quantity} Bộ`} />
-            <InfoField label="PO / HĐ" value={detail.poNumber} mono />
-            <InfoField label="Khách hàng" value={detail.clientName} />
+            <InfoField
+              label="PO / HĐ"
+              value={
+                <Link
+                  to="/manage/orders/$orderId"
+                  params={{ orderId: detail.order.id }}
+                  className="text-primary hover:underline"
+                >
+                  {detail.order.code}
+                </Link>
+              }
+              mono
+            />
+            <InfoField label="Khách hàng" value={detail.client?.name ?? "—"} />
             <InfoField
               label="Ngày tạo"
               value={DateTime.fromISO(detail.createdAt).toFormat("dd/MM/yyyy")}
             />
             <InfoField
               label="Ngày giao hàng"
-              value={DateTime.fromISO(detail.dueDate).toFormat("dd/MM/yyyy")}
+              value={
+                detail.order.dueDate === null
+                  ? "—"
+                  : DateTime.fromISO(detail.order.dueDate).toFormat(
+                      "dd/MM/yyyy"
+                    )
+              }
             />
           </dl>
         </div>
@@ -70,7 +96,7 @@ export function ProductionJobDetailHeader({
           className="gap-1.5"
           aria-label="Lưu — chưa được kết nối API"
         >
-          <Icon icon={disketteBold} className="size-4" />
+          <Diskette className="size-4" />
           Lưu
         </Button>
       </div>

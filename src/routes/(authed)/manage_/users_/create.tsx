@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { CreateUserPage } from "@/features/users/pages/CreateUserPage"
 import {
@@ -18,4 +19,5 @@ export const Route = createFileRoute("/(authed)/manage_/users_/create")({
       context.queryClient.ensureQueryData(rolesQueryOptions()),
     ]),
   component: CreateUserPage,
+  pendingComponent: PageLoading,
 })

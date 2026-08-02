@@ -7,7 +7,8 @@ import {
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { ClientsTable } from "@/features/clients/components/ClientsTable"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
 import {
@@ -67,10 +68,9 @@ export function ClientsPage() {
           />
 
           {clientsQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : clientsQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={clientsQuery.error.message}
               onRetry={() => void clientsQuery.refetch()}
             />

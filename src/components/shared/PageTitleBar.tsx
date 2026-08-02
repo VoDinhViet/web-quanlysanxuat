@@ -1,6 +1,5 @@
 import { Fragment } from "react"
-import { Icon } from "@iconify/react"
-import userBold from "@iconify-icons/solar/user-bold"
+import { User as UserSolar } from "@solar-icons/react"
 import { Link, useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -121,7 +120,7 @@ function UserMenu({
           <Avatar className="size-10">
             {avatarImage}
             <AvatarFallback>
-              <Icon icon={userBold} className="size-3/5" />
+              <UserSolar className="size-3/5" />
             </AvatarFallback>
           </Avatar>
 
@@ -144,7 +143,7 @@ function UserMenu({
           <Avatar className="size-10">
             {avatarImage}
             <AvatarFallback>
-              <Icon icon={userBold} className="size-3/5" />
+              <UserSolar className="size-3/5" />
             </AvatarFallback>
           </Avatar>
 

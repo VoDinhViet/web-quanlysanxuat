@@ -5,14 +5,18 @@ import {
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
+import { SolarProvider } from "@solar-icons/react"
 import type { QueryClient } from "@tanstack/react-query"
 
 import { ThemeProvider } from "@/components/shared/ThemeProvider"
+// Side-effect import, must run before any DateTime.fromISO() call on either
+// server or client — see src/lib/luxon-config.ts for why.
+import "@/lib/luxon-config"
 // Side-effect import (not `?url`) so Start attaches the CSS to the route
 // manifest and inlines it into the SSR <head> — no separate blocking
 // stylesheet request, which is what caused the flash of unstyled content.
 import appCss from "../styles.css?url"
-import "../styles.css"
+// import "../styles.css"
 
 type RouterContext = {
   queryClient: QueryClient
@@ -50,7 +54,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SolarProvider value={{ weight: "Bold" }}>{children}</SolarProvider>
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",

@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
-import { Icon } from "@iconify/react"
-import altArrowLeftBold from "@iconify-icons/solar/alt-arrow-left-bold"
+import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Badge } from "@/components/ui/badge"
@@ -81,7 +80,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
               className="-ml-1.5 flex size-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground print:hidden"
               aria-label="Quay lại danh sách đơn hàng"
             >
-              <Icon icon={altArrowLeftBold} className="size-4" />
+              <AltArrowLeft className="size-4" />
             </Link>
 
             <div className="flex min-w-0 flex-col gap-1">

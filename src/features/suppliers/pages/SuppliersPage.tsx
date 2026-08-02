@@ -7,13 +7,13 @@ import {
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
-import { TableQueryFallback } from "@/components/shared/TableQueryFallback"
+import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/TableQueryError"
 import { SupplierStatCards } from "@/features/suppliers/components/SupplierStatCards"
 import { SuppliersTable } from "@/features/suppliers/components/SuppliersTable"
 import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersTableFilter"
 import {
   supplierGroupOptionsQueryOptions,
-  supplierStatsQueryOptions,
   suppliersQueryOptions,
 } from "@/features/suppliers/api/suppliers.options"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
@@ -22,9 +22,10 @@ import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/supplie
 export function SuppliersPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries; the reference lists resolve synchronously via
+  // prefetches these queries; the reference lists resolve synchronously via
   // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
-  // pagination changes only update the table, not the whole route.
+  // pagination changes only update the table, not the whole route. Supplier
+  // stats are non-critical — SupplierStatCards reads and awaits them itself.
   const search = useSearch({ from: "/(authed)/manage_/suppliers" })
   const navigate = useNavigate({ from: "/manage/suppliers" })
 
@@ -32,7 +33,6 @@ export function SuppliersPage() {
     ...suppliersQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-  const { data: stats } = useSuspenseQuery(supplierStatsQueryOptions())
   const { data: supplierGroupOptions } = useSuspenseQuery(
     supplierGroupOptionsQueryOptions()
   )
@@ -66,7 +66,7 @@ export function SuppliersPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <SupplierStatCards stats={stats} />
+        <SupplierStatCards />
 
         <Surface contentClassName="min-h-[calc(100svh-19rem)]">
           <SuppliersTableFilter
@@ -77,10 +77,9 @@ export function SuppliersPage() {
           />
 
           {suppliersQuery.isPending ? (
-            <TableQueryFallback status="pending" />
+            <TableQueryLoading rows={search.limit} />
           ) : suppliersQuery.isError ? (
-            <TableQueryFallback
-              status="error"
+            <TableQueryError
               error={suppliersQuery.error.message}
               onRetry={() => void suppliersQuery.refetch()}
             />
