@@ -1,25 +1,26 @@
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
-import { Icon } from "@iconify/react"
-import boxBold from "@iconify-icons/solar/box-bold"
-import buildings2Bold from "@iconify-icons/solar/buildings-2-bold"
-import calendarAddBold from "@iconify-icons/solar/calendar-add-bold"
-import clockCircleBold from "@iconify-icons/solar/clock-circle-bold"
-import copyBold from "@iconify-icons/solar/copy-bold"
-import documentsBold from "@iconify-icons/solar/documents-bold"
-import fileTextBold from "@iconify-icons/solar/file-text-bold"
-import galleryBold from "@iconify-icons/solar/gallery-bold"
-import galleryRemoveBold from "@iconify-icons/solar/gallery-remove-bold"
-import magniferZoomInBold from "@iconify-icons/solar/magnifer-zoom-in-bold"
-import infoCircleBold from "@iconify-icons/solar/info-circle-bold"
-import notesBold from "@iconify-icons/solar/notes-bold"
-import paperclipBold from "@iconify-icons/solar/paperclip-bold"
-import recordCircleBold from "@iconify-icons/solar/record-circle-bold"
-import rulerBold from "@iconify-icons/solar/ruler-bold"
-import userBold from "@iconify-icons/solar/user-bold"
-import type { IconifyIcon } from "@iconify/types"
-import type { ReactNode } from "react"
+import {
+  Box,
+  Buildings2,
+  CalendarAdd,
+  ClockCircle,
+  Copy,
+  Documents,
+  FileText,
+  Gallery,
+  GalleryRemove,
+  InfoCircle,
+  MagniferZoomIn,
+  Notes,
+  Paperclip,
+  RecordCircle,
+  Ruler,
+  User,
+} from "@solar-icons/react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType, ReactNode } from "react"
 
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -36,26 +37,26 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
   return (
     <>
       {/* Code and name aren't repeated — the header already shows them large. */}
-      <SidebarSection title="Thông tin sản phẩm" icon={infoCircleBold}>
+      <SidebarSection title="Thông tin sản phẩm" icon={InfoCircle}>
         <dl className="divide-y divide-border">
           <SummaryRow
-            icon={buildings2Bold}
+            icon={Buildings2}
             label="Khách hàng"
             value={product.client?.name ?? "—"}
           />
           <SummaryRow
-            icon={boxBold}
+            icon={Box}
             label="Nhóm sản phẩm"
             value={product.group?.name ?? "—"}
           />
           <SummaryRow
-            icon={rulerBold}
+            icon={Ruler}
             label="Đơn vị tính"
             value={product.unit.name}
           />
           {product.source ? (
             <SummaryRow
-              icon={copyBold}
+              icon={Copy}
               label="Sao chép từ"
               value={
                 <Link
@@ -70,22 +71,22 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
             />
           ) : null}
           <SummaryRow
-            icon={recordCircleBold}
+            icon={RecordCircle}
             label="Trạng thái"
             value={<ProductStatusBadge status={product.status} />}
           />
           <SummaryRow
-            icon={userBold}
+            icon={User}
             label="Người tạo"
             value={product.creator?.username ?? "—"}
           />
           <SummaryRow
-            icon={calendarAddBold}
+            icon={CalendarAdd}
             label="Ngày tạo"
             value={DateTime.fromISO(product.createdAt).toFormat("dd/MM/yyyy")}
           />
           <SummaryRow
-            icon={clockCircleBold}
+            icon={ClockCircle}
             label="Ngày cập nhật"
             value={DateTime.fromISO(product.updatedAt).toFormat("dd/MM/yyyy")}
           />
@@ -95,7 +96,7 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
             it gets its own full-width block. */}
         <div className="border-t border-border px-4 py-3">
           <p className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
-            <Icon icon={notesBold} className="size-3.5 shrink-0" />
+            <Notes className="size-3.5 shrink-0" />
             Ghi chú
           </p>
           <p className="mt-1.5 text-xs font-medium break-words text-foreground">
@@ -104,13 +105,13 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
         </div>
       </SidebarSection>
 
-      <SidebarSection title="Hình ảnh sản phẩm" icon={galleryBold} padded>
+      <SidebarSection title="Hình ảnh sản phẩm" icon={Gallery} padded>
         {/* One image today — `Product.image` is a single file. The multi-image
             gallery in the mockup arrives with its backend in a later phase. */}
         <ProductImagePreview image={product.image} name={product.name} />
       </SidebarSection>
 
-      <SidebarSection title="Tài liệu đính kèm" icon={paperclipBold} padded>
+      <SidebarSection title="Tài liệu đính kèm" icon={Paperclip} padded>
         {product.attachments.length > 0 ? (
           <ul className="space-y-1.5">
             {product.attachments.map((attachment) => (
@@ -123,10 +124,7 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
                   rel="noreferrer"
                   className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary"
                 >
-                  <Icon
-                    icon={fileTextBold}
-                    className="size-4 shrink-0 text-muted-foreground"
-                  />
+                  <FileText className="size-4 shrink-0 text-muted-foreground" />
                   <span className="truncate">
                     {attachment.file.originalName}
                   </span>
@@ -136,10 +134,7 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
           </ul>
         ) : (
           <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
-            <Icon
-              icon={documentsBold}
-              className="size-7 text-muted-foreground/40"
-            />
+            <Documents className="size-7 text-muted-foreground/40" />
             <p className="text-[11px] font-medium text-muted-foreground">
               Chưa có tài liệu đính kèm
             </p>
@@ -152,7 +147,7 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
 
 type SidebarSectionProps = {
   title: string
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   children: ReactNode
   // The summary list draws its own row padding; other sections need the box.
   padded?: boolean
@@ -160,7 +155,7 @@ type SidebarSectionProps = {
 
 function SidebarSection({
   title,
-  icon,
+  icon: IconComponent,
   children,
   padded,
 }: SidebarSectionProps) {
@@ -169,7 +164,7 @@ function SidebarSection({
     // clean so the divider only ever falls between two sections.
     <div className="not-first:border-t not-first:border-border">
       <h2 className="flex items-center gap-2 border-b border-border px-4 py-3.5 text-xs font-semibold tracking-wide text-foreground uppercase">
-        <Icon icon={icon} className="size-4 text-muted-foreground" />
+        <IconComponent className="size-4 text-muted-foreground" />
         {title}
       </h2>
       <div className={padded ? "p-4" : "py-1"}>{children}</div>
@@ -178,17 +173,22 @@ function SidebarSection({
 }
 
 type SummaryRowProps = {
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   label: string
   value: ReactNode
   mono?: boolean
 }
 
-function SummaryRow({ icon, label, value, mono }: SummaryRowProps) {
+function SummaryRow({
+  icon: IconComponent,
+  label,
+  value,
+  mono,
+}: SummaryRowProps) {
   return (
     <div className="grid grid-cols-[minmax(0,8rem)_minmax(0,1fr)] items-center gap-3 px-4 py-2.5">
       <dt className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
-        <Icon icon={icon} className="size-3.5 shrink-0" />
+        <IconComponent className="size-3.5 shrink-0" />
         {label}
       </dt>
       <dd
@@ -219,10 +219,7 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
   if (!image || isBroken) {
     return (
       <div className="flex aspect-4/3 flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
-        <Icon
-          icon={galleryRemoveBold}
-          className="size-7 text-muted-foreground/40"
-        />
+        <GalleryRemove className="size-7 text-muted-foreground/40" />
         <p className="text-[11px] font-medium text-muted-foreground">
           {isBroken ? "Không tải được hình ảnh" : "Chưa có hình ảnh"}
         </p>
@@ -249,7 +246,7 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
 
         <span className="absolute inset-0 flex items-center justify-center bg-foreground/45 opacity-0 transition-opacity group-hover:opacity-100">
           <span className="flex items-center gap-1.5 rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-foreground shadow-sm">
-            <Icon icon={magniferZoomInBold} className="size-3.5" />
+            <MagniferZoomIn className="size-3.5" />
             Xem ảnh gốc
           </span>
         </span>

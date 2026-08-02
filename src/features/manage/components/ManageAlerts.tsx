@@ -1,5 +1,3 @@
-import { Icon } from "@iconify/react"
-
 import { Card, CardContent } from "@/components/ui/card"
 import { ALERT_ITEMS } from "@/features/manage/mock/manage-dashboard.mock"
 import { cn } from "@/lib/utils"
@@ -14,8 +12,7 @@ export function ManageAlerts() {
         {ALERT_ITEMS.map((alert) => (
           <Card key={alert.label} size="sm" className={alert.cardClassName}>
             <CardContent className="flex items-center gap-3">
-              <Icon
-                icon={alert.icon}
+              <alert.icon
                 className={cn("size-8 shrink-0", alert.accentClassName)}
               />
               <div className="min-w-0">

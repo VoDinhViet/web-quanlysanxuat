@@ -2,11 +2,7 @@ import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Loader2 } from "lucide-react"
-import { Icon } from "@iconify/react"
-import altArrowLeftBold from "@iconify-icons/solar/alt-arrow-left-bold"
-import boxBold from "@iconify-icons/solar/box-bold"
-import disketteBold from "@iconify-icons/solar/diskette-bold"
-import printerBold from "@iconify-icons/solar/printer-bold"
+import { AltArrowLeft, Box, Diskette, Printer } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
@@ -44,7 +40,7 @@ export function ProductDetailHeader({
             asChild
           >
             <Link to="/manage/products" search={{ page: 1, limit: 10 }}>
-              <Icon icon={altArrowLeftBold} className="size-4" />
+              <AltArrowLeft className="size-4" />
               <span className="hidden sm:inline">Quay lại</span>
             </Link>
           </Button>
@@ -107,7 +103,7 @@ export function ProductDetailHeader({
                   </>
                 ) : (
                   <>
-                    <Icon icon={disketteBold} className="size-4" />
+                    <Diskette className="size-4" />
                     Lưu
                   </>
                 )}
@@ -124,7 +120,7 @@ export function ProductDetailHeader({
             variant="outline"
             onClick={() => window.print()}
           >
-            <Icon icon={printerBold} className="size-4" />
+            <Printer className="size-4" />
             In
           </Button>
         </div>
@@ -155,7 +151,7 @@ function ProductHeaderThumbnail({ image, name }: ProductHeaderThumbnailProps) {
   if (!image || isBroken) {
     return (
       <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        <Icon icon={boxBold} className="size-5" />
+        <Box className="size-5" />
       </div>
     )
   }

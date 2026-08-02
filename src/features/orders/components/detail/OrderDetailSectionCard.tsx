@@ -1,12 +1,11 @@
-import { Icon } from "@iconify/react"
-import type { IconifyIcon } from "@iconify/types"
-import type { ReactNode } from "react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType, ReactNode } from "react"
 
 import { MockDataBadge } from "@/components/shared/MockDataBadge"
 import { cn } from "@/lib/utils"
 
 type OrderDetailSectionCardProps = {
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   title: string
   isMock?: boolean
   action?: ReactNode
@@ -21,7 +20,7 @@ type OrderDetailSectionCardProps = {
 // <section> (same shell as ProductDetailPage's own top section) rather than
 // the shadcn Card component — see OrderDetailSummaryCard for the same idiom.
 export function OrderDetailSectionCard({
-  icon,
+  icon: IconComponent,
   title,
   isMock,
   action,
@@ -38,7 +37,7 @@ export function OrderDetailSectionCard({
     >
       <div className="flex items-center justify-between gap-2 border-b border-border/60 px-4 py-3.5 sm:px-5">
         <div className="flex items-center gap-2 font-heading text-base font-semibold tracking-tight text-foreground">
-          <Icon icon={icon} className="size-4 text-muted-foreground" />
+          <IconComponent className="size-4 text-muted-foreground" />
           {title}
         </div>
         {isMock || action ? (

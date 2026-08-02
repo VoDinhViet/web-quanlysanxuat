@@ -1,4 +1,4 @@
-import deliveryBold from "@iconify-icons/solar/delivery-bold"
+import { Delivery } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
 import {
@@ -26,11 +26,7 @@ export function OrderDetailDeliveryHistoryCard({
   const rows = buildMockDeliveryHistory(order)
 
   return (
-    <OrderDetailSectionCard
-      icon={deliveryBold}
-      title="Lịch sử giao hàng"
-      isMock
-    >
+    <OrderDetailSectionCard icon={Delivery} title="Lịch sử giao hàng" isMock>
       {rows.length === 0 ? (
         <p className="py-6 text-center text-sm text-muted-foreground">
           Chưa có lượt giao hàng nào.

@@ -1,6 +1,4 @@
-import { Icon } from "@iconify/react"
-import arrowDownBold from "@iconify-icons/solar/arrow-down-bold"
-import arrowUpBold from "@iconify-icons/solar/arrow-up-bold"
+import { ArrowDown, ArrowUp } from "@solar-icons/react"
 import { useQuery } from "@tanstack/react-query"
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -63,7 +61,7 @@ export function OrderStatCards() {
                   tile.iconClassName
                 )}
               >
-                <Icon icon={tile.icon} className="size-4" />
+                <tile.icon className="size-4" />
               </div>
               <p className="truncate text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
                 {tile.label}
@@ -94,14 +92,11 @@ export function OrderStatCards() {
                 )}
               >
                 {tile.trend.direction ? (
-                  <Icon
-                    icon={
-                      tile.trend.direction === "up"
-                        ? arrowUpBold
-                        : arrowDownBold
-                    }
-                    className="size-3 shrink-0"
-                  />
+                  tile.trend.direction === "up" ? (
+                    <ArrowUp className="size-3 shrink-0" />
+                  ) : (
+                    <ArrowDown className="size-3 shrink-0" />
+                  )
                 ) : null}
                 <span className="truncate">{tile.trend.text}</span>
               </p>

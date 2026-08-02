@@ -1,6 +1,5 @@
 import { DateTime } from "luxon"
-import historyBold from "@iconify-icons/solar/history-bold"
-import { Icon } from "@iconify/react"
+import { History } from "@solar-icons/react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -46,7 +45,7 @@ export function ProductionOrderLogsCard({
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
       <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold text-foreground sm:px-5">
-        <Icon icon={historyBold} className="size-4 text-muted-foreground" />
+        <History className="size-4 text-muted-foreground" />
         Lịch sử thay đổi
       </div>
 

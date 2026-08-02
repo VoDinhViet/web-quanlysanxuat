@@ -1,17 +1,19 @@
-import bag4Bold from "@iconify-icons/solar/bag-4-bold"
-import billListBold from "@iconify-icons/solar/bill-list-bold"
-import boxBold from "@iconify-icons/solar/box-bold"
-import buildings2Bold from "@iconify-icons/solar/buildings-2-bold"
-import cartLarge2Bold from "@iconify-icons/solar/cart-large-2-bold"
-import clipboardAddBold from "@iconify-icons/solar/clipboard-add-bold"
-import clockCircleBold from "@iconify-icons/solar/clock-circle-bold"
-import dangerTriangleBold from "@iconify-icons/solar/danger-triangle-bold"
-import deliveryBold from "@iconify-icons/solar/delivery-bold"
-import documentAddBold from "@iconify-icons/solar/document-add-bold"
-import documentTextBold from "@iconify-icons/solar/document-text-bold"
-import inboxInBold from "@iconify-icons/solar/inbox-in-bold"
-import inboxOutBold from "@iconify-icons/solar/inbox-out-bold"
-import magniferBold from "@iconify-icons/solar/magnifer-bold"
+import {
+  Bag4,
+  BillList,
+  Box,
+  Buildings2,
+  CartLarge2,
+  ClipboardAdd,
+  ClockCircle,
+  DangerTriangle,
+  Delivery,
+  DocumentAdd,
+  DocumentText,
+  InboxIn,
+  InboxOut,
+  Magnifer,
+} from "@solar-icons/react"
 import { faker } from "@faker-js/faker"
 
 import {
@@ -73,7 +75,7 @@ export const STAT_CARDS: StatCard[] = [
     label: "PO đang chạy",
     value: 42,
     unit: "đơn",
-    icon: deliveryBold,
+    icon: Delivery,
     iconClassName:
       "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
     trend: { direction: "up", text: "12% so với tuần trước" },
@@ -82,7 +84,7 @@ export const STAT_CARDS: StatCard[] = [
     label: "PO trễ hạn",
     value: 5,
     unit: "đơn",
-    icon: clockCircleBold,
+    icon: ClockCircle,
     iconClassName: "bg-destructive/15 text-destructive",
     trend: { direction: "up", text: "2 so với hôm qua" },
   },
@@ -90,7 +92,7 @@ export const STAT_CARDS: StatCard[] = [
     label: "PO sắp giao",
     value: 12,
     unit: "đơn",
-    icon: boxBold,
+    icon: Box,
     iconClassName:
       "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
     trend: { text: "Trong 3 ngày tới" },
@@ -99,7 +101,7 @@ export const STAT_CARDS: StatCard[] = [
     label: "Job đang sản xuất",
     value: 25,
     unit: "job",
-    icon: buildings2Bold,
+    icon: Buildings2,
     iconClassName: "bg-success/15 text-success",
     trend: { direction: "up", text: "8 so với hôm qua" },
   },
@@ -107,7 +109,7 @@ export const STAT_CARDS: StatCard[] = [
     label: "Chờ QC",
     value: 5,
     unit: "job",
-    icon: magniferBold,
+    icon: Magnifer,
     iconClassName:
       "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
     trend: { direction: "up", text: "1 so với hôm qua" },
@@ -116,7 +118,7 @@ export const STAT_CARDS: StatCard[] = [
     label: "NCR chưa xử lý",
     value: 7,
     unit: "ncr",
-    icon: dangerTriangleBold,
+    icon: DangerTriangle,
     iconClassName:
       "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
     trend: { direction: "down", text: "2 so với hôm qua" },
@@ -127,7 +129,7 @@ export const ALERT_ITEMS: AlertItem[] = [
   {
     label: "Job trễ hạn",
     count: 5,
-    icon: dangerTriangleBold,
+    icon: DangerTriangle,
     cardClassName:
       "border border-l-4 border-destructive/30 border-l-destructive bg-destructive/10",
     accentClassName: "text-destructive",
@@ -136,7 +138,7 @@ export const ALERT_ITEMS: AlertItem[] = [
   {
     label: "Vật tư thiếu",
     count: 12,
-    icon: boxBold,
+    icon: Box,
     cardClassName:
       "border border-l-4 border-warning/30 border-l-warning bg-warning/10",
     accentClassName: "text-warning",
@@ -145,7 +147,7 @@ export const ALERT_ITEMS: AlertItem[] = [
   {
     label: "OS trễ hạn",
     count: 3,
-    icon: deliveryBold,
+    icon: Delivery,
     cardClassName:
       "border border-l-4 border-destructive/30 border-l-destructive bg-destructive/10",
     accentClassName: "text-destructive",
@@ -154,7 +156,7 @@ export const ALERT_ITEMS: AlertItem[] = [
   {
     label: "NCR chưa xử lý",
     count: 7,
-    icon: documentTextBold,
+    icon: DocumentText,
     cardClassName:
       "border border-l-4 border-rose-300 border-l-rose-500 bg-rose-50 dark:border-rose-800/40 dark:border-l-rose-500 dark:bg-rose-500/10",
     accentClassName: "text-rose-600 dark:text-rose-400",
@@ -163,7 +165,7 @@ export const ALERT_ITEMS: AlertItem[] = [
   {
     label: "DO sắp giao",
     count: 8,
-    icon: deliveryBold,
+    icon: Delivery,
     cardClassName:
       "border border-l-4 border-blue-300 border-l-blue-500 bg-blue-50 dark:border-blue-800/40 dark:border-l-blue-500 dark:bg-blue-500/10",
     accentClassName: "text-blue-600 dark:text-blue-400",
@@ -342,63 +344,63 @@ export const NCR_BY_TYPE_TOTAL = NCR_BY_TYPE.reduce(
 export const QUICK_ACTIONS: QuickAction[] = [
   {
     label: "Tạo LSX (Job)",
-    icon: clipboardAddBold,
+    icon: ClipboardAdd,
     accentClassName: "text-emerald-600 dark:text-emerald-400",
     tileClassName:
       "border-emerald-200 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-800/40 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20",
   },
   {
     label: "Tạo DO",
-    icon: deliveryBold,
+    icon: Delivery,
     accentClassName: "text-blue-600 dark:text-blue-400",
     tileClassName:
       "border-blue-200 bg-blue-50 hover:bg-blue-100 dark:border-blue-800/40 dark:bg-blue-500/10 dark:hover:bg-blue-500/20",
   },
   {
     label: "Tạo NCR",
-    icon: documentAddBold,
+    icon: DocumentAdd,
     accentClassName: "text-red-600 dark:text-red-400",
     tileClassName:
       "border-red-200 bg-red-50 hover:bg-red-100 dark:border-red-800/40 dark:bg-red-500/10 dark:hover:bg-red-500/20",
   },
   {
     label: "Đề xuất mua",
-    icon: cartLarge2Bold,
+    icon: CartLarge2,
     accentClassName: "text-amber-600 dark:text-amber-400",
     tileClassName:
       "border-amber-200 bg-amber-50 hover:bg-amber-100 dark:border-amber-800/40 dark:bg-amber-500/10 dark:hover:bg-amber-500/20",
   },
   {
     label: "Nhập OS về",
-    icon: inboxInBold,
+    icon: InboxIn,
     accentClassName: "text-indigo-600 dark:text-indigo-400",
     tileClassName:
       "border-indigo-200 bg-indigo-50 hover:bg-indigo-100 dark:border-indigo-800/40 dark:bg-indigo-500/10 dark:hover:bg-indigo-500/20",
   },
   {
     label: "Nhập kho",
-    icon: boxBold,
+    icon: Box,
     accentClassName: "text-teal-600 dark:text-teal-400",
     tileClassName:
       "border-teal-200 bg-teal-50 hover:bg-teal-100 dark:border-teal-800/40 dark:bg-teal-500/10 dark:hover:bg-teal-500/20",
   },
   {
     label: "Xuất kho",
-    icon: inboxOutBold,
+    icon: InboxOut,
     accentClassName: "text-cyan-600 dark:text-cyan-400",
     tileClassName:
       "border-cyan-200 bg-cyan-50 hover:bg-cyan-100 dark:border-cyan-800/40 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20",
   },
   {
     label: "Báo giá (RFQ)",
-    icon: billListBold,
+    icon: BillList,
     accentClassName: "text-violet-600 dark:text-violet-400",
     tileClassName:
       "border-violet-200 bg-violet-50 hover:bg-violet-100 dark:border-violet-800/40 dark:bg-violet-500/10 dark:hover:bg-violet-500/20",
   },
   {
     label: "PO mua hàng",
-    icon: bag4Bold,
+    icon: Bag4,
     accentClassName: "text-slate-600 dark:text-slate-400",
     tileClassName:
       "border-slate-200 bg-slate-50 hover:bg-slate-100 dark:border-slate-700/40 dark:bg-slate-500/10 dark:hover:bg-slate-500/20",

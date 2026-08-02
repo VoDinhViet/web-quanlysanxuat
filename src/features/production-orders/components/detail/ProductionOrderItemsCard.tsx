@@ -1,5 +1,4 @@
-import boxBold from "@iconify-icons/solar/box-bold"
-import { Icon } from "@iconify/react"
+import { Box } from "@solar-icons/react"
 import { TriangleAlert } from "lucide-react"
 import type { ReactNode } from "react"
 
@@ -119,7 +118,7 @@ export const ProductionOrderItemsCard = withForm({
         <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
           <div className="min-w-0">
             <h2 className="flex items-center gap-2 font-heading text-base font-semibold text-foreground">
-              <Icon icon={boxBold} className="size-4 text-muted-foreground" />
+              <Box className="size-4 text-muted-foreground" />
               Quyết định sản xuất
             </h2>
             <p className="text-sm text-muted-foreground">

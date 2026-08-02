@@ -1,7 +1,4 @@
-import { Icon } from "@iconify/react"
-import documentsBold from "@iconify-icons/solar/documents-bold"
-import fileTextBold from "@iconify-icons/solar/file-text-bold"
-import paperclipBold from "@iconify-icons/solar/paperclip-bold"
+import { Documents, FileText, Paperclip } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
@@ -29,7 +26,7 @@ export function OrderDetailAttachmentsCard({
 }: OrderDetailAttachmentsCardProps) {
   return (
     <OrderDetailSectionCard
-      icon={paperclipBold}
+      icon={Paperclip}
       title={`Tài liệu đính kèm (${order.attachments.length})`}
     >
       {order.attachments.length > 0 ? (
@@ -44,10 +41,7 @@ export function OrderDetailAttachmentsCard({
                 rel="noreferrer"
                 className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary"
               >
-                <Icon
-                  icon={fileTextBold}
-                  className="size-4 shrink-0 text-muted-foreground"
-                />
+                <FileText className="size-4 shrink-0 text-muted-foreground" />
                 <span className="min-w-0 flex-1 truncate">
                   {attachment.file.originalName}
                 </span>
@@ -65,10 +59,7 @@ export function OrderDetailAttachmentsCard({
         </ul>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
-          <Icon
-            icon={documentsBold}
-            className="size-7 text-muted-foreground/40"
-          />
+          <Documents className="size-7 text-muted-foreground/40" />
           <p className="text-[11px] font-medium text-muted-foreground">
             Chưa có tài liệu đính kèm
           </p>

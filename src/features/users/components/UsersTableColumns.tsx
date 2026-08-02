@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { Icon } from "@iconify/react"
-import userBold from "@iconify-icons/solar/user-bold"
+import { User as UserSolar } from "@solar-icons/react"
 import { createColumnHelper } from "@tanstack/react-table"
 import { cva } from "class-variance-authority"
 import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
@@ -49,7 +48,7 @@ export const userColumns = [
               alt={user.fullName}
             />
             <AvatarFallback>
-              <Icon icon={userBold} className="size-3/5" />
+              <UserSolar className="size-3/5" />
             </AvatarFallback>
           </Avatar>
           <span className="truncate text-xs font-medium text-foreground">

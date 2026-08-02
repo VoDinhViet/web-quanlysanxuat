@@ -1,5 +1,5 @@
 import { DateTime } from "luxon"
-import infoCircleBold from "@iconify-icons/solar/info-circle-bold"
+import { InfoCircle } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
@@ -21,7 +21,7 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
   const clientProfile = buildMockClientProfile(order)
 
   return (
-    <OrderDetailSectionCard icon={infoCircleBold} title="Thông tin đơn hàng">
+    <OrderDetailSectionCard icon={InfoCircle} title="Thông tin đơn hàng">
       <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
         <div className="space-y-3">
           <InfoRow label="Mã đơn hàng" value={order.code} />

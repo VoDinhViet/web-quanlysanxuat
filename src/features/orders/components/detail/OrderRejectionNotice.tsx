@@ -1,5 +1,4 @@
-import { Icon } from "@iconify/react"
-import dangerTriangleBold from "@iconify-icons/solar/danger-triangle-bold"
+import { DangerTriangle } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
 import { OrderStatus } from "@/lib/types/order.type"
@@ -18,10 +17,7 @@ export function OrderRejectionNotice({ order }: OrderRejectionNoticeProps) {
 
   return (
     <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4 sm:p-5">
-      <Icon
-        icon={dangerTriangleBold}
-        className="mt-0.5 size-5 shrink-0 text-destructive"
-      />
+      <DangerTriangle className="mt-0.5 size-5 shrink-0 text-destructive" />
       <div className="min-w-0 space-y-1">
         <p className="text-sm font-semibold text-destructive">
           Đơn hàng bị từ chối

@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
+import { SolarProvider } from "@solar-icons/react"
 import type { QueryClient } from "@tanstack/react-query"
 
 import { ThemeProvider } from "@/components/shared/ThemeProvider"
@@ -53,7 +54,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SolarProvider value={{ weight: "Bold" }}>{children}</SolarProvider>
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",

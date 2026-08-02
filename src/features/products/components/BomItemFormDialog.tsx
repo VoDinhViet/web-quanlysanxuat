@@ -1,8 +1,5 @@
 import { useState } from "react"
-import { Icon } from "@iconify/react"
-import boxMinimalisticBold from "@iconify-icons/solar/box-minimalistic-bold"
-import checkCircleBold from "@iconify-icons/solar/check-circle-bold"
-import layersBold from "@iconify-icons/solar/layers-bold"
+import { BoxMinimalistic, CheckCircle, Layers } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -192,8 +189,7 @@ function CreateBomItemForm({
                 >
                   <div className="flex w-full items-center justify-between">
                     <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                      <Icon
-                        icon={boxMinimalisticBold}
+                      <BoxMinimalistic
                         className={cn(
                           "size-4",
                           field.state.value === BomItemType.MATERIAL
@@ -204,10 +200,7 @@ function CreateBomItemForm({
                       Vật tư / Linh kiện
                     </span>
                     {field.state.value === BomItemType.MATERIAL ? (
-                      <Icon
-                        icon={checkCircleBold}
-                        className="size-4 text-primary"
-                      />
+                      <CheckCircle className="size-4 text-primary" />
                     ) : null}
                   </div>
                   <p className="text-[11px] leading-tight text-muted-foreground">
@@ -231,8 +224,7 @@ function CreateBomItemForm({
                 >
                   <div className="flex w-full items-center justify-between">
                     <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                      <Icon
-                        icon={layersBold}
+                      <Layers
                         className={cn(
                           "size-4",
                           field.state.value === BomItemType.PRODUCT
@@ -243,10 +235,7 @@ function CreateBomItemForm({
                       Sản phẩm (WIP)
                     </span>
                     {field.state.value === BomItemType.PRODUCT ? (
-                      <Icon
-                        icon={checkCircleBold}
-                        className="size-4 text-primary"
-                      />
+                      <CheckCircle className="size-4 text-primary" />
                     ) : null}
                   </div>
                   <p className="text-[11px] leading-tight text-muted-foreground">
@@ -322,7 +311,7 @@ function CreateBomItemForm({
           Hủy
         </Button>
         <Button type="submit" disabled={isSaving}>
-          <Icon icon={checkCircleBold} className="size-4" />
+          <CheckCircle className="size-4" />
           Thêm vào BOM
         </Button>
       </DialogFooter>
@@ -430,7 +419,7 @@ function UpdateBomItemForm({
           Hủy
         </Button>
         <Button type="submit" disabled={isSaving}>
-          <Icon icon={checkCircleBold} className="size-4" />
+          <CheckCircle className="size-4" />
           Lưu thay đổi
         </Button>
       </DialogFooter>

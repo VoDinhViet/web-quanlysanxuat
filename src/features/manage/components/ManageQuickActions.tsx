@@ -1,5 +1,3 @@
-import { Icon } from "@iconify/react"
-
 import { Button } from "@/components/ui/button"
 import { QUICK_ACTIONS } from "@/features/manage/mock/manage-dashboard.mock"
 import { cn } from "@/lib/utils"
@@ -17,10 +15,7 @@ export function ManageQuickActions() {
             action.tileClassName
           )}
         >
-          <Icon
-            icon={action.icon}
-            className={cn("size-6", action.accentClassName)}
-          />
+          <action.icon className={cn("size-6", action.accentClassName)} />
           <span className={action.accentClassName}>{action.label}</span>
         </Button>
       ))}

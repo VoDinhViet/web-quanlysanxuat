@@ -1,10 +1,12 @@
-import { Icon } from "@iconify/react"
-import buildings2Bold from "@iconify-icons/solar/buildings-2-bold"
-import checkCircleBold from "@iconify-icons/solar/check-circle-bold"
-import closeCircleBold from "@iconify-icons/solar/close-circle-bold"
-import pauseCircleBold from "@iconify-icons/solar/pause-circle-bold"
+import {
+  Buildings2,
+  CheckCircle,
+  CloseCircle,
+  PauseCircle,
+} from "@solar-icons/react"
 import { useQuery } from "@tanstack/react-query"
-import type { IconifyIcon } from "@iconify/types"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { supplierStatsQueryOptions } from "@/features/suppliers/api/suppliers.options"
@@ -27,7 +29,7 @@ type StatTile = {
   label: string
   value: number
   subtitle: string
-  icon: IconifyIcon
+  icon: ComponentType<IconProps>
   iconClassName: string
 }
 
@@ -37,28 +39,28 @@ function buildStatTiles(stats: SupplierStats): StatTile[] {
       label: "Tổng nhà cung cấp",
       value: stats.total,
       subtitle: "Tất cả",
-      icon: buildings2Bold,
+      icon: Buildings2,
       iconClassName: "bg-info/15 text-info",
     },
     {
       label: "Đang hoạt động",
       value: stats.active,
       subtitle: formatPercent(stats.active, stats.total),
-      icon: checkCircleBold,
+      icon: CheckCircle,
       iconClassName: "bg-success/15 text-success",
     },
     {
       label: "Tạm ngưng",
       value: stats.paused,
       subtitle: formatPercent(stats.paused, stats.total),
-      icon: pauseCircleBold,
+      icon: PauseCircle,
       iconClassName: "bg-warning/15 text-warning",
     },
     {
       label: "Đã ngừng hợp tác",
       value: stats.stopped,
       subtitle: formatPercent(stats.stopped, stats.total),
-      icon: closeCircleBold,
+      icon: CloseCircle,
       iconClassName: "bg-destructive/15 text-destructive",
     },
   ]
@@ -113,7 +115,7 @@ export function SupplierStatCards() {
               tile.iconClassName
             )}
           >
-            <Icon icon={tile.icon} className="size-5" />
+            <tile.icon className="size-5" />
           </div>
           <div className="min-w-0">
             <p className="truncate text-xs font-semibold text-muted-foreground">

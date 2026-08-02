@@ -1,9 +1,7 @@
-import { Icon } from "@iconify/react"
-import checkCircleBold from "@iconify-icons/solar/check-circle-bold"
-import closeCircleBold from "@iconify-icons/solar/close-circle-bold"
-import routeBold from "@iconify-icons/solar/route-bold"
+import { CheckCircle, CloseCircle, Route } from "@solar-icons/react"
 import { DateTime } from "luxon"
-import type { IconifyIcon } from "@iconify/types"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { buildOrderTimeline } from "@/features/orders/order-timeline"
@@ -15,7 +13,7 @@ import { cn } from "@/lib/utils"
 
 type NodeVisual = {
   circleClassName: string
-  icon: IconifyIcon | null
+  icon: ComponentType<IconProps> | null
 }
 
 function resolveNodeVisual(state: OrderTimelineStepState): NodeVisual {
@@ -23,7 +21,7 @@ function resolveNodeVisual(state: OrderTimelineStepState): NodeVisual {
     case "done":
       return {
         circleClassName: "bg-success text-success-foreground",
-        icon: checkCircleBold,
+        icon: CheckCircle,
       }
     case "current":
       return {
@@ -34,7 +32,7 @@ function resolveNodeVisual(state: OrderTimelineStepState): NodeVisual {
     case "cancelled":
       return {
         circleClassName: "bg-destructive text-destructive-foreground",
-        icon: closeCircleBold,
+        icon: CloseCircle,
       }
     case "upcoming":
       return {
@@ -57,7 +55,7 @@ export function OrderDetailTimelineCard({
   const steps = buildOrderTimeline(order)
 
   return (
-    <OrderDetailSectionCard icon={routeBold} title="Quy trình đơn hàng">
+    <OrderDetailSectionCard icon={Route} title="Quy trình đơn hàng">
       <ol>
         {steps.map((step, index) => {
           const visual = resolveNodeVisual(step.state)
@@ -72,11 +70,7 @@ export function OrderDetailTimelineCard({
                     visual.circleClassName
                   )}
                 >
-                  {visual.icon ? (
-                    <Icon icon={visual.icon} className="size-4" />
-                  ) : (
-                    index + 1
-                  )}
+                  {visual.icon ? <visual.icon className="size-4" /> : index + 1}
                 </span>
                 {isLast ? null : (
                   <span
