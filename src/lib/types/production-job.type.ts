@@ -1,28 +1,29 @@
 import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
-import type { OrderClientRef } from "@/lib/types/order.type"
+import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
+import type { ProductRef } from "@/lib/types/product.type"
 
 /** Mirrors the backend's real `production_jobs.status` column (`GET /production-jobs`,
- *  `GET /production-jobs/:jobId`). Rút từ 5 xuống 3 giá trị 2026-07-31 theo yêu cầu nghiệp vụ (xưởng
- *  chỉ cần "Chưa SX"/"Đang SX"/"Chờ Sản Xuất") — không còn điểm kết thúc, `WAITING` quay lại
- *  `IN_PROGRESS` được (`resumeJob`). `PENDING → IN_PROGRESS ⇄ WAITING`. */
+ *  `GET /production-jobs/:jobId`). Rút còn 2 giá trị 2026-08-01 theo yêu cầu nghiệp vụ — không
+ *  còn `WAITING`, một chiều `PENDING → IN_PROGRESS`, không có đường lùi và không có điểm kết
+ *  thúc nào khác `IN_PROGRESS` (xem `src/database/schemas/production.ts`, backend). */
 export enum ProductionJobStatus {
   PENDING = "PENDING",
   IN_PROGRESS = "IN_PROGRESS",
-  WAITING = "WAITING",
 }
 
 export const PRODUCTION_JOB_STATUS_LABELS: Record<ProductionJobStatus, string> =
   {
     [ProductionJobStatus.PENDING]: "Chưa SX",
     [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
-    [ProductionJobStatus.WAITING]: "Chờ Sản Xuất",
   }
 
 /** Mirrors the backend's ProductionJobResDto — one row of `GET /production-jobs`, the "Quản lý
  *  sản xuất" screen. Split off from the detail shape 2026-07-31: the list only carries the columns
- *  the table needs, not the full Job (no `product` object, `rejectedQty`, `remainingQty`,
- *  `startedAt`, `approver`, `approvedAt` — those are `GET /production-jobs/:jobId`-only). */
+ *  the table needs, not the full Job (no `product` object, `startedAt` — those are
+ *  `GET /production-jobs/:jobId`-only). `warning`/`producedQty` removed 2026-08-01 along with
+ *  `producedQty`/`rejectedQty` off the `production_jobs` table itself — the backend has no
+ *  progress-reporting route yet. */
 export type ProductionJob = {
   id: string
   code: string
@@ -32,26 +33,23 @@ export type ProductionJob = {
   quantity: number
   orderDate: string
   dueDate: string | null
-  // Trễ hạn giao hàng mà sản xuất chưa đủ số (dueDate < now && producedQty + rejectedQty <
-  // quantity) — computed server-side in SQL, not derived here: `status` alone can't tell "chưa
-  // xong" apart since the 3-value enum has no terminal state (a fully-reported Job still reads
-  // IN_PROGRESS).
-  warning: boolean
-  producedQty: number
   status: ProductionJobStatus
 }
 
-/** Mirrors the backend's ProductionJobDetailResDto (`GET /production-jobs/:jobId`) — a
- *  deliberately thin, unjoined row of the `production_jobs` table (see the service's own
- *  comment: "Không join — thông tin PO/khách hàng/sản phẩm FE lấy từ dòng tương ứng ở
- *  getProductionJobs"). `lsxCode`/`productName`/`clientName`/`poNumber`/`dueDate`/`producedQty`
- *  from the old UI-only mock have no source here — the detail screen renders those fields as
- *  "Chưa có API" via MissingFieldValue instead of trying to reconstruct them from other calls. */
+/** Mirrors the backend's ProductionJobDetailResDto (`GET /production-jobs/:jobId`) — joins in
+ *  the parent order, its client and the FG product (`OrderBaseResDto`/`ClientBaseResDto`/
+ *  `ProductBaseResDto` server-side, 2026-08-01). `productionOrderId` has no matching LSX code on
+ *  this endpoint — the detail screen links to the LSX by id instead of rendering its code. */
 export type ProductionJobDetail = {
   id: string
   code: string
   productionOrderId: string
+  order: OrderRef
+  // Cùng một dòng `clients` với `order.client` (service leftJoin `clients` trên
+  // `orders.client_id`) — backend expose ở cả 2 chỗ; UI đọc field top-level này.
+  client: OrderClientRef | null
   productId: string
+  product: ProductRef
   quantity: number
   status: ProductionJobStatus
   startedBy: string | null

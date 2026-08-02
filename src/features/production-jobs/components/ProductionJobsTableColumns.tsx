@@ -1,10 +1,7 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import {
-  ProductionJobStatusBadge,
-  ProductionJobWarningBadge,
-} from "@/features/production-jobs/components/ProductionJobBadges"
+import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import {
   ProductImageCell,
   ProductionJobActionsCell,
@@ -70,21 +67,6 @@ export const productionJobColumns = [
       return dueDate === null
         ? "—"
         : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
-    },
-  }),
-  productionJobColumnHelper.accessor("warning", {
-    header: "Cảnh báo",
-    meta: {
-      headerClassName: "min-w-28 text-center",
-      cellClassName: "text-center",
-    },
-    cell: ({ getValue }) => <ProductionJobWarningBadge warning={getValue()} />,
-  }),
-  productionJobColumnHelper.accessor("producedQty", {
-    header: "Đã nhập",
-    meta: {
-      headerClassName: "min-w-20 text-center",
-      cellClassName: "text-center",
     },
   }),
   productionJobColumnHelper.accessor("status", {

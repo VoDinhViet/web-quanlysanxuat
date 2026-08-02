@@ -118,8 +118,9 @@ export type OrderCreator = {
   username: string
 }
 
-/** Mirrors the backend's OrderRefResDto — lightweight order reference nested inside another
- *  module's response DTO (e.g. `ProductionOrderDetail.order`). */
+/** Lightweight order reference nested inside another module's response DTO (e.g.
+ *  `ProductionOrderDetail.order`, `ProductionJobDetail.order`) — a subset of the backend's
+ *  `OrderBaseResDto`. */
 export type OrderRef = {
   id: string
   code: string
