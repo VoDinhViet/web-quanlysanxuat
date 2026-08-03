@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
-import { productionJobsQueryOptions } from "@/features/production-jobs/api/production-jobs.options"
+import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobsPage } from "@/features/production-jobs/pages/ProductionJobsPage"
 import { productionJobsSearchSchema } from "@/features/production-jobs/schemas/production-jobs-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"

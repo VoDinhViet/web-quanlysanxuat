@@ -120,13 +120,13 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
       <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
         <InfoSection title="Tài liệu đính kèm" icon={Paperclip}>
           <div className="p-4 sm:p-5">
-            <ProductionJobDocumentsSection />
+            <ProductionJobDocumentsSection productionJobId={detail.id} />
           </div>
         </InfoSection>
 
         <InfoSection title="Ghi chú" icon={StickyNote}>
           <div className="p-4 sm:p-5">
-            <ProductionJobNotesSection />
+            <ProductionJobNotesSection productionJobId={detail.id} />
           </div>
         </InfoSection>
       </aside>

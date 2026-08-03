@@ -7,8 +7,8 @@ import { Surface } from "@/components/shared/Surface"
 import { ProductionJobBomTab } from "@/features/production-jobs/components/detail/ProductionJobBomTab"
 import { ProductionJobDetailHeader } from "@/features/production-jobs/components/detail/ProductionJobDetailHeader"
 import { ProductionJobInfoTab } from "@/features/production-jobs/components/detail/ProductionJobInfoTab"
-import { ProductionJobOperationsTab } from "@/features/production-jobs/components/detail/ProductionJobOperationsTab"
-import { productionJobQueryOptions } from "@/features/production-jobs/api/production-jobs.options"
+import { ProductionJobMaterialsTab } from "@/features/production-jobs/components/detail/ProductionJobMaterialsTab"
+import { productionJobQueryOptions } from "@/features/production-jobs/api/options"
 import { PRODUCTION_JOB_DETAIL_TABS } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
 
 export function ProductionJobDetailPage() {
@@ -57,12 +57,15 @@ export function ProductionJobDetailPage() {
               <ProductionJobInfoTab detail={detail} />
             </TabsContent>
 
-            <TabsContent value="bom" className="m-0 outline-none">
-              <ProductionJobBomTab productionJobId={productionJobId} />
+            <TabsContent value="materials" className="m-0 outline-none">
+              <ProductionJobMaterialsTab productionJobId={productionJobId} />
             </TabsContent>
 
-            <TabsContent value="operations" className="m-0 outline-none">
-              <ProductionJobOperationsTab productionJobId={productionJobId} />
+            <TabsContent value="bom" className="m-0 outline-none">
+              <ProductionJobBomTab
+                productionJobId={productionJobId}
+                status={detail.status}
+              />
             </TabsContent>
           </Tabs>
         </Surface>

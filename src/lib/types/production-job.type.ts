@@ -1,3 +1,4 @@
+import type { BomItemType } from "@/lib/types/bom-item.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
@@ -58,26 +59,73 @@ export type ProductionJobDetail = {
   updatedAt: string
 }
 
-/** Mirrors the backend's ProductionJobStepResDto (`GET /production-jobs/:jobId/steps`) — the
- *  Job's routing snapshot, one row per operation in sequence. No plannedQty/doneQty/sentQty/
- *  receivedQty and no part grouping — `production_job_steps` only stores the operation + note. */
-export type ProductionJobStep = {
+/** Mirrors the backend's ProductionJobOperationResDto, nested in ProductionJobBomItem below — the
+ *  as-used routing snapshot copied from `routing_steps` onto a single BOM node at LSX approval
+ *  time (`production_job_operations`). `code`/`name`/`type`/`sortOrder`/`note`/`operationId` stay
+ *  frozen; `completedQuantity`/`completedDate` are the only two fields editable afterwards, via
+ *  `PATCH /production-jobs/:jobId/operations/:operationId` — `completedDate` is server-set (not
+ *  part of the update payload), auto-filled once `completedQuantity` reaches the parent node's
+ *  `plannedQuantity`, auto-cleared if edited back down. */
+export type ProductionJobOperation = {
   id: string
+  operationId: string | null
+  code: string
+  name: string
+  type: OperationType
   sortOrder: number
   note: string | null
-  operation: { id: string; code: string; name: string; type: OperationType }
+  completedQuantity: number
+  completedDate: string | null
   createdAt: string
 }
 
-/** Mirrors the backend's ProductionJobMaterialResDto (`GET /production-jobs/:jobId/materials`,
- *  paginated). `issuedQty` has no equivalent here (no stock-issue linkage on this endpoint) — the
- *  BOM tab renders that column as "Chưa có API" via MissingFieldValue. */
-export type ProductionJobMaterial = {
-  materialId: string
+/** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/bom`) — one row
+ *  of the Job's BOM tree, frozen at LSX approval time. A flat parent-child list (FE builds the
+ *  tree via `parentId`; `parentId = null` is a top-level node, a direct child of the FG product),
+ *  not a nested tree like `BomItem` — and it never includes the FG product itself, only real BOM
+ *  nodes. Each node carries its own as-used `operations[]`. `plannedQuantity` (SL Job × cumulative
+ *  parent-chain ratio) and `level` (1-based depth) are computed/stored server-side, not derived
+ *  here. */
+export type ProductionJobBomItem = {
+  id: string
+  parentId: string | null
+  itemType: BomItemType
   code: string
   name: string
-  unit: { id: string; code: string; name: string }
+  quantity: number
+  plannedQuantity: number
+  level: number
+  operations: ProductionJobOperation[]
+}
+
+/** Mirrors the backend's ProductionJobMaterialResDto (`GET /production-jobs/:jobId/materials`,
+ *  paginated) — flat text snapshots off `production_job_materials`, independent of the live
+ *  `materials`/`units` tables (`materialId` is a reference-only link, nullable). `issuedQty` has
+ *  no equivalent here (no stock-issue linkage on this endpoint) — the tab renders that column as
+ *  "Chưa có API" via MissingFieldValue. */
+export type ProductionJobMaterial = {
+  materialId: string | null
+  materialCode: string
+  materialName: string
+  unitCode: string
+  unitName: string
   image: FileResource | null
   unitQty: number | null
   requiredQty: number
+}
+
+/** Mirrors the backend's UserRefResDto nested in ProductionJobNoteResDto. */
+export type ProductionJobNoteCreator = {
+  id: string
+  code: string
+  fullName: string
+}
+
+/** Mirrors the backend's ProductionJobNoteResDto (`GET /production-jobs/:jobId/notes`,
+ *  paginated, sorted asc(createdAt) — a free-form conversation feed, not an audit log). */
+export type ProductionJobNote = {
+  id: string
+  content: string
+  creator: ProductionJobNoteCreator | null
+  createdAt: string
 }

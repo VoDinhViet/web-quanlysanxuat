@@ -44,9 +44,10 @@ export function ProductImageCell({ image }: { image: FileResource | null }) {
 // The edit flow (task 8.2's write side) isn't built yet, so that action stays disabled with a
 // tooltip explaining why. The <span tabIndex={0}> wrapper is required: a disabled button
 // swallows pointer events and the tooltip would never fire (same idiom as OrderTableCells.tsx's
-// DisabledAction — duplicated here rather than imported since a feature may only read another
-// feature's data through its api/index.ts barrel, never its components).
-function DisabledAction({
+// DisabledAction — duplicated *there* only, since that's a different feature and a feature may
+// only read another feature's data through its api/index.ts barrel, never its components; other
+// production-jobs files import this one directly, see ProductionJobBomTab.tsx).
+export function DisabledAction({
   label,
   children,
 }: {
