@@ -6,7 +6,7 @@ import { orderQueryOptions } from "@/features/orders/api"
 import {
   productionOrderLogsQueryOptions,
   productionOrderQueryOptions,
-} from "@/features/production-orders/api/production-orders.options"
+} from "@/features/production-orders/api/options"
 import { ProductionOrderDetailPage } from "@/features/production-orders/pages/ProductionOrderDetailPage"
 
 // `params.productionOrderId` is the production order's own id, not the order's id — the backend

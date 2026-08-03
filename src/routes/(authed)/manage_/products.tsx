@@ -6,7 +6,7 @@ import { ProductsPage } from "@/features/products/pages/ProductsPage"
 import {
   productGroupOptionsQueryOptions,
   productsQueryOptions,
-} from "@/features/products/api/products.options"
+} from "@/features/products/api/options"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 

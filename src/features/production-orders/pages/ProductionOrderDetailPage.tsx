@@ -19,7 +19,7 @@ import { ProductionOrderLogsCard } from "@/features/production-orders/components
 import {
   productionOrderLogsQueryOptions,
   productionOrderQueryOptions,
-} from "@/features/production-orders/api/production-orders.options"
+} from "@/features/production-orders/api/options"
 import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
 import { updateProductionOrder } from "@/features/production-orders/api/server-functions/update-production-order.api"
 import { updateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"

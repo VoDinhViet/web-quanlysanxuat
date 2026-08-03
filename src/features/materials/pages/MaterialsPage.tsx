@@ -14,7 +14,7 @@ import { MaterialsTableFilter } from "@/features/materials/components/MaterialsT
 import {
   materialGroupOptionsQueryOptions,
   materialsQueryOptions,
-} from "@/features/materials/api/materials.options"
+} from "@/features/materials/api/options"
 import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 

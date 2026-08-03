@@ -1,10 +1,10 @@
-import { CircleCheck, CircleX, Send } from "lucide-react"
+import { CheckCircle, CloseCircle, SendSquare } from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { ApproveOrderDialog } from "@/features/orders/components/detail/ApproveOrderDialog"
+import { ReqOrderApprovalDialog } from "@/features/orders/components/detail/ReqOrderApprovalDialog"
 import { RejectOrderDialog } from "@/features/orders/components/detail/RejectOrderDialog"
-import { SubmitOrderApprovalDialog } from "@/features/orders/components/detail/SubmitOrderApprovalDialog"
 import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 
@@ -13,18 +13,18 @@ type OrderApprovalActionsProps = {
 }
 
 // The 3-button approval flow: DRAFT shows "Gửi duyệt" (orders:update, same as any edit);
-// PENDING_CONFIRMATION shows "Duyệt"/"Từ chối" (orders:approve, director-level). Every
-// other status shows nothing — the rest of the lifecycle still goes through the update
-// form's status select.
+// PENDING_CONFIRMATION shows "Duyệt"/"Từ chối" (orders:approve, director-level). Every other
+// status shows nothing — once approved (AWAITING_PRODUCTION onward) the order is locked from
+// editing entirely (see canUpdateOrder), so there's no later status-select path either.
 export function OrderApprovalActions({ order }: OrderApprovalActionsProps) {
   if (order.status === OrderStatus.DRAFT) {
     return (
       <PermissionGate permission="orders:update">
-        <SubmitOrderApprovalDialog
+        <ReqOrderApprovalDialog
           order={order}
           trigger={
             <Button type="button">
-              <Send className="size-4" />
+              <SendSquare className="size-4" />
               Gửi duyệt
             </Button>
           }
@@ -43,9 +43,9 @@ export function OrderApprovalActions({ order }: OrderApprovalActionsProps) {
               <Button
                 type="button"
                 variant="outline"
-                className="border-destructive/30 bg-destructive/5 text-destructive hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                className="border-destructive/40 text-destructive"
               >
-                <CircleX className="size-4" />
+                <CloseCircle className="size-4" />
                 Từ chối
               </Button>
             }
@@ -54,7 +54,7 @@ export function OrderApprovalActions({ order }: OrderApprovalActionsProps) {
             order={order}
             trigger={
               <Button type="button">
-                <CircleCheck className="size-4" />
+                <CheckCircle className="size-4" />
                 Duyệt
               </Button>
             }

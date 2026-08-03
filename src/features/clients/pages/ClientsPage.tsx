@@ -14,7 +14,7 @@ import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFi
 import {
   clientGroupOptionsQueryOptions,
   clientsQueryOptions,
-} from "@/features/clients/api/clients.options"
+} from "@/features/clients/api/options"
 import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
 
 export function ClientsPage() {

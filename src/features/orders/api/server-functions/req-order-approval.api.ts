@@ -9,7 +9,7 @@ import type { OrderDetail } from "@/lib/types/order.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
-function resolveSubmitOrderForApprovalErrorMessage(error: unknown): string {
+function resolveReqOrderApprovalErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
     return GENERIC_ERROR_MESSAGE
   }
@@ -28,7 +28,7 @@ function resolveSubmitOrderForApprovalErrorMessage(error: unknown): string {
 
 // Đơn hàng ở DRAFT → PENDING_CONFIRMATION — a plain PATCH with only `status` (see
 // UpdateOrderReqDto), same permission (orders:update) as any other edit.
-export const submitOrderForApproval = createServerFn({ method: "POST" })
+export const reqOrderApproval = createServerFn({ method: "POST" })
   .validator(z.object({ orderId: z.uuid() }))
   .handler(async ({ data }): Promise<OrderDetail> => {
     try {
@@ -39,8 +39,8 @@ export const submitOrderForApproval = createServerFn({ method: "POST" })
 
       return response.data
     } catch (error) {
-      logHttpError(error, "submitOrderForApproval")
+      logHttpError(error, "reqOrderApproval")
 
-      throw new Error(resolveSubmitOrderForApprovalErrorMessage(error))
+      throw new Error(resolveReqOrderApprovalErrorMessage(error))
     }
   })

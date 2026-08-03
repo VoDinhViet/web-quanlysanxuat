@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useDebounceValue } from "usehooks-ts"
 
-import { operationOptionsQueryOptions } from "@/features/operations/api/operations.options"
+import { operationOptionsQueryOptions } from "@/features/operations/api/options"
 import type { OperationType } from "@/lib/types/operation.type"
 import { buildSelectOptions } from "@/lib/utils"
 

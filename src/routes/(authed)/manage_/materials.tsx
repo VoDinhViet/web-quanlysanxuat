@@ -6,7 +6,7 @@ import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
 import {
   materialGroupOptionsQueryOptions,
   materialsQueryOptions,
-} from "@/features/materials/api/materials.options"
+} from "@/features/materials/api/options"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 

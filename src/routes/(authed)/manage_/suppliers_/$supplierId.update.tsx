@@ -6,7 +6,7 @@ import { UpdateSupplierPage } from "@/features/suppliers/pages/UpdateSupplierPag
 import {
   supplierGroupOptionsQueryOptions,
   supplierQueryOptions,
-} from "@/features/suppliers/api/suppliers.options"
+} from "@/features/suppliers/api/options"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
 
 export const Route = createFileRoute(

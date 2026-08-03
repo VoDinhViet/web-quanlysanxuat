@@ -1,10 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import {
-  FileDownload,
-  MenuDots,
-  PenNewSquare,
-  Printer,
-} from "@solar-icons/react"
+import { FileDownload, PenNewSquare, Printer } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
@@ -16,7 +11,10 @@ import {
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { OrderApprovalActions } from "@/features/orders/components/detail/OrderApprovalActions"
-import { OrderStatus } from "@/lib/types/order.type"
+import {
+  canUpdateOrder,
+  resolveOrderUpdateDisabledHint,
+} from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 
 type OrderDetailActionsProps = {
@@ -27,9 +25,7 @@ type OrderDetailActionsProps = {
 // disabled with the generic "tính năng sắp có" hint, same idiom as OrderActionsCell's
 // row-level actions.
 export function OrderDetailActions({ order }: OrderDetailActionsProps) {
-  const isEditable =
-    order.status !== OrderStatus.COMPLETED &&
-    order.status !== OrderStatus.CANCELLED
+  const isEditable = canUpdateOrder(order.status)
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
@@ -52,27 +48,9 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
         <DisabledAction
           icon={PenNewSquare}
           label="Chỉnh sửa"
-          hint="Đơn hàng đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa"
+          hint={resolveOrderUpdateDisabledHint(order.status)}
         />
       )}
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              disabled
-              className="pointer-events-none text-muted-foreground"
-              aria-label="Thêm tùy chọn"
-            >
-              <MenuDots className="size-4" />
-            </Button>
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>Tính năng sắp có</TooltipContent>
-      </Tooltip>
     </div>
   )
 }

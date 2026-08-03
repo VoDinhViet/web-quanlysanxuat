@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { CreateProductPage } from "@/features/products/pages/CreateProductPage"
-import { productGroupOptionsQueryOptions } from "@/features/products/api/products.options"
+import { productGroupOptionsQueryOptions } from "@/features/products/api/options"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 
 export const Route = createFileRoute("/(authed)/manage_/products_/create")({

@@ -33,6 +33,39 @@ export const ORDER_STATUS_DESCRIPTIONS: Record<OrderStatus, string> = {
   [OrderStatus.CANCELLED]: "Đơn hàng đã bị hủy",
 }
 
+// Statuses where the order can no longer be edited: PENDING_CONFIRMATION (already sent for
+// director approval — editing now would change the ground under the approver), everything from
+// AWAITING_PRODUCTION onward (once approved, the order is locked for good — there is no editable
+// status past this point), plus the two terminal statuses. Shared by both "Chỉnh sửa" buttons and
+// the update route's loader guard so all three stay in sync by construction instead of by
+// duplicated status literals.
+const NOT_UPDATABLE_STATUSES: ReadonlySet<OrderStatus> = new Set([
+  OrderStatus.PENDING_CONFIRMATION,
+  OrderStatus.AWAITING_PRODUCTION,
+  OrderStatus.IN_PROGRESS,
+  OrderStatus.COMPLETED,
+  OrderStatus.CANCELLED,
+])
+
+export function canUpdateOrder(status: OrderStatus): boolean {
+  return !NOT_UPDATABLE_STATUSES.has(status)
+}
+
+// Only meaningful when canUpdateOrder(status) is false — callers only read this inside that
+// branch (see OrderDetailActions.tsx / OrderTableCells.tsx).
+export function resolveOrderUpdateDisabledHint(status: OrderStatus): string {
+  if (status === OrderStatus.PENDING_CONFIRMATION) {
+    return "Đơn hàng đã gửi duyệt, đang chờ xác nhận nên không thể chỉnh sửa"
+  }
+  if (
+    status === OrderStatus.AWAITING_PRODUCTION ||
+    status === OrderStatus.IN_PROGRESS
+  ) {
+    return "Đơn hàng đã được duyệt nên không thể chỉnh sửa"
+  }
+  return "Đơn hàng đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa"
+}
+
 // Derived pseudo-status. `isOverdue` is a backend-computed flag on every row,
 // not an OrderStatus member — an overdue order keeps its real status, so a row
 // can read "Đang thực hiện" next to a red delivery date. These constants exist

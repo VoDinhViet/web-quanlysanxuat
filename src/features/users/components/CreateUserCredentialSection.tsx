@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { Switch } from "@/components/ui/switch"
 import { withForm } from "@/hooks/use-app-form"
-import { rolesQueryOptions } from "@/features/users/api/users.options"
+import { rolesQueryOptions } from "@/features/users/api/options"
 import { createUserFormDefaultValues } from "@/features/users/schemas/create-user.schema"
 import { buildSelectOptions } from "@/lib/utils"
 

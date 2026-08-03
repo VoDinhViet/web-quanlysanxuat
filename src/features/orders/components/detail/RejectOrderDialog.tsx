@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CircleX } from "lucide-react"
+import { CloseCircle } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -79,7 +79,7 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
     >
       <DialogHeader className="gap-1">
         <DialogTitle className="flex items-center gap-2 text-base font-semibold">
-          <CircleX className="size-4 text-destructive" />
+          <CloseCircle className="size-4 text-destructive" />
           Từ chối đơn hàng {order.code}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">

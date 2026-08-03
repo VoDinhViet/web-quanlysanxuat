@@ -35,8 +35,9 @@ src/
     (authed)/                # authenticated shell + beforeLoad session guard
   features/<domain>/        # vertical slices; no cross-feature imports
     api/                      # data-access: server functions + queryOptions
+      index.ts                  # cross-feature barrel, if any other feature reads this one
       server-functions/         # createServerFn handlers, one per operation (*.api.ts)
-      <domain>.options.ts        # all of this feature's queryOptions factories
+      options/                   # queryOptions factories, one per file (*.options.ts) + own index.ts barrel
     components/              # presentational pieces — flat by default (see below)
     hooks/                   # feature-local hooks (option hooks, mutation hubs owning state)
     pages/                   # route-level composition
@@ -49,8 +50,10 @@ src/
 ```
 
 Every feature has migrated to the `api/` layout above (`orders` → `clients` → `suppliers` →
-`users` → `materials` → `products` → `auth`, in that order), and `FILTER_OPTIONS_LIMIT` has
-been fully inlined to a literal at each call site and removed from `src/lib/constants.ts`.
+`users` → `materials` → `products` → `auth`, in that order), and `FILTER_OPTIONS_LIMIT` /
+`REFERENCE_STALE_TIME` have both been fully inlined to a literal at each call site and removed
+from `src/lib/constants.ts`. Every feature has also since split its single `<domain>.options.ts`
+into `api/options/` (one queryOptions factory per file, see `src/features/orders/api/options/`).
 Follow the `api/` layout for any new feature or file.
 
 `units`, `operations`, `countries` were split off before that migration order — each is a brand-new
@@ -85,6 +88,6 @@ schemas, types, server functions, hooks, lib, routes — stays kebab-case
 (`users-search.schema.ts`, `create-user.ts`, `use-app-form.ts`). Zod schema files end in
 `.schema.ts`, domain type files end in `.type.ts`. A migrated feature's data-access files
 end in `.api.ts` (one `createServerFn` per file, under `api/server-functions/`) and
-`.options.ts` (that feature's `queryOptions` factories) — see `src/features/orders/api/`.
-Exception: `src/components/ui/` is shadcn-generated and keeps shadcn's kebab-case names.
-Path alias `@/*` resolves to `src/*`.
+`.options.ts` (one `queryOptions` factory per file, under `api/options/`) — see
+`src/features/orders/api/`. Exception: `src/components/ui/` is shadcn-generated and keeps
+shadcn's kebab-case names. Path alias `@/*` resolves to `src/*`.

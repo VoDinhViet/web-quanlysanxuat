@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { CreateMaterialPage } from "@/features/materials/pages/CreateMaterialPage"
-import { materialGroupOptionsQueryOptions } from "@/features/materials/api/materials.options"
+import { materialGroupOptionsQueryOptions } from "@/features/materials/api/options"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 

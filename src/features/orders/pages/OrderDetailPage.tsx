@@ -12,7 +12,7 @@ import { OrderDetailPaymentHistoryCard } from "@/features/orders/components/deta
 import { OrderRejectionNotice } from "@/features/orders/components/detail/OrderRejectionNotice"
 import { OrderDetailSummaryCard } from "@/features/orders/components/detail/OrderDetailSummaryCard"
 import { OrderDetailTimelineCard } from "@/features/orders/components/detail/OrderDetailTimelineCard"
-import { orderQueryOptions } from "@/features/orders/api/orders.options"
+import { orderQueryOptions } from "@/features/orders/api/options"
 
 export function OrderDetailPage() {
   const { orderId } = useParams({

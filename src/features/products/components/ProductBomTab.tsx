@@ -11,7 +11,7 @@ import { useProductBom } from "@/features/products/hooks/use-product-bom"
 import {
   productBomQueryOptions,
   productOperationsQueryOptions,
-} from "@/features/products/api/products.options"
+} from "@/features/products/api/options"
 import type { OperationsByProductId } from "@/features/products/components/ProductBomTable"
 import { BomItemType } from "@/lib/types/bom-item.type"
 import type { BomItem } from "@/lib/types/bom-item.type"

@@ -15,7 +15,7 @@ import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersT
 import {
   supplierGroupOptionsQueryOptions,
   suppliersQueryOptions,
-} from "@/features/suppliers/api/suppliers.options"
+} from "@/features/suppliers/api/options"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
 import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 

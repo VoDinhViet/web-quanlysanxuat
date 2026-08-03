@@ -7,7 +7,7 @@ import { productDetailSearchSchema } from "@/features/products/schemas/product-d
 import {
   productGroupOptionsQueryOptions,
   productQueryOptions,
-} from "@/features/products/api/products.options"
+} from "@/features/products/api/options"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 
 // Guarded on `products:read`, not `products:update`: a read-only viewer should

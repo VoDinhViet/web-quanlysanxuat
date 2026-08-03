@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { UpdateClientForm } from "@/features/clients/components/update/UpdateClientForm"
-import { clientQueryOptions } from "@/features/clients/api/clients.options"
+import { clientQueryOptions } from "@/features/clients/api/options"
 
 export function UpdateClientPage() {
   const { clientId } = useParams({

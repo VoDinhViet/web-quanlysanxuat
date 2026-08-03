@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useDebounceValue } from "usehooks-ts"
 
-import { clientOptionsQueryOptions } from "@/features/clients/api/clients.options"
+import { clientOptionsQueryOptions } from "@/features/clients/api/options"
 import { buildSelectOptions } from "@/lib/utils"
 
 // Server-searched options for the "Khách hàng" combobox: debounces the typed

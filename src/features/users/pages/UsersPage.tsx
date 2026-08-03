@@ -7,7 +7,7 @@ import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
 import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
-import { usersQueryOptions } from "@/features/users/api/users.options"
+import { usersQueryOptions } from "@/features/users/api/options"
 import type { UsersSearchSchema } from "@/features/users/schemas/users-search.schema"
 
 export function UsersPage() {

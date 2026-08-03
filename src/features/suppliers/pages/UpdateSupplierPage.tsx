@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { UpdateSupplierForm } from "@/features/suppliers/components/update/UpdateSupplierForm"
-import { supplierQueryOptions } from "@/features/suppliers/api/suppliers.options"
+import { supplierQueryOptions } from "@/features/suppliers/api/options"
 
 export function UpdateSupplierPage() {
   const { supplierId } = useParams({
