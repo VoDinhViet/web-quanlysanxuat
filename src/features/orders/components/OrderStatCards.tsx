@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildOrderStatTiles } from "@/features/orders/components/order-stat-tiles"
 import type { OrderStatTrendTone } from "@/features/orders/components/order-stat-tiles"
-import { orderStatsQueryOptions } from "@/features/orders/api/orders.options"
+import { orderStatsQueryOptions } from "@/features/orders/api/options"
 import { cn } from "@/lib/utils"
 
 const trendToneClassName: Record<OrderStatTrendTone, string> = {

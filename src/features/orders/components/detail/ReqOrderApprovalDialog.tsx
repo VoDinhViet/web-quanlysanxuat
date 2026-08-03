@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Send } from "lucide-react"
+import { SendSquare } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import {
@@ -16,25 +16,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { submitOrderForApproval } from "@/features/orders/api/server-functions/submit-order-for-approval.api"
+import { reqOrderApproval } from "@/features/orders/api/server-functions/req-order-approval.api"
 import type { OrderDetail } from "@/lib/types/order.type"
 
-type SubmitOrderApprovalDialogProps = {
+type ReqOrderApprovalDialogProps = {
   order: OrderDetail
   trigger: ReactNode
 }
 
 // DRAFT → PENDING_CONFIRMATION — hands the order to a director for approval.
-export function SubmitOrderApprovalDialog({
+export function ReqOrderApprovalDialog({
   order,
   trigger,
-}: SubmitOrderApprovalDialogProps) {
+}: ReqOrderApprovalDialogProps) {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
-  const submitOrderForApprovalFn = useServerFn(submitOrderForApproval)
+  const reqOrderApprovalFn = useServerFn(reqOrderApproval)
 
   const mutation = useMutation({
-    mutationFn: () => submitOrderForApprovalFn({ data: { orderId: order.id } }),
+    mutationFn: () => reqOrderApprovalFn({ data: { orderId: order.id } }),
     onSuccess: async () => {
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["orders"] })
@@ -53,7 +53,7 @@ export function SubmitOrderApprovalDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
-            <Send />
+            <SendSquare />
           </AlertDialogMedia>
           <AlertDialogTitle>Gửi duyệt đơn hàng này?</AlertDialogTitle>
           <AlertDialogDescription>

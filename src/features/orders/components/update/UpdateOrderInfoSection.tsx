@@ -6,7 +6,7 @@ import type { ComboboxOption } from "@/components/shared/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
 import { OrderContactSelect } from "@/features/orders/components/OrderContactSelect"
-import { exchangeRateQueryOptions } from "@/features/orders/api/orders.options"
+import { exchangeRateQueryOptions } from "@/features/orders/api/options"
 import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
 import {
   CURRENCY_LABELS,

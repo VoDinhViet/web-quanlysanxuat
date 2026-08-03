@@ -8,7 +8,7 @@ import {
   supplierGroupOptionsQueryOptions,
   supplierStatsQueryOptions,
   suppliersQueryOptions,
-} from "@/features/suppliers/api/suppliers.options"
+} from "@/features/suppliers/api/options"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
 
 export const Route = createFileRoute("/(authed)/manage_/suppliers")({

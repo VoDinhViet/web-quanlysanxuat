@@ -4,4 +4,4 @@
 export {
   orderQueryOptions,
   ordersQueryOptions,
-} from "@/features/orders/api/orders.options"
+} from "@/features/orders/api/options"

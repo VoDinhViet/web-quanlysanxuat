@@ -4,7 +4,7 @@ import { withForm } from "@/hooks/use-app-form"
 import {
   departmentsQueryOptions,
   positionsQueryOptions,
-} from "@/features/users/api/users.options"
+} from "@/features/users/api/options"
 import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
 import { EMPLOYEE_STATUS_LABELS } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"

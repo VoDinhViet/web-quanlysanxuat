@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
-import { productionOrdersQueryOptions } from "@/features/production-orders/api/production-orders.options"
+import { productionOrdersQueryOptions } from "@/features/production-orders/api/options"
 import { ProductionOrdersPage } from "@/features/production-orders/pages/ProductionOrdersPage"
 import { productionOrdersSearchSchema } from "@/features/production-orders/schemas/production-orders-search.schema"
 

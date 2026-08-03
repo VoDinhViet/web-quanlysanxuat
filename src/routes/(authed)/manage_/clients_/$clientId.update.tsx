@@ -5,7 +5,7 @@ import { requirePermission } from "@/features/auth/guard"
 import {
   clientGroupOptionsQueryOptions,
   clientQueryOptions,
-} from "@/features/clients/api/clients.options"
+} from "@/features/clients/api/options"
 import { UpdateClientPage } from "@/features/clients/pages/UpdateClientPage"
 
 export const Route = createFileRoute(

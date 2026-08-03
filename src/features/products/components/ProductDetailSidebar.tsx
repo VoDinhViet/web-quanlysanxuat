@@ -218,7 +218,7 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
 
   if (!image || isBroken) {
     return (
-      <div className="flex aspect-4/3 flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
+      <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
         <GalleryRemove className="size-7 text-muted-foreground/40" />
         <p className="text-[11px] font-medium text-muted-foreground">
           {isBroken ? "Không tải được hình ảnh" : "Chưa có hình ảnh"}
@@ -235,12 +235,12 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
         href={resolveFileUrl(image.url)}
         target="_blank"
         rel="noreferrer"
-        className="group relative flex aspect-4/3 items-center justify-center overflow-hidden rounded-md border border-border bg-muted/30 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="group relative flex aspect-square items-center justify-center overflow-hidden rounded-md border border-border bg-muted/30 outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <img
           src={resolveFileUrl(image.url)}
           alt={name}
-          className="size-full object-contain p-2 transition-transform duration-200 group-hover:scale-105"
+          className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
           onError={() => setIsBroken(true)}
         />
 

@@ -8,7 +8,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppSidebar } from "@/components/shared/AppSidebar"
-import { currentUserQueryOptions } from "@/features/auth/api/auth.options"
+import { currentUserQueryOptions } from "@/features/auth/api/options"
 import { requireSession } from "@/features/auth/guard"
 
 export const Route = createFileRoute("/(authed)")({

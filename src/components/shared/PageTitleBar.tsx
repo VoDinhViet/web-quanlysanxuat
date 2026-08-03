@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
-import { currentUserQueryOptions } from "@/features/auth/api/auth.options"
+import { currentUserQueryOptions } from "@/features/auth/api/options"
 import { logout } from "@/features/auth/api/server-functions/logout.api"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { FileRouteTypes } from "@/routeTree.gen"

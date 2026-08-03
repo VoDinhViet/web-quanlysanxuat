@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage"
-import { orderQueryOptions } from "@/features/orders/api/orders.options"
+import { orderQueryOptions } from "@/features/orders/api/options"
 
 // Guarded on `orders:read`, not `orders:update`: a read-only viewer should
 // reach this screen. The write action gates itself (OrderDetailActions'

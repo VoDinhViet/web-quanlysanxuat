@@ -4,7 +4,7 @@ import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { UsersPage } from "@/features/users/pages/UsersPage"
 import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
-import { usersQueryOptions } from "@/features/users/api/users.options"
+import { usersQueryOptions } from "@/features/users/api/options"
 
 export const Route = createFileRoute("/(authed)/manage_/users")({
   beforeLoad: ({ context }) =>

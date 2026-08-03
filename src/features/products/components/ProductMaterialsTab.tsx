@@ -5,7 +5,7 @@ import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
 import { ProductMaterialsTable } from "@/features/products/components/ProductMaterialsTable"
 import { ProductMaterialsTableFilter } from "@/features/products/components/ProductMaterialsTableFilter"
-import { bomMaterialsQueryOptions } from "@/features/products/api/products.options"
+import { bomMaterialsQueryOptions } from "@/features/products/api/options"
 import type { Product } from "@/lib/types/product.type"
 
 type ProductMaterialsTabProps = {

@@ -8,7 +8,7 @@ import {
   positionsQueryOptions,
   rolesQueryOptions,
   userQueryOptions,
-} from "@/features/users/api/users.options"
+} from "@/features/users/api/options"
 
 export const Route = createFileRoute("/(authed)/manage_/users_/$userId/update")(
   {

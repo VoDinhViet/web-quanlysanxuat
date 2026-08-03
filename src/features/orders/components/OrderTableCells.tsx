@@ -11,7 +11,11 @@ import {
 } from "@/components/ui/tooltip"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { OrderStatus, resolveDeliveryTone } from "@/lib/types/order.type"
+import {
+  canUpdateOrder,
+  resolveDeliveryTone,
+  resolveOrderUpdateDisabledHint,
+} from "@/lib/types/order.type"
 import type { DeliveryTone, Order } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
@@ -49,15 +53,14 @@ export function DueDateCell({ order }: { order: Order }) {
 }
 
 // A COMPLETED/CANCELLED order can't be edited (backend rejects the PATCH with
-// order.error.not_editable, and the update route's own loader redirects away) — its
-// "Chỉnh sửa" stays disabled with a status-specific hint. Otherwise it links to the update
-// screen, gated on `orders:update` same as the create button on the toolbar. The
-// <span tabIndex={0}> wrapper on the disabled action is required — a disabled button
-// swallows pointer events and the tooltip would never fire.
+// order.error.not_editable, and the update route's own loader redirects away); PENDING_CONFIRMATION
+// and everything from AWAITING_PRODUCTION onward can't either, but those are a front-end-only rule
+// (the backend still accepts the PATCH) — see canUpdateOrder. Either way "Chỉnh sửa" stays disabled
+// with a status-specific hint. Otherwise it links to the update screen, gated on `orders:update`
+// same as the create button on the toolbar. The <span tabIndex={0}> wrapper on the disabled action
+// is required — a disabled button swallows pointer events and the tooltip would never fire.
 export function OrderActionsCell({ order }: { order: Order }) {
-  const isEditable =
-    order.status !== OrderStatus.COMPLETED &&
-    order.status !== OrderStatus.CANCELLED
+  const isEditable = canUpdateOrder(order.status)
 
   return (
     <div className="flex items-center justify-center gap-1.5">
@@ -80,7 +83,7 @@ export function OrderActionsCell({ order }: { order: Order }) {
       ) : (
         <DisabledAction
           label="Chỉnh sửa"
-          hint="Đơn hàng đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa"
+          hint={resolveOrderUpdateDisabledHint(order.status)}
         >
           <Pencil className="size-3.5" />
         </DisabledAction>

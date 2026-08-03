@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { UpdateOrderForm } from "@/features/orders/components/update/UpdateOrderForm"
-import { orderQueryOptions } from "@/features/orders/api/orders.options"
+import { orderQueryOptions } from "@/features/orders/api/options"
 
 export function UpdateOrderPage() {
   const { orderId } = useParams({

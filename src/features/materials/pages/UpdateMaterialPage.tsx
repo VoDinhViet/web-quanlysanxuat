@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { UpdateMaterialForm } from "@/features/materials/components/update/UpdateMaterialForm"
-import { materialQueryOptions } from "@/features/materials/api/materials.options"
+import { materialQueryOptions } from "@/features/materials/api/options"
 
 export function UpdateMaterialPage() {
   const { materialId } = useParams({

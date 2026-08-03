@@ -6,7 +6,7 @@ import { UpdateMaterialPage } from "@/features/materials/pages/UpdateMaterialPag
 import {
   materialGroupOptionsQueryOptions,
   materialQueryOptions,
-} from "@/features/materials/api/materials.options"
+} from "@/features/materials/api/options"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 

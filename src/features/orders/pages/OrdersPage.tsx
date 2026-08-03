@@ -9,7 +9,7 @@ import { OrderStatCards } from "@/features/orders/components/OrderStatCards"
 import { OrderStatusLegend } from "@/features/orders/components/OrderStatusLegend"
 import { OrdersTable } from "@/features/orders/components/OrdersTable"
 import { OrdersTableFilter } from "@/features/orders/components/OrdersTableFilter"
-import { ordersQueryOptions } from "@/features/orders/api/orders.options"
+import { ordersQueryOptions } from "@/features/orders/api/options"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
 
 export function OrdersPage() {

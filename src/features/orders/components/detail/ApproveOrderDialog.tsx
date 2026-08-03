@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CircleCheck } from "lucide-react"
+import { CheckCircle } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import {
@@ -53,7 +53,7 @@ export function ApproveOrderDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
-            <CircleCheck />
+            <CheckCircle />
           </AlertDialogMedia>
           <AlertDialogTitle>Duyệt đơn hàng này?</AlertDialogTitle>
           <AlertDialogDescription>

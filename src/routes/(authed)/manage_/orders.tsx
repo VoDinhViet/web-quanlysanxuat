@@ -6,7 +6,7 @@ import { OrdersPage } from "@/features/orders/pages/OrdersPage"
 import {
   orderStatsQueryOptions,
   ordersQueryOptions,
-} from "@/features/orders/api/orders.options"
+} from "@/features/orders/api/options"
 import { ordersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
 
 export const Route = createFileRoute("/(authed)/manage_/orders")({

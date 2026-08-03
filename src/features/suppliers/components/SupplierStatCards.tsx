@@ -9,7 +9,7 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { supplierStatsQueryOptions } from "@/features/suppliers/api/suppliers.options"
+import { supplierStatsQueryOptions } from "@/features/suppliers/api/options"
 import type { SupplierStats } from "@/lib/types/supplier.type"
 import { cn } from "@/lib/utils"
 

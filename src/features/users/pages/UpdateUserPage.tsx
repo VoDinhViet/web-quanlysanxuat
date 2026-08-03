@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { UpdateUserForm } from "@/features/users/components/UpdateUserForm"
-import { userQueryOptions } from "@/features/users/api/users.options"
+import { userQueryOptions } from "@/features/users/api/options"
 
 export function UpdateUserPage() {
   const { userId } = useParams({

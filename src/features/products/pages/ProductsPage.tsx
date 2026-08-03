@@ -14,7 +14,7 @@ import { ProductsTableFilter } from "@/features/products/components/ProductsTabl
 import {
   productGroupOptionsQueryOptions,
   productsQueryOptions,
-} from "@/features/products/api/products.options"
+} from "@/features/products/api/options"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 
