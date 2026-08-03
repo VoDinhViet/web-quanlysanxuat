@@ -13,8 +13,8 @@ type ProductionJobDetailTabItem = {
 
 const PRODUCTION_JOB_DETAIL_TAB_ITEMS: ProductionJobDetailTabItem[] = [
   { value: "info", label: "Thông tin chung", icon: InfoCircle },
-  { value: "bom", label: "BOM vật tư", icon: Layers },
-  { value: "operations", label: "Công đoạn sản xuất", icon: Route },
+  { value: "materials", label: "BOM vật tư", icon: Layers },
+  { value: "bom", label: "Công đoạn sản xuất", icon: Route },
 ]
 
 // Only the triggers — the panels live in the page, same split as ProductDetailTabs.tsx. No

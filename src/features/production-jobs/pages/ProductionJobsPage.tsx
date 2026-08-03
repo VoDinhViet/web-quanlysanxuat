@@ -11,7 +11,7 @@ import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
 import { ProductionJobsTable } from "@/features/production-jobs/components/ProductionJobsTable"
 import { ProductionJobsTableFilter } from "@/features/production-jobs/components/ProductionJobsTableFilter"
-import { productionJobsQueryOptions } from "@/features/production-jobs/api/production-jobs.options"
+import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 import type { ProductionJobsSearchSchema } from "@/features/production-jobs/schemas/production-jobs-search.schema"
 

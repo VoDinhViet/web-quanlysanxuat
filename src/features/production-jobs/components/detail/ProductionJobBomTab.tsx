@@ -1,196 +1,158 @@
-import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { useDebounceCallback } from "usehooks-ts"
-import { Search } from "lucide-react"
+import { Download, Logs, Route, Send } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
 
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { MissingFieldValue } from "@/components/shared/MissingFieldValue"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
-import { TablePagination } from "@/components/shared/TablePagination"
+import { Badge } from "@/components/ui/badge"
 import { TableQueryError } from "@/components/shared/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
-import { productionJobMaterialsQueryOptions } from "@/features/production-jobs/api/production-jobs.options"
+import { DisabledAction } from "@/features/production-jobs/components/ProductionJobTableCells"
+import { ProductionJobBomTable } from "@/features/production-jobs/components/detail/ProductionJobBomTable"
+import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
+import { ProductionJobStatus } from "@/lib/types/production-job.type"
+import type { ProductionJobBomItem } from "@/lib/types/production-job.type"
 
-const quantityFormatter = new Intl.NumberFormat("vi-VN")
-const DEFAULT_PAGE = 1
-const DEFAULT_LIMIT = 10
-const COLUMN_COUNT = 7
+// A rough row-count guess for the loading placeholder's height — the BOM tree isn't paginated,
+// so there's no `search.limit` to size it off (unlike the paginated tables elsewhere in the app).
+const BOM_ROW_ESTIMATE = 5
 
-type ProductionJobBomTabProps = {
-  productionJobId: string
+export type ProductionJobBomRow = {
+  node: ProductionJobBomItem
+  path: string
+  level: number
 }
 
-// "BOM vật tư" tab — vật tư cần cho Job này, đọc trực tiếp GET /production-jobs/:jobId/materials
-// (phân trang), cùng pattern client-driven useQuery với ProductMaterialsTab.tsx. Cột "Tiến độ
-// xuất kho" của bản mock cũ (badge + phân số + thanh tiến độ) dựa vào `issuedQty` — trường này
-// không có trên endpoint thật (không có liên kết xuất kho), nên hiện MissingFieldValue thay vì
-// bịa số.
-export function ProductionJobBomTab({
-  productionJobId,
-}: ProductionJobBomTabProps) {
-  const search = useSearch({
-    from: "/(authed)/manage_/production-jobs_/$productionJobId",
-  })
-  const navigate = useNavigate({
-    from: "/manage/production-jobs/$productionJobId",
+// GET /production-jobs/:jobId/bom returns a flat parent-child list (`parentId` links each node
+// to its parent, `null` = top-level, direct child of the FG) — build the tree in memory and
+// flatten it back out depth-first into a numbered, indented row list (path like "1.2"), same
+// idiom as `flattenNodes` in ProductBomTable.tsx.
+function buildBomRows(nodes: ProductionJobBomItem[]): ProductionJobBomRow[] {
+  const childrenByParentId = new Map<string | null, ProductionJobBomItem[]>()
+  nodes.forEach((node) => {
+    const siblings = childrenByParentId.get(node.parentId) ?? []
+    siblings.push(node)
+    childrenByParentId.set(node.parentId, siblings)
   })
 
-  const page = search.page ?? DEFAULT_PAGE
-  const limit = search.limit ?? DEFAULT_LIMIT
+  const rows: ProductionJobBomRow[] = []
 
-  const materialsQuery = useQuery({
-    ...productionJobMaterialsQueryOptions(productionJobId, {
-      page,
-      limit,
-      q: search.q,
-    }),
-    placeholderData: keepPreviousData,
-  })
-
-  const handleSearchChange = (q: string | undefined) => {
-    void navigate({
-      search: (prev) => ({ ...prev, q, page: DEFAULT_PAGE }),
-      replace: true,
+  function visit(
+    parentId: string | null,
+    parentPath: string | null,
+    level: number
+  ) {
+    const children = childrenByParentId.get(parentId) ?? []
+    children.forEach((node, index) => {
+      const path =
+        parentPath === null ? `${index + 1}` : `${parentPath}.${index + 1}`
+      rows.push({ node, path, level })
+      visit(node.id, path, level + 1)
     })
   }
 
-  return (
-    <div className="flex min-w-0 flex-col">
-      <MaterialsSearchFilter q={search.q} onSearchChange={handleSearchChange} />
-
-      {materialsQuery.isPending ? (
-        <TableQueryLoading rows={limit} />
-      ) : materialsQuery.isError ? (
-        <TableQueryError
-          error={materialsQuery.error.message}
-          onRetry={() => void materialsQuery.refetch()}
-        />
-      ) : (
-        <div className="px-4 pb-4 lg:px-5">
-          <Table>
-            <TableHeader>
-              <TableRow className="h-11 bg-muted/30 font-semibold text-muted-foreground hover:bg-muted/30">
-                <TableHead className="w-14 font-bold text-foreground">
-                  STT
-                </TableHead>
-                <TableHead className="w-32 font-bold text-foreground">
-                  Mã vật tư
-                </TableHead>
-                <TableHead className="min-w-44 font-bold text-foreground">
-                  Tên vật tư
-                </TableHead>
-                <TableHead className="w-24 font-bold text-foreground">
-                  ĐVT
-                </TableHead>
-                <TableHead className="w-24 text-center font-bold text-foreground">
-                  Định mức
-                </TableHead>
-                <TableHead className="w-24 text-center font-bold text-foreground">
-                  SL cần
-                </TableHead>
-                <TableHead className="min-w-48 font-bold text-foreground">
-                  Tiến độ xuất kho
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {materialsQuery.data.data.length === 0 ? (
-                <TableEmptyRow colSpan={COLUMN_COUNT} />
-              ) : (
-                materialsQuery.data.data.map((material, index) => (
-                  <TableRow
-                    key={material.materialId}
-                    className="bg-card hover:bg-muted/20"
-                  >
-                    <TableCell className="py-3 font-mono text-muted-foreground">
-                      {(page - 1) * limit + index + 1}
-                    </TableCell>
-                    <TableCell className="py-3 font-mono font-semibold text-foreground">
-                      {material.code}
-                    </TableCell>
-                    <TableCell className="py-3 font-medium text-foreground">
-                      {material.name}
-                    </TableCell>
-                    <TableCell className="py-3 text-muted-foreground">
-                      {material.unit.name}
-                    </TableCell>
-                    <TableCell className="py-3 text-center text-foreground tabular-nums">
-                      {material.unitQty !== null
-                        ? quantityFormatter.format(material.unitQty)
-                        : "—"}
-                    </TableCell>
-                    <TableCell className="py-3 text-center text-foreground tabular-nums">
-                      {quantityFormatter.format(material.requiredQty)}
-                    </TableCell>
-                    <TableCell className="py-3">
-                      <MissingFieldValue label="Chưa có API xuất kho" />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-
-          <TablePagination
-            pagination={materialsQuery.data.pagination}
-            className="pt-4"
-          />
-        </div>
-      )}
-    </div>
-  )
+  visit(null, null, 0)
+  return rows
 }
 
-type MaterialsSearchFilterProps = {
-  q: string | undefined
-  onSearchChange: (q: string | undefined) => void
+// An operation counts as "hoàn thành" once its completedQuantity reaches its own BOM node's
+// plannedQuantity — same threshold the backend uses to auto-set completedDate. Feeds the header
+// badge; each Part's own count is computed the same way inside ProductionJobBomTable.
+function summarizeOperationProgress(rows: ProductionJobBomRow[]): {
+  completed: number
+  total: number
+} {
+  let completed = 0
+  let total = 0
+
+  rows.forEach((row) => {
+    row.node.operations.forEach((operation) => {
+      total += 1
+      if (operation.completedQuantity >= row.node.plannedQuantity) {
+        completed += 1
+      }
+    })
+  })
+
+  return { completed, total }
 }
 
-function MaterialsSearchFilter({
-  q,
-  onSearchChange,
-}: MaterialsSearchFilterProps) {
-  const [value, setValue] = useState(q ?? "")
+type ProductionJobBomTabProps = {
+  productionJobId: string
+  status: ProductionJobStatus
+}
 
-  // Filters as the user types, 300ms after the last keystroke — same delay as
-  // the other list filters in this app.
-  const handleSearch = useDebounceCallback((term: string) => {
-    const trimmed = term.trim()
-    onSearchChange(trimmed.length > 0 ? trimmed : undefined)
-  }, 300)
+// Reads GET /production-jobs/:jobId/bom directly (client-driven, tab-gated) and groups its
+// as-used routing by BOM node — one header per node (code/tên + SL hoàn thành của riêng node đó)
+// followed by that node's công đoạn, mỗi công đoạn kèm SL kế hoạch (plannedQuantity của node) và
+// ô SL hoàn thành sửa được (ghi đè qua PATCH .../operations/:operationId). Sửa chỉ mở khi Job
+// đang IN_PROGRESS (khớp ràng buộc backend — completedQuantity/completedDate đóng băng ngoài
+// trạng thái đó).
+//
+// Single-column, full width: the previous 320px side rail (`ProductionJobBomSidebar`, since
+// removed) only ever held inert placeholders for gửi/nhận gia công ngoài + a static rule list —
+// none of it was Job-specific data worth keeping in view the way ProductDetailSidebar's facts
+// are, so it's folded into the card itself instead of claiming a permanent column: the pending
+// actions move into the header toolbar (DisabledAction — same "chưa được xây dựng" idiom as the
+// list page's row actions), the rule text moves to a caption below the table (same idiom as
+// ProductionOrderItemsCard's "Công thức: …" line), and the table gets the width back.
+export function ProductionJobBomTab({
+  productionJobId,
+  status,
+}: ProductionJobBomTabProps) {
+  const bomQuery = useQuery(productionJobBomQueryOptions(productionJobId))
+  const canEdit = status === ProductionJobStatus.IN_PROGRESS
+  const rows = bomQuery.data ? buildBomRows(bomQuery.data) : []
+  const progress = summarizeOperationProgress(rows)
 
   return (
-    <div className="bg-card px-4 py-4 lg:px-5">
-      <label className="block max-w-sm space-y-1.5">
-        <span className="sr-only">Tìm kiếm vật tư</span>
-        <div className="relative">
-          <Input
-            className="pr-9 text-xs placeholder:text-muted-foreground/75"
-            placeholder="Tìm kiếm theo mã, tên vật tư..."
-            value={value}
-            onChange={(event) => {
-              setValue(event.target.value)
-              handleSearch(event.target.value)
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault()
-                handleSearch.flush()
-              }
-            }}
-          />
-          <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+    <div className="min-w-0 space-y-3 p-4 sm:p-5">
+      <div className="overflow-hidden rounded-md border border-border/60 bg-card">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Route className="size-3.5 text-muted-foreground" />
+            <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+              Công đoạn sản xuất
+            </h2>
+            {bomQuery.isSuccess && progress.total > 0 ? (
+              <Badge variant="secondary" className="font-normal">
+                {progress.completed}/{progress.total} hoàn thành
+              </Badge>
+            ) : null}
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <DisabledAction label="Xem lịch sử cập nhật">
+              <Logs className="size-3.5" />
+            </DisabledAction>
+            <DisabledAction label="Gửi đi gia công ngoài">
+              <Send className="size-3.5" />
+            </DisabledAction>
+            <DisabledAction label="Cập nhật SL nhận về (gia công ngoài)">
+              <Download className="size-3.5" />
+            </DisabledAction>
+          </div>
         </div>
-      </label>
+
+        {bomQuery.isPending ? (
+          <TableQueryLoading rows={BOM_ROW_ESTIMATE} />
+        ) : bomQuery.isError ? (
+          <TableQueryError
+            error={bomQuery.error.message}
+            onRetry={() => void bomQuery.refetch()}
+          />
+        ) : (
+          <ProductionJobBomTable
+            rows={rows}
+            productionJobId={productionJobId}
+            canEdit={canEdit}
+          />
+        )}
+      </div>
+
+      <p className="text-[11px] text-muted-foreground">
+        SL kế hoạch lấy từ cấu trúc sản phẩm lúc tạo Job. SL hoàn thành là số
+        lượng thực tế đã hoàn thành tại xưởng — nhập trực tiếp vào bảng trên,
+        Ngày hoàn thành tự điền khi đạt đủ SL kế hoạch. Theo dõi gửi/nhận gia
+        công ngoài (có thể nhiều lần, tự động cộng dồn) sẽ được bổ sung sau.
+      </p>
     </div>
   )
 }
