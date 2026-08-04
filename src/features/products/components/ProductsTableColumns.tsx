@@ -8,7 +8,10 @@ import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { CopyProductDialog } from "@/features/products/components/CopyProductDialog"
 import { DeleteProductDialog } from "@/features/products/components/DeleteProductDialog"
-import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
+import {
+  ProductStatusBadge,
+  ProductTypeBadge,
+} from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Product } from "@/lib/types/product.type"
 
@@ -59,6 +62,14 @@ export const productColumns = [
         </div>
       )
     },
+  }),
+  productColumnHelper.accessor("type", {
+    header: "Loại",
+    meta: {
+      headerClassName: "min-w-28 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ getValue }) => <ProductTypeBadge type={getValue()} />,
   }),
   productColumnHelper.accessor((row) => row.client?.name ?? "—", {
     id: "client",

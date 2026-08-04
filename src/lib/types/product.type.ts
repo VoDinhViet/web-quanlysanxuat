@@ -20,6 +20,11 @@ export enum ProductType {
   WORK_IN_PROGRESS = "WORK_IN_PROGRESS",
 }
 
+export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
+  [ProductType.FINISHED_GOOD]: "Thành phẩm",
+  [ProductType.WORK_IN_PROGRESS]: "Bán thành phẩm",
+}
+
 /** Mirrors the backend's `source` relation (ProductRefResDto) — the product
  *  another product was cloned from. The group/unit relations use their own
  *  domain types (`ProductGroupRef` below, `Unit` from @/lib/types/unit.type)
@@ -48,17 +53,11 @@ export type ProductCreator = {
  * List rows and the detail endpoint eager-load the same relations, so a row
  * already carries everything the detail drawer needs — no lazy detail fetch.
  */
-/** Mirrors the backend's ProductAttachmentResDto — a join row carrying the
- *  registry file it points at. */
-export type ProductAttachment = {
-  id: string
-  file: FileResource
-}
-
 export type Product = {
   id: string
   code: string
   name: string
+  type: ProductType
   image: FileResource | null
   status: ProductStatus
   note: string | null
@@ -68,7 +67,6 @@ export type Product = {
   // The product this one was cloned from (POST /:id/copy); null for an
   // originally-created product.
   source: ProductRef | null
-  attachments: ProductAttachment[]
   creator: ProductCreator | null
   createdAt: string
   updatedAt: string

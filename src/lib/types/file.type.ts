@@ -7,6 +7,8 @@ export enum UploadType {
   MATERIAL_IMAGE = "MATERIAL_IMAGE",
   MATERIAL_DOCUMENT = "MATERIAL_DOCUMENT",
   PRODUCT_IMAGE = "PRODUCT_IMAGE",
+  // Retired — product_attachments was dropped in favour of per-BOM-item drawings.
+  // Kept because the backend enum can't drop a value either; don't use for new files.
   PRODUCT_DOCUMENT = "PRODUCT_DOCUMENT",
   SUPPLIER_LOGO = "SUPPLIER_LOGO",
   SUPPLIER_DOCUMENT = "SUPPLIER_DOCUMENT",

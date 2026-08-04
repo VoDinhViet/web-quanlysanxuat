@@ -4,19 +4,14 @@ import axios from "axios"
 import { createProductSchema } from "@/features/products/schemas/create-product.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import {
-  resolveApiAttachmentFileIds,
-  resolveApiFileId,
-} from "@/lib/file-field.schema"
-import type { Product } from "@/lib/types/product.type"
+import { resolveApiFileId } from "@/lib/file-field.schema"
 
 // The form holds the whole uploaded-file object so it can render a preview; the
 // backend only wants the file id.
 const createProductPayloadSchema = createProductSchema.transform(
-  ({ image, attachments, ...rest }) => ({
+  ({ image, ...rest }) => ({
     ...rest,
     imageFileId: resolveApiFileId(image, "create"),
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
   })
 )
 
@@ -49,11 +44,9 @@ function resolveCreateProductErrorMessage(error: unknown): string {
 
 export const createProduct = createServerFn({ method: "POST" })
   .validator(createProductPayloadSchema)
-  .handler(async ({ data }): Promise<Product> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
-      const response = await http.post<Product>("/api/products", data)
-
-      return response.data
+      await http.post("/api/products", data)
     } catch (error) {
       logHttpError(error, "createProduct")
 

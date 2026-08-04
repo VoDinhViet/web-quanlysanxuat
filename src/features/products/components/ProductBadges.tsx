@@ -1,7 +1,12 @@
 import { cva } from "class-variance-authority"
 
 import { Badge } from "@/components/ui/badge"
-import { PRODUCT_STATUS_LABELS, ProductStatus } from "@/lib/types/product.type"
+import {
+  PRODUCT_STATUS_LABELS,
+  PRODUCT_TYPE_LABELS,
+  ProductStatus,
+  ProductType,
+} from "@/lib/types/product.type"
 import { cn } from "@/lib/utils"
 
 const statusBadgeVariants = cva("", {
@@ -38,6 +43,31 @@ export function ProductStatusBadge({
         className={cn("size-1.5 rounded-full", STATUS_DOT_CLASSNAME[status])}
       />
       {PRODUCT_STATUS_LABELS[status]}
+    </Badge>
+  )
+}
+
+const typeBadgeVariants = cva("", {
+  variants: {
+    type: {
+      [ProductType.FINISHED_GOOD]: "bg-primary/10 text-primary",
+      [ProductType.WORK_IN_PROGRESS]: "bg-warning/10 text-warning",
+    },
+  },
+})
+
+type ProductTypeBadgeProps = {
+  type: ProductType
+  className?: string
+}
+
+export function ProductTypeBadge({ type, className }: ProductTypeBadgeProps) {
+  return (
+    <Badge
+      variant="outline"
+      className={cn(typeBadgeVariants({ type }), className)}
+    >
+      {PRODUCT_TYPE_LABELS[type]}
     </Badge>
   )
 }
