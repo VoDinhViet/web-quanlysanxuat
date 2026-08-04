@@ -47,6 +47,8 @@ export const PERMISSION_CODES = [
   "suppliers:create",
   "suppliers:update",
   "suppliers:delete",
+
+  "purchase-requests:read",
 ] as const
 
 export type PermissionCode = (typeof PERMISSION_CODES)[number]

@@ -20,6 +20,7 @@ import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage
 import { Route as authedManageProductionJobsRouteImport } from './routes/(authed)/manage_/production-jobs'
 import { Route as authedManageProductionOrdersRouteImport } from './routes/(authed)/manage_/production-orders'
 import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
+import { Route as authedManagePurchaseRequestsRouteImport } from './routes/(authed)/manage_/purchase-requests'
 import { Route as authedManageSuppliersRouteImport } from './routes/(authed)/manage_/suppliers'
 import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
 import { Route as authedManageClientsCreateRouteImport } from './routes/(authed)/manage_/clients_/create'
@@ -93,6 +94,12 @@ const authedManageProductsRoute = authedManageProductsRouteImport.update({
   path: '/manage/products',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManagePurchaseRequestsRoute =
+  authedManagePurchaseRequestsRouteImport.update({
+    id: '/manage_/purchase-requests',
+    path: '/manage/purchase-requests',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageSuppliersRoute = authedManageSuppliersRouteImport.update({
   id: '/manage_/suppliers',
   path: '/manage/suppliers',
@@ -203,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
   '/manage/products': typeof authedManageProductsRoute
+  '/manage/purchase-requests': typeof authedManagePurchaseRequestsRoute
   '/manage/suppliers': typeof authedManageSuppliersRoute
   '/manage/users': typeof authedManageUsersRoute
   '/manage/clients/create': typeof authedManageClientsCreateRoute
@@ -231,6 +239,7 @@ export interface FileRoutesByTo {
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
   '/manage/products': typeof authedManageProductsRoute
+  '/manage/purchase-requests': typeof authedManagePurchaseRequestsRoute
   '/manage/suppliers': typeof authedManageSuppliersRoute
   '/manage/users': typeof authedManageUsersRoute
   '/manage/clients/create': typeof authedManageClientsCreateRoute
@@ -262,6 +271,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/production-jobs': typeof authedManageProductionJobsRoute
   '/(authed)/manage_/production-orders': typeof authedManageProductionOrdersRoute
   '/(authed)/manage_/products': typeof authedManageProductsRoute
+  '/(authed)/manage_/purchase-requests': typeof authedManagePurchaseRequestsRoute
   '/(authed)/manage_/suppliers': typeof authedManageSuppliersRoute
   '/(authed)/manage_/users': typeof authedManageUsersRoute
   '/(authed)/manage_/clients_/create': typeof authedManageClientsCreateRoute
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/manage/production-jobs'
     | '/manage/production-orders'
     | '/manage/products'
+    | '/manage/purchase-requests'
     | '/manage/suppliers'
     | '/manage/users'
     | '/manage/clients/create'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/manage/production-jobs'
     | '/manage/production-orders'
     | '/manage/products'
+    | '/manage/purchase-requests'
     | '/manage/suppliers'
     | '/manage/users'
     | '/manage/clients/create'
@@ -350,6 +362,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/production-jobs'
     | '/(authed)/manage_/production-orders'
     | '/(authed)/manage_/products'
+    | '/(authed)/manage_/purchase-requests'
     | '/(authed)/manage_/suppliers'
     | '/(authed)/manage_/users'
     | '/(authed)/manage_/clients_/create'
@@ -452,6 +465,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/products'
       fullPath: '/manage/products'
       preLoaderRoute: typeof authedManageProductsRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-requests': {
+      id: '/(authed)/manage_/purchase-requests'
+      path: '/manage/purchase-requests'
+      fullPath: '/manage/purchase-requests'
+      preLoaderRoute: typeof authedManagePurchaseRequestsRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/suppliers': {
@@ -596,6 +616,7 @@ interface authedRouteRouteChildren {
   authedManageProductionJobsRoute: typeof authedManageProductionJobsRoute
   authedManageProductionOrdersRoute: typeof authedManageProductionOrdersRoute
   authedManageProductsRoute: typeof authedManageProductsRoute
+  authedManagePurchaseRequestsRoute: typeof authedManagePurchaseRequestsRoute
   authedManageSuppliersRoute: typeof authedManageSuppliersRoute
   authedManageUsersRoute: typeof authedManageUsersRoute
   authedManageClientsCreateRoute: typeof authedManageClientsCreateRoute
@@ -623,6 +644,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageProductionJobsRoute: authedManageProductionJobsRoute,
   authedManageProductionOrdersRoute: authedManageProductionOrdersRoute,
   authedManageProductsRoute: authedManageProductsRoute,
+  authedManagePurchaseRequestsRoute: authedManagePurchaseRequestsRoute,
   authedManageSuppliersRoute: authedManageSuppliersRoute,
   authedManageUsersRoute: authedManageUsersRoute,
   authedManageClientsCreateRoute: authedManageClientsCreateRoute,
