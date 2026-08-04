@@ -4,20 +4,15 @@ import axios from "axios"
 import { updateProductSchema } from "@/features/products/schemas/update-product.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import {
-  resolveApiAttachmentFileIds,
-  resolveApiFileId,
-} from "@/lib/file-field.schema"
-import type { Product } from "@/lib/types/product.type"
+import { resolveApiFileId } from "@/lib/file-field.schema"
 
-// `image`/`attachments` carry display URLs the backend has no field for — only the file ids go
-// on the wire. `updateProductSchema` already leaves every other field wire-ready
-// (emptyToNull-transformed), so this only maps file ids.
+// `image` carries a display URL the backend has no field for — only the file id goes on the
+// wire. `updateProductSchema` already leaves every other field wire-ready (emptyToNull-
+// transformed), so this only maps the image field id.
 const updateProductPayloadSchema = updateProductSchema.transform(
-  ({ image, attachments, ...rest }) => ({
+  ({ image, ...rest }) => ({
     ...rest,
     imageFileId: resolveApiFileId(image, "update"),
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
   })
 )
 
@@ -52,15 +47,10 @@ function resolveUpdateProductErrorMessage(error: unknown): string {
 
 export const updateProduct = createServerFn({ method: "POST" })
   .validator(updateProductPayloadSchema)
-  .handler(async ({ data }): Promise<Product> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
       const { productId, ...payload } = data
-      const response = await http.patch<Product>(
-        `/api/products/${productId}`,
-        payload
-      )
-
-      return response.data
+      await http.patch(`/api/products/${productId}`, payload)
     } catch (error) {
       logHttpError(error, "updateProduct")
 

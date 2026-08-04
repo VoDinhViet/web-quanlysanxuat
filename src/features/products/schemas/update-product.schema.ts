@@ -1,8 +1,8 @@
 import { z } from "zod"
 
-import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+import { imageFieldSchema } from "@/lib/file-field.schema"
 import { emptyToNull, emptyToUndefined } from "@/lib/zod-transforms"
-import { ProductStatus } from "@/lib/types/product.type"
+import { ProductStatus, ProductType } from "@/lib/types/product.type"
 
 // Wire contract for PATCH /api/products/:id — also the client-side onSubmit validator for
 // UpdateProductForm (via ProductInfoTab, both driven by ProductDetailPage's own form).
@@ -26,10 +26,10 @@ export const updateProductSchema = z.object({
     .min(1, "Vui lòng nhập tên sản phẩm")
     .max(255, "Tên sản phẩm tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
+  type: z.enum(ProductType),
   productGroupId: z.string().trim().transform(emptyToNull),
   clientId: z.string().trim().transform(emptyToNull),
   image: imageFieldSchema,
-  attachments: z.array(fileFieldSchema),
   status: z.enum(ProductStatus),
   note: z
     .string()
@@ -47,10 +47,10 @@ export const updateProductFormDefaultValues: UpdateProductSchema = {
   code: "",
   name: "",
   unitId: "",
+  type: ProductType.FINISHED_GOOD,
   productGroupId: "",
   clientId: "",
   image: null,
-  attachments: [],
   status: ProductStatus.ACTIVE,
   note: "",
 }

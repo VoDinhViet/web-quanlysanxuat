@@ -1,8 +1,8 @@
 import { z } from "zod"
 
-import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
+import { imageFieldSchema } from "@/lib/file-field.schema"
 import { emptyToUndefined } from "@/lib/zod-transforms"
-import { ProductStatus } from "@/lib/types/product.type"
+import { ProductStatus, ProductType } from "@/lib/types/product.type"
 
 // Wire contract for POST /api/products — also the client-side onSubmit validator for
 // CreateProductForm. `code` is editable (backend allows it, re-checks uniqueness) — leave it
@@ -22,10 +22,10 @@ export const createProductSchema = z.object({
     .min(1, "Vui lòng nhập tên sản phẩm")
     .max(255, "Tên sản phẩm tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
+  type: z.enum(ProductType),
   productGroupId: z.string().trim().transform(emptyToUndefined),
   clientId: z.string().trim().transform(emptyToUndefined),
   image: imageFieldSchema,
-  attachments: z.array(fileFieldSchema),
   status: z.enum(ProductStatus),
   note: z
     .string()
@@ -40,10 +40,10 @@ export const createProductFormDefaultValues: CreateProductSchema = {
   code: "",
   name: "",
   unitId: "",
+  type: ProductType.FINISHED_GOOD,
   productGroupId: "",
   clientId: "",
   image: null,
-  attachments: [],
   status: ProductStatus.ACTIVE,
   note: "",
 }

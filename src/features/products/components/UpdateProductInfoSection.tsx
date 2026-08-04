@@ -3,17 +3,20 @@ import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/ComboboxField"
-import { ProductAttachmentsField } from "@/features/products/components/ProductAttachmentsField"
 import { ProductImageField } from "@/features/products/components/ProductImageField"
 import { productGroupOptionsQueryOptions } from "@/features/products/api/options"
 import { updateProductFormDefaultValues } from "@/features/products/schemas/update-product.schema"
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
-import { PRODUCT_STATUS_LABELS } from "@/lib/types/product.type"
+import {
+  PRODUCT_STATUS_LABELS,
+  PRODUCT_TYPE_LABELS,
+} from "@/lib/types/product.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
 
 const STATUS_OPTIONS = buildOptionsFromLabels(PRODUCT_STATUS_LABELS)
+const TYPE_OPTIONS = buildOptionsFromLabels(PRODUCT_TYPE_LABELS)
 
 export const UpdateProductInfoSection = withForm({
   defaultValues: updateProductFormDefaultValues,
@@ -86,6 +89,17 @@ export const UpdateProductInfoSection = withForm({
                 )}
               </form.AppField>
 
+              <form.AppField name="type">
+                {(field) => (
+                  <field.RadioPillField
+                    label="Loại sản phẩm"
+                    required
+                    options={TYPE_OPTIONS}
+                    disabled={disabled}
+                  />
+                )}
+              </form.AppField>
+
               <form.AppField name="productGroupId">
                 {(field) => (
                   <field.SelectField
@@ -147,18 +161,6 @@ export const UpdateProductInfoSection = withForm({
             <form.Field name="image">
               {(field) => (
                 <ProductImageField
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  disabled={disabled}
-                />
-              )}
-            </form.Field>
-          </div>
-
-          <div className="mt-6 border-t border-border pt-5">
-            <form.Field name="attachments">
-              {(field) => (
-                <ProductAttachmentsField
                   value={field.state.value}
                   onChange={field.handleChange}
                   disabled={disabled}

@@ -24,11 +24,12 @@ function resolveGetProductsErrorMessage(error: unknown): string {
 }
 
 // Broader than any single caller's own search schema — see get-clients.api.ts
-// for why (route-facing `productsSearchSchema` stays local to the products
-// route and doesn't expose `type`, this one does). The unified product-picker
-// combobox (this feature's own BOM picker, and orders' order-line picker via
-// this feature's `api` barrel) is the other caller, optionally fixing
-// `type`/`status` and driving `q` from its own search box.
+// for why. The route-facing `productsSearchSchema` now also exposes `type` (as
+// a user-facing filter on the products list), but this schema stays the wider
+// one: the unified product-picker combobox (this feature's own BOM picker, and
+// orders' order-line picker via this feature's `api` barrel) is the other
+// caller, optionally fixing `type`/`status` and driving `q` from its own
+// search box, without going through the route's own search params at all.
 const getProductsSchema = z.object({
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),

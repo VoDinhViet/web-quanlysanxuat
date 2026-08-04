@@ -22,7 +22,12 @@ import { ComboboxField } from "@/components/shared/ComboboxField"
 import { buildSelectOption } from "@/lib/utils"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
-import { PRODUCT_STATUS_LABELS, ProductStatus } from "@/lib/types/product.type"
+import {
+  PRODUCT_STATUS_LABELS,
+  PRODUCT_TYPE_LABELS,
+  ProductStatus,
+  ProductType,
+} from "@/lib/types/product.type"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import type { ClientRef } from "@/lib/types/client.type"
 import type { ProductGroupRef } from "@/lib/types/product.type"
@@ -34,6 +39,21 @@ const STATUS_FILTER_OPTIONS: {
   { value: "all", label: "Tất cả" },
   { value: ProductStatus.ACTIVE, label: PRODUCT_STATUS_LABELS.ACTIVE },
   { value: ProductStatus.INACTIVE, label: PRODUCT_STATUS_LABELS.INACTIVE },
+]
+
+const TYPE_FILTER_OPTIONS: {
+  value: ProductType | "all"
+  label: string
+}[] = [
+  { value: "all", label: "Tất cả" },
+  {
+    value: ProductType.FINISHED_GOOD,
+    label: PRODUCT_TYPE_LABELS.FINISHED_GOOD,
+  },
+  {
+    value: ProductType.WORK_IN_PROGRESS,
+    label: PRODUCT_TYPE_LABELS.WORK_IN_PROGRESS,
+  },
 ]
 
 type ProductsTableFilterProps = {
@@ -77,6 +97,7 @@ export function ProductsTableFilter({
     setQ("")
     onFilterChange({
       q: undefined,
+      type: undefined,
       status: undefined,
       clientId: undefined,
       productGroupId: undefined,
@@ -87,7 +108,7 @@ export function ProductsTableFilter({
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)]">
           <label className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <span className="sr-only">Tìm kiếm sản phẩm</span>
             <div className="relative">
@@ -147,6 +168,31 @@ export function ProductsTableFilter({
                 {productGroupOptions.map((option) => (
                   <SelectItem key={option.id} value={option.id}>
                     {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
+
+          <label className="space-y-1.5">
+            <span className="block text-[11px] font-medium text-muted-foreground">
+              Loại sản phẩm
+            </span>
+            <Select
+              value={search.type ?? "all"}
+              onValueChange={(next) =>
+                onFilterChange({
+                  type: next === "all" ? undefined : (next as ProductType),
+                })
+              }
+            >
+              <SelectTrigger className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {TYPE_FILTER_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>

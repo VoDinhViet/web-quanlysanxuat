@@ -31,10 +31,10 @@ function buildProductDefaultValues(product: Product): UpdateProductSchema {
     code: product.code,
     name: product.name,
     unitId: product.unit.id,
+    type: product.type,
     productGroupId: product.group?.id ?? "",
     clientId: product.client?.id ?? "",
     image: product.image,
-    attachments: product.attachments.map((attachment) => attachment.file),
     status: product.status,
     note: product.note ?? "",
   }

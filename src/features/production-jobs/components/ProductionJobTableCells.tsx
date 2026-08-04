@@ -1,15 +1,10 @@
 import { Image } from "@unpic/react"
 import { Link } from "@tanstack/react-router"
 import { Eye, Pencil } from "lucide-react"
-import type { ReactNode } from "react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { DisabledAction } from "@/components/shared/DisabledAction"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -41,40 +36,6 @@ export function ProductImageCell({ image }: { image: FileResource | null }) {
   )
 }
 
-// The edit flow (task 8.2's write side) isn't built yet, so that action stays disabled with a
-// tooltip explaining why. The <span tabIndex={0}> wrapper is required: a disabled button
-// swallows pointer events and the tooltip would never fire (same idiom as OrderTableCells.tsx's
-// DisabledAction — duplicated *there* only, since that's a different feature and a feature may
-// only read another feature's data through its api/index.ts barrel, never its components; other
-// production-jobs files import this one directly, see ProductionJobBomTab.tsx).
-export function DisabledAction({
-  label,
-  children,
-}: {
-  label: string
-  children: ReactNode
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span tabIndex={0}>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            className="pointer-events-none bg-background text-muted-foreground"
-            aria-label={label}
-            disabled
-          >
-            {children}
-          </Button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>{`${label} — chưa được xây dựng`}</TooltipContent>
-    </Tooltip>
-  )
-}
-
 type ProductionJobActionsCellProps = {
   productionJobId: string
 }
@@ -100,7 +61,7 @@ export function ProductionJobActionsCell({
           <Eye className="size-3.5" />
         </Link>
       </Button>
-      <DisabledAction label="Chỉnh sửa">
+      <DisabledAction label="Chỉnh sửa" hint="chưa được xây dựng">
         <Pencil className="size-3.5" />
       </DisabledAction>
     </div>

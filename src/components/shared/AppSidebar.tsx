@@ -82,7 +82,12 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Quản lý mua hàng",
     items: [
-      { label: "Đề xuất mua hàng", icon: ClipboardList },
+      {
+        label: "Đề xuất mua hàng",
+        icon: ClipboardList,
+        href: "/manage/purchase-requests",
+        permission: "purchase-requests:read",
+      },
       { label: "Đơn mua hàng (PO)", icon: ReceiptText },
       { label: "Nhập hàng", icon: ArrowDownToLine },
     ],

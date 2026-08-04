@@ -4,8 +4,11 @@ import { AltArrowLeft, Diskette } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/detail/ProductionJobDetailTabs"
+import { StartProductionJobDialog } from "@/features/production-jobs/components/detail/StartProductionJobDialog"
+import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type ProductionJobDetailHeaderProps = {
@@ -13,8 +16,10 @@ type ProductionJobDetailHeaderProps = {
 }
 
 // Identity, the header facts and the tab strip read as one unit, so they share a single block
-// like ProductDetailHeader.tsx. The "Lưu" button stays disabled — no update mutation wired up
-// yet.
+// like ProductDetailHeader.tsx. "Xác nhận" opens StartProductionJobDialog (POST
+// /production-jobs/:jobId/start) — only shown while PENDING; once IN_PROGRESS the transition is
+// one-way and there's nothing left to confirm, so the button disappears entirely rather than
+// showing disabled (same idiom as ProductionOrderDetailActions.tsx's "Duyệt LSX").
 export function ProductionJobDetailHeader({
   detail,
 }: ProductionJobDetailHeaderProps) {
@@ -90,15 +95,19 @@ export function ProductionJobDetailHeader({
           </dl>
         </div>
 
-        <Button
-          type="button"
-          disabled
-          className="gap-1.5"
-          aria-label="Lưu — chưa được kết nối API"
-        >
-          <Diskette className="size-4" />
-          Lưu
-        </Button>
+        {detail.status === ProductionJobStatus.PENDING ? (
+          <PermissionGate permission="production:update">
+            <StartProductionJobDialog
+              job={detail}
+              trigger={
+                <Button type="button" className="gap-1.5">
+                  <Diskette className="size-4" />
+                  Xác nhận
+                </Button>
+              }
+            />
+          </PermissionGate>
+        ) : null}
       </div>
 
       <ProductionJobDetailTabs />

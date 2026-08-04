@@ -7,14 +7,12 @@ import {
   CalendarAdd,
   ClockCircle,
   Copy,
-  Documents,
-  FileText,
   Gallery,
   GalleryRemove,
   InfoCircle,
+  Layers,
   MagniferZoomIn,
   Notes,
-  Paperclip,
   RecordCircle,
   Ruler,
   User,
@@ -22,7 +20,10 @@ import {
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
-import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
+import {
+  ProductStatusBadge,
+  ProductTypeBadge,
+} from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Product } from "@/lib/types/product.type"
 import type { FileResource } from "@/lib/types/file.type"
@@ -71,6 +72,11 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
             />
           ) : null}
           <SummaryRow
+            icon={Layers}
+            label="Loại sản phẩm"
+            value={<ProductTypeBadge type={product.type} />}
+          />
+          <SummaryRow
             icon={RecordCircle}
             label="Trạng thái"
             value={<ProductStatusBadge status={product.status} />}
@@ -109,37 +115,6 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
         {/* One image today — `Product.image` is a single file. The multi-image
             gallery in the mockup arrives with its backend in a later phase. */}
         <ProductImagePreview image={product.image} name={product.name} />
-      </SidebarSection>
-
-      <SidebarSection title="Tài liệu đính kèm" icon={Paperclip} padded>
-        {product.attachments.length > 0 ? (
-          <ul className="space-y-1.5">
-            {product.attachments.map((attachment) => (
-              <li key={attachment.id}>
-                {/* The download route is @Public(), so the signed URL opens in a
-                    new tab without an auth header. */}
-                <a
-                  href={resolveFileUrl(attachment.file.url)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary"
-                >
-                  <FileText className="size-4 shrink-0 text-muted-foreground" />
-                  <span className="truncate">
-                    {attachment.file.originalName}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
-            <Documents className="size-7 text-muted-foreground/40" />
-            <p className="text-[11px] font-medium text-muted-foreground">
-              Chưa có tài liệu đính kèm
-            </p>
-          </div>
-        )}
       </SidebarSection>
     </>
   )

@@ -4,6 +4,5 @@
 // call.
 export { usersQueryOptions } from "@/features/users/api/options/users.options"
 export { userQueryOptions } from "@/features/users/api/options/user.options"
-export { departmentsQueryOptions } from "@/features/users/api/options/departments.options"
 export { positionsQueryOptions } from "@/features/users/api/options/positions.options"
 export { rolesQueryOptions } from "@/features/users/api/options/roles.options"

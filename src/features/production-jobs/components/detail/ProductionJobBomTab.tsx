@@ -2,9 +2,9 @@ import { Download, Logs, Route, Send } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 
 import { Badge } from "@/components/ui/badge"
+import { DisabledAction } from "@/components/shared/DisabledAction"
 import { TableQueryError } from "@/components/shared/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
-import { DisabledAction } from "@/features/production-jobs/components/ProductionJobTableCells"
 import { ProductionJobBomTable } from "@/features/production-jobs/components/detail/ProductionJobBomTable"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
@@ -119,13 +119,22 @@ export function ProductionJobBomTab({
           </div>
 
           <div className="flex items-center gap-1.5">
-            <DisabledAction label="Xem lịch sử cập nhật">
+            <DisabledAction
+              label="Xem lịch sử cập nhật"
+              hint="chưa được xây dựng"
+            >
               <Logs className="size-3.5" />
             </DisabledAction>
-            <DisabledAction label="Gửi đi gia công ngoài">
+            <DisabledAction
+              label="Gửi đi gia công ngoài"
+              hint="chưa được xây dựng"
+            >
               <Send className="size-3.5" />
             </DisabledAction>
-            <DisabledAction label="Cập nhật SL nhận về (gia công ngoài)">
+            <DisabledAction
+              label="Cập nhật SL nhận về (gia công ngoài)"
+              hint="chưa được xây dựng"
+            >
               <Download className="size-3.5" />
             </DisabledAction>
           </div>

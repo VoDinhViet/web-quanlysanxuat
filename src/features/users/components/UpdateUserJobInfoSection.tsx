@@ -1,10 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { withForm } from "@/hooks/use-app-form"
-import {
-  departmentsQueryOptions,
-  positionsQueryOptions,
-} from "@/features/users/api/options"
+import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { positionsQueryOptions } from "@/features/users/api/options"
 import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
 import { EMPLOYEE_STATUS_LABELS } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -18,7 +16,9 @@ export const UpdateUserJobInfoSection = withForm({
   },
   render: function Render({ form, disabled }) {
     // The route loader already prefetches both — resolves synchronously off cache.
-    const { data: departments } = useSuspenseQuery(departmentsQueryOptions())
+    const { data: departments } = useSuspenseQuery(
+      departmentOptionsQueryOptions()
+    )
     const { data: positions } = useSuspenseQuery(positionsQueryOptions())
 
     return (

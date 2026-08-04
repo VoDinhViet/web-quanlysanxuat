@@ -1,14 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
-import type { ReactNode } from "react"
 
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { DisabledAction } from "@/components/shared/DisabledAction"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import {
@@ -89,37 +83,5 @@ export function OrderActionsCell({ order }: { order: Order }) {
         </DisabledAction>
       )}
     </div>
-  )
-}
-
-type DisabledActionProps = {
-  label: string
-  hint?: string
-  children: ReactNode
-}
-
-function DisabledAction({
-  label,
-  hint = "tính năng sắp có",
-  children,
-}: DisabledActionProps) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span tabIndex={0}>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            className="pointer-events-none bg-background text-muted-foreground"
-            aria-label={label}
-            disabled
-          >
-            {children}
-          </Button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>{`${label} — ${hint}`}</TooltipContent>
-    </Tooltip>
   )
 }
