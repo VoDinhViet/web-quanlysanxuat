@@ -169,9 +169,9 @@ function CreateBomItemForm({
         <form.AppField name="itemType">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-foreground">
+              <span className="text-xs font-semibold text-foreground">
                 Loại thành phần <span className="text-destructive">*</span>
-              </label>
+              </span>
               <div className="grid grid-cols-2 gap-2.5">
                 {/* Material Option Card */}
                 <button
