@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { BoxMinimalistic, CheckCircle, Layers } from "@solar-icons/react"
+import { CheckCircle } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +13,6 @@ import {
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { BomItemDrawingField } from "@/features/products/components/BomItemDrawingField"
-import { useGetBomMaterialOptions } from "@/features/products/hooks/use-get-bom-material-options"
 import { useGetBomProductOptions } from "@/features/products/hooks/use-get-bom-product-options"
 import {
   CREATE_BOM_ITEM_DEFAULT_VALUES,
@@ -22,10 +21,7 @@ import {
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
 import type { CreateBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
-import type { BomItemDialogState } from "@/features/products/hooks/use-product-bom"
-import { BomItemType } from "@/lib/types/bom-item.type"
-import type { BomItem } from "@/lib/types/bom-item.type"
-import { cn } from "@/lib/utils"
+import type { BomItem, BomItemDialogState } from "@/lib/types/bom-item.type"
 
 type BomItemFormDialogProps = {
   dialog: BomItemDialogState
@@ -42,8 +38,8 @@ export function BomItemFormDialog({
   onUpdate,
   isSaving,
 }: BomItemFormDialogProps) {
-  // The BomItemPicker combobox portals its popup into this node instead of
-  // `<body>` — see BomItemPicker's `container` doc for why.
+  // The product-picker combobox portals its popup into this node instead of
+  // `<body>` — see ComboboxField's `container` doc for why.
   const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
 
   return (
@@ -72,60 +68,6 @@ export function BomItemFormDialog({
   )
 }
 
-type BomItemPickerProps = {
-  itemType: BomItemType
-  value: string
-  onValueChange: (value: string) => void
-  onBlur: () => void
-  isInvalid: boolean
-  errors: React.ComponentProps<typeof ComboboxField>["errors"]
-  container: HTMLDivElement | null
-}
-
-// Both option hooks run (hook rules); only the one matching `itemType` is shown.
-function BomItemPicker({
-  itemType,
-  value,
-  onValueChange,
-  onBlur,
-  isInvalid,
-  errors,
-  container,
-}: BomItemPickerProps) {
-  const productOptions = useGetBomProductOptions()
-  const materialOptions = useGetBomMaterialOptions()
-  const source =
-    itemType === BomItemType.PRODUCT ? productOptions : materialOptions
-
-  return (
-    <ComboboxField
-      label={
-        itemType === BomItemType.PRODUCT
-          ? "Chọn Bán thành phẩm (WIP)"
-          : "Chọn Vật tư / Linh kiện"
-      }
-      required
-      placeholder={
-        itemType === BomItemType.PRODUCT
-          ? "Tìm mã hoặc tên sản phẩm..."
-          : "Tìm mã hoặc tên vật tư..."
-      }
-      value={value || undefined}
-      onValueChange={(next) => onValueChange(next ?? "")}
-      onBlur={onBlur}
-      options={source.options}
-      onSearchChange={source.onSearchChange}
-      isPending={source.isFetching}
-      isInvalid={isInvalid}
-      errors={errors}
-      // Rendered inside BomItemFormDialog's Radix Dialog — portal the popup
-      // into the dialog's own DOM subtree (see ComboboxField's `container`
-      // doc) so the option click commits instead of being swallowed.
-      container={container}
-    />
-  )
-}
-
 type CreateBomItemFormProps = {
   container: HTMLDivElement | null
   onSubmit: (value: CreateBomItemSchema) => void
@@ -144,6 +86,7 @@ function CreateBomItemForm({
     validators: { onSubmit: createBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
+  const productOptions = useGetBomProductOptions()
 
   return (
     <form
@@ -160,113 +103,35 @@ function CreateBomItemForm({
           Thêm thành phần BOM
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Thêm vật tư hoặc bán thành phẩm vào cấu trúc sản phẩm.
+          Thêm bán thành phẩm (WIP) vào cấu trúc sản phẩm.
         </DialogDescription>
       </DialogHeader>
 
       <div className="grid gap-4.5">
-        {/* Visual Card Selector for itemType using Solar Icons */}
-        <form.AppField name="itemType">
+        <form.AppField name="itemProductId">
           {(field) => (
-            <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-semibold text-foreground">
-                Loại thành phần <span className="text-destructive">*</span>
-              </span>
-              <div className="grid grid-cols-2 gap-2.5">
-                {/* Material Option Card */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    field.handleChange(BomItemType.MATERIAL)
-                    form.setFieldValue("itemId", "")
-                  }}
-                  className={cn(
-                    "flex cursor-pointer flex-col items-start gap-1.5 rounded-lg border p-3 text-left transition-all",
-                    field.state.value === BomItemType.MATERIAL
-                      ? "border-primary bg-primary/5 ring-1 ring-primary/30"
-                      : "border-border/70 bg-card hover:border-border hover:bg-muted/40"
-                  )}
-                >
-                  <div className="flex w-full items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                      <BoxMinimalistic
-                        className={cn(
-                          "size-4",
-                          field.state.value === BomItemType.MATERIAL
-                            ? "text-primary"
-                            : "text-muted-foreground"
-                        )}
-                      />
-                      Vật tư / Linh kiện
-                    </span>
-                    {field.state.value === BomItemType.MATERIAL ? (
-                      <CheckCircle className="size-4 text-primary" />
-                    ) : null}
-                  </div>
-                  <p className="text-[11px] leading-tight text-muted-foreground">
-                    Linh kiện, vật tư đầu vào
-                  </p>
-                </button>
-
-                {/* WIP Product Option Card */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    field.handleChange(BomItemType.PRODUCT)
-                    form.setFieldValue("itemId", "")
-                  }}
-                  className={cn(
-                    "flex cursor-pointer flex-col items-start gap-1.5 rounded-lg border p-3 text-left transition-all",
-                    field.state.value === BomItemType.PRODUCT
-                      ? "border-primary bg-primary/5 ring-1 ring-primary/30"
-                      : "border-border/70 bg-card hover:border-border hover:bg-muted/40"
-                  )}
-                >
-                  <div className="flex w-full items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                      <Layers
-                        className={cn(
-                          "size-4",
-                          field.state.value === BomItemType.PRODUCT
-                            ? "text-primary"
-                            : "text-muted-foreground"
-                        )}
-                      />
-                      Sản phẩm (WIP)
-                    </span>
-                    {field.state.value === BomItemType.PRODUCT ? (
-                      <CheckCircle className="size-4 text-primary" />
-                    ) : null}
-                  </div>
-                  <p className="text-[11px] leading-tight text-muted-foreground">
-                    Bán thành phẩm chế tạo
-                  </p>
-                </button>
-              </div>
-            </div>
+            <ComboboxField
+              label="Chọn Bán thành phẩm (WIP)"
+              required
+              placeholder="Tìm mã hoặc tên sản phẩm..."
+              value={field.state.value || undefined}
+              onValueChange={(next) => field.handleChange(next ?? "")}
+              onBlur={field.handleBlur}
+              options={productOptions.options}
+              onSearchChange={productOptions.onSearchChange}
+              isPending={productOptions.isFetching}
+              isInvalid={
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
+              }
+              errors={field.state.meta.errors}
+              // Rendered inside BomItemFormDialog's Radix Dialog — portal the
+              // popup into the dialog's own DOM subtree (see ComboboxField's
+              // `container` doc) so the option click commits instead of
+              // being swallowed.
+              container={container}
+            />
           )}
         </form.AppField>
-
-        <form.Subscribe selector={(state) => state.values.itemType}>
-          {(itemType) => (
-            <form.AppField name="itemId">
-              {(field) => (
-                <BomItemPicker
-                  itemType={itemType}
-                  value={field.state.value}
-                  onValueChange={(next) => field.handleChange(next)}
-                  onBlur={field.handleBlur}
-                  isInvalid={
-                    field.state.meta.isTouched &&
-                    field.state.meta.errors.length > 0
-                  }
-                  errors={field.state.meta.errors}
-                  container={container}
-                />
-              )}
-            </form.AppField>
-          )}
-        </form.Subscribe>
 
         <form.AppField name="quantity">
           {(field) => (
@@ -333,7 +198,7 @@ function UpdateBomItemForm({
   isSaving,
 }: UpdateBomItemFormProps) {
   const defaultValues: UpdateBomItemSchema = {
-    quantity: node.quantity,
+    quantity: String(node.quantity),
     sortOrder: String(node.sortOrder),
     note: node.note ?? "",
     drawing: node.drawing,

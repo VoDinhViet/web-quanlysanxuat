@@ -2,46 +2,141 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useServerFn } from "@tanstack/react-start"
 import { toast } from "sonner"
 
+import { createBomOperation } from "@/features/products/api/server-functions/create-bom-operation.api"
 import { createProductOperation } from "@/features/products/api/server-functions/create-product-operation.api"
+import { deleteBomOperation } from "@/features/products/api/server-functions/delete-bom-operation.api"
 import { deleteProductOperation } from "@/features/products/api/server-functions/delete-product-operation.api"
+import { updateBomOperation } from "@/features/products/api/server-functions/update-bom-operation.api"
 import { updateProductOperation } from "@/features/products/api/server-functions/update-product-operation.api"
-import type { Operation } from "@/lib/types/operation.type"
+import type { ProductOperation } from "@/lib/types/operation.type"
 
-type SortOrderPair = { stepId: string; sortOrder: number }
+export type OperationsTarget = {
+  productId: string
+  itemId?: string
+}
 
-// One write per hook: each owns its server-fn binding plus the shared
-// success plumbing (invalidate `["products"]` → toast), mirroring
-// `use-product-bom.ts`.
-function useCreateOperation(productId: string) {
+export type MoveDirection = "up" | "down"
+
+export type CreateOperationInput = {
+  operationId: string
+  sortOrder: number
+  note?: string
+}
+
+export type UpdateOperationInput = {
+  note?: string
+  sortOrder?: number
+}
+
+type SortOrderSwapPair = {
+  stepId: string
+  sortOrder: number
+}
+
+function useCreateOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
-  const createFn = useServerFn(createProductOperation)
+  const createProductFn = useServerFn(createProductOperation)
+  const createBomFn = useServerFn(createBomOperation)
+
   return useMutation({
-    mutationFn: (input: {
-      operationId: string
-      sortOrder: number
-      note?: string
-    }) => createFn({ data: { ...input, productId } }),
+    mutationFn: (input: CreateOperationInput) => {
+      if (target.itemId) {
+        return createBomFn({
+          data: {
+            productId: target.productId,
+            itemId: target.itemId,
+            operationId: input.operationId,
+            sortOrder: input.sortOrder,
+            note: input.note,
+          },
+        })
+      }
+
+      return createProductFn({
+        data: {
+          productId: target.productId,
+          operationId: input.operationId,
+          sortOrder: input.sortOrder,
+          note: input.note,
+        },
+      })
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["products"] })
-      toast.success("Đã thêm công đoạn")
+      toast.success("Đã thêm công đoạn thành công")
     },
     onError: (error) => toast.error(error.message),
   })
 }
 
-// Reordering swaps the sortOrder of two adjacent steps — both PATCH calls run
-// together as one mutation so there's a single invalidate/toast per move.
-function useMoveOperation(productId: string) {
+function useUpdateOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
-  const updateFn = useServerFn(updateProductOperation)
+  const updateProductFn = useServerFn(updateProductOperation)
+  const updateBomFn = useServerFn(updateBomOperation)
+
   return useMutation({
-    mutationFn: (pairs: SortOrderPair[]) =>
+    mutationFn: (input: {
+      stepId: string
+      sortOrder?: number
+      note?: string
+    }) => {
+      if (target.itemId) {
+        return updateBomFn({
+          data: {
+            productId: target.productId,
+            itemId: target.itemId,
+            stepId: input.stepId,
+            sortOrder: input.sortOrder,
+            note: input.note,
+          },
+        })
+      }
+
+      return updateProductFn({
+        data: {
+          productId: target.productId,
+          stepId: input.stepId,
+          sortOrder: input.sortOrder,
+          note: input.note,
+        },
+      })
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      toast.success("Đã cập nhật công đoạn thành công")
+    },
+    onError: (error) => toast.error(error.message),
+  })
+}
+
+function useMoveOperation(target: OperationsTarget) {
+  const queryClient = useQueryClient()
+  const updateProductFn = useServerFn(updateProductOperation)
+  const updateBomFn = useServerFn(updateBomOperation)
+
+  return useMutation({
+    mutationFn: (pairs: SortOrderSwapPair[]) =>
       Promise.all(
-        pairs.map((pair) =>
-          updateFn({
-            data: { productId, stepId: pair.stepId, sortOrder: pair.sortOrder },
+        pairs.map((pair) => {
+          if (target.itemId) {
+            return updateBomFn({
+              data: {
+                productId: target.productId,
+                itemId: target.itemId,
+                stepId: pair.stepId,
+                sortOrder: pair.sortOrder,
+              },
+            })
+          }
+
+          return updateProductFn({
+            data: {
+              productId: target.productId,
+              stepId: pair.stepId,
+              sortOrder: pair.sortOrder,
+            },
           })
-        )
+        })
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["products"] })
@@ -50,67 +145,101 @@ function useMoveOperation(productId: string) {
   })
 }
 
-function useDeleteOperation(productId: string) {
+function useDeleteOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
-  const deleteFn = useServerFn(deleteProductOperation)
+  const deleteProductFn = useServerFn(deleteProductOperation)
+  const deleteBomFn = useServerFn(deleteBomOperation)
+
   return useMutation({
-    mutationFn: (stepId: string) => deleteFn({ data: { productId, stepId } }),
+    mutationFn: (stepId: string) => {
+      if (target.itemId) {
+        return deleteBomFn({
+          data: {
+            productId: target.productId,
+            itemId: target.itemId,
+            stepId,
+          },
+        })
+      }
+
+      return deleteProductFn({
+        data: {
+          productId: target.productId,
+          stepId,
+        },
+      })
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["products"] })
-      toast.success("Đã xoá công đoạn")
+      toast.success("Đã xoá công đoạn thành công")
     },
     onError: (error) => toast.error(error.message),
   })
 }
 
 export interface UseProductOperationsResult {
-  addOperation: (operationId: string, note?: string) => void
-  moveOperation: (index: number, direction: "up" | "down") => void
-  deleteOperation: (stepId: string) => void
+  create: (operationId: string, note?: string) => void
+  update: (stepId: string, input: UpdateOperationInput) => void
+  move: (index: number, direction: MoveDirection) => void
+  remove: (stepId: string) => void
   isSaving: boolean
   isDeleting: boolean
 }
 
 /**
- * Owns the routing section's writes: add / reorder / delete a step of the
- * product's operations list. `operations` is the already-fetched, in-run-order
- * list — used to compute the next sortOrder on add and the swap pair on move.
+ * Owns writing routing steps (create, update, reorder, delete) for a product or BOM item routing.
+ * `target` picks whether to write through product-level or BOM item-level API endpoints.
  */
 export function useProductOperations(
-  productId: string,
-  operations: Operation[]
+  target: OperationsTarget,
+  operations: ProductOperation[]
 ): UseProductOperationsResult {
-  const create = useCreateOperation(productId)
-  const move = useMoveOperation(productId)
-  const remove = useDeleteOperation(productId)
+  const createOperation = useCreateOperation(target)
+  const updateOperation = useUpdateOperation(target)
+  const moveOperation = useMoveOperation(target)
+  const deleteOperation = useDeleteOperation(target)
 
-  function addOperation(operationId: string, note?: string) {
+  function create(operationId: string, note?: string) {
     const nextSortOrder =
       operations.reduce((max, item) => Math.max(max, item.sortOrder), -1) + 1
-    create.mutate({ operationId, sortOrder: nextSortOrder, note })
+
+    createOperation.mutate({
+      operationId,
+      sortOrder: nextSortOrder,
+      note,
+    })
   }
 
-  function moveOperation(index: number, direction: "up" | "down") {
+  function update(stepId: string, input: UpdateOperationInput) {
+    updateOperation.mutate({ stepId, ...input })
+  }
+
+  function move(index: number, direction: MoveDirection) {
     const targetIndex = direction === "up" ? index - 1 : index + 1
     if (targetIndex < 0 || targetIndex >= operations.length) return
 
-    const current = operations[index]
-    const target = operations[targetIndex]
-    move.mutate([
-      { stepId: current.id, sortOrder: target.sortOrder },
-      { stepId: target.id, sortOrder: current.sortOrder },
+    const currentStep = operations[index]
+    const targetStep = operations[targetIndex]
+
+    moveOperation.mutate([
+      { stepId: currentStep.id, sortOrder: targetStep.sortOrder },
+      { stepId: targetStep.id, sortOrder: currentStep.sortOrder },
     ])
   }
 
-  function deleteOperation(stepId: string) {
-    remove.mutate(stepId)
+  function remove(stepId: string) {
+    deleteOperation.mutate(stepId)
   }
 
   return {
-    addOperation,
-    moveOperation,
-    deleteOperation,
-    isSaving: create.isPending || move.isPending,
-    isDeleting: remove.isPending,
+    create,
+    update,
+    move,
+    remove,
+    isSaving:
+      createOperation.isPending ||
+      updateOperation.isPending ||
+      moveOperation.isPending,
+    isDeleting: deleteOperation.isPending,
   }
 }

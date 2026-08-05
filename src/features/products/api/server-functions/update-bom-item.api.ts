@@ -6,7 +6,7 @@ import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item
 import { resolveApiFileId } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { BomItemNode } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -18,8 +18,6 @@ function resolveUpdateBomItemErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "bom_item.error.not_found":
       return "Không tìm thấy hạng mục."
-    case "bom_item.error.quantity_not_integer":
-      return "Sản phẩm phải có số lượng nguyên."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -49,10 +47,10 @@ function toUpdateBomItemPayload(
 
 export const updateBomItem = createServerFn({ method: "POST" })
   .validator(updateBomItemInputSchema)
-  .handler(async ({ data }): Promise<BomItemNode> => {
+  .handler(async ({ data }): Promise<BomItem> => {
     try {
       const { productId, itemId, ...rest } = data
-      const response = await http.patch<BomItemNode>(
+      const response = await http.patch<BomItem>(
         `/api/products/${productId}/bom/items/${itemId}`,
         toUpdateBomItemPayload(rest)
       )

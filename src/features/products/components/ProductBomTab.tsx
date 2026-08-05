@@ -1,5 +1,5 @@
-import { useMemo } from "react"
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -12,30 +12,11 @@ import {
   productBomQueryOptions,
   productOperationsQueryOptions,
 } from "@/features/products/api/options"
-import type { OperationsByProductId } from "@/features/products/components/ProductBomTable"
-import { BomItemType } from "@/lib/types/bom-item.type"
-import type { BomItem } from "@/lib/types/bom-item.type"
 import type { Product } from "@/lib/types/product.type"
+import type { BomItem, BomItemDialogState } from "@/lib/types/bom-item.type"
 
 type ProductBomTabProps = {
   product: Product
-}
-
-// Every "Sản phẩm"-type BOM line is itself a product with its own routing
-// (GET /api/products/:itemId/operations) — collect all of them, at every
-// depth, so their routing can be fetched alongside the current product's own.
-function collectProductItemIds(nodes: BomItem[]): string[] {
-  const ids: string[] = []
-
-  function visit(list: BomItem[]) {
-    list.forEach((node) => {
-      if (node.itemType === BomItemType.PRODUCT) ids.push(node.itemId)
-      if (node.children.length > 0) visit(node.children)
-    })
-  }
-
-  visit(nodes)
-  return ids
 }
 
 // Centered wrapper for the tab's error state.
@@ -48,40 +29,36 @@ function BomTabMessage({ children }: { children: ReactNode }) {
 }
 
 export function ProductBomTab({ product }: ProductBomTabProps) {
-  const bomQuery = useQuery(productBomQueryOptions(product.id))
-  const bom = useProductBom(product.id)
+  const [dialog, setDialog] = useState<BomItemDialogState>({ mode: "closed" })
+  const [deletingNode, setDeletingNode] = useState<BomItem | null>(null)
 
+  const closeDialog = () => setDialog({ mode: "closed" })
+
+  const bomQuery = useQuery(productBomQueryOptions(product.id))
   const operationsQuery = useQuery(productOperationsQueryOptions(product.id))
 
-  const childProductIds = useMemo(
-    () => collectProductItemIds(bomQuery.data ?? []),
-    [bomQuery.data]
-  )
-  const childOperationsQueries = useQueries({
-    queries: childProductIds.map((id) => productOperationsQueryOptions(id)),
-  })
-  const operationsByProductId = useMemo(() => {
-    const map: OperationsByProductId = {
-      [product.id]: {
-        operations: operationsQuery.data ?? [],
-        isPending: operationsQuery.isPending,
-      },
-    }
-    childProductIds.forEach((id, index) => {
-      const result = childOperationsQueries[index]
-      map[id] = {
-        operations: result.data ?? [],
-        isPending: result.isPending,
-      }
-    })
-    return map
-  }, [
+  const { createItem, updateItem, deleteItem, isSaving } = useProductBom(
     product.id,
-    operationsQuery.data,
-    operationsQuery.isPending,
-    childProductIds,
-    childOperationsQueries,
-  ])
+    {
+      onSuccessCreate: closeDialog,
+      onSuccessUpdate: closeDialog,
+      onSuccessDelete: () => setDeletingNode(null),
+    }
+  )
+
+  function openCreate(parentId: string | null) {
+    setDialog({ mode: "create", parentId })
+  }
+
+  function openUpdate(node: BomItem) {
+    setDialog({ mode: "update", node })
+  }
+
+  function handleDeleteConfirm() {
+    if (deletingNode) {
+      deleteItem(deletingNode.id)
+    }
+  }
 
   return (
     <div className="px-4 py-5 sm:px-5">
@@ -107,11 +84,14 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
             product={product}
             nodes={bomQuery.data}
             actions={{
-              onCreate: bom.openCreate,
-              onUpdate: bom.openUpdate,
-              onDelete: bom.setDeletingNode,
+              onCreate: openCreate,
+              onUpdate: openUpdate,
+              onDelete: setDeletingNode,
             }}
-            operationsByProductId={operationsByProductId}
+            rootOperations={{
+              operations: operationsQuery.data ?? [],
+              isPending: operationsQuery.isPending,
+            }}
           />
           {bomQuery.data.length === 0 ? (
             <p className="mt-3 text-xs font-medium text-muted-foreground">
@@ -123,21 +103,21 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
       )}
 
       <BomItemFormDialog
-        dialog={bom.dialog}
+        dialog={dialog}
         onOpenChange={(open) => {
-          if (!open) bom.closeDialog()
+          if (!open) closeDialog()
         }}
-        onCreate={bom.createItem}
-        onUpdate={bom.updateItem}
-        isSaving={bom.isSaving}
+        onCreate={createItem}
+        onUpdate={updateItem}
+        isSaving={isSaving}
       />
 
       <DeleteBomItemDialog
-        node={bom.deletingNode}
+        node={deletingNode}
         onOpenChange={(open) => {
-          if (!open) bom.setDeletingNode(null)
+          if (!open) setDeletingNode(null)
         }}
-        onConfirm={bom.deleteItem}
+        onConfirm={handleDeleteConfirm}
       />
     </div>
   )

@@ -3,7 +3,7 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import { OperationType } from "@/lib/types/operation.type"
-import type { Operation } from "@/lib/types/operation.type"
+import type { OperationRef } from "@/lib/types/operation.type"
 import { optional } from "@/lib/zod-transforms"
 
 const getOperationsSchema = z.object({
@@ -21,9 +21,9 @@ const getOperationsSchema = z.object({
 // of taking down the whole routing section.
 export const getOperations = createServerFn({ method: "GET" })
   .validator(getOperationsSchema)
-  .handler(async ({ data }): Promise<Operation[]> => {
+  .handler(async ({ data }): Promise<OperationRef[]> => {
     try {
-      const response = await http.get<Operation[]>("/api/operations", {
+      const response = await http.get<OperationRef[]>("/api/operations", {
         params: {
           q: data.q,
           type: data.type,

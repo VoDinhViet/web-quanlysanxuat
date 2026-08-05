@@ -1,15 +1,6 @@
 import { Fragment, useState } from "react"
 import { Image } from "@unpic/react"
-import {
-  AddSquare,
-  AltArrowDown,
-  AltArrowUp,
-  Export,
-  Home,
-  Route,
-  TrashBinTrash,
-} from "@solar-icons/react"
-import { cva } from "class-variance-authority"
+import { Route } from "@solar-icons/react"
 import {
   ChevronRight,
   CornerDownRight,
@@ -20,21 +11,9 @@ import {
   Plus,
   Trash2,
 } from "lucide-react"
-import type { IconProps } from "@solar-icons/react"
-import type { ComponentType } from "react"
 
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
   TableBody,
@@ -49,38 +28,26 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ComboboxField } from "@/components/shared/ComboboxField"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { useGetOperationOptions } from "@/features/operations/api"
-import { useProductOperations } from "@/features/products/hooks/use-product-operations"
-import { BomItemType } from "@/lib/types/bom-item.type"
+import { ProductOperationsPanel } from "@/features/products/components/ProductOperationsPanel"
 import type { BomItem } from "@/lib/types/bom-item.type"
-import {
-  formatOperationSequence,
-  OperationType,
-} from "@/lib/types/operation.type"
-import type { Operation } from "@/lib/types/operation.type"
+import type { ProductOperation } from "@/lib/types/operation.type"
+import { formatOperationSequence } from "@/lib/types/operation.type"
 import type { Product } from "@/lib/types/product.type"
-import { useHasPermission } from "@/hooks/use-permissions"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 
-// The read-only routing snapshot for one BOM row's drawing: the current
-// product for the root row, or the row's own itemId for a "Sản phẩm"-type
-// BOM line (a sub-assembly with its own productId, and thus its own
-// separate routing).
-export type OperationsByProductId = Record<
-  string,
-  { operations: Operation[]; isPending: boolean }
->
+// The root row's own routing (Cấp 0) — fetched separately since the BOM GET
+// only returns the tree's child nodes, not the product itself. Each BOM node
+// carries its own `operations` directly (see BomItem in bom-item.type.ts), so
+// no equivalent type is needed for child rows.
+export type RootOperations = {
+  operations: ProductOperation[]
+  isPending: boolean
+}
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-
-function formatQuantity(quantity: string): string {
-  const parsed = Number(quantity)
-  return Number.isFinite(parsed) ? quantityFormatter.format(parsed) : "—"
-}
 
 export type BomTableActions = {
   onCreate: (parentId: string | null) => void
@@ -93,18 +60,34 @@ type FlatRow = {
   path: string
 }
 
+// GET .../bom returns a flat parent-child list (`parentId` links each node to
+// its parent, `null` = top-level) — group by parent once, then walk it
+// depth-first into a numbered, indented row list (path like "1.2"), same idiom
+// as `buildBomRows` in ProductionJobBomTab.tsx.
+function groupByParentId(nodes: BomItem[]): Map<string | null, BomItem[]> {
+  const map = new Map<string | null, BomItem[]>()
+  nodes.forEach((node) => {
+    const siblings = map.get(node.parentId) ?? []
+    siblings.push(node)
+    map.set(node.parentId, siblings)
+  })
+  return map
+}
+
 function flattenNodes(
-  nodes: BomItem[],
+  childrenByParentId: Map<string | null, BomItem[]>,
+  parentId: string | null,
   parentPath: string | null,
   expandedIds: Set<string>,
   rows: FlatRow[]
 ): void {
-  nodes.forEach((node, index) => {
+  const children = childrenByParentId.get(parentId) ?? []
+  children.forEach((node, index) => {
     const path =
       parentPath === null ? `${index + 1}.0` : `${parentPath}.${index + 1}`
     rows.push({ node, path })
-    if (node.children.length > 0 && expandedIds.has(node.id)) {
-      flattenNodes(node.children, path, expandedIds, rows)
+    if (childrenByParentId.has(node.id) && expandedIds.has(node.id)) {
+      flattenNodes(childrenByParentId, node.id, path, expandedIds, rows)
     }
   })
 }
@@ -113,15 +96,9 @@ function flattenNodes(
  * Render Level badge (CẤP column) matching reference design:
  * Cấp 0: Green dot (● 0)
  * Cấp 1: Blue dot (● 1)
- * Cấp 2: Yellow/Amber dot (● 2) for PRODUCT, Grey dot for MATERIAL/hardware
+ * Cấp 2+: Yellow/Amber dot
  */
-function LevelBadge({
-  level,
-  itemType,
-}: {
-  level: number
-  itemType?: BomItemType
-}) {
+function LevelBadge({ level }: { level: number }) {
   if (level === 0) {
     return (
       <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-400">
@@ -136,14 +113,6 @@ function LevelBadge({
       </span>
     )
   }
-  if (itemType === BomItemType.MATERIAL) {
-    return (
-      <span className="inline-flex items-center gap-1.5 font-semibold text-slate-500">
-        <span className="size-2 rounded-full bg-slate-400" />
-        {level}
-      </span>
-    )
-  }
   return (
     <span className="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-400">
       <span className="size-2 rounded-full bg-amber-500" />
@@ -152,50 +121,14 @@ function LevelBadge({
   )
 }
 
-type OperationTypeContent = {
-  label: string
-  icon: ComponentType<IconProps>
-}
-
-// Tint recipe mirrors SuppliersTableColumns' status badges: shadcn Badge
-// (variant="outline") + a bg-<token>/15 text-<token> tint. Read-only — an
-// operation's type belongs to the master catalog entry, not to this routing step.
-const operationTypeBadgeVariants = cva("", {
-  variants: {
-    type: {
-      INHOUSE: "bg-primary/15 text-primary",
-      OUTSOURCE: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
-    },
-  },
-})
-
-// Label and icon aren't badge styling, so they stay a plain map rather than
-// being folded into the cva above.
-const OPERATION_TYPE_CONTENT: Record<OperationType, OperationTypeContent> = {
-  INHOUSE: { label: "Inhouse", icon: Home },
-  OUTSOURCE: { label: "Outsource", icon: Export },
-}
-
-function OperationTypeBadge({ type }: { type: OperationType }) {
-  const { label, icon: IconComponent } = OPERATION_TYPE_CONTENT[type]
-  return (
-    <Badge variant="outline" className={operationTypeBadgeVariants({ type })}>
-      <IconComponent className="size-3" />
-      {label}
-    </Badge>
-  )
-}
-
 // The CÔNG ĐOẠN cell: a plain read-only summary of the routing's sequence
-// text. Non-"Sản phẩm" rows (materials/hardware) have no routing at all, so
-// they render a plain "—" instead — see the two call sites below. Expanding
-// the row's own operations panel is done from THAO TÁC (OperationsToggleButton
-// below), not from here.
+// text. Expanding the row's own operations panel is done from THAO TÁC
+// (OperationsToggleButton below), not from here.
 function OperationSummaryText({
   operations,
   isPending,
 }: {
-  operations: Operation[]
+  operations: ProductOperation[]
   isPending: boolean
 }) {
   if (isPending) {
@@ -234,196 +167,8 @@ function OperationsToggleButton({
   )
 }
 
-// The expanded panel beneath a "Sản phẩm"-type row: a table of that
-// product's own routing steps (STT / Công đoạn / Loại / Ghi chú), styled
-// like the outer BOM table above it, plus the add-step form when the viewer
-// can manage it. Owns its own writes via
-// `useProductOperations(productId, ...)` — safe to call unconditionally
-// here because this component only mounts while its row is expanded, so the
-// call count for any given table row instance never changes across renders.
-function ProductOperationsPanel({
-  productId,
-  operations,
-  isPending,
-}: {
-  productId: string
-  operations: Operation[]
-  isPending: boolean
-}) {
-  const canManage = useHasPermission("products:bom-manage")
-  const { addOperation, moveOperation, deleteOperation } = useProductOperations(
-    productId,
-    operations
-  )
-  const [typeFilter, setTypeFilter] = useState<OperationType>(
-    OperationType.INHOUSE
-  )
-  const operationPicker = useGetOperationOptions(typeFilter)
-  const [selectedOperationId, setSelectedOperationId] = useState<
-    string | undefined
-  >(undefined)
-  const [note, setNote] = useState("")
-
-  function handleAdd() {
-    if (!selectedOperationId) return
-    addOperation(selectedOperationId, note.trim() || undefined)
-    setSelectedOperationId(undefined)
-    setNote("")
-  }
-
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center py-6">
-        <Spinner className="size-5" />
-      </div>
-    )
-  }
-
-  const columnCount = canManage ? 5 : 4
-
-  return (
-    <div className="overflow-x-auto rounded-md border border-border/60 bg-card shadow-2xs">
-      <Table>
-        <TableHeader>
-          <TableRow className="h-11 bg-muted/30 font-semibold text-muted-foreground hover:bg-muted/30">
-            <TableHead className="w-14 font-bold text-foreground">
-              STT
-            </TableHead>
-            <TableHead className="font-bold text-foreground">
-              CÔNG ĐOẠN
-            </TableHead>
-            <TableHead className="w-36 font-bold text-foreground">
-              LOẠI
-            </TableHead>
-            <TableHead className="font-bold text-foreground">GHI CHÚ</TableHead>
-            <PermissionGate permission="products:bom-manage">
-              <TableHead className="w-28 text-right font-bold text-foreground">
-                THAO TÁC
-              </TableHead>
-            </PermissionGate>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {operations.length === 0 && !canManage ? (
-            <TableRow className="hover:bg-transparent">
-              <TableCell
-                colSpan={columnCount}
-                className="py-6 text-center text-muted-foreground"
-              >
-                Chưa có công đoạn nào.
-              </TableCell>
-            </TableRow>
-          ) : (
-            operations.map((step, idx) => (
-              <TableRow
-                key={step.id}
-                className="h-14 bg-card hover:bg-muted/20"
-              >
-                <TableCell className="font-mono font-bold text-muted-foreground">
-                  {idx + 1}
-                </TableCell>
-                <TableCell className="font-semibold text-foreground">
-                  {step.operation.name}
-                </TableCell>
-                <TableCell>
-                  <OperationTypeBadge type={step.operation.type} />
-                </TableCell>
-                <TableCell className="font-medium text-muted-foreground">
-                  {step.note ?? "—"}
-                </TableCell>
-                <PermissionGate permission="products:bom-manage">
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <IconButton
-                        label="Di chuyển lên"
-                        disabled={idx === 0}
-                        onClick={() => moveOperation(idx, "up")}
-                        className="border border-border/60 hover:bg-muted"
-                      >
-                        <AltArrowUp className="size-3.5" />
-                      </IconButton>
-                      <IconButton
-                        label="Di chuyển xuống"
-                        disabled={idx === operations.length - 1}
-                        onClick={() => moveOperation(idx, "down")}
-                        className="border border-border/60 hover:bg-muted"
-                      >
-                        <AltArrowDown className="size-3.5" />
-                      </IconButton>
-                      <IconButton
-                        label="Xoá công đoạn"
-                        onClick={() => deleteOperation(step.id)}
-                        className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                      >
-                        <TrashBinTrash className="size-3.5" />
-                      </IconButton>
-                    </div>
-                  </TableCell>
-                </PermissionGate>
-              </TableRow>
-            ))
-          )}
-
-          <PermissionGate permission="products:bom-manage">
-            <TableRow className="h-14 bg-card hover:bg-muted/20">
-              <TableCell className="text-muted-foreground">—</TableCell>
-              <TableCell>
-                <ComboboxField
-                  value={selectedOperationId}
-                  onValueChange={setSelectedOperationId}
-                  options={operationPicker.options}
-                  onSearchChange={operationPicker.onSearchChange}
-                  isPending={operationPicker.isFetching}
-                  emptyMessage="Không tìm thấy công đoạn"
-                  placeholder="Chọn công đoạn..."
-                />
-              </TableCell>
-              <TableCell>
-                <Select
-                  value={typeFilter}
-                  onValueChange={(next) => setTypeFilter(next as OperationType)}
-                >
-                  <SelectTrigger className="h-9 w-full text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="INHOUSE">Inhouse</SelectItem>
-                    <SelectItem value="OUTSOURCE">Outsource</SelectItem>
-                  </SelectContent>
-                </Select>
-              </TableCell>
-              <TableCell>
-                <Input
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder="Ghi chú (tuỳ chọn)"
-                  className="h-9 text-xs"
-                />
-              </TableCell>
-              <TableCell className="text-right">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="gap-1 text-xs"
-                  disabled={!selectedOperationId}
-                  onClick={handleAdd}
-                >
-                  <AddSquare className="size-3.5" />
-                  Thêm
-                </Button>
-              </TableCell>
-            </TableRow>
-          </PermissionGate>
-        </TableBody>
-      </Table>
-    </div>
-  )
-}
-
-// Add entry point — a "+" per row. A PRODUCT row can host children, so it
-// offers a menu (con / cùng cấp); a MATERIAL row cannot (backend rejects with
-// `bom_item.error.parent_is_material`), so its "+" only adds a sibling.
+// Add entry point — a "+" per row. Every row is a WIP product, so it can
+// always host children ("Cấp con") alongside adding a sibling ("Cùng cấp").
 function BomRowActions({
   node,
   onAddChild,
@@ -439,37 +184,27 @@ function BomRowActions({
 }) {
   return (
     <>
-      {node.itemType === BomItemType.PRODUCT ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <IconButton
-              label="Thêm thành phần"
-              className="border border-border/60 hover:bg-muted"
-            >
-              <Plus className="size-3.5" />
-            </IconButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {/* "Thêm" is already implied by the "+" trigger — just say where. */}
-            <DropdownMenuItem onSelect={onAddChild}>
-              <CornerDownRight />
-              Cấp con
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={onAddSibling}>
-              <LayersPlus />
-              Cùng cấp
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <IconButton
-          label="Thêm cùng cấp"
-          onClick={onAddSibling}
-          className="border border-border/60 hover:bg-muted"
-        >
-          <Plus className="size-3.5" />
-        </IconButton>
-      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <IconButton
+            label="Thêm thành phần"
+            className="border border-border/60 hover:bg-muted"
+          >
+            <Plus className="size-3.5" />
+          </IconButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {/* "Thêm" is already implied by the "+" trigger — just say where. */}
+          <DropdownMenuItem onSelect={onAddChild}>
+            <CornerDownRight />
+            Cấp con
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={onAddSibling}>
+            <LayersPlus />
+            Cùng cấp
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <IconButton
         label="Sửa thành phần"
@@ -494,14 +229,14 @@ type ProductBomTableProps = {
   product: Product
   nodes: BomItem[]
   actions?: BomTableActions
-  operationsByProductId: OperationsByProductId
+  rootOperations: RootOperations
 }
 
 export function ProductBomTable({
   product,
   nodes,
   actions,
-  operationsByProductId,
+  rootOperations,
 }: ProductBomTableProps) {
   // STT / MÃ BẢN VẼ / TÊN BẢN VẼ / CẤP / SỐ LƯỢNG / ĐVT / CÔNG ĐOẠN / THAO TÁC —
   // THAO TÁC always renders now since every "Sản phẩm"-type row's operations
@@ -515,8 +250,9 @@ export function ProductBomTable({
     new Set()
   )
 
+  const childrenByParentId = groupByParentId(nodes)
   const rows: FlatRow[] = []
-  flattenNodes(nodes, null, expandedIds, rows)
+  flattenNodes(childrenByParentId, null, null, expandedIds, rows)
 
   function toggleExpanded(nodeId: string) {
     setExpandedIds((prev) => {
@@ -633,13 +369,11 @@ export function ProductBomTable({
               <TableCell className="text-muted-foreground">—</TableCell>
               <TableCell
                 className="max-w-64 truncate"
-                title={formatOperationSequence(
-                  operationsByProductId[product.id].operations
-                )}
+                title={formatOperationSequence(rootOperations.operations)}
               >
                 <OperationSummaryText
-                  operations={operationsByProductId[product.id].operations}
-                  isPending={operationsByProductId[product.id].isPending}
+                  operations={rootOperations.operations}
+                  isPending={rootOperations.isPending}
                 />
               </TableCell>
               <TableCell className="text-right">
@@ -656,9 +390,9 @@ export function ProductBomTable({
               <TableRow className="bg-muted/10 hover:bg-muted/10">
                 <TableCell colSpan={columnCount} className="p-0">
                   <ProductOperationsPanel
-                    productId={product.id}
-                    operations={operationsByProductId[product.id].operations}
-                    isPending={operationsByProductId[product.id].isPending}
+                    target={{ productId: product.id }}
+                    operations={rootOperations.operations}
+                    isPending={rootOperations.isPending}
                   />
                 </TableCell>
               </TableRow>
@@ -666,7 +400,7 @@ export function ProductBomTable({
 
             {/* Child BOM rows */}
             {rows.map(({ node, path }) => {
-              const hasChildren = node.children.length > 0
+              const hasChildren = childrenByParentId.has(node.id)
               const isExpanded = expandedIds.has(node.id)
               const isOperationsExpanded = expandedOperationIds.has(node.id)
 
@@ -735,10 +469,10 @@ export function ProductBomTable({
                       {node.name}
                     </TableCell>
                     <TableCell>
-                      <LevelBadge level={node.level} itemType={node.itemType} />
+                      <LevelBadge level={node.level} />
                     </TableCell>
                     <TableCell className="text-center font-semibold text-foreground tabular-nums">
-                      {formatQuantity(node.quantity)}
+                      {quantityFormatter.format(node.quantity)}
                     </TableCell>
                     <TableCell
                       className="font-medium text-muted-foreground"
@@ -748,37 +482,19 @@ export function ProductBomTable({
                     </TableCell>
                     <TableCell
                       className="max-w-64 truncate"
-                      title={
-                        node.itemType === BomItemType.PRODUCT
-                          ? formatOperationSequence(
-                              operationsByProductId[node.itemId].operations
-                            )
-                          : undefined
-                      }
+                      title={formatOperationSequence(node.operations)}
                     >
-                      {node.itemType === BomItemType.PRODUCT ? (
-                        <OperationSummaryText
-                          operations={
-                            operationsByProductId[node.itemId].operations
-                          }
-                          isPending={
-                            operationsByProductId[node.itemId].isPending
-                          }
-                        />
-                      ) : (
-                        <span className="text-xs text-muted-foreground/50 italic">
-                          —
-                        </span>
-                      )}
+                      <OperationSummaryText
+                        operations={node.operations}
+                        isPending={false}
+                      />
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        {node.itemType === BomItemType.PRODUCT ? (
-                          <OperationsToggleButton
-                            isExpanded={isOperationsExpanded}
-                            onToggle={() => toggleOperationsExpanded(node.id)}
-                          />
-                        ) : null}
+                        <OperationsToggleButton
+                          isExpanded={isOperationsExpanded}
+                          onToggle={() => toggleOperationsExpanded(node.id)}
+                        />
                         {actions !== undefined ? (
                           <PermissionGate permission="products:bom-manage">
                             <BomRowActions
@@ -805,18 +521,16 @@ export function ProductBomTable({
                     </TableCell>
                   </TableRow>
 
-                  {node.itemType === BomItemType.PRODUCT &&
-                  isOperationsExpanded ? (
+                  {isOperationsExpanded ? (
                     <TableRow className="bg-muted/10 hover:bg-muted/10">
                       <TableCell colSpan={columnCount} className="p-0">
                         <ProductOperationsPanel
-                          productId={node.itemId}
-                          operations={
-                            operationsByProductId[node.itemId].operations
-                          }
-                          isPending={
-                            operationsByProductId[node.itemId].isPending
-                          }
+                          target={{
+                            productId: node.productId,
+                            itemId: node.id,
+                          }}
+                          operations={node.operations}
+                          isPending={false}
                         />
                       </TableCell>
                     </TableRow>

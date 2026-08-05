@@ -36,7 +36,7 @@ export const getBomMaterials = createServerFn({ method: "GET" })
     try {
       const { productId, ...params } = data
       const response = await http.get<PaginatedResponse<BomMaterial>>(
-        `/api/products/${productId}/bom/materials`,
+        `/api/products/${productId}/materials`,
         { params }
       )
 

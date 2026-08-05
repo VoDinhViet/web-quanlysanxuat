@@ -1,15 +1,18 @@
 import { z } from "zod"
 
 import { fileFieldSchema } from "@/lib/file-field.schema"
-import { BomItemType } from "@/lib/types/bom-item.type"
 
-// Raw form shape for adding a BOM node. Wire mapping (quantity string → number,
+// Raw form shape for adding a BOM node. Every node is now a WIP product —
+// bom_items no longer carries a material/product type split (materials moved
+// to their own bom_materials model). Wire mapping (quantity string → number,
 // empty note → undefined) happens in the server function, not here. The
-// integer-quantity rule for PRODUCT nodes is enforced by the backend (E055) and
-// surfaced as a Vietnamese message, so it isn't duplicated client-side.
+// integer-quantity rule is enforced by the backend and surfaced as a
+// Vietnamese message, so it isn't duplicated client-side.
 export const createBomItemSchema = z.object({
-  itemType: z.enum(BomItemType),
-  itemId: z.string().min(1, "Vui lòng chọn mục"),
+  // The WIP product this node links to — named apart from the owner scope's
+  // own `productId` (added by create-bom-item.api.ts) to avoid colliding
+  // with it when the two schemas are merged.
+  itemProductId: z.string().min(1, "Vui lòng chọn sản phẩm"),
   quantity: z.string().refine((value) => {
     const parsed = Number(value)
     return value.trim() !== "" && Number.isFinite(parsed) && parsed > 0
@@ -22,8 +25,7 @@ export const createBomItemSchema = z.object({
 export type CreateBomItemSchema = z.infer<typeof createBomItemSchema>
 
 export const CREATE_BOM_ITEM_DEFAULT_VALUES: CreateBomItemSchema = {
-  itemType: BomItemType.MATERIAL,
-  itemId: "",
+  itemProductId: "",
   quantity: "1",
   note: "",
   drawing: null,

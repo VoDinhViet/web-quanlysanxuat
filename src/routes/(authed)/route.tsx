@@ -64,7 +64,7 @@ function AuthedLayout() {
           </div>
         </SidebarInset>
       </SidebarProvider>
-      <Toaster />
+      <Toaster richColors />
     </TooltipProvider>
   )
 }

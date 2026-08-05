@@ -8,31 +8,32 @@ export enum OperationStatus {
   INACTIVE = "INACTIVE",
 }
 
-export const OPERATION_TYPE_LABELS: Record<OperationType, string> = {
-  INHOUSE: "Inhouse",
-  OUTSOURCE: "Outsource",
+export const operationTypeLabels: Record<OperationType, string> = {
+  [OperationType.INHOUSE]: "Inhouse",
+  [OperationType.OUTSOURCE]: "Outsource",
 }
 
-/** Mirrors the backend's OperationRefResDto — the master operation
- *  (@/api/operations) a routing step points at. */
-export type OperationRef = {
+/**
+ * Mirrors backend's OperationResDto / OperationRefResDto — the master catalog operation entity.
+ */
+export type Operation = {
   id: string
   code: string
   name: string
   type: OperationType
 }
 
+/** Legacy alias for backward compatibility */
+export type OperationRef = Operation
+
 /**
- * Mirrors the backend's ProductOperationResDto — one step of a product's
- * routing (GET/POST/PATCH /api/products/:productId/operations). Routing is
- * scoped to the whole product, not to individual BOM lines.
+ * Mirrors backend's ProductOperationResDto / BomOperationResDto — one step of a product or BOM item routing.
  */
-export type Operation = {
+export type ProductOperation = {
   id: string
   sortOrder: number
   note: string | null
-  type: OperationType
-  operation: OperationRef
+  operation: Operation
   createdAt: string
   updatedAt: string
 }
@@ -41,7 +42,9 @@ export type Operation = {
  * Format a routing's steps into a single line, e.g.
  * "1. Tiện CNC → 2. Phay CNC".
  */
-export function formatOperationSequence(operations: Operation[]): string {
+export function formatOperationSequence(
+  operations: ProductOperation[]
+): string {
   if (operations.length === 0) return "—"
   return operations
     .map((step, idx) => `${idx + 1}. ${step.operation.name}`)

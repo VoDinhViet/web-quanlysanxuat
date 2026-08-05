@@ -25,13 +25,18 @@ export const bomMaterialColumns = [
     meta: { headerClassName: "min-w-64" },
     cell: ({ row }) => {
       const material = row.original
+      const imageUrl = material.image
+        ? typeof material.image === "string"
+          ? resolveFileUrl(material.image)
+          : resolveFileUrl(material.image.url)
+        : null
 
       return (
         <div className="flex min-w-0 items-center gap-3 py-1">
           <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
-            {material.image ? (
+            {imageUrl ? (
               <Image
-                src={resolveFileUrl(material.image.url)}
+                src={imageUrl}
                 alt={material.name}
                 layout="fullWidth"
                 objectFit="cover"
@@ -58,12 +63,17 @@ export const bomMaterialColumns = [
     header: "ĐVT",
     meta: { headerClassName: "min-w-20" },
   }),
-  bomMaterialColumnHelper.accessor("totalQuantity", {
-    header: "Tổng số lượng",
+  bomMaterialColumnHelper.accessor("quantity", {
+    header: "Định mức / 1 bộ",
     meta: {
       headerClassName: "min-w-32 text-right",
       cellClassName: "text-right font-medium text-foreground",
     },
     cell: ({ getValue }) => quantityFormatter.format(getValue()),
+  }),
+  bomMaterialColumnHelper.accessor("note", {
+    header: "Ghi chú",
+    meta: { headerClassName: "min-w-40" },
+    cell: ({ getValue }) => getValue() || "—",
   }),
 ]

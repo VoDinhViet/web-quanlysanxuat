@@ -6,7 +6,7 @@ import { createBomItemSchema } from "@/features/products/schemas/create-bom-item
 import { resolveApiFileId } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { BomItemNode } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -18,18 +18,12 @@ function resolveCreateBomItemErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "product.error.not_found":
       return "Không tìm thấy sản phẩm."
-    case "material.error.not_found":
-      return "Không tìm thấy vật tư."
     case "bom_item.error.parent_not_found":
       return "Không tìm thấy hạng mục cha."
-    case "bom_item.error.parent_is_material":
-      return "Không thể thêm hạng mục con vào một vật tư."
     case "bom_item.error.product_not_wip":
       return "Chỉ thêm được sản phẩm dạng bán thành phẩm (WIP) vào cấu trúc."
     case "bom_item.error.cycle_detected":
       return "Không thể thêm: sẽ tạo vòng lặp trong cấu trúc sản phẩm."
-    case "bom_item.error.quantity_not_integer":
-      return "Sản phẩm phải có số lượng nguyên."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -47,8 +41,7 @@ function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "productId">) {
   const note = data.note.trim()
 
   return {
-    itemType: data.itemType,
-    itemId: data.itemId,
+    productId: data.itemProductId,
     parentId: data.parentId,
     quantity: Number(data.quantity),
     sortOrder: data.sortOrder,
@@ -59,10 +52,10 @@ function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "productId">) {
 
 export const createBomItem = createServerFn({ method: "POST" })
   .validator(createBomItemInputSchema)
-  .handler(async ({ data }): Promise<BomItemNode> => {
+  .handler(async ({ data }): Promise<BomItem> => {
     try {
       const { productId, ...rest } = data
-      const response = await http.post<BomItemNode>(
+      const response = await http.post<BomItem>(
         `/api/products/${productId}/bom/items`,
         toCreateBomItemPayload(rest)
       )

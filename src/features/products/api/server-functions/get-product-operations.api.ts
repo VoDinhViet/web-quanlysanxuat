@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Operation } from "@/lib/types/operation.type"
+import type { ProductOperation } from "@/lib/types/operation.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -23,9 +23,9 @@ function resolveGetProductOperationsErrorMessage(error: unknown): string {
 
 export const getProductOperations = createServerFn({ method: "GET" })
   .validator(z.object({ productId: z.uuid() }))
-  .handler(async ({ data }): Promise<Operation[]> => {
+  .handler(async ({ data }): Promise<ProductOperation[]> => {
     try {
-      const response = await http.get<Operation[]>(
+      const response = await http.get<ProductOperation[]>(
         `/api/products/${data.productId}/operations`
       )
 

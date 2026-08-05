@@ -8,36 +8,41 @@ import type { ApiErrorResponse } from "@/lib/http"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
-function resolveUpdateProductOperationErrorMessage(error: unknown): string {
+function resolveUpdateBomOperationErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
     return GENERIC_ERROR_MESSAGE
   }
 
   switch (error.response?.data.errorCode) {
-    case "product_operation.error.not_found":
+    case "product.error.not_found":
+      return "Không tìm thấy sản phẩm."
+    case "bom_item.error.parent_not_found":
+      return "Không tìm thấy hạng mục trong cấu trúc sản phẩm."
+    case "bom_operation.error.not_found":
       return "Không tìm thấy bước công đoạn."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
-const updateProductOperationInputSchema = updateProductOperationSchema.extend({
+const updateBomOperationInputSchema = updateProductOperationSchema.extend({
   productId: z.uuid(),
+  itemId: z.uuid(),
   stepId: z.uuid(),
 })
 
-export const updateProductOperation = createServerFn({ method: "POST" })
-  .validator(updateProductOperationInputSchema)
+export const updateBomOperation = createServerFn({ method: "POST" })
+  .validator(updateBomOperationInputSchema)
   .handler(async ({ data }): Promise<void> => {
     try {
-      const { productId, stepId, ...rest } = data
+      const { productId, itemId, stepId, ...rest } = data
       await http.patch(
-        `/api/products/${productId}/operations/${stepId}`,
+        `/api/products/${productId}/bom/items/${itemId}/operations/${stepId}`,
         rest
       )
     } catch (error) {
-      logHttpError(error, "updateProductOperation")
+      logHttpError(error, "updateBomOperation")
 
-      throw new Error(resolveUpdateProductOperationErrorMessage(error))
+      throw new Error(resolveUpdateBomOperationErrorMessage(error))
     }
   })
