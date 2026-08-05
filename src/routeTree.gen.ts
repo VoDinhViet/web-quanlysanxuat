@@ -15,6 +15,7 @@ import { Route as authedRouteRouteImport } from './routes/(authed)/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authedManageRouteImport } from './routes/(authed)/manage'
 import { Route as authedManageClientsRouteImport } from './routes/(authed)/manage_/clients'
+import { Route as authedManageInventoryMaterialsRouteImport } from './routes/(authed)/manage_/inventory-materials'
 import { Route as authedManageMaterialsRouteImport } from './routes/(authed)/manage_/materials'
 import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage_/orders'
 import { Route as authedManageProductionJobsRouteImport } from './routes/(authed)/manage_/production-jobs'
@@ -67,6 +68,12 @@ const authedManageClientsRoute = authedManageClientsRouteImport.update({
   path: '/manage/clients',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManageInventoryMaterialsRoute =
+  authedManageInventoryMaterialsRouteImport.update({
+    id: '/manage_/inventory-materials',
+    path: '/manage/inventory-materials',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageMaterialsRoute = authedManageMaterialsRouteImport.update({
   id: '/manage_/materials',
   path: '/manage/materials',
@@ -205,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
   '/manage/clients': typeof authedManageClientsRoute
+  '/manage/inventory-materials': typeof authedManageInventoryMaterialsRoute
   '/manage/materials': typeof authedManageMaterialsRoute
   '/manage/orders': typeof authedManageOrdersRoute
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
@@ -234,6 +242,7 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
   '/manage/clients': typeof authedManageClientsRoute
+  '/manage/inventory-materials': typeof authedManageInventoryMaterialsRoute
   '/manage/materials': typeof authedManageMaterialsRoute
   '/manage/orders': typeof authedManageOrdersRoute
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
@@ -266,6 +275,7 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(authed)/manage': typeof authedManageRoute
   '/(authed)/manage_/clients': typeof authedManageClientsRoute
+  '/(authed)/manage_/inventory-materials': typeof authedManageInventoryMaterialsRoute
   '/(authed)/manage_/materials': typeof authedManageMaterialsRoute
   '/(authed)/manage_/orders': typeof authedManageOrdersRoute
   '/(authed)/manage_/production-jobs': typeof authedManageProductionJobsRoute
@@ -297,6 +307,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage'
     | '/manage/clients'
+    | '/manage/inventory-materials'
     | '/manage/materials'
     | '/manage/orders'
     | '/manage/production-jobs'
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage'
     | '/manage/clients'
+    | '/manage/inventory-materials'
     | '/manage/materials'
     | '/manage/orders'
     | '/manage/production-jobs'
@@ -357,6 +369,7 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(authed)/manage'
     | '/(authed)/manage_/clients'
+    | '/(authed)/manage_/inventory-materials'
     | '/(authed)/manage_/materials'
     | '/(authed)/manage_/orders'
     | '/(authed)/manage_/production-jobs'
@@ -430,6 +443,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/clients'
       fullPath: '/manage/clients'
       preLoaderRoute: typeof authedManageClientsRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-materials': {
+      id: '/(authed)/manage_/inventory-materials'
+      path: '/manage/inventory-materials'
+      fullPath: '/manage/inventory-materials'
+      preLoaderRoute: typeof authedManageInventoryMaterialsRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/materials': {
@@ -611,6 +631,7 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 interface authedRouteRouteChildren {
   authedManageRoute: typeof authedManageRoute
   authedManageClientsRoute: typeof authedManageClientsRoute
+  authedManageInventoryMaterialsRoute: typeof authedManageInventoryMaterialsRoute
   authedManageMaterialsRoute: typeof authedManageMaterialsRoute
   authedManageOrdersRoute: typeof authedManageOrdersRoute
   authedManageProductionJobsRoute: typeof authedManageProductionJobsRoute
@@ -639,6 +660,7 @@ interface authedRouteRouteChildren {
 const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageRoute: authedManageRoute,
   authedManageClientsRoute: authedManageClientsRoute,
+  authedManageInventoryMaterialsRoute: authedManageInventoryMaterialsRoute,
   authedManageMaterialsRoute: authedManageMaterialsRoute,
   authedManageOrdersRoute: authedManageOrdersRoute,
   authedManageProductionJobsRoute: authedManageProductionJobsRoute,

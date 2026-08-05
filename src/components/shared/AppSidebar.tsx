@@ -115,7 +115,12 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: "Nhập kho", icon: PackagePlus },
       { label: "Xuất kho", icon: PackageMinus },
-      { label: "Tồn kho vật tư", icon: Warehouse },
+      {
+        label: "Tồn kho vật tư",
+        icon: Warehouse,
+        href: "/manage/inventory-materials",
+        permission: "materials:read",
+      },
       { label: "Tồn kho thành phẩm", icon: Boxes },
     ],
   },
