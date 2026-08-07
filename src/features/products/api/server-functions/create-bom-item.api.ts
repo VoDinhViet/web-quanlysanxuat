@@ -16,14 +16,18 @@ function resolveCreateBomItemErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     case "bom_item.error.parent_not_found":
       return "Không tìm thấy hạng mục cha."
-    case "bom_item.error.product_not_wip":
-      return "Chỉ thêm được sản phẩm dạng bán thành phẩm (WIP) vào cấu trúc."
+    case "bom_item.error.parent_is_leaf":
+      return "Vật tư luôn là lá của cấu trúc — không thể thêm hạng mục con vào đây."
+    case "bom_item.error.item_not_wip":
+      return "Chỉ thêm được bán thành phẩm (WIP) hoặc vật tư (RM) vào cấu trúc."
     case "bom_item.error.cycle_detected":
       return "Không thể thêm: sẽ tạo vòng lặp trong cấu trúc sản phẩm."
+    case "bom_item.error.quantity_not_integer":
+      return "Số lượng phải là số nguyên đối với bán thành phẩm (WIP)."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -41,7 +45,7 @@ function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "productId">) {
   const note = data.note.trim()
 
   return {
-    productId: data.itemProductId,
+    itemId: data.itemId,
     parentId: data.parentId,
     quantity: Number(data.quantity),
     sortOrder: data.sortOrder,
@@ -56,7 +60,7 @@ export const createBomItem = createServerFn({ method: "POST" })
     try {
       const { productId, ...rest } = data
       const response = await http.post<BomItem>(
-        `/api/products/${productId}/bom/items`,
+        `/api/items/${productId}/bom/items`,
         toCreateBomItemPayload(rest)
       )
 

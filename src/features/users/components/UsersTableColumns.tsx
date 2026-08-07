@@ -1,25 +1,19 @@
 import { Link } from "@tanstack/react-router"
-import { User as UserSolar } from "@solar-icons/react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { cva } from "class-variance-authority"
-import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
+import { Edit3, MoreHorizontal, ShieldCheck, UserRound } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { EMPLOYEE_STATUS_LABELS, EmployeeStatus } from "@/lib/types/user.type"
-import type { User } from "@/lib/types/user.type"
-import { resolveFileUrl } from "@/lib/file-url"
+import { employeeStatusLabels } from "@/lib/types/user.type"
+import type { EmployeeStatus, User } from "@/lib/types/user.type"
+import { resolveAvatarUrl } from "@/lib/file-url"
 
-const statusBadgeVariants = cva("", {
-  variants: {
-    status: {
-      [EmployeeStatus.WORKING]: "bg-success/15 text-success",
-      [EmployeeStatus.RESIGNED]: "bg-muted text-muted-foreground",
-    },
-  },
-})
+const statusStyles: Record<EmployeeStatus, string> = {
+  WORKING: "bg-success/15 text-success",
+  RESIGNED: "bg-muted text-muted-foreground",
+}
 
 const userColumnHelper = createColumnHelper<User>()
 
@@ -44,11 +38,11 @@ export const userColumns = [
         <div className="flex min-w-0 items-center gap-3">
           <Avatar className="size-9">
             <AvatarImage
-              src={user.avatar ? resolveFileUrl(user.avatar.url) : undefined}
+              src={resolveAvatarUrl(user.avatar?.url)}
               alt={user.fullName}
             />
-            <AvatarFallback>
-              <UserSolar className="size-3/5" />
+            <AvatarFallback className="bg-muted">
+              <UserRound className="size-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
           <span className="truncate text-xs font-medium text-foreground">
@@ -97,8 +91,8 @@ export const userColumns = [
       const status = getValue()
 
       return (
-        <Badge variant="outline" className={statusBadgeVariants({ status })}>
-          {EMPLOYEE_STATUS_LABELS[status]}
+        <Badge variant="outline" className={statusStyles[status]}>
+          {employeeStatusLabels[status]}
         </Badge>
       )
     },

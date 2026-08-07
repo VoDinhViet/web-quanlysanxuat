@@ -5,7 +5,6 @@ import { z } from "zod"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
 import { SupplierStatus } from "@/lib/types/supplier.type"
 import type { Supplier } from "@/lib/types/supplier.type"
 import { optional } from "@/lib/zod-transforms"
@@ -23,9 +22,6 @@ function resolveGetSuppliersErrorMessage(error: unknown): string {
   }
 }
 
-// Broader than any single caller's own search schema — see get-clients.api.ts
-// for why (route-facing `suppliersSearchSchema` stays local to the suppliers
-// route, this one just needs to be wire-valid for the backend).
 const getSuppliersSchema = z.object({
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),
@@ -33,7 +29,7 @@ const getSuppliersSchema = z.object({
   status: z.enum(SupplierStatus).optional(),
   supplierGroupId: z.string().trim().min(1).optional(),
   countryId: z.string().trim().min(1).optional(),
-  order: z.enum(SORT_ORDERS).optional(),
+  order: z.enum(["ASC", "DESC"]).optional(),
 })
 
 export const getSuppliers = createServerFn({ method: "GET" })

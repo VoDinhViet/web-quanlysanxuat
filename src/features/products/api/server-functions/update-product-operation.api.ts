@@ -14,7 +14,7 @@ function resolveUpdateProductOperationErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product_operation.error.not_found":
+    case "routing_operation.error.not_found":
       return "Không tìm thấy bước công đoạn."
     default:
       return GENERIC_ERROR_MESSAGE
@@ -31,10 +31,7 @@ export const updateProductOperation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<void> => {
     try {
       const { productId, stepId, ...rest } = data
-      await http.patch(
-        `/api/products/${productId}/operations/${stepId}`,
-        rest
-      )
+      await http.patch(`/api/items/${productId}/operations/${stepId}`, rest)
     } catch (error) {
       logHttpError(error, "updateProductOperation")
 

@@ -4,7 +4,7 @@ import axios from "axios"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { Position } from "@/lib/types/user.type"
+import type { Position } from "@/lib/types/position.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 

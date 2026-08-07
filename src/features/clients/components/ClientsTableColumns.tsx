@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
-import { cva } from "class-variance-authority"
 import { Edit3, Eye, MoreHorizontal } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -9,14 +8,10 @@ import { PermissionGate } from "@/components/shared/PermissionGate"
 import { CLIENT_STATUS_LABELS, ClientStatus } from "@/lib/types/client.type"
 import type { Client } from "@/lib/types/client.type"
 
-const statusBadgeVariants = cva("", {
-  variants: {
-    status: {
-      [ClientStatus.ACTIVE]: "bg-success/15 text-success",
-      [ClientStatus.PAUSED]: "bg-warning/15 text-warning",
-    },
-  },
-})
+const statusStyles: Record<ClientStatus, string> = {
+  [ClientStatus.ACTIVE]: "bg-success/15 text-success",
+  [ClientStatus.PAUSED]: "bg-warning/15 text-warning",
+}
 
 const clientColumnHelper = createColumnHelper<Client>()
 
@@ -78,7 +73,7 @@ export const clientColumns = [
       const status = getValue()
 
       return (
-        <Badge variant="outline" className={statusBadgeVariants({ status })}>
+        <Badge variant="outline" className={statusStyles[status]}>
           {CLIENT_STATUS_LABELS[status]}
         </Badge>
       )

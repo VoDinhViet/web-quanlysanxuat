@@ -1,10 +1,10 @@
 import { withForm } from "@/hooks/use-app-form"
 import { UserAvatarField } from "@/features/users/components/UserAvatarField"
 import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
-import { USER_GENDER_LABELS } from "@/lib/types/user.type"
+import { genderLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const GENDER_OPTIONS = buildOptionsFromLabels(USER_GENDER_LABELS)
+const GENDER_OPTIONS = buildOptionsFromLabels(genderLabels)
 
 export const UpdateUserInfoSection = withForm({
   defaultValues: updateUserFormDefaultValues,

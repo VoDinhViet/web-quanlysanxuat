@@ -14,8 +14,10 @@ function resolveCreateProductOperationErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
+    case "item.error.raw_material_not_allowed":
+      return "Vật tư không có công đoạn riêng."
     case "operation.error.not_found":
       return "Không tìm thấy công đoạn trong danh mục."
     default:
@@ -33,7 +35,7 @@ export const createProductOperation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<void> => {
     try {
       const { productId, ...rest } = data
-      await http.post(`/api/products/${productId}/operations`, rest)
+      await http.post(`/api/items/${productId}/operations`, rest)
     } catch (error) {
       logHttpError(error, "createProductOperation")
 

@@ -16,7 +16,7 @@ function resolveGetBomMaterialsErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     default:
       return GENERIC_ERROR_MESSAGE
@@ -36,7 +36,7 @@ export const getBomMaterials = createServerFn({ method: "GET" })
     try {
       const { productId, ...params } = data
       const response = await http.get<PaginatedResponse<BomMaterial>>(
-        `/api/products/${productId}/materials`,
+        `/api/items/${productId}/materials`,
         { params }
       )
 

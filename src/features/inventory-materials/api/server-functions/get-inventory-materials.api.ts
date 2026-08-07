@@ -4,7 +4,6 @@ import { z } from "zod"
 import type { InventoryMaterial } from "@/lib/types/inventory-material.type"
 import { InventoryStatus } from "@/lib/types/inventory-material.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
 import { optional } from "@/lib/zod-transforms"
 
 // ---------------------------------------------------------------------------
@@ -68,10 +67,7 @@ function seededRandom(seed: number): number {
   return x - Math.floor(x)
 }
 
-function buildMockRow(
-  index: number,
-  seed: number
-): InventoryMaterial {
+function buildMockRow(index: number, seed: number): InventoryMaterial {
   const [code, name, groupName] = MATERIAL_NAMES[index % MATERIAL_NAMES.length]
   const r = (n: number) => Math.round(seededRandom(seed * 31 + n) * 1000)
 
@@ -116,59 +112,59 @@ const getInventoryMaterialsSchema = z.object({
   limit: z.number().int().min(1).optional(),
   q: optional(z.string().trim()),
   materialGroupId: z.string().trim().min(1).optional(),
+  materialTypeId: z.string().trim().min(1).optional(),
+  supplierId: z.string().trim().min(1).optional(),
+  warehouseId: z.string().trim().min(1).optional(),
   status: z.enum(InventoryStatus).optional(),
-  order: z.enum(SORT_ORDERS).optional(),
+  dateMode: z.enum(["current", "range"]).optional(),
+  fromDate: z.string().trim().min(1).optional(),
+  toDate: z.string().trim().min(1).optional(),
+  order: z.enum(["ASC", "DESC"]).optional(),
 })
 
 export const getInventoryMaterials = createServerFn({ method: "GET" })
   .validator(getInventoryMaterialsSchema)
-  .handler(
-    async ({ data }): Promise<PaginatedResponse<InventoryMaterial>> => {
-      const page = data.page ?? 1
-      const limit = data.limit ?? 10
+  .handler(async ({ data }): Promise<PaginatedResponse<InventoryMaterial>> => {
+    const page = data.page ?? 1
+    const limit = data.limit ?? 10
 
-      // Build entire dataset then filter in-process (mock only).
-      let rows = MATERIAL_NAMES.map((_, idx) =>
-        buildMockRow(idx, idx + 1)
+    // Build entire dataset then filter in-process (mock only).
+    let rows = MATERIAL_NAMES.map((_, idx) => buildMockRow(idx, idx + 1))
+
+    // Filter by search term
+    if (data.q) {
+      const q = data.q.toLowerCase()
+      rows = rows.filter(
+        (row) =>
+          row.code.toLowerCase().includes(q) ||
+          row.name.toLowerCase().includes(q)
       )
-
-      // Filter by search term
-      if (data.q) {
-        const q = data.q.toLowerCase()
-        rows = rows.filter(
-          (row) =>
-            row.code.toLowerCase().includes(q) ||
-            row.name.toLowerCase().includes(q)
-        )
-      }
-
-      // Filter by group
-      if (data.materialGroupId) {
-        rows = rows.filter(
-          (row) => row.group.id === data.materialGroupId
-        )
-      }
-
-      // Filter by status
-      if (data.status) {
-        rows = rows.filter((row) => row.status === data.status)
-      }
-
-      const totalRecords = rows.length
-      const totalPages = Math.ceil(totalRecords / limit) || 1
-      const start = (page - 1) * limit
-      const pageRows = rows.slice(start, start + limit)
-
-      return {
-        data: pageRows,
-        pagination: {
-          limit,
-          currentPage: page,
-          nextPage: page < totalPages ? page + 1 : null,
-          previousPage: page > 1 ? page - 1 : null,
-          totalRecords,
-          totalPages,
-        },
-      }
     }
-  )
+
+    // Filter by group
+    if (data.materialGroupId) {
+      rows = rows.filter((row) => row.group.id === data.materialGroupId)
+    }
+
+    // Filter by status
+    if (data.status) {
+      rows = rows.filter((row) => row.status === data.status)
+    }
+
+    const totalRecords = rows.length
+    const totalPages = Math.ceil(totalRecords / limit) || 1
+    const start = (page - 1) * limit
+    const pageRows = rows.slice(start, start + limit)
+
+    return {
+      data: pageRows,
+      pagination: {
+        limit,
+        currentPage: page,
+        nextPage: page < totalPages ? page + 1 : null,
+        previousPage: page > 1 ? page - 1 : null,
+        totalRecords,
+        totalPages,
+      },
+    }
+  })

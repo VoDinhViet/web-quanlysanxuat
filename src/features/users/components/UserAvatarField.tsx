@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
-import { Camera, Loader2, UserRound } from "lucide-react"
+import { Camera, Loader2 } from "lucide-react"
 import { ErrorCode, useDropzone } from "react-dropzone"
 
-import { resolveFileUrl } from "@/lib/file-url"
+import { resolveAvatarUrl } from "@/lib/file-url"
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_IMAGE_SIZE_BYTES,
@@ -41,6 +41,7 @@ export function UserAvatarField({
   disabled,
 }: UserAvatarFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
+  const [isPreviewBroken, setIsPreviewBroken] = useState(false)
   const uploadAvatarFn = useServerFn(uploadFile)
 
   const {
@@ -54,7 +55,10 @@ export function UserAvatarField({
       formData.append("type", "USER_AVATAR")
       return uploadAvatarFn({ data: formData })
     },
-    onSuccess: (result) => onChange(result),
+    onSuccess: (result) => {
+      setIsPreviewBroken(false)
+      onChange(result)
+    },
   })
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -96,20 +100,12 @@ export function UserAvatarField({
             isDragActive && "border-primary bg-primary/5"
           )}
         >
-          {value ? (
-            <img
-              src={resolveFileUrl(value.url)}
-              alt="Ảnh đại diện"
-              className="size-full object-cover"
-              // The signed URL expires after ~1h; fall back rather than showing
-              // a broken-image glyph.
-              onError={(event) => {
-                event.currentTarget.style.display = "none"
-              }}
-            />
-          ) : (
-            <UserRound className="size-14 text-muted-foreground/60" />
-          )}
+          <img
+            src={resolveAvatarUrl(!isPreviewBroken ? value?.url : null)}
+            alt="Ảnh đại diện"
+            className="size-full object-cover"
+            onError={() => setIsPreviewBroken(true)}
+          />
 
           {isPending ? (
             <div className="absolute inset-0 flex items-center justify-center rounded-full bg-background/70">

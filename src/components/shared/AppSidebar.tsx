@@ -143,7 +143,7 @@ const menuGroups: MenuGroup[] = [
         label: "Sản phẩm",
         icon: PackageSearch,
         href: "/manage/products",
-        permission: "products:read",
+        permission: "items:read",
       },
       {
         label: "Vật tư",

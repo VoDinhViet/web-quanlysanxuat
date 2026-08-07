@@ -3,11 +3,11 @@ import type { FileResource } from "@/lib/types/file.type"
 import type { Unit } from "@/lib/types/unit.type"
 
 /**
- * Snapshot-only now — `bom_items` (this file's `BomItem`) split its material
- * rows into their own `bom_materials` table/endpoint, so every current BOM
- * structure node is a WIP product (see `BomItem.productId`). The enum still
- * mirrors the backend's `BomItemType` DB enum for `production-job.type.ts`,
- * which snapshots a Job's BOM (and its itemType) at approval time.
+ * Snapshot-only now — `bom_items` (this file's `BomItem`) mirrors the
+ * backend's live `ItemType` (`BomNodeItemType` below) for anything current.
+ * This enum still mirrors the backend's older `BomItemType` DB enum for
+ * `production-job.type.ts`, which snapshots a Job's BOM (and its itemType) at
+ * approval time under the pre-items-merge names.
  */
 export enum BomItemType {
   PRODUCT = "PRODUCT",
@@ -19,17 +19,28 @@ export const BOM_ITEM_TYPE_LABELS: Record<BomItemType, string> = {
   [BomItemType.MATERIAL]: "Vật tư",
 }
 
+/** Mirrors the backend's ItemType for a BOM node's linked entity — a node
+ *  links to either a WIP (sub-assembly, can have its own children and
+ *  routing) or an RM (raw-material leaf, always childless, never has
+ *  routing). The root FG/WIP item itself is never a `bom_items` row. */
+export type BomNodeItemType = "WIP" | "RM"
+
+export const BOM_NODE_ITEM_TYPE_LABELS: Record<BomNodeItemType, string> = {
+  WIP: "Bán thành phẩm",
+  RM: "Vật tư",
+}
+
 // One node — mirrors the backend's BomItemResDto 1:1, the single shape shared
 // by the BOM GET (tree), and the add/update endpoints (GET/POST/PATCH under
-// /api/products/:productId/bom). The backend returns the tree flat (`parentId`
+// /api/items/:itemId/bom). The backend returns the tree flat (`parentId`
 // links each node to its parent, no nested `children`) — build the tree
 // client-side, same idiom as ProductionJobBomTab.tsx's `buildBomRows`.
 export type BomItem = {
   id: string
   parentId: string | null
-  // Id of the linked WIP product — every node is now a WIP product (materials
-  // were split into their own bom_materials table/endpoint).
-  productId: string
+  // Id of the linked WIP/RM item this node points to.
+  itemId: string
+  itemType: BomNodeItemType
   code: string
   name: string
   image: FileResource | null
@@ -41,13 +52,14 @@ export type BomItem = {
   level: number
   note: string | null
   // A technical drawing (bản vẽ, PDF) specific to this node — independent of
-  // `image` above, which is coalesced from the linked product.
+  // `image` above, which is coalesced from the linked item.
   drawing: FileResource | null
   // This node's own as-used routing (GET/POST/PATCH/DELETE under
-  // /api/products/:productId/bom/items/:itemId/operations, via the
+  // /api/items/:itemId/bom/items/:bomItemId/operations, via the
   // bom-operations module) — embedded directly so reading the tree doesn't
-  // need a separate per-node fetch. Empty right after add/update (a freshly
-  // written node has no routing yet).
+  // need a separate per-node fetch. Always empty for an RM leaf (routing can
+  // only attach to a WIP node) and right after add/update (a freshly written
+  // node has no routing yet).
   operations: ProductOperation[]
 }
 
@@ -62,18 +74,13 @@ export type BomItemDialogState =
   | { mode: "create"; parentId: string | null }
   | { mode: "update"; node: BomItem }
 
-// Lightweight {id, code, name} row for the "add BOM item" pickers (WIP products
-// / materials), narrowed from the products/materials list responses.
-export type BomEntityOption = {
-  id: string
-  code: string
-  name: string
-}
-
-// One row of a product's BOM materials list — GET /api/products/:productId/materials (BomMaterialResDto).
+// One row of an item's BOM materials list — GET /api/items/:itemId/materials
+// (ItemMaterialResDto). Read-only derived view: an RM leaf is added to the
+// tree via the same create-bom-item endpoint as a WIP node (see
+// BomItemFormDialog), not a separate materials CRUD.
 export type BomMaterial = {
   id: string
-  materialId: string
+  itemId: string
   code: string
   name: string
   unit: Unit

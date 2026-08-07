@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import { SupplierStatus } from "@/lib/types/supplier.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 // Mirrors the backend's GetSuppliersReqDto (page, limit, q, order inherited from
 // PageOptionsDto; status/supplierGroupId/countryId are supplier-specific filters).
@@ -14,7 +13,7 @@ export const suppliersSearchSchema = z.object({
   status: z.enum(SupplierStatus).optional().catch(undefined),
   supplierGroupId: z.string().trim().min(1).optional().catch(undefined),
   countryId: z.string().trim().min(1).optional().catch(undefined),
-  order: z.enum(SORT_ORDERS).optional().catch(undefined),
+  order: z.enum(["ASC", "DESC"]).optional().catch(undefined),
 })
 
 export type SuppliersSearchSchema = z.infer<typeof suppliersSearchSchema>

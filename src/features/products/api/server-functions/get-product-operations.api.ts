@@ -14,7 +14,7 @@ function resolveGetProductOperationsErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     default:
       return GENERIC_ERROR_MESSAGE
@@ -26,7 +26,7 @@ export const getProductOperations = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<ProductOperation[]> => {
     try {
       const response = await http.get<ProductOperation[]>(
-        `/api/products/${data.productId}/operations`
+        `/api/items/${data.productId}/operations`
       )
 
       return response.data

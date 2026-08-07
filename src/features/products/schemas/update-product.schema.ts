@@ -4,15 +4,15 @@ import { imageFieldSchema } from "@/lib/file-field.schema"
 import { emptyToNull, emptyToUndefined } from "@/lib/zod-transforms"
 import { ProductStatus, ProductType } from "@/lib/types/product.type"
 
-// Wire contract for PATCH /api/products/:id — also the client-side onSubmit validator for
+// Wire contract for PATCH /api/items/:id — also the client-side onSubmit validator for
 // UpdateProductForm (via ProductInfoTab, both driven by ProductDetailPage's own form).
 // `productId` lives directly in the form's own state, so mutationFn receives the form value
 // as-is — no manual id merge at the call site. Deliberately shares no field definitions with
 // create-product.schema.ts: on a PATCH an omitted key means "leave unchanged", not "not
-// provided", so `clientId`/`productGroupId`/`note` here transform ""→null (an explicit clear)
-// instead of ""→undefined — see UpdateProductReqDto's `nullable: true` fields on the backend.
-// `code` stays ""→undefined on both flows: the backend treats a missing `code` as "keep the
-// current one", not "clear it".
+// provided", so `clientId`/`note` here transform ""→null (an explicit clear) instead of
+// ""→undefined — see UpdateItemReqDto's `nullable: true` fields on the backend. `code` stays
+// ""→undefined on both flows: the backend treats a missing `code` as "keep the current one",
+// not "clear it". `type` is always FG/WIP here — this feature never turns an item into RM.
 export const updateProductSchema = z.object({
   productId: z.uuid(),
   code: z
@@ -27,7 +27,6 @@ export const updateProductSchema = z.object({
     .max(255, "Tên sản phẩm tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
   type: z.enum(ProductType),
-  productGroupId: z.string().trim().transform(emptyToNull),
   clientId: z.string().trim().transform(emptyToNull),
   image: imageFieldSchema,
   status: z.enum(ProductStatus),
@@ -47,8 +46,7 @@ export const updateProductFormDefaultValues: UpdateProductSchema = {
   code: "",
   name: "",
   unitId: "",
-  type: ProductType.FINISHED_GOOD,
-  productGroupId: "",
+  type: ProductType.FG,
   clientId: "",
   image: null,
   status: ProductStatus.ACTIVE,

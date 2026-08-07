@@ -14,10 +14,12 @@ function resolveUpdateBomOperationErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     case "bom_item.error.parent_not_found":
       return "Không tìm thấy hạng mục trong cấu trúc sản phẩm."
+    case "bom_operation.error.leaf_node":
+      return "Vật tư là lá của cấu trúc — không gắn được công đoạn riêng."
     case "bom_operation.error.not_found":
       return "Không tìm thấy bước công đoạn."
     default:
@@ -27,7 +29,7 @@ function resolveUpdateBomOperationErrorMessage(error: unknown): string {
 
 const updateBomOperationInputSchema = updateProductOperationSchema.extend({
   productId: z.uuid(),
-  itemId: z.uuid(),
+  bomItemId: z.uuid(),
   stepId: z.uuid(),
 })
 
@@ -35,9 +37,9 @@ export const updateBomOperation = createServerFn({ method: "POST" })
   .validator(updateBomOperationInputSchema)
   .handler(async ({ data }): Promise<void> => {
     try {
-      const { productId, itemId, stepId, ...rest } = data
+      const { productId, bomItemId, stepId, ...rest } = data
       await http.patch(
-        `/api/products/${productId}/bom/items/${itemId}/operations/${stepId}`,
+        `/api/items/${productId}/bom/items/${bomItemId}/operations/${stepId}`,
         rest
       )
     } catch (error) {

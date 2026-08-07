@@ -24,7 +24,7 @@ import type { UpdateProductSchema } from "@/features/products/schemas/update-pro
 import type { Product } from "@/lib/types/product.type"
 
 // Product → raw form values: nullable relations/text become "", the nested
-// unit/group/client refs collapse to their id for the selects.
+// unit/client refs collapse to their id for the selects.
 function buildProductDefaultValues(product: Product): UpdateProductSchema {
   return {
     productId: product.id,
@@ -32,7 +32,6 @@ function buildProductDefaultValues(product: Product): UpdateProductSchema {
     name: product.name,
     unitId: product.unit.id,
     type: product.type,
-    productGroupId: product.group?.id ?? "",
     clientId: product.client?.id ?? "",
     image: product.image,
     status: product.status,

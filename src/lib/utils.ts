@@ -13,14 +13,14 @@ export function roundMoney(value: number): number {
   return Math.round(value * 100) / 100
 }
 
-type SelectOptionItem = {
+export interface SelectOptionItem {
   id: string
   name: string
 }
 
-type SelectOption = {
-  value: string
+export interface SelectOption {
   label: string
+  value: string
 }
 
 // Turns `{id, name}` reference rows (departments, positions, roles) into

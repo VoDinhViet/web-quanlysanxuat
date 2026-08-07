@@ -24,9 +24,9 @@ function resolveUpdateProductErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
-    case "product.error.code_exists":
+    case "item.error.code_exists":
       return "Mã sản phẩm đã tồn tại."
     case "file.error.not_found":
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
@@ -34,8 +34,6 @@ function resolveUpdateProductErrorMessage(error: unknown): string {
       return "Đơn vị tính không tồn tại."
     case "unit.error.scope_mismatch":
       return "Đơn vị tính không dùng được cho loại này."
-    case "product_group.error.not_found":
-      return "Nhóm sản phẩm không tồn tại."
     case "client.error.not_found":
       return "Khách hàng không tồn tại."
     case "auth.error.forbidden":
@@ -50,7 +48,7 @@ export const updateProduct = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<void> => {
     try {
       const { productId, ...payload } = data
-      await http.patch(`/api/products/${productId}`, payload)
+      await http.patch(`/api/items/${productId}`, payload)
     } catch (error) {
       logHttpError(error, "updateProduct")
 

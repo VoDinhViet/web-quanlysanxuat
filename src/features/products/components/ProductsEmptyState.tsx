@@ -12,7 +12,7 @@ export function ProductsEmptyState() {
       title="Chưa có sản phẩm nào"
       description="Bắt đầu bằng cách thêm sản phẩm đầu tiên vào danh mục của bạn."
       action={
-        <PermissionGate permission="products:create">
+        <PermissionGate permission="items:create">
           <Button asChild size="sm" className="text-xs">
             <Link to="/manage/products/create">
               <Plus className="size-4" />

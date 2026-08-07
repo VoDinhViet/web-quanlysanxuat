@@ -7,7 +7,6 @@ import type { ApiErrorResponse } from "@/lib/http"
 import { MaterialStatus, MaterialType } from "@/lib/types/material.type"
 import type { Material } from "@/lib/types/material.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
 import { optional } from "@/lib/zod-transforms"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
@@ -36,7 +35,7 @@ const getMaterialsSchema = z.object({
   materialGroupId: z.string().trim().min(1).optional(),
   clientId: z.string().trim().min(1).optional(),
   status: z.enum(MaterialStatus).optional(),
-  order: z.enum(SORT_ORDERS).optional(),
+  order: z.enum(["ASC", "DESC"]).optional(),
 })
 
 export const getMaterials = createServerFn({ method: "GET" })

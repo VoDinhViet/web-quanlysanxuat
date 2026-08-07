@@ -4,17 +4,14 @@ import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { ProductDetailPage } from "@/features/products/pages/ProductDetailPage"
 import { productDetailSearchSchema } from "@/features/products/schemas/product-detail-search.schema"
-import {
-  productGroupOptionsQueryOptions,
-  productQueryOptions,
-} from "@/features/products/api/options"
+import { productQueryOptions } from "@/features/products/api/options"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 
-// Guarded on `products:read`, not `products:update`: a read-only viewer should
+// Guarded on `items:read`, not `items:update`: a read-only viewer should
 // reach this screen. The write actions gate themselves with PermissionGate.
 export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
   beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "products:read"),
+    requirePermission(context.permissions, "items:read"),
   validateSearch: productDetailSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
@@ -22,7 +19,6 @@ export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
         productQueryOptions(params.productId)
       ),
       context.queryClient.ensureQueryData(unitOptionsQueryOptions("PRODUCT")),
-      context.queryClient.ensureQueryData(productGroupOptionsQueryOptions()),
     ]),
   component: ProductDetailPage,
   pendingComponent: PageLoading,

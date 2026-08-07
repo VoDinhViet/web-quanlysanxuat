@@ -1,5 +1,4 @@
 import { Fragment } from "react"
-import { User as UserSolar } from "@solar-icons/react"
 import { Link, useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -11,6 +10,7 @@ import {
   Menu,
   Settings,
   User,
+  UserRound,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -35,7 +35,7 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
 import { currentUserQueryOptions } from "@/features/auth/api/options"
 import { logout } from "@/features/auth/api/server-functions/logout.api"
-import { resolveFileUrl } from "@/lib/file-url"
+import { resolveAvatarUrl } from "@/lib/file-url"
 import type { FileRouteTypes } from "@/routeTree.gen"
 
 const FALLBACK_USER_NAME = "--"
@@ -95,7 +95,7 @@ type UserMenuProps = {
   onLogout: () => void
 }
 
-function UserMenu({
+export function UserMenu({
   fullName,
   username,
   email,
@@ -104,10 +104,6 @@ function UserMenu({
   isLoggingOut,
   onLogout,
 }: UserMenuProps) {
-  const avatarImage = avatarUrl && (
-    <AvatarImage src={resolveFileUrl(avatarUrl)} alt={fullName} />
-  )
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -118,9 +114,9 @@ function UserMenu({
           aria-label="Tài khoản người dùng"
         >
           <Avatar className="size-10">
-            {avatarImage}
-            <AvatarFallback>
-              <UserSolar className="size-3/5" />
+            <AvatarImage src={resolveAvatarUrl(avatarUrl)} alt={fullName} />
+            <AvatarFallback className="bg-muted">
+              <UserRound className="size-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
 
@@ -135,15 +131,15 @@ function UserMenu({
             )}
           </span>
 
-          <ChevronDown className="hidden lg:block" />
+          <ChevronDown className="size-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
         <div className="flex items-start gap-3 px-2 py-1.5">
           <Avatar className="size-10">
-            {avatarImage}
-            <AvatarFallback>
-              <UserSolar className="size-3/5" />
+            <AvatarImage src={resolveAvatarUrl(avatarUrl)} alt={fullName} />
+            <AvatarFallback className="bg-muted">
+              <UserRound className="size-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
 

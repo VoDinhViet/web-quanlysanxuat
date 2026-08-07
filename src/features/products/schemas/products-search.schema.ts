@@ -1,10 +1,11 @@
 import { z } from "zod"
 
 import { ProductStatus, ProductType } from "@/lib/types/product.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
-// Mirrors the backend's GetProductsReqDto (page, limit, q, order inherited from
-// PageOptionsDto; type/status/clientId/productGroupId are product-specific filters).
+// Mirrors the backend's GetItemsReqDto (page, limit, q, order inherited from
+// PageOptionsDto; type/status/clientId are item filters this feature exposes). An unset `type`
+// means "all products" (FG + WIP) — get-products.api.ts translates that into the backend's
+// `type` array filter so RM never leaks into this list.
 export const productsSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
@@ -12,8 +13,7 @@ export const productsSearchSchema = z.object({
   type: z.enum(ProductType).optional().catch(undefined),
   status: z.enum(ProductStatus).optional().catch(undefined),
   clientId: z.string().trim().min(1).optional().catch(undefined),
-  productGroupId: z.string().trim().min(1).optional().catch(undefined),
-  order: z.enum(SORT_ORDERS).optional().catch(undefined),
+  order: z.enum(["ASC", "DESC"]).optional().catch(undefined),
 })
 
 export type ProductsSearchSchema = z.infer<typeof productsSearchSchema>

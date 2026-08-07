@@ -13,7 +13,7 @@ function resolveDeleteProductErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     case "auth.error.forbidden":
       return "Bạn không có quyền thực hiện thao tác này."
@@ -26,7 +26,7 @@ export const deleteProduct = createServerFn({ method: "POST" })
   .validator(z.object({ productId: z.uuid() }))
   .handler(async ({ data }): Promise<void> => {
     try {
-      await http.delete(`/api/products/${data.productId}`)
+      await http.delete(`/api/items/${data.productId}`)
     } catch (error) {
       logHttpError(error, "deleteProduct")
 

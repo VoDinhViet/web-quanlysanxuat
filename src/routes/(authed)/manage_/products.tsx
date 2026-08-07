@@ -3,16 +3,13 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { ProductsPage } from "@/features/products/pages/ProductsPage"
-import {
-  productGroupOptionsQueryOptions,
-  productsQueryOptions,
-} from "@/features/products/api/options"
+import { productsQueryOptions } from "@/features/products/api/options"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export const Route = createFileRoute("/(authed)/manage_/products")({
   beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "products:read"),
+    requirePermission(context.permissions, "items:read"),
   validateSearch: productsSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route
   // match (that would re-trigger this loader and the router's
@@ -26,7 +23,6 @@ export const Route = createFileRoute("/(authed)/manage_/products")({
       context.queryClient.ensureQueryData(
         productsQueryOptions(productsSearchSchema.parse(location.search))
       ),
-      context.queryClient.ensureQueryData(productGroupOptionsQueryOptions()),
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),
   component: ProductsPage,

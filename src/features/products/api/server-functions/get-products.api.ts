@@ -5,7 +5,6 @@ import { z } from "zod"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
 import { ProductStatus, ProductType } from "@/lib/types/product.type"
 import type { Product } from "@/lib/types/product.type"
 import { optional } from "@/lib/zod-transforms"
@@ -23,31 +22,33 @@ function resolveGetProductsErrorMessage(error: unknown): string {
   }
 }
 
-// Broader than any single caller's own search schema — see get-clients.api.ts
-// for why. The route-facing `productsSearchSchema` now also exposes `type` (as
-// a user-facing filter on the products list), but this schema stays the wider
-// one: the unified product-picker combobox (this feature's own BOM picker, and
-// orders' order-line picker via this feature's `api` barrel) is the other
-// caller, optionally fixing `type`/`status` and driving `q` from its own
-// search box, without going through the route's own search params at all.
 const getProductsSchema = z.object({
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),
   q: optional(z.string().trim()),
   type: z.enum(ProductType).optional(),
   clientId: z.string().trim().min(1).optional(),
-  productGroupId: z.string().trim().min(1).optional(),
   status: z.enum(ProductStatus).optional(),
-  order: z.enum(SORT_ORDERS).optional(),
+  order: z.enum(["ASC", "DESC"]).optional(),
 })
 
+// The backend's `GET /api/items` `type` filter takes an array (comma-separated on the wire) so
+// it can express "FG or WIP" in one call — this feature's own filter stays a single optional
+// value (see products-search.schema.ts), defaulting to both FG and WIP so RM never leaks into
+// the products list.
 export const getProducts = createServerFn({ method: "GET" })
   .validator(getProductsSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<Product>> => {
     try {
+      const { type, ...rest } = data
       const response = await http.get<PaginatedResponse<Product>>(
-        "/api/products",
-        { params: data }
+        "/api/items",
+        {
+          params: {
+            ...rest,
+            type: (type ? [type] : [ProductType.FG, ProductType.WIP]).join(","),
+          },
+        }
       )
 
       return response.data

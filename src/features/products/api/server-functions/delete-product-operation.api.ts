@@ -13,7 +13,7 @@ function resolveDeleteProductOperationErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product_operation.error.not_found":
+    case "routing_operation.error.not_found":
       return "Không tìm thấy bước công đoạn."
     default:
       return GENERIC_ERROR_MESSAGE
@@ -30,7 +30,7 @@ export const deleteProductOperation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<void> => {
     try {
       await http.delete(
-        `/api/products/${data.productId}/operations/${data.stepId}`
+        `/api/items/${data.productId}/operations/${data.stepId}`
       )
     } catch (error) {
       logHttpError(error, "deleteProductOperation")

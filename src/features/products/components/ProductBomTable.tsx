@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { BomNodeTypeBadge } from "@/features/products/components/ProductBadges"
 import { ProductOperationsPanel } from "@/features/products/components/ProductOperationsPanel"
 import type { BomItem } from "@/lib/types/bom-item.type"
 import type { ProductOperation } from "@/lib/types/operation.type"
@@ -167,8 +168,9 @@ function OperationsToggleButton({
   )
 }
 
-// Add entry point — a "+" per row. Every row is a WIP product, so it can
-// always host children ("Cấp con") alongside adding a sibling ("Cùng cấp").
+// Add entry point — a "+" per row. A WIP row can host children ("Cấp con")
+// alongside adding a sibling ("Cùng cấp"); an RM row is always a leaf
+// (backend E052), so it only ever offers "Cùng cấp".
 function BomRowActions({
   node,
   onAddChild,
@@ -195,10 +197,12 @@ function BomRowActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {/* "Thêm" is already implied by the "+" trigger — just say where. */}
-          <DropdownMenuItem onSelect={onAddChild}>
-            <CornerDownRight />
-            Cấp con
-          </DropdownMenuItem>
+          {node.itemType === "WIP" ? (
+            <DropdownMenuItem onSelect={onAddChild}>
+              <CornerDownRight />
+              Cấp con
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuItem onSelect={onAddSibling}>
             <LayersPlus />
             Cùng cấp
@@ -283,7 +287,7 @@ export function ProductBomTable({
   return (
     <div className="flex flex-col gap-2">
       {actions !== undefined ? (
-        <PermissionGate permission="products:bom-manage">
+        <PermissionGate permission="items:bom-manage">
           <div className="flex justify-end">
             <Button
               type="button"
@@ -448,6 +452,10 @@ export function ProductBomTable({
                         <span className="font-mono font-bold text-foreground">
                           {node.code}
                         </span>
+                        <BomNodeTypeBadge
+                          type={node.itemType}
+                          className="text-[10px]"
+                        />
                         {node.drawing ? (
                           <a
                             href={resolveFileUrl(node.drawing.url)}
@@ -482,21 +490,31 @@ export function ProductBomTable({
                     </TableCell>
                     <TableCell
                       className="max-w-64 truncate"
-                      title={formatOperationSequence(node.operations)}
+                      title={
+                        node.itemType === "WIP"
+                          ? formatOperationSequence(node.operations)
+                          : undefined
+                      }
                     >
-                      <OperationSummaryText
-                        operations={node.operations}
-                        isPending={false}
-                      />
+                      {node.itemType === "WIP" ? (
+                        <OperationSummaryText
+                          operations={node.operations}
+                          isPending={false}
+                        />
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        <OperationsToggleButton
-                          isExpanded={isOperationsExpanded}
-                          onToggle={() => toggleOperationsExpanded(node.id)}
-                        />
+                        {node.itemType === "WIP" ? (
+                          <OperationsToggleButton
+                            isExpanded={isOperationsExpanded}
+                            onToggle={() => toggleOperationsExpanded(node.id)}
+                          />
+                        ) : null}
                         {actions !== undefined ? (
-                          <PermissionGate permission="products:bom-manage">
+                          <PermissionGate permission="items:bom-manage">
                             <BomRowActions
                               node={node}
                               onAddChild={() => {
@@ -521,13 +539,13 @@ export function ProductBomTable({
                     </TableCell>
                   </TableRow>
 
-                  {isOperationsExpanded ? (
+                  {node.itemType === "WIP" && isOperationsExpanded ? (
                     <TableRow className="bg-muted/10 hover:bg-muted/10">
                       <TableCell colSpan={columnCount} className="p-0">
                         <ProductOperationsPanel
                           target={{
-                            productId: node.productId,
-                            itemId: node.id,
+                            productId: product.id,
+                            bomItemId: node.id,
                           }}
                           operations={node.operations}
                           isPending={false}

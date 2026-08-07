@@ -13,7 +13,7 @@ function resolveDeleteBomOperationErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     case "bom_item.error.parent_not_found":
       return "Không tìm thấy hạng mục trong cấu trúc sản phẩm."
@@ -28,14 +28,14 @@ export const deleteBomOperation = createServerFn({ method: "POST" })
   .validator(
     z.object({
       productId: z.uuid(),
-      itemId: z.uuid(),
+      bomItemId: z.uuid(),
       stepId: z.uuid(),
     })
   )
   .handler(async ({ data }): Promise<void> => {
     try {
       await http.delete(
-        `/api/products/${data.productId}/bom/items/${data.itemId}/operations/${data.stepId}`
+        `/api/items/${data.productId}/bom/items/${data.bomItemId}/operations/${data.stepId}`
       )
     } catch (error) {
       logHttpError(error, "deleteBomOperation")

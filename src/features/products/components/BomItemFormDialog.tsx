@@ -10,6 +10,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { BomItemDrawingField } from "@/features/products/components/BomItemDrawingField"
@@ -21,7 +28,12 @@ import {
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
 import type { CreateBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
-import type { BomItem, BomItemDialogState } from "@/lib/types/bom-item.type"
+import { BOM_NODE_ITEM_TYPE_LABELS } from "@/lib/types/bom-item.type"
+import type {
+  BomItem,
+  BomItemDialogState,
+  BomNodeItemType,
+} from "@/lib/types/bom-item.type"
 
 type BomItemFormDialogProps = {
   dialog: BomItemDialogState
@@ -86,7 +98,8 @@ function CreateBomItemForm({
     validators: { onSubmit: createBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
-  const productOptions = useGetBomProductOptions()
+  const [nodeType, setNodeType] = useState<BomNodeItemType>("WIP")
+  const productOptions = useGetBomProductOptions(nodeType)
 
   return (
     <form
@@ -103,17 +116,47 @@ function CreateBomItemForm({
           Thêm thành phần BOM
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Thêm bán thành phẩm (WIP) vào cấu trúc sản phẩm.
+          Thêm bán thành phẩm (WIP) hoặc vật tư (RM) vào cấu trúc sản phẩm.
         </DialogDescription>
       </DialogHeader>
 
       <div className="grid gap-4.5">
-        <form.AppField name="itemProductId">
+        <label className="space-y-1.5">
+          <span className="block text-xs font-medium text-foreground">
+            Loại thành phần
+          </span>
+          <Select
+            value={nodeType}
+            onValueChange={(next) => {
+              const nextType = next as BomNodeItemType
+              setNodeType(nextType)
+              // The previously picked item no longer matches the new type's
+              // option list — clear the selection instead of leaving a stale id.
+              form.setFieldValue("itemId", "")
+            }}
+          >
+            <SelectTrigger className="w-full text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="WIP">
+                {BOM_NODE_ITEM_TYPE_LABELS.WIP}
+              </SelectItem>
+              <SelectItem value="RM">{BOM_NODE_ITEM_TYPE_LABELS.RM}</SelectItem>
+            </SelectContent>
+          </Select>
+        </label>
+
+        <form.AppField name="itemId">
           {(field) => (
             <ComboboxField
-              label="Chọn Bán thành phẩm (WIP)"
+              label={
+                nodeType === "WIP"
+                  ? "Chọn bán thành phẩm (WIP)"
+                  : "Chọn vật tư (RM)"
+              }
               required
-              placeholder="Tìm mã hoặc tên sản phẩm..."
+              placeholder="Tìm mã hoặc tên..."
               value={field.state.value || undefined}
               onValueChange={(next) => field.handleChange(next ?? "")}
               onBlur={field.handleBlur}

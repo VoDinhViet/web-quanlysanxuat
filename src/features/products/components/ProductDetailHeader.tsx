@@ -57,21 +57,19 @@ export function ProductDetailHeader({
                 {product.code}
               </span>
               <Dot />
-              <span>{product.group?.name ?? "Chưa phân nhóm"}</span>
-              <Dot />
               <span>ĐVT: {product.unit.name}</span>
-              {product.source ? (
+              {product.clonedFrom ? (
                 <>
                   <Dot />
                   <span>
                     Sao chép từ{" "}
                     <Link
                       to="/manage/products/$productId"
-                      params={{ productId: product.source.id }}
+                      params={{ productId: product.clonedFrom.id }}
                       search={{ tab: "info" }}
                       className="font-mono font-medium text-primary hover:underline"
                     >
-                      {product.source.code}
+                      {product.clonedFrom.code}
                     </Link>
                   </span>
                 </>
@@ -94,7 +92,7 @@ export function ProductDetailHeader({
               write on each action, so a shared "Lưu" there would either do nothing
               or silently submit a different tab's data. */}
           {activeTab === "info" ? (
-            <PermissionGate permission="products:update">
+            <PermissionGate permission="items:update">
               <Button type="button" disabled={isSaving} onClick={onSave}>
                 {isSaving ? (
                   <>

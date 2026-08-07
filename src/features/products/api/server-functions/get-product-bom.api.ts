@@ -14,7 +14,7 @@ function resolveGetProductBomErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     default:
       return GENERIC_ERROR_MESSAGE
@@ -26,7 +26,7 @@ export const getProductBom = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<BomItem[]> => {
     try {
       const response = await http.get<BomItem[]>(
-        `/api/products/${data.productId}/bom`
+        `/api/items/${data.productId}/bom`
       )
 
       return response.data

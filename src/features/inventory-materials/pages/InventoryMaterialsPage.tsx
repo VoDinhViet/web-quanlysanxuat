@@ -15,6 +15,30 @@ import { inventoryMaterialsQueryOptions } from "@/features/inventory-materials/a
 import { materialGroupOptionsQueryOptions } from "@/features/materials/api/options"
 import type { InventoryMaterialsSearchSchema } from "@/features/inventory-materials/schemas/inventory-materials-search.schema"
 
+// ---------------------------------------------------------------------------
+// TODO: Replace these mock lists with real API calls once the backend is ready.
+// Follow the same pattern as materialGroupOptionsQueryOptions.
+// ---------------------------------------------------------------------------
+const MOCK_MATERIAL_TYPE_OPTIONS = [
+  { id: "type-1", name: "Nguyên vật liệu chính" },
+  { id: "type-2", name: "Vật tư phụ trợ" },
+  { id: "type-3", name: "Bảo hộ lao động" },
+  { id: "type-4", name: "Dụng cụ thiết bị" },
+]
+
+const MOCK_SUPPLIER_OPTIONS = [
+  { id: "sup-1", name: "Công ty Thép Việt" },
+  { id: "sup-2", name: "Nhà máy Sơn Tổng hợp" },
+  { id: "sup-3", name: "Cty TNHH Thiết bị công nghiệp" },
+  { id: "sup-4", name: "Đại lý Khí công nghiệp Miền Nam" },
+]
+
+const MOCK_WAREHOUSE_OPTIONS = [
+  { id: "wh-1", name: "Kho chính (KCN)" },
+  { id: "wh-2", name: "Kho phụ A" },
+  { id: "wh-3", name: "Kho vật tư tạm" },
+]
+
 export function InventoryMaterialsPage() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path. The loader prefetched the list + group options; the list is
@@ -66,6 +90,9 @@ export function InventoryMaterialsPage() {
             search={search}
             onFilterChange={handleFilterChange}
             materialGroupOptions={materialGroupOptions}
+            materialTypeOptions={MOCK_MATERIAL_TYPE_OPTIONS}
+            supplierOptions={MOCK_SUPPLIER_OPTIONS}
+            warehouseOptions={MOCK_WAREHOUSE_OPTIONS}
           />
 
           {inventoryQuery.isPending ? (

@@ -16,7 +16,7 @@ export type CreateBomItemInput = CreateBomItemSchema & {
 }
 
 export type UpdateBomItemInput = UpdateBomItemSchema & {
-  itemId: string
+  bomItemId: string
 }
 
 export type ProductBomCallbacks = {
@@ -62,7 +62,8 @@ function useDeleteItem(productId: string, onSuccess?: () => void) {
   const deleteFn = useServerFn(deleteBomItem)
 
   return useMutation({
-    mutationFn: (itemId: string) => deleteFn({ data: { productId, itemId } }),
+    mutationFn: (bomItemId: string) =>
+      deleteFn({ data: { productId, bomItemId } }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["products"] })
       onSuccess?.()
@@ -74,8 +75,8 @@ function useDeleteItem(productId: string, onSuccess?: () => void) {
 
 export interface UseProductBomResult {
   createItem: (value: CreateBomItemSchema, parentId: string | null) => void
-  updateItem: (value: UpdateBomItemSchema, itemId: string) => void
-  deleteItem: (itemId: string) => void
+  updateItem: (value: UpdateBomItemSchema, bomItemId: string) => void
+  deleteItem: (bomItemId: string) => void
   isSaving: boolean
   isDeleting: boolean
 }
@@ -105,12 +106,12 @@ export function useProductBom(
     createItemOperation.mutate({ ...value, parentId })
   }
 
-  function updateItem(value: UpdateBomItemSchema, itemId: string) {
-    updateItemOperation.mutate({ ...value, itemId })
+  function updateItem(value: UpdateBomItemSchema, bomItemId: string) {
+    updateItemOperation.mutate({ ...value, bomItemId })
   }
 
-  function deleteItem(itemId: string) {
-    deleteItemOperation.mutate(itemId)
+  function deleteItem(bomItemId: string) {
+    deleteItemOperation.mutate(bomItemId)
   }
 
   return {

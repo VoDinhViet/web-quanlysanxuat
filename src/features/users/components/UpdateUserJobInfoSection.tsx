@@ -4,10 +4,10 @@ import { withForm } from "@/hooks/use-app-form"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { positionsQueryOptions } from "@/features/users/api/options"
 import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
-import { EMPLOYEE_STATUS_LABELS } from "@/lib/types/user.type"
+import { employeeStatusLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
-const EMPLOYEE_STATUS_OPTIONS = buildOptionsFromLabels(EMPLOYEE_STATUS_LABELS)
+const EMPLOYEE_STATUS_OPTIONS = buildOptionsFromLabels(employeeStatusLabels)
 
 export const UpdateUserJobInfoSection = withForm({
   defaultValues: updateUserFormDefaultValues,

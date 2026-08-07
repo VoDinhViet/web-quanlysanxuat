@@ -4,7 +4,6 @@ import { PackageSearch } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { ProductImageField } from "@/features/products/components/ProductImageField"
-import { productGroupOptionsQueryOptions } from "@/features/products/api/options"
 import { updateProductFormDefaultValues } from "@/features/products/schemas/update-product.schema"
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
@@ -26,16 +25,12 @@ export const UpdateProductInfoSection = withForm({
   },
   render: function Render({ form, disabled, selectedClient }) {
     const client = useGetClientOptions()
-    // The route loader already prefetches both — resolves synchronously off cache.
+    // The route loader already prefetches this — resolves synchronously off cache.
     const { data: unitOptions } = useSuspenseQuery(
       unitOptionsQueryOptions("PRODUCT")
     )
-    const { data: productGroupOptions } = useSuspenseQuery(
-      productGroupOptionsQueryOptions()
-    )
 
     const unitSelectOptions = buildSelectOptions(unitOptions)
-    const productGroupSelectOptions = buildSelectOptions(productGroupOptions)
 
     return (
       <div>
@@ -95,17 +90,6 @@ export const UpdateProductInfoSection = withForm({
                     label="Loại sản phẩm"
                     required
                     options={TYPE_OPTIONS}
-                    disabled={disabled}
-                  />
-                )}
-              </form.AppField>
-
-              <form.AppField name="productGroupId">
-                {(field) => (
-                  <field.SelectField
-                    label="Nhóm sản phẩm"
-                    placeholder="Chọn nhóm sản phẩm"
-                    options={productGroupSelectOptions}
                     disabled={disabled}
                   />
                 )}

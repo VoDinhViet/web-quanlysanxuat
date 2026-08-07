@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
-import { cva } from "class-variance-authority"
 import { Image } from "@unpic/react"
 import { Edit3, Trash2 } from "lucide-react"
 
@@ -16,15 +15,11 @@ import {
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Supplier } from "@/lib/types/supplier.type"
 
-const statusBadgeVariants = cva("", {
-  variants: {
-    status: {
-      [SupplierStatus.ACTIVE]: "bg-success/15 text-success",
-      [SupplierStatus.PAUSED]: "bg-warning/15 text-warning",
-      [SupplierStatus.STOPPED]: "bg-destructive/15 text-destructive",
-    },
-  },
-})
+const statusStyles: Record<SupplierStatus, string> = {
+  [SupplierStatus.ACTIVE]: "bg-success/15 text-success",
+  [SupplierStatus.PAUSED]: "bg-warning/15 text-warning",
+  [SupplierStatus.STOPPED]: "bg-destructive/15 text-destructive",
+}
 
 const supplierColumnHelper = createColumnHelper<Supplier>()
 
@@ -141,7 +136,7 @@ export const supplierColumns = [
       const status = getValue()
 
       return (
-        <Badge variant="outline" className={statusBadgeVariants({ status })}>
+        <Badge variant="outline" className={statusStyles[status]}>
           {SUPPLIER_STATUS_LABELS[status]}
         </Badge>
       )

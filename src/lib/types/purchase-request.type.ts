@@ -1,4 +1,4 @@
-import type { Department } from "@/lib/types/user.type"
+import type { Department } from "@/lib/types/department.type"
 
 /** Mirrors the backend's `purchase_requests.status` column (`GET /purchase-requests`). Giai đoạn 1
  *  chỉ có route list — chưa route nào ghi trạng thái, cả 4 giá trị tồn tại sẵn cho vòng đời tương

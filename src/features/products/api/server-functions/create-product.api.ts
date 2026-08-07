@@ -23,7 +23,7 @@ function resolveCreateProductErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.code_exists":
+    case "item.error.code_exists":
       return "Mã sản phẩm đã tồn tại."
     case "file.error.not_found":
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
@@ -31,8 +31,6 @@ function resolveCreateProductErrorMessage(error: unknown): string {
       return "Đơn vị tính không tồn tại."
     case "unit.error.scope_mismatch":
       return "Đơn vị tính không dùng được cho loại này."
-    case "product_group.error.not_found":
-      return "Nhóm sản phẩm không tồn tại."
     case "client.error.not_found":
       return "Khách hàng không tồn tại."
     case "auth.error.forbidden":
@@ -46,7 +44,7 @@ export const createProduct = createServerFn({ method: "POST" })
   .validator(createProductPayloadSchema)
   .handler(async ({ data }): Promise<void> => {
     try {
-      await http.post("/api/products", data)
+      await http.post("/api/items", data)
     } catch (error) {
       logHttpError(error, "createProduct")
 

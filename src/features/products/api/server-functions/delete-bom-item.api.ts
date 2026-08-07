@@ -24,13 +24,13 @@ export const deleteBomItem = createServerFn({ method: "POST" })
   .validator(
     z.object({
       productId: z.uuid(),
-      itemId: z.uuid(),
+      bomItemId: z.uuid(),
     })
   )
   .handler(async ({ data }): Promise<void> => {
     try {
       await http.delete(
-        `/api/products/${data.productId}/bom/items/${data.itemId}`
+        `/api/items/${data.productId}/bom/items/${data.bomItemId}`
       )
     } catch (error) {
       logHttpError(error, "deleteBomItem")

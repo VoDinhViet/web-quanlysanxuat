@@ -31,12 +31,12 @@ export const PERMISSION_CODES = [
   "clients:update",
   "clients:delete",
 
-  "products:read",
-  "products:create",
-  "products:update",
-  "products:delete",
-  "products:copy",
-  "products:bom-manage",
+  "items:read",
+  "items:create",
+  "items:update",
+  "items:delete",
+  "items:copy",
+  "items:bom-manage",
 
   "materials:read",
   "materials:create",

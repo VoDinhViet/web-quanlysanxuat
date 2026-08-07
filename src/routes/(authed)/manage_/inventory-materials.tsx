@@ -7,9 +7,7 @@ import { inventoryMaterialsQueryOptions } from "@/features/inventory-materials/a
 import { inventoryMaterialsSearchSchema } from "@/features/inventory-materials/schemas/inventory-materials-search.schema"
 import { materialGroupOptionsQueryOptions } from "@/features/materials/api/options"
 
-export const Route = createFileRoute(
-  "/(authed)/manage_/inventory-materials"
-)({
+export const Route = createFileRoute("/(authed)/manage_/inventory-materials")({
   beforeLoad: ({ context }) =>
     requirePermission(context.permissions, "materials:read"),
   validateSearch: inventoryMaterialsSearchSchema,

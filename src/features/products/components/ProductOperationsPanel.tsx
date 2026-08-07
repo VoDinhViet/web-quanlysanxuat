@@ -7,7 +7,6 @@ import {
   Home,
   TrashBinTrash,
 } from "@solar-icons/react"
-import { cva } from "class-variance-authority"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
@@ -48,18 +47,14 @@ type OperationTypeContent = {
 // Tint recipe mirrors SuppliersTableColumns' status badges: shadcn Badge
 // (variant="outline") + a bg-<token>/15 text-<token> tint. Read-only — an
 // operation's type belongs to the master catalog entry, not to this routing step.
-const operationTypeBadgeVariants = cva("", {
-  variants: {
-    type: {
-      [OperationType.INHOUSE]: "bg-primary/15 text-primary",
-      [OperationType.OUTSOURCE]:
-        "bg-amber-500/15 text-amber-700 dark:text-amber-400",
-    },
-  },
-})
+const operationTypeStyles: Record<OperationType, string> = {
+  [OperationType.INHOUSE]: "bg-primary/15 text-primary",
+  [OperationType.OUTSOURCE]:
+    "bg-amber-500/15 text-amber-700 dark:text-amber-400",
+}
 
 // Label and icon aren't badge styling, so they stay a plain map rather than
-// being folded into the cva above.
+// being folded into the style map above.
 const operationTypeContent: Record<OperationType, OperationTypeContent> = {
   [OperationType.INHOUSE]: {
     label: operationTypeLabels[OperationType.INHOUSE],
@@ -74,7 +69,7 @@ const operationTypeContent: Record<OperationType, OperationTypeContent> = {
 export function OperationTypeBadge({ type }: { type: OperationType }) {
   const { label, icon: IconComponent } = operationTypeContent[type]
   return (
-    <Badge variant="outline" className={operationTypeBadgeVariants({ type })}>
+    <Badge variant="outline" className={operationTypeStyles[type]}>
       <IconComponent className="size-3" />
       {label}
     </Badge>
@@ -97,7 +92,7 @@ export function ProductOperationsPanel({
   operations: ProductOperation[]
   isPending: boolean
 }) {
-  const canManage = useHasPermission("products:bom-manage")
+  const canManage = useHasPermission("items:bom-manage")
   const { create, move, remove } = useProductOperations(target, operations)
   const [typeFilter, setTypeFilter] = useState<OperationType>(
     OperationType.INHOUSE
@@ -140,7 +135,7 @@ export function ProductOperationsPanel({
               LOẠI
             </TableHead>
             <TableHead className="font-bold text-foreground">GHI CHÚ</TableHead>
-            <PermissionGate permission="products:bom-manage">
+            <PermissionGate permission="items:bom-manage">
               <TableHead className="w-28 text-right font-bold text-foreground">
                 THAO TÁC
               </TableHead>
@@ -175,7 +170,7 @@ export function ProductOperationsPanel({
                 <TableCell className="font-medium text-muted-foreground">
                   {step.note ?? "—"}
                 </TableCell>
-                <PermissionGate permission="products:bom-manage">
+                <PermissionGate permission="items:bom-manage">
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <IconButton
@@ -208,7 +203,7 @@ export function ProductOperationsPanel({
             ))
           )}
 
-          <PermissionGate permission="products:bom-manage">
+          <PermissionGate permission="items:bom-manage">
             <TableRow className="h-14 bg-card hover:bg-muted/20">
               <TableCell className="text-muted-foreground">—</TableCell>
               <TableCell>

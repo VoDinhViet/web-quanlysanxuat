@@ -1,5 +1,3 @@
-import { cva } from "class-variance-authority"
-
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { TableCell, TableRow } from "@/components/ui/table"
@@ -13,24 +11,20 @@ import {
 } from "@/features/manage/mock/manage-dashboard.mock"
 import { JOB_STATUS_LABELS, JobStatus } from "@/lib/types/manage.type"
 
-const jobStatusBadgeVariants = cva("", {
-  variants: {
-    status: {
-      [JobStatus.IN_PROGRESS]:
-        "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-      [JobStatus.WAITING_MATERIAL]:
-        "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-      [JobStatus.WAITING_OUTSOURCE]:
-        "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400",
-      [JobStatus.WAITING_QC]:
-        "bg-cyan-100 text-cyan-700 dark:bg-cyan-500/15 dark:text-cyan-400",
-      [JobStatus.REWORK]:
-        "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
-      [JobStatus.COMPLETED]: "bg-success/15 text-success",
-      [JobStatus.CANCELLED]: "bg-muted text-muted-foreground",
-    },
-  },
-})
+const jobStatusStyles: Record<JobStatus, string> = {
+  [JobStatus.IN_PROGRESS]:
+    "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+  [JobStatus.WAITING_MATERIAL]:
+    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  [JobStatus.WAITING_OUTSOURCE]:
+    "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400",
+  [JobStatus.WAITING_QC]:
+    "bg-cyan-100 text-cyan-700 dark:bg-cyan-500/15 dark:text-cyan-400",
+  [JobStatus.REWORK]:
+    "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
+  [JobStatus.COMPLETED]: "bg-success/15 text-success",
+  [JobStatus.CANCELLED]: "bg-muted text-muted-foreground",
+}
 
 /** Mockup row: production-progress donut + "Job trễ hạn" + "Thiếu vật tư". */
 export function ManageProductionRow() {
@@ -59,10 +53,7 @@ export function ManageProductionRow() {
               {job.daysOverdue} ngày
             </TableCell>
             <TableCell>
-              <Badge
-                variant="outline"
-                className={jobStatusBadgeVariants({ status: job.status })}
-              >
+              <Badge variant="outline" className={jobStatusStyles[job.status]}>
                 {JOB_STATUS_LABELS[job.status]}
               </Badge>
             </TableCell>

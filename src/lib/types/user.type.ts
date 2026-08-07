@@ -1,42 +1,23 @@
 import type { FileResource } from "@/lib/types/file.type"
 import type { RoleRef } from "@/lib/types/role.type"
 
-export enum UserGender {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  OTHER = "OTHER",
+export type Gender = "MALE" | "FEMALE" | "OTHER"
+
+export const genderLabels: Record<Gender, string> = {
+  MALE: "Nam",
+  FEMALE: "Nữ",
+  OTHER: "Khác",
 }
 
-export const USER_GENDER_LABELS: Record<UserGender, string> = {
-  [UserGender.MALE]: "Nam",
-  [UserGender.FEMALE]: "Nữ",
-  [UserGender.OTHER]: "Khác",
+export type EmployeeStatus = "WORKING" | "RESIGNED"
+
+export const employeeStatusLabels: Record<EmployeeStatus, string> = {
+  WORKING: "Đang làm việc",
+  RESIGNED: "Đã nghỉ việc",
 }
 
-export enum EmployeeStatus {
-  WORKING = "WORKING",
-  RESIGNED = "RESIGNED",
-}
-
-export const EMPLOYEE_STATUS_LABELS: Record<EmployeeStatus, string> = {
-  [EmployeeStatus.WORKING]: "Đang làm việc",
-  [EmployeeStatus.RESIGNED]: "Đã nghỉ việc",
-}
-
-/** Mirrors the backend's department rows (GET /api/departments). */
-export type Department = {
-  id: string
-  code: string
-  name: string
-}
-
-/** Mirrors the backend's position rows (GET /api/positions). */
-export type Position = {
-  id: string
-  code: string
-  name: string
-  department: Department
-}
+import type { Department } from "@/lib/types/department.type"
+import type { Position } from "@/lib/types/position.type"
 
 /** Mirrors the credential summary nested in the backend's UserResDto. */
 export type UserCredential = {
@@ -52,7 +33,7 @@ export type User = {
   id: string
   code: string
   fullName: string
-  gender: UserGender
+  gender: Gender
   dateOfBirth: string | null
   idNumber: string | null
   phoneNumber: string | null

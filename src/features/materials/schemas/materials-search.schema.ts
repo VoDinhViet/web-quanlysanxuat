@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import { MaterialStatus, MaterialType } from "@/lib/types/material.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
 
 // Mirrors the backend's GetMaterialsReqDto (page, limit, q, order inherited from
 // PageOptionsDto; type/materialGroupId/clientId/status are material-specific filters).
@@ -13,7 +12,7 @@ export const materialsSearchSchema = z.object({
   materialGroupId: z.string().trim().min(1).optional().catch(undefined),
   clientId: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(MaterialStatus).optional().catch(undefined),
-  order: z.enum(SORT_ORDERS).optional().catch(undefined),
+  order: z.enum(["ASC", "DESC"]).optional().catch(undefined),
 })
 
 export type MaterialsSearchSchema = z.infer<typeof materialsSearchSchema>

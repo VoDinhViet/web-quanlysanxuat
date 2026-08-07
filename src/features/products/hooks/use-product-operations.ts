@@ -12,7 +12,7 @@ import type { ProductOperation } from "@/lib/types/operation.type"
 
 export type OperationsTarget = {
   productId: string
-  itemId?: string
+  bomItemId?: string
 }
 
 export type MoveDirection = "up" | "down"
@@ -40,11 +40,11 @@ function useCreateOperation(target: OperationsTarget) {
 
   return useMutation({
     mutationFn: (input: CreateOperationInput) => {
-      if (target.itemId) {
+      if (target.bomItemId) {
         return createBomFn({
           data: {
             productId: target.productId,
-            itemId: target.itemId,
+            bomItemId: target.bomItemId,
             operationId: input.operationId,
             sortOrder: input.sortOrder,
             note: input.note,
@@ -80,11 +80,11 @@ function useUpdateOperation(target: OperationsTarget) {
       sortOrder?: number
       note?: string
     }) => {
-      if (target.itemId) {
+      if (target.bomItemId) {
         return updateBomFn({
           data: {
             productId: target.productId,
-            itemId: target.itemId,
+            bomItemId: target.bomItemId,
             stepId: input.stepId,
             sortOrder: input.sortOrder,
             note: input.note,
@@ -118,11 +118,11 @@ function useMoveOperation(target: OperationsTarget) {
     mutationFn: (pairs: SortOrderSwapPair[]) =>
       Promise.all(
         pairs.map((pair) => {
-          if (target.itemId) {
+          if (target.bomItemId) {
             return updateBomFn({
               data: {
                 productId: target.productId,
-                itemId: target.itemId,
+                bomItemId: target.bomItemId,
                 stepId: pair.stepId,
                 sortOrder: pair.sortOrder,
               },
@@ -152,11 +152,11 @@ function useDeleteOperation(target: OperationsTarget) {
 
   return useMutation({
     mutationFn: (stepId: string) => {
-      if (target.itemId) {
+      if (target.bomItemId) {
         return deleteBomFn({
           data: {
             productId: target.productId,
-            itemId: target.itemId,
+            bomItemId: target.bomItemId,
             stepId,
           },
         })

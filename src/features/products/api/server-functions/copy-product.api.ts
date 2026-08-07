@@ -14,7 +14,7 @@ function resolveCopyProductErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     case "auth.error.forbidden":
       return "Bạn không có quyền thực hiện thao tác này."
@@ -28,7 +28,7 @@ export const copyProduct = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<Product> => {
     try {
       const response = await http.post<Product>(
-        `/api/products/${data.productId}/copy`
+        `/api/items/${data.productId}/copy`
       )
 
       return response.data

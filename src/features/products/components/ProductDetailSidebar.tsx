@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import {
-  Box,
   Buildings2,
   CalendarAdd,
   ClockCircle,
@@ -46,27 +45,22 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
             value={product.client?.name ?? "—"}
           />
           <SummaryRow
-            icon={Box}
-            label="Nhóm sản phẩm"
-            value={product.group?.name ?? "—"}
-          />
-          <SummaryRow
             icon={Ruler}
             label="Đơn vị tính"
             value={product.unit.name}
           />
-          {product.source ? (
+          {product.clonedFrom ? (
             <SummaryRow
               icon={Copy}
               label="Sao chép từ"
               value={
                 <Link
                   to="/manage/products/$productId"
-                  params={{ productId: product.source.id }}
+                  params={{ productId: product.clonedFrom.id }}
                   search={{ tab: "info" }}
                   className="font-mono text-primary hover:underline"
                 >
-                  {product.source.code}
+                  {product.clonedFrom.code}
                 </Link>
               }
             />
@@ -84,7 +78,7 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
           <SummaryRow
             icon={User}
             label="Người tạo"
-            value={product.creator?.username ?? "—"}
+            value={product.creator?.fullName ?? "—"}
           />
           <SummaryRow
             icon={CalendarAdd}

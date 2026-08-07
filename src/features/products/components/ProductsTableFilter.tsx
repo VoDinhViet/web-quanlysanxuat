@@ -30,7 +30,6 @@ import {
 } from "@/lib/types/product.type"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import type { ClientRef } from "@/lib/types/client.type"
-import type { ProductGroupRef } from "@/lib/types/product.type"
 
 const STATUS_FILTER_OPTIONS: {
   value: ProductStatus | "all"
@@ -47,12 +46,12 @@ const TYPE_FILTER_OPTIONS: {
 }[] = [
   { value: "all", label: "Tất cả" },
   {
-    value: ProductType.FINISHED_GOOD,
-    label: PRODUCT_TYPE_LABELS.FINISHED_GOOD,
+    value: ProductType.FG,
+    label: PRODUCT_TYPE_LABELS.FG,
   },
   {
-    value: ProductType.WORK_IN_PROGRESS,
-    label: PRODUCT_TYPE_LABELS.WORK_IN_PROGRESS,
+    value: ProductType.WIP,
+    label: PRODUCT_TYPE_LABELS.WIP,
   },
 ]
 
@@ -62,14 +61,12 @@ type ProductsTableFilterProps = {
     patch: Partial<ProductsSearchSchema>,
     options?: { replace?: boolean }
   ) => void
-  productGroupOptions: ProductGroupRef[]
   clientOptions: ClientRef[]
 }
 
 export function ProductsTableFilter({
   search,
   onFilterChange,
-  productGroupOptions,
   clientOptions,
 }: ProductsTableFilterProps) {
   const [q, setQ] = useState(search.q ?? "")
@@ -100,7 +97,6 @@ export function ProductsTableFilter({
       type: undefined,
       status: undefined,
       clientId: undefined,
-      productGroupId: undefined,
       order: undefined,
     })
   }
@@ -108,13 +104,13 @@ export function ProductsTableFilter({
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)]">
           <label className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <span className="sr-only">Tìm kiếm sản phẩm</span>
             <div className="relative">
               <Input
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo mã, tên sản phẩm, nhóm sản phẩm..."
+                placeholder="Tìm theo mã, tên sản phẩm..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)
@@ -146,32 +142,6 @@ export function ProductsTableFilter({
               placeholder="Tìm khách hàng..."
               className="text-xs"
             />
-          </label>
-
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Nhóm sản phẩm
-            </span>
-            <Select
-              value={search.productGroupId ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  productGroupId: next === "all" ? undefined : next,
-                })
-              }
-            >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue placeholder="Tìm nhóm sản phẩm..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                {productGroupOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {option.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </label>
 
           <label className="space-y-1.5">
@@ -253,7 +223,7 @@ export function ProductsTableFilter({
             <RotateCw className="size-4" />
             Làm mới
           </Button>
-          <PermissionGate permission="products:create">
+          <PermissionGate permission="items:create">
             <Button asChild className="text-xs">
               <Link to="/manage/products/create">
                 <Plus className="size-4" />

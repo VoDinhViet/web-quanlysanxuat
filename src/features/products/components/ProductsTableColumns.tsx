@@ -79,14 +79,6 @@ export const productColumns = [
       <span className="text-muted-foreground">{getValue()}</span>
     ),
   }),
-  productColumnHelper.accessor((row) => row.group?.name ?? "—", {
-    id: "group",
-    header: "Nhóm sản phẩm",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => (
-      <span className="text-muted-foreground">{getValue()}</span>
-    ),
-  }),
   productColumnHelper.accessor((row) => row.unit.name, {
     id: "unit",
     header: "ĐVT",
@@ -103,7 +95,7 @@ export const productColumns = [
     },
     cell: ({ getValue }) => <ProductStatusBadge status={getValue()} />,
   }),
-  productColumnHelper.accessor((row) => row.creator?.username ?? "—", {
+  productColumnHelper.accessor((row) => row.creator?.fullName ?? "—", {
     id: "creator",
     header: "Người tạo",
     meta: { headerClassName: "min-w-28" },
@@ -143,7 +135,7 @@ export const productColumns = [
               <Eye className="size-3.5" />
             </Link>
           </IconButton>
-          <PermissionGate permission="products:copy">
+          <PermissionGate permission="items:copy">
             <CopyProductDialog
               product={product}
               trigger={
@@ -156,7 +148,7 @@ export const productColumns = [
               }
             />
           </PermissionGate>
-          <PermissionGate permission="products:delete">
+          <PermissionGate permission="items:delete">
             <DeleteProductDialog
               product={product}
               trigger={

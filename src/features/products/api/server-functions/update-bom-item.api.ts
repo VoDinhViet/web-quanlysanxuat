@@ -18,6 +18,8 @@ function resolveUpdateBomItemErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "bom_item.error.not_found":
       return "Không tìm thấy hạng mục."
+    case "bom_item.error.quantity_not_integer":
+      return "Số lượng phải là số nguyên đối với bán thành phẩm (WIP)."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -25,13 +27,13 @@ function resolveUpdateBomItemErrorMessage(error: unknown): string {
 
 const updateBomItemInputSchema = updateBomItemSchema.extend({
   productId: z.uuid(),
-  itemId: z.uuid(),
+  bomItemId: z.uuid(),
 })
 
 type UpdateBomItemInput = z.infer<typeof updateBomItemInputSchema>
 
 function toUpdateBomItemPayload(
-  data: Omit<UpdateBomItemInput, "productId" | "itemId">
+  data: Omit<UpdateBomItemInput, "productId" | "bomItemId">
 ) {
   const note = data.note.trim()
   const sortOrder = data.sortOrder.trim()
@@ -49,9 +51,9 @@ export const updateBomItem = createServerFn({ method: "POST" })
   .validator(updateBomItemInputSchema)
   .handler(async ({ data }): Promise<BomItem> => {
     try {
-      const { productId, itemId, ...rest } = data
+      const { productId, bomItemId, ...rest } = data
       const response = await http.patch<BomItem>(
-        `/api/products/${productId}/bom/items/${itemId}`,
+        `/api/items/${productId}/bom/items/${bomItemId}`,
         toUpdateBomItemPayload(rest)
       )
 

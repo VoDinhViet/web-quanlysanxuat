@@ -8,8 +8,6 @@ import {
   toIsoDate,
 } from "@/lib/zod-transforms"
 
-import { EmployeeStatus, UserGender } from "@/lib/types/user.type"
-
 // Wire contract for the `credential` field of POST /api/users — creating an employee
 // always provisions a brand-new account, so the password is required. Not .trim(): leading/
 // trailing whitespace could be intentional, unlike the other optional fields below.
@@ -30,7 +28,7 @@ export const createUserSchema = z.object({
     .trim()
     .min(1, "Vui lòng nhập họ và tên")
     .max(255, "Họ và tên tối đa 255 ký tự"),
-  gender: z.enum(UserGender),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]),
   dateOfBirth: z.string().trim().transform(emptyToUndefinedIsoDate),
   idNumber: z
     .string()
@@ -61,7 +59,7 @@ export const createUserSchema = z.object({
     .trim()
     .max(1000, "Ghi chú tối đa 1000 ký tự")
     .transform(emptyToUndefined),
-  status: z.enum(EmployeeStatus),
+  status: z.enum(["WORKING", "RESIGNED"]),
   credential: createCredentialSchema.optional(),
 })
 
@@ -69,7 +67,7 @@ export type CreateUserSchema = z.input<typeof createUserSchema>
 
 export const createUserFormDefaultValues: CreateUserSchema = {
   fullName: "",
-  gender: UserGender.MALE,
+  gender: "MALE",
   dateOfBirth: "",
   idNumber: "",
   phoneNumber: "",
@@ -80,6 +78,6 @@ export const createUserFormDefaultValues: CreateUserSchema = {
   positionId: "",
   hireDate: "",
   note: "",
-  status: EmployeeStatus.WORKING,
+  status: "WORKING",
   credential: undefined,
 }

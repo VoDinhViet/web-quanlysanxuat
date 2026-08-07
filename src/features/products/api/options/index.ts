@@ -4,7 +4,6 @@
 // options dropdown in one call.
 export { productsQueryOptions } from "@/features/products/api/options/products.options"
 export { productQueryOptions } from "@/features/products/api/options/product.options"
-export { productGroupOptionsQueryOptions } from "@/features/products/api/options/product-group-options.options"
 export { productBomQueryOptions } from "@/features/products/api/options/product-bom.options"
 export { bomMaterialsQueryOptions } from "@/features/products/api/options/bom-materials.options"
 export { productOperationsQueryOptions } from "@/features/products/api/options/product-operations.options"

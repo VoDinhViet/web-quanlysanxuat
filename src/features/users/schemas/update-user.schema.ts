@@ -8,8 +8,6 @@ import {
   toIsoDate,
 } from "@/lib/zod-transforms"
 
-import { EmployeeStatus, UserGender } from "@/lib/types/user.type"
-
 // Wire contract for the `credential` field of PATCH /api/users/:userId. `credentialId` is
 // UI-only: present means the employee already has an ERP account, so the password may be
 // left blank (blank = keep the current password). The object transform below strips it
@@ -54,7 +52,7 @@ export const updateUserSchema = z.object({
     .trim()
     .min(1, "Vui lòng nhập họ và tên")
     .max(255, "Họ và tên tối đa 255 ký tự"),
-  gender: z.enum(UserGender),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]),
   dateOfBirth: z.string().trim().transform(emptyToUndefinedIsoDate),
   idNumber: z
     .string()
@@ -85,7 +83,7 @@ export const updateUserSchema = z.object({
     .trim()
     .max(1000, "Ghi chú tối đa 1000 ký tự")
     .transform(emptyToUndefined),
-  status: z.enum(EmployeeStatus),
+  status: z.enum(["WORKING", "RESIGNED"]),
   credential: updateCredentialSchema.optional(),
 })
 
@@ -97,7 +95,7 @@ export type UpdateUserSchema = z.input<typeof updateUserSchema>
 export const updateUserFormDefaultValues: UpdateUserSchema = {
   userId: "",
   fullName: "",
-  gender: UserGender.MALE,
+  gender: "MALE",
   dateOfBirth: "",
   idNumber: "",
   phoneNumber: "",
@@ -108,6 +106,6 @@ export const updateUserFormDefaultValues: UpdateUserSchema = {
   positionId: "",
   hireDate: "",
   note: "",
-  status: EmployeeStatus.WORKING,
+  status: "WORKING",
   credential: undefined,
 }

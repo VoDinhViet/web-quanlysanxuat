@@ -2,7 +2,7 @@ import { Info } from "lucide-react"
 
 import {
   ORDER_BADGE_LABELS,
-  ORDER_BADGE_DOT_CLASSNAME,
+  orderBadgeStyles,
 } from "@/features/orders/components/OrderBadges"
 import {
   ORDER_STATUS_DESCRIPTIONS,
@@ -45,7 +45,7 @@ export function OrderStatusLegend() {
               <span
                 className={cn(
                   "size-2 shrink-0 rounded-full",
-                  ORDER_BADGE_DOT_CLASSNAME[tone]
+                  orderBadgeStyles[tone].dot
                 )}
               />
               {ORDER_BADGE_LABELS[tone]}

@@ -11,10 +11,7 @@ import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
 import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
-import {
-  productGroupOptionsQueryOptions,
-  productsQueryOptions,
-} from "@/features/products/api/options"
+import { productsQueryOptions } from "@/features/products/api/options"
 import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 
@@ -31,9 +28,6 @@ export function ProductsPage() {
     ...productsQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-  const { data: productGroupOptions } = useSuspenseQuery(
-    productGroupOptionsQueryOptions()
-  )
   const { data: clientOptions } = useSuspenseQuery(
     clientOptionsQueryOptions("")
   )
@@ -68,7 +62,6 @@ export function ProductsPage() {
           <ProductsTableFilter
             search={search}
             onFilterChange={handleFilterChange}
-            productGroupOptions={productGroupOptions}
             clientOptions={clientOptions}
           />
 

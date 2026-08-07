@@ -14,7 +14,7 @@ function resolveGetProductErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     default:
       return GENERIC_ERROR_MESSAGE
@@ -25,9 +25,7 @@ export const getProduct = createServerFn({ method: "GET" })
   .validator(z.object({ productId: z.uuid() }))
   .handler(async ({ data }): Promise<Product> => {
     try {
-      const response = await http.get<Product>(
-        `/api/products/${data.productId}`
-      )
+      const response = await http.get<Product>(`/api/items/${data.productId}`)
 
       return response.data
     } catch (error) {
