@@ -28,14 +28,15 @@ import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-fo
 import { vndFormatter } from "@/lib/currency"
 import {
   Currency,
-  ORDER_ITEM_STATUS_LABELS,
+  orderItemStatusLabels,
   OrderItemStatus,
 } from "@/lib/types/order.type"
 import { roundMoney } from "@/lib/utils"
 
-const ORDER_ITEM_STATUS_OPTIONS = Object.values(OrderItemStatus).map(
-  (status) => ({ value: status, label: ORDER_ITEM_STATUS_LABELS[status] })
-)
+const orderItemStatusOptions = Object.values(OrderItemStatus).map((status) => ({
+  value: status,
+  label: orderItemStatusLabels[status],
+}))
 
 type OrderItemDialogProps = {
   open: boolean
@@ -239,7 +240,7 @@ function OrderItemDialogForm({
           {(field) => (
             <field.SelectField
               label="Trạng thái dòng"
-              options={ORDER_ITEM_STATUS_OPTIONS}
+              options={orderItemStatusOptions}
             />
           )}
         </form.AppField>

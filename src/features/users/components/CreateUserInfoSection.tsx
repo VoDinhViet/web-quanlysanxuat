@@ -4,7 +4,7 @@ import { createUserFormDefaultValues } from "@/features/users/schemas/create-use
 import { genderLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const GENDER_OPTIONS = buildOptionsFromLabels(genderLabels)
+const genderOptions = buildOptionsFromLabels(genderLabels)
 
 export const CreateUserInfoSection = withForm({
   defaultValues: createUserFormDefaultValues,
@@ -42,7 +42,7 @@ export const CreateUserInfoSection = withForm({
                 {(field) => (
                   <field.RadioPillField
                     label="Giới tính"
-                    options={GENDER_OPTIONS}
+                    options={genderOptions}
                     disabled={disabled}
                     className="sm:col-span-2"
                   />

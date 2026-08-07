@@ -18,11 +18,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { copyProduct } from "@/features/products/api/server-functions/copy-product.api"
-import type { Product } from "@/lib/types/product.type"
+import { copyItem } from "@/features/products/api/server-functions/copy-item.api"
+import type { Item } from "@/lib/types/item.type"
 
 type CopyProductDialogProps = {
-  product: Product
+  product: Item
   trigger: ReactNode
 }
 
@@ -35,14 +35,14 @@ export function CopyProductDialog({
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const copyProductFn = useServerFn(copyProduct)
+  const copyItemFn = useServerFn(copyItem)
 
   const mutation = useMutation({
-    mutationFn: () => copyProductFn({ data: { productId: product.id } }),
+    mutationFn: () => copyItemFn({ data: { itemId: product.id } }),
     onSuccess: async (created) => {
       setOpen(false)
       toast.success(`Đã nhân bản thành ${created.code}`)
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       await navigate({
         to: "/manage/products/$productId",
         params: { productId: created.id },

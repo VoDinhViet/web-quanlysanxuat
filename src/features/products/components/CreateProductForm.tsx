@@ -13,13 +13,13 @@ import {
   createProductFormDefaultValues,
   createProductSchema,
 } from "@/features/products/schemas/create-product.schema"
-import { createProduct } from "@/features/products/api/server-functions/create-product.api"
+import { createItem } from "@/features/products/api/server-functions/create-item.api"
 import type { CreateProductSchema } from "@/features/products/schemas/create-product.schema"
 
 export function CreateProductForm() {
   const navigate = useNavigate({ from: "/manage/products/create" })
   const queryClient = useQueryClient()
-  const createProductFn = useServerFn(createProduct)
+  const createItemFn = useServerFn(createItem)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateProductSchema>(
     "qlsx:draft:create-product"
@@ -27,11 +27,10 @@ export function CreateProductForm() {
   const draftRestoredRef = useRef(false)
 
   const { mutate: create, isPending } = useMutation({
-    mutationFn: (value: CreateProductSchema) =>
-      createProductFn({ data: value }),
+    mutationFn: (value: CreateProductSchema) => createItemFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       await navigate({ to: "/manage/products", search: { page: 1, limit: 10 } })
     },
     onError: (error) => toast.error(error.message),

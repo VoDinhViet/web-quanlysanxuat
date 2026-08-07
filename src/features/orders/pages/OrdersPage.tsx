@@ -1,43 +1,31 @@
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { ClipboardList } from "lucide-react"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
+import { DataTable } from "@/components/shared/DataTable"
 import { OrderStatCards } from "@/features/orders/components/OrderStatCards"
 import { OrderStatusLegend } from "@/features/orders/components/OrderStatusLegend"
-import { OrdersTable } from "@/features/orders/components/OrdersTable"
+import { orderColumns } from "@/features/orders/components/OrdersTableColumns"
 import { OrdersTableFilter } from "@/features/orders/components/OrdersTableFilter"
 import { ordersQueryOptions } from "@/features/orders/api/options"
-import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
 
 export function OrdersPage() {
-  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
-  // resolved URL path instead — the two intentionally differ. The loader
-  // prefetches this query; the filtered list is a plain useQuery so filter/
-  // pagination changes only update the table, not the whole route. Order
-  // stats are non-critical — OrderStatCards reads and awaits them itself.
+  // useSearch keys off the file-based route id. The loader prefetches this
+  // query; it's a plain useQuery so filter/pagination changes only update the
+  // table, not the whole route. Order stats are non-critical — OrderStatCards
+  // reads and awaits them itself. The filter reads/writes this same route
+  // search itself (its own useSearch/useNavigate) rather than through props.
   const search = useSearch({ from: "/(authed)/manage_/orders" })
-  const navigate = useNavigate({ from: "/manage/orders" })
 
   const ordersQuery = useQuery({
     ...ordersQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-
-  // `replace` is for the search box: it commits on every debounced keystroke, and
-  // pushing each one would bury the pre-search page under a dozen history entries.
-  // Discrete filters (the selects) stay on push so Back undoes them one by one.
-  const handleFilterChange = (
-    patch: Partial<OrdersSearchSchema>,
-    options?: { replace?: boolean }
-  ) => {
-    void navigate({
-      search: (prev) => ({ ...prev, ...patch, page: 1 }),
-      replace: options?.replace,
-    })
-  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -55,11 +43,7 @@ export function OrdersPage() {
         <OrderStatCards />
 
         <Surface contentClassName="min-h-[calc(100svh-25rem)]">
-          <OrdersTableFilter
-            search={search}
-            onFilterChange={handleFilterChange}
-            salesRepOptions={[]}
-          />
+          <OrdersTableFilter />
 
           {ordersQuery.isPending ? (
             <TableQueryLoading rows={search.limit} />
@@ -69,10 +53,18 @@ export function OrdersPage() {
               onRetry={() => void ordersQuery.refetch()}
             />
           ) : (
-            <OrdersTable
+            <DataTable
               rows={ordersQuery.data.data}
+              columns={orderColumns}
               pagination={ordersQuery.data.pagination}
               isPending={ordersQuery.isFetching}
+              emptyState={
+                <TableEmptyState
+                  icon={ClipboardList}
+                  title="Chưa có đơn hàng nào"
+                  description="Đơn hàng sẽ xuất hiện ở đây sau khi được tạo."
+                />
+              }
             />
           )}
         </Surface>

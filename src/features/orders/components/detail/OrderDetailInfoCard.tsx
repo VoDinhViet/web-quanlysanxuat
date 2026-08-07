@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
 import { buildMockClientProfile } from "@/features/orders/mock/order-detail.mock"
-import { PAYMENT_TERM_LABELS } from "@/lib/types/order.type"
+import { paymentTermLabels } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
@@ -54,7 +54,7 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
           <InfoRow
             label="Điều khoản thanh toán"
             value={
-              order.paymentTerm ? PAYMENT_TERM_LABELS[order.paymentTerm] : "—"
+              order.paymentTerm ? paymentTermLabels[order.paymentTerm] : "—"
             }
           />
           <InfoRow

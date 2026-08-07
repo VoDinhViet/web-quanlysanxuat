@@ -4,7 +4,7 @@ import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { ProductDetailPage } from "@/features/products/pages/ProductDetailPage"
 import { productDetailSearchSchema } from "@/features/products/schemas/product-detail-search.schema"
-import { productQueryOptions } from "@/features/products/api/options"
+import { itemQueryOptions } from "@/features/products/api/options"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 
 // Guarded on `items:read`, not `items:update`: a read-only viewer should
@@ -15,9 +15,7 @@ export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
   validateSearch: productDetailSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        productQueryOptions(params.productId)
-      ),
+      context.queryClient.ensureQueryData(itemQueryOptions(params.productId)),
       context.queryClient.ensureQueryData(unitOptionsQueryOptions("PRODUCT")),
     ]),
   component: ProductDetailPage,

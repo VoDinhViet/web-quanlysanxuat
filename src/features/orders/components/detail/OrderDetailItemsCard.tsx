@@ -18,10 +18,7 @@ import {
   deriveMockItemDelivered,
 } from "@/features/orders/mock/order-detail.mock"
 import { currencyFormatter } from "@/lib/currency"
-import {
-  ORDER_ITEM_STATUS_LABELS,
-  OrderItemStatus,
-} from "@/lib/types/order.type"
+import { orderItemStatusLabels, OrderItemStatus } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
@@ -128,7 +125,7 @@ export function OrderDetailItemsCard({ order }: OrderDetailItemsCardProps) {
                               : "text-success"
                           )}
                         >
-                          {ORDER_ITEM_STATUS_LABELS[item.status]}
+                          {orderItemStatusLabels[item.status]}
                         </Badge>
                       </TableCell>
                     </TableRow>

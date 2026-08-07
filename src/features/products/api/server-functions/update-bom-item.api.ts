@@ -26,14 +26,14 @@ function resolveUpdateBomItemErrorMessage(error: unknown): string {
 }
 
 const updateBomItemInputSchema = updateBomItemSchema.extend({
-  productId: z.uuid(),
+  itemId: z.uuid(),
   bomItemId: z.uuid(),
 })
 
 type UpdateBomItemInput = z.infer<typeof updateBomItemInputSchema>
 
 function toUpdateBomItemPayload(
-  data: Omit<UpdateBomItemInput, "productId" | "bomItemId">
+  data: Omit<UpdateBomItemInput, "itemId" | "bomItemId">
 ) {
   const note = data.note.trim()
   const sortOrder = data.sortOrder.trim()
@@ -51,9 +51,9 @@ export const updateBomItem = createServerFn({ method: "POST" })
   .validator(updateBomItemInputSchema)
   .handler(async ({ data }): Promise<BomItem> => {
     try {
-      const { productId, bomItemId, ...rest } = data
+      const { itemId, bomItemId, ...rest } = data
       const response = await http.patch<BomItem>(
-        `/api/items/${productId}/bom/items/${bomItemId}`,
+        `/api/items/${itemId}/bom/items/${bomItemId}`,
         toUpdateBomItemPayload(rest)
       )
 

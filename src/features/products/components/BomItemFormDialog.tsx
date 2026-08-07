@@ -28,7 +28,7 @@ import {
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
 import type { CreateBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
-import { BOM_NODE_ITEM_TYPE_LABELS } from "@/lib/types/bom-item.type"
+import { bomNodeItemTypeLabels } from "@/lib/types/bom-item.type"
 import type {
   BomItem,
   BomItemDialogState,
@@ -139,10 +139,8 @@ function CreateBomItemForm({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="WIP">
-                {BOM_NODE_ITEM_TYPE_LABELS.WIP}
-              </SelectItem>
-              <SelectItem value="RM">{BOM_NODE_ITEM_TYPE_LABELS.RM}</SelectItem>
+              <SelectItem value="WIP">{bomNodeItemTypeLabels.WIP}</SelectItem>
+              <SelectItem value="RM">{bomNodeItemTypeLabels.RM}</SelectItem>
             </SelectContent>
           </Select>
         </label>

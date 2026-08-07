@@ -1,8 +1,10 @@
 import { useState } from "react"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Search } from "lucide-react"
+import { Filter, Plus, RotateCw, Search } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -11,33 +13,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { DateRangeFilter } from "@/components/shared/DateRangeFilter"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { DateRangePicker } from "@/components/shared/DateRangePicker"
+import { FilterLabel } from "@/components/shared/FilterLabel"
+import { PendingAction } from "@/components/shared/PendingAction"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
-import { PurchaseRequestsFilterActions } from "@/features/purchase-requests/components/PurchaseRequestsFilterActions"
-import { PURCHASE_REQUEST_STATUS_LABELS } from "@/lib/types/purchase-request.type"
+import { purchaseRequestStatusLabels } from "@/lib/types/purchase-request.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
-import type { PurchaseRequestsSearchSchema } from "@/features/purchase-requests/schemas/purchase-requests-search.schema"
 import type { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 
-const ALL_VALUE = "all"
-
-const STATUS_FILTER_OPTIONS = [
-  { value: ALL_VALUE, label: "Tất cả" },
-  ...buildOptionsFromLabels(PURCHASE_REQUEST_STATUS_LABELS),
+const statusFilterOptions = [
+  { value: "all", label: "Tất cả" },
+  ...buildOptionsFromLabels(purchaseRequestStatusLabels),
 ]
 
-type PurchaseRequestsTableFilterProps = {
-  search: PurchaseRequestsSearchSchema
-  onFilterChange: (
-    patch: Partial<PurchaseRequestsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => void
-}
-
-export function PurchaseRequestsTableFilter({
-  search,
-  onFilterChange,
-}: PurchaseRequestsTableFilterProps) {
+export function PurchaseRequestsTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/purchase-requests" })
+  const navigate = useNavigate({ from: "/manage/purchase-requests" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Reference list with a fixed key — the loader already prefetched it, resolves synchronously.
@@ -45,7 +37,7 @@ export function PurchaseRequestsTableFilter({
     departmentOptionsQueryOptions()
   )
   const departmentOptions = [
-    { value: ALL_VALUE, label: "Tất cả" },
+    { value: "all", label: "Tất cả" },
     ...buildSelectOptions(departments),
   ]
 
@@ -55,127 +47,194 @@ export function PurchaseRequestsTableFilter({
   // Enter both call `.flush()` to apply immediately without waiting out the debounce.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    onFilterChange(
-      { q: trimmed.length > 0 ? trimmed : undefined },
-      { replace: true }
-    )
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
   }, 300)
+
+  const handleStatusChange = (value: string) => {
+    const status =
+      value === "all" ? undefined : (value as PurchaseRequestStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
+
+  const handleDateRangeChange = (range: {
+    from: string | undefined
+    to: string | undefined
+  }) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        createdDateFrom: range.from,
+        createdDateTo: range.to,
+        page: 1,
+      }),
+    })
+  }
+
+  const handleDepartmentChange = (value: string) => {
+    const departmentId = value === "all" ? undefined : value
+    void navigate({ search: (prev) => ({ ...prev, departmentId, page: 1 }) })
+  }
 
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
     handleSearch.cancel()
     setQ("")
-    onFilterChange({
-      q: undefined,
-      status: undefined,
-      departmentId: undefined,
-      createdDateFrom: undefined,
-      createdDateTo: undefined,
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          status: _status,
+          departmentId: _departmentId,
+          createdDateFrom: _createdDateFrom,
+          createdDateTo: _createdDateTo,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
     })
   }
 
   return (
-    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(9rem,1fr)_minmax(16rem,1.6fr)_minmax(10rem,1fr)_minmax(14rem,1.4fr)]">
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Trạng thái
-            </span>
-            <Select
-              value={search.status ?? ALL_VALUE}
-              onValueChange={(next) =>
-                onFilterChange({
-                  status:
-                    next === ALL_VALUE
-                      ? undefined
-                      : (next as PurchaseRequestStatus),
-                })
-              }
-            >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
+    <TooltipProvider>
+      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(9rem,1fr)_minmax(16rem,1.6fr)_minmax(10rem,1fr)_minmax(14rem,1.4fr)]">
+            <div className="space-y-1.5">
+              <FilterLabel
+                label="Trạng thái"
+                htmlFor="purchase-requests-status"
+              />
+              <Select
+                value={search.status ?? "all"}
+                onValueChange={handleStatusChange}
+              >
+                <SelectTrigger
+                  id="purchase-requests-status"
+                  className="w-full text-xs"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="sm:col-span-2 xl:col-span-1">
-            <DateRangeFilter
-              idPrefix="purchase-requests"
-              fromLabel="Từ ngày"
-              toLabel="Đến ngày"
-              from={search.createdDateFrom}
-              to={search.createdDateTo}
-              onChange={(range) =>
-                onFilterChange({
-                  createdDateFrom: range.from,
-                  createdDateTo: range.to,
-                })
-              }
-            />
+            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+              <FilterLabel
+                label="Ngày tạo"
+                htmlFor="purchase-requests-date-range"
+              />
+              <DateRangePicker
+                id="purchase-requests-date-range"
+                from={search.createdDateFrom}
+                to={search.createdDateTo}
+                onChange={handleDateRangeChange}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <FilterLabel
+                label="Bộ phận"
+                htmlFor="purchase-requests-department"
+              />
+              <Select
+                value={search.departmentId ?? "all"}
+                onValueChange={handleDepartmentChange}
+              >
+                <SelectTrigger
+                  id="purchase-requests-department"
+                  className="w-full text-xs"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {departmentOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+              <FilterLabel
+                label="Tìm kiếm"
+                htmlFor="purchase-requests-search"
+              />
+              <div className="relative">
+                <Input
+                  id="purchase-requests-search"
+                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                  placeholder="Tìm kiếm: Mã PR, PO, Job, Vật tư..."
+                  value={q}
+                  onChange={(event) => {
+                    setQ(event.target.value)
+                    handleSearch(event.target.value)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault()
+                      handleSearch.flush()
+                    }
+                  }}
+                />
+                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
+            </div>
           </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Bộ phận
-            </span>
-            <Select
-              value={search.departmentId ?? ALL_VALUE}
-              onValueChange={(next) =>
-                onFilterChange({
-                  departmentId: next === ALL_VALUE ? undefined : next,
-                })
-              }
+          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+            {/* Select/DateRangePicker already apply live on change (app-wide convention) — this only
+                flushes the search box's 300ms debounce immediately, same effect as pressing Enter in
+                it. Not a "select then apply" gate over the other fields. */}
+            <Button
+              type="button"
+              variant="outline"
+              className="text-xs"
+              onClick={() => handleSearch.flush()}
             >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {departmentOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
+              <Filter className="size-4" />
+              Bộ lọc
+            </Button>
 
-          <label className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <span className="sr-only">Tìm kiếm đề xuất mua hàng</span>
-            <div className="relative">
-              <Input
-                className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm kiếm: Mã PR, PO, Job, Vật tư..."
-                value={q}
-                onChange={(event) => {
-                  setQ(event.target.value)
-                  handleSearch(event.target.value)
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
-                }}
-              />
-              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            </div>
-          </label>
+            <Button
+              type="button"
+              variant="outline"
+              className="text-xs"
+              onClick={resetFilters}
+            >
+              <RotateCw className="size-4" />
+              Làm mới
+            </Button>
+
+            {/* variant="default" (primary), not the outline every other PendingAction uses — matches
+                the reference mockup (UI_PR_01) exactly, which shows this button primary-colored even
+                though the create screen isn't built yet. Deliberate deviation, not a missed rename. */}
+            <PendingAction
+              label="Tạo đề xuất mua hàng (Manual)"
+              hint="Màn hình tạo đề xuất mua hàng sắp có"
+              variant="default"
+            >
+              <Plus className="size-4" />
+              Tạo đề xuất mua hàng (Manual)
+            </PendingAction>
+          </div>
         </div>
-
-        <PurchaseRequestsFilterActions
-          onApplySearch={() => handleSearch.flush()}
-          onReset={resetFilters}
-        />
       </div>
-    </div>
+    </TooltipProvider>
   )
 }

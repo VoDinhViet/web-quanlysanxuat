@@ -31,9 +31,9 @@ function useCreateItem(productId: string, onSuccess?: () => void) {
 
   return useMutation({
     mutationFn: (input: CreateBomItemInput) =>
-      createFn({ data: { ...input, productId } }),
+      createFn({ data: { ...input, rootItemId: productId } }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       onSuccess?.()
       toast.success("Đã thêm hạng mục thành công")
     },
@@ -47,9 +47,9 @@ function useUpdateItem(productId: string, onSuccess?: () => void) {
 
   return useMutation({
     mutationFn: (input: UpdateBomItemInput) =>
-      updateFn({ data: { ...input, productId } }),
+      updateFn({ data: { ...input, itemId: productId } }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       onSuccess?.()
       toast.success("Đã cập nhật hạng mục thành công")
     },
@@ -63,9 +63,9 @@ function useDeleteItem(productId: string, onSuccess?: () => void) {
 
   return useMutation({
     mutationFn: (bomItemId: string) =>
-      deleteFn({ data: { productId, bomItemId } }),
+      deleteFn({ data: { itemId: productId, bomItemId } }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       onSuccess?.()
       toast.success("Đã xoá hạng mục thành công")
     },
@@ -83,7 +83,7 @@ export interface UseProductBomResult {
 
 /**
  * Manages write operations (create, update, delete) for a product's BOM tree structure.
- * Automatically invalidates `["products"]` query cache after successful writes.
+ * Automatically invalidates `["items"]` query cache after successful writes.
  */
 export function useProductBom(
   productId: string,

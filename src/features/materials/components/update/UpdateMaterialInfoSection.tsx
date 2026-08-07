@@ -10,15 +10,15 @@ import { updateMaterialFormDefaultValues } from "@/features/materials/schemas/up
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import {
-  MATERIAL_STATUS_LABELS,
-  MATERIAL_TYPE_LABELS,
+  materialStatusLabels,
+  materialTypeLabels,
   MaterialType,
 } from "@/lib/types/material.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
 
-const MATERIAL_TYPE_OPTIONS = buildOptionsFromLabels(MATERIAL_TYPE_LABELS)
-const STATUS_OPTIONS = buildOptionsFromLabels(MATERIAL_STATUS_LABELS)
+const MATERIAL_TYPE_OPTIONS = buildOptionsFromLabels(materialTypeLabels)
+const statusOptions = buildOptionsFromLabels(materialStatusLabels)
 
 export const UpdateMaterialInfoSection = withForm({
   defaultValues: updateMaterialFormDefaultValues,
@@ -151,7 +151,7 @@ export const UpdateMaterialInfoSection = withForm({
                   <field.RadioPillField
                     label="Trạng thái"
                     required
-                    options={STATUS_OPTIONS}
+                    options={statusOptions}
                     disabled={disabled}
                   />
                 )}

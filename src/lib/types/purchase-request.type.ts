@@ -10,7 +10,7 @@ export enum PurchaseRequestStatus {
   REJECTED = "REJECTED",
 }
 
-export const PURCHASE_REQUEST_STATUS_LABELS: Record<
+export const purchaseRequestStatusLabels: Record<
   PurchaseRequestStatus,
   string
 > = {

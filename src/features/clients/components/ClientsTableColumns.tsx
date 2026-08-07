@@ -5,7 +5,7 @@ import { Edit3, Eye, MoreHorizontal } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { CLIENT_STATUS_LABELS, ClientStatus } from "@/lib/types/client.type"
+import { clientStatusLabels, ClientStatus } from "@/lib/types/client.type"
 import type { Client } from "@/lib/types/client.type"
 
 const statusStyles: Record<ClientStatus, string> = {
@@ -74,7 +74,7 @@ export const clientColumns = [
 
       return (
         <Badge variant="outline" className={statusStyles[status]}>
-          {CLIENT_STATUS_LABELS[status]}
+          {clientStatusLabels[status]}
         </Badge>
       )
     },

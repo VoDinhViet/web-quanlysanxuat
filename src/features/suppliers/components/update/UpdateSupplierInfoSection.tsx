@@ -7,10 +7,10 @@ import { SupplierLogoField } from "@/features/suppliers/components/SupplierLogoF
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
 import { updateSupplierFormDefaultValues } from "@/features/suppliers/schemas/update-supplier.schema"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
-import { SUPPLIER_TYPE_LABELS } from "@/lib/types/supplier.type"
+import { supplierTypeLabels } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
-const SUPPLIER_TYPE_OPTIONS = buildOptionsFromLabels(SUPPLIER_TYPE_LABELS)
+const supplierTypeOptions = buildOptionsFromLabels(supplierTypeLabels)
 
 export const UpdateSupplierInfoSection = withForm({
   defaultValues: updateSupplierFormDefaultValues,
@@ -82,7 +82,7 @@ export const UpdateSupplierInfoSection = withForm({
                   <field.RadioPillField
                     label="Loại hình nhà cung cấp"
                     required
-                    options={SUPPLIER_TYPE_OPTIONS}
+                    options={supplierTypeOptions}
                     disabled={disabled}
                     className="sm:col-span-2 lg:col-span-3"
                   />

@@ -13,9 +13,9 @@ import {
   ProductTypeBadge,
 } from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
-import type { Product } from "@/lib/types/product.type"
+import type { Item } from "@/lib/types/item.type"
 
-const productColumnHelper = createColumnHelper<Product>()
+const productColumnHelper = createColumnHelper<Item>()
 
 export const productColumns = [
   productColumnHelper.display({

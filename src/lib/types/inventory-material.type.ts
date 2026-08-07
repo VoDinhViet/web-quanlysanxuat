@@ -1,38 +1,42 @@
-/** Tình trạng tồn kho vật tư */
-export enum InventoryStatus {
-  /** Bình thường: Tồn khả dụng >= Min */
-  NORMAL = "NORMAL",
-  /** Cảnh báo: 0 <= Tồn khả dụng < Min */
-  WARNING = "WARNING",
-  /** Thiếu: Tồn khả dụng < 0 */
-  SHORTAGE = "SHORTAGE",
+import type { SupplierRef } from "@/lib/types/supplier.type"
+import type { Unit } from "@/lib/types/unit.type"
+
+/** Tình trạng tồn kho vật tư — tính lúc đọc trên backend (không lưu cột nào), giá trị khớp
+ *  1:1 với backend's `MaterialStockStatus` (be-quanlysanxuat/src/api/inventory/inventory.constant.ts).
+ *  - NORMAL: available >= minStock (Bình thường)
+ *  - WARNING: 0 <= available < minStock (Cảnh báo)
+ *  - SHORTAGE: available < 0 (Thiếu) */
+export type InventoryStatus = "NORMAL" | "WARNING" | "SHORTAGE"
+
+export const inventoryStatusLabels: Record<InventoryStatus, string> = {
+  NORMAL: "Bình thường",
+  WARNING: "Cảnh báo",
+  SHORTAGE: "Thiếu",
 }
 
-export const INVENTORY_STATUS_LABELS: Record<InventoryStatus, string> = {
-  [InventoryStatus.NORMAL]: "Bình thường",
-  [InventoryStatus.WARNING]: "Cảnh báo",
-  [InventoryStatus.SHORTAGE]: "Thiếu",
-}
-
-/** Mirrors the backend's InventoryMaterialResDto (GET /api/inventory/materials). */
-export type InventoryMaterial = {
+/** Mirrors the backend's MaterialInventoryItemResDto (GET /api/inventory/materials) — field
+ *  names match the backend 1:1 (not translated to friendlier FE names), same convention as
+ *  `ProductionJobMaterial`. `reserved`/`bomDemand` currently always come back `0` — the backend
+ *  doesn't have "Phiếu lãnh vật tư" (material requisitions) or BOM explosion yet, see
+ *  `inventory.service.ts`'s own comments. */
+export type MaterialInventoryItem = {
   id: string
   code: string
   name: string
-  unit: { id: string; name: string }
-  group: { id: string; name: string }
+  unit: Unit
+  supplier: SupplierRef | null
   image: { url: string } | null
-  /** Tồn thực tế: Số lượng vật tư hiện có trong kho tại thời điểm xem tồn */
-  stockActual: number
-  /** Đã giữ: Số lượng đã được duyệt nhưng chưa xuất kho */
-  stockHeld: number
-  /** Có thể xuất: Số lượng hàng có thể xuất kho = Tồn thực tế - Đã giữ */
-  stockAvailable: number
-  /** Tổng nhu cầu BOM: Tổng nhu cầu của các LSX/Job chưa hoàn thành */
-  demandBom: number
-  /** Tồn khả dụng: Tồn thực tế - Tổng nhu cầu BOM */
-  stockUsable: number
-  /** Min: Định mức tồn kho tối thiểu */
+  /** Tồn thực tế: Σ nhập − Σ xuất trên các phiếu chưa xoá */
+  onHand: number
+  /** Đã giữ: luôn 0 ở đợt này — chưa có Phiếu lãnh vật tư */
+  reserved: number
+  /** Có thể xuất = onHand − reserved */
+  issuable: number
+  /** Tổng nhu cầu BOM: luôn 0 ở đợt này — chưa nổ BOM */
+  bomDemand: number
+  /** Tồn khả dụng = onHand − bomDemand */
+  available: number
+  /** Định mức tồn tối thiểu */
   minStock: number
   status: InventoryStatus
 }

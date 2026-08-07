@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import {
-  PURCHASE_REQUEST_STATUS_LABELS,
+  purchaseRequestStatusLabels,
   PurchaseRequestStatus,
 } from "@/lib/types/purchase-request.type"
 import { cn } from "@/lib/utils"
@@ -45,7 +45,7 @@ export function PurchaseRequestStatusBadge({
   return (
     <Badge variant="outline" className={cn(badge, className)}>
       <span className={cn("size-1.5 rounded-full", dot)} />
-      {PURCHASE_REQUEST_STATUS_LABELS[status]}
+      {purchaseRequestStatusLabels[status]}
     </Badge>
   )
 }

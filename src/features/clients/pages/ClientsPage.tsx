@@ -1,51 +1,31 @@
-import { useNavigate, useSearch } from "@tanstack/react-router"
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { Link, useSearch } from "@tanstack/react-router"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { Plus, UserRound } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/Surface"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
-import { ClientsTable } from "@/features/clients/components/ClientsTable"
+import { DataTable } from "@/components/shared/DataTable"
+import { clientColumns } from "@/features/clients/components/ClientsTableColumns"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
-import {
-  clientGroupOptionsQueryOptions,
-  clientsQueryOptions,
-} from "@/features/clients/api/options"
-import type { ClientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
+import { clientsQueryOptions } from "@/features/clients/api/options"
 
 export function ClientsPage() {
-  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
-  // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries; the reference list resolves synchronously via
-  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
-  // pagination changes only update the table, not the whole route.
+  // useSearch keys off the file-based route id. The loader prefetched this
+  // query; it's a plain useQuery (not useSuspenseQuery) so filter/pagination
+  // changes only update the table, not the whole route. The filter reads/
+  // writes this same route search itself (its own useSearch/useNavigate)
+  // rather than through props.
   const search = useSearch({ from: "/(authed)/manage_/clients" })
-  const navigate = useNavigate({ from: "/manage/clients" })
 
   const clientsQuery = useQuery({
     ...clientsQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-  const { data: clientGroupOptions } = useSuspenseQuery(
-    clientGroupOptionsQueryOptions()
-  )
-
-  // `replace` is for the search box: it commits on every debounced keystroke, and
-  // pushing each one would bury the pre-search page under a dozen history entries.
-  // Discrete filters (the selects) stay on push so Back undoes them one by one.
-  const handleFilterChange = (
-    patch: Partial<ClientsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => {
-    void navigate({
-      search: (prev) => ({ ...prev, ...patch, page: 1 }),
-      replace: options?.replace,
-    })
-  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -61,11 +41,7 @@ export function ClientsPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <ClientsTableFilter
-            search={search}
-            onFilterChange={handleFilterChange}
-            clientGroupOptions={clientGroupOptions}
-          />
+          <ClientsTableFilter />
 
           {clientsQuery.isPending ? (
             <TableQueryLoading rows={search.limit} />
@@ -75,10 +51,28 @@ export function ClientsPage() {
               onRetry={() => void clientsQuery.refetch()}
             />
           ) : (
-            <ClientsTable
+            <DataTable
               rows={clientsQuery.data.data}
+              columns={clientColumns}
               pagination={clientsQuery.data.pagination}
               isPending={clientsQuery.isFetching}
+              emptyState={
+                <TableEmptyState
+                  icon={UserRound}
+                  title="Chưa có khách hàng nào"
+                  description="Bắt đầu bằng cách thêm khách hàng đầu tiên vào danh sách của bạn."
+                  action={
+                    <PermissionGate permission="clients:create">
+                      <Button asChild size="sm" className="text-xs">
+                        <Link to="/manage/clients/create">
+                          <Plus className="size-4" />
+                          Tạo khách hàng
+                        </Link>
+                      </Button>
+                    </PermissionGate>
+                  }
+                />
+              }
             />
           )}
         </Surface>

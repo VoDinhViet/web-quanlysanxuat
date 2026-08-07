@@ -33,15 +33,19 @@ function resolveCreateBomItemErrorMessage(error: unknown): string {
   }
 }
 
+// `rootItemId` (not `itemId`) — the schema already has its own `itemId` (the
+// linked WIP/RM node, see create-bom-item.schema.ts); this one is the FG/WIP
+// item whose BOM tree the new node is added to. Different entities, so they
+// can't share a name once the two schemas are merged here.
 const createBomItemInputSchema = createBomItemSchema.extend({
-  productId: z.uuid(),
+  rootItemId: z.uuid(),
   parentId: z.uuid().nullable(),
   sortOrder: z.number().int().min(0).optional(),
 })
 
 type CreateBomItemInput = z.infer<typeof createBomItemInputSchema>
 
-function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "productId">) {
+function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "rootItemId">) {
   const note = data.note.trim()
 
   return {
@@ -58,9 +62,9 @@ export const createBomItem = createServerFn({ method: "POST" })
   .validator(createBomItemInputSchema)
   .handler(async ({ data }): Promise<BomItem> => {
     try {
-      const { productId, ...rest } = data
+      const { rootItemId, ...rest } = data
       const response = await http.post<BomItem>(
-        `/api/items/${productId}/bom/items`,
+        `/api/items/${rootItemId}/bom/items`,
         toCreateBomItemPayload(rest)
       )
 

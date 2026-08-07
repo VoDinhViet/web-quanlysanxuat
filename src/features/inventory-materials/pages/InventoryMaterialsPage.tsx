@@ -1,76 +1,42 @@
-import { useNavigate, useSearch } from "@tanstack/react-router"
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { useSearch } from "@tanstack/react-router"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { Warehouse } from "lucide-react"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
-import { InventoryMaterialsTable } from "@/features/inventory-materials/components/InventoryMaterialsTable"
+import { DataTable } from "@/components/shared/DataTable"
+import { inventoryMaterialColumns } from "@/features/inventory-materials/components/InventoryMaterialsTableColumns"
 import { InventoryMaterialsTableFilter } from "@/features/inventory-materials/components/InventoryMaterialsTableFilter"
-import { inventoryMaterialsQueryOptions } from "@/features/inventory-materials/api/options/inventory-materials.options"
-import { materialGroupOptionsQueryOptions } from "@/features/materials/api/options"
-import type { InventoryMaterialsSearchSchema } from "@/features/inventory-materials/schemas/inventory-materials-search.schema"
+import { materialInventoryQueryOptions } from "@/features/inventory-materials/api/options/material-inventory.options"
+import type { MaterialInventoryItem } from "@/lib/types/inventory-material.type"
 
-// ---------------------------------------------------------------------------
-// TODO: Replace these mock lists with real API calls once the backend is ready.
-// Follow the same pattern as materialGroupOptionsQueryOptions.
-// ---------------------------------------------------------------------------
-const MOCK_MATERIAL_TYPE_OPTIONS = [
-  { id: "type-1", name: "Nguyên vật liệu chính" },
-  { id: "type-2", name: "Vật tư phụ trợ" },
-  { id: "type-3", name: "Bảo hộ lao động" },
-  { id: "type-4", name: "Dụng cụ thiết bị" },
-]
-
-const MOCK_SUPPLIER_OPTIONS = [
-  { id: "sup-1", name: "Công ty Thép Việt" },
-  { id: "sup-2", name: "Nhà máy Sơn Tổng hợp" },
-  { id: "sup-3", name: "Cty TNHH Thiết bị công nghiệp" },
-  { id: "sup-4", name: "Đại lý Khí công nghiệp Miền Nam" },
-]
-
-const MOCK_WAREHOUSE_OPTIONS = [
-  { id: "wh-1", name: "Kho chính (KCN)" },
-  { id: "wh-2", name: "Kho phụ A" },
-  { id: "wh-3", name: "Kho vật tư tạm" },
-]
+// Flags shortage rows with a left accent so they stand out down the whole
+// list, not just within their own row's status badge.
+function inventoryRowClassName(
+  item: MaterialInventoryItem
+): string | undefined {
+  return item.status === "SHORTAGE"
+    ? "border-l-2 border-l-destructive"
+    : undefined
+}
 
 export function InventoryMaterialsPage() {
-  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
-  // resolved URL path. The loader prefetched the list + group options; the list is
-  // read via useQuery so filter/pagination changes only update the table (not the
-  // whole route), while the reference list resolves synchronously via
-  // useSuspenseQuery.
+  // useSearch keys off the file-based route id. The loader prefetched the list +
+  // warehouse options; the list is read via useQuery so filter/pagination changes
+  // only update the table (not the whole route), while the reference lists resolve
+  // synchronously via useSuspenseQuery. The filter reads/writes this same route
+  // search itself (its own useSearch/useNavigate) rather than through props.
   const search = useSearch({
     from: "/(authed)/manage_/inventory-materials",
   })
-  const navigate = useNavigate({ from: "/manage/inventory-materials" })
 
   const inventoryQuery = useQuery({
-    ...inventoryMaterialsQueryOptions(search),
+    ...materialInventoryQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-
-  const { data: materialGroupOptions } = useSuspenseQuery(
-    materialGroupOptionsQueryOptions()
-  )
-
-  // `replace` is for the search box: debounced keystrokes push many entries
-  // into history very fast; using replace keeps Back usable. Discrete filter
-  // changes (selects) use push so Back undoes them one by one.
-  const handleFilterChange = (
-    patch: Partial<InventoryMaterialsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => {
-    void navigate({
-      search: (prev) => ({ ...prev, ...patch, page: 1 }),
-      replace: options?.replace,
-    })
-  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -86,14 +52,7 @@ export function InventoryMaterialsPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <InventoryMaterialsTableFilter
-            search={search}
-            onFilterChange={handleFilterChange}
-            materialGroupOptions={materialGroupOptions}
-            materialTypeOptions={MOCK_MATERIAL_TYPE_OPTIONS}
-            supplierOptions={MOCK_SUPPLIER_OPTIONS}
-            warehouseOptions={MOCK_WAREHOUSE_OPTIONS}
-          />
+          <InventoryMaterialsTableFilter />
 
           {inventoryQuery.isPending ? (
             <TableQueryLoading rows={search.limit} />
@@ -103,10 +62,19 @@ export function InventoryMaterialsPage() {
               onRetry={() => void inventoryQuery.refetch()}
             />
           ) : (
-            <InventoryMaterialsTable
+            <DataTable
               rows={inventoryQuery.data.data}
+              columns={inventoryMaterialColumns}
               pagination={inventoryQuery.data.pagination}
               isPending={inventoryQuery.isFetching}
+              rowClassName={inventoryRowClassName}
+              emptyState={
+                <TableEmptyState
+                  icon={Warehouse}
+                  title="Không có vật tư nào"
+                  description="Thử thay đổi bộ lọc hoặc kiểm tra lại thời gian xem tồn."
+                />
+              }
             />
           )}
         </Surface>

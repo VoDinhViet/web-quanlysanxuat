@@ -9,20 +9,20 @@ import { OrderContactSelect } from "@/features/orders/components/OrderContactSel
 import { exchangeRateQueryOptions } from "@/features/orders/api/options"
 import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
 import {
-  CURRENCY_LABELS,
+  currencyLabels,
   Currency,
-  ORDER_STATUS_LABELS,
+  orderStatusLabels,
   OrderStatus,
-  PAYMENT_TERM_LABELS,
+  paymentTermLabels,
 } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const CURRENCY_OPTIONS = buildOptionsFromLabels(CURRENCY_LABELS)
-const PAYMENT_TERM_OPTIONS = buildOptionsFromLabels(PAYMENT_TERM_LABELS)
+const currencyOptions = buildOptionsFromLabels(currencyLabels)
+const paymentTermOptions = buildOptionsFromLabels(paymentTermLabels)
 // AWAITING_PRODUCTION excluded: only reachable via the "Duyệt" action
 // (approve-order.api.ts), never settable directly through this form (order.error.
 // status_not_settable_directly) — see the matching drop in update-order.api.ts.
-const ORDER_STATUS_OPTIONS = buildOptionsFromLabels(ORDER_STATUS_LABELS).filter(
+const orderStatusOptions = buildOptionsFromLabels(orderStatusLabels).filter(
   (option) => option.value !== OrderStatus.AWAITING_PRODUCTION
 )
 
@@ -177,7 +177,7 @@ export const UpdateOrderInfoSection = withForm({
               <field.SelectField
                 label="Trạng thái đơn hàng"
                 required
-                options={ORDER_STATUS_OPTIONS}
+                options={orderStatusOptions}
                 disabled={disabled}
               />
             )}
@@ -219,7 +219,7 @@ export const UpdateOrderInfoSection = withForm({
               <field.SelectField
                 label="Điều khoản thanh toán"
                 placeholder="Chọn điều khoản"
-                options={PAYMENT_TERM_OPTIONS}
+                options={paymentTermOptions}
                 disabled={disabled}
               />
             )}
@@ -230,7 +230,7 @@ export const UpdateOrderInfoSection = withForm({
               <field.SelectField
                 label="Tiền tệ"
                 required
-                options={CURRENCY_OPTIONS}
+                options={currencyOptions}
                 disabled={disabled}
               />
             )}

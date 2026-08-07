@@ -7,15 +7,12 @@ import { ProductImageField } from "@/features/products/components/ProductImageFi
 import { createProductFormDefaultValues } from "@/features/products/schemas/create-product.schema"
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
-import {
-  PRODUCT_STATUS_LABELS,
-  PRODUCT_TYPE_LABELS,
-} from "@/lib/types/product.type"
+import { itemStatusLabels, itemTypeLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
 
-const STATUS_OPTIONS = buildOptionsFromLabels(PRODUCT_STATUS_LABELS)
-const TYPE_OPTIONS = buildOptionsFromLabels(PRODUCT_TYPE_LABELS)
+const statusOptions = buildOptionsFromLabels(itemStatusLabels)
+const typeOptions = buildOptionsFromLabels(itemTypeLabels)
 
 export const CreateProductInfoSection = withForm({
   defaultValues: createProductFormDefaultValues,
@@ -89,7 +86,7 @@ export const CreateProductInfoSection = withForm({
                   <field.RadioPillField
                     label="Loại sản phẩm"
                     required
-                    options={TYPE_OPTIONS}
+                    options={typeOptions}
                     disabled={disabled}
                   />
                 )}
@@ -124,7 +121,7 @@ export const CreateProductInfoSection = withForm({
                   <field.RadioPillField
                     label="Trạng thái"
                     required
-                    options={STATUS_OPTIONS}
+                    options={statusOptions}
                     disabled={disabled}
                   />
                 )}

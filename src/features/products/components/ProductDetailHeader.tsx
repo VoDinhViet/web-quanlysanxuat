@@ -10,11 +10,11 @@ import { ProductStatusBadge } from "@/features/products/components/ProductBadges
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductDetailTab } from "@/features/products/schemas/product-detail-search.schema"
-import type { Product } from "@/lib/types/product.type"
+import type { Item } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"
 
 type ProductDetailHeaderProps = {
-  product: Product
+  product: Item
   activeTab: ProductDetailTab
   isSaving: boolean
   onSave: () => void

@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { approveProductionOrder } from "@/features/production-orders/api/server-functions/approve-production-order.api"
-import { ORDER_STATUS_LABELS, OrderStatus } from "@/lib/types/order.type"
+import { orderStatusLabels, OrderStatus } from "@/lib/types/order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 type ApproveProductionOrderDialogProps = {
@@ -65,7 +65,7 @@ export function ApproveProductionOrderDialog({
           <AlertDialogDescription>
             Lệnh sản xuất cho đơn hàng {production.order.code} sẽ được cấp mã
             LSX và chuyển sang trạng thái "Đã duyệt". Đơn hàng sẽ chuyển sang "
-            {ORDER_STATUS_LABELS[OrderStatus.IN_PROGRESS]}". Sau khi duyệt, số
+            {orderStatusLabels[OrderStatus.IN_PROGRESS]}". Sau khi duyệt, số
             lượng sản xuất không thể chỉnh sửa lại.
           </AlertDialogDescription>
         </AlertDialogHeader>

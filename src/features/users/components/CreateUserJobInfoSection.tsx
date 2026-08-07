@@ -7,7 +7,7 @@ import { createUserFormDefaultValues } from "@/features/users/schemas/create-use
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
-const EMPLOYEE_STATUS_OPTIONS = buildOptionsFromLabels(employeeStatusLabels)
+const employeeStatusOptions = buildOptionsFromLabels(employeeStatusLabels)
 
 export const CreateUserJobInfoSection = withForm({
   defaultValues: createUserFormDefaultValues,
@@ -83,7 +83,7 @@ export const CreateUserJobInfoSection = withForm({
                 <field.RadioPillField
                   label="Tình trạng nhân sự"
                   required
-                  options={EMPLOYEE_STATUS_OPTIONS}
+                  options={employeeStatusOptions}
                   disabled={disabled}
                 />
               )}

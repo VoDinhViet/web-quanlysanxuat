@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import {
-  PRODUCTION_ORDER_STATUS_LABELS,
+  productionOrderStatusLabels,
   ProductionOrderStatus,
 } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
@@ -39,7 +39,7 @@ export function ProductionOrderStatusBadge({
   return (
     <Badge variant="outline" className={cn(badge, className)}>
       <span className={cn("size-1.5 rounded-full", dot)} />
-      {PRODUCTION_ORDER_STATUS_LABELS[tone]}
+      {productionOrderStatusLabels[tone]}
     </Badge>
   )
 }

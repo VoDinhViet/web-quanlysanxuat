@@ -25,7 +25,7 @@ export function CreateProductPage() {
             instead of the save jumping to a screen that looks unrelated. */}
         <Tabs value="info" className="gap-0">
           <ProductDetailTabs
-            lockedTabs={["structure", "materials"]}
+            lockedTabs={["boms", "materials"]}
             lockedHint={LOCKED_TABS_HINT}
           />
 

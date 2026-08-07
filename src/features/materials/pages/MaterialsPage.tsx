@@ -1,55 +1,31 @@
-import { useNavigate, useSearch } from "@tanstack/react-router"
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { Link, useSearch } from "@tanstack/react-router"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { PackageOpen, Plus } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/Surface"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
-import { MaterialsTable } from "@/features/materials/components/MaterialsTable"
+import { DataTable } from "@/components/shared/DataTable"
+import { materialColumns } from "@/features/materials/components/MaterialsTableColumns"
 import { MaterialsTableFilter } from "@/features/materials/components/MaterialsTableFilter"
-import {
-  materialGroupOptionsQueryOptions,
-  materialsQueryOptions,
-} from "@/features/materials/api/options"
-import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
-import { clientOptionsQueryOptions } from "@/features/clients/api"
+import { materialsQueryOptions } from "@/features/materials/api/options"
 
 export function MaterialsPage() {
-  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
-  // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched these queries; the reference lists resolve synchronously via
-  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
-  // pagination changes only update the table, not the whole route.
+  // useSearch keys off the file-based route id. The loader prefetched this
+  // query; it's a plain useQuery (not useSuspenseQuery) so filter/pagination
+  // changes only update the table, not the whole route. The filter reads/
+  // writes this same route search itself (its own useSearch/useNavigate) and
+  // fetches its own reference options, rather than through props.
   const search = useSearch({ from: "/(authed)/manage_/materials" })
-  const navigate = useNavigate({ from: "/manage/materials" })
 
   const materialsQuery = useQuery({
     ...materialsQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-  const { data: materialGroupOptions } = useSuspenseQuery(
-    materialGroupOptionsQueryOptions()
-  )
-  const { data: clientOptions } = useSuspenseQuery(
-    clientOptionsQueryOptions("")
-  )
-
-  // `replace` is for the search box: it commits on every debounced keystroke, and
-  // pushing each one would bury the pre-search page under a dozen history entries.
-  // Discrete filters (the selects) stay on push so Back undoes them one by one.
-  const handleFilterChange = (
-    patch: Partial<MaterialsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => {
-    void navigate({
-      search: (prev) => ({ ...prev, ...patch, page: 1 }),
-      replace: options?.replace,
-    })
-  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -65,12 +41,7 @@ export function MaterialsPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <MaterialsTableFilter
-            search={search}
-            onFilterChange={handleFilterChange}
-            materialGroupOptions={materialGroupOptions}
-            clientOptions={clientOptions}
-          />
+          <MaterialsTableFilter />
 
           {materialsQuery.isPending ? (
             <TableQueryLoading rows={search.limit} />
@@ -80,10 +51,28 @@ export function MaterialsPage() {
               onRetry={() => void materialsQuery.refetch()}
             />
           ) : (
-            <MaterialsTable
+            <DataTable
               rows={materialsQuery.data.data}
+              columns={materialColumns}
               pagination={materialsQuery.data.pagination}
               isPending={materialsQuery.isFetching}
+              emptyState={
+                <TableEmptyState
+                  icon={PackageOpen}
+                  title="Chưa có vật tư nào"
+                  description="Bắt đầu bằng cách thêm vật tư đầu tiên vào danh mục của bạn."
+                  action={
+                    <PermissionGate permission="materials:create">
+                      <Button asChild size="sm" className="text-xs">
+                        <Link to="/manage/materials/create">
+                          <Plus className="size-4" />
+                          Thêm vật tư
+                        </Link>
+                      </Button>
+                    </PermissionGate>
+                  }
+                />
+              }
             />
           )}
         </Surface>

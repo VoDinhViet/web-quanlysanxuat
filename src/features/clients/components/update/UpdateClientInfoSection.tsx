@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
 import { clientGroupOptionsQueryOptions } from "@/features/clients/api/options"
 import { updateClientFormDefaultValues } from "@/features/clients/schemas/update-client.schema"
-import { CLIENT_STATUS_LABELS } from "@/lib/types/client.type"
+import { clientStatusLabels } from "@/lib/types/client.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
-const CLIENT_STATUS_OPTIONS = buildOptionsFromLabels(CLIENT_STATUS_LABELS)
+const clientStatusOptions = buildOptionsFromLabels(clientStatusLabels)
 
 export const UpdateClientInfoSection = withForm({
   defaultValues: updateClientFormDefaultValues,
@@ -118,7 +118,7 @@ export const UpdateClientInfoSection = withForm({
                   label="Trạng thái"
                   required
                   placeholder="Chọn trạng thái"
-                  options={CLIENT_STATUS_OPTIONS}
+                  options={clientStatusOptions}
                   disabled={disabled}
                 />
               )}

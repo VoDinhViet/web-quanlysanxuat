@@ -14,7 +14,7 @@ export enum ProductionOrderStatus {
   APPROVED = "APPROVED",
 }
 
-export const PRODUCTION_ORDER_STATUS_LABELS: Record<
+export const productionOrderStatusLabels: Record<
   ProductionOrderStatus,
   string
 > = {
@@ -77,7 +77,7 @@ export enum ProductionOrderLogAction {
   APPROVED = "APPROVED",
 }
 
-export const PRODUCTION_ORDER_LOG_ACTION_LABELS: Record<
+export const productionOrderLogActionLabels: Record<
   ProductionOrderLogAction,
   string
 > = {

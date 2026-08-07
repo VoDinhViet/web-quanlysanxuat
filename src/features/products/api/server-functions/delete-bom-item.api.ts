@@ -23,15 +23,13 @@ function resolveDeleteBomItemErrorMessage(error: unknown): string {
 export const deleteBomItem = createServerFn({ method: "POST" })
   .validator(
     z.object({
-      productId: z.uuid(),
+      itemId: z.uuid(),
       bomItemId: z.uuid(),
     })
   )
   .handler(async ({ data }): Promise<void> => {
     try {
-      await http.delete(
-        `/api/items/${data.productId}/bom/items/${data.bomItemId}`
-      )
+      await http.delete(`/api/items/${data.itemId}/bom/items/${data.bomItemId}`)
     } catch (error) {
       logHttpError(error, "deleteBomItem")
 

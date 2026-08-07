@@ -9,10 +9,10 @@ import { OrderDetailStatTiles } from "@/features/orders/components/detail/OrderD
 import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
 import { resolveMockPaymentStatus } from "@/features/orders/mock/order-detail.mock"
 import {
-  ORDER_MOCK_PAYMENT_STATUS_LABELS,
+  orderMockPaymentStatusLabels,
   OVERDUE_FILTER_VALUE,
   OrderStatus,
-  PAYMENT_TERM_LABELS,
+  paymentTermLabels,
   resolveDeliveryTone,
 } from "@/lib/types/order.type"
 import type { DeliveryTone, OrderDetail } from "@/lib/types/order.type"
@@ -150,7 +150,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
             <MetaField
               label="Điều khoản thanh toán"
               value={
-                order.paymentTerm ? PAYMENT_TERM_LABELS[order.paymentTerm] : "—"
+                order.paymentTerm ? paymentTermLabels[order.paymentTerm] : "—"
               }
             />
             <MetaField
@@ -163,7 +163,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
                     PAYMENT_STATUS_CLASSNAME[paymentStatus]
                   )}
                 >
-                  {ORDER_MOCK_PAYMENT_STATUS_LABELS[paymentStatus]}
+                  {orderMockPaymentStatusLabels[paymentStatus]}
                 </Badge>
               }
             />

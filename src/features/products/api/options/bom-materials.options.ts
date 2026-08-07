@@ -8,13 +8,13 @@ type BomMaterialsSearch = {
   q?: string
 }
 
-// Scoped to the product, so it nests under the detail key like productBomQueryOptions —
-// `invalidateQueries({ queryKey: ["products"] })` still covers it.
+// Scoped to the item, so it nests under the detail key like itemBomQueryOptions —
+// `invalidateQueries({ queryKey: ["items"] })` still covers it.
 export const bomMaterialsQueryOptions = (
-  productId: string,
+  itemId: string,
   search: BomMaterialsSearch
 ) =>
   queryOptions({
-    queryKey: ["products", "detail", productId, "bom-materials", search],
-    queryFn: () => getBomMaterials({ data: { productId, ...search } }),
+    queryKey: ["items", "detail", itemId, "bom-materials", search],
+    queryFn: () => getBomMaterials({ data: { itemId, ...search } }),
   })

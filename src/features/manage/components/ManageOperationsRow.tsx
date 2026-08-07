@@ -7,10 +7,10 @@ import {
   UPCOMING_DELIVERIES,
 } from "@/features/manage/mock/manage-dashboard.mock"
 import {
-  DO_STATUS_LABELS,
+  doStatusLabels,
   DoStatus,
-  NCR_SOURCE_LABELS,
-  NCR_STATUS_LABELS,
+  ncrSourceLabels,
+  ncrStatusLabels,
   NcrStatus,
 } from "@/lib/types/manage.type"
 
@@ -59,13 +59,13 @@ export function ManageOperationsRow() {
           <TableRow key={ncr.ncrCode}>
             <TableCell className="text-xs font-medium">{ncr.ncrCode}</TableCell>
             <TableCell className="text-xs">
-              {NCR_SOURCE_LABELS[ncr.source]}
+              {ncrSourceLabels[ncr.source]}
             </TableCell>
             <TableCell className="text-xs">{ncr.type}</TableCell>
             <TableCell className="text-xs">{ncr.createdAt}</TableCell>
             <TableCell>
               <Badge variant="outline" className={ncrStatusStyles[ncr.status]}>
-                {NCR_STATUS_LABELS[ncr.status]}
+                {ncrStatusLabels[ncr.status]}
               </Badge>
             </TableCell>
           </TableRow>
@@ -90,7 +90,7 @@ export function ManageOperationsRow() {
                 variant="outline"
                 className={doStatusStyles[delivery.status]}
               >
-                {DO_STATUS_LABELS[delivery.status]}
+                {doStatusLabels[delivery.status]}
               </Badge>
             </TableCell>
           </TableRow>

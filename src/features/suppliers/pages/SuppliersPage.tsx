@@ -1,57 +1,33 @@
-import { useNavigate, useSearch } from "@tanstack/react-router"
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { Link, useSearch } from "@tanstack/react-router"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { Building2, Plus } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/Surface"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
+import { DataTable } from "@/components/shared/DataTable"
 import { SupplierStatCards } from "@/features/suppliers/components/SupplierStatCards"
-import { SuppliersTable } from "@/features/suppliers/components/SuppliersTable"
+import { supplierColumns } from "@/features/suppliers/components/SuppliersTableColumns"
 import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersTableFilter"
-import {
-  supplierGroupOptionsQueryOptions,
-  suppliersQueryOptions,
-} from "@/features/suppliers/api/options"
-import { countryOptionsQueryOptions } from "@/features/countries/api"
-import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
+import { suppliersQueryOptions } from "@/features/suppliers/api/options"
 
 export function SuppliersPage() {
-  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
-  // resolved URL path instead — the two intentionally differ. The loader
-  // prefetches these queries; the reference lists resolve synchronously via
-  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
-  // pagination changes only update the table, not the whole route. Supplier
-  // stats are non-critical — SupplierStatCards reads and awaits them itself.
+  // useSearch keys off the file-based route id. The loader prefetches this
+  // query; it's a plain useQuery (not useSuspenseQuery) so filter/pagination
+  // changes only update the table, not the whole route. Supplier stats are
+  // non-critical — SupplierStatCards reads and awaits them itself. The filter
+  // reads/writes this same route search itself (its own useSearch/useNavigate)
+  // rather than through props.
   const search = useSearch({ from: "/(authed)/manage_/suppliers" })
-  const navigate = useNavigate({ from: "/manage/suppliers" })
 
   const suppliersQuery = useQuery({
     ...suppliersQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-  const { data: supplierGroupOptions } = useSuspenseQuery(
-    supplierGroupOptionsQueryOptions()
-  )
-  const { data: countryOptions } = useSuspenseQuery(
-    countryOptionsQueryOptions()
-  )
-
-  // `replace` is for the search box: it commits on every debounced keystroke, and
-  // pushing each one would bury the pre-search page under a dozen history entries.
-  // Discrete filters (the selects) stay on push so Back undoes them one by one.
-  const handleFilterChange = (
-    patch: Partial<SuppliersSearchSchema>,
-    options?: { replace?: boolean }
-  ) => {
-    void navigate({
-      search: (prev) => ({ ...prev, ...patch, page: 1 }),
-      replace: options?.replace,
-    })
-  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -69,12 +45,7 @@ export function SuppliersPage() {
         <SupplierStatCards />
 
         <Surface contentClassName="min-h-[calc(100svh-19rem)]">
-          <SuppliersTableFilter
-            search={search}
-            onFilterChange={handleFilterChange}
-            supplierGroupOptions={supplierGroupOptions}
-            countryOptions={countryOptions}
-          />
+          <SuppliersTableFilter />
 
           {suppliersQuery.isPending ? (
             <TableQueryLoading rows={search.limit} />
@@ -84,10 +55,28 @@ export function SuppliersPage() {
               onRetry={() => void suppliersQuery.refetch()}
             />
           ) : (
-            <SuppliersTable
+            <DataTable
               rows={suppliersQuery.data.data}
+              columns={supplierColumns}
               pagination={suppliersQuery.data.pagination}
               isPending={suppliersQuery.isFetching}
+              emptyState={
+                <TableEmptyState
+                  icon={Building2}
+                  title="Chưa có nhà cung cấp nào"
+                  description="Bắt đầu bằng cách thêm nhà cung cấp đầu tiên vào danh sách của bạn."
+                  action={
+                    <PermissionGate permission="suppliers:create">
+                      <Button asChild size="sm" className="text-xs">
+                        <Link to="/manage/suppliers/create">
+                          <Plus className="size-4" />
+                          Thêm nhà cung cấp
+                        </Link>
+                      </Button>
+                    </PermissionGate>
+                  }
+                />
+              }
             />
           )}
         </Surface>

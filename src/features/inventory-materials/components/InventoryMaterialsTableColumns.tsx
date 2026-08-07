@@ -6,23 +6,117 @@ import { IconButton } from "@/components/shared/IconButton"
 import { InventoryMaterialStatusBadge } from "@/features/inventory-materials/components/InventoryMaterialStatusBadge"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
-import type { InventoryMaterial } from "@/lib/types/inventory-material.type"
+import type {
+  InventoryStatus,
+  MaterialInventoryItem,
+} from "@/lib/types/inventory-material.type"
 
 const stockFormatter = new Intl.NumberFormat("vi-VN")
 
-const inventoryColumnHelper = createColumnHelper<InventoryMaterial>()
+const inventoryColumnHelper = createColumnHelper<MaterialInventoryItem>()
 
-// Highlight usable stock value: green when positive, red when negative.
-function UsableStockCell({ value }: { value: number }) {
+const stockValueClassName: Record<InventoryStatus, string> = {
+  NORMAL: "text-foreground",
+  WARNING: "text-warning",
+  SHORTAGE: "text-destructive",
+}
+
+const gaugeFillClassName: Record<InventoryStatus, string> = {
+  NORMAL: "bg-success",
+  WARNING: "bg-warning",
+  SHORTAGE: "bg-destructive",
+}
+
+type StockLevelGaugeProps = {
+  available: number
+  minStock: number
+  status: InventoryStatus
+}
+
+// A per-row "fuel gauge": fill = available, tick = the reorder threshold
+// (minStock). The domain is derived from this row's own numbers only (no
+// cross-row scale), so every gauge reads its own margin-to-reorder at a
+// glance instead of making the reader compare five raw columns.
+function StockLevelGauge({
+  available,
+  minStock,
+  status,
+}: StockLevelGaugeProps) {
+  const domainMax = Math.max(minStock * 1.5, available, 1)
+  const fillPercent = Math.min(Math.max((available / domainMax) * 100, 0), 100)
+  const tickPercent =
+    minStock > 0 ? Math.min((minStock / domainMax) * 100, 100) : null
+
   return (
-    <span
+    <div
       className={cn(
-        "font-medium tabular-nums",
-        value < 0 ? "text-destructive" : "text-success"
+        "relative h-1.5 w-full min-w-24 overflow-hidden rounded-full",
+        status === "SHORTAGE" ? "bg-destructive/15" : "bg-muted"
       )}
     >
-      {stockFormatter.format(value)}
-    </span>
+      <div
+        className={cn("h-full rounded-full", gaugeFillClassName[status])}
+        style={{ width: `${fillPercent}%` }}
+      />
+      {tickPercent !== null && (
+        <span
+          className="absolute top-1/2 h-2.5 w-px -translate-y-1/2 bg-foreground/30"
+          style={{ left: `${tickPercent}%` }}
+        />
+      )}
+    </div>
+  )
+}
+
+type StockCellProps = {
+  onHand: number
+  reserved: number
+  bomDemand: number
+  available: number
+  minStock: number
+  status: InventoryStatus
+}
+
+// Collapses onHand/reserved/bomDemand/available/minStock into one glanceable
+// cell: the number that actually drives `status` (available) stays big and
+// colored, minStock rides along as the gauge's threshold, and onHand/reserved/
+// bomDemand fall back to a compact caption — `issuable` (= onHand − reserved)
+// is left out of the caption since it's arithmetically implied by the two
+// numbers already shown there.
+function StockCell({
+  onHand,
+  reserved,
+  bomDemand,
+  available,
+  minStock,
+  status,
+}: StockCellProps) {
+  return (
+    <div className="flex min-w-40 flex-col gap-1 py-1.5">
+      <div className="flex items-baseline justify-between gap-2">
+        <span
+          className={cn(
+            "text-sm font-semibold tabular-nums",
+            stockValueClassName[status]
+          )}
+        >
+          {stockFormatter.format(available)}
+        </span>
+        <span className="text-[10px] whitespace-nowrap text-muted-foreground">
+          Min {stockFormatter.format(minStock)}
+        </span>
+      </div>
+      <StockLevelGauge
+        available={available}
+        minStock={minStock}
+        status={status}
+      />
+      <p className="truncate text-[10px] text-muted-foreground">
+        Thực tồn {stockFormatter.format(onHand)} · Đã giữ{" "}
+        {stockFormatter.format(reserved)} · BOM{" "}
+        {stockFormatter.format(bomDemand)}
+      </p>
+    </div>
   )
 }
 
@@ -80,67 +174,32 @@ export const inventoryMaterialColumns = [
     meta: { headerClassName: "min-w-16" },
   }),
 
-  inventoryColumnHelper.accessor((row) => row.group.name, {
-    id: "group",
-    header: "Nhóm vật tư",
+  inventoryColumnHelper.accessor((row) => row.supplier?.name, {
+    id: "supplier",
+    header: "Nhà cung cấp",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
-      <span className="text-muted-foreground">{getValue()}</span>
+      <span className="text-muted-foreground">{getValue() ?? "—"}</span>
     ),
   }),
 
-  inventoryColumnHelper.accessor("stockActual", {
-    header: "Tồn thực tế",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right font-medium text-foreground tabular-nums",
-    },
-    cell: ({ getValue }) => stockFormatter.format(getValue()),
-  }),
-
-  inventoryColumnHelper.accessor("stockHeld", {
-    header: "Đã giữ",
-    meta: {
-      headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums text-muted-foreground",
-    },
-    cell: ({ getValue }) => stockFormatter.format(getValue()),
-  }),
-
-  inventoryColumnHelper.accessor("stockAvailable", {
-    header: "Có thể xuất",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right tabular-nums font-medium text-foreground",
-    },
-    cell: ({ getValue }) => stockFormatter.format(getValue()),
-  }),
-
-  inventoryColumnHelper.accessor("demandBom", {
-    header: "Nhu cầu BOM",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right tabular-nums text-muted-foreground",
-    },
-    cell: ({ getValue }) => stockFormatter.format(getValue()),
-  }),
-
-  inventoryColumnHelper.accessor("stockUsable", {
+  inventoryColumnHelper.display({
+    id: "stock",
     header: "Tồn khả dụng",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right",
+    meta: { headerClassName: "min-w-44" },
+    cell: ({ row }) => {
+      const item = row.original
+      return (
+        <StockCell
+          onHand={item.onHand}
+          reserved={item.reserved}
+          bomDemand={item.bomDemand}
+          available={item.available}
+          minStock={item.minStock}
+          status={item.status}
+        />
+      )
     },
-    cell: ({ getValue }) => <UsableStockCell value={getValue()} />,
-  }),
-
-  inventoryColumnHelper.accessor("minStock", {
-    header: "Min",
-    meta: {
-      headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right tabular-nums text-muted-foreground",
-    },
-    cell: ({ getValue }) => stockFormatter.format(getValue()),
   }),
 
   inventoryColumnHelper.accessor("status", {

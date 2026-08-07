@@ -27,7 +27,7 @@ function resolveDeleteBomOperationErrorMessage(error: unknown): string {
 export const deleteBomOperation = createServerFn({ method: "POST" })
   .validator(
     z.object({
-      productId: z.uuid(),
+      itemId: z.uuid(),
       bomItemId: z.uuid(),
       stepId: z.uuid(),
     })
@@ -35,7 +35,7 @@ export const deleteBomOperation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<void> => {
     try {
       await http.delete(
-        `/api/items/${data.productId}/bom/items/${data.bomItemId}/operations/${data.stepId}`
+        `/api/items/${data.itemId}/bom/items/${data.bomItemId}/operations/${data.stepId}`
       )
     } catch (error) {
       logHttpError(error, "deleteBomOperation")

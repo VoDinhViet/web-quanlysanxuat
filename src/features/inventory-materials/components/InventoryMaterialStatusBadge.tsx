@@ -1,8 +1,6 @@
 import { Badge } from "@/components/ui/badge"
-import {
-  INVENTORY_STATUS_LABELS,
-  InventoryStatus,
-} from "@/lib/types/inventory-material.type"
+import { inventoryStatusLabels } from "@/lib/types/inventory-material.type"
+import type { InventoryStatus } from "@/lib/types/inventory-material.type"
 import { cn } from "@/lib/utils"
 
 type StatusBadgeStyle = {
@@ -11,15 +9,15 @@ type StatusBadgeStyle = {
 }
 
 const statusStyles: Record<InventoryStatus, StatusBadgeStyle> = {
-  [InventoryStatus.NORMAL]: {
+  NORMAL: {
     badge: "border-success/20 bg-success/10 text-success",
     dot: "bg-success",
   },
-  [InventoryStatus.WARNING]: {
+  WARNING: {
     badge: "border-warning/20 bg-warning/10 text-warning",
     dot: "bg-warning",
   },
-  [InventoryStatus.SHORTAGE]: {
+  SHORTAGE: {
     badge: "border-destructive/20 bg-destructive/10 text-destructive",
     dot: "bg-destructive",
   },
@@ -46,7 +44,7 @@ export function InventoryMaterialStatusBadge({
       )}
     >
       <span className={cn("size-1.5 rounded-full", dot)} />
-      {INVENTORY_STATUS_LABELS[status]}
+      {inventoryStatusLabels[status]}
     </Badge>
   )
 }

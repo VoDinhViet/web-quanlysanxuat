@@ -28,7 +28,7 @@ import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 // production.items → raw form values: quantity becomes a string for the numeric <Input>,
 // parsed back to a number by updateProductionOrderSchema on submit.
-function buildDefaultValues(
+function getDefaultValues(
   production: ProductionOrderDetail
 ): UpdateProductionOrderSchema {
   return {
@@ -80,7 +80,7 @@ export function ProductionOrderDetailPage() {
   })
 
   const form = useAppForm({
-    defaultValues: buildDefaultValues(production),
+    defaultValues: getDefaultValues(production),
     validators: { onSubmit: updateProductionOrderSchema },
     // Chỉ gửi dòng đã đổi — PATCH của backend là partial, dòng không gửi giữ nguyên giá trị đã
     // lưu.

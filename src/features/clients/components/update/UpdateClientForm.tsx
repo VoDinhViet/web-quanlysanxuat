@@ -16,7 +16,7 @@ import type { Client } from "@/lib/types/client.type"
 // Client → raw form values: nullable fields become "", contacts drop the
 // server-assigned id/isPrimary back down to the editable shape (isPrimary is
 // re-derived from array order on submit, see clientContactsSchema).
-function buildClientDefaultValues(client: Client): UpdateClientSchema {
+function getClientDefaultValues(client: Client): UpdateClientSchema {
   return {
     clientId: client.id,
     name: client.name,
@@ -56,7 +56,7 @@ export function UpdateClientForm({ client }: UpdateClientFormProps) {
   })
 
   const form = useAppForm({
-    defaultValues: buildClientDefaultValues(client),
+    defaultValues: getClientDefaultValues(client),
     validators: {
       onSubmit: updateClientSchema,
     },

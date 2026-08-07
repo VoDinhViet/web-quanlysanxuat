@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import {
-  ORDER_STATUS_LABELS,
+  orderStatusLabels,
   OVERDUE_FILTER_VALUE,
   OVERDUE_LABEL,
   OrderStatus,
@@ -55,7 +55,7 @@ export const orderBadgeStyles: Record<OrderBadgeTone, OrderBadgeStyle> = {
 }
 
 export const ORDER_BADGE_LABELS: Record<OrderBadgeTone, string> = {
-  ...ORDER_STATUS_LABELS,
+  ...orderStatusLabels,
   [OVERDUE_FILTER_VALUE]: OVERDUE_LABEL,
 }
 

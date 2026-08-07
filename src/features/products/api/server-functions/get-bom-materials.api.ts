@@ -24,7 +24,7 @@ function resolveGetBomMaterialsErrorMessage(error: unknown): string {
 }
 
 const getBomMaterialsSchema = z.object({
-  productId: z.uuid(),
+  itemId: z.uuid(),
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),
   q: optional(z.string().trim()),
@@ -34,9 +34,9 @@ export const getBomMaterials = createServerFn({ method: "GET" })
   .validator(getBomMaterialsSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<BomMaterial>> => {
     try {
-      const { productId, ...params } = data
+      const { itemId, ...params } = data
       const response = await http.get<PaginatedResponse<BomMaterial>>(
-        `/api/items/${productId}/materials`,
+        `/api/items/${itemId}/materials`,
         { params }
       )
 

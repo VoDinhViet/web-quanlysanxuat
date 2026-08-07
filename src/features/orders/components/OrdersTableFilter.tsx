@@ -1,7 +1,9 @@
 import { useState } from "react"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { Search } from "lucide-react"
+import { Download, Plus, RotateCw, Search } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -10,48 +12,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { DateRangeFilter } from "@/components/shared/DateRangeFilter"
-import { OrdersFilterActions } from "@/features/orders/components/OrdersFilterActions"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { DateRangePicker } from "@/components/shared/DateRangePicker"
+import { FilterLabel } from "@/components/shared/FilterLabel"
+import { PendingAction } from "@/components/shared/PendingAction"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import {
-  ORDER_STATUS_LABELS,
+  orderStatusLabels,
   OVERDUE_FILTER_VALUE,
   OVERDUE_LABEL,
-  PAYMENT_TERM_LABELS,
+  paymentTermLabels,
 } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
-import type { OrderFilterOption, PaymentTerm } from "@/lib/types/order.type"
-
-const ALL_VALUE = "all"
+import type { PaymentTerm } from "@/lib/types/order.type"
 
 // "Trễ hạn" sits in the same select as the real statuses because it is the same
 // question from the user's side ("show me which orders?"), even though the
 // server function sends it as a separate `overdue` flag.
-const STATUS_FILTER_OPTIONS = [
-  { value: ALL_VALUE, label: "Tất cả" },
-  ...buildOptionsFromLabels(ORDER_STATUS_LABELS),
+const statusFilterOptions = [
+  { value: "all", label: "Tất cả" },
+  ...buildOptionsFromLabels(orderStatusLabels),
   { value: OVERDUE_FILTER_VALUE, label: OVERDUE_LABEL },
 ]
 
-const PAYMENT_TERM_FILTER_OPTIONS = [
-  { value: ALL_VALUE, label: "Tất cả" },
-  ...buildOptionsFromLabels(PAYMENT_TERM_LABELS),
+const paymentTermFilterOptions = [
+  { value: "all", label: "Tất cả" },
+  ...buildOptionsFromLabels(paymentTermLabels),
 ]
 
-type OrdersTableFilterProps = {
-  search: OrdersSearchSchema
-  onFilterChange: (
-    patch: Partial<OrdersSearchSchema>,
-    options?: { replace?: boolean }
-  ) => void
-  salesRepOptions: OrderFilterOption[]
-}
-
-export function OrdersTableFilter({
-  search,
-  onFilterChange,
-  salesRepOptions,
-}: OrdersTableFilterProps) {
+export function OrdersTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/orders" })
+  const navigate = useNavigate({ from: "/manage/orders" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — the same delay the
@@ -59,153 +51,197 @@ export function OrdersTableFilter({
   // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    onFilterChange(
-      { q: trimmed.length > 0 ? trimmed : undefined },
-      { replace: true }
-    )
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
   }, 300)
+
+  const handleDateRangeChange = (range: {
+    from: string | undefined
+    to: string | undefined
+  }) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        orderDateFrom: range.from,
+        orderDateTo: range.to,
+        page: 1,
+      }),
+    })
+  }
+
+  const handleStatusChange = (value: string) => {
+    const status =
+      value === "all" ? undefined : (value as OrdersSearchSchema["status"])
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
+
+  const handlePaymentTermChange = (value: string) => {
+    const paymentTerm = value === "all" ? undefined : (value as PaymentTerm)
+    void navigate({ search: (prev) => ({ ...prev, paymentTerm, page: 1 }) })
+  }
+
+  const handleSalesRepChange = (value: string) => {
+    const salesRepId = value === "all" ? undefined : value
+    void navigate({ search: (prev) => ({ ...prev, salesRepId, page: 1 }) })
+  }
 
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
     handleSearch.cancel()
     setQ("")
-    onFilterChange({
-      q: undefined,
-      status: undefined,
-      paymentTerm: undefined,
-      salesRepId: undefined,
-      orderDateFrom: undefined,
-      orderDateTo: undefined,
-      order: undefined,
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          status: _status,
+          paymentTerm: _paymentTerm,
+          salesRepId: _salesRepId,
+          orderDateFrom: _orderDateFrom,
+          orderDateTo: _orderDateTo,
+          order: _order,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
     })
   }
 
   return (
-    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
-          <label className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <span className="sr-only">Tìm kiếm đơn hàng</span>
-            <div className="relative">
-              <Input
-                className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo Mã SO, khách hàng, người liên hệ, SĐT..."
-                value={q}
-                onChange={(event) => {
-                  setQ(event.target.value)
-                  handleSearch(event.target.value)
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
-                }}
-              />
-              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+    <TooltipProvider>
+      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
+            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+              <FilterLabel label="Tìm kiếm" htmlFor="orders-search" />
+              <div className="relative">
+                <Input
+                  id="orders-search"
+                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                  placeholder="Tìm theo Mã SO, khách hàng, người liên hệ, SĐT..."
+                  value={q}
+                  onChange={(event) => {
+                    setQ(event.target.value)
+                    handleSearch(event.target.value)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault()
+                      handleSearch.flush()
+                    }
+                  }}
+                />
+                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
-          </label>
 
-          <div className="sm:col-span-2 xl:col-span-1">
-            <DateRangeFilter
-              idPrefix="orders"
-              fromLabel="Ngày giao từ"
-              toLabel="Đến"
-              from={search.orderDateFrom}
-              to={search.orderDateTo}
-              onChange={(range) =>
-                onFilterChange({
-                  orderDateFrom: range.from,
-                  orderDateTo: range.to,
-                })
-              }
-            />
+            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+              <FilterLabel label="Ngày giao" htmlFor="orders-date-range" />
+              <DateRangePicker
+                id="orders-date-range"
+                from={search.orderDateFrom}
+                to={search.orderDateTo}
+                onChange={handleDateRangeChange}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <FilterLabel label="Trạng thái" htmlFor="orders-status" />
+              <Select
+                value={search.status ?? "all"}
+                onValueChange={handleStatusChange}
+              >
+                <SelectTrigger id="orders-status" className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <FilterLabel
+                label="Điều khoản TT"
+                htmlFor="orders-payment-term"
+              />
+              <Select
+                value={search.paymentTerm ?? "all"}
+                onValueChange={handlePaymentTermChange}
+              >
+                <SelectTrigger
+                  id="orders-payment-term"
+                  className="w-full text-xs"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {paymentTermFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* No backend endpoint exists for sales-rep options yet (confirmed:
+                no `salesRep` anywhere in be-quanlysanxuat/src) — the select stays
+                populated with only "Tất cả" until that ships. Not faked. */}
+            <div className="space-y-1.5">
+              <FilterLabel label="NV kinh doanh" htmlFor="orders-sales-rep" />
+              <Select
+                value={search.salesRepId ?? "all"}
+                onValueChange={handleSalesRepChange}
+              >
+                <SelectTrigger id="orders-sales-rep" className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Trạng thái
-            </span>
-            <Select
-              value={search.status ?? ALL_VALUE}
-              onValueChange={(next) =>
-                onFilterChange({
-                  status:
-                    next === ALL_VALUE
-                      ? undefined
-                      : (next as OrdersSearchSchema["status"]),
-                })
-              }
+          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+            <PendingAction
+              label="Xuất Excel"
+              hint="Tính năng xuất Excel sắp có"
             >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Điều khoản TT
-            </span>
-            <Select
-              value={search.paymentTerm ?? ALL_VALUE}
-              onValueChange={(next) =>
-                onFilterChange({
-                  paymentTerm:
-                    next === ALL_VALUE ? undefined : (next as PaymentTerm),
-                })
-              }
+              <Download className="size-4" />
+              Xuất Excel
+            </PendingAction>
+            <Button
+              type="button"
+              variant="outline"
+              className="text-xs"
+              onClick={resetFilters}
             >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PAYMENT_TERM_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              NV kinh doanh
-            </span>
-            <Select
-              value={search.salesRepId ?? ALL_VALUE}
-              onValueChange={(next) =>
-                onFilterChange({
-                  salesRepId: next === ALL_VALUE ? undefined : next,
-                })
-              }
-            >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ALL_VALUE}>Tất cả</SelectItem>
-                {salesRepOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {option.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
+              <RotateCw className="size-4" />
+              Làm mới
+            </Button>
+            <PermissionGate permission="orders:create">
+              <Button asChild className="text-xs">
+                <Link to="/manage/orders/create">
+                  <Plus className="size-4" />
+                  Tạo đơn hàng
+                </Link>
+              </Button>
+            </PermissionGate>
+          </div>
         </div>
-
-        <OrdersFilterActions onReset={resetFilters} />
       </div>
-    </div>
+    </TooltipProvider>
   )
 }

@@ -11,7 +11,7 @@ export enum JobStatus {
   CANCELLED = "CANCELLED",
 }
 
-export const JOB_STATUS_LABELS: Record<JobStatus, string> = {
+export const jobStatusLabels: Record<JobStatus, string> = {
   [JobStatus.IN_PROGRESS]: "Đang SX",
   [JobStatus.WAITING_MATERIAL]: "Chờ vật tư",
   [JobStatus.WAITING_OUTSOURCE]: "Chờ OS",
@@ -27,7 +27,7 @@ export enum NcrSource {
   MANUAL = "MANUAL",
 }
 
-export const NCR_SOURCE_LABELS: Record<NcrSource, string> = {
+export const ncrSourceLabels: Record<NcrSource, string> = {
   [NcrSource.IQC]: "IQC",
   [NcrSource.OQC]: "OQC",
   [NcrSource.MANUAL]: "Thủ công",
@@ -39,7 +39,7 @@ export enum NcrStatus {
   PENDING = "PENDING",
 }
 
-export const NCR_STATUS_LABELS: Record<NcrStatus, string> = {
+export const ncrStatusLabels: Record<NcrStatus, string> = {
   [NcrStatus.REWORK]: "Làm lại",
   [NcrStatus.SCRAP]: "Loại bỏ",
   [NcrStatus.PENDING]: "Chờ xử lý",
@@ -50,7 +50,7 @@ export enum DoStatus {
   PREPARING = "PREPARING",
 }
 
-export const DO_STATUS_LABELS: Record<DoStatus, string> = {
+export const doStatusLabels: Record<DoStatus, string> = {
   [DoStatus.NOT_EXPORTED]: "Chưa xuất",
   [DoStatus.PREPARING]: "Đang chuẩn bị",
 }

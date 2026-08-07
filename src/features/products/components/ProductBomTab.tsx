@@ -9,14 +9,14 @@ import { DeleteBomItemDialog } from "@/features/products/components/DeleteBomIte
 import { ProductBomTable } from "@/features/products/components/ProductBomTable"
 import { useProductBom } from "@/features/products/hooks/use-product-bom"
 import {
-  productBomQueryOptions,
-  productOperationsQueryOptions,
+  itemBomQueryOptions,
+  itemOperationsQueryOptions,
 } from "@/features/products/api/options"
-import type { Product } from "@/lib/types/product.type"
+import type { Item } from "@/lib/types/item.type"
 import type { BomItem, BomItemDialogState } from "@/lib/types/bom-item.type"
 
 type ProductBomTabProps = {
-  product: Product
+  product: Item
 }
 
 // Centered wrapper for the tab's error state.
@@ -34,8 +34,8 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
 
   const closeDialog = () => setDialog({ mode: "closed" })
 
-  const bomQuery = useQuery(productBomQueryOptions(product.id))
-  const operationsQuery = useQuery(productOperationsQueryOptions(product.id))
+  const bomQuery = useQuery(itemBomQueryOptions(product.id))
+  const operationsQuery = useQuery(itemOperationsQueryOptions(product.id))
 
   const { createItem, updateItem, deleteItem, isSaving } = useProductBom(
     product.id,

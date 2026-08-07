@@ -1,13 +1,19 @@
-import { useSearch } from "@tanstack/react-router"
+import { Link, useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { Plus, UserRound } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/Surface"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
-import { UsersTable } from "@/features/users/components/UsersTable"
+import { DataTable } from "@/components/shared/DataTable"
+import { userColumns } from "@/features/users/components/UsersTableColumns"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
 import { usersQueryOptions } from "@/features/users/api/options"
+
 export function UsersPage() {
   // useSearch keys off the file-based route id. The loader prefetched this query
   // for the first paint; the filtered list is a plain useQuery so filter/pagination
@@ -42,10 +48,28 @@ export function UsersPage() {
               onRetry={() => void usersQuery.refetch()}
             />
           ) : (
-            <UsersTable
+            <DataTable
               rows={usersQuery.data.data}
+              columns={userColumns}
               pagination={usersQuery.data.pagination}
               isPending={usersQuery.isFetching}
+              emptyState={
+                <TableEmptyState
+                  icon={UserRound}
+                  title="Chưa có nhân sự nào"
+                  description="Bắt đầu bằng cách thêm nhân sự đầu tiên vào hệ thống."
+                  action={
+                    <PermissionGate permission="users:create">
+                      <Button asChild size="sm" className="text-xs">
+                        <Link to="/manage/users/create">
+                          <Plus className="size-4" />
+                          Thêm nhân sự
+                        </Link>
+                      </Button>
+                    </PermissionGate>
+                  }
+                />
+              }
             />
           )}
         </Surface>

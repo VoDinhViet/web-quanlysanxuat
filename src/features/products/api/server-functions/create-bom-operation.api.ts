@@ -28,7 +28,7 @@ function resolveCreateBomOperationErrorMessage(error: unknown): string {
 }
 
 const createBomOperationInputSchema = createProductOperationSchema.extend({
-  productId: z.uuid(),
+  itemId: z.uuid(),
   bomItemId: z.uuid(),
   sortOrder: z.number().int().min(0),
 })
@@ -37,9 +37,9 @@ export const createBomOperation = createServerFn({ method: "POST" })
   .validator(createBomOperationInputSchema)
   .handler(async ({ data }): Promise<void> => {
     try {
-      const { productId, bomItemId, ...rest } = data
+      const { itemId, bomItemId, ...rest } = data
       await http.post(
-        `/api/items/${productId}/bom/items/${bomItemId}/operations`,
+        `/api/items/${itemId}/bom/items/${bomItemId}/operations`,
         rest
       )
     } catch (error) {

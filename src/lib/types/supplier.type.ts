@@ -6,7 +6,7 @@ export enum SupplierStatus {
   STOPPED = "STOPPED",
 }
 
-export const SUPPLIER_STATUS_LABELS: Record<SupplierStatus, string> = {
+export const supplierStatusLabels: Record<SupplierStatus, string> = {
   [SupplierStatus.ACTIVE]: "Đang hoạt động",
   [SupplierStatus.PAUSED]: "Tạm ngưng",
   [SupplierStatus.STOPPED]: "Đã ngừng hợp tác",
@@ -18,7 +18,7 @@ export enum SupplierType {
   HOUSEHOLD = "HOUSEHOLD",
 }
 
-export const SUPPLIER_TYPE_LABELS: Record<SupplierType, string> = {
+export const supplierTypeLabels: Record<SupplierType, string> = {
   [SupplierType.INDIVIDUAL]: "Cá nhân",
   [SupplierType.COMPANY]: "Công ty",
   [SupplierType.HOUSEHOLD]: "Hộ kinh doanh",
@@ -29,7 +29,7 @@ export enum PaymentMethod {
   BANK_TRANSFER = "BANK_TRANSFER",
 }
 
-export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+export const paymentMethodLabels: Record<PaymentMethod, string> = {
   [PaymentMethod.CASH]: "Tiền mặt",
   [PaymentMethod.BANK_TRANSFER]: "Chuyển khoản",
 }
@@ -41,7 +41,7 @@ export enum PaymentTerm {
   NET_60 = "NET_60",
 }
 
-export const PAYMENT_TERM_LABELS: Record<PaymentTerm, string> = {
+export const paymentTermLabels: Record<PaymentTerm, string> = {
   [PaymentTerm.IMMEDIATE]: "Thanh toán ngay",
   [PaymentTerm.NET_15]: "Net 15 ngày",
   [PaymentTerm.NET_30]: "Net 30 ngày",

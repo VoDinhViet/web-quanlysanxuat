@@ -20,7 +20,7 @@ import type { Supplier } from "@/lib/types/supplier.type"
 // flattened to its primary (or first) entry — the form only has flat
 // representativeName/representativePhone fields today (a known gap, see the
 // update-page plan), so anything beyond one representative isn't editable yet.
-function buildSupplierDefaultValues(supplier: Supplier): UpdateSupplierSchema {
+function getSupplierDefaultValues(supplier: Supplier): UpdateSupplierSchema {
   const { payment } = supplier
   const primaryRepresentative =
     supplier.representatives.find((rep) => rep.isPrimary) ??
@@ -82,7 +82,7 @@ export function UpdateSupplierForm({ supplier }: UpdateSupplierFormProps) {
   })
 
   const form = useAppForm({
-    defaultValues: buildSupplierDefaultValues(supplier),
+    defaultValues: getSupplierDefaultValues(supplier),
     validators: {
       onSubmit: updateSupplierSchema,
     },

@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
-import { PRODUCTION_ORDER_LOG_ACTION_LABELS } from "@/lib/types/production-order.type"
+import { productionOrderLogActionLabels } from "@/lib/types/production-order.type"
 import type { ProductionOrderLog } from "@/lib/types/production-order.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 import { cn } from "@/lib/utils"
@@ -86,7 +86,7 @@ export function ProductionOrderLogsCard({
                   </TableCell>
                   <TableCell>{log.performer?.username ?? "Hệ thống"}</TableCell>
                   <TableCell>
-                    {PRODUCTION_ORDER_LOG_ACTION_LABELS[log.action]}
+                    {productionOrderLogActionLabels[log.action]}
                   </TableCell>
                   <TableCell>{log.content}</TableCell>
                 </TableRow>

@@ -8,10 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { DeleteSupplierDialog } from "@/features/suppliers/components/DeleteSupplierDialog"
-import {
-  SUPPLIER_STATUS_LABELS,
-  SupplierStatus,
-} from "@/lib/types/supplier.type"
+import { supplierStatusLabels, SupplierStatus } from "@/lib/types/supplier.type"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Supplier } from "@/lib/types/supplier.type"
 
@@ -137,7 +134,7 @@ export const supplierColumns = [
 
       return (
         <Badge variant="outline" className={statusStyles[status]}>
-          {SUPPLIER_STATUS_LABELS[status]}
+          {supplierStatusLabels[status]}
         </Badge>
       )
     },

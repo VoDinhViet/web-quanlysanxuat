@@ -18,10 +18,7 @@ import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-o
 import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
 import { currencyFormatter } from "@/lib/currency"
 import type { Currency } from "@/lib/types/order.type"
-import {
-  ORDER_ITEM_STATUS_LABELS,
-  OrderItemStatus,
-} from "@/lib/types/order.type"
+import { orderItemStatusLabels, OrderItemStatus } from "@/lib/types/order.type"
 import { roundMoney } from "@/lib/utils"
 
 // Client-side estimate only, mirroring the backend's `recalculateTotals`
@@ -142,11 +139,11 @@ export const UpdateOrderItemsSection = withForm({
                           <TableCell>
                             {item.status === OrderItemStatus.CANCELLED ? (
                               <span className="text-destructive">
-                                {ORDER_ITEM_STATUS_LABELS[item.status]}
+                                {orderItemStatusLabels[item.status]}
                               </span>
                             ) : (
                               <span className="text-success">
-                                {ORDER_ITEM_STATUS_LABELS[item.status]}
+                                {orderItemStatusLabels[item.status]}
                               </span>
                             )}
                           </TableCell>

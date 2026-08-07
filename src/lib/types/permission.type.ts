@@ -48,6 +48,11 @@ export const PERMISSION_CODES = [
   "suppliers:update",
   "suppliers:delete",
 
+  "inventory:read",
+  "inventory:create",
+  "inventory:update",
+  "inventory:delete",
+
   "purchase-requests:read",
 ] as const
 

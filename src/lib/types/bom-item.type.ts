@@ -14,7 +14,7 @@ export enum BomItemType {
   MATERIAL = "MATERIAL",
 }
 
-export const BOM_ITEM_TYPE_LABELS: Record<BomItemType, string> = {
+export const bomItemTypeLabels: Record<BomItemType, string> = {
   [BomItemType.PRODUCT]: "Sản phẩm",
   [BomItemType.MATERIAL]: "Vật tư",
 }
@@ -25,7 +25,7 @@ export const BOM_ITEM_TYPE_LABELS: Record<BomItemType, string> = {
  *  routing). The root FG/WIP item itself is never a `bom_items` row. */
 export type BomNodeItemType = "WIP" | "RM"
 
-export const BOM_NODE_ITEM_TYPE_LABELS: Record<BomNodeItemType, string> = {
+export const bomNodeItemTypeLabels: Record<BomNodeItemType, string> = {
   WIP: "Bán thành phẩm",
   RM: "Vật tư",
 }

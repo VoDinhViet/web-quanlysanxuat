@@ -24,11 +24,11 @@ import {
   ProductTypeBadge,
 } from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
-import type { Product } from "@/lib/types/product.type"
+import type { Item } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"
 
 type ProductDetailSidebarProps = {
-  product: Product
+  product: Item
 }
 
 // Keeps the product's key facts, image and documents in view while the user
@@ -106,7 +106,7 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
       </SidebarSection>
 
       <SidebarSection title="Hình ảnh sản phẩm" icon={Gallery} padded>
-        {/* One image today — `Product.image` is a single file. The multi-image
+        {/* One image today — `Item.image` is a single file. The multi-image
             gallery in the mockup arrives with its backend in a later phase. */}
         <ProductImagePreview image={product.image} name={product.name} />
       </SidebarSection>

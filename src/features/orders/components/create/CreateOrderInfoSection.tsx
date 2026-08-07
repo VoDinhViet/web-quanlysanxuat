@@ -8,14 +8,14 @@ import { OrderContactSelect } from "@/features/orders/components/OrderContactSel
 import { exchangeRateQueryOptions } from "@/features/orders/api/options"
 import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
 import {
-  CURRENCY_LABELS,
+  currencyLabels,
   Currency,
-  PAYMENT_TERM_LABELS,
+  paymentTermLabels,
 } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const CURRENCY_OPTIONS = buildOptionsFromLabels(CURRENCY_LABELS)
-const PAYMENT_TERM_OPTIONS = buildOptionsFromLabels(PAYMENT_TERM_LABELS)
+const currencyOptions = buildOptionsFromLabels(currencyLabels)
+const paymentTermOptions = buildOptionsFromLabels(paymentTermLabels)
 
 // Auto-fills a starting rate on a non-VND currency pick (GET open.er-api.com
 // via get-exchange-rate.api.ts), but the field stays editable — this only
@@ -194,7 +194,7 @@ export const CreateOrderInfoSection = withForm({
               <field.SelectField
                 label="Điều khoản thanh toán"
                 placeholder="Chọn điều khoản"
-                options={PAYMENT_TERM_OPTIONS}
+                options={paymentTermOptions}
                 disabled={disabled}
               />
             )}
@@ -205,7 +205,7 @@ export const CreateOrderInfoSection = withForm({
               <field.SelectField
                 label="Tiền tệ"
                 required
-                options={CURRENCY_OPTIONS}
+                options={currencyOptions}
                 disabled={disabled}
               />
             )}

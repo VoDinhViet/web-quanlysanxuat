@@ -9,7 +9,7 @@ import {
   LOW_STOCK_MATERIALS,
   OVERDUE_JOBS,
 } from "@/features/manage/mock/manage-dashboard.mock"
-import { JOB_STATUS_LABELS, JobStatus } from "@/lib/types/manage.type"
+import { jobStatusLabels, JobStatus } from "@/lib/types/manage.type"
 
 const jobStatusStyles: Record<JobStatus, string> = {
   [JobStatus.IN_PROGRESS]:
@@ -54,7 +54,7 @@ export function ManageProductionRow() {
             </TableCell>
             <TableCell>
               <Badge variant="outline" className={jobStatusStyles[job.status]}>
-                {JOB_STATUS_LABELS[job.status]}
+                {jobStatusLabels[job.status]}
               </Badge>
             </TableCell>
           </TableRow>

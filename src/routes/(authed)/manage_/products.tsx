@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { ProductsPage } from "@/features/products/pages/ProductsPage"
-import { productsQueryOptions } from "@/features/products/api/options"
+import { itemsQueryOptions } from "@/features/products/api/options"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/(authed)/manage_/products")({
   loader: ({ context, location }) =>
     Promise.all([
       context.queryClient.ensureQueryData(
-        productsQueryOptions(productsSearchSchema.parse(location.search))
+        itemsQueryOptions(productsSearchSchema.parse(location.search))
       ),
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),

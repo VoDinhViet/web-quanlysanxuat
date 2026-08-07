@@ -1,50 +1,30 @@
-import { useNavigate, useSearch } from "@tanstack/react-router"
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { useSearch } from "@tanstack/react-router"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/TableQueryError"
-import { ProductionJobsTable } from "@/features/production-jobs/components/ProductionJobsTable"
+import { Factory } from "lucide-react"
+
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
+import { DataTable } from "@/components/shared/DataTable"
+import { productionJobColumns } from "@/features/production-jobs/components/ProductionJobsTableColumns"
 import { ProductionJobsTableFilter } from "@/features/production-jobs/components/ProductionJobsTableFilter"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
-import { clientOptionsQueryOptions } from "@/features/clients/api"
-import type { ProductionJobsSearchSchema } from "@/features/production-jobs/schemas/production-jobs-search.schema"
 
 export function ProductionJobsPage() {
-  // useSearch keys off the file-based route id; useNavigate's `from` keys off the
-  // resolved URL path instead — the two intentionally differ. The loader
-  // prefetched both queries; the client reference list resolves synchronously via
-  // useSuspenseQuery, while the filtered list is a plain useQuery so filter/
-  // pagination changes only update the table, not the whole route.
+  // useSearch keys off the file-based route id. The loader prefetched this
+  // query; it's a plain useQuery so filter/pagination changes only update the
+  // table, not the whole route. The filter reads/writes this same route
+  // search itself (its own useSearch/useNavigate) and fetches its own
+  // reference options, rather than through props.
   const search = useSearch({ from: "/(authed)/manage_/production-jobs" })
-  const navigate = useNavigate({ from: "/manage/production-jobs" })
 
   const productionJobsQuery = useQuery({
     ...productionJobsQueryOptions(search),
     placeholderData: keepPreviousData,
   })
-  const { data: clientOptions } = useSuspenseQuery(
-    clientOptionsQueryOptions("")
-  )
-
-  // `replace` is for the search box: it commits on every debounced keystroke, and
-  // pushing each one would bury the pre-search page under a dozen history entries.
-  // Discrete filters (the selects, the combobox, the date range) stay on push so
-  // Back undoes them one by one.
-  const handleFilterChange = (
-    patch: Partial<ProductionJobsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => {
-    void navigate({
-      search: (prev) => ({ ...prev, ...patch, page: 1 }),
-      replace: options?.replace,
-    })
-  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -60,11 +40,7 @@ export function ProductionJobsPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <ProductionJobsTableFilter
-            search={search}
-            onFilterChange={handleFilterChange}
-            clientOptions={clientOptions}
-          />
+          <ProductionJobsTableFilter />
 
           {productionJobsQuery.isPending ? (
             <TableQueryLoading rows={search.limit} />
@@ -74,10 +50,21 @@ export function ProductionJobsPage() {
               onRetry={() => void productionJobsQuery.refetch()}
             />
           ) : (
-            <ProductionJobsTable
+            <DataTable
               rows={productionJobsQuery.data.data}
+              columns={productionJobColumns}
               pagination={productionJobsQuery.data.pagination}
               isPending={productionJobsQuery.isFetching}
+              emptyState={
+                // No action button — a Job is created automatically when its
+                // LSX (production order) is approved, never by hand from this
+                // screen.
+                <TableEmptyState
+                  icon={Factory}
+                  title="Chưa có Job nào"
+                  description="Job được tạo tự động khi Lệnh sản xuất (LSX) được duyệt."
+                />
+              }
             />
           )}
         </Surface>

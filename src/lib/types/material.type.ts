@@ -8,7 +8,7 @@ export enum MaterialType {
   CLIENT = "CLIENT",
 }
 
-export const MATERIAL_TYPE_LABELS: Record<MaterialType, string> = {
+export const materialTypeLabels: Record<MaterialType, string> = {
   [MaterialType.INTERNAL]: "Nội bộ",
   [MaterialType.CLIENT]: "Khách hàng",
 }
@@ -18,7 +18,7 @@ export enum MaterialStatus {
   INACTIVE = "INACTIVE",
 }
 
-export const MATERIAL_STATUS_LABELS: Record<MaterialStatus, string> = {
+export const materialStatusLabels: Record<MaterialStatus, string> = {
   [MaterialStatus.ACTIVE]: "Đang sử dụng",
   [MaterialStatus.INACTIVE]: "Ngừng sử dụng",
 }

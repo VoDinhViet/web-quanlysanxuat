@@ -15,19 +15,19 @@ import { ProductBomTab } from "@/features/products/components/ProductBomTab"
 import { ProductMaterialsTab } from "@/features/products/components/ProductMaterialsTab"
 import { ProductInfoTab } from "@/features/products/components/ProductInfoTab"
 import { updateProductSchema } from "@/features/products/schemas/update-product.schema"
-import { PRODUCT_DETAIL_TABS } from "@/features/products/schemas/product-detail-search.schema"
-import { updateProduct } from "@/features/products/api/server-functions/update-product.api"
-import { productQueryOptions } from "@/features/products/api/options"
+import { productDetailTabSchema } from "@/features/products/schemas/product-detail-search.schema"
+import { updateItem } from "@/features/products/api/server-functions/update-item.api"
+import { itemQueryOptions } from "@/features/products/api/options"
 import { useAppForm } from "@/hooks/use-app-form"
 import { buildSelectOption } from "@/lib/utils"
 import type { UpdateProductSchema } from "@/features/products/schemas/update-product.schema"
-import type { Product } from "@/lib/types/product.type"
+import type { Item } from "@/lib/types/item.type"
 
-// Product → raw form values: nullable relations/text become "", the nested
+// Item → raw form values: nullable relations/text become "", the nested
 // unit/client refs collapse to their id for the selects.
-function buildProductDefaultValues(product: Product): UpdateProductSchema {
+function getProductDefaultValues(product: Item): UpdateProductSchema {
   return {
-    productId: product.id,
+    itemId: product.id,
     code: product.code,
     name: product.name,
     unitId: product.unit.id,
@@ -46,35 +46,34 @@ export function ProductDetailPage() {
   const { tab } = useSearch({ from: "/(authed)/manage_/products_/$productId" })
   const navigate = useNavigate({ from: "/manage/products/$productId" })
   const queryClient = useQueryClient()
-  const updateProductFn = useServerFn(updateProduct)
+  const updateItemFn = useServerFn(updateItem)
 
-  const { data: product } = useSuspenseQuery(productQueryOptions(productId))
+  const { data: product } = useSuspenseQuery(itemQueryOptions(productId))
 
   const { mutate: update, isPending } = useMutation({
-    mutationFn: (value: UpdateProductSchema) =>
-      updateProductFn({ data: value }),
+    mutationFn: (value: UpdateProductSchema) => updateItemFn({ data: value }),
     // Stay on the page: this is a multi-tab authoring screen, so saving one tab
     // is no reason to navigate away.
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã lưu thông tin sản phẩm")
     },
     onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
-    defaultValues: buildProductDefaultValues(product),
+    defaultValues: getProductDefaultValues(product),
     validators: { onSubmit: updateProductSchema },
     onSubmit: ({ value }) => update(value),
   })
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a
-  // cast, and an unrecognised value simply doesn't navigate.
+  // Radix widens onValueChange to `string`; safeParse narrows it back without
+  // a cast, and an unrecognised value simply doesn't navigate.
   const handleTabChange = (value: string) => {
-    const nextTab = PRODUCT_DETAIL_TABS.find((item) => item === value)
+    const nextTab = productDetailTabSchema.safeParse(value)
 
-    if (nextTab) {
-      void navigate({ search: { tab: nextTab } })
+    if (nextTab.success) {
+      void navigate({ search: { tab: nextTab.data } })
     }
   }
 
@@ -120,7 +119,7 @@ export function ProductDetailPage() {
                   />
                 </TabsContent>
 
-                <TabsContent value="structure" className="m-0 outline-none">
+                <TabsContent value="boms" className="m-0 outline-none">
                   <ProductBomTab product={product} />
                 </TabsContent>
 

@@ -6,11 +6,11 @@ import {
 import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
 import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
 import { currencyFormatter, vndFormatter } from "@/lib/currency"
-import { Currency, ORDER_DISCOUNT_TYPE_LABELS } from "@/lib/types/order.type"
+import { Currency, orderDiscountTypeLabels } from "@/lib/types/order.type"
 import type { OrderDiscountType } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const DISCOUNT_TYPE_OPTIONS = buildOptionsFromLabels(ORDER_DISCOUNT_TYPE_LABELS)
+const discountTypeOptions = buildOptionsFromLabels(orderDiscountTypeLabels)
 
 export const UpdateOrderTotalsSummary = withForm({
   defaultValues: updateOrderFormDefaultValues,
@@ -32,7 +32,7 @@ export const UpdateOrderTotalsSummary = withForm({
             {(field) => (
               <field.SelectField
                 label="Loại chiết khấu"
-                options={DISCOUNT_TYPE_OPTIONS}
+                options={discountTypeOptions}
                 disabled={disabled}
               />
             )}

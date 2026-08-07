@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { RotateCw, Search } from "lucide-react"
 
@@ -12,39 +13,28 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ComboboxField } from "@/components/shared/ComboboxField"
-import { DateRangeFilter } from "@/components/shared/DateRangeFilter"
+import { DateRangePicker } from "@/components/shared/DateRangePicker"
+import { FilterLabel } from "@/components/shared/FilterLabel"
 import { useGetClientOptions } from "@/features/clients/api"
-import { PRODUCTION_JOB_STATUS_LABELS } from "@/lib/types/production-job.type"
+import { productionJobStatusLabels } from "@/lib/types/production-job.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
-import type { ProductionJobsSearchSchema } from "@/features/production-jobs/schemas/production-jobs-search.schema"
-import type { ClientRef } from "@/lib/types/client.type"
 import type { ProductionJobStatus } from "@/lib/types/production-job.type"
 
-const ALL_VALUE = "all"
-
-const STATUS_FILTER_OPTIONS = [
-  { value: ALL_VALUE, label: "Tất cả" },
-  ...buildOptionsFromLabels(PRODUCTION_JOB_STATUS_LABELS),
+const statusFilterOptions = [
+  { value: "all", label: "Tất cả" },
+  ...buildOptionsFromLabels(productionJobStatusLabels),
 ]
 
-type ProductionJobsTableFilterProps = {
-  search: ProductionJobsSearchSchema
-  onFilterChange: (
-    patch: Partial<ProductionJobsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => void
-  clientOptions: ClientRef[]
-}
-
-export function ProductionJobsTableFilter({
-  search,
-  onFilterChange,
-  clientOptions,
-}: ProductionJobsTableFilterProps) {
+export function ProductionJobsTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/production-jobs" })
+  const navigate = useNavigate({ from: "/manage/production-jobs" })
   const [q, setQ] = useState(search.q ?? "")
 
+  // The route loader prefetches this hook's own q="" query, so `client.clients`
+  // already has data on first render — no separate suspense query needed just
+  // to seed the combobox's selected-label.
   const client = useGetClientOptions()
-  const selectedClient = clientOptions.find(
+  const selectedClient = client.clients.find(
     (option) => option.id === search.clientId
   )
 
@@ -53,23 +43,58 @@ export function ProductionJobsTableFilter({
   // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    onFilterChange(
-      { q: trimmed.length > 0 ? trimmed : undefined },
-      { replace: true }
-    )
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
   }, 300)
+
+  const handleClientChange = (value: string | undefined) => {
+    void navigate({
+      search: (prev) => ({ ...prev, clientId: value, page: 1 }),
+    })
+  }
+
+  const handleDateRangeChange = (range: {
+    from: string | undefined
+    to: string | undefined
+  }) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        dueDateFrom: range.from,
+        dueDateTo: range.to,
+        page: 1,
+      }),
+    })
+  }
+
+  const handleStatusChange = (value: string) => {
+    const status = value === "all" ? undefined : (value as ProductionJobStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
 
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
     handleSearch.cancel()
     setQ("")
-    onFilterChange({
-      q: undefined,
-      status: undefined,
-      clientId: undefined,
-      dueDateFrom: undefined,
-      dueDateTo: undefined,
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          status: _status,
+          clientId: _clientId,
+          dueDateFrom: _dueDateFrom,
+          dueDateTo: _dueDateTo,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
     })
   }
 
@@ -77,10 +102,11 @@ export function ProductionJobsTableFilter({
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)_minmax(16rem,1.6fr)_minmax(9rem,1fr)]">
-          <label className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <span className="sr-only">Tìm kiếm Job</span>
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <FilterLabel label="Tìm kiếm" htmlFor="production-jobs-search" />
             <div className="relative">
               <Input
+                id="production-jobs-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
                 placeholder="Tìm PO / Job / Mã SP / Tên SP..."
                 value={q}
@@ -97,15 +123,14 @@ export function ProductionJobsTableFilter({
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Khách hàng
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Khách hàng" htmlFor="production-jobs-client" />
             <ComboboxField
+              id="production-jobs-client"
               value={search.clientId}
-              onValueChange={(next) => onFilterChange({ clientId: next })}
+              onValueChange={handleClientChange}
               options={client.options}
               onSearchChange={client.onSearchChange}
               isPending={client.isFetching}
@@ -114,51 +139,42 @@ export function ProductionJobsTableFilter({
               placeholder="Tìm khách hàng..."
               className="text-xs"
             />
-          </label>
+          </div>
 
-          <div className="sm:col-span-2 xl:col-span-1">
-            <DateRangeFilter
-              idPrefix="production-jobs"
-              fromLabel="Ngày giao từ"
-              toLabel="Đến"
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <FilterLabel
+              label="Ngày giao"
+              htmlFor="production-jobs-date-range"
+            />
+            <DateRangePicker
+              id="production-jobs-date-range"
               from={search.dueDateFrom}
               to={search.dueDateTo}
-              onChange={(range) =>
-                onFilterChange({
-                  dueDateFrom: range.from,
-                  dueDateTo: range.to,
-                })
-              }
+              onChange={handleDateRangeChange}
             />
           </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Trạng thái
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Trạng thái" htmlFor="production-jobs-status" />
             <Select
-              value={search.status ?? ALL_VALUE}
-              onValueChange={(next) =>
-                onFilterChange({
-                  status:
-                    next === ALL_VALUE
-                      ? undefined
-                      : (next as ProductionJobStatus),
-                })
-              }
+              value={search.status ?? "all"}
+              onValueChange={handleStatusChange}
             >
-              <SelectTrigger className="w-full text-xs">
+              <SelectTrigger
+                id="production-jobs-status"
+                className="w-full text-xs"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {STATUS_FILTER_OPTIONS.map((option) => (
+                {statusFilterOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </label>
+          </div>
         </div>
 
         <Button

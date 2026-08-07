@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
@@ -13,44 +14,35 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ComboboxField } from "@/components/shared/ComboboxField"
+import { FilterLabel } from "@/components/shared/FilterLabel"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
+import { materialGroupOptionsQueryOptions } from "@/features/materials/api/options"
 import {
-  MATERIAL_STATUS_LABELS,
-  MATERIAL_TYPE_LABELS,
+  materialStatusLabels,
+  materialTypeLabels,
 } from "@/lib/types/material.type"
-import type { MaterialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
-import type { ClientRef } from "@/lib/types/client.type"
-import type {
-  MaterialGroupRef,
-  MaterialStatus,
-  MaterialType,
-} from "@/lib/types/material.type"
+import type { MaterialStatus, MaterialType } from "@/lib/types/material.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
 
-const TYPE_OPTIONS = buildOptionsFromLabels(MATERIAL_TYPE_LABELS)
-const STATUS_OPTIONS = buildOptionsFromLabels(MATERIAL_STATUS_LABELS)
+const typeOptions = buildOptionsFromLabels(materialTypeLabels)
+const statusOptions = buildOptionsFromLabels(materialStatusLabels)
 
-type MaterialsTableFilterProps = {
-  search: MaterialsSearchSchema
-  onFilterChange: (
-    patch: Partial<MaterialsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => void
-  materialGroupOptions: MaterialGroupRef[]
-  clientOptions: ClientRef[]
-}
+export function MaterialsTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/materials" })
+  const navigate = useNavigate({ from: "/manage/materials" })
 
-export function MaterialsTableFilter({
-  search,
-  onFilterChange,
-  materialGroupOptions,
-  clientOptions,
-}: MaterialsTableFilterProps) {
+  // The route loader already prefetches this — resolves synchronously off cache.
+  const { data: materialGroupOptions } = useSuspenseQuery(
+    materialGroupOptionsQueryOptions()
+  )
   const [q, setQ] = useState(search.q ?? "")
 
+  // The route loader prefetches this hook's own q="" query, so `client.clients`
+  // already has data on first render — no separate suspense query needed just
+  // to seed the combobox's selected-label.
   const client = useGetClientOptions()
-  const selectedClient = clientOptions.find(
+  const selectedClient = client.clients.find(
     (option) => option.id === search.clientId
   )
 
@@ -59,24 +51,57 @@ export function MaterialsTableFilter({
   // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    onFilterChange(
-      { q: trimmed.length > 0 ? trimmed : undefined },
-      { replace: true }
-    )
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
   }, 300)
+
+  const handleGroupChange = (value: string) => {
+    const materialGroupId = value === "all" ? undefined : value
+    void navigate({
+      search: (prev) => ({ ...prev, materialGroupId, page: 1 }),
+    })
+  }
+
+  const handleTypeChange = (value: string) => {
+    const type = value === "all" ? undefined : (value as MaterialType)
+    void navigate({ search: (prev) => ({ ...prev, type, page: 1 }) })
+  }
+
+  const handleClientChange = (value: string | undefined) => {
+    void navigate({
+      search: (prev) => ({ ...prev, clientId: value, page: 1 }),
+    })
+  }
+
+  const handleStatusChange = (value: string) => {
+    const status = value === "all" ? undefined : (value as MaterialStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
 
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
     handleSearch.cancel()
     setQ("")
-    onFilterChange({
-      q: undefined,
-      type: undefined,
-      materialGroupId: undefined,
-      clientId: undefined,
-      status: undefined,
-      order: undefined,
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          type: _type,
+          materialGroupId: _materialGroupId,
+          clientId: _clientId,
+          status: _status,
+          order: _order,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
     })
   }
 
@@ -84,10 +109,11 @@ export function MaterialsTableFilter({
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-4 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)]">
-          <label className="space-y-1.5 sm:col-span-4 lg:col-span-1">
-            <span className="sr-only">Tìm kiếm vật tư</span>
+          <div className="space-y-1.5 sm:col-span-4 lg:col-span-1">
+            <FilterLabel label="Tìm kiếm" htmlFor="materials-search" />
             <div className="relative">
               <Input
+                id="materials-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
                 placeholder="Tìm kiếm theo mã, tên vật tư..."
                 value={q}
@@ -104,21 +130,15 @@ export function MaterialsTableFilter({
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Nhóm vật tư
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Nhóm vật tư" htmlFor="materials-group" />
             <Select
               value={search.materialGroupId ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  materialGroupId: next === "all" ? undefined : next,
-                })
-              }
+              onValueChange={handleGroupChange}
             >
-              <SelectTrigger className="w-full text-xs">
+              <SelectTrigger id="materials-group" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -130,41 +150,34 @@ export function MaterialsTableFilter({
                 ))}
               </SelectContent>
             </Select>
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Loại vật tư
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Loại vật tư" htmlFor="materials-type" />
             <Select
               value={search.type ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  type: next === "all" ? undefined : (next as MaterialType),
-                })
-              }
+              onValueChange={handleTypeChange}
             >
-              <SelectTrigger className="w-full text-xs">
+              <SelectTrigger id="materials-type" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
-                {TYPE_OPTIONS.map((option) => (
+                {typeOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Khách hàng
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Khách hàng" htmlFor="materials-client" />
             <ComboboxField
+              id="materials-client"
               value={search.clientId}
-              onValueChange={(next) => onFilterChange({ clientId: next })}
+              onValueChange={handleClientChange}
               options={client.options}
               onSearchChange={client.onSearchChange}
               isPending={client.isFetching}
@@ -173,33 +186,27 @@ export function MaterialsTableFilter({
               placeholder="Tìm khách hàng..."
               className="text-xs"
             />
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Trạng thái
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Trạng thái" htmlFor="materials-status" />
             <Select
               value={search.status ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  status: next === "all" ? undefined : (next as MaterialStatus),
-                })
-              }
+              onValueChange={handleStatusChange}
             >
-              <SelectTrigger className="w-full text-xs">
+              <SelectTrigger id="materials-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
-                {STATUS_OPTIONS.map((option) => (
+                {statusOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </label>
+          </div>
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 
@@ -12,67 +12,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { ComboboxField } from "@/components/shared/ComboboxField"
-import { buildSelectOption } from "@/lib/utils"
+import { FilterLabel } from "@/components/shared/FilterLabel"
+import { PendingAction } from "@/components/shared/PendingAction"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
 import {
-  PRODUCT_STATUS_LABELS,
-  PRODUCT_TYPE_LABELS,
-  ProductStatus,
-  ProductType,
-} from "@/lib/types/product.type"
-import type { ProductsSearchSchema } from "@/features/products/schemas/products-search.schema"
-import type { ClientRef } from "@/lib/types/client.type"
+  itemStatusLabels,
+  itemTypeLabels,
+  ItemStatus,
+  ItemType,
+} from "@/lib/types/item.type"
+import { buildSelectOption } from "@/lib/utils"
 
-const STATUS_FILTER_OPTIONS: {
-  value: ProductStatus | "all"
+const statusFilterOptions: {
+  value: ItemStatus | "all"
   label: string
 }[] = [
   { value: "all", label: "Tất cả" },
-  { value: ProductStatus.ACTIVE, label: PRODUCT_STATUS_LABELS.ACTIVE },
-  { value: ProductStatus.INACTIVE, label: PRODUCT_STATUS_LABELS.INACTIVE },
+  { value: ItemStatus.ACTIVE, label: itemStatusLabels.ACTIVE },
+  { value: ItemStatus.INACTIVE, label: itemStatusLabels.INACTIVE },
 ]
 
-const TYPE_FILTER_OPTIONS: {
-  value: ProductType | "all"
+const typeFilterOptions: {
+  value: ItemType | "all"
   label: string
 }[] = [
   { value: "all", label: "Tất cả" },
   {
-    value: ProductType.FG,
-    label: PRODUCT_TYPE_LABELS.FG,
+    value: ItemType.FG,
+    label: itemTypeLabels.FG,
   },
   {
-    value: ProductType.WIP,
-    label: PRODUCT_TYPE_LABELS.WIP,
+    value: ItemType.WIP,
+    label: itemTypeLabels.WIP,
   },
 ]
 
-type ProductsTableFilterProps = {
-  search: ProductsSearchSchema
-  onFilterChange: (
-    patch: Partial<ProductsSearchSchema>,
-    options?: { replace?: boolean }
-  ) => void
-  clientOptions: ClientRef[]
-}
-
-export function ProductsTableFilter({
-  search,
-  onFilterChange,
-  clientOptions,
-}: ProductsTableFilterProps) {
+export function ProductsTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/products" })
+  const navigate = useNavigate({ from: "/manage/products" })
   const [q, setQ] = useState(search.q ?? "")
 
+  // The route loader prefetches this hook's own q="" query, so `client.clients`
+  // already has data on first render — no separate suspense query needed just
+  // to seed the combobox's selected-label.
   const client = useGetClientOptions()
-  const selectedClient = clientOptions.find(
+  const selectedClient = client.clients.find(
     (option) => option.id === search.clientId
   )
 
@@ -81,158 +68,163 @@ export function ProductsTableFilter({
   // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    onFilterChange(
-      { q: trimmed.length > 0 ? trimmed : undefined },
-      { replace: true }
-    )
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
   }, 300)
+
+  const handleClientChange = (value: string | undefined) => {
+    void navigate({
+      search: (prev) => ({ ...prev, clientId: value, page: 1 }),
+    })
+  }
+
+  const handleTypeChange = (value: string) => {
+    const type = value === "all" ? undefined : (value as ItemType)
+    void navigate({ search: (prev) => ({ ...prev, type, page: 1 }) })
+  }
+
+  const handleStatusChange = (value: string) => {
+    const status = value === "all" ? undefined : (value as ItemStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
 
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
     handleSearch.cancel()
     setQ("")
-    onFilterChange({
-      q: undefined,
-      type: undefined,
-      status: undefined,
-      clientId: undefined,
-      order: undefined,
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          type: _type,
+          status: _status,
+          clientId: _clientId,
+          order: _order,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
     })
   }
 
   return (
-    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)]">
-          <label className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-            <span className="sr-only">Tìm kiếm sản phẩm</span>
-            <div className="relative">
-              <Input
-                className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo mã, tên sản phẩm..."
-                value={q}
-                onChange={(event) => {
-                  setQ(event.target.value)
-                  handleSearch(event.target.value)
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
-                }}
-              />
-              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+    <TooltipProvider>
+      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)]">
+            <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
+              <FilterLabel label="Tìm kiếm" htmlFor="products-search" />
+              <div className="relative">
+                <Input
+                  id="products-search"
+                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                  placeholder="Tìm theo mã, tên sản phẩm..."
+                  value={q}
+                  onChange={(event) => {
+                    setQ(event.target.value)
+                    handleSearch(event.target.value)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault()
+                      handleSearch.flush()
+                    }
+                  }}
+                />
+                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
-          </label>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Khách hàng
-            </span>
-            <ComboboxField
-              value={search.clientId}
-              onValueChange={(next) => onFilterChange({ clientId: next })}
-              options={client.options}
-              onSearchChange={client.onSearchChange}
-              isPending={client.isFetching}
-              initialOption={buildSelectOption(selectedClient)}
-              emptyMessage="Không tìm thấy khách hàng"
-              placeholder="Tìm khách hàng..."
+            <div className="space-y-1.5">
+              <FilterLabel label="Khách hàng" htmlFor="products-client" />
+              <ComboboxField
+                id="products-client"
+                value={search.clientId}
+                onValueChange={handleClientChange}
+                options={client.options}
+                onSearchChange={client.onSearchChange}
+                isPending={client.isFetching}
+                initialOption={buildSelectOption(selectedClient)}
+                emptyMessage="Không tìm thấy khách hàng"
+                placeholder="Tìm khách hàng..."
+                className="text-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <FilterLabel label="Loại sản phẩm" htmlFor="products-type" />
+              <Select
+                value={search.type ?? "all"}
+                onValueChange={handleTypeChange}
+              >
+                <SelectTrigger id="products-type" className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {typeFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <FilterLabel label="Trạng thái" htmlFor="products-status" />
+              <Select
+                value={search.status ?? "all"}
+                onValueChange={handleStatusChange}
+              >
+                <SelectTrigger id="products-status" className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+            <PendingAction
+              label="Xuất Excel"
+              hint="Tính năng xuất Excel sắp có"
+            >
+              <Download className="size-4" />
+              Xuất Excel
+            </PendingAction>
+            <Button
+              type="button"
+              variant="outline"
               className="text-xs"
-            />
-          </label>
-
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Loại sản phẩm
-            </span>
-            <Select
-              value={search.type ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  type: next === "all" ? undefined : (next as ProductType),
-                })
-              }
+              onClick={resetFilters}
             >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {TYPE_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Trạng thái
-            </span>
-            <Select
-              value={search.status ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  status: next === "all" ? undefined : (next as ProductStatus),
-                })
-              }
-            >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-        </div>
-
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span tabIndex={0}>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="pointer-events-none text-xs"
-                    disabled
-                  >
-                    <Download className="size-4" />
-                    Xuất Excel
-                  </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>Tính năng xuất Excel sắp có</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <Button
-            type="button"
-            variant="outline"
-            className="text-xs"
-            onClick={resetFilters}
-          >
-            <RotateCw className="size-4" />
-            Làm mới
-          </Button>
-          <PermissionGate permission="items:create">
-            <Button asChild className="text-xs">
-              <Link to="/manage/products/create">
-                <Plus className="size-4" />
-                Thêm sản phẩm
-              </Link>
+              <RotateCw className="size-4" />
+              Làm mới
             </Button>
-          </PermissionGate>
+            <PermissionGate permission="items:create">
+              <Button asChild className="text-xs">
+                <Link to="/manage/products/create">
+                  <Plus className="size-4" />
+                  Thêm sản phẩm
+                </Link>
+              </Button>
+            </PermissionGate>
+          </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   )
 }

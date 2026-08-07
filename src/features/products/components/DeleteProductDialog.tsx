@@ -16,11 +16,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteProduct } from "@/features/products/api/server-functions/delete-product.api"
-import type { Product } from "@/lib/types/product.type"
+import { deleteItem } from "@/features/products/api/server-functions/delete-item.api"
+import type { Item } from "@/lib/types/item.type"
 
 type DeleteProductDialogProps = {
-  product: Product
+  product: Item
   trigger: ReactNode
 }
 
@@ -30,13 +30,13 @@ export function DeleteProductDialog({
 }: DeleteProductDialogProps) {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
-  const deleteProductFn = useServerFn(deleteProduct)
+  const deleteItemFn = useServerFn(deleteItem)
 
   const mutation = useMutation({
-    mutationFn: () => deleteProductFn({ data: { productId: product.id } }),
+    mutationFn: () => deleteItemFn({ data: { itemId: product.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
     },
   })
 

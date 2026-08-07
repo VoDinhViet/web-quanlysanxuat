@@ -35,7 +35,7 @@ import { ProductOperationsPanel } from "@/features/products/components/ProductOp
 import type { BomItem } from "@/lib/types/bom-item.type"
 import type { ProductOperation } from "@/lib/types/operation.type"
 import { formatOperationSequence } from "@/lib/types/operation.type"
-import type { Product } from "@/lib/types/product.type"
+import type { Item } from "@/lib/types/item.type"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 
@@ -230,7 +230,7 @@ function BomRowActions({
 }
 
 type ProductBomTableProps = {
-  product: Product
+  product: Item
   nodes: BomItem[]
   actions?: BomTableActions
   rootOperations: RootOperations
@@ -333,7 +333,7 @@ export function ProductBomTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* Product root row — "Cấp 0" */}
+            {/* Item root row — "Cấp 0" */}
             <TableRow className="h-14 bg-muted/10 hover:bg-muted/20">
               <TableCell className="font-mono font-bold text-foreground">
                 0

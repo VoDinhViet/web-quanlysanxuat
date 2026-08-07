@@ -3,6 +3,7 @@ import { useDebounceCallback } from "usehooks-ts"
 import { Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
+import { FilterLabel } from "@/components/shared/FilterLabel"
 
 type ProductMaterialsTableFilterProps = {
   q: string | undefined
@@ -24,10 +25,11 @@ export function ProductMaterialsTableFilter({
 
   return (
     <div className="bg-card px-4 py-4 lg:px-5">
-      <label className="block max-w-sm space-y-1.5">
-        <span className="sr-only">Tìm kiếm vật tư</span>
+      <div className="max-w-sm space-y-1.5">
+        <FilterLabel label="Tìm kiếm" htmlFor="product-materials-search" />
         <div className="relative">
           <Input
+            id="product-materials-search"
             className="pr-9 text-xs placeholder:text-muted-foreground/75"
             placeholder="Tìm kiếm theo mã, tên vật tư..."
             value={value}
@@ -44,7 +46,7 @@ export function ProductMaterialsTableFilter({
           />
           <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
         </div>
-      </label>
+      </div>
     </div>
   )
 }

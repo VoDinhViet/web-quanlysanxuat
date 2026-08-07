@@ -3,7 +3,7 @@ export enum ClientStatus {
   PAUSED = "PAUSED",
 }
 
-export const CLIENT_STATUS_LABELS: Record<ClientStatus, string> = {
+export const clientStatusLabels: Record<ClientStatus, string> = {
   [ClientStatus.ACTIVE]: "Hoạt động",
   [ClientStatus.PAUSED]: "Tạm ngưng",
 }

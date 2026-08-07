@@ -2,7 +2,7 @@ import type { BomItemType } from "@/lib/types/bom-item.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
-import type { ProductRef } from "@/lib/types/product.type"
+import type { ItemRef } from "@/lib/types/item.type"
 
 /** Mirrors the backend's real `production_jobs.status` column (`GET /production-jobs`,
  *  `GET /production-jobs/:jobId`). Rút còn 2 giá trị 2026-08-01 theo yêu cầu nghiệp vụ — không
@@ -13,11 +13,10 @@ export enum ProductionJobStatus {
   IN_PROGRESS = "IN_PROGRESS",
 }
 
-export const PRODUCTION_JOB_STATUS_LABELS: Record<ProductionJobStatus, string> =
-  {
-    [ProductionJobStatus.PENDING]: "Chưa SX",
-    [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
-  }
+export const productionJobStatusLabels: Record<ProductionJobStatus, string> = {
+  [ProductionJobStatus.PENDING]: "Chưa SX",
+  [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
+}
 
 /** Mirrors the backend's ProductionJobResDto — one row of `GET /production-jobs`, the "Quản lý
  *  sản xuất" screen. Split off from the detail shape 2026-07-31: the list only carries the columns
@@ -50,7 +49,7 @@ export type ProductionJobDetail = {
   // `orders.client_id`) — backend expose ở cả 2 chỗ; UI đọc field top-level này.
   client: OrderClientRef | null
   productId: string
-  product: ProductRef
+  product: ItemRef
   quantity: number
   status: ProductionJobStatus
   startedBy: string | null

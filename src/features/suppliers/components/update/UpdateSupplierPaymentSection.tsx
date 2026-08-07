@@ -1,13 +1,13 @@
 import { withForm } from "@/hooks/use-app-form"
 import { updateSupplierFormDefaultValues } from "@/features/suppliers/schemas/update-supplier.schema"
 import {
-  PAYMENT_METHOD_LABELS,
-  PAYMENT_TERM_LABELS,
+  paymentMethodLabels,
+  paymentTermLabels,
 } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const PAYMENT_METHOD_OPTIONS = buildOptionsFromLabels(PAYMENT_METHOD_LABELS)
-const PAYMENT_TERM_OPTIONS = buildOptionsFromLabels(PAYMENT_TERM_LABELS)
+const paymentMethodOptions = buildOptionsFromLabels(paymentMethodLabels)
+const paymentTermOptions = buildOptionsFromLabels(paymentTermLabels)
 
 export const UpdateSupplierPaymentSection = withForm({
   defaultValues: updateSupplierFormDefaultValues,
@@ -72,7 +72,7 @@ export const UpdateSupplierPaymentSection = withForm({
               <field.SelectField
                 label="Phương thức thanh toán mặc định"
                 placeholder="Chọn phương thức"
-                options={PAYMENT_METHOD_OPTIONS}
+                options={paymentMethodOptions}
                 disabled={disabled}
               />
             )}
@@ -83,7 +83,7 @@ export const UpdateSupplierPaymentSection = withForm({
               <field.SelectField
                 label="Điều khoản thanh toán mặc định"
                 placeholder="Chọn điều khoản"
-                options={PAYMENT_TERM_OPTIONS}
+                options={paymentTermOptions}
                 disabled={disabled}
               />
             )}

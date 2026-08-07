@@ -10,7 +10,7 @@ import { fileFieldSchema } from "@/lib/file-field.schema"
 // message, so it isn't duplicated client-side.
 export const createBomItemSchema = z.object({
   // The WIP/RM item this node links to — named apart from the owner scope's
-  // own `productId` (added by create-bom-item.api.ts) to avoid colliding
+  // own `rootItemId` (added by create-bom-item.api.ts) to avoid colliding
   // with it when the two schemas are merged.
   itemId: z.string().min(1, "Vui lòng chọn hạng mục"),
   quantity: z.string().refine((value) => {

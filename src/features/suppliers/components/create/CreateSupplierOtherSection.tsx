@@ -1,10 +1,10 @@
 import { withForm } from "@/hooks/use-app-form"
 import { SupplierAttachmentsField } from "@/features/suppliers/components/SupplierAttachmentsField"
 import { createSupplierFormDefaultValues } from "@/features/suppliers/schemas/create-supplier.schema"
-import { SUPPLIER_STATUS_LABELS } from "@/lib/types/supplier.type"
+import { supplierStatusLabels } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const STATUS_OPTIONS = buildOptionsFromLabels(SUPPLIER_STATUS_LABELS)
+const statusOptions = buildOptionsFromLabels(supplierStatusLabels)
 
 export const CreateSupplierOtherSection = withForm({
   defaultValues: createSupplierFormDefaultValues,
@@ -29,7 +29,7 @@ export const CreateSupplierOtherSection = withForm({
               <field.RadioPillField
                 label="Trạng thái"
                 required
-                options={STATUS_OPTIONS}
+                options={statusOptions}
                 disabled={disabled}
               />
             )}

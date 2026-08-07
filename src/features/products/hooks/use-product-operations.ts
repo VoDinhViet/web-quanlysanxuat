@@ -3,11 +3,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { toast } from "sonner"
 
 import { createBomOperation } from "@/features/products/api/server-functions/create-bom-operation.api"
-import { createProductOperation } from "@/features/products/api/server-functions/create-product-operation.api"
+import { createItemOperation } from "@/features/products/api/server-functions/create-item-operation.api"
 import { deleteBomOperation } from "@/features/products/api/server-functions/delete-bom-operation.api"
-import { deleteProductOperation } from "@/features/products/api/server-functions/delete-product-operation.api"
+import { deleteItemOperation } from "@/features/products/api/server-functions/delete-item-operation.api"
 import { updateBomOperation } from "@/features/products/api/server-functions/update-bom-operation.api"
-import { updateProductOperation } from "@/features/products/api/server-functions/update-product-operation.api"
+import { updateItemOperation } from "@/features/products/api/server-functions/update-item-operation.api"
 import type { ProductOperation } from "@/lib/types/operation.type"
 
 export type OperationsTarget = {
@@ -35,7 +35,7 @@ type SortOrderSwapPair = {
 
 function useCreateOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
-  const createProductFn = useServerFn(createProductOperation)
+  const createItemFn = useServerFn(createItemOperation)
   const createBomFn = useServerFn(createBomOperation)
 
   return useMutation({
@@ -43,7 +43,7 @@ function useCreateOperation(target: OperationsTarget) {
       if (target.bomItemId) {
         return createBomFn({
           data: {
-            productId: target.productId,
+            itemId: target.productId,
             bomItemId: target.bomItemId,
             operationId: input.operationId,
             sortOrder: input.sortOrder,
@@ -52,9 +52,9 @@ function useCreateOperation(target: OperationsTarget) {
         })
       }
 
-      return createProductFn({
+      return createItemFn({
         data: {
-          productId: target.productId,
+          itemId: target.productId,
           operationId: input.operationId,
           sortOrder: input.sortOrder,
           note: input.note,
@@ -62,7 +62,7 @@ function useCreateOperation(target: OperationsTarget) {
       })
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã thêm công đoạn thành công")
     },
     onError: (error) => toast.error(error.message),
@@ -71,7 +71,7 @@ function useCreateOperation(target: OperationsTarget) {
 
 function useUpdateOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
-  const updateProductFn = useServerFn(updateProductOperation)
+  const updateItemFn = useServerFn(updateItemOperation)
   const updateBomFn = useServerFn(updateBomOperation)
 
   return useMutation({
@@ -83,7 +83,7 @@ function useUpdateOperation(target: OperationsTarget) {
       if (target.bomItemId) {
         return updateBomFn({
           data: {
-            productId: target.productId,
+            itemId: target.productId,
             bomItemId: target.bomItemId,
             stepId: input.stepId,
             sortOrder: input.sortOrder,
@@ -92,9 +92,9 @@ function useUpdateOperation(target: OperationsTarget) {
         })
       }
 
-      return updateProductFn({
+      return updateItemFn({
         data: {
-          productId: target.productId,
+          itemId: target.productId,
           stepId: input.stepId,
           sortOrder: input.sortOrder,
           note: input.note,
@@ -102,7 +102,7 @@ function useUpdateOperation(target: OperationsTarget) {
       })
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã cập nhật công đoạn thành công")
     },
     onError: (error) => toast.error(error.message),
@@ -111,7 +111,7 @@ function useUpdateOperation(target: OperationsTarget) {
 
 function useMoveOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
-  const updateProductFn = useServerFn(updateProductOperation)
+  const updateItemFn = useServerFn(updateItemOperation)
   const updateBomFn = useServerFn(updateBomOperation)
 
   return useMutation({
@@ -121,7 +121,7 @@ function useMoveOperation(target: OperationsTarget) {
           if (target.bomItemId) {
             return updateBomFn({
               data: {
-                productId: target.productId,
+                itemId: target.productId,
                 bomItemId: target.bomItemId,
                 stepId: pair.stepId,
                 sortOrder: pair.sortOrder,
@@ -129,9 +129,9 @@ function useMoveOperation(target: OperationsTarget) {
             })
           }
 
-          return updateProductFn({
+          return updateItemFn({
             data: {
-              productId: target.productId,
+              itemId: target.productId,
               stepId: pair.stepId,
               sortOrder: pair.sortOrder,
             },
@@ -139,7 +139,7 @@ function useMoveOperation(target: OperationsTarget) {
         })
       ),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
     },
     onError: (error) => toast.error(error.message),
   })
@@ -147,7 +147,7 @@ function useMoveOperation(target: OperationsTarget) {
 
 function useDeleteOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
-  const deleteProductFn = useServerFn(deleteProductOperation)
+  const deleteItemFn = useServerFn(deleteItemOperation)
   const deleteBomFn = useServerFn(deleteBomOperation)
 
   return useMutation({
@@ -155,22 +155,22 @@ function useDeleteOperation(target: OperationsTarget) {
       if (target.bomItemId) {
         return deleteBomFn({
           data: {
-            productId: target.productId,
+            itemId: target.productId,
             bomItemId: target.bomItemId,
             stepId,
           },
         })
       }
 
-      return deleteProductFn({
+      return deleteItemFn({
         data: {
-          productId: target.productId,
+          itemId: target.productId,
           stepId,
         },
       })
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã xoá công đoạn thành công")
     },
     onError: (error) => toast.error(error.message),

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { startProductionJob } from "@/features/production-jobs/api/server-functions/start-production-job.api"
 import {
-  PRODUCTION_JOB_STATUS_LABELS,
+  productionJobStatusLabels,
   ProductionJobStatus,
 } from "@/lib/types/production-job.type"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
@@ -65,8 +65,8 @@ export function StartProductionJobDialog({
           <AlertDialogTitle>Xác nhận sản xuất Job này?</AlertDialogTitle>
           <AlertDialogDescription>
             Job {job.code} sẽ chuyển sang trạng thái "
-            {PRODUCTION_JOB_STATUS_LABELS[ProductionJobStatus.IN_PROGRESS]}".
-            Sau khi xác nhận, không thể quay lại trạng thái trước đó.
+            {productionJobStatusLabels[ProductionJobStatus.IN_PROGRESS]}". Sau
+            khi xác nhận, không thể quay lại trạng thái trước đó.
           </AlertDialogDescription>
         </AlertDialogHeader>
 

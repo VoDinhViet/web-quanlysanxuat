@@ -3,8 +3,8 @@ import type { LucideIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
-  MATERIAL_STATUS_LABELS,
-  MATERIAL_TYPE_LABELS,
+  materialStatusLabels,
+  materialTypeLabels,
   MaterialStatus,
   MaterialType,
 } from "@/lib/types/material.type"
@@ -35,7 +35,7 @@ export function MaterialTypeBadge({ type, className }: MaterialTypeBadgeProps) {
   return (
     <Badge variant="outline" className={cn(typeStyles[type], className)}>
       <Icon className="size-3" />
-      {MATERIAL_TYPE_LABELS[type]}
+      {materialTypeLabels[type]}
     </Badge>
   )
 }
@@ -70,7 +70,7 @@ export function MaterialStatusBadge({
   return (
     <Badge variant="outline" className={cn(badge, className)}>
       <span className={cn("size-1.5 rounded-full", dot)} />
-      {MATERIAL_STATUS_LABELS[status]}
+      {materialStatusLabels[status]}
     </Badge>
   )
 }

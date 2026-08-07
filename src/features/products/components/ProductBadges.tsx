@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge"
-import { BOM_NODE_ITEM_TYPE_LABELS } from "@/lib/types/bom-item.type"
+import { bomNodeItemTypeLabels } from "@/lib/types/bom-item.type"
 import type { BomNodeItemType } from "@/lib/types/bom-item.type"
 import {
-  PRODUCT_STATUS_LABELS,
-  PRODUCT_TYPE_LABELS,
-  ProductStatus,
-  ProductType,
-} from "@/lib/types/product.type"
+  itemStatusLabels,
+  ItemStatus,
+  ItemType,
+  itemTypeLabels,
+} from "@/lib/types/item.type"
 import { cn } from "@/lib/utils"
 
 type StatusBadgeStyle = {
@@ -14,19 +14,19 @@ type StatusBadgeStyle = {
   dot: string
 }
 
-const statusStyles: Record<ProductStatus, StatusBadgeStyle> = {
-  [ProductStatus.ACTIVE]: {
+const statusStyles: Record<ItemStatus, StatusBadgeStyle> = {
+  [ItemStatus.ACTIVE]: {
     badge: "bg-success/10 text-success",
     dot: "bg-success",
   },
-  [ProductStatus.INACTIVE]: {
+  [ItemStatus.INACTIVE]: {
     badge: "bg-muted text-muted-foreground",
     dot: "bg-muted-foreground/50",
   },
 }
 
 type ProductStatusBadgeProps = {
-  status: ProductStatus
+  status: ItemStatus
   className?: string
 }
 
@@ -39,25 +39,25 @@ export function ProductStatusBadge({
   return (
     <Badge variant="outline" className={cn(badge, className)}>
       <span className={cn("size-1.5 rounded-full", dot)} />
-      {PRODUCT_STATUS_LABELS[status]}
+      {itemStatusLabels[status]}
     </Badge>
   )
 }
 
-const typeStyles: Record<ProductType, string> = {
-  [ProductType.FG]: "bg-primary/10 text-primary",
-  [ProductType.WIP]: "bg-warning/10 text-warning",
+const typeStyles: Record<ItemType, string> = {
+  [ItemType.FG]: "bg-primary/10 text-primary",
+  [ItemType.WIP]: "bg-warning/10 text-warning",
 }
 
 type ProductTypeBadgeProps = {
-  type: ProductType
+  type: ItemType
   className?: string
 }
 
 export function ProductTypeBadge({ type, className }: ProductTypeBadgeProps) {
   return (
     <Badge variant="outline" className={cn(typeStyles[type], className)}>
-      {PRODUCT_TYPE_LABELS[type]}
+      {itemTypeLabels[type]}
     </Badge>
   )
 }
@@ -78,7 +78,7 @@ type BomNodeTypeBadgeProps = {
 export function BomNodeTypeBadge({ type, className }: BomNodeTypeBadgeProps) {
   return (
     <Badge variant="outline" className={cn(bomNodeTypeStyles[type], className)}>
-      {BOM_NODE_ITEM_TYPE_LABELS[type]}
+      {bomNodeItemTypeLabels[type]}
     </Badge>
   )
 }

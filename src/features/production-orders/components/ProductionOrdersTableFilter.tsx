@@ -1,7 +1,9 @@
 import { useState } from "react"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { Search } from "lucide-react"
+import { Download, Plus, RotateCw, Search } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -10,32 +12,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { DateRangeFilter } from "@/components/shared/DateRangeFilter"
-import { ProductionOrdersFilterActions } from "@/features/production-orders/components/ProductionOrdersFilterActions"
-import { PRODUCTION_ORDER_STATUS_LABELS } from "@/lib/types/production-order.type"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { DateRangePicker } from "@/components/shared/DateRangePicker"
+import { FilterLabel } from "@/components/shared/FilterLabel"
+import { PendingAction } from "@/components/shared/PendingAction"
+import { productionOrderStatusLabels } from "@/lib/types/production-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
-import type { ProductionOrdersSearchSchema } from "@/features/production-orders/schemas/production-orders-search.schema"
 import type { ProductionOrderStatus } from "@/lib/types/production-order.type"
 
-const ALL_VALUE = "all"
-
-const STATUS_FILTER_OPTIONS = [
-  { value: ALL_VALUE, label: "Tất cả" },
-  ...buildOptionsFromLabels(PRODUCTION_ORDER_STATUS_LABELS),
+const statusFilterOptions = [
+  { value: "all", label: "Tất cả" },
+  ...buildOptionsFromLabels(productionOrderStatusLabels),
 ]
 
-type ProductionOrdersTableFilterProps = {
-  search: ProductionOrdersSearchSchema
-  onFilterChange: (
-    patch: Partial<ProductionOrdersSearchSchema>,
-    options?: { replace?: boolean }
-  ) => void
-}
-
-export function ProductionOrdersTableFilter({
-  search,
-  onFilterChange,
-}: ProductionOrdersTableFilterProps) {
+export function ProductionOrdersTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/production-orders" })
+  const navigate = useNavigate({ from: "/manage/production-orders" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
@@ -43,98 +35,149 @@ export function ProductionOrdersTableFilter({
   // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    onFilterChange(
-      { q: trimmed.length > 0 ? trimmed : undefined },
-      { replace: true }
-    )
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
   }, 300)
+
+  const handleDateRangeChange = (range: {
+    from: string | undefined
+    to: string | undefined
+  }) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        dueDateFrom: range.from,
+        dueDateTo: range.to,
+        page: 1,
+      }),
+    })
+  }
+
+  const handleStatusChange = (value: string) => {
+    const status =
+      value === "all" ? undefined : (value as ProductionOrderStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
 
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
     handleSearch.cancel()
     setQ("")
-    onFilterChange({
-      q: undefined,
-      status: undefined,
-      dueDateFrom: undefined,
-      dueDateTo: undefined,
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          status: _status,
+          dueDateFrom: _dueDateFrom,
+          dueDateTo: _dueDateTo,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
     })
   }
 
   return (
-    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1.6fr)_minmax(16rem,1.6fr)_minmax(10rem,1fr)]">
-          <label className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <span className="sr-only">Tìm kiếm lệnh sản xuất</span>
-            <div className="relative">
-              <Input
-                className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo mã đơn hàng (SO)..."
-                value={q}
-                onChange={(event) => {
-                  setQ(event.target.value)
-                  handleSearch(event.target.value)
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
-                }}
+    <TooltipProvider>
+      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1.6fr)_minmax(16rem,1.6fr)_minmax(10rem,1fr)]">
+            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+              <FilterLabel
+                label="Tìm kiếm"
+                htmlFor="production-orders-search"
               />
-              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <div className="relative">
+                <Input
+                  id="production-orders-search"
+                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                  placeholder="Tìm theo mã đơn hàng (SO)..."
+                  value={q}
+                  onChange={(event) => {
+                    setQ(event.target.value)
+                    handleSearch(event.target.value)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault()
+                      handleSearch.flush()
+                    }
+                  }}
+                />
+                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
-          </label>
 
-          <div className="sm:col-span-2 xl:col-span-1">
-            <DateRangeFilter
-              idPrefix="production-orders"
-              fromLabel="Ngày giao từ"
-              toLabel="Đến"
-              from={search.dueDateFrom}
-              to={search.dueDateTo}
-              onChange={(range) =>
-                onFilterChange({
-                  dueDateFrom: range.from,
-                  dueDateTo: range.to,
-                })
-              }
-            />
+            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+              <FilterLabel
+                label="Ngày giao"
+                htmlFor="production-orders-date-range"
+              />
+              <DateRangePicker
+                id="production-orders-date-range"
+                from={search.dueDateFrom}
+                to={search.dueDateTo}
+                onChange={handleDateRangeChange}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <FilterLabel
+                label="Trạng thái"
+                htmlFor="production-orders-status"
+              />
+              <Select
+                value={search.status ?? "all"}
+                onValueChange={handleStatusChange}
+              >
+                <SelectTrigger
+                  id="production-orders-status"
+                  className="w-full text-xs"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Trạng thái
-            </span>
-            <Select
-              value={search.status ?? ALL_VALUE}
-              onValueChange={(next) =>
-                onFilterChange({
-                  status:
-                    next === ALL_VALUE
-                      ? undefined
-                      : (next as ProductionOrderStatus),
-                })
-              }
+          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+            <PendingAction
+              label="Xuất Excel"
+              hint="Tính năng xuất Excel sắp có"
             >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
+              <Download className="size-4" />
+              Xuất Excel
+            </PendingAction>
+            <Button
+              type="button"
+              variant="outline"
+              className="text-xs"
+              onClick={resetFilters}
+            >
+              <RotateCw className="size-4" />
+              Làm mới
+            </Button>
+            <PendingAction label="Tạo LSX" hint="Màn hình tạo LSX sắp có">
+              <Plus className="size-4" />
+              Tạo LSX
+            </PendingAction>
+          </div>
         </div>
-
-        <ProductionOrdersFilterActions onReset={resetFilters} />
       </div>
-    </div>
+    </TooltipProvider>
   )
 }

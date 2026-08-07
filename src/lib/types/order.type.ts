@@ -15,7 +15,7 @@ export enum OrderStatus {
   CANCELLED = "CANCELLED",
 }
 
-export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+export const orderStatusLabels: Record<OrderStatus, string> = {
   [OrderStatus.DRAFT]: "Nháp",
   [OrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận",
   [OrderStatus.AWAITING_PRODUCTION]: "Chờ sản xuất",
@@ -84,7 +84,7 @@ export enum PaymentTerm {
   NET_60 = "NET_60",
 }
 
-export const PAYMENT_TERM_LABELS: Record<PaymentTerm, string> = {
+export const paymentTermLabels: Record<PaymentTerm, string> = {
   [PaymentTerm.IMMEDIATE]: "TT ngay",
   [PaymentTerm.NET_15]: "TT 15 ngày",
   [PaymentTerm.NET_30]: "TT 30 ngày",
@@ -100,7 +100,7 @@ export enum Currency {
   KRW = "KRW",
 }
 
-export const CURRENCY_LABELS: Record<Currency, string> = {
+export const currencyLabels: Record<Currency, string> = {
   [Currency.VND]: "VND",
   [Currency.USD]: "USD",
   [Currency.EUR]: "EUR",
@@ -116,7 +116,7 @@ export enum OrderDiscountType {
   AMOUNT = "AMOUNT",
 }
 
-export const ORDER_DISCOUNT_TYPE_LABELS: Record<OrderDiscountType, string> = {
+export const orderDiscountTypeLabels: Record<OrderDiscountType, string> = {
   [OrderDiscountType.PERCENT]: "%",
   [OrderDiscountType.AMOUNT]: "Số tiền",
 }
@@ -128,7 +128,7 @@ export enum OrderItemStatus {
   CANCELLED = "CANCELLED",
 }
 
-export const ORDER_ITEM_STATUS_LABELS: Record<OrderItemStatus, string> = {
+export const orderItemStatusLabels: Record<OrderItemStatus, string> = {
   [OrderItemStatus.NORMAL]: "Bình thường",
   [OrderItemStatus.CANCELLED]: "Đã hủy",
 }
@@ -268,11 +268,6 @@ export type OrderStats = {
   completedPercentOfTotal: number
 }
 
-export type OrderFilterOption = {
-  id: string
-  name: string
-}
-
 export type DeliveryTone = "overdue" | "near-due" | "normal"
 
 // Days before dueDate at which the date turns orange. Presentation-only.
@@ -347,7 +342,7 @@ export type OrderMockPaymentRow = {
 
 export type OrderMockPaymentStatus = "unpaid" | "partially_paid" | "paid"
 
-export const ORDER_MOCK_PAYMENT_STATUS_LABELS: Record<
+export const orderMockPaymentStatusLabels: Record<
   OrderMockPaymentStatus,
   string
 > = {

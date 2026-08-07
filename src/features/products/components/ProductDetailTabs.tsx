@@ -21,7 +21,7 @@ type ProductDetailTabItem = {
 
 const PRODUCT_DETAIL_TAB_ITEMS: ProductDetailTabItem[] = [
   { value: "info", label: "Thông tin sản phẩm", icon: Box },
-  { value: "structure", label: "Cấu trúc & Công đoạn", icon: Layers },
+  { value: "boms", label: "Cấu trúc & Công đoạn", icon: Layers },
   {
     value: "materials",
     label: "Thành phần vật tư",

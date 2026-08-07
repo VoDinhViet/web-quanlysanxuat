@@ -16,7 +16,7 @@ import type { Material } from "@/lib/types/material.type"
 // Material → raw form values: nullable fields become "", specificWeight
 // (number | null on the wire, a Drizzle `numeric` column) becomes a string
 // for the text input.
-function buildMaterialDefaultValues(material: Material): UpdateMaterialSchema {
+function getMaterialDefaultValues(material: Material): UpdateMaterialSchema {
   return {
     materialId: material.id,
     name: material.name,
@@ -66,7 +66,7 @@ export function UpdateMaterialForm({ material }: UpdateMaterialFormProps) {
   })
 
   const form = useAppForm({
-    defaultValues: buildMaterialDefaultValues(material),
+    defaultValues: getMaterialDefaultValues(material),
     validators: {
       onSubmit: updateMaterialSchema,
     },

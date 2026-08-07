@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
@@ -12,34 +13,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { FilterLabel } from "@/components/shared/FilterLabel"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { SUPPLIER_STATUS_LABELS } from "@/lib/types/supplier.type"
-import type { SuppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
-import type {
-  CountryRef,
-  SupplierGroupRef,
-  SupplierStatus,
-} from "@/lib/types/supplier.type"
+import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
+import { countryOptionsQueryOptions } from "@/features/countries/api"
+import { supplierStatusLabels } from "@/lib/types/supplier.type"
+import type { SupplierStatus } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const STATUS_OPTIONS = buildOptionsFromLabels(SUPPLIER_STATUS_LABELS)
+const statusOptions = buildOptionsFromLabels(supplierStatusLabels)
 
-type SuppliersTableFilterProps = {
-  search: SuppliersSearchSchema
-  onFilterChange: (
-    patch: Partial<SuppliersSearchSchema>,
-    options?: { replace?: boolean }
-  ) => void
-  supplierGroupOptions: SupplierGroupRef[]
-  countryOptions: CountryRef[]
-}
+export function SuppliersTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/suppliers" })
+  const navigate = useNavigate({ from: "/manage/suppliers" })
 
-export function SuppliersTableFilter({
-  search,
-  onFilterChange,
-  supplierGroupOptions,
-  countryOptions,
-}: SuppliersTableFilterProps) {
+  // The route loader already prefetches both — resolves synchronously off cache.
+  const { data: supplierGroupOptions } = useSuspenseQuery(
+    supplierGroupOptionsQueryOptions()
+  )
+  const { data: countryOptions } = useSuspenseQuery(
+    countryOptionsQueryOptions()
+  )
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — the same delay the
@@ -47,23 +41,50 @@ export function SuppliersTableFilter({
   // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    onFilterChange(
-      { q: trimmed.length > 0 ? trimmed : undefined },
-      { replace: true }
-    )
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
   }, 300)
+
+  const handleStatusChange = (value: string) => {
+    const status = value === "all" ? undefined : (value as SupplierStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
+
+  const handleGroupChange = (value: string) => {
+    const supplierGroupId = value === "all" ? undefined : value
+    void navigate({
+      search: (prev) => ({ ...prev, supplierGroupId, page: 1 }),
+    })
+  }
+
+  const handleCountryChange = (value: string) => {
+    const countryId = value === "all" ? undefined : value
+    void navigate({ search: (prev) => ({ ...prev, countryId, page: 1 }) })
+  }
 
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
     handleSearch.cancel()
     setQ("")
-    onFilterChange({
-      q: undefined,
-      status: undefined,
-      supplierGroupId: undefined,
-      countryId: undefined,
-      order: undefined,
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          status: _status,
+          supplierGroupId: _supplierGroupId,
+          countryId: _countryId,
+          order: _order,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
     })
   }
 
@@ -71,10 +92,11 @@ export function SuppliersTableFilter({
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-4 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)]">
-          <label className="space-y-1.5 sm:col-span-4 lg:col-span-1">
-            <span className="sr-only">Tìm kiếm nhà cung cấp</span>
+          <div className="space-y-1.5 sm:col-span-4 lg:col-span-1">
+            <FilterLabel label="Tìm kiếm" htmlFor="suppliers-search" />
             <div className="relative">
               <Input
+                id="suppliers-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
                 placeholder="Tìm kiếm theo mã, tên, mã số thuế, người liên hệ..."
                 value={q}
@@ -91,47 +113,35 @@ export function SuppliersTableFilter({
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Trạng thái
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Trạng thái" htmlFor="suppliers-status" />
             <Select
               value={search.status ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  status: next === "all" ? undefined : (next as SupplierStatus),
-                })
-              }
+              onValueChange={handleStatusChange}
             >
-              <SelectTrigger className="w-full text-xs">
+              <SelectTrigger id="suppliers-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
-                {STATUS_OPTIONS.map((option) => (
+                {statusOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Nhóm NCC
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Nhóm NCC" htmlFor="suppliers-group" />
             <Select
               value={search.supplierGroupId ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  supplierGroupId: next === "all" ? undefined : next,
-                })
-              }
+              onValueChange={handleGroupChange}
             >
-              <SelectTrigger className="w-full text-xs">
+              <SelectTrigger id="suppliers-group" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -143,21 +153,15 @@ export function SuppliersTableFilter({
                 ))}
               </SelectContent>
             </Select>
-          </label>
+          </div>
 
-          <label className="space-y-1.5">
-            <span className="block text-[11px] font-medium text-muted-foreground">
-              Quốc gia
-            </span>
+          <div className="space-y-1.5">
+            <FilterLabel label="Quốc gia" htmlFor="suppliers-country" />
             <Select
               value={search.countryId ?? "all"}
-              onValueChange={(next) =>
-                onFilterChange({
-                  countryId: next === "all" ? undefined : next,
-                })
-              }
+              onValueChange={handleCountryChange}
             >
-              <SelectTrigger className="w-full text-xs">
+              <SelectTrigger id="suppliers-country" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -169,7 +173,7 @@ export function SuppliersTableFilter({
                 ))}
               </SelectContent>
             </Select>
-          </label>
+          </div>
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
