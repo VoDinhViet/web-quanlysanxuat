@@ -1,5 +1,7 @@
+import { Link } from "@tanstack/react-router"
 import { Eye, Pencil } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/DisabledAction"
 import { MissingFieldValue } from "@/components/shared/MissingFieldValue"
 import type { PurchaseRequestProductionOrderRef } from "@/lib/types/purchase-request.type"
@@ -25,14 +27,32 @@ export function PurchaseRequestSourceCell({
   )
 }
 
-// Both actions stay disabled: there is no detail route or write API yet (giai đoạn 1 chỉ có
-// GET /purchase-requests).
-export function PurchaseRequestActionsCell() {
+type PurchaseRequestActionsCellProps = {
+  purchaseRequestId: string
+}
+
+// "Xem chi tiết" now has a real route (dữ liệu mẫu, xem PurchaseRequestDetailPage) — "Chỉnh sửa"
+// stays disabled, there is still no write API (giai đoạn 1 chỉ có GET /purchase-requests).
+export function PurchaseRequestActionsCell({
+  purchaseRequestId,
+}: PurchaseRequestActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <DisabledAction label="Xem chi tiết">
-        <Eye className="size-3.5" />
-      </DisabledAction>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className="bg-background text-muted-foreground"
+        aria-label="Xem chi tiết"
+        asChild
+      >
+        <Link
+          to="/manage/purchase-requests/$purchaseRequestId"
+          params={{ purchaseRequestId }}
+        >
+          <Eye className="size-3.5" />
+        </Link>
+      </Button>
       <DisabledAction label="Chỉnh sửa">
         <Pencil className="size-3.5" />
       </DisabledAction>

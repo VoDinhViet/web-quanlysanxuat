@@ -35,7 +35,7 @@ export const purchaseRequestColumns = [
     cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
   purchaseRequestColumnHelper.accessor(
-    (row) => row.requester?.fullName ?? "—",
+    (row) => row.requesterBy?.fullName ?? "—",
     {
       id: "requester",
       header: "Người đề xuất",
@@ -72,6 +72,8 @@ export const purchaseRequestColumns = [
       headerClassName: "min-w-24 text-center",
       cellClassName: "font-normal",
     },
-    cell: () => <PurchaseRequestActionsCell />,
+    cell: ({ row }) => (
+      <PurchaseRequestActionsCell purchaseRequestId={row.original.id} />
+    ),
   }),
 ]

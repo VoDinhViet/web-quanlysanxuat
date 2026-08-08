@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
+import { NumericFormat } from "react-number-format"
 import type { ComponentProps } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -63,6 +64,66 @@ export function TextField({
         value={field.state.value ?? ""}
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
+        aria-invalid={isInvalid}
+        disabled={disabled}
+      />
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
+  )
+}
+
+type NumberFieldProps = {
+  label: string
+  required?: boolean
+  placeholder?: string
+  disabled?: boolean
+  className?: string
+  // See `TextFieldProps.id` — overrides the input id/label htmlFor.
+  id?: string
+  // Nhóm hàng nghìn kiểu vi-VN ("1.234,5") — tắt cho field luôn nhỏ hơn 1000 (VAT %, chiết
+  // khấu %), nơi nhóm không có tác dụng và chỉ thêm nhiễu mắt. Mặc định bật cho các field
+  // tiền (đơn giá, thành tiền, phí vận chuyển...).
+  thousandSeparator?: boolean
+}
+
+// Field value is still the plain numeric string the Zod schema expects (e.g. "1234.5") —
+// react-number-format only owns the *display* formatting; `onValueChange`'s `values.value` is
+// always unformatted (no grouping, "." decimal), so no extra parsing is needed before
+// `field.handleChange`.
+export function NumberField({
+  label,
+  required,
+  placeholder,
+  disabled,
+  className,
+  id,
+  thousandSeparator = true,
+}: NumberFieldProps) {
+  const field = useFieldContext<string | undefined>()
+  const inputId = id ?? field.name
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <Field className={className} data-invalid={isInvalid}>
+      <FieldLabel
+        htmlFor={inputId}
+        className="text-xs font-medium text-foreground"
+      >
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <NumericFormat
+        customInput={Input}
+        id={inputId}
+        name={field.name}
+        placeholder={placeholder}
+        className="h-9 bg-background text-xs"
+        value={field.state.value ?? ""}
+        thousandSeparator={thousandSeparator ? "." : undefined}
+        decimalSeparator=","
+        allowNegative={false}
+        onBlur={field.handleBlur}
+        onValueChange={(values) => field.handleChange(values.value)}
         aria-invalid={isInvalid}
         disabled={disabled}
       />
