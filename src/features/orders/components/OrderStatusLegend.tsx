@@ -1,13 +1,13 @@
 import { Info } from "lucide-react"
 
 import {
-  ORDER_BADGE_LABELS,
+  orderBadgeLabels,
   orderBadgeStyles,
 } from "@/features/orders/components/OrderBadges"
 import {
-  ORDER_STATUS_DESCRIPTIONS,
+  orderStatusDescriptions,
   OVERDUE_DESCRIPTION,
-  OVERDUE_FILTER_VALUE,
+  OVERDUE_TONE,
   OrderStatus,
 } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
@@ -15,19 +15,19 @@ import type { OrderBadgeTone } from "@/features/orders/components/OrderBadges"
 
 // Display order follows the table's typical flow rather than the enum order:
 // active states first, then the waiting states, then the exception.
-const LEGEND_TONES: OrderBadgeTone[] = [
+const legendTones: OrderBadgeTone[] = [
   OrderStatus.DRAFT,
   OrderStatus.PENDING_CONFIRMATION,
   OrderStatus.AWAITING_PRODUCTION,
   OrderStatus.IN_PROGRESS,
   OrderStatus.COMPLETED,
   OrderStatus.CANCELLED,
-  OVERDUE_FILTER_VALUE,
+  OVERDUE_TONE,
 ]
 
-const LEGEND_DESCRIPTIONS: Record<OrderBadgeTone, string> = {
-  ...ORDER_STATUS_DESCRIPTIONS,
-  [OVERDUE_FILTER_VALUE]: OVERDUE_DESCRIPTION,
+const legendDescriptions: Record<OrderBadgeTone, string> = {
+  ...orderStatusDescriptions,
+  [OVERDUE_TONE]: OVERDUE_DESCRIPTION,
 }
 
 export function OrderStatusLegend() {
@@ -39,7 +39,7 @@ export function OrderStatusLegend() {
       </h2>
 
       <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {LEGEND_TONES.map((tone) => (
+        {legendTones.map((tone) => (
           <div key={tone} className="min-w-0 space-y-1">
             <dt className="flex items-center gap-1.5 text-xs font-medium text-foreground">
               <span
@@ -48,10 +48,10 @@ export function OrderStatusLegend() {
                   orderBadgeStyles[tone].dot
                 )}
               />
-              {ORDER_BADGE_LABELS[tone]}
+              {orderBadgeLabels[tone]}
             </dt>
             <dd className="text-[11px] text-muted-foreground">
-              {LEGEND_DESCRIPTIONS[tone]}
+              {legendDescriptions[tone]}
             </dd>
           </div>
         ))}

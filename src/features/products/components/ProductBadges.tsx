@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
-import { bomNodeItemTypeLabels } from "@/lib/types/bom-item.type"
-import type { BomNodeItemType } from "@/lib/types/bom-item.type"
+import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
+import type { BomItemType } from "@/lib/types/bom-item.type"
 import {
   itemStatusLabels,
   ItemStatus,
@@ -62,13 +62,13 @@ export function ProductTypeBadge({ type, className }: ProductTypeBadgeProps) {
   )
 }
 
-const bomNodeTypeStyles: Record<BomNodeItemType, string> = {
+const bomNodeTypeStyles: Record<BomItemType, string> = {
   WIP: "bg-warning/10 text-warning",
   RM: "bg-info/10 text-info",
 }
 
 type BomNodeTypeBadgeProps = {
-  type: BomNodeItemType
+  type: BomItemType
   className?: string
 }
 
@@ -78,7 +78,7 @@ type BomNodeTypeBadgeProps = {
 export function BomNodeTypeBadge({ type, className }: BomNodeTypeBadgeProps) {
   return (
     <Badge variant="outline" className={cn(bomNodeTypeStyles[type], className)}>
-      {bomNodeItemTypeLabels[type]}
+      {bomItemTypeLabels[type]}
     </Badge>
   )
 }

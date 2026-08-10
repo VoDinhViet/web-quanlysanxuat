@@ -71,8 +71,8 @@ export const orderColumns = [
       )
     },
   }),
-  orderColumnHelper.accessor((row) => row.staff?.fullName ?? "—", {
-    id: "salesRep",
+  orderColumnHelper.accessor((row) => row.assignedUser?.fullName ?? "—", {
+    id: "assignedUser",
     header: "NV kinh doanh",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (

@@ -1,11 +1,7 @@
 import { DateTime } from "luxon"
 import { z } from "zod"
 
-import {
-  OVERDUE_FILTER_VALUE,
-  OrderStatus,
-  PaymentTerm,
-} from "@/lib/types/order.type"
+import { OrderStatus } from "@/lib/types/order.type"
 
 const isoDateFilter = z
   .string()
@@ -15,16 +11,16 @@ const isoDateFilter = z
   .optional()
   .catch(undefined)
 
+// The backend's GetOrdersReqDto has no `paymentTerm` or `overdue` filter and no `salesRepId`
+// (it's `assignedUserId`) — a URL carrying the old `status=OVERDUE`/`paymentTerm` params from
+// before this schema changed just falls through each field's own `.catch(undefined)` instead
+// of crashing.
 export const ordersSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
   q: z.string().trim().min(1).optional().catch(undefined),
-  status: z
-    .union([z.enum(OrderStatus), z.literal(OVERDUE_FILTER_VALUE)])
-    .optional()
-    .catch(undefined),
-  paymentTerm: z.enum(PaymentTerm).optional().catch(undefined),
-  salesRepId: z.string().trim().min(1).optional().catch(undefined),
+  status: z.enum(OrderStatus).optional().catch(undefined),
+  assignedUserId: z.string().trim().min(1).optional().catch(undefined),
   orderDateFrom: isoDateFilter,
   orderDateTo: isoDateFilter,
   order: z.enum(["ASC", "DESC"]).optional().catch(undefined),

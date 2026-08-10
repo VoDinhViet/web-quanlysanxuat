@@ -53,3 +53,14 @@ export function formatSignedAmount(amount: number, sign: "+" | "−"): string {
     ? `${sign}${currencyFormatter.format(amount)}`
     : currencyFormatter.format(0)
 }
+
+// Client-side estimate only, mirroring the backend's `recalculateTotals`
+// formula (round(quantity * unitPrice * (1 - discountPercent/100), 2)) — the
+// authoritative lineTotal comes back from the server after save.
+export function estimateLineTotal(item: OrderItemFormValue): number {
+  const quantity = Number(item.quantity) || 0
+  const unitPrice = Number(item.unitPrice) || 0
+  const discountPercent = Number(item.discountPercent) || 0
+
+  return roundMoney(quantity * unitPrice * (1 - discountPercent / 100))
+}

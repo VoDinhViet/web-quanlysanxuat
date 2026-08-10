@@ -62,7 +62,7 @@ export function ProductionJobMaterialsTable({
           ) : (
             rows.map((material, index) => (
               <TableRow
-                key={material.materialId ?? material.materialCode}
+                key={material.itemId ?? material.materialCode}
                 className="bg-card hover:bg-muted/20"
               >
                 <TableCell className="py-3 font-mono text-muted-foreground">

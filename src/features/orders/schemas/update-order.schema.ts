@@ -7,7 +7,6 @@ import {
   isNonNegativeNumberString,
   isPercentString,
   isPositiveNumberString,
-  optionalEmail,
   optionalEnumNullable,
   toIsoDate,
 } from "@/lib/zod-transforms"
@@ -28,24 +27,11 @@ import {
 // provided", so every optional field here transforms ""→null (an explicit clear) instead of
 // ""→undefined — see UpdateOrderReqDto's `nullable: true` fields on the backend. Also carries
 // `status`, which CreateOrderReqDto has no field for (the backend defaults a new order to
-// DRAFT).
+// DRAFT). No contact snapshot fields — see create-order.schema.ts's comment.
 export const updateOrderSchema = z.object({
   orderId: z.uuid(),
   clientId: z.string().trim().min(1, "Vui lòng chọn khách hàng"),
-  contactName: z
-    .string()
-    .trim()
-    .max(255, "Họ tên tối đa 255 ký tự")
-    .transform(emptyToNull),
-  contactPhone: z
-    .string()
-    .trim()
-    .max(30, "Số điện thoại tối đa 30 ký tự")
-    .transform(emptyToNull),
-  // optionalEmail() transforms ""→undefined; a PATCH needs an explicit null to actually
-  // clear the field (an omitted key means "leave unchanged"), so re-map the last step.
-  contactEmail: optionalEmail().transform((value) => value ?? null),
-  staffId: z.string().trim().transform(emptyToNull),
+  assignedUserId: z.string().trim().transform(emptyToNull),
   orderDate: z
     .string()
     .min(1, "Vui lòng chọn ngày đặt hàng")
@@ -109,10 +95,7 @@ export type UpdateOrderSchema = z.input<typeof updateOrderSchema>
 export const updateOrderFormDefaultValues: UpdateOrderSchema = {
   orderId: "",
   clientId: "",
-  contactName: "",
-  contactPhone: "",
-  contactEmail: "",
-  staffId: "",
+  assignedUserId: "",
   orderDate: "",
   dueDate: "",
   deliveryAddress: "",

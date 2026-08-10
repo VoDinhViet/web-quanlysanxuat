@@ -10,7 +10,7 @@ import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
 import { resolveMockPaymentStatus } from "@/features/orders/mock/order-detail.mock"
 import {
   orderMockPaymentStatusLabels,
-  OVERDUE_FILTER_VALUE,
+  OVERDUE_TONE,
   OrderStatus,
   paymentTermLabels,
   resolveDeliveryTone,
@@ -90,7 +90,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
                 </h2>
                 <OrderStatusBadge tone={order.status} />
                 {order.expired ? (
-                  <OrderStatusBadge tone={OVERDUE_FILTER_VALUE} />
+                  <OrderStatusBadge tone={OVERDUE_TONE} />
                 ) : null}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -111,24 +111,8 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <MetaField label="Khách hàng" value={order.client.name} />
             <MetaField
-              label="Người liên hệ"
-              value={
-                order.contactName ? (
-                  <>
-                    {order.contactName}
-                    {order.contactPhone ? (
-                      <>
-                        {" "}
-                        <span className="text-muted-foreground">
-                          · {order.contactPhone}
-                        </span>
-                      </>
-                    ) : null}
-                  </>
-                ) : (
-                  "—"
-                )
-              }
+              label="Điện thoại KH"
+              value={order.client.phoneNumber ?? "—"}
             />
             <MetaField
               label="Ngày đặt hàng"

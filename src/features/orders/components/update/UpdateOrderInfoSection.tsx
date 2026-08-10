@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react"
+import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
-import { OrderContactSelect } from "@/features/orders/components/OrderContactSelect"
 import { exchangeRateQueryOptions } from "@/features/orders/api/options"
+import { resolveExchangeRatePlaceholder } from "@/features/orders/resolve-exchange-rate-placeholder"
 import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
 import {
   currencyLabels,
@@ -34,12 +35,13 @@ const orderStatusOptions = buildOptionsFromLabels(orderStatusLabels).filter(
 // order's own saved rate (which seeds the ref on mount) is never overwritten
 // by a fetch, and neither is a value the user is mid-typing when a fetch
 // resolves. Built with `withForm` (not a plain component taking `form:
-// AnyFormApi`, like OrderContactSelect) because it needs `form.AppField`,
-// only available on the form's own bound type.
+// AnyFormApi`) because it needs `form.AppField`, only available on the
+// form's own bound type.
 const ExchangeRateField = withForm({
   defaultValues: updateOrderFormDefaultValues,
-  props: { currency: Currency.VND, disabled: false },
-  render: function Render({ form, currency, disabled }) {
+  props: { disabled: false },
+  render: function Render({ form, disabled }) {
+    const currency = useField({ form, name: "currency" }).state.value
     const { data: rate, isFetching } = useQuery({
       ...exchangeRateQueryOptions(currency),
       enabled: currency !== Currency.VND,
@@ -83,18 +85,13 @@ const ExchangeRateField = withForm({
       }
     }, [currency, rate, form])
 
-    const placeholder = isFetching
-      ? "Đang lấy tỷ giá..."
-      : rate === null
-        ? "Không lấy được tỷ giá, nhập tay"
-        : "0"
+    const placeholder = resolveExchangeRatePlaceholder(isFetching, rate)
 
     return (
       <form.AppField name="exchangeRate">
         {(field) => (
-          <field.TextField
+          <field.NumberField
             label={`Tỷ giá quy đổi (${currency === Currency.VND ? "so với VND" : "1 " + currency + " = ? VND"})`}
-            type="number"
             placeholder={placeholder}
             disabled={disabled}
           />
@@ -151,17 +148,7 @@ export const UpdateOrderInfoSection = withForm({
             )}
           </form.Field>
 
-          <form.Subscribe selector={(state) => state.values.clientId}>
-            {(clientId) => (
-              <OrderContactSelect
-                form={form}
-                clientId={clientId}
-                disabled={disabled}
-              />
-            )}
-          </form.Subscribe>
-
-          <form.AppField name="staffId">
+          <form.AppField name="assignedUserId">
             {(field) => (
               <field.SelectField
                 label="Nhân viên kinh doanh"
@@ -236,15 +223,7 @@ export const UpdateOrderInfoSection = withForm({
             )}
           </form.AppField>
 
-          <form.Subscribe selector={(state) => state.values.currency}>
-            {(currency) => (
-              <ExchangeRateField
-                form={form}
-                currency={currency}
-                disabled={disabled}
-              />
-            )}
-          </form.Subscribe>
+          <ExchangeRateField form={form} disabled={disabled} />
 
           <form.AppField name="note">
             {(field) => (

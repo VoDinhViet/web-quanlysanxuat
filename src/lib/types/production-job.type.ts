@@ -37,9 +37,9 @@ export type ProductionJob = {
 }
 
 /** Mirrors the backend's ProductionJobDetailResDto (`GET /production-jobs/:jobId`) — joins in
- *  the parent order, its client and the FG product (`OrderBaseResDto`/`ClientBaseResDto`/
- *  `ProductBaseResDto` server-side, 2026-08-01). `productionOrderId` has no matching LSX code on
- *  this endpoint — the detail screen links to the LSX by id instead of rendering its code. */
+ *  the parent order, its client and the FG item (`OrderBaseResDto`/`ClientBaseResDto`/
+ *  `ItemRefResDto` server-side). `productionOrderId` has no matching LSX code on this endpoint —
+ *  the detail screen links to the LSX by id instead of rendering its code. */
 export type ProductionJobDetail = {
   id: string
   code: string
@@ -48,8 +48,8 @@ export type ProductionJobDetail = {
   // Cùng một dòng `clients` với `order.client` (service leftJoin `clients` trên
   // `orders.client_id`) — backend expose ở cả 2 chỗ; UI đọc field top-level này.
   client: OrderClientRef | null
-  productId: string
-  product: ItemRef
+  itemId: string
+  item: ItemRef
   quantity: number
   status: ProductionJobStatus
   startedBy: string | null
@@ -99,11 +99,11 @@ export type ProductionJobBomItem = {
 
 /** Mirrors the backend's ProductionJobMaterialResDto (`GET /production-jobs/:jobId/materials`,
  *  paginated) — flat text snapshots off `production_job_materials`, independent of the live
- *  `materials`/`units` tables (`materialId` is a reference-only link, nullable). `issuedQty` has
+ *  `items`/`units` tables (`itemId` is a reference-only link, nullable). `issuedQty` has
  *  no equivalent here (no stock-issue linkage on this endpoint) — the tab renders that column as
  *  "Chưa có API" via MissingFieldValue. */
 export type ProductionJobMaterial = {
-  materialId: string | null
+  itemId: string | null
   materialCode: string
   materialName: string
   unitCode: string

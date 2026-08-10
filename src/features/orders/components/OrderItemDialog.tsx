@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Check } from "lucide-react"
+import { NumericFormat } from "react-number-format"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -19,9 +20,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
-import { useGetProductOptions } from "@/features/orders/hooks/use-get-product-options"
+import { useGetItemOptions } from "@/features/orders/hooks/use-get-item-options"
 import {
-  ORDER_ITEM_DEFAULT_VALUE,
+  orderItemDefaultValue,
   orderItemFormSchema,
 } from "@/features/orders/schemas/order-item-form.schema"
 import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
@@ -103,10 +104,10 @@ function OrderItemDialogForm({
   exchangeRate,
 }: OrderItemDialogFormProps) {
   const isEditing = initialValue !== null
-  const product = useGetProductOptions()
+  const item = useGetItemOptions()
 
   const form = useAppForm({
-    defaultValues: initialValue ?? ORDER_ITEM_DEFAULT_VALUE,
+    defaultValues: initialValue ?? orderItemDefaultValue,
     validators: {
       onSubmit: orderItemFormSchema,
     },
@@ -134,7 +135,7 @@ function OrderItemDialogForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <form.Field name="productId">
+          <form.Field name="itemId">
             {(field) => (
               <ComboboxField
                 id="order-item-product"
@@ -144,9 +145,9 @@ function OrderItemDialogForm({
                 value={field.state.value || undefined}
                 onValueChange={(next) => {
                   field.handleChange(next ?? "")
-                  const selected = product.products.find((p) => p.id === next)
-                  form.setFieldValue("productLabel", selected?.name ?? "")
-                  form.setFieldValue("productUnit", selected?.unit.name ?? "")
+                  const selected = item.items.find((p) => p.id === next)
+                  form.setFieldValue("itemLabel", selected?.name ?? "")
+                  form.setFieldValue("itemUnit", selected?.unit.name ?? "")
                 }}
                 onBlur={field.handleBlur}
                 isInvalid={
@@ -154,14 +155,14 @@ function OrderItemDialogForm({
                   field.state.meta.errors.length > 0
                 }
                 errors={field.state.meta.errors}
-                options={product.options}
-                onSearchChange={product.onSearchChange}
-                isPending={product.isFetching}
+                options={item.options}
+                onSearchChange={item.onSearchChange}
+                isPending={item.isFetching}
                 initialOption={
-                  initialValue?.productId
+                  initialValue
                     ? {
-                        value: initialValue.productId,
-                        label: initialValue.productLabel,
+                        value: initialValue.itemId,
+                        label: initialValue.itemLabel,
                       }
                     : undefined
                 }
@@ -174,19 +175,18 @@ function OrderItemDialogForm({
 
         <form.AppField name="quantity">
           {(field) => (
-            <field.TextField
+            <field.NumberField
               id="order-item-quantity"
               label="Số lượng"
               required
-              type="number"
               placeholder="0"
             />
           )}
         </form.AppField>
 
-        {/* Built manually (not `field.TextField`) to fit the live "≈ ... VND"
-            conversion hint below the input — the shared TextField has no slot
-            for it. Label/input/error otherwise mirror TextField exactly. */}
+        {/* Built manually (not `field.NumberField`) to fit the live "≈ ... VND"
+            conversion hint below the input — the shared NumberField has no slot
+            for it. Label/input/error otherwise mirror NumberField exactly. */}
         <form.AppField name="unitPrice">
           {(field) => {
             const isInvalid =
@@ -203,15 +203,18 @@ function OrderItemDialogForm({
                 >
                   {`Đơn giá (${currency})`}
                 </FieldLabel>
-                <Input
+                <NumericFormat
+                  customInput={Input}
                   id="order-item-unit-price"
                   name={field.name}
-                  type="number"
                   placeholder="0"
                   className="h-9 bg-background text-xs"
                   value={field.state.value}
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  allowNegative={false}
                   onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
+                  onValueChange={(values) => field.handleChange(values.value)}
                   aria-invalid={isInvalid}
                 />
                 {currency !== Currency.VND && (
@@ -227,11 +230,11 @@ function OrderItemDialogForm({
 
         <form.AppField name="discountPercent">
           {(field) => (
-            <field.TextField
+            <field.NumberField
               id="order-item-discount"
               label="Chiết khấu (%)"
-              type="number"
               placeholder="0"
+              thousandSeparator={false}
             />
           )}
         </form.AppField>

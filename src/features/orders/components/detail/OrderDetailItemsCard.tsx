@@ -86,18 +86,18 @@ export function OrderDetailItemsCard({ order }: OrderDetailItemsCardProps) {
                         <div className="min-w-0">
                           <Link
                             to="/manage/products/$productId"
-                            params={{ productId: item.product.id }}
+                            params={{ productId: item.item.id }}
                             search={{ tab: "info" }}
                             className="block truncate font-medium text-foreground hover:text-primary hover:underline"
                           >
-                            {item.product.name}
+                            {item.item.name}
                           </Link>
                           <p className="truncate font-mono text-[11px] text-muted-foreground">
-                            {item.product.code}
+                            {item.item.code}
                           </p>
                         </div>
                       </TableCell>
-                      <TableCell>{item.product.unit.name}</TableCell>
+                      <TableCell>{item.item.unit.name}</TableCell>
                       <TableCell className="text-right tabular-nums">
                         {quantityFormatter.format(item.quantity)}
                       </TableCell>

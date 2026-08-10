@@ -42,15 +42,12 @@ export function UpdateOrderForm({ order }: UpdateOrderFormProps) {
   // yyyy-MM-dd strings the date pickers work with. {zone:"utc"} is the exact inverse of
   // toIsoDate (which writes out midnight UTC) — without it, reading back in a negative
   // offset loses a day. `items`/`attachments` carry the UI-only display fields
-  // (productLabel/productUnit, file metadata) that orderItemFormSchema/the update server
+  // (itemLabel/itemUnit, file metadata) that orderItemFormSchema/the update server
   // function strip back out before the payload reaches the wire.
   const defaultValues: UpdateOrderSchema = {
     orderId: order.id,
     clientId: order.client.id,
-    contactName: order.contactName ?? "",
-    contactPhone: order.contactPhone ?? "",
-    contactEmail: order.contactEmail ?? "",
-    staffId: order.staff?.id ?? "",
+    assignedUserId: order.assignedUser?.id ?? "",
     orderDate: DateTime.fromISO(order.orderDate, { zone: "utc" }).toFormat(
       "yyyy-MM-dd"
     ),
@@ -69,9 +66,9 @@ export function UpdateOrderForm({ order }: UpdateOrderFormProps) {
     note: order.note ?? "",
     internalNote: order.internalNote ?? "",
     items: order.items.map((item) => ({
-      productId: item.product.id,
-      productLabel: item.product.name,
-      productUnit: item.product.unit.name,
+      itemId: item.item.id,
+      itemLabel: item.item.name,
+      itemUnit: item.item.unit.name,
       quantity: String(item.quantity),
       unitPrice: String(item.unitPrice),
       discountPercent: String(item.discountPercent),

@@ -121,7 +121,7 @@ export function buildMockPaymentHistory(
   seedFor(order)
   const orderDate = DateTime.fromISO(order.orderDate)
   const rowCount = order.status === OrderStatus.COMPLETED ? 2 : 1
-  const collectedBy = order.staff?.fullName ?? "Kế toán"
+  const collectedBy = order.assignedUser?.fullName ?? "Kế toán"
 
   return Array.from({ length: rowCount }, (_, index) => {
     const share = rowCount === 1 ? 1 : 0.5
@@ -156,18 +156,15 @@ const DELIVERY_TERMS = [
   "EXW - Nhà máy",
 ]
 
-// The client entity has no billing address/tax code on the wire yet
-// (`OrderClientRef` only carries id/code/name), and delivery terms (FOB/CIF/…)
-// aren't a real field either — this stands in for all 3 until the client API
-// grows those fields.
+// Delivery terms (FOB/CIF/…) aren't a real field on the wire yet — address/tax code now come
+// from `order.client` instead (the backend's ClientBaseResDto), so this only stands in for
+// `deliveryTerm`.
 export function buildMockClientProfile(
   order: OrderDetail
 ): OrderMockClientProfile {
   seedFor(order)
 
   return {
-    address: faker.location.streetAddress({ useFullAddress: true }),
-    taxCode: faker.string.numeric(10),
     deliveryTerm: faker.helpers.arrayElement(DELIVERY_TERMS),
   }
 }

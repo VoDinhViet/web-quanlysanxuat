@@ -28,11 +28,11 @@ import {
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
 import type { CreateBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
-import { bomNodeItemTypeLabels } from "@/lib/types/bom-item.type"
+import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import type {
   BomItem,
   BomItemDialogState,
-  BomNodeItemType,
+  BomItemType,
 } from "@/lib/types/bom-item.type"
 
 type BomItemFormDialogProps = {
@@ -98,7 +98,7 @@ function CreateBomItemForm({
     validators: { onSubmit: createBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
-  const [nodeType, setNodeType] = useState<BomNodeItemType>("WIP")
+  const [nodeType, setNodeType] = useState<BomItemType>("WIP")
   const productOptions = useGetBomProductOptions(nodeType)
 
   return (
@@ -128,7 +128,7 @@ function CreateBomItemForm({
           <Select
             value={nodeType}
             onValueChange={(next) => {
-              const nextType = next as BomNodeItemType
+              const nextType = next as BomItemType
               setNodeType(nextType)
               // The previously picked item no longer matches the new type's
               // option list — clear the selection instead of leaving a stale id.
@@ -139,8 +139,8 @@ function CreateBomItemForm({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="WIP">{bomNodeItemTypeLabels.WIP}</SelectItem>
-              <SelectItem value="RM">{bomNodeItemTypeLabels.RM}</SelectItem>
+              <SelectItem value="WIP">{bomItemTypeLabels.WIP}</SelectItem>
+              <SelectItem value="RM">{bomItemTypeLabels.RM}</SelectItem>
             </SelectContent>
           </Select>
         </label>

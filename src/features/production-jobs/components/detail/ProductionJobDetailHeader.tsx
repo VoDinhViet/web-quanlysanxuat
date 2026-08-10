@@ -55,11 +55,11 @@ export function ProductionJobDetailHeader({
               value={
                 <Link
                   to="/manage/products/$productId"
-                  params={{ productId: detail.productId }}
+                  params={{ productId: detail.itemId }}
                   search={{ tab: "info" }}
                   className="text-primary hover:underline"
                 >
-                  {detail.product.code} — {detail.product.name}
+                  {detail.item.code} — {detail.item.name}
                 </Link>
               }
             />

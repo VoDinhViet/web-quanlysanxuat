@@ -17,28 +17,15 @@ import { DateRangePicker } from "@/components/shared/DateRangePicker"
 import { FilterLabel } from "@/components/shared/FilterLabel"
 import { PendingAction } from "@/components/shared/PendingAction"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import {
-  orderStatusLabels,
-  OVERDUE_FILTER_VALUE,
-  OVERDUE_LABEL,
-  paymentTermLabels,
-} from "@/lib/types/order.type"
+import { orderStatusLabels } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
-import type { PaymentTerm } from "@/lib/types/order.type"
 
-// "Trễ hạn" sits in the same select as the real statuses because it is the same
-// question from the user's side ("show me which orders?"), even though the
-// server function sends it as a separate `overdue` flag.
+// No "Trễ hạn" entry — the backend's GetOrdersReqDto has no `overdue` filter, only the
+// `expired` flag on each row (see OrderStatusBadge for where that still shows up).
 const statusFilterOptions = [
   { value: "all", label: "Tất cả" },
   ...buildOptionsFromLabels(orderStatusLabels),
-  { value: OVERDUE_FILTER_VALUE, label: OVERDUE_LABEL },
-]
-
-const paymentTermFilterOptions = [
-  { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(paymentTermLabels),
 ]
 
 export function OrdersTableFilter() {
@@ -81,14 +68,9 @@ export function OrdersTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
-  const handlePaymentTermChange = (value: string) => {
-    const paymentTerm = value === "all" ? undefined : (value as PaymentTerm)
-    void navigate({ search: (prev) => ({ ...prev, paymentTerm, page: 1 }) })
-  }
-
-  const handleSalesRepChange = (value: string) => {
-    const salesRepId = value === "all" ? undefined : value
-    void navigate({ search: (prev) => ({ ...prev, salesRepId, page: 1 }) })
+  const handleAssignedUserChange = (value: string) => {
+    const assignedUserId = value === "all" ? undefined : value
+    void navigate({ search: (prev) => ({ ...prev, assignedUserId, page: 1 }) })
   }
 
   const resetFilters = () => {
@@ -101,8 +83,7 @@ export function OrdersTableFilter() {
         const {
           q: _q,
           status: _status,
-          paymentTerm: _paymentTerm,
-          salesRepId: _salesRepId,
+          assignedUserId: _assignedUserId,
           orderDateFrom: _orderDateFrom,
           orderDateTo: _orderDateTo,
           order: _order,
@@ -117,14 +98,14 @@ export function OrdersTableFilter() {
     <TooltipProvider>
       <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
+          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
             <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
               <FilterLabel label="Tìm kiếm" htmlFor="orders-search" />
               <div className="relative">
                 <Input
                   id="orders-search"
                   className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Tìm theo Mã SO, khách hàng, người liên hệ, SĐT..."
+                  placeholder="Tìm theo Mã SO..."
                   value={q}
                   onChange={(event) => {
                     setQ(event.target.value)
@@ -170,41 +151,22 @@ export function OrdersTableFilter() {
               </Select>
             </div>
 
-            <div className="space-y-1.5">
-              <FilterLabel
-                label="Điều khoản TT"
-                htmlFor="orders-payment-term"
-              />
-              <Select
-                value={search.paymentTerm ?? "all"}
-                onValueChange={handlePaymentTermChange}
-              >
-                <SelectTrigger
-                  id="orders-payment-term"
-                  className="w-full text-xs"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {paymentTermFilterOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* No backend endpoint exists for sales-rep options yet (confirmed:
-                no `salesRep` anywhere in be-quanlysanxuat/src) — the select stays
+            {/* No backend endpoint exists for assigned-user options yet (confirmed:
+                GET /api/users has no options endpoint) — the select stays
                 populated with only "Tất cả" until that ships. Not faked. */}
             <div className="space-y-1.5">
-              <FilterLabel label="NV kinh doanh" htmlFor="orders-sales-rep" />
+              <FilterLabel
+                label="NV kinh doanh"
+                htmlFor="orders-assigned-user"
+              />
               <Select
-                value={search.salesRepId ?? "all"}
-                onValueChange={handleSalesRepChange}
+                value={search.assignedUserId ?? "all"}
+                onValueChange={handleAssignedUserChange}
               >
-                <SelectTrigger id="orders-sales-rep" className="w-full text-xs">
+                <SelectTrigger
+                  id="orders-assigned-user"
+                  className="w-full text-xs"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

@@ -14,9 +14,10 @@ type OrderDetailInfoCardProps = {
 }
 
 // A dense 2-column record of order facts, matching the reference layout —
-// "Địa chỉ"/"Mã số thuế"/"Điều khoản giao hàng" have no backing field on
-// `OrderClientRef`/`OrderDetail` yet, so they're built from
-// buildMockClientProfile (order-detail-mock.ts) and flagged individually.
+// "Điều khoản giao hàng" has no backing field on `OrderDetail` yet, so it's
+// built from buildMockClientProfile (order-detail-mock.ts) and flagged.
+// "Địa chỉ"/"Mã số thuế"/"Điện thoại"/"Email" read off `order.client` — the
+// order itself no longer snapshots a contact (see order.type.ts's `Order`).
 export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
   const clientProfile = buildMockClientProfile(order)
 
@@ -26,11 +27,10 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
         <div className="space-y-3">
           <InfoRow label="Mã đơn hàng" value={order.code} />
           <InfoRow label="Khách hàng" value={order.client.name} />
-          <InfoRow label="Địa chỉ" value={clientProfile.address} isMock />
-          <InfoRow label="Mã số thuế" value={clientProfile.taxCode} isMock />
-          <InfoRow label="Người liên hệ" value={order.contactName ?? "—"} />
-          <InfoRow label="Điện thoại" value={order.contactPhone ?? "—"} />
-          <InfoRow label="Email" value={order.contactEmail ?? "—"} />
+          <InfoRow label="Địa chỉ" value={order.client.address ?? "—"} />
+          <InfoRow label="Mã số thuế" value={order.client.taxCode ?? "—"} />
+          <InfoRow label="Điện thoại" value={order.client.phoneNumber ?? "—"} />
+          <InfoRow label="Email" value={order.client.email ?? "—"} />
         </div>
 
         <div className="space-y-3">
@@ -59,7 +59,7 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
           />
           <InfoRow
             label="Nhân viên kinh doanh"
-            value={order.staff?.fullName ?? "—"}
+            value={order.assignedUser?.fullName ?? "—"}
           />
           <InfoRow
             label="Trạng thái"

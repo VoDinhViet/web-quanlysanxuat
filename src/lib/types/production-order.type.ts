@@ -1,7 +1,7 @@
 import type {
   OrderClientRef,
   OrderCreator,
-  OrderItemProductRef,
+  OrderItemRef,
   OrderRef,
 } from "@/lib/types/order.type"
 
@@ -44,7 +44,7 @@ export type ProductionOrder = {
  *  are a snapshot taken at that seed time, not recomputed live. */
 export type ProductionOrderDetailItem = {
   orderItemId: string
-  product: OrderItemProductRef
+  item: OrderItemRef
   // SL PO.
   orderQty: number
   // Tồn TP tại thời điểm duyệt PO.

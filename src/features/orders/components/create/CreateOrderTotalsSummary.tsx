@@ -1,13 +1,13 @@
+import { useField } from "@tanstack/react-form"
+
 import { withForm } from "@/hooks/use-app-form"
 import {
   computeOrderTotals,
   formatSignedAmount,
 } from "@/features/orders/order-totals"
 import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
-import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
 import { currencyFormatter, vndFormatter } from "@/lib/currency"
 import { Currency, orderDiscountTypeLabels } from "@/lib/types/order.type"
-import type { OrderDiscountType } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const discountTypeOptions = buildOptionsFromLabels(orderDiscountTypeLabels)
@@ -16,6 +16,8 @@ export const CreateOrderTotalsSummary = withForm({
   defaultValues: createOrderFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
+    const currencyField = useField({ form, name: "currency" })
+
     return (
       <div className="space-y-3">
         <div>
@@ -40,9 +42,8 @@ export const CreateOrderTotalsSummary = withForm({
 
           <form.AppField name="discountValue">
             {(field) => (
-              <field.TextField
+              <field.NumberField
                 label="Giá trị chiết khấu"
-                type="number"
                 placeholder="0"
                 disabled={disabled}
               />
@@ -51,29 +52,24 @@ export const CreateOrderTotalsSummary = withForm({
 
           <form.AppField name="vatPercent">
             {(field) => (
-              <field.TextField
+              <field.NumberField
                 label="Thuế VAT (%)"
-                type="number"
                 placeholder="0"
+                thousandSeparator={false}
                 disabled={disabled}
               />
             )}
           </form.AppField>
 
-          <form.Subscribe selector={(state) => state.values.currency}>
-            {(currency) => (
-              <form.AppField name="shippingFee">
-                {(field) => (
-                  <field.TextField
-                    label={`Phí vận chuyển (${currency})`}
-                    type="number"
-                    placeholder="0"
-                    disabled={disabled}
-                  />
-                )}
-              </form.AppField>
+          <form.AppField name="shippingFee">
+            {(field) => (
+              <field.NumberField
+                label={`Phí vận chuyển (${currencyField.state.value})`}
+                placeholder="0"
+                disabled={disabled}
+              />
             )}
-          </form.Subscribe>
+          </form.AppField>
         </div>
 
         <OrderTotalsPreview form={form} />
@@ -87,17 +83,17 @@ const OrderTotalsPreview = withForm({
   render: function Render({ form }) {
     return (
       <form.Subscribe
-        selector={(state) => [
-          state.values.items,
-          state.values.discountType,
-          state.values.discountValue,
-          state.values.vatPercent,
-          state.values.shippingFee,
-          state.values.currency,
-          state.values.exchangeRate,
-        ]}
+        selector={(state) => ({
+          items: state.values.items,
+          discountType: state.values.discountType,
+          discountValue: state.values.discountValue,
+          vatPercent: state.values.vatPercent,
+          shippingFee: state.values.shippingFee,
+          currency: state.values.currency,
+          exchangeRate: state.values.exchangeRate,
+        })}
       >
-        {([
+        {({
           items,
           discountType,
           discountValue,
@@ -105,10 +101,10 @@ const OrderTotalsPreview = withForm({
           shippingFee,
           currency,
           exchangeRate,
-        ]) => {
+        }) => {
           const totals = computeOrderTotals(
-            items as OrderItemFormValue[],
-            discountType as OrderDiscountType,
+            items,
+            discountType,
             Number(discountValue) || 0,
             Number(vatPercent) || 0,
             Number(shippingFee) || 0,
@@ -153,7 +149,7 @@ const OrderTotalsPreview = withForm({
                     {currencyFormatter.format(totals.total)}
                   </span>
                   <span className="text-xs font-medium text-muted-foreground">
-                    {currency as Currency}
+                    {currency}
                   </span>
                 </span>
               </div>

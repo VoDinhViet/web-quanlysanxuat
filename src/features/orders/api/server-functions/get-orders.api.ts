@@ -2,10 +2,9 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { ordersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
-import { OVERDUE_FILTER_VALUE } from "@/lib/types/order.type"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Order, OrderStatus, PaymentTerm } from "@/lib/types/order.type"
+import type { Order, OrderStatus } from "@/lib/types/order.type"
 import type { PaginatedResponse, SortOrder } from "@/lib/types/pagination.type"
 
 type OrdersQueryParams = {
@@ -13,42 +12,23 @@ type OrdersQueryParams = {
   limit: number
   q?: string
   status?: OrderStatus
-  overdue?: true
-  paymentTerm?: PaymentTerm
-  salesRepId?: string
+  assignedUserId?: string
   fromDate?: string
   toDate?: string
   order?: SortOrder
 }
 
-// "Trễ hạn" is one entry in the status select, but on the wire it is a separate
-// `overdue` flag rather than a `status` value. Empty `q` has to drop out
-// entirely too — the backend 422s on a present-but-empty `q` (see
-// get-client-options.ts). `orderDateFrom`/`orderDateTo` rename to `fromDate`/
-// `toDate` here — GetOrdersReqDto's field names, which filter on `dueDate`, not
-// `orderDate` (the URL param names stay as-is so existing shared links keep
-// working; only the wire shape changes).
-//
-// This transform hangs off a derived schema, NOT off `ordersSearchSchema`
-// itself: the route's validateSearch needs the raw shape so `useSearch()`
-// returns `status: "OVERDUE"` for the filter select to show the right option.
+// Empty `q` has to drop out entirely — the backend 422s on a present-but-empty `q` (see
+// get-client-options.ts). `orderDateFrom`/`orderDateTo` rename to `fromDate`/`toDate` here —
+// GetOrdersReqDto's field names, which filter on `dueDate`, not `orderDate` (the URL param
+// names stay as-is so existing shared links keep working; only the wire shape changes).
 const getOrdersParamsSchema = ordersSearchSchema.transform(
-  ({ status, q, orderDateFrom, orderDateTo, ...rest }): OrdersQueryParams =>
-    status === OVERDUE_FILTER_VALUE
-      ? {
-          ...rest,
-          q: q || undefined,
-          overdue: true,
-          fromDate: orderDateFrom,
-          toDate: orderDateTo,
-        }
-      : {
-          ...rest,
-          q: q || undefined,
-          status,
-          fromDate: orderDateFrom,
-          toDate: orderDateTo,
-        }
+  ({ q, orderDateFrom, orderDateTo, ...rest }): OrdersQueryParams => ({
+    ...rest,
+    q: q || undefined,
+    fromDate: orderDateFrom,
+    toDate: orderDateTo,
+  })
 )
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."

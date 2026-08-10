@@ -16,7 +16,7 @@ export const itemStatusLabels: Record<ItemStatus, string> = {
  *  sends/filters on — FG (thành phẩm) is a sellable end product and the root of
  *  its own BOM; WIP (bán thành phẩm) is referenced as a child node in another
  *  item's BOM tree. The backend's third value, RM (vật tư), is a different
- *  domain concept (see BomNodeItemType in bom-item.type.ts) and never appears
+ *  domain concept (see BomItemType in bom-item.type.ts) and never appears
  *  on an `Item`. */
 export enum ItemType {
   FG = "FG",

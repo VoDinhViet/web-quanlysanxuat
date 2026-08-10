@@ -33,7 +33,7 @@ function resolveCreateOrderErrorMessage(error: unknown): string {
       return "Khách hàng không tồn tại."
     case "order.error.staff_not_found":
       return "Nhân viên kinh doanh không tồn tại."
-    case "order.error.product_not_found":
+    case "order.error.item_not_found":
       return "Một sản phẩm trong đơn hàng không tồn tại."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."

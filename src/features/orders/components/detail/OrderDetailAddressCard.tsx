@@ -1,4 +1,4 @@
-import { Buildings2, MapPoint, Phone, User } from "@solar-icons/react"
+import { Buildings2, MapPoint, Phone } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
@@ -13,11 +13,6 @@ export function OrderDetailAddressCard({ order }: OrderDetailAddressCardProps) {
   return (
     <OrderDetailSectionCard icon={MapPoint} title="Địa chỉ giao hàng">
       <dl className="space-y-4">
-        <AddressRow
-          icon={User}
-          label="Người nhận"
-          value={order.contactName ?? "—"}
-        />
         <AddressRow
           icon={Buildings2}
           label="Công ty"
@@ -38,7 +33,7 @@ export function OrderDetailAddressCard({ order }: OrderDetailAddressCardProps) {
         <AddressRow
           icon={Phone}
           label="Điện thoại"
-          value={order.contactPhone ?? "—"}
+          value={order.client.phoneNumber ?? "—"}
         />
       </dl>
     </OrderDetailSectionCard>

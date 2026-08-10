@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useDebounceValue } from "usehooks-ts"
 
 import { itemOptionsQueryOptions } from "@/features/products/api/options"
-import type { BomNodeItemType } from "@/lib/types/bom-item.type"
+import type { BomItemType } from "@/lib/types/bom-item.type"
 
 // Server-searched options for the "add BOM item" picker, via
 // GET /api/items/options — only WIP (sub-assembly) or RM (vật tư) items may
@@ -11,7 +11,7 @@ import type { BomNodeItemType } from "@/lib/types/bom-item.type"
 // itself always filters ACTIVE. Debounces the typed term and maps the
 // `ItemRef` rows to the {value,label} pairs ComboboxField expects. Mirrors
 // use-get-client-options.
-export function useGetBomProductOptions(nodeType: BomNodeItemType) {
+export function useGetBomProductOptions(nodeType: BomItemType) {
   const [q, setQ] = useDebounceValue("", 300)
 
   const { data: options = [], isFetching } = useQuery({

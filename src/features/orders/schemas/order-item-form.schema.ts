@@ -20,12 +20,12 @@ import { OrderItemStatus } from "@/lib/types/order.type"
 // object-level transform below), so the create/update server functions never re-map a line
 // themselves.
 export const orderItemFormFields = {
-  productId: z.string().trim().min(1, "Vui lòng chọn sản phẩm"),
-  // UI-only — re-displayed in the items table without a second product fetch;
+  itemId: z.string().trim().min(1, "Vui lòng chọn sản phẩm"),
+  // UI-only — re-displayed in the items table without a second item fetch;
   // dropped by orderItemFormSchema's own transform below before the payload
   // reaches the create/update server function.
-  productLabel: z.string(),
-  productUnit: z.string(),
+  itemLabel: z.string(),
+  itemUnit: z.string(),
   quantity: z
     .string()
     .trim()
@@ -49,19 +49,19 @@ export const orderItemFormFields = {
   status: z.enum(OrderItemStatus),
 }
 
-// The object-level transform drops productLabel/productUnit from the OUTPUT
+// The object-level transform drops itemLabel/itemUnit from the OUTPUT
 // only — z.input (below) still sees them, so the row-editing state keeps
-// re-displaying the picked product without a second fetch.
+// re-displaying the picked item without a second fetch.
 export const orderItemFormSchema = z
   .object(orderItemFormFields)
-  .transform(({ productLabel, productUnit, ...item }) => item)
+  .transform(({ itemLabel, itemUnit, ...item }) => item)
 
 export type OrderItemFormValue = z.input<typeof orderItemFormSchema>
 
-export const ORDER_ITEM_DEFAULT_VALUE: OrderItemFormValue = {
-  productId: "",
-  productLabel: "",
-  productUnit: "",
+export const orderItemDefaultValue: OrderItemFormValue = {
+  itemId: "",
+  itemLabel: "",
+  itemUnit: "",
   quantity: "1",
   unitPrice: "0",
   discountPercent: "0",

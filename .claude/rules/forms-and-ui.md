@@ -12,6 +12,18 @@
   the shared field components in `src/components/shared/AppFormFields.tsx`. In
   `withForm` `props` defaults, type empty arrays with `[] as X[]` — a bare `[]`
   infers `never[]` and breaks the caller (a justified cast).
+- To read another field's live value from within the same form — a sibling section
+  needs `currency` to label its own input, a dialog needs the order's `currency` to
+  pass down — call `useField({ form, name })` (from `@tanstack/react-form`) right
+  where it's needed, rather than threading the value down as a prop or wrapping a
+  render in `form.Subscribe`. It keeps the field's real type (no literal-widening
+  surprises to work around) and avoids an extra render-prop layer. Reserve
+  `form.Subscribe` for form-level state (`canSubmit`, `isSubmitting`, see
+  `CreateOrderForm.tsx`) or when a single render genuinely needs several field values
+  at once (`OrderTotalsPreview` in `CreateOrderTotalsSummary.tsx`/
+  `UpdateOrderTotalsSummary.tsx`) — and there, have the selector return an **object**,
+  not a tuple: a tuple's elements get unified to one type, forcing a cast to pull a
+  specific field back out; an object keeps each field's own type.
 - Select options come from label maps via `buildOptionsFromLabels` or from
   `{id, name}` reference rows fetched in the route loader (`Promise.all` for several
   lists) — see `src/routes/(authed)/manage_/users_/create.tsx`.

@@ -2,30 +2,13 @@ import type { ProductOperation } from "@/lib/types/operation.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { Unit } from "@/lib/types/unit.type"
 
-/**
- * Snapshot-only now — `bom_items` (this file's `BomItem`) mirrors the
- * backend's live `ItemType` (`BomNodeItemType` below) for anything current.
- * This enum still mirrors the backend's older `BomItemType` DB enum for
- * `production-job.type.ts`, which snapshots a Job's BOM (and its itemType) at
- * approval time under the pre-items-merge names.
- */
-export enum BomItemType {
-  PRODUCT = "PRODUCT",
-  MATERIAL = "MATERIAL",
-}
-
-export const bomItemTypeLabels: Record<BomItemType, string> = {
-  [BomItemType.PRODUCT]: "Sản phẩm",
-  [BomItemType.MATERIAL]: "Vật tư",
-}
-
 /** Mirrors the backend's ItemType for a BOM node's linked entity — a node
  *  links to either a WIP (sub-assembly, can have its own children and
  *  routing) or an RM (raw-material leaf, always childless, never has
  *  routing). The root FG/WIP item itself is never a `bom_items` row. */
-export type BomNodeItemType = "WIP" | "RM"
+export type BomItemType = "WIP" | "RM"
 
-export const bomNodeItemTypeLabels: Record<BomNodeItemType, string> = {
+export const bomItemTypeLabels: Record<BomItemType, string> = {
   WIP: "Bán thành phẩm",
   RM: "Vật tư",
 }
@@ -40,7 +23,7 @@ export type BomItem = {
   parentId: string | null
   // Id of the linked WIP/RM item this node points to.
   itemId: string
-  itemType: BomNodeItemType
+  itemType: BomItemType
   code: string
   name: string
   image: FileResource | null

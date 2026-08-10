@@ -45,9 +45,9 @@ function ProductionOrderItemRow({
   return (
     <TableRow className="h-14 bg-card hover:bg-muted/25">
       <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-      <TableCell className="font-mono text-xs">{item.product.code}</TableCell>
+      <TableCell className="font-mono text-xs">{item.item.code}</TableCell>
       <TableCell className="font-medium text-foreground">
-        {item.product.name}
+        {item.item.name}
       </TableCell>
       <TableCell className="text-right tabular-nums">
         {quantityFormatter.format(item.orderQty)}
@@ -191,7 +191,7 @@ export const ProductionOrderItemsCard = withForm({
                                         field.state.meta.isTouched &&
                                         field.state.meta.errors.length > 0
                                       }
-                                      aria-label={`Số lượng sản xuất cho ${item.product.name}`}
+                                      aria-label={`Số lượng sản xuất cho ${item.item.name}`}
                                       className="h-8 w-24 text-right text-xs tabular-nums"
                                     />
                                     <FieldError

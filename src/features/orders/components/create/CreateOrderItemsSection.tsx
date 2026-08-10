@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useField } from "@tanstack/react-form"
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -14,23 +15,11 @@ import { IconButton } from "@/components/shared/IconButton"
 import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { withForm } from "@/hooks/use-app-form"
 import { OrderItemDialog } from "@/features/orders/components/OrderItemDialog"
+import { estimateLineTotal } from "@/features/orders/order-totals"
 import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
 import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
 import { currencyFormatter } from "@/lib/currency"
-import type { Currency } from "@/lib/types/order.type"
 import { orderItemStatusLabels, OrderItemStatus } from "@/lib/types/order.type"
-import { roundMoney } from "@/lib/utils"
-
-// Client-side estimate only, mirroring the backend's `recalculateTotals`
-// formula (round(quantity * unitPrice * (1 - discountPercent/100), 2)) — the
-// authoritative lineTotal comes back from the server after save.
-function estimateLineTotal(item: OrderItemFormValue): number {
-  const quantity = Number(item.quantity) || 0
-  const unitPrice = Number(item.unitPrice) || 0
-  const discountPercent = Number(item.discountPercent) || 0
-
-  return roundMoney(quantity * unitPrice * (1 - discountPercent / 100))
-}
 
 export const CreateOrderItemsSection = withForm({
   defaultValues: createOrderFormDefaultValues,
@@ -38,6 +27,8 @@ export const CreateOrderItemsSection = withForm({
   render: function Render({ form, disabled }) {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [editingIndex, setEditingIndex] = useState<number | null>(null)
+    const currencyField = useField({ form, name: "currency" })
+    const exchangeRateField = useField({ form, name: "exchangeRate" })
 
     return (
       <form.Field name="items" mode="array">
@@ -120,8 +111,8 @@ export const CreateOrderItemsSection = withForm({
                           <TableCell className="text-muted-foreground">
                             {index + 1}
                           </TableCell>
-                          <TableCell>{item.productLabel || "—"}</TableCell>
-                          <TableCell>{item.productUnit || "—"}</TableCell>
+                          <TableCell>{item.itemLabel || "—"}</TableCell>
+                          <TableCell>{item.itemUnit || "—"}</TableCell>
                           <TableCell className="text-right tabular-nums">
                             {item.quantity}
                           </TableCell>
@@ -196,23 +187,14 @@ export const CreateOrderItemsSection = withForm({
                 </Table>
               </div>
 
-              <form.Subscribe
-                selector={(state) => [
-                  state.values.currency,
-                  state.values.exchangeRate,
-                ]}
-              >
-                {([currency, exchangeRate]) => (
-                  <OrderItemDialog
-                    open={dialogOpen}
-                    onOpenChange={setDialogOpen}
-                    initialValue={editingItem}
-                    onSubmit={handleSubmit}
-                    currency={currency as Currency}
-                    exchangeRate={exchangeRate}
-                  />
-                )}
-              </form.Subscribe>
+              <OrderItemDialog
+                open={dialogOpen}
+                onOpenChange={setDialogOpen}
+                initialValue={editingItem}
+                onSubmit={handleSubmit}
+                currency={currencyField.state.value}
+                exchangeRate={exchangeRateField.state.value}
+              />
             </div>
           )
         }}

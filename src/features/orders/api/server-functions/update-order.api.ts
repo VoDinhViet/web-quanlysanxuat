@@ -6,7 +6,6 @@ import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import { OrderStatus } from "@/lib/types/order.type"
-import type { OrderDetail } from "@/lib/types/order.type"
 
 // Every field is already wire-ready by the time this runs — string->number mapping happens
 // field-by-field on updateOrderSchema, and the two UI-only item fields are already dropped
@@ -42,7 +41,7 @@ function resolveUpdateOrderErrorMessage(error: unknown): string {
       return "Khách hàng không tồn tại."
     case "order.error.staff_not_found":
       return "Nhân viên kinh doanh không tồn tại."
-    case "order.error.product_not_found":
+    case "order.error.item_not_found":
       return "Một sản phẩm trong đơn hàng không tồn tại."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."
@@ -55,15 +54,10 @@ function resolveUpdateOrderErrorMessage(error: unknown): string {
 
 export const updateOrder = createServerFn({ method: "POST" })
   .validator(updateOrderPayloadSchema)
-  .handler(async ({ data }): Promise<OrderDetail> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
       const { orderId, ...payload } = data
-      const response = await http.patch<OrderDetail>(
-        `/api/orders/${orderId}`,
-        payload
-      )
-
-      return response.data
+      await http.patch(`/api/orders/${orderId}`, payload)
     } catch (error) {
       logHttpError(error, "updateOrder")
 

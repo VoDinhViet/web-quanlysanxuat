@@ -7,7 +7,6 @@ import {
   isNonNegativeNumberString,
   isPercentString,
   isPositiveNumberString,
-  optionalEmail,
   optionalEnum,
   toIsoDate,
 } from "@/lib/zod-transforms"
@@ -23,23 +22,12 @@ import {
 // parsed value is already wire-ready — no separate mapping step. Deliberately shares no
 // field definitions with update-order.schema.ts: on a PATCH, an omitted key means "leave
 // unchanged" rather than "not provided", so the two flows need different empty-string
-// transforms (undefined here vs. null there) and must evolve independently.
+// transforms (undefined here vs. null there) and must evolve independently. No contact
+// snapshot fields — the backend dropped `contactName`/`contactPhone`/`contactEmail`; contact
+// info now reads through `clientId` instead (see order.type.ts's `OrderClientRef`).
 export const createOrderSchema = z.object({
   clientId: z.string().trim().min(1, "Vui lòng chọn khách hàng"),
-  // Snapshot strings, not a contactId FK — see order.type.ts. The "Người liên
-  // hệ" dropdown in CreateOrderInfoSection only pre-fills these; still editable.
-  contactName: z
-    .string()
-    .trim()
-    .max(255, "Họ tên tối đa 255 ký tự")
-    .transform(emptyToUndefined),
-  contactPhone: z
-    .string()
-    .trim()
-    .max(30, "Số điện thoại tối đa 30 ký tự")
-    .transform(emptyToUndefined),
-  contactEmail: optionalEmail(),
-  staffId: z.string().trim().transform(emptyToUndefined),
+  assignedUserId: z.string().trim().transform(emptyToUndefined),
   orderDate: z
     .string()
     .min(1, "Vui lòng chọn ngày đặt hàng")
@@ -96,14 +84,11 @@ export type CreateOrderSchema = z.input<typeof createOrderSchema>
 
 export const createOrderFormDefaultValues: CreateOrderSchema = {
   clientId: "",
-  contactName: "",
-  contactPhone: "",
-  contactEmail: "",
-  staffId: "",
+  assignedUserId: "",
   orderDate: "",
   dueDate: "",
   deliveryAddress: "",
-  paymentTerm: "",
+  paymentTerm: PaymentTerm.IMMEDIATE,
   currency: Currency.VND,
   exchangeRate: "1",
   discountType: OrderDiscountType.PERCENT,
