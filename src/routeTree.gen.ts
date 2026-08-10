@@ -21,6 +21,9 @@ import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage
 import { Route as authedManageProductionJobsRouteImport } from './routes/(authed)/manage_/production-jobs'
 import { Route as authedManageProductionOrdersRouteImport } from './routes/(authed)/manage_/production-orders'
 import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
+import { Route as authedManagePurchaseLedgerRouteImport } from './routes/(authed)/manage_/purchase-ledger'
+import { Route as authedManagePurchaseOrdersRouteImport } from './routes/(authed)/manage_/purchase-orders'
+import { Route as authedManagePurchaseQuotationsRouteImport } from './routes/(authed)/manage_/purchase-quotations'
 import { Route as authedManagePurchaseRequestsRouteImport } from './routes/(authed)/manage_/purchase-requests'
 import { Route as authedManageSuppliersRouteImport } from './routes/(authed)/manage_/suppliers'
 import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
@@ -32,6 +35,7 @@ import { Route as authedManageProductionJobsProductionJobIdRouteImport } from '.
 import { Route as authedManageProductionOrdersProductionOrderIdRouteImport } from './routes/(authed)/manage_/production-orders_/$productionOrderId'
 import { Route as authedManageProductsProductIdRouteImport } from './routes/(authed)/manage_/products_/$productId'
 import { Route as authedManageProductsCreateRouteImport } from './routes/(authed)/manage_/products_/create'
+import { Route as authedManagePurchaseQuotationsCreateRouteImport } from './routes/(authed)/manage_/purchase-quotations_/create'
 import { Route as authedManagePurchaseRequestsPurchaseRequestIdRouteImport } from './routes/(authed)/manage_/purchase-requests_/$purchaseRequestId'
 import { Route as authedManageSuppliersCreateRouteImport } from './routes/(authed)/manage_/suppliers_/create'
 import { Route as authedManageUsersCreateRouteImport } from './routes/(authed)/manage_/users_/create'
@@ -102,6 +106,24 @@ const authedManageProductsRoute = authedManageProductsRouteImport.update({
   path: '/manage/products',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManagePurchaseLedgerRoute =
+  authedManagePurchaseLedgerRouteImport.update({
+    id: '/manage_/purchase-ledger',
+    path: '/manage/purchase-ledger',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseOrdersRoute =
+  authedManagePurchaseOrdersRouteImport.update({
+    id: '/manage_/purchase-orders',
+    path: '/manage/purchase-orders',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseQuotationsRoute =
+  authedManagePurchaseQuotationsRouteImport.update({
+    id: '/manage_/purchase-quotations',
+    path: '/manage/purchase-quotations',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManagePurchaseRequestsRoute =
   authedManagePurchaseRequestsRouteImport.update({
     id: '/manage_/purchase-requests',
@@ -166,6 +188,12 @@ const authedManageProductsCreateRoute =
     path: '/manage/products/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManagePurchaseQuotationsCreateRoute =
+  authedManagePurchaseQuotationsCreateRouteImport.update({
+    id: '/manage_/purchase-quotations_/create',
+    path: '/manage/purchase-quotations/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManagePurchaseRequestsPurchaseRequestIdRoute =
   authedManagePurchaseRequestsPurchaseRequestIdRouteImport.update({
     id: '/manage_/purchase-requests_/$purchaseRequestId',
@@ -225,6 +253,9 @@ export interface FileRoutesByFullPath {
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
   '/manage/products': typeof authedManageProductsRoute
+  '/manage/purchase-ledger': typeof authedManagePurchaseLedgerRoute
+  '/manage/purchase-orders': typeof authedManagePurchaseOrdersRoute
+  '/manage/purchase-quotations': typeof authedManagePurchaseQuotationsRoute
   '/manage/purchase-requests': typeof authedManagePurchaseRequestsRoute
   '/manage/suppliers': typeof authedManageSuppliersRoute
   '/manage/users': typeof authedManageUsersRoute
@@ -236,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
   '/manage/products/create': typeof authedManageProductsCreateRoute
+  '/manage/purchase-quotations/create': typeof authedManagePurchaseQuotationsCreateRoute
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
   '/manage/users/create': typeof authedManageUsersCreateRoute
@@ -256,6 +288,9 @@ export interface FileRoutesByTo {
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
   '/manage/products': typeof authedManageProductsRoute
+  '/manage/purchase-ledger': typeof authedManagePurchaseLedgerRoute
+  '/manage/purchase-orders': typeof authedManagePurchaseOrdersRoute
+  '/manage/purchase-quotations': typeof authedManagePurchaseQuotationsRoute
   '/manage/purchase-requests': typeof authedManagePurchaseRequestsRoute
   '/manage/suppliers': typeof authedManageSuppliersRoute
   '/manage/users': typeof authedManageUsersRoute
@@ -267,6 +302,7 @@ export interface FileRoutesByTo {
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
   '/manage/products/create': typeof authedManageProductsCreateRoute
+  '/manage/purchase-quotations/create': typeof authedManagePurchaseQuotationsCreateRoute
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
   '/manage/users/create': typeof authedManageUsersCreateRoute
@@ -290,6 +326,9 @@ export interface FileRoutesById {
   '/(authed)/manage_/production-jobs': typeof authedManageProductionJobsRoute
   '/(authed)/manage_/production-orders': typeof authedManageProductionOrdersRoute
   '/(authed)/manage_/products': typeof authedManageProductsRoute
+  '/(authed)/manage_/purchase-ledger': typeof authedManagePurchaseLedgerRoute
+  '/(authed)/manage_/purchase-orders': typeof authedManagePurchaseOrdersRoute
+  '/(authed)/manage_/purchase-quotations': typeof authedManagePurchaseQuotationsRoute
   '/(authed)/manage_/purchase-requests': typeof authedManagePurchaseRequestsRoute
   '/(authed)/manage_/suppliers': typeof authedManageSuppliersRoute
   '/(authed)/manage_/users': typeof authedManageUsersRoute
@@ -301,6 +340,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/production-orders_/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/(authed)/manage_/products_/$productId': typeof authedManageProductsProductIdRoute
   '/(authed)/manage_/products_/create': typeof authedManageProductsCreateRoute
+  '/(authed)/manage_/purchase-quotations_/create': typeof authedManagePurchaseQuotationsCreateRoute
   '/(authed)/manage_/purchase-requests_/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/(authed)/manage_/suppliers_/create': typeof authedManageSuppliersCreateRoute
   '/(authed)/manage_/users_/create': typeof authedManageUsersCreateRoute
@@ -323,6 +363,9 @@ export interface FileRouteTypes {
     | '/manage/production-jobs'
     | '/manage/production-orders'
     | '/manage/products'
+    | '/manage/purchase-ledger'
+    | '/manage/purchase-orders'
+    | '/manage/purchase-quotations'
     | '/manage/purchase-requests'
     | '/manage/suppliers'
     | '/manage/users'
@@ -334,6 +377,7 @@ export interface FileRouteTypes {
     | '/manage/production-orders/$productionOrderId'
     | '/manage/products/$productId'
     | '/manage/products/create'
+    | '/manage/purchase-quotations/create'
     | '/manage/purchase-requests/$purchaseRequestId'
     | '/manage/suppliers/create'
     | '/manage/users/create'
@@ -354,6 +398,9 @@ export interface FileRouteTypes {
     | '/manage/production-jobs'
     | '/manage/production-orders'
     | '/manage/products'
+    | '/manage/purchase-ledger'
+    | '/manage/purchase-orders'
+    | '/manage/purchase-quotations'
     | '/manage/purchase-requests'
     | '/manage/suppliers'
     | '/manage/users'
@@ -365,6 +412,7 @@ export interface FileRouteTypes {
     | '/manage/production-orders/$productionOrderId'
     | '/manage/products/$productId'
     | '/manage/products/create'
+    | '/manage/purchase-quotations/create'
     | '/manage/purchase-requests/$purchaseRequestId'
     | '/manage/suppliers/create'
     | '/manage/users/create'
@@ -387,6 +435,9 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/production-jobs'
     | '/(authed)/manage_/production-orders'
     | '/(authed)/manage_/products'
+    | '/(authed)/manage_/purchase-ledger'
+    | '/(authed)/manage_/purchase-orders'
+    | '/(authed)/manage_/purchase-quotations'
     | '/(authed)/manage_/purchase-requests'
     | '/(authed)/manage_/suppliers'
     | '/(authed)/manage_/users'
@@ -398,6 +449,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/production-orders_/$productionOrderId'
     | '/(authed)/manage_/products_/$productId'
     | '/(authed)/manage_/products_/create'
+    | '/(authed)/manage_/purchase-quotations_/create'
     | '/(authed)/manage_/purchase-requests_/$purchaseRequestId'
     | '/(authed)/manage_/suppliers_/create'
     | '/(authed)/manage_/users_/create'
@@ -500,6 +552,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageProductsRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/purchase-ledger': {
+      id: '/(authed)/manage_/purchase-ledger'
+      path: '/manage/purchase-ledger'
+      fullPath: '/manage/purchase-ledger'
+      preLoaderRoute: typeof authedManagePurchaseLedgerRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-orders': {
+      id: '/(authed)/manage_/purchase-orders'
+      path: '/manage/purchase-orders'
+      fullPath: '/manage/purchase-orders'
+      preLoaderRoute: typeof authedManagePurchaseOrdersRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-quotations': {
+      id: '/(authed)/manage_/purchase-quotations'
+      path: '/manage/purchase-quotations'
+      fullPath: '/manage/purchase-quotations'
+      preLoaderRoute: typeof authedManagePurchaseQuotationsRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/manage_/purchase-requests': {
       id: '/(authed)/manage_/purchase-requests'
       path: '/manage/purchase-requests'
@@ -575,6 +648,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/products/create'
       fullPath: '/manage/products/create'
       preLoaderRoute: typeof authedManageProductsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-quotations_/create': {
+      id: '/(authed)/manage_/purchase-quotations_/create'
+      path: '/manage/purchase-quotations/create'
+      fullPath: '/manage/purchase-quotations/create'
+      preLoaderRoute: typeof authedManagePurchaseQuotationsCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/purchase-requests_/$purchaseRequestId': {
@@ -657,6 +737,9 @@ interface authedRouteRouteChildren {
   authedManageProductionJobsRoute: typeof authedManageProductionJobsRoute
   authedManageProductionOrdersRoute: typeof authedManageProductionOrdersRoute
   authedManageProductsRoute: typeof authedManageProductsRoute
+  authedManagePurchaseLedgerRoute: typeof authedManagePurchaseLedgerRoute
+  authedManagePurchaseOrdersRoute: typeof authedManagePurchaseOrdersRoute
+  authedManagePurchaseQuotationsRoute: typeof authedManagePurchaseQuotationsRoute
   authedManagePurchaseRequestsRoute: typeof authedManagePurchaseRequestsRoute
   authedManageSuppliersRoute: typeof authedManageSuppliersRoute
   authedManageUsersRoute: typeof authedManageUsersRoute
@@ -668,6 +751,7 @@ interface authedRouteRouteChildren {
   authedManageProductionOrdersProductionOrderIdRoute: typeof authedManageProductionOrdersProductionOrderIdRoute
   authedManageProductsProductIdRoute: typeof authedManageProductsProductIdRoute
   authedManageProductsCreateRoute: typeof authedManageProductsCreateRoute
+  authedManagePurchaseQuotationsCreateRoute: typeof authedManagePurchaseQuotationsCreateRoute
   authedManagePurchaseRequestsPurchaseRequestIdRoute: typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   authedManageSuppliersCreateRoute: typeof authedManageSuppliersCreateRoute
   authedManageUsersCreateRoute: typeof authedManageUsersCreateRoute
@@ -687,6 +771,9 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageProductionJobsRoute: authedManageProductionJobsRoute,
   authedManageProductionOrdersRoute: authedManageProductionOrdersRoute,
   authedManageProductsRoute: authedManageProductsRoute,
+  authedManagePurchaseLedgerRoute: authedManagePurchaseLedgerRoute,
+  authedManagePurchaseOrdersRoute: authedManagePurchaseOrdersRoute,
+  authedManagePurchaseQuotationsRoute: authedManagePurchaseQuotationsRoute,
   authedManagePurchaseRequestsRoute: authedManagePurchaseRequestsRoute,
   authedManageSuppliersRoute: authedManageSuppliersRoute,
   authedManageUsersRoute: authedManageUsersRoute,
@@ -700,6 +787,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
     authedManageProductionOrdersProductionOrderIdRoute,
   authedManageProductsProductIdRoute: authedManageProductsProductIdRoute,
   authedManageProductsCreateRoute: authedManageProductsCreateRoute,
+  authedManagePurchaseQuotationsCreateRoute:
+    authedManagePurchaseQuotationsCreateRoute,
   authedManagePurchaseRequestsPurchaseRequestIdRoute:
     authedManagePurchaseRequestsPurchaseRequestIdRoute,
   authedManageSuppliersCreateRoute: authedManageSuppliersCreateRoute,

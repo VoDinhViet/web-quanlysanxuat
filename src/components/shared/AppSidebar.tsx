@@ -2,6 +2,7 @@ import { Image } from "@unpic/react"
 import { Link, useLocation } from "@tanstack/react-router"
 import {
   ArrowDownToLine,
+  BookText,
   Boxes,
   Building2,
   ClipboardList,
@@ -88,7 +89,24 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/purchase-requests",
         permission: "purchase-requests:read",
       },
-      { label: "Đơn mua hàng (PO)", icon: ReceiptText },
+      {
+        label: "Báo giá NCC (RFQ)",
+        icon: FileText,
+        href: "/manage/purchase-quotations",
+        permission: "purchasing:read",
+      },
+      {
+        label: "Danh mục mua hàng",
+        icon: BookText,
+        href: "/manage/purchase-ledger",
+        permission: "purchasing:read",
+      },
+      {
+        label: "Đơn mua hàng (PO)",
+        icon: ReceiptText,
+        href: "/manage/purchase-orders",
+        permission: "purchasing:read",
+      },
       { label: "Nhập hàng", icon: ArrowDownToLine },
     ],
   },

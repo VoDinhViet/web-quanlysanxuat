@@ -1,0 +1,56 @@
+import { Eye } from "lucide-react"
+
+import { DisabledAction } from "@/components/shared/DisabledAction"
+
+// Renders the first source code + a "+N" suffix for the rest — a PO can gather lines from
+// several PRs/quotations at once (see PurchaseOrderSourceRef in purchase-order.type.ts), so a
+// single-code cell would silently drop data.
+type PurchaseOrderSourceCellProps = {
+  codes: string[]
+}
+
+export function PurchaseOrderSourceCell({
+  codes,
+}: PurchaseOrderSourceCellProps) {
+  if (codes.length === 0) {
+    return <span className="text-xs text-muted-foreground">—</span>
+  }
+
+  return (
+    <span className="font-mono text-xs font-semibold text-primary">
+      {codes[0]}
+      {codes.length > 1 && (
+        <span className="ml-1 font-sans font-normal text-muted-foreground">
+          +{codes.length - 1}
+        </span>
+      )}
+    </span>
+  )
+}
+
+const amountFormatter = new Intl.NumberFormat("vi-VN")
+
+type PurchaseOrderAmountCellProps = {
+  value: number
+}
+
+export function PurchaseOrderAmountCell({
+  value,
+}: PurchaseOrderAmountCellProps) {
+  return (
+    <span className="font-semibold text-foreground tabular-nums">
+      {amountFormatter.format(value)}
+    </span>
+  )
+}
+
+// No route/API for a detail screen yet — disabled, not linked.
+export function PurchaseOrderActionsCell() {
+  return (
+    <div className="flex items-center justify-center">
+      <DisabledAction label="Xem chi tiết">
+        <Eye className="size-3.5" />
+      </DisabledAction>
+    </div>
+  )
+}

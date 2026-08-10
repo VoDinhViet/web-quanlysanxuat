@@ -3,3 +3,4 @@
 // import rule) — never reach into `api/server-functions/` or
 // `api/options/` directly.
 export { supplierOptionsQueryOptions } from "@/features/suppliers/api/options"
+export { useGetSupplierOptions } from "@/features/suppliers/api/use-get-supplier-options"
