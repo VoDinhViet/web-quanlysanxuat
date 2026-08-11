@@ -5,7 +5,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { Plus } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -14,35 +16,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ComboboxField } from "@/components/shared/ComboboxField"
 import { buildQuotationSuppliersQuoteColumns } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersQuoteColumns"
-import { useGetSupplierOptions } from "@/features/suppliers/api"
+import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 type QuotationCompareQuoteTableProps = {
   item: PickedQuotationItemValue
   itemIndex: number
   itemsField: AnyFieldApi
+  onOpenAddSupplier: (purchaseRequestItemId: string) => void
   disabled?: boolean
 }
 
-// Nested useReactTable listing one item's own NCC × giá rows, plus the trailing "+ Thêm NCC" add
-// row. Owns its own supplier-options fetch (search box is per item, not shared across the whole
-// compare grid) — split out of QuotationCompareItemRow so that component only has to worry about
-// the outer row, not this table's columns/add-row markup too.
+// Nested useReactTable listing one item's own NCC × giá rows, plus a trailing "Thêm NCC" trigger
+// that opens QuotationAddSupplierDialog (owned by CreateQuotationSuppliersSection — supplier
+// search now lives once in that dialog, not per item here). Rendered directly under every outer
+// row (see CreateQuotationSuppliersSection.tsx's row map) — one instance per item, so calling
+// useMemo/useReactTable here at the top level is a normal single-hook-per-render component, no
+// conditional-mount reasoning needed.
 export function QuotationCompareQuoteTable({
   item,
   itemIndex,
   itemsField,
+  onOpenAddSupplier,
   disabled,
 }: QuotationCompareQuoteTableProps) {
-  const {
-    suppliers,
-    options: supplierOptions,
-    isFetching: isSupplierOptionsPending,
-    onSearchChange: onSupplierSearchChange,
-  } = useGetSupplierOptions()
-
   const quoteColumns = useMemo(
     () =>
       buildQuotationSuppliersQuoteColumns({
@@ -60,44 +58,47 @@ export function QuotationCompareQuoteTable({
     getCoreRowModel: getCoreRowModel(),
   })
 
-  const chosenIds = new Set(item.quotes.map((quote) => quote.supplierId))
-  const availableOptions = supplierOptions.filter(
-    (option) => !chosenIds.has(option.value)
-  )
-
   return (
     <Table>
-      <TableHeader>
-        {quoteTable.getHeaderGroups().map((headerGroup) => (
-          <TableRow
-            key={headerGroup.id}
-            className="h-8 border-none bg-transparent hover:bg-transparent"
-          >
-            {headerGroup.headers.map((header) => (
-              <TableHead
-                key={header.id}
-                className={header.column.columnDef.meta?.headerClassName}
-              >
-                {!header.isPlaceholder &&
-                  flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
+      {item.quotes.length > 0 && (
+        <TableHeader className="bg-transparent">
+          {quoteTable.getHeaderGroups().map((headerGroup) => (
+            <TableRow
+              key={headerGroup.id}
+              className="h-8 bg-transparent hover:bg-transparent"
+            >
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={cn(
+                    "border-b border-primary/15",
+                    header.column.columnDef.meta?.headerClassName
                   )}
-              </TableHead>
-            ))}
-          </TableRow>
-        ))}
-      </TableHeader>
+                >
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+      )}
       <TableBody>
         {quoteTable.getRowModel().rows.map((quoteRow) => (
           <TableRow
             key={quoteRow.id}
-            className="h-12 border-none bg-transparent hover:bg-background/60"
+            className="h-12 bg-transparent hover:bg-transparent"
           >
             {quoteRow.getVisibleCells().map((cell) => (
               <TableCell
                 key={cell.id}
-                className={cell.column.columnDef.meta?.cellClassName}
+                className={cn(
+                  "border-b border-primary/15",
+                  cell.column.columnDef.meta?.cellClassName
+                )}
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </TableCell>
@@ -105,46 +106,27 @@ export function QuotationCompareQuoteTable({
           </TableRow>
         ))}
 
-        {/* Same column rhythm as the data rows above (not a wide spanning banner) — only the
-            "Nhà cung cấp" cell is live, the rest stay blank so the add slot reads as the start of
-            a new row rather than a separate control bolted onto the table. */}
         <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
-          <TableCell className="pl-10">
-            <ComboboxField
-              className="h-8 max-w-56 border-dashed bg-transparent text-xs text-muted-foreground"
-              placeholder="+ Thêm NCC"
-              value={undefined}
-              onValueChange={(nextId) => {
-                if (!nextId) return
-                const picked = suppliers.find(
-                  (supplier) => supplier.id === nextId
-                )
-                itemsField.replaceValue(itemIndex, {
-                  ...item,
-                  quotes: [
-                    ...item.quotes,
-                    {
-                      supplierId: nextId,
-                      supplierLabel: picked?.name ?? "",
-                      lastPrice: "",
-                      lastPurchaseDate: "",
-                      unitPrice: "",
-                      leadTimeDays: "",
-                      note: "",
-                    },
-                  ],
-                })
-              }}
-              options={availableOptions}
-              onSearchChange={onSupplierSearchChange}
-              isPending={isSupplierOptionsPending}
-              emptyMessage="Không tìm thấy NCC"
-              disabled={disabled}
-            />
+          <TableCell colSpan={quoteColumns.length} className="pl-10">
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-xs text-primary hover:text-primary"
+                disabled={disabled}
+                onClick={() => onOpenAddSupplier(item.purchaseRequestItemId)}
+              >
+                <Plus className="size-3.5" />
+                Thêm NCC
+              </Button>
+              {item.quotes.length === 0 && (
+                <span className="text-xs text-muted-foreground">
+                  Chưa có NCC nào cho vật tư này
+                </span>
+              )}
+            </div>
           </TableCell>
-          {quoteColumns.slice(1).map((_, index) => (
-            <TableCell key={index} />
-          ))}
         </TableRow>
       </TableBody>
     </Table>

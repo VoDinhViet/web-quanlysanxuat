@@ -2,9 +2,10 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { Trash2 } from "lucide-react"
 
-import { Input } from "@/components/ui/input"
+import { DatePicker } from "@/components/shared/DatePicker"
 import { IconButton } from "@/components/shared/IconButton"
 import { NumericCellInput } from "@/features/purchase-quotations/components/create/NumericCellInput"
+import { TableTextCellInput } from "@/features/purchase-quotations/components/create/TableTextCellInput"
 import type {
   PickedQuotationItemValue,
   QuotationSupplierQuoteValue,
@@ -52,7 +53,7 @@ export function buildQuotationSuppliersQuoteColumns({
     quotationQuoteColumnHelper.display({
       id: "lastPrice",
       header: "Giá gần nhất",
-      meta: { headerClassName: "w-32 text-[10px]" },
+      meta: { headerClassName: "w-40 text-[10px]" },
       cell: ({ row }) => (
         <NumericCellInput
           value={row.original.lastPrice}
@@ -69,13 +70,11 @@ export function buildQuotationSuppliersQuoteColumns({
       header: "Ngày mua gần nhất",
       meta: { headerClassName: "w-32 text-[10px]" },
       cell: ({ row }) => (
-        <Input
-          className="h-8 bg-background text-xs"
-          placeholder="dd/mm/yyyy"
+        <DatePicker
+          id={`quotation-quote-last-purchase-date-${itemIndex}-${row.index}`}
           value={row.original.lastPurchaseDate}
-          disabled={disabled}
-          onChange={(event) =>
-            updateQuote(row.index, { lastPurchaseDate: event.target.value })
+          onChange={(value) =>
+            updateQuote(row.index, { lastPurchaseDate: value })
           }
         />
       ),
@@ -83,7 +82,7 @@ export function buildQuotationSuppliersQuoteColumns({
     quotationQuoteColumnHelper.display({
       id: "unitPrice",
       header: "Giá báo (VNĐ)",
-      meta: { headerClassName: "w-36 text-[10px]" },
+      meta: { headerClassName: "w-44 text-[10px]" },
       cell: ({ row }) => (
         <NumericCellInput
           value={row.original.unitPrice}
@@ -98,7 +97,7 @@ export function buildQuotationSuppliersQuoteColumns({
     quotationQuoteColumnHelper.display({
       id: "leadTimeDays",
       header: "Leadtime (ngày)",
-      meta: { headerClassName: "w-28 text-[10px]" },
+      meta: { headerClassName: "w-32 text-[10px]" },
       cell: ({ row }) => (
         <NumericCellInput
           value={row.original.leadTimeDays}
@@ -115,14 +114,11 @@ export function buildQuotationSuppliersQuoteColumns({
       header: "Ghi chú",
       meta: { headerClassName: "text-[10px]" },
       cell: ({ row }) => (
-        <Input
-          className="h-8 bg-background text-xs"
-          placeholder="Ghi chú"
+        <TableTextCellInput
           value={row.original.note}
+          placeholder="Ghi chú"
           disabled={disabled}
-          onChange={(event) =>
-            updateQuote(row.index, { note: event.target.value })
-          }
+          onValueChange={(value) => updateQuote(row.index, { note: value })}
         />
       ),
     }),
@@ -132,7 +128,7 @@ export function buildQuotationSuppliersQuoteColumns({
       cell: ({ row }) => (
         <IconButton
           label="Xóa NCC"
-          className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+          className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
           disabled={disabled}
           onClick={() =>
             itemsField.replaceValue(itemIndex, {

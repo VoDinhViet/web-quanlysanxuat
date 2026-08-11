@@ -1,10 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { AnyFieldApi } from "@tanstack/react-form"
-import { Trash2 } from "lucide-react"
+import { ChevronDown, Trash2 } from "lucide-react"
 
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { IconButton } from "@/components/shared/IconButton"
+import { AdjustmentReasonDialog } from "@/features/purchase-quotations/components/create/AdjustmentReasonDialog"
 import { NumericCellInput } from "@/features/purchase-quotations/components/create/NumericCellInput"
+import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 const quotationItemColumnHelper = createColumnHelper<PickedQuotationItemValue>()
@@ -67,6 +69,7 @@ export function buildQuotationSuppliersItemColumns({
               id={inputId}
               value={item.quantity}
               disabled={disabled}
+              min={1}
               onValueChange={(value) =>
                 itemsField.replaceValue(row.index, { ...item, quantity: value })
               }
@@ -81,17 +84,35 @@ export function buildQuotationSuppliersItemColumns({
       meta: { headerClassName: "w-40" },
       cell: ({ row }) => {
         const item = row.original
+        const hasReason = item.adjustmentReason.length > 0
+
+        // The reason can run long — a w-40 cell has no room to edit it inline, so the cell is
+        // just a compact trigger and the actual Textarea lives in AdjustmentReasonDialog.
         return (
-          <Input
-            className="h-8 bg-background text-xs"
-            placeholder="Lý do (nếu có)"
-            value={item.adjustmentReason}
-            disabled={disabled}
-            onChange={(event) =>
+          <AdjustmentReasonDialog
+            itemName={item.itemName}
+            reason={item.adjustmentReason}
+            onSave={(value) =>
               itemsField.replaceValue(row.index, {
                 ...item,
-                adjustmentReason: event.target.value,
+                adjustmentReason: value,
               })
+            }
+            trigger={
+              <Button
+                type="button"
+                variant="outline"
+                disabled={disabled}
+                className={cn(
+                  "h-8 w-full max-w-40 justify-between text-xs font-normal",
+                  !hasReason && "border-dashed text-muted-foreground"
+                )}
+              >
+                <span className="max-w-32 min-w-0 truncate">
+                  {hasReason ? item.adjustmentReason : "Thêm lý do"}
+                </span>
+                <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+              </Button>
             }
           />
         )
@@ -107,7 +128,7 @@ export function buildQuotationSuppliersItemColumns({
       cell: ({ row }) => (
         <IconButton
           label="Bỏ chọn vật tư"
-          className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+          className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
           disabled={disabled}
           onClick={() => itemsField.removeValue(row.index)}
         >
