@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Filter, Plus, RotateCw, Search } from "lucide-react"
 
@@ -15,9 +16,8 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/DateRangePicker"
 import { FilterLabel } from "@/components/shared/FilterLabel"
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
 import { PendingAction } from "@/components/shared/PendingAction"
-import { MOCK_SUPPLIERS } from "@/features/purchase-orders/mock/purchase-orders-rows.mock"
+import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { purchaseOrderProgressLabels } from "@/lib/types/purchase-order.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { PurchaseOrderProgress } from "@/lib/types/purchase-order.type"
@@ -27,17 +27,17 @@ const statusFilterOptions = [
   ...buildOptionsFromLabels(purchaseOrderProgressLabels),
 ]
 
-// No supplierOptionsQueryOptions equivalent exists for this mock-backed feature yet — the NCC
-// select reads straight from the same seeded pool the rows are built from.
-const supplierFilterOptions = [
-  { value: "all", label: "Tất cả" },
-  ...buildSelectOptions(MOCK_SUPPLIERS),
-]
-
 export function PurchaseOrdersTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/purchase-orders" })
   const navigate = useNavigate({ from: "/manage/purchase-orders" })
   const [q, setQ] = useState(search.q ?? "")
+
+  // The route loader already prefetches this — resolves synchronously off cache.
+  const { data: suppliers } = useSuspenseQuery(supplierOptionsQueryOptions())
+  const supplierFilterOptions = [
+    { value: "all", label: "Tất cả" },
+    ...buildSelectOptions(suppliers),
+  ]
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // PurchaseLedgerTableFilter.tsx. The "Bộ lọc" button and Enter both call `.flush()` to apply
@@ -54,10 +54,10 @@ export function PurchaseOrdersTableFilter() {
     })
   }, 300)
 
-  const handleStatusChange = (value: string) => {
-    const status =
+  const handleProgressChange = (value: string) => {
+    const progress =
       value === "all" ? undefined : (value as PurchaseOrderProgress)
-    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+    void navigate({ search: (prev) => ({ ...prev, progress, page: 1 }) })
   }
 
   const handleSupplierChange = (value: string) => {
@@ -72,8 +72,8 @@ export function PurchaseOrdersTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        orderDateFrom: range.from,
-        orderDateTo: range.to,
+        fromDate: range.from,
+        toDate: range.to,
         page: 1,
       }),
     })
@@ -88,10 +88,10 @@ export function PurchaseOrdersTableFilter() {
       search: (prev) => {
         const {
           q: _q,
-          status: _status,
+          progress: _progress,
           supplierId: _supplierId,
-          orderDateFrom: _orderDateFrom,
-          orderDateTo: _orderDateTo,
+          fromDate: _fromDate,
+          toDate: _toDate,
           ...rest
         } = prev
         return { ...rest, page: 1 }
@@ -110,8 +110,8 @@ export function PurchaseOrdersTableFilter() {
                 htmlFor="purchase-orders-status"
               />
               <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
+                value={search.progress ?? "all"}
+                onValueChange={handleProgressChange}
               >
                 <SelectTrigger
                   id="purchase-orders-status"
@@ -158,8 +158,8 @@ export function PurchaseOrdersTableFilter() {
               />
               <DateRangePicker
                 id="purchase-orders-date-range"
-                from={search.orderDateFrom}
-                to={search.orderDateTo}
+                from={search.fromDate}
+                to={search.toDate}
                 onChange={handleOrderDateRangeChange}
               />
             </div>
@@ -170,7 +170,7 @@ export function PurchaseOrdersTableFilter() {
                 <Input
                   id="purchase-orders-search"
                   className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Tìm theo mã PO, NCC, mã PR, mã RFQ..."
+                  placeholder="Tìm theo mã PO..."
                   value={q}
                   onChange={(event) => {
                     setQ(event.target.value)
@@ -189,8 +189,6 @@ export function PurchaseOrdersTableFilter() {
           </div>
 
           <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <MockDataBadge />
-
             {/* Select/DateRangePicker already apply live on change (app-wide convention) — this
                 only flushes the search box's 300ms debounce immediately, same effect as pressing
                 Enter in it. */}

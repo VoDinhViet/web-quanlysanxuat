@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Save } from "lucide-react"
+import { Diskette } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -25,8 +25,8 @@ type AdjustmentReasonDialogProps = {
 // "Lý do điều chỉnh SL" can run long, and the outer table cell (CreateQuotationSuppliersItemColumns.tsx)
 // only has room for a short trigger — so editing happens here instead of inline. Emits the edited
 // string via onSave, same "transient command, parent owns the write" shape as
-// QuotationAddSupplierDialog.tsx: adjustmentReason lives in itemsField (in-progress RFQ form
-// state, not yet submitted), so this isn't its own persisted record and doesn't need
+// QuotationAddSupplierDialog.tsx: quantityAdjustmentReason lives in itemsField (in-progress RFQ
+// form state, not yet submitted), so this isn't its own persisted record and doesn't need
 // useAppForm/a Zod schema — it just reads/writes one string.
 export function AdjustmentReasonDialog({
   itemName,
@@ -111,7 +111,7 @@ function AdjustmentReasonDialogForm({
           Hủy
         </Button>
         <Button type="submit">
-          <Save className="size-4" />
+          <Diskette className="size-4" />
           Lưu
         </Button>
       </DialogFooter>

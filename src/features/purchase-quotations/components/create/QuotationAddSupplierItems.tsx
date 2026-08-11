@@ -1,22 +1,38 @@
-import { Checkbox } from "@/components/ui/checkbox"
+import { useMemo } from "react"
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { buildQuotationAddSupplierItemsColumns } from "@/features/purchase-quotations/components/create/QuotationAddSupplierItemsColumns"
 import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 type QuotationAddSupplierItemsProps = {
   items: PickedQuotationItemValue[]
   checkedIds: Set<string>
-  // Items that already list the currently-picked supplier — rendered checked + disabled with
-  // an "(đã có)" hint instead of vanishing from the list, so the list length never shifts under
-  // the cursor and it's clear WHY a row can't be toggled (same lesson the old per-item combobox
-  // got wrong by silently hiding already-added suppliers).
   assignedIds: Set<string>
   allChecked: boolean
   onToggleItem: (purchaseRequestItemId: string) => void
   onToggleAll: (checked: boolean) => void
 }
 
-// Presentational checklist for QuotationAddSupplierDialog — the dialog owns all state (which
-// supplier is picked, which items are checked), this only renders it and reports taps.
+// Presentational data table for QuotationAddSupplierDialog — the dialog owns all state (which
+// supplier is picked, which items are checked), this only renders it and reports taps. Row style
+// mirrors CreateQuotationItemsPickerSection.tsx's picker table (whole-row click toggles, with
+// stopPropagation on the select cell so the checkbox's own change doesn't double-fire) — but with
+// hover/focus background effects deliberately dropped: a static bg-primary/5 tint marks a checked
+// row instead, so selection stays legible without hover.
 export function QuotationAddSupplierItems({
   items,
   checkedIds,
@@ -31,69 +47,106 @@ export function QuotationAddSupplierItems({
       !assignedIds.has(item.purchaseRequestItemId)
   ).length
 
+  const columns = useMemo(
+    () =>
+      buildQuotationAddSupplierItemsColumns({
+        checkedIds,
+        assignedIds,
+        allChecked,
+        onToggleItem,
+        onToggleAll,
+      }),
+    [checkedIds, assignedIds, allChecked, onToggleItem, onToggleAll]
+  )
+
+  const table = useReactTable({
+    data: items,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
   return (
-    <div className="rounded-md border border-border/60">
-      <div className="flex items-center gap-3 border-b border-border/60 px-3 py-2">
-        <Checkbox
-          id="quotation-add-supplier-all"
-          checked={allChecked}
-          onCheckedChange={(checked) => onToggleAll(checked === true)}
-        />
-        <label
-          htmlFor="quotation-add-supplier-all"
-          className="flex-1 cursor-pointer text-xs font-medium"
-        >
-          {allChecked ? "Bỏ chọn tất cả" : "Chọn tất cả"}
-        </label>
-        <span className="text-xs text-muted-foreground">
-          Sẽ thêm cho {newCount} vật tư
-        </span>
-      </div>
+    <div className="space-y-1.5">
+      <p className="text-right text-xs text-muted-foreground">
+        Sẽ thêm cho {newCount} vật tư
+      </p>
 
-      <div className="max-h-64 overflow-y-auto p-1">
-        {items.length === 0 ? (
-          <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-            Chưa có vật tư nào
-          </p>
-        ) : (
-          items.map((item) => {
-            const isAssigned = assignedIds.has(item.purchaseRequestItemId)
-            const checkboxId = `quotation-add-supplier-item-${item.purchaseRequestItemId}`
-
-            return (
-              <div
-                key={item.purchaseRequestItemId}
-                className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-muted/40"
-              >
-                <Checkbox
-                  id={checkboxId}
-                  checked={
-                    isAssigned || checkedIds.has(item.purchaseRequestItemId)
-                  }
-                  disabled={isAssigned}
-                  onCheckedChange={() =>
-                    onToggleItem(item.purchaseRequestItemId)
-                  }
-                />
-                <label
-                  htmlFor={checkboxId}
-                  className={cn(
-                    "flex flex-1 cursor-pointer items-center gap-2 text-xs",
-                    isAssigned && "cursor-not-allowed text-muted-foreground"
-                  )}
+      <div className="overflow-hidden rounded-md border border-border/50 bg-card">
+        <div className="max-h-80 overflow-y-auto">
+          <Table>
+            <TableHeader className="sticky top-0 z-10 bg-muted/45">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  key={headerGroup.id}
+                  className="h-10 hover:bg-transparent"
                 >
-                  <span className="shrink-0 font-mono text-primary">
-                    {item.itemCode}
-                  </span>
-                  <span className="flex-1 truncate">{item.itemName}</span>
-                  {isAssigned && (
-                    <span className="shrink-0 text-[11px]">(đã có)</span>
-                  )}
-                </label>
-              </div>
-            )
-          })
-        )}
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className={header.column.columnDef.meta?.headerClassName}
+                    >
+                      {!header.isPlaceholder &&
+                        flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {items.length === 0 ? (
+                <TableEmptyRow
+                  colSpan={columns.length}
+                  message="Chưa có vật tư nào"
+                />
+              ) : (
+                table.getRowModel().rows.map((row) => {
+                  const isAssigned = assignedIds.has(
+                    row.original.purchaseRequestItemId
+                  )
+                  const isChecked = checkedIds.has(
+                    row.original.purchaseRequestItemId
+                  )
+
+                  return (
+                    <TableRow
+                      key={row.id}
+                      className={cn(
+                        "h-12 hover:bg-transparent",
+                        isAssigned
+                          ? "cursor-not-allowed text-muted-foreground"
+                          : "cursor-pointer",
+                        isChecked && !isAssigned && "bg-primary/5"
+                      )}
+                      onClick={() =>
+                        !isAssigned &&
+                        onToggleItem(row.original.purchaseRequestItemId)
+                      }
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                          onClick={(event) =>
+                            cell.column.id === "select" &&
+                            event.stopPropagation()
+                          }
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   )

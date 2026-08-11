@@ -1,7 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { MissingFieldValue } from "@/components/shared/MissingFieldValue"
 import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/PurchaseQuotationBadges"
 import { PurchaseQuotationActionsCell } from "@/features/purchase-quotations/components/PurchaseQuotationsTableCells"
 import type { PurchaseQuotationRow } from "@/lib/types/purchase-quotation.type"
@@ -17,13 +16,7 @@ export const purchaseQuotationsColumns = [
     ),
   }),
 
-  purchaseQuotationColumnHelper.accessor((row) => row.supplier.name, {
-    id: "supplier",
-    header: "NCC",
-    meta: { headerClassName: "min-w-40" },
-  }),
-
-  purchaseQuotationColumnHelper.accessor("quotationDate", {
+  purchaseQuotationColumnHelper.accessor("createdAt", {
     header: "Ngày lập",
     meta: {
       headerClassName: "min-w-28 text-center",
@@ -33,7 +26,7 @@ export const purchaseQuotationsColumns = [
   }),
 
   purchaseQuotationColumnHelper.accessor(
-    (row) => row.creator?.fullName ?? "—",
+    (row) => row.creatorBy?.fullName ?? "—",
     {
       id: "creator",
       header: "Người tạo",
@@ -60,21 +53,30 @@ export const purchaseQuotationsColumns = [
     ),
   }),
 
-  // GET /purchase-quotations (list) doesn't return senderBy/sentAt — only the detail endpoint
-  // does (see purchase-quotation.type.ts). Real gap, not a genuinely-empty field.
-  purchaseQuotationColumnHelper.display({
-    id: "sent",
+  purchaseQuotationColumnHelper.accessor("sentAt", {
     header: "Ngày gửi",
-    meta: { headerClassName: "min-w-28" },
-    cell: () => <MissingFieldValue />,
+    meta: {
+      headerClassName: "min-w-28 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ getValue }) => {
+      const sentAt = getValue()
+      return sentAt ? DateTime.fromISO(sentAt).toFormat("dd/MM/yyyy") : "—"
+    },
   }),
 
-  // Same as "sent" above — receiverBy/receivedAt only exist on the detail endpoint.
-  purchaseQuotationColumnHelper.display({
-    id: "received",
-    header: "Ngày nhận báo giá",
-    meta: { headerClassName: "min-w-32" },
-    cell: () => <MissingFieldValue />,
+  purchaseQuotationColumnHelper.accessor("approvedAt", {
+    header: "Ngày duyệt",
+    meta: {
+      headerClassName: "min-w-28 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ getValue }) => {
+      const approvedAt = getValue()
+      return approvedAt
+        ? DateTime.fromISO(approvedAt).toFormat("dd/MM/yyyy")
+        : "—"
+    },
   }),
 
   purchaseQuotationColumnHelper.accessor((row) => row.note ?? "—", {
@@ -95,6 +97,8 @@ export const purchaseQuotationsColumns = [
       headerClassName: "min-w-20 text-center",
       cellClassName: "font-normal",
     },
-    cell: () => <PurchaseQuotationActionsCell />,
+    cell: ({ row }) => (
+      <PurchaseQuotationActionsCell purchaseQuotationId={row.original.id} />
+    ),
   }),
 ]

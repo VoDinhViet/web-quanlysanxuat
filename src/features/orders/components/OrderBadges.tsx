@@ -29,6 +29,12 @@ export const orderBadgeStyles: Record<OrderBadgeTone, OrderBadgeStyle> = {
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
+  [OrderStatus.REJECTED]: {
+    // Rose, not `destructive` — that tone is already OVERDUE_TONE's, and a
+    // rejected order is a distinct signal from an overdue one.
+    badge: "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
+    dot: "bg-rose-500 dark:bg-rose-400",
+  },
   [OrderStatus.AWAITING_PRODUCTION]: {
     badge:
       "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",

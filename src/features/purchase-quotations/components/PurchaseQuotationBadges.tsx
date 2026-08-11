@@ -10,26 +10,29 @@ type BadgeStyle = {
   dot: string
 }
 
-// Same palette idiom as PurchaseOrderBadges/PurchaseLedgerBadges. PurchaseQuotationLegend also
-// reads this map, to render the dot on its own without a badge.
+// Same DRAFT/PENDING_APPROVAL/APPROVED/CANCELLED lifecycle as PurchaseRequestBadges — reuse its
+// palette so the two approval flows read consistently across the app. PurchaseQuotationLegend
+// also reads this map, to render the dot on its own without a badge.
 export const purchaseQuotationStatusStyles: Record<
   PurchaseQuotationStatus,
   BadgeStyle
 > = {
   [PurchaseQuotationStatus.DRAFT]: {
-    badge: "border-dashed bg-transparent text-muted-foreground",
-    dot: "bg-muted-foreground/60",
+    badge: "bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground/50",
   },
-  [PurchaseQuotationStatus.SENT]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
-    dot: "bg-blue-500 dark:bg-blue-400",
+  [PurchaseQuotationStatus.PENDING_APPROVAL]: {
+    badge:
+      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    dot: "bg-amber-500 dark:bg-amber-400",
   },
-  [PurchaseQuotationStatus.RECEIVED]: {
-    badge: "bg-success/10 text-success",
-    dot: "bg-success",
+  [PurchaseQuotationStatus.APPROVED]: {
+    badge:
+      "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+    dot: "bg-emerald-500 dark:bg-emerald-400",
   },
   [PurchaseQuotationStatus.CANCELLED]: {
-    badge: "bg-destructive/10 text-destructive",
+    badge: "bg-destructive/10 text-destructive dark:bg-destructive/15",
     dot: "bg-destructive",
   },
 }

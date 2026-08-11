@@ -24,7 +24,7 @@ type RejectOrderDialogProps = {
   trigger: ReactNode
 }
 
-// PENDING_CONFIRMATION → DRAFT, reason required — director-level (orders:approve). A Dialog
+// PENDING_CONFIRMATION → REJECTED, reason required — director-level (orders:approve). A Dialog
 // (not AlertDialog) because it needs an input field, not just a confirm/cancel choice.
 export function RejectOrderDialog({ order, trigger }: RejectOrderDialogProps) {
   const [open, setOpen] = useState(false)
@@ -83,8 +83,8 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
           Từ chối đơn hàng {order.code}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Đơn hàng sẽ quay về trạng thái "Nháp" để nhân viên kinh doanh chỉnh
-          sửa lại.
+          Đơn hàng sẽ chuyển sang trạng thái "Từ chối". Nhân viên kinh doanh có
+          thể gửi duyệt lại ngay, hoặc sửa lại (đơn sẽ tự về "Nháp").
         </DialogDescription>
       </DialogHeader>
 

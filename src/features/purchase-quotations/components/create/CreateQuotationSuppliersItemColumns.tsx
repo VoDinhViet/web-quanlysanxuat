@@ -1,8 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { AnyFieldApi } from "@tanstack/react-form"
-import { ChevronDown, Trash2 } from "lucide-react"
+import { AddCircle, AltArrowDown, TrashBinTrash } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { IconButton } from "@/components/shared/IconButton"
 import { AdjustmentReasonDialog } from "@/features/purchase-quotations/components/create/AdjustmentReasonDialog"
 import { NumericCellInput } from "@/features/purchase-quotations/components/create/NumericCellInput"
@@ -14,6 +19,7 @@ const quotationItemColumnHelper = createColumnHelper<PickedQuotationItemValue>()
 type BuildQuotationSuppliersItemColumnsArgs = {
   itemsField: AnyFieldApi
   disabled?: boolean
+  onOpenAddSupplier: (purchaseRequestItemId: string) => void
 }
 
 // Own useReactTable columns for the outer (per-vật tư) table in CreateQuotationSuppliersSection —
@@ -22,6 +28,7 @@ type BuildQuotationSuppliersItemColumnsArgs = {
 export function buildQuotationSuppliersItemColumns({
   itemsField,
   disabled,
+  onOpenAddSupplier,
 }: BuildQuotationSuppliersItemColumnsArgs) {
   return [
     quotationItemColumnHelper.display({
@@ -79,23 +86,23 @@ export function buildQuotationSuppliersItemColumns({
       },
     }),
     quotationItemColumnHelper.display({
-      id: "adjustmentReason",
+      id: "quantityAdjustmentReason",
       header: "Lý do điều chỉnh SL",
       meta: { headerClassName: "w-40" },
       cell: ({ row }) => {
         const item = row.original
-        const hasReason = item.adjustmentReason.length > 0
+        const hasReason = item.quantityAdjustmentReason.length > 0
 
         // The reason can run long — a w-40 cell has no room to edit it inline, so the cell is
         // just a compact trigger and the actual Textarea lives in AdjustmentReasonDialog.
         return (
           <AdjustmentReasonDialog
             itemName={item.itemName}
-            reason={item.adjustmentReason}
+            reason={item.quantityAdjustmentReason}
             onSave={(value) =>
               itemsField.replaceValue(row.index, {
                 ...item,
-                adjustmentReason: value,
+                quantityAdjustmentReason: value,
               })
             }
             trigger={
@@ -109,9 +116,9 @@ export function buildQuotationSuppliersItemColumns({
                 )}
               >
                 <span className="max-w-32 min-w-0 truncate">
-                  {hasReason ? item.adjustmentReason : "Thêm lý do"}
+                  {hasReason ? item.quantityAdjustmentReason : "Thêm lý do"}
                 </span>
-                <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+                <AltArrowDown className="size-3.5 shrink-0 text-muted-foreground" />
               </Button>
             }
           />
@@ -122,19 +129,47 @@ export function buildQuotationSuppliersItemColumns({
       id: "actions",
       header: "Thao tác",
       meta: {
-        headerClassName: "w-12 text-center",
+        headerClassName: "w-20 text-center",
         cellClassName: "text-center",
       },
-      cell: ({ row }) => (
-        <IconButton
-          label="Bỏ chọn vật tư"
-          className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-          disabled={disabled}
-          onClick={() => itemsField.removeValue(row.index)}
-        >
-          <Trash2 className="size-3.5" />
-        </IconButton>
-      ),
+      cell: ({ row }) => {
+        const item = row.original
+        return (
+          <div className="flex items-center justify-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <IconButton
+                    label="Thêm NCC"
+                    disabled={disabled}
+                    onClick={() =>
+                      onOpenAddSupplier(item.purchaseRequestItemId)
+                    }
+                  >
+                    <AddCircle className="size-3.5" />
+                  </IconButton>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Thêm NCC</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <IconButton
+                    label="Bỏ chọn vật tư"
+                    className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
+                    disabled={disabled}
+                    onClick={() => itemsField.removeValue(row.index)}
+                  >
+                    <TrashBinTrash className="size-3.5" />
+                  </IconButton>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Bỏ chọn vật tư</TooltipContent>
+            </Tooltip>
+          </div>
+        )
+      },
     }),
   ]
 }

@@ -8,10 +8,14 @@ type OrderRejectionNoticeProps = {
   order: OrderDetail
 }
 
-// Only meaningful while the order is back at DRAFT after a reject — once it's resubmitted
-// (PENDING_CONFIRMATION) the old rejectionReason is stale history, not current state.
+// Shown while REJECTED (current state) and while DRAFT after an edit reverted it (history —
+// the person editing still needs to read why it was rejected). Once resubmitted
+// (PENDING_CONFIRMATION) the old rejectionReason is stale, not current state.
 export function OrderRejectionNotice({ order }: OrderRejectionNoticeProps) {
-  if (order.status !== OrderStatus.DRAFT || !order.rejectionReason) {
+  const isRejected = order.status === OrderStatus.REJECTED
+  const isPastRejection = order.status === OrderStatus.DRAFT
+
+  if ((!isRejected && !isPastRejection) || !order.rejectionReason) {
     return null
   }
 
@@ -20,7 +24,7 @@ export function OrderRejectionNotice({ order }: OrderRejectionNoticeProps) {
       <DangerTriangle className="mt-0.5 size-5 shrink-0 text-destructive" />
       <div className="min-w-0 space-y-1">
         <p className="text-sm font-semibold text-destructive">
-          Đơn hàng bị từ chối
+          {isRejected ? "Đơn hàng bị từ chối" : "Đơn hàng từng bị từ chối"}
         </p>
         <p className="text-sm text-foreground">{order.rejectionReason}</p>
         {order.rejecter && order.rejectedAt ? (

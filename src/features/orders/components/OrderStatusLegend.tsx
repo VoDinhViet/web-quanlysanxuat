@@ -18,6 +18,7 @@ import type { OrderBadgeTone } from "@/features/orders/components/OrderBadges"
 const legendTones: OrderBadgeTone[] = [
   OrderStatus.DRAFT,
   OrderStatus.PENDING_CONFIRMATION,
+  OrderStatus.REJECTED,
   OrderStatus.AWAITING_PRODUCTION,
   OrderStatus.IN_PROGRESS,
   OrderStatus.COMPLETED,

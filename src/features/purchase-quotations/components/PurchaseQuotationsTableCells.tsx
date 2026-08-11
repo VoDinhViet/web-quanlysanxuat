@@ -1,14 +1,33 @@
+import { Link } from "@tanstack/react-router"
 import { Eye } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/DisabledAction"
+import { Button } from "@/components/ui/button"
 
-// No route/API for a detail screen yet — disabled, not linked.
-export function PurchaseQuotationActionsCell() {
+type PurchaseQuotationActionsCellProps = {
+  purchaseQuotationId: string
+}
+
+// "Xem chi tiết" now has a real route — see PurchaseQuotationDetailPage.
+export function PurchaseQuotationActionsCell({
+  purchaseQuotationId,
+}: PurchaseQuotationActionsCellProps) {
   return (
     <div className="flex items-center justify-center">
-      <DisabledAction label="Xem chi tiết">
-        <Eye className="size-3.5" />
-      </DisabledAction>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className="bg-background text-muted-foreground"
+        aria-label="Xem chi tiết"
+        asChild
+      >
+        <Link
+          to="/manage/purchase-quotations/$purchaseQuotationId"
+          params={{ purchaseQuotationId }}
+        >
+          <Eye className="size-3.5" />
+        </Link>
+      </Button>
     </div>
   )
 }

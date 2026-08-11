@@ -12,15 +12,19 @@ import { OrderStatus } from "@/lib/types/order.type"
 // by orderItemFormSchema's own transform (order-item-form.schema.ts). All that's left is
 // collapsing attachments into attachmentFileIds — kept here, not on the schema, matching
 // every other feature's file-field handling (see "Server functions" in architecture.md).
-// `status` is dropped entirely when it's AWAITING_PRODUCTION: that value is only reachable
-// through POST .../approve (approve-order.api.ts) — sending it here hits
+// `status` is dropped entirely when it's AWAITING_PRODUCTION or REJECTED: both are only
+// reachable through POST .../approve / .../reject — sending either here hits
 // order.error.status_not_settable_directly. A PATCH treats a missing key as "leave
-// unchanged", which is exactly right since the form can only ever be *displaying* that
-// status here, never setting it.
+// unchanged", which is exactly right since the form can only ever be *displaying* those
+// statuses here, never setting them (UpdateOrderForm already seeds DRAFT instead of REJECTED,
+// so this is a safety net, not the normal path).
 const updateOrderPayloadSchema = updateOrderSchema.transform(
   ({ attachments, status, ...rest }) => ({
     ...rest,
-    ...(status === OrderStatus.AWAITING_PRODUCTION ? {} : { status }),
+    ...(status === OrderStatus.AWAITING_PRODUCTION ||
+    status === OrderStatus.REJECTED
+      ? {}
+      : { status }),
     attachmentFileIds: resolveApiAttachmentFileIds(attachments),
   })
 )
@@ -43,6 +47,8 @@ function resolveUpdateOrderErrorMessage(error: unknown): string {
       return "Nhân viên kinh doanh không tồn tại."
     case "order.error.item_not_found":
       return "Một sản phẩm trong đơn hàng không tồn tại."
+    case "order.error.status_not_settable_directly":
+      return "Không thể đặt trạng thái này trực tiếp."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":

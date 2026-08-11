@@ -12,12 +12,16 @@ type OrderApprovalActionsProps = {
   order: OrderDetail
 }
 
-// The 3-button approval flow: DRAFT shows "Gửi duyệt" (orders:update, same as any edit);
+// The 3-button approval flow: DRAFT/REJECTED show "Gửi duyệt" (orders:update, same as any
+// edit) — a REJECTED order can be resubmitted straight away, no edit required first;
 // PENDING_CONFIRMATION shows "Duyệt"/"Từ chối" (orders:approve, director-level). Every other
 // status shows nothing — once approved (AWAITING_PRODUCTION onward) the order is locked from
 // editing entirely (see canUpdateOrder), so there's no later status-select path either.
 export function OrderApprovalActions({ order }: OrderApprovalActionsProps) {
-  if (order.status === OrderStatus.DRAFT) {
+  if (
+    order.status === OrderStatus.DRAFT ||
+    order.status === OrderStatus.REJECTED
+  ) {
     return (
       <PermissionGate permission="orders:update">
         <ReqOrderApprovalDialog

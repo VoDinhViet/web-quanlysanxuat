@@ -1,5 +1,14 @@
+import type { Department } from "@/lib/types/department.type"
 import type { FileResource } from "@/lib/types/file.type"
+import type { Position } from "@/lib/types/position.type"
 import type { RoleRef } from "@/lib/types/role.type"
+
+/** Mirrors the backend's UserRefResDto (GET /users/options). */
+export type UserRef = {
+  id: string
+  code: string
+  fullName: string
+}
 
 export type Gender = "MALE" | "FEMALE" | "OTHER"
 
@@ -15,9 +24,6 @@ export const employeeStatusLabels: Record<EmployeeStatus, string> = {
   WORKING: "Đang làm việc",
   RESIGNED: "Đã nghỉ việc",
 }
-
-import type { Department } from "@/lib/types/department.type"
-import type { Position } from "@/lib/types/position.type"
 
 /** Mirrors the credential summary nested in the backend's UserResDto. */
 export type UserCredential = {

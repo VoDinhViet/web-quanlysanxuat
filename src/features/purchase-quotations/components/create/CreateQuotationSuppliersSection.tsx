@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from "react"
+import { Fragment, useMemo } from "react"
 import { useField } from "@tanstack/react-form"
 import {
   flexRender,
@@ -17,9 +17,9 @@ import {
 import { buildQuotationSuppliersItemColumns } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersItemColumns"
 import { QuotationAddSupplierDialog } from "@/features/purchase-quotations/components/create/QuotationAddSupplierDialog"
 import { QuotationCompareQuoteTable } from "@/features/purchase-quotations/components/create/QuotationCompareQuoteTable"
+import { useQuotationAddSupplierDialog } from "@/features/purchase-quotations/hooks/use-quotation-add-supplier-dialog"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"
-import type { QuotationSupplierSelection } from "@/features/purchase-quotations/components/create/QuotationAddSupplierDialog"
 
 export const CreateQuotationSuppliersSection = withForm({
   defaultValues: createQuotationFormDefaultValues,
@@ -28,55 +28,16 @@ export const CreateQuotationSuppliersSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
-    const [addSupplierOpen, setAddSupplierOpen] = useState(false)
-    // Pre-checked when the dialog opens: the one item whose own "Thêm NCC" trigger opened it —
-    // still an array since the checklist itself can still target more than one item.
-    const [initialItemIds, setInitialItemIds] = useState<string[]>([])
-
-    const openAddSupplierForItem = useCallback(
-      (purchaseRequestItemId: string) => {
-        setInitialItemIds([purchaseRequestItemId])
-        setAddSupplierOpen(true)
-      },
-      []
-    )
-
-    const handleAddSupplier = ({
-      supplierId,
-      supplierLabel,
-      purchaseRequestItemIds,
-    }: QuotationSupplierSelection) => {
-      const targetIds = new Set(purchaseRequestItemIds)
-
-      // One replaceValue per touched item — form-core's replaceFieldValue applies a functional
-      // update against the live store, so sequential calls here each build on the previous
-      // one's result rather than overwriting each other.
-      items.forEach((item, index) => {
-        if (!targetIds.has(item.purchaseRequestItemId)) return
-
-        itemsField.replaceValue(index, {
-          ...item,
-          quotes: [
-            ...item.quotes,
-            {
-              supplierId,
-              supplierLabel,
-              lastPrice: "",
-              lastPurchaseDate: "",
-              unitPrice: "",
-              leadTimeDays: "",
-              note: "",
-            },
-          ],
-        })
-      })
-
-      setAddSupplierOpen(false)
-    }
+    const addSupplierDialog = useQuotationAddSupplierDialog(itemsField, items)
 
     const columns = useMemo(
-      () => buildQuotationSuppliersItemColumns({ itemsField, disabled }),
-      [itemsField, disabled]
+      () =>
+        buildQuotationSuppliersItemColumns({
+          itemsField,
+          disabled,
+          onOpenAddSupplier: addSupplierDialog.openForItem,
+        }),
+      [itemsField, disabled, addSupplierDialog.openForItem]
     )
 
     const table = useReactTable({
@@ -85,7 +46,9 @@ export const CreateQuotationSuppliersSection = withForm({
       getCoreRowModel: getCoreRowModel(),
     })
 
-    const suppliedCount = items.filter((item) => item.quotes.length > 0).length
+    const suppliedCount = items.filter(
+      (item) => item.suppliers.length > 0
+    ).length
 
     return (
       <div className="px-4 py-5 sm:px-5">
@@ -95,12 +58,8 @@ export const CreateQuotationSuppliersSection = withForm({
               Khai báo NCC & báo giá
             </h2>
             <p className="text-sm text-muted-foreground">
-              Mỗi vật tư tự chọn NCC riêng — một vật tư có thể hỏi nhiều NCC để
-              so sánh giá
-            </p>
-            <p className="text-[11px] text-muted-foreground/75 italic">
-              Giá gần nhất, ngày mua gần nhất và lý do điều chỉnh SL chỉ để tham
-              khảo — không được lưu khi tạo RFQ
+              Giá gần nhất, ngày mua và lý do điều chỉnh SL chỉ để tham khảo,
+              không lưu khi tạo RFQ
             </p>
           </div>
           <span className="text-xs font-medium text-muted-foreground">
@@ -148,22 +107,25 @@ export const CreateQuotationSuppliersSection = withForm({
                     ))}
                   </TableRow>
 
-                  {/* Left accent border reads as "detail of the row above" — same idea
-                      PurchaseLedgerPage uses (border-l-2) to flag a row, reused here for
-                      hierarchy instead of a second dose of the outer table's own header
-                      shading. Set on the <td>, not the <tr> — a border-collapse:separate
-                      table (the default, unset elsewhere in this app) only paints borders
-                      declared on table/td/th; one set on <tr> is silently dropped. */}
+                  {/* Left accent reads as "detail of the row above" — reads unmistakably at a
+                      glance which vật tư a NCC block belongs to, even with several items stacked.
+                      An inset ring rather than `border-l`: Tailwind's `ring-*` has no single-side
+                      variant (it's always a uniform box-shadow), so this is that same inset
+                      box-shadow mechanism hand-scoped to just the left edge via an arbitrary
+                      value — drawn inside the cell's own bounds (no layout width added, unlike
+                      border-l) and never clipped by the outer wrapper's `overflow-hidden`. Set on
+                      the <td>, not the <tr> — a border-collapse:separate table (the default,
+                      unset elsewhere in this app) only paints borders/shadows declared on
+                      table/td/th; one set on <tr> is silently dropped. */}
                   <TableRow className="bg-card hover:bg-card">
                     <TableCell
                       colSpan={row.getVisibleCells().length}
-                      className="border-l-2 border-l-primary/40 p-0"
+                      className="p-0 shadow-[inset_3px_0_0_0_var(--color-primary)]"
                     >
                       <QuotationCompareQuoteTable
                         item={row.original}
                         itemIndex={row.index}
                         itemsField={itemsField}
-                        onOpenAddSupplier={openAddSupplierForItem}
                         disabled={disabled}
                       />
                     </TableCell>
@@ -175,11 +137,11 @@ export const CreateQuotationSuppliersSection = withForm({
         </div>
 
         <QuotationAddSupplierDialog
-          open={addSupplierOpen}
-          onOpenChange={setAddSupplierOpen}
+          open={addSupplierDialog.isOpen}
+          onOpenChange={addSupplierDialog.setOpen}
           items={items}
-          initialItemIds={initialItemIds}
-          onSubmit={handleAddSupplier}
+          initialItemIds={addSupplierDialog.initialItemIds}
+          onSubmit={addSupplierDialog.submit}
         />
       </div>
     )

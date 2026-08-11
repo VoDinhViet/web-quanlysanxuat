@@ -20,11 +20,13 @@ import { buildOptionsFromLabels } from "@/lib/utils"
 
 const currencyOptions = buildOptionsFromLabels(currencyLabels)
 const paymentTermOptions = buildOptionsFromLabels(paymentTermLabels)
-// AWAITING_PRODUCTION excluded: only reachable via the "Duyệt" action
-// (approve-order.api.ts), never settable directly through this form (order.error.
-// status_not_settable_directly) — see the matching drop in update-order.api.ts.
+// AWAITING_PRODUCTION/REJECTED excluded: only reachable via the "Duyệt"/"Từ chối" actions
+// (approve-order.api.ts/reject-order.api.ts), never settable directly through this form
+// (order.error.status_not_settable_directly) — see the matching drop in update-order.api.ts.
 const orderStatusOptions = buildOptionsFromLabels(orderStatusLabels).filter(
-  (option) => option.value !== OrderStatus.AWAITING_PRODUCTION
+  (option) =>
+    option.value !== OrderStatus.AWAITING_PRODUCTION &&
+    option.value !== OrderStatus.REJECTED
 )
 
 // Auto-fills a starting rate on a non-VND currency pick (GET open.er-api.com

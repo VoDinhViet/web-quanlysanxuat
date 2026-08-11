@@ -5,6 +5,7 @@ import { requirePermission } from "@/features/auth/guard"
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api/options"
 import { PurchaseOrdersPage } from "@/features/purchase-orders/pages/PurchaseOrdersPage"
 import { purchaseOrdersSearchSchema } from "@/features/purchase-orders/schemas/purchase-orders-search.schema"
+import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 
 export const Route = createFileRoute("/(authed)/manage_/purchase-orders")({
   beforeLoad: ({ context }) =>
@@ -14,11 +15,14 @@ export const Route = createFileRoute("/(authed)/manage_/purchase-orders")({
   // re-trigger this loader and blank the whole page. The list itself is read client-side in
   // PurchaseOrdersPage via useQuery instead.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      purchaseOrdersQueryOptions(
-        purchaseOrdersSearchSchema.parse(location.search)
-      )
-    ),
+    Promise.all([
+      context.queryClient.ensureQueryData(
+        purchaseOrdersQueryOptions(
+          purchaseOrdersSearchSchema.parse(location.search)
+        )
+      ),
+      context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
+    ]),
   component: PurchaseOrdersPage,
   pendingComponent: PageLoading,
 })

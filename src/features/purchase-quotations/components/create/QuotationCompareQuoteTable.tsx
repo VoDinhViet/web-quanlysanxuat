@@ -5,9 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -24,21 +22,20 @@ type QuotationCompareQuoteTableProps = {
   item: PickedQuotationItemValue
   itemIndex: number
   itemsField: AnyFieldApi
-  onOpenAddSupplier: (purchaseRequestItemId: string) => void
   disabled?: boolean
 }
 
-// Nested useReactTable listing one item's own NCC × giá rows, plus a trailing "Thêm NCC" trigger
-// that opens QuotationAddSupplierDialog (owned by CreateQuotationSuppliersSection — supplier
-// search now lives once in that dialog, not per item here). Rendered directly under every outer
-// row (see CreateQuotationSuppliersSection.tsx's row map) — one instance per item, so calling
-// useMemo/useReactTable here at the top level is a normal single-hook-per-render component, no
-// conditional-mount reasoning needed.
+// Nested useReactTable listing one item's own NCC × giá rows. The "Thêm NCC" trigger that opens
+// QuotationAddSupplierDialog now lives on the outer row's "Thao tác" cell (see
+// CreateQuotationSuppliersItemColumns.tsx) instead of a trailing row here — this table only
+// renders an empty-state hint when the item has no suppliers yet. Rendered directly under every
+// outer row (see CreateQuotationSuppliersSection.tsx's row map) — one instance per item, so
+// calling useMemo/useReactTable here at the top level is a normal single-hook-per-render
+// component, no conditional-mount reasoning needed.
 export function QuotationCompareQuoteTable({
   item,
   itemIndex,
   itemsField,
-  onOpenAddSupplier,
   disabled,
 }: QuotationCompareQuoteTableProps) {
   const quoteColumns = useMemo(
@@ -53,14 +50,14 @@ export function QuotationCompareQuoteTable({
   )
 
   const quoteTable = useReactTable({
-    data: item.quotes,
+    data: item.suppliers,
     columns: quoteColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
   return (
     <Table>
-      {item.quotes.length > 0 && (
+      {item.suppliers.length > 0 && (
         <TableHeader className="bg-transparent">
           {quoteTable.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -106,28 +103,15 @@ export function QuotationCompareQuoteTable({
           </TableRow>
         ))}
 
-        <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
-          <TableCell colSpan={quoteColumns.length} className="pl-10">
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="text-xs text-primary hover:text-primary"
-                disabled={disabled}
-                onClick={() => onOpenAddSupplier(item.purchaseRequestItemId)}
-              >
-                <Plus className="size-3.5" />
-                Thêm NCC
-              </Button>
-              {item.quotes.length === 0 && (
-                <span className="text-xs text-muted-foreground">
-                  Chưa có NCC nào cho vật tư này
-                </span>
-              )}
-            </div>
-          </TableCell>
-        </TableRow>
+        {item.suppliers.length === 0 && (
+          <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
+            <TableCell colSpan={quoteColumns.length} className="pl-10">
+              <span className="text-xs text-muted-foreground">
+                Chưa có NCC nào cho vật tư này
+              </span>
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>
     </Table>
   )

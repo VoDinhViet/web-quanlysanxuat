@@ -24,7 +24,7 @@ type ReqOrderApprovalDialogProps = {
   trigger: ReactNode
 }
 
-// DRAFT → PENDING_CONFIRMATION — hands the order to a director for approval.
+// DRAFT/REJECTED → PENDING_CONFIRMATION — hands the order to a director for approval.
 export function ReqOrderApprovalDialog({
   order,
   trigger,

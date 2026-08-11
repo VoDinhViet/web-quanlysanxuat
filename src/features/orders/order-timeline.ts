@@ -28,10 +28,13 @@ export function buildOrderTimeline(order: OrderDetail): OrderTimelineStep[] {
     ]
   }
 
-  // A reject only ever fires from PENDING_CONFIRMATION, sending the order back to
-  // DRAFT — so `rejectedAt` set while still DRAFT means "rejected, not yet resubmitted".
+  // A reject sends the order to REJECTED; editing it without changing `status` reverts it to
+  // DRAFT (keeping `rejectedAt` as history) — either status with `rejectedAt` set means
+  // "was rejected", current or past.
   const isRejected =
-    order.status === OrderStatus.DRAFT && order.rejectedAt !== null
+    (order.status === OrderStatus.REJECTED ||
+      order.status === OrderStatus.DRAFT) &&
+    order.rejectedAt !== null
   const isApproved = order.approvedAt !== null
   const isProducing = order.status === OrderStatus.IN_PROGRESS
   const isCompleted = order.status === OrderStatus.COMPLETED

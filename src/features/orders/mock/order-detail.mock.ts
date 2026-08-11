@@ -42,6 +42,7 @@ function seedFor(order: OrderDetail): void {
 const DELIVERED_PERCENT_BY_STATUS: Record<OrderStatus, number> = {
   [OrderStatus.DRAFT]: 0,
   [OrderStatus.PENDING_CONFIRMATION]: 0,
+  [OrderStatus.REJECTED]: 0,
   [OrderStatus.AWAITING_PRODUCTION]: 0,
   [OrderStatus.IN_PROGRESS]: 45,
   [OrderStatus.COMPLETED]: 100,

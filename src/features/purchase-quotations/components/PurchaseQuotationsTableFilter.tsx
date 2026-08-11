@@ -71,8 +71,8 @@ export function PurchaseQuotationsTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        quotationDateFrom: range.from,
-        quotationDateTo: range.to,
+        fromDate: range.from,
+        toDate: range.to,
         page: 1,
       }),
     })
@@ -89,8 +89,8 @@ export function PurchaseQuotationsTableFilter() {
           q: _q,
           status: _status,
           supplierId: _supplierId,
-          quotationDateFrom: _quotationDateFrom,
-          quotationDateTo: _quotationDateTo,
+          fromDate: _fromDate,
+          toDate: _toDate,
           ...rest
         } = prev
         return { ...rest, page: 1 }
@@ -157,8 +157,8 @@ export function PurchaseQuotationsTableFilter() {
               />
               <DateRangePicker
                 id="purchase-quotations-date-range"
-                from={search.quotationDateFrom}
-                to={search.quotationDateTo}
+                from={search.fromDate}
+                to={search.toDate}
                 onChange={handleQuotationDateRangeChange}
               />
             </div>
@@ -172,7 +172,7 @@ export function PurchaseQuotationsTableFilter() {
                 <Input
                   id="purchase-quotations-search"
                   className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Tìm theo mã RFQ, tên NCC..."
+                  placeholder="Tìm theo mã RFQ..."
                   value={q}
                   onChange={(event) => {
                     setQ(event.target.value)

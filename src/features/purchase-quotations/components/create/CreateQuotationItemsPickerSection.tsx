@@ -7,7 +7,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { useDebounceValue } from "usehooks-ts"
-import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { AltArrowLeft, AltArrowRight, Magnifer } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -53,8 +53,8 @@ function buildPickedQuotationItem(
     requestedQuantity: row.quantity,
     neededDate: row.neededDate,
     quantity: String(row.quantity),
-    adjustmentReason: "",
-    quotes: [],
+    quantityAdjustmentReason: "",
+    suppliers: [],
   }
 }
 
@@ -151,7 +151,7 @@ export const CreateQuotationItemsPickerSection = withForm({
                 setPage(1)
               }}
             />
-            <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
           </div>
         </div>
 
@@ -253,7 +253,7 @@ export const CreateQuotationItemsPickerSection = withForm({
                 disabled={disabled || pagination.currentPage <= 1}
                 onClick={() => setPage((p) => p - 1)}
               >
-                <ChevronLeft className="size-4" />
+                <AltArrowLeft className="size-4" />
               </Button>
               <Button
                 type="button"
@@ -264,7 +264,7 @@ export const CreateQuotationItemsPickerSection = withForm({
                 }
                 onClick={() => setPage((p) => p + 1)}
               >
-                <ChevronRight className="size-4" />
+                <AltArrowRight className="size-4" />
               </Button>
             </div>
           </div>

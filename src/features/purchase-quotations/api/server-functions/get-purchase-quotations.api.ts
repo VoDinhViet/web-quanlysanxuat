@@ -4,19 +4,8 @@ import axios from "axios"
 import { purchaseQuotationsSearchSchema } from "@/features/purchase-quotations/schemas/purchase-quotations-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { PurchaseQuotationApiRow } from "@/lib/types/purchase-quotation.type"
+import type { PurchaseQuotationRow } from "@/lib/types/purchase-quotation.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-
-// `quotationDateFrom`/`quotationDateTo` rename to `fromDate`/`toDate` — a real range on
-// GetQuotationsReqDto, same idiom as purchase-ledger's createdDateFrom/To rename.
-const getPurchaseQuotationsParamsSchema =
-  purchaseQuotationsSearchSchema.transform(
-    ({ quotationDateFrom, quotationDateTo, ...rest }) => ({
-      ...rest,
-      fromDate: quotationDateFrom,
-      toDate: quotationDateTo,
-    })
-  )
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -34,12 +23,12 @@ function resolveGetPurchaseQuotationsErrorMessage(error: unknown): string {
 }
 
 export const getPurchaseQuotations = createServerFn({ method: "GET" })
-  .validator(getPurchaseQuotationsParamsSchema)
+  .validator(purchaseQuotationsSearchSchema)
   .handler(
-    async ({ data }): Promise<PaginatedResponse<PurchaseQuotationApiRow>> => {
+    async ({ data }): Promise<PaginatedResponse<PurchaseQuotationRow>> => {
       try {
         const response = await http.get<
-          PaginatedResponse<PurchaseQuotationApiRow>
+          PaginatedResponse<PurchaseQuotationRow>
         >("/api/purchase-quotations", { params: data })
 
         return response.data

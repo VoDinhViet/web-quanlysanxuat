@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { AnyFieldApi } from "@tanstack/react-form"
-import { Trash2 } from "lucide-react"
+import { TrashBinTrash } from "@solar-icons/react"
 
 import { DatePicker } from "@/components/shared/DatePicker"
 import { IconButton } from "@/components/shared/IconButton"
@@ -8,11 +8,11 @@ import { NumericCellInput } from "@/features/purchase-quotations/components/crea
 import { TableTextCellInput } from "@/features/purchase-quotations/components/create/TableTextCellInput"
 import type {
   PickedQuotationItemValue,
-  QuotationSupplierQuoteValue,
+  QuotationItemSupplierValue,
 } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 const quotationQuoteColumnHelper =
-  createColumnHelper<QuotationSupplierQuoteValue>()
+  createColumnHelper<QuotationItemSupplierValue>()
 
 type BuildQuotationSuppliersQuoteColumnsArgs = {
   itemsField: AnyFieldApi
@@ -22,8 +22,9 @@ type BuildQuotationSuppliersQuoteColumnsArgs = {
 }
 
 // Own useReactTable columns for the inner (per-NCC) table nested under each vật tư row —
-// mutating a quote here always rewrites the WHOLE parent item via `itemsField.replaceValue`,
-// same as the outer columns, since `quotes` lives nested inside `items[itemIndex]` in form state.
+// mutating a supplier here always rewrites the WHOLE parent item via `itemsField.replaceValue`,
+// same as the outer columns, since `suppliers` lives nested inside `items[itemIndex]` in form
+// state.
 export function buildQuotationSuppliersQuoteColumns({
   itemsField,
   itemIndex,
@@ -32,12 +33,12 @@ export function buildQuotationSuppliersQuoteColumns({
 }: BuildQuotationSuppliersQuoteColumnsArgs) {
   const updateQuote = (
     quoteIndex: number,
-    patch: Partial<QuotationSupplierQuoteValue>
+    patch: Partial<QuotationItemSupplierValue>
   ) =>
     itemsField.replaceValue(itemIndex, {
       ...item,
-      quotes: item.quotes.map((quote, index) =>
-        index === quoteIndex ? { ...quote, ...patch } : quote
+      suppliers: item.suppliers.map((supplier, index) =>
+        index === quoteIndex ? { ...supplier, ...patch } : supplier
       ),
     })
 
@@ -133,11 +134,13 @@ export function buildQuotationSuppliersQuoteColumns({
           onClick={() =>
             itemsField.replaceValue(itemIndex, {
               ...item,
-              quotes: item.quotes.filter((_, index) => index !== row.index),
+              suppliers: item.suppliers.filter(
+                (_, index) => index !== row.index
+              ),
             })
           }
         >
-          <Trash2 className="size-3.5" />
+          <TrashBinTrash className="size-3.5" />
         </IconButton>
       ),
     }),

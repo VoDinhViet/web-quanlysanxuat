@@ -25,7 +25,7 @@ function resolveRejectOrderErrorMessage(error: unknown): string {
   }
 }
 
-// PENDING_CONFIRMATION → DRAFT, with a mandatory reason — director-level `orders:approve`,
+// PENDING_CONFIRMATION → REJECTED, with a mandatory reason — director-level `orders:approve`,
 // same permission as approveOrder.
 export const rejectOrder = createServerFn({ method: "POST" })
   .validator(rejectOrderSchema)

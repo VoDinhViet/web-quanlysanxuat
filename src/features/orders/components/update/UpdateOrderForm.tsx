@@ -14,6 +14,7 @@ import { OrderAttachmentsField } from "@/features/orders/components/OrderAttachm
 import { updateOrder } from "@/features/orders/api/server-functions/update-order.api"
 import { updateOrderSchema } from "@/features/orders/schemas/update-order.schema"
 import type { UpdateOrderSchema } from "@/features/orders/schemas/update-order.schema"
+import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 
 type UpdateOrderFormProps = {
@@ -62,7 +63,10 @@ export function UpdateOrderForm({ order }: UpdateOrderFormProps) {
     discountValue: String(order.discountValue),
     vatPercent: String(order.vatPercent),
     shippingFee: String(order.shippingFee),
-    status: order.status,
+    // Editing a REJECTED order reverts it to DRAFT server-side (OrdersService.updateOrder) — the
+    // form shows that outcome up front rather than the stale REJECTED value.
+    status:
+      order.status === OrderStatus.REJECTED ? OrderStatus.DRAFT : order.status,
     note: order.note ?? "",
     internalNote: order.internalNote ?? "",
     items: order.items.map((item) => ({

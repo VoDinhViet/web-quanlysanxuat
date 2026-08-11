@@ -5,10 +5,13 @@ import type { Unit } from "@/lib/types/unit.type"
 
 // Mirrors the backend's OrderStatus exactly. DRAFT → PENDING_CONFIRMATION (submit) →
 // AWAITING_PRODUCTION (director approve only, never a direct PATCH) → IN_PROGRESS →
-// COMPLETED/CANCELLED; a reject sends PENDING_CONFIRMATION back to DRAFT.
+// COMPLETED/CANCELLED. A reject sends PENDING_CONFIRMATION to REJECTED; editing a REJECTED
+// order without changing `status` reverts it to DRAFT, or it can be resubmitted straight to
+// PENDING_CONFIRMATION without editing anything.
 export const OrderStatus = {
   DRAFT: "DRAFT",
   PENDING_CONFIRMATION: "PENDING_CONFIRMATION",
+  REJECTED: "REJECTED",
   AWAITING_PRODUCTION: "AWAITING_PRODUCTION",
   IN_PROGRESS: "IN_PROGRESS",
   COMPLETED: "COMPLETED",
@@ -20,6 +23,7 @@ export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 export const orderStatusLabels: Record<OrderStatus, string> = {
   [OrderStatus.DRAFT]: "Nháp",
   [OrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận",
+  [OrderStatus.REJECTED]: "Từ chối",
   [OrderStatus.AWAITING_PRODUCTION]: "Chờ sản xuất",
   [OrderStatus.IN_PROGRESS]: "Đang thực hiện",
   [OrderStatus.COMPLETED]: "Hoàn thành",
@@ -29,6 +33,7 @@ export const orderStatusLabels: Record<OrderStatus, string> = {
 export const orderStatusDescriptions: Record<OrderStatus, string> = {
   [OrderStatus.DRAFT]: "Đơn nháp, sửa tự do, chưa gửi duyệt",
   [OrderStatus.PENDING_CONFIRMATION]: "Đã gửi, chờ Giám đốc duyệt",
+  [OrderStatus.REJECTED]: "Giám đốc từ chối — sửa lại sẽ tự về Nháp",
   [OrderStatus.AWAITING_PRODUCTION]: "Đã duyệt, chờ đưa vào sản xuất",
   [OrderStatus.IN_PROGRESS]: "Đơn hàng đang được xử lý",
   [OrderStatus.COMPLETED]: "Đã hoàn thành, kết thúc đơn hàng",
@@ -38,9 +43,10 @@ export const orderStatusDescriptions: Record<OrderStatus, string> = {
 // Statuses where the order can no longer be edited: PENDING_CONFIRMATION (already sent for
 // director approval — editing now would change the ground under the approver), everything from
 // AWAITING_PRODUCTION onward (once approved, the order is locked for good — there is no editable
-// status past this point), plus the two terminal statuses. Shared by both "Chỉnh sửa" buttons and
-// the update route's loader guard so all three stay in sync by construction instead of by
-// duplicated status literals.
+// status past this point), plus the two terminal statuses. REJECTED stays editable on purpose —
+// editing it (without changing `status`) is exactly how it reverts to DRAFT. Shared by both
+// "Chỉnh sửa" buttons and the update route's loader guard so all three stay in sync by
+// construction instead of by duplicated status literals.
 const notUpdatableStatuses: ReadonlySet<OrderStatus> = new Set([
   OrderStatus.PENDING_CONFIRMATION,
   OrderStatus.AWAITING_PRODUCTION,

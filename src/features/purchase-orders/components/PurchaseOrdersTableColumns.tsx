@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
@@ -7,9 +8,9 @@ import {
   PurchaseOrderAmountCell,
   PurchaseOrderSourceCell,
 } from "@/features/purchase-orders/components/PurchaseOrdersTableCells"
-import type { PurchaseOrderRow } from "@/lib/types/purchase-order.type"
+import type { PurchaseOrder } from "@/lib/types/purchase-order.type"
 
-const purchaseOrderColumnHelper = createColumnHelper<PurchaseOrderRow>()
+const purchaseOrderColumnHelper = createColumnHelper<PurchaseOrder>()
 
 export const purchaseOrdersColumns = [
   purchaseOrderColumnHelper.accessor("code", {
@@ -27,14 +28,24 @@ export const purchaseOrdersColumns = [
   }),
 
   purchaseOrderColumnHelper.display({
-    id: "quotations",
+    id: "quotation",
     header: "RFQ nguồn",
     meta: { headerClassName: "min-w-28" },
-    cell: ({ row }) => (
-      <PurchaseOrderSourceCell
-        codes={row.original.quotations.map((ref) => ref.code)}
-      />
-    ),
+    cell: ({ row }) => {
+      const quotation = row.original.quotation
+      if (!quotation) {
+        return <span className="text-xs text-muted-foreground">—</span>
+      }
+      return (
+        <Link
+          to="/manage/purchase-quotations/$purchaseQuotationId"
+          params={{ purchaseQuotationId: quotation.id }}
+          className="font-mono text-xs font-semibold text-primary hover:underline"
+        >
+          {quotation.code}
+        </Link>
+      )
+    },
   }),
 
   purchaseOrderColumnHelper.display({
@@ -89,11 +100,14 @@ export const purchaseOrdersColumns = [
     ),
   }),
 
-  purchaseOrderColumnHelper.accessor((row) => row.creator?.fullName ?? "—", {
-    id: "creator",
-    header: "Người phụ trách",
-    meta: { headerClassName: "min-w-32" },
-  }),
+  purchaseOrderColumnHelper.accessor(
+    (row) => row.assignedUser?.fullName ?? "—",
+    {
+      id: "assignedUser",
+      header: "Người phụ trách",
+      meta: { headerClassName: "min-w-32" },
+    }
+  ),
 
   purchaseOrderColumnHelper.display({
     id: "actions",
@@ -102,6 +116,8 @@ export const purchaseOrdersColumns = [
       headerClassName: "min-w-20 text-center",
       cellClassName: "font-normal",
     },
-    cell: () => <PurchaseOrderActionsCell />,
+    cell: ({ row }) => (
+      <PurchaseOrderActionsCell purchaseOrderId={row.original.id} />
+    ),
   }),
 ]
