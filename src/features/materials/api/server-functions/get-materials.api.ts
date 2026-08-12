@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import { MaterialStatus, MaterialType } from "@/lib/types/material.type"
+import { ItemStatus } from "@/lib/types/item.type"
 import type { Material } from "@/lib/types/material.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import { optional } from "@/lib/zod-transforms"
@@ -22,19 +22,16 @@ function resolveGetMaterialsErrorMessage(error: unknown): string {
   }
 }
 
-// Broader than any single caller's own search schema — see get-clients.api.ts
-// for why (route-facing `materialsSearchSchema` stays local to the materials
-// route, this one just needs to be wire-valid for the backend). The products
-// feature's BOM material picker is the other caller (via this feature's `api`
-// barrel), fixing `status: ACTIVE` and driving `q` from the picker's search box.
+// Broader than any single caller's own search schema — see get-clients.api.ts for why
+// (route-facing `materialsSearchSchema` stays local to the materials route, this one just needs
+// to be wire-valid for the backend). `type` isn't part of this schema — this feature only ever
+// reads RM, so the handler below fixes it, mirroring get-items.api.ts's own `type` handling.
 const getMaterialsSchema = z.object({
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),
   q: optional(z.string().trim()),
-  type: z.enum(MaterialType).optional(),
-  materialGroupId: z.string().trim().min(1).optional(),
   clientId: z.string().trim().min(1).optional(),
-  status: z.enum(MaterialStatus).optional(),
+  status: z.enum(ItemStatus).optional(),
   order: z.enum(["ASC", "DESC"]).optional(),
 })
 
@@ -43,8 +40,8 @@ export const getMaterials = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<PaginatedResponse<Material>> => {
     try {
       const response = await http.get<PaginatedResponse<Material>>(
-        "/api/materials",
-        { params: data }
+        "/api/items",
+        { params: { ...data, type: "RM" } }
       )
 
       return response.data

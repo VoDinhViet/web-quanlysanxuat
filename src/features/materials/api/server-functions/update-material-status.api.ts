@@ -4,7 +4,6 @@ import axios from "axios"
 import { updateMaterialStatusSchema } from "@/features/materials/schemas/update-material-status.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Material } from "@/lib/types/material.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -14,7 +13,7 @@ function resolveUpdateMaterialStatusErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "material.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy vật tư."
     case "auth.error.forbidden":
       return "Bạn không có quyền thực hiện thao tác này."
@@ -25,14 +24,11 @@ function resolveUpdateMaterialStatusErrorMessage(error: unknown): string {
 
 export const updateMaterialStatus = createServerFn({ method: "POST" })
   .validator(updateMaterialStatusSchema)
-  .handler(async ({ data }): Promise<Material> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
-      const response = await http.patch<Material>(
-        `/api/materials/${data.materialId}`,
-        { status: data.status }
-      )
-
-      return response.data
+      await http.patch(`/api/items/${data.materialId}`, {
+        status: data.status,
+      })
     } catch (error) {
       logHttpError(error, "updateMaterialStatus")
 

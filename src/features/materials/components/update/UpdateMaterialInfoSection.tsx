@@ -5,20 +5,14 @@ import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/ComboboxField"
 import { MaterialImageField } from "@/features/materials/components/MaterialImageField"
-import { materialGroupOptionsQueryOptions } from "@/features/materials/api/options"
 import { updateMaterialFormDefaultValues } from "@/features/materials/schemas/update-material.schema"
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
-import {
-  materialStatusLabels,
-  materialTypeLabels,
-  MaterialType,
-} from "@/lib/types/material.type"
+import { itemStatusLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { ComboboxOption } from "@/components/shared/ComboboxField"
 
-const MATERIAL_TYPE_OPTIONS = buildOptionsFromLabels(materialTypeLabels)
-const statusOptions = buildOptionsFromLabels(materialStatusLabels)
+const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 
 export const UpdateMaterialInfoSection = withForm({
   defaultValues: updateMaterialFormDefaultValues,
@@ -28,16 +22,12 @@ export const UpdateMaterialInfoSection = withForm({
   },
   render: function Render({ form, disabled, selectedClient }) {
     const client = useGetClientOptions()
-    // The route loader already prefetches both — resolves synchronously off cache.
+    // The route loader already prefetches this — resolves synchronously off cache.
     const { data: unitOptions } = useSuspenseQuery(
       unitOptionsQueryOptions("MATERIAL")
     )
-    const { data: materialGroupOptions } = useSuspenseQuery(
-      materialGroupOptionsQueryOptions()
-    )
 
     const unitSelectOptions = buildSelectOptions(unitOptions)
-    const materialGroupSelectOptions = buildSelectOptions(materialGroupOptions)
 
     return (
       <div>
@@ -94,57 +84,29 @@ export const UpdateMaterialInfoSection = withForm({
                 )}
               </form.AppField>
 
-              <form.AppField name="materialGroupId">
+              <form.Field name="clientId">
                 {(field) => (
-                  <field.SelectField
-                    label="Nhóm vật tư"
-                    required
-                    placeholder="Chọn nhóm vật tư"
-                    options={materialGroupSelectOptions}
+                  <ComboboxField
+                    id={field.name}
+                    label="Khách hàng"
+                    placeholder="Chọn khách hàng"
+                    value={field.state.value || undefined}
+                    onValueChange={(next) => field.handleChange(next ?? "")}
+                    onBlur={field.handleBlur}
+                    isInvalid={
+                      field.state.meta.isTouched &&
+                      field.state.meta.errors.length > 0
+                    }
+                    errors={field.state.meta.errors}
+                    options={client.options}
+                    onSearchChange={client.onSearchChange}
+                    isPending={client.isFetching}
+                    initialOption={selectedClient}
+                    emptyMessage="Không tìm thấy khách hàng"
                     disabled={disabled}
                   />
                 )}
-              </form.AppField>
-
-              <form.AppField name="type">
-                {(field) => (
-                  <field.RadioPillField
-                    label="Loại vật tư"
-                    required
-                    options={MATERIAL_TYPE_OPTIONS}
-                    disabled={disabled}
-                  />
-                )}
-              </form.AppField>
-
-              <form.Subscribe selector={(state) => state.values.type}>
-                {(type) => (
-                  <form.Field name="clientId">
-                    {(field) => (
-                      <ComboboxField
-                        id={field.name}
-                        label="Khách hàng"
-                        required={type === MaterialType.CLIENT}
-                        placeholder="Chọn khách hàng"
-                        value={field.state.value || undefined}
-                        onValueChange={(next) => field.handleChange(next ?? "")}
-                        onBlur={field.handleBlur}
-                        isInvalid={
-                          field.state.meta.isTouched &&
-                          field.state.meta.errors.length > 0
-                        }
-                        errors={field.state.meta.errors}
-                        options={client.options}
-                        onSearchChange={client.onSearchChange}
-                        isPending={client.isFetching}
-                        initialOption={selectedClient}
-                        emptyMessage="Không tìm thấy khách hàng"
-                        disabled={disabled || type !== MaterialType.CLIENT}
-                      />
-                    )}
-                  </form.Field>
-                )}
-              </form.Subscribe>
+              </form.Field>
 
               <form.AppField name="status">
                 {(field) => (

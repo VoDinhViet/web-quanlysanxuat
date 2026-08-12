@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { updateMaterialStatus } from "@/features/materials/api/server-functions/update-material-status.api"
-import { MaterialStatus } from "@/lib/types/material.type"
+import { ItemStatus } from "@/lib/types/item.type"
 import type { Material } from "@/lib/types/material.type"
 
 type ToggleMaterialStatusDialogProps = {
@@ -29,9 +29,9 @@ type ToggleMaterialStatusDialogProps = {
 // confirmations only differ in copy, not behavior, so a status-derived branch
 // here beats near-duplicate "deactivate"/"activate" dialog components.
 function getStatusConfig(material: Material) {
-  if (material.status === MaterialStatus.ACTIVE) {
+  if (material.status === ItemStatus.ACTIVE) {
     return {
-      nextStatus: MaterialStatus.INACTIVE,
+      nextStatus: ItemStatus.INACTIVE,
       icon: CirclePause,
       title: "Ngừng sử dụng vật tư này?",
       description: `"${material.name}" sẽ chuyển sang trạng thái Ngừng sử dụng và không thể chọn khi tạo giao dịch mới.`,
@@ -39,7 +39,7 @@ function getStatusConfig(material: Material) {
   }
 
   return {
-    nextStatus: MaterialStatus.ACTIVE,
+    nextStatus: ItemStatus.ACTIVE,
     icon: CircleCheck,
     title: "Kích hoạt lại vật tư này?",
     description: `"${material.name}" sẽ chuyển về trạng thái Đang sử dụng.`,

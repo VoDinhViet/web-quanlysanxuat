@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Link, useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
@@ -17,25 +16,16 @@ import { ComboboxField } from "@/components/shared/ComboboxField"
 import { FilterLabel } from "@/components/shared/FilterLabel"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
-import { materialGroupOptionsQueryOptions } from "@/features/materials/api/options"
-import {
-  materialStatusLabels,
-  materialTypeLabels,
-} from "@/lib/types/material.type"
-import type { MaterialStatus, MaterialType } from "@/lib/types/material.type"
+import { itemStatusLabels } from "@/lib/types/item.type"
+import type { ItemStatus } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
 
-const typeOptions = buildOptionsFromLabels(materialTypeLabels)
-const statusOptions = buildOptionsFromLabels(materialStatusLabels)
+const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 
 export function MaterialsTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/materials" })
   const navigate = useNavigate({ from: "/manage/materials" })
 
-  // The route loader already prefetches this — resolves synchronously off cache.
-  const { data: materialGroupOptions } = useSuspenseQuery(
-    materialGroupOptionsQueryOptions()
-  )
   const [q, setQ] = useState(search.q ?? "")
 
   // The route loader prefetches this hook's own q="" query, so `client.clients`
@@ -61,18 +51,6 @@ export function MaterialsTableFilter() {
     })
   }, 300)
 
-  const handleGroupChange = (value: string) => {
-    const materialGroupId = value === "all" ? undefined : value
-    void navigate({
-      search: (prev) => ({ ...prev, materialGroupId, page: 1 }),
-    })
-  }
-
-  const handleTypeChange = (value: string) => {
-    const type = value === "all" ? undefined : (value as MaterialType)
-    void navigate({ search: (prev) => ({ ...prev, type, page: 1 }) })
-  }
-
   const handleClientChange = (value: string | undefined) => {
     void navigate({
       search: (prev) => ({ ...prev, clientId: value, page: 1 }),
@@ -80,7 +58,7 @@ export function MaterialsTableFilter() {
   }
 
   const handleStatusChange = (value: string) => {
-    const status = value === "all" ? undefined : (value as MaterialStatus)
+    const status = value === "all" ? undefined : (value as ItemStatus)
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
@@ -93,8 +71,6 @@ export function MaterialsTableFilter() {
       search: (prev) => {
         const {
           q: _q,
-          type: _type,
-          materialGroupId: _materialGroupId,
           clientId: _clientId,
           status: _status,
           order: _order,
@@ -108,8 +84,8 @@ export function MaterialsTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-4 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)]">
-          <div className="space-y-1.5 sm:col-span-4 lg:col-span-1">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(14rem,1.4fr)_minmax(9rem,1fr)]">
+          <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <FilterLabel label="Tìm kiếm" htmlFor="materials-search" />
             <div className="relative">
               <Input
@@ -130,46 +106,6 @@ export function MaterialsTableFilter() {
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <FilterLabel label="Nhóm vật tư" htmlFor="materials-group" />
-            <Select
-              value={search.materialGroupId ?? "all"}
-              onValueChange={handleGroupChange}
-            >
-              <SelectTrigger id="materials-group" className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                {materialGroupOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {option.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <FilterLabel label="Loại vật tư" htmlFor="materials-type" />
-            <Select
-              value={search.type ?? "all"}
-              onValueChange={handleTypeChange}
-            >
-              <SelectTrigger id="materials-type" className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                {typeOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="space-y-1.5">
@@ -219,7 +155,7 @@ export function MaterialsTableFilter() {
             <RotateCw className="size-4" />
             Làm mới
           </Button>
-          <PermissionGate permission="materials:create">
+          <PermissionGate permission="items:create">
             <Button asChild className="text-xs">
               <Link to="/manage/materials/create">
                 <Plus className="size-4" />

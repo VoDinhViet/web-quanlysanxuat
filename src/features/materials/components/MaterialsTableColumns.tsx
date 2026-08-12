@@ -1,19 +1,17 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Image } from "@unpic/react"
-import { CircleCheck, CirclePause, Edit3, ImageOff, Trash2 } from "lucide-react"
+import { CircleCheck, CirclePause, Edit3, ImageOff } from "lucide-react"
 
 import { IconButton } from "@/components/shared/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { DeleteMaterialDialog } from "@/features/materials/components/DeleteMaterialDialog"
-import {
-  MaterialStatusBadge,
-  MaterialTypeBadge,
-} from "@/features/materials/components/MaterialBadges"
+import { MaterialStatusBadge } from "@/features/materials/components/MaterialBadges"
 import { ToggleMaterialStatusDialog } from "@/features/materials/components/ToggleMaterialStatusDialog"
-import { MaterialStatus } from "@/lib/types/material.type"
+import { ItemStatus } from "@/lib/types/item.type"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Material } from "@/lib/types/material.type"
+
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 const materialColumnHelper = createColumnHelper<Material>()
 
@@ -68,21 +66,13 @@ export const materialColumns = [
     header: "ĐVT",
     meta: { headerClassName: "min-w-20" },
   }),
-  materialColumnHelper.accessor((row) => row.group.name, {
-    id: "group",
-    header: "Nhóm vật tư",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => (
-      <span className="text-muted-foreground">{getValue()}</span>
-    ),
-  }),
-  materialColumnHelper.accessor("type", {
-    header: "Loại vật tư",
+  materialColumnHelper.accessor("minStock", {
+    header: "Định mức tồn",
     meta: {
-      headerClassName: "min-w-28 text-center",
-      cellClassName: "text-center",
+      headerClassName: "min-w-28 text-right",
+      cellClassName: "text-right tabular-nums",
     },
-    cell: ({ getValue }) => <MaterialTypeBadge type={getValue()} />,
+    cell: ({ getValue }) => quantityFormatter.format(getValue()),
   }),
   materialColumnHelper.accessor((row) => row.client?.name ?? "—", {
     id: "client",
@@ -109,11 +99,11 @@ export const materialColumns = [
     },
     cell: ({ row }) => {
       const material = row.original
-      const isActive = material.status === MaterialStatus.ACTIVE
+      const isActive = material.status === ItemStatus.ACTIVE
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <PermissionGate permission="materials:update">
+          <PermissionGate permission="items:update">
             <IconButton
               label="Chỉnh sửa"
               asChild
@@ -127,7 +117,7 @@ export const materialColumns = [
               </Link>
             </IconButton>
           </PermissionGate>
-          <PermissionGate permission="materials:update">
+          <PermissionGate permission="items:update">
             <ToggleMaterialStatusDialog
               material={material}
               trigger={
@@ -144,19 +134,6 @@ export const materialColumns = [
                   ) : (
                     <CircleCheck className="size-3.5" />
                   )}
-                </IconButton>
-              }
-            />
-          </PermissionGate>
-          <PermissionGate permission="materials:delete">
-            <DeleteMaterialDialog
-              material={material}
-              trigger={
-                <IconButton
-                  label="Xóa"
-                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                >
-                  <Trash2 className="size-3.5" />
                 </IconButton>
               }
             />

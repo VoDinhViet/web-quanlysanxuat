@@ -4,5 +4,3 @@
 // the options dropdown in one call.
 export { materialsQueryOptions } from "@/features/materials/api/options/materials.options"
 export { materialQueryOptions } from "@/features/materials/api/options/material.options"
-export { materialGroupOptionsQueryOptions } from "@/features/materials/api/options/material-group-options.options"
-export { materialOptionsQueryOptions } from "@/features/materials/api/options/material-options.options"

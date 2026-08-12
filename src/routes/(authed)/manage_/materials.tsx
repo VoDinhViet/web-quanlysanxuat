@@ -3,16 +3,13 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
-import {
-  materialGroupOptionsQueryOptions,
-  materialsQueryOptions,
-} from "@/features/materials/api/options"
+import { materialsQueryOptions } from "@/features/materials/api/options"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export const Route = createFileRoute("/(authed)/manage_/materials")({
   beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "materials:read"),
+    requirePermission(context.permissions, "items:read"),
   validateSearch: materialsSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route
   // match (that would re-trigger this loader and the router's
@@ -26,7 +23,6 @@ export const Route = createFileRoute("/(authed)/manage_/materials")({
       context.queryClient.ensureQueryData(
         materialsQueryOptions(materialsSearchSchema.parse(location.search))
       ),
-      context.queryClient.ensureQueryData(materialGroupOptionsQueryOptions()),
       context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
     ]),
   component: MaterialsPage,

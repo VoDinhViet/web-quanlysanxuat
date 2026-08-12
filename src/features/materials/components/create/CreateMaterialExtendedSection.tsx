@@ -1,7 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { withForm } from "@/hooks/use-app-form"
-import { MaterialAttachmentsField } from "@/features/materials/components/MaterialAttachmentsField"
 import { createMaterialFormDefaultValues } from "@/features/materials/schemas/create-material.schema"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { buildSelectOptions } from "@/lib/utils"
@@ -73,6 +72,17 @@ export const CreateMaterialExtendedSection = withForm({
             )}
           </form.AppField>
 
+          <form.AppField name="minStock">
+            {(field) => (
+              <field.TextField
+                label="Định mức tồn tối thiểu"
+                type="number"
+                placeholder="0"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
           <form.AppField name="colorSurface">
             {(field) => (
               <field.TextField
@@ -93,10 +103,10 @@ export const CreateMaterialExtendedSection = withForm({
             )}
           </form.AppField>
 
-          <form.AppField name="preferredSupplierId">
+          <form.AppField name="supplierId">
             {(field) => (
               <field.SelectField
-                label="Nhà cung cấp ưu tiên"
+                label="Nhà cung cấp chính"
                 placeholder="Chọn nhà cung cấp"
                 options={supplierSelectOptions}
                 disabled={disabled}
@@ -124,16 +134,6 @@ export const CreateMaterialExtendedSection = withForm({
               />
             )}
           </form.AppField>
-
-          <form.Field name="attachments">
-            {(field) => (
-              <MaterialAttachmentsField
-                value={field.state.value}
-                onChange={field.handleChange}
-                disabled={disabled}
-              />
-            )}
-          </form.Field>
         </div>
       </div>
     )

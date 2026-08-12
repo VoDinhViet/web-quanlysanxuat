@@ -13,20 +13,19 @@ import { updateMaterial } from "@/features/materials/api/server-functions/update
 import type { UpdateMaterialSchema } from "@/features/materials/schemas/update-material.schema"
 import type { Material } from "@/lib/types/material.type"
 
-// Material → raw form values: nullable fields become "", specificWeight
-// (number | null on the wire, a Drizzle `numeric` column) becomes a string
-// for the text input.
+// Material → raw form values: nullable fields become "", specificWeight/minStock
+// (number | null on the wire, Drizzle `numeric` columns) become strings for the text inputs.
 function getMaterialDefaultValues(material: Material): UpdateMaterialSchema {
   return {
     materialId: material.id,
     name: material.name,
     unitId: material.unit.id,
-    materialGroupId: material.group.id,
-    type: material.type,
     clientId: material.client?.id ?? "",
     image: material.image,
     status: material.status,
     note: material.note ?? "",
+    supplierId: material.supplier?.id ?? "",
+    minStock: String(material.minStock),
     materialGrade: material.materialGrade ?? "",
     technicalStandard: material.technicalStandard ?? "",
     dimensions: material.dimensions ?? "",
@@ -35,11 +34,7 @@ function getMaterialDefaultValues(material: Material): UpdateMaterialSchema {
     colorSurface: material.colorSurface ?? "",
     description: material.description ?? "",
     origin: material.origin ?? "",
-    preferredSupplierId: material.preferredSupplier?.id ?? "",
     leadTime: material.leadTime ?? "",
-    attachments: (material.attachments ?? []).map(
-      (attachment) => attachment.file
-    ),
   }
 }
 

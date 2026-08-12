@@ -62,7 +62,7 @@ export function MaterialsPage() {
                   title="Chưa có vật tư nào"
                   description="Bắt đầu bằng cách thêm vật tư đầu tiên vào danh mục của bạn."
                   action={
-                    <PermissionGate permission="materials:create">
+                    <PermissionGate permission="items:create">
                       <Button asChild size="sm" className="text-xs">
                         <Link to="/manage/materials/create">
                           <Plus className="size-4" />

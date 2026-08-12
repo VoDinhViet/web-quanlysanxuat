@@ -18,7 +18,6 @@ export const PERMISSION_CODES = [
   "orders:read",
   "orders:create",
   "orders:update",
-  "orders:delete",
   "orders:approve",
 
   "production:read",
@@ -34,14 +33,10 @@ export const PERMISSION_CODES = [
   "items:read",
   "items:create",
   "items:update",
-  "items:delete",
   "items:copy",
   "items:bom-manage",
 
-  "materials:read",
-  "materials:create",
-  "materials:update",
-  "materials:delete",
+  "operations:read",
 
   "suppliers:read",
   "suppliers:create",

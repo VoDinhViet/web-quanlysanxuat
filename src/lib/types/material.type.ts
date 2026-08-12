@@ -1,63 +1,35 @@
 import type { ClientRef } from "@/lib/types/client.type"
 import type { FileResource } from "@/lib/types/file.type"
+import type { ItemStatus } from "@/lib/types/item.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 
-export enum MaterialType {
-  INTERNAL = "INTERNAL",
-  CLIENT = "CLIENT",
-}
+// Vật tư (RM) is a `type = "RM"` row of the backend's `items` table (products+materials merged,
+// see be-quanlysanxuat/docs/decisions/items-merge.md) — this feature never sends/reads `type`
+// itself (the server function always fixes it to "RM"). Status is `ItemStatus` from
+// item.type.ts (ACTIVE/INACTIVE) — no separate `MaterialStatus` enum; a status this feature
+// shares 1:1 with `products` doesn't need its own name. Import `ItemStatus`/`itemStatusLabels`
+// directly from `@/lib/types/item.type` at call sites.
 
-export const materialTypeLabels: Record<MaterialType, string> = {
-  [MaterialType.INTERNAL]: "Nội bộ",
-  [MaterialType.CLIENT]: "Khách hàng",
-}
-
-export enum MaterialStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-}
-
-export const materialStatusLabels: Record<MaterialStatus, string> = {
-  [MaterialStatus.ACTIVE]: "Đang sử dụng",
-  [MaterialStatus.INACTIVE]: "Ngừng sử dụng",
-}
-
-/** Mirrors the backend's nested material-group relation (GET /api/material-groups). */
-export type MaterialGroupRef = {
-  id: string
-  code: string
-  name: string
-}
-
-/** Mirrors the backend's nested creator/changer relation (maps from `credentials`). */
-export type MaterialCreator = {
-  id: string
-  username: string
-}
-
-/** Mirrors the backend's MaterialAttachmentResDto — a join row carrying the
- *  registry file it points at. */
-export type MaterialAttachment = {
-  id: string
-  file: FileResource
-}
-
-/** Mirrors the backend's MaterialResDto (GET /api/materials, GET /api/materials/:id).
- *  `preferredSupplier` and `attachments` are optional because the backend only
- *  loads those relations on the detail endpoint — list rows omit them entirely. */
+/** Mirrors the backend's MaterialResDto (GET /api/items?type=RM, GET /api/items/:id) narrowed to
+ *  the RM-only fields this feature reads — `id`/`code`/`name`/`status`/`unit`/`client`/`image`/
+ *  `note` are shared with FG/WIP (see `Item` in item.type.ts); `supplier`/`minStock`/8 extended
+ *  fields below are always null/default on a non-RM row and only meaningful here. No `group`/
+ *  `type` (INTERNAL/CLIENT) — both concepts were dropped when products+materials merged into
+ *  `items` (nhóm hàng hoá bỏ hẳn; ownership giờ suy từ `clientId` có set hay không). No
+ *  `attachments` — `material_attachments` was dropped too, only `image` remains. */
 export type Material = {
   id: string
   code: string
   name: string
-  type: MaterialType
-  status: MaterialStatus
+  status: ItemStatus
   unit: Unit
-  group: MaterialGroupRef
   client: ClientRef | null
   image: FileResource | null
   note: string | null
-  // Extended information (all optional)
+  supplier: SupplierRef | null
+  /** Định mức tồn tối thiểu — quyết định badge Bình thường/Cảnh báo ở màn Tồn kho vật tư. */
+  minStock: number
   materialGrade: string | null
   technicalStandard: string | null
   dimensions: string | null
@@ -65,10 +37,7 @@ export type Material = {
   colorSurface: string | null
   description: string | null
   origin: string | null
-  preferredSupplier?: SupplierRef | null
   leadTime: string | null
-  attachments?: MaterialAttachment[]
-  creator: MaterialCreator | null
   createdAt: string
   updatedAt: string
 }

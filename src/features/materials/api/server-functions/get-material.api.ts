@@ -14,7 +14,7 @@ function resolveGetMaterialErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "material.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy vật tư."
     default:
       return GENERIC_ERROR_MESSAGE
@@ -25,9 +25,7 @@ export const getMaterial = createServerFn({ method: "GET" })
   .validator(z.object({ materialId: z.uuid() }))
   .handler(async ({ data }): Promise<Material> => {
     try {
-      const response = await http.get<Material>(
-        `/api/materials/${data.materialId}`
-      )
+      const response = await http.get<Material>(`/api/items/${data.materialId}`)
 
       return response.data
     } catch (error) {
