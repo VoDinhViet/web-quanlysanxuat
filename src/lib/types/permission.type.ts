@@ -60,6 +60,7 @@ export const PERMISSION_CODES = [
 
   "iqc:read",
   "iqc:create",
+  "iqc:update",
 ] as const
 
 export type PermissionCode = (typeof PERMISSION_CODES)[number]

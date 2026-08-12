@@ -5,10 +5,10 @@ import { iqcStatsQueryOptions } from "@/features/iqc/api/options"
 import { buildIqcStatTiles } from "@/features/iqc/components/iqc-stat-tiles"
 import { cn } from "@/lib/utils"
 
-// Six across only from 2xl up — a narrower card cannot hold the icon tile + 2-line label/value
+// Seven across only from 2xl up — a narrower card cannot hold the icon tile + 2-line label/value
 // stack side by side.
 const gridClassName =
-  "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6"
+  "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-7"
 
 // Route loader only prefetches this (see manage_/iqc.tsx) — it doesn't block the route, so this
 // component reads it itself via a plain useQuery instead of useSuspenseQuery.
@@ -18,7 +18,7 @@ export function IqcStatCards() {
   if (statsQuery.isPending) {
     return (
       <div className={gridClassName}>
-        {Array.from({ length: 6 }, (_, index) => (
+        {Array.from({ length: 7 }, (_, index) => (
           <div
             key={index}
             className="flex items-center gap-3 rounded-lg bg-card p-4 shadow-card"

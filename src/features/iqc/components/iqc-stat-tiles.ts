@@ -4,6 +4,7 @@ import {
   ClipboardText,
   ClockCircle,
   CloseCircle,
+  QuestionCircle,
   UndoLeftRound,
 } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
@@ -51,6 +52,13 @@ const iqcStatTileDefs: IqcStatTileDef[] = [
     iconClassName: "bg-info/15 text-info",
     selectValue: (stats) => stats.total,
     selectPercentBase: null,
+  },
+  {
+    label: "Chưa kiểm",
+    icon: QuestionCircle,
+    iconClassName: "bg-muted text-muted-foreground",
+    selectValue: (stats) => stats.notInspected,
+    selectPercentBase: (stats) => stats.total,
   },
   {
     label: "PASS",

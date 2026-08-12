@@ -139,6 +139,6 @@ export const iqcColumns = [
       headerClassName: "min-w-24 text-center",
       cellClassName: "font-normal",
     },
-    cell: () => <IqcActionsCell />,
+    cell: ({ row }) => <IqcActionsCell iqcId={row.original.id} />,
   }),
 ]

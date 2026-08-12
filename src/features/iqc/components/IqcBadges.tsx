@@ -26,11 +26,16 @@ export const iqcResultStyles: Record<IqcResult, BadgeStyle> = {
 }
 
 type IqcResultBadgeProps = {
-  result: IqcResult
+  result: IqcResult | null
   className?: string
 }
 
+// `result` is null for a NOT_INSPECTED row — chưa chạy AQL sampling nên chưa có PASS/FAIL.
 export function IqcResultBadge({ result, className }: IqcResultBadgeProps) {
+  if (!result) {
+    return <span className="text-xs text-muted-foreground">—</span>
+  }
+
   const { badge, dot } = iqcResultStyles[result]
 
   return (
@@ -84,6 +89,10 @@ export function IqcDispositionBadge({
 }
 
 export const iqcStatusStyles: Record<IqcStatus, BadgeStyle> = {
+  [IqcStatus.NOT_INSPECTED]: {
+    badge: "bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground/60",
+  },
   [IqcStatus.PENDING]: {
     badge:
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",

@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { IqcDisposition, IqcResult, IqcStatus } from "@/lib/types/iqc.type"
+import { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 
 // Mirrors the backend's GetIqcsReqDto (GET /api/iqc). Every optional field carries
 // `.catch(undefined)` so a hand-mangled URL degrades gracefully instead of taking the route down.
@@ -15,9 +15,7 @@ export const iqcSearchSchema = z.object({
   materialKeyword: z.string().trim().min(1).optional().catch(undefined),
   supplierId: z.string().trim().min(1).optional().catch(undefined),
   poCode: z.string().trim().min(1).optional().catch(undefined),
-  nkCode: z.string().trim().min(1).optional().catch(undefined),
   result: z.enum(IqcResult).optional().catch(undefined),
-  disposition: z.enum(IqcDisposition).optional().catch(undefined),
   status: z.enum(IqcStatus).optional().catch(undefined),
 })
 

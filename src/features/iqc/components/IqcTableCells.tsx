@@ -1,6 +1,8 @@
+import { Link } from "@tanstack/react-router"
 import { Edit3, Eye } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/DisabledAction"
+import { Button } from "@/components/ui/button"
 
 // "PO / Lý do" — theo docs/domains/quality.md: có PO thì hiện mã PO, không thì hiện lý do tự do
 // (reason, free text). Cả hai cùng null là biên hiếm (seed luôn set reason khi không có PO).
@@ -28,15 +30,28 @@ export function IqcPoOrReasonCell({
   return <span className="text-xs text-muted-foreground">—</span>
 }
 
-// Cả "Xem chi tiết" lẫn "Chỉnh sửa" đều chưa có route (backend chỉ có GET list + GET stats + POST
-// create, không có GET/PATCH theo id) — khác supplier-returns lúc mới dựng (chỉ "Chỉnh sửa" bị
-// disable, "Xem chi tiết" mở được sheet từ dữ liệu list); ở đây cả 2 cùng chưa có gì để trỏ tới.
-export function IqcActionsCell() {
+type IqcActionsCellProps = {
+  iqcId: string
+}
+
+// "Xem chi tiết" now has a real route (GET /iqc/:iqcId) — see IqcDetailPage. "Chỉnh sửa" stays
+// disabled: the only way to change a row after creation is the confirm-QC flow on the detail
+// page itself, not a free-form edit.
+export function IqcActionsCell({ iqcId }: IqcActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <DisabledAction label="Xem chi tiết" hint="chưa có màn chi tiết">
-        <Eye className="size-3.5" />
-      </DisabledAction>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className="bg-background text-muted-foreground"
+        aria-label="Xem chi tiết"
+        asChild
+      >
+        <Link to="/manage/iqc/$iqcId" params={{ iqcId }}>
+          <Eye className="size-3.5" />
+        </Link>
+      </Button>
       <DisabledAction label="Chỉnh sửa" hint="tính năng sắp có">
         <Edit3 className="size-3.5" />
       </DisabledAction>
