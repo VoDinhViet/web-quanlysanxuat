@@ -3,3 +3,4 @@
 // import rule) — never reach into `api/server-functions/` or
 // `api/options/` directly.
 export { orderItemOptionsQueryOptions } from "@/features/products/api/options"
+export { itemQueryOptions } from "@/features/products/api/options"

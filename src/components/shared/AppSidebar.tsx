@@ -5,6 +5,7 @@ import {
   BookText,
   Boxes,
   Building2,
+  ClipboardCheck,
   ClipboardList,
   Factory,
   FileText,
@@ -21,6 +22,7 @@ import {
   ShieldCheck,
   ShoppingCart,
   Truck,
+  Undo2,
   UserRound,
   Warehouse,
 } from "lucide-react"
@@ -108,6 +110,23 @@ const menuGroups: MenuGroup[] = [
         permission: "purchasing:read",
       },
       { label: "Nhập hàng", icon: ArrowDownToLine },
+      {
+        label: "Trả NCC",
+        icon: Undo2,
+        href: "/manage/supplier-returns",
+        permission: "inventory:read",
+      },
+    ],
+  },
+  {
+    label: "Kiểm tra chất lượng (QC)",
+    items: [
+      {
+        label: "IQC",
+        icon: ClipboardCheck,
+        href: "/manage/iqc",
+        permission: "iqc:read",
+      },
     ],
   },
   {
