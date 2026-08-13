@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { Download, Filter, RotateCw, Search } from "lucide-react"
+import { Download, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -32,8 +32,8 @@ export function PurchaseLedgerTableFilter() {
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
-  // PurchaseRequestsTableFilter.tsx. The "Bộ lọc" button and Enter both call `.flush()` to
-  // apply immediately without waiting out the debounce.
+  // PurchaseRequestsTableFilter.tsx. Enter calls `.flush()` to apply immediately without waiting
+  // out the debounce.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
     void navigate({
@@ -182,19 +182,6 @@ export function PurchaseLedgerTableFilter() {
 
           <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
             <MockDataBadge />
-
-            {/* Select/DateRangePicker already apply live on change (app-wide convention) —
-                this only flushes the search box's 300ms debounce immediately, same effect as
-                pressing Enter in it. */}
-            <Button
-              type="button"
-              variant="outline"
-              className="text-xs"
-              onClick={() => handleSearch.flush()}
-            >
-              <Filter className="size-4" />
-              Bộ lọc
-            </Button>
 
             <Button
               type="button"

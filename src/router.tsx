@@ -33,7 +33,20 @@ export function getRouter() {
     context: { queryClient },
   })
 
-  setupRouterSsrQueryIntegration({ router, queryClient })
+  setupRouterSsrQueryIntegration({
+    router,
+    queryClient,
+    dehydrateOptions: {
+      shouldDehydrateQuery: (query) => query.meta?.ssr !== false,
+    },
+    hydrateOptions: {
+      defaultOptions: {
+        queries: {
+          gcTime: 60_000,
+        },
+      },
+    },
+  })
 
   return router
 }

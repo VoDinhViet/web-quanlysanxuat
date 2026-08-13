@@ -9,7 +9,6 @@ import {
   supplierStatsQueryOptions,
   suppliersQueryOptions,
 } from "@/features/suppliers/api/options"
-import { countryOptionsQueryOptions } from "@/features/countries/api"
 
 export const Route = createFileRoute("/(authed)/manage_/suppliers")({
   beforeLoad: ({ context }) =>
@@ -34,7 +33,6 @@ export const Route = createFileRoute("/(authed)/manage_/suppliers")({
         suppliersQueryOptions(suppliersSearchSchema.parse(location.search))
       ),
       context.queryClient.ensureQueryData(supplierGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(countryOptionsQueryOptions()),
     ])
   },
   component: SuppliersPage,

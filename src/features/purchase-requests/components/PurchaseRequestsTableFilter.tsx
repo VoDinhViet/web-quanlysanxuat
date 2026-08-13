@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Filter, Plus, RotateCw, Search } from "lucide-react"
+import { Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,8 +43,8 @@ export function PurchaseRequestsTableFilter() {
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // ProductionJobsTableFilter.tsx. An empty term becomes `undefined` so the search
-  // schema's `.optional()` drops `q` from the URL entirely. The "Bộ lọc" button and
-  // Enter both call `.flush()` to apply immediately without waiting out the debounce.
+  // schema's `.optional()` drops `q` from the URL entirely. Enter calls `.flush()` to apply
+  // immediately without waiting out the debounce.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
     void navigate({
@@ -198,19 +198,6 @@ export function PurchaseRequestsTableFilter() {
           </div>
 
           <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            {/* Select/DateRangePicker already apply live on change (app-wide convention) — this only
-                flushes the search box's 300ms debounce immediately, same effect as pressing Enter in
-                it. Not a "select then apply" gate over the other fields. */}
-            <Button
-              type="button"
-              variant="outline"
-              className="text-xs"
-              onClick={() => handleSearch.flush()}
-            >
-              <Filter className="size-4" />
-              Bộ lọc
-            </Button>
-
             <Button
               type="button"
               variant="outline"

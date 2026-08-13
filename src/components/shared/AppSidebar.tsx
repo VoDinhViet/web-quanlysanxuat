@@ -7,6 +7,7 @@ import {
   Building2,
   ClipboardCheck,
   ClipboardList,
+  CreditCard,
   Factory,
   FileText,
   GitBranch,
@@ -79,7 +80,12 @@ const menuGroups: MenuGroup[] = [
         permission: "orders:read",
       },
       { label: "Báo giá (RFQ)", icon: FileText },
-      { label: "Giao hàng (DO)", icon: Truck },
+      {
+        label: "Giao hàng (DO)",
+        icon: Truck,
+        href: "/manage/outbound-orders",
+        permission: "orders:read",
+      },
     ],
   },
   {
@@ -107,6 +113,12 @@ const menuGroups: MenuGroup[] = [
         label: "Đơn mua hàng (PO)",
         icon: ReceiptText,
         href: "/manage/purchase-orders",
+        permission: "purchasing:read",
+      },
+      {
+        label: "Yêu cầu thanh toán",
+        icon: CreditCard,
+        href: "/manage/payment-requests",
         permission: "purchasing:read",
       },
       { label: "Nhập hàng", icon: ArrowDownToLine },
@@ -150,7 +162,12 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Quản lý kho",
     items: [
-      { label: "Nhập kho", icon: PackagePlus },
+      {
+        label: "Nhập kho",
+        icon: PackagePlus,
+        href: "/manage/inventory-receipts",
+        permission: "inventory:read",
+      },
       { label: "Xuất kho", icon: PackageMinus },
       {
         label: "Tồn kho vật tư",
@@ -158,7 +175,12 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/inventory-materials",
         permission: "inventory:read",
       },
-      { label: "Tồn kho thành phẩm", icon: Boxes },
+      {
+        label: "Tồn kho thành phẩm",
+        icon: Boxes,
+        href: "/manage/inventory-products",
+        permission: "inventory:read",
+      },
     ],
   },
   {

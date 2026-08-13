@@ -68,11 +68,6 @@ export function OrdersTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
-  const handleAssignedUserChange = (value: string) => {
-    const assignedUserId = value === "all" ? undefined : value
-    void navigate({ search: (prev) => ({ ...prev, assignedUserId, page: 1 }) })
-  }
-
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
@@ -151,18 +146,16 @@ export function OrdersTableFilter() {
               </Select>
             </div>
 
-            {/* No backend endpoint exists for assigned-user options yet (confirmed:
-                GET /api/users has no options endpoint) — the select stays
-                populated with only "Tất cả" until that ships. Not faked. */}
+            {/* NV kinh doanh is a visual placeholder — no backend endpoint exists for
+                assigned-user options yet (confirmed: GET /api/users has no options endpoint), so
+                the filter is disabled until that ships. Not faked. Same pattern as "Khu vực" in
+                ClientsTableFilter.tsx. */}
             <div className="space-y-1.5">
               <FilterLabel
                 label="NV kinh doanh"
                 htmlFor="orders-assigned-user"
               />
-              <Select
-                value={search.assignedUserId ?? "all"}
-                onValueChange={handleAssignedUserChange}
-              >
+              <Select value="all" disabled>
                 <SelectTrigger
                   id="orders-assigned-user"
                   className="w-full text-xs"

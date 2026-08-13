@@ -17,7 +17,6 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { DatePicker } from "@/components/shared/DatePicker"
 import { FilterLabel } from "@/components/shared/FilterLabel"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import type { InventoryStatus } from "@/lib/types/inventory-material.type"
 import { inventoryStatusLabels } from "@/lib/types/inventory-material.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -34,12 +33,9 @@ export function InventoryMaterialsTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/inventory-materials" })
   const navigate = useNavigate({ from: "/manage/inventory-materials" })
 
-  // The route loader already prefetches both — resolves synchronously off cache.
+  // The route loader already prefetches this — resolves synchronously off cache.
   const { data: supplierOptions } = useSuspenseQuery(
     supplierOptionsQueryOptions()
-  )
-  const { data: warehouseOptions } = useSuspenseQuery(
-    warehouseOptionsQueryOptions()
   )
   const [q, setQ] = useState(search.q ?? "")
 
@@ -63,11 +59,6 @@ export function InventoryMaterialsTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
   }
 
-  const handleWarehouseChange = (value: string) => {
-    const warehouseId = value === "all" ? undefined : value
-    void navigate({ search: (prev) => ({ ...prev, warehouseId, page: 1 }) })
-  }
-
   const handleStatusChange = (value: string) => {
     const status = value === "all" ? undefined : (value as InventoryStatus)
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
@@ -87,7 +78,6 @@ export function InventoryMaterialsTableFilter() {
         const {
           q: _q,
           supplierId: _supplierId,
-          warehouseId: _warehouseId,
           status: _status,
           asOfDate: _asOfDate,
           ...rest
@@ -101,7 +91,7 @@ export function InventoryMaterialsTableFilter() {
     <TooltipProvider>
       <div className="flex flex-col gap-3 bg-card px-4 py-3.5 lg:px-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(12rem,1.5fr)_minmax(8rem,1fr)_minmax(8rem,1fr)_minmax(8rem,1fr)_minmax(9rem,1fr)]">
+          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(12rem,1.5fr)_minmax(8rem,1fr)_minmax(8rem,1fr)_minmax(9rem,1fr)]">
             {/* Tìm kiếm */}
             <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
               <FilterLabel
@@ -168,30 +158,6 @@ export function InventoryMaterialsTableFilter() {
                 <SelectContent>
                   <SelectItem value="all">Tất cả</SelectItem>
                   {supplierOptions.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
-                      {option.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Kho */}
-            <div className="space-y-1.5">
-              <FilterLabel label="Kho" htmlFor="inventory-warehouse" />
-              <Select
-                value={search.warehouseId ?? "all"}
-                onValueChange={handleWarehouseChange}
-              >
-                <SelectTrigger
-                  id="inventory-warehouse"
-                  className="w-full text-xs"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả</SelectItem>
-                  {warehouseOptions.map((option) => (
                     <SelectItem key={option.id} value={option.id}>
                       {option.name}
                     </SelectItem>

@@ -6,7 +6,6 @@ import { InventoryMaterialsPage } from "@/features/inventory-materials/pages/Inv
 import { materialInventoryQueryOptions } from "@/features/inventory-materials/api/options/material-inventory.options"
 import { inventoryMaterialsSearchSchema } from "@/features/inventory-materials/schemas/inventory-materials-search.schema"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 
 export const Route = createFileRoute("/(authed)/manage_/inventory-materials")({
   beforeLoad: ({ context }) =>
@@ -24,7 +23,6 @@ export const Route = createFileRoute("/(authed)/manage_/inventory-materials")({
           inventoryMaterialsSearchSchema.parse(location.search)
         )
       ),
-      context.queryClient.ensureQueryData(warehouseOptionsQueryOptions()),
       context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
     ]),
   component: InventoryMaterialsPage,
