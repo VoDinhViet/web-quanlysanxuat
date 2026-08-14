@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Eye, MoreVertical, Pencil, Printer, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -18,34 +20,78 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { mockDeleteInventoryReceipt } from "@/features/inventory-receipts/mock/inventory-receipts.mock"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { InventoryReceiptPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptPrintDialog"
-import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
+import { deleteInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/delete-inventory-receipt.api"
+import { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
+import type {
+  InventoryReceipt,
+  InventoryReceiptProductionOrderRef,
+  InventoryReceiptPurchaseOrderRef,
+  InventoryReceiptPurchaseRequestRef,
+} from "@/lib/types/inventory-receipt.type"
+import type { SupplierRef } from "@/lib/types/supplier.type"
+
+type InventoryReceiptSourceCellProps = {
+  purchaseOrder: InventoryReceiptPurchaseOrderRef | null
+  supplier: SupplierRef | null
+  purchaseRequest: InventoryReceiptPurchaseRequestRef | null
+  productionOrder: InventoryReceiptProductionOrderRef | null
+}
+
+// Ưu tiên hiển thị PO → NCC → PR → "—". `productionOrder` không tham gia hiển thị (phiếu từ
+// LSX hiếm khi cũng gắn NCC/PO) nhưng vẫn nhận qua props để chữ ký khớp đủ 4 nguồn gốc có thể có
+// trên một phiếu — tránh gọi nhầm thiếu tham số khi thêm cột khác sau này.
+export function InventoryReceiptSourceCell({
+  purchaseOrder,
+  supplier,
+  purchaseRequest,
+}: InventoryReceiptSourceCellProps) {
+  if (purchaseOrder) {
+    return (
+      <span className="font-mono text-xs font-semibold text-primary">
+        {purchaseOrder.code}
+      </span>
+    )
+  }
+
+  if (supplier) {
+    return <span className="text-xs text-foreground">{supplier.name}</span>
+  }
+
+  if (purchaseRequest) {
+    return (
+      <span className="font-mono text-xs text-muted-foreground">
+        {purchaseRequest.code}
+      </span>
+    )
+  }
+
+  return <span className="text-xs text-muted-foreground">—</span>
+}
+
+type InventoryReceiptActionsCellProps = {
+  receipt: InventoryReceipt
+}
 
 export function InventoryReceiptActionsCell({
   receipt,
-}: {
-  receipt: InventoryReceipt
-}) {
+}: InventoryReceiptActionsCellProps) {
   const [printOpen, setPrintOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const queryClient = useQueryClient()
+  const deleteInventoryReceiptFn = useServerFn(deleteInventoryReceipt)
 
   const deleteMutation = useMutation({
-    mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 200))
-      return mockDeleteInventoryReceipt(receipt.id)
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: ["inventory-receipts", "list"],
-      })
+    mutationFn: () =>
+      deleteInventoryReceiptFn({ data: { receiptId: receipt.id } }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["inventory-receipts"] })
       setDeleteOpen(false)
     },
   })
 
-  const isDraft = receipt.status === "DRAFT"
+  const isDraft = receipt.status === InventoryReceiptStatus.DRAFT
 
   return (
     <>
@@ -89,7 +135,6 @@ export function InventoryReceiptActionsCell({
               </Link>
             </DropdownMenuItem>
 
-            {/* Added Print Feature per mockup annotation */}
             <DropdownMenuItem onClick={() => setPrintOpen(true)}>
               <Printer className="mr-2 size-4" />
               In phiếu nhập kho
@@ -98,22 +143,26 @@ export function InventoryReceiptActionsCell({
             {isDraft && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/manage/inventory-receipts/$inventoryReceiptId"
-                    params={{ inventoryReceiptId: receipt.id }}
+                <PermissionGate permission="inventory:update">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/manage/inventory-receipts/$inventoryReceiptId/update"
+                      params={{ inventoryReceiptId: receipt.id }}
+                    >
+                      <Pencil className="mr-2 size-4 text-amber-600" />
+                      Chỉnh sửa phiếu
+                    </Link>
+                  </DropdownMenuItem>
+                </PermissionGate>
+                <PermissionGate permission="inventory:delete">
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => setDeleteOpen(true)}
                   >
-                    <Pencil className="mr-2 size-4 text-amber-600" />
-                    Chỉnh sửa phiếu
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => setDeleteOpen(true)}
-                >
-                  <Trash2 className="mr-2 size-4" />
-                  Xóa phiếu
-                </DropdownMenuItem>
+                    <Trash2 className="mr-2 size-4" />
+                    Xóa phiếu
+                  </DropdownMenuItem>
+                </PermissionGate>
               </>
             )}
           </DropdownMenuContent>
@@ -124,11 +173,17 @@ export function InventoryReceiptActionsCell({
       <InventoryReceiptPrintDialog
         open={printOpen}
         onOpenChange={setPrintOpen}
-        receiptId={receipt.id}
+        detail={receipt}
       />
 
       {/* Delete Confirm Dialog */}
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+      <Dialog
+        open={deleteOpen}
+        onOpenChange={(next) => {
+          setDeleteOpen(next)
+          if (next) deleteMutation.reset()
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Xóa phiếu nhập kho</DialogTitle>
@@ -140,6 +195,11 @@ export function InventoryReceiptActionsCell({
               ? Hành động này không thể hoàn tác.
             </DialogDescription>
           </DialogHeader>
+          {deleteMutation.error && (
+            <p className="text-sm text-destructive">
+              {deleteMutation.error.message}
+            </p>
+          )}
           <DialogFooter>
             <Button
               variant="outline"

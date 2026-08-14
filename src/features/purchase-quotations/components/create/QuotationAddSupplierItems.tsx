@@ -23,7 +23,7 @@ type QuotationAddSupplierItemsProps = {
   checkedIds: Set<string>
   assignedIds: Set<string>
   allChecked: boolean
-  onToggleItem: (purchaseRequestItemId: string) => void
+  onToggleItem: (itemId: string) => void
   onToggleAll: (checked: boolean) => void
 }
 
@@ -43,8 +43,8 @@ export function QuotationAddSupplierItems({
 }: QuotationAddSupplierItemsProps) {
   const newCount = items.filter(
     (item) =>
-      checkedIds.has(item.purchaseRequestItemId) &&
-      !assignedIds.has(item.purchaseRequestItemId)
+      checkedIds.has(item.itemId) &&
+      !assignedIds.has(item.itemId)
   ).length
 
   const columns = useMemo(
@@ -104,10 +104,10 @@ export function QuotationAddSupplierItems({
               ) : (
                 table.getRowModel().rows.map((row) => {
                   const isAssigned = assignedIds.has(
-                    row.original.purchaseRequestItemId
+                    row.original.itemId
                   )
                   const isChecked = checkedIds.has(
-                    row.original.purchaseRequestItemId
+                    row.original.itemId
                   )
 
                   return (
@@ -122,7 +122,7 @@ export function QuotationAddSupplierItems({
                       )}
                       onClick={() =>
                         !isAssigned &&
-                        onToggleItem(row.original.purchaseRequestItemId)
+                        onToggleItem(row.original.itemId)
                       }
                     >
                       {row.getVisibleCells().map((cell) => (

@@ -4,13 +4,11 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import {
-  AssetTypeBadge,
-  InventoryReceiptStatusBadge,
-} from "@/features/inventory-receipts/components/InventoryReceiptBadges"
+import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/InventoryReceiptBadges"
+import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/InventoryReceiptsTableCells"
 import { InventoryReceiptDetailActions } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailActions"
+import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
-import { inventoryReceiptSourceLabels } from "@/lib/types/inventory-receipt.type"
 
 type InventoryReceiptDetailHeaderProps = {
   detail: InventoryReceiptDetail
@@ -43,32 +41,44 @@ export function InventoryReceiptDetailHeader({
             {detail.code}
           </span>
           <InventoryReceiptStatusBadge status={detail.status} />
-          <AssetTypeBadge type={detail.assetType} />
         </div>
 
         {/* 3-column MetaFields Grid */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-3">
           <div className="flex flex-col gap-4">
             <MetaField
-              label="Nguồn nhập"
-              value={inventoryReceiptSourceLabels[detail.source]}
+              label="PO / Lý do"
+              value={
+                <InventoryReceiptSourceCell
+                  purchaseOrder={detail.purchaseOrder}
+                  supplier={detail.supplier}
+                  purchaseRequest={detail.purchaseRequest}
+                  productionOrder={detail.productionOrder}
+                />
+              }
             />
-            <MetaField label="PO / Lý do" value={detail.poOrReason} />
-            <MetaField label="Kho nhận" value={detail.warehouseName} />
+            <MetaField
+              label="Loại phiếu"
+              value={inventoryReceiptTypeLabels[detail.receiptType]}
+            />
+            <MetaField label="Kho nhận" value={detail.warehouse.name} />
           </div>
 
           <div className="flex flex-col gap-4">
             <MetaField
               label="Ngày nhập"
-              value={DateTime.fromISO(detail.receiptDate).toFormat(
-                "dd/MM/yyyy HH:mm"
-              )}
+              value={DateTime.fromISO(detail.receiptDate, {
+                zone: "utc",
+              }).toFormat("dd/MM/yyyy")}
             />
             <MetaField
-              label="Người giao"
-              value={detail.delivererName ?? "—"}
+              label="Người tạo"
+              value={detail.creatorBy?.fullName ?? "—"}
             />
-            <MetaField label="Người tạo" value={detail.createdByName} />
+            <MetaField
+              label="Người xác nhận"
+              value={detail.posterBy?.fullName ?? "—"}
+            />
           </div>
 
           <div className="flex flex-col gap-4">

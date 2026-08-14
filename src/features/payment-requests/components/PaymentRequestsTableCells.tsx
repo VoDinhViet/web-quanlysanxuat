@@ -13,9 +13,7 @@ const amountFormatter = new Intl.NumberFormat("vi-VN")
 
 // Formats a VND amount — same idiom as PurchaseOrderAmountCell.
 export function PaymentRequestAmountCell({ value }: { value: number }) {
-  return (
-    <span className="tabular-nums">{amountFormatter.format(value)}</span>
-  )
+  return <span className="tabular-nums">{amountFormatter.format(value)}</span>
 }
 
 // Three-dot action menu linking to the detail page.

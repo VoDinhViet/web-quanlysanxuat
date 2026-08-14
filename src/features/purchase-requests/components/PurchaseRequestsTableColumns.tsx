@@ -54,6 +54,8 @@ export const purchaseRequestColumns = [
     cell: ({ row }) => (
       <PurchaseRequestSourceCell
         productionOrder={row.original.productionOrder}
+        status={row.original.status}
+        rejectionReason={row.original.rejectionReason}
       />
     ),
   }),

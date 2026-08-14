@@ -47,9 +47,7 @@ export function OutboundOrderStatusHistoryCard({
                                 : "bg-muted-foreground"
                       )}
                     />
-                    {!isLast && (
-                      <span className="mt-1 w-px flex-1 bg-border" />
-                    )}
+                    {!isLast && <span className="mt-1 w-px flex-1 bg-border" />}
                   </div>
 
                   <div className={cn("min-w-0", isLast ? "pb-0" : "pb-5")}>

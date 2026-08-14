@@ -38,7 +38,7 @@ export function PaymentRequestStatusHistoryCard({
                   <div className="flex flex-col items-center">
                     <span
                       className={cn(
-                        "flex size-2.5 shrink-0 rounded-full mt-1",
+                        "mt-1 flex size-2.5 shrink-0 rounded-full",
                         entry.status === "PAID"
                           ? "bg-success"
                           : entry.status === "CANCELLED"
@@ -46,9 +46,7 @@ export function PaymentRequestStatusHistoryCard({
                             : "bg-amber-500"
                       )}
                     />
-                    {!isLast && (
-                      <span className="w-px flex-1 bg-border mt-1" />
-                    )}
+                    {!isLast && <span className="mt-1 w-px flex-1 bg-border" />}
                   </div>
 
                   <div className={cn("min-w-0", isLast ? "pb-0" : "pb-5")}>

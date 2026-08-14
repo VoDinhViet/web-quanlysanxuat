@@ -1,21 +1,32 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
+import {
+  ArrowLeft,
+  ArrowRight,
+  FileText,
+  Loader2,
+  RotateCcw,
+  Save,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { PurchaseRequestCreateHeaderSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateHeaderSection"
-import { PurchaseRequestCreateItemsSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateItemsSection"
-import { PurchaseRequestCreateSummaryCard } from "@/features/purchase-requests/components/create/PurchaseRequestCreateSummaryCard"
+import { PurchaseRequestCreateMaterialPickerSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerSection"
+import { PurchaseRequestCreateQuantitySection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateQuantitySection"
+import { PurchaseRequestCreateStepsTabs } from "@/features/purchase-requests/components/create/PurchaseRequestCreateStepsTabs"
+import { PurchaseRequestCreateTallySheet } from "@/features/purchase-requests/components/create/PurchaseRequestCreateTallySheet"
 import { createPurchaseRequest } from "@/features/purchase-requests/api/server-functions/create-purchase-request.api"
 import {
   createPurchaseRequestFormDefaultValues,
   createPurchaseRequestSchema,
 } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
+import type { PurchaseRequestCreateWizardStep } from "@/features/purchase-requests/components/create/PurchaseRequestCreateStepsTabs"
 import type { CreatePurchaseRequestSchema } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
 
 export function PurchaseRequestCreateForm() {
@@ -23,24 +34,29 @@ export function PurchaseRequestCreateForm() {
   const queryClient = useQueryClient()
   const createPurchaseRequestFn = useServerFn(createPurchaseRequest)
 
+  // -v2: the item shape changed (itemLabel → itemCode/itemName/itemUnit/minStock, for the
+  // picker-table redesign) — a v1 key would let restoreFormDraft() write a stale-shaped draft
+  // into the form (it doesn't validate against the current schema on restore), showing "—" for
+  // every material's name. Renaming the key lets old drafts harmlessly expire, same idiom as
+  // create-purchase-quotation-v2.
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreatePurchaseRequestSchema>(
-      "qlsx:draft:create-purchase-request"
+      "qlsx:draft:create-purchase-request-v2"
     )
   const draftRestoredRef = useRef(false)
 
-  // Trả về {id} (khác createOrder/createInventoryReceipt trả void) — điều hướng thẳng sang
-  // trang chi tiết vừa tạo thay vì quay về danh sách, theo quyết định đã chốt với user.
+  // Trả về void (giống createOrder/createInventoryReceipt) — backend không trả id nên điều hướng
+  // về danh sách, không vào thẳng trang chi tiết vừa tạo.
   const { mutate: create, isPending } = useMutation({
     mutationFn: (value: CreatePurchaseRequestSchema) =>
       createPurchaseRequestFn({ data: value }),
-    onSuccess: async ({ id }) => {
+    onSuccess: async () => {
       clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
       toast.success("Đã tạo đề xuất mua hàng")
       await navigate({
-        to: "/manage/purchase-requests/$purchaseRequestId",
-        params: { purchaseRequestId: id },
+        to: "/manage/purchase-requests",
+        search: { page: 1, limit: 10 },
       })
     },
     onError: (error) => toast.error(error.message),
@@ -54,7 +70,14 @@ export function PurchaseRequestCreateForm() {
     onSubmit: ({ value }) => create(value),
   })
 
-  // Auto-restore a saved draft into the form once, after localStorage hydrates.
+  const [step, setStep] = useState<PurchaseRequestCreateWizardStep>("materials")
+  const canGoToQuantities =
+    useField({ form, name: "items" }).state.value.length > 0
+
+  // Auto-restore a saved draft into the form once, after localStorage hydrates. Always resumes
+  // on step 1 (even if the draft already had vật tư picked) — the picker re-shows them
+  // pre-checked, so resuming still asks the user to confirm the selection before step 2, same
+  // gate a fresh form goes through.
   useEffect(() => {
     if (!draftRestoredRef.current && draft) {
       draftRestoredRef.current = true
@@ -74,87 +97,127 @@ export function PurchaseRequestCreateForm() {
     >
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="overflow-hidden rounded-lg bg-card shadow-card">
-          <PurchaseRequestCreateHeaderSection
-            form={form}
-            disabled={isPending}
+          <PurchaseRequestCreateStepsTabs
+            step={step}
+            canGoToQuantities={canGoToQuantities}
+            onStepChange={setStep}
           />
 
-          <div className="border-t border-border">
-            <PurchaseRequestCreateItemsSection
+          {step === "materials" ? (
+            <PurchaseRequestCreateMaterialPickerSection
               form={form}
               disabled={isPending}
             />
-          </div>
+          ) : (
+            <>
+              <PurchaseRequestCreateHeaderSection
+                form={form}
+                disabled={isPending}
+              />
+              <div className="border-t border-border">
+                <PurchaseRequestCreateQuantitySection
+                  form={form}
+                  disabled={isPending}
+                />
+              </div>
+            </>
+          )}
+
+          {step === "materials" ? (
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-muted-foreground hover:text-foreground"
+                onClick={() =>
+                  void navigate({
+                    to: "/manage/purchase-requests",
+                    search: { page: 1, limit: 10 },
+                  })
+                }
+              >
+                Hủy
+              </Button>
+              <Button
+                type="button"
+                disabled={!canGoToQuantities}
+                onClick={() => setStep("quantities")}
+              >
+                Tiếp tục: nhập số lượng
+                <ArrowRight className="size-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-muted-foreground hover:text-foreground"
+                disabled={isPending}
+                onClick={() => setStep("materials")}
+              >
+                <ArrowLeft className="size-4" />
+                Quay lại chọn vật tư
+              </Button>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={isPending}
+                  onClick={() => {
+                    form.reset()
+                    restoreFormDraft(
+                      form,
+                      createPurchaseRequestFormDefaultValues
+                    )
+                    clearDraft()
+                    setStep("materials")
+                  }}
+                >
+                  <RotateCcw className="size-4" />
+                  Đặt lại
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={() => {
+                    saveDraft(form.state.values)
+                    toast.success("Đã lưu nháp")
+                  }}
+                >
+                  <FileText className="size-4" />
+                  Lưu nháp
+                </Button>
+                <form.Subscribe
+                  selector={(state) => [state.canSubmit, state.isSubmitting]}
+                >
+                  {([canSubmit, isSubmitting]) => (
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting || isPending}
+                    >
+                      {isSubmitting || isPending ? (
+                        <>
+                          <Loader2 className="animate-spin" />
+                          Đang lưu
+                        </>
+                      ) : (
+                        <>
+                          <Save />
+                          Tạo đề xuất
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </form.Subscribe>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="sticky top-6 h-fit rounded-lg bg-card p-4 shadow-card sm:p-5">
-          <PurchaseRequestCreateSummaryCard form={form} />
-        </div>
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-4 shadow-card sm:px-5">
-        <Button
-          type="button"
-          variant="ghost"
-          className="text-muted-foreground hover:text-foreground"
-          disabled={isPending}
-          onClick={() =>
-            void navigate({
-              to: "/manage/purchase-requests",
-              search: { page: 1, limit: 10 },
-            })
-          }
-        >
-          Hủy
-        </Button>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            disabled={isPending}
-            onClick={() => {
-              form.reset()
-              restoreFormDraft(form, createPurchaseRequestFormDefaultValues)
-              clearDraft()
-            }}
-          >
-            <RotateCcw className="size-4" />
-            Đặt lại
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isPending}
-            onClick={() => {
-              saveDraft(form.state.values)
-              toast.success("Đã lưu nháp")
-            }}
-          >
-            <FileText className="size-4" />
-            Lưu nháp
-          </Button>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
-            {([canSubmit, isSubmitting]) => (
-              <Button
-                type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
-              >
-                {isSubmitting || isPending ? (
-                  <>
-                    <Loader2 className="animate-spin" />
-                    Đang lưu
-                  </>
-                ) : (
-                  <>
-                    <Save />
-                    Tạo đề xuất
-                  </>
-                )}
-              </Button>
-            )}
-          </form.Subscribe>
+          <PurchaseRequestCreateTallySheet form={form} />
         </div>
       </div>
     </form>

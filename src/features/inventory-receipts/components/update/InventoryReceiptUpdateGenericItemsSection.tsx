@@ -13,12 +13,18 @@ import {
 import { IconButton } from "@/components/shared/IconButton"
 import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
 import { withForm } from "@/hooks/use-app-form"
-import { PurchaseRequestItemDialog } from "@/features/purchase-requests/components/create/PurchaseRequestItemDialog"
-import { createPurchaseRequestFormDefaultValues } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
-import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/schemas/purchase-request-item-form.schema"
+import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/create/InventoryReceiptItemDialog"
+import { updateInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"
+import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
+import { vndFormatter } from "@/lib/currency"
 
-export const PurchaseRequestCreateItemsSection = withForm({
-  defaultValues: createPurchaseRequestFormDefaultValues,
+// Bản update của InventoryReceiptGenericItemsSection.tsx — nội dung giống hệt, chỉ khác
+// `defaultValues` để khớp kiểu form update (`withForm` bind theo shape riêng của từng form,
+// không dùng chung được giữa create/update — cùng cách orders tách CreateOrderItemsSection.tsx/
+// UpdateOrderItemsSection.tsx). InventoryReceiptItemDialog tái dùng nguyên vẹn vì nó tự quản lý
+// form riêng, không bind theo shape của form cha.
+export const InventoryReceiptUpdateGenericItemsSection = withForm({
+  defaultValues: updateInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -41,7 +47,7 @@ export const PurchaseRequestCreateItemsSection = withForm({
             setDialogOpen(true)
           }
 
-          const handleSubmit = (value: PurchaseRequestItemFormValue) => {
+          const handleSubmit = (value: InventoryReceiptItemFormValue) => {
             if (editingIndex === null) {
               itemsField.pushValue(value)
             } else {
@@ -58,7 +64,7 @@ export const PurchaseRequestCreateItemsSection = withForm({
                     Danh sách vật tư
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Đề xuất cần ít nhất một dòng vật tư
+                    Phiếu cần ít nhất một dòng vật tư
                   </p>
                 </div>
                 <Button
@@ -80,6 +86,8 @@ export const PurchaseRequestCreateItemsSection = withForm({
                       <TableHead className="w-12">#</TableHead>
                       <TableHead>Vật tư</TableHead>
                       <TableHead className="text-right">Số lượng</TableHead>
+                      <TableHead className="text-right">Đơn giá</TableHead>
+                      <TableHead className="text-right">Thành tiền</TableHead>
                       <TableHead>Ghi chú</TableHead>
                       <TableHead className="w-24 text-right">
                         Thao tác
@@ -89,8 +97,8 @@ export const PurchaseRequestCreateItemsSection = withForm({
                   <TableBody>
                     {items.length === 0 ? (
                       <TableEmptyRow
-                        colSpan={5}
-                        message="Đề xuất cần ít nhất một dòng vật tư. Bấm “Thêm vật tư” để thêm."
+                        colSpan={7}
+                        message="Chưa có vật tư nào. Bấm “Thêm vật tư” để thêm."
                       />
                     ) : (
                       items.map((item, index) => (
@@ -104,6 +112,19 @@ export const PurchaseRequestCreateItemsSection = withForm({
                           <TableCell>{item.itemLabel || "—"}</TableCell>
                           <TableCell className="text-right tabular-nums">
                             {item.quantity}
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            {item.unitPrice
+                              ? vndFormatter.format(Number(item.unitPrice))
+                              : "—"}
+                          </TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">
+                            {item.unitPrice
+                              ? vndFormatter.format(
+                                  (Number(item.quantity) || 0) *
+                                    Number(item.unitPrice)
+                                )
+                              : "—"}
                           </TableCell>
                           <TableCell className="max-w-40 truncate text-muted-foreground">
                             {item.note || "—"}
@@ -135,7 +156,7 @@ export const PurchaseRequestCreateItemsSection = withForm({
                 </Table>
               </div>
 
-              <PurchaseRequestItemDialog
+              <InventoryReceiptItemDialog
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
                 initialValue={editingItem}

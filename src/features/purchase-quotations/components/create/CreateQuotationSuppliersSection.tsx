@@ -92,7 +92,7 @@ export const CreateQuotationSuppliersSection = withForm({
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((row) => (
-                <Fragment key={row.original.purchaseRequestItemId}>
+                <Fragment key={row.original.itemId}>
                   <TableRow className="h-14 bg-card hover:bg-muted/25">
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -141,7 +141,7 @@ export const CreateQuotationSuppliersSection = withForm({
           onOpenChange={addSupplierDialog.setOpen}
           items={items}
           initialItemIds={addSupplierDialog.initialItemIds}
-          onSubmit={addSupplierDialog.submit}
+          onSubmit={addSupplierDialog.handleSupplierSelection}
         />
       </div>
     )

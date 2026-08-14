@@ -68,8 +68,9 @@ export type PurchaseQuotationItemSupplierDetail = {
   selectedAt: string | null
 }
 
-/** Mirrors the backend's `QuotationItemResDto`. */
-export type PurchaseQuotationItemDetail = {
+/** Mirrors the backend's `QuotationItemAllocationResDto` — một dòng ĐXMH nguồn đã gộp vào dòng
+ *  vật tư này, kèm SL phân bổ riêng của nó. SL báo giá của cả vật tư là tổng các phân bổ. */
+export type PurchaseQuotationItemAllocationDetail = {
   id: string
   quantity: number
   quantityAdjustmentReason: string | null
@@ -79,6 +80,15 @@ export type PurchaseQuotationItemDetail = {
     purchaseRequest: { id: string; code: string }
     item: { id: string; code: string; name: string; unit: Unit }
   }
+}
+
+/** Mirrors the backend's `QuotationItemResDto`. `quantity` là giá trị tính (tổng
+ *  `allocations[].quantity`), backend gắn vào lúc đọc — không phải cột DB. */
+export type PurchaseQuotationItemDetail = {
+  id: string
+  item: { id: string; code: string; name: string; unit: Unit }
+  quantity: number
+  allocations: PurchaseQuotationItemAllocationDetail[]
   suppliers: PurchaseQuotationItemSupplierDetail[]
 }
 

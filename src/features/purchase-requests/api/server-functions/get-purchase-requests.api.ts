@@ -7,17 +7,6 @@ import type { ApiErrorResponse } from "@/lib/http"
 import type { PurchaseRequest } from "@/lib/types/purchase-request.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
-// `createdDateFrom`/`createdDateTo` rename to `fromDate`/`toDate` here — GetPurchaseRequestsReqDto's
-// field names (the URL param names stay as-is so existing links keep working; only the wire shape
-// changes).
-const getPurchaseRequestsParamsSchema = purchaseRequestsSearchSchema.transform(
-  ({ createdDateFrom, createdDateTo, ...rest }) => ({
-    ...rest,
-    fromDate: createdDateFrom,
-    toDate: createdDateTo,
-  })
-)
-
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
 function resolveGetPurchaseRequestsErrorMessage(error: unknown): string {
@@ -34,7 +23,7 @@ function resolveGetPurchaseRequestsErrorMessage(error: unknown): string {
 }
 
 export const getPurchaseRequests = createServerFn({ method: "GET" })
-  .validator(getPurchaseRequestsParamsSchema)
+  .validator(purchaseRequestsSearchSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<PurchaseRequest>> => {
     try {
       const response = await http.get<PaginatedResponse<PurchaseRequest>>(

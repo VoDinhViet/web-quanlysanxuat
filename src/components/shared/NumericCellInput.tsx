@@ -15,14 +15,13 @@ type NumericCellInputProps = {
 }
 
 // Bare version of AppFormFields.tsx's NumberField — same NumericFormat recipe, no Field/Label
-// chrome, since a compare-grid cell has no room for either. Shared by both the outer "SL báo
-// giá" column and the inner quote table's price/leadtime columns.
+// chrome, since a compare-grid or picker cell has no room for either. Promoted to shared once a
+// 2nd feature needed it (purchase-quotations' supplier compare grid, purchase-requests' quantity
+// step) — see .claude/rules/code-quality.md's "no abstraction until the 3rd use".
 //
 // Value is local state, only committed to the form on blur — every column using this cell
-// mutates itemsField by rewriting the whole parent item/quotes array (see
-// CreateQuotationSuppliersItemColumns.tsx / CreateQuotationSuppliersQuoteColumns.tsx), which
-// cascades a full outer-table + nested-quote-table row-model rebuild through useReactTable on
-// every commit. Committing per keystroke made that rebuild run once per character, which was
+// mutates an items array field wired into useReactTable, which cascades a full row-model rebuild
+// on every commit. Committing per keystroke made that rebuild run once per character, which was
 // dropping focus mid-type; committing on blur (the pattern TanStack Table's own "Editable Data"
 // example uses for exactly this shape of data source) keeps typing local and cheap, and clicking
 // another control still blurs first, so nothing here is lost on submit/draft-save.

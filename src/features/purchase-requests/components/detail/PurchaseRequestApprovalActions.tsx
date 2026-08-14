@@ -9,7 +9,7 @@ import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestApprovalActionsProps = {
-  detail: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestDetail
 }
 
 // The 3-button approval flow, mirroring OrderApprovalActions.tsx: DRAFT shows "Gửi duyệt"
@@ -18,13 +18,13 @@ type PurchaseRequestApprovalActionsProps = {
 // credentials.seed.ts). Every other status (APPROVED, or REJECTED not yet reopened by an item
 // edit) shows nothing — there's no direct action to take from there.
 export function PurchaseRequestApprovalActions({
-  detail,
+  purchaseRequest,
 }: PurchaseRequestApprovalActionsProps) {
-  if (detail.status === PurchaseRequestStatus.DRAFT) {
+  if (purchaseRequest.status === PurchaseRequestStatus.DRAFT) {
     return (
       <PermissionGate permission="purchase-requests:update">
         <SendPurchaseRequestDialog
-          detail={detail}
+          purchaseRequest={purchaseRequest}
           trigger={
             <Button type="button">
               <Send className="size-4" />
@@ -36,12 +36,12 @@ export function PurchaseRequestApprovalActions({
     )
   }
 
-  if (detail.status === PurchaseRequestStatus.PENDING_APPROVAL) {
+  if (purchaseRequest.status === PurchaseRequestStatus.PENDING_APPROVAL) {
     return (
       <PermissionGate permission="purchase-requests:approve">
         <div className="flex items-center gap-2">
           <RejectPurchaseRequestDialog
-            detail={detail}
+            purchaseRequest={purchaseRequest}
             trigger={
               <Button
                 type="button"
@@ -54,7 +54,7 @@ export function PurchaseRequestApprovalActions({
             }
           />
           <ApprovePurchaseRequestDialog
-            detail={detail}
+            purchaseRequest={purchaseRequest}
             trigger={
               <Button type="button">
                 <CircleCheck className="size-4" />

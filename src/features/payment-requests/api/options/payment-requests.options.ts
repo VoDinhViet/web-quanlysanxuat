@@ -4,7 +4,10 @@ import {
   getMockPaymentRequests,
   getMockPaymentRequest,
 } from "@/features/payment-requests/mock/payment-requests.mock"
-import type { PaymentRequest, PaymentRequestDetail } from "@/lib/types/payment-request.type"
+import type {
+  PaymentRequest,
+  PaymentRequestDetail,
+} from "@/lib/types/payment-request.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { PaymentRequestsSearchSchema } from "@/features/payment-requests/schemas/payment-requests-search.schema"
 

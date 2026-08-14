@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tooltip"
 import { IconButton } from "@/components/shared/IconButton"
 import { AdjustmentReasonDialog } from "@/features/purchase-quotations/components/create/AdjustmentReasonDialog"
-import { NumericCellInput } from "@/features/purchase-quotations/components/create/NumericCellInput"
+import { NumericCellInput } from "@/components/shared/NumericCellInput"
 import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 

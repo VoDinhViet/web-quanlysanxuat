@@ -74,8 +74,10 @@ export function OutboundOrdersTableFilter() {
         ...prev,
         q: q.trim().length > 0 ? q.trim() : undefined,
         poCode: poCode.trim().length > 0 ? poCode.trim() : undefined,
-        productCode: productCode.trim().length > 0 ? productCode.trim() : undefined,
-        productName: productName.trim().length > 0 ? productName.trim() : undefined,
+        productCode:
+          productCode.trim().length > 0 ? productCode.trim() : undefined,
+        productName:
+          productName.trim().length > 0 ? productName.trim() : undefined,
         page: 1,
       }),
       replace: true,
@@ -106,7 +108,8 @@ export function OutboundOrdersTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        deliveryMethod: value === "all" ? undefined : (value as OutboundDeliveryMethod),
+        deliveryMethod:
+          value === "all" ? undefined : (value as OutboundDeliveryMethod),
         page: 1,
       }),
     })
@@ -171,7 +174,12 @@ export function OutboundOrdersTableFilter() {
       <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
         {/* Top Header Bar: Title Actions */}
         <div className="flex flex-wrap items-center justify-end gap-2 border-b border-border/60 pb-3">
-          <Button type="button" variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-xs"
+          >
             <HelpCircle className="size-3.5 text-muted-foreground" />
             <span>Hướng dẫn</span>
           </Button>
@@ -187,7 +195,10 @@ export function OutboundOrdersTableFilter() {
             <RotateCw className="size-3.5 text-muted-foreground" />
           </Button>
 
-          <PendingAction label="Tạo DO mới" hint="Tính năng lập DO mới đang kết nối">
+          <PendingAction
+            label="Tạo DO mới"
+            hint="Tính năng lập DO mới đang kết nối"
+          >
             <Plus className="size-4" />
             Tạo DO mới
           </PendingAction>
@@ -302,8 +313,8 @@ export function OutboundOrdersTableFilter() {
           </div>
 
           {/* Row 2: Mã sản phẩm, Tên sản phẩm, Từ ngày - Đến ngày, Action buttons */}
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between pt-1">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 flex-1">
+          <div className="flex flex-col gap-3 pt-1 lg:flex-row lg:items-end lg:justify-between">
+            <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <div className="space-y-1.5">
                 <FilterLabel label="Mã sản phẩm" htmlFor="do-prodcode" />
                 <div className="relative">
@@ -351,7 +362,10 @@ export function OutboundOrdersTableFilter() {
               </div>
 
               <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-                <FilterLabel label="Từ ngày – Đến ngày" htmlFor="do-daterange" />
+                <FilterLabel
+                  label="Từ ngày – Đến ngày"
+                  htmlFor="do-daterange"
+                />
                 <DateRangePicker
                   id="do-daterange"
                   from={search.fromDate}
@@ -361,11 +375,11 @@ export function OutboundOrdersTableFilter() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 self-end w-full lg:w-auto">
+            <div className="flex w-full items-center justify-end gap-2 self-end lg:w-auto">
               <Button
                 type="button"
                 variant="outline"
-                className="text-xs gap-1.5"
+                className="gap-1.5 text-xs"
                 onClick={resetFilters}
               >
                 <RotateCw className="size-3.5" />
@@ -373,7 +387,7 @@ export function OutboundOrdersTableFilter() {
               </Button>
               <Button
                 type="button"
-                className="text-xs gap-1.5"
+                className="gap-1.5 text-xs"
                 onClick={handleExecuteSearch}
               >
                 <Search className="size-3.5" />
@@ -384,21 +398,29 @@ export function OutboundOrdersTableFilter() {
         </div>
 
         {/* Sub-toolbar right above table: Xuất Excel, In danh sách, Info count, Limit select */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/60">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-2">
           <div className="flex items-center gap-2">
-            <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có" variant="outline">
+            <PendingAction
+              label="Xuất Excel"
+              hint="Tính năng xuất Excel sắp có"
+              variant="outline"
+            >
               <FileSpreadsheet className="size-4 text-emerald-600" />
               <span>Xuất Excel</span>
             </PendingAction>
 
-            <PendingAction label="In danh sách" hint="Tính năng in danh sách sắp có" variant="outline">
+            <PendingAction
+              label="In danh sách"
+              hint="Tính năng in danh sách sắp có"
+              variant="outline"
+            >
               <Printer className="size-4 text-muted-foreground" />
               <span>In danh sách</span>
             </PendingAction>
           </div>
 
           <div className="flex items-center gap-4 text-xs">
-            <span className="text-muted-foreground font-medium">
+            <span className="font-medium text-muted-foreground">
               Tổng số: <strong className="text-foreground">12 DO</strong>
             </span>
 

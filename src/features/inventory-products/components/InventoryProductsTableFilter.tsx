@@ -83,7 +83,8 @@ export function InventoryProductsTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        category: value === "all" ? undefined : (value as InventoryProductCategory),
+        category:
+          value === "all" ? undefined : (value as InventoryProductCategory),
         page: 1,
       }),
     })
@@ -154,7 +155,12 @@ export function InventoryProductsTableFilter() {
       <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
         {/* Top Header Action Buttons */}
         <div className="flex flex-wrap items-center justify-end gap-2 border-b border-border/60 pb-3">
-          <Button type="button" variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-xs"
+          >
             <HelpCircle className="size-3.5 text-muted-foreground" />
             <span>Hướng dẫn</span>
           </Button>
@@ -307,8 +313,8 @@ export function InventoryProductsTableFilter() {
           </div>
 
           {/* Row 3: Ngày & Action buttons */}
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between pt-1">
-            <div className="space-y-1.5 w-full sm:w-auto xl:w-96">
+          <div className="flex flex-col gap-3 pt-1 lg:flex-row lg:items-end lg:justify-between">
+            <div className="w-full space-y-1.5 sm:w-auto xl:w-96">
               <FilterLabel label="Ngày" htmlFor="tp-daterange" />
               <DateRangePicker
                 id="tp-daterange"
@@ -318,11 +324,11 @@ export function InventoryProductsTableFilter() {
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 self-end w-full lg:w-auto">
+            <div className="flex w-full items-center justify-end gap-2 self-end lg:w-auto">
               <Button
                 type="button"
                 variant="outline"
-                className="text-xs gap-1.5"
+                className="gap-1.5 text-xs"
                 onClick={resetFilters}
               >
                 <RotateCw className="size-3.5" />
@@ -330,7 +336,7 @@ export function InventoryProductsTableFilter() {
               </Button>
               <Button
                 type="button"
-                className="text-xs gap-1.5"
+                className="gap-1.5 text-xs"
                 onClick={handleExecuteSearch}
               >
                 <Search className="size-3.5" />

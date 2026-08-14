@@ -7,39 +7,35 @@ import type { ApiErrorResponse } from "@/lib/http"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
-// POST /api/purchase-requests chưa tồn tại trên backend tại thời điểm viết (xem comment
-// "giai đoạn 1 chỉ có GET /purchase-requests" trong PurchaseRequestsPage.tsx) — endpoint và
-// payload giả định theo đúng pattern các luồng purchasing khác (vd createInventoryReceipt).
-// errorCode thật sẽ bổ sung vào switch dưới đây khi backend triển khai xong; tạm thời chỉ
-// có nhánh default.
 function resolveCreatePurchaseRequestErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
     return GENERIC_ERROR_MESSAGE
   }
 
   switch (error.response?.data.errorCode) {
+    case "purchase_request.error.no_items":
+      return "Đề xuất cần ít nhất một dòng vật tư."
+    case "purchase_request_item.error.duplicate_item":
+      return "Vật tư bị trùng lặp trong đề xuất."
+    case "purchase_request_item.error.item_not_raw_material":
+      return "Vật tư được chọn không phải nguyên vật liệu."
+    case "department.error.not_found":
+      return "Phòng ban không tồn tại."
+    case "item.error.not_found":
+      return "Vật tư không tồn tại."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
-type CreatePurchaseRequestResult = {
-  id: string
-}
-
-// Luôn tạo ở DRAFT. Khác createOrder/createInventoryReceipt (trả void): trả về {id} vì
-// PurchaseRequestCreateForm điều hướng thẳng sang trang chi tiết vừa tạo (để gửi duyệt
-// ngay), không quay về danh sách.
+// Luôn tạo ở DRAFT. POST /api/purchase-requests trả 204 No Content (void) — không có {id} như
+// createOrder/createInventoryReceipt cũng trả void, nên PurchaseRequestCreateForm điều hướng về
+// danh sách sau khi tạo, không có id để vào thẳng trang chi tiết.
 export const createPurchaseRequest = createServerFn({ method: "POST" })
   .validator(createPurchaseRequestSchema)
-  .handler(async ({ data }): Promise<CreatePurchaseRequestResult> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
-      const response = await http.post<CreatePurchaseRequestResult>(
-        "/api/purchase-requests",
-        data
-      )
-
-      return response.data
+      await http.post("/api/purchase-requests", data)
     } catch (error) {
       logHttpError(error, "createPurchaseRequest")
 

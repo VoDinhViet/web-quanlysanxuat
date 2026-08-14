@@ -4,13 +4,12 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { MissingFieldValue } from "@/components/shared/MissingFieldValue"
 import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/PurchaseRequestBadges"
 import { PurchaseRequestDetailActions } from "@/features/purchase-requests/components/detail/PurchaseRequestDetailActions"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestDetailHeaderProps = {
-  detail: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestDetail
   itemCount: number
 }
 
@@ -24,13 +23,13 @@ const getSourceLabel = ({
   productionJob || productionOrder ? "Từ Job/PO" : "Thủ công"
 
 // Identity + info row, same single-block idiom as ProductionJobDetailHeader.tsx —
-// `itemCount` is a prop (not `detail.items.length`) so "Tổng số vật tư" tracks the page's own
+// `itemCount` is a prop (not `purchaseRequest.items.length`) so "Tổng số vật tư" tracks the page's own
 // editable row list (a vật tư removed locally shouldn't still count here).
 export function PurchaseRequestDetailHeader({
-  detail,
+  purchaseRequest,
   itemCount,
 }: PurchaseRequestDetailHeaderProps) {
-  const source = getSourceLabel(detail)
+  const source = getSourceLabel(purchaseRequest)
 
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
@@ -52,9 +51,9 @@ export function PurchaseRequestDetailHeader({
           </Button>
 
           <span className="font-mono text-lg font-bold text-foreground">
-            {detail.code}
+            {purchaseRequest.code}
           </span>
-          <PurchaseRequestStatusBadge status={detail.status} />
+          <PurchaseRequestStatusBadge status={purchaseRequest.status} />
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -62,40 +61,47 @@ export function PurchaseRequestDetailHeader({
           <MetaField
             label="PO liên quan"
             value={
-              detail.productionOrder ? (
+              purchaseRequest.productionOrder ? (
                 <Link
                   to="/manage/production-orders/$productionOrderId"
-                  params={{ productionOrderId: detail.productionOrder.id }}
+                  params={{
+                    productionOrderId: purchaseRequest.productionOrder.id,
+                  }}
                   className="font-mono text-primary hover:underline"
                 >
-                  {detail.productionOrder.code ?? "—"}
+                  {purchaseRequest.productionOrder.code ?? "—"}
                 </Link>
               ) : (
                 "—"
               )
             }
           />
-          <MetaField label="Bộ phận đề xuất" value={detail.department.name} />
+          <MetaField
+            label="Bộ phận đề xuất"
+            value={purchaseRequest.department.name}
+          />
           <MetaField
             label="Người tạo"
-            value={detail.requesterBy?.fullName ?? "—"}
+            value={purchaseRequest.requesterBy?.fullName ?? "—"}
           />
           <MetaField
             label="Ngày tạo"
-            value={DateTime.fromISO(detail.createdAt).toFormat(
+            value={DateTime.fromISO(purchaseRequest.createdAt).toFormat(
               "dd/MM/yyyy HH:mm"
             )}
           />
           <MetaField
             label="Ngày cần"
-            value={DateTime.fromISO(detail.neededDate).toFormat("dd/MM/yyyy")}
+            value={DateTime.fromISO(purchaseRequest.neededDate).toFormat(
+              "dd/MM/yyyy"
+            )}
           />
           <MetaField label="Tổng số vật tư" value={String(itemCount)} />
-          <MetaField label="Ghi chú" value={<MissingFieldValue />} />
+          <MetaField label="Ghi chú" value="—" />
         </div>
       </div>
 
-      <PurchaseRequestDetailActions detail={detail} />
+      <PurchaseRequestDetailActions purchaseRequest={purchaseRequest} />
     </div>
   )
 }

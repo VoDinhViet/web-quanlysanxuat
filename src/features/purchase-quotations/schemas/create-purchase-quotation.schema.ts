@@ -43,31 +43,44 @@ export type QuotationItemSupplierValue = z.input<
   typeof quotationItemSupplierSchema
 >
 
-// Display fields (prCode/itemCode/itemName/unit/requestedQuantity/neededDate) are UI-only,
-// carried so the compare table can re-render a row without a second fetch — same idiom as
-// orderItemFormSchema's itemLabel/itemUnit. `suppliers` is this item's OWN NCC list — adding a
-// supplier to one item never touches any other item's list.
-const pickedQuotationItemFields = {
+// One dòng ĐXMH nguồn merged into a vật tư line — prCode/requestedQuantity/neededDate are
+// UI-only, same idiom as pickedQuotationItemFields's own display fields below. Named `quantity`/
+// `quantityAdjustmentReason` 1:1 matching CreateQuotationItemAllocationReqDto's own field names —
+// no rename to map back out at payload-build time.
+const quotationItemAllocationFields = {
   purchaseRequestItemId: z.string().trim().min(1),
   prCode: z.string(),
-  itemCode: z.string(),
-  itemName: z.string(),
-  unit: z.string(),
   requestedQuantity: z.number(),
   neededDate: z.string(),
-  // Named `quantity`, not e.g. `declaredQuantity` — matches CreateQuotationItemReqDto's own field
-  // name 1:1 (no rename to map back out at payload-build time). Defaults to requestedQuantity,
-  // editable.
   quantity: z
     .string()
     .trim()
     .refine(isPositiveNumberString, "Số lượng phải lớn hơn 0"),
-  // Matches CreateQuotationItemReqDto's own field name 1:1 — the backend now persists this
-  // (quantity_adjustment_reason column), it's no longer UI-only.
   quantityAdjustmentReason: z
     .string()
     .trim()
     .max(500, "Lý do tối đa 500 ký tự"),
+}
+
+export const quotationItemAllocationSchema = z.object(
+  quotationItemAllocationFields
+)
+export type QuotationItemAllocationValue = z.input<
+  typeof quotationItemAllocationSchema
+>
+
+// Display fields (itemCode/itemName/unit) are UI-only, carried so the compare table can re-render
+// a row without a second fetch — same idiom as orderItemFormSchema's itemLabel/itemUnit.
+// `allocations` is every dòng ĐXMH merged into this vật tư (picking two ledger rows with the same
+// itemId appends a second allocation instead of a second item — see
+// CreateQuotationItemsPickerSection.tsx's toggleRow). `suppliers` is this item's OWN NCC list —
+// adding a supplier to one item never touches any other item's list.
+const pickedQuotationItemFields = {
+  itemId: z.string().trim().min(1),
+  itemCode: z.string(),
+  itemName: z.string(),
+  unit: z.string(),
+  allocations: z.array(quotationItemAllocationSchema).min(1),
   suppliers: z.array(quotationItemSupplierSchema),
 }
 

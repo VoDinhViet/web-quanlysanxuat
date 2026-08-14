@@ -17,43 +17,38 @@ export const purchaseQuotationItemsColumns = [
       <span className="text-muted-foreground">{row.index + 1}</span>
     ),
   }),
-  purchaseQuotationItemColumnHelper.accessor(
-    (row) => row.purchaseRequestItem.item.code,
-    {
-      id: "itemCode",
-      header: "Mã vật tư",
-      meta: {
-        headerClassName: "w-32",
-        cellClassName: "font-mono text-primary",
-      },
-    }
-  ),
-  purchaseQuotationItemColumnHelper.accessor(
-    (row) => row.purchaseRequestItem.item.name,
-    {
-      id: "itemName",
-      header: "Tên vật tư",
-    }
-  ),
-  purchaseQuotationItemColumnHelper.accessor(
-    (row) => row.purchaseRequestItem.item.unit.name,
-    {
-      id: "unit",
-      header: "ĐVT",
-      meta: { headerClassName: "w-16" },
-    }
-  ),
-  purchaseQuotationItemColumnHelper.accessor(
-    (row) => row.purchaseRequestItem.quantity,
-    {
-      id: "requestedQuantity",
-      header: "SL yêu cầu",
-      meta: {
-        headerClassName: "w-24 text-right",
-        cellClassName: "text-right tabular-nums",
-      },
-    }
-  ),
+  purchaseQuotationItemColumnHelper.accessor((row) => row.item.code, {
+    id: "itemCode",
+    header: "Mã vật tư",
+    meta: {
+      headerClassName: "w-32",
+      cellClassName: "font-mono text-primary",
+    },
+  }),
+  purchaseQuotationItemColumnHelper.accessor((row) => row.item.name, {
+    id: "itemName",
+    header: "Tên vật tư",
+  }),
+  purchaseQuotationItemColumnHelper.accessor((row) => row.item.unit.name, {
+    id: "unit",
+    header: "ĐVT",
+    meta: { headerClassName: "w-16" },
+  }),
+  // Tổng SL đề xuất của mọi dòng ĐXMH đã gộp vào vật tư này — chi tiết từng dòng xem bảng con
+  // "Nguồn ĐXMH" (PurchaseQuotationAllocationsTable.tsx).
+  purchaseQuotationItemColumnHelper.display({
+    id: "requestedQuantity",
+    header: "SL yêu cầu",
+    meta: {
+      headerClassName: "w-24 text-right",
+      cellClassName: "text-right tabular-nums",
+    },
+    cell: ({ row }) =>
+      row.original.allocations.reduce(
+        (sum, allocation) => sum + allocation.purchaseRequestItem.quantity,
+        0
+      ),
+  }),
   purchaseQuotationItemColumnHelper.accessor("quantity", {
     header: "SL báo giá",
     meta: {
@@ -61,18 +56,4 @@ export const purchaseQuotationItemsColumns = [
       cellClassName: "text-right tabular-nums font-medium",
     },
   }),
-  purchaseQuotationItemColumnHelper.accessor(
-    (row) => row.quantityAdjustmentReason ?? "—",
-    {
-      id: "quantityAdjustmentReason",
-      header: "Lý do điều chỉnh SL",
-      meta: {
-        headerClassName: "w-48",
-        cellClassName: "text-xs text-muted-foreground",
-      },
-      cell: ({ getValue }) => (
-        <span className="line-clamp-2">{getValue()}</span>
-      ),
-    }
-  ),
 ]

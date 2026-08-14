@@ -25,7 +25,7 @@ import type { PickedQuotationItemValue } from "@/features/purchase-quotations/sc
 export type QuotationSupplierSelection = {
   supplierId: string
   supplierLabel: string
-  purchaseRequestItemIds: string[]
+  itemIds: string[]
 }
 
 type QuotationAddSupplierDialogProps = {
@@ -107,7 +107,7 @@ function QuotationAddSupplierDialogForm({
       supplierId,
       supplierLabel:
         suppliers.find((supplier) => supplier.id === supplierId)?.name ?? "",
-      purchaseRequestItemIds: targetIds,
+      itemIds: targetIds,
     })
   }
 

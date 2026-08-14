@@ -54,8 +54,7 @@ export const paymentRequestsColumns = [
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) =>
-      DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
 
   col.accessor("poValue", {
@@ -82,9 +81,7 @@ export const paymentRequestsColumns = [
       headerClassName: "min-w-36 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => (
-      <PaymentRequestStatusBadge status={getValue()} />
-    ),
+    cell: ({ getValue }) => <PaymentRequestStatusBadge status={getValue()} />,
   }),
 
   col.accessor("createdAt", {

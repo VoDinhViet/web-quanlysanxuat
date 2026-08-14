@@ -56,33 +56,26 @@ export function PaymentRequestDetailHeader({
               }
             />
             <MetaField label="Nhà cung cấp" value={detail.supplier.name} />
-            <MetaField
-              label="Địa chỉ"
-              value={detail.supplier.address ?? "—"}
-            />
+            <MetaField label="Địa chỉ" value={detail.supplier.address ?? "—"} />
           </div>
 
           {/* Column 2: Ngày PO / Ngày hoàn thành PO / Ngày tạo YCTT */}
           <div className="flex flex-col gap-4">
             <MetaField
               label="Ngày PO"
-              value={DateTime.fromISO(
-                detail.purchaseOrder.orderDate
-              ).toFormat("dd/MM/yyyy")}
+              value={DateTime.fromISO(detail.purchaseOrder.orderDate).toFormat(
+                "dd/MM/yyyy"
+              )}
             />
             <MetaField
               label="Ngày hoàn thành PO"
-              value={DateTime.fromISO(
-                detail.purchaseOrder.orderDate
-              )
+              value={DateTime.fromISO(detail.purchaseOrder.orderDate)
                 .plus({ months: 1 })
                 .toFormat("dd/MM/yyyy")}
             />
             <MetaField
               label="Ngày tạo YCTT"
-              value={DateTime.fromISO(detail.createdAt).toFormat(
-                "dd/MM/yyyy"
-              )}
+              value={DateTime.fromISO(detail.createdAt).toFormat("dd/MM/yyyy")}
             />
           </div>
 
@@ -90,7 +83,9 @@ export function PaymentRequestDetailHeader({
           <div className="flex flex-col gap-4">
             <MetaField
               label="Giá trị PO"
-              value={new Intl.NumberFormat("vi-VN").format(detail.poValue) + " VND"}
+              value={
+                new Intl.NumberFormat("vi-VN").format(detail.poValue) + " VND"
+              }
             />
             <MetaField
               label="Giá trị yêu cầu TT"

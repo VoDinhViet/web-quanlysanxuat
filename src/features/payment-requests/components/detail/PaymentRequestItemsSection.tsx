@@ -3,7 +3,10 @@ import { PackageSearch } from "lucide-react"
 import { DataTable } from "@/components/shared/DataTable"
 import { TableEmptyState } from "@/components/shared/TableEmptyState"
 import { createColumnHelper } from "@tanstack/react-table"
-import type { PaymentRequestDetail, PaymentRequestItem } from "@/lib/types/payment-request.type"
+import type {
+  PaymentRequestDetail,
+  PaymentRequestItem,
+} from "@/lib/types/payment-request.type"
 
 const col = createColumnHelper<PaymentRequestItem>()
 const numberFmt = new Intl.NumberFormat("vi-VN")
@@ -86,7 +89,10 @@ type PaymentRequestItemsSectionProps = {
 export function PaymentRequestItemsSection({
   detail,
 }: PaymentRequestItemsSectionProps) {
-  const totalAmount = detail.items.reduce((sum, item) => sum + item.lineTotal, 0)
+  const totalAmount = detail.items.reduce(
+    (sum, item) => sum + item.lineTotal,
+    0
+  )
 
   return (
     <div className="border-b border-border not-first:border-t">
@@ -112,7 +118,7 @@ export function PaymentRequestItemsSection({
       {/* Footer total row */}
       {detail.items.length > 0 && (
         <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             Tổng cộng
           </span>
           <span className="font-semibold text-foreground tabular-nums">

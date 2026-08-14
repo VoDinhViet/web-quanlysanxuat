@@ -11,22 +11,20 @@ export const PurchaseRequestCreateHeaderSection = withForm({
   render: function Render({ form, disabled }) {
     // Không loader ở route create — danh sách phòng ban là 1 useQuery nhỏ ngay trong
     // component, cùng lý do InventoryReceiptHeaderSection.tsx không prefetch kho/NCC.
-    const { data: departments = [] } = useQuery(
-      departmentOptionsQueryOptions()
-    )
+    const { data: departments = [] } = useQuery(departmentOptionsQueryOptions())
 
     return (
-      <div className="drafting-title-block">
-        <div className="border-b border-border px-4 py-4 sm:px-5">
-          <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
-            Đề xuất mua hàng
+      <div className="px-4 py-5 sm:px-5">
+        <div>
+          <h2 className="font-heading text-base font-semibold text-foreground">
+            Thông tin đề xuất
           </h2>
-          <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-            Mã đề xuất: sẽ cấp sau khi lưu
+          <p className="text-sm text-muted-foreground">
+            Mã đề xuất sẽ được cấp sau khi lưu
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-5 px-4 py-5 sm:grid-cols-2 sm:px-5">
+        <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
           <form.AppField name="departmentId">
             {(field) => (
               <field.SelectField

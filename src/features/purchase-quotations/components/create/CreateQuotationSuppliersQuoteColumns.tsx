@@ -4,8 +4,8 @@ import { TrashBinTrash } from "@solar-icons/react"
 
 import { DatePicker } from "@/components/shared/DatePicker"
 import { IconButton } from "@/components/shared/IconButton"
-import { NumericCellInput } from "@/features/purchase-quotations/components/create/NumericCellInput"
-import { TableTextCellInput } from "@/features/purchase-quotations/components/create/TableTextCellInput"
+import { NumericCellInput } from "@/components/shared/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/TableTextCellInput"
 import type {
   PickedQuotationItemValue,
   QuotationItemSupplierValue,

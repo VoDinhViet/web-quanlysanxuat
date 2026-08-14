@@ -10,11 +10,12 @@ type TableTextCellInputProps = {
   id?: string
 }
 
-// Bare text input for a compare-grid cell — same local-state-until-blur reasoning as
+// Bare text input for a compare-grid or picker cell — same local-state-until-blur reasoning as
 // NumericCellInput.tsx in this folder (see its comment): every column using this cell rewrites
-// the whole parent item/quotes array on commit, which cascades a full nested-table row-model
-// rebuild through useReactTable, so committing per keystroke dropped focus mid-type. Shared by
-// "Lý do điều chỉnh SL" (outer table) and "Ngày mua gần nhất"/"Ghi chú" (inner quote table).
+// the whole parent items array field, which cascades a full useReactTable row-model rebuild, so
+// committing per keystroke dropped focus mid-type. Promoted to shared once a 2nd feature needed it
+// (purchase-quotations' compare grid, purchase-requests' quantity step) — see
+// .claude/rules/code-quality.md's "no abstraction until the 3rd use".
 export function TableTextCellInput({
   value,
   onValueChange,

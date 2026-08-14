@@ -7,7 +7,6 @@ import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/
 import { InventoryReceiptDetailHeader } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailHeader"
 import { InventoryReceiptItemsSection } from "@/features/inventory-receipts/components/detail/InventoryReceiptItemsSection"
 import { InventoryReceiptInfoCard } from "@/features/inventory-receipts/components/detail/InventoryReceiptInfoCard"
-import { InventoryReceiptStatusHistoryCard } from "@/features/inventory-receipts/components/detail/InventoryReceiptStatusHistoryCard"
 
 export function InventoryReceiptDetailPage() {
   const { inventoryReceiptId } = useParams({
@@ -45,7 +44,6 @@ export function InventoryReceiptDetailPage() {
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
             <InventoryReceiptInfoCard detail={detail} />
-            <InventoryReceiptStatusHistoryCard detail={detail} />
           </div>
         </div>
       </div>

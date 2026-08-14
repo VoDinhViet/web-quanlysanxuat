@@ -50,7 +50,7 @@ export function OutboundOrderPrintDialog({
         >
           <div className="flex items-start justify-between border-b border-border pb-4">
             <div>
-              <h2 className="text-lg font-bold uppercase tracking-tight text-primary">
+              <h2 className="text-lg font-bold tracking-tight text-primary uppercase">
                 CƠ KHÍ TIẾN HUY
               </h2>
               <p className="text-xs text-muted-foreground">
@@ -68,10 +68,10 @@ export function OutboundOrderPrintDialog({
           </div>
 
           <div className="py-2 text-center">
-            <h1 className="text-xl font-bold uppercase tracking-wide">
+            <h1 className="text-xl font-bold tracking-wide uppercase">
               PHIẾU GIAO HÀNG (DELIVERY ORDER)
             </h1>
-            <p className="text-xs italic text-muted-foreground">
+            <p className="text-xs text-muted-foreground italic">
               Hình thức: {outboundDeliveryMethodLabels[detail.deliveryMethod]}
             </p>
           </div>
@@ -91,11 +91,14 @@ export function OutboundOrderPrintDialog({
             </p>
             <p>
               <strong className="font-semibold">Tài xế / SĐT:</strong>{" "}
-              {detail.driverName ? `${detail.driverName} (${detail.driverPhone})` : "—"}
+              {detail.driverName
+                ? `${detail.driverName} (${detail.driverPhone})`
+                : "—"}
             </p>
             {detail.note && (
               <p className="col-span-2">
-                <strong className="font-semibold">Ghi chú:</strong> {detail.note}
+                <strong className="font-semibold">Ghi chú:</strong>{" "}
+                {detail.note}
               </p>
             )}
           </div>
@@ -106,7 +109,9 @@ export function OutboundOrderPrintDialog({
               <tr className="bg-muted/50">
                 <th className="border border-border p-2 text-center">STT</th>
                 <th className="border border-border p-2 text-left">Mã SP</th>
-                <th className="border border-border p-2 text-left">Tên sản phẩm</th>
+                <th className="border border-border p-2 text-left">
+                  Tên sản phẩm
+                </th>
                 <th className="border border-border p-2 text-center">ĐVT</th>
                 <th className="border border-border p-2 text-right">SL Giao</th>
               </tr>
@@ -138,7 +143,9 @@ export function OutboundOrderPrintDialog({
           <div className="grid grid-cols-3 gap-4 pt-6 text-center text-xs">
             <div>
               <p className="font-semibold">Người lập phiếu</p>
-              <p className="mt-12 text-muted-foreground">{detail.createdByName ?? "(Ký tên)"}</p>
+              <p className="mt-12 text-muted-foreground">
+                {detail.createdByName ?? "(Ký tên)"}
+              </p>
             </div>
             <div>
               <p className="font-semibold">Người vận chuyển</p>
@@ -148,7 +155,9 @@ export function OutboundOrderPrintDialog({
             </div>
             <div>
               <p className="font-semibold">Người nhận hàng</p>
-              <p className="mt-12 text-muted-foreground">(Ký & ghi rõ họ tên)</p>
+              <p className="mt-12 text-muted-foreground">
+                (Ký & ghi rõ họ tên)
+              </p>
             </div>
           </div>
         </div>

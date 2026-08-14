@@ -16,11 +16,7 @@ import { mockDeleteOutboundOrder } from "@/features/outbound-orders/mock/outboun
 import { OutboundOrderPrintDialog } from "@/features/outbound-orders/components/detail/OutboundOrderPrintDialog"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 
-export function OutboundOrderActionsCell({
-  order,
-}: {
-  order: OutboundOrder
-}) {
+export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
   const [printOpen, setPrintOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const queryClient = useQueryClient()
@@ -45,7 +41,7 @@ export function OutboundOrderActionsCell({
         <Button
           variant="outline"
           size="icon"
-          className="size-7 text-primary border-primary/20 hover:bg-primary/10"
+          className="size-7 border-primary/20 text-primary hover:bg-primary/10"
           title="Xem chi tiết DO"
           asChild
         >
@@ -61,7 +57,7 @@ export function OutboundOrderActionsCell({
         <Button
           variant="outline"
           size="icon"
-          className="size-7 text-blue-600 border-blue-600/20 hover:bg-blue-50 dark:hover:bg-blue-950"
+          className="size-7 border-blue-600/20 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950"
           title="Chỉnh sửa DO"
           asChild
         >
@@ -77,7 +73,7 @@ export function OutboundOrderActionsCell({
         <Button
           variant="outline"
           size="icon"
-          className="size-7 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+          className="size-7 border-slate-300 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
           title="In phiếu DO"
           onClick={() => setPrintOpen(true)}
         >
@@ -88,7 +84,7 @@ export function OutboundOrderActionsCell({
         <Button
           variant="outline"
           size="icon"
-          className="size-7 text-destructive border-destructive/20 hover:bg-destructive/10"
+          className="size-7 border-destructive/20 text-destructive hover:bg-destructive/10"
           title="Xóa DO"
           onClick={() => setDeleteOpen(true)}
         >

@@ -58,7 +58,7 @@ function AuthedLayout() {
         }
       >
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className="min-w-0">
           <div className="flex min-h-svh flex-col text-foreground">
             <Outlet />
           </div>

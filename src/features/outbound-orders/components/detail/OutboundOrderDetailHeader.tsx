@@ -27,10 +27,7 @@ export function OutboundOrderDetailHeader({
             aria-label="Quay lại danh sách đơn giao hàng"
             asChild
           >
-            <Link
-              to="/manage/outbound-orders"
-              search={{ page: 1, limit: 20 }}
-            >
+            <Link to="/manage/outbound-orders" search={{ page: 1, limit: 20 }}>
               <AltArrowLeft className="size-4" />
               <span className="hidden sm:inline">Quay lại</span>
             </Link>

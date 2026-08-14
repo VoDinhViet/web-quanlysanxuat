@@ -8,8 +8,8 @@ export interface UseQuotationAddSupplierDialogResult {
   isOpen: boolean
   setOpen: (open: boolean) => void
   initialItemIds: string[]
-  openForItem: (purchaseRequestItemId: string) => void
-  submit: (selection: QuotationSupplierSelection) => void
+  openForItem: (itemId: string) => void
+  handleSupplierSelection: (selection: QuotationSupplierSelection) => void
 }
 
 /**
@@ -27,24 +27,20 @@ export function useQuotationAddSupplierDialog(
   // still an array since the checklist itself can still target more than one item.
   const [initialItemIds, setInitialItemIds] = useState<string[]>([])
 
-  const openForItem = useCallback((purchaseRequestItemId: string) => {
-    setInitialItemIds([purchaseRequestItemId])
+  const openForItem = useCallback((itemId: string) => {
+    setInitialItemIds([itemId])
     setOpen(true)
   }, [])
 
-  const submit = useCallback(
-    ({
-      supplierId,
-      supplierLabel,
-      purchaseRequestItemIds,
-    }: QuotationSupplierSelection) => {
-      const targetIds = new Set(purchaseRequestItemIds)
+  const handleSupplierSelection = useCallback(
+    ({ supplierId, supplierLabel, itemIds }: QuotationSupplierSelection) => {
+      const targetIds = new Set(itemIds)
 
       // One replaceValue per touched item — form-core's replaceFieldValue applies a functional
       // update against the live store, so sequential calls here each build on the previous
       // one's result rather than overwriting each other.
       items.forEach((item, index) => {
-        if (!targetIds.has(item.purchaseRequestItemId)) return
+        if (!targetIds.has(item.itemId)) return
 
         itemsField.replaceValue(index, {
           ...item,
@@ -68,5 +64,5 @@ export function useQuotationAddSupplierDialog(
     [items, itemsField]
   )
 
-  return { isOpen, setOpen, initialItemIds, openForItem, submit }
+  return { isOpen, setOpen, initialItemIds, openForItem, handleSupplierSelection }
 }

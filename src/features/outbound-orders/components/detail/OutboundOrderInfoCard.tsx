@@ -41,7 +41,9 @@ export function OutboundOrderInfoCard({ detail }: OutboundOrderInfoCardProps) {
             Tài xế / Số điện thoại
           </p>
           <p className="text-sm font-medium text-foreground">
-            {detail.driverName ? `${detail.driverName} (${detail.driverPhone ?? "—"})` : "—"}
+            {detail.driverName
+              ? `${detail.driverName} (${detail.driverPhone ?? "—"})`
+              : "—"}
           </p>
         </div>
 

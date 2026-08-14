@@ -7,31 +7,6 @@ import type { ApiErrorResponse } from "@/lib/http"
 import type { PurchaseLedgerApiRow } from "@/lib/types/purchase-ledger.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
-// `q` (the single search box) renames to `materialKeyword` — GetPurchaseLedgerReqDto's own `q`
-// only matches purchase_requests.code, and ANDing it together with `materialKeyword` would
-// require a row to match BOTH instead of the "search across fields" the box implies, so only one
-// can be wired: `materialKeyword` fits this vật-tư-tracking table better. `neededDateFrom` renames
-// to `neededDate` — the backend only supports an exact-day match here, not a range, so only "từ
-// ngày" ends up filtering; `neededDateTo` is dropped rather than sent. `createdDateFrom`/
-// `createdDateTo` rename to `fromDate`/`toDate` (a real range, same idiom as orders/
-// purchase-requests own fromDate/toDate rename).
-const getPurchaseLedgerParamsSchema = purchaseLedgerSearchSchema.transform(
-  ({
-    q,
-    createdDateFrom,
-    createdDateTo,
-    neededDateFrom,
-    neededDateTo: _neededDateTo,
-    ...rest
-  }) => ({
-    ...rest,
-    materialKeyword: q,
-    fromDate: createdDateFrom,
-    toDate: createdDateTo,
-    neededDate: neededDateFrom,
-  })
-)
-
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
 function resolveGetPurchaseLedgerErrorMessage(error: unknown): string {
@@ -48,7 +23,7 @@ function resolveGetPurchaseLedgerErrorMessage(error: unknown): string {
 }
 
 export const getPurchaseLedger = createServerFn({ method: "GET" })
-  .validator(getPurchaseLedgerParamsSchema)
+  .validator(purchaseLedgerSearchSchema)
   .handler(
     async ({ data }): Promise<PaginatedResponse<PurchaseLedgerApiRow>> => {
       try {

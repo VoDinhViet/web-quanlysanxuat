@@ -10,7 +10,9 @@ type PaymentRequestInfoCardProps = {
 
 // Sidebar card — "Thông tin chứng từ".
 // Same section/border idiom as PurchaseOrderSummaryCard.tsx.
-export function PaymentRequestInfoCard({ detail }: PaymentRequestInfoCardProps) {
+export function PaymentRequestInfoCard({
+  detail,
+}: PaymentRequestInfoCardProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
       <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">

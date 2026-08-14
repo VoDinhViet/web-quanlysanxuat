@@ -130,8 +130,7 @@ export function getMockInventoryProducts(
     const q = search.q.toLowerCase()
     rows = rows.filter(
       (r) =>
-        r.code.toLowerCase().includes(q) ||
-        r.name.toLowerCase().includes(q)
+        r.code.toLowerCase().includes(q) || r.name.toLowerCase().includes(q)
     )
   }
 
@@ -173,8 +172,6 @@ export function getMockInventoryProducts(
   }
 }
 
-export function getMockInventoryProduct(
-  id: string
-): InventoryProduct | null {
+export function getMockInventoryProduct(id: string): InventoryProduct | null {
   return MOCK_ROWS.find((r) => r.id === id) ?? null
 }

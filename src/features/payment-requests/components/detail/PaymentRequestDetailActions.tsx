@@ -12,9 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import {
-  mockUpdatePaymentRequestStatus,
-} from "@/features/payment-requests/mock/payment-requests.mock"
+import { mockUpdatePaymentRequestStatus } from "@/features/payment-requests/mock/payment-requests.mock"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestDetailActionsProps = {
@@ -60,10 +58,7 @@ export function PaymentRequestDetailActions({
           {/* Mark as PAID */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button
-                type="button"
-                disabled={mutation.isPending}
-              >
+              <Button type="button" disabled={mutation.isPending}>
                 <CheckCircle className="size-4" />
                 Đã thanh toán
               </Button>
@@ -73,9 +68,7 @@ export function PaymentRequestDetailActions({
                 <DialogTitle>Xác nhận thanh toán</DialogTitle>
                 <DialogDescription>
                   Xác nhận yêu cầu thanh toán{" "}
-                  <span className="font-mono font-semibold">
-                    {detail.code}
-                  </span>{" "}
+                  <span className="font-mono font-semibold">{detail.code}</span>{" "}
                   đã được chi? Hành động này không thể hoàn tác.
                 </DialogDescription>
               </DialogHeader>
@@ -85,7 +78,9 @@ export function PaymentRequestDetailActions({
                   disabled={mutation.isPending}
                   onClick={() => mutation.mutate("PAID")}
                 >
-                  {mutation.isPending ? "Đang xử lý…" : "Xác nhận đã thanh toán"}
+                  {mutation.isPending
+                    ? "Đang xử lý…"
+                    : "Xác nhận đã thanh toán"}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -111,9 +106,7 @@ export function PaymentRequestDetailActions({
                 <DialogTitle>Hủy yêu cầu thanh toán</DialogTitle>
                 <DialogDescription>
                   Bạn chắc chắn muốn hủy yêu cầu thanh toán{" "}
-                  <span className="font-mono font-semibold">
-                    {detail.code}
-                  </span>
+                  <span className="font-mono font-semibold">{detail.code}</span>
                   ? Hành động này không thể hoàn tác.
                 </DialogDescription>
               </DialogHeader>

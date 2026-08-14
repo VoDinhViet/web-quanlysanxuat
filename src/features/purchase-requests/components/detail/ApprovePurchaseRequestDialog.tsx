@@ -20,13 +20,13 @@ import { approvePurchaseRequest } from "@/features/purchase-requests/api/server-
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type ApprovePurchaseRequestDialogProps = {
-  detail: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestDetail
   trigger: ReactNode
 }
 
 // PENDING_APPROVAL → APPROVED (terminal) — director-level, needs purchase-requests:approve.
 export function ApprovePurchaseRequestDialog({
-  detail,
+  purchaseRequest,
   trigger,
 }: ApprovePurchaseRequestDialogProps) {
   const [open, setOpen] = useState(false)
@@ -35,7 +35,9 @@ export function ApprovePurchaseRequestDialog({
 
   const mutation = useMutation({
     mutationFn: () =>
-      approvePurchaseRequestFn({ data: { purchaseRequestId: detail.id } }),
+      approvePurchaseRequestFn({
+        data: { purchaseRequestId: purchaseRequest.id },
+      }),
     onSuccess: async () => {
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
@@ -59,7 +61,7 @@ export function ApprovePurchaseRequestDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Duyệt đề xuất mua hàng này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Đề xuất ${detail.code} sẽ chuyển sang trạng thái "Đã duyệt".`}
+            {`Đề xuất ${purchaseRequest.code} sẽ chuyển sang trạng thái "Đã duyệt".`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

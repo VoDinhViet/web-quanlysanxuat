@@ -20,14 +20,14 @@ import { sendPurchaseRequest } from "@/features/purchase-requests/api/server-fun
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type SendPurchaseRequestDialogProps = {
-  detail: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestDetail
   trigger: ReactNode
 }
 
 // DRAFT → PENDING_APPROVAL — needs purchase-requests:update (same permission as any edit; the
 // submitter can't also be the approver, see PurchaseRequestApprovalActions.tsx).
 export function SendPurchaseRequestDialog({
-  detail,
+  purchaseRequest,
   trigger,
 }: SendPurchaseRequestDialogProps) {
   const [open, setOpen] = useState(false)
@@ -36,7 +36,9 @@ export function SendPurchaseRequestDialog({
 
   const mutation = useMutation({
     mutationFn: () =>
-      sendPurchaseRequestFn({ data: { purchaseRequestId: detail.id } }),
+      sendPurchaseRequestFn({
+        data: { purchaseRequestId: purchaseRequest.id },
+      }),
     onSuccess: async () => {
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
@@ -60,7 +62,7 @@ export function SendPurchaseRequestDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Gửi duyệt đề xuất mua hàng này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Đề xuất ${detail.code} sẽ chuyển sang trạng thái "Chờ duyệt" và chờ Giám đốc duyệt.`}
+            {`Đề xuất ${purchaseRequest.code} sẽ chuyển sang trạng thái "Chờ duyệt" và chờ Giám đốc duyệt.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

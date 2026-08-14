@@ -13,7 +13,7 @@ type BuildQuotationAddSupplierItemsColumnsArgs = {
   // cursor and it's clear WHY a row can't be toggled.
   assignedIds: Set<string>
   allChecked: boolean
-  onToggleItem: (purchaseRequestItemId: string) => void
+  onToggleItem: (itemId: string) => void
   onToggleAll: (checked: boolean) => void
 }
 
@@ -42,15 +42,15 @@ export function buildQuotationAddSupplierItemsColumns({
       ),
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => {
-        const isAssigned = assignedIds.has(row.original.purchaseRequestItemId)
+        const isAssigned = assignedIds.has(row.original.itemId)
         return (
           <Checkbox
             checked={
-              isAssigned || checkedIds.has(row.original.purchaseRequestItemId)
+              isAssigned || checkedIds.has(row.original.itemId)
             }
             disabled={isAssigned}
             onCheckedChange={() =>
-              onToggleItem(row.original.purchaseRequestItemId)
+              onToggleItem(row.original.itemId)
             }
             aria-label={`Chọn ${row.original.itemName}`}
           />
@@ -76,7 +76,7 @@ export function buildQuotationAddSupplierItemsColumns({
       id: "itemName",
       header: "Tên vật tư",
       cell: ({ row }) => {
-        const isAssigned = assignedIds.has(row.original.purchaseRequestItemId)
+        const isAssigned = assignedIds.has(row.original.itemId)
         return (
           <span>
             {row.original.itemName}
@@ -93,12 +93,18 @@ export function buildQuotationAddSupplierItemsColumns({
       header: "ĐVT",
       meta: { headerClassName: "w-16" },
     }),
-    quotationAddSupplierItemsColumnHelper.accessor("requestedQuantity", {
+    quotationAddSupplierItemsColumnHelper.display({
+      id: "requestedQuantity",
       header: "SL yêu cầu",
       meta: {
         headerClassName: "w-24 text-right",
         cellClassName: "text-right tabular-nums",
       },
+      cell: ({ row }) =>
+        row.original.allocations.reduce(
+          (sum, allocation) => sum + allocation.requestedQuantity,
+          0
+        ),
     }),
   ]
 }

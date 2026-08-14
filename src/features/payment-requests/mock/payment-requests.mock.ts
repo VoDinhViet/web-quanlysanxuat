@@ -226,8 +226,7 @@ export function getMockPaymentRequests(
   }
   if (search.fromDate) {
     rows = rows.filter(
-      (r) =>
-        new Date(r.createdAt) >= new Date(search.fromDate!)
+      (r) => new Date(r.createdAt) >= new Date(search.fromDate!)
     )
   }
   if (search.toDate) {
@@ -256,9 +255,7 @@ export function getMockPaymentRequests(
   }
 }
 
-export function getMockPaymentRequest(
-  id: string
-): PaymentRequestDetail | null {
+export function getMockPaymentRequest(id: string): PaymentRequestDetail | null {
   return (
     MOCK_DETAILS[id] ??
     (MOCK_ROWS.find((r) => r.id === id)

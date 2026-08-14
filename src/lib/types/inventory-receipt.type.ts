@@ -1,101 +1,144 @@
-// Domain types for Inventory Receipts (Phiếu nhập kho).
+import type { ItemRef } from "@/lib/types/item.type"
+import type { SupplierRef } from "@/lib/types/supplier.type"
+import type { WarehouseRef } from "@/lib/types/warehouse.type"
 
 export const InventoryReceiptStatus = {
   DRAFT: "DRAFT",
-  AWAITING_IQC: "AWAITING_IQC",
-  AWAITING_RECEIPT: "AWAITING_RECEIPT",
-  RECEIVED: "RECEIVED",
+  POSTED: "POSTED",
   CANCELLED: "CANCELLED",
 } as const
 
 export type InventoryReceiptStatus =
   (typeof InventoryReceiptStatus)[keyof typeof InventoryReceiptStatus]
 
-export const inventoryReceiptStatusLabels: Record<InventoryReceiptStatus, string> =
-  {
-    [InventoryReceiptStatus.DRAFT]: "Draft",
-    [InventoryReceiptStatus.AWAITING_IQC]: "Chờ IQC",
-    [InventoryReceiptStatus.AWAITING_RECEIPT]: "Chờ nhập kho",
-    [InventoryReceiptStatus.RECEIVED]: "Đã nhập kho",
-    [InventoryReceiptStatus.CANCELLED]: "Hủy",
-  }
+export const inventoryReceiptStatusLabels: Record<
+  InventoryReceiptStatus,
+  string
+> = {
+  [InventoryReceiptStatus.DRAFT]: "Nháp",
+  [InventoryReceiptStatus.POSTED]: "Đã nhập kho",
+  [InventoryReceiptStatus.CANCELLED]: "Đã huỷ",
+}
 
 export const inventoryReceiptStatusDescriptions: Record<
   InventoryReceiptStatus,
   string
 > = {
-  [InventoryReceiptStatus.DRAFT]: "Phiếu đang soạn thảo, chưa gửi đi.",
-  [InventoryReceiptStatus.AWAITING_IQC]: "Đã gửi yêu cầu kiểm tra chất lượng.",
-  [InventoryReceiptStatus.AWAITING_RECEIPT]: "Đã qua IQC, chờ nhập kho.",
-  [InventoryReceiptStatus.RECEIVED]: "Hoàn tất nhập kho.",
-  [InventoryReceiptStatus.CANCELLED]: "Phiếu đã bị hủy.",
+  [InventoryReceiptStatus.DRAFT]: "Phiếu đang soạn, chưa đụng tồn kho.",
+  [InventoryReceiptStatus.POSTED]:
+    "Đã ghi sổ, tồn kho đã cập nhật — phiếu bất biến từ đây.",
+  [InventoryReceiptStatus.CANCELLED]: "Phiếu đã bị huỷ.",
 }
 
-export const InventoryReceiptSource = {
-  PURCHASE_ORDER: "PURCHASE_ORDER",
-  CUSTOMER_MATERIAL: "CUSTOMER_MATERIAL",
-  PRODUCTION_RETURN: "PRODUCTION_RETURN",
-  OTHER_ADJUSTMENT: "OTHER_ADJUSTMENT",
+// Backend rejects a PATCH/DELETE off DRAFT (`inventory_document.error.invalid_status_transition`)
+// — used by the update route's loader to bounce away instead of showing a form that can never
+// save, same idiom as `canUpdateOrder` in `order.type.ts`.
+export function canUpdateInventoryReceipt(
+  status: InventoryReceiptStatus
+): boolean {
+  return status === InventoryReceiptStatus.DRAFT
+}
+
+export const InventoryReceiptType = {
+  PURCHASE: "PURCHASE",
+  PRODUCTION: "PRODUCTION",
+  RETURN: "RETURN",
+  ADJUSTMENT: "ADJUSTMENT",
 } as const
 
-export type InventoryReceiptSource =
-  (typeof InventoryReceiptSource)[keyof typeof InventoryReceiptSource]
+export type InventoryReceiptType =
+  (typeof InventoryReceiptType)[keyof typeof InventoryReceiptType]
 
-export const inventoryReceiptSourceLabels: Record<
-  InventoryReceiptSource,
-  string
-> = {
-  [InventoryReceiptSource.PURCHASE_ORDER]: "Nhập từ PO",
-  [InventoryReceiptSource.CUSTOMER_MATERIAL]: "Nhập từ vật tư khách hàng",
-  [InventoryReceiptSource.PRODUCTION_RETURN]: "Nhập trả vật tư sản xuất",
-  [InventoryReceiptSource.OTHER_ADJUSTMENT]: "Nhập điều chỉnh khác",
+export const inventoryReceiptTypeLabels: Record<InventoryReceiptType, string> =
+  {
+    [InventoryReceiptType.PURCHASE]: "Mua hàng",
+    [InventoryReceiptType.PRODUCTION]: "Từ sản xuất",
+    [InventoryReceiptType.RETURN]: "Trả hàng",
+    [InventoryReceiptType.ADJUSTMENT]: "Điều chỉnh",
+  }
+
+/** Mirrors the backend's `UserRefResDto` as nested on a receipt row — declared locally rather
+ *  than imported from `user.type.ts`, same idiom as `PurchaseRequestUserRef`/`PurchaseOrderUserRef`:
+ *  each domain owns its own ref shape even where it coincides with another domain's. */
+export type InventoryReceiptUserRef = {
+  id: string
+  code: string
+  fullName: string
 }
 
-export const AssetType = {
-  COMPANY_MATERIAL: "COMPANY_MATERIAL",
-  CUSTOMER_MATERIAL: "CUSTOMER_MATERIAL",
-} as const
-
-export type AssetType = (typeof AssetType)[keyof typeof AssetType]
-
-export const assetTypeLabels: Record<AssetType, string> = {
-  [AssetType.COMPANY_MATERIAL]: "Vật tư công ty",
-  [AssetType.CUSTOMER_MATERIAL]: "Vật tư khách hàng",
+/** Mirrors the backend's `PurchaseRequestRefResDto` as nested on a receipt row. */
+export type InventoryReceiptPurchaseRequestRef = {
+  id: string
+  code: string
 }
 
+/** Mirrors the backend's `ProductionOrderRefResDto` as nested on a receipt row. `code` is
+ *  nullable even when the object itself is present — null until the LSX is `APPROVED`. */
+export type InventoryReceiptProductionOrderRef = {
+  id: string
+  code: string | null
+}
+
+/** Mirrors the backend's `PurchaseOrderRefResDto` as nested on a receipt row. */
+export type InventoryReceiptPurchaseOrderRef = {
+  id: string
+  code: string
+}
+
+/** Mirrors the backend's `PurchaseOrderItemRefResDto` as nested on a receipt line — only present
+ *  when the line was picked from a PO (`purchaseOrderItemId` set). */
+export type InventoryReceiptPurchaseOrderItemRef = {
+  id: string
+  quantity: number
+}
+
+/** Mirrors the backend's `PageInventoryReceiptItemResDto` — the line shape on the **list** row
+ *  (`GET /inventory-receipts`). No PO ref, no stock numbers — those only exist on the detail
+ *  line shape below (`.claude/rules/api.md` two-layer Page/Detail convention). */
+export type InventoryReceiptItem = {
+  id: string
+  item: ItemRef
+  quantity: number
+  unitPrice: number | null
+  note: string | null
+}
+
+/** Mirrors the backend's `InventoryReceiptItemResDto` — the line shape on the **detail** route
+ *  (`GET /inventory-receipts/:id`). `onHand`/`bomDemand`/`available`/`fromStock` are computed at
+ *  read time (`item-stock.query.ts` on the backend), not stored columns. */
+export type InventoryReceiptItemDetail = InventoryReceiptItem & {
+  purchaseOrderItem: InventoryReceiptPurchaseOrderItemRef | null
+  onHand: number
+  bomDemand: number
+  available: number
+  fromStock: number
+}
+
+/** Mirrors the backend's `PageInventoryReceiptResDto` (`GET /inventory-receipts`) — the list row
+ *  shape. Independent from `InventoryReceiptDetail` below, not a subset/superset via `extends`
+ *  (same two-layer convention as `purchase-ledger`/`purchase-request` types). */
 export type InventoryReceipt = {
   id: string
   code: string
+  warehouse: WarehouseRef
+  receiptType: InventoryReceiptType
+  status: InventoryReceiptStatus
   receiptDate: string
-  source: InventoryReceiptSource
-  poOrReason: string
-  assetType: AssetType
-  status: InventoryReceiptStatus
-  createdByName: string
-}
-
-export type InventoryReceiptItem = {
-  id: string
-  materialCode: string
-  materialName: string
-  unit: string
-  docQuantity: number
-  actualQuantity: number
-  passedQuantity: number
-  failedQuantity: number
-  note: string | null
-}
-
-export type InventoryReceiptStatusHistoryEntry = {
-  status: InventoryReceiptStatus
-  changedAt: string
-  changedBy: string | null
-}
-
-export type InventoryReceiptDetail = InventoryReceipt & {
-  warehouseName: string
-  delivererName: string | null
+  supplier: SupplierRef | null
+  purchaseRequest: InventoryReceiptPurchaseRequestRef | null
+  productionOrder: InventoryReceiptProductionOrderRef | null
+  purchaseOrder: InventoryReceiptPurchaseOrderRef | null
   note: string | null
   items: InventoryReceiptItem[]
-  statusHistory: InventoryReceiptStatusHistoryEntry[]
+  posterBy: InventoryReceiptUserRef | null
+  postedAt: string | null
+  creatorBy: InventoryReceiptUserRef | null
+  createdAt: string
+  updatedAt: string
+}
+
+/** Mirrors the backend's `InventoryReceiptResDto` (`GET /inventory-receipts/:id`) — the detail
+ *  shape, same header fields as `InventoryReceipt` but full line items (`InventoryReceiptItemDetail`). */
+export type InventoryReceiptDetail = Omit<InventoryReceipt, "items"> & {
+  items: InventoryReceiptItemDetail[]
 }

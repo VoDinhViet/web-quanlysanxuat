@@ -12,10 +12,7 @@ export const paymentRequestsSearchSchema = z.object({
   // Filter by PO code (plain string, not an id — matches the mockup filter)
   poCode: z.string().trim().min(1).optional().catch(undefined),
   // Status filter
-  status: z
-    .enum(["PENDING", "PAID", "CANCELLED"])
-    .optional()
-    .catch(undefined),
+  status: z.enum(["PENDING", "PAID", "CANCELLED"]).optional().catch(undefined),
   // Date range (ISO yyyy-MM-dd) — matches the "Từ ngày / Đến ngày" DateRangePicker pair
   fromDate: z.string().trim().min(1).optional().catch(undefined),
   toDate: z.string().trim().min(1).optional().catch(undefined),

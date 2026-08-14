@@ -44,8 +44,7 @@ export function PaymentRequestsTableFilter() {
   }, 300)
 
   const handleStatusChange = (value: string) => {
-    const status =
-      value === "all" ? undefined : (value as PaymentRequestStatus)
+    const status = value === "all" ? undefined : (value as PaymentRequestStatus)
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
@@ -144,7 +143,10 @@ export function PaymentRequestsTableFilter() {
           </div>
 
           <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+            <PendingAction
+              label="Xuất Excel"
+              hint="Tính năng xuất Excel sắp có"
+            >
               <Download className="size-4" />
               Xuất Excel
             </PendingAction>

@@ -5,10 +5,9 @@ import type { Unit } from "@/lib/types/unit.type"
  *  purchase-ledger.constant.ts`) exactly — computed at read time from `quotedQuantity`/
  *  `orderedQuantity`/`receivedQuantity`, not a stored column. `COMPLETED` needs `receivedQuantity`
  *  (joined via `purchaseOrderItemId`, `POSTED` receipts), so it can't appear yet until
- *  `inventory-receipts` writes that link. `quotedQuantity`/`orderedQuantity` are always `0` today
- *  since `purchase-quotations`/`purchase-orders` have no write routes — in practice every row
- *  currently comes back `WAITING_TO_PURCHASE` (see `docs/domains/purchasing.md` in the backend
- *  repo). */
+ *  `inventory-receipts` writes that link. `orderedQuantity` only counts PO status `ORDERED` (a
+ *  `DRAFT` PO auto-generated from an approved RFQ doesn't count) — see `docs/domains/purchasing.md`
+ *  in the backend repo. */
 export const PurchaseLedgerStatus = {
   WAITING_TO_PURCHASE: "WAITING_TO_PURCHASE",
   QUOTING: "QUOTING",

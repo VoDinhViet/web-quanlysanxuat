@@ -31,13 +31,15 @@ export function CreateQuotationForm() {
   const queryClient = useQueryClient()
   const createQuotationFn = useServerFn(createPurchaseQuotation)
 
-  // -v2: the item shape changed (quotes→suppliers, adjustmentReason→quantityAdjustmentReason) to
-  // match the backend's new per-supplier model — a v1 key would let restoreFormDraft() write a
-  // stale-shaped draft into the form (it doesn't validate against the current schema on restore),
-  // crashing step 2's `item.suppliers.map`. Renaming the key lets old drafts harmlessly expire.
+  // Draft key version bumped: the item shape changed (purchaseRequestItemId+quantity+
+  // quantityAdjustmentReason at item level → itemId+allocations[] merging several dòng ĐXMH into
+  // one item) to match the backend's gộp-by-itemId model — an old key would let
+  // restoreFormDraft() write a stale-shaped draft into the form (it doesn't validate against the
+  // current schema on restore), crashing step 2's `item.allocations.map`. Bumping the key lets
+  // old drafts harmlessly expire.
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateQuotationFormSchema>(
-      "qlsx:draft:create-purchase-quotation-v2"
+      "qlsx:draft:create-purchase-quotation-v3"
     )
   const draftRestoredRef = useRef(false)
 

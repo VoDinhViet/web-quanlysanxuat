@@ -6,8 +6,8 @@ import { http, logHttpError } from "@/lib/http"
 import { emptyToUndefined, emptyToUndefinedNumber } from "@/lib/zod-transforms"
 import type { ApiErrorResponse } from "@/lib/http"
 
-// Mirrors CreateQuotationReqDto exactly — one POST carries the whole item→suppliers tree.
-// Chained onto the form's own schema (not a hand-written parallel one) so `data` inside
+// Mirrors CreateQuotationReqDto exactly — one POST carries the whole item→allocations/suppliers
+// tree. Chained onto the form's own schema (not a hand-written parallel one) so `data` inside
 // `.handler()` is already wire-ready, same pattern as update-user.api.ts/create-material.api.ts.
 // Only unitPrice/leadTimeDays/note/quantityAdjustmentReason go through emptyToUndefined* — the
 // backend only allows explicit `null` for the header-level `note` (never sent here, per product
@@ -16,9 +16,14 @@ import type { ApiErrorResponse } from "@/lib/http"
 const createQuotationPayloadSchema = createQuotationFormSchema.transform(
   ({ items }) => ({
     items: items.map((item) => ({
-      purchaseRequestItemId: item.purchaseRequestItemId,
-      quantity: Number(item.quantity),
-      quantityAdjustmentReason: emptyToUndefined(item.quantityAdjustmentReason),
+      itemId: item.itemId,
+      allocations: item.allocations.map((allocation) => ({
+        purchaseRequestItemId: allocation.purchaseRequestItemId,
+        quantity: Number(allocation.quantity),
+        quantityAdjustmentReason: emptyToUndefined(
+          allocation.quantityAdjustmentReason
+        ),
+      })),
       suppliers: item.suppliers.map((supplier) => ({
         supplierId: supplier.supplierId,
         unitPrice: emptyToUndefinedNumber(supplier.unitPrice),
@@ -42,9 +47,13 @@ function resolveCreatePurchaseQuotationErrorMessage(error: unknown): string {
     case "purchase_ledger.error.line_not_purchasable":
       return "Có dòng vật tư đã hủy hoặc đề xuất chưa duyệt, không thể lập báo giá."
     case "purchase_quotation.error.duplicate_request_item":
-      return "Có vật tư bị trùng trong danh sách báo giá."
+      return "Một dòng đề xuất bị gộp vào 2 vật tư khác nhau."
     case "purchase_quotation.error.duplicate_item_supplier":
       return "Một vật tư đang có NCC bị chọn trùng."
+    case "purchase_quotation_item.error.allocation_item_mismatch":
+      return "Có dòng đề xuất không đúng mã vật tư của dòng báo giá."
+    case "purchase_quotation_item.error.no_allocations":
+      return "Có vật tư chưa gắn dòng đề xuất nào."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo báo giá."
     default:

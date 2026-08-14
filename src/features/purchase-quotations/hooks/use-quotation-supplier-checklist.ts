@@ -9,7 +9,7 @@ export interface UseQuotationSupplierChecklistResult {
   assignedIds: Set<string>
   targetIds: string[]
   allChecked: boolean
-  toggleItem: (purchaseRequestItemId: string) => void
+  toggleItem: (itemId: string) => void
   toggleAll: (checked: boolean) => void
 }
 
@@ -39,25 +39,25 @@ export function useQuotationSupplierChecklist(
               (supplier) => supplier.supplierId === supplierId
             )
           )
-          .map((item) => item.purchaseRequestItemId)
+          .map((item) => item.itemId)
       ),
     [items, supplierId]
   )
 
   const selectableIds = items
-    .map((item) => item.purchaseRequestItemId)
-    .filter((purchaseRequestItemId) => !assignedIds.has(purchaseRequestItemId))
+    .map((item) => item.itemId)
+    .filter((itemId) => !assignedIds.has(itemId))
   const targetIds = selectableIds.filter((id) => checkedIds.has(id))
   const allChecked =
     selectableIds.length > 0 && targetIds.length === selectableIds.length
 
-  function toggleItem(purchaseRequestItemId: string) {
+  function toggleItem(itemId: string) {
     setCheckedIds((prev) => {
       const next = new Set(prev)
-      if (next.has(purchaseRequestItemId)) {
-        next.delete(purchaseRequestItemId)
+      if (next.has(itemId)) {
+        next.delete(itemId)
       } else {
-        next.add(purchaseRequestItemId)
+        next.add(itemId)
       }
       return next
     })

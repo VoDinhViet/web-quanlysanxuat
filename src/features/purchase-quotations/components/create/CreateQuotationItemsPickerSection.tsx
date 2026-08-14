@@ -34,26 +34,36 @@ import { createQuotationFormDefaultValues } from "@/features/purchase-quotations
 import { withForm } from "@/hooks/use-app-form"
 import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
 import { cn } from "@/lib/utils"
-import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
+import type {
+  PickedQuotationItemValue,
+  QuotationItemAllocationValue,
+} from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
 const LIMIT_OPTIONS = [10, 20, 50] as const
 
-// Each item starts with an empty NCC list — suppliers are added per item, in
+function buildAllocation(row: PurchaseLedgerRow): QuotationItemAllocationValue {
+  return {
+    purchaseRequestItemId: row.id,
+    prCode: row.purchaseRequest.code,
+    requestedQuantity: row.quantity,
+    neededDate: row.neededDate,
+    quantity: String(row.quantity),
+    quantityAdjustmentReason: "",
+  }
+}
+
+// Starts with an empty NCC list — suppliers are added per item, in
 // CreateQuotationSuppliersSection, not seeded here.
 function buildPickedQuotationItem(
   row: PurchaseLedgerRow
 ): PickedQuotationItemValue {
   return {
-    purchaseRequestItemId: row.id,
-    prCode: row.purchaseRequest.code,
+    itemId: row.item.id,
     itemCode: row.item.code,
     itemName: row.item.name,
     unit: row.unit.name,
-    requestedQuantity: row.quantity,
-    neededDate: row.neededDate,
-    quantity: String(row.quantity),
-    quantityAdjustmentReason: "",
+    allocations: [buildAllocation(row)],
     suppliers: [],
   }
 }
@@ -88,13 +98,42 @@ export const CreateQuotationItemsPickerSection = withForm({
       placeholderData: keepPreviousData,
     })
 
+    // Picking a dòng ĐXMH whose itemId matches an already-picked vật tư appends a new allocation
+    // to that item instead of a second item — the merge this whole feature exists for. The DB's
+    // new unique (quotationId, itemId) constraint makes two items sharing an itemId unrepresentable
+    // server-side, so it has to be prevented here at pick time, not left to submit-time dedup.
     const toggleRow = useCallback(
       (row: PurchaseLedgerRow) => {
-        const index = items.findIndex(
-          (item) => item.purchaseRequestItemId === row.id
+        const itemIndex = items.findIndex((item) =>
+          item.allocations.some(
+            (allocation) => allocation.purchaseRequestItemId === row.id
+          )
         )
-        if (index >= 0) {
-          itemsField.removeValue(index)
+
+        if (itemIndex >= 0) {
+          const item = items[itemIndex]
+          if (item.allocations.length > 1) {
+            itemsField.replaceValue(itemIndex, {
+              ...item,
+              allocations: item.allocations.filter(
+                (allocation) => allocation.purchaseRequestItemId !== row.id
+              ),
+            })
+          } else {
+            itemsField.removeValue(itemIndex)
+          }
+          return
+        }
+
+        const existingItemIndex = items.findIndex(
+          (item) => item.itemId === row.item.id
+        )
+        if (existingItemIndex >= 0) {
+          const item = items[existingItemIndex]
+          itemsField.replaceValue(existingItemIndex, {
+            ...item,
+            allocations: [...item.allocations, buildAllocation(row)],
+          })
         } else {
           itemsField.pushValue(buildPickedQuotationItem(row))
         }
@@ -105,14 +144,26 @@ export const CreateQuotationItemsPickerSection = withForm({
     const rows = ledgerQuery.data?.data ?? []
     const pagination = ledgerQuery.data?.pagination
 
+    const pickedIds = useMemo(
+      () =>
+        new Set(
+          items.flatMap((item) =>
+            item.allocations.map(
+              (allocation) => allocation.purchaseRequestItemId
+            )
+          )
+        ),
+      [items]
+    )
+
     const columns = useMemo(
       () =>
         buildQuotationItemsPickerColumns({
-          pickedIds: new Set(items.map((item) => item.purchaseRequestItemId)),
+          pickedIds,
           disabled,
           onToggleRow: toggleRow,
         }),
-      [items, disabled, toggleRow]
+      [pickedIds, disabled, toggleRow]
     )
 
     const table = useReactTable({
@@ -133,7 +184,7 @@ export const CreateQuotationItemsPickerSection = withForm({
             </p>
           </div>
           <span className="text-xs font-medium text-primary">
-            Đã chọn {items.length} vật tư
+            Đã chọn {pickedIds.size} dòng ĐXMH · {items.length} vật tư
           </span>
         </div>
 

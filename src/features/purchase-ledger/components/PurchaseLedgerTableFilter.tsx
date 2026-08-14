@@ -15,7 +15,6 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/DateRangePicker"
 import { FilterLabel } from "@/components/shared/FilterLabel"
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
 import { PendingAction } from "@/components/shared/PendingAction"
 import { purchaseLedgerStatusLabels } from "@/lib/types/purchase-ledger.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -162,7 +161,7 @@ export function PurchaseLedgerTableFilter() {
                 <Input
                   id="purchase-ledger-search"
                   className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Tìm theo Mã PR, mã/tên vật tư, mã PO..."
+                  placeholder="Tìm theo Mã PR, mã/tên vật tư..."
                   value={q}
                   onChange={(event) => {
                     setQ(event.target.value)
@@ -181,8 +180,6 @@ export function PurchaseLedgerTableFilter() {
           </div>
 
           <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <MockDataBadge />
-
             <Button
               type="button"
               variant="outline"

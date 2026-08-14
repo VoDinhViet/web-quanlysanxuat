@@ -16,7 +16,7 @@ export const inventoryProductsColumns = [
     header: ({ table }) => (
       <input
         type="checkbox"
-        className="size-3.5 rounded border-border accent-primary cursor-pointer"
+        className="size-3.5 cursor-pointer rounded border-border accent-primary"
         checked={table.getIsAllRowsSelected()}
         onChange={table.getToggleAllRowsSelectedHandler()}
         aria-label="Chọn tất cả"
@@ -29,7 +29,7 @@ export const inventoryProductsColumns = [
     cell: ({ row }) => (
       <input
         type="checkbox"
-        className="size-3.5 rounded border-border accent-primary cursor-pointer"
+        className="size-3.5 cursor-pointer rounded border-border accent-primary"
         checked={row.getIsSelected()}
         onChange={row.getToggleSelectedHandler()}
         aria-label={`Chọn sản phẩm ${row.original.code}`}
@@ -101,9 +101,7 @@ export const inventoryProductsColumns = [
       headerClassName: "min-w-36 text-right",
       cellClassName: "text-right",
     },
-    cell: ({ getValue }) => (
-      <QuantityCell value={getValue()} variant="blue" />
-    ),
+    cell: ({ getValue }) => <QuantityCell value={getValue()} variant="blue" />,
   }),
 
   col.accessor("actualQuantity", {
@@ -122,9 +120,7 @@ export const inventoryProductsColumns = [
       headerClassName: "min-w-36 text-right",
       cellClassName: "text-right",
     },
-    cell: ({ getValue }) => (
-      <QuantityCell value={getValue()} variant="blue" />
-    ),
+    cell: ({ getValue }) => <QuantityCell value={getValue()} variant="blue" />,
   }),
 
   col.accessor("reservedQuantity", {
@@ -164,9 +160,7 @@ export const inventoryProductsColumns = [
       headerClassName: "min-w-40 text-right",
       cellClassName: "text-right",
     },
-    cell: ({ getValue }) => (
-      <QuantityCell value={getValue()} variant="green" />
-    ),
+    cell: ({ getValue }) => <QuantityCell value={getValue()} variant="green" />,
   }),
 
   col.accessor("availableQuantity", {
@@ -197,8 +191,6 @@ export const inventoryProductsColumns = [
       headerClassName: "min-w-20 text-center",
       cellClassName: "text-center font-normal",
     },
-    cell: ({ row }) => (
-      <InventoryProductActionsCell product={row.original} />
-    ),
+    cell: ({ row }) => <InventoryProductActionsCell product={row.original} />,
   }),
 ]

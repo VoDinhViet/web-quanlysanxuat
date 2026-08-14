@@ -1,5 +1,11 @@
 import { useState } from "react"
-import { Package, MoreHorizontal, Search, History, FileText } from "lucide-react"
+import {
+  Package,
+  MoreHorizontal,
+  Search,
+  History,
+  FileText,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -57,7 +63,11 @@ export function QuantityCell({
         : "text-foreground font-semibold"
   }
 
-  return <span className={cn("tabular-nums text-xs", colorClass)}>{numberFmt.format(value)}</span>
+  return (
+    <span className={cn("text-xs tabular-nums", colorClass)}>
+      {numberFmt.format(value)}
+    </span>
+  )
 }
 
 export function InventoryProductActionsCell({
@@ -73,7 +83,7 @@ export function InventoryProductActionsCell({
         <Button
           variant="outline"
           size="icon"
-          className="size-7 text-primary border-primary/30 hover:bg-primary/10"
+          className="size-7 border-primary/30 text-primary hover:bg-primary/10"
           title="Xem nhanh thành phẩm"
           onClick={() => setDetailOpen(true)}
         >
@@ -114,34 +124,57 @@ export function InventoryProductActionsCell({
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-3 text-xs pt-2">
+          <div className="space-y-3 pt-2 text-xs">
             <div className="flex justify-between border-b border-border/60 pb-2">
               <span className="text-muted-foreground">Khách hàng:</span>
-              <span className="font-semibold text-foreground">{product.clientName}</span>
+              <span className="font-semibold text-foreground">
+                {product.clientName}
+              </span>
             </div>
             <div className="flex justify-between border-b border-border/60 pb-2">
               <span className="text-muted-foreground">Đơn vị tính:</span>
-              <span className="font-semibold text-foreground">{product.unit}</span>
+              <span className="font-semibold text-foreground">
+                {product.unit}
+              </span>
             </div>
             <div className="flex justify-between border-b border-border/60 pb-2">
               <span className="text-muted-foreground">Tổng nhu cầu PO:</span>
-              <span className="font-semibold text-blue-600">{numberFmt.format(product.poDemandQuantity)}</span>
+              <span className="font-semibold text-blue-600">
+                {numberFmt.format(product.poDemandQuantity)}
+              </span>
             </div>
             <div className="flex justify-between border-b border-border/60 pb-2">
-              <span className="text-muted-foreground">Tồn thực tế (Đã QC):</span>
-              <span className="font-semibold text-blue-600">{numberFmt.format(product.actualQuantity)}</span>
+              <span className="text-muted-foreground">
+                Tồn thực tế (Đã QC):
+              </span>
+              <span className="font-semibold text-blue-600">
+                {numberFmt.format(product.actualQuantity)}
+              </span>
             </div>
             <div className="flex justify-between border-b border-border/60 pb-2">
-              <span className="text-muted-foreground">Đã giữ (DO chưa giao):</span>
-              <span className="font-semibold text-amber-600">{numberFmt.format(product.reservedQuantity)}</span>
+              <span className="text-muted-foreground">
+                Đã giữ (DO chưa giao):
+              </span>
+              <span className="font-semibold text-amber-600">
+                {numberFmt.format(product.reservedQuantity)}
+              </span>
             </div>
             <div className="flex justify-between border-b border-border/60 pb-2">
               <span className="text-muted-foreground">Có thể xuất:</span>
-              <span className="font-semibold text-emerald-600">{numberFmt.format(product.exportableQuantity)}</span>
+              <span className="font-semibold text-emerald-600">
+                {numberFmt.format(product.exportableQuantity)}
+              </span>
             </div>
             <div className="flex justify-between pb-1">
               <span className="text-muted-foreground">Tồn TP khả dụng:</span>
-              <span className={cn("font-bold", product.availableQuantity < 0 ? "text-rose-600" : "text-foreground")}>
+              <span
+                className={cn(
+                  "font-bold",
+                  product.availableQuantity < 0
+                    ? "text-rose-600"
+                    : "text-foreground"
+                )}
+              >
                 {numberFmt.format(product.availableQuantity)}
               </span>
             </div>

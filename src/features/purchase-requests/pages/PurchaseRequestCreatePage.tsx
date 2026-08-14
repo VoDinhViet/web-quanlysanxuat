@@ -15,7 +15,7 @@ export function PurchaseRequestCreatePage() {
         notificationCount={5}
       />
 
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <div className="requisition-sheet flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <PurchaseRequestCreateForm />
       </div>
     </main>

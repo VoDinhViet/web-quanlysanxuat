@@ -20,7 +20,7 @@ import { rejectPurchaseRequestSchema } from "@/features/purchase-requests/schema
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type RejectPurchaseRequestDialogProps = {
-  detail: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestDetail
   trigger: ReactNode
 }
 
@@ -28,7 +28,7 @@ type RejectPurchaseRequestDialogProps = {
 // Dialog (not AlertDialog) because it needs an input field, not just a confirm/cancel choice —
 // same split as RejectOrderDialog.tsx.
 export function RejectPurchaseRequestDialog({
-  detail,
+  purchaseRequest,
   trigger,
 }: RejectPurchaseRequestDialogProps) {
   const [open, setOpen] = useState(false)
@@ -40,7 +40,7 @@ export function RejectPurchaseRequestDialog({
         {/* Radix unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <RejectPurchaseRequestForm
-          detail={detail}
+          purchaseRequest={purchaseRequest}
           onClose={() => setOpen(false)}
         />
       </DialogContent>
@@ -49,12 +49,12 @@ export function RejectPurchaseRequestDialog({
 }
 
 type RejectPurchaseRequestFormProps = {
-  detail: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestDetail
   onClose: () => void
 }
 
 function RejectPurchaseRequestForm({
-  detail,
+  purchaseRequest,
   onClose,
 }: RejectPurchaseRequestFormProps) {
   const queryClient = useQueryClient()
@@ -63,7 +63,7 @@ function RejectPurchaseRequestForm({
   const mutation = useMutation({
     mutationFn: (reason: string) =>
       rejectPurchaseRequestFn({
-        data: { purchaseRequestId: detail.id, reason },
+        data: { purchaseRequestId: purchaseRequest.id, reason },
       }),
     onSuccess: async () => {
       onClose()
@@ -92,7 +92,7 @@ function RejectPurchaseRequestForm({
       <DialogHeader className="gap-1">
         <DialogTitle className="flex items-center gap-2 text-base font-semibold">
           <CircleX className="size-4 text-destructive" />
-          Từ chối đề xuất {detail.code}
+          Từ chối đề xuất {purchaseRequest.code}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
           Đề xuất sẽ chuyển sang trạng thái "Từ chối". Cần sửa hoặc xóa một dòng

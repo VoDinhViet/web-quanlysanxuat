@@ -1,14 +1,7 @@
 import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import {
-  Download,
-  Plus,
-  RotateCw,
-  Search,
-  ShoppingCart,
-  UserRound,
-} from "lucide-react"
+import { Download, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,24 +16,25 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/DateRangePicker"
 import { FilterLabel } from "@/components/shared/FilterLabel"
 import { PendingAction } from "@/components/shared/PendingAction"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import type {
-  AssetType,
-  InventoryReceiptSource,
+  InventoryReceiptStatus,
+  InventoryReceiptType,
 } from "@/lib/types/inventory-receipt.type"
 import {
-  assetTypeLabels,
-  inventoryReceiptSourceLabels,
+  inventoryReceiptStatusLabels,
+  inventoryReceiptTypeLabels,
 } from "@/lib/types/inventory-receipt.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
-const sourceOptions = [
+const receiptTypeOptions = [
   { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(inventoryReceiptSourceLabels),
+  ...buildOptionsFromLabels(inventoryReceiptTypeLabels),
 ]
 
-const assetTypeOptions = [
+const statusOptions = [
   { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(assetTypeLabels),
+  ...buildOptionsFromLabels(inventoryReceiptStatusLabels),
 ]
 
 export function InventoryReceiptsTableFilter() {
@@ -60,15 +54,16 @@ export function InventoryReceiptsTableFilter() {
     })
   }, 300)
 
-  const handleSourceChange = (value: string) => {
-    const source =
-      value === "all" ? undefined : (value as InventoryReceiptSource)
-    void navigate({ search: (prev) => ({ ...prev, source, page: 1 }) })
+  const handleReceiptTypeChange = (value: string) => {
+    const receiptType =
+      value === "all" ? undefined : (value as InventoryReceiptType)
+    void navigate({ search: (prev) => ({ ...prev, receiptType, page: 1 }) })
   }
 
-  const handleAssetTypeChange = (value: string) => {
-    const assetType = value === "all" ? undefined : (value as AssetType)
-    void navigate({ search: (prev) => ({ ...prev, assetType, page: 1 }) })
+  const handleStatusChange = (value: string) => {
+    const status =
+      value === "all" ? undefined : (value as InventoryReceiptStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
   const handleDateRangeChange = (range: {
@@ -92,8 +87,7 @@ export function InventoryReceiptsTableFilter() {
       search: (prev) => {
         const {
           q: _q,
-          source: _source,
-          assetType: _assetType,
+          receiptType: _receiptType,
           status: _status,
           fromDate: _fromDate,
           toDate: _toDate,
@@ -107,39 +101,19 @@ export function InventoryReceiptsTableFilter() {
   return (
     <TooltipProvider>
       <div className="flex flex-col gap-5 bg-card px-4 py-4 lg:px-5">
-        {/* Top creation section — Minimalist quick buttons per "dev thiết kế lại cho tối giản" */}
+        {/* Top creation section */}
         <div className="border-b border-border/60 pb-4">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Tạo phiếu nhập kho
           </p>
-          <div className="flex flex-wrap items-center gap-2">
-            <PendingAction
-              label="Từ PO (Nhà cung cấp)"
-              hint="Tính năng lập phiếu nhập từ PO đang được kết nối"
-              variant="outline"
-            >
-              <ShoppingCart className="size-3.5 text-primary" />
-              <span>Từ PO (Nhà cung cấp)</span>
-            </PendingAction>
-
-            <PendingAction
-              label="Từ vật tư khách hàng"
-              hint="Tính năng lập phiếu từ vật tư khách hàng đang phát triển"
-              variant="outline"
-            >
-              <UserRound className="size-3.5 text-blue-500" />
-              <span>Từ vật tư khách hàng</span>
-            </PendingAction>
-
-            <PendingAction
-              label="Nhập từ khác"
-              hint="Tính năng nhập từ nguồn khác đang phát triển"
-              variant="outline"
-            >
-              <Plus className="size-3.5" />
-              <span>Nhập từ khác</span>
-            </PendingAction>
-          </div>
+          <PermissionGate permission="inventory:create">
+            <Button variant="outline" className="text-xs" asChild>
+              <Link to="/manage/inventory-receipts/create">
+                <Plus className="size-3.5" />
+                Tạo phiếu nhập kho
+              </Link>
+            </Button>
+          </PermissionGate>
         </div>
 
         {/* Filters section — DANH SÁCH PHIẾU NHẬP KHO */}
@@ -169,18 +143,18 @@ export function InventoryReceiptsTableFilter() {
               </div>
             </div>
 
-            {/* Select Nguồn nhập */}
+            {/* Select Loại phiếu */}
             <div className="space-y-1.5">
-              <FilterLabel label="Nguồn nhập" htmlFor="nk-source" />
+              <FilterLabel label="Loại phiếu" htmlFor="nk-receipt-type" />
               <Select
-                value={search.source ?? "all"}
-                onValueChange={handleSourceChange}
+                value={search.receiptType ?? "all"}
+                onValueChange={handleReceiptTypeChange}
               >
-                <SelectTrigger id="nk-source" className="w-full text-xs">
+                <SelectTrigger id="nk-receipt-type" className="w-full text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {sourceOptions.map((option) => (
+                  {receiptTypeOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -189,18 +163,18 @@ export function InventoryReceiptsTableFilter() {
               </Select>
             </div>
 
-            {/* Select Loại tài sản */}
+            {/* Select Trạng thái */}
             <div className="space-y-1.5">
-              <FilterLabel label="Loại tài sản" htmlFor="nk-asset-type" />
+              <FilterLabel label="Trạng thái" htmlFor="nk-status" />
               <Select
-                value={search.assetType ?? "all"}
-                onValueChange={handleAssetTypeChange}
+                value={search.status ?? "all"}
+                onValueChange={handleStatusChange}
               >
-                <SelectTrigger id="nk-asset-type" className="w-full text-xs">
+                <SelectTrigger id="nk-status" className="w-full text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {assetTypeOptions.map((option) => (
+                  {statusOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -222,7 +196,10 @@ export function InventoryReceiptsTableFilter() {
           </div>
 
           <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+            <PendingAction
+              label="Xuất Excel"
+              hint="Tính năng xuất Excel sắp có"
+            >
               <Download className="size-4" />
               Xuất Excel
             </PendingAction>
