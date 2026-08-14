@@ -1,13 +1,15 @@
-import { useSearch } from "@tanstack/react-router"
+import { Link, useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
 import { TableQueryError } from "@/components/shared/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
-import { ClipboardList } from "lucide-react"
+import { ClipboardList, Plus } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { TableEmptyState } from "@/components/shared/TableEmptyState"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { DataTable } from "@/components/shared/DataTable"
 import { purchaseRequestColumns } from "@/features/purchase-requests/components/PurchaseRequestsTableColumns"
 import { PurchaseRequestsTableFilter } from "@/features/purchase-requests/components/PurchaseRequestsTableFilter"
@@ -56,12 +58,20 @@ export function PurchaseRequestsPage() {
               pagination={purchaseRequestsQuery.data.pagination}
               isPending={purchaseRequestsQuery.isFetching}
               emptyState={
-                // No action button — creation isn't built yet (giai đoạn 1
-                // chỉ có GET /purchase-requests).
                 <TableEmptyState
                   icon={ClipboardList}
                   title="Chưa có đề xuất mua hàng nào"
                   description="Đề xuất mua hàng sẽ hiển thị tại đây khi được tạo."
+                  action={
+                    <PermissionGate permission="purchase-requests:create">
+                      <Button asChild size="sm" className="text-xs">
+                        <Link to="/manage/purchase-requests/create">
+                          <Plus className="size-4" />
+                          Tạo đề xuất mua hàng (Manual)
+                        </Link>
+                      </Button>
+                    </PermissionGate>
+                  }
                 />
               }
             />
