@@ -33,34 +33,34 @@ importers:
         specifier: ^3.44.0
         version: 3.44.0(react@19.2.7)
       '@tailwindcss/vite':
-        specifier: ^4
+        specifier: ^4.3.1
         version: 4.3.1(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0))
       '@tanstack/react-devtools':
-        specifier: latest
+        specifier: ^0.10.9
         version: 0.10.9(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(csstype@3.2.3)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(solid-js@1.9.13)
       '@tanstack/react-form':
         specifier: ^1.33.0
         version: 1.33.0(@tanstack/react-start@1.168.38(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0)))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-query':
-        specifier: latest
+        specifier: ^5.101.4
         version: 5.101.4(react@19.2.7)
       '@tanstack/react-router':
-        specifier: latest
+        specifier: ^1.170.21
         version: 1.170.21(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-router-devtools':
-        specifier: latest
+        specifier: ^1.167.1
         version: 1.167.1(@tanstack/react-router@1.170.21(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.18)(csstype@3.2.3)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-router-ssr-query':
-        specifier: latest
+        specifier: ^1.167.1
         version: 1.167.1(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.7))(@tanstack/react-router@1.170.21(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: latest
+        specifier: ^1.168.38
         version: 1.168.38(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0))
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/router-plugin':
-        specifier: latest
+        specifier: ^1.168.26
         version: 1.168.26(@tanstack/react-router@1.170.21(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0))
       '@unpic/react':
         specifier: ^1.0.2
@@ -123,7 +123,7 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       tailwindcss:
-        specifier: ^4
+        specifier: ^4.3.1
         version: 4.3.1
       tw-animate-css:
         specifier: ^1.4.0
@@ -145,10 +145,10 @@ importers:
         specifier: ^10.5.0
         version: 10.5.0
       '@tanstack/devtools-vite':
-        specifier: latest
+        specifier: ^0.8.3
         version: 0.8.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0))
       '@tanstack/eslint-config':
-        specifier: latest
+        specifier: ^0.4.0
         version: 0.4.0(@typescript-eslint/utils@8.61.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
       '@testing-library/dom':
         specifier: ^10.4.1
@@ -160,19 +160,19 @@ importers:
         specifier: ^3.7.2
         version: 3.7.2
       '@types/node':
-        specifier: ^22
+        specifier: ^22.19.21
         version: 22.19.21
       '@types/react':
-        specifier: ^19
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^6
+        specifier: ^6.0.2
         version: 6.0.2(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0))
       eslint:
-        specifier: ^9
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-jsx-a11y:
         specifier: ^6.10.2
@@ -181,7 +181,7 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1(eslint@9.39.4(jiti@2.7.0))
       jsdom:
-        specifier: ^28
+        specifier: ^28.1.0
         version: 28.1.0(@noble/hashes@1.8.0)
       prettier:
         specifier: ^3.8.3
@@ -193,13 +193,13 @@ importers:
         specifier: ^4.13.0
         version: 4.13.0(typescript@6.0.3)
       typescript:
-        specifier: ^6
+        specifier: ^6.0.3
         version: 6.0.3
       vite:
-        specifier: ^8
+        specifier: ^8.0.16
         version: 8.0.16(@types/node@22.19.21)(jiti@2.7.0)
       vitest:
-        specifier: ^4
+        specifier: ^4.1.9
         version: 4.1.9(@types/node@22.19.21)(jsdom@28.1.0(@noble/hashes@1.8.0))(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0))
 
 packages:
