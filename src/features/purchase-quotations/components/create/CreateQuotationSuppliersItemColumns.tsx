@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { AnyFieldApi } from "@tanstack/react-form"
-import { AddCircle, AltArrowDown, TrashBinTrash } from "@solar-icons/react"
+import { AddCircle, TrashBinTrash } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -9,9 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { IconButton } from "@/components/shared/IconButton"
-import { AdjustmentReasonDialog } from "@/features/purchase-quotations/components/create/AdjustmentReasonDialog"
-import { NumericCellInput } from "@/components/shared/NumericCellInput"
-import { cn } from "@/lib/utils"
+import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/create/QuotationAllocationsDialog"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 const quotationItemColumnHelper = createColumnHelper<PickedQuotationItemValue>()
@@ -19,7 +17,7 @@ const quotationItemColumnHelper = createColumnHelper<PickedQuotationItemValue>()
 type BuildQuotationSuppliersItemColumnsArgs = {
   itemsField: AnyFieldApi
   disabled?: boolean
-  onOpenAddSupplier: (purchaseRequestItemId: string) => void
+  onOpenAddSupplier: (itemId: string) => void
 }
 
 // Own useReactTable columns for the outer (per-vật tư) table in CreateQuotationSuppliersSection —
@@ -53,72 +51,53 @@ export function buildQuotationSuppliersItemColumns({
       header: "ĐVT",
       meta: { headerClassName: "w-16" },
     }),
-    quotationItemColumnHelper.accessor("requestedQuantity", {
+    quotationItemColumnHelper.display({
+      id: "requestedQuantity",
       header: "SL yêu cầu",
       meta: {
         headerClassName: "w-24 text-right",
         cellClassName: "text-right tabular-nums",
       },
+      cell: ({ row }) =>
+        row.original.allocations.reduce(
+          (sum, allocation) => sum + allocation.requestedQuantity,
+          0
+        ),
     }),
     quotationItemColumnHelper.display({
       id: "quantity",
       header: "SL báo giá",
-      meta: { headerClassName: "w-32 text-right", cellClassName: "text-right" },
+      meta: { headerClassName: "w-36 text-right", cellClassName: "text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const inputId = `quotation-item-quantity-${item.purchaseRequestItemId}`
-        return (
-          <>
-            <label htmlFor={inputId} className="sr-only">
-              SL báo giá — {item.itemName}
-            </label>
-            <NumericCellInput
-              id={inputId}
-              value={item.quantity}
-              disabled={disabled}
-              min={1}
-              onValueChange={(value) =>
-                itemsField.replaceValue(row.index, { ...item, quantity: value })
-              }
-            />
-          </>
+        const total = item.allocations.reduce(
+          (sum, allocation) => sum + (Number(allocation.quantity) || 0),
+          0
         )
-      },
-    }),
-    quotationItemColumnHelper.display({
-      id: "quantityAdjustmentReason",
-      header: "Lý do điều chỉnh SL",
-      meta: { headerClassName: "w-40" },
-      cell: ({ row }) => {
-        const item = row.original
-        const hasReason = item.quantityAdjustmentReason.length > 0
 
-        // The reason can run long — a w-40 cell has no room to edit it inline, so the cell is
-        // just a compact trigger and the actual Textarea lives in AdjustmentReasonDialog.
+        // Read-only here — a vật tư merging ≥2 dòng ĐXMH has ≥2 numbers to edit (one SL per
+        // allocation), so editing moved into QuotationAllocationsDialog; this cell only shows the
+        // resulting total, per allocation-vs-item field boundary set by createQuotationFormSchema.
         return (
-          <AdjustmentReasonDialog
+          <QuotationAllocationsDialog
             itemName={item.itemName}
-            reason={item.quantityAdjustmentReason}
-            onSave={(value) =>
-              itemsField.replaceValue(row.index, {
-                ...item,
-                quantityAdjustmentReason: value,
-              })
+            allocations={item.allocations}
+            onSave={(allocations) =>
+              itemsField.replaceValue(row.index, { ...item, allocations })
             }
             trigger={
               <Button
                 type="button"
                 variant="outline"
                 disabled={disabled}
-                className={cn(
-                  "h-8 w-full max-w-40 justify-between text-xs font-normal",
-                  !hasReason && "border-dashed text-muted-foreground"
-                )}
+                className="h-8 w-full max-w-36 flex-col items-end gap-0 text-xs font-normal"
               >
-                <span className="max-w-32 min-w-0 truncate">
-                  {hasReason ? item.quantityAdjustmentReason : "Thêm lý do"}
-                </span>
-                <AltArrowDown className="size-3.5 shrink-0 text-muted-foreground" />
+                <span className="tabular-nums">{total}</span>
+                {item.allocations.length > 1 && (
+                  <span className="text-[10px] text-muted-foreground">
+                    {item.allocations.length} dòng ĐXMH
+                  </span>
+                )}
               </Button>
             }
           />
@@ -142,9 +121,7 @@ export function buildQuotationSuppliersItemColumns({
                   <IconButton
                     label="Thêm NCC"
                     disabled={disabled}
-                    onClick={() =>
-                      onOpenAddSupplier(item.purchaseRequestItemId)
-                    }
+                    onClick={() => onOpenAddSupplier(item.itemId)}
                   >
                     <AddCircle className="size-3.5" />
                   </IconButton>
