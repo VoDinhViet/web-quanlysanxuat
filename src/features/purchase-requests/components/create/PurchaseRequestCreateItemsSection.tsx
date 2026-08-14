@@ -90,7 +90,7 @@ export const PurchaseRequestCreateItemsSection = withForm({
                     {items.length === 0 ? (
                       <TableEmptyRow
                         colSpan={5}
-                        message={`Đề xuất cần ít nhất một dòng vật tư. Bấm "Thêm vật tư" để thêm.`}
+                        message="Đề xuất cần ít nhất một dòng vật tư. Bấm “Thêm vật tư” để thêm."
                       />
                     ) : (
                       items.map((item, index) => (
