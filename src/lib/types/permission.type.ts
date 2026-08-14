@@ -49,6 +49,7 @@ export const PERMISSION_CODES = [
   "inventory:delete",
 
   "purchase-requests:read",
+  "purchase-requests:create",
   "purchase-requests:update",
   "purchase-requests:approve",
 
