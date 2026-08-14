@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
@@ -16,7 +16,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/DateRangePicker"
 import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { purchaseRequestStatusLabels } from "@/lib/types/purchase-request.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -208,17 +208,14 @@ export function PurchaseRequestsTableFilter() {
               Làm mới
             </Button>
 
-            {/* variant="default" (primary), not the outline every other PendingAction uses — matches
-                the reference mockup (UI_PR_01) exactly, which shows this button primary-colored even
-                though the create screen isn't built yet. Deliberate deviation, not a missed rename. */}
-            <PendingAction
-              label="Tạo đề xuất mua hàng (Manual)"
-              hint="Màn hình tạo đề xuất mua hàng sắp có"
-              variant="default"
-            >
-              <Plus className="size-4" />
-              Tạo đề xuất mua hàng (Manual)
-            </PendingAction>
+            <PermissionGate permission="purchase-requests:create">
+              <Button asChild className="text-xs">
+                <Link to="/manage/purchase-requests/create">
+                  <Plus className="size-4" />
+                  Tạo đề xuất mua hàng (Manual)
+                </Link>
+              </Button>
+            </PermissionGate>
           </div>
         </div>
       </div>
