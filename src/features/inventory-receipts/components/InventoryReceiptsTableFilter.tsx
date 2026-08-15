@@ -108,9 +108,9 @@ export function InventoryReceiptsTableFilter() {
           </p>
           <PermissionGate permission="inventory:create">
             <Button variant="outline" className="text-xs" asChild>
-              <Link to="/manage/inventory-receipts/create">
+              <Link to="/manage/inventory-receipts/create-from-po">
                 <Plus className="size-3.5" />
-                Tạo phiếu nhập kho
+                Nhập từ PO
               </Link>
             </Button>
           </PermissionGate>

@@ -27,6 +27,10 @@ export const createInventoryReceiptSchema = z.object({
   purchaseRequestId: z.string().trim().transform(emptyToUndefined),
   productionOrderId: z.string().trim().transform(emptyToUndefined),
   purchaseOrderId: z.string().trim().transform(emptyToUndefined),
+  // Plain optional boolean, not a ""→undefined string transform like its neighbors — only
+  // InventoryReceiptCreateFromPoForm.tsx sets it (already a real boolean by submit time);
+  // InventoryReceiptCreateForm.tsx has no UI for it and omits the key entirely.
+  requiresIqc: z.boolean().optional(),
   note: z
     .string()
     .trim()

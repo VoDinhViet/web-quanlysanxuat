@@ -2,8 +2,15 @@ import type { ItemRef } from "@/lib/types/item.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { WarehouseRef } from "@/lib/types/warehouse.type"
 
+// PENDING_RECEIPT/PENDING_IQC sit between DRAFT and POSTED — reached via `confirm`
+// (InventoryReceiptsController's `POST :id/confirm`), which the create-from-PO wizard calls
+// right after create (see inventory-receipts/components/create-from-po/). `requiresIqc` on the
+// receipt decides which of the two `confirm` lands on; `post` accepts either (PENDING_IQC only
+// once every IQC inspection tied to it is COMPLETED).
 export const InventoryReceiptStatus = {
   DRAFT: "DRAFT",
+  PENDING_RECEIPT: "PENDING_RECEIPT",
+  PENDING_IQC: "PENDING_IQC",
   POSTED: "POSTED",
   CANCELLED: "CANCELLED",
 } as const
@@ -16,6 +23,8 @@ export const inventoryReceiptStatusLabels: Record<
   string
 > = {
   [InventoryReceiptStatus.DRAFT]: "Nháp",
+  [InventoryReceiptStatus.PENDING_RECEIPT]: "Chờ nhập kho",
+  [InventoryReceiptStatus.PENDING_IQC]: "Chờ IQC",
   [InventoryReceiptStatus.POSTED]: "Đã nhập kho",
   [InventoryReceiptStatus.CANCELLED]: "Đã huỷ",
 }
@@ -25,6 +34,10 @@ export const inventoryReceiptStatusDescriptions: Record<
   string
 > = {
   [InventoryReceiptStatus.DRAFT]: "Phiếu đang soạn, chưa đụng tồn kho.",
+  [InventoryReceiptStatus.PENDING_RECEIPT]:
+    "Phiếu đã xác nhận, sẵn sàng để nhập kho.",
+  [InventoryReceiptStatus.PENDING_IQC]:
+    "Phiếu đã xác nhận và đang chờ kiểm tra chất lượng (IQC).",
   [InventoryReceiptStatus.POSTED]:
     "Đã ghi sổ, tồn kho đã cập nhật — phiếu bất biến từ đây.",
   [InventoryReceiptStatus.CANCELLED]: "Phiếu đã bị huỷ.",

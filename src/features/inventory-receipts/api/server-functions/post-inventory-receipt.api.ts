@@ -19,6 +19,8 @@ function resolvePostInventoryReceiptErrorMessage(error: unknown): string {
       return "Phiếu đã đổi trạng thái. Vui lòng tải lại trang."
     case "inventory_document.error.insufficient_stock":
       return "Không thể xác nhận — thao tác sẽ làm tồn một mặt hàng xuống âm."
+    case "inventory_receipt.error.iqc_not_completed":
+      return "Còn phiếu IQC chưa hoàn tất — kiểm tra chất lượng xong mới nhập kho được."
     case "auth.error.forbidden":
       return "Bạn không có quyền xác nhận nhập kho."
     default:
@@ -26,7 +28,8 @@ function resolvePostInventoryReceiptErrorMessage(error: unknown): string {
   }
 }
 
-// DRAFT → POSTED — sinh bút toán + cập nhật tồn, sau đó phiếu bất biến. Xem
+// PENDING_RECEIPT/PENDING_IQC → POSTED — sinh bút toán + cập nhật tồn, sau đó phiếu bất biến.
+// PENDING_IQC chỉ post được khi mọi phiếu IQC đã COMPLETED (E153 nếu chưa). Xem
 // InventoryReceiptDetailActions.tsx.
 export const postInventoryReceipt = createServerFn({ method: "POST" })
   .validator(z.object({ receiptId: z.uuid() }))
