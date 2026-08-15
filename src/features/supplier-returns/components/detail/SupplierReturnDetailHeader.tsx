@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
-import { ArrowLeft, EllipsisVertical, Printer } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { DisabledAction } from "@/components/shared/DisabledAction"
+import { SupplierReturnDetailActions } from "@/features/supplier-returns/components/detail/SupplierReturnDetailActions"
 import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/SupplierReturnBadges"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 
@@ -12,10 +12,11 @@ type SupplierReturnDetailHeaderProps = {
   detail: SupplierReturnDetail
 }
 
-// Identity row + the one real action (In phiếu, window.print()) — same shell as
-// PurchaseOrderDetailHeader.tsx / ProductDetailHeader.tsx. Hủy phiếu/Lưu/Xác nhận xuất live in
-// the sticky SupplierReturnDetailActions footer instead (mirrors the mockup's In phiếu button
-// appearing in both places).
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
+// Identity row + at-a-glance meta grid + header-level actions (SupplierReturnDetailActions) —
+// same shell as PurchaseOrderDetailHeader.tsx, which embeds PurchaseOrderDetailActions the same
+// way instead of a separate sticky footer.
 export function SupplierReturnDetailHeader({
   detail,
 }: SupplierReturnDetailHeaderProps) {
@@ -42,23 +43,33 @@ export function SupplierReturnDetailHeader({
           <SupplierReturnStatusBadge status={detail.status} />
         </div>
 
-        <MetaField
-          label="Ngày tạo phiếu"
-          value={DateTime.fromISO(detail.createdAt).toFormat(
-            "dd/MM/yyyy HH:mm"
-          )}
-        />
+        <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+          <MetaField
+            label="Vật tư trả"
+            value={
+              <span>
+                <span className="font-mono text-primary">
+                  {detail.item.code}
+                </span>{" "}
+                · {detail.item.name}
+              </span>
+            }
+          />
+          <MetaField
+            label="SL trả"
+            value={`${quantityFormatter.format(detail.quantity)} ${detail.item.unit.name}`}
+          />
+          <MetaField label="Kho xuất trả" value={detail.warehouse.name} />
+          <MetaField
+            label="Ngày tạo phiếu"
+            value={DateTime.fromISO(detail.createdAt).toFormat(
+              "dd/MM/yyyy HH:mm"
+            )}
+          />
+        </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Button type="button" variant="outline" onClick={() => window.print()}>
-          <Printer className="size-4" />
-          In phiếu
-        </Button>
-        <DisabledAction label="Thêm thao tác" hint="chưa có thao tác nào khác">
-          <EllipsisVertical className="size-3.5" />
-        </DisabledAction>
-      </div>
+      <SupplierReturnDetailActions detail={detail} />
     </div>
   )
 }

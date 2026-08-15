@@ -4,11 +4,8 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PageTitleBar } from "@/components/shared/PageTitleBar"
 import { Surface } from "@/components/shared/Surface"
 import { supplierReturnQueryOptions } from "@/features/supplier-returns/api/options"
-import { SupplierReturnDetailActions } from "@/features/supplier-returns/components/detail/SupplierReturnDetailActions"
 import { SupplierReturnDetailHeader } from "@/features/supplier-returns/components/detail/SupplierReturnDetailHeader"
 import { SupplierReturnItemInfoSection } from "@/features/supplier-returns/components/detail/SupplierReturnItemInfoSection"
-import { SupplierReturnReasonSection } from "@/features/supplier-returns/components/detail/SupplierReturnReasonSection"
-import { SupplierReturnReferenceCard } from "@/features/supplier-returns/components/detail/SupplierReturnReferenceCard"
 import { SupplierReturnSupplierInfoCard } from "@/features/supplier-returns/components/detail/SupplierReturnSupplierInfoCard"
 import { SupplierReturnWarehouseSection } from "@/features/supplier-returns/components/detail/SupplierReturnWarehouseSection"
 
@@ -39,16 +36,12 @@ export function SupplierReturnDetailPage() {
           <SupplierReturnDetailHeader detail={detail} />
         </Surface>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <SupplierReturnReferenceCard detail={detail} />
-          <SupplierReturnSupplierInfoCard supplierId={detail.supplier.id} />
-        </div>
-
-        <SupplierReturnReasonSection />
         <SupplierReturnItemInfoSection detail={detail} />
-        <SupplierReturnWarehouseSection detail={detail} />
 
-        <SupplierReturnDetailActions />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <SupplierReturnSupplierInfoCard supplierId={detail.supplier.id} />
+          <SupplierReturnWarehouseSection detail={detail} />
+        </div>
       </div>
     </main>
   )

@@ -6,18 +6,21 @@ import { cn } from "@/lib/utils"
 type SupplierReturnDetailSectionCardProps = {
   icon: LucideIcon
   title: string
+  description?: string
+  action?: ReactNode
   className?: string
   contentClassName?: string
   children: ReactNode
 }
 
-// Shared shell for every content card on this detail page — icon + title, same idiom as
-// OrderDetailSectionCard.tsx, but feature-local (this feature's own icons come from
-// lucide-react, not @solar-icons/react) and without that card's isMock/action slots, which
-// nothing here needs.
+// Shared shell for every content card on this detail page — icon chip + title (+ optional
+// subtitle/action), same idiom as IqcDetailSectionCard.tsx, but feature-local (this feature's
+// own icons come from lucide-react, not @solar-icons/react).
 export function SupplierReturnDetailSectionCard({
   icon: Icon,
   title,
+  description,
+  action,
   className,
   contentClassName,
   children,
@@ -29,9 +32,21 @@ export function SupplierReturnDetailSectionCard({
         className
       )}
     >
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
-        <Icon className="size-4 text-muted-foreground" />
-        {title}
+      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Icon className="size-5" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="font-heading text-base font-semibold text-foreground">
+              {title}
+            </h2>
+            {description ? (
+              <p className="text-sm text-muted-foreground">{description}</p>
+            ) : null}
+          </div>
+        </div>
+        {action}
       </div>
       <div className={cn("p-4 sm:p-5", contentClassName)}>{children}</div>
     </section>
