@@ -1,7 +1,6 @@
 import { FileText } from "lucide-react"
 import { DateTime } from "luxon"
 
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestInfoCardProps = {
@@ -35,7 +34,7 @@ export function PaymentRequestInfoCard({
             Người tạo
           </p>
           <p className="text-sm font-medium text-foreground">
-            {detail.createdBy ?? "—"}
+            {detail.createdBy?.fullName ?? "—"}
           </p>
         </div>
 
@@ -47,13 +46,6 @@ export function PaymentRequestInfoCard({
             <p className="text-sm text-foreground">{detail.note}</p>
           </div>
         )}
-
-        <div className="mt-1 flex items-center gap-1.5">
-          <MockDataBadge className="h-4 px-1.5 text-[9px]" />
-          <span className="text-[10px] text-muted-foreground">
-            Dữ liệu mẫu — chờ kết nối API
-          </span>
-        </div>
       </div>
     </section>
   )

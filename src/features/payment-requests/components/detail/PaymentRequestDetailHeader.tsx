@@ -56,7 +56,7 @@ export function PaymentRequestDetailHeader({
               }
             />
             <MetaField label="Nhà cung cấp" value={detail.supplier.name} />
-            <MetaField label="Địa chỉ" value={detail.supplier.address ?? "—"} />
+            <MetaField label="Địa chỉ" value={detail.supplier.address} />
           </div>
 
           {/* Column 2: Ngày PO / Ngày hoàn thành PO / Ngày tạo YCTT */}
@@ -68,10 +68,8 @@ export function PaymentRequestDetailHeader({
               )}
             />
             <MetaField
-              label="Ngày hoàn thành PO"
-              value={DateTime.fromISO(detail.purchaseOrder.orderDate)
-                .plus({ months: 1 })
-                .toFormat("dd/MM/yyyy")}
+              label="Hạn thanh toán"
+              value={DateTime.fromISO(detail.dueDate).toFormat("dd/MM/yyyy")}
             />
             <MetaField
               label="Ngày tạo YCTT"
@@ -94,10 +92,7 @@ export function PaymentRequestDetailHeader({
                 " VND"
               }
             />
-            <MetaField
-              label="Điện thoại"
-              value={detail.supplier.phoneNumber ?? "—"}
-            />
+            <MetaField label="Điện thoại" value={detail.supplier.phoneNumber} />
           </div>
         </div>
       </div>

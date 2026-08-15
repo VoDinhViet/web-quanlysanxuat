@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, RotateCw, Search } from "lucide-react"
 
@@ -16,9 +17,10 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/DateRangePicker"
 import { FilterLabel } from "@/components/shared/FilterLabel"
 import { PendingAction } from "@/components/shared/PendingAction"
+import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { PaymentRequestStatus } from "@/lib/types/payment-request.type"
 import { paymentRequestStatusLabels } from "@/lib/types/payment-request.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
 const statusOptions = [
   { value: "all", label: "Tất cả" },
@@ -29,23 +31,41 @@ export function PaymentRequestsTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/payment-requests" })
   const navigate = useNavigate({ from: "/manage/payment-requests" })
   const [q, setQ] = useState(search.q ?? "")
+  const [poCode, setPoCode] = useState(search.poCode ?? "")
 
-  // Debounced search — 300ms after last keystroke, same idiom as OrdersTableFilter.
-  const handleSearch = useDebounceCallback((term: string) => {
-    const trimmed = term.trim()
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        q: trimmed.length > 0 ? trimmed : undefined,
-        page: 1,
-      }),
-      replace: true,
-    })
-  }, 300)
+  // The route loader already prefetches this — resolves synchronously off cache.
+  const { data: suppliers } = useSuspenseQuery(supplierOptionsQueryOptions())
+  const supplierFilterOptions = [
+    { value: "all", label: "Tất cả" },
+    ...buildSelectOptions(suppliers),
+  ]
+
+  // Debounced search — 300ms after last keystroke, same idiom as OrdersTableFilter. Factored so
+  // the q/poCode boxes (identical debounce/navigate shape, only the search key differs) share it.
+  const useDebouncedSearchNav = (key: "q" | "poCode") =>
+    useDebounceCallback((term: string) => {
+      const trimmed = term.trim()
+      void navigate({
+        search: (prev) => ({
+          ...prev,
+          [key]: trimmed.length > 0 ? trimmed : undefined,
+          page: 1,
+        }),
+        replace: true,
+      })
+    }, 300)
+
+  const handleSearch = useDebouncedSearchNav("q")
+  const handlePoCodeSearch = useDebouncedSearchNav("poCode")
 
   const handleStatusChange = (value: string) => {
     const status = value === "all" ? undefined : (value as PaymentRequestStatus)
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
+
+  const handleSupplierChange = (value: string) => {
+    const supplierId = value === "all" ? undefined : value
+    void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
   }
 
   const handleDateRangeChange = (range: {
@@ -64,7 +84,9 @@ export function PaymentRequestsTableFilter() {
 
   const resetFilters = () => {
     handleSearch.cancel()
+    handlePoCodeSearch.cancel()
     setQ("")
+    setPoCode("")
     void navigate({
       search: (prev) => {
         const {
@@ -85,7 +107,7 @@ export function PaymentRequestsTableFilter() {
     <TooltipProvider>
       <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.5fr)_minmax(14rem,1.5fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
+          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_minmax(11rem,1fr)_minmax(9rem,0.8fr)_minmax(9rem,0.8fr)_minmax(12rem,1.2fr)]">
             {/* Từ ngày / Đến ngày */}
             <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
               <FilterLabel label="Từ ngày – Đến ngày" htmlFor="pr-date-range" />
@@ -95,6 +117,67 @@ export function PaymentRequestsTableFilter() {
                 to={search.toDate}
                 onChange={handleDateRangeChange}
               />
+            </div>
+
+            {/* Nhà cung cấp */}
+            <div className="space-y-1.5">
+              <FilterLabel label="Nhà cung cấp" htmlFor="pr-supplier" />
+              <Select
+                value={search.supplierId ?? "all"}
+                onValueChange={handleSupplierChange}
+              >
+                <SelectTrigger id="pr-supplier" className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {supplierFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Mã PO */}
+            <div className="space-y-1.5">
+              <FilterLabel label="Mã PO" htmlFor="pr-po-code" />
+              <Input
+                id="pr-po-code"
+                className="text-xs placeholder:text-muted-foreground/75"
+                placeholder="PO2405-012..."
+                value={poCode}
+                onChange={(event) => {
+                  setPoCode(event.target.value)
+                  handlePoCodeSearch(event.target.value)
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault()
+                    handlePoCodeSearch.flush()
+                  }
+                }}
+              />
+            </div>
+
+            {/* Trạng thái */}
+            <div className="space-y-1.5">
+              <FilterLabel label="Trạng thái" htmlFor="pr-status" />
+              <Select
+                value={search.status ?? "all"}
+                onValueChange={handleStatusChange}
+              >
+                <SelectTrigger id="pr-status" className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Tìm kiếm mã YCTT / Mã PO */}
@@ -119,26 +202,6 @@ export function PaymentRequestsTableFilter() {
                 />
                 <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
               </div>
-            </div>
-
-            {/* Trạng thái */}
-            <div className="space-y-1.5">
-              <FilterLabel label="Trạng thái" htmlFor="pr-status" />
-              <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
-              >
-                <SelectTrigger id="pr-status" className="w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
 

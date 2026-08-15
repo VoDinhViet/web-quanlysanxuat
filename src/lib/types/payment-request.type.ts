@@ -1,7 +1,3 @@
-// Mirrors the screenshot's "Yêu cầu thanh toán" (YCTT) domain. Backend endpoint
-// not yet available — types declared here so the rest of the feature can be
-// strongly-typed even while running on mock data.
-
 export const PaymentRequestStatus = {
   PENDING: "PENDING",
   PAID: "PAID",
@@ -18,25 +14,34 @@ export const paymentRequestStatusLabels: Record<PaymentRequestStatus, string> =
     [PaymentRequestStatus.CANCELLED]: "Đã hủy",
   }
 
-// Supplier reference nested on a payment request row — kept in this domain
-// rather than imported from suppliers, same idiom as OrderClientRef.
+/** Mirrors the backend's `PaymentRequestSupplierRefResDto` (`PickType(SupplierResDto, [...])`) —
+ *  `address`/`phoneNumber` are non-null there, only `email` is nullable. */
 export type PaymentRequestSupplierRef = {
   id: string
+  code: string
   name: string
-  address: string | null
-  phoneNumber: string | null
+  address: string
+  phoneNumber: string
   email: string | null
 }
 
-// PO reference nested on a payment request row.
+/** Mirrors the backend's `PaymentRequestPurchaseOrderRefResDto`. */
 export type PaymentRequestPoRef = {
   id: string
   code: string
   orderDate: string
 }
 
-// List-page row — mirrors what the backend will eventually return for
-// GET /api/payment-requests.
+/** Mirrors the backend's `UserRefResDto`, nested on `createdBy`/`paidBy`/`cancelledBy` — same
+ *  shape as `PurchaseOrderUserRef` (`purchase-order.type.ts`), declared locally per the
+ *  "features don't import each other's domain types" convention already applied there. */
+export type PaymentRequestUserRef = {
+  id: string
+  code: string
+  fullName: string
+}
+
+/** Wire-accurate mirror of `PagePaymentRequestResDto` — the list page's row. */
 export type PaymentRequest = {
   id: string
   code: string
@@ -48,7 +53,8 @@ export type PaymentRequest = {
   createdAt: string
 }
 
-// One material line inside a payment request.
+/** One material line inside a payment request — read back from the source PO's items, not
+ *  stored on `payment_requests` itself. Mirrors `PaymentRequestItemResDto`. */
 export type PaymentRequestItem = {
   id: string
   materialCode: string
@@ -60,17 +66,37 @@ export type PaymentRequestItem = {
   lineTotal: number
 }
 
-// One entry in the status-change history sidebar.
-export type PaymentRequestStatusHistoryEntry = {
+/** Wire-accurate mirror of `PaymentRequestResDto` (`GET /payment-requests/:id`) — no
+ *  `statusHistory` array on the wire; the sidebar timeline is built client-side from
+ *  `createdBy/createdAt`, `paidBy/paidAt`, `cancelledBy/cancelledAt`, see
+ *  `payment-request-timeline.ts`. */
+export type PaymentRequestDetail = {
+  id: string
+  code: string
+  purchaseOrder: PaymentRequestPoRef
+  supplier: PaymentRequestSupplierRef
+  poValue: number
+  requestValue: number
+  dueDate: string
   status: PaymentRequestStatus
-  changedAt: string
-  changedBy: string | null
+  items: PaymentRequestItem[]
+  note: string | null
+  createdBy: PaymentRequestUserRef | null
+  createdAt: string
+  paidBy: PaymentRequestUserRef | null
+  paidAt: string | null
+  cancelledBy: PaymentRequestUserRef | null
+  cancelledAt: string | null
 }
 
-// Detail-page DTO — superset of the list row.
-export type PaymentRequestDetail = PaymentRequest & {
-  items: PaymentRequestItem[]
-  statusHistory: PaymentRequestStatusHistoryEntry[]
-  createdBy: string | null
-  note: string | null
+/** Declared locally rather than shared with `purchase-order.type.ts`'s equivalent — same
+ *  "domain types don't cross features" convention already applied between other feature pairs. */
+export type PaymentRequestTimelineStepState = "done" | "current" | "cancelled"
+
+export type PaymentRequestTimelineStep = {
+  key: string
+  label: string
+  state: PaymentRequestTimelineStepState
+  timestamp: string | null
+  actor: string | null
 }

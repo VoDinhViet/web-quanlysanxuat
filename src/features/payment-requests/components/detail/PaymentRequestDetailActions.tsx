@@ -1,3 +1,4 @@
+import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CheckCircle, CloseCircle } from "@solar-icons/react"
 
@@ -12,7 +13,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { mockUpdatePaymentRequestStatus } from "@/features/payment-requests/mock/payment-requests.mock"
+import { cancelPaymentRequest } from "@/features/payment-requests/api/server-functions/cancel-payment-request.api"
+import { markPaymentRequestPaid } from "@/features/payment-requests/api/server-functions/mark-payment-request-paid.api"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestDetailActionsProps = {
@@ -25,28 +27,17 @@ export function PaymentRequestDetailActions({
   detail,
 }: PaymentRequestDetailActionsProps) {
   const queryClient = useQueryClient()
+  const markPaymentRequestPaidFn = useServerFn(markPaymentRequestPaid)
+  const cancelPaymentRequestFn = useServerFn(cancelPaymentRequest)
 
   const mutation = useMutation({
-    mutationFn: async (status: "PAID" | "CANCELLED") => {
-      // Fake async — swap with a real server function call when backend ships.
-      await new Promise((resolve) => setTimeout(resolve, 300))
-      return mockUpdatePaymentRequestStatus(
-        detail.id,
-        status,
-        "Người dùng hiện tại"
-      )
-    },
-    onSuccess: (updated) => {
-      if (!updated) return
-      queryClient.setQueryData(
-        ["payment-requests", "detail", detail.id],
-        updated
-      )
-      // Also invalidate the list so the badge updates there too.
-      void queryClient.invalidateQueries({
-        queryKey: ["payment-requests", "list"],
-      })
-    },
+    mutationFn: (status: "PAID" | "CANCELLED") =>
+      status === "PAID"
+        ? markPaymentRequestPaidFn({ data: { paymentRequestId: detail.id } })
+        : cancelPaymentRequestFn({ data: { paymentRequestId: detail.id } }),
+    // No body on success (204) — invalidate list + detail so both refetch the new status.
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
   })
 
   if (detail.status !== "PENDING") return null
@@ -56,7 +47,7 @@ export function PaymentRequestDetailActions({
       <div className="flex items-center gap-2">
         <PermissionGate permission="purchasing:approve">
           {/* Mark as PAID */}
-          <Dialog>
+          <Dialog onOpenChange={(next) => next && mutation.reset()}>
             <DialogTrigger asChild>
               <Button type="button" disabled={mutation.isPending}>
                 <CheckCircle className="size-4" />
@@ -72,6 +63,11 @@ export function PaymentRequestDetailActions({
                   đã được chi? Hành động này không thể hoàn tác.
                 </DialogDescription>
               </DialogHeader>
+              {mutation.error ? (
+                <p className="text-sm text-destructive">
+                  {mutation.error.message}
+                </p>
+              ) : null}
               <DialogFooter>
                 <Button
                   type="button"
@@ -89,7 +85,7 @@ export function PaymentRequestDetailActions({
 
         <PermissionGate permission="purchasing:approve">
           {/* Cancel */}
-          <Dialog>
+          <Dialog onOpenChange={(next) => next && mutation.reset()}>
             <DialogTrigger asChild>
               <Button
                 type="button"
@@ -110,6 +106,11 @@ export function PaymentRequestDetailActions({
                   ? Hành động này không thể hoàn tác.
                 </DialogDescription>
               </DialogHeader>
+              {mutation.error ? (
+                <p className="text-sm text-destructive">
+                  {mutation.error.message}
+                </p>
+              ) : null}
               <DialogFooter>
                 <Button
                   type="button"
