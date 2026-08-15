@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
 
-import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
 
 type PurchaseOrderNoteFieldProps = {
@@ -65,9 +65,9 @@ export function PurchaseOrderNoteField({
       >
         Ghi chú
       </label>
-      <Input
+      <Textarea
         id="purchase-order-note"
-        className="h-9 bg-background text-xs"
+        className="min-h-16 resize-none bg-background text-xs"
         placeholder="Nhập ghi chú"
         value={localValue}
         onChange={(event) => setLocalValue(event.target.value)}

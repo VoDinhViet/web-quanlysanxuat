@@ -20,15 +20,16 @@ import { confirmPurchaseOrder } from "@/features/purchase-orders/api/server-func
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderConfirmDialogProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
   trigger: ReactNode
 }
 
 // DRAFT → ORDERED (terminal short of a cancel). `trigger`'s own disabled state (set by
-// PurchaseOrderDetailActions.tsx from the same 2 conditions the backend enforces — expectedDate
-// set, every item priced) is the client-side precheck; the backend still re-validates.
+// PurchaseOrderDetailActions.tsx from the same 3 conditions the backend enforces — expectedDate
+// set, receiptWarehouse chosen, every item priced) is the client-side precheck; the backend still
+// re-validates.
 export function PurchaseOrderConfirmDialog({
-  detail,
+  purchaseOrder,
   trigger,
 }: PurchaseOrderConfirmDialogProps) {
   const [open, setOpen] = useState(false)
@@ -37,7 +38,7 @@ export function PurchaseOrderConfirmDialog({
 
   const mutation = useMutation({
     mutationFn: () =>
-      confirmPurchaseOrderFn({ data: { purchaseOrderId: detail.id } }),
+      confirmPurchaseOrderFn({ data: { purchaseOrderId: purchaseOrder.id } }),
     onSuccess: async () => {
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["purchase-orders"] })
@@ -60,7 +61,7 @@ export function PurchaseOrderConfirmDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Xác nhận đặt hàng?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Đơn mua hàng ${detail.code} sẽ chuyển sang trạng thái "Đã đặt hàng" và gửi cho NCC. Không thể sửa SL đặt/đơn giá sau khi xác nhận.`}
+            {`Đơn mua hàng ${purchaseOrder.code} sẽ chuyển sang trạng thái "Đã đặt hàng" và gửi cho NCC. Không thể sửa SL đặt/đơn giá sau khi xác nhận.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

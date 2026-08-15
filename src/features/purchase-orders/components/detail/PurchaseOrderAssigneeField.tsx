@@ -57,7 +57,7 @@ export function PurchaseOrderAssigneeField({
         htmlFor="purchase-order-assignee"
         className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
       >
-        Người phụ trách
+        Người phụ trách <span className="text-destructive">*</span>
       </label>
       <ComboboxField
         id="purchase-order-assignee"

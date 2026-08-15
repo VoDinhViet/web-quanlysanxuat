@@ -14,6 +14,12 @@ export const purchaseOrdersSearchSchema = z.object({
   supplierId: z.string().trim().min(1).optional().catch(undefined),
   fromDate: z.string().trim().min(1).optional().catch(undefined),
   toDate: z.string().trim().min(1).optional().catch(undefined),
+  // Independent from `progress` (matches GetPurchaseOrdersReqDto.hasRemainingReceipt) — PO đã
+  // ORDERED và còn hàng chưa nhập đủ (progress ORDERED hoặc RECEIVING). Chưa dùng ở trang danh
+  // sách PO (route ở đó không set field này); dùng bởi bước chọn PO của
+  // inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPickerSection.tsx
+  // để chỉ liệt kê PO còn cần nhập kho.
+  hasRemainingReceipt: z.boolean().optional().catch(undefined),
 })
 
 export type PurchaseOrdersSearchSchema = z.infer<

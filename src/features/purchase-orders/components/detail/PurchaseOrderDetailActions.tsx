@@ -8,31 +8,32 @@ import { PurchaseOrderStatus } from "@/lib/types/purchase-order.type"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderDetailActionsProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
 }
 
 // Header-level status actions. Xác nhận đặt hàng dùng `purchasing:update` (cùng quyền sửa PO);
 // Huỷ PO dùng `purchasing:approve` (khác quyền sửa — backend đòi rõ ràng), nên 2 nút đứng cạnh
 // nhau khi DRAFT thay vì gộp vào 1 status switch như PurchaseQuotationDetailActions.tsx.
 export function PurchaseOrderDetailActions({
-  detail,
+  purchaseOrder,
 }: PurchaseOrderDetailActionsProps) {
-  if (detail.status === PurchaseOrderStatus.CANCELLED) {
+  if (purchaseOrder.status === PurchaseOrderStatus.CANCELLED) {
     return null
   }
 
   const isConfirmable =
-    detail.status === PurchaseOrderStatus.DRAFT &&
-    detail.expectedDate !== null &&
-    detail.items.every((item) => item.unitPrice !== null)
+    purchaseOrder.status === PurchaseOrderStatus.DRAFT &&
+    purchaseOrder.expectedDate !== null &&
+    purchaseOrder.receiptWarehouse !== null &&
+    purchaseOrder.items.every((item) => item.unitPrice !== null)
 
   return (
     <div className="flex shrink-0 flex-col items-end gap-1.5">
       <div className="flex items-center gap-2">
-        {detail.status === PurchaseOrderStatus.DRAFT && (
+        {purchaseOrder.status === PurchaseOrderStatus.DRAFT && (
           <PermissionGate permission="purchasing:update">
             <PurchaseOrderConfirmDialog
-              detail={detail}
+              purchaseOrder={purchaseOrder}
               trigger={
                 <Button type="button" disabled={!isConfirmable}>
                   <CheckCircle className="size-4" />
@@ -45,7 +46,7 @@ export function PurchaseOrderDetailActions({
 
         <PermissionGate permission="purchasing:approve">
           <PurchaseOrderCancelDialog
-            detail={detail}
+            purchaseOrder={purchaseOrder}
             trigger={
               <Button
                 type="button"
@@ -60,9 +61,10 @@ export function PurchaseOrderDetailActions({
         </PermissionGate>
       </div>
 
-      {detail.status === PurchaseOrderStatus.DRAFT && !isConfirmable && (
+      {purchaseOrder.status === PurchaseOrderStatus.DRAFT && !isConfirmable && (
         <p className="max-w-64 text-right text-[11px] text-muted-foreground">
-          Cần nhập ngày giao dự kiến và đơn giá cho mọi dòng trước khi xác nhận.
+          Cần nhập ngày giao dự kiến, chọn kho nhận hàng và đơn giá cho mọi dòng
+          trước khi xác nhận.
         </p>
       )}
     </div>

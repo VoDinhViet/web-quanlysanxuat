@@ -20,14 +20,14 @@ import { useAppForm } from "@/hooks/use-app-form"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderCancelDialogProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
   trigger: ReactNode
 }
 
 // DRAFT/ORDERED → CANCELLED (terminal), reason required — mirrors RejectQuotationDialog.tsx. A
 // Dialog (not AlertDialog) because it needs a text field.
 export function PurchaseOrderCancelDialog({
-  detail,
+  purchaseOrder,
   trigger,
 }: PurchaseOrderCancelDialogProps) {
   const [open, setOpen] = useState(false)
@@ -39,7 +39,7 @@ export function PurchaseOrderCancelDialog({
         {/* Radix unmounts content while closed, so the form (and its mutation state) re-mounts
             fresh each time the dialog opens. */}
         <PurchaseOrderCancelForm
-          detail={detail}
+          purchaseOrder={purchaseOrder}
           onClose={() => setOpen(false)}
         />
       </DialogContent>
@@ -48,12 +48,12 @@ export function PurchaseOrderCancelDialog({
 }
 
 type PurchaseOrderCancelFormProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
   onClose: () => void
 }
 
 function PurchaseOrderCancelForm({
-  detail,
+  purchaseOrder,
   onClose,
 }: PurchaseOrderCancelFormProps) {
   const queryClient = useQueryClient()
@@ -62,7 +62,7 @@ function PurchaseOrderCancelForm({
   const mutation = useMutation({
     mutationFn: (reason: string) =>
       cancelPurchaseOrderFn({
-        data: { purchaseOrderId: detail.id, reason },
+        data: { purchaseOrderId: purchaseOrder.id, reason },
       }),
     onSuccess: async () => {
       onClose()
@@ -91,7 +91,7 @@ function PurchaseOrderCancelForm({
       <DialogHeader className="gap-1">
         <DialogTitle className="flex items-center gap-2 text-base font-semibold">
           <CloseCircle className="size-4 text-destructive" />
-          Huỷ đơn mua hàng {detail.code}
+          Huỷ đơn mua hàng {purchaseOrder.code}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
           Đơn mua hàng sẽ chuyển sang trạng thái "Đã hủy". Đây là quyết định

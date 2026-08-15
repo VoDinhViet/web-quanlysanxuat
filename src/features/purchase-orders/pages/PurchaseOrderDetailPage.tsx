@@ -18,7 +18,7 @@ export function PurchaseOrderDetailPage() {
     from: "/(authed)/manage_/purchase-orders_/$purchaseOrderId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: purchaseOrder } = useSuspenseQuery(
     purchaseOrderQueryOptions(purchaseOrderId)
   )
 
@@ -27,7 +27,7 @@ export function PurchaseOrderDetailPage() {
   // (PurchaseOrderDetailActions.tsx) kiểm quyền riêng của chính mình, không phụ thuộc `editable`.
   const editable =
     useHasPermission("purchasing:update") &&
-    detail.status === PurchaseOrderStatus.DRAFT
+    purchaseOrder.status === PurchaseOrderStatus.DRAFT
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -37,23 +37,29 @@ export function PurchaseOrderDetailPage() {
           { label: "Dashboard", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Đơn mua hàng (PO)", href: "/manage/purchase-orders" },
-          { label: detail.code },
+          { label: purchaseOrder.code },
         ]}
         notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <PurchaseOrderCancellationNotice detail={detail} />
+        <PurchaseOrderCancellationNotice purchaseOrder={purchaseOrder} />
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           <Surface>
-            <PurchaseOrderDetailHeader detail={detail} editable={editable} />
-            <PurchaseOrderItemsSection detail={detail} editable={editable} />
+            <PurchaseOrderDetailHeader
+              purchaseOrder={purchaseOrder}
+              editable={editable}
+            />
+            <PurchaseOrderItemsSection
+              purchaseOrder={purchaseOrder}
+              editable={editable}
+            />
           </Surface>
 
           <div className="flex flex-col gap-4">
-            <PurchaseOrderDetailTimelineCard detail={detail} />
-            <PurchaseOrderSummaryCard detail={detail} />
+            <PurchaseOrderDetailTimelineCard purchaseOrder={purchaseOrder} />
+            <PurchaseOrderSummaryCard purchaseOrder={purchaseOrder} />
             <PurchaseOrderStatusLegend />
           </div>
         </div>

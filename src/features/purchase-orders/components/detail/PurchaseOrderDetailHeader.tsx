@@ -14,7 +14,7 @@ import { PurchaseOrderStatusBadge } from "@/features/purchase-orders/components/
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderDetailHeaderProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
   editable: boolean
 }
 
@@ -25,12 +25,12 @@ type PurchaseOrderDetailHeaderProps = {
 // sidebar riêng vào đây) / thông tin phụ trách+thanh toán / thông tin giao nhận, mirror layout
 // tham khảo ban đầu.
 export function PurchaseOrderDetailHeader({
-  detail,
+  purchaseOrder,
   editable,
 }: PurchaseOrderDetailHeaderProps) {
   const purchaseRequests = Array.from(
     new Map(
-      detail.items.map((item) => [
+      purchaseOrder.items.map((item) => [
         item.purchaseRequestItem.purchaseRequest.id,
         item.purchaseRequestItem.purchaseRequest,
       ])
@@ -54,24 +54,24 @@ export function PurchaseOrderDetailHeader({
           </Button>
 
           <span className="font-mono text-lg font-bold text-foreground">
-            {detail.code}
+            {purchaseOrder.code}
           </span>
-          <PurchaseOrderStatusBadge status={detail.status} />
+          <PurchaseOrderStatusBadge status={purchaseOrder.status} />
         </div>
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
           <div className="flex flex-col gap-4">
-            <MetaField label="NCC" value={detail.supplier.name} />
+            <MetaField label="NCC" value={purchaseOrder.supplier.name} />
             <MetaField
               label="RFQ nguồn"
               value={
-                detail.quotation ? (
+                purchaseOrder.quotation ? (
                   <Link
                     to="/manage/purchase-quotations/$purchaseQuotationId"
-                    params={{ purchaseQuotationId: detail.quotation.id }}
+                    params={{ purchaseQuotationId: purchaseOrder.quotation.id }}
                     className="font-mono text-primary hover:underline"
                   >
-                    {detail.quotation.code}
+                    {purchaseOrder.quotation.code}
                   </Link>
                 ) : (
                   "Không có"
@@ -103,42 +103,44 @@ export function PurchaseOrderDetailHeader({
 
           <div className="flex flex-col gap-4">
             <PurchaseOrderAssigneeField
-              purchaseOrderId={detail.id}
-              assignedUser={detail.assignedUser}
+              purchaseOrderId={purchaseOrder.id}
+              assignedUser={purchaseOrder.assignedUser}
               editable={editable}
             />
             <PurchaseOrderPaymentTermField
-              purchaseOrderId={detail.id}
-              paymentTerm={detail.paymentTerm}
+              purchaseOrderId={purchaseOrder.id}
+              paymentTerm={purchaseOrder.paymentTerm}
               editable={editable}
             />
             <MetaField
               label="Ngày đặt"
-              value={DateTime.fromISO(detail.orderDate).toFormat("dd/MM/yyyy")}
+              value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
+                "dd/MM/yyyy"
+              )}
             />
           </div>
 
           <div className="flex flex-col gap-4">
             <PurchaseOrderExpectedDateField
-              purchaseOrderId={detail.id}
-              expectedDate={detail.expectedDate}
+              purchaseOrderId={purchaseOrder.id}
+              expectedDate={purchaseOrder.expectedDate}
               editable={editable}
             />
             <PurchaseOrderReceiptWarehouseField
-              purchaseOrderId={detail.id}
-              receiptWarehouse={detail.receiptWarehouse}
+              purchaseOrderId={purchaseOrder.id}
+              receiptWarehouse={purchaseOrder.receiptWarehouse}
               editable={editable}
             />
             <PurchaseOrderNoteField
-              purchaseOrderId={detail.id}
-              note={detail.note}
+              purchaseOrderId={purchaseOrder.id}
+              note={purchaseOrder.note}
               editable={editable}
             />
           </div>
         </div>
       </div>
 
-      <PurchaseOrderDetailActions detail={detail} />
+      <PurchaseOrderDetailActions purchaseOrder={purchaseOrder} />
     </div>
   )
 }

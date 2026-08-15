@@ -29,6 +29,20 @@ export function buildPurchaseOrderItemColumns(editable: boolean) {
         cellClassName: "text-center text-muted-foreground",
       },
     }),
+    // Vật tư trùng do gộp nhiều dòng ĐXMH ở RFQ vẫn tách lại thành nhiều dòng PO (1 dòng PO ↔ 1
+    // dòng ĐXMH — bất biến bắt buộc cho sổ cái mua hàng/nhập kho), nên 2 dòng cùng vật tư chỉ khác
+    // nhau ở Mã PR — cột này giúp phân biệt thay vì trông như bị trùng/lỗi.
+    purchaseOrderItemColumnHelper.accessor(
+      (row) => row.purchaseRequestItem.purchaseRequest.code,
+      {
+        id: "prCode",
+        header: "Mã PR",
+        meta: { headerClassName: "min-w-28" },
+        cell: ({ getValue }) => (
+          <span className="font-mono text-muted-foreground">{getValue()}</span>
+        ),
+      }
+    ),
     purchaseOrderItemColumnHelper.accessor(
       (row) => row.purchaseRequestItem.item.code,
       {

@@ -11,29 +11,29 @@ import type {
 // only appears when it actually happened (`orderedAt !== null`) — showing it unconditionally
 // would claim a step that never occurred.
 export function buildPurchaseOrderTimeline(
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
 ): PurchaseOrderTimelineStep[] {
-  const creatorName = detail.creatorBy?.fullName ?? "Hệ thống"
+  const creatorName = purchaseOrder.creatorBy?.fullName ?? "Hệ thống"
   const createdStep: PurchaseOrderTimelineStep = {
     key: "created",
     label: "Tạo đơn mua hàng",
     state: "done",
-    timestamp: detail.createdAt,
+    timestamp: purchaseOrder.createdAt,
     actor: creatorName,
     detail: null,
   }
 
-  if (detail.status === PurchaseOrderStatus.CANCELLED) {
+  if (purchaseOrder.status === PurchaseOrderStatus.CANCELLED) {
     const cancelledStep: PurchaseOrderTimelineStep = {
       key: "cancelled",
       label: "Huỷ PO",
       state: "cancelled",
-      timestamp: detail.cancelledAt,
-      actor: detail.cancellerBy?.fullName ?? null,
-      detail: detail.cancellationReason,
+      timestamp: purchaseOrder.cancelledAt,
+      actor: purchaseOrder.cancellerBy?.fullName ?? null,
+      detail: purchaseOrder.cancellationReason,
     }
 
-    if (detail.orderedAt === null) {
+    if (purchaseOrder.orderedAt === null) {
       return [createdStep, cancelledStep]
     }
 
@@ -43,15 +43,15 @@ export function buildPurchaseOrderTimeline(
         key: "confirmed",
         label: "Xác nhận đặt hàng",
         state: "done",
-        timestamp: detail.orderedAt,
-        actor: detail.ordererBy?.fullName ?? null,
+        timestamp: purchaseOrder.orderedAt,
+        actor: purchaseOrder.ordererBy?.fullName ?? null,
         detail: null,
       },
       cancelledStep,
     ]
   }
 
-  const isOrdered = detail.status === PurchaseOrderStatus.ORDERED
+  const isOrdered = purchaseOrder.status === PurchaseOrderStatus.ORDERED
 
   return [
     createdStep,
@@ -59,8 +59,8 @@ export function buildPurchaseOrderTimeline(
       key: "confirmed",
       label: "Xác nhận đặt hàng",
       state: isOrdered ? "done" : "current",
-      timestamp: isOrdered ? detail.orderedAt : null,
-      actor: isOrdered ? (detail.ordererBy?.fullName ?? null) : null,
+      timestamp: isOrdered ? purchaseOrder.orderedAt : null,
+      actor: isOrdered ? (purchaseOrder.ordererBy?.fullName ?? null) : null,
       detail: null,
     },
   ]

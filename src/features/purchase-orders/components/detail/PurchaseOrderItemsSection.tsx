@@ -7,7 +7,7 @@ import { buildPurchaseOrderItemColumns } from "@/features/purchase-orders/compon
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderItemsSectionProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
   editable: boolean
 }
 
@@ -15,12 +15,29 @@ type PurchaseOrderItemsSectionProps = {
 // single-section screen doesn't earn a Tabs strip. No pagination — a PO's line count is small
 // and comes back in one response.
 export function PurchaseOrderItemsSection({
-  detail,
+  purchaseOrder,
   editable,
 }: PurchaseOrderItemsSectionProps) {
   const columns = useMemo(
     () => buildPurchaseOrderItemColumns(editable),
     [editable]
+  )
+
+  // BE không orderBy items — sắp theo mã vật tư (rồi mã PR) để các dòng cùng vật tư (tách từ
+  // cùng 1 dòng RFQ gộp) đứng cạnh nhau, thay vì rải rác theo thứ tự BE trả về.
+  const items = useMemo(
+    () =>
+      [...purchaseOrder.items].sort((a, b) => {
+        const itemCodeCompare = a.purchaseRequestItem.item.code.localeCompare(
+          b.purchaseRequestItem.item.code
+        )
+        if (itemCodeCompare !== 0) return itemCodeCompare
+
+        return a.purchaseRequestItem.purchaseRequest.code.localeCompare(
+          b.purchaseRequestItem.purchaseRequest.code
+        )
+      }),
+    [purchaseOrder.items]
   )
 
   return (
@@ -31,7 +48,7 @@ export function PurchaseOrderItemsSection({
       </h3>
 
       <DataTable
-        rows={detail.items}
+        rows={items}
         columns={columns}
         isPending={false}
         bare

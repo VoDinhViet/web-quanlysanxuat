@@ -14,8 +14,6 @@ import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-funct
 import { paymentTermLabels, PaymentTerm } from "@/lib/types/purchase-order.type"
 import type { PaymentTerm as PaymentTermType } from "@/lib/types/purchase-order.type"
 
-const UNSET = "unset"
-
 type PurchaseOrderPaymentTermFieldProps = {
   purchaseOrderId: string
   paymentTerm: PaymentTermType | null
@@ -23,7 +21,9 @@ type PurchaseOrderPaymentTermFieldProps = {
 }
 
 // Mirror PurchaseOrderExpectedDateField.tsx's shape — a plain <Select> (static 4-value enum, no
-// search needed, unlike PurchaseOrderAssigneeField.tsx), commit on change.
+// search needed, unlike PurchaseOrderAssigneeField.tsx), commit on change. Bắt buộc — không còn
+// lựa chọn "Chưa chọn"; PO chưa từng đặt điều khoản (paymentTerm null, ví dụ sinh từ RFQ cũ) mặc
+// định hiển thị/chọn "Thanh toán ngay" (IMMEDIATE) thay vì để trống.
 export function PurchaseOrderPaymentTermField({
   purchaseOrderId,
   paymentTerm,
@@ -31,10 +31,10 @@ export function PurchaseOrderPaymentTermField({
 }: PurchaseOrderPaymentTermFieldProps) {
   const queryClient = useQueryClient()
   const updatePurchaseOrderFn = useServerFn(updatePurchaseOrder)
-  const [value, setValue] = useState(paymentTerm ?? UNSET)
+  const [value, setValue] = useState(paymentTerm ?? PaymentTerm.IMMEDIATE)
 
   const { mutate: save } = useMutation({
-    mutationFn: (nextPaymentTerm: PaymentTermType | null) =>
+    mutationFn: (nextPaymentTerm: PaymentTermType) =>
       updatePurchaseOrderFn({
         data: { purchaseOrderId, paymentTerm: nextPaymentTerm },
       }),
@@ -42,7 +42,7 @@ export function PurchaseOrderPaymentTermField({
       queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
     onError: (error) => {
       toast.error(error.message)
-      setValue(paymentTerm ?? UNSET)
+      setValue(paymentTerm ?? PaymentTerm.IMMEDIATE)
     },
   })
 
@@ -53,7 +53,7 @@ export function PurchaseOrderPaymentTermField({
           Điều khoản TT
         </p>
         <p className="truncate text-sm font-medium text-foreground">
-          {paymentTerm ? paymentTermLabels[paymentTerm] : "Chưa chọn"}
+          {paymentTermLabels[paymentTerm ?? PaymentTerm.IMMEDIATE]}
         </p>
       </div>
     )
@@ -65,13 +65,14 @@ export function PurchaseOrderPaymentTermField({
         htmlFor="purchase-order-payment-term"
         className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
       >
-        Điều khoản TT
+        Điều khoản TT <span className="text-destructive">*</span>
       </label>
       <Select
         value={value}
         onValueChange={(nextValue: string) => {
-          setValue(nextValue)
-          save(nextValue === UNSET ? null : (nextValue as PaymentTermType))
+          const nextPaymentTerm = nextValue as PaymentTermType
+          setValue(nextPaymentTerm)
+          save(nextPaymentTerm)
         }}
       >
         <SelectTrigger
@@ -81,7 +82,6 @@ export function PurchaseOrderPaymentTermField({
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={UNSET}>Chưa chọn</SelectItem>
           {Object.values(PaymentTerm).map((term) => (
             <SelectItem key={term} value={term}>
               {paymentTermLabels[term]}

@@ -5,17 +5,17 @@ import { PurchaseOrderStatus } from "@/lib/types/purchase-order.type"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderCancellationNoticeProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
 }
 
 // Mirrors PurchaseQuotationRejectionNotice.tsx. CANCELLED is terminal here too — no route
 // accepts it back — so this only ever needs to gate on `status === CANCELLED`.
 export function PurchaseOrderCancellationNotice({
-  detail,
+  purchaseOrder,
 }: PurchaseOrderCancellationNoticeProps) {
   if (
-    detail.status !== PurchaseOrderStatus.CANCELLED ||
-    !detail.cancellationReason
+    purchaseOrder.status !== PurchaseOrderStatus.CANCELLED ||
+    !purchaseOrder.cancellationReason
   ) {
     return null
   }
@@ -27,11 +27,15 @@ export function PurchaseOrderCancellationNotice({
         <p className="text-sm font-semibold text-destructive">
           Đơn mua hàng đã bị huỷ
         </p>
-        <p className="text-sm text-foreground">{detail.cancellationReason}</p>
-        {detail.cancellerBy && detail.cancelledAt ? (
+        <p className="text-sm text-foreground">
+          {purchaseOrder.cancellationReason}
+        </p>
+        {purchaseOrder.cancellerBy && purchaseOrder.cancelledAt ? (
           <p className="text-xs text-muted-foreground">
-            {detail.cancellerBy.fullName} ·{" "}
-            {DateTime.fromISO(detail.cancelledAt).toFormat("dd/MM/yyyy HH:mm")}
+            {purchaseOrder.cancellerBy.fullName} ·{" "}
+            {DateTime.fromISO(purchaseOrder.cancelledAt).toFormat(
+              "dd/MM/yyyy HH:mm"
+            )}
           </p>
         ) : null}
       </div>

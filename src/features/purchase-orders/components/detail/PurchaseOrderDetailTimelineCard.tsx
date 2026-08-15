@@ -42,15 +42,15 @@ function resolveNodeVisual(state: PurchaseOrderTimelineStepState): NodeVisual {
 }
 
 type PurchaseOrderDetailTimelineCardProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
 }
 
 // Mirrors PurchaseQuotationDetailTimelineCard.tsx — every node/timestamp comes straight off
-// `detail` via buildPurchaseOrderTimeline, no invented data.
+// `purchaseOrder` via buildPurchaseOrderTimeline, no invented data.
 export function PurchaseOrderDetailTimelineCard({
-  detail,
+  purchaseOrder,
 }: PurchaseOrderDetailTimelineCardProps) {
-  const steps = buildPurchaseOrderTimeline(detail)
+  const steps = buildPurchaseOrderTimeline(purchaseOrder)
 
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">

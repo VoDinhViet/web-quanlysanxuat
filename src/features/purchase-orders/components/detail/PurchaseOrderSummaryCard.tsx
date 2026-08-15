@@ -3,7 +3,7 @@ import { Calculator } from "lucide-react"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderSummaryCardProps = {
-  detail: PurchaseOrderDetail
+  purchaseOrder: PurchaseOrderDetail
 }
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -13,17 +13,17 @@ const amountFormatter = new Intl.NumberFormat("vi-VN")
 // sách, DTO riêng có aggregate) — tính thẳng từ items[] ở đây, bỏ qua dòng chưa có unitPrice khi
 // cộng tiền nhưng vẫn báo rõ số dòng thiếu để không đánh lừa người dùng là tổng đã đầy đủ.
 export function PurchaseOrderSummaryCard({
-  detail,
+  purchaseOrder,
 }: PurchaseOrderSummaryCardProps) {
-  const totalQuantity = detail.items.reduce(
+  const totalQuantity = purchaseOrder.items.reduce(
     (sum, item) => sum + item.quantity,
     0
   )
-  const totalAmount = detail.items.reduce(
+  const totalAmount = purchaseOrder.items.reduce(
     (sum, item) => sum + item.quantity * (item.unitPrice ?? 0),
     0
   )
-  const missingUnitPriceCount = detail.items.filter(
+  const missingUnitPriceCount = purchaseOrder.items.filter(
     (item) => item.unitPrice === null
   ).length
 

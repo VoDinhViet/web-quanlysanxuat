@@ -60,7 +60,7 @@ export function PurchaseOrderExpectedDateField({
         htmlFor="purchase-order-expected-date"
         className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
       >
-        Ngày giao dự kiến
+        Ngày giao dự kiến <span className="text-destructive">*</span>
       </label>
       <DatePicker
         id="purchase-order-expected-date"
