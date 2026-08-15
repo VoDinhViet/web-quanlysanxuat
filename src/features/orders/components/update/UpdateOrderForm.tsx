@@ -5,15 +5,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
+import { AttachmentsField } from "@/components/shared/AttachmentsField"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { UpdateOrderInfoSection } from "@/features/orders/components/update/UpdateOrderInfoSection"
 import { UpdateOrderItemsSection } from "@/features/orders/components/update/UpdateOrderItemsSection"
 import { UpdateOrderTotalsSummary } from "@/features/orders/components/update/UpdateOrderTotalsSummary"
-import { OrderAttachmentsField } from "@/features/orders/components/OrderAttachmentsField"
 import { updateOrder } from "@/features/orders/api/server-functions/update-order.api"
 import { updateOrderSchema } from "@/features/orders/schemas/update-order.schema"
 import type { UpdateOrderSchema } from "@/features/orders/schemas/update-order.schema"
+import {
+  ACCEPTED_DOCUMENT_TYPES,
+  MAX_DOCUMENT_SIZE_BYTES,
+  UploadType,
+} from "@/lib/types/file.type"
 import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 
@@ -133,7 +138,15 @@ export function UpdateOrderForm({ order }: UpdateOrderFormProps) {
           <div className="border-t border-border px-4 py-5 sm:px-5">
             <form.Field name="attachments">
               {(field) => (
-                <OrderAttachmentsField
+                <AttachmentsField
+                  label="Tài liệu đính kèm"
+                  hint="Hợp đồng, bản vẽ, chứng từ liên quan tới đơn hàng..."
+                  formatHint="Hỗ trợ: PDF, DOCX, XLSX (tối đa 10MB)"
+                  invalidTypeMessage="Chỉ chấp nhận PDF, DOCX, XLSX."
+                  uploadType={UploadType.ORDER_DOCUMENT}
+                  accept={ACCEPTED_DOCUMENT_TYPES}
+                  maxSize={MAX_DOCUMENT_SIZE_BYTES}
+                  layout="grid"
                   value={field.state.value}
                   onChange={field.handleChange}
                   disabled={isPending}

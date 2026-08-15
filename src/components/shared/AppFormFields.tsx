@@ -140,6 +140,10 @@ type TextareaFieldProps = {
   className?: string
   // See `TextFieldProps.id` — overrides the textarea id/label htmlFor.
   id?: string
+  // Caps the HTML input and renders a live "x/N" counter under the field — the Zod schema's
+  // `.max(N)` stays the source of truth for validation; this is only the UX affordance, so the
+  // two must agree at each call site.
+  maxLength?: number
 }
 
 export function TextareaField({
@@ -149,6 +153,7 @@ export function TextareaField({
   disabled,
   className,
   id,
+  maxLength,
 }: TextareaFieldProps) {
   const field = useFieldContext<string>()
   const inputId = id ?? field.name
@@ -165,13 +170,21 @@ export function TextareaField({
         id={inputId}
         name={field.name}
         placeholder={placeholder}
+        maxLength={maxLength}
         className="min-h-20 resize-none bg-background text-xs"
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
         disabled={disabled}
       />
-      <FieldError errors={field.state.meta.errors} />
+      <div className="flex items-center justify-between gap-2">
+        <FieldError errors={field.state.meta.errors} />
+        {maxLength ? (
+          <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
+            {field.state.value.length}/{maxLength}
+          </span>
+        ) : null}
+      </div>
     </Field>
   )
 }

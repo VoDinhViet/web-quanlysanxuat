@@ -1,6 +1,11 @@
 import { withForm } from "@/hooks/use-app-form"
-import { SupplierAttachmentsField } from "@/features/suppliers/components/SupplierAttachmentsField"
+import { AttachmentsField } from "@/components/shared/AttachmentsField"
 import { updateSupplierFormDefaultValues } from "@/features/suppliers/schemas/update-supplier.schema"
+import {
+  ACCEPTED_DOCUMENT_TYPES,
+  MAX_DOCUMENT_SIZE_BYTES,
+  UploadType,
+} from "@/lib/types/file.type"
 import { supplierStatusLabels } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
@@ -47,7 +52,14 @@ export const UpdateSupplierOtherSection = withForm({
 
           <form.Field name="attachments">
             {(field) => (
-              <SupplierAttachmentsField
+              <AttachmentsField
+                label="Tài liệu đính kèm"
+                hint="Hợp đồng, báo giá, chứng nhận chất lượng..."
+                formatHint="Hỗ trợ: PDF, DOCX, XLSX (tối đa 10MB)"
+                invalidTypeMessage="Chỉ chấp nhận PDF, DOCX, XLSX."
+                uploadType={UploadType.SUPPLIER_DOCUMENT}
+                accept={ACCEPTED_DOCUMENT_TYPES}
+                maxSize={MAX_DOCUMENT_SIZE_BYTES}
                 value={field.state.value}
                 onChange={field.handleChange}
                 disabled={disabled}

@@ -14,11 +14,15 @@ export enum UploadType {
   SUPPLIER_DOCUMENT = "SUPPLIER_DOCUMENT",
   BOM_ITEM_DRAWING = "BOM_ITEM_DRAWING",
   ORDER_DOCUMENT = "ORDER_DOCUMENT",
+  IQC_EVIDENCE = "IQC_EVIDENCE",
+  IQC_DISPOSITION_EVIDENCE = "IQC_DISPOSITION_EVIDENCE",
 }
 
 export enum FileKind {
   IMAGE = "IMAGE",
   DOCUMENT = "DOCUMENT",
+  // Ảnh ∪ tài liệu — bằng chứng IQC vừa có ảnh chụp thực tế vừa có tài liệu đo lường (PDF).
+  EVIDENCE = "EVIDENCE",
 }
 
 /**
@@ -67,4 +71,10 @@ export const ACCEPTED_DOCUMENT_TYPES = {
 // shared IMAGE policy.
 export const ACCEPTED_DRAWING_TYPES = {
   "application/pdf": [],
+}
+
+// IQC evidence — union of IMAGE and DOCUMENT, matching the backend's FileKind.EVIDENCE.
+export const ACCEPTED_EVIDENCE_TYPES = {
+  ...ACCEPTED_IMAGE_TYPES,
+  ...ACCEPTED_DOCUMENT_TYPES,
 }

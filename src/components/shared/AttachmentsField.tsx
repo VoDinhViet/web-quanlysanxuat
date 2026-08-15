@@ -2,43 +2,61 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
 import { ErrorCode, useDropzone } from "react-dropzone"
-import { FileText, Loader2, Paperclip, X } from "lucide-react"
+import { Loader2, Paperclip } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { resolveFileUrl } from "@/lib/file-url"
-import {
-  ACCEPTED_DOCUMENT_TYPES,
-  MAX_DOCUMENT_SIZE_BYTES,
-} from "@/lib/types/file.type"
+import { AttachmentsFieldList } from "@/components/shared/AttachmentsFieldList"
 import { uploadFile } from "@/lib/upload-file"
 import { cn } from "@/lib/utils"
 import type { FileFieldValue } from "@/lib/file-field.schema"
+import type { UploadType } from "@/lib/types/file.type"
 import type { FileRejection } from "react-dropzone"
 
 function resolveDropRejectionMessage(
-  rejections: FileRejection[]
+  rejections: FileRejection[],
+  invalidTypeMessage: string
 ): string | null {
   switch (rejections[0]?.errors[0]?.code) {
     case ErrorCode.FileInvalidType:
-      return "Chỉ chấp nhận PDF, DOCX, XLSX."
+      return invalidTypeMessage
     case ErrorCode.FileTooLarge:
-      return "Kích thước file tối đa 10MB."
+      return "Kích thước file vượt quá giới hạn cho phép."
     default:
       return rejections.length > 0 ? "Không thể tải file lên." : null
   }
 }
 
-type OrderAttachmentsFieldProps = {
+type AttachmentsFieldProps = {
+  label: string
+  hint: string
+  formatHint: string
+  invalidTypeMessage: string
+  uploadType: UploadType
+  accept: Record<string, string[]>
+  maxSize: number
   value: FileFieldValue[]
   onChange: (value: FileFieldValue[]) => void
   disabled?: boolean
+  // "grid" = horizontal dropzone + 2-col list (OrderAttachmentsField's old shape); "list" =
+  // stacked dropzone + 1-col list (SupplierAttachmentsField's old shape).
+  layout?: "grid" | "list"
 }
 
-export function OrderAttachmentsField({
+// Promoted from OrderAttachmentsField/SupplierAttachmentsField, which were already near-identical
+// copies — the IQC detail page needs two more (bằng chứng QC + bằng chứng quyết định), the 3rd/4th
+// use crossing the repo's "no abstraction until 3rd use" threshold.
+export function AttachmentsField({
+  label,
+  hint,
+  formatHint,
+  invalidTypeMessage,
+  uploadType,
+  accept,
+  maxSize,
   value,
   onChange,
   disabled,
-}: OrderAttachmentsFieldProps) {
+  layout = "list",
+}: AttachmentsFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
   const uploadFileFn = useServerFn(uploadFile)
 
@@ -50,14 +68,14 @@ export function OrderAttachmentsField({
     mutationFn: (file: File) => {
       const formData = new FormData()
       formData.append("file", file)
-      formData.append("type", "ORDER_DOCUMENT")
+      formData.append("type", uploadType)
       return uploadFileFn({ data: formData })
     },
   })
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ACCEPTED_DOCUMENT_TYPES,
-    maxSize: MAX_DOCUMENT_SIZE_BYTES,
+    accept,
+    maxSize,
     multiple: true,
     disabled,
     onDropAccepted: async (files) => {
@@ -84,7 +102,9 @@ export function OrderAttachmentsField({
       }
     },
     onDropRejected: (rejections) =>
-      setClientError(resolveDropRejectionMessage(rejections)),
+      setClientError(
+        resolveDropRejectionMessage(rejections, invalidTypeMessage)
+      ),
   })
 
   // Keyed and removed by `id`, not `url`: the URL now carries a per-response
@@ -99,22 +119,20 @@ export function OrderAttachmentsField({
     <div className="space-y-3">
       <div>
         <span className="block text-sm font-semibold text-foreground">
-          Tài liệu đính kèm
+          {label}
           {value.length > 0 ? (
             <span className="ml-1 font-normal text-muted-foreground">
               · {value.length} tệp
             </span>
           ) : null}
         </span>
-        <p className="text-[11px] text-muted-foreground">
-          Hợp đồng, bản vẽ, chứng từ liên quan tới đơn hàng...
-        </p>
+        <p className="text-[11px] text-muted-foreground">{hint}</p>
       </div>
 
       <div
         {...getRootProps({
           role: "button",
-          "aria-label": "Tải tài liệu đính kèm lên",
+          "aria-label": `Tải ${label.toLowerCase()} lên`,
           className: cn(
             "relative w-full outline-none focus-visible:ring-2 focus-visible:ring-ring",
             disabled && "pointer-events-none opacity-50"
@@ -125,21 +143,26 @@ export function OrderAttachmentsField({
 
         <div
           className={cn(
-            "flex min-h-24 w-full items-center gap-4 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-4 transition-colors",
+            "flex w-full items-center gap-4 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-4 transition-colors",
+            layout === "grid"
+              ? "min-h-24"
+              : "min-h-28 flex-col justify-center gap-1.5 text-center",
             isDragActive && "border-primary bg-primary/5"
           )}
         >
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-            <Paperclip className="size-5" />
-          </div>
-          <div className="min-w-0 space-y-0.5">
+          {layout === "grid" ? (
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <Paperclip className="size-5" />
+            </div>
+          ) : (
+            <Paperclip className="size-5 text-muted-foreground/60" />
+          )}
+          <div className={cn("min-w-0", layout === "grid" && "space-y-0.5")}>
             <p className="text-xs text-muted-foreground">
               Kéo thả file vào đây hoặc{" "}
               <span className="font-medium text-primary">chọn file</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
-              Hỗ trợ: PDF, DOCX, XLSX (tối đa 10MB)
-            </p>
+            <p className="text-[11px] text-muted-foreground">{formatHint}</p>
           </div>
 
           {isPending ? (
@@ -154,36 +177,12 @@ export function OrderAttachmentsField({
         <p className="text-xs text-destructive">{errorMessage}</p>
       ) : null}
 
-      {value.length > 0 ? (
-        <ul className="grid gap-2 sm:grid-cols-2">
-          {value.map((attachment) => (
-            <li
-              key={attachment.id}
-              className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-3 py-2"
-            >
-              <a
-                href={resolveFileUrl(attachment.url)}
-                target="_blank"
-                rel="noreferrer"
-                className="flex min-w-0 items-center gap-2 text-xs text-foreground hover:text-primary hover:underline"
-              >
-                <FileText className="size-4 shrink-0 text-muted-foreground" />
-                <span className="truncate">{attachment.originalName}</span>
-              </a>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                disabled={disabled}
-                aria-label={`Xóa ${attachment.originalName}`}
-                onClick={() => removeAttachment(attachment.id)}
-              >
-                <X className="size-3.5" />
-              </Button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <AttachmentsFieldList
+        value={value}
+        onRemove={removeAttachment}
+        disabled={disabled}
+        layout={layout}
+      />
     </div>
   )
 }
