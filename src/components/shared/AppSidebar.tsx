@@ -2,6 +2,7 @@ import { Image } from "@unpic/react"
 import { Link, useLocation } from "@tanstack/react-router"
 import {
   ArrowDownToLine,
+  BarChart3,
   BookText,
   Boxes,
   Building2,
@@ -19,12 +20,15 @@ import {
   PackagePlus,
   PackageSearch,
   ReceiptText,
+  Send,
   Settings,
   ShieldCheck,
   ShoppingCart,
   Truck,
   Undo2,
+  Upload,
   UserRound,
+  Users,
   Warehouse,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -157,6 +161,19 @@ const menuGroups: MenuGroup[] = [
         permission: "production:read",
       },
       { label: "BOM & Định mức", icon: ListChecks },
+    ],
+  },
+  {
+    label: "Gia công ngoài",
+    items: [
+      {
+        label: "Xuất đi gia công (OS-OUT)",
+        icon: Send,
+        href: "/manage/outsourcing-orders",
+      },
+      { label: "Nhập về (OS-IN)", icon: Upload },
+      { label: "Nhà cung cấp gia công", icon: Users },
+      { label: "Báo cáo gia công ngoài", icon: BarChart3 },
     ],
   },
   {
