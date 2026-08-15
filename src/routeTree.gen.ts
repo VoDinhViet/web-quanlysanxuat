@@ -22,6 +22,7 @@ import { Route as authedManageIqcRouteImport } from './routes/(authed)/manage_/i
 import { Route as authedManageMaterialsRouteImport } from './routes/(authed)/manage_/materials'
 import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage_/orders'
 import { Route as authedManageOutboundOrdersRouteImport } from './routes/(authed)/manage_/outbound-orders'
+import { Route as authedManageOutsourcingOrdersRouteImport } from './routes/(authed)/manage_/outsourcing-orders'
 import { Route as authedManagePaymentRequestsRouteImport } from './routes/(authed)/manage_/payment-requests'
 import { Route as authedManageProductionJobsRouteImport } from './routes/(authed)/manage_/production-jobs'
 import { Route as authedManageProductionOrdersRouteImport } from './routes/(authed)/manage_/production-orders'
@@ -36,6 +37,7 @@ import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_
 import { Route as authedManageClientsCreateRouteImport } from './routes/(authed)/manage_/clients_/create'
 import { Route as authedManageInventoryReceiptsInventoryReceiptIdRouteImport } from './routes/(authed)/manage_/inventory-receipts_/$inventoryReceiptId'
 import { Route as authedManageInventoryReceiptsCreateRouteImport } from './routes/(authed)/manage_/inventory-receipts_/create'
+import { Route as authedManageInventoryReceiptsCreateFromPoRouteImport } from './routes/(authed)/manage_/inventory-receipts_/create-from-po'
 import { Route as authedManageIqcIqcIdRouteImport } from './routes/(authed)/manage_/iqc_/$iqcId'
 import { Route as authedManageMaterialsCreateRouteImport } from './routes/(authed)/manage_/materials_/create'
 import { Route as authedManageOrdersOrderIdRouteImport } from './routes/(authed)/manage_/orders_/$orderId'
@@ -128,6 +130,12 @@ const authedManageOutboundOrdersRoute =
     path: '/manage/outbound-orders',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageOutsourcingOrdersRoute =
+  authedManageOutsourcingOrdersRouteImport.update({
+    id: '/manage_/outsourcing-orders',
+    path: '/manage/outsourcing-orders',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManagePaymentRequestsRoute =
   authedManagePaymentRequestsRouteImport.update({
     id: '/manage_/payment-requests',
@@ -207,6 +215,12 @@ const authedManageInventoryReceiptsCreateRoute =
   authedManageInventoryReceiptsCreateRouteImport.update({
     id: '/manage_/inventory-receipts_/create',
     path: '/manage/inventory-receipts/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryReceiptsCreateFromPoRoute =
+  authedManageInventoryReceiptsCreateFromPoRouteImport.update({
+    id: '/manage_/inventory-receipts_/create-from-po',
+    path: '/manage/inventory-receipts/create-from-po',
     getParentRoute: () => authedRouteRoute,
   } as any)
 const authedManageIqcIqcIdRoute = authedManageIqcIqcIdRouteImport.update({
@@ -364,6 +378,7 @@ export interface FileRoutesByFullPath {
   '/manage/materials': typeof authedManageMaterialsRoute
   '/manage/orders': typeof authedManageOrdersRoute
   '/manage/outbound-orders': typeof authedManageOutboundOrdersRoute
+  '/manage/outsourcing-orders': typeof authedManageOutsourcingOrdersRoute
   '/manage/payment-requests': typeof authedManagePaymentRequestsRoute
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
@@ -378,6 +393,7 @@ export interface FileRoutesByFullPath {
   '/manage/clients/create': typeof authedManageClientsCreateRoute
   '/manage/inventory-receipts/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
   '/manage/inventory-receipts/create': typeof authedManageInventoryReceiptsCreateRoute
+  '/manage/inventory-receipts/create-from-po': typeof authedManageInventoryReceiptsCreateFromPoRoute
   '/manage/iqc/$iqcId': typeof authedManageIqcIqcIdRoute
   '/manage/materials/create': typeof authedManageMaterialsCreateRoute
   '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
@@ -415,6 +431,7 @@ export interface FileRoutesByTo {
   '/manage/materials': typeof authedManageMaterialsRoute
   '/manage/orders': typeof authedManageOrdersRoute
   '/manage/outbound-orders': typeof authedManageOutboundOrdersRoute
+  '/manage/outsourcing-orders': typeof authedManageOutsourcingOrdersRoute
   '/manage/payment-requests': typeof authedManagePaymentRequestsRoute
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
@@ -429,6 +446,7 @@ export interface FileRoutesByTo {
   '/manage/clients/create': typeof authedManageClientsCreateRoute
   '/manage/inventory-receipts/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
   '/manage/inventory-receipts/create': typeof authedManageInventoryReceiptsCreateRoute
+  '/manage/inventory-receipts/create-from-po': typeof authedManageInventoryReceiptsCreateFromPoRoute
   '/manage/iqc/$iqcId': typeof authedManageIqcIqcIdRoute
   '/manage/materials/create': typeof authedManageMaterialsCreateRoute
   '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
@@ -469,6 +487,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/materials': typeof authedManageMaterialsRoute
   '/(authed)/manage_/orders': typeof authedManageOrdersRoute
   '/(authed)/manage_/outbound-orders': typeof authedManageOutboundOrdersRoute
+  '/(authed)/manage_/outsourcing-orders': typeof authedManageOutsourcingOrdersRoute
   '/(authed)/manage_/payment-requests': typeof authedManagePaymentRequestsRoute
   '/(authed)/manage_/production-jobs': typeof authedManageProductionJobsRoute
   '/(authed)/manage_/production-orders': typeof authedManageProductionOrdersRoute
@@ -483,6 +502,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/clients_/create': typeof authedManageClientsCreateRoute
   '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
   '/(authed)/manage_/inventory-receipts_/create': typeof authedManageInventoryReceiptsCreateRoute
+  '/(authed)/manage_/inventory-receipts_/create-from-po': typeof authedManageInventoryReceiptsCreateFromPoRoute
   '/(authed)/manage_/iqc_/$iqcId': typeof authedManageIqcIqcIdRoute
   '/(authed)/manage_/materials_/create': typeof authedManageMaterialsCreateRoute
   '/(authed)/manage_/orders_/$orderId': typeof authedManageOrdersOrderIdRoute
@@ -522,6 +542,7 @@ export interface FileRouteTypes {
     | '/manage/materials'
     | '/manage/orders'
     | '/manage/outbound-orders'
+    | '/manage/outsourcing-orders'
     | '/manage/payment-requests'
     | '/manage/production-jobs'
     | '/manage/production-orders'
@@ -536,6 +557,7 @@ export interface FileRouteTypes {
     | '/manage/clients/create'
     | '/manage/inventory-receipts/$inventoryReceiptId'
     | '/manage/inventory-receipts/create'
+    | '/manage/inventory-receipts/create-from-po'
     | '/manage/iqc/$iqcId'
     | '/manage/materials/create'
     | '/manage/orders/$orderId'
@@ -573,6 +595,7 @@ export interface FileRouteTypes {
     | '/manage/materials'
     | '/manage/orders'
     | '/manage/outbound-orders'
+    | '/manage/outsourcing-orders'
     | '/manage/payment-requests'
     | '/manage/production-jobs'
     | '/manage/production-orders'
@@ -587,6 +610,7 @@ export interface FileRouteTypes {
     | '/manage/clients/create'
     | '/manage/inventory-receipts/$inventoryReceiptId'
     | '/manage/inventory-receipts/create'
+    | '/manage/inventory-receipts/create-from-po'
     | '/manage/iqc/$iqcId'
     | '/manage/materials/create'
     | '/manage/orders/$orderId'
@@ -626,6 +650,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/materials'
     | '/(authed)/manage_/orders'
     | '/(authed)/manage_/outbound-orders'
+    | '/(authed)/manage_/outsourcing-orders'
     | '/(authed)/manage_/payment-requests'
     | '/(authed)/manage_/production-jobs'
     | '/(authed)/manage_/production-orders'
@@ -640,6 +665,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/clients_/create'
     | '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId'
     | '/(authed)/manage_/inventory-receipts_/create'
+    | '/(authed)/manage_/inventory-receipts_/create-from-po'
     | '/(authed)/manage_/iqc_/$iqcId'
     | '/(authed)/manage_/materials_/create'
     | '/(authed)/manage_/orders_/$orderId'
@@ -765,6 +791,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageOutboundOrdersRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/outsourcing-orders': {
+      id: '/(authed)/manage_/outsourcing-orders'
+      path: '/manage/outsourcing-orders'
+      fullPath: '/manage/outsourcing-orders'
+      preLoaderRoute: typeof authedManageOutsourcingOrdersRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/manage_/payment-requests': {
       id: '/(authed)/manage_/payment-requests'
       path: '/manage/payment-requests'
@@ -861,6 +894,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/inventory-receipts/create'
       fullPath: '/manage/inventory-receipts/create'
       preLoaderRoute: typeof authedManageInventoryReceiptsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-receipts_/create-from-po': {
+      id: '/(authed)/manage_/inventory-receipts_/create-from-po'
+      path: '/manage/inventory-receipts/create-from-po'
+      fullPath: '/manage/inventory-receipts/create-from-po'
+      preLoaderRoute: typeof authedManageInventoryReceiptsCreateFromPoRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/iqc_/$iqcId': {
@@ -1056,6 +1096,7 @@ interface authedRouteRouteChildren {
   authedManageMaterialsRoute: typeof authedManageMaterialsRoute
   authedManageOrdersRoute: typeof authedManageOrdersRoute
   authedManageOutboundOrdersRoute: typeof authedManageOutboundOrdersRoute
+  authedManageOutsourcingOrdersRoute: typeof authedManageOutsourcingOrdersRoute
   authedManagePaymentRequestsRoute: typeof authedManagePaymentRequestsRoute
   authedManageProductionJobsRoute: typeof authedManageProductionJobsRoute
   authedManageProductionOrdersRoute: typeof authedManageProductionOrdersRoute
@@ -1070,6 +1111,7 @@ interface authedRouteRouteChildren {
   authedManageClientsCreateRoute: typeof authedManageClientsCreateRoute
   authedManageInventoryReceiptsInventoryReceiptIdRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
   authedManageInventoryReceiptsCreateRoute: typeof authedManageInventoryReceiptsCreateRoute
+  authedManageInventoryReceiptsCreateFromPoRoute: typeof authedManageInventoryReceiptsCreateFromPoRoute
   authedManageIqcIqcIdRoute: typeof authedManageIqcIqcIdRoute
   authedManageMaterialsCreateRoute: typeof authedManageMaterialsCreateRoute
   authedManageOrdersOrderIdRoute: typeof authedManageOrdersOrderIdRoute
@@ -1106,6 +1148,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageMaterialsRoute: authedManageMaterialsRoute,
   authedManageOrdersRoute: authedManageOrdersRoute,
   authedManageOutboundOrdersRoute: authedManageOutboundOrdersRoute,
+  authedManageOutsourcingOrdersRoute: authedManageOutsourcingOrdersRoute,
   authedManagePaymentRequestsRoute: authedManagePaymentRequestsRoute,
   authedManageProductionJobsRoute: authedManageProductionJobsRoute,
   authedManageProductionOrdersRoute: authedManageProductionOrdersRoute,
@@ -1122,6 +1165,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
     authedManageInventoryReceiptsInventoryReceiptIdRoute,
   authedManageInventoryReceiptsCreateRoute:
     authedManageInventoryReceiptsCreateRoute,
+  authedManageInventoryReceiptsCreateFromPoRoute:
+    authedManageInventoryReceiptsCreateFromPoRoute,
   authedManageIqcIqcIdRoute: authedManageIqcIqcIdRoute,
   authedManageMaterialsCreateRoute: authedManageMaterialsCreateRoute,
   authedManageOrdersOrderIdRoute: authedManageOrdersOrderIdRoute,
