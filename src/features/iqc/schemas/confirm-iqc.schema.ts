@@ -1,79 +1,155 @@
 import { DateTime } from "luxon"
 import { z } from "zod"
 
-import { AQL_LEVELS, IqcInspectionLevel } from "@/lib/types/iqc.type"
+import {
+  AQL_LEVELS,
+  IqcDisposition,
+  IqcInspectionLevel,
+  IqcResult,
+} from "@/lib/types/iqc.type"
+import { fileFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToUndefined,
+  emptyToUndefinedNumber,
   isNonNegativeNumberString,
   isPositiveNumberString,
+  optionalEnum,
 } from "@/lib/zod-transforms"
+import type { FileFieldValue } from "@/lib/file-field.schema"
+import type { IqcDetail } from "@/lib/types/iqc.type"
 
 const AQL_LEVEL_VALUES: readonly number[] = AQL_LEVELS
 
-// Wire contract for POST /api/iqc/:iqcId/confirm — shared by IqcAqlInputCard's form and the
-// server function's validator. aqlLevel/sampleSize/defectQty travel as strings through the form
-// (SelectField/NumberField only deal in strings) and transform to numbers here, same idiom as
-// order-item-form.schema.ts. Server never trusts a client-computed result — it isn't part of
-// this schema at all, see confirm-iqc.api.ts.
-export const confirmIqcSchema = z.object({
-  iqcId: z.uuid(),
-  inspectionLevel: z.enum(IqcInspectionLevel),
-  aqlLevel: z
-    .string()
-    .trim()
-    .refine(
-      (value) => AQL_LEVEL_VALUES.includes(Number(value)),
-      "Vui lòng chọn mức AQL"
-    )
-    .transform(Number),
-  sampleSize: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Cỡ mẫu phải lớn hơn 0")
-    .transform(Number),
-  defectQty: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Số lượng lỗi không được âm")
-    .transform(Number),
-  inspectionStandard: z
-    .string()
-    .trim()
-    .max(100, "Tối đa 100 ký tự")
-    .transform(emptyToUndefined),
-  inspectorName: z
-    .string()
-    .trim()
-    .max(100, "Tối đa 100 ký tự")
-    .transform(emptyToUndefined),
-  measuringTools: z
-    .string()
-    .trim()
-    .max(255, "Tối đa 255 ký tự")
-    .transform(emptyToUndefined),
-  // `<input type="datetime-local">` value ("yyyy-MM-ddTHH:mm") — must parse at the local zone
-  // (not `{zone:"utc"}` like `toIsoDate`/`emptyToUndefinedIsoDate` in zod-transforms.ts, which
-  // are for date-only pickers): the value already carries the hour the user picked, so reading
-  // it back as UTC would shift it by the local offset. Not reused as a shared helper — this is
-  // the only datetime-local field in the codebase so far.
-  inspectionDate: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value.length === 0 || DateTime.fromISO(value).isValid,
-      "Ngày kiểm tra không hợp lệ"
-    )
-    .transform((value) =>
-      value.length > 0
-        ? DateTime.fromISO(value).toJSDate().toISOString()
-        : undefined
-    ),
-})
+// numeric(18,3) on the backend — comparing raw floats risks 0.1+0.2 !== 0.3 style mismatches.
+// Mirrors IqcService.validateDecision's own `scale`.
+function scale(value: number): number {
+  return Math.round(value * 1000)
+}
 
-// The form's own value type, hand-written rather than derived via `z.input` —
-// `inspectionLevel` starts blank (no sensible default AQL sampling level to preselect), which
-// `z.enum(IqcInspectionLevel)`'s input type can't represent. `onSubmit` narrows the blank case
-// out before calling the mutation (see IqcAqlInputCard.tsx).
+// Wire contract for POST /api/iqc/:iqcId/confirm — now the single "Lưu" button of the whole
+// detail page (shared by every section card's form.AppField, all under one <form> in
+// IqcDetailForm.tsx), not a one-shot AQL-only confirm. Also the client-side onSubmit validator.
+// `totalQuantity` is FE-only (seeded from the IQC's own `quantity`, never sent — dropped by
+// confirm-iqc.api.ts's payload transform) — carried here purely so the SORT split's cross-field
+// check below has something to compare against, since this schema is a module-level constant and
+// can't close over a specific record's `quantity`.
+export const confirmIqcSchema = z
+  .object({
+    iqcId: z.uuid(),
+    inspectionLevel: z.enum(IqcInspectionLevel),
+    aqlLevel: z
+      .string()
+      .trim()
+      .refine(
+        (value) => AQL_LEVEL_VALUES.includes(Number(value)),
+        "Vui lòng chọn mức AQL"
+      )
+      .transform(Number),
+    sampleSize: z
+      .string()
+      .trim()
+      .refine(isPositiveNumberString, "Cỡ mẫu phải lớn hơn 0")
+      .transform(Number),
+    defectQty: z
+      .string()
+      .trim()
+      .refine(isNonNegativeNumberString, "Số lượng lỗi không được âm")
+      .transform(Number),
+    inspectionStandard: z
+      .string()
+      .trim()
+      .max(100, "Tối đa 100 ký tự")
+      .transform(emptyToUndefined),
+    inspectorName: z
+      .string()
+      .trim()
+      .max(100, "Tối đa 100 ký tự")
+      .transform(emptyToUndefined),
+    measuringTools: z
+      .string()
+      .trim()
+      .max(255, "Tối đa 255 ký tự")
+      .transform(emptyToUndefined),
+    // `<input type="datetime-local">` value — parsed at the local zone, not `{zone:"utc"}` (see
+    // the original comment this was copied from, still accurate).
+    inspectionDate: z
+      .string()
+      .trim()
+      .refine(
+        (value) => value.length === 0 || DateTime.fromISO(value).isValid,
+        "Ngày kiểm tra không hợp lệ"
+      )
+      .transform((value) =>
+        value.length > 0
+          ? DateTime.fromISO(value).toJSDate().toISOString()
+          : undefined
+      ),
+    result: z.enum(IqcResult),
+    resultNote: z
+      .string()
+      .trim()
+      .max(500, "Tối đa 500 ký tự")
+      .transform(emptyToUndefined),
+    qcDepartmentId: z.string().trim().transform(emptyToUndefined),
+    qcEvidence: z.array(fileFieldSchema),
+    // Optional even for a FAIL row — no disposition picked yet is a valid save (→ PENDING).
+    disposition: optionalEnum(IqcDisposition),
+    sortOkQty: z.string().trim().transform(emptyToUndefinedNumber),
+    sortNgQty: z.string().trim().transform(emptyToUndefinedNumber),
+    dispositionNote: z
+      .string()
+      .trim()
+      .max(500, "Tối đa 500 ký tự")
+      .transform(emptyToUndefined),
+    dispositionEvidence: z.array(fileFieldSchema),
+    totalQuantity: z.string().trim().transform(Number),
+  })
+  .superRefine((value, ctx) => {
+    if (value.result === IqcResult.PASS && value.disposition) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["disposition"],
+        message: "Kết quả PASS thì không được chọn phương án xử lý",
+      })
+    }
+
+    if (value.disposition !== IqcDisposition.SORT) {
+      return
+    }
+
+    if (value.sortOkQty === undefined) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sortOkQty"],
+        message: "Vui lòng nhập SL OK",
+      })
+    }
+    if (value.sortNgQty === undefined) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sortNgQty"],
+        message: "Vui lòng nhập SL NG",
+      })
+    }
+    if (value.sortOkQty === undefined || value.sortNgQty === undefined) {
+      return
+    }
+
+    if (
+      scale(value.sortOkQty + value.sortNgQty) !== scale(value.totalQuantity)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sortNgQty"],
+        message: "SL OK + SL NG phải bằng Tổng SL",
+      })
+    }
+  })
+
+// The form's own value type, hand-written rather than derived via `z.input` — `inspectionLevel`,
+// `result` and `disposition` all start blank (no sensible default to preselect), which
+// `z.enum(...)`'s input type can't represent. `onSubmit` narrows the blank cases out before
+// calling the mutation (see use-iqc-detail-form.ts).
 export type ConfirmIqcFormValue = {
   iqcId: string
   inspectionLevel: IqcInspectionLevel | ""
@@ -84,25 +160,47 @@ export type ConfirmIqcFormValue = {
   inspectorName: string
   measuringTools: string
   inspectionDate: string
+  result: IqcResult | ""
+  resultNote: string
+  qcDepartmentId: string
+  qcEvidence: FileFieldValue[]
+  disposition: IqcDisposition | ""
+  sortOkQty: string
+  sortNgQty: string
+  dispositionNote: string
+  dispositionEvidence: FileFieldValue[]
+  totalQuantity: string
 }
 
-// `inspectionDate` prefills from the IQC's own `inspectionDate` (set at creation) formatted for
-// `<input type="datetime-local">` — the other 3 new fields have no sensible default, same as the
-// existing AQL fields below.
+// The page is now a form that's always editable, seeded from the saved record (not a blank
+// create form) — every field prefills from `iqc`, including a row still NOT_INSPECTED (all
+// null on the backend, so every field below falls back to its own blank default).
 export function buildConfirmIqcFormDefaultValues(
-  iqcId: string,
-  inspectionDate: string
+  iqc: IqcDetail
 ): ConfirmIqcFormValue {
   return {
-    iqcId,
-    inspectionLevel: "",
-    aqlLevel: "",
-    sampleSize: "",
-    defectQty: "",
-    inspectionStandard: "",
-    inspectorName: "",
-    measuringTools: "",
-    inspectionDate:
-      DateTime.fromISO(inspectionDate).toFormat("yyyy-MM-dd'T'HH:mm"),
+    iqcId: iqc.id,
+    inspectionLevel: iqc.inspectionLevel ?? "",
+    aqlLevel: iqc.aqlLevel !== null ? String(iqc.aqlLevel) : "",
+    sampleSize: iqc.sampleSize !== null ? String(iqc.sampleSize) : "",
+    defectQty: iqc.defectQty !== null ? String(iqc.defectQty) : "",
+    inspectionStandard: iqc.inspectionStandard ?? "",
+    inspectorName: iqc.inspectorName ?? "",
+    measuringTools: iqc.measuringTools ?? "",
+    inspectionDate: DateTime.fromISO(iqc.inspectionDate).toFormat(
+      "yyyy-MM-dd'T'HH:mm"
+    ),
+    result: iqc.result ?? "",
+    resultNote: iqc.resultNote ?? "",
+    qcDepartmentId: iqc.qcDepartment?.id ?? "",
+    qcEvidence: iqc.qcEvidence.map((attachment) => attachment.file),
+    disposition: iqc.disposition ?? "",
+    sortOkQty: iqc.sortOkQty !== null ? String(iqc.sortOkQty) : "",
+    sortNgQty: iqc.sortNgQty !== null ? String(iqc.sortNgQty) : "",
+    dispositionNote: iqc.dispositionNote ?? "",
+    dispositionEvidence: iqc.dispositionEvidence.map(
+      (attachment) => attachment.file
+    ),
+    totalQuantity: String(iqc.quantity),
   }
 }

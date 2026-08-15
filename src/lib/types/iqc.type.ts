@@ -1,3 +1,6 @@
+import type { Department } from "@/lib/types/department.type"
+import type { FileResource } from "@/lib/types/file.type"
+import type { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { UserRef } from "@/lib/types/user.type"
 import type { Unit } from "@/lib/types/unit.type"
@@ -49,6 +52,21 @@ export const iqcDispositionLabels: Record<IqcDisposition, string> = {
   [IqcDisposition.RETURN]: "Trả NCC",
 }
 
+// For IqcResultCard's radio cards — one short sentence explaining what picking this result means.
+export const iqcResultDescriptions: Record<IqcResult, string> = {
+  [IqcResult.PASS]: "Vật tư đạt yêu cầu chất lượng, cho phép nhập kho.",
+  [IqcResult.FAIL]: "Vật tư không đạt, cần chọn hướng xử lý bên dưới.",
+}
+
+// For IqcDispositionCard's radio cards.
+export const iqcDispositionDescriptions: Record<IqcDisposition, string> = {
+  [IqcDisposition.CONCESSION]:
+    "Chấp nhận dùng dù không đạt, có ghi nhận ngoại lệ.",
+  [IqcDisposition.SORT]:
+    "Tách riêng phần đạt (OK) và phần lỗi (NG) trong lô hàng.",
+  [IqcDisposition.RETURN]: "Trả toàn bộ lô hàng về nhà cung cấp.",
+}
+
 export const IqcStatus = {
   NOT_INSPECTED: "NOT_INSPECTED",
   PENDING: "PENDING",
@@ -67,10 +85,10 @@ export const iqcStatusLabels: Record<IqcStatus, string> = {
 
 // For IqcStatusLegend.tsx — same idiom as purchaseOrderStatusDescriptions.
 export const iqcStatusDescriptions: Record<IqcStatus, string> = {
-  [IqcStatus.NOT_INSPECTED]: "Đã tạo, chưa chạy AQL sampling",
+  [IqcStatus.NOT_INSPECTED]: "Đã tạo, chờ QC nhập kết quả kiểm tra",
   [IqcStatus.PENDING]: "FAIL, đang chờ chọn hướng xử lý",
   [IqcStatus.WAITING_RETURN]: "Đang chờ trả hàng về NCC",
-  [IqcStatus.COMPLETED]: "PASS, đã hoàn tất kiểm tra",
+  [IqcStatus.COMPLETED]: "Đã hoàn tất kiểm tra (PASS hoặc đã xử lý xong)",
 }
 
 /** Mirrors the backend's PageIqcResDto (GET /api/iqc) — only the fields this list screen reads.
@@ -95,9 +113,20 @@ export type Iqc = {
   createdAt: string
 }
 
+/** Mirrors the backend's IqcAttachmentResDto — one file entry inside `qcEvidence` /
+ *  `dispositionEvidence` below. */
+export type IqcAttachment = {
+  id: string
+  file: FileResource
+}
+
 /** Mirrors the backend's IqcResDto (GET /api/iqc/:iqcId) — adds the AQL sampling fields over
  *  `Iqc`, all null until `POST /iqc/:iqcId/confirm` runs. `ac`/`re` are computed at response time
- *  from the AQL lookup table (`iqc-aql.constant.ts` ở backend), not stored columns. */
+ *  from the AQL lookup table (`iqc-aql.constant.ts` ở backend), not stored columns — a plan the
+ *  table doesn't cover comes back null, and confirm never blocks on it (advisory only). `result`
+ *  is chosen by QC, not server-computed; `sortOkQty`/`sortNgQty` are only ever both set together,
+ *  and only when `disposition === "SORT"` (DB CHECK constraints). `supplierReturn` is set once
+ *  `status` reaches `WAITING_RETURN` (auto-generated DRAFT phiếu trả NCC). */
 export type IqcDetail = Iqc & {
   inspectionLevel: IqcInspectionLevel | null
   aqlLevel: number | null
@@ -108,6 +137,18 @@ export type IqcDetail = Iqc & {
   measuringTools: string | null
   ac: number | null
   re: number | null
+  resultNote: string | null
+  qcDepartment: Department | null
+  qcEvidence: IqcAttachment[]
+  sortOkQty: number | null
+  sortNgQty: number | null
+  dispositionNote: string | null
+  dispositionEvidence: IqcAttachment[]
+  supplierReturn: {
+    id: string
+    code: string
+    status: InventoryDocumentStatus
+  } | null
   confirmerBy: UserRef | null
   confirmedAt: string | null
   resolverBy: UserRef | null

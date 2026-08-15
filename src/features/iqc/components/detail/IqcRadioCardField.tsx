@@ -1,0 +1,100 @@
+import { Check } from "lucide-react"
+
+import { FieldLabel } from "@/components/ui/field"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { cn } from "@/lib/utils"
+import type { IconProps } from "@solar-icons/react"
+import type { AnyFieldApi } from "@tanstack/react-form"
+import type { ComponentType } from "react"
+
+export type IqcRadioCardOption<TValue extends string> = {
+  value: TValue
+  label: string
+  description: string
+  icon: ComponentType<IconProps>
+  // Tailwind classes for the checked-state card border/background and icon-chip tint — each
+  // call site supplies its own tone (PASS=success, FAIL=destructive, CONCESSION=amber,
+  // SORT=violet, RETURN=neutral), so this component itself stays domain-agnostic.
+  activeClassName: string
+  chipClassName: string
+}
+
+type IqcRadioCardFieldProps<TValue extends string> = {
+  field: AnyFieldApi
+  options: IqcRadioCardOption<TValue>[]
+  disabled?: boolean
+  columns?: 2 | 3
+}
+
+// Large radio cards (icon chip + label + description + a checked badge) — used for §3 KẾT QUẢ
+// (2 cards, PASS/FAIL) and §5 QUYẾT ĐỊNH XỬ LÝ (3 cards, CONCESSION/SORT/RETURN), the two
+// decision points of the page, so these get more visual weight than a plain form field. Checked
+// state is computed in JS off `field.state.value` (not CSS has-*/group-has-* chaining) — simpler
+// to reason about, and the same comparison drives both the card tint and the icon-chip tint.
+// Takes `field: AnyFieldApi` rather than going through useFieldContext/form.AppField's typed
+// registry — the two call sites bind different enums (IqcResult/IqcDisposition), and this is
+// only the 2nd use, not yet worth a generic addition to AppFormFields.tsx's shared field set.
+export function IqcRadioCardField<TValue extends string>({
+  field,
+  options,
+  disabled,
+  columns = 2,
+}: IqcRadioCardFieldProps<TValue>) {
+  return (
+    <RadioGroup
+      value={field.state.value}
+      onValueChange={(value) => field.handleChange(value)}
+      disabled={disabled}
+      className={cn(
+        "grid gap-3",
+        columns === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"
+      )}
+    >
+      {options.map((option) => {
+        const Icon = option.icon
+        const isChecked = field.state.value === option.value
+
+        return (
+          <FieldLabel
+            key={option.value}
+            htmlFor={`${field.name}-${option.value}`}
+            className={cn(
+              "relative cursor-pointer items-start gap-3 rounded-xl border-2 border-border bg-card p-4 transition-colors hover:border-foreground/25",
+              isChecked && option.activeClassName
+            )}
+          >
+            <RadioGroupItem
+              value={option.value}
+              id={`${field.name}-${option.value}`}
+              className="mt-0.5"
+            />
+            <div className="flex items-start gap-3 pr-5">
+              <div
+                className={cn(
+                  "flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors",
+                  isChecked && option.chipClassName
+                )}
+              >
+                <Icon className="size-4" />
+              </div>
+              <div className="space-y-0.5 pt-0.5">
+                <p className="text-sm font-semibold text-foreground">
+                  {option.label}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {option.description}
+                </p>
+              </div>
+            </div>
+
+            {isChecked ? (
+              <span className="absolute top-3 right-3 flex size-5 items-center justify-center rounded-full bg-foreground text-background">
+                <Check className="size-3" strokeWidth={3} />
+              </span>
+            ) : null}
+          </FieldLabel>
+        )
+      })}
+    </RadioGroup>
+  )
+}

@@ -1,158 +1,129 @@
-import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { ChecklistMinimalistic } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import {
+  ChecklistMinimalistic,
+  DangerTriangle,
+  Delivery,
+  Layers,
+} from "@solar-icons/react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
-import { Button } from "@/components/ui/button"
-import { resolveIqc } from "@/features/iqc/api/server-functions/resolve-iqc.api"
 import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
-import { IqcDispositionBadge } from "@/features/iqc/components/IqcBadges"
+import { IqcRadioCardField } from "@/features/iqc/components/detail/IqcRadioCardField"
+import type { IqcRadioCardOption } from "@/features/iqc/components/detail/IqcRadioCardField"
+import { IqcSortSplitFields } from "@/features/iqc/components/detail/IqcSortSplitFields"
+import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {
-  buildResolveIqcFormDefaultValues,
-  resolveIqcSchema,
-} from "@/features/iqc/schemas/resolve-iqc.schema"
-import { useAppForm } from "@/hooks/use-app-form"
-import {
+  iqcDispositionDescriptions,
   iqcDispositionLabels,
   IqcDisposition,
-  IqcResult,
-  IqcStatus,
 } from "@/lib/types/iqc.type"
 import type { IqcDetail } from "@/lib/types/iqc.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
-import type { z } from "zod"
 
-const dispositionOptions = buildOptionsFromLabels(iqcDispositionLabels)
+const dispositionOptions: IqcRadioCardOption<IqcDisposition>[] = [
+  {
+    value: IqcDisposition.CONCESSION,
+    label: iqcDispositionLabels[IqcDisposition.CONCESSION],
+    description: iqcDispositionDescriptions[IqcDisposition.CONCESSION],
+    icon: DangerTriangle,
+    activeClassName: "border-amber-500 bg-amber-50 dark:bg-amber-500/10",
+    chipClassName:
+      "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
+  },
+  {
+    value: IqcDisposition.SORT,
+    label: iqcDispositionLabels[IqcDisposition.SORT],
+    description: iqcDispositionDescriptions[IqcDisposition.SORT],
+    icon: Layers,
+    activeClassName: "border-violet-500 bg-violet-50 dark:bg-violet-500/10",
+    chipClassName:
+      "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400",
+  },
+  {
+    value: IqcDisposition.RETURN,
+    label: iqcDispositionLabels[IqcDisposition.RETURN],
+    description: iqcDispositionDescriptions[IqcDisposition.RETURN],
+    icon: Delivery,
+    activeClassName: "border-foreground/40 bg-muted",
+    chipClassName: "bg-foreground/10 text-foreground",
+  },
+]
 
 type IqcDispositionCardProps = {
-  detail: IqcDetail
+  form: IqcDetailFormApi
+  iqc: IqcDetail
+  disabled?: boolean
 }
 
-// Only ever relevant for a FAIL row — a PASS row (or one still NOT_INSPECTED) never has a
-// disposition, so this renders nothing for those. `status === PENDING` is the one window where
-// the user can still choose (see IqcDispositionForm below); once `disposition` is set the row has
-// moved on to WAITING_RETURN or COMPLETED (CONCESSION) and this renders read-only.
-export function IqcDispositionCard({ detail }: IqcDispositionCardProps) {
-  if (detail.result !== IqcResult.FAIL) {
-    return null
-  }
-
-  if (detail.status !== IqcStatus.PENDING) {
-    return (
-      <IqcDetailSectionCard icon={ChecklistMinimalistic} title="Xử lý QC FAIL">
-        <div className="flex flex-wrap items-center gap-3">
-          {detail.disposition && (
-            <IqcDispositionBadge disposition={detail.disposition} />
-          )}
-          {detail.resolvedAt && (
-            <p className="text-xs text-muted-foreground">
-              Đã xử lý lúc{" "}
-              {DateTime.fromISO(detail.resolvedAt).toFormat("dd/MM/yyyy HH:mm")}
-              {detail.resolverBy && ` bởi ${detail.resolverBy.fullName}`}
-            </p>
-          )}
-        </div>
-      </IqcDetailSectionCard>
-    )
-  }
-
-  return <IqcDispositionForm detail={detail} />
-}
-
-type IqcDispositionFormProps = {
-  detail: IqcDetail
-}
-
-function IqcDispositionForm({ detail }: IqcDispositionFormProps) {
-  const queryClient = useQueryClient()
-  const resolveIqcFn = useServerFn(resolveIqc)
-
-  const mutation = useMutation({
-    mutationFn: (value: z.input<typeof resolveIqcSchema>) =>
-      resolveIqcFn({ data: value }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["iqc"] })
-    },
-  })
-
-  const form = useAppForm({
-    defaultValues: buildResolveIqcFormDefaultValues(detail.id),
-    validators: {
-      onSubmit: resolveIqcSchema,
-    },
-    onSubmit: ({ value }) =>
-      mutation.mutate({
-        ...value,
-        // `validators.onSubmit` (resolveIqcSchema) has already guaranteed a non-blank
-        // disposition by the time this runs — TS just can't narrow it from the form's own
-        // (deliberately looser, blank-until-picked) value type.
-        disposition: value.disposition as IqcDisposition,
-      }),
-  })
-
+// QUYẾT ĐỊNH XỬ LÝ — chỉ được render khi `result` (live) = FAIL, IqcDetailForm quyết định việc
+// đó (1 useField duy nhất dùng chung với cả bằng chứng quyết định, tránh 2 subscription trùng
+// nhau). Không chọn phương án nào vẫn lưu được (→ Chờ xử lý) — SL OK/NG chỉ hiện khi SORT. Đây
+// là điểm quyết định thứ hai của trang (sau KẾT QUẢ) nên dùng cùng khuôn thẻ radio lớn.
+export function IqcDispositionCard({
+  form,
+  iqc,
+  disabled,
+}: IqcDispositionCardProps) {
   return (
-    <IqcDetailSectionCard icon={ChecklistMinimalistic} title="Xử lý QC FAIL">
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          event.stopPropagation()
-          form.handleSubmit()
-        }}
-        noValidate
-        className="space-y-4"
-      >
-        <form.AppField name="disposition">
+    <IqcDetailSectionCard
+      icon={ChecklistMinimalistic}
+      title="Quyết định xử lý"
+      description="Chọn hướng xử lý cho lô hàng không đạt (FAIL)"
+    >
+      <div className="space-y-4">
+        <form.Field name="disposition">
           {(field) => (
-            <field.SelectField
-              label="Phương án xử lý"
-              required
-              placeholder="Chọn phương án xử lý"
+            <IqcRadioCardField
+              field={field}
               options={dispositionOptions}
+              disabled={disabled}
+              columns={3}
             />
           )}
-        </form.AppField>
+        </form.Field>
 
         <form.Subscribe selector={(state) => state.values.disposition}>
           {(disposition) => {
-            if (!disposition) return null
+            if (disposition === IqcDisposition.SORT) {
+              return (
+                <IqcSortSplitFields
+                  form={form}
+                  quantity={iqc.quantity}
+                  unitName={iqc.item.unit.name}
+                  disabled={disabled}
+                />
+              )
+            }
 
-            const preview =
-              disposition === IqcDisposition.CONCESSION
-                ? "Hoàn thành ngay — không cần xuất trả hàng."
-                : 'Chuyển "Chờ trả NCC" — cần xuất hàng NG ra khỏi kho.'
+            if (disposition === IqcDisposition.CONCESSION) {
+              return (
+                <p className="rounded-lg bg-amber-50 px-3 py-2.5 text-xs font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
+                  ⚠ Hoàn thành ngay — không cần xuất trả hàng.
+                </p>
+              )
+            }
 
-            return (
-              <p className="text-xs text-muted-foreground">
-                Kết quả: <span className="text-foreground">{preview}</span>
-              </p>
-            )
+            if (disposition === IqcDisposition.RETURN) {
+              return (
+                <p className="rounded-lg bg-muted px-3 py-2.5 text-xs font-medium text-foreground">
+                  → Chuyển "Chờ trả NCC" — hệ thống tự sinh phiếu trả NCC cho
+                  toàn bộ lô sau khi lưu.
+                </p>
+              )
+            }
+
+            return null
           }}
         </form.Subscribe>
 
-        {mutation.error ? (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        ) : null}
-
-        <PermissionGate permission="iqc:update">
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
-            {([canSubmit, isSubmitting]) => (
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting || mutation.isPending}
-                >
-                  {isSubmitting || mutation.isPending
-                    ? "Đang xử lý..."
-                    : "Xác nhận xử lý"}
-                </Button>
-              </div>
-            )}
-          </form.Subscribe>
-        </PermissionGate>
-      </form>
+        <form.AppField name="dispositionNote">
+          {(field) => (
+            <field.TextareaField
+              label="Ghi chú quyết định"
+              placeholder="Ghi chú thêm về hướng xử lý (nếu có)"
+              maxLength={500}
+              disabled={disabled}
+            />
+          )}
+        </form.AppField>
+      </div>
     </IqcDetailSectionCard>
   )
 }
