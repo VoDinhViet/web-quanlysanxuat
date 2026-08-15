@@ -64,5 +64,11 @@ export function useQuotationAddSupplierDialog(
     [items, itemsField]
   )
 
-  return { isOpen, setOpen, initialItemIds, openForItem, handleSupplierSelection }
+  return {
+    isOpen,
+    setOpen,
+    initialItemIds,
+    openForItem,
+    handleSupplierSelection,
+  }
 }

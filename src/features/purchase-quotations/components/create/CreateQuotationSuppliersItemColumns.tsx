@@ -9,6 +9,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { IconButton } from "@/components/shared/IconButton"
+import { NumericCellInput } from "@/components/shared/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/TableTextCellInput"
 import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/create/QuotationAllocationsDialog"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
@@ -70,35 +72,90 @@ export function buildQuotationSuppliersItemColumns({
       meta: { headerClassName: "w-36 text-right", cellClassName: "text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const total = item.allocations.reduce(
-          (sum, allocation) => sum + (Number(allocation.quantity) || 0),
-          0
-        )
 
-        // Read-only here — a vật tư merging ≥2 dòng ĐXMH has ≥2 numbers to edit (one SL per
-        // allocation), so editing moved into QuotationAllocationsDialog; this cell only shows the
-        // resulting total, per allocation-vs-item field boundary set by createQuotationFormSchema.
+        // A vật tư merging ≥2 dòng ĐXMH has ≥2 numbers to edit (one SL per allocation) — inline
+        // editing only fits a single number, so that case still opens QuotationAllocationsDialog
+        // to edit the breakdown. The common case (1 dòng ĐXMH, no merge) edits directly here —
+        // no dialog needed just to change one number.
+        if (item.allocations.length > 1) {
+          const total = item.allocations.reduce(
+            (sum, allocation) => sum + (Number(allocation.quantity) || 0),
+            0
+          )
+
+          return (
+            <QuotationAllocationsDialog
+              itemName={item.itemName}
+              allocations={item.allocations}
+              onSave={(allocations) =>
+                itemsField.replaceValue(row.index, { ...item, allocations })
+              }
+              trigger={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={disabled}
+                  title={`${item.allocations.length} dòng ĐXMH`}
+                  className="w-full max-w-36 justify-end text-xs font-normal tabular-nums"
+                >
+                  {total}
+                </Button>
+              }
+            />
+          )
+        }
+
+        const allocation = item.allocations[0]
         return (
-          <QuotationAllocationsDialog
-            itemName={item.itemName}
-            allocations={item.allocations}
-            onSave={(allocations) =>
-              itemsField.replaceValue(row.index, { ...item, allocations })
+          <NumericCellInput
+            id={`quotation-item-quantity-${row.index}`}
+            value={allocation.quantity}
+            min={1}
+            disabled={disabled}
+            onValueChange={(value) =>
+              itemsField.replaceValue(row.index, {
+                ...item,
+                allocations: [{ ...allocation, quantity: value }],
+              })
             }
-            trigger={
-              <Button
-                type="button"
-                variant="outline"
-                disabled={disabled}
-                className="h-8 w-full max-w-36 flex-col items-end gap-0 text-xs font-normal"
-              >
-                <span className="tabular-nums">{total}</span>
-                {item.allocations.length > 1 && (
-                  <span className="text-[10px] text-muted-foreground">
-                    {item.allocations.length} dòng ĐXMH
-                  </span>
-                )}
-              </Button>
+          />
+        )
+      },
+    }),
+    quotationItemColumnHelper.display({
+      id: "quantityAdjustmentReason",
+      header: "Lý do điều chỉnh SL",
+      meta: { headerClassName: "w-48" },
+      cell: ({ row }) => {
+        const item = row.original
+
+        // A vật tư merging ≥2 dòng ĐXMH has ≥2 reasons (one per allocation) — same read/write
+        // boundary as the "quantity" cell above, so editing stays inside
+        // QuotationAllocationsDialog for that case; this column only edits inline when there's
+        // exactly one allocation to attribute the reason to.
+        if (item.allocations.length > 1) {
+          return (
+            <span className="text-xs text-muted-foreground">
+              Xem trong SL báo giá
+            </span>
+          )
+        }
+
+        const allocation = item.allocations[0]
+        return (
+          <TableTextCellInput
+            id={`quotation-item-adjustment-reason-${row.index}`}
+            value={allocation.quantityAdjustmentReason}
+            placeholder="Nếu SL báo giá khác SL yêu cầu"
+            disabled={disabled}
+            onValueChange={(value) =>
+              itemsField.replaceValue(row.index, {
+                ...item,
+                allocations: [
+                  { ...allocation, quantityAdjustmentReason: value },
+                ],
+              })
             }
           />
         )

@@ -58,8 +58,7 @@ export const CreateQuotationSuppliersSection = withForm({
               Khai báo NCC & báo giá
             </h2>
             <p className="text-sm text-muted-foreground">
-              Giá gần nhất, ngày mua và lý do điều chỉnh SL chỉ để tham khảo,
-              không lưu khi tạo RFQ
+              Giá gần nhất và ngày mua chỉ để tham khảo, không lưu khi tạo RFQ
             </p>
           </div>
           <span className="text-xs font-medium text-muted-foreground">

@@ -49,7 +49,7 @@ function resolveCreatePurchaseQuotationErrorMessage(error: unknown): string {
     case "purchase_quotation.error.duplicate_request_item":
       return "Một dòng đề xuất bị gộp vào 2 vật tư khác nhau."
     case "purchase_quotation.error.duplicate_item_supplier":
-      return "Một vật tư đang có NCC bị chọn trùng."
+      return "Một NCC được khai 2 lần cho cùng một vật tư với giá khác nhau."
     case "purchase_quotation_item.error.allocation_item_mismatch":
       return "Có dòng đề xuất không đúng mã vật tư của dòng báo giá."
     case "purchase_quotation_item.error.no_allocations":
