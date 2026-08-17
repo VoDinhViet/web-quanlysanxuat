@@ -10,8 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { IconButton } from "@/components/shared/IconButton"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { IconButton } from "@/components/shared/buttons/IconButton"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/create/InventoryReceiptItemDialog"
 import { updateInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"

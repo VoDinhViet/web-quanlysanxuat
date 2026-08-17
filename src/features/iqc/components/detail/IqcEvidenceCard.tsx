@@ -1,4 +1,4 @@
-import { AttachmentsField } from "@/components/shared/AttachmentsField"
+import { AttachmentsField } from "@/components/shared/inputs/AttachmentsField"
 import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {

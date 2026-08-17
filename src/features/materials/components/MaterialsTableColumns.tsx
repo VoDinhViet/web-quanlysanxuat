@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { Image } from "@unpic/react"
 import { CircleCheck, CirclePause, Edit3, ImageOff } from "lucide-react"
 
-import { IconButton } from "@/components/shared/IconButton"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { MaterialStatusBadge } from "@/features/materials/components/MaterialBadges"
 import { ToggleMaterialStatusDialog } from "@/features/materials/components/ToggleMaterialStatusDialog"

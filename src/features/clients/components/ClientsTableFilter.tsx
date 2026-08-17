@@ -14,8 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { clientGroupOptionsQueryOptions } from "@/features/clients/api/options"
 import { clientStatusLabels } from "@/lib/types/client.type"

@@ -4,7 +4,7 @@ import { Image } from "@unpic/react"
 import { DateTime } from "luxon"
 import { Copy, Eye, ImageOff } from "lucide-react"
 
-import { IconButton } from "@/components/shared/IconButton"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { CopyProductDialog } from "@/features/products/components/CopyProductDialog"
 import {

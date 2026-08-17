@@ -1,6 +1,6 @@
 import { Eye, EllipsisVertical, Printer } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/DisabledAction"
+import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
 
 // No detail route/print/edit API exists for this domain yet (UI-only pass) — every row action
 // stays disabled with a tooltip, same idiom as SupplierReturnsTableCells' "Chỉnh sửa".

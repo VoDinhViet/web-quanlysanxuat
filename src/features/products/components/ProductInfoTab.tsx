@@ -1,7 +1,7 @@
 import { withForm } from "@/hooks/use-app-form"
 import { UpdateProductInfoSection } from "@/features/products/components/UpdateProductInfoSection"
 import { updateProductFormDefaultValues } from "@/features/products/schemas/update-product.schema"
-import type { ComboboxOption } from "@/components/shared/ComboboxField"
+import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
 
 // The form instance is owned by ProductDetailPage, because the header's "Lưu"
 // button sits outside this panel and submits the same form.

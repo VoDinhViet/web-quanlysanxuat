@@ -1,7 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { Eye, HelpCircle } from "lucide-react"
 
-import { IconButton } from "@/components/shared/IconButton"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { InventoryMaterialStatusBadge } from "@/features/inventory-materials/components/InventoryMaterialStatusBadge"
 import {
   MaterialImageCell,

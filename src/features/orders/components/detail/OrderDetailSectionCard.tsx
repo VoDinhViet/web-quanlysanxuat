@@ -1,7 +1,7 @@
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
+import { MockDataBadge } from "@/components/shared/feedback/MockDataBadge"
 import { cn } from "@/lib/utils"
 
 type OrderDetailSectionCardProps = {

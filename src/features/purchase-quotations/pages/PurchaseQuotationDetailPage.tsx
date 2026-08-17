@@ -1,8 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { Surface } from "@/components/shared/Surface"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { Surface } from "@/components/shared/layout/Surface"
 import { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options"
 import { PurchaseQuotationDetailHeader } from "@/features/purchase-quotations/components/detail/PurchaseQuotationDetailHeader"
 import { PurchaseQuotationDetailQuotesSection } from "@/features/purchase-quotations/components/detail/PurchaseQuotationDetailQuotesSection"

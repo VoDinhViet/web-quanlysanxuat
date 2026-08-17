@@ -13,9 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { DateRangePicker } from "@/components/shared/DateRangePicker"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { orderStatusLabels } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"

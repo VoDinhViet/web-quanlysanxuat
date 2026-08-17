@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import type { EmployeeStatus } from "@/lib/types/user.type"

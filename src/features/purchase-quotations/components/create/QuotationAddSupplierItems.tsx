@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { buildQuotationAddSupplierItemsColumns } from "@/features/purchase-quotations/components/create/QuotationAddSupplierItemsColumns"
 import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
@@ -42,9 +42,7 @@ export function QuotationAddSupplierItems({
   onToggleAll,
 }: QuotationAddSupplierItemsProps) {
   const newCount = items.filter(
-    (item) =>
-      checkedIds.has(item.itemId) &&
-      !assignedIds.has(item.itemId)
+    (item) => checkedIds.has(item.itemId) && !assignedIds.has(item.itemId)
   ).length
 
   const columns = useMemo(
@@ -103,12 +101,8 @@ export function QuotationAddSupplierItems({
                 />
               ) : (
                 table.getRowModel().rows.map((row) => {
-                  const isAssigned = assignedIds.has(
-                    row.original.itemId
-                  )
-                  const isChecked = checkedIds.has(
-                    row.original.itemId
-                  )
+                  const isAssigned = assignedIds.has(row.original.itemId)
+                  const isChecked = checkedIds.has(row.original.itemId)
 
                   return (
                     <TableRow
@@ -121,8 +115,7 @@ export function QuotationAddSupplierItems({
                         isChecked && !isAssigned && "bg-primary/5"
                       )}
                       onClick={() =>
-                        !isAssigned &&
-                        onToggleItem(row.original.itemId)
+                        !isAssigned && onToggleItem(row.original.itemId)
                       }
                     >
                       {row.getVisibleCells().map((cell) => (

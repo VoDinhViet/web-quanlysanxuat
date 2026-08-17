@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { Eye, Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { DisabledAction } from "@/components/shared/DisabledAction"
+import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type { PurchaseRequestProductionOrderRef } from "@/lib/types/purchase-request.type"
 

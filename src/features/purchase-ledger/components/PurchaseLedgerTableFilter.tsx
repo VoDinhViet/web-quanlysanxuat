@@ -13,9 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { DateRangePicker } from "@/components/shared/DateRangePicker"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { purchaseLedgerStatusLabels } from "@/lib/types/purchase-ledger.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"

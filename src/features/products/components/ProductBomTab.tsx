@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { BomItemFormDialog } from "@/features/products/components/BomItemFormDialog"
 import { DeleteBomItemDialog } from "@/features/products/components/DeleteBomItemDialog"
 import { ProductBomTable } from "@/features/products/components/ProductBomTable"

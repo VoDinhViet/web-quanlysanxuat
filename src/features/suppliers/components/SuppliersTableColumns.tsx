@@ -5,7 +5,7 @@ import { Edit3, Trash2 } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/IconButton"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { DeleteSupplierDialog } from "@/features/suppliers/components/DeleteSupplierDialog"
 import { supplierStatusLabels, SupplierStatus } from "@/lib/types/supplier.type"

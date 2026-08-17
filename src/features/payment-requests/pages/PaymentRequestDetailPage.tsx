@@ -1,8 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { Surface } from "@/components/shared/Surface"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { Surface } from "@/components/shared/layout/Surface"
 import { paymentRequestQueryOptions } from "@/features/payment-requests/api/options"
 import { PaymentRequestDetailHeader } from "@/features/payment-requests/components/detail/PaymentRequestDetailHeader"
 import { PaymentRequestItemsSection } from "@/features/payment-requests/components/detail/PaymentRequestItemsSection"

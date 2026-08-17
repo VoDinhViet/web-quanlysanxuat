@@ -5,9 +5,9 @@ import {
   Layers,
 } from "@solar-icons/react"
 
+import { RadioCardField } from "@/components/shared/inputs/RadioCardField"
+import type { RadioCardOption } from "@/components/shared/inputs/RadioCardField"
 import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
-import { IqcRadioCardField } from "@/features/iqc/components/detail/IqcRadioCardField"
-import type { IqcRadioCardOption } from "@/features/iqc/components/detail/IqcRadioCardField"
 import { IqcSortSplitFields } from "@/features/iqc/components/detail/IqcSortSplitFields"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {
@@ -17,7 +17,7 @@ import {
 } from "@/lib/types/iqc.type"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 
-const dispositionOptions: IqcRadioCardOption<IqcDisposition>[] = [
+const dispositionOptions: RadioCardOption<IqcDisposition>[] = [
   {
     value: IqcDisposition.CONCESSION,
     label: iqcDispositionLabels[IqcDisposition.CONCESSION],
@@ -70,7 +70,7 @@ export function IqcDispositionCard({
       <div className="space-y-4">
         <form.Field name="disposition">
           {(field) => (
-            <IqcRadioCardField
+            <RadioCardField
               field={field}
               options={dispositionOptions}
               disabled={disabled}

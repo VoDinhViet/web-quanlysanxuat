@@ -29,8 +29,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ComboboxField } from "@/components/shared/ComboboxField"
-import { IconButton } from "@/components/shared/IconButton"
+import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { useProductOperations } from "@/features/products/hooks/use-product-operations"

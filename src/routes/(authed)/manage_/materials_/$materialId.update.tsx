@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { UpdateMaterialPage } from "@/features/materials/pages/UpdateMaterialPage"
 import { materialQueryOptions } from "@/features/materials/api/options"

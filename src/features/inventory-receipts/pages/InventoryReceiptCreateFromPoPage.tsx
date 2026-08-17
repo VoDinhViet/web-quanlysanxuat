@@ -1,4 +1,4 @@
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { InventoryReceiptCreateFromPoForm } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoForm"
 
 export function InventoryReceiptCreateFromPoPage() {

@@ -4,7 +4,7 @@ import { Eye, Pencil } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
-import { DisabledAction } from "@/components/shared/DisabledAction"
+import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { FileResource } from "@/lib/types/file.type"
 

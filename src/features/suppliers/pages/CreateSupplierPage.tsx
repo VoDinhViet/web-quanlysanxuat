@@ -1,4 +1,4 @@
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { CreateSupplierForm } from "@/features/suppliers/components/create/CreateSupplierForm"
 
 export function CreateSupplierPage() {

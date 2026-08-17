@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { ImageOff, Package } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { MissingSectionAlert } from "@/components/shared/MissingSectionAlert"
+import { MissingSectionAlert } from "@/components/shared/feedback/MissingSectionAlert"
 import { itemQueryOptions } from "@/features/products/api"
 import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/detail/SupplierReturnDetailSectionCard"
 import { SupplierReturnCodeCell } from "@/features/supplier-returns/components/SupplierReturnsTableCells"

@@ -21,8 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { NumericCellInput } from "@/components/shared/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/TableTextCellInput"
+import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/inputs/TableTextCellInput"
 import type { QuotationItemAllocationValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 type QuotationAllocationsDialogProps = {
@@ -126,16 +126,16 @@ function QuotationAllocationsDialogForm({
           </TableHeader>
           <TableBody>
             {localAllocations.map((allocation, index) => (
-              <TableRow
-                key={allocation.purchaseRequestItemId}
-                className="h-12"
-              >
+              <TableRow key={allocation.purchaseRequestItemId} className="h-12">
                 <TableCell>
                   <span className="font-mono text-xs font-semibold text-primary">
                     {allocation.prCode}
                   </span>
                   <p className="text-[11px] text-muted-foreground">
-                    Cần {DateTime.fromISO(allocation.neededDate).toFormat("dd/MM/yyyy")}
+                    Cần{" "}
+                    {DateTime.fromISO(allocation.neededDate).toFormat(
+                      "dd/MM/yyyy"
+                    )}
                   </p>
                 </TableCell>
                 <TableCell className="text-right text-xs tabular-nums">

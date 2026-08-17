@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { UpdateOrderPage } from "@/features/orders/pages/UpdateOrderPage"
 import { orderQueryOptions } from "@/features/orders/api/options"

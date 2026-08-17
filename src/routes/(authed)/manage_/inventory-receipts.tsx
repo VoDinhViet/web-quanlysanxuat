@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { inventoryReceiptsQueryOptions } from "@/features/inventory-receipts/api/options"
 import { InventoryReceiptsPage } from "@/features/inventory-receipts/pages/InventoryReceiptsPage"

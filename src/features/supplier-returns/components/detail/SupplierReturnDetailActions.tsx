@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Printer } from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,

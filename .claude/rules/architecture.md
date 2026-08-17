@@ -3,7 +3,7 @@
 - A route file (`src/routes/**`) may only contain `createFileRoute`, `validateSearch`,
   `beforeLoad`, `loader`, `pendingComponent`, and a `component` pointing at a page in
   `src/features/`. `pendingComponent` is always the shared `PageLoading`
-  (`src/components/shared/PageLoading.tsx`) — never a route-specific loading component.
+  (`src/components/shared/feedback/PageLoading.tsx`) — never a route-specific loading component.
   Exception: a layout route (e.g. `src/routes/(authed)/route.tsx`) may hold the provider/
   shell JSX itself.
 - All business logic lives in `src/features/<domain>/`. A feature may read another feature's

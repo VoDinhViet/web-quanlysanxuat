@@ -3,7 +3,7 @@ import { useDebounceCallback } from "usehooks-ts"
 import { Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
-import { FilterLabel } from "@/components/shared/FilterLabel"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 
 type ProductMaterialsTableFilterProps = {
   q: string | undefined

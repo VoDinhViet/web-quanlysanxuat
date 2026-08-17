@@ -9,7 +9,7 @@
   `create-user.schema.ts`) — a toggle-gated section stores the nested object or
   `undefined`, not parallel flat fields.
 - Multi-section forms use `useAppForm`/`withForm` (`src/hooks/use-app-form.ts`) with
-  the shared field components in `src/components/shared/AppFormFields.tsx`. In
+  the shared field components in `src/components/shared/inputs/AppFormFields.tsx`. In
   `withForm` `props` defaults, type empty arrays with `[] as X[]` — a bare `[]`
   infers `never[]` and breaks the caller (a justified cast).
 - To read another field's live value from within the same form — a sibling section
@@ -46,7 +46,7 @@
   directly at each call site (no intermediate constants) — see
   `src/features/users/pages/UsersPage.tsx`.
 - List pages reuse the shared `TablePagination`
-  (`src/components/shared/TablePagination.tsx`) — it patches the current route's
+  (`src/components/shared/data/TablePagination.tsx`) — it patches the current route's
   `page`/`limit` search params itself via `navigate({ to: "." })`; callers only pass
   `pagination` and layout `className`.
 

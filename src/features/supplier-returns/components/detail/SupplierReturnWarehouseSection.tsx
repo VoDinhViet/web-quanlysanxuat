@@ -2,7 +2,7 @@ import { DateTime } from "luxon"
 import { PackageCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { MissingSectionAlert } from "@/components/shared/MissingSectionAlert"
+import { MissingSectionAlert } from "@/components/shared/feedback/MissingSectionAlert"
 import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/detail/SupplierReturnDetailSectionCard"
 import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"

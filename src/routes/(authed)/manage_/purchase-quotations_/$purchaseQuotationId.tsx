@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options"
 import { PurchaseQuotationDetailPage } from "@/features/purchase-quotations/pages/PurchaseQuotationDetailPage"

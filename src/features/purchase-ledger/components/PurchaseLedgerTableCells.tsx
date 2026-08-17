@@ -1,6 +1,6 @@
 import { Eye } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/DisabledAction"
+import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
 import { PurchaseLedgerWarningBadge } from "@/features/purchase-ledger/components/PurchaseLedgerBadges"
 import { cn } from "@/lib/utils"
 import type {

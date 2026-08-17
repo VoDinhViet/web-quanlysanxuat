@@ -12,9 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ComboboxField } from "@/components/shared/ComboboxField"
-import { DateRangePicker } from "@/components/shared/DateRangePicker"
-import { FilterLabel } from "@/components/shared/FilterLabel"
+import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { useGetClientOptions } from "@/features/clients/api"
 import { productionJobStatusLabels } from "@/lib/types/production-job.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"

@@ -14,8 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { DateRangePicker } from "@/components/shared/DateRangePicker"
-import { FilterLabel } from "@/components/shared/FilterLabel"
+import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { purchaseRequestStatusLabels } from "@/lib/types/purchase-request.type"

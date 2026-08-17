@@ -1,7 +1,7 @@
 import { useField } from "@tanstack/react-form"
 import { ClipboardList, Documents } from "@solar-icons/react"
 
-import { Surface } from "@/components/shared/Surface"
+import { Surface } from "@/components/shared/layout/Surface"
 import { IqcAqlInputCard } from "@/features/iqc/components/detail/IqcAqlInputCard"
 import { IqcDetailHeader } from "@/features/iqc/components/detail/IqcDetailHeader"
 import { IqcDispositionCard } from "@/features/iqc/components/detail/IqcDispositionCard"

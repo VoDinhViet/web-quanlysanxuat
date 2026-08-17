@@ -19,8 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import { inventoryDocumentStatusLabels } from "@/lib/types/supplier-return.type"

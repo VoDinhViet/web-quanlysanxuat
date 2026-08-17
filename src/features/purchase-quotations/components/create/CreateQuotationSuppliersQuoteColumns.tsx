@@ -2,10 +2,10 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
-import { DatePicker } from "@/components/shared/DatePicker"
-import { IconButton } from "@/components/shared/IconButton"
-import { NumericCellInput } from "@/components/shared/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/TableTextCellInput"
+import { DatePicker } from "@/components/shared/inputs/DatePicker"
+import { IconButton } from "@/components/shared/buttons/IconButton"
+import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/inputs/TableTextCellInput"
 import type {
   PickedQuotationItemValue,
   QuotationItemSupplierValue,

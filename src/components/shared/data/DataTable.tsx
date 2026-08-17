@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TablePagination } from "@/components/shared/TablePagination"
+import { TablePagination } from "@/components/shared/data/TablePagination"
 import { cn } from "@/lib/utils"
 import type { Pagination } from "@/lib/types/pagination.type"
 

@@ -1,7 +1,7 @@
 import { PackageSearch } from "lucide-react"
 
-import { DataTable } from "@/components/shared/DataTable"
-import { TableEmptyState } from "@/components/shared/TableEmptyState"
+import { DataTable } from "@/components/shared/data/DataTable"
+import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { createColumnHelper } from "@tanstack/react-table"
 import type {
   PaymentRequestDetail,

@@ -3,14 +3,14 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
-import { ComboboxField } from "@/components/shared/ComboboxField"
+import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { MaterialImageField } from "@/features/materials/components/MaterialImageField"
 import { createMaterialFormDefaultValues } from "@/features/materials/schemas/create-material.schema"
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
-import type { ComboboxOption } from "@/components/shared/ComboboxField"
+import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
 
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 

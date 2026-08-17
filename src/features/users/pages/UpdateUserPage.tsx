@@ -1,7 +1,7 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { UpdateUserForm } from "@/features/users/components/UpdateUserForm"
 import { userQueryOptions } from "@/features/users/api/options"
 

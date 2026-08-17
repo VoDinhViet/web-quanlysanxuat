@@ -1,5 +1,5 @@
 import { buildMockDeliveryProgress } from "@/features/orders/mock/order-detail.mock"
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
+import { MockDataBadge } from "@/components/shared/feedback/MockDataBadge"
 import { vndFormatter } from "@/lib/currency"
 import type { OrderDetail } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"

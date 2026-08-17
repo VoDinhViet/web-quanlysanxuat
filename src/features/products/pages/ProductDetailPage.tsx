@@ -8,7 +8,7 @@ import {
 import { toast } from "sonner"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { ProductDetailHeader } from "@/features/products/components/ProductDetailHeader"
 import { ProductDetailSidebar } from "@/features/products/components/ProductDetailSidebar"
 import { ProductBomTab } from "@/features/products/components/ProductBomTab"

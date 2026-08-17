@@ -28,7 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { IconButton } from "@/components/shared/IconButton"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { BomNodeTypeBadge } from "@/features/products/components/ProductBadges"
 import { ProductOperationsPanel } from "@/features/products/components/ProductOperationsPanel"

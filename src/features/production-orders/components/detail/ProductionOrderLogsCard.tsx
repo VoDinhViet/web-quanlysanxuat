@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { productionOrderLogActionLabels } from "@/lib/types/production-order.type"
 import type { ProductionOrderLog } from "@/lib/types/production-order.type"
 import type { Pagination } from "@/lib/types/pagination.type"

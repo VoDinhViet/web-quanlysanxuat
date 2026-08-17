@@ -18,7 +18,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { ComboboxField } from "@/components/shared/ComboboxField"
+import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useGetItemOptions } from "@/features/orders/hooks/use-get-item-options"
 import {

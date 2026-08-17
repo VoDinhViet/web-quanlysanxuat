@@ -1,4 +1,4 @@
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { CreateClientForm } from "@/features/clients/components/create/CreateClientForm"
 
 export function CreateClientPage() {

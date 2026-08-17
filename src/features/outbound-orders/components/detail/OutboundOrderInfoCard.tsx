@@ -1,7 +1,7 @@
 import { Truck } from "lucide-react"
 import { DateTime } from "luxon"
 
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
+import { MockDataBadge } from "@/components/shared/feedback/MockDataBadge"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 import { outboundDeliveryMethodLabels } from "@/lib/types/outbound-order.type"
 

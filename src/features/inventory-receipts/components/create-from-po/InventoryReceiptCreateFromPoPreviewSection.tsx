@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { withForm } from "@/hooks/use-app-form"

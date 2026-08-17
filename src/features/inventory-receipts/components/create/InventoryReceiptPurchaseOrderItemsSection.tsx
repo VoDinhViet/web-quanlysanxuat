@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { withForm } from "@/hooks/use-app-form"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"

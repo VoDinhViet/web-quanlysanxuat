@@ -1,7 +1,7 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { InventoryReceiptUpdateForm } from "@/features/inventory-receipts/components/update/InventoryReceiptUpdateForm"
 import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/options"
 

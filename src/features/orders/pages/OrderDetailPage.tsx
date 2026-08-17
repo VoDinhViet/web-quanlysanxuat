@@ -1,7 +1,7 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { OrderDetailAddressCard } from "@/features/orders/components/detail/OrderDetailAddressCard"
 import { OrderDetailAttachmentsCard } from "@/features/orders/components/detail/OrderDetailAttachmentsCard"
 import { OrderDetailDeliveryHistoryCard } from "@/features/orders/components/detail/OrderDetailDeliveryHistoryCard"

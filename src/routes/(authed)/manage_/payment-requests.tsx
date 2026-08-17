@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { paymentRequestsQueryOptions } from "@/features/payment-requests/api/options"
 import { PaymentRequestsPage } from "@/features/payment-requests/pages/PaymentRequestsPage"

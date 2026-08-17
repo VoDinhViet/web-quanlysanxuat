@@ -14,8 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { DatePicker } from "@/components/shared/DatePicker"
-import { FilterLabel } from "@/components/shared/FilterLabel"
+import { DatePicker } from "@/components/shared/inputs/DatePicker"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { InventoryStatus } from "@/lib/types/inventory-material.type"
 import { inventoryStatusLabels } from "@/lib/types/inventory-material.type"

@@ -2,7 +2,7 @@ import { RefreshCw } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { ManageAlerts } from "@/features/manage/components/ManageAlerts"
 import { ManageAnalyticsRow } from "@/features/manage/components/ManageAnalyticsRow"
 import { ManageFooter } from "@/features/manage/components/ManageFooter"

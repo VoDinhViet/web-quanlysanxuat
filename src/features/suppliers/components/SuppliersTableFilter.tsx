@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { FilterLabel } from "@/components/shared/FilterLabel"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
 import { supplierStatusLabels } from "@/lib/types/supplier.type"

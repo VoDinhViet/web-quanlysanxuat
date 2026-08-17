@@ -1,8 +1,8 @@
 import { Checklist, CheckCircle, CloseCircle } from "@solar-icons/react"
 
+import { RadioCardField } from "@/components/shared/inputs/RadioCardField"
+import type { RadioCardOption } from "@/components/shared/inputs/RadioCardField"
 import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
-import { IqcRadioCardField } from "@/features/iqc/components/detail/IqcRadioCardField"
-import type { IqcRadioCardOption } from "@/features/iqc/components/detail/IqcRadioCardField"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {
   iqcResultDescriptions,
@@ -11,7 +11,7 @@ import {
 } from "@/lib/types/iqc.type"
 import { cn } from "@/lib/utils"
 
-const resultOptions: IqcRadioCardOption<IqcResult>[] = [
+const resultOptions: RadioCardOption<IqcResult>[] = [
   {
     value: IqcResult.PASS,
     label: iqcResultLabels[IqcResult.PASS],
@@ -49,7 +49,7 @@ export function IqcResultCard({ form, disabled }: IqcResultCardProps) {
       <div className="space-y-4">
         <form.Field name="result">
           {(field) => (
-            <IqcRadioCardField
+            <RadioCardField
               field={field}
               options={resultOptions}
               disabled={disabled}

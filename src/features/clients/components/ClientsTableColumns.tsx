@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { Edit3, Eye, MoreHorizontal } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/IconButton"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { clientStatusLabels, ClientStatus } from "@/lib/types/client.type"
 import type { Client } from "@/lib/types/client.type"

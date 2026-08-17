@@ -7,7 +7,7 @@ import type { IconProps } from "@solar-icons/react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import type { ComponentType } from "react"
 
-export type IqcRadioCardOption<TValue extends string> = {
+export type RadioCardOption<TValue extends string> = {
   value: TValue
   label: string
   description: string
@@ -19,27 +19,28 @@ export type IqcRadioCardOption<TValue extends string> = {
   chipClassName: string
 }
 
-type IqcRadioCardFieldProps<TValue extends string> = {
+type RadioCardFieldProps<TValue extends string> = {
   field: AnyFieldApi
-  options: IqcRadioCardOption<TValue>[]
+  options: RadioCardOption<TValue>[]
   disabled?: boolean
   columns?: 2 | 3
 }
 
-// Large radio cards (icon chip + label + description + a checked badge) — used for §3 KẾT QUẢ
-// (2 cards, PASS/FAIL) and §5 QUYẾT ĐỊNH XỬ LÝ (3 cards, CONCESSION/SORT/RETURN), the two
-// decision points of the page, so these get more visual weight than a plain form field. Checked
-// state is computed in JS off `field.state.value` (not CSS has-*/group-has-* chaining) — simpler
-// to reason about, and the same comparison drives both the card tint and the icon-chip tint.
-// Takes `field: AnyFieldApi` rather than going through useFieldContext/form.AppField's typed
-// registry — the two call sites bind different enums (IqcResult/IqcDisposition), and this is
-// only the 2nd use, not yet worth a generic addition to AppFormFields.tsx's shared field set.
-export function IqcRadioCardField<TValue extends string>({
+// Large radio cards (icon chip + label + description + a checked badge) — originally built for
+// IQC's §3 KẾT QUẢ (2 cards, PASS/FAIL) and §5 QUYẾT ĐỊNH XỬ LÝ (3 cards, CONCESSION/SORT/
+// RETURN), now shared with OQC's own PASS/FAIL result cards (3rd use — promoted out of
+// src/features/iqc/ per the repo's cross-feature layer boundary). Checked state is computed in
+// JS off `field.state.value` (not CSS has-*/group-has-* chaining) — simpler to reason about, and
+// the same comparison drives both the card tint and the icon-chip tint. Takes `field:
+// AnyFieldApi` rather than going through useFieldContext/form.AppField's typed registry — call
+// sites bind different enums per feature (IqcResult/IqcDisposition/OqcResult), and each feature's
+// form type differs, so a single shared component can't be typed more tightly than this.
+export function RadioCardField<TValue extends string>({
   field,
   options,
   disabled,
   columns = 2,
-}: IqcRadioCardFieldProps<TValue>) {
+}: RadioCardFieldProps<TValue>) {
   return (
     <RadioGroup
       value={field.state.value}

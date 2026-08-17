@@ -1,8 +1,8 @@
 import { PackageSearch } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { DataTable } from "@/components/shared/DataTable"
-import { TableEmptyState } from "@/components/shared/TableEmptyState"
+import { DataTable } from "@/components/shared/data/DataTable"
+import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import type {
   InventoryReceiptDetail,
   InventoryReceiptItemDetail,

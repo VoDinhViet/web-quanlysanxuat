@@ -4,7 +4,7 @@ import { Edit3, MoreHorizontal, ShieldCheck, UserRound } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/IconButton"
+import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import type { EmployeeStatus, User } from "@/lib/types/user.type"

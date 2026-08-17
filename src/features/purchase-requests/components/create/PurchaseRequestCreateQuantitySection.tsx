@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { buildPurchaseRequestQuantityColumns } from "@/features/purchase-requests/components/create/PurchaseRequestCreateQuantityColumns"
 import { createPurchaseRequestFormDefaultValues } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
 import { withForm } from "@/hooks/use-app-form"

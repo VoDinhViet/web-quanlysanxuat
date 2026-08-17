@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { outsourcingOrdersQueryOptions } from "@/features/outsourcing-orders/api/options"
 import { OutsourcingOrdersPage } from "@/features/outsourcing-orders/pages/OutsourcingOrdersPage"
 import { outsourcingOrdersSearchSchema } from "@/features/outsourcing-orders/schemas/outsourcing-orders-search.schema"

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobsPage } from "@/features/production-jobs/pages/ProductionJobsPage"

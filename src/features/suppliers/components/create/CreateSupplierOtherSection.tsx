@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/use-app-form"
-import { AttachmentsField } from "@/components/shared/AttachmentsField"
+import { AttachmentsField } from "@/components/shared/inputs/AttachmentsField"
 import { createSupplierFormDefaultValues } from "@/features/suppliers/schemas/create-supplier.schema"
 import {
   ACCEPTED_DOCUMENT_TYPES,

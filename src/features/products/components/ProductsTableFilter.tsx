@@ -13,9 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { ComboboxField } from "@/components/shared/ComboboxField"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
 import {

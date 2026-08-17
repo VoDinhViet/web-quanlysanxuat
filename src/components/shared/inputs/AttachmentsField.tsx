@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query"
 import { ErrorCode, useDropzone } from "react-dropzone"
 import { Loader2, Paperclip } from "lucide-react"
 
-import { AttachmentsFieldList } from "@/components/shared/AttachmentsFieldList"
+import { AttachmentsFieldList } from "@/components/shared/inputs/AttachmentsFieldList"
 import { uploadFile } from "@/lib/upload-file"
 import { cn } from "@/lib/utils"
 import type { FileFieldValue } from "@/lib/file-field.schema"

@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
-import { AttachmentsField } from "@/components/shared/AttachmentsField"
+import { AttachmentsField } from "@/components/shared/inputs/AttachmentsField"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { iqcQueryOptions } from "@/features/iqc/api/options"
