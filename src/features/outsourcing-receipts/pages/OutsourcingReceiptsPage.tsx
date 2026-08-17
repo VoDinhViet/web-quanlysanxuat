@@ -1,15 +1,12 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Upload } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { outsourcingReceiptsQueryOptions } from "@/features/outsourcing-receipts/api/options"
-import { outsourcingReceiptsColumns } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTableColumns"
+import { OutsourcingReceiptsTable } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTable"
 import { OutsourcingReceiptsTableFilter } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTableFilter"
 
 export function OutsourcingReceiptsPage() {
@@ -44,18 +41,10 @@ export function OutsourcingReceiptsPage() {
               onRetry={() => void outsourcingReceiptsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <OutsourcingReceiptsTable
               rows={outsourcingReceiptsQuery.data.data}
-              columns={outsourcingReceiptsColumns}
               pagination={outsourcingReceiptsQuery.data.pagination}
               isPending={outsourcingReceiptsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={Upload}
-                  title="Chưa có phiếu nhận gia công ngoài nào"
-                  description="Phiếu OS-IN sẽ hiển thị tại đây sau khi được lập từ phiếu gửi gia công (OS-OUT) đã Đã xuất."
-                />
-              }
             />
           )}
         </Surface>

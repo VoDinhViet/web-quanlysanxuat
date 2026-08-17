@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { ListFilter, Plus, RotateCw, Search } from "lucide-react"
@@ -21,7 +21,6 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { outsourcingReceiptStatusLabels } from "@/lib/types/outsourcing-receipt.type"
@@ -303,14 +302,12 @@ export function OutsourcingReceiptsTableFilter() {
             Xóa bộ lọc
           </Button>
 
-          <PendingAction
-            label="Lập phiếu OS-IN"
-            hint="Tính năng lập phiếu OS-IN sắp có"
-            variant="default"
-          >
-            <Plus className="size-4" />
-            Lập phiếu OS-IN
-          </PendingAction>
+          <Button asChild>
+            <Link to="/manage/outsourcing-receipts/create">
+              <Plus className="size-4" />
+              Lập phiếu OS-IN
+            </Link>
+          </Button>
         </div>
       </div>
     </TooltipProvider>

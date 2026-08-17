@@ -15,7 +15,8 @@ type OutsourcingReceiptDetailHeaderProps = {
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 // Identity row + at-a-glance meta grid + header-level actions — same shell as
-// SupplierReturnDetailHeader.tsx.
+// SupplierReturnDetailHeader.tsx. "Số dòng"/"Tổng SL nhận" thay cho "Vật tư nhận"/"SL nhận" cũ (1
+// phiếu giờ có thể nhiều dòng — chi tiết từng dòng xem OutsourcingReceiptItemsCard.tsx).
 export function OutsourcingReceiptDetailHeader({
   detail,
 }: OutsourcingReceiptDetailHeaderProps) {
@@ -42,24 +43,14 @@ export function OutsourcingReceiptDetailHeader({
           <span className="font-mono text-lg font-bold text-foreground">
             {detail.code}
           </span>
-          <OutsourcingReceiptStatusBadge status={detail.status} />
+          <OutsourcingReceiptStatusBadge status={detail.progress} />
         </div>
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+          <MetaField label="Số dòng" value={String(detail.items.length)} />
           <MetaField
-            label="Vật tư nhận"
-            value={
-              <span>
-                <span className="font-mono text-primary">
-                  {detail.item.code}
-                </span>{" "}
-                · {detail.item.name}
-              </span>
-            }
-          />
-          <MetaField
-            label="SL nhận"
-            value={`${quantityFormatter.format(detail.quantity)} ${detail.item.unit.name}`}
+            label="Tổng SL nhận"
+            value={quantityFormatter.format(detail.totalQuantity)}
           />
           <MetaField label="Kho nhận" value={detail.warehouse.name} />
           <MetaField

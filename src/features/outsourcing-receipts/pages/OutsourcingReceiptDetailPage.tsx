@@ -6,6 +6,7 @@ import { Surface } from "@/components/shared/layout/Surface"
 import { outsourcingReceiptQueryOptions } from "@/features/outsourcing-receipts/api/options"
 import { OutsourcingReceiptDetailHeader } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailHeader"
 import { OutsourcingReceiptInfoCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptInfoCard"
+import { OutsourcingReceiptItemsCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptItemsCard"
 
 export function OutsourcingReceiptDetailPage() {
   const { outsourcingReceiptId } = useParams({
@@ -35,6 +36,7 @@ export function OutsourcingReceiptDetailPage() {
         </Surface>
 
         <OutsourcingReceiptInfoCard detail={detail} />
+        <OutsourcingReceiptItemsCard detail={detail} />
       </div>
     </main>
   )

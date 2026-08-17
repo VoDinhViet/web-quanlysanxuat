@@ -3,3 +3,4 @@
 // invalidateQueries({ queryKey: ["outsourcing-receipts"] }) refreshes the whole feature.
 export { outsourcingReceiptsQueryOptions } from "@/features/outsourcing-receipts/api/options/outsourcing-receipts.options"
 export { outsourcingReceiptQueryOptions } from "@/features/outsourcing-receipts/api/options/outsourcing-receipt.options"
+export { pendingOrderItemsQueryOptions } from "@/features/outsourcing-receipts/api/options/pending-order-items.options"

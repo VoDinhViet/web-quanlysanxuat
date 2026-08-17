@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
@@ -19,35 +20,59 @@ export const outsourcingReceiptsColumns = [
     ),
   }),
 
+  // Một phiếu có thể gộp nhiều dòng OS-OUT khác nhau (cùng NCC) — nối tên vật tư distinct ngay
+  // tại cell, không qua field trung gian nào (xem outsourcing-receipt.type.ts's OutsourcingReceipt
+  // comment).
   outsourcingReceiptColumnHelper.display({
     id: "item",
     header: "Vật tư",
     meta: { headerClassName: "min-w-48" },
     cell: ({ row }) => {
-      const item = row.original.item
+      const itemNames = Array.from(
+        new Set(row.original.items.map((item) => item.item.name))
+      ).join(", ")
 
       return (
-        <div className="min-w-0">
-          <p className="truncate text-xs font-semibold text-foreground">
-            {item.name}
-          </p>
-          <p className="truncate font-mono text-[11px] text-muted-foreground">
-            {item.code}
-          </p>
-        </div>
+        <p className="truncate text-xs font-semibold text-foreground">
+          {itemNames || "—"}
+        </p>
       )
     },
   }),
 
-  outsourcingReceiptColumnHelper.accessor((row) => row.outsourcingOrder.code, {
+  outsourcingReceiptColumnHelper.display({
     id: "outsourcingOrder",
     header: "Mã OS-OUT",
     meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs text-muted-foreground">
-        {getValue()}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const orders = Array.from(
+        new Map(
+          row.original.items.map((item) => [
+            item.outsourcingOrder.id,
+            item.outsourcingOrder,
+          ])
+        ).values()
+      )
+
+      if (orders.length === 0) return "—"
+      if (orders.length === 1) {
+        const order = orders[0]
+        return (
+          <Link
+            to="/manage/outsourcing-orders/$outsourcingOrderId"
+            params={{ outsourcingOrderId: order.id }}
+            className="font-mono text-xs text-primary hover:underline"
+          >
+            {order.code}
+          </Link>
+        )
+      }
+      return (
+        <span className="text-xs text-muted-foreground">
+          {orders.map((order) => order.code).join(", ")}
+        </span>
+      )
+    },
   }),
 
   outsourcingReceiptColumnHelper.accessor((row) => row.supplier.name, {
@@ -66,14 +91,24 @@ export const outsourcingReceiptsColumns = [
       headerClassName: "min-w-24 text-right",
       cellClassName: "text-right",
     },
-    cell: ({ row }) => (
-      <span className="font-semibold text-foreground tabular-nums">
-        {quantityFormatter.format(row.original.quantity)}{" "}
-        <span className="font-normal text-muted-foreground">
-          {row.original.item.unit.name}
+    cell: ({ row }) => {
+      const unitCodes = new Set(
+        row.original.items.map((item) => item.item.unit.code)
+      )
+      const unitName =
+        unitCodes.size === 1
+          ? (row.original.items[0]?.item.unit.name ?? "")
+          : ""
+
+      return (
+        <span className="font-semibold text-foreground tabular-nums">
+          {quantityFormatter.format(row.original.totalQuantity)}{" "}
+          <span className="font-normal text-muted-foreground">
+            {unitName || "—"}
+          </span>
         </span>
-      </span>
-    ),
+      )
+    },
   }),
 
   outsourcingReceiptColumnHelper.accessor((row) => row.warehouse.name, {
@@ -101,7 +136,7 @@ export const outsourcingReceiptsColumns = [
       ),
   }),
 
-  outsourcingReceiptColumnHelper.accessor("status", {
+  outsourcingReceiptColumnHelper.accessor("progress", {
     header: "Trạng thái",
     meta: {
       headerClassName: "min-w-28 text-center",

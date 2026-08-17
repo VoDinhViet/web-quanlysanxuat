@@ -3,7 +3,6 @@ import {
   Building2,
   Calendar,
   ClipboardCheck,
-  FileText,
   Info,
   StickyNote,
   User,
@@ -20,9 +19,9 @@ type OutsourcingReceiptInfoCardProps = {
   detail: OutsourcingReceiptDetail
 }
 
-// Gộp toàn bộ tham chiếu vào 1 card (khuôn InfoTile của IqcGeneralInfoCard.tsx) — module này chỉ
-// có 1 dòng vật tư mỗi phiếu nên không cần bảng dòng riêng như inventory-receipts. Mã OS-OUT hiện
-// dạng text thường (không phải <Link>) vì OS-OUT chưa có route chi tiết `$id`.
+// Gộp toàn bộ tham chiếu vào 1 card (khuôn InfoTile của IqcGeneralInfoCard.tsx). Không có tile
+// "Mã phiếu gửi (OS-OUT)" — mỗi dòng của phiếu giờ có thể trỏ tới một OS-OUT khác nhau (không còn
+// 1-1 ở cấp phiếu), xem OutsourcingReceiptItemsCard.tsx cho mã OS-OUT theo từng dòng.
 export function OutsourcingReceiptInfoCard({
   detail,
 }: OutsourcingReceiptInfoCardProps) {
@@ -35,13 +34,6 @@ export function OutsourcingReceiptInfoCard({
       description="Nguồn gốc, kho nhận và trạng thái xác nhận"
     >
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
-        <InfoTile
-          icon={FileText}
-          label="Mã phiếu gửi (OS-OUT)"
-          value={
-            <span className="font-mono">{detail.outsourcingOrder.code}</span>
-          }
-        />
         <InfoTile
           icon={Building2}
           label="Nhà cung cấp"
