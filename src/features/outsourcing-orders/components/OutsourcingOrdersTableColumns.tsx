@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
@@ -21,10 +22,14 @@ export const outsourcingOrdersColumns = [
   col.accessor("code", {
     header: "Mã phiếu",
     meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+    cell: ({ getValue, row }) => (
+      <Link
+        to="/manage/outsourcing-orders/$outsourcingOrderId"
+        params={{ outsourcingOrderId: row.original.id }}
+        className="font-mono text-xs font-semibold text-primary hover:underline"
+      >
         {getValue()}
-      </span>
+      </Link>
     ),
   }),
 
@@ -99,7 +104,10 @@ export const outsourcingOrdersColumns = [
       headerClassName: "min-w-24 text-center",
       cellClassName: "text-center text-xs",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) => {
+      const value = getValue()
+      return value ? DateTime.fromISO(value).toFormat("dd/MM/yyyy") : "—"
+    },
   }),
 
   col.display({
@@ -109,6 +117,8 @@ export const outsourcingOrdersColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center font-normal",
     },
-    cell: () => <OutsourcingOrderActionsCell />,
+    cell: ({ row }) => (
+      <OutsourcingOrderActionsCell outsourcingOrder={row.original} />
+    ),
   }),
 ]

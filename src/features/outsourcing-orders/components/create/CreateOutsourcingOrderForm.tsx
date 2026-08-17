@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AltArrowLeft, AltArrowRight, CheckCircle } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
@@ -11,66 +12,42 @@ import { CreateOutsourcingOrderConfirmSection } from "@/features/outsourcing-ord
 import { CreateOutsourcingOrderInfoSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderInfoSection"
 import { CreateOutsourcingOrderItemsSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderItemsSection"
 import { CreateOutsourcingOrderPickerSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderPickerSection"
-import { CreateOutsourcingOrderStepsTabs } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderStepsTabs"
+import {
+  CreateOutsourcingOrderTabs,
+  wizardTabs,
+} from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderTabs"
 import { CreateOutsourcingOrderSuccessDialog } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderSuccessDialog"
-import { createMockOutsourcingOrder } from "@/features/outsourcing-orders/mock/create-outsourcing-order.mock"
+import { createOutsourcingOrder } from "@/features/outsourcing-orders/api/server-functions/create-outsourcing-order.api"
 import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/outsourcing-order-item-totals"
 import {
   createOutsourcingOrderFormDefaultValues,
   createOutsourcingOrderSchema,
 } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
-import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import type { CreateOutsourcingOrderWizardStep } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderStepsTabs"
+import type { CreateOutsourcingOrderWizardTab } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderTabs"
 import type { CreateOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 
-type StepNavMeta = {
-  prevStep?: CreateOutsourcingOrderWizardStep
-  prevLabel?: string
-  nextStep?: CreateOutsourcingOrderWizardStep
-  nextLabel?: string
-}
-
-const stepNav: Record<CreateOutsourcingOrderWizardStep, StepNavMeta> = {
-  picker: { nextStep: "items", nextLabel: "Tiếp theo: Nhập SL & thông tin" },
-  items: {
-    prevStep: "picker",
-    prevLabel: "Quay lại chọn chi tiết",
-    nextStep: "confirm",
-    nextLabel: "Tiếp theo: Xác nhận",
-  },
-  confirm: { prevStep: "items", prevLabel: "Quay lại nhập SL & thông tin" },
-}
-
 // Vỏ wizard "Tạo phiếu OS-OUT" — rập khuôn InventoryReceiptCreateFromPoForm.tsx/
-// PurchaseRequestCreateForm.tsx, 3 bước, không có "Lưu nháp" riêng (chỉ 1 hành động submit —
-// backend đích chưa tồn tại nên không có khái niệm DRAFT thật).
+// PurchaseRequestCreateForm.tsx, 3 tab, không có "Lưu nháp" riêng (chỉ 1 hành động submit —
+// POST /outsourcing-orders luôn tạo ở trạng thái DRAFT).
 export function CreateOutsourcingOrderForm() {
   const navigate = useNavigate({ from: "/manage/outsourcing-orders/create" })
   const queryClient = useQueryClient()
-  const { data: suppliers = [] } = useQuery(supplierOptionsQueryOptions())
+  const createOutsourcingOrderFn = useServerFn(createOutsourcingOrder)
 
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateOutsourcingOrderSchema>(
-      "qlsx:draft:create-outsourcing-order-v1"
+      "qlsx:draft:create-outsourcing-order-v3"
     )
   const draftRestoredRef = useRef(false)
 
-  const [step, setStep] = useState<CreateOutsourcingOrderWizardStep>("picker")
+  const [tab, setTab] = useState<CreateOutsourcingOrderWizardTab>("picker")
   const [createdCode, setCreatedCode] = useState<string | null>(null)
 
   const { mutate: create, isPending } = useMutation({
     mutationFn: async (value: CreateOutsourcingOrderSchema) => {
-      const selectedSupplier = suppliers.find((s) => s.id === value.supplierId)
-      if (!selectedSupplier) {
-        throw new Error("Vui lòng chọn nhà cung cấp gia công.")
-      }
-
-      const { code } = await createMockOutsourcingOrder({
-        ...value,
-        supplierName: selectedSupplier.name,
-      })
+      const { code } = await createOutsourcingOrderFn({ data: value })
 
       setCreatedCode(code)
     },
@@ -99,8 +76,8 @@ export function CreateOutsourcingOrderForm() {
 
   const items = useField({ form, name: "items" }).state.value
 
-  function handleStepChange(nextStep: CreateOutsourcingOrderWizardStep) {
-    setStep(nextStep)
+  function handleTabChange(nextTab: CreateOutsourcingOrderWizardTab) {
+    setTab(nextTab)
     saveDraft(form.state.values)
   }
 
@@ -108,11 +85,14 @@ export function CreateOutsourcingOrderForm() {
     form.reset()
     restoreFormDraft(form, createOutsourcingOrderFormDefaultValues)
     clearDraft()
-    setStep("picker")
+    setTab("picker")
     setCreatedCode(null)
   }
 
-  const { prevStep, prevLabel, nextStep, nextLabel } = stepNav[step]
+  const tabIndex = wizardTabs.findIndex((t) => t.value === tab)
+  const prevTab = tabIndex > 0 ? wizardTabs[tabIndex - 1] : undefined
+  const nextTab =
+    tabIndex < wizardTabs.length - 1 ? wizardTabs[tabIndex + 1] : undefined
 
   return (
     <>
@@ -128,30 +108,31 @@ export function CreateOutsourcingOrderForm() {
           <form.Subscribe
             selector={(state) => ({
               hasItems: state.values.items.length > 0,
-              hasStepTwoInfo: Boolean(
+              hasTabTwoInfo: Boolean(
                 state.values.supplierId &&
+                state.values.warehouseId &&
                 state.values.sendDate &&
                 state.values.expectedReturnDate
               ),
             })}
           >
-            {({ hasItems, hasStepTwoInfo }) => (
-              <CreateOutsourcingOrderStepsTabs
-                step={step}
+            {({ hasItems, hasTabTwoInfo }) => (
+              <CreateOutsourcingOrderTabs
+                tab={tab}
                 canGoToItems={hasItems}
-                canGoToConfirm={hasItems && hasStepTwoInfo}
-                onStepChange={handleStepChange}
+                canGoToConfirm={hasItems && hasTabTwoInfo}
+                onTabChange={handleTabChange}
               />
             )}
           </form.Subscribe>
 
-          {step === "picker" && (
+          {tab === "picker" && (
             <CreateOutsourcingOrderPickerSection
               form={form}
               disabled={isPending}
             />
           )}
-          {step === "items" && (
+          {tab === "items" && (
             <>
               <CreateOutsourcingOrderInfoSection
                 form={form}
@@ -165,21 +146,21 @@ export function CreateOutsourcingOrderForm() {
               </div>
             </>
           )}
-          {step === "confirm" && (
+          {tab === "confirm" && (
             <CreateOutsourcingOrderConfirmSection form={form} />
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-            {prevStep ? (
+            {prevTab ? (
               <Button
                 type="button"
                 variant="ghost"
                 className="text-muted-foreground hover:text-foreground"
                 disabled={isPending}
-                onClick={() => handleStepChange(prevStep)}
+                onClick={() => handleTabChange(prevTab.value)}
               >
                 <AltArrowLeft className="size-4" />
-                {prevLabel}
+                Quay lại
               </Button>
             ) : (
               <Button
@@ -198,28 +179,29 @@ export function CreateOutsourcingOrderForm() {
               </Button>
             )}
 
-            {nextStep ? (
+            {nextTab ? (
               <form.Subscribe
                 selector={(state) => ({
                   hasItems: state.values.items.length > 0,
-                  hasStepTwoInfo: Boolean(
+                  hasTabTwoInfo: Boolean(
                     state.values.supplierId &&
+                    state.values.warehouseId &&
                     state.values.sendDate &&
                     state.values.expectedReturnDate
                   ),
                 })}
               >
-                {({ hasItems, hasStepTwoInfo }) => {
+                {({ hasItems, hasTabTwoInfo }) => {
                   const canAdvance =
-                    step === "picker" ? hasItems : hasItems && hasStepTwoInfo
+                    tab === "picker" ? hasItems : hasItems && hasTabTwoInfo
 
                   return (
                     <Button
                       type="button"
                       disabled={!canAdvance}
-                      onClick={() => handleStepChange(nextStep)}
+                      onClick={() => handleTabChange(nextTab.value)}
                     >
-                      {nextLabel}
+                      Tiếp theo: {nextTab.label}
                       <AltArrowRight className="size-4" />
                     </Button>
                   )

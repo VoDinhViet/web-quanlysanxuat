@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { BarChart3, Send, Upload, Users } from "lucide-react"
+import { Send, Upload } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 import {
@@ -16,9 +16,10 @@ type TabItem = {
   href?: FileRouteTypes["to"]
 }
 
-// Only "Xuất đi gia công (OS-OUT)" has a page so far — the other 3 stay disabled with a tooltip,
-// same "no page yet" idiom as AppSidebar's href-less menu items, rendered as a tab strip instead
-// of a real Tabs state machine since there's only one panel to show right now.
+// "Nhà cung cấp gia công"/"Báo cáo gia công ngoài" ngoài phạm vi giai đoạn này — bỏ khỏi tab
+// strip. "Xuất đi gia công (OS-OUT)" có trang; "Nhập về (OS-IN)" chưa có href ở đây (dù đã có
+// trang riêng ở /manage/outsourcing-receipts) nên vẫn giữ disabled, cùng "no page yet" idiom như
+// AppSidebar's href-less menu items.
 const tabs: TabItem[] = [
   {
     label: "Xuất đi gia công (OS-OUT)",
@@ -26,8 +27,6 @@ const tabs: TabItem[] = [
     href: "/manage/outsourcing-orders",
   },
   { label: "Nhập về (OS-IN)", icon: Upload },
-  { label: "Nhà cung cấp gia công", icon: Users },
-  { label: "Báo cáo gia công ngoài", icon: BarChart3 },
 ]
 
 export function OutsourcingOrderTabs() {

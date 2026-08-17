@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildCreateOutsourcingOrderItemColumns } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderItemsColumns"
 import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/outsourcing-order-item-totals"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
@@ -85,9 +85,10 @@ export const CreateOutsourcingOrderItemsSection = withForm({
             </TableHeader>
             <TableBody>
               {items.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message="Chưa có dòng nào. Quay lại bước ① để chọn chi tiết."
+                  title="Chưa có dòng nào"
+                  description="Quay lại bước ① để chọn chi tiết."
                 />
               ) : (
                 table.getRowModel().rows.map((row) => (

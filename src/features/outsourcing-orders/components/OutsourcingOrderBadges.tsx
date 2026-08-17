@@ -12,16 +12,20 @@ export const outsourcingOrderStatusStyles: Record<
   OutsourcingOrderStatus,
   BadgeStyle
 > = {
-  IN_PROGRESS: {
+  DRAFT: {
+    badge: "bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground/60",
+  },
+  SENT: {
     badge:
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
-  PARTIALLY_RETURNED: {
+  PARTIAL: {
     badge: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
     dot: "bg-sky-500 dark:bg-sky-400",
   },
-  AWAITING_QC: {
+  WAITING_QC: {
     badge:
       "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400",
     dot: "bg-yellow-500 dark:bg-yellow-400",
@@ -29,10 +33,6 @@ export const outsourcingOrderStatusStyles: Record<
   COMPLETED: {
     badge: "bg-success/10 text-success",
     dot: "bg-success",
-  },
-  OVERDUE: {
-    badge: "bg-destructive/10 text-destructive",
-    dot: "bg-destructive",
   },
   CANCELLED: {
     badge: "border-dashed bg-transparent text-muted-foreground",

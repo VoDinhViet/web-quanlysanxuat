@@ -1,25 +1,20 @@
-import { useField } from "@tanstack/react-form"
+import { useQuery } from "@tanstack/react-query"
 
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
+import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import { withForm } from "@/hooks/use-app-form"
-import { getPrimaryRepresentative } from "@/lib/types/supplier.type"
+import { buildSelectOptions } from "@/lib/utils"
 
-// Nửa đầu bước ② — thông tin phiếu (NCC/ngày gửi/ngày cần/ghi chú). Dải thông tin NCC bên dưới
-// chỉ để tham khảo (không phải field), lấy thẳng từ suppliers đã fetch chứ không query lần 2 —
-// vừa lấp khoảng trống dưới grid 4 cột, vừa là dữ liệu hiển thị lại trên phiếu in.
+// Nửa đầu bước ② — thông tin phiếu (NCC/kho xuất/ngày gửi/ngày cần/ghi chú).
 export const CreateOutsourcingOrderInfoSection = withForm({
   defaultValues: createOutsourcingOrderFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const supplier = useGetSupplierOptions()
-    const supplierId = useField({ form, name: "supplierId" }).state.value
-
-    const selectedSupplier = supplier.suppliers.find((s) => s.id === supplierId)
-    const primaryRepresentative = selectedSupplier
-      ? getPrimaryRepresentative(selectedSupplier.representatives)
-      : undefined
+    const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
+    const warehouseSelectOptions = buildSelectOptions(warehouses)
 
     return (
       <div className="px-4 py-5 sm:px-5">
@@ -28,7 +23,8 @@ export const CreateOutsourcingOrderInfoSection = withForm({
             ② Thông tin phiếu
           </h2>
           <p className="text-sm text-muted-foreground">
-            Chọn nhà cung cấp gia công và thời gian gửi/nhận cho phiếu này.
+            Chọn nhà cung cấp gia công, kho xuất hàng và thời gian gửi/nhận cho
+            phiếu này.
           </p>
         </div>
 
@@ -56,6 +52,18 @@ export const CreateOutsourcingOrderInfoSection = withForm({
               />
             )}
           </form.Field>
+
+          <form.AppField name="warehouseId">
+            {(field) => (
+              <field.SelectField
+                label="Kho xuất hàng"
+                required
+                placeholder="Chọn kho xuất hàng"
+                options={warehouseSelectOptions}
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
 
           <form.AppField name="sendDate">
             {(field) => (
@@ -87,36 +95,6 @@ export const CreateOutsourcingOrderInfoSection = withForm({
             )}
           </form.AppField>
         </div>
-
-        {selectedSupplier && (
-          <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2 rounded-md border border-dashed border-border/50 bg-muted/20 p-4 text-xs sm:grid-cols-2 lg:grid-cols-4">
-            <p>
-              <span className="text-muted-foreground">Mã NCC:</span>{" "}
-              <span className="font-medium text-foreground">
-                {selectedSupplier.code}
-              </span>
-            </p>
-            <p>
-              <span className="text-muted-foreground">Người liên hệ:</span>{" "}
-              <span className="font-medium text-foreground">
-                {primaryRepresentative?.name ?? "—"}
-              </span>
-            </p>
-            <p>
-              <span className="text-muted-foreground">Điện thoại:</span>{" "}
-              <span className="font-medium text-foreground">
-                {primaryRepresentative?.phoneNumber ??
-                  selectedSupplier.phoneNumber}
-              </span>
-            </p>
-            <p>
-              <span className="text-muted-foreground">Địa chỉ:</span>{" "}
-              <span className="font-medium text-foreground">
-                {selectedSupplier.address}
-              </span>
-            </p>
-          </div>
-        )}
       </div>
     )
   },

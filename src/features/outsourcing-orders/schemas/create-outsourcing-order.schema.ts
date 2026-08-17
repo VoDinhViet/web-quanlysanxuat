@@ -40,8 +40,8 @@ const createOutsourcingOrderItemFields = {
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
-// SL gửi lần này không được vượt SL còn được phép gửi — chặn ngay ở form, cùng ràng buộc
-// backend đích sẽ tự kiểm lại (mirror inventoryReceiptFromPoItemSchema's "SL nhận > SL đặt").
+// SL gửi lần này không được vượt SL còn được phép gửi — chặn ngay ở form, cùng ràng buộc backend tự
+// kiểm lại (mirror inventoryReceiptFromPoItemSchema's "SL nhận > SL đặt").
 export const createOutsourcingOrderItemSchema = z
   .object(createOutsourcingOrderItemFields)
   .refine((item) => Number(item.quantity) <= item.remainingQuantity, {
@@ -59,6 +59,7 @@ export type CreateOutsourcingOrderItemValue = z.input<
 export const createOutsourcingOrderSchema = z
   .object({
     supplierId: z.string().trim().min(1, "Vui lòng chọn nhà cung cấp gia công"),
+    warehouseId: z.string().trim().min(1, "Vui lòng chọn kho xuất hàng"),
     sendDate: z.string().trim().min(1, "Vui lòng chọn ngày gửi đi"),
     expectedReturnDate: z
       .string()
@@ -81,6 +82,7 @@ export type CreateOutsourcingOrderSchema = z.input<
 export const createOutsourcingOrderFormDefaultValues: CreateOutsourcingOrderSchema =
   {
     supplierId: "",
+    warehouseId: "",
     sendDate: "",
     expectedReturnDate: "",
     note: "",

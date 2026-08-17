@@ -1,18 +1,15 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Send } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { outsourcingOrdersQueryOptions } from "@/features/outsourcing-orders/api/options"
 import { OutsourcingOrderLegend } from "@/features/outsourcing-orders/components/OutsourcingOrderLegend"
 import { OutsourcingOrderQuickAccess } from "@/features/outsourcing-orders/components/OutsourcingOrderQuickAccess"
 import { OutsourcingOrderTabs } from "@/features/outsourcing-orders/components/OutsourcingOrderTabs"
-import { outsourcingOrdersColumns } from "@/features/outsourcing-orders/components/OutsourcingOrdersTableColumns"
+import { OutsourcingOrdersTable } from "@/features/outsourcing-orders/components/OutsourcingOrdersTable"
 import { OutsourcingOrdersTableFilter } from "@/features/outsourcing-orders/components/OutsourcingOrdersTableFilter"
 
 export function OutsourcingOrdersPage() {
@@ -48,18 +45,10 @@ export function OutsourcingOrdersPage() {
               onRetry={() => void outsourcingOrdersQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <OutsourcingOrdersTable
               rows={outsourcingOrdersQuery.data.data}
-              columns={outsourcingOrdersColumns}
               pagination={outsourcingOrdersQuery.data.pagination}
               isPending={outsourcingOrdersQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={Send}
-                  title="Chưa có phiếu gia công ngoài nào"
-                  description="Phiếu xuất đi gia công (OS-OUT) sẽ hiển thị tại đây sau khi được tạo."
-                />
-              }
             />
           )}
         </Surface>

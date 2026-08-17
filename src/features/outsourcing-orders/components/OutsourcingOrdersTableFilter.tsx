@@ -25,12 +25,6 @@ const statusOptions = [
   ...buildOptionsFromLabels(outsourcingOrderStatusLabels),
 ]
 
-const limitOptions = [
-  { value: 10, label: "10 / trang" },
-  { value: 20, label: "20 / trang" },
-  { value: 50, label: "50 / trang" },
-]
-
 export function OutsourcingOrdersTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/outsourcing-orders" })
   const navigate = useNavigate({ from: "/manage/outsourcing-orders" })
@@ -67,17 +61,6 @@ export function OutsourcingOrdersTableFilter() {
         ...prev,
         fromDate: range.from,
         toDate: range.to,
-        page: 1,
-      }),
-    })
-  }
-
-  const handleLimitChange = (value: string) => {
-    const limit = Number(value) as 10 | 20 | 50
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        limit,
         page: 1,
       }),
     })
@@ -138,7 +121,7 @@ export function OutsourcingOrdersTableFilter() {
                 <Input
                   id="os-out-q"
                   className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Mã phiếu, NCC, công đoạn..."
+                  placeholder="Mã phiếu..."
                   value={q}
                   onChange={(e) => {
                     setQ(e.target.value)
@@ -206,26 +189,6 @@ export function OutsourcingOrdersTableFilter() {
               <Search className="size-3.5" />
               Bộ lọc
             </Button>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-end gap-4 border-t border-border/60 pt-3 text-xs">
-          <div className="flex items-center gap-1.5">
-            <Select
-              value={String(search.limit)}
-              onValueChange={handleLimitChange}
-            >
-              <SelectTrigger className="h-8 w-24 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent align="end">
-                {limitOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={String(opt.value)}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
         </div>
       </div>

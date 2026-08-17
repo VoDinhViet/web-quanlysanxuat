@@ -27,15 +27,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { useGetOperationOptions } from "@/features/operations/api"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api/options"
 import { buildCreateOutsourcingOrderPickerColumns } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderPickerColumns"
-import {
-  outsourceableJobOptions,
-  outsourceableOperationOptions,
-} from "@/features/outsourcing-orders/mock/outsourceable-operations.mock"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
+import { useGetProductionJobOptions } from "@/features/production-jobs/api"
 import { withForm } from "@/hooks/use-app-form"
+import { OperationType } from "@/lib/types/operation.type"
 import { cn } from "@/lib/utils"
 import type { CreateOutsourcingOrderItemValue } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
@@ -74,6 +73,11 @@ export const CreateOutsourcingOrderPickerSection = withForm({
     const [debouncedQ] = useDebounceValue(q, 300)
     const [productionJobId, setProductionJobId] = useState<string | undefined>()
     const [operationId, setOperationId] = useState<string | undefined>()
+
+    const { options: jobOptions } = useGetProductionJobOptions()
+    const { options: operationOptions } = useGetOperationOptions(
+      OperationType.OUTSOURCE
+    )
 
     // `useField`, not `form.Field`'s render-prop — useReactTable/useMemo below are real hooks,
     // same reasoning as PurchaseRequestCreateMaterialPickerSection.tsx.
@@ -205,7 +209,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả Job</SelectItem>
-                {outsourceableJobOptions.map((option) => (
+                {jobOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -232,7 +236,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả công đoạn</SelectItem>
-                {outsourceableOperationOptions.map((option) => (
+                {operationOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -271,9 +275,9 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               )}
             >
               {rows.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message={
+                  title={
                     query.isPending
                       ? "Đang tải..."
                       : "Không tìm thấy chi tiết nào"
