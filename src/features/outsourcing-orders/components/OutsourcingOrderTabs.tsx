@@ -19,7 +19,7 @@ type TabItem = {
 // Only "Xuất đi gia công (OS-OUT)" has a page so far — the other 3 stay disabled with a tooltip,
 // same "no page yet" idiom as AppSidebar's href-less menu items, rendered as a tab strip instead
 // of a real Tabs state machine since there's only one panel to show right now.
-const TABS: TabItem[] = [
+const tabs: TabItem[] = [
   {
     label: "Xuất đi gia công (OS-OUT)",
     icon: Send,
@@ -34,7 +34,7 @@ export function OutsourcingOrderTabs() {
   return (
     <TooltipProvider>
       <div className="flex flex-wrap items-center gap-1 border-b border-border px-1">
-        {TABS.map((tab) =>
+        {tabs.map((tab) =>
           tab.href ? (
             <Link
               key={tab.label}

@@ -1,14 +1,14 @@
 import { ManageDonutChart } from "@/features/manage/components/ManageProductionChart"
 import {
-  NCR_BY_TYPE,
-  NCR_BY_TYPE_TOTAL,
+  ncrByType,
+  ncrByTypeTotal,
 } from "@/features/manage/mock/manage-dashboard.mock"
 
 export function ManageNcrByTypeChart() {
   return (
     <ManageDonutChart
-      slices={NCR_BY_TYPE}
-      total={NCR_BY_TYPE_TOTAL}
+      slices={ncrByType}
+      total={ncrByTypeTotal}
       totalLabel="ncr"
     />
   )

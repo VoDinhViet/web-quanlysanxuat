@@ -2,7 +2,7 @@ import { DateTime } from "luxon"
 import { z } from "zod"
 
 import {
-  AQL_LEVELS,
+  aqlLevels,
   IqcDisposition,
   IqcInspectionLevel,
   IqcResult,
@@ -18,7 +18,7 @@ import {
 import type { FileFieldValue } from "@/lib/file-field.schema"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 
-const AQL_LEVEL_VALUES: readonly number[] = AQL_LEVELS
+const aqlLevelValues: readonly number[] = aqlLevels
 
 // numeric(18,3) on the backend — comparing raw floats risks 0.1+0.2 !== 0.3 style mismatches.
 // Mirrors IqcService.validateDecision's own `scale`.
@@ -41,7 +41,7 @@ export const confirmIqcSchema = z
       .string()
       .trim()
       .refine(
-        (value) => AQL_LEVEL_VALUES.includes(Number(value)),
+        (value) => aqlLevelValues.includes(Number(value)),
         "Vui lòng chọn mức AQL"
       )
       .transform(Number),

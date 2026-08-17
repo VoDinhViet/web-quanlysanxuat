@@ -10,7 +10,7 @@ import {
 import { paymentTermLabels } from "@/lib/types/order.type"
 import type { Order } from "@/lib/types/order.type"
 
-const MONEY_COLUMN_META = {
+const moneyColumnMeta = {
   headerClassName: "min-w-36 text-right",
   cellClassName: "text-right tabular-nums whitespace-nowrap",
 }
@@ -48,7 +48,7 @@ export const orderColumns = [
   }),
   orderColumnHelper.accessor("totalVnd", {
     header: "Tổng giá trị (VND)",
-    meta: MONEY_COLUMN_META,
+    meta: moneyColumnMeta,
     cell: ({ getValue }) => <MoneyCell value={getValue()} />,
   }),
   orderColumnHelper.accessor("status", {

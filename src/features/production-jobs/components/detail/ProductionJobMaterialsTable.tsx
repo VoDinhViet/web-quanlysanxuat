@@ -6,14 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { MissingFieldValue } from "@/components/shared/MissingFieldValue"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
-import { TablePagination } from "@/components/shared/TablePagination"
+import { MissingFieldValue } from "@/components/shared/feedback/MissingFieldValue"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TablePagination } from "@/components/shared/data/TablePagination"
 import type { ProductionJobMaterial } from "@/lib/types/production-job.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-const COLUMN_COUNT = 7
+const columnCount = 7
 
 type ProductionJobMaterialsTableProps = {
   rows: ProductionJobMaterial[]
@@ -58,7 +58,7 @@ export function ProductionJobMaterialsTable({
         </TableHeader>
         <TableBody>
           {rows.length === 0 ? (
-            <TableEmptyRow colSpan={COLUMN_COUNT} />
+            <TableEmptyRow colSpan={columnCount} />
           ) : (
             rows.map((material, index) => (
               <TableRow

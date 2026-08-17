@@ -13,7 +13,7 @@ type PurchaseRequestCreateStepItem = {
   icon: ComponentType<LucideProps>
 }
 
-const PURCHASE_REQUEST_CREATE_STEP_ITEMS: PurchaseRequestCreateStepItem[] = [
+const purchaseRequestCreateStepItems: PurchaseRequestCreateStepItem[] = [
   { value: "materials", label: "1. Chọn vật tư", icon: Package },
   {
     value: "quantities",
@@ -52,7 +52,7 @@ export function PurchaseRequestCreateStepsTabs({
         variant="line"
         className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
       >
-        {PURCHASE_REQUEST_CREATE_STEP_ITEMS.map((item) => {
+        {purchaseRequestCreateStepItems.map((item) => {
           const isDisabled = item.value === "quantities" && !canGoToQuantities
 
           return (

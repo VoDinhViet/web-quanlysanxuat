@@ -11,7 +11,7 @@ import { createPurchaseRequestFormDefaultValues } from "@/features/purchase-requ
 // (see the ScrollArea usage below). Below it, the list just renders at its natural height — a
 // fixed-height ScrollArea on a short list leaves dead space under the last row, which looks as
 // broken as the empty state we already fixed once.
-const SCROLLABLE_ITEM_COUNT_THRESHOLD = 6
+const scrollableItemCountThreshold = 6
 
 // Signature element of the create-purchase-request page: a running "phiếu tạm" styled after a
 // real phiếu kho — an icon-badge letterhead with its own preprinted "Số" field, ruled/numbered
@@ -103,7 +103,7 @@ export const PurchaseRequestCreateTallySheet = withForm({
                     the Root leaves the viewport unbounded and overlapping the rail's own footer,
                     which is why this is a fixed `h-72` gated behind the threshold rather than an
                     always-on `max-h-72`. */}
-                {items.length > SCROLLABLE_ITEM_COUNT_THRESHOLD ? (
+                {items.length > scrollableItemCountThreshold ? (
                   <ScrollArea className="h-72">{list}</ScrollArea>
                 ) : (
                   list

@@ -5,13 +5,13 @@ import { useDebounceCallback } from "usehooks-ts"
 import { Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
-import { TableQueryError } from "@/components/shared/TableQueryError"
-import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
+import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { ProductionJobMaterialsTable } from "@/features/production-jobs/components/detail/ProductionJobMaterialsTable"
 import { productionJobMaterialsQueryOptions } from "@/features/production-jobs/api/options"
 
-const DEFAULT_PAGE = 1
-const DEFAULT_LIMIT = 10
+const defaultPage = 1
+const defaultLimit = 10
 
 type ProductionJobMaterialsTabProps = {
   productionJobId: string
@@ -33,8 +33,8 @@ export function ProductionJobMaterialsTab({
     from: "/manage/production-jobs/$productionJobId",
   })
 
-  const page = search.page ?? DEFAULT_PAGE
-  const limit = search.limit ?? DEFAULT_LIMIT
+  const page = search.page ?? defaultPage
+  const limit = search.limit ?? defaultLimit
 
   const materialsQuery = useQuery({
     ...productionJobMaterialsQueryOptions(productionJobId, {
@@ -47,7 +47,7 @@ export function ProductionJobMaterialsTab({
 
   const handleSearchChange = (q: string | undefined) => {
     void navigate({
-      search: (prev) => ({ ...prev, q, page: DEFAULT_PAGE }),
+      search: (prev) => ({ ...prev, q, page: defaultPage }),
       replace: true,
     })
   }

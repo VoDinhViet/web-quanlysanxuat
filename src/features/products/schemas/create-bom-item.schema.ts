@@ -24,7 +24,7 @@ export const createBomItemSchema = z.object({
 
 export type CreateBomItemSchema = z.infer<typeof createBomItemSchema>
 
-export const CREATE_BOM_ITEM_DEFAULT_VALUES: CreateBomItemSchema = {
+export const createBomItemDefaultValues: CreateBomItemSchema = {
   itemId: "",
   quantity: "1",
   note: "",

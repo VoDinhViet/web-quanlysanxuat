@@ -1,9 +1,9 @@
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { CreateProductForm } from "@/features/products/components/CreateProductForm"
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
 
-const LOCKED_TABS_HINT =
+const lockedTabsHint =
   "Lưu thông tin sản phẩm trước để mở khoá bước này — cấu trúc và vật tư cần mã sản phẩm đã tạo."
 
 export function CreateProductPage() {
@@ -26,7 +26,7 @@ export function CreateProductPage() {
         <Tabs value="info" className="gap-0">
           <ProductDetailTabs
             lockedTabs={["boms", "materials"]}
-            lockedHint={LOCKED_TABS_HINT}
+            lockedHint={lockedTabsHint}
           />
 
           <TabsContent value="info" className="m-0 mt-5 outline-none">

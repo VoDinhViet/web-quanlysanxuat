@@ -20,6 +20,12 @@
   single obvious subject (e.g. `type UserRowProps = { id: string }`) can stay `id` — the
   rule is about disambiguating _which_ id once a component or callback deals with more
   than one kind of entity.
+- Module-scope constants use `camelCase` (`quickAccessTiles`, `orderStatusLabels`,
+  `mockRows`) — same as every label map in `src/lib/types/*.type.ts`.
+  `SCREAMING_SNAKE_CASE` is reserved for actual configuration/infrastructure constants
+  (`API_BASE_URL`, `HTTP_TIMEOUT_MS`, `SESSION_MAX_AGE_SECONDS`, `MOBILE_BREAKPOINT`,
+  `MAX_*_SIZE_BYTES`, `PERMISSION_CODES`) and for `GENERIC_ERROR_MESSAGE` in each
+  `*.api.ts`. `src/components/ui/` is shadcn-generated and keeps whatever shadcn wrote.
 
 ## Simplicity
 

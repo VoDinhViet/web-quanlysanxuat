@@ -42,7 +42,7 @@ type StepNavMeta = {
   nextLabel?: string
 }
 
-const STEP_NAV: Record<InventoryReceiptFromPoWizardStep, StepNavMeta> = {
+const stepNav: Record<InventoryReceiptFromPoWizardStep, StepNavMeta> = {
   po: { nextStep: "preview", nextLabel: "Tiếp theo: Xem trước đơn mua" },
   preview: {
     prevStep: "po",
@@ -186,7 +186,7 @@ export function InventoryReceiptCreateFromPoForm() {
     saveDraft(form.state.values)
   }
 
-  const { prevStep, prevLabel, nextStep, nextLabel } = STEP_NAV[step]
+  const { prevStep, prevLabel, nextStep, nextLabel } = stepNav[step]
 
   return (
     <form

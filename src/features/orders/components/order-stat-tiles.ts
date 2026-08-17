@@ -101,7 +101,7 @@ function resolveTone(
   return direction === positiveDirection ? "positive" : "negative"
 }
 
-const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
+const orderStatTileDefs: OrderStatTileDef[] = [
   {
     label: "Tổng đơn hàng",
     icon: BillList,
@@ -185,7 +185,7 @@ const ORDER_STAT_TILE_DEFS: OrderStatTileDef[] = [
 ]
 
 export function buildOrderStatTiles(stats: OrderStats): OrderStatTile[] {
-  return ORDER_STAT_TILE_DEFS.map((def) => {
+  return orderStatTileDefs.map((def) => {
     const trend = def.selectTrend(stats)
 
     return {

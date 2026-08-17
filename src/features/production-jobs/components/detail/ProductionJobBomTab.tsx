@@ -2,9 +2,9 @@ import { Download, Logs, Route, Send } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 
 import { Badge } from "@/components/ui/badge"
-import { DisabledAction } from "@/components/shared/DisabledAction"
-import { TableQueryError } from "@/components/shared/TableQueryError"
-import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
+import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
+import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
+import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { ProductionJobBomTable } from "@/features/production-jobs/components/detail/ProductionJobBomTable"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
@@ -12,7 +12,7 @@ import type { ProductionJobBomItem } from "@/lib/types/production-job.type"
 
 // A rough row-count guess for the loading placeholder's height — the BOM tree isn't paginated,
 // so there's no `search.limit` to size it off (unlike the paginated tables elsewhere in the app).
-const BOM_ROW_ESTIMATE = 5
+const bomRowEstimate = 5
 
 export type ProductionJobBomRow = {
   node: ProductionJobBomItem
@@ -141,7 +141,7 @@ export function ProductionJobBomTab({
         </div>
 
         {bomQuery.isPending ? (
-          <TableQueryLoading rows={BOM_ROW_ESTIMATE} />
+          <TableQueryLoading rows={bomRowEstimate} />
         ) : bomQuery.isError ? (
           <TableQueryError
             error={bomQuery.error.message}

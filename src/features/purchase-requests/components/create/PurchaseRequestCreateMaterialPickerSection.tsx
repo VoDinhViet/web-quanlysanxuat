@@ -26,9 +26,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ComboboxField } from "@/components/shared/ComboboxField"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { useGetClientOptions } from "@/features/clients/api"
 import { materialsQueryOptions } from "@/features/materials/api"
 import { buildPurchaseRequestMaterialPickerColumns } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerColumns"
@@ -39,7 +39,7 @@ import { cn } from "@/lib/utils"
 import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/schemas/purchase-request-item-form.schema"
 import type { Material } from "@/lib/types/material.type"
 
-const LIMIT_OPTIONS = [10, 20, 50] as const
+const limitOptions = [10, 20, 50] as const
 
 // Only ACTIVE materials are pickable — an inactive vật tư can't be proposed for purchase. Not
 // user-facing: unlike MaterialsTableFilter's status dropdown, this picker fixes the filter
@@ -63,7 +63,7 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof LIMIT_OPTIONS)[number]>(10)
+    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
     const [clientId, setClientId] = useState<string | undefined>()
@@ -291,7 +291,7 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
               <Select
                 value={String(limit)}
                 onValueChange={(value) => {
-                  setLimit(Number(value) as (typeof LIMIT_OPTIONS)[number])
+                  setLimit(Number(value) as (typeof limitOptions)[number])
                   setPage(1)
                 }}
                 disabled={disabled}
@@ -300,7 +300,7 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {LIMIT_OPTIONS.map((option) => (
+                  {limitOptions.map((option) => (
                     <SelectItem key={option} value={String(option)}>
                       {option} / trang
                     </SelectItem>

@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router"
 import { Info, PackageOpen, PackageSearch, TriangleAlert } from "lucide-react"
 import { useMemo } from "react"
 
-import { DataTable } from "@/components/shared/DataTable"
-import { TableEmptyState } from "@/components/shared/TableEmptyState"
+import { DataTable } from "@/components/shared/data/DataTable"
+import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { buildPurchaseRequestItemColumns } from "@/features/purchase-requests/components/detail/PurchaseRequestItemsTableColumns"
 import type { PurchaseRequestItem } from "@/lib/types/purchase-request.type"
 
@@ -46,7 +46,7 @@ export function PurchaseRequestItemsSection({
 
       {/* Hướng dẫn đọc số liệu + chú ý điều kiện chỉnh sửa — 2 thẻ song song, mỗi thẻ 1 tiêu đề +
           danh sách gạch đầu dòng có bold từ khóa, thay vì đoạn văn dài. Viền nhấn trái (border-l-4)
-          cùng công thức với ALERT_ITEMS trong manage-dashboard.mock.ts (thẻ cảnh báo dashboard),
+          cùng công thức với alertItems trong manage-dashboard.mock.ts (thẻ cảnh báo dashboard),
           tái dùng để 2 thẻ này rõ ràng là 1 khối riêng chứ không hòa vào bảng phía trên. */}
       <div className="grid grid-cols-1 gap-3 px-4 pb-4 sm:px-5 lg:grid-cols-2">
         <div className="rounded-lg border border-l-4 border-primary/30 border-l-primary bg-primary/5 p-3.5">

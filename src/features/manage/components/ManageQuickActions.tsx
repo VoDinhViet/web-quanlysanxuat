@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button"
-import { QUICK_ACTIONS } from "@/features/manage/mock/manage-dashboard.mock"
+import { quickActions } from "@/features/manage/mock/manage-dashboard.mock"
 import { cn } from "@/lib/utils"
 
 export function ManageQuickActions() {
   return (
     <div className="grid grid-cols-3 gap-3">
-      {QUICK_ACTIONS.map((action) => (
+      {quickActions.map((action) => (
         <Button
           key={action.label}
           type="button"

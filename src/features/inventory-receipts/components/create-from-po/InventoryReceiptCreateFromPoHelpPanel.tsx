@@ -5,7 +5,7 @@ type HelpStep = {
   tips: string[]
 }
 
-const HELP_STEPS: HelpStep[] = [
+const helpSteps: HelpStep[] = [
   {
     title: "1. Chọn PO cần nhập",
     tips: ["Chỉ hiện các PO chưa nhập kho.", "Chọn 01 PO cho mỗi phiếu nhập."],
@@ -31,7 +31,7 @@ const HELP_STEPS: HelpStep[] = [
   },
 ]
 
-const PROCESSING_LOGIC = [
+const processingLogic = [
   "Mỗi lần nhập chỉ chọn được 1 PO.",
   "Số lượng nhận lần này không được lớn hơn số lượng đặt.",
   "Không chọn yêu cầu QC → trạng thái sau khi xác nhận là Chờ nhập kho.",
@@ -52,7 +52,7 @@ export function InventoryReceiptCreateFromPoHelpPanel() {
           <span>Hướng dẫn</span>
         </div>
         <ul className="mt-3 space-y-3">
-          {HELP_STEPS.map((step) => (
+          {helpSteps.map((step) => (
             <li key={step.title} className="text-xs">
               <p className="font-medium text-foreground">{step.title}</p>
               <ul className="mt-1 list-inside list-disc space-y-0.5 text-muted-foreground">
@@ -71,7 +71,7 @@ export function InventoryReceiptCreateFromPoHelpPanel() {
           <span>Logic xử lý</span>
         </div>
         <ul className="mt-3 space-y-2">
-          {PROCESSING_LOGIC.map((rule) => (
+          {processingLogic.map((rule) => (
             <li key={rule} className="flex items-start gap-2 text-xs">
               <CheckCircle className="mt-0.5 size-3.5 shrink-0 text-success" />
               <span className="text-muted-foreground">{rule}</span>

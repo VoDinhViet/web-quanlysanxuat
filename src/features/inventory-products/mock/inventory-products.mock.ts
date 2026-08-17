@@ -6,7 +6,7 @@ import type { InventoryProductsSearchSchema } from "@/features/inventory-product
 // Static mock data — matches the 7 items shown in the mockup screenshot.
 // ---------------------------------------------------------------------------
 
-const MOCK_ROWS: InventoryProduct[] = [
+const mockRows: InventoryProduct[] = [
   {
     id: "tp-1",
     code: "TP-240501-001",
@@ -124,7 +124,7 @@ const MOCK_ROWS: InventoryProduct[] = [
 export function getMockInventoryProducts(
   search: InventoryProductsSearchSchema
 ): PaginatedResponse<InventoryProduct> {
-  let rows = [...MOCK_ROWS]
+  let rows = [...mockRows]
 
   if (search.q) {
     const q = search.q.toLowerCase()
@@ -173,5 +173,5 @@ export function getMockInventoryProducts(
 }
 
 export function getMockInventoryProduct(id: string): InventoryProduct | null {
-  return MOCK_ROWS.find((r) => r.id === id) ?? null
+  return mockRows.find((r) => r.id === id) ?? null
 }

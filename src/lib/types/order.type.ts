@@ -79,9 +79,9 @@ export function resolveOrderUpdateDisabledHint(status: OrderStatus): string {
 // hiện" next to a red delivery date. The backend has no `overdue` list filter (only
 // `expired` on each row), so this is display-only now — the status legend and the badge's
 // tone map, not a selectable filter option.
-export const OVERDUE_TONE = "OVERDUE"
-export const OVERDUE_LABEL = "Trễ hạn"
-export const OVERDUE_DESCRIPTION = "Đơn hàng đã quá ngày giao"
+export const overdueTone = "OVERDUE"
+export const overdueLabel = "Trễ hạn"
+export const overdueDescription = "Đơn hàng đã quá ngày giao"
 
 // Payment terms as worded on a sales order. The suppliers slice has a similar
 // enum with purchasing wording ("Net 30 ngày"); features must not import each
@@ -296,7 +296,7 @@ export type OrderStats = {
 export type DeliveryTone = "overdue" | "near-due" | "normal"
 
 // Days before dueDate at which the date turns orange. Presentation-only.
-const NEAR_DUE_DAYS = 3
+const nearDueDays = 3
 
 // `overdue` comes straight off the row because deriving it here would run once
 // on the server and again in the browser, possibly in different timezones — a
@@ -315,7 +315,7 @@ export function resolveDeliveryTone(order: Order): DeliveryTone {
     .startOf("day")
     .diff(DateTime.now().startOf("day"), "days").days
 
-  return daysLeft <= NEAR_DUE_DAYS ? "near-due" : "normal"
+  return daysLeft <= nearDueDays ? "near-due" : "normal"
 }
 
 // Built by src/features/orders/order-timeline.ts from real OrderDetail fields

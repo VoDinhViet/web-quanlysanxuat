@@ -3,10 +3,10 @@ import { useQuery } from "@tanstack/react-query"
 
 import { ClipboardList } from "lucide-react"
 
-import { TableEmptyState } from "@/components/shared/TableEmptyState"
-import { TableQueryLoading } from "@/components/shared/TableQueryLoading"
-import { TableQueryError } from "@/components/shared/TableQueryError"
-import { DataTable } from "@/components/shared/DataTable"
+import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
+import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
+import { DataTable } from "@/components/shared/data/DataTable"
 import { bomMaterialColumns } from "@/features/products/components/ProductMaterialsTableColumns"
 import { ProductMaterialsTableFilter } from "@/features/products/components/ProductMaterialsTableFilter"
 import { bomMaterialsQueryOptions } from "@/features/products/api/options"
@@ -16,15 +16,15 @@ type ProductMaterialsTabProps = {
   product: Item
 }
 
-const DEFAULT_PAGE = 1
-const DEFAULT_LIMIT = 10
+const defaultPage = 1
+const defaultLimit = 10
 
 export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
   const search = useSearch({ from: "/(authed)/manage_/products_/$productId" })
   const navigate = useNavigate({ from: "/manage/products/$productId" })
 
-  const page = search.page ?? DEFAULT_PAGE
-  const limit = search.limit ?? DEFAULT_LIMIT
+  const page = search.page ?? defaultPage
+  const limit = search.limit ?? defaultLimit
 
   const materialsQuery = useQuery(
     bomMaterialsQueryOptions(product.id, { page, limit, q: search.q })
@@ -32,7 +32,7 @@ export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
 
   const handleSearchChange = (q: string | undefined) => {
     void navigate({
-      search: (prev) => ({ ...prev, q, page: DEFAULT_PAGE }),
+      search: (prev) => ({ ...prev, q, page: defaultPage }),
       replace: true,
     })
   }

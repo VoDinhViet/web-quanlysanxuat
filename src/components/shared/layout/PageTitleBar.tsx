@@ -1,0 +1,283 @@
+import { Fragment } from "react"
+import { Link, useRouter } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import {
+  Bell,
+  ChevronDown,
+  CircleHelp,
+  LogOut,
+  Menu,
+  Settings,
+  User,
+  UserRound,
+} from "lucide-react"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useSidebar } from "@/components/ui/sidebar"
+import { ThemeToggle } from "@/components/shared/layout/ThemeToggle"
+import { currentUserQueryOptions } from "@/features/auth/api/options"
+import { logout } from "@/features/auth/api/server-functions/logout.api"
+import { resolveAvatarUrl } from "@/lib/file-url"
+import type { FileRouteTypes } from "@/routeTree.gen"
+
+const fallbackUserName = "--"
+
+type PageTitleBreadcrumb = {
+  label: string
+  // Typed against the generated route tree — see AppSidebar.tsx's MenuItem.href for why. A
+  // href-less, non-last crumb renders as plain text (a group label, not a link) below.
+  href?: FileRouteTypes["to"]
+}
+
+type PageTitleBarProps = {
+  title: string
+  breadcrumbs: PageTitleBreadcrumb[]
+  notificationCount?: number
+}
+
+type PageBreadcrumbsProps = {
+  breadcrumbs: PageTitleBreadcrumb[]
+}
+
+function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
+  const lastIndex = breadcrumbs.length - 1
+
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        {breadcrumbs.map((breadcrumb, index) => (
+          <Fragment key={`${breadcrumb.label}-${index}`}>
+            <BreadcrumbItem>
+              {index === lastIndex ? (
+                <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+              ) : breadcrumb.href ? (
+                <BreadcrumbLink asChild>
+                  <Link to={breadcrumb.href}>{breadcrumb.label}</Link>
+                </BreadcrumbLink>
+              ) : (
+                <span>{breadcrumb.label}</span>
+              )}
+            </BreadcrumbItem>
+
+            {index < lastIndex && <BreadcrumbSeparator />}
+          </Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+
+type UserMenuProps = {
+  fullName: string
+  username: string
+  email: string
+  roleName: string | null
+  avatarUrl: string | null
+  isLoggingOut: boolean
+  onLogout: () => void
+}
+
+export function UserMenu({
+  fullName,
+  username,
+  email,
+  roleName,
+  avatarUrl,
+  isLoggingOut,
+  onLogout,
+}: UserMenuProps) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          className="h-auto gap-3 px-1.5 py-1"
+          aria-label="Tài khoản người dùng"
+        >
+          <Avatar className="size-10">
+            <AvatarImage src={resolveAvatarUrl(avatarUrl)} alt={fullName} />
+            <AvatarFallback className="bg-muted">
+              <UserRound className="size-5 text-muted-foreground" />
+            </AvatarFallback>
+          </Avatar>
+
+          <span className="hidden min-w-0 text-left lg:block">
+            <span className="block truncate text-sm leading-tight font-bold">
+              {fullName}
+            </span>
+            {roleName && (
+              <span className="block truncate text-xs leading-tight text-muted-foreground">
+                {roleName}
+              </span>
+            )}
+          </span>
+
+          <ChevronDown className="size-4 text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <div className="flex items-start gap-3 px-2 py-1.5">
+          <Avatar className="size-10">
+            <AvatarImage src={resolveAvatarUrl(avatarUrl)} alt={fullName} />
+            <AvatarFallback className="bg-muted">
+              <UserRound className="size-5 text-muted-foreground" />
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="min-w-0 space-y-1">
+            <p className="truncate text-sm leading-tight font-semibold">
+              {fullName}
+            </p>
+            {username && (
+              <p className="truncate text-xs leading-tight text-muted-foreground">
+                @{username}
+              </p>
+            )}
+            {email && (
+              <p className="truncate text-xs leading-tight text-muted-foreground">
+                {email}
+              </p>
+            )}
+            {roleName && (
+              <Badge variant="secondary" className="mt-1 max-w-full">
+                <span className="truncate">{roleName}</span>
+              </Badge>
+            )}
+          </div>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <User />
+          Hồ sơ cá nhân
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Settings />
+          Cài đặt tài khoản
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <CircleHelp />
+          Trợ giúp
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          variant="destructive"
+          disabled={isLoggingOut}
+          onSelect={onLogout}
+        >
+          <LogOut />
+          Đăng xuất
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+export function PageTitleBar({
+  title,
+  breadcrumbs,
+  notificationCount = 0,
+}: PageTitleBarProps) {
+  const { toggleSidebar } = useSidebar()
+  const router = useRouter()
+  const logoutFn = useServerFn(logout)
+
+  // Reads the profile the `(authed)` beforeLoad already cached — no extra fetch.
+  const profileQuery = useQuery(currentUserQueryOptions)
+  const profile = profileQuery.data
+  const fullName = profile?.fullName ?? fallbackUserName
+
+  const logoutMutation = useMutation({
+    mutationFn: () => logoutFn(),
+    // Always navigate away regardless of outcome — a failed backend revoke
+    // shouldn't strand the user on an authenticated page.
+    onSettled: async () => {
+      await router.invalidate()
+      await router.navigate({ to: "/login" })
+    },
+  })
+
+  const isLoggingOut = logoutMutation.isPending
+  const handleLogout = () => logoutMutation.mutate()
+
+  return (
+    <header className="flex min-h-22 w-full items-center justify-between gap-4 bg-card px-4 py-4 text-card-foreground shadow-card sm:px-6">
+      <div className="flex min-w-0 items-center gap-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+          aria-label="Mở hoặc thu gọn thanh điều hướng"
+        >
+          <Menu />
+        </Button>
+
+        <div className="min-w-0 space-y-2">
+          <h1 className="truncate text-xl leading-6 font-bold capitalize sm:text-2xl">
+            {title}
+          </h1>
+
+          <PageBreadcrumbs breadcrumbs={breadcrumbs} />
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="relative"
+          aria-label="Thông báo"
+        >
+          <Bell />
+          {notificationCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold text-destructive-foreground ring-2 ring-card">
+              {notificationCount > 9 ? "9+" : notificationCount}
+            </span>
+          )}
+        </Button>
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="hidden sm:inline-flex"
+          aria-label="Trợ giúp"
+        >
+          <CircleHelp />
+        </Button>
+
+        <ThemeToggle />
+
+        <UserMenu
+          fullName={fullName}
+          username={profile?.username ?? ""}
+          email={profile?.email ?? ""}
+          roleName={profile?.role?.name ?? null}
+          avatarUrl={profile?.avatar ?? null}
+          isLoggingOut={isLoggingOut}
+          onLogout={handleLogout}
+        />
+      </div>
+    </header>
+  )
+}

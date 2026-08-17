@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "@/lib/constants"
 
-export const DEFAULT_AVATAR_URL = "https://github.com/evilrabbit.png"
+export const defaultAvatarUrl = "https://github.com/evilrabbit.png"
 
 /**
  * The backend mints `FileResDto.url` host-relative (`/api/files/<id>/download?exp=&sig=`),
@@ -15,5 +15,5 @@ export function resolveFileUrl(url: string): string {
 }
 
 export function resolveAvatarUrl(url?: string | null): string {
-  return url ? resolveFileUrl(url) : DEFAULT_AVATAR_URL
+  return url ? resolveFileUrl(url) : defaultAvatarUrl
 }

@@ -10,7 +10,7 @@ import type { OutboundOrdersSearchSchema } from "@/features/outbound-orders/sche
 // Static mock data — matches the 9 rows shown in the mockup screenshot.
 // ---------------------------------------------------------------------------
 
-const MOCK_ROWS: OutboundOrder[] = [
+const mockRows: OutboundOrder[] = [
   {
     id: "do-1",
     code: "DO-250608-001",
@@ -121,9 +121,9 @@ const MOCK_ROWS: OutboundOrder[] = [
   },
 ]
 
-const MOCK_DETAILS: Record<string, OutboundOrderDetail> = {
+const mockDetails: Record<string, OutboundOrderDetail> = {
   "do-1": {
-    ...MOCK_ROWS[0],
+    ...mockRows[0],
     deliveryAddress: "Khu công nghiệp Yên Phong, Bắc Ninh",
     driverName: "Nguyễn Văn X (Tài xế)",
     driverPhone: "0912 345 678",
@@ -189,7 +189,7 @@ function buildFallbackDetail(row: OutboundOrder): OutboundOrderDetail {
 export function getMockOutboundOrders(
   search: OutboundOrdersSearchSchema
 ): PaginatedResponse<OutboundOrder> {
-  let rows = [...MOCK_ROWS]
+  let rows = [...mockRows]
 
   if (search.q) {
     const q = search.q.toLowerCase()
@@ -247,9 +247,9 @@ export function getMockOutboundOrders(
 
 export function getMockOutboundOrder(id: string): OutboundOrderDetail | null {
   return (
-    MOCK_DETAILS[id] ??
-    (MOCK_ROWS.find((r) => r.id === id)
-      ? buildFallbackDetail(MOCK_ROWS.find((r) => r.id === id)!)
+    mockDetails[id] ??
+    (mockRows.find((r) => r.id === id)
+      ? buildFallbackDetail(mockRows.find((r) => r.id === id)!)
       : null)
   )
 }
@@ -270,19 +270,19 @@ export function mockUpdateOutboundOrderStatus(
       { status, changedAt: new Date().toISOString(), changedBy },
     ],
   }
-  MOCK_DETAILS[id] = updated
+  mockDetails[id] = updated
 
-  const listRow = MOCK_ROWS.find((r) => r.id === id)
+  const listRow = mockRows.find((r) => r.id === id)
   if (listRow) listRow.status = status
 
   return updated
 }
 
 export function mockDeleteOutboundOrder(id: string): boolean {
-  const idx = MOCK_ROWS.findIndex((r) => r.id === id)
+  const idx = mockRows.findIndex((r) => r.id === id)
   if (idx !== -1) {
-    MOCK_ROWS.splice(idx, 1)
-    delete MOCK_DETAILS[id]
+    mockRows.splice(idx, 1)
+    delete mockDetails[id]
     return true
   }
   return false

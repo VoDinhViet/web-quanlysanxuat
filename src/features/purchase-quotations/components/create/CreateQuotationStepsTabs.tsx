@@ -13,7 +13,7 @@ type CreateQuotationStepItem = {
   icon: ComponentType<IconProps>
 }
 
-const CREATE_QUOTATION_STEP_ITEMS: CreateQuotationStepItem[] = [
+const createQuotationStepItems: CreateQuotationStepItem[] = [
   { value: "items", label: "1. Chọn vật tư", icon: Box },
   { value: "suppliers", label: "2. Khai báo NCC & báo giá", icon: TagPrice },
 ]
@@ -49,7 +49,7 @@ export function CreateQuotationStepsTabs({
         variant="line"
         className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
       >
-        {CREATE_QUOTATION_STEP_ITEMS.map((item) => {
+        {createQuotationStepItems.map((item) => {
           const isDisabled = item.value === "suppliers" && !canGoToSuppliers
 
           return (

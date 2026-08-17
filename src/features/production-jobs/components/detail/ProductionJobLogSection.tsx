@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { MockDataBadge } from "@/components/shared/MockDataBadge"
+import { MockDataBadge } from "@/components/shared/feedback/MockDataBadge"
 
 type ProductionJobLogRow = {
   id: string
@@ -23,7 +23,7 @@ type ProductionJobLogRow = {
 // placeholder so the layout can be reviewed; replace this whole component wholesale once a real
 // endpoint ships. The MockDataBadge lives here (not in the shared InfoSection header) so the
 // surrounding tab layout stays untouched.
-const MOCK_LOG_ROWS: ProductionJobLogRow[] = [
+const mockLogRows: ProductionJobLogRow[] = [
   {
     id: "mock-1",
     at: "2026-07-28T08:15:00.000+07:00",
@@ -64,7 +64,7 @@ export function ProductionJobLogSection() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {MOCK_LOG_ROWS.map((row) => (
+            {mockLogRows.map((row) => (
               <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
                 <TableCell className="whitespace-nowrap tabular-nums">
                   {DateTime.fromISO(row.at).toFormat("dd/MM/yyyy HH:mm")}

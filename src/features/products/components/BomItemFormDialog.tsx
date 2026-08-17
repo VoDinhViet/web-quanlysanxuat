@@ -17,12 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ComboboxField } from "@/components/shared/ComboboxField"
+import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { BomItemDrawingField } from "@/features/products/components/BomItemDrawingField"
 import { useGetBomProductOptions } from "@/features/products/hooks/use-get-bom-product-options"
 import {
-  CREATE_BOM_ITEM_DEFAULT_VALUES,
+  createBomItemDefaultValues,
   createBomItemSchema,
 } from "@/features/products/schemas/create-bom-item.schema"
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
@@ -94,7 +94,7 @@ function CreateBomItemForm({
   isSaving,
 }: CreateBomItemFormProps) {
   const form = useAppForm({
-    defaultValues: CREATE_BOM_ITEM_DEFAULT_VALUES,
+    defaultValues: createBomItemDefaultValues,
     validators: { onSubmit: createBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })

@@ -1,15 +1,15 @@
 import { Badge } from "@/components/ui/badge"
 import {
   orderStatusLabels,
-  OVERDUE_TONE,
-  OVERDUE_LABEL,
+  overdueTone,
+  overdueLabel,
   OrderStatus,
 } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
 // "Trễ hạn" is not an OrderStatus — it gets a style here so the legend and the
 // filter select can render it with the same treatment as the real statuses.
-export type OrderBadgeTone = OrderStatus | typeof OVERDUE_TONE
+export type OrderBadgeTone = OrderStatus | typeof overdueTone
 
 type OrderBadgeStyle = {
   badge: string
@@ -30,7 +30,7 @@ export const orderBadgeStyles: Record<OrderBadgeTone, OrderBadgeStyle> = {
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [OrderStatus.REJECTED]: {
-    // Rose, not `destructive` — that tone is already OVERDUE_TONE's, and a
+    // Rose, not `destructive` — that tone is already overdueTone's, and a
     // rejected order is a distinct signal from an overdue one.
     badge: "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
     dot: "bg-rose-500 dark:bg-rose-400",
@@ -54,7 +54,7 @@ export const orderBadgeStyles: Record<OrderBadgeTone, OrderBadgeStyle> = {
     badge: "bg-muted text-muted-foreground",
     dot: "bg-muted-foreground",
   },
-  [OVERDUE_TONE]: {
+  [overdueTone]: {
     badge: "bg-destructive/10 text-destructive",
     dot: "bg-destructive",
   },
@@ -62,7 +62,7 @@ export const orderBadgeStyles: Record<OrderBadgeTone, OrderBadgeStyle> = {
 
 export const orderBadgeLabels: Record<OrderBadgeTone, string> = {
   ...orderStatusLabels,
-  [OVERDUE_TONE]: OVERDUE_LABEL,
+  [overdueTone]: overdueLabel,
 }
 
 type OrderStatusBadgeProps = {

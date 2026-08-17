@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query"
 
 import { getProductionOrderLogs } from "@/features/production-orders/api/server-functions/get-production-order-logs.api"
 
-const PRODUCTION_ORDER_LOGS_PAGE_LIMIT = 10
+const productionOrderLogsPageLimit = 10
 
 // The detail screen's "Lịch sử thay đổi" card — keyed by the route param like the detail query
 // above, so it's read once at the page and passed down (see .claude/rules/architecture.md).
@@ -20,7 +20,7 @@ export const productionOrderLogsQueryOptions = (
         data: {
           productionOrderId,
           page,
-          limit: PRODUCTION_ORDER_LOGS_PAGE_LIMIT,
+          limit: productionOrderLogsPageLimit,
         },
       }),
   })

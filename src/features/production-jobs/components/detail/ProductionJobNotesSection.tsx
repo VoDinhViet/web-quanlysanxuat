@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ProductionJobNoteList } from "@/features/production-jobs/components/detail/ProductionJobNoteList"
 import {
-  PRODUCTION_JOB_NOTES_PAGE_LIMIT,
+  productionJobNotesPageLimit,
   productionJobNotesQueryOptions,
 } from "@/features/production-jobs/api/options"
 import { createProductionJobNote } from "@/features/production-jobs/api/server-functions/create-production-job-note.api"
@@ -49,7 +49,7 @@ export function ProductionJobNotesSection({
       // The feed reads oldest-first, so a new note lands on the last page — jump there so the
       // poster actually sees it land.
       const totalRecords = (notesQuery.data?.pagination.totalRecords ?? 0) + 1
-      setPage(Math.ceil(totalRecords / PRODUCTION_JOB_NOTES_PAGE_LIMIT))
+      setPage(Math.ceil(totalRecords / productionJobNotesPageLimit))
       await queryClient.invalidateQueries({ queryKey: ["production-jobs"] })
       form.reset()
       toast.success("Đã thêm ghi chú")

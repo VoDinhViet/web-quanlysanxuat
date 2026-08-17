@@ -35,7 +35,7 @@ export const iqcInspectionLevelLabels: Record<IqcInspectionLevel, string> = {
 
 // Khớp CHECK `chk_iqc_inspections_aql_level_valid` ở backend — mọi nơi cần liệt kê 6 mức này (ô
 // chọn AQL Level ở IqcAqlInputCard) đọc từ đây, không lặp lại mảng số.
-export const AQL_LEVELS = [0.65, 1.0, 1.5, 2.5, 4.0, 6.5] as const
+export const aqlLevels = [0.65, 1.0, 1.5, 2.5, 4.0, 6.5] as const
 
 export const IqcDisposition = {
   CONCESSION: "CONCESSION",

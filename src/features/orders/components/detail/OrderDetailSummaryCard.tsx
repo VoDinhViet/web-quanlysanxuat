@@ -10,7 +10,7 @@ import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
 import { resolveMockPaymentStatus } from "@/features/orders/mock/order-detail.mock"
 import {
   orderMockPaymentStatusLabels,
-  OVERDUE_TONE,
+  overdueTone,
   OrderStatus,
   paymentTermLabels,
   resolveDeliveryTone,
@@ -18,13 +18,13 @@ import {
 import type { DeliveryTone, OrderDetail } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
-const DELIVERY_TONE_CLASSNAME: Record<DeliveryTone, string> = {
+const deliveryToneClassName: Record<DeliveryTone, string> = {
   overdue: "text-destructive",
   "near-due": "text-warning",
   normal: "text-foreground",
 }
 
-const PAYMENT_STATUS_CLASSNAME: Record<string, string> = {
+const paymentStatusClassName: Record<string, string> = {
   unpaid: "border-warning/40 bg-warning/5 text-warning",
   partially_paid: "border-warning/40 bg-warning/5 text-warning",
   paid: "border-success/40 bg-success/5 text-success",
@@ -89,9 +89,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
                   {order.code}
                 </h2>
                 <OrderStatusBadge tone={order.status} />
-                {order.expired ? (
-                  <OrderStatusBadge tone={OVERDUE_TONE} />
-                ) : null}
+                {order.expired ? <OrderStatusBadge tone={overdueTone} /> : null}
               </div>
               <p className="text-xs text-muted-foreground">
                 Tạo bởi{" "}
@@ -122,7 +120,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
               label="Ngày giao hàng"
               value={
                 order.dueDate ? (
-                  <span className={DELIVERY_TONE_CLASSNAME[deliveryTone]}>
+                  <span className={deliveryToneClassName[deliveryTone]}>
                     {DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")}
                     {dueDateNote ? ` (${dueDateNote})` : ""}
                   </span>
@@ -144,7 +142,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
                   variant="outline"
                   className={cn(
                     "border-dashed",
-                    PAYMENT_STATUS_CLASSNAME[paymentStatus]
+                    paymentStatusClassName[paymentStatus]
                   )}
                 >
                   {orderMockPaymentStatusLabels[paymentStatus]}

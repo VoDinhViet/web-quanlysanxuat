@@ -6,7 +6,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
-import { INVENTORY_ALERTS } from "@/features/manage/mock/manage-dashboard.mock"
+import { inventoryAlerts } from "@/features/manage/mock/manage-dashboard.mock"
 
 const chartConfig: ChartConfig = {
   belowMinimum: {
@@ -19,7 +19,7 @@ const chartConfig: ChartConfig = {
 export function ManageInventoryChart() {
   return (
     <ChartContainer config={chartConfig} className="aspect-auto h-56 w-full">
-      <RechartsPrimitive.BarChart data={INVENTORY_ALERTS}>
+      <RechartsPrimitive.BarChart data={inventoryAlerts}>
         <RechartsPrimitive.CartesianGrid
           vertical={false}
           strokeDasharray="3 3"

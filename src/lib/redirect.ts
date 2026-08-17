@@ -1,4 +1,4 @@
-export const DEFAULT_AUTHED_REDIRECT = "/manage"
+export const defaultAuthedRedirect = "/manage"
 
 /**
  * A `redirectTo` value reaches us from the URL, so an attacker controls it. Anything
@@ -7,18 +7,18 @@ export const DEFAULT_AUTHED_REDIRECT = "/manage"
  */
 export function resolveInternalRedirect(target: string | undefined) {
   if (!target || !target.startsWith("/")) {
-    return DEFAULT_AUTHED_REDIRECT
+    return defaultAuthedRedirect
   }
 
   if (target.startsWith("//") || target.startsWith("/\\")) {
-    return DEFAULT_AUTHED_REDIRECT
+    return defaultAuthedRedirect
   }
 
   // Following a redirect back onto /login after a successful login would just show
   // the form again (or loop if it carries its own redirectTo).
   const pathname = target.split(/[?#]/, 1)[0] ?? target
   if (pathname === "/login" || pathname.startsWith("/login/")) {
-    return DEFAULT_AUTHED_REDIRECT
+    return defaultAuthedRedirect
   }
 
   return target

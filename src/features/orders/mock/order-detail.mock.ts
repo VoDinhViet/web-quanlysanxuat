@@ -39,7 +39,7 @@ function seedFor(order: OrderDetail): void {
 // Share of the order considered "delivered" so far — a stand-in for real DO
 // tracking. Nothing ships before production starts; a cancelled order never
 // ships at all.
-const DELIVERED_PERCENT_BY_STATUS: Record<OrderStatus, number> = {
+const deliveredPercentByStatus: Record<OrderStatus, number> = {
   [OrderStatus.DRAFT]: 0,
   [OrderStatus.PENDING_CONFIRMATION]: 0,
   [OrderStatus.REJECTED]: 0,
@@ -56,7 +56,7 @@ export function buildMockDeliveryProgress(
     (sum, item) => sum + item.quantity,
     0
   )
-  const deliveredPercent = DELIVERED_PERCENT_BY_STATUS[order.status]
+  const deliveredPercent = deliveredPercentByStatus[order.status]
   const deliveredQuantity = Math.round((totalQuantity * deliveredPercent) / 100)
 
   return {
@@ -79,7 +79,7 @@ export function deriveMockItemDelivered(
   return { delivered, remaining: quantity - delivered }
 }
 
-const DELIVERY_VEHICLES = ["51C-12345", "51D-67890", "50A-11223"]
+const deliveryVehicles = ["51C-12345", "51D-67890", "50A-11223"]
 
 export function buildMockDeliveryHistory(
   order: OrderDetail
@@ -104,12 +104,12 @@ export function buildMockDeliveryHistory(
       ),
       quantity: Math.round(progress.deliveredQuantity * share),
       valueVnd: roundMoney(progress.deliveredVnd * share),
-      vehicle: faker.helpers.arrayElement(DELIVERY_VEHICLES),
+      vehicle: faker.helpers.arrayElement(deliveryVehicles),
     }
   })
 }
 
-const PAYMENT_METHODS = ["Chuyển khoản", "Tiền mặt"]
+const paymentMethods = ["Chuyển khoản", "Tiền mặt"]
 
 export function buildMockPaymentHistory(
   order: OrderDetail
@@ -132,7 +132,7 @@ export function buildMockPaymentHistory(
       amountVnd: roundMoney(
         order.totalVnd * (progress.deliveredPercent / 100) * share
       ),
-      method: faker.helpers.arrayElement(PAYMENT_METHODS),
+      method: faker.helpers.arrayElement(paymentMethods),
       collectedBy,
     }
   })
@@ -141,7 +141,7 @@ export function buildMockPaymentHistory(
 export function resolveMockPaymentStatus(
   order: OrderDetail
 ): OrderMockPaymentStatus {
-  const deliveredPercent = DELIVERED_PERCENT_BY_STATUS[order.status]
+  const deliveredPercent = deliveredPercentByStatus[order.status]
 
   if (deliveredPercent >= 100) {
     return "paid"
@@ -150,7 +150,7 @@ export function resolveMockPaymentStatus(
   return deliveredPercent > 0 ? "partially_paid" : "unpaid"
 }
 
-const DELIVERY_TERMS = [
+const deliveryTerms = [
   "FOB - Bình Dương",
   "CIF - Cảng Cát Lái",
   "Giao tại kho người bán",
@@ -166,6 +166,6 @@ export function buildMockClientProfile(
   seedFor(order)
 
   return {
-    deliveryTerm: faker.helpers.arrayElement(DELIVERY_TERMS),
+    deliveryTerm: faker.helpers.arrayElement(deliveryTerms),
   }
 }

@@ -11,14 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { ProductionJobOperationCompletedQuantityCell } from "@/features/production-jobs/components/detail/ProductionJobOperationCompletedQuantityCell"
 import type { ProductionJobBomRow } from "@/features/production-jobs/components/detail/ProductionJobBomTab"
 import { OperationType } from "@/lib/types/operation.type"
 import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-const COLUMN_COUNT = 4
+const columnCount = 4
 
 type ProductionJobBomTableProps = {
   rows: ProductionJobBomRow[]
@@ -64,7 +64,7 @@ function BomNodeHeaderRow({ row }: { row: ProductionJobBomRow }) {
 
   return (
     <TableRow className="h-14 bg-muted/10 hover:bg-muted/15">
-      <TableCell colSpan={COLUMN_COUNT} className="py-3">
+      <TableCell colSpan={columnCount} className="py-3">
         <div className="flex items-center gap-2.5">
           <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground">
             <Package className="size-4" />
@@ -121,7 +121,7 @@ export function ProductionJobBomTable({
       <TableBody>
         {rowsWithOperations.length === 0 ? (
           <TableEmptyRow
-            colSpan={COLUMN_COUNT}
+            colSpan={columnCount}
             message="Chưa có công đoạn nào."
           />
         ) : (

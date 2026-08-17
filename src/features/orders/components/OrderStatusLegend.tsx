@@ -6,8 +6,8 @@ import {
 } from "@/features/orders/components/OrderBadges"
 import {
   orderStatusDescriptions,
-  OVERDUE_DESCRIPTION,
-  OVERDUE_TONE,
+  overdueDescription,
+  overdueTone,
   OrderStatus,
 } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
@@ -23,12 +23,12 @@ const legendTones: OrderBadgeTone[] = [
   OrderStatus.IN_PROGRESS,
   OrderStatus.COMPLETED,
   OrderStatus.CANCELLED,
-  OVERDUE_TONE,
+  overdueTone,
 ]
 
 const legendDescriptions: Record<OrderBadgeTone, string> = {
   ...orderStatusDescriptions,
-  [OVERDUE_TONE]: OVERDUE_DESCRIPTION,
+  [overdueTone]: overdueDescription,
 }
 
 export function OrderStatusLegend() {

@@ -3,8 +3,8 @@ import * as RechartsPrimitive from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
 import {
-  PRODUCTION_PROGRESS,
-  PRODUCTION_PROGRESS_TOTAL,
+  productionProgress,
+  productionProgressTotal,
 } from "@/features/manage/mock/manage-dashboard.mock"
 
 type DonutSlice = {
@@ -102,8 +102,8 @@ export function ManageDonutChart({
 export function ManageProductionChart() {
   return (
     <ManageDonutChart
-      slices={PRODUCTION_PROGRESS}
-      total={PRODUCTION_PROGRESS_TOTAL}
+      slices={productionProgress}
+      total={productionProgressTotal}
       totalLabel="job"
     />
   )

@@ -7,6 +7,6 @@ export { productionJobBomQueryOptions } from "@/features/production-jobs/api/opt
 export { productionJobMaterialsQueryOptions } from "@/features/production-jobs/api/options/production-job-materials.options"
 export { productionJobAttachmentsQueryOptions } from "@/features/production-jobs/api/options/production-job-attachments.options"
 export {
-  PRODUCTION_JOB_NOTES_PAGE_LIMIT,
+  productionJobNotesPageLimit,
   productionJobNotesQueryOptions,
 } from "@/features/production-jobs/api/options/production-job-notes.options"

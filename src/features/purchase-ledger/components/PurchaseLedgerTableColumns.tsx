@@ -12,8 +12,8 @@ import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
 const purchaseLedgerColumnHelper = createColumnHelper<PurchaseLedgerRow>()
 
-// Shared by the 3 quantity columns — same idiom as OrdersTableColumns' MONEY_COLUMN_META.
-const QUANTITY_COLUMN_META = {
+// Shared by the 3 quantity columns — same idiom as OrdersTableColumns' moneyColumnMeta.
+const quantityColumnMeta = {
   headerClassName: "min-w-24 text-right",
   cellClassName: "text-right",
 }
@@ -67,7 +67,7 @@ export const purchaseLedgerColumns = [
 
   purchaseLedgerColumnHelper.accessor("quantity", {
     header: "SL cần mua",
-    meta: QUANTITY_COLUMN_META,
+    meta: quantityColumnMeta,
     cell: ({ getValue }) => (
       <PurchaseLedgerQuantityCell value={getValue()} tone="neutral" />
     ),
@@ -75,7 +75,7 @@ export const purchaseLedgerColumns = [
 
   purchaseLedgerColumnHelper.accessor("quotedQuantity", {
     header: "SL báo giá",
-    meta: QUANTITY_COLUMN_META,
+    meta: quantityColumnMeta,
     cell: ({ getValue }) => (
       <PurchaseLedgerQuantityCell value={getValue()} tone="primary" />
     ),
@@ -83,7 +83,7 @@ export const purchaseLedgerColumns = [
 
   purchaseLedgerColumnHelper.accessor("orderedQuantity", {
     header: "SL đặt mua",
-    meta: QUANTITY_COLUMN_META,
+    meta: quantityColumnMeta,
     cell: ({ getValue }) => (
       <PurchaseLedgerQuantityCell value={getValue()} tone="ordered" />
     ),

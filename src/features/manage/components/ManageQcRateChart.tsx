@@ -6,26 +6,26 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
-import { QC_RATE_POINTS } from "@/features/manage/mock/manage-dashboard.mock"
+import { qcRatePoints } from "@/features/manage/mock/manage-dashboard.mock"
 
-const IQC_COLOR = "var(--color-chart-1)"
-const OQC_COLOR = "var(--color-chart-2)"
+const iqcColor = "var(--color-chart-1)"
+const oqcColor = "var(--color-chart-2)"
 
 const chartConfig: ChartConfig = {
-  iqcPassRate: { label: "IQC đạt (%)", color: IQC_COLOR },
-  oqcPassRate: { label: "OQC đạt (%)", color: OQC_COLOR },
+  iqcPassRate: { label: "IQC đạt (%)", color: iqcColor },
+  oqcPassRate: { label: "OQC đạt (%)", color: oqcColor },
 }
 
-const SERIES = [
-  { key: "iqcPassRate", label: "IQC đạt (%)", color: IQC_COLOR },
-  { key: "oqcPassRate", label: "OQC đạt (%)", color: OQC_COLOR },
+const qcRateSeries = [
+  { key: "iqcPassRate", label: "IQC đạt (%)", color: iqcColor },
+  { key: "oqcPassRate", label: "OQC đạt (%)", color: oqcColor },
 ]
 
 export function ManageQcRateChart() {
   return (
     <div className="space-y-3">
       <ul className="flex flex-wrap items-center gap-4 text-xs">
-        {SERIES.map((series) => (
+        {qcRateSeries.map((series) => (
           <li
             key={series.key}
             className="flex items-center gap-2 text-foreground"
@@ -40,7 +40,7 @@ export function ManageQcRateChart() {
       </ul>
       <ChartContainer config={chartConfig} className="aspect-auto h-52 w-full">
         <RechartsPrimitive.LineChart
-          data={QC_RATE_POINTS}
+          data={qcRatePoints}
           margin={{ left: -8, right: 8, top: 4 }}
         >
           <RechartsPrimitive.CartesianGrid

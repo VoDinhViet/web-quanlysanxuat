@@ -6,8 +6,8 @@ import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
 import { ManageProductionChart } from "@/features/manage/components/ManageProductionChart"
 import { ManageTable } from "@/features/manage/components/ManageTable"
 import {
-  LOW_STOCK_MATERIALS,
-  OVERDUE_JOBS,
+  lowStockMaterials,
+  overdueJobs,
 } from "@/features/manage/mock/manage-dashboard.mock"
 import { jobStatusLabels, JobStatus } from "@/lib/types/manage.type"
 
@@ -44,7 +44,7 @@ export function ManageProductionRow() {
         title="Job trễ hạn"
         headers={["Job", "PO", "Ngày giao", "Trễ hạn", "Trạng thái"]}
       >
-        {OVERDUE_JOBS.map((job) => (
+        {overdueJobs.map((job) => (
           <TableRow key={job.jobCode}>
             <TableCell className="text-xs font-medium">{job.jobCode}</TableCell>
             <TableCell className="text-xs">{job.poCode}</TableCell>
@@ -65,7 +65,7 @@ export function ManageProductionRow() {
         title="Thiếu vật tư"
         headers={["Mã vật tư", "Tên vật tư", "Thiếu", "ĐVT"]}
       >
-        {LOW_STOCK_MATERIALS.map((material) => (
+        {lowStockMaterials.map((material) => (
           <TableRow key={material.materialCode}>
             <TableCell className="text-xs font-medium">
               {material.materialCode}

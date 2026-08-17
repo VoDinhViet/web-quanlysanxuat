@@ -1,50 +1,42 @@
-import { Box, CheckCircle, Checklist, Eye } from "@solar-icons/react"
-import type { IconProps } from "@solar-icons/react"
+import { Box, CheckCircle2, ListChecks } from "lucide-react"
 import type { ComponentType } from "react"
+import type { LucideProps } from "lucide-react"
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
-export type InventoryReceiptFromPoWizardStep =
-  | "po"
-  | "preview"
-  | "items"
-  | "confirm"
+export type CreateOutsourcingOrderWizardStep = "picker" | "items" | "confirm"
 
 type StepItem = {
-  value: InventoryReceiptFromPoWizardStep
+  value: CreateOutsourcingOrderWizardStep
   label: string
-  icon: ComponentType<IconProps>
+  icon: ComponentType<LucideProps>
 }
 
 const stepItems: StepItem[] = [
-  { value: "po", label: "1. Chọn PO cần nhập", icon: Box },
-  { value: "preview", label: "2. Xem trước đơn mua", icon: Eye },
-  { value: "items", label: "3. Nhập SL & QC", icon: Checklist },
-  { value: "confirm", label: "4. Lưu nháp / Xác nhận", icon: CheckCircle },
+  { value: "picker", label: "1. Chọn chi tiết cần gia công", icon: Box },
+  { value: "items", label: "2. Số lượng & thông tin phiếu", icon: ListChecks },
+  { value: "confirm", label: "3. Xác nhận & tạo phiếu", icon: CheckCircle2 },
 ]
 
-type InventoryReceiptCreateFromPoStepsTabsProps = {
-  step: InventoryReceiptFromPoWizardStep
-  canGoToPreview: boolean
+type CreateOutsourcingOrderStepsTabsProps = {
+  step: CreateOutsourcingOrderWizardStep
   canGoToItems: boolean
   canGoToConfirm: boolean
-  onStepChange: (step: InventoryReceiptFromPoWizardStep) => void
+  onStepChange: (step: CreateOutsourcingOrderWizardStep) => void
 }
 
-// Rập khuôn CreateQuotationStepsTabs.tsx — 4 bước thay vì 2, mỗi bước có điều kiện riêng để mở
-// khoá (xem InventoryReceiptCreateFromPoForm.tsx's canGoToX). Bước ① luôn mở được để quay lại
-// đổi PO.
-export function InventoryReceiptCreateFromPoStepsTabs({
+// Rập khuôn InventoryReceiptCreateFromPoStepsTabs.tsx / PurchaseRequestCreateStepsTabs.tsx — 3
+// bước, bước ②/③ khoá tới khi có điều kiện tương ứng (xem CreateOutsourcingOrderForm.tsx's
+// canGoToX). Bước ① luôn mở được để quay lại đổi lựa chọn.
+export function CreateOutsourcingOrderStepsTabs({
   step,
-  canGoToPreview,
   canGoToItems,
   canGoToConfirm,
   onStepChange,
-}: InventoryReceiptCreateFromPoStepsTabsProps) {
-  const disabledByStep: Record<InventoryReceiptFromPoWizardStep, boolean> = {
-    po: false,
-    preview: !canGoToPreview,
+}: CreateOutsourcingOrderStepsTabsProps) {
+  const disabledByStep: Record<CreateOutsourcingOrderWizardStep, boolean> = {
+    picker: false,
     items: !canGoToItems,
     confirm: !canGoToConfirm,
   }
@@ -53,7 +45,7 @@ export function InventoryReceiptCreateFromPoStepsTabs({
     <Tabs
       value={step}
       onValueChange={(value) =>
-        onStepChange(value as InventoryReceiptFromPoWizardStep)
+        onStepChange(value as CreateOutsourcingOrderWizardStep)
       }
       className="border-b border-border"
     >

@@ -2,14 +2,14 @@ import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { Surface } from "@/components/shared/Surface"
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { Surface } from "@/components/shared/layout/Surface"
 import { ProductionJobBomTab } from "@/features/production-jobs/components/detail/ProductionJobBomTab"
 import { ProductionJobDetailHeader } from "@/features/production-jobs/components/detail/ProductionJobDetailHeader"
 import { ProductionJobInfoTab } from "@/features/production-jobs/components/detail/ProductionJobInfoTab"
 import { ProductionJobMaterialsTab } from "@/features/production-jobs/components/detail/ProductionJobMaterialsTab"
 import { productionJobQueryOptions } from "@/features/production-jobs/api/options"
-import { PRODUCTION_JOB_DETAIL_TABS } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
+import { productionJobDetailTabs } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
 
 export function ProductionJobDetailPage() {
   const { productionJobId } = useParams({
@@ -29,7 +29,7 @@ export function ProductionJobDetailPage() {
   // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
   // unrecognised value simply doesn't navigate.
   const handleTabChange = (value: string) => {
-    const nextTab = PRODUCTION_JOB_DETAIL_TABS.find((item) => item === value)
+    const nextTab = productionJobDetailTabs.find((item) => item === value)
 
     if (nextTab) {
       void navigate({ search: { tab: nextTab } })

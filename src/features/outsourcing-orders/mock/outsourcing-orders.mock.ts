@@ -7,7 +7,7 @@ import type { OutsourcingOrdersSearchSchema } from "@/features/outsourcing-order
 // column the mockup flagged as missing.
 // ---------------------------------------------------------------------------
 
-const MOCK_ROWS: OutsourcingOrder[] = [
+const mockRows: OutsourcingOrder[] = [
   {
     id: "os-out-8",
     code: "OS-OUT-0008",
@@ -114,10 +114,54 @@ const MOCK_ROWS: OutsourcingOrder[] = [
   },
 ]
 
+// Highest existing numeric suffix across `OS-OUT-000N` codes — the next created phiếu continues
+// this sequence instead of restarting at 1, which would collide with an existing row's code.
+function resolveNextMockCode(): string {
+  const maxSeq = mockRows.reduce((max, row) => {
+    const seq = Number(row.code.split("-").pop())
+    return Number.isFinite(seq) && seq > max ? seq : max
+  }, 0)
+
+  return `OS-OUT-${String(maxSeq + 1).padStart(4, "0")}`
+}
+
+export type AddMockOutsourcingOrderInput = {
+  supplierName: string
+  operationName: string
+  totalQuantity: number
+  unit: string
+  sentDate: string
+  expectedReturnDate: string
+}
+
+// Session-only — appended to the in-memory mockRows array, so it's visible for the rest of the
+// browser session (list re-reads pick it up via query invalidation) but resets on page reload,
+// same lifetime as every other piece of this feature's mock state.
+export function addMockOutsourcingOrder(
+  input: AddMockOutsourcingOrderInput
+): OutsourcingOrder {
+  const created: OutsourcingOrder = {
+    id: `os-out-${Date.now()}`,
+    code: resolveNextMockCode(),
+    createdAt: new Date().toISOString(),
+    sentDate: input.sentDate,
+    supplierName: input.supplierName,
+    operationName: input.operationName,
+    totalQuantity: input.totalQuantity,
+    receivedQuantity: 0,
+    unit: input.unit,
+    status: "IN_PROGRESS",
+    expectedReturnDate: input.expectedReturnDate,
+  }
+
+  mockRows.unshift(created)
+  return created
+}
+
 export function getMockOutsourcingOrders(
   search: OutsourcingOrdersSearchSchema
 ): PaginatedResponse<OutsourcingOrder> {
-  let rows = [...MOCK_ROWS]
+  let rows = [...mockRows]
 
   if (search.q) {
     const q = search.q.toLowerCase()

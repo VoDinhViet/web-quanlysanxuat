@@ -1,8 +1,10 @@
+import { Link } from "@tanstack/react-router"
 import { BarChart3, Send, Upload, Users } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import type { FileRouteTypes } from "@/routeTree.gen"
 
 type QuickAccessTile = {
   label: string
@@ -10,9 +12,12 @@ type QuickAccessTile = {
   icon: LucideIcon
   accentClassName: string
   tileClassName: string
+  // Chỉ 2 ô OS-OUT/OS-IN đã có route thật — 2 ô còn lại (Nhà cung cấp gia công/Báo cáo) chưa có
+  // trang nên vẫn giữ nguyên preview không bấm được.
+  href?: FileRouteTypes["to"]
 }
 
-const QUICK_ACCESS_TILES: QuickAccessTile[] = [
+const quickAccessTiles: QuickAccessTile[] = [
   {
     label: "Tạo phiếu OS-OUT",
     description: "Tạo phiếu xuất đi gia công ngoài cho NCC.",
@@ -20,6 +25,7 @@ const QUICK_ACCESS_TILES: QuickAccessTile[] = [
     accentClassName: "text-blue-600 dark:text-blue-400",
     tileClassName:
       "border-blue-200 bg-blue-50 hover:bg-blue-100 dark:border-blue-800/40 dark:bg-blue-500/10 dark:hover:bg-blue-500/20",
+    href: "/manage/outsourcing-orders/create",
   },
   {
     label: "Nhập hàng về (OS-IN)",
@@ -28,6 +34,7 @@ const QUICK_ACCESS_TILES: QuickAccessTile[] = [
     accentClassName: "text-emerald-600 dark:text-emerald-400",
     tileClassName:
       "border-emerald-200 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-800/40 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20",
+    href: "/manage/outsourcing-receipts",
   },
   {
     label: "Nhà cung cấp gia công",
@@ -47,10 +54,13 @@ const QUICK_ACCESS_TILES: QuickAccessTile[] = [
   },
 ]
 
+const tileContentClassName = cn(
+  "h-auto flex-col items-start gap-1 px-3.5 py-3.5 text-left whitespace-normal disabled:opacity-100"
+)
+
 // "Truy cập nhanh" strip — same tile idiom as ManageQuickActions.tsx (dashboard), sized for 4
-// items instead of that page's grid-cols-3. None of these routes exist yet (this pass only
-// builds the OS-OUT list tab), so every tile stays a disabled, non-interactive preview instead
-// of a dead Link.
+// items instead of that page's grid-cols-3. Only the 2 tiles with a real route render as a Link;
+// the other 2 (no page behind them yet) stay a disabled, non-interactive preview.
 export function OutsourcingOrderQuickAccess() {
   return (
     <section className="rounded-lg bg-card px-4 py-4 shadow-card lg:px-5">
@@ -59,26 +69,46 @@ export function OutsourcingOrderQuickAccess() {
       </h2>
 
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {QUICK_ACCESS_TILES.map((tile) => (
-          <Button
-            key={tile.label}
-            type="button"
-            variant="outline"
-            disabled
-            className={cn(
-              "h-auto flex-col items-start gap-1 px-3.5 py-3.5 text-left whitespace-normal disabled:opacity-100",
-              tile.tileClassName
-            )}
-          >
-            <tile.icon className={cn("size-5", tile.accentClassName)} />
-            <span className={cn("text-xs font-semibold", tile.accentClassName)}>
-              {tile.label}
-            </span>
-            <span className="text-[11px] font-normal text-muted-foreground">
-              {tile.description}
-            </span>
-          </Button>
-        ))}
+        {quickAccessTiles.map((tile) =>
+          tile.href ? (
+            <Button
+              key={tile.label}
+              asChild
+              variant="outline"
+              className={cn(tileContentClassName, tile.tileClassName)}
+            >
+              <Link to={tile.href}>
+                <tile.icon className={cn("size-5", tile.accentClassName)} />
+                <span
+                  className={cn("text-xs font-semibold", tile.accentClassName)}
+                >
+                  {tile.label}
+                </span>
+                <span className="text-[11px] font-normal text-muted-foreground">
+                  {tile.description}
+                </span>
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              key={tile.label}
+              type="button"
+              variant="outline"
+              disabled
+              className={cn(tileContentClassName, tile.tileClassName)}
+            >
+              <tile.icon className={cn("size-5", tile.accentClassName)} />
+              <span
+                className={cn("text-xs font-semibold", tile.accentClassName)}
+              >
+                {tile.label}
+              </span>
+              <span className="text-[11px] font-normal text-muted-foreground">
+                {tile.description}
+              </span>
+            </Button>
+          )
+        )}
       </div>
     </section>
   )

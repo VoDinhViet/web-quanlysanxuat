@@ -1,9 +1,9 @@
 import { Factory } from "lucide-react"
 
-import { TableEmptyState } from "@/components/shared/TableEmptyState"
+import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 
-const EMPTY_STATE_COPY: Record<
+const emptyStateCopy: Record<
   ProductionOrderStatus,
   { title: string; description: string }
 > = {
@@ -19,8 +19,8 @@ const EMPTY_STATE_COPY: Record<
 }
 
 // No filter selected ("Tất cả") gets its own generic copy rather than indexing
-// EMPTY_STATE_COPY, since there's no single status to describe.
-const ALL_EMPTY_STATE_COPY = {
+// emptyStateCopy, since there's no single status to describe.
+const allEmptyStateCopy = {
   title: "Chưa có lệnh sản xuất nào",
   description: "Lệnh sản xuất được tạo tự động khi Giám đốc duyệt đơn hàng.",
 }
@@ -32,7 +32,7 @@ type ProductionOrdersEmptyStateProps = {
 export function ProductionOrdersEmptyState({
   status,
 }: ProductionOrdersEmptyStateProps) {
-  const copy = status ? EMPTY_STATE_COPY[status] : ALL_EMPTY_STATE_COPY
+  const copy = status ? emptyStateCopy[status] : allEmptyStateCopy
 
   return (
     <TableEmptyState

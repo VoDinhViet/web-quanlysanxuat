@@ -13,7 +13,7 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { clientContactFormSchema } from "@/features/clients/schemas/client-contact.schema"
 import type { ClientContactInput } from "@/features/clients/schemas/client-contact.schema"
 
-export const EMPTY_CONTACT: ClientContactInput = {
+export const emptyContact: ClientContactInput = {
   name: "",
   position: "",
   phoneNumber: "",
@@ -64,7 +64,7 @@ function ClientContactDialogForm({
   const isEditing = initialValue !== null
 
   const form = useAppForm({
-    defaultValues: initialValue ?? EMPTY_CONTACT,
+    defaultValues: initialValue ?? emptyContact,
     validators: {
       onSubmit: clientContactFormSchema,
     },

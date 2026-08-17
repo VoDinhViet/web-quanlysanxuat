@@ -2,9 +2,9 @@ import { Badge } from "@/components/ui/badge"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { ManageTable } from "@/features/manage/components/ManageTable"
 import {
-  OPEN_NCRS,
-  OVERDUE_OUTSOURCE,
-  UPCOMING_DELIVERIES,
+  openNcrs,
+  overdueOutsource,
+  upcomingDeliveries,
 } from "@/features/manage/mock/manage-dashboard.mock"
 import {
   doStatusLabels,
@@ -36,7 +36,7 @@ export function ManageOperationsRow() {
         title="Gia công ngoài trễ hạn"
         headers={["OS", "NCC", "Công đoạn", "Ngày hẹn", "Trễ"]}
       >
-        {OVERDUE_OUTSOURCE.map((os) => (
+        {overdueOutsource.map((os) => (
           <TableRow key={os.osCode}>
             <TableCell className="text-xs font-medium">{os.osCode}</TableCell>
             <TableCell className="max-w-16 truncate text-xs">
@@ -55,7 +55,7 @@ export function ManageOperationsRow() {
         title="NCR chưa xử lý"
         headers={["NCR", "Nguồn", "Loại", "Ngày tạo", "Trạng thái"]}
       >
-        {OPEN_NCRS.map((ncr) => (
+        {openNcrs.map((ncr) => (
           <TableRow key={ncr.ncrCode}>
             <TableCell className="text-xs font-medium">{ncr.ncrCode}</TableCell>
             <TableCell className="text-xs">
@@ -76,7 +76,7 @@ export function ManageOperationsRow() {
         title="DO sắp giao"
         headers={["DO", "Khách hàng", "Ngày giao", "Trạng thái"]}
       >
-        {UPCOMING_DELIVERIES.map((delivery) => (
+        {upcomingDeliveries.map((delivery) => (
           <TableRow key={delivery.doCode}>
             <TableCell className="text-xs font-medium">
               {delivery.doCode}

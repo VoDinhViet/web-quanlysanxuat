@@ -42,7 +42,7 @@ import type {
 // with real server-function data once the API exists (see architecture.md).
 faker.seed(2026)
 
-const CHART_COLOR_VARS = [
+const chartColorVars = [
   "var(--color-chart-1)",
   "var(--color-chart-2)",
   "var(--color-chart-3)",
@@ -51,7 +51,7 @@ const CHART_COLOR_VARS = [
 ]
 
 function nextChartColor(index: number): string {
-  return CHART_COLOR_VARS[index % CHART_COLOR_VARS.length]
+  return chartColorVars[index % chartColorVars.length]
 }
 
 function poCode(): string {
@@ -70,7 +70,7 @@ function recentDateLabel(): string {
   })
 }
 
-export const STAT_CARDS: StatCard[] = [
+export const statCards: StatCard[] = [
   {
     label: "PO đang chạy",
     value: 42,
@@ -125,7 +125,7 @@ export const STAT_CARDS: StatCard[] = [
   },
 ]
 
-export const ALERT_ITEMS: AlertItem[] = [
+export const alertItems: AlertItem[] = [
   {
     label: "Job trễ hạn",
     count: 5,
@@ -176,7 +176,7 @@ export const ALERT_ITEMS: AlertItem[] = [
 // Fixed categorical palette (job-status hues) — a donut split by status needs
 // 7 distinct colors, so this draws straight from the theme's --chart-1..7
 // tokens (each dark-mode-aware) instead of hardcoded hex.
-export const PRODUCTION_PROGRESS: ProductionProgressSlice[] = [
+export const productionProgress: ProductionProgressSlice[] = [
   { label: "Đang sản xuất", value: 25, colorVar: "var(--color-chart-1)" },
   { label: "Chờ vật tư", value: 4, colorVar: "var(--color-chart-6)" },
   { label: "Chờ OS", value: 3, colorVar: "var(--color-chart-4)" },
@@ -188,9 +188,9 @@ export const PRODUCTION_PROGRESS: ProductionProgressSlice[] = [
 
 // Total jobs shown in the donut center. Mirrors the design mock: the 7 slices
 // above are a partial breakdown, so percentages read against this grand total.
-export const PRODUCTION_PROGRESS_TOTAL = 75
+export const productionProgressTotal = 75
 
-const OVERDUE_JOB_STATUSES = [
+const overdueJobStatuses = [
   JobStatus.IN_PROGRESS,
   JobStatus.WAITING_OUTSOURCE,
   JobStatus.WAITING_MATERIAL,
@@ -198,18 +198,18 @@ const OVERDUE_JOB_STATUSES = [
   JobStatus.REWORK,
 ]
 
-export const OVERDUE_JOBS: OverdueJobRow[] = Array.from(
+export const overdueJobs: OverdueJobRow[] = Array.from(
   { length: 5 },
   (_, index) => ({
     jobCode: jobCode(),
     poCode: poCode(),
     dueDate: recentDateLabel(),
     daysOverdue: faker.number.int({ min: 1, max: 5 }),
-    status: OVERDUE_JOB_STATUSES[index],
+    status: overdueJobStatuses[index],
   })
 )
 
-const LOW_STOCK_CATALOG = [
+const lowStockCatalog = [
   {
     materialCode: "STEEL-SS400-5",
     materialName: "Thép tấm SS400 5mm",
@@ -229,14 +229,14 @@ const LOW_STOCK_CATALOG = [
   { materialCode: "PAINT-POWDER", materialName: "Sơn tĩnh điện", unit: "Kg" },
 ]
 
-export const LOW_STOCK_MATERIALS: LowStockMaterialRow[] = LOW_STOCK_CATALOG.map(
+export const lowStockMaterials: LowStockMaterialRow[] = lowStockCatalog.map(
   (material) => ({
     ...material,
     shortage: faker.number.int({ min: 20, max: 500 }),
   })
 )
 
-const OUTSOURCE_OPERATIONS = [
+const outsourceOperations = [
   "Nhiệt luyện",
   "Mạ kẽm",
   "Sơn tĩnh điện",
@@ -244,65 +244,62 @@ const OUTSOURCE_OPERATIONS = [
   "Phay CNC",
 ]
 
-export const OVERDUE_OUTSOURCE: OverdueOutsourceRow[] = Array.from(
+export const overdueOutsource: OverdueOutsourceRow[] = Array.from(
   { length: 3 },
   (_, index) => ({
     osCode: `OS-2405-${faker.number.int({ min: 1, max: 20 }).toString().padStart(2, "0")}`,
     supplierName: faker.company.name(),
-    operation: OUTSOURCE_OPERATIONS[index],
+    operation: outsourceOperations[index],
     dueDate: recentDateLabel(),
     daysOverdue: faker.number.int({ min: 1, max: 4 }),
   })
 )
 
-const NCR_DEFECT_TYPES = [
+const ncrDefectTypes = [
   "Kích thước",
   "Mối hàn",
   "Sơn bong tróc",
   "Sai kích thước",
 ]
-const OPEN_NCR_SOURCES = [
+const openNcrSources = [
   NcrSource.IQC,
   NcrSource.OQC,
   NcrSource.OQC,
   NcrSource.MANUAL,
 ]
-const OPEN_NCR_STATUSES = [
+const openNcrStatuses = [
   NcrStatus.REWORK,
   NcrStatus.REWORK,
   NcrStatus.SCRAP,
   NcrStatus.PENDING,
 ]
 
-export const OPEN_NCRS: OpenNcrRow[] = Array.from(
-  { length: 4 },
-  (_, index) => ({
-    ncrCode: `NCR-${(8 + index).toString().padStart(4, "0")}`,
-    source: OPEN_NCR_SOURCES[index],
-    type: NCR_DEFECT_TYPES[index],
-    createdAt: recentDateLabel(),
-    status: OPEN_NCR_STATUSES[index],
-  })
-)
+export const openNcrs: OpenNcrRow[] = Array.from({ length: 4 }, (_, index) => ({
+  ncrCode: `NCR-${(8 + index).toString().padStart(4, "0")}`,
+  source: openNcrSources[index],
+  type: ncrDefectTypes[index],
+  createdAt: recentDateLabel(),
+  status: openNcrStatuses[index],
+}))
 
-const UPCOMING_DELIVERY_STATUSES = [
+const upcomingDeliveryStatuses = [
   DoStatus.NOT_EXPORTED,
   DoStatus.NOT_EXPORTED,
   DoStatus.PREPARING,
   DoStatus.NOT_EXPORTED,
 ]
 
-export const UPCOMING_DELIVERIES: UpcomingDeliveryRow[] = Array.from(
+export const upcomingDeliveries: UpcomingDeliveryRow[] = Array.from(
   { length: 4 },
   (_, index) => ({
     doCode: `DO-2405-${(23 + index).toString().padStart(3, "0")}`,
     customerName: faker.company.name(),
     deliveryDate: recentDateLabel(),
-    status: UPCOMING_DELIVERY_STATUSES[index],
+    status: upcomingDeliveryStatuses[index],
   })
 )
 
-export const INVENTORY_ALERTS: InventoryAlertPoint[] = [
+export const inventoryAlerts: InventoryAlertPoint[] = [
   "STEEL-SS400-5",
   "BOLT-M12-050",
   "NUT-M12",
@@ -314,7 +311,7 @@ export const INVENTORY_ALERTS: InventoryAlertPoint[] = [
   runningLow: faker.number.int({ min: 10, max: 80 }),
 }))
 
-export const QC_RATE_POINTS: QcRatePoint[] = [
+export const qcRatePoints: QcRatePoint[] = [
   "14/05",
   "15/05",
   "16/05",
@@ -328,7 +325,7 @@ export const QC_RATE_POINTS: QcRatePoint[] = [
   oqcPassRate: faker.number.int({ min: 75, max: 95 }),
 }))
 
-export const NCR_BY_TYPE: NcrByTypeSlice[] = [
+export const ncrByType: NcrByTypeSlice[] = [
   { label: "Kích thước", value: 9 },
   { label: "Mối hàn", value: 6 },
   { label: "Sơn", value: 4 },
@@ -336,12 +333,12 @@ export const NCR_BY_TYPE: NcrByTypeSlice[] = [
   { label: "Khác", value: 1 },
 ].map((slice, index) => ({ ...slice, colorVar: nextChartColor(index) }))
 
-export const NCR_BY_TYPE_TOTAL = NCR_BY_TYPE.reduce(
+export const ncrByTypeTotal = ncrByType.reduce(
   (sum, slice) => sum + slice.value,
   0
 )
 
-export const QUICK_ACTIONS: QuickAction[] = [
+export const quickActions: QuickAction[] = [
   {
     label: "Tạo LSX (Job)",
     icon: ClipboardAdd,
@@ -407,4 +404,4 @@ export const QUICK_ACTIONS: QuickAction[] = [
   },
 ]
 
-export const LAST_UPDATED_AT = faker.date.recent({ days: 1 }).toISOString()
+export const lastUpdatedAt = faker.date.recent({ days: 1 }).toISOString()

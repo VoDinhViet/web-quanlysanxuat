@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { ALERT_ITEMS } from "@/features/manage/mock/manage-dashboard.mock"
+import { alertItems } from "@/features/manage/mock/manage-dashboard.mock"
 import { cn } from "@/lib/utils"
 
 export function ManageAlerts() {
@@ -9,7 +9,7 @@ export function ManageAlerts() {
         Cảnh báo quan trọng
       </h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {ALERT_ITEMS.map((alert) => (
+        {alertItems.map((alert) => (
           <Card key={alert.label} size="sm" className={alert.cardClassName}>
             <CardContent className="flex items-center gap-3">
               <alert.icon

@@ -3,12 +3,12 @@ import { ClipboardCheck } from "@solar-icons/react"
 import { IqcAqlPlanPanel } from "@/features/iqc/components/detail/IqcAqlPlanPanel"
 import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
-import { AQL_LEVELS, iqcInspectionLevelLabels } from "@/lib/types/iqc.type"
+import { aqlLevels, iqcInspectionLevelLabels } from "@/lib/types/iqc.type"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const inspectionLevelOptions = buildOptionsFromLabels(iqcInspectionLevelLabels)
-const aqlLevelOptions = AQL_LEVELS.map((level) => ({
+const aqlLevelOptions = aqlLevels.map((level) => ({
   value: String(level),
   label: `${level.toFixed(2)}%`,
 }))

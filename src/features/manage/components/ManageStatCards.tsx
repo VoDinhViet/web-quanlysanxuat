@@ -1,13 +1,13 @@
 import { ArrowDown, ArrowUp } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { STAT_CARDS } from "@/features/manage/mock/manage-dashboard.mock"
+import { statCards } from "@/features/manage/mock/manage-dashboard.mock"
 import { cn } from "@/lib/utils"
 
 export function ManageStatCards() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-      {STAT_CARDS.map((stat) => (
+      {statCards.map((stat) => (
         <Card key={stat.label} size="sm">
           <CardContent className="flex items-start gap-3">
             <div

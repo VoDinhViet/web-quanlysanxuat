@@ -11,7 +11,7 @@ type ProductionJobDetailTabItem = {
   icon: ComponentType<IconProps>
 }
 
-const PRODUCTION_JOB_DETAIL_TAB_ITEMS: ProductionJobDetailTabItem[] = [
+const productionJobDetailTabItems: ProductionJobDetailTabItem[] = [
   { value: "info", label: "Thông tin chung", icon: InfoCircle },
   { value: "materials", label: "BOM vật tư", icon: Layers },
   { value: "bom", label: "Công đoạn sản xuất", icon: Route },
@@ -30,7 +30,7 @@ export function ProductionJobDetailTabs() {
         variant="line"
         className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
       >
-        {PRODUCTION_JOB_DETAIL_TAB_ITEMS.map((item) => (
+        {productionJobDetailTabItems.map((item) => (
           <TabsTrigger
             key={item.value}
             value={item.value}

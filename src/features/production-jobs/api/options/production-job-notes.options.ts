@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query"
 
 import { getProductionJobNotes } from "@/features/production-jobs/api/server-functions/get-production-job-notes.api"
 
-export const PRODUCTION_JOB_NOTES_PAGE_LIMIT = 10
+export const productionJobNotesPageLimit = 10
 
 // The "Ghi chú" sub-section's own pagination — kept as local component state rather than a route
 // search param because `page`/`limit` on this route are already owned by the "materials" tab (see
@@ -15,6 +15,6 @@ export const productionJobNotesQueryOptions = (
     queryKey: ["production-jobs", "notes", productionJobId, page],
     queryFn: () =>
       getProductionJobNotes({
-        data: { productionJobId, page, limit: PRODUCTION_JOB_NOTES_PAGE_LIMIT },
+        data: { productionJobId, page, limit: productionJobNotesPageLimit },
       }),
   })

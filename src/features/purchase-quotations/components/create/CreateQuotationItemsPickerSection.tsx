@@ -26,8 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { TableEmptyRow } from "@/components/shared/TableEmptyRow"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
 import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api"
 import { buildQuotationItemsPickerColumns } from "@/features/purchase-quotations/components/create/CreateQuotationItemsPickerColumns"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
@@ -40,7 +40,7 @@ import type {
 } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
-const LIMIT_OPTIONS = [10, 20, 50] as const
+const limitOptions = [10, 20, 50] as const
 
 function buildAllocation(row: PurchaseLedgerRow): QuotationItemAllocationValue {
   return {
@@ -73,7 +73,7 @@ export const CreateQuotationItemsPickerSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof LIMIT_OPTIONS)[number]>(10)
+    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
 
@@ -281,7 +281,7 @@ export const CreateQuotationItemsPickerSection = withForm({
               <Select
                 value={String(limit)}
                 onValueChange={(value) => {
-                  setLimit(Number(value) as (typeof LIMIT_OPTIONS)[number])
+                  setLimit(Number(value) as (typeof limitOptions)[number])
                   setPage(1)
                 }}
                 disabled={disabled}
@@ -290,7 +290,7 @@ export const CreateQuotationItemsPickerSection = withForm({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {LIMIT_OPTIONS.map((option) => (
+                  {limitOptions.map((option) => (
                     <SelectItem key={option} value={String(option)}>
                       {option} / trang
                     </SelectItem>

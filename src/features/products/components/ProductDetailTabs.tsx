@@ -19,7 +19,7 @@ type ProductDetailTabItem = {
   icon: ComponentType<IconProps>
 }
 
-const PRODUCT_DETAIL_TAB_ITEMS: ProductDetailTabItem[] = [
+const productDetailTabItems: ProductDetailTabItem[] = [
   { value: "info", label: "Thông tin sản phẩm", icon: Box },
   { value: "boms", label: "Cấu trúc & Công đoạn", icon: Layers },
   {
@@ -53,7 +53,7 @@ export function ProductDetailTabs({
         variant="line"
         className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
       >
-        {PRODUCT_DETAIL_TAB_ITEMS.map((item) => {
+        {productDetailTabItems.map((item) => {
           const isLocked = lockedTabs.includes(item.value)
 
           const trigger = (

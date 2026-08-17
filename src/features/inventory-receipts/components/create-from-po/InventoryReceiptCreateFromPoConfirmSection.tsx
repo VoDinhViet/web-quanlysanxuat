@@ -11,8 +11,9 @@ import {
   InventoryReceiptStatus,
   inventoryReceiptStatusDescriptions,
 } from "@/lib/types/inventory-receipt.type"
+import { getPrimaryRepresentative } from "@/lib/types/supplier.type"
 
-const PREVIEW_STATUSES = [
+const previewStatuses = [
   InventoryReceiptStatus.DRAFT,
   InventoryReceiptStatus.PENDING_RECEIPT,
   InventoryReceiptStatus.PENDING_IQC,
@@ -56,9 +57,9 @@ export const InventoryReceiptCreateFromPoConfirmSection = withForm({
       enabled: Boolean(purchaseOrder),
     })
 
-    const representative =
-      supplier?.representatives.find((rep) => rep.isPrimary) ??
-      supplier?.representatives[0]
+    const representative = supplier
+      ? getPrimaryRepresentative(supplier.representatives)
+      : undefined
 
     const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")
 
@@ -105,7 +106,7 @@ export const InventoryReceiptCreateFromPoConfirmSection = withForm({
             Ý nghĩa trạng thái
           </p>
           <ul className="mt-2 space-y-1.5">
-            {PREVIEW_STATUSES.map((status) => (
+            {previewStatuses.map((status) => (
               <li key={status} className="flex items-start gap-2 text-xs">
                 <InventoryReceiptStatusBadge
                   status={status}
