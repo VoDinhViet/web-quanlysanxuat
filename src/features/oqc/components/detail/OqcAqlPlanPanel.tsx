@@ -1,26 +1,24 @@
 import { useField } from "@tanstack/react-form"
-import { Lightbulb } from "@solar-icons/react"
+import { Lightbulb } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
+import type { OqcDetailFormApi } from "@/features/oqc/hooks/use-oqc-detail-form"
 import { resolveAqlPlan } from "@/lib/aql-sampling"
 
-type IqcAqlPlanPanelProps = {
-  form: IqcDetailFormApi
+type OqcAqlPlanPanelProps = {
+  form: OqcDetailFormApi
   quantity: number
   disabled?: boolean
 }
 
-// "QUY ĐỊNH AQL ĐANG ÁP DỤNG" — live gợi ý cỡ mẫu/Ac/Re từ bảng AQL khi user đã chọn đủ
-// Inspection Level + AQL Level. Chỉ còn mang tính tham khảo — không còn chặn được Lưu (xem
-// docs/domains/quality.md) — nên "—" khi bảng thiếu tổ hợp là trạng thái bình thường, không phải
-// lỗi. Tông xanh dương (thông tin/gợi ý) để tách biệt rõ với các băng xác nhận quyết định
-// (xanh lá/đỏ) ở IqcResultCard/IqcDispositionCard — panel này không phải là một quyết định.
-export function IqcAqlPlanPanel({
+// Gợi ý sống cỡ mẫu/Ac/Re từ bảng AQL khi đã chọn đủ Inspection Level + AQL Level — mirrors
+// IqcAqlPlanPanel.tsx, dùng chung `resolveAqlPlan` (src/lib/aql-sampling.ts). Chỉ mang tính tham
+// khảo — không chặn Lưu — nên "—" khi bảng thiếu tổ hợp là trạng thái bình thường.
+export function OqcAqlPlanPanel({
   form,
   quantity,
   disabled,
-}: IqcAqlPlanPanelProps) {
+}: OqcAqlPlanPanelProps) {
   const inspectionLevel = useField({ form, name: "inspectionLevel" }).state
     .value
   const aqlLevel = useField({ form, name: "aqlLevel" }).state.value
