@@ -1,0 +1,26 @@
+import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { CreateOutsourcingOrderForm } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderForm"
+
+export function CreateOutsourcingOrderPage() {
+  return (
+    <main className="min-h-svh bg-background text-foreground">
+      <PageTitleBar
+        title="Tạo phiếu xuất đi gia công ngoài (OS-OUT)"
+        breadcrumbs={[
+          { label: "Dashboard", href: "/manage" },
+          { label: "Gia công ngoài", href: "/manage/outsourcing-orders" },
+          {
+            label: "Xuất đi gia công (OS-OUT)",
+            href: "/manage/outsourcing-orders",
+          },
+          { label: "Tạo phiếu" },
+        ]}
+        notificationCount={5}
+      />
+
+      <div className="w-full p-4 sm:p-5 lg:p-6">
+        <CreateOutsourcingOrderForm />
+      </div>
+    </main>
+  )
+}

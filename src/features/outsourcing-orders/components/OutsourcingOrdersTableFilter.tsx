@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search, Upload } from "lucide-react"
 
@@ -13,9 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { DateRangePicker } from "@/components/shared/DateRangePicker"
-import { FilterLabel } from "@/components/shared/FilterLabel"
-import { PendingAction } from "@/components/shared/PendingAction"
+import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import type { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
 import { outsourcingOrderStatusLabels } from "@/lib/types/outsourcing-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -108,22 +108,26 @@ export function OutsourcingOrdersTableFilter() {
     <TooltipProvider>
       <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
         <div className="flex flex-wrap items-center gap-2 border-b border-border/60 pb-4">
-          <PendingAction
-            label="Tạo phiếu gia công ngoài (OS-OUT)"
-            hint="Tính năng lập phiếu OS-OUT đang kết nối"
-            variant="default"
-          >
-            <Plus className="size-4" />
-            Tạo phiếu gia công ngoài (OS-OUT)
-          </PendingAction>
+          <PermissionGate permission="outsourcing:create">
+            <Button asChild className="gap-1.5">
+              <Link to="/manage/outsourcing-orders/create">
+                <Plus className="size-4" />
+                Tạo phiếu gia công ngoài (OS-OUT)
+              </Link>
+            </Button>
+          </PermissionGate>
 
-          <PendingAction
-            label="Nhập hàng về (OS-IN)"
-            hint="Tính năng nhập hàng về OS-IN đang kết nối"
-          >
-            <Upload className="size-4" />
-            Nhập hàng về (OS-IN)
-          </PendingAction>
+          <PermissionGate permission="outsourcing:read">
+            <Button asChild variant="outline" className="gap-1.5">
+              <Link
+                to="/manage/outsourcing-receipts"
+                search={{ page: 1, limit: 10 }}
+              >
+                <Upload className="size-4" />
+                Nhập hàng về (OS-IN)
+              </Link>
+            </Button>
+          </PermissionGate>
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">

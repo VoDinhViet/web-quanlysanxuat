@@ -56,3 +56,25 @@ export type OutsourcingOrder = {
   status: OutsourcingOrderStatus
   expectedReturnDate: string // Ngày hẹn về
 }
+
+// One row per (Job part × công đoạn OUTSOURCE) eligible to be sent for outsourcing — the
+// create-wizard picker's source. Mirrors the shape of the backend's documented (not yet shipped)
+// `GET /outsourcing-orders/outsourceable-operations`: `plannedQuantity` comes from the Job's BOM
+// (`ProductionJobBomItem.plannedQuantity`), `sentQuantity`/`remainingQuantity` accumulate across
+// every OS-OUT ever created for that operation — data no FE endpoint exposes today, so it lives
+// in mock (`mock/outsourceable-operations.mock.ts`) until the real endpoint ships.
+export type OutsourceableOperation = {
+  id: string // productionJobOperation id
+  productionJobId: string
+  productionJobCode: string
+  itemId: string
+  itemCode: string
+  itemName: string
+  operationId: string
+  operationCode: string
+  operationName: string
+  unitName: string
+  plannedQuantity: number // SL định mức (theo Job)
+  sentQuantity: number // Đã gửi (OS-OUT trước)
+  remainingQuantity: number // Còn được phép gửi = plannedQuantity - sentQuantity
+}
