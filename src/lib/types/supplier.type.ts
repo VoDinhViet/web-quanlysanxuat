@@ -86,6 +86,14 @@ export type SupplierRepresentative = {
   isPrimary: boolean
 }
 
+/** The representative to show when only one can be displayed — the one marked
+ *  `isPrimary`, or the first if none is. */
+export function getPrimaryRepresentative(
+  representatives: SupplierRepresentative[]
+): SupplierRepresentative | undefined {
+  return representatives.find((rep) => rep.isPrimary) ?? representatives[0]
+}
+
 /** Mirrors the backend's SupplierPaymentResDto — always present, sub-fields nullable. */
 export type SupplierPayment = {
   bankName: string | null

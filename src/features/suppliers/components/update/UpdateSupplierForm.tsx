@@ -13,6 +13,7 @@ import { UpdateSupplierPaymentSection } from "@/features/suppliers/components/up
 import { updateSupplierSchema } from "@/features/suppliers/schemas/update-supplier.schema"
 import { updateSupplier } from "@/features/suppliers/api/server-functions/update-supplier.api"
 import type { UpdateSupplierSchema } from "@/features/suppliers/schemas/update-supplier.schema"
+import { getPrimaryRepresentative } from "@/lib/types/supplier.type"
 import type { Supplier } from "@/lib/types/supplier.type"
 
 // Supplier → raw form values: nullable fields become "", numbers/dates become
@@ -22,9 +23,9 @@ import type { Supplier } from "@/lib/types/supplier.type"
 // update-page plan), so anything beyond one representative isn't editable yet.
 function getSupplierDefaultValues(supplier: Supplier): UpdateSupplierSchema {
   const { payment } = supplier
-  const primaryRepresentative =
-    supplier.representatives.find((rep) => rep.isPrimary) ??
-    supplier.representatives.at(0)
+  const primaryRepresentative = getPrimaryRepresentative(
+    supplier.representatives
+  )
 
   return {
     supplierId: supplier.id,
