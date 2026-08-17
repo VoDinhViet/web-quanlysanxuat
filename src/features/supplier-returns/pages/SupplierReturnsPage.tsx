@@ -1,15 +1,12 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Undo2 } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { supplierReturnsQueryOptions } from "@/features/supplier-returns/api/options"
-import { supplierReturnsColumns } from "@/features/supplier-returns/components/SupplierReturnsTableColumns"
+import { SupplierReturnsTable } from "@/features/supplier-returns/components/SupplierReturnsTable"
 import { SupplierReturnsTableFilter } from "@/features/supplier-returns/components/SupplierReturnsTableFilter"
 
 export function SupplierReturnsPage() {
@@ -47,18 +44,10 @@ export function SupplierReturnsPage() {
               onRetry={() => void supplierReturnsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <SupplierReturnsTable
               rows={supplierReturnsQuery.data.data}
-              columns={supplierReturnsColumns}
               pagination={supplierReturnsQuery.data.pagination}
               isPending={supplierReturnsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={Undo2}
-                  title="Chưa có phiếu trả NCC nào"
-                  description="Phiếu trả sẽ hiển thị tại đây sau khi được lập từ kết quả kiểm tra chất lượng (IQC)."
-                />
-              }
             />
           )}
         </Surface>

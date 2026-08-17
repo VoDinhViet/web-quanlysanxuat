@@ -45,13 +45,9 @@ export function buildQuotationAddSupplierItemsColumns({
         const isAssigned = assignedIds.has(row.original.itemId)
         return (
           <Checkbox
-            checked={
-              isAssigned || checkedIds.has(row.original.itemId)
-            }
+            checked={isAssigned || checkedIds.has(row.original.itemId)}
             disabled={isAssigned}
-            onCheckedChange={() =>
-              onToggleItem(row.original.itemId)
-            }
+            onCheckedChange={() => onToggleItem(row.original.itemId)}
             aria-label={`Chọn ${row.original.itemName}`}
           />
         )

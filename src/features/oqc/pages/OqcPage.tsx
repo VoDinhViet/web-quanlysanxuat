@@ -1,15 +1,12 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { ClipboardCheck } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { oqcsQueryOptions } from "@/features/oqc/api/options"
-import { oqcColumns } from "@/features/oqc/components/OqcTableColumns"
+import { OqcTable } from "@/features/oqc/components/OqcTable"
 import { OqcTableFilter } from "@/features/oqc/components/OqcTableFilter"
 
 // No stat cards — unlike IQC, the backend has no GET /oqc/stats, so the content area doesn't
@@ -46,18 +43,10 @@ export function OqcPage() {
               onRetry={() => void oqcsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <OqcTable
               rows={oqcsQuery.data.data}
-              columns={oqcColumns}
               pagination={oqcsQuery.data.pagination}
               isPending={oqcsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={ClipboardCheck}
-                  title="Chưa có phiếu OQC nào"
-                  description="Phiếu OQC sẽ hiển thị tại đây sau khi Sản xuất yêu cầu QC cho một lô thành phẩm."
-                />
-              }
             />
           )}
         </Surface>

@@ -1,16 +1,13 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { ReceiptText } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api/options"
 import { PurchaseOrderLegend } from "@/features/purchase-orders/components/PurchaseOrderLegend"
-import { purchaseOrdersColumns } from "@/features/purchase-orders/components/PurchaseOrdersTableColumns"
+import { PurchaseOrdersTable } from "@/features/purchase-orders/components/PurchaseOrdersTable"
 import { PurchaseOrdersTableFilter } from "@/features/purchase-orders/components/PurchaseOrdersTableFilter"
 
 export function PurchaseOrdersPage() {
@@ -48,18 +45,10 @@ export function PurchaseOrdersPage() {
               onRetry={() => void purchaseOrdersQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <PurchaseOrdersTable
               rows={purchaseOrdersQuery.data.data}
-              columns={purchaseOrdersColumns}
               pagination={purchaseOrdersQuery.data.pagination}
               isPending={purchaseOrdersQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={ReceiptText}
-                  title="Chưa có đơn mua hàng nào"
-                  description="Đơn mua hàng sẽ hiển thị tại đây sau khi được lập từ đề xuất mua hàng đã duyệt."
-                />
-              }
             />
           )}
         </Surface>

@@ -1,15 +1,12 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Truck } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { outboundOrdersQueryOptions } from "@/features/outbound-orders/api/options"
-import { outboundOrdersColumns } from "@/features/outbound-orders/components/OutboundOrdersTableColumns"
+import { OutboundOrdersTable } from "@/features/outbound-orders/components/OutboundOrdersTable"
 import { OutboundOrdersTableFilter } from "@/features/outbound-orders/components/OutboundOrdersTableFilter"
 
 export function OutboundOrdersPage() {
@@ -44,18 +41,10 @@ export function OutboundOrdersPage() {
               onRetry={() => void outboundOrdersQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <OutboundOrdersTable
               rows={outboundOrdersQuery.data.data}
-              columns={outboundOrdersColumns}
               pagination={outboundOrdersQuery.data.pagination}
               isPending={outboundOrdersQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={Truck}
-                  title="Chưa có phiếu giao hàng nào"
-                  description="Phiếu giao hàng (DO) sẽ hiển thị tại đây sau khi được lập từ đơn hàng."
-                />
-              }
             />
           )}
         </Surface>

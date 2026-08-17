@@ -1,15 +1,12 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { ArrowDownToLine } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { inventoryReceiptsQueryOptions } from "@/features/inventory-receipts/api/options"
-import { inventoryReceiptsColumns } from "@/features/inventory-receipts/components/InventoryReceiptsTableColumns"
+import { InventoryReceiptsTable } from "@/features/inventory-receipts/components/InventoryReceiptsTable"
 import { InventoryReceiptsTableFilter } from "@/features/inventory-receipts/components/InventoryReceiptsTableFilter"
 import { InventoryReceiptLegend } from "@/features/inventory-receipts/components/InventoryReceiptLegend"
 
@@ -45,18 +42,10 @@ export function InventoryReceiptsPage() {
               onRetry={() => void inventoryReceiptsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <InventoryReceiptsTable
               rows={inventoryReceiptsQuery.data.data}
-              columns={inventoryReceiptsColumns}
               pagination={inventoryReceiptsQuery.data.pagination}
               isPending={inventoryReceiptsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={ArrowDownToLine}
-                  title="Chưa có phiếu nhập kho nào"
-                  description="Phiếu nhập kho sẽ hiển thị tại đây sau khi được lập từ PO, hàng trả hoặc nhập khác."
-                />
-              }
             />
           )}
         </Surface>

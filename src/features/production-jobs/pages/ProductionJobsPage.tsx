@@ -5,11 +5,7 @@ import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { Factory } from "lucide-react"
-
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
-import { DataTable } from "@/components/shared/data/DataTable"
-import { productionJobColumns } from "@/features/production-jobs/components/ProductionJobsTableColumns"
+import { ProductionJobsTable } from "@/features/production-jobs/components/ProductionJobsTable"
 import { ProductionJobsTableFilter } from "@/features/production-jobs/components/ProductionJobsTableFilter"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
 
@@ -50,21 +46,10 @@ export function ProductionJobsPage() {
               onRetry={() => void productionJobsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <ProductionJobsTable
               rows={productionJobsQuery.data.data}
-              columns={productionJobColumns}
               pagination={productionJobsQuery.data.pagination}
               isPending={productionJobsQuery.isFetching}
-              emptyState={
-                // No action button — a Job is created automatically when its
-                // LSX (production order) is approved, never by hand from this
-                // screen.
-                <TableEmptyState
-                  icon={Factory}
-                  title="Chưa có Job nào"
-                  description="Job được tạo tự động khi Lệnh sản xuất (LSX) được duyệt."
-                />
-              }
             />
           )}
         </Surface>

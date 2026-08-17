@@ -1,17 +1,12 @@
-import { Link, useSearch } from "@tanstack/react-router"
+import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Building2, Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
 import { SupplierStatCards } from "@/features/suppliers/components/SupplierStatCards"
-import { supplierColumns } from "@/features/suppliers/components/SuppliersTableColumns"
+import { SuppliersTable } from "@/features/suppliers/components/SuppliersTable"
 import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersTableFilter"
 import { suppliersQueryOptions } from "@/features/suppliers/api/options"
 
@@ -55,28 +50,10 @@ export function SuppliersPage() {
               onRetry={() => void suppliersQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <SuppliersTable
               rows={suppliersQuery.data.data}
-              columns={supplierColumns}
               pagination={suppliersQuery.data.pagination}
               isPending={suppliersQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={Building2}
-                  title="Chưa có nhà cung cấp nào"
-                  description="Bắt đầu bằng cách thêm nhà cung cấp đầu tiên vào danh sách của bạn."
-                  action={
-                    <PermissionGate permission="suppliers:create">
-                      <Button asChild size="sm" className="text-xs">
-                        <Link to="/manage/suppliers/create">
-                          <Plus className="size-4" />
-                          Thêm nhà cung cấp
-                        </Link>
-                      </Button>
-                    </PermissionGate>
-                  }
-                />
-              }
             />
           )}
         </Surface>

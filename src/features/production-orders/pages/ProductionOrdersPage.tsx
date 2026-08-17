@@ -5,10 +5,8 @@ import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
 import { productionOrdersQueryOptions } from "@/features/production-orders/api/options"
-import { ProductionOrdersEmptyState } from "@/features/production-orders/components/ProductionOrdersEmptyState"
-import { productionOrderColumns } from "@/features/production-orders/components/ProductionOrdersTableColumns"
+import { ProductionOrdersTable } from "@/features/production-orders/components/ProductionOrdersTable"
 import { ProductionOrdersTableFilter } from "@/features/production-orders/components/ProductionOrdersTableFilter"
 
 export function ProductionOrdersPage() {
@@ -45,12 +43,11 @@ export function ProductionOrdersPage() {
               onRetry={() => void productionOrdersQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <ProductionOrdersTable
               rows={productionOrdersQuery.data.data}
-              columns={productionOrderColumns}
               pagination={productionOrdersQuery.data.pagination}
               isPending={productionOrdersQuery.isFetching}
-              emptyState={<ProductionOrdersEmptyState status={search.status} />}
+              status={search.status}
             />
           )}
         </Surface>

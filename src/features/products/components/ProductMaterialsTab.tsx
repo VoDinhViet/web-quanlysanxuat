@@ -1,13 +1,9 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 
-import { ClipboardList } from "lucide-react"
-
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
-import { bomMaterialColumns } from "@/features/products/components/ProductMaterialsTableColumns"
+import { ProductMaterialsTable } from "@/features/products/components/ProductMaterialsTable"
 import { ProductMaterialsTableFilter } from "@/features/products/components/ProductMaterialsTableFilter"
 import { bomMaterialsQueryOptions } from "@/features/products/api/options"
 import type { Item } from "@/lib/types/item.type"
@@ -52,18 +48,10 @@ export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
           onRetry={() => void materialsQuery.refetch()}
         />
       ) : (
-        <DataTable
+        <ProductMaterialsTable
           rows={materialsQuery.data.data}
-          columns={bomMaterialColumns}
           pagination={materialsQuery.data.pagination}
           isPending={materialsQuery.isFetching}
-          emptyState={
-            <TableEmptyState
-              icon={ClipboardList}
-              title="Chưa có vật tư nào"
-              description='Thêm vật tư vào cấu trúc sản phẩm ở tab "Cấu trúc & Công đoạn" để hiển thị tại đây.'
-            />
-          }
         />
       )}
     </div>

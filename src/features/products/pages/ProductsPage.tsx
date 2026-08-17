@@ -1,16 +1,11 @@
-import { Link, useSearch } from "@tanstack/react-router"
+import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { PackageOpen, Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
-import { productColumns } from "@/features/products/components/ProductsTableColumns"
+import { ProductsTable } from "@/features/products/components/ProductsTable"
 import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
 import { itemsQueryOptions } from "@/features/products/api/options"
 
@@ -51,28 +46,10 @@ export function ProductsPage() {
               onRetry={() => void productsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <ProductsTable
               rows={productsQuery.data.data}
-              columns={productColumns}
               pagination={productsQuery.data.pagination}
               isPending={productsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={PackageOpen}
-                  title="Chưa có sản phẩm nào"
-                  description="Bắt đầu bằng cách thêm sản phẩm đầu tiên vào danh mục của bạn."
-                  action={
-                    <PermissionGate permission="items:create">
-                      <Button asChild size="sm" className="text-xs">
-                        <Link to="/manage/products/create">
-                          <Plus className="size-4" />
-                          Thêm sản phẩm
-                        </Link>
-                      </Button>
-                    </PermissionGate>
-                  }
-                />
-              }
             />
           )}
         </Surface>

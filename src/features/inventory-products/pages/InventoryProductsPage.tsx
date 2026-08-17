@@ -1,15 +1,12 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Boxes } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { inventoryProductsQueryOptions } from "@/features/inventory-products/api/options"
-import { inventoryProductsColumns } from "@/features/inventory-products/components/InventoryProductsTableColumns"
+import { InventoryProductsTable } from "@/features/inventory-products/components/InventoryProductsTable"
 import { InventoryProductsTableFilter } from "@/features/inventory-products/components/InventoryProductsTableFilter"
 import { InventoryProductLegend } from "@/features/inventory-products/components/InventoryProductLegend"
 
@@ -45,18 +42,10 @@ export function InventoryProductsPage() {
               onRetry={() => void inventoryProductsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <InventoryProductsTable
               rows={inventoryProductsQuery.data.data}
-              columns={inventoryProductsColumns}
               pagination={inventoryProductsQuery.data.pagination}
               isPending={inventoryProductsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={Boxes}
-                  title="Chưa có thành phẩm nào trong kho"
-                  description="Dữ liệu tồn kho thành phẩm sẽ hiển thị khi có kết quả nhập kho thành phẩm."
-                />
-              }
             />
           )}
         </Surface>

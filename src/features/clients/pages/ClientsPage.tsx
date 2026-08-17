@@ -1,16 +1,11 @@
-import { Link, useSearch } from "@tanstack/react-router"
+import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Plus, UserRound } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
-import { clientColumns } from "@/features/clients/components/ClientsTableColumns"
+import { ClientsTable } from "@/features/clients/components/ClientsTable"
 import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
 import { clientsQueryOptions } from "@/features/clients/api/options"
 
@@ -51,28 +46,10 @@ export function ClientsPage() {
               onRetry={() => void clientsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <ClientsTable
               rows={clientsQuery.data.data}
-              columns={clientColumns}
               pagination={clientsQuery.data.pagination}
               isPending={clientsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={UserRound}
-                  title="Chưa có khách hàng nào"
-                  description="Bắt đầu bằng cách thêm khách hàng đầu tiên vào danh sách của bạn."
-                  action={
-                    <PermissionGate permission="clients:create">
-                      <Button asChild size="sm" className="text-xs">
-                        <Link to="/manage/clients/create">
-                          <Plus className="size-4" />
-                          Tạo khách hàng
-                        </Link>
-                      </Button>
-                    </PermissionGate>
-                  }
-                />
-              }
             />
           )}
         </Surface>

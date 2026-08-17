@@ -1,16 +1,13 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { FileText } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { purchaseQuotationsQueryOptions } from "@/features/purchase-quotations/api/options"
 import { PurchaseQuotationLegend } from "@/features/purchase-quotations/components/PurchaseQuotationLegend"
-import { purchaseQuotationsColumns } from "@/features/purchase-quotations/components/PurchaseQuotationsTableColumns"
+import { PurchaseQuotationsTable } from "@/features/purchase-quotations/components/PurchaseQuotationsTable"
 import { PurchaseQuotationsTableFilter } from "@/features/purchase-quotations/components/PurchaseQuotationsTableFilter"
 
 export function PurchaseQuotationsPage() {
@@ -48,18 +45,10 @@ export function PurchaseQuotationsPage() {
               onRetry={() => void purchaseQuotationsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <PurchaseQuotationsTable
               rows={purchaseQuotationsQuery.data.data}
-              columns={purchaseQuotationsColumns}
               pagination={purchaseQuotationsQuery.data.pagination}
               isPending={purchaseQuotationsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={FileText}
-                  title="Chưa có báo giá nào"
-                  description="Báo giá NCC sẽ hiển thị tại đây sau khi được tạo từ đề xuất mua hàng đã duyệt."
-                />
-              }
             />
           )}
         </Surface>

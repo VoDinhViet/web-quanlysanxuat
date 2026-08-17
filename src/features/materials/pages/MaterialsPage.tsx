@@ -1,16 +1,11 @@
-import { Link, useSearch } from "@tanstack/react-router"
+import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { PackageOpen, Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
-import { materialColumns } from "@/features/materials/components/MaterialsTableColumns"
+import { MaterialsTable } from "@/features/materials/components/MaterialsTable"
 import { MaterialsTableFilter } from "@/features/materials/components/MaterialsTableFilter"
 import { materialsQueryOptions } from "@/features/materials/api/options"
 
@@ -51,28 +46,10 @@ export function MaterialsPage() {
               onRetry={() => void materialsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <MaterialsTable
               rows={materialsQuery.data.data}
-              columns={materialColumns}
               pagination={materialsQuery.data.pagination}
               isPending={materialsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={PackageOpen}
-                  title="Chưa có vật tư nào"
-                  description="Bắt đầu bằng cách thêm vật tư đầu tiên vào danh mục của bạn."
-                  action={
-                    <PermissionGate permission="items:create">
-                      <Button asChild size="sm" className="text-xs">
-                        <Link to="/manage/materials/create">
-                          <Plus className="size-4" />
-                          Thêm vật tư
-                        </Link>
-                      </Button>
-                    </PermissionGate>
-                  }
-                />
-              }
             />
           )}
         </Surface>

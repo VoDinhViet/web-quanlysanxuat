@@ -1,16 +1,11 @@
-import { Link, useSearch } from "@tanstack/react-router"
+import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Plus, UserRound } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
-import { userColumns } from "@/features/users/components/UsersTableColumns"
+import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
 import { usersQueryOptions } from "@/features/users/api/options"
 
@@ -48,28 +43,10 @@ export function UsersPage() {
               onRetry={() => void usersQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <UsersTable
               rows={usersQuery.data.data}
-              columns={userColumns}
               pagination={usersQuery.data.pagination}
               isPending={usersQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={UserRound}
-                  title="Chưa có nhân sự nào"
-                  description="Bắt đầu bằng cách thêm nhân sự đầu tiên vào hệ thống."
-                  action={
-                    <PermissionGate permission="users:create">
-                      <Button asChild size="sm" className="text-xs">
-                        <Link to="/manage/users/create">
-                          <Plus className="size-4" />
-                          Thêm nhân sự
-                        </Link>
-                      </Button>
-                    </PermissionGate>
-                  }
-                />
-              }
             />
           )}
         </Surface>

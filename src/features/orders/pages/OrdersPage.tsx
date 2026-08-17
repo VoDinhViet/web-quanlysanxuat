@@ -1,16 +1,13 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { ClipboardList } from "lucide-react"
 
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { DataTable } from "@/components/shared/data/DataTable"
 import { OrderStatCards } from "@/features/orders/components/OrderStatCards"
 import { OrderStatusLegend } from "@/features/orders/components/OrderStatusLegend"
-import { orderColumns } from "@/features/orders/components/OrdersTableColumns"
+import { OrdersTable } from "@/features/orders/components/OrdersTable"
 import { OrdersTableFilter } from "@/features/orders/components/OrdersTableFilter"
 import { ordersQueryOptions } from "@/features/orders/api/options"
 
@@ -53,18 +50,10 @@ export function OrdersPage() {
               onRetry={() => void ordersQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <OrdersTable
               rows={ordersQuery.data.data}
-              columns={orderColumns}
               pagination={ordersQuery.data.pagination}
               isPending={ordersQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={ClipboardList}
-                  title="Chưa có đơn hàng nào"
-                  description="Đơn hàng sẽ xuất hiện ở đây sau khi được tạo."
-                />
-              }
             />
           )}
         </Surface>

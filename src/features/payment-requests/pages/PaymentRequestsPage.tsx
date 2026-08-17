@@ -1,15 +1,12 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { CreditCard } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { paymentRequestsQueryOptions } from "@/features/payment-requests/api/options"
-import { paymentRequestsColumns } from "@/features/payment-requests/components/PaymentRequestsTableColumns"
+import { PaymentRequestsTable } from "@/features/payment-requests/components/PaymentRequestsTable"
 import { PaymentRequestsTableFilter } from "@/features/payment-requests/components/PaymentRequestsTableFilter"
 
 export function PaymentRequestsPage() {
@@ -44,18 +41,10 @@ export function PaymentRequestsPage() {
               onRetry={() => void paymentRequestsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <PaymentRequestsTable
               rows={paymentRequestsQuery.data.data}
-              columns={paymentRequestsColumns}
               pagination={paymentRequestsQuery.data.pagination}
               isPending={paymentRequestsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={CreditCard}
-                  title="Chưa có yêu cầu thanh toán nào"
-                  description="Yêu cầu thanh toán sẽ hiển thị tại đây sau khi được tạo từ đơn mua hàng đã hoàn tất nhập hàng."
-                />
-              }
             />
           )}
         </Surface>

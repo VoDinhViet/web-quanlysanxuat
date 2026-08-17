@@ -1,16 +1,13 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { ClipboardCheck } from "lucide-react"
 
-import { DataTable } from "@/components/shared/data/DataTable"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { iqcsQueryOptions } from "@/features/iqc/api/options"
 import { IqcStatCards } from "@/features/iqc/components/IqcStatCards"
-import { iqcColumns } from "@/features/iqc/components/IqcTableColumns"
+import { IqcTable } from "@/features/iqc/components/IqcTable"
 import { IqcTableFilter } from "@/features/iqc/components/IqcTableFilter"
 
 export function IqcPage() {
@@ -52,18 +49,10 @@ export function IqcPage() {
               onRetry={() => void iqcsQuery.refetch()}
             />
           ) : (
-            <DataTable
+            <IqcTable
               rows={iqcsQuery.data.data}
-              columns={iqcColumns}
               pagination={iqcsQuery.data.pagination}
               isPending={iqcsQuery.isFetching}
-              emptyState={
-                <TableEmptyState
-                  icon={ClipboardCheck}
-                  title="Chưa có phiếu IQC nào"
-                  description="Phiếu IQC sẽ hiển thị tại đây sau khi kiểm tra chất lượng vật tư đầu vào."
-                />
-              }
             />
           )}
         </Surface>
