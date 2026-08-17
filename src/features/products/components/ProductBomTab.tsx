@@ -93,6 +93,8 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
               isPending: operationsQuery.isPending,
             }}
           />
+          {/* Small inline hint beneath the BOM tree, not a full-table empty state — too
+          small-scale for TableEmpty's icon-badge treatment, intentionally not using it here. */}
           {bomQuery.data.length === 0 ? (
             <p className="mt-3 text-xs font-medium text-muted-foreground">
               Chưa có thành phần con — nhấn "Thêm thành phần" ở dòng sản phẩm để

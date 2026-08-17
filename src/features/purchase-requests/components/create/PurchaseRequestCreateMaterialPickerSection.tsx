@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/table"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { useGetClientOptions } from "@/features/clients/api"
 import { materialsQueryOptions } from "@/features/materials/api"
 import { buildPurchaseRequestMaterialPickerColumns } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerColumns"
@@ -242,9 +242,9 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
               )}
             >
               {rows.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message={
+                  title={
                     materialsQuery.isPending
                       ? "Đang tải..."
                       : "Không tìm thấy vật tư nào"

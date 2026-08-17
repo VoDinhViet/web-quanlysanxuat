@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { IconButton } from "@/components/shared/buttons/IconButton"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
 import { OrderItemDialog } from "@/features/orders/components/OrderItemDialog"
 import { estimateLineTotal } from "@/features/orders/order-totals"
@@ -98,9 +98,10 @@ export const UpdateOrderItemsSection = withForm({
                   </TableHeader>
                   <TableBody>
                     {items.length === 0 ? (
-                      <TableEmptyRow
+                      <TableEmpty
                         colSpan={9}
-                        message="Chưa có sản phẩm nào. Bấm “Thêm sản phẩm” để thêm."
+                        title="Chưa có sản phẩm nào"
+                        description="Bấm “Thêm sản phẩm” để thêm."
                       />
                     ) : (
                       items.map((item, index) => (

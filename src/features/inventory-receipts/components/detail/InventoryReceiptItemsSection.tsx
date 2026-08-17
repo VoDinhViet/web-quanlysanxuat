@@ -1,8 +1,20 @@
 import { PackageSearch } from "lucide-react"
-import { createColumnHelper } from "@tanstack/react-table"
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
 
-import { DataTable } from "@/components/shared/data/DataTable"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import type {
   InventoryReceiptDetail,
   InventoryReceiptItemDetail,
@@ -97,6 +109,12 @@ type InventoryReceiptItemsSectionProps = {
 export function InventoryReceiptItemsSection({
   detail,
 }: InventoryReceiptItemsSectionProps) {
+  const table = useReactTable({
+    data: detail.items,
+    columns: itemColumns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
   const totalQuantity = detail.items.reduce(
     (sum, item) => sum + item.quantity,
     0
@@ -114,19 +132,48 @@ export function InventoryReceiptItemsSection({
         Danh sách vật tư nhập kho
       </h3>
 
-      <DataTable
-        rows={detail.items}
-        columns={itemColumns}
-        isPending={false}
-        bare
-        emptyState={
-          <TableEmptyState
-            icon={PackageSearch}
-            title="Chưa có vật tư nào"
-            description="Phiếu nhập kho này chưa có dòng vật tư nào."
-          />
-        }
-      />
+      {detail.items.length === 0 ? (
+        <TableEmpty
+          icon={PackageSearch}
+          title="Chưa có vật tư nào"
+          description="Phiếu nhập kho này chưa có dòng vật tư nào."
+        />
+      ) : (
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="h-12 hover:bg-muted/45">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cell.column.columnDef.meta?.cellClassName}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
 
       {detail.items.length > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">

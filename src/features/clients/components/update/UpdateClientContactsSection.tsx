@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { IconButton } from "@/components/shared/buttons/IconButton"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
 import { ClientContactDialog } from "@/features/clients/components/ClientContactDialog"
 import { updateClientFormDefaultValues } from "@/features/clients/schemas/update-client.schema"
@@ -90,9 +90,10 @@ export const UpdateClientContactsSection = withForm({
                   </TableHeader>
                   <TableBody>
                     {contacts.length === 0 ? (
-                      <TableEmptyRow
+                      <TableEmpty
                         colSpan={7}
-                        message="Chưa có người liên hệ. Bấm “Thêm người liên hệ” để thêm."
+                        title="Chưa có người liên hệ"
+                        description="Bấm “Thêm người liên hệ” để thêm."
                       />
                     ) : (
                       contacts.map((contact, index) => (

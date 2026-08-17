@@ -1,5 +1,6 @@
 import { Delivery } from "@solar-icons/react"
 import { DateTime } from "luxon"
+import { Truck } from "lucide-react"
 
 import {
   Table,
@@ -9,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { buildMockDeliveryHistory } from "@/features/orders/mock/order-detail.mock"
 import { vndFormatter } from "@/lib/currency"
@@ -28,9 +30,11 @@ export function OrderDetailDeliveryHistoryCard({
   return (
     <OrderDetailSectionCard icon={Delivery} title="Lịch sử giao hàng" isMock>
       {rows.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">
-          Chưa có lượt giao hàng nào.
-        </p>
+        <TableEmpty
+          icon={Truck}
+          title="Chưa có lượt giao hàng nào"
+          description="Lượt giao hàng sẽ hiện ở đây khi đơn hàng bắt đầu được giao."
+        />
       ) : (
         <div className="overflow-x-auto rounded-md border border-border/50">
           <Table>

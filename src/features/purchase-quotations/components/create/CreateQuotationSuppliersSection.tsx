@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildQuotationSuppliersItemColumns } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersItemColumns"
 import { QuotationAddSupplierDialog } from "@/features/purchase-quotations/components/create/QuotationAddSupplierDialog"
 import { QuotationCompareQuoteTable } from "@/features/purchase-quotations/components/create/QuotationCompareQuoteTable"
@@ -90,47 +91,54 @@ export const CreateQuotationSuppliersSection = withForm({
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <Fragment key={row.original.itemId}>
-                  <TableRow className="h-14 bg-card hover:bg-muted/25">
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cell.column.columnDef.meta?.cellClassName}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+              {items.length === 0 ? (
+                <TableEmpty
+                  colSpan={columns.length}
+                  title="Chưa chọn vật tư nào"
+                />
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <Fragment key={row.original.itemId}>
+                    <TableRow className="h-14 bg-card hover:bg-muted/25">
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
 
-                  {/* Left accent reads as "detail of the row above" — reads unmistakably at a
-                      glance which vật tư a NCC block belongs to, even with several items stacked.
-                      An inset ring rather than `border-l`: Tailwind's `ring-*` has no single-side
-                      variant (it's always a uniform box-shadow), so this is that same inset
-                      box-shadow mechanism hand-scoped to just the left edge via an arbitrary
-                      value — drawn inside the cell's own bounds (no layout width added, unlike
-                      border-l) and never clipped by the outer wrapper's `overflow-hidden`. Set on
-                      the <td>, not the <tr> — a border-collapse:separate table (the default,
-                      unset elsewhere in this app) only paints borders/shadows declared on
-                      table/td/th; one set on <tr> is silently dropped. */}
-                  <TableRow className="bg-card hover:bg-card">
-                    <TableCell
-                      colSpan={row.getVisibleCells().length}
-                      className="p-0 shadow-[inset_3px_0_0_0_var(--color-primary)]"
-                    >
-                      <QuotationCompareQuoteTable
-                        item={row.original}
-                        itemIndex={row.index}
-                        itemsField={itemsField}
-                        disabled={disabled}
-                      />
-                    </TableCell>
-                  </TableRow>
-                </Fragment>
-              ))}
+                    {/* Left accent reads as "detail of the row above" — reads unmistakably at a
+                        glance which vật tư a NCC block belongs to, even with several items stacked.
+                        An inset ring rather than `border-l`: Tailwind's `ring-*` has no single-side
+                        variant (it's always a uniform box-shadow), so this is that same inset
+                        box-shadow mechanism hand-scoped to just the left edge via an arbitrary
+                        value — drawn inside the cell's own bounds (no layout width added, unlike
+                        border-l) and never clipped by the outer wrapper's `overflow-hidden`. Set on
+                        the <td>, not the <tr> — a border-collapse:separate table (the default,
+                        unset elsewhere in this app) only paints borders/shadows declared on
+                        table/td/th; one set on <tr> is silently dropped. */}
+                    <TableRow className="bg-card hover:bg-card">
+                      <TableCell
+                        colSpan={row.getVisibleCells().length}
+                        className="p-0 shadow-[inset_3px_0_0_0_var(--color-primary)]"
+                      >
+                        <QuotationCompareQuoteTable
+                          item={row.original}
+                          itemIndex={row.index}
+                          itemsField={itemsField}
+                          disabled={disabled}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </Fragment>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

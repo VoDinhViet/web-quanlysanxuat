@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildInventoryReceiptFromPoItemColumns } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoItemsColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { withForm } from "@/hooks/use-app-form"
@@ -98,9 +98,10 @@ export const InventoryReceiptCreateFromPoItemsSection = withForm({
             </TableHeader>
             <TableBody>
               {items.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message="Chưa có dòng nào. Quay lại bước ① để chọn PO."
+                  title="Chưa có dòng nào"
+                  description="Quay lại bước ① để chọn PO."
                 />
               ) : (
                 table.getRowModel().rows.map((row) => (

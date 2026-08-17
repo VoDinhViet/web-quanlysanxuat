@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { withForm } from "@/hooks/use-app-form"
@@ -95,9 +95,9 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
             </TableHeader>
             <TableBody>
               {lines.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={5}
-                  message={
+                  title={
                     isFetching
                       ? "Đang tải dòng đơn mua hàng..."
                       : "Đơn mua hàng không có dòng nào"

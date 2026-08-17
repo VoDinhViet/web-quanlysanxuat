@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { Box } from "@solar-icons/react"
+import { PackageSearch } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -11,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OrderDetailPaymentSummary } from "@/features/orders/components/detail/OrderDetailPaymentSummary"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import {
@@ -44,11 +46,11 @@ export function OrderDetailItemsCard({ order }: OrderDetailItemsCardProps) {
       title={`Danh sách sản phẩm (${order.items.length})`}
     >
       {order.items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
-          <p className="text-sm font-medium text-muted-foreground">
-            Đơn hàng chưa có sản phẩm nào.
-          </p>
-        </div>
+        <TableEmpty
+          icon={PackageSearch}
+          title="Đơn hàng chưa có sản phẩm nào"
+          description="Danh sách sản phẩm sẽ hiện ở đây khi đơn hàng được cập nhật."
+        />
       ) : (
         <div className="space-y-5">
           <div className="overflow-x-auto rounded-md border border-border/50">

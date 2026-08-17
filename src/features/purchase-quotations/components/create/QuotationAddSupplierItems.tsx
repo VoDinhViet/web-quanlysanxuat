@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildQuotationAddSupplierItemsColumns } from "@/features/purchase-quotations/components/create/QuotationAddSupplierItemsColumns"
 import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
@@ -95,9 +95,9 @@ export function QuotationAddSupplierItems({
             </TableHeader>
             <TableBody>
               {items.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message="Chưa có vật tư nào"
+                  title="Chưa có vật tư nào"
                 />
               ) : (
                 table.getRowModel().rows.map((row) => {

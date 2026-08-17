@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { productionOrderLogActionLabels } from "@/lib/types/production-order.type"
 import type { ProductionOrderLog } from "@/lib/types/production-order.type"
 import type { Pagination } from "@/lib/types/pagination.type"
@@ -72,7 +72,7 @@ export function ProductionOrderLogsCard({
                 </TableCell>
               </TableRow>
             ) : logs.length === 0 ? (
-              <TableEmptyRow colSpan={4} message="Chưa có dữ liệu lịch sử." />
+              <TableEmpty colSpan={4} title="Chưa có dữ liệu lịch sử." />
             ) : (
               logs.map((log) => (
                 <TableRow

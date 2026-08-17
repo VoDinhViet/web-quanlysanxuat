@@ -1,8 +1,20 @@
 import { PackageSearch } from "lucide-react"
 import { useMemo } from "react"
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
 
-import { DataTable } from "@/components/shared/data/DataTable"
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildPurchaseOrderItemColumns } from "@/features/purchase-orders/components/detail/PurchaseOrderItemsTableColumns"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
@@ -40,6 +52,12 @@ export function PurchaseOrderItemsSection({
     [purchaseOrder.items]
   )
 
+  const table = useReactTable({
+    data: items,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
   return (
     <div className="border-b border-border not-first:border-t">
       <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-semibold tracking-wide text-foreground uppercase sm:px-5">
@@ -47,19 +65,48 @@ export function PurchaseOrderItemsSection({
         Chi tiết vật tư
       </h3>
 
-      <DataTable
-        rows={items}
-        columns={columns}
-        isPending={false}
-        bare
-        emptyState={
-          <TableEmptyState
-            icon={PackageSearch}
-            title="Chưa có vật tư nào"
-            description="Đơn mua hàng này chưa có dòng vật tư nào."
-          />
-        }
-      />
+      {items.length === 0 ? (
+        <TableEmpty
+          icon={PackageSearch}
+          title="Chưa có vật tư nào"
+          description="Đơn mua hàng này chưa có dòng vật tư nào."
+        />
+      ) : (
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="h-12 hover:bg-muted/45">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cell.column.columnDef.meta?.cellClassName}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
   )
 }

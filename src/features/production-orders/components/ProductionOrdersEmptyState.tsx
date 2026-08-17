@@ -1,6 +1,6 @@
 import { Factory } from "lucide-react"
 
-import { TableEmptyState } from "@/components/shared/feedback/TableEmptyState"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 
 const emptyStateCopy: Record<
@@ -35,7 +35,7 @@ export function ProductionOrdersEmptyState({
   const copy = status ? emptyStateCopy[status] : allEmptyStateCopy
 
   return (
-    <TableEmptyState
+    <TableEmpty
       icon={Factory}
       title={copy.title}
       description={copy.description}

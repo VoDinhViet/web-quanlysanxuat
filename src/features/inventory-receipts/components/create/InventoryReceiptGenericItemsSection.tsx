@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { IconButton } from "@/components/shared/buttons/IconButton"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/create/InventoryReceiptItemDialog"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
@@ -94,9 +94,10 @@ export const InventoryReceiptGenericItemsSection = withForm({
                   </TableHeader>
                   <TableBody>
                     {items.length === 0 ? (
-                      <TableEmptyRow
+                      <TableEmpty
                         colSpan={7}
-                        message="Chưa có vật tư nào. Bấm “Thêm vật tư” để thêm."
+                        title="Chưa có vật tư nào"
+                        description="Bấm “Thêm vật tư” để thêm."
                       />
                     ) : (
                       items.map((item, index) => (

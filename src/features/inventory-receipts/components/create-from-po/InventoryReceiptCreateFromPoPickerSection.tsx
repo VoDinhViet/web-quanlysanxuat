@@ -28,7 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildInventoryReceiptFromPoPickerColumns } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPickerColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api"
@@ -134,9 +134,9 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
               )}
             >
               {rows.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message={
+                  title={
                     poQuery.isPending
                       ? "Đang tải..."
                       : "Không có PO nào cần nhập kho"

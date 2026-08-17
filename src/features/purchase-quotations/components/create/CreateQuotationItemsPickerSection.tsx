@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api"
 import { buildQuotationItemsPickerColumns } from "@/features/purchase-quotations/components/create/CreateQuotationItemsPickerColumns"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
@@ -235,9 +235,9 @@ export const CreateQuotationItemsPickerSection = withForm({
               )}
             >
               {rows.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message={
+                  title={
                     ledgerQuery.isPending
                       ? "Đang tải..."
                       : "Không có vật tư nào cần mua"

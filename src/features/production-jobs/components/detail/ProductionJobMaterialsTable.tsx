@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { MissingFieldValue } from "@/components/shared/feedback/MissingFieldValue"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import type { ProductionJobMaterial } from "@/lib/types/production-job.type"
 import type { Pagination } from "@/lib/types/pagination.type"
@@ -58,7 +58,7 @@ export function ProductionJobMaterialsTable({
         </TableHeader>
         <TableBody>
           {rows.length === 0 ? (
-            <TableEmptyRow colSpan={columnCount} />
+            <TableEmpty colSpan={columnCount} title="Không có dữ liệu" />
           ) : (
             rows.map((material, index) => (
               <TableRow

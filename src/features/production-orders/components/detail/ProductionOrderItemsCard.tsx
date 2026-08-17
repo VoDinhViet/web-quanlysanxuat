@@ -1,5 +1,5 @@
 import { Box } from "@solar-icons/react"
-import { TriangleAlert } from "lucide-react"
+import { PackageSearch, TriangleAlert } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { withForm } from "@/hooks/use-app-form"
 import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
@@ -129,11 +130,11 @@ export const ProductionOrderItemsCard = withForm({
 
         <div className="p-4 sm:p-5">
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
-              <p className="text-sm font-medium text-muted-foreground">
-                Đơn hàng không có dòng sản phẩm nào cần lập kế hoạch sản xuất.
-              </p>
-            </div>
+            <TableEmpty
+              icon={PackageSearch}
+              title="Đơn hàng không có dòng sản phẩm nào cần lập kế hoạch sản xuất"
+              description="Danh sách dòng sản phẩm cần lập kế hoạch sản xuất sẽ hiện ở đây khi có dữ liệu."
+            />
           ) : (
             <div className="space-y-3">
               <div className="overflow-x-auto rounded-md border border-border/50">

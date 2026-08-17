@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildPurchaseRequestQuantityColumns } from "@/features/purchase-requests/components/create/PurchaseRequestCreateQuantityColumns"
 import { createPurchaseRequestFormDefaultValues } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
 import { withForm } from "@/hooks/use-app-form"
@@ -75,9 +75,10 @@ export const PurchaseRequestCreateQuantitySection = withForm({
             </TableHeader>
             <TableBody>
               {items.length === 0 ? (
-                <TableEmptyRow
+                <TableEmpty
                   colSpan={columns.length}
-                  message="Chưa chọn vật tư nào. Quay lại tab “Chọn vật tư” để bắt đầu."
+                  title="Chưa chọn vật tư nào"
+                  description="Quay lại tab “Chọn vật tư” để bắt đầu."
                 />
               ) : (
                 table.getRowModel().rows.map((row) => (

@@ -99,6 +99,8 @@ export function PurchaseQuotationSupplierCompareTable({
           </TableRow>
         ))}
 
+        {/* Nested sub-row hint, indented under the outer item row — too small-scale for
+        TableEmpty's icon-badge treatment, intentionally not using it here. */}
         {item.suppliers.length === 0 && (
           <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
             <TableCell colSpan={columns.length} className="pl-10">

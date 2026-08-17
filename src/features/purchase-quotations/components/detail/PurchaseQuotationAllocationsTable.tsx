@@ -78,6 +78,22 @@ export function PurchaseQuotationAllocationsTable({
             ))}
           </TableRow>
         ))}
+
+        {/* Nested sub-row hint, indented under the outer item row — same "too small-scale for
+        TableEmpty" treatment as QuotationCompareQuoteTable.tsx / PurchaseQuotationSupplierCompareTable.tsx,
+        this table's twin stacked right below it. */}
+        {item.allocations.length === 0 && (
+          <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
+            <TableCell
+              colSpan={purchaseQuotationAllocationsColumns.length}
+              className="pl-10"
+            >
+              <span className="text-xs text-muted-foreground">
+                Chưa có dòng ĐXMH nào cho vật tư này
+              </span>
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>
     </Table>
   )

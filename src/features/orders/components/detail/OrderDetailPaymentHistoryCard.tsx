@@ -1,5 +1,6 @@
 import { Card2 } from "@solar-icons/react"
 import { DateTime } from "luxon"
+import { CreditCard } from "lucide-react"
 
 import {
   Table,
@@ -9,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { buildMockPaymentHistory } from "@/features/orders/mock/order-detail.mock"
 import { vndFormatter } from "@/lib/currency"
@@ -26,9 +28,11 @@ export function OrderDetailPaymentHistoryCard({
   return (
     <OrderDetailSectionCard icon={Card2} title="Lịch sử thanh toán" isMock>
       {rows.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">
-          Chưa có giao dịch thanh toán nào.
-        </p>
+        <TableEmpty
+          icon={CreditCard}
+          title="Chưa có giao dịch thanh toán nào"
+          description="Giao dịch thanh toán sẽ hiện ở đây khi được ghi nhận."
+        />
       ) : (
         <div className="overflow-x-auto rounded-md border border-border/50">
           <Table>

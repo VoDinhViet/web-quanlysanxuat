@@ -10,6 +10,8 @@ import {
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
+import { ClipboardList } from "lucide-react"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,6 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
@@ -144,14 +147,11 @@ export function ProductOperationsPanel({
         </TableHeader>
         <TableBody>
           {operations.length === 0 && !canManage ? (
-            <TableRow className="hover:bg-transparent">
-              <TableCell
-                colSpan={columnCount}
-                className="py-6 text-center text-muted-foreground"
-              >
-                Chưa có công đoạn nào.
-              </TableCell>
-            </TableRow>
+            <TableEmpty
+              icon={ClipboardList}
+              colSpan={columnCount}
+              title="Chưa có công đoạn nào"
+            />
           ) : (
             operations.map((step, idx) => (
               <TableRow

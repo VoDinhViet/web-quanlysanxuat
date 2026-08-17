@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmptyRow } from "@/components/shared/feedback/TableEmptyRow"
+import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { ProductionJobOperationCompletedQuantityCell } from "@/features/production-jobs/components/detail/ProductionJobOperationCompletedQuantityCell"
 import type { ProductionJobBomRow } from "@/features/production-jobs/components/detail/ProductionJobBomTab"
 import { OperationType } from "@/lib/types/operation.type"
@@ -120,10 +120,7 @@ export function ProductionJobBomTable({
       </TableHeader>
       <TableBody>
         {rowsWithOperations.length === 0 ? (
-          <TableEmptyRow
-            colSpan={columnCount}
-            message="Chưa có công đoạn nào."
-          />
+          <TableEmpty colSpan={columnCount} title="Chưa có công đoạn nào." />
         ) : (
           rowsWithOperations.map((row, groupIndex) => (
             <Fragment key={row.node.id}>
