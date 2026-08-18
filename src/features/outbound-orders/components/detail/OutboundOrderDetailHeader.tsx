@@ -7,14 +7,17 @@ import { Button } from "@/components/ui/button"
 import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/OutboundOrderBadges"
 import { OutboundOrderDetailActions } from "@/features/outbound-orders/components/detail/OutboundOrderDetailActions"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
-import { outboundDeliveryMethodLabels } from "@/lib/types/outbound-order.type"
+import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 
 type OutboundOrderDetailHeaderProps = {
-  detail: OutboundOrderDetail
+  order: OutboundOrderDetail
 }
 
+// Meta grid chỉ giữ field BE thật sự trả (client/fulfillmentDate/fulfillmentType) — địa chỉ
+// giao/tài xế/SĐT/tổng SL giao không có nguồn dữ liệu (BE chưa có, xem OutboundOrderInfoCard.tsx
+// cho Ghi chú/Người tạo). Không có kho xuất — BE bỏ warehouseId khỏi outbound_orders.
 export function OutboundOrderDetailHeader({
-  detail,
+  order,
 }: OutboundOrderDetailHeaderProps) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5">
@@ -34,57 +37,27 @@ export function OutboundOrderDetailHeader({
           </Button>
 
           <span className="font-mono text-lg font-bold text-foreground">
-            {detail.code}
+            {order.code}
           </span>
-          <OutboundOrderStatusBadge status={detail.status} />
+          <OutboundOrderStatusBadge status={order.status} />
         </div>
 
-        {/* 3-column MetaFields Grid */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-3">
-          <div className="flex flex-col gap-4">
-            <MetaField label="Khách hàng" value={detail.clientName} />
-            <MetaField label="PO / Lý do" value={detail.poOrReason} />
-            <MetaField
-              label="Địa chỉ giao"
-              value={detail.deliveryAddress ?? "—"}
-            />
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <MetaField
-              label="Ngày tạo"
-              value={DateTime.fromISO(detail.createdAt).toFormat(
-                "dd/MM/yyyy HH:mm"
-              )}
-            />
-            <MetaField
-              label="Hình thức giao"
-              value={outboundDeliveryMethodLabels[detail.deliveryMethod]}
-            />
-            <MetaField
-              label="Tài xế / SĐT"
-              value={
-                detail.driverName
-                  ? `${detail.driverName} (${detail.driverPhone ?? "—"})`
-                  : "—"
-              }
-            />
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <MetaField
-              label="Tổng SL giao"
-              value={`${detail.totalQuantity} ${detail.unit}`}
-            />
-            <MetaField
-              label="Ghi chú"
-              value={detail.note ?? "Không có ghi chú"}
-            />
-          </div>
+          <MetaField label="Khách hàng" value={order.client.name} />
+          <MetaField
+            label="Ngày giao"
+            value={DateTime.fromISO(order.fulfillmentDate).toFormat(
+              "dd/MM/yyyy"
+            )}
+          />
+          <MetaField
+            label="Hình thức giao"
+            value={fulfillmentTypeLabels[order.fulfillmentType]}
+          />
         </div>
       </div>
 
-      <OutboundOrderDetailActions detail={detail} />
+      <OutboundOrderDetailActions order={order} />
     </div>
   )
 }

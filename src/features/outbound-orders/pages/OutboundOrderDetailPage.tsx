@@ -3,19 +3,24 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { outboundOrderQueryOptions } from "@/features/outbound-orders/api/options"
+import {
+  outboundOrderItemsQueryOptions,
+  outboundOrderQueryOptions,
+} from "@/features/outbound-orders/api/options"
 import { OutboundOrderDetailHeader } from "@/features/outbound-orders/components/detail/OutboundOrderDetailHeader"
 import { OutboundOrderItemsSection } from "@/features/outbound-orders/components/detail/OutboundOrderItemsSection"
 import { OutboundOrderInfoCard } from "@/features/outbound-orders/components/detail/OutboundOrderInfoCard"
-import { OutboundOrderStatusHistoryCard } from "@/features/outbound-orders/components/detail/OutboundOrderStatusHistoryCard"
 
 export function OutboundOrderDetailPage() {
   const { outboundOrderId } = useParams({
     from: "/(authed)/manage_/outbound-orders_/$outboundOrderId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: order } = useSuspenseQuery(
     outboundOrderQueryOptions(outboundOrderId)
+  )
+  const { data: items } = useSuspenseQuery(
+    outboundOrderItemsQueryOptions(outboundOrderId)
   )
 
   return (
@@ -29,7 +34,7 @@ export function OutboundOrderDetailPage() {
             label: "Giao hàng (DO)",
             href: "/manage/outbound-orders",
           },
-          { label: detail.code },
+          { label: order.code },
         ]}
         notificationCount={5}
       />
@@ -38,14 +43,13 @@ export function OutboundOrderDetailPage() {
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           {/* Main content */}
           <Surface>
-            <OutboundOrderDetailHeader detail={detail} />
-            <OutboundOrderItemsSection detail={detail} />
+            <OutboundOrderDetailHeader order={order} />
+            <OutboundOrderItemsSection items={items} />
           </Surface>
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
-            <OutboundOrderInfoCard detail={detail} />
-            <OutboundOrderStatusHistoryCard detail={detail} />
+            <OutboundOrderInfoCard order={order} />
           </div>
         </div>
       </div>

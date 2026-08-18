@@ -1,179 +1,65 @@
-import { useState } from "react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CheckCircle, CloseCircle, Printer } from "@solar-icons/react"
 import { SendHorizontal } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { PermissionGate } from "@/components/shared/PermissionGate"
-import { mockUpdateOutboundOrderStatus } from "@/features/outbound-orders/mock/outbound-orders.mock"
-import { OutboundOrderPrintDialog } from "@/features/outbound-orders/components/detail/OutboundOrderPrintDialog"
-import type {
-  OutboundOrderDetail,
-  OutboundOrderStatus,
-} from "@/lib/types/outbound-order.type"
+import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { OutboundOrderStatus } from "@/lib/types/outbound-order.type"
+import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
 type OutboundOrderDetailActionsProps = {
-  detail: OutboundOrderDetail
+  order: OutboundOrderDetail
 }
 
+// BE outbound-orders hiện chỉ có list/detail/items/create (luôn DRAFT, docs/domains/inventory.md
+// mục "Giao hàng" — phase 1) — chưa có API duyệt/xác nhận giao/hủy/in phiếu (cũng chưa có
+// permission `outbound:update` nào để gate các thao tác này), nên mọi nút chuyển trạng thái + in
+// phiếu dùng PendingAction (disabled + tooltip) thay vì mutation mock cũ, không bọc PermissionGate
+// vì chưa có permission code đúng cho chúng. Điều kiện hiện nút theo status giữ nguyên để UI đã
+// sẵn sàng khi BE thêm API ở phase sau.
 export function OutboundOrderDetailActions({
-  detail,
+  order,
 }: OutboundOrderDetailActionsProps) {
-  const [printOpen, setPrintOpen] = useState(false)
-  const [confirmStatus, setConfirmStatus] =
-    useState<OutboundOrderStatus | null>(null)
-  const queryClient = useQueryClient()
-
-  const mutation = useMutation({
-    mutationFn: async (nextStatus: OutboundOrderStatus) => {
-      await new Promise((resolve) => setTimeout(resolve, 300))
-      return mockUpdateOutboundOrderStatus(
-        detail.id,
-        nextStatus,
-        "Người dùng hiện tại"
-      )
-    },
-    onSuccess: (updated) => {
-      if (!updated) return
-      queryClient.setQueryData(
-        ["outbound-orders", "detail", detail.id],
-        updated
-      )
-      void queryClient.invalidateQueries({
-        queryKey: ["outbound-orders", "list"],
-      })
-      setConfirmStatus(null)
-    },
-  })
-
-  const isDraft = detail.status === "DRAFT"
-  const isAwaitingApproval = detail.status === "AWAITING_APPROVAL"
-  const isAwaitingDelivery = detail.status === "AWAITING_DELIVERY_CONFIRMATION"
+  const isDraft = order.status === OutboundOrderStatus.DRAFT
+  const isPendingApproval =
+    order.status === OutboundOrderStatus.PENDING_APPROVAL
+  const isPendingDelivery =
+    order.status === OutboundOrderStatus.PENDING_DELIVERY
 
   return (
-    <div className="flex shrink-0 flex-col items-end gap-2">
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Print button */}
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setPrintOpen(true)}
+    <div className="flex flex-wrap items-center gap-2">
+      <PendingAction label="In phiếu DO" hint="chưa có tính năng in phiếu">
+        <Printer className="size-4" />
+        In phiếu DO
+      </PendingAction>
+
+      {isDraft && (
+        <PendingAction label="Gửi duyệt DO" hint="chưa có tính năng duyệt DO">
+          <SendHorizontal className="size-4" />
+          Gửi duyệt DO
+        </PendingAction>
+      )}
+
+      {isPendingApproval && (
+        <PendingAction label="Duyệt đơn DO" hint="chưa có tính năng duyệt DO">
+          <CheckCircle className="size-4" />
+          Duyệt đơn DO
+        </PendingAction>
+      )}
+
+      {isPendingDelivery && (
+        <PendingAction
+          label="Xác nhận đã giao"
+          hint="chưa có tính năng xác nhận giao hàng"
         >
-          <Printer className="size-4" />
-          In phiếu DO
-        </Button>
+          <CheckCircle className="size-4" />
+          Xác nhận đã giao
+        </PendingAction>
+      )}
 
-        {/* Action: Submit for Approval if Draft */}
-        {isDraft && (
-          <PermissionGate permission="orders:update">
-            <Button
-              type="button"
-              onClick={() => setConfirmStatus("AWAITING_APPROVAL")}
-              disabled={mutation.isPending}
-            >
-              <SendHorizontal className="size-4" />
-              Gửi duyệt DO
-            </Button>
-          </PermissionGate>
-        )}
-
-        {/* Action: Approve DO if Awaiting Approval */}
-        {isAwaitingApproval && (
-          <PermissionGate permission="orders:approve">
-            <Button
-              type="button"
-              onClick={() => setConfirmStatus("AWAITING_DELIVERY_CONFIRMATION")}
-              disabled={mutation.isPending}
-            >
-              <CheckCircle className="size-4" />
-              Duyệt đơn DO
-            </Button>
-          </PermissionGate>
-        )}
-
-        {/* Action: Confirm Delivered if Awaiting Delivery */}
-        {isAwaitingDelivery && (
-          <PermissionGate permission="orders:update">
-            <Button
-              type="button"
-              onClick={() => setConfirmStatus("DELIVERED")}
-              disabled={mutation.isPending}
-            >
-              <CheckCircle className="size-4" />
-              Xác nhận đã giao
-            </Button>
-          </PermissionGate>
-        )}
-
-        {/* Action: Cancel */}
-        {(isDraft || isAwaitingApproval) && (
-          <PermissionGate permission="orders:update">
-            <Button
-              type="button"
-              variant="outline"
-              className="border-destructive/40 text-destructive"
-              onClick={() => setConfirmStatus("CANCELLED")}
-              disabled={mutation.isPending}
-            >
-              <CloseCircle className="size-4" />
-              Hủy đơn DO
-            </Button>
-          </PermissionGate>
-        )}
-      </div>
-
-      {/* Print Dialog */}
-      <OutboundOrderPrintDialog
-        open={printOpen}
-        onOpenChange={setPrintOpen}
-        orderId={detail.id}
-      />
-
-      {/* Status Confirm Dialog */}
-      {confirmStatus && (
-        <Dialog
-          open={Boolean(confirmStatus)}
-          onOpenChange={(open) => !open && setConfirmStatus(null)}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Xác nhận chuyển trạng thái</DialogTitle>
-              <DialogDescription>
-                Bạn chắc chắn muốn chuyển đơn giao hàng{" "}
-                <span className="font-mono font-semibold text-foreground">
-                  {detail.code}
-                </span>{" "}
-                sang trạng thái mới?
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setConfirmStatus(null)}
-                disabled={mutation.isPending}
-              >
-                Hủy
-              </Button>
-              <Button
-                variant={
-                  confirmStatus === "CANCELLED" ? "destructive" : "default"
-                }
-                onClick={() => mutation.mutate(confirmStatus)}
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? "Đang xử lý…" : "Xác nhận"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+      {(isDraft || isPendingApproval) && (
+        <PendingAction label="Hủy đơn DO" hint="chưa có tính năng hủy DO">
+          <CloseCircle className="size-4" />
+          Hủy đơn DO
+        </PendingAction>
       )}
     </div>
   )

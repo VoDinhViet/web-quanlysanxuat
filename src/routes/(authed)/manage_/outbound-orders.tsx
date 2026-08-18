@@ -8,7 +8,7 @@ import { outboundOrdersSearchSchema } from "@/features/outbound-orders/schemas/o
 
 export const Route = createFileRoute("/(authed)/manage_/outbound-orders")({
   beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "orders:read"),
+    requirePermission(context.permissions, "outbound:read"),
   validateSearch: outboundOrdersSearchSchema,
   loader: ({ context, location }) =>
     context.queryClient.ensureQueryData(

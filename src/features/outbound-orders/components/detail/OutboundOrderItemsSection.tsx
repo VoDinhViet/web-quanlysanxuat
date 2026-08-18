@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { PackageSearch } from "lucide-react"
 import {
   createColumnHelper,
@@ -10,15 +11,13 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import type {
-  OutboundOrderDetail,
-  OutboundOrderItem,
-} from "@/lib/types/outbound-order.type"
+import type { OutboundOrderItem } from "@/lib/types/outbound-order.type"
 
 const col = createColumnHelper<OutboundOrderItem>()
 const numberFmt = new Intl.NumberFormat("vi-VN")
@@ -34,7 +33,43 @@ const itemColumns = [
     cell: ({ row }) => row.index + 1,
   }),
 
-  col.accessor("productCode", {
+  col.display({
+    id: "order",
+    header: "Mã PO",
+    meta: { headerClassName: "min-w-24" },
+    cell: ({ row }) => (
+      <Link
+        to="/manage/orders/$orderId"
+        params={{ orderId: row.original.order.id }}
+        className="font-mono text-xs text-primary hover:underline"
+      >
+        {row.original.order.code}
+      </Link>
+    ),
+  }),
+
+  col.display({
+    id: "productionJob",
+    header: "Job",
+    meta: { headerClassName: "min-w-24" },
+    cell: ({ row }) => {
+      const job = row.original.productionJob
+      if (!job) return "--"
+      return (
+        <Link
+          to="/manage/production-jobs/$productionJobId"
+          params={{ productionJobId: job.id }}
+          search={{ tab: "info" }}
+          className="font-mono text-xs text-primary hover:underline"
+        >
+          {job.code}
+        </Link>
+      )
+    },
+  }),
+
+  col.accessor((row) => row.item.code, {
+    id: "itemCode",
     header: "Mã sản phẩm",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
@@ -42,12 +77,14 @@ const itemColumns = [
     ),
   }),
 
-  col.accessor("productName", {
+  col.accessor((row) => row.item.name, {
+    id: "itemName",
     header: "Tên sản phẩm",
     meta: { headerClassName: "min-w-48" },
   }),
 
-  col.accessor("unit", {
+  col.accessor((row) => row.unit.name, {
+    id: "unit",
     header: "ĐVT",
     meta: {
       headerClassName: "min-w-16 text-center",
@@ -55,17 +92,8 @@ const itemColumns = [
     },
   }),
 
-  col.accessor("orderedQuantity", {
-    header: "SL yêu cầu",
-    meta: {
-      headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums",
-    },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
-  }),
-
-  col.accessor("deliveredQuantity", {
-    header: "SL thực giao",
+  col.accessor("quantity", {
+    header: "SL giao",
     meta: {
       headerClassName: "min-w-24 text-right",
       cellClassName: "text-right tabular-nums font-semibold text-emerald-600",
@@ -81,22 +109,21 @@ const itemColumns = [
 ]
 
 type OutboundOrderItemsSectionProps = {
-  detail: OutboundOrderDetail
+  items: OutboundOrderItem[]
 }
 
+// `totalQuantity` tự tính từ items (không có nguồn BE-computed nào ở cấp header — xem
+// outbound-order.type.ts's OutboundOrderDetail comment).
 export function OutboundOrderItemsSection({
-  detail,
+  items,
 }: OutboundOrderItemsSectionProps) {
   const table = useReactTable({
-    data: detail.items,
+    data: items,
     columns: itemColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
-  const totalDelivered = detail.items.reduce(
-    (sum, item) => sum + item.deliveredQuantity,
-    0
-  )
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <div className="border-b border-border not-first:border-t">
@@ -105,7 +132,7 @@ export function OutboundOrderItemsSection({
         Danh sách thành phẩm giao hàng
       </h3>
 
-      {detail.items.length === 0 ? (
+      {items.length === 0 ? (
         <TableEmpty
           icon={PackageSearch}
           title="Chưa có sản phẩm nào"
@@ -145,18 +172,18 @@ export function OutboundOrderItemsSection({
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow className="h-12">
+              <TableCell colSpan={6} className="font-semibold">
+                Tổng
+              </TableCell>
+              <TableCell className="text-right font-semibold tabular-nums">
+                {numberFmt.format(totalQuantity)}
+              </TableCell>
+              <TableCell />
+            </TableRow>
+          </TableFooter>
         </Table>
-      )}
-
-      {detail.items.length > 0 && (
-        <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
-          <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Tổng cộng SL thực giao:
-          </span>
-          <span className="font-semibold text-emerald-600 tabular-nums">
-            {numberFmt.format(totalDelivered)} {detail.unit}
-          </span>
-        </div>
       )}
     </div>
   )

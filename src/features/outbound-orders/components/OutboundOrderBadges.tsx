@@ -16,12 +16,12 @@ export const outboundOrderStatusStyles: Record<
     badge: "border-dashed bg-transparent text-muted-foreground",
     dot: "bg-muted-foreground/60",
   },
-  AWAITING_APPROVAL: {
+  PENDING_APPROVAL: {
     badge:
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
-  AWAITING_DELIVERY_CONFIRMATION: {
+  PENDING_DELIVERY: {
     badge: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
     dot: "bg-sky-500 dark:bg-sky-400",
   },
