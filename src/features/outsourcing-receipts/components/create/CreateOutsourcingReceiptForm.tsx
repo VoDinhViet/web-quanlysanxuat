@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { CreateOutsourcingReceiptConfirmSection } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptConfirmSection"
 import { CreateOutsourcingReceiptItemsSection } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptItemsSection"
 import { CreateOutsourcingReceiptPickerSection } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptPickerSection"
@@ -56,8 +57,14 @@ export function CreateOutsourcingReceiptForm() {
     onSubmit: ({ value }) => create({ data: value }),
   })
 
-  function handleTabChange(nextTab: CreateOutsourcingReceiptWizardTab) {
-    setTab(nextTab)
+  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
+  // unrecognised value simply doesn't switch tabs.
+  function handleTabChange(value: string) {
+    const nextTab = wizardTabs.find((item) => item.value === value)
+
+    if (nextTab) {
+      setTab(nextTab.value)
+    }
   }
 
   const tabIndex = wizardTabs.findIndex((t) => t.value === tab)
@@ -75,41 +82,39 @@ export function CreateOutsourcingReceiptForm() {
       noValidate
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <form.Subscribe
-          selector={(state) => ({
-            hasItems: state.values.items.length > 0,
-            hasReceiptInfo: Boolean(
-              state.values.supplierId &&
-              state.values.warehouseId &&
-              state.values.receiptDate
-            ),
-          })}
-        >
-          {({ hasItems, hasReceiptInfo }) => (
-            <CreateOutsourcingReceiptTabs
-              tab={tab}
-              canGoToItems={hasItems}
-              canGoToConfirm={hasItems && hasReceiptInfo}
-              onTabChange={handleTabChange}
-            />
-          )}
-        </form.Subscribe>
+        <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
+          <form.Subscribe
+            selector={(state) => ({
+              hasItems: state.values.items.length > 0,
+              hasReceiptInfo: Boolean(
+                state.values.supplierId && state.values.receiptDate
+              ),
+            })}
+          >
+            {({ hasItems, hasReceiptInfo }) => (
+              <CreateOutsourcingReceiptTabs
+                canGoToItems={hasItems}
+                canGoToConfirm={hasItems && hasReceiptInfo}
+              />
+            )}
+          </form.Subscribe>
 
-        {tab === "picker" && (
-          <CreateOutsourcingReceiptPickerSection
-            form={form}
-            disabled={isPending}
-          />
-        )}
-        {tab === "items" && (
-          <CreateOutsourcingReceiptItemsSection
-            form={form}
-            disabled={isPending}
-          />
-        )}
-        {tab === "confirm" && (
-          <CreateOutsourcingReceiptConfirmSection form={form} />
-        )}
+          <TabsContent value="picker" className="m-0 outline-none">
+            <CreateOutsourcingReceiptPickerSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
+          <TabsContent value="items" className="m-0 outline-none">
+            <CreateOutsourcingReceiptItemsSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
+          <TabsContent value="confirm" className="m-0 outline-none">
+            <CreateOutsourcingReceiptConfirmSection form={form} />
+          </TabsContent>
+        </Tabs>
 
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
           {prevTab ? (
@@ -118,7 +123,7 @@ export function CreateOutsourcingReceiptForm() {
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
               disabled={isPending}
-              onClick={() => handleTabChange(prevTab.value)}
+              onClick={() => setTab(prevTab.value)}
             >
               <AltArrowLeft className="size-4" />
               Quay lại
@@ -145,9 +150,7 @@ export function CreateOutsourcingReceiptForm() {
               selector={(state) => ({
                 hasItems: state.values.items.length > 0,
                 hasReceiptInfo: Boolean(
-                  state.values.supplierId &&
-                  state.values.warehouseId &&
-                  state.values.receiptDate
+                  state.values.supplierId && state.values.receiptDate
                 ),
               })}
             >
@@ -159,7 +162,7 @@ export function CreateOutsourcingReceiptForm() {
                   <Button
                     type="button"
                     disabled={!canAdvance}
-                    onClick={() => handleTabChange(nextTab.value)}
+                    onClick={() => setTab(nextTab.value)}
                   >
                     Tiếp theo: {nextTab.label}
                     <AltArrowRight className="size-4" />

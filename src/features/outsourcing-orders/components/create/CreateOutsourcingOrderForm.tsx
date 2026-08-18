@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { CreateOutsourcingOrderConfirmSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderConfirmSection"
 import { CreateOutsourcingOrderInfoSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderInfoSection"
 import { CreateOutsourcingOrderItemsSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderItemsSection"
@@ -81,6 +82,17 @@ export function CreateOutsourcingOrderForm() {
     saveDraft(form.state.values)
   }
 
+  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
+  // unrecognised value simply doesn't switch tabs. Delegates to the typed `handleTabChange`
+  // above so the draft-on-tab-change behavior stays in one place.
+  function handleTabValueChange(value: string) {
+    const nextTab = wizardTabs.find((item) => item.value === value)
+
+    if (nextTab) {
+      handleTabChange(nextTab.value)
+    }
+  }
+
   function resetWizard() {
     form.reset()
     restoreFormDraft(form, createOutsourcingOrderFormDefaultValues)
@@ -105,35 +117,37 @@ export function CreateOutsourcingOrderForm() {
         noValidate
       >
         <div className="overflow-hidden rounded-lg bg-card shadow-card">
-          <form.Subscribe
-            selector={(state) => ({
-              hasItems: state.values.items.length > 0,
-              hasTabTwoInfo: Boolean(
-                state.values.supplierId &&
-                state.values.warehouseId &&
-                state.values.sendDate &&
-                state.values.expectedReturnDate
-              ),
-            })}
+          <Tabs
+            value={tab}
+            onValueChange={handleTabValueChange}
+            className="gap-0"
           >
-            {({ hasItems, hasTabTwoInfo }) => (
-              <CreateOutsourcingOrderTabs
-                tab={tab}
-                canGoToItems={hasItems}
-                canGoToConfirm={hasItems && hasTabTwoInfo}
-                onTabChange={handleTabChange}
-              />
-            )}
-          </form.Subscribe>
+            <form.Subscribe
+              selector={(state) => ({
+                hasItems: state.values.items.length > 0,
+                hasTabTwoInfo: Boolean(
+                  state.values.supplierId &&
+                  state.values.warehouseId &&
+                  state.values.sendDate &&
+                  state.values.expectedReturnDate
+                ),
+              })}
+            >
+              {({ hasItems, hasTabTwoInfo }) => (
+                <CreateOutsourcingOrderTabs
+                  canGoToItems={hasItems}
+                  canGoToConfirm={hasItems && hasTabTwoInfo}
+                />
+              )}
+            </form.Subscribe>
 
-          {tab === "picker" && (
-            <CreateOutsourcingOrderPickerSection
-              form={form}
-              disabled={isPending}
-            />
-          )}
-          {tab === "items" && (
-            <>
+            <TabsContent value="picker" className="m-0 outline-none">
+              <CreateOutsourcingOrderPickerSection
+                form={form}
+                disabled={isPending}
+              />
+            </TabsContent>
+            <TabsContent value="items" className="m-0 outline-none">
               <CreateOutsourcingOrderInfoSection
                 form={form}
                 disabled={isPending}
@@ -144,11 +158,11 @@ export function CreateOutsourcingOrderForm() {
                   disabled={isPending}
                 />
               </div>
-            </>
-          )}
-          {tab === "confirm" && (
-            <CreateOutsourcingOrderConfirmSection form={form} />
-          )}
+            </TabsContent>
+            <TabsContent value="confirm" className="m-0 outline-none">
+              <CreateOutsourcingOrderConfirmSection form={form} />
+            </TabsContent>
+          </Tabs>
 
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
             {prevTab ? (

@@ -2,7 +2,7 @@ import { ClipboardList, Package } from "lucide-react"
 import type { ComponentType } from "react"
 import type { LucideProps } from "lucide-react"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
 export type PurchaseRequestCreateWizardStep = "materials" | "quantities"
@@ -13,7 +13,7 @@ type PurchaseRequestCreateStepItem = {
   icon: ComponentType<LucideProps>
 }
 
-const purchaseRequestCreateStepItems: PurchaseRequestCreateStepItem[] = [
+export const purchaseRequestCreateStepItems: PurchaseRequestCreateStepItem[] = [
   { value: "materials", label: "1. Chọn vật tư", icon: Package },
   {
     value: "quantities",
@@ -23,28 +23,21 @@ const purchaseRequestCreateStepItems: PurchaseRequestCreateStepItem[] = [
 ]
 
 type PurchaseRequestCreateStepsTabsProps = {
-  step: PurchaseRequestCreateWizardStep
   // Same gate as the "Tiếp tục" button below the picker — no jumping to step 2 before at
   // least 1 vật tư is picked. Step 1's tab is always reachable to go back.
   canGoToQuantities: boolean
-  onStepChange: (step: PurchaseRequestCreateWizardStep) => void
 }
 
-// Mirrors CreateQuotationStepsTabs.tsx (the repo's other 2-step create wizard) — same
-// TabsList/TabsTrigger override chain, adapted to this wizard's own step values.
+// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
+// PurchaseRequestCreateForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers — the
+// panels live in the page"). Mirrors CreateQuotationStepsTabs.tsx (the repo's other 2-step
+// create wizard) — same TabsList/TabsTrigger override chain, adapted to this wizard's own step
+// values.
 export function PurchaseRequestCreateStepsTabs({
-  step,
   canGoToQuantities,
-  onStepChange,
 }: PurchaseRequestCreateStepsTabsProps) {
   return (
-    <Tabs
-      value={step}
-      onValueChange={(value) =>
-        onStepChange(value as PurchaseRequestCreateWizardStep)
-      }
-      className="border-b border-border"
-    >
+    <div className="border-b border-border">
       {/* `group-data-horizontal/tabs:h-auto`, not plain `h-auto`: the list's cva base pins the
           height with that same variant chain, and tailwind-merge only dedupes when the chains
           match — otherwise the list stays 36px while the 48px triggers overflow it. */}
@@ -78,6 +71,6 @@ export function PurchaseRequestCreateStepsTabs({
           )
         })}
       </TabsList>
-    </Tabs>
+    </div>
   )
 }

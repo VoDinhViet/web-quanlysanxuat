@@ -2,7 +2,7 @@ import { Box, CheckCircle2, ListChecks } from "lucide-react"
 import type { ComponentType } from "react"
 import type { LucideProps } from "lucide-react"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
 export type CreateOutsourcingOrderWizardTab = "picker" | "items" | "confirm"
@@ -22,20 +22,17 @@ export const wizardTabs: WizardTab[] = [
 ]
 
 type CreateOutsourcingOrderTabsProps = {
-  tab: CreateOutsourcingOrderWizardTab
   canGoToItems: boolean
   canGoToConfirm: boolean
-  onTabChange: (tab: CreateOutsourcingOrderWizardTab) => void
 }
 
-// Rập khuôn InventoryReceiptCreateFromPoStepsTabs.tsx / PurchaseRequestCreateStepsTabs.tsx — 3
-// tab, tab ②/③ khoá tới khi có điều kiện tương ứng (xem CreateOutsourcingOrderForm.tsx's
-// canGoToX). Tab ① luôn mở được để quay lại đổi lựa chọn.
+// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
+// CreateOutsourcingOrderForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers — the
+// panels live in the page"). Tab ②/③ khoá tới khi có điều kiện tương ứng (xem
+// CreateOutsourcingOrderForm.tsx's canGoToX). Tab ① luôn mở được để quay lại đổi lựa chọn.
 export function CreateOutsourcingOrderTabs({
-  tab,
   canGoToItems,
   canGoToConfirm,
-  onTabChange,
 }: CreateOutsourcingOrderTabsProps) {
   const disabledByTab: Record<CreateOutsourcingOrderWizardTab, boolean> = {
     picker: false,
@@ -44,13 +41,7 @@ export function CreateOutsourcingOrderTabs({
   }
 
   return (
-    <Tabs
-      value={tab}
-      onValueChange={(value) =>
-        onTabChange(value as CreateOutsourcingOrderWizardTab)
-      }
-      className="border-b border-border"
-    >
+    <div className="border-b border-border">
       <TabsList
         variant="line"
         className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
@@ -78,6 +69,6 @@ export function CreateOutsourcingOrderTabs({
           )
         })}
       </TabsList>
-    </Tabs>
+    </div>
   )
 }

@@ -14,12 +14,16 @@ import {
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { PurchaseRequestCreateHeaderSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateHeaderSection"
 import { PurchaseRequestCreateMaterialPickerSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerSection"
 import { PurchaseRequestCreateQuantitySection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateQuantitySection"
-import { PurchaseRequestCreateStepsTabs } from "@/features/purchase-requests/components/create/PurchaseRequestCreateStepsTabs"
+import {
+  PurchaseRequestCreateStepsTabs,
+  purchaseRequestCreateStepItems,
+} from "@/features/purchase-requests/components/create/PurchaseRequestCreateStepsTabs"
 import { PurchaseRequestCreateTallySheet } from "@/features/purchase-requests/components/create/PurchaseRequestCreateTallySheet"
 import { createPurchaseRequest } from "@/features/purchase-requests/api/server-functions/create-purchase-request.api"
 import {
@@ -74,6 +78,18 @@ export function PurchaseRequestCreateForm() {
   const canGoToQuantities =
     useField({ form, name: "items" }).state.value.length > 0
 
+  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
+  // unrecognised value simply doesn't switch steps.
+  function handleStepChange(value: string) {
+    const nextStep = purchaseRequestCreateStepItems.find(
+      (item) => item.value === value
+    )
+
+    if (nextStep) {
+      setStep(nextStep.value)
+    }
+  }
+
   // Auto-restore a saved draft into the form once, after localStorage hydrates. Always resumes
   // on step 1 (even if the draft already had vật tư picked) — the picker re-shows them
   // pre-checked, so resuming still asks the user to confirm the selection before step 2, same
@@ -97,19 +113,18 @@ export function PurchaseRequestCreateForm() {
     >
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="overflow-hidden rounded-lg bg-card shadow-card">
-          <PurchaseRequestCreateStepsTabs
-            step={step}
-            canGoToQuantities={canGoToQuantities}
-            onStepChange={setStep}
-          />
-
-          {step === "materials" ? (
-            <PurchaseRequestCreateMaterialPickerSection
-              form={form}
-              disabled={isPending}
+          <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
+            <PurchaseRequestCreateStepsTabs
+              canGoToQuantities={canGoToQuantities}
             />
-          ) : (
-            <>
+
+            <TabsContent value="materials" className="m-0 outline-none">
+              <PurchaseRequestCreateMaterialPickerSection
+                form={form}
+                disabled={isPending}
+              />
+            </TabsContent>
+            <TabsContent value="quantities" className="m-0 outline-none">
               <PurchaseRequestCreateHeaderSection
                 form={form}
                 disabled={isPending}
@@ -120,8 +135,8 @@ export function PurchaseRequestCreateForm() {
                   disabled={isPending}
                 />
               </div>
-            </>
-          )}
+            </TabsContent>
+          </Tabs>
 
           {step === "materials" ? (
             <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">

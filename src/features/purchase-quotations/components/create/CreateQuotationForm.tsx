@@ -13,8 +13,12 @@ import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { CreateQuotationItemsPickerSection } from "@/features/purchase-quotations/components/create/CreateQuotationItemsPickerSection"
-import { CreateQuotationStepsTabs } from "@/features/purchase-quotations/components/create/CreateQuotationStepsTabs"
+import {
+  CreateQuotationStepsTabs,
+  createQuotationStepItems,
+} from "@/features/purchase-quotations/components/create/CreateQuotationStepsTabs"
 import { CreateQuotationSuppliersSection } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersSection"
 import { createPurchaseQuotation } from "@/features/purchase-quotations/api/server-functions/create-purchase-quotation.api"
 import {
@@ -64,6 +68,18 @@ export function CreateQuotationForm() {
 
   const [step, setStep] = useState<CreateQuotationWizardStep>("items")
 
+  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
+  // unrecognised value simply doesn't switch steps.
+  function handleStepChange(value: string) {
+    const nextStep = createQuotationStepItems.find(
+      (item) => item.value === value
+    )
+
+    if (nextStep) {
+      setStep(nextStep.value)
+    }
+  }
+
   // Auto-restore a saved draft into the form once, after localStorage hydrates. Always resumes on
   // step 1 (even if the draft already had items picked) — the picker re-shows them pre-checked,
   // so resuming still asks the user to confirm the selection before step 2, same gate a fresh
@@ -86,21 +102,23 @@ export function CreateQuotationForm() {
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <form.Subscribe selector={(state) => state.values.items.length}>
-          {(itemCount) => (
-            <CreateQuotationStepsTabs
-              step={step}
-              canGoToSuppliers={itemCount > 0}
-              onStepChange={setStep}
-            />
-          )}
-        </form.Subscribe>
+        <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
+          <form.Subscribe selector={(state) => state.values.items.length}>
+            {(itemCount) => (
+              <CreateQuotationStepsTabs canGoToSuppliers={itemCount > 0} />
+            )}
+          </form.Subscribe>
 
-        {step === "items" ? (
-          <CreateQuotationItemsPickerSection form={form} disabled={isPending} />
-        ) : (
-          <CreateQuotationSuppliersSection form={form} disabled={isPending} />
-        )}
+          <TabsContent value="items" className="m-0 outline-none">
+            <CreateQuotationItemsPickerSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
+          <TabsContent value="suppliers" className="m-0 outline-none">
+            <CreateQuotationSuppliersSection form={form} disabled={isPending} />
+          </TabsContent>
+        </Tabs>
 
         {step === "items" ? (
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">

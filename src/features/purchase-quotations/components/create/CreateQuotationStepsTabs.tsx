@@ -2,7 +2,7 @@ import { Box, TagPrice } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
 export type CreateQuotationWizardStep = "items" | "suppliers"
@@ -13,35 +13,27 @@ type CreateQuotationStepItem = {
   icon: ComponentType<IconProps>
 }
 
-const createQuotationStepItems: CreateQuotationStepItem[] = [
+export const createQuotationStepItems: CreateQuotationStepItem[] = [
   { value: "items", label: "1. Chọn vật tư", icon: Box },
   { value: "suppliers", label: "2. Khai báo NCC & báo giá", icon: TagPrice },
 ]
 
 type CreateQuotationStepsTabsProps = {
-  step: CreateQuotationWizardStep
   // Same gate as the "Tiếp theo" button below the picker — no jumping to step 2 before at
   // least 1 vật tư is picked. Step 1's tab is always reachable to go back.
   canGoToSuppliers: boolean
-  onStepChange: (step: CreateQuotationWizardStep) => void
 }
 
-// Mirrors ProductDetailTabs.tsx's "line" tab bar (the only other step/tab indicator in the
-// repo) — same TabsList/TabsTrigger override chain, adapted to a 2-step wizard's own gating
-// (a disabled trigger swallowing the click, not a per-tab lock tooltip).
+// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
+// CreateQuotationForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers — the panels
+// live in the page"). Mirrors ProductDetailTabs.tsx's "line" tab bar (the only other step/tab
+// indicator in the repo) — same TabsList/TabsTrigger override chain, adapted to a 2-step
+// wizard's own gating (a disabled trigger swallowing the click, not a per-tab lock tooltip).
 export function CreateQuotationStepsTabs({
-  step,
   canGoToSuppliers,
-  onStepChange,
 }: CreateQuotationStepsTabsProps) {
   return (
-    <Tabs
-      value={step}
-      onValueChange={(value) =>
-        onStepChange(value as CreateQuotationWizardStep)
-      }
-      className="border-b border-border"
-    >
+    <div className="border-b border-border">
       {/* `group-data-horizontal/tabs:h-auto`, not plain `h-auto`: the list's cva base pins the
           height with that same variant chain, and tailwind-merge only dedupes when the chains
           match — otherwise the list stays 36px while the 48px triggers overflow it. */}
@@ -75,6 +67,6 @@ export function CreateQuotationStepsTabs({
           )
         })}
       </TabsList>
-    </Tabs>
+    </div>
   )
 }

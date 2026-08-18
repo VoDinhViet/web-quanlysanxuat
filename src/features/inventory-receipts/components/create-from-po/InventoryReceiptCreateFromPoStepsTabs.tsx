@@ -2,7 +2,7 @@ import { Box, CheckCircle, Checklist, Eye } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
 export type InventoryReceiptFromPoWizardStep =
@@ -17,7 +17,7 @@ type StepItem = {
   icon: ComponentType<IconProps>
 }
 
-const stepItems: StepItem[] = [
+export const stepItems: StepItem[] = [
   { value: "po", label: "1. Chọn PO cần nhập", icon: Box },
   { value: "preview", label: "2. Xem trước đơn mua", icon: Eye },
   { value: "items", label: "3. Nhập SL & QC", icon: Checklist },
@@ -25,22 +25,19 @@ const stepItems: StepItem[] = [
 ]
 
 type InventoryReceiptCreateFromPoStepsTabsProps = {
-  step: InventoryReceiptFromPoWizardStep
   canGoToPreview: boolean
   canGoToItems: boolean
   canGoToConfirm: boolean
-  onStepChange: (step: InventoryReceiptFromPoWizardStep) => void
 }
 
-// Rập khuôn CreateQuotationStepsTabs.tsx — 4 bước thay vì 2, mỗi bước có điều kiện riêng để mở
-// khoá (xem InventoryReceiptCreateFromPoForm.tsx's canGoToX). Bước ① luôn mở được để quay lại
-// đổi PO.
+// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
+// InventoryReceiptCreateFromPoForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers
+// — the panels live in the page"). 4 bước, mỗi bước có điều kiện riêng để mở khoá (xem
+// InventoryReceiptCreateFromPoForm.tsx's canGoToX). Bước ① luôn mở được để quay lại đổi PO.
 export function InventoryReceiptCreateFromPoStepsTabs({
-  step,
   canGoToPreview,
   canGoToItems,
   canGoToConfirm,
-  onStepChange,
 }: InventoryReceiptCreateFromPoStepsTabsProps) {
   const disabledByStep: Record<InventoryReceiptFromPoWizardStep, boolean> = {
     po: false,
@@ -50,13 +47,7 @@ export function InventoryReceiptCreateFromPoStepsTabs({
   }
 
   return (
-    <Tabs
-      value={step}
-      onValueChange={(value) =>
-        onStepChange(value as InventoryReceiptFromPoWizardStep)
-      }
-      className="border-b border-border"
-    >
+    <div className="border-b border-border">
       <TabsList
         variant="line"
         className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
@@ -84,6 +75,6 @@ export function InventoryReceiptCreateFromPoStepsTabs({
           )
         })}
       </TabsList>
-    </Tabs>
+    </div>
   )
 }

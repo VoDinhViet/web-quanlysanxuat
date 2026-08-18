@@ -14,12 +14,16 @@ import { DateTime } from "luxon"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { InventoryReceiptCreateFromPoConfirmSection } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoConfirmSection"
 import { InventoryReceiptCreateFromPoHelpPanel } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoHelpPanel"
 import { InventoryReceiptCreateFromPoItemsSection } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoItemsSection"
 import { InventoryReceiptCreateFromPoPickerSection } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPickerSection"
 import { InventoryReceiptCreateFromPoPreviewSection } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPreviewSection"
-import { InventoryReceiptCreateFromPoStepsTabs } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoStepsTabs"
+import {
+  InventoryReceiptCreateFromPoStepsTabs,
+  stepItems,
+} from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoStepsTabs"
 import { confirmInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/confirm-inventory-receipt.api"
 import { createInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/create-inventory-receipt.api"
 import {
@@ -186,6 +190,17 @@ export function InventoryReceiptCreateFromPoForm() {
     saveDraft(form.state.values)
   }
 
+  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
+  // unrecognised value simply doesn't switch steps. Delegates to the typed `handleStepChange`
+  // above so the draft-on-step-change behavior stays in one place.
+  function handleStepValueChange(value: string) {
+    const nextStep = stepItems.find((item) => item.value === value)
+
+    if (nextStep) {
+      handleStepChange(nextStep.value)
+    }
+  }
+
   const { prevStep, prevLabel, nextStep, nextLabel } = stepNav[step]
 
   return (
@@ -199,49 +214,53 @@ export function InventoryReceiptCreateFromPoForm() {
       className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_20rem]"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <form.Subscribe
-          selector={(state) => ({
-            hasPurchaseOrder: Boolean(state.values.purchaseOrderId),
-            hasItems: state.values.items.length > 0,
-          })}
+        <Tabs
+          value={step}
+          onValueChange={handleStepValueChange}
+          className="gap-0"
         >
-          {({ hasPurchaseOrder, hasItems }) => (
-            <InventoryReceiptCreateFromPoStepsTabs
-              step={step}
-              canGoToPreview={hasPurchaseOrder}
-              canGoToItems={
-                hasPurchaseOrder && Boolean(purchaseOrder?.receiptWarehouse)
-              }
-              canGoToConfirm={hasItems}
-              onStepChange={handleStepChange}
-            />
-          )}
-        </form.Subscribe>
+          <form.Subscribe
+            selector={(state) => ({
+              hasPurchaseOrder: Boolean(state.values.purchaseOrderId),
+              hasItems: state.values.items.length > 0,
+            })}
+          >
+            {({ hasPurchaseOrder, hasItems }) => (
+              <InventoryReceiptCreateFromPoStepsTabs
+                canGoToPreview={hasPurchaseOrder}
+                canGoToItems={
+                  hasPurchaseOrder && Boolean(purchaseOrder?.receiptWarehouse)
+                }
+                canGoToConfirm={hasItems}
+              />
+            )}
+          </form.Subscribe>
 
-        {step === "po" && (
-          <InventoryReceiptCreateFromPoPickerSection
-            form={form}
-            disabled={isPending}
-          />
-        )}
-        {step === "preview" && (
-          <InventoryReceiptCreateFromPoPreviewSection
-            form={form}
-            disabled={isPending}
-          />
-        )}
-        {step === "items" && (
-          <InventoryReceiptCreateFromPoItemsSection
-            form={form}
-            disabled={isPending}
-          />
-        )}
-        {step === "confirm" && (
-          <InventoryReceiptCreateFromPoConfirmSection
-            form={form}
-            disabled={isPending}
-          />
-        )}
+          <TabsContent value="po" className="m-0 outline-none">
+            <InventoryReceiptCreateFromPoPickerSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
+          <TabsContent value="preview" className="m-0 outline-none">
+            <InventoryReceiptCreateFromPoPreviewSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
+          <TabsContent value="items" className="m-0 outline-none">
+            <InventoryReceiptCreateFromPoItemsSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
+          <TabsContent value="confirm" className="m-0 outline-none">
+            <InventoryReceiptCreateFromPoConfirmSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
+        </Tabs>
 
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
           {prevStep ? (
