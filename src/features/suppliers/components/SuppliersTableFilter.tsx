@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
 import { supplierStatusLabels } from "@/lib/types/supplier.type"
 import type { SupplierStatus } from "@/lib/types/supplier.type"
@@ -156,14 +156,14 @@ export function SuppliersTableFilter() {
             <RotateCw className="size-4" />
             Làm mới
           </Button>
-          <PermissionGate permission="suppliers:create">
+          <RoutePermissionGate route="/manage/suppliers/create">
             <Button asChild className="text-xs">
               <Link to="/manage/suppliers/create">
                 <Plus className="size-4" />
                 Thêm nhà cung cấp
               </Link>
             </Button>
-          </PermissionGate>
+          </RoutePermissionGate>
         </div>
       </div>
     </div>

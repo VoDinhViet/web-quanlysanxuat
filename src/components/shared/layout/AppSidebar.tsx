@@ -47,8 +47,9 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { hasPermission } from "@/features/auth/permissions"
+import { requiredPermissionForPath } from "@/features/auth/route-permissions"
 import { usePermissions } from "@/hooks/use-permissions"
-import type { FileRouteTypes } from "@/routeTree.gen"
+import type { ManageRoutePath } from "@/features/auth/route-permissions"
 import type { PermissionCode } from "@/lib/types/permission.type"
 
 type MenuItem = {
@@ -57,10 +58,20 @@ type MenuItem = {
   // Typed against the generated route tree, not a plain `string` — a href pointing at a route
   // that doesn't exist is now a compile error instead of a silent `<a>` fallback. A domain with no
   // page yet omits `href` entirely (see the placeholder items below) rather than pointing it at a
-  // path that isn't real yet.
-  href?: FileRouteTypes["to"]
-  // When set, the item is hidden unless the user holds this permission.
+  // path that isn't real yet. A linked item derives its required permission from
+  // `routePermissions` via this href — it must NOT also set `permission` below.
+  href?: ManageRoutePath
+  // Placeholder items only (no page yet, so no route to derive from). Ignored when `href`
+  // is set — the route map wins. Every item — linked or placeholder — must resolve to some
+  // permission, so a menu entry can never outlive the group-emptying filter below.
   permission?: PermissionCode
+}
+
+/** The permission required to see `item` — via its route if linked, else its own field. */
+function requiredPermission(item: MenuItem): PermissionCode | null {
+  return item.href
+    ? requiredPermissionForPath(item.href)
+    : (item.permission ?? null)
 }
 
 type MenuGroup = {
@@ -82,14 +93,12 @@ const menuGroups: MenuGroup[] = [
         label: "Đơn hàng (SO)",
         icon: ShoppingCart,
         href: "/manage/orders",
-        permission: "orders:read",
       },
-      { label: "Báo giá (RFQ)", icon: FileText },
+      { label: "Báo giá (RFQ)", icon: FileText, permission: "orders:read" },
       {
         label: "Giao hàng (DO)",
         icon: Truck,
         href: "/manage/outbound-orders",
-        permission: "orders:read",
       },
     ],
   },
@@ -100,38 +109,36 @@ const menuGroups: MenuGroup[] = [
         label: "Đề xuất mua hàng",
         icon: ClipboardList,
         href: "/manage/purchase-requests",
-        permission: "purchase-requests:read",
       },
       {
         label: "Báo giá NCC (RFQ)",
         icon: FileText,
         href: "/manage/purchase-quotations",
-        permission: "purchasing:read",
       },
       {
         label: "Danh mục mua hàng",
         icon: BookText,
         href: "/manage/purchase-ledger",
-        permission: "purchasing:read",
       },
       {
         label: "Đơn mua hàng (PO)",
         icon: ReceiptText,
         href: "/manage/purchase-orders",
-        permission: "purchasing:read",
       },
       {
         label: "Yêu cầu thanh toán",
         icon: CreditCard,
         href: "/manage/payment-requests",
-        permission: "purchasing:read",
       },
-      { label: "Nhập hàng", icon: ArrowDownToLine },
+      {
+        label: "Nhập hàng",
+        icon: ArrowDownToLine,
+        permission: "inventory:read",
+      },
       {
         label: "Trả NCC",
         icon: Undo2,
         href: "/manage/supplier-returns",
-        permission: "inventory:read",
       },
     ],
   },
@@ -142,13 +149,11 @@ const menuGroups: MenuGroup[] = [
         label: "IQC",
         icon: ClipboardCheck,
         href: "/manage/iqc",
-        permission: "iqc:read",
       },
       {
         label: "OQC",
         icon: PackageCheck,
         href: "/manage/oqc",
-        permission: "oqc:read",
       },
     ],
   },
@@ -159,15 +164,17 @@ const menuGroups: MenuGroup[] = [
         label: "Lệnh sản xuất (LSX)",
         icon: Factory,
         href: "/manage/production-orders",
-        permission: "production:read",
       },
       {
         label: "Quản lý sản xuất",
         icon: GitBranch,
         href: "/manage/production-jobs",
-        permission: "production:read",
       },
-      { label: "BOM & Định mức", icon: ListChecks },
+      {
+        label: "BOM & Định mức",
+        icon: ListChecks,
+        permission: "items:bom-manage",
+      },
     ],
   },
   {
@@ -182,10 +189,17 @@ const menuGroups: MenuGroup[] = [
         label: "Nhập về (OS-IN)",
         icon: Upload,
         href: "/manage/outsourcing-receipts",
+      },
+      {
+        label: "Nhà cung cấp gia công",
+        icon: Users,
+        permission: "suppliers:read",
+      },
+      {
+        label: "Báo cáo gia công ngoài",
+        icon: BarChart3,
         permission: "outsourcing:read",
       },
-      { label: "Nhà cung cấp gia công", icon: Users },
-      { label: "Báo cáo gia công ngoài", icon: BarChart3 },
     ],
   },
   {
@@ -195,20 +209,21 @@ const menuGroups: MenuGroup[] = [
         label: "Nhập kho",
         icon: PackagePlus,
         href: "/manage/inventory-receipts",
+      },
+      {
+        label: "Xuất kho",
+        icon: PackageMinus,
         permission: "inventory:read",
       },
-      { label: "Xuất kho", icon: PackageMinus },
       {
         label: "Tồn kho vật tư",
         icon: Warehouse,
         href: "/manage/inventory-materials",
-        permission: "inventory:read",
       },
       {
         label: "Tồn kho thành phẩm",
         icon: Boxes,
         href: "/manage/inventory-products",
-        permission: "inventory:read",
       },
     ],
   },
@@ -219,25 +234,21 @@ const menuGroups: MenuGroup[] = [
         label: "Khách hàng",
         icon: UserRound,
         href: "/manage/clients",
-        permission: "clients:read",
       },
       {
         label: "Nhà cung cấp",
         icon: Building2,
         href: "/manage/suppliers",
-        permission: "suppliers:read",
       },
       {
         label: "Sản phẩm",
         icon: PackageSearch,
         href: "/manage/products",
-        permission: "items:read",
       },
       {
         label: "Vật tư",
         icon: Layers,
         href: "/manage/materials",
-        permission: "items:read",
       },
     ],
   },
@@ -248,11 +259,14 @@ const menuGroups: MenuGroup[] = [
         label: "Nhân sự",
         icon: UserRound,
         href: "/manage/users",
-        permission: "users:update",
       },
       { label: "Phân quyền", icon: ShieldCheck, permission: "roles:read" },
-      { label: "Cài đặt", icon: Settings },
-      { label: "Nhật ký hệ thống", icon: History },
+      { label: "Cài đặt", icon: Settings, permission: "system:manage" },
+      {
+        label: "Nhật ký hệ thống",
+        icon: History,
+        permission: "system:manage",
+      },
     ],
   },
 ]
@@ -264,14 +278,16 @@ export function AppSidebar() {
   const location = useLocation()
   const permissions = usePermissions()
 
-  // Hide items the user lacks permission for, then drop any group left empty.
+  // Hide items the user can't open — a linked item reuses the same access map the router
+  // guard reads, so a menu entry can never disagree with its route — then drop any group
+  // left empty.
   const visibleGroups = menuGroups
     .map((group) => ({
       ...group,
-      items: group.items.filter(
-        (item) =>
-          !item.permission || hasPermission(permissions, item.permission)
-      ),
+      items: group.items.filter((item) => {
+        const required = requiredPermission(item)
+        return required === null || hasPermission(permissions, required)
+      }),
     }))
     .filter((group) => group.items.length > 0)
 

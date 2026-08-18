@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { purchaseRequestQueryOptions } from "@/features/purchase-requests/api/options"
 import { PurchaseRequestDetailPage } from "@/features/purchase-requests/pages/PurchaseRequestDetailPage"
 
@@ -10,8 +9,6 @@ import { PurchaseRequestDetailPage } from "@/features/purchase-requests/pages/Pu
 export const Route = createFileRoute(
   "/(authed)/manage_/purchase-requests_/$purchaseRequestId"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "purchase-requests:read"),
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(
       purchaseRequestQueryOptions(params.purchaseRequestId)

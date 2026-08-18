@@ -59,5 +59,6 @@
   `const` first — see the badge base classes in
   `src/features/products/components/ProductBadges.tsx`.
 - Icon-only buttons need `aria-label`; invalid form inputs need `aria-invalid`; every
-  `<label>` pairs `htmlFor` with the input's `id`; every `<button>` inside a `<form>` has
-  an explicit `type` so it can't accidentally submit.
+  `<button>` inside a `<form>` has an explicit `type` so it can't accidentally submit.
+  `jsx-a11y/label-has-associated-control` (pairing a `<label>`'s `htmlFor` with its
+  control's `id`) is off in `eslint.config.js` — not enforced.

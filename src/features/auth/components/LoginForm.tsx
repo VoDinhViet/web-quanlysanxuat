@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form"
 import { useNavigate, useRouter, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, LogIn } from "lucide-react"
 import { toast } from "sonner"
 
@@ -24,6 +24,7 @@ export function LoginForm() {
   const { redirectTo } = useSearch({ from: "/(auth)/login" })
   const navigate = useNavigate()
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const loginWithEmailPasswordFn = useServerFn(loginWithEmailPassword)
 
@@ -31,6 +32,10 @@ export function LoginForm() {
     mutationFn: (value: LoginSchema) =>
       loginWithEmailPasswordFn({ data: value }),
     onSuccess: async () => {
+      // The QueryClient outlives a logout/login cycle, so a previous user's cache can
+      // still be fresh (staleTime 60s) — wipe it before the guard below re-reads the
+      // profile, or the new user inherits the old user's permissions and list data.
+      queryClient.clear()
       // The session cookie only exists after the server function resolves, so the
       // (authed) guard must re-run against it before we navigate into that layout.
       await router.invalidate()

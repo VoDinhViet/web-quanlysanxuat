@@ -16,7 +16,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
 import {
   itemStatusLabels,
@@ -214,14 +214,14 @@ export function ProductsTableFilter() {
               <RotateCw className="size-4" />
               Làm mới
             </Button>
-            <PermissionGate permission="items:create">
+            <RoutePermissionGate route="/manage/products/create">
               <Button asChild className="text-xs">
                 <Link to="/manage/products/create">
                   <Plus className="size-4" />
                   Thêm sản phẩm
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           </div>
         </div>
       </div>

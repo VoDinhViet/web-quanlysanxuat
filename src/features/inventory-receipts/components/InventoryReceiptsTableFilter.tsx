@@ -16,7 +16,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import type {
   InventoryReceiptStatus,
   InventoryReceiptType,
@@ -106,14 +106,14 @@ export function InventoryReceiptsTableFilter() {
           <p className="mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Tạo phiếu nhập kho
           </p>
-          <PermissionGate permission="inventory:create">
+          <RoutePermissionGate route="/manage/inventory-receipts/create-from-po">
             <Button variant="outline" className="text-xs" asChild>
               <Link to="/manage/inventory-receipts/create-from-po">
                 <Plus className="size-3.5" />
                 Nhập từ PO
               </Link>
             </Button>
-          </PermissionGate>
+          </RoutePermissionGate>
         </div>
 
         {/* Filters section — DANH SÁCH PHIẾU NHẬP KHO */}

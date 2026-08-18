@@ -15,7 +15,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import type { EmployeeStatus } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -129,14 +129,14 @@ export function UsersTableFilter() {
               <RotateCw className="size-4" />
               Làm mới
             </Button>
-            <PermissionGate permission="users:create">
+            <RoutePermissionGate route="/manage/users/create">
               <Button asChild className="text-xs">
                 <Link to="/manage/users/create">
                   <Plus className="size-4" />
                   Thêm nhân sự
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           </div>
         </div>
       </div>

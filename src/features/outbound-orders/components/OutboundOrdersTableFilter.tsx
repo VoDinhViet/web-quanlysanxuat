@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 
 export function OutboundOrdersTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/outbound-orders" })
@@ -45,14 +45,14 @@ export function OutboundOrdersTableFilter() {
   return (
     <TooltipProvider>
       <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
-        <PermissionGate permission="outbound:create">
+        <RoutePermissionGate route="/manage/outbound-orders/create">
           <Button asChild className="gap-1.5">
             <Link to="/manage/outbound-orders/create">
               <Plus className="size-4" />
               Tạo DO mới
             </Link>
           </Button>
-        </PermissionGate>
+        </RoutePermissionGate>
 
         <div className="w-72 space-y-1.5">
           <FilterLabel label="Tìm kiếm" htmlFor="do-q" />

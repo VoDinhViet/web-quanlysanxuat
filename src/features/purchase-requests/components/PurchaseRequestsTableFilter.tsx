@@ -16,7 +16,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { purchaseRequestStatusLabels } from "@/lib/types/purchase-request.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -208,14 +208,14 @@ export function PurchaseRequestsTableFilter() {
               Làm mới
             </Button>
 
-            <PermissionGate permission="purchase-requests:create">
+            <RoutePermissionGate route="/manage/purchase-requests/create">
               <Button asChild className="text-xs">
                 <Link to="/manage/purchase-requests/create">
                   <Plus className="size-4" />
                   Tạo đề xuất mua hàng (Manual)
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           </div>
         </div>
       </div>

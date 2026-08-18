@@ -16,7 +16,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { orderStatusLabels } from "@/lib/types/order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { OrdersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
@@ -186,14 +186,14 @@ export function OrdersTableFilter() {
               <RotateCw className="size-4" />
               Làm mới
             </Button>
-            <PermissionGate permission="orders:create">
+            <RoutePermissionGate route="/manage/orders/create">
               <Button asChild className="text-xs">
                 <Link to="/manage/orders/create">
                   <Plus className="size-4" />
                   Tạo đơn hàng
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           </div>
         </div>
       </div>

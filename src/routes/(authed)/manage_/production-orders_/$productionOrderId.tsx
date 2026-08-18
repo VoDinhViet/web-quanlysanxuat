@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { orderQueryOptions } from "@/features/orders/api"
 import {
   productionOrderLogsQueryOptions,
@@ -17,8 +16,6 @@ import { ProductionOrderDetailPage } from "@/features/production-orders/pages/Pr
 export const Route = createFileRoute(
   "/(authed)/manage_/production-orders_/$productionOrderId"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "production:read"),
   loader: async ({ context, params }) => {
     const production = await context.queryClient.ensureQueryData(
       productionOrderQueryOptions(params.productionOrderId)

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import {
   outboundOrderItemsQueryOptions,
   outboundOrderQueryOptions,
@@ -11,8 +10,6 @@ import { OutboundOrderDetailPage } from "@/features/outbound-orders/pages/Outbou
 export const Route = createFileRoute(
   "/(authed)/manage_/outbound-orders_/$outboundOrderId"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "outbound:read"),
   loader: ({ context, params }) =>
     Promise.all([
       context.queryClient.ensureQueryData(

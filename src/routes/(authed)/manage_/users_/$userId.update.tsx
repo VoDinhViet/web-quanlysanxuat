@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { UpdateUserPage } from "@/features/users/pages/UpdateUserPage"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import {
@@ -12,8 +11,6 @@ import {
 
 export const Route = createFileRoute("/(authed)/manage_/users_/$userId/update")(
   {
-    beforeLoad: ({ context }) =>
-      requirePermission(context.permissions, "users:update"),
     loader: ({ context, params }) =>
       Promise.all([
         context.queryClient.ensureQueryData(userQueryOptions(params.userId)),

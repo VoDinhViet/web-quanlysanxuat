@@ -1,14 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { UsersPage } from "@/features/users/pages/UsersPage"
 import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
 import { usersQueryOptions } from "@/features/users/api/options"
 
 export const Route = createFileRoute("/(authed)/manage_/users")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "users:update"),
   validateSearch: usersSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route
   // match (that would re-trigger this loader and the router's

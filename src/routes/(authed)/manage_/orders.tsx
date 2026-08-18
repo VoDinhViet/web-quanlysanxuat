@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { OrdersPage } from "@/features/orders/pages/OrdersPage"
 import {
   orderStatsQueryOptions,
@@ -10,8 +9,6 @@ import {
 import { ordersSearchSchema } from "@/features/orders/schemas/orders-search.schema"
 
 export const Route = createFileRoute("/(authed)/manage_/orders")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "orders:read"),
   validateSearch: ordersSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route
   // match (that would re-trigger this loader and the router's

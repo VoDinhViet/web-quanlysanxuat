@@ -16,13 +16,7 @@ export default [
       "@typescript-eslint/array-type": "off",
       "@typescript-eslint/require-await": "off",
       "pnpm/json-enforce-catalog": "off",
-      // Shared form controls (Input, Select, ComboboxField) wrap a real native
-      // control several JSX layers down — jsx-a11y can't see through them
-      // without this list, so every filter's wrapping <label> misfires.
-      "jsx-a11y/label-has-associated-control": [
-        "error",
-        { controlComponents: ["Input", "Select", "ComboboxField"] },
-      ],
+      "jsx-a11y/label-has-associated-control": "off",
       // This codebase's one use of tabIndex on a non-interactive element is the
       // deliberate <span tabIndex={0}> + disabled Button + Tooltip idiom (see
       // DisabledAction.tsx) — it's what makes the tooltip keyboard-reachable

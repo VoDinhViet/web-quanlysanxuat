@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { productColumns } from "@/features/products/components/ProductsTableColumns"
@@ -55,14 +55,14 @@ export function ProductsTable({
           title="Chưa có sản phẩm nào"
           description="Bắt đầu bằng cách thêm sản phẩm đầu tiên vào danh mục của bạn."
           action={
-            <PermissionGate permission="items:create">
+            <RoutePermissionGate route="/manage/products/create">
               <Button asChild size="sm" className="text-xs">
                 <Link to="/manage/products/create">
                   <Plus className="size-4" />
                   Thêm sản phẩm
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           }
         />
       ) : (

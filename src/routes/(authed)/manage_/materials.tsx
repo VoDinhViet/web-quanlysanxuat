@@ -1,15 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
 import { materialsQueryOptions } from "@/features/materials/api/options"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export const Route = createFileRoute("/(authed)/manage_/materials")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "items:read"),
   validateSearch: materialsSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route
   // match (that would re-trigger this loader and the router's

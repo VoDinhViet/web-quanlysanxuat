@@ -1,15 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { ProductsPage } from "@/features/products/pages/ProductsPage"
 import { itemsQueryOptions } from "@/features/products/api/options"
 import { productsSearchSchema } from "@/features/products/schemas/products-search.schema"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export const Route = createFileRoute("/(authed)/manage_/products")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "items:read"),
   validateSearch: productsSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route
   // match (that would re-trigger this loader and the router's

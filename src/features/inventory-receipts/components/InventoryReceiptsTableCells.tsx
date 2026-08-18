@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { InventoryReceiptPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptPrintDialog"
 import { deleteInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/delete-inventory-receipt.api"
 import { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
@@ -143,7 +144,7 @@ export function InventoryReceiptActionsCell({
             {isDraft && (
               <>
                 <DropdownMenuSeparator />
-                <PermissionGate permission="inventory:update">
+                <RoutePermissionGate route="/manage/inventory-receipts/$inventoryReceiptId/update">
                   <DropdownMenuItem asChild>
                     <Link
                       to="/manage/inventory-receipts/$inventoryReceiptId/update"
@@ -153,7 +154,7 @@ export function InventoryReceiptActionsCell({
                       Chỉnh sửa phiếu
                     </Link>
                   </DropdownMenuItem>
-                </PermissionGate>
+                </RoutePermissionGate>
                 <PermissionGate permission="inventory:delete">
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive"

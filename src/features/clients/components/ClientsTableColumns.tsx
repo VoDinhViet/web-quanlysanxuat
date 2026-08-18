@@ -4,7 +4,7 @@ import { Edit3, Eye, MoreHorizontal } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { clientStatusLabels, ClientStatus } from "@/lib/types/client.type"
 import type { Client } from "@/lib/types/client.type"
 
@@ -98,7 +98,7 @@ export const clientColumns = [
           >
             <Eye className="size-3.5" />
           </IconButton>
-          <PermissionGate permission="clients:update">
+          <RoutePermissionGate route="/manage/clients/$clientId/update">
             <IconButton
               label="Chỉnh sửa"
               asChild
@@ -111,7 +111,7 @@ export const clientColumns = [
                 <Edit3 className="size-3.5" />
               </Link>
             </IconButton>
-          </PermissionGate>
+          </RoutePermissionGate>
           <IconButton
             label="Thao tác khác"
             className="text-muted-foreground hover:border-primary/30 hover:text-primary"

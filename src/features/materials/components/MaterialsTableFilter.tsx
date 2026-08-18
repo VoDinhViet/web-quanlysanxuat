@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import type { ItemStatus } from "@/lib/types/item.type"
@@ -155,14 +155,14 @@ export function MaterialsTableFilter() {
             <RotateCw className="size-4" />
             Làm mới
           </Button>
-          <PermissionGate permission="items:create">
+          <RoutePermissionGate route="/manage/materials/create">
             <Button asChild className="text-xs">
               <Link to="/manage/materials/create">
                 <Plus className="size-4" />
                 Thêm vật tư
               </Link>
             </Button>
-          </PermissionGate>
+          </RoutePermissionGate>
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { clientColumns } from "@/features/clients/components/ClientsTableColumns"
@@ -55,14 +55,14 @@ export function ClientsTable({
           title="Chưa có khách hàng nào"
           description="Bắt đầu bằng cách thêm khách hàng đầu tiên vào danh sách của bạn."
           action={
-            <PermissionGate permission="clients:create">
+            <RoutePermissionGate route="/manage/clients/create">
               <Button asChild size="sm" className="text-xs">
                 <Link to="/manage/clients/create">
                   <Plus className="size-4" />
                   Tạo khách hàng
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           }
         />
       ) : (

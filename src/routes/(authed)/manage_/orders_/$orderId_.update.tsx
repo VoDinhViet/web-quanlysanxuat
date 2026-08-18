@@ -1,7 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { UpdateOrderPage } from "@/features/orders/pages/UpdateOrderPage"
 import {
   orderItemsQueryOptions,
@@ -15,8 +14,6 @@ import { canUpdateOrder } from "@/lib/types/order.type"
 export const Route = createFileRoute(
   "/(authed)/manage_/orders_/$orderId_/update"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "orders:update"),
   loader: async ({ context, params }) => {
     const [order] = await Promise.all([
       context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options"
 import { PurchaseQuotationDetailPage } from "@/features/purchase-quotations/pages/PurchaseQuotationDetailPage"
 
@@ -11,8 +10,6 @@ import { PurchaseQuotationDetailPage } from "@/features/purchase-quotations/page
 export const Route = createFileRoute(
   "/(authed)/manage_/purchase-quotations_/$purchaseQuotationId"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "purchasing:read"),
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(
       purchaseQuotationQueryOptions(params.purchaseQuotationId)

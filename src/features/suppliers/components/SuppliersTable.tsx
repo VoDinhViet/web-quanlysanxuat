@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { supplierColumns } from "@/features/suppliers/components/SuppliersTableColumns"
@@ -55,14 +55,14 @@ export function SuppliersTable({
           title="Chưa có nhà cung cấp nào"
           description="Bắt đầu bằng cách thêm nhà cung cấp đầu tiên vào danh sách của bạn."
           action={
-            <PermissionGate permission="suppliers:create">
+            <RoutePermissionGate route="/manage/suppliers/create">
               <Button asChild size="sm" className="text-xs">
                 <Link to="/manage/suppliers/create">
                   <Plus className="size-4" />
                   Thêm nhà cung cấp
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           }
         />
       ) : (

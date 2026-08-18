@@ -1,15 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { InventoryMaterialsPage } from "@/features/inventory-materials/pages/InventoryMaterialsPage"
 import { materialInventoryQueryOptions } from "@/features/inventory-materials/api/options/material-inventory.options"
 import { inventoryMaterialsSearchSchema } from "@/features/inventory-materials/schemas/inventory-materials-search.schema"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 
 export const Route = createFileRoute("/(authed)/manage_/inventory-materials")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "inventory:read"),
   validateSearch: inventoryMaterialsSearchSchema,
   // No loaderDeps: filter/pagination navigation must not create a new route
   // match (that would re-trigger the loader and blank the page). The list is

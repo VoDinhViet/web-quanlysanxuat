@@ -1,9 +1,10 @@
 import { redirect } from "@tanstack/react-router"
 
 import { hasPermission } from "@/features/auth/permissions"
+import { requiredPermissionForPath } from "@/features/auth/route-permissions"
 import { getCurrentSession } from "@/features/auth/api/server-functions/get-current-session.api"
 import type { CurrentSession } from "@/lib/types/login.type"
-import type { PermissionCode } from "@/lib/types/permission.type"
+import type { MakeRouteMatchUnion } from "@tanstack/react-router"
 
 /**
  * The single place that decides whether a protected route may render. Called from the
@@ -24,14 +25,20 @@ export async function requireSession(location: {
 }
 
 /**
- * Route-level authorization. Call from a route's `beforeLoad` with the
- * permissions from the `(authed)` layout context. Missing permission bounces to
- * the dashboard — the backend permission guard is still the real enforcement.
+ * Route-level authorization for the whole authenticated app, run once from the `(authed)`
+ * layout's `beforeLoad`. `matches` is the full match array for the destination — including
+ * the child routes about to render — so a single check covers every page; no route under
+ * `(authed)` needs its own guard (see `route-permissions.ts`). Missing permission bounces
+ * to the dashboard — the backend permission guard is still the real enforcement.
  */
-export function requirePermission(
+export function requireRoutePermissions(
   permissions: string[],
-  required: PermissionCode | PermissionCode[]
+  matches: ReadonlyArray<MakeRouteMatchUnion>
 ): void {
+  const required = matches
+    .map((match) => requiredPermissionForPath(match.fullPath))
+    .filter((code) => code !== null)
+
   if (!hasPermission(permissions, required)) {
     throw redirect({ to: "/manage" })
   }

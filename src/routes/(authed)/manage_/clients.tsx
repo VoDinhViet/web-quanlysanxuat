@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import {
   clientGroupOptionsQueryOptions,
   clientsQueryOptions,
@@ -10,8 +9,6 @@ import { ClientsPage } from "@/features/clients/pages/ClientsPage"
 import { clientsSearchSchema } from "@/features/clients/schemas/clients-search.schema"
 
 export const Route = createFileRoute("/(authed)/manage_/clients")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "clients:read"),
   validateSearch: clientsSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route
   // match (that would re-trigger this loader and the router's

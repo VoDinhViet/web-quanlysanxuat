@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import {
   outsourcingReceiptItemsQueryOptions,
   outsourcingReceiptQueryOptions,
@@ -11,8 +10,6 @@ import { OutsourcingReceiptDetailPage } from "@/features/outsourcing-receipts/pa
 export const Route = createFileRoute(
   "/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "outsourcing:read"),
   loader: ({ context, params }) =>
     Promise.all([
       context.queryClient.ensureQueryData(

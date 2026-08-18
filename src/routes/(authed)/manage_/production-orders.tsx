@@ -1,14 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { productionOrdersQueryOptions } from "@/features/production-orders/api/options"
 import { ProductionOrdersPage } from "@/features/production-orders/pages/ProductionOrdersPage"
 import { productionOrdersSearchSchema } from "@/features/production-orders/schemas/production-orders-search.schema"
 
 export const Route = createFileRoute("/(authed)/manage_/production-orders")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "production:read"),
   validateSearch: productionOrdersSearchSchema,
   // No loaderDeps: see orders.tsx for why — a filter/pagination navigation must
   // not create a new route match, which would re-trigger this loader and blank

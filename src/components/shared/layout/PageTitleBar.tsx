@@ -1,7 +1,6 @@
-import { Fragment } from "react"
 import { Link, useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   Bell,
   ChevronDown,
@@ -32,13 +31,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ThemeToggle } from "@/components/shared/layout/ThemeToggle"
 import { currentUserQueryOptions } from "@/features/auth/api/options"
 import { logout } from "@/features/auth/api/server-functions/logout.api"
 import { resolveAvatarUrl } from "@/lib/file-url"
 import type { FileRouteTypes } from "@/routeTree.gen"
-
-const fallbackUserName = "--"
 
 type PageTitleBreadcrumb = {
   label: string
@@ -63,47 +61,67 @@ function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {breadcrumbs.map((breadcrumb, index) => (
-          <Fragment key={`${breadcrumb.label}-${index}`}>
-            <BreadcrumbItem>
-              {index === lastIndex ? (
-                <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
-              ) : breadcrumb.href ? (
-                <BreadcrumbLink asChild>
-                  <Link to={breadcrumb.href}>{breadcrumb.label}</Link>
-                </BreadcrumbLink>
-              ) : (
-                <span>{breadcrumb.label}</span>
-              )}
-            </BreadcrumbItem>
+        {breadcrumbs.flatMap((breadcrumb, index) => {
+          const isLast = index === lastIndex
 
-            {index < lastIndex && <BreadcrumbSeparator />}
-          </Fragment>
-        ))}
+          let content
+          if (isLast) {
+            content = <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+          } else if (breadcrumb.href) {
+            content = (
+              <BreadcrumbLink asChild>
+                <Link to={breadcrumb.href}>{breadcrumb.label}</Link>
+              </BreadcrumbLink>
+            )
+          } else {
+            content = breadcrumb.label
+          }
+
+          const item = (
+            <BreadcrumbItem key={`item-${breadcrumb.label}-${index}`}>
+              {content}
+            </BreadcrumbItem>
+          )
+
+          if (isLast) {
+            return [item]
+          }
+
+          return [
+            item,
+            <BreadcrumbSeparator
+              key={`separator-${breadcrumb.label}-${index}`}
+            />,
+          ]
+        })}
       </BreadcrumbList>
     </Breadcrumb>
   )
 }
 
 type UserMenuProps = {
-  fullName: string
-  username: string
-  email: string
-  roleName: string | null
-  avatarUrl: string | null
   isLoggingOut: boolean
   onLogout: () => void
 }
 
-export function UserMenu({
-  fullName,
-  username,
-  email,
-  roleName,
-  avatarUrl,
-  isLoggingOut,
-  onLogout,
-}: UserMenuProps) {
+export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
+  // Reads the profile the `(authed)` beforeLoad already cached — no extra fetch.
+  const profileQuery = useQuery(currentUserQueryOptions)
+
+  if (profileQuery.isPending) {
+    return (
+      <div className="flex items-center gap-3 px-1.5 py-1">
+        <Skeleton className="size-10 shrink-0 rounded-full" />
+        <span className="hidden min-w-0 flex-col gap-1.5 lg:flex">
+          <Skeleton className="h-3.5 w-24" />
+          <Skeleton className="h-3 w-16" />
+        </span>
+      </div>
+    )
+  }
+
+  const profile = profileQuery.data
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -114,7 +132,10 @@ export function UserMenu({
           aria-label="Tài khoản người dùng"
         >
           <Avatar className="size-10">
-            <AvatarImage src={resolveAvatarUrl(avatarUrl)} alt={fullName} />
+            <AvatarImage
+              src={resolveAvatarUrl(profile?.avatar)}
+              alt={profile?.fullName ?? "--"}
+            />
             <AvatarFallback className="bg-muted">
               <UserRound className="size-5 text-muted-foreground" />
             </AvatarFallback>
@@ -122,11 +143,11 @@ export function UserMenu({
 
           <span className="hidden min-w-0 text-left lg:block">
             <span className="block truncate text-sm leading-tight font-bold">
-              {fullName}
+              {profile?.fullName ?? "--"}
             </span>
-            {roleName && (
+            {profile?.role?.name && (
               <span className="block truncate text-xs leading-tight text-muted-foreground">
-                {roleName}
+                {profile.role.name}
               </span>
             )}
           </span>
@@ -137,7 +158,10 @@ export function UserMenu({
       <DropdownMenuContent align="end" className="w-64">
         <div className="flex items-start gap-3 px-2 py-1.5">
           <Avatar className="size-10">
-            <AvatarImage src={resolveAvatarUrl(avatarUrl)} alt={fullName} />
+            <AvatarImage
+              src={resolveAvatarUrl(profile?.avatar)}
+              alt={profile?.fullName ?? "--"}
+            />
             <AvatarFallback className="bg-muted">
               <UserRound className="size-5 text-muted-foreground" />
             </AvatarFallback>
@@ -145,21 +169,21 @@ export function UserMenu({
 
           <div className="min-w-0 space-y-1">
             <p className="truncate text-sm leading-tight font-semibold">
-              {fullName}
+              {profile?.fullName ?? "--"}
             </p>
-            {username && (
+            {profile?.username && (
               <p className="truncate text-xs leading-tight text-muted-foreground">
-                @{username}
+                @{profile.username}
               </p>
             )}
-            {email && (
+            {profile?.email && (
               <p className="truncate text-xs leading-tight text-muted-foreground">
-                {email}
+                {profile.email}
               </p>
             )}
-            {roleName && (
+            {profile?.role?.name && (
               <Badge variant="secondary" className="mt-1 max-w-full">
-                <span className="truncate">{roleName}</span>
+                <span className="truncate">{profile.role.name}</span>
               </Badge>
             )}
           </div>
@@ -198,12 +222,8 @@ export function PageTitleBar({
 }: PageTitleBarProps) {
   const { toggleSidebar } = useSidebar()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const logoutFn = useServerFn(logout)
-
-  // Reads the profile the `(authed)` beforeLoad already cached — no extra fetch.
-  const profileQuery = useQuery(currentUserQueryOptions)
-  const profile = profileQuery.data
-  const fullName = profile?.fullName ?? fallbackUserName
 
   const logoutMutation = useMutation({
     mutationFn: () => logoutFn(),
@@ -212,6 +232,11 @@ export function PageTitleBar({
     onSettled: async () => {
       await router.invalidate()
       await router.navigate({ to: "/login" })
+      // Clear only after leaving the authed tree — clearing while its components (this
+      // one included) are still mounted would make every live observer refetch against a
+      // dead session. Needed so a later login as a different user doesn't inherit this
+      // one's cached permissions/data (staleTime 60s).
+      queryClient.clear()
     },
   })
 
@@ -268,15 +293,7 @@ export function PageTitleBar({
 
         <ThemeToggle />
 
-        <UserMenu
-          fullName={fullName}
-          username={profile?.username ?? ""}
-          email={profile?.email ?? ""}
-          roleName={profile?.role?.name ?? null}
-          avatarUrl={profile?.avatar ?? null}
-          isLoggingOut={isLoggingOut}
-          onLogout={handleLogout}
-        />
+        <UserMenu isLoggingOut={isLoggingOut} onLogout={handleLogout} />
       </div>
     </header>
   )

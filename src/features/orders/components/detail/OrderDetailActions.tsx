@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { OrderApprovalActions } from "@/features/orders/components/detail/OrderApprovalActions"
 import {
   canUpdateOrder,
@@ -33,7 +33,7 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
       <DisabledAction icon={Printer} label="In" />
       <DisabledAction icon={FileDownload} label="Xuất Excel" />
       {isEditable ? (
-        <PermissionGate permission="orders:update">
+        <RoutePermissionGate route="/manage/orders/$orderId/update">
           <Button type="button" asChild>
             <Link
               to="/manage/orders/$orderId/update"
@@ -43,7 +43,7 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
               Chỉnh sửa
             </Link>
           </Button>
-        </PermissionGate>
+        </RoutePermissionGate>
       ) : (
         <DisabledAction
           icon={PenNewSquare}

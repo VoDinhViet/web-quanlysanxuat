@@ -4,7 +4,7 @@ import { Eye, Pencil } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
 import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import {
   canUpdateOrder,
   resolveDeliveryTone,
@@ -64,7 +64,7 @@ export function OrderActionsCell({ order }: { order: Order }) {
         </Link>
       </IconButton>
       {isEditable ? (
-        <PermissionGate permission="orders:update">
+        <RoutePermissionGate route="/manage/orders/$orderId/update">
           <IconButton label="Chỉnh sửa" asChild>
             <Link
               to="/manage/orders/$orderId/update"
@@ -73,7 +73,7 @@ export function OrderActionsCell({ order }: { order: Order }) {
               <Pencil className="size-3.5" />
             </Link>
           </IconButton>
-        </PermissionGate>
+        </RoutePermissionGate>
       ) : (
         <DisabledAction
           label="Chỉnh sửa"

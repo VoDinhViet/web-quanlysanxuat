@@ -5,6 +5,7 @@ import { CircleCheck, CirclePause, Edit3, ImageOff } from "lucide-react"
 
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { MaterialStatusBadge } from "@/features/materials/components/MaterialBadges"
 import { ToggleMaterialStatusDialog } from "@/features/materials/components/ToggleMaterialStatusDialog"
 import { ItemStatus } from "@/lib/types/item.type"
@@ -103,7 +104,7 @@ export const materialColumns = [
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <PermissionGate permission="items:update">
+          <RoutePermissionGate route="/manage/materials/$materialId/update">
             <IconButton
               label="Chỉnh sửa"
               asChild
@@ -116,7 +117,7 @@ export const materialColumns = [
                 <Edit3 className="size-3.5" />
               </Link>
             </IconButton>
-          </PermissionGate>
+          </RoutePermissionGate>
           <PermissionGate permission="items:update">
             <ToggleMaterialStatusDialog
               material={material}

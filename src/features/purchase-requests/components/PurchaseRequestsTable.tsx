@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { purchaseRequestColumns } from "@/features/purchase-requests/components/PurchaseRequestsTableColumns"
@@ -55,14 +55,14 @@ export function PurchaseRequestsTable({
           title="Chưa có đề xuất mua hàng nào"
           description="Đề xuất mua hàng sẽ hiển thị tại đây khi được tạo."
           action={
-            <PermissionGate permission="purchase-requests:create">
+            <RoutePermissionGate route="/manage/purchase-requests/create">
               <Button asChild size="sm" className="text-xs">
                 <Link to="/manage/purchase-requests/create">
                   <Plus className="size-4" />
                   Tạo đề xuất mua hàng (Manual)
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           }
         />
       ) : (

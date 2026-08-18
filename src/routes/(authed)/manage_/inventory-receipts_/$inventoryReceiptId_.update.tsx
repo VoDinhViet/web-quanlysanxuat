@@ -1,7 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { InventoryReceiptUpdatePage } from "@/features/inventory-receipts/pages/InventoryReceiptUpdatePage"
 import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/options"
 import { canUpdateInventoryReceipt } from "@/lib/types/inventory-receipt.type"
@@ -12,8 +11,6 @@ import { canUpdateInventoryReceipt } from "@/lib/types/inventory-receipt.type"
 export const Route = createFileRoute(
   "/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "inventory:update"),
   loader: async ({ context, params }) => {
     const detail = await context.queryClient.ensureQueryData(
       inventoryReceiptQueryOptions(params.inventoryReceiptId)

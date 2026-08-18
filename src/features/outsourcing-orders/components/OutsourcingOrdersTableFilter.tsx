@@ -15,7 +15,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import type { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
 import { outsourcingOrderStatusLabels } from "@/lib/types/outsourcing-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -90,14 +90,14 @@ export function OutsourcingOrdersTableFilter() {
   return (
     <TooltipProvider>
       <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
-        <PermissionGate permission="outsourcing:create">
+        <RoutePermissionGate route="/manage/outsourcing-orders/create">
           <Button asChild className="gap-1.5">
             <Link to="/manage/outsourcing-orders/create">
               <Plus className="size-4" />
               Tạo phiếu gia công ngoài (OS-OUT)
             </Link>
           </Button>
-        </PermissionGate>
+        </RoutePermissionGate>
 
         <div className="w-72 space-y-1.5">
           <FilterLabel label="Tìm kiếm" htmlFor="os-out-q" />

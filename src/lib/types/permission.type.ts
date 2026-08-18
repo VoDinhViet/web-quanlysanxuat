@@ -15,16 +15,6 @@ export const PERMISSION_CODES = [
   "roles:update",
   "roles:delete",
 
-  "orders:read",
-  "orders:create",
-  "orders:update",
-  "orders:approve",
-
-  "production:read",
-  "production:create",
-  "production:update",
-  "production:approve",
-
   "clients:read",
   "clients:create",
   "clients:update",
@@ -43,14 +33,25 @@ export const PERMISSION_CODES = [
   "suppliers:update",
   "suppliers:delete",
 
+  "orders:read",
+  "orders:create",
+  "orders:update",
+  "orders:approve",
+
   "inventory:read",
   "inventory:create",
   "inventory:update",
   "inventory:delete",
 
+  "production:read",
+  "production:create",
+  "production:update",
+  "production:approve",
+
   "purchase-requests:read",
   "purchase-requests:create",
   "purchase-requests:update",
+  "purchase-requests:delete",
   "purchase-requests:approve",
 
   "purchasing:read",
@@ -62,6 +63,7 @@ export const PERMISSION_CODES = [
   "iqc:read",
   "iqc:create",
   "iqc:update",
+  "iqc:delete",
 
   "outsourcing:read",
   "outsourcing:create",
@@ -75,6 +77,7 @@ export const PERMISSION_CODES = [
 
   "outbound:read",
   "outbound:create",
+  "outbound:update",
 ] as const
 
 export type PermissionCode = (typeof PERMISSION_CODES)[number]

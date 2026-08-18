@@ -7,6 +7,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { DeleteSupplierDialog } from "@/features/suppliers/components/DeleteSupplierDialog"
 import { supplierStatusLabels, SupplierStatus } from "@/lib/types/supplier.type"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -151,7 +152,7 @@ export const supplierColumns = [
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <PermissionGate permission="suppliers:update">
+          <RoutePermissionGate route="/manage/suppliers/$supplierId/update">
             <IconButton
               label="Chỉnh sửa"
               asChild
@@ -164,7 +165,7 @@ export const supplierColumns = [
                 <Edit3 className="size-3.5" />
               </Link>
             </IconButton>
-          </PermissionGate>
+          </RoutePermissionGate>
           <PermissionGate permission="suppliers:delete">
             <DeleteSupplierDialog
               supplier={supplier}

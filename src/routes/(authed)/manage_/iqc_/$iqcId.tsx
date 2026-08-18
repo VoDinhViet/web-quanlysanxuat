@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { iqcQueryOptions } from "@/features/iqc/api/options"
 import { IqcDetailPage } from "@/features/iqc/pages/IqcDetailPage"
@@ -13,8 +12,6 @@ import { itemQueryOptions } from "@/features/products/api"
 // (for IqcGeneralInfoCard's Bộ phận QC select) doesn't depend on the IQC, so it runs alongside
 // the primary query instead of waiting on it.
 export const Route = createFileRoute("/(authed)/manage_/iqc_/$iqcId")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "iqc:read"),
   loader: async ({ context, params }) => {
     const [iqc] = await Promise.all([
       context.queryClient.ensureQueryData(iqcQueryOptions(params.iqcId)),

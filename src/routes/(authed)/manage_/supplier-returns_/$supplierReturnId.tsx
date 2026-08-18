@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import { itemQueryOptions } from "@/features/products/api"
 import { supplierReturnQueryOptions } from "@/features/supplier-returns/api/options"
 import { SupplierReturnDetailPage } from "@/features/supplier-returns/pages/SupplierReturnDetailPage"
@@ -15,8 +14,6 @@ import { supplierQueryOptions } from "@/features/suppliers/api"
 export const Route = createFileRoute(
   "/(authed)/manage_/supplier-returns_/$supplierReturnId"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "inventory:read"),
   loader: async ({ context, params }) => {
     const detail = await context.queryClient.ensureQueryData(
       supplierReturnQueryOptions(params.supplierReturnId)

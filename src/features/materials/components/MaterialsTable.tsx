@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { materialColumns } from "@/features/materials/components/MaterialsTableColumns"
@@ -55,14 +55,14 @@ export function MaterialsTable({
           title="Chưa có vật tư nào"
           description="Bắt đầu bằng cách thêm vật tư đầu tiên vào danh mục của bạn."
           action={
-            <PermissionGate permission="items:create">
+            <RoutePermissionGate route="/manage/materials/create">
               <Button asChild size="sm" className="text-xs">
                 <Link to="/manage/materials/create">
                   <Plus className="size-4" />
                   Thêm vật tư
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           }
         />
       ) : (

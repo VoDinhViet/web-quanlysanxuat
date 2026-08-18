@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { requirePermission } from "@/features/auth/guard"
 import { CreateQuotationPage } from "@/features/purchase-quotations/pages/CreateQuotationPage"
 
 // No loader: the item picker (purchase-ledger rows) and supplier combobox are both
@@ -9,7 +8,5 @@ import { CreateQuotationPage } from "@/features/purchase-quotations/pages/Create
 export const Route = createFileRoute(
   "/(authed)/manage_/purchase-quotations_/create"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "purchasing:create"),
   component: CreateQuotationPage,
 })

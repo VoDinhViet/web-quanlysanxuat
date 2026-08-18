@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import type { EmployeeStatus, User } from "@/lib/types/user.type"
 import { resolveAvatarUrl } from "@/lib/file-url"
@@ -109,7 +110,7 @@ export const userColumns = [
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <PermissionGate permission="users:update">
+          <RoutePermissionGate route="/manage/users/$userId/update">
             <IconButton
               label="Chỉnh sửa"
               asChild
@@ -122,7 +123,7 @@ export const userColumns = [
                 <Edit3 className="size-3.5" />
               </Link>
             </IconButton>
-          </PermissionGate>
+          </RoutePermissionGate>
           <PermissionGate permission="roles:update">
             <IconButton
               label="Phân quyền"

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
 import {
   iqcStatsQueryOptions,
   iqcsQueryOptions,
@@ -11,8 +10,6 @@ import { iqcSearchSchema } from "@/features/iqc/schemas/iqc-search.schema"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 
 export const Route = createFileRoute("/(authed)/manage_/iqc")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "iqc:read"),
   validateSearch: iqcSearchSchema,
   // No loaderDeps: a filter/pagination navigation must not create a new route match, which would
   // re-trigger this loader and blank the whole page. The list itself is read client-side in

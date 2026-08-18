@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { userColumns } from "@/features/users/components/UsersTableColumns"
@@ -51,14 +51,14 @@ export function UsersTable({ rows, pagination, isPending }: UsersTableProps) {
           title="Chưa có nhân sự nào"
           description="Bắt đầu bằng cách thêm nhân sự đầu tiên vào hệ thống."
           action={
-            <PermissionGate permission="users:create">
+            <RoutePermissionGate route="/manage/users/create">
               <Button asChild size="sm" className="text-xs">
                 <Link to="/manage/users/create">
                   <Plus className="size-4" />
                   Thêm nhân sự
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           }
         />
       ) : (

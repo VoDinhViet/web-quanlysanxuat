@@ -9,16 +9,20 @@ import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppSidebar } from "@/components/shared/layout/AppSidebar"
 import { currentUserQueryOptions } from "@/features/auth/api/options"
-import { requireSession } from "@/features/auth/guard"
+import { requireRoutePermissions, requireSession } from "@/features/auth/guard"
 
 export const Route = createFileRoute("/(authed)")({
-  beforeLoad: async ({ location, context }) => {
+  beforeLoad: async ({ location, context, matches }) => {
     const user = await requireSession(location)
     // Load the profile + effective permissions once (cached) so every nested
-    // route guard and component can read them without refetching.
+    // route and component can read them without refetching.
     const profile = await context.queryClient.ensureQueryData(
       currentUserQueryOptions
     )
+
+    // One check for the whole destination — `matches` includes the child routes about to
+    // render, so no page under `(authed)` needs its own guard (see route-permissions.ts).
+    requireRoutePermissions(profile.permissions, matches)
 
     return { user, permissions: profile.permissions }
   },

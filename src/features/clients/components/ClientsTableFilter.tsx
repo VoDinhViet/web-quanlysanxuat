@@ -16,7 +16,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { clientGroupOptionsQueryOptions } from "@/features/clients/api/options"
 import { clientStatusLabels } from "@/lib/types/client.type"
 import type { ClientStatus } from "@/lib/types/client.type"
@@ -175,14 +175,14 @@ export function ClientsTableFilter() {
               <RotateCw className="size-4" />
               Làm mới
             </Button>
-            <PermissionGate permission="clients:create">
+            <RoutePermissionGate route="/manage/clients/create">
               <Button asChild className="text-xs">
                 <Link to="/manage/clients/create">
                   <Plus className="size-4" />
                   Tạo khách hàng
                 </Link>
               </Button>
-            </PermissionGate>
+            </RoutePermissionGate>
           </div>
         </div>
       </div>
