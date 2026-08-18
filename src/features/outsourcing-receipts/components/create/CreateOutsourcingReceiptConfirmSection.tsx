@@ -1,5 +1,4 @@
 import { useField } from "@tanstack/react-form"
-import { useQuery } from "@tanstack/react-query"
 import {
   flexRender,
   getCoreRowModel,
@@ -22,7 +21,6 @@ import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { createOutsourcingReceiptConfirmColumns } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptConfirmColumns"
 import { sumOutsourcingReceiptItemTotals } from "@/features/outsourcing-receipts/outsourcing-receipt-item-totals"
 import { createOutsourcingReceiptFormDefaultValues } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import { withForm } from "@/hooks/use-app-form"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -53,13 +51,10 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
   defaultValues: createOutsourcingReceiptFormDefaultValues,
   props: {},
   render: function Render({ form }) {
-    const warehouseId = useField({ form, name: "warehouseId" }).state.value
     const receiptDate = useField({ form, name: "receiptDate" }).state.value
     const requiresIqc = useField({ form, name: "requiresIqc" }).state.value
     const items = useField({ form, name: "items" }).state.value
 
-    const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
-    const selectedWarehouse = warehouses.find((w) => w.id === warehouseId)
     const supplierName = items.length > 0 ? items[0].supplierName : undefined
 
     const { totalQuantity, totalWeight, totalArea } =
@@ -101,12 +96,8 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
             </Badge>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-3">
             <PreviewField label="Nhà cung cấp" value={supplierName ?? "—"} />
-            <PreviewField
-              label="Kho nhận"
-              value={selectedWarehouse?.name ?? "—"}
-            />
             <PreviewField
               label="Ngày nhận"
               value={

@@ -33,10 +33,9 @@ import { useGetOperationOptions } from "@/features/operations/api"
 import { pendingOrderItemsQueryOptions } from "@/features/outsourcing-receipts/api/options"
 import { buildCreateOutsourcingReceiptPickerColumns } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptPickerColumns"
 import { createOutsourcingReceiptFormDefaultValues } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import { withForm } from "@/hooks/use-app-form"
 import { OperationType } from "@/lib/types/operation.type"
-import { buildSelectOptions, cn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import type { CreateOutsourcingReceiptItemValue } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import type { PendingOrderItem } from "@/lib/types/outsourcing-receipt.type"
 
@@ -50,29 +49,29 @@ function buildPickedOutsourcingReceiptItem(
   row: PendingOrderItem
 ): CreateOutsourcingReceiptItemValue {
   return {
-    outsourcingOrderItemId: row.outsourcingOrderItemId,
-    outsourcingOrderId: row.outsourcingOrderId,
-    outsourcingOrderCode: row.outsourcingOrderCode,
-    sendDate: row.sendDate,
-    supplierId: row.supplierId,
-    supplierName: row.supplierName,
-    productionJobCode: row.productionJobCode,
-    itemCode: row.itemCode,
-    itemName: row.itemName,
-    unitName: row.unitName,
+    outsourcingOrderItemId: row.id,
+    outsourcingOrderId: row.outsourcingOrder.id,
+    outsourcingOrderCode: row.outsourcingOrder.code,
+    sendDate: row.outsourcingOrder.sendDate,
+    supplierId: row.supplier.id,
+    supplierName: row.supplier.name,
+    productionJobCode: row.jobCode,
+    itemCode: row.item.code,
+    itemName: row.item.name,
+    unitName: row.unit.name,
     operationCode: row.operationCode,
     operationName: row.operationName,
-    sentQuantity: row.sentQuantity,
-    quantity: String(row.sentQuantity),
+    sentQuantity: row.quantity,
+    quantity: String(row.quantity),
     weight: row.weight !== null ? String(row.weight) : "",
     area: row.area !== null ? String(row.area) : "",
     note: "",
   }
 }
 
-// Bước ① của wizard "Nhập hàng gia công về" (OS-IN) — chọn Kho nhận cho cả phiếu rồi tích các
-// dòng OS-OUT (GET /outsourcing-receipts/pending-order-items, hiện đủ mọi NCC ngay từ đầu — NCC
-// không phải chọn trước). NCC của cả phiếu tự suy ra theo dòng đầu tiên được tích — BE bắt buộc
+// Bước ① của wizard "Nhập hàng gia công về" (OS-IN) — tích các dòng OS-OUT cần nhận (GET
+// /outsourcing-receipts/pending-order-items, hiện đủ mọi NCC ngay từ đầu — NCC không phải chọn
+// trước). NCC của cả phiếu tự suy ra theo dòng đầu tiên được tích — BE bắt buộc
 // mọi dòng cùng 1 NCC (E187), nên từ dòng thứ 2 trở đi chỉ được tích dòng cùng NCC với dòng đã
 // chọn (xem `toggleRow`/`toggleAll`, và cột "NCC" để phân biệt các dòng). Cùng cấu trúc
 // checkbox-nhiều-dòng như CreateOutsourcingOrderPickerSection.tsx.
@@ -87,15 +86,12 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
     const [operationId, setOperationId] = useState<string | undefined>()
 
     const supplierIdField = useField({ form, name: "supplierId" })
-    const warehouseIdField = useField({ form, name: "warehouseId" })
     // `useField`, không phải `form.Field`'s render-prop — useReactTable/useMemo bên dưới là hook
     // thật, cùng lý do CreateOutsourcingOrderPickerSection.tsx.
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
     const lockedSupplierId = items.length > 0 ? items[0].supplierId : undefined
 
-    const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
-    const warehouseSelectOptions = buildSelectOptions(warehouses)
     const { options: operationOptions } = useGetOperationOptions(
       OperationType.OUTSOURCE
     )
@@ -120,7 +116,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
     const toggleRow = useCallback(
       (row: PendingOrderItem) => {
         const index = items.findIndex(
-          (item) => item.outsourcingOrderItemId === row.outsourcingOrderItemId
+          (item) => item.outsourcingOrderItemId === row.id
         )
         if (index >= 0) {
           itemsField.removeValue(index)
@@ -130,7 +126,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           return
         }
 
-        if (items.length > 0 && items[0].supplierId !== row.supplierId) {
+        if (items.length > 0 && items[0].supplierId !== row.supplier.id) {
           toast.error(
             "Chỉ có thể chọn các dòng cùng một nhà cung cấp trong 1 phiếu."
           )
@@ -139,7 +135,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
 
         itemsField.pushValue(buildPickedOutsourcingReceiptItem(row))
         if (items.length === 0) {
-          supplierIdField.handleChange(row.supplierId)
+          supplierIdField.handleChange(row.supplier.id)
         }
       },
       [items, itemsField, supplierIdField]
@@ -147,19 +143,17 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
 
     const toggleAll = useCallback(
       (checked: boolean) => {
-        const pageIds = new Set(rows.map((row) => row.outsourcingOrderItemId))
+        const pageIds = new Set(rows.map((row) => row.id))
 
         if (checked) {
-          const toAdd = rows.filter(
-            (row) => !pickedIds.has(row.outsourcingOrderItemId)
-          )
+          const toAdd = rows.filter((row) => !pickedIds.has(row.id))
           const distinctSupplierIds = new Set(
-            toAdd.map((row) => row.supplierId)
+            toAdd.map((row) => row.supplier.id)
           )
           const hasMismatch =
             distinctSupplierIds.size > 1 ||
             (lockedSupplierId !== undefined &&
-              toAdd.some((row) => row.supplierId !== lockedSupplierId))
+              toAdd.some((row) => row.supplier.id !== lockedSupplierId))
 
           if (hasMismatch) {
             toast.error(
@@ -173,7 +167,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
             ...toAdd.map(buildPickedOutsourcingReceiptItem),
           ])
           if (items.length === 0 && toAdd.length > 0) {
-            supplierIdField.handleChange(toAdd[0].supplierId)
+            supplierIdField.handleChange(toAdd[0].supplier.id)
           }
         } else {
           const remaining = items.filter(
@@ -189,8 +183,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
     )
 
     const allChecked =
-      rows.length > 0 &&
-      rows.every((row) => pickedIds.has(row.outsourcingOrderItemId))
+      rows.length > 0 && rows.every((row) => pickedIds.has(row.id))
 
     const columns = useMemo(
       () =>
@@ -219,8 +212,8 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
               ① Chọn hàng cần nhận
             </h2>
             <p className="text-sm text-muted-foreground">
-              Chọn kho nhận, sau đó tích các dòng OS-OUT cần nhận về — nhà cung
-              cấp của phiếu tự xác định theo dòng đầu tiên bạn chọn.
+              Tích các dòng OS-OUT cần nhận về — nhà cung cấp của phiếu tự xác
+              định theo dòng đầu tiên bạn chọn.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -235,30 +228,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="space-y-1.5">
-            <FilterLabel label="Kho nhận" htmlFor="os-in-picker-warehouse" />
-            <Select
-              value={warehouseIdField.state.value || undefined}
-              onValueChange={(value) => warehouseIdField.handleChange(value)}
-              disabled={disabled}
-            >
-              <SelectTrigger
-                id="os-in-picker-warehouse"
-                className="w-full text-xs"
-              >
-                <SelectValue placeholder="Chọn kho nhận" />
-              </SelectTrigger>
-              <SelectContent>
-                {warehouseSelectOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
             <FilterLabel label="Tìm kiếm" htmlFor="os-in-picker-search" />
             <div className="relative">
@@ -342,12 +312,10 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
                 />
               ) : (
                 table.getRowModel().rows.map((row) => {
-                  const isPicked = pickedIds.has(
-                    row.original.outsourcingOrderItemId
-                  )
+                  const isPicked = pickedIds.has(row.original.id)
                   const isOtherSupplier =
                     lockedSupplierId !== undefined &&
-                    row.original.supplierId !== lockedSupplierId
+                    row.original.supplier.id !== lockedSupplierId
 
                   return (
                     <TableRow

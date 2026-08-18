@@ -2,7 +2,10 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
-import { outsourcingReceiptQueryOptions } from "@/features/outsourcing-receipts/api/options"
+import {
+  outsourcingReceiptItemsQueryOptions,
+  outsourcingReceiptQueryOptions,
+} from "@/features/outsourcing-receipts/api/options"
 import { OutsourcingReceiptDetailPage } from "@/features/outsourcing-receipts/pages/OutsourcingReceiptDetailPage"
 
 export const Route = createFileRoute(
@@ -11,9 +14,14 @@ export const Route = createFileRoute(
   beforeLoad: ({ context }) =>
     requirePermission(context.permissions, "outsourcing:read"),
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      outsourcingReceiptQueryOptions(params.outsourcingReceiptId)
-    ),
+    Promise.all([
+      context.queryClient.ensureQueryData(
+        outsourcingReceiptQueryOptions(params.outsourcingReceiptId)
+      ),
+      context.queryClient.ensureQueryData(
+        outsourcingReceiptItemsQueryOptions(params.outsourcingReceiptId)
+      ),
+    ]),
   component: OutsourcingReceiptDetailPage,
   pendingComponent: PageLoading,
 })

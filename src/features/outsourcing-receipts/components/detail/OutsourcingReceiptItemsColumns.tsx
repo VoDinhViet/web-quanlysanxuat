@@ -63,7 +63,7 @@ export const outsourcingReceiptItemsColumns = [
     id: "unit",
     header: "ĐVT",
     meta: { headerClassName: "w-14", cellClassName: "text-muted-foreground" },
-    cell: ({ row }) => row.original.item.unit.name,
+    cell: ({ row }) => row.original.unit.name,
   }),
   itemColumnHelper.accessor("quantity", {
     header: "SL nhận",

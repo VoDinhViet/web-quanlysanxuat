@@ -6,7 +6,6 @@ import { outsourcingReceiptsQueryOptions } from "@/features/outsourcing-receipts
 import { OutsourcingReceiptsPage } from "@/features/outsourcing-receipts/pages/OutsourcingReceiptsPage"
 import { outsourcingReceiptsSearchSchema } from "@/features/outsourcing-receipts/schemas/outsourcing-receipts-search.schema"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 
 export const Route = createFileRoute("/(authed)/manage_/outsourcing-receipts")({
   beforeLoad: ({ context }) =>
@@ -23,7 +22,6 @@ export const Route = createFileRoute("/(authed)/manage_/outsourcing-receipts")({
         )
       ),
       context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(warehouseOptionsQueryOptions()),
     ]),
   component: OutsourcingReceiptsPage,
   pendingComponent: PageLoading,

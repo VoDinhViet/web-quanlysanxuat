@@ -3,7 +3,10 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
-import { outsourcingReceiptQueryOptions } from "@/features/outsourcing-receipts/api/options"
+import {
+  outsourcingReceiptItemsQueryOptions,
+  outsourcingReceiptQueryOptions,
+} from "@/features/outsourcing-receipts/api/options"
 import { OutsourcingReceiptDetailHeader } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailHeader"
 import { OutsourcingReceiptInfoCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptInfoCard"
 import { OutsourcingReceiptItemsCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptItemsCard"
@@ -13,8 +16,11 @@ export function OutsourcingReceiptDetailPage() {
     from: "/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: receipt } = useSuspenseQuery(
     outsourcingReceiptQueryOptions(outsourcingReceiptId)
+  )
+  const { data: items } = useSuspenseQuery(
+    outsourcingReceiptItemsQueryOptions(outsourcingReceiptId)
   )
 
   return (
@@ -25,18 +31,18 @@ export function OutsourcingReceiptDetailPage() {
           { label: "Dashboard", href: "/manage" },
           { label: "Gia công ngoài" },
           { label: "Nhập về (OS-IN)", href: "/manage/outsourcing-receipts" },
-          { label: detail.code },
+          { label: receipt.code },
         ]}
         notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface>
-          <OutsourcingReceiptDetailHeader detail={detail} />
+          <OutsourcingReceiptDetailHeader receipt={receipt} items={items} />
         </Surface>
 
-        <OutsourcingReceiptInfoCard detail={detail} />
-        <OutsourcingReceiptItemsCard detail={detail} />
+        <OutsourcingReceiptInfoCard receipt={receipt} />
+        <OutsourcingReceiptItemsCard items={items} />
       </div>
     </main>
   )

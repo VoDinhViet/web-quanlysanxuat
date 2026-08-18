@@ -17,10 +17,10 @@ import {
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OutsourcingReceiptDetailSectionCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailSectionCard"
 import { outsourcingReceiptItemsColumns } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptItemsColumns"
-import type { OutsourcingReceiptDetail } from "@/lib/types/outsourcing-receipt.type"
+import type { OutsourcingReceiptItem } from "@/lib/types/outsourcing-receipt.type"
 
 type OutsourcingReceiptItemsCardProps = {
-  detail: OutsourcingReceiptDetail
+  items: OutsourcingReceiptItem[]
 }
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -28,19 +28,19 @@ const decimalFormatter = new Intl.NumberFormat("vi-VN", {
   maximumFractionDigits: 2,
 })
 
-// Bảng chi tiết từng dòng — mới, cùng khuôn OutsourcingOrderItemsCard.tsx bên OS-OUT (một phiếu
-// giờ có thể nhiều dòng, mỗi dòng ứng với một dòng OS-OUT nguồn).
+// Bảng chi tiết từng dòng — cùng khuôn OutsourcingOrderItemsCard.tsx bên OS-OUT (một phiếu giờ
+// có thể nhiều dòng, mỗi dòng ứng với một dòng OS-OUT nguồn). `totalQuantity` tự tính từ `items`
+// (không lấy detail.totalQuantity — endpoint chi tiết hiện không trả field này).
 export function OutsourcingReceiptItemsCard({
-  detail,
+  items,
 }: OutsourcingReceiptItemsCardProps) {
-  const items = detail.items
-
   const table = useReactTable({
     data: items,
     columns: outsourcingReceiptItemsColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
   const totalWeight = items.reduce((sum, item) => sum + (item.weight ?? 0), 0)
   const totalArea = items.reduce((sum, item) => sum + (item.area ?? 0), 0)
 
@@ -48,7 +48,7 @@ export function OutsourcingReceiptItemsCard({
     <OutsourcingReceiptDetailSectionCard
       icon={ListChecks}
       title="Danh sách dòng đã nhận"
-      description={`${items.length} dòng · Tổng SL nhận ${quantityFormatter.format(detail.totalQuantity)}`}
+      description={`${items.length} dòng · Tổng SL nhận ${quantityFormatter.format(totalQuantity)}`}
       contentClassName="p-0"
     >
       <div className="overflow-x-auto">
@@ -101,7 +101,7 @@ export function OutsourcingReceiptItemsCard({
                   Tổng
                 </TableCell>
                 <TableCell className="text-right font-semibold tabular-nums">
-                  {quantityFormatter.format(detail.totalQuantity)}
+                  {quantityFormatter.format(totalQuantity)}
                 </TableCell>
                 <TableCell className="text-right font-semibold tabular-nums">
                   {decimalFormatter.format(totalWeight)}

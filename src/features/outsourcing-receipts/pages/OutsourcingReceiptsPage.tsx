@@ -1,11 +1,13 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
+import { OutsourcingTabs } from "@/components/shared/layout/OutsourcingTabs"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { outsourcingReceiptsQueryOptions } from "@/features/outsourcing-receipts/api/options"
+import { OutsourcingReceiptLegend } from "@/features/outsourcing-receipts/components/OutsourcingReceiptLegend"
 import { OutsourcingReceiptsTable } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTable"
 import { OutsourcingReceiptsTableFilter } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTableFilter"
 
@@ -31,6 +33,7 @@ export function OutsourcingReceiptsPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+          <OutsourcingTabs />
           <OutsourcingReceiptsTableFilter />
 
           {outsourcingReceiptsQuery.isPending ? (
@@ -48,6 +51,8 @@ export function OutsourcingReceiptsPage() {
             />
           )}
         </Surface>
+
+        <OutsourcingReceiptLegend />
       </div>
     </main>
   )

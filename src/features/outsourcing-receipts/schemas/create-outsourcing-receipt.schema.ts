@@ -61,12 +61,11 @@ export type CreateOutsourcingReceiptItemValue = z.input<
   typeof createOutsourcingReceiptItemSchema
 >
 
-// Toàn bộ wizard 3 bước — supplierId/warehouseId chọn ở đầu bước ① (BE bắt buộc mọi dòng cùng 1
-// NCC — E187 — và 1 kho nhận cho cả phiếu), receiptDate/requiresIqc nhập ở cuối bước ②, items
-// chọn ở bước ①.
+// Toàn bộ wizard 3 bước — supplierId chọn ở đầu bước ① (BE bắt buộc mọi dòng cùng 1 NCC — E187),
+// receiptDate/requiresIqc nhập ở cuối bước ②, items chọn ở bước ①. Không có warehouseId — hàng gia
+// công ngoài không đi qua tồn kho, xem docs/decisions/wip-not-stocked.md.
 export const createOutsourcingReceiptSchema = z.object({
   supplierId: z.string().trim().min(1, "Vui lòng chọn nhà cung cấp"),
-  warehouseId: z.string().trim().min(1, "Vui lòng chọn kho nhận"),
   receiptDate: z.string().trim().min(1, "Vui lòng chọn ngày nhận"),
   requiresIqc: z.boolean(),
   items: z
@@ -81,7 +80,6 @@ export type CreateOutsourcingReceiptSchema = z.input<
 export const createOutsourcingReceiptFormDefaultValues: CreateOutsourcingReceiptSchema =
   {
     supplierId: "",
-    warehouseId: "",
     receiptDate: "",
     requiresIqc: false,
     items: [],

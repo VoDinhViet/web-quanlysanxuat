@@ -32,56 +32,16 @@ const getPendingOrderItemsSchema = z.object({
   operationId: optional(z.string().trim()),
 })
 
-// Wire shape of PendingOrderItemResDto — nested outsourcingOrder/productionJob/item refs the
-// backend returns, narrowed to only the sub-fields actually read below. `supplier` lồng trong
-// `outsourcingOrder` (OutsourcingOrderWithSupplierRefResDto), không phải field top-level.
-// Flattened into PendingOrderItem so PickerColumns/PickerSection keep flat field names, cùng
-// khuôn get-outsourceable-operations.api.ts (OS-OUT's own picker).
-type PendingOrderItemWireRow = {
-  id: string
-  outsourcingOrder: {
-    id: string
-    code: string
-    sendDate: string
-    supplier: { id: string; name: string }
-  }
-  productionJob: { code: string } | null
-  item: { code: string; name: string; unit: { name: string } }
-  operationCode: string
-  operationName: string
-  quantity: number
-  weight: number | null
-  area: number | null
-}
-
 export const getPendingOrderItems = createServerFn({ method: "GET" })
   .validator(getPendingOrderItemsSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<PendingOrderItem>> => {
     try {
-      const response = await http.get<
-        PaginatedResponse<PendingOrderItemWireRow>
-      >("/api/outsourcing-receipts/pending-order-items", { params: data })
+      const response = await http.get<PaginatedResponse<PendingOrderItem>>(
+        "/api/outsourcing-receipts/pending-order-items",
+        { params: data }
+      )
 
-      return {
-        ...response.data,
-        data: response.data.data.map((row) => ({
-          outsourcingOrderItemId: row.id,
-          outsourcingOrderId: row.outsourcingOrder.id,
-          outsourcingOrderCode: row.outsourcingOrder.code,
-          sendDate: row.outsourcingOrder.sendDate,
-          supplierId: row.outsourcingOrder.supplier.id,
-          supplierName: row.outsourcingOrder.supplier.name,
-          productionJobCode: row.productionJob?.code ?? null,
-          itemCode: row.item.code,
-          itemName: row.item.name,
-          unitName: row.item.unit.name,
-          operationCode: row.operationCode,
-          operationName: row.operationName,
-          sentQuantity: row.quantity,
-          weight: row.weight,
-          area: row.area,
-        })),
-      }
+      return response.data
     } catch (error) {
       logHttpError(error, "getPendingOrderItems")
 

@@ -46,45 +46,51 @@ export function buildCreateOutsourcingReceiptPickerColumns({
       cell: ({ row }) => {
         const isOtherSupplier =
           lockedSupplierId !== undefined &&
-          row.original.supplierId !== lockedSupplierId
+          row.original.supplier.id !== lockedSupplierId
 
         return (
           <Checkbox
-            checked={pickedIds.has(row.original.outsourcingOrderItemId)}
+            checked={pickedIds.has(row.original.id)}
             disabled={disabled || isOtherSupplier}
             onCheckedChange={() => onToggleRow(row.original)}
-            aria-label={`Chọn ${row.original.itemName}`}
+            aria-label={`Chọn ${row.original.item.name}`}
           />
         )
       },
     }),
-    pendingOrderItemColumnHelper.accessor("outsourcingOrderCode", {
+    pendingOrderItemColumnHelper.accessor((row) => row.outsourcingOrder.code, {
+      id: "outsourcingOrderCode",
       header: "OS-OUT",
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue, row }) => (
         <Link
           to="/manage/outsourcing-orders/$outsourcingOrderId"
-          params={{ outsourcingOrderId: row.original.outsourcingOrderId }}
+          params={{ outsourcingOrderId: row.original.outsourcingOrder.id }}
           className="font-mono text-xs text-primary hover:underline"
         >
           {getValue()}
         </Link>
       ),
     }),
-    pendingOrderItemColumnHelper.accessor("supplierName", {
+    pendingOrderItemColumnHelper.accessor((row) => row.supplier.name, {
+      id: "supplierName",
       header: "NCC",
       meta: { headerClassName: "min-w-32" },
     }),
-    pendingOrderItemColumnHelper.accessor("sendDate", {
-      header: "Ngày gửi",
-      meta: {
-        headerClassName: "min-w-24 text-center",
-        cellClassName: "text-center text-xs text-muted-foreground",
-      },
-      cell: ({ getValue }) =>
-        DateTime.fromISO(getValue(), { zone: "utc" }).toFormat("dd/MM/yyyy"),
-    }),
-    pendingOrderItemColumnHelper.accessor("productionJobCode", {
+    pendingOrderItemColumnHelper.accessor(
+      (row) => row.outsourcingOrder.sendDate,
+      {
+        id: "sendDate",
+        header: "Ngày gửi",
+        meta: {
+          headerClassName: "min-w-24 text-center",
+          cellClassName: "text-center text-xs text-muted-foreground",
+        },
+        cell: ({ getValue }) =>
+          DateTime.fromISO(getValue(), { zone: "utc" }).toFormat("dd/MM/yyyy"),
+      }
+    ),
+    pendingOrderItemColumnHelper.accessor("jobCode", {
       header: "Job",
       meta: {
         headerClassName: "min-w-24",
@@ -99,10 +105,10 @@ export function buildCreateOutsourcingReceiptPickerColumns({
       cell: ({ row }) => (
         <div>
           <p className="text-xs font-semibold text-foreground">
-            {row.original.itemName}
+            {row.original.item.name}
           </p>
           <p className="font-mono text-[11px] text-muted-foreground">
-            {row.original.itemCode}
+            {row.original.item.code}
           </p>
         </div>
       ),
@@ -111,14 +117,15 @@ export function buildCreateOutsourcingReceiptPickerColumns({
       header: "Công đoạn",
       meta: { headerClassName: "min-w-32" },
     }),
-    pendingOrderItemColumnHelper.accessor("unitName", {
+    pendingOrderItemColumnHelper.accessor((row) => row.unit.name, {
+      id: "unitName",
       header: "ĐVT",
       meta: {
         headerClassName: "w-16",
         cellClassName: "text-muted-foreground",
       },
     }),
-    pendingOrderItemColumnHelper.accessor("sentQuantity", {
+    pendingOrderItemColumnHelper.accessor("quantity", {
       header: "SL đã gửi",
       meta: { headerClassName: "w-24 text-right", cellClassName: "text-right" },
       cell: ({ getValue }) => (

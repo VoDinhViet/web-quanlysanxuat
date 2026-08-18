@@ -4,7 +4,11 @@ import axios from "axios"
 import { createOutsourcingReceiptSchema } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import { emptyToUndefined, emptyToUndefinedNumber, toIsoDate } from "@/lib/zod-transforms"
+import {
+  emptyToUndefined,
+  emptyToUndefinedNumber,
+  toIsoDate,
+} from "@/lib/zod-transforms"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -26,8 +30,6 @@ function resolveCreateOutsourcingReceiptErrorMessage(error: unknown): string {
       return "SL nhận vượt SL còn lại của dòng OS-OUT."
     case "outsourcing_order.error.not_found":
       return "Không tìm thấy phiếu OS-OUT nguồn."
-    case "warehouse.error.inactive":
-      return "Kho nhận đang ngừng hoạt động."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo phiếu nhận gia công ngoài."
     default:
@@ -38,19 +40,20 @@ function resolveCreateOutsourcingReceiptErrorMessage(error: unknown): string {
 // Ghép sang payload wire CreateOutsourcingReceiptReqDto — items chỉ gửi 4 field BE cần
 // (outsourcingOrderItemId/quantity/weight?/area?/note?), bỏ mọi field UI-only (outsourcingOrderCode,
 // itemName...) khỏi payload.
-const createOutsourcingReceiptPayloadSchema = createOutsourcingReceiptSchema.transform(
-  ({ items, receiptDate, ...rest }) => ({
-    ...rest,
-    receiptDate: toIsoDate(receiptDate),
-    items: items.map((item) => ({
-      outsourcingOrderItemId: item.outsourcingOrderItemId,
-      quantity: Number(item.quantity),
-      weight: emptyToUndefinedNumber(item.weight),
-      area: emptyToUndefinedNumber(item.area),
-      note: emptyToUndefined(item.note),
-    })),
-  })
-)
+const createOutsourcingReceiptPayloadSchema =
+  createOutsourcingReceiptSchema.transform(
+    ({ items, receiptDate, ...rest }) => ({
+      ...rest,
+      receiptDate: toIsoDate(receiptDate),
+      items: items.map((item) => ({
+        outsourcingOrderItemId: item.outsourcingOrderItemId,
+        quantity: Number(item.quantity),
+        weight: emptyToUndefinedNumber(item.weight),
+        area: emptyToUndefinedNumber(item.area),
+        note: emptyToUndefined(item.note),
+      })),
+    })
+  )
 
 // POST /outsourcing-receipts — luôn tạo DRAFT, trả về void (không có code để hiện lại). Xem
 // CreateOutsourcingReceiptForm.tsx.

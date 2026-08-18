@@ -6,7 +6,6 @@ import {
   Info,
   StickyNote,
   User,
-  Warehouse,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
@@ -16,39 +15,34 @@ import { InventoryDocumentStatus } from "@/lib/types/outsourcing-receipt.type"
 import type { OutsourcingReceiptDetail } from "@/lib/types/outsourcing-receipt.type"
 
 type OutsourcingReceiptInfoCardProps = {
-  detail: OutsourcingReceiptDetail
+  receipt: OutsourcingReceiptDetail
 }
 
 // Gộp toàn bộ tham chiếu vào 1 card (khuôn InfoTile của IqcGeneralInfoCard.tsx). Không có tile
 // "Mã phiếu gửi (OS-OUT)" — mỗi dòng của phiếu giờ có thể trỏ tới một OS-OUT khác nhau (không còn
 // 1-1 ở cấp phiếu), xem OutsourcingReceiptItemsCard.tsx cho mã OS-OUT theo từng dòng.
 export function OutsourcingReceiptInfoCard({
-  detail,
+  receipt,
 }: OutsourcingReceiptInfoCardProps) {
-  const isPosted = detail.status === InventoryDocumentStatus.POSTED
+  const isPosted = receipt.status === InventoryDocumentStatus.POSTED
 
   return (
     <OutsourcingReceiptDetailSectionCard
       icon={Info}
       title="Thông tin phiếu"
-      description="Nguồn gốc, kho nhận và trạng thái xác nhận"
+      description="Nguồn gốc và trạng thái xác nhận"
     >
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
         <InfoTile
           icon={Building2}
           label="Nhà cung cấp"
-          value={detail.supplier.name}
-        />
-        <InfoTile
-          icon={Warehouse}
-          label="Kho nhận"
-          value={detail.warehouse.name}
+          value={receipt.supplier.name}
         />
         <InfoTile
           icon={ClipboardCheck}
           label="Yêu cầu QC"
           value={
-            detail.requiresIqc
+            receipt.requiresIqc
               ? isPosted
                 ? "Có — đã sinh phiếu IQC, xem trong danh sách IQC"
                 : "Có — sẽ sinh phiếu IQC khi xác nhận đã nhận"
@@ -58,26 +52,26 @@ export function OutsourcingReceiptInfoCard({
         <InfoTile
           icon={StickyNote}
           label="Ghi chú"
-          value={detail.note ?? "—"}
+          value={receipt.note ?? "—"}
         />
         <InfoTile
           icon={User}
           label="Người tạo"
-          value={detail.creatorBy?.fullName ?? "—"}
+          value={receipt.creatorBy?.fullName ?? "—"}
         />
         {isPosted && (
           <>
             <InfoTile
               icon={User}
               label="Người xác nhận"
-              value={detail.posterBy?.fullName ?? "—"}
+              value={receipt.posterBy?.fullName ?? "—"}
             />
             <InfoTile
               icon={Calendar}
               label="Ngày xác nhận"
               value={
-                detail.postedAt
-                  ? DateTime.fromISO(detail.postedAt).toFormat(
+                receipt.postedAt
+                  ? DateTime.fromISO(receipt.postedAt).toFormat(
                       "dd/MM/yyyy HH:mm"
                     )
                   : "—"

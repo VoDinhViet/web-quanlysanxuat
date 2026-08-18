@@ -1,6 +1,8 @@
 import { Badge } from "@/components/ui/badge"
-import type { OutsourcingReceiptProgress } from "@/lib/types/outsourcing-receipt.type"
-import { outsourcingReceiptProgressLabels } from "@/lib/types/outsourcing-receipt.type"
+import {
+  InventoryDocumentStatus,
+  outsourcingReceiptStatusLabels,
+} from "@/lib/types/outsourcing-receipt.type"
 import { cn } from "@/lib/utils"
 
 type BadgeStyle = {
@@ -8,50 +10,43 @@ type BadgeStyle = {
   dot: string
 }
 
-// Mirror 100% OutsourcingOrderBadges.tsx's style map (cùng bảng màu theo progress) — thiếu mỗi
-// SENT (OS-IN không có bước "đã gửi chờ NCC xử lý" như OS-OUT).
-export const outsourcingReceiptProgressStyles: Record<
-  OutsourcingReceiptProgress,
+// Badge cho raw DB status (POSTED/CANCELLED — DRAFT không còn phát sinh, docs/decisions/
+// outsourcing-no-draft.md phía be-quanlysanxuat) — BE bỏ hẳn `progress` (không còn dữ liệu để
+// tính "Về 1 phần"/"Chờ QC"/"Hoàn thành"), dùng thẳng status thay thế. Mirror
+// outsourcingOrderDocStatusStyles/OutsourcingOrderDocStatusBadge bên OS-OUT.
+export const outsourcingReceiptDocStatusStyles: Record<
+  InventoryDocumentStatus,
   BadgeStyle
 > = {
-  DRAFT: {
+  [InventoryDocumentStatus.DRAFT]: {
     badge: "bg-muted text-muted-foreground",
     dot: "bg-muted-foreground/60",
   },
-  PARTIAL: {
-    badge: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
-    dot: "bg-sky-500 dark:bg-sky-400",
-  },
-  WAITING_QC: {
-    badge:
-      "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400",
-    dot: "bg-yellow-500 dark:bg-yellow-400",
-  },
-  COMPLETED: {
+  [InventoryDocumentStatus.POSTED]: {
     badge: "bg-success/10 text-success",
     dot: "bg-success",
   },
-  CANCELLED: {
+  [InventoryDocumentStatus.CANCELLED]: {
     badge: "border-dashed bg-transparent text-muted-foreground",
     dot: "bg-muted-foreground/60",
   },
 }
 
-type OutsourcingReceiptStatusBadgeProps = {
-  status: OutsourcingReceiptProgress
+type OutsourcingReceiptDocStatusBadgeProps = {
+  status: InventoryDocumentStatus
   className?: string
 }
 
-export function OutsourcingReceiptStatusBadge({
+export function OutsourcingReceiptDocStatusBadge({
   status,
   className,
-}: OutsourcingReceiptStatusBadgeProps) {
-  const { badge, dot } = outsourcingReceiptProgressStyles[status]
+}: OutsourcingReceiptDocStatusBadgeProps) {
+  const { badge, dot } = outsourcingReceiptDocStatusStyles[status]
 
   return (
     <Badge variant="outline" className={cn(badge, className)}>
       <span className={cn("size-1.5 rounded-full", dot)} />
-      {outsourcingReceiptProgressLabels[status]}
+      {outsourcingReceiptStatusLabels[status]}
     </Badge>
   )
 }
