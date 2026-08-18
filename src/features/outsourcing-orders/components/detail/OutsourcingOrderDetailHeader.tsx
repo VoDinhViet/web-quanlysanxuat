@@ -5,18 +5,19 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { OutsourcingOrderDetailActions } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderDetailActions"
-import { OutsourcingOrderStatusBadge } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
+import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderDetailHeaderProps = {
-  detail: OutsourcingOrderDetail
+  order: OutsourcingOrderDetail
 }
 
 // Identity row + at-a-glance meta grid + header-level actions — same shell as
-// OutsourcingReceiptDetailHeader.tsx. Badge dùng `progress` (đã map sẵn sang
-// OutsourcingOrderStatus), không phải `status` (DB status thô).
+// OutsourcingReceiptDetailHeader.tsx. Badge dùng `status` (DB status thô) — endpoint chi tiết
+// hiện chưa tính `progress` (xem outsourcing-order.type.ts), cùng badge cột Trạng thái của bảng
+// danh sách.
 export function OutsourcingOrderDetailHeader({
-  detail,
+  order,
 }: OutsourcingOrderDetailHeaderProps) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
@@ -39,23 +40,22 @@ export function OutsourcingOrderDetailHeader({
           </Button>
 
           <span className="font-mono text-lg font-bold text-foreground">
-            {detail.code}
+            {order.code}
           </span>
-          <OutsourcingOrderStatusBadge status={detail.progress} />
+          <OutsourcingOrderDocStatusBadge status={order.status} />
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
-          <MetaField label="Nhà cung cấp" value={detail.supplier.name} />
-          <MetaField label="Kho xuất hàng" value={detail.warehouse.name} />
+        <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3">
+          <MetaField label="Nhà cung cấp" value={order.supplier.name} />
           <MetaField
             label="Ngày gửi"
-            value={DateTime.fromISO(detail.sendDate).toFormat("dd/MM/yyyy")}
+            value={DateTime.fromISO(order.sendDate).toFormat("dd/MM/yyyy")}
           />
           <MetaField
             label="Ngày hẹn về"
             value={
-              detail.expectedReturnDate
-                ? DateTime.fromISO(detail.expectedReturnDate).toFormat(
+              order.expectedReturnDate
+                ? DateTime.fromISO(order.expectedReturnDate).toFormat(
                     "dd/MM/yyyy"
                   )
                 : "—"
@@ -64,7 +64,7 @@ export function OutsourcingOrderDetailHeader({
         </div>
       </div>
 
-      <OutsourcingOrderDetailActions detail={detail} />
+      <OutsourcingOrderDetailActions order={order} />
     </div>
   )
 }

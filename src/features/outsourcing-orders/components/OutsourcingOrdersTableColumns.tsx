@@ -2,23 +2,13 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { OutsourcingOrderStatusBadge } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
+import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
 import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/OutsourcingOrdersTableCells"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
 const col = createColumnHelper<OutsourcingOrder>()
 
 export const outsourcingOrdersColumns = [
-  col.display({
-    id: "stt",
-    header: "STT",
-    meta: {
-      headerClassName: "w-11 min-w-11 text-center",
-      cellClassName: "text-center text-muted-foreground font-mono text-xs",
-    },
-    cell: ({ row }) => row.index + 1,
-  }),
-
   col.accessor("code", {
     header: "Mã phiếu",
     meta: { headerClassName: "min-w-32" },
@@ -42,7 +32,7 @@ export const outsourcingOrdersColumns = [
     cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
 
-  col.accessor("sentDate", {
+  col.accessor("sendDate", {
     header: "Ngày gửi",
     meta: {
       headerClassName: "min-w-24 text-center",
@@ -51,14 +41,10 @@ export const outsourcingOrdersColumns = [
     cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
 
-  col.accessor("supplierName", {
+  col.accessor((row) => row.supplier.name, {
+    id: "supplier",
     header: "Nhà cung cấp",
     meta: { headerClassName: "min-w-36" },
-  }),
-
-  col.accessor("operationName", {
-    header: "Công đoạn",
-    meta: { headerClassName: "min-w-32" },
   }),
 
   col.accessor("totalQuantity", {
@@ -67,7 +53,6 @@ export const outsourcingOrdersColumns = [
       headerClassName: "min-w-24 text-right",
       cellClassName: "text-right tabular-nums text-xs",
     },
-    cell: ({ getValue, row }) => `${getValue()} ${row.original.unit}`,
   }),
 
   col.accessor("receivedQuantity", {
@@ -78,15 +63,12 @@ export const outsourcingOrdersColumns = [
     },
   }),
 
-  col.display({
-    id: "remaining",
+  col.accessor("remainingQuantity", {
     header: "Còn lại",
     meta: {
       headerClassName: "min-w-20 text-right",
       cellClassName: "text-right tabular-nums text-xs font-semibold",
     },
-    cell: ({ row }) =>
-      row.original.totalQuantity - row.original.receivedQuantity,
   }),
 
   col.accessor("status", {
@@ -95,7 +77,9 @@ export const outsourcingOrdersColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => <OutsourcingOrderStatusBadge status={getValue()} />,
+    cell: ({ getValue }) => (
+      <OutsourcingOrderDocStatusBadge status={getValue()} />
+    ),
   }),
 
   col.accessor("expectedReturnDate", {

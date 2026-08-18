@@ -4,10 +4,11 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import type { OutsourcingOrderItem } from "@/lib/types/outsourcing-order.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
-function resolveDeleteOutsourcingOrderErrorMessage(error: unknown): string {
+function resolveGetOutsourcingOrderItemsErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
     return GENERIC_ERROR_MESSAGE
   }
@@ -15,24 +16,25 @@ function resolveDeleteOutsourcingOrderErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "outsourcing_order.error.not_found":
       return "Không tìm thấy phiếu gia công ngoài."
-    case "inventory_document.error.invalid_status_transition":
-      return "Chỉ có thể xoá phiếu còn ở trạng thái Nháp."
     case "auth.error.forbidden":
-      return "Bạn không có quyền xoá phiếu."
+      return "Bạn không có quyền xem chi tiết phiếu gia công ngoài này."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
-// Chỉ xoá được khi còn DRAFT — dòng con xoá theo cascade. Xem OutsourcingOrderDetailActions.tsx.
-export const deleteOutsourcingOrder = createServerFn({ method: "POST" })
+export const getOutsourcingOrderItems = createServerFn({ method: "GET" })
   .validator(z.object({ outsourcingOrderId: z.uuid() }))
-  .handler(async ({ data }): Promise<void> => {
+  .handler(async ({ data }): Promise<OutsourcingOrderItem[]> => {
     try {
-      await http.delete(`/api/outsourcing-orders/${data.outsourcingOrderId}`)
-    } catch (error) {
-      logHttpError(error, "deleteOutsourcingOrder")
+      const response = await http.get<OutsourcingOrderItem[]>(
+        `/api/outsourcing-orders/${data.outsourcingOrderId}/items`
+      )
 
-      throw new Error(resolveDeleteOutsourcingOrderErrorMessage(error))
+      return response.data
+    } catch (error) {
+      logHttpError(error, "getOutsourcingOrderItems")
+
+      throw new Error(resolveGetOutsourcingOrderItemsErrorMessage(error))
     }
   })

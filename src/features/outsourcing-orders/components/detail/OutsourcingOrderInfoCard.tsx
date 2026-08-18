@@ -8,16 +8,16 @@ import { InventoryDocumentStatus } from "@/lib/types/outsourcing-order.type"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderInfoCardProps = {
-  detail: OutsourcingOrderDetail
+  order: OutsourcingOrderDetail
 }
 
 // Ghi chú + người tạo, cộng người/ngày xác nhận gửi khi phiếu đã qua DRAFT — cùng khuôn
 // OutsourcingReceiptInfoCard.tsx's `isPosted &&` block. NCC/kho xuất/ngày đã có ở header's meta
 // grid nên không lặp lại ở đây.
 export function OutsourcingOrderInfoCard({
-  detail,
+  order,
 }: OutsourcingOrderInfoCardProps) {
-  const isDraft = detail.status === InventoryDocumentStatus.DRAFT
+  const isDraft = order.status === InventoryDocumentStatus.DRAFT
 
   return (
     <OutsourcingOrderDetailSectionCard
@@ -26,29 +26,25 @@ export function OutsourcingOrderInfoCard({
       description="Ghi chú và trạng thái xác nhận"
     >
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
-        <InfoTile
-          icon={StickyNote}
-          label="Ghi chú"
-          value={detail.note ?? "—"}
-        />
+        <InfoTile icon={StickyNote} label="Ghi chú" value={order.note ?? "—"} />
         <InfoTile
           icon={User}
           label="Người tạo"
-          value={detail.creatorBy?.fullName ?? "—"}
+          value={order.creatorBy?.fullName ?? "—"}
         />
         {!isDraft && (
           <>
             <InfoTile
               icon={User}
               label="Người xác nhận"
-              value={detail.posterBy?.fullName ?? "—"}
+              value={order.posterBy?.fullName ?? "—"}
             />
             <InfoTile
               icon={Calendar}
               label="Ngày xác nhận"
               value={
-                detail.postedAt
-                  ? DateTime.fromISO(detail.postedAt).toFormat(
+                order.postedAt
+                  ? DateTime.fromISO(order.postedAt).toFormat(
                       "dd/MM/yyyy HH:mm"
                     )
                   : "—"

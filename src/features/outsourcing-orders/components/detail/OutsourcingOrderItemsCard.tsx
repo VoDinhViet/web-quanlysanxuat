@@ -17,30 +17,33 @@ import {
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderDetailSectionCard"
 import { outsourcingOrderItemsColumns } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderItemsColumns"
-import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
-
-type OutsourcingOrderItemsCardProps = {
-  detail: OutsourcingOrderDetail
-}
+import type { OutsourcingOrderItem } from "@/lib/types/outsourcing-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const decimalFormatter = new Intl.NumberFormat("vi-VN", {
   maximumFractionDigits: 2,
 })
 
-// Bảng chi tiết từng dòng — không có ở OutsourcingReceiptDetailPage.tsx (OS-IN chỉ 1 dòng vật tư
-// mỗi phiếu), cùng khuôn bảng bước ③ của wizard (CreateOutsourcingOrderConfirmSection.tsx).
-export function OutsourcingOrderItemsCard({
-  detail,
-}: OutsourcingOrderItemsCardProps) {
-  const items = detail.items
+type OutsourcingOrderItemsCardProps = {
+  items: OutsourcingOrderItem[]
+}
 
+// Bảng chi tiết từng dòng — không có ở OutsourcingReceiptDetailPage.tsx (OS-IN chỉ 1 dòng vật tư
+// mỗi phiếu), cùng khuôn bảng bước ③ của wizard (CreateOutsourcingOrderConfirmSection.tsx). Nhận
+// `items` riêng (không phải cả `detail`) — GET /outsourcing-orders/:id/items là endpoint tách
+// biệt, xem outsourcing-order-items.options.ts.
+export function OutsourcingOrderItemsCard({
+  items,
+}: OutsourcingOrderItemsCardProps) {
   const table = useReactTable({
     data: items,
     columns: outsourcingOrderItemsColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
+  // totalQuantity tự tính từ items (không lấy detail.totalQuantity — endpoint chi tiết hiện
+  // không trả field này) để tổng ở footer luôn khớp đúng các dòng đang hiển thị.
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
   const totalReceivedQuantity = items.reduce(
     (sum, item) => sum + item.receivedQuantity,
     0
@@ -52,15 +55,15 @@ export function OutsourcingOrderItemsCard({
     <OutsourcingOrderDetailSectionCard
       icon={ListChecks}
       title="Danh sách chi tiết gửi gia công"
-      description={`${items.length} dòng · Tổng SL gửi ${quantityFormatter.format(detail.totalQuantity)}`}
+      description="Hệ thống chưa trả về danh sách dòng cho phiếu này"
       contentClassName="p-0"
     >
       <div className="overflow-x-auto">
         {items.length === 0 ? (
           <TableEmpty
             icon={PackageSearch}
-            title="Chưa có dòng gửi gia công nào"
-            description="Phiếu gửi gia công này chưa có dòng chi tiết nào."
+            title="Chưa thể hiển thị chi tiết dòng"
+            description="Hệ thống hiện chưa trả về danh sách dòng cho phiếu này."
           />
         ) : (
           <Table className="min-w-[1080px] table-fixed">
@@ -105,14 +108,14 @@ export function OutsourcingOrderItemsCard({
                   Tổng
                 </TableCell>
                 <TableCell className="text-right font-semibold tabular-nums">
-                  {quantityFormatter.format(detail.totalQuantity)}
+                  {quantityFormatter.format(totalQuantity)}
                 </TableCell>
                 <TableCell className="text-right font-semibold tabular-nums">
                   {quantityFormatter.format(totalReceivedQuantity)}
                 </TableCell>
                 <TableCell className="text-right font-semibold tabular-nums">
                   {quantityFormatter.format(
-                    detail.totalQuantity - totalReceivedQuantity
+                    totalQuantity - totalReceivedQuantity
                   )}
                 </TableCell>
                 <TableCell className="text-right font-semibold tabular-nums">

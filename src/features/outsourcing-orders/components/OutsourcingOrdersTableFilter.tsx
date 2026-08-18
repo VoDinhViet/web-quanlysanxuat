@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { Plus, RotateCw, Search, Upload } from "lucide-react"
+import { Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -89,108 +89,77 @@ export function OutsourcingOrdersTableFilter() {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-        <div className="flex flex-wrap items-center gap-2 border-b border-border/60 pb-4">
-          <PermissionGate permission="outsourcing:create">
-            <Button asChild className="gap-1.5">
-              <Link to="/manage/outsourcing-orders/create">
-                <Plus className="size-4" />
-                Tạo phiếu gia công ngoài (OS-OUT)
-              </Link>
-            </Button>
-          </PermissionGate>
+      <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
+        <PermissionGate permission="outsourcing:create">
+          <Button asChild className="gap-1.5">
+            <Link to="/manage/outsourcing-orders/create">
+              <Plus className="size-4" />
+              Tạo phiếu gia công ngoài (OS-OUT)
+            </Link>
+          </Button>
+        </PermissionGate>
 
-          <PermissionGate permission="outsourcing:read">
-            <Button asChild variant="outline" className="gap-1.5">
-              <Link
-                to="/manage/outsourcing-receipts"
-                search={{ page: 1, limit: 10 }}
-              >
-                <Upload className="size-4" />
-                Nhập hàng về (OS-IN)
-              </Link>
-            </Button>
-          </PermissionGate>
-        </div>
-
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-              <FilterLabel label="Tìm kiếm" htmlFor="os-out-q" />
-              <div className="relative">
-                <Input
-                  id="os-out-q"
-                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Mã phiếu..."
-                  value={q}
-                  onChange={(e) => {
-                    setQ(e.target.value)
-                    handleSearchDebounced()
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      handleExecuteSearch()
-                    }
-                  }}
-                />
-                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <FilterLabel label="Trạng thái" htmlFor="os-out-status" />
-              <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
-              >
-                <SelectTrigger id="os-out-status" className="w-full text-xs">
-                  <SelectValue placeholder="Chọn trạng thái" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-1.5 sm:col-span-2">
-              <FilterLabel
-                label="Từ ngày – Đến ngày"
-                htmlFor="os-out-daterange"
-              />
-              <DateRangePicker
-                id="os-out-daterange"
-                from={search.fromDate}
-                to={search.toDate}
-                onChange={handleDateRangeChange}
-              />
-            </div>
-          </div>
-
-          <div className="flex w-full items-center justify-end gap-2 lg:w-auto">
-            <Button
-              type="button"
-              variant="outline"
-              className="gap-1.5 text-xs"
-              onClick={resetFilters}
-            >
-              <RotateCw className="size-3.5" />
-              Xóa bộ lọc
-            </Button>
-            <Button
-              type="button"
-              className="gap-1.5 text-xs"
-              onClick={handleExecuteSearch}
-            >
-              <Search className="size-3.5" />
-              Bộ lọc
-            </Button>
+        <div className="w-72 space-y-1.5">
+          <FilterLabel label="Tìm kiếm" htmlFor="os-out-q" />
+          <div className="relative">
+            <Input
+              id="os-out-q"
+              className="pr-9 text-xs placeholder:text-muted-foreground/75"
+              placeholder="Mã phiếu..."
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value)
+                handleSearchDebounced()
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  handleExecuteSearch()
+                }
+              }}
+            />
+            <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
           </div>
         </div>
+
+        <div className="w-40 space-y-1.5">
+          <FilterLabel label="Trạng thái" htmlFor="os-out-status" />
+          <Select
+            value={search.status ?? "all"}
+            onValueChange={handleStatusChange}
+          >
+            <SelectTrigger id="os-out-status" className="w-full text-xs">
+              <SelectValue placeholder="Chọn trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              {statusOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="w-56 space-y-1.5">
+          <FilterLabel label="Từ ngày – Đến ngày" htmlFor="os-out-daterange" />
+          <DateRangePicker
+            id="os-out-daterange"
+            from={search.fromDate}
+            to={search.toDate}
+            onChange={handleDateRangeChange}
+          />
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-1.5 text-xs"
+          onClick={resetFilters}
+        >
+          <RotateCw className="size-3.5" />
+          Xóa bộ lọc
+        </Button>
       </div>
     </TooltipProvider>
   )
