@@ -1,6 +1,7 @@
 import { DateTime } from "luxon"
 
 import type { FileResource } from "@/lib/types/file.type"
+import type { ItemRef } from "@/lib/types/item.type"
 import type { Unit } from "@/lib/types/unit.type"
 
 // Mirrors the backend's OrderStatus exactly. DRAFT → PENDING_CONFIRMATION (submit) →
@@ -212,7 +213,11 @@ export type Order = {
   updatedAt: string
 }
 
-/** Mirrors the backend's nested item relation on an order line (OrderItemRefResDto). */
+/** Mirrors the backend's OrderItemRefResDto — a different, older nested-item shape than the
+ *  order-item endpoint below uses now. Kept only because `ProductionOrderDetailItem`
+ *  (production-order.type.ts) still nests `unit`/`image` inside `item` for its own resource
+ *  (ProductionOrderItemResDto) — not used by `OrderItem` itself anymore, see its own doc comment.
+ */
 export type OrderItemRef = {
   id: string
   code: string
@@ -221,7 +226,10 @@ export type OrderItemRef = {
   image: FileResource | null
 }
 
-/** Mirrors the backend's OrderItemResDto — one line of an order's item list. */
+/** Mirrors the backend's OrderItemResDto — one line of an order's item list (GET
+ *  /api/orders/:orderId/items, a separate endpoint from the order detail — see `OrderDetail`
+ *  below). `unit`/`image` are top-level siblings of `item`, not nested inside it — `item` itself
+ *  is just the lightweight {id, code, name} `ItemRef`. */
 export type OrderItem = {
   id: string
   quantity: number
@@ -232,7 +240,9 @@ export type OrderItem = {
   note: string | null
   status: OrderItemStatus
   sortOrder: number
-  item: OrderItemRef
+  item: ItemRef
+  unit: Unit
+  image: FileResource | null
 }
 
 /** Mirrors the backend's OrderAttachmentResDto — a join row carrying the registry file it points at. */
@@ -244,7 +254,8 @@ export type OrderAttachment = {
 // Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
 // endpoint (GET /api/orders, `Order` above) intentionally skips items/attachments
 // for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
-// extends `Order` rather than folding everything onto one shared type.
+// extends `Order` rather than folding everything onto one shared type. Items are their own
+// endpoint too — GET /api/orders/:id/items, `OrderItem` above — no longer embedded here.
 export type OrderDetail = Order & {
   deliveryAddress: string | null
   currency: Currency
@@ -263,7 +274,6 @@ export type OrderDetail = Order & {
   total: number
   note: string | null
   internalNote: string | null
-  items: OrderItem[]
   attachments: OrderAttachment[]
   // Approval flow (see OrderStatus doc comment) — only the most recent approve/reject is
   // kept, no history table. `approver`/`rejecter` share the same shape as `creator`.

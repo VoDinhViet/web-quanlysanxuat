@@ -15,7 +15,11 @@ import {
   paymentTermLabels,
   resolveDeliveryTone,
 } from "@/lib/types/order.type"
-import type { DeliveryTone, OrderDetail } from "@/lib/types/order.type"
+import type {
+  DeliveryTone,
+  OrderDetail,
+  OrderItem,
+} from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
 const deliveryToneClassName: Record<DeliveryTone, string> = {
@@ -54,6 +58,7 @@ function formatDueDateNote(order: OrderDetail): string | null {
 
 type OrderDetailSummaryCardProps = {
   order: OrderDetail
+  items: OrderItem[]
 }
 
 // Identity + action buttons + a 2x3 meta grid beside the 4 stat tiles — the
@@ -61,7 +66,10 @@ type OrderDetailSummaryCardProps = {
 // ProductDetailPage's own top section) rather than the shadcn Card
 // component — its padding lives on this inner wrapper instead of Card's
 // own --card-spacing, same idiom as the old OrderDetailHeader.
-export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
+export function OrderDetailSummaryCard({
+  order,
+  items,
+}: OrderDetailSummaryCardProps) {
   const dueDateNote = formatDueDateNote(order)
   const deliveryTone = resolveDeliveryTone(order)
   // Not a real payment ledger yet — see order-detail-mock.ts. Rendered with a
@@ -151,7 +159,7 @@ export function OrderDetailSummaryCard({ order }: OrderDetailSummaryCardProps) {
             />
           </div>
 
-          <OrderDetailStatTiles order={order} />
+          <OrderDetailStatTiles order={order} items={items} />
         </div>
       </div>
     </section>

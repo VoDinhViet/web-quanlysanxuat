@@ -21,31 +21,32 @@ import {
 } from "@/features/orders/mock/order-detail.mock"
 import { currencyFormatter } from "@/lib/currency"
 import { orderItemStatusLabels, OrderItemStatus } from "@/lib/types/order.type"
-import type { OrderDetail } from "@/lib/types/order.type"
+import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 type OrderDetailItemsCardProps = {
   order: OrderDetail
+  items: OrderItem[]
 }
 
 // "Đã giao"/"Còn lại" split each line by the order's own mock delivery
 // percent (see order-detail-mock.ts) — there's no per-item delivery log, so
 // every line is assumed to ship at the same pace as the order overall.
-export function OrderDetailItemsCard({ order }: OrderDetailItemsCardProps) {
-  const totalQuantity = order.items.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  )
-  const progress = buildMockDeliveryProgress(order)
+export function OrderDetailItemsCard({
+  order,
+  items,
+}: OrderDetailItemsCardProps) {
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
+  const progress = buildMockDeliveryProgress(order, items)
 
   return (
     <OrderDetailSectionCard
       icon={Box}
-      title={`Danh sách sản phẩm (${order.items.length})`}
+      title={`Danh sách sản phẩm (${items.length})`}
     >
-      {order.items.length === 0 ? (
+      {items.length === 0 ? (
         <TableEmpty
           icon={PackageSearch}
           title="Đơn hàng chưa có sản phẩm nào"
@@ -70,7 +71,7 @@ export function OrderDetailItemsCard({ order }: OrderDetailItemsCardProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {order.items.map((item, index) => {
+                {items.map((item, index) => {
                   const { delivered, remaining } = deriveMockItemDelivered(
                     item.quantity,
                     progress.deliveredPercent
@@ -99,7 +100,7 @@ export function OrderDetailItemsCard({ order }: OrderDetailItemsCardProps) {
                           </p>
                         </div>
                       </TableCell>
-                      <TableCell>{item.item.unit.name}</TableCell>
+                      <TableCell>{item.unit.name}</TableCell>
                       <TableCell className="text-right tabular-nums">
                         {quantityFormatter.format(item.quantity)}
                       </TableCell>

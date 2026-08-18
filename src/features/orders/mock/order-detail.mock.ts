@@ -5,6 +5,7 @@ import { roundMoney } from "@/lib/utils"
 import { OrderStatus } from "@/lib/types/order.type"
 import type {
   OrderDetail,
+  OrderItem,
   OrderMockClientProfile,
   OrderMockDeliveryProgress,
   OrderMockDeliveryRow,
@@ -50,12 +51,10 @@ const deliveredPercentByStatus: Record<OrderStatus, number> = {
 }
 
 export function buildMockDeliveryProgress(
-  order: OrderDetail
+  order: OrderDetail,
+  items: OrderItem[]
 ): OrderMockDeliveryProgress {
-  const totalQuantity = order.items.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  )
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
   const deliveredPercent = deliveredPercentByStatus[order.status]
   const deliveredQuantity = Math.round((totalQuantity * deliveredPercent) / 100)
 
@@ -82,9 +81,10 @@ export function deriveMockItemDelivered(
 const deliveryVehicles = ["51C-12345", "51D-67890", "50A-11223"]
 
 export function buildMockDeliveryHistory(
-  order: OrderDetail
+  order: OrderDetail,
+  items: OrderItem[]
 ): OrderMockDeliveryRow[] {
-  const progress = buildMockDeliveryProgress(order)
+  const progress = buildMockDeliveryProgress(order, items)
   if (progress.deliveredQuantity === 0) {
     return []
   }
@@ -112,9 +112,10 @@ export function buildMockDeliveryHistory(
 const paymentMethods = ["Chuyển khoản", "Tiền mặt"]
 
 export function buildMockPaymentHistory(
-  order: OrderDetail
+  order: OrderDetail,
+  items: OrderItem[]
 ): OrderMockPaymentRow[] {
-  const progress = buildMockDeliveryProgress(order)
+  const progress = buildMockDeliveryProgress(order, items)
   if (progress.deliveredPercent === 0) {
     return []
   }

@@ -3,13 +3,17 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { UpdateOrderForm } from "@/features/orders/components/update/UpdateOrderForm"
-import { orderQueryOptions } from "@/features/orders/api/options"
+import {
+  orderItemsQueryOptions,
+  orderQueryOptions,
+} from "@/features/orders/api/options"
 
 export function UpdateOrderPage() {
   const { orderId } = useParams({
     from: "/(authed)/manage_/orders_/$orderId_/update",
   })
   const { data: order } = useSuspenseQuery(orderQueryOptions(orderId))
+  const { data: items } = useSuspenseQuery(orderItemsQueryOptions(orderId))
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -26,7 +30,7 @@ export function UpdateOrderPage() {
       />
 
       <div className="order-drafting w-full p-4 sm:p-5 lg:p-6">
-        <UpdateOrderForm order={order} />
+        <UpdateOrderForm order={order} items={items} />
       </div>
     </main>
   )

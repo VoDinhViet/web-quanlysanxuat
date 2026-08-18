@@ -14,16 +14,18 @@ import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { buildMockPaymentHistory } from "@/features/orders/mock/order-detail.mock"
 import { vndFormatter } from "@/lib/currency"
-import type { OrderDetail } from "@/lib/types/order.type"
+import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 
 type OrderDetailPaymentHistoryCardProps = {
   order: OrderDetail
+  items: OrderItem[]
 }
 
 export function OrderDetailPaymentHistoryCard({
   order,
+  items,
 }: OrderDetailPaymentHistoryCardProps) {
-  const rows = buildMockPaymentHistory(order)
+  const rows = buildMockPaymentHistory(order, items)
 
   return (
     <OrderDetailSectionCard icon={Card2} title="Lịch sử thanh toán" isMock>

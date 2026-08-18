@@ -3,7 +3,10 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { requirePermission } from "@/features/auth/guard"
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage"
-import { orderQueryOptions } from "@/features/orders/api/options"
+import {
+  orderItemsQueryOptions,
+  orderQueryOptions,
+} from "@/features/orders/api/options"
 
 // Guarded on `orders:read`, not `orders:update`: a read-only viewer should
 // reach this screen. The write action gates itself (OrderDetailActions'
@@ -14,7 +17,12 @@ export const Route = createFileRoute("/(authed)/manage_/orders_/$orderId")({
   beforeLoad: ({ context }) =>
     requirePermission(context.permissions, "orders:read"),
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
+    Promise.all([
+      context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
+      context.queryClient.ensureQueryData(
+        orderItemsQueryOptions(params.orderId)
+      ),
+    ]),
   component: OrderDetailPage,
   pendingComponent: PageLoading,
 })

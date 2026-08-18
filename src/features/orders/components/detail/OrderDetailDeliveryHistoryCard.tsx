@@ -14,18 +14,20 @@ import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { buildMockDeliveryHistory } from "@/features/orders/mock/order-detail.mock"
 import { vndFormatter } from "@/lib/currency"
-import type { OrderDetail } from "@/lib/types/order.type"
+import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 type OrderDetailDeliveryHistoryCardProps = {
   order: OrderDetail
+  items: OrderItem[]
 }
 
 export function OrderDetailDeliveryHistoryCard({
   order,
+  items,
 }: OrderDetailDeliveryHistoryCardProps) {
-  const rows = buildMockDeliveryHistory(order)
+  const rows = buildMockDeliveryHistory(order, items)
 
   return (
     <OrderDetailSectionCard icon={Delivery} title="Lịch sử giao hàng" isMock>

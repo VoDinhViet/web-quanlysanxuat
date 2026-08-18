@@ -1,7 +1,7 @@
 import { buildMockDeliveryProgress } from "@/features/orders/mock/order-detail.mock"
 import { MockDataBadge } from "@/components/shared/feedback/MockDataBadge"
 import { vndFormatter } from "@/lib/currency"
-import type { OrderDetail } from "@/lib/types/order.type"
+import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
 const countFormatter = new Intl.NumberFormat("vi-VN")
@@ -16,6 +16,7 @@ type StatTile = {
 
 type OrderDetailStatTilesProps = {
   order: OrderDetail
+  items: OrderItem[]
 }
 
 // A single row of 4 flat tinted boxes beside the meta grid in
@@ -23,12 +24,12 @@ type OrderDetailStatTilesProps = {
 // compute yet (see order-detail-mock.ts), each carrying its own percent
 // subtitle; the 2 real tiles stay plain/neutral with no subtitle to avoid
 // implying a comparison that doesn't exist.
-export function OrderDetailStatTiles({ order }: OrderDetailStatTilesProps) {
-  const totalQuantity = order.items.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  )
-  const progress = buildMockDeliveryProgress(order)
+export function OrderDetailStatTiles({
+  order,
+  items,
+}: OrderDetailStatTilesProps) {
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
+  const progress = buildMockDeliveryProgress(order, items)
 
   const tiles: StatTile[] = [
     {

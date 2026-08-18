@@ -20,13 +20,14 @@ import {
   UploadType,
 } from "@/lib/types/file.type"
 import { OrderStatus } from "@/lib/types/order.type"
-import type { OrderDetail } from "@/lib/types/order.type"
+import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 
 type UpdateOrderFormProps = {
   order: OrderDetail
+  items: OrderItem[]
 }
 
-export function UpdateOrderForm({ order }: UpdateOrderFormProps) {
+export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
   const navigate = useNavigate({ from: "/manage/orders/$orderId/update" })
   const queryClient = useQueryClient()
   const updateOrderFn = useServerFn(updateOrder)
@@ -74,10 +75,10 @@ export function UpdateOrderForm({ order }: UpdateOrderFormProps) {
       order.status === OrderStatus.REJECTED ? OrderStatus.DRAFT : order.status,
     note: order.note ?? "",
     internalNote: order.internalNote ?? "",
-    items: order.items.map((item) => ({
+    items: items.map((item) => ({
       itemId: item.item.id,
       itemLabel: item.item.name,
-      itemUnit: item.item.unit.name,
+      itemUnit: item.unit.name,
       quantity: String(item.quantity),
       unitPrice: String(item.unitPrice),
       discountPercent: String(item.discountPercent),

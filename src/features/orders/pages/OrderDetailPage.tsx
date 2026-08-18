@@ -12,7 +12,10 @@ import { OrderDetailPaymentHistoryCard } from "@/features/orders/components/deta
 import { OrderRejectionNotice } from "@/features/orders/components/detail/OrderRejectionNotice"
 import { OrderDetailSummaryCard } from "@/features/orders/components/detail/OrderDetailSummaryCard"
 import { OrderDetailTimelineCard } from "@/features/orders/components/detail/OrderDetailTimelineCard"
-import { orderQueryOptions } from "@/features/orders/api/options"
+import {
+  orderItemsQueryOptions,
+  orderQueryOptions,
+} from "@/features/orders/api/options"
 
 export function OrderDetailPage() {
   const { orderId } = useParams({
@@ -20,6 +23,7 @@ export function OrderDetailPage() {
   })
 
   const { data: order } = useSuspenseQuery(orderQueryOptions(orderId))
+  const { data: items } = useSuspenseQuery(orderItemsQueryOptions(orderId))
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -34,7 +38,7 @@ export function OrderDetailPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <OrderDetailSummaryCard order={order} />
+        <OrderDetailSummaryCard order={order} items={items} />
         <OrderRejectionNotice order={order} />
 
         {/* minmax(0,1fr) (not 1fr) so the items table scrolls inside its own
@@ -42,8 +46,8 @@ export function OrderDetailPage() {
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
           <div className="flex min-w-0 flex-col gap-4">
             <OrderDetailInfoCard order={order} />
-            <OrderDetailItemsCard order={order} />
-            <OrderDetailPaymentHistoryCard order={order} />
+            <OrderDetailItemsCard order={order} items={items} />
+            <OrderDetailPaymentHistoryCard order={order} items={items} />
           </div>
 
           <div className="flex min-w-0 flex-col gap-4">
@@ -53,7 +57,7 @@ export function OrderDetailPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <OrderDetailDeliveryHistoryCard order={order} />
+          <OrderDetailDeliveryHistoryCard order={order} items={items} />
           <OrderDetailNotesCard order={order} />
           <OrderDetailAttachmentsCard order={order} />
         </div>
