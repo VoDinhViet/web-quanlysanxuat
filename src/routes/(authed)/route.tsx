@@ -5,7 +5,6 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppSidebar } from "@/components/shared/layout/AppSidebar"
 import { currentUserQueryOptions } from "@/features/auth/api/options"
@@ -68,7 +67,6 @@ function AuthedLayout() {
           </div>
         </SidebarInset>
       </SidebarProvider>
-      <Toaster richColors />
     </TooltipProvider>
   )
 }

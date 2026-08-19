@@ -18,6 +18,10 @@ function resolveLoginErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "user.error.invalid_credentials":
       return "Tài khoản hoặc mật khẩu không đúng."
+    // BE dùng chung mã lỗi này cho tài khoản đã bị khóa (credentialEnabled=false)
+    // và nhân sự đã nghỉ việc — cả hai đều "không còn được phép đăng nhập".
+    case "user.error.resigned":
+      return "Tài khoản đã bị khóa hoặc ngừng hoạt động. Vui lòng liên hệ quản trị viên."
     default:
       return GENERIC_ERROR_MESSAGE
   }

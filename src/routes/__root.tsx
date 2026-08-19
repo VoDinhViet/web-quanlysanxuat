@@ -9,6 +9,7 @@ import { SolarProvider } from "@solar-icons/react"
 import type { QueryClient } from "@tanstack/react-query"
 
 import { ThemeProvider } from "@/components/shared/layout/ThemeProvider"
+import { Toaster } from "@/components/ui/sonner"
 // Side-effect import, must run before any DateTime.fromISO() call on either
 // server or client — see src/lib/luxon-config.ts for why.
 import "@/lib/luxon-config"
@@ -56,6 +57,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider>
           <SolarProvider value={{ weight: "Bold" }}>{children}</SolarProvider>
+          <Toaster richColors />
         </ThemeProvider>
         <TanStackDevtools
           config={{
