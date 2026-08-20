@@ -177,7 +177,6 @@ function CreateBomItemForm({
         <form.AppField name="quantity">
           {(field) => (
             <field.TextField
-              id="bom-item-quantity"
               label="Số lượng định mức"
               required
               type="number"
@@ -189,7 +188,6 @@ function CreateBomItemForm({
         <form.AppField name="note">
           {(field) => (
             <field.TextareaField
-              id="bom-item-note"
               label="Ghi chú thành phần"
               placeholder="Ghi chú quy cách hoặc thông tin thêm (nếu có)..."
             />
@@ -274,23 +272,13 @@ function UpdateBomItemForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <form.AppField name="quantity">
           {(field) => (
-            <field.TextField
-              id="edit-bom-item-quantity"
-              label="Số lượng"
-              required
-              type="number"
-            />
+            <field.TextField label="Số lượng" required type="number" />
           )}
         </form.AppField>
 
         <form.AppField name="sortOrder">
           {(field) => (
-            <field.TextField
-              id="edit-bom-item-sort-order"
-              label="Thứ tự sắp xếp"
-              required
-              type="number"
-            />
+            <field.TextField label="Thứ tự sắp xếp" required type="number" />
           )}
         </form.AppField>
       </div>
@@ -298,7 +286,6 @@ function UpdateBomItemForm({
       <form.AppField name="note">
         {(field) => (
           <field.TextareaField
-            id="edit-bom-item-note"
             label="Ghi chú"
             placeholder="Ghi chú (nếu có)..."
           />

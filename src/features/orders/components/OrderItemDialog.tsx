@@ -175,12 +175,7 @@ function OrderItemDialogForm({
 
         <form.AppField name="quantity">
           {(field) => (
-            <field.NumberField
-              id="order-item-quantity"
-              label="Số lượng"
-              required
-              placeholder="0"
-            />
+            <field.NumberField label="Số lượng" required placeholder="0" />
           )}
         </form.AppField>
 
@@ -231,7 +226,6 @@ function OrderItemDialogForm({
         <form.AppField name="discountPercent">
           {(field) => (
             <field.NumberField
-              id="order-item-discount"
               label="Chiết khấu (%)"
               placeholder="0"
               thousandSeparator={false}
@@ -252,7 +246,6 @@ function OrderItemDialogForm({
           <form.AppField name="note">
             {(field) => (
               <field.TextareaField
-                id="order-item-note"
                 label="Ghi chú"
                 placeholder="Nhập ghi chú (nếu có)"
               />

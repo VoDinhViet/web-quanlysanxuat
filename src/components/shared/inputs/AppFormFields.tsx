@@ -27,10 +27,6 @@ type TextFieldProps = {
   type?: ComponentProps<typeof Input>["type"]
   disabled?: boolean
   className?: string
-  // Override the input's `id`/label `htmlFor` (defaults to the field name). Use
-  // this when two forms on the same page share field names — e.g. a dialog form
-  // rendered alongside the page form — to avoid duplicate DOM ids.
-  id?: string
 }
 
 export function TextField({
@@ -40,10 +36,9 @@ export function TextField({
   type = "text",
   disabled,
   className,
-  id,
 }: TextFieldProps) {
   const field = useFieldContext<string | undefined>()
-  const inputId = id ?? field.name
+  const inputId = field.name
   const isInvalid =
     field.state.meta.isTouched && field.state.meta.errors.length > 0
 
@@ -78,8 +73,6 @@ type NumberFieldProps = {
   placeholder?: string
   disabled?: boolean
   className?: string
-  // See `TextFieldProps.id` — overrides the input id/label htmlFor.
-  id?: string
   // Nhóm hàng nghìn kiểu vi-VN ("1.234,5") — tắt cho field luôn nhỏ hơn 1000 (VAT %, chiết
   // khấu %), nơi nhóm không có tác dụng và chỉ thêm nhiễu mắt. Mặc định bật cho các field
   // tiền (đơn giá, thành tiền, phí vận chuyển...).
@@ -96,11 +89,10 @@ export function NumberField({
   placeholder,
   disabled,
   className,
-  id,
   thousandSeparator = true,
 }: NumberFieldProps) {
   const field = useFieldContext<string | undefined>()
-  const inputId = id ?? field.name
+  const inputId = field.name
   const isInvalid =
     field.state.meta.isTouched && field.state.meta.errors.length > 0
 
@@ -138,8 +130,6 @@ type TextareaFieldProps = {
   placeholder?: string
   disabled?: boolean
   className?: string
-  // See `TextFieldProps.id` — overrides the textarea id/label htmlFor.
-  id?: string
   // Caps the HTML input and renders a live "x/N" counter under the field — the Zod schema's
   // `.max(N)` stays the source of truth for validation; this is only the UX affordance, so the
   // two must agree at each call site.
@@ -152,11 +142,10 @@ export function TextareaField({
   placeholder,
   disabled,
   className,
-  id,
   maxLength,
 }: TextareaFieldProps) {
   const field = useFieldContext<string>()
-  const inputId = id ?? field.name
+  const inputId = field.name
 
   return (
     <Field className={className}>
@@ -259,6 +248,10 @@ type SelectFieldProps = {
   placeholder?: string
   options: SelectOption[]
   disabled?: boolean
+  // Options list is still loading (a `useQuery` the caller can't prefetch in the loader, e.g.
+  // gated behind a permission or another field's value) — swaps the placeholder to "Đang tải..."
+  // instead of the caller building that string itself. Mirrors `ComboboxField`'s `isPending`.
+  isPending?: boolean
 }
 
 export function SelectField({
@@ -267,6 +260,7 @@ export function SelectField({
   placeholder,
   options,
   disabled,
+  isPending,
 }: SelectFieldProps) {
   const field = useFieldContext<string | undefined>()
   const isInvalid =
@@ -291,7 +285,7 @@ export function SelectField({
           aria-invalid={isInvalid}
           className="h-9 w-full bg-background text-xs"
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={isPending ? "Đang tải..." : placeholder} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (

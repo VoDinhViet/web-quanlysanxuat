@@ -149,30 +149,18 @@ function InventoryReceiptItemDialogForm({
 
         <form.AppField name="quantity">
           {(field) => (
-            <field.NumberField
-              id="inventory-receipt-item-quantity"
-              label="Số lượng"
-              required
-              placeholder="0"
-            />
+            <field.NumberField label="Số lượng" required placeholder="0" />
           )}
         </form.AppField>
 
         <form.AppField name="unitPrice">
-          {(field) => (
-            <field.NumberField
-              id="inventory-receipt-item-unit-price"
-              label="Đơn giá"
-              placeholder="0"
-            />
-          )}
+          {(field) => <field.NumberField label="Đơn giá" placeholder="0" />}
         </form.AppField>
 
         <div className="sm:col-span-2">
           <form.AppField name="note">
             {(field) => (
               <field.TextareaField
-                id="inventory-receipt-item-note"
                 label="Ghi chú"
                 placeholder="Nhập ghi chú (nếu có)"
               />

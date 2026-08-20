@@ -95,7 +95,6 @@ function ClientContactDialogForm({
           <form.AppField name="name">
             {(field) => (
               <field.TextField
-                id="contact-name"
                 label="Họ và tên"
                 required
                 placeholder="Nhập họ và tên"
@@ -106,18 +105,13 @@ function ClientContactDialogForm({
 
         <form.AppField name="position">
           {(field) => (
-            <field.TextField
-              id="contact-position"
-              label="Chức vụ"
-              placeholder="Nhập chức vụ"
-            />
+            <field.TextField label="Chức vụ" placeholder="Nhập chức vụ" />
           )}
         </form.AppField>
 
         <form.AppField name="phoneNumber">
           {(field) => (
             <field.TextField
-              id="contact-phone"
               label="Điện thoại"
               type="tel"
               placeholder="Nhập số điện thoại"
@@ -129,7 +123,6 @@ function ClientContactDialogForm({
           <form.AppField name="email">
             {(field) => (
               <field.TextField
-                id="contact-email"
                 label="Email"
                 type="email"
                 placeholder="Nhập email"
@@ -141,7 +134,6 @@ function ClientContactDialogForm({
         <form.AppField name="note">
           {(field) => (
             <field.TextareaField
-              id="contact-note"
               label="Ghi chú"
               placeholder="Nhập ghi chú (nếu có)"
               className="sm:col-span-2"

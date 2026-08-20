@@ -113,7 +113,6 @@ function PurchaseRequestItemNoteDialogForm({
       <form.AppField name="note">
         {(field) => (
           <field.TextareaField
-            id="purchase-request-item-note"
             label="Ghi chú"
             placeholder="Nhập ghi chú (nếu có)"
           />
