@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
 import { itemStatusLabels } from "@/lib/types/item.type"
@@ -83,10 +83,15 @@ export function MaterialsTableFilter() {
 
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(14rem,1.4fr)_minmax(9rem,1fr)]">
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-            <FilterLabel label="Tìm kiếm" htmlFor="materials-search" />
+            <Label
+              htmlFor="materials-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
             <div className="relative">
               <Input
                 id="materials-search"
@@ -109,7 +114,12 @@ export function MaterialsTableFilter() {
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Khách hàng" htmlFor="materials-client" />
+            <Label
+              htmlFor="materials-client"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Khách hàng
+            </Label>
             <ComboboxField
               id="materials-client"
               value={search.clientId}
@@ -125,7 +135,12 @@ export function MaterialsTableFilter() {
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Trạng thái" htmlFor="materials-status" />
+            <Label
+              htmlFor="materials-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
             <Select
               value={search.status ?? "all"}
               onValueChange={handleStatusChange}
@@ -145,7 +160,7 @@ export function MaterialsTableFilter() {
           </div>
         </div>
 
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
           <Button
             type="button"
             variant="outline"

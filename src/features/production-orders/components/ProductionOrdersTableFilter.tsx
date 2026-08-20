@@ -12,9 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { productionOrderStatusLabels } from "@/lib/types/production-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -85,99 +84,100 @@ export function ProductionOrdersTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1.6fr)_minmax(16rem,1.6fr)_minmax(10rem,1fr)]">
-            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-              <FilterLabel
-                label="Tìm kiếm"
-                htmlFor="production-orders-search"
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1.6fr)_minmax(16rem,1.6fr)_minmax(10rem,1fr)]">
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <Label
+              htmlFor="production-orders-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
+            <div className="relative">
+              <Input
+                id="production-orders-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo mã đơn hàng (SO)..."
+                value={q}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  handleSearch(event.target.value)
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault()
+                    handleSearch.flush()
+                  }
+                }}
               />
-              <div className="relative">
-                <Input
-                  id="production-orders-search"
-                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Tìm theo mã đơn hàng (SO)..."
-                  value={q}
-                  onChange={(event) => {
-                    setQ(event.target.value)
-                    handleSearch(event.target.value)
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handleSearch.flush()
-                    }
-                  }}
-                />
-                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              </div>
-            </div>
-
-            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-              <FilterLabel
-                label="Ngày giao"
-                htmlFor="production-orders-date-range"
-              />
-              <DateRangePicker
-                id="production-orders-date-range"
-                from={search.dueDateFrom}
-                to={search.dueDateTo}
-                onChange={handleDateRangeChange}
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <FilterLabel
-                label="Trạng thái"
-                htmlFor="production-orders-status"
-              />
-              <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
-              >
-                <SelectTrigger
-                  id="production-orders-status"
-                  className="w-full text-xs"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusFilterOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
           </div>
 
-          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <PendingAction
-              label="Xuất Excel"
-              hint="Tính năng xuất Excel sắp có"
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <Label
+              htmlFor="production-orders-date-range"
+              className="text-[11px] font-medium text-muted-foreground"
             >
-              <Download className="size-4" />
-              Xuất Excel
-            </PendingAction>
-            <Button
-              type="button"
-              variant="outline"
-              className="text-xs"
-              onClick={resetFilters}
+              Ngày giao
+            </Label>
+            <DateRangePicker
+              id="production-orders-date-range"
+              from={search.dueDateFrom}
+              to={search.dueDateTo}
+              onChange={handleDateRangeChange}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="production-orders-status"
+              className="text-[11px] font-medium text-muted-foreground"
             >
-              <RotateCw className="size-4" />
-              Làm mới
-            </Button>
-            <PendingAction label="Tạo LSX" hint="Màn hình tạo LSX sắp có">
-              <Plus className="size-4" />
-              Tạo LSX
-            </PendingAction>
+              Trạng thái
+            </Label>
+            <Select
+              value={search.status ?? "all"}
+              onValueChange={handleStatusChange}
+            >
+              <SelectTrigger
+                id="production-orders-status"
+                className="w-full text-xs"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {statusFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
+          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+            <Download className="size-4" />
+            Xuất Excel
+          </PendingAction>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-4" />
+            Làm mới
+          </Button>
+          <PendingAction label="Tạo LSX" hint="Màn hình tạo LSX sắp có">
+            <Plus className="size-4" />
+            Tạo LSX
+          </PendingAction>
+        </div>
       </div>
-    </TooltipProvider>
+    </div>
   )
 }

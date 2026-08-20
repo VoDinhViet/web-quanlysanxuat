@@ -26,8 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Label } from "@/components/ui/label"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { useGetClientOptions } from "@/features/clients/api"
 import { materialsQueryOptions } from "@/features/materials/api"
@@ -170,10 +170,12 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(16rem,1.6fr)_minmax(12rem,1fr)]">
           <div className="space-y-1.5">
-            <FilterLabel
-              label="Tìm kiếm"
+            <Label
               htmlFor="purchase-request-picker-search"
-            />
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
             <div className="relative">
               <Input
                 id="purchase-request-picker-search"
@@ -191,10 +193,12 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel
-              label="Khách hàng"
+            <Label
               htmlFor="purchase-request-picker-client"
-            />
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Khách hàng
+            </Label>
             <ComboboxField
               id="purchase-request-picker-client"
               value={clientId}

@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { Label } from "@/components/ui/label"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
 import { supplierStatusLabels } from "@/lib/types/supplier.type"
@@ -80,10 +80,15 @@ export function SuppliersTableFilter() {
 
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-3 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
           <div className="space-y-1.5 sm:col-span-3 lg:col-span-1">
-            <FilterLabel label="Tìm kiếm" htmlFor="suppliers-search" />
+            <Label
+              htmlFor="suppliers-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
             <div className="relative">
               <Input
                 id="suppliers-search"
@@ -106,7 +111,12 @@ export function SuppliersTableFilter() {
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Trạng thái" htmlFor="suppliers-status" />
+            <Label
+              htmlFor="suppliers-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
             <Select
               value={search.status ?? "all"}
               onValueChange={handleStatusChange}
@@ -126,7 +136,12 @@ export function SuppliersTableFilter() {
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Nhóm NCC" htmlFor="suppliers-group" />
+            <Label
+              htmlFor="suppliers-group"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Nhóm NCC
+            </Label>
             <Select
               value={search.supplierGroupId ?? "all"}
               onValueChange={handleGroupChange}
@@ -146,7 +161,7 @@ export function SuppliersTableFilter() {
           </div>
         </div>
 
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
           <Button
             type="button"
             variant="outline"

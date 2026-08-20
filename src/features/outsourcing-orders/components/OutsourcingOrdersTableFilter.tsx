@@ -12,9 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import type { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
 import { outsourcingOrderStatusLabels } from "@/lib/types/outsourcing-order.type"
@@ -88,79 +87,92 @@ export function OutsourcingOrdersTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
-        <RoutePermissionGate route="/manage/outsourcing-orders/create">
-          <Button asChild className="gap-1.5">
-            <Link to="/manage/outsourcing-orders/create">
-              <Plus className="size-4" />
-              Tạo phiếu gia công ngoài (OS-OUT)
-            </Link>
-          </Button>
-        </RoutePermissionGate>
-
-        <div className="w-72 space-y-1.5">
-          <FilterLabel label="Tìm kiếm" htmlFor="os-out-q" />
-          <div className="relative">
-            <Input
-              id="os-out-q"
-              className="pr-9 text-xs placeholder:text-muted-foreground/75"
-              placeholder="Mã phiếu..."
-              value={q}
-              onChange={(e) => {
-                setQ(e.target.value)
-                handleSearchDebounced()
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault()
-                  handleExecuteSearch()
-                }
-              }}
-            />
-            <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          </div>
-        </div>
-
-        <div className="w-40 space-y-1.5">
-          <FilterLabel label="Trạng thái" htmlFor="os-out-status" />
-          <Select
-            value={search.status ?? "all"}
-            onValueChange={handleStatusChange}
-          >
-            <SelectTrigger id="os-out-status" className="w-full text-xs">
-              <SelectValue placeholder="Chọn trạng thái" />
-            </SelectTrigger>
-            <SelectContent>
-              {statusOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-56 space-y-1.5">
-          <FilterLabel label="Từ ngày – Đến ngày" htmlFor="os-out-daterange" />
-          <DateRangePicker
-            id="os-out-daterange"
-            from={search.fromDate}
-            to={search.toDate}
-            onChange={handleDateRangeChange}
-          />
-        </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-1.5 text-xs"
-          onClick={resetFilters}
-        >
-          <RotateCw className="size-3.5" />
-          Xóa bộ lọc
+    <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
+      <RoutePermissionGate route="/manage/outsourcing-orders/create">
+        <Button asChild className="gap-1.5">
+          <Link to="/manage/outsourcing-orders/create">
+            <Plus className="size-4" />
+            Tạo phiếu gia công ngoài (OS-OUT)
+          </Link>
         </Button>
+      </RoutePermissionGate>
+
+      <div className="w-72 space-y-1.5">
+        <Label
+          htmlFor="os-out-q"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Tìm kiếm
+        </Label>
+        <div className="relative">
+          <Input
+            id="os-out-q"
+            className="pr-9 text-xs placeholder:text-muted-foreground/75"
+            placeholder="Mã phiếu..."
+            value={q}
+            onChange={(e) => {
+              setQ(e.target.value)
+              handleSearchDebounced()
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                handleExecuteSearch()
+              }
+            }}
+          />
+          <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        </div>
       </div>
-    </TooltipProvider>
+
+      <div className="w-40 space-y-1.5">
+        <Label
+          htmlFor="os-out-status"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Trạng thái
+        </Label>
+        <Select
+          value={search.status ?? "all"}
+          onValueChange={handleStatusChange}
+        >
+          <SelectTrigger id="os-out-status" className="w-full text-xs">
+            <SelectValue placeholder="Chọn trạng thái" />
+          </SelectTrigger>
+          <SelectContent>
+            {statusOptions.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="w-56 space-y-1.5">
+        <Label
+          htmlFor="os-out-daterange"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Từ ngày – Đến ngày
+        </Label>
+        <DateRangePicker
+          id="os-out-daterange"
+          from={search.fromDate}
+          to={search.toDate}
+          onChange={handleDateRangeChange}
+        />
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="gap-1.5 text-xs"
+        onClick={resetFilters}
+      >
+        <RotateCw className="size-3.5" />
+        Xóa bộ lọc
+      </Button>
+    </div>
   )
 }

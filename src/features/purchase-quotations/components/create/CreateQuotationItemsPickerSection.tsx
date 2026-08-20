@@ -26,7 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { Label } from "@/components/ui/label"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api"
 import { buildQuotationItemsPickerColumns } from "@/features/purchase-quotations/components/create/CreateQuotationItemsPickerColumns"
@@ -189,7 +189,12 @@ export const CreateQuotationItemsPickerSection = withForm({
         </div>
 
         <div className="mt-4 max-w-sm space-y-1.5">
-          <FilterLabel label="Tìm kiếm" htmlFor="quotation-picker-search" />
+          <Label
+            htmlFor="quotation-picker-search"
+            className="text-[11px] font-medium text-muted-foreground"
+          >
+            Tìm kiếm
+          </Label>
           <div className="relative">
             <Input
               id="quotation-picker-search"

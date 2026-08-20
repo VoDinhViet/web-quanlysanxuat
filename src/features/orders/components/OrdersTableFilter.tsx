@@ -12,9 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { orderStatusLabels } from "@/lib/types/order.type"
@@ -90,113 +89,125 @@ export function OrdersTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
-            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-              <FilterLabel label="Tìm kiếm" htmlFor="orders-search" />
-              <div className="relative">
-                <Input
-                  id="orders-search"
-                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Tìm theo Mã SO..."
-                  value={q}
-                  onChange={(event) => {
-                    setQ(event.target.value)
-                    handleSearch(event.target.value)
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handleSearch.flush()
-                    }
-                  }}
-                />
-                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              </div>
-            </div>
-
-            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-              <FilterLabel label="Ngày giao" htmlFor="orders-date-range" />
-              <DateRangePicker
-                id="orders-date-range"
-                from={search.orderDateFrom}
-                to={search.orderDateTo}
-                onChange={handleDateRangeChange}
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <Label
+              htmlFor="orders-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
+            <div className="relative">
+              <Input
+                id="orders-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo Mã SO..."
+                value={q}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  handleSearch(event.target.value)
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault()
+                    handleSearch.flush()
+                  }
+                }}
               />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
+          </div>
 
-            <div className="space-y-1.5">
-              <FilterLabel label="Trạng thái" htmlFor="orders-status" />
-              <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
-              >
-                <SelectTrigger id="orders-status" className="w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusFilterOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <Label
+              htmlFor="orders-date-range"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Ngày giao
+            </Label>
+            <DateRangePicker
+              id="orders-date-range"
+              from={search.orderDateFrom}
+              to={search.orderDateTo}
+              onChange={handleDateRangeChange}
+            />
+          </div>
 
-            {/* NV kinh doanh is a visual placeholder — no backend endpoint exists for
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="orders-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
+            <Select
+              value={search.status ?? "all"}
+              onValueChange={handleStatusChange}
+            >
+              <SelectTrigger id="orders-status" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {statusFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* NV kinh doanh is a visual placeholder — no backend endpoint exists for
                 assigned-user options yet (confirmed: GET /api/users has no options endpoint), so
                 the filter is disabled until that ships. Not faked. Same pattern as "Khu vực" in
                 ClientsTableFilter.tsx. */}
-            <div className="space-y-1.5">
-              <FilterLabel
-                label="NV kinh doanh"
-                htmlFor="orders-assigned-user"
-              />
-              <Select value="all" disabled>
-                <SelectTrigger
-                  id="orders-assigned-user"
-                  className="w-full text-xs"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <PendingAction
-              label="Xuất Excel"
-              hint="Tính năng xuất Excel sắp có"
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="orders-assigned-user"
+              className="text-[11px] font-medium text-muted-foreground"
             >
-              <Download className="size-4" />
-              Xuất Excel
-            </PendingAction>
-            <Button
-              type="button"
-              variant="outline"
-              className="text-xs"
-              onClick={resetFilters}
-            >
-              <RotateCw className="size-4" />
-              Làm mới
-            </Button>
-            <RoutePermissionGate route="/manage/orders/create">
-              <Button asChild className="text-xs">
-                <Link to="/manage/orders/create">
-                  <Plus className="size-4" />
-                  Tạo đơn hàng
-                </Link>
-              </Button>
-            </RoutePermissionGate>
+              NV kinh doanh
+            </Label>
+            <Select value="all" disabled>
+              <SelectTrigger
+                id="orders-assigned-user"
+                className="w-full text-xs"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
+          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+            <Download className="size-4" />
+            Xuất Excel
+          </PendingAction>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-4" />
+            Làm mới
+          </Button>
+          <RoutePermissionGate route="/manage/orders/create">
+            <Button asChild className="text-xs">
+              <Link to="/manage/orders/create">
+                <Plus className="size-4" />
+                Tạo đơn hàng
+              </Link>
+            </Button>
+          </RoutePermissionGate>
+        </div>
       </div>
-    </TooltipProvider>
+    </div>
   )
 }

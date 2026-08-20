@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { Label } from "@/components/ui/label"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildInventoryReceiptFromPoPickerColumns } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPickerColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
@@ -84,7 +84,12 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
         </div>
 
         <div className="mt-4 max-w-sm space-y-1.5">
-          <FilterLabel label="Tìm kiếm" htmlFor="receipt-from-po-search" />
+          <Label
+            htmlFor="receipt-from-po-search"
+            className="text-[11px] font-medium text-muted-foreground"
+          >
+            Tìm kiếm
+          </Label>
           <div className="relative">
             <Input
               id="receipt-from-po-search"

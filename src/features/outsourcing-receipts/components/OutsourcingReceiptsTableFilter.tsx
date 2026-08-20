@@ -13,9 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import {
@@ -140,122 +139,145 @@ export function OutsourcingReceiptsTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
-        <RoutePermissionGate route="/manage/outsourcing-receipts/create">
-          <Button asChild className="gap-1.5">
-            <Link to="/manage/outsourcing-receipts/create">
-              <Plus className="size-4" />
-              Lập phiếu OS-IN
-            </Link>
-          </Button>
-        </RoutePermissionGate>
-
-        <div className="w-56 space-y-1.5">
-          <FilterLabel label="Tìm kiếm" htmlFor="os-in-q" />
-          <div className="relative">
-            <Input
-              id="os-in-q"
-              className="pr-9 text-xs placeholder:text-muted-foreground/75"
-              placeholder="Mã phiếu..."
-              value={q}
-              onChange={(e) => {
-                setQ(e.target.value)
-                handleSearchDebounced()
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault()
-                  handleExecuteSearch()
-                }
-              }}
-            />
-            <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          </div>
-        </div>
-
-        <div className="w-40 space-y-1.5">
-          <FilterLabel label="Nhà cung cấp" htmlFor="os-in-supplier" />
-          <Select
-            value={search.supplierId ?? "all"}
-            onValueChange={handleSupplierChange}
-          >
-            <SelectTrigger id="os-in-supplier" className="w-full text-xs">
-              <SelectValue placeholder="Chọn nhà cung cấp" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả NCC</SelectItem>
-              {supplierOptions.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {option.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-36 space-y-1.5">
-          <FilterLabel label="Trạng thái" htmlFor="os-in-status" />
-          <Select
-            value={search.status ?? "all"}
-            onValueChange={handleStatusChange}
-          >
-            <SelectTrigger id="os-in-status" className="w-full text-xs">
-              <SelectValue placeholder="Chọn trạng thái" />
-            </SelectTrigger>
-            <SelectContent>
-              {statusOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-40 space-y-1.5">
-          <FilterLabel label="Yêu cầu QC" htmlFor="os-in-requires-iqc" />
-          <Select
-            value={
-              search.requiresIqc === undefined
-                ? "all"
-                : String(search.requiresIqc)
-            }
-            onValueChange={handleRequiresIqcChange}
-          >
-            <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">
-              <SelectValue placeholder="Chọn yêu cầu QC" />
-            </SelectTrigger>
-            <SelectContent>
-              {requiresIqcOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-56 space-y-1.5">
-          <FilterLabel label="Từ ngày – Đến ngày" htmlFor="os-in-daterange" />
-          <DateRangePicker
-            id="os-in-daterange"
-            from={search.fromDate}
-            to={search.toDate}
-            onChange={handleDateRangeChange}
-          />
-        </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-1.5 text-xs"
-          onClick={resetFilters}
-        >
-          <RotateCw className="size-3.5" />
-          Xóa bộ lọc
+    <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
+      <RoutePermissionGate route="/manage/outsourcing-receipts/create">
+        <Button asChild className="gap-1.5">
+          <Link to="/manage/outsourcing-receipts/create">
+            <Plus className="size-4" />
+            Lập phiếu OS-IN
+          </Link>
         </Button>
+      </RoutePermissionGate>
+
+      <div className="w-56 space-y-1.5">
+        <Label
+          htmlFor="os-in-q"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Tìm kiếm
+        </Label>
+        <div className="relative">
+          <Input
+            id="os-in-q"
+            className="pr-9 text-xs placeholder:text-muted-foreground/75"
+            placeholder="Mã phiếu..."
+            value={q}
+            onChange={(e) => {
+              setQ(e.target.value)
+              handleSearchDebounced()
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                handleExecuteSearch()
+              }
+            }}
+          />
+          <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        </div>
       </div>
-    </TooltipProvider>
+
+      <div className="w-40 space-y-1.5">
+        <Label
+          htmlFor="os-in-supplier"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Nhà cung cấp
+        </Label>
+        <Select
+          value={search.supplierId ?? "all"}
+          onValueChange={handleSupplierChange}
+        >
+          <SelectTrigger id="os-in-supplier" className="w-full text-xs">
+            <SelectValue placeholder="Chọn nhà cung cấp" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tất cả NCC</SelectItem>
+            {supplierOptions.map((option) => (
+              <SelectItem key={option.id} value={option.id}>
+                {option.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="w-36 space-y-1.5">
+        <Label
+          htmlFor="os-in-status"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Trạng thái
+        </Label>
+        <Select
+          value={search.status ?? "all"}
+          onValueChange={handleStatusChange}
+        >
+          <SelectTrigger id="os-in-status" className="w-full text-xs">
+            <SelectValue placeholder="Chọn trạng thái" />
+          </SelectTrigger>
+          <SelectContent>
+            {statusOptions.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="w-40 space-y-1.5">
+        <Label
+          htmlFor="os-in-requires-iqc"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Yêu cầu QC
+        </Label>
+        <Select
+          value={
+            search.requiresIqc === undefined
+              ? "all"
+              : String(search.requiresIqc)
+          }
+          onValueChange={handleRequiresIqcChange}
+        >
+          <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">
+            <SelectValue placeholder="Chọn yêu cầu QC" />
+          </SelectTrigger>
+          <SelectContent>
+            {requiresIqcOptions.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="w-56 space-y-1.5">
+        <Label
+          htmlFor="os-in-daterange"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Từ ngày – Đến ngày
+        </Label>
+        <DateRangePicker
+          id="os-in-daterange"
+          from={search.fromDate}
+          to={search.toDate}
+          onChange={handleDateRangeChange}
+        />
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="gap-1.5 text-xs"
+        onClick={resetFilters}
+      >
+        <RotateCw className="size-3.5" />
+        Xóa bộ lọc
+      </Button>
+    </div>
   )
 }

@@ -12,9 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { useGetClientOptions } from "@/features/clients/api"
 import { productionJobStatusLabels } from "@/lib/types/production-job.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
@@ -103,7 +103,12 @@ export function ProductionJobsTableFilter() {
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)_minmax(16rem,1.6fr)_minmax(9rem,1fr)]">
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <FilterLabel label="Tìm kiếm" htmlFor="production-jobs-search" />
+            <Label
+              htmlFor="production-jobs-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
             <div className="relative">
               <Input
                 id="production-jobs-search"
@@ -126,7 +131,12 @@ export function ProductionJobsTableFilter() {
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Khách hàng" htmlFor="production-jobs-client" />
+            <Label
+              htmlFor="production-jobs-client"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Khách hàng
+            </Label>
             <ComboboxField
               id="production-jobs-client"
               value={search.clientId}
@@ -142,10 +152,12 @@ export function ProductionJobsTableFilter() {
           </div>
 
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <FilterLabel
-              label="Ngày giao"
+            <Label
               htmlFor="production-jobs-date-range"
-            />
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Ngày giao
+            </Label>
             <DateRangePicker
               id="production-jobs-date-range"
               from={search.dueDateFrom}
@@ -155,7 +167,12 @@ export function ProductionJobsTableFilter() {
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Trạng thái" htmlFor="production-jobs-status" />
+            <Label
+              htmlFor="production-jobs-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
             <Select
               value={search.status ?? "all"}
               onValueChange={handleStatusChange}

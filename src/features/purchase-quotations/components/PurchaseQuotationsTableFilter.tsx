@@ -12,9 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { purchaseQuotationStatusLabels } from "@/lib/types/purchase-quotation.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
@@ -84,95 +83,99 @@ export function PurchaseQuotationsTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(9rem,1fr)_minmax(14rem,1.3fr)_minmax(14rem,1.4fr)]">
-            <div className="space-y-1.5">
-              <FilterLabel
-                label="Trạng thái"
-                htmlFor="purchase-quotations-status"
-              />
-              <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(9rem,1fr)_minmax(14rem,1.3fr)_minmax(14rem,1.4fr)]">
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="purchase-quotations-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
+            <Select
+              value={search.status ?? "all"}
+              onValueChange={handleStatusChange}
+            >
+              <SelectTrigger
+                id="purchase-quotations-status"
+                className="w-full text-xs"
               >
-                <SelectTrigger
-                  id="purchase-quotations-status"
-                  className="w-full text-xs"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusFilterOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-1.5">
-              <FilterLabel
-                label="Ngày lập"
-                htmlFor="purchase-quotations-date-range"
-              />
-              <DateRangePicker
-                id="purchase-quotations-date-range"
-                from={search.fromDate}
-                to={search.toDate}
-                onChange={handleQuotationDateRangeChange}
-              />
-            </div>
-
-            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-              <FilterLabel
-                label="Tìm kiếm"
-                htmlFor="purchase-quotations-search"
-              />
-              <div className="relative">
-                <Input
-                  id="purchase-quotations-search"
-                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Tìm theo mã RFQ..."
-                  value={q}
-                  onChange={(event) => {
-                    setQ(event.target.value)
-                    handleSearch(event.target.value)
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handleSearch.flush()
-                    }
-                  }}
-                />
-                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              </div>
-            </div>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {statusFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <Button
-              type="button"
-              variant="outline"
-              className="text-xs"
-              onClick={resetFilters}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="purchase-quotations-date-range"
+              className="text-[11px] font-medium text-muted-foreground"
             >
-              <RotateCw className="size-4" />
-              Làm mới
-            </Button>
+              Ngày lập
+            </Label>
+            <DateRangePicker
+              id="purchase-quotations-date-range"
+              from={search.fromDate}
+              to={search.toDate}
+              onChange={handleQuotationDateRangeChange}
+            />
+          </div>
 
-            <Button asChild className="text-xs">
-              <Link to="/manage/purchase-quotations/create">
-                <Plus className="size-4" />
-                Tạo RFQ
-              </Link>
-            </Button>
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <Label
+              htmlFor="purchase-quotations-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
+            <div className="relative">
+              <Input
+                id="purchase-quotations-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo mã RFQ..."
+                value={q}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  handleSearch(event.target.value)
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault()
+                    handleSearch.flush()
+                  }
+                }}
+              />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
           </div>
         </div>
+
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-4" />
+            Làm mới
+          </Button>
+
+          <Button asChild className="text-xs">
+            <Link to="/manage/purchase-quotations/create">
+              <Plus className="size-4" />
+              Tạo RFQ
+            </Link>
+          </Button>
+        </div>
       </div>
-    </TooltipProvider>
+    </div>
   )
 }

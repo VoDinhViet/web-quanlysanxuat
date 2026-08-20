@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { Label } from "@/components/ui/label"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { pendingOrderItemsQueryOptions } from "@/features/outsourcing-receipts/api/options"
@@ -230,7 +230,12 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <FilterLabel label="Tìm kiếm" htmlFor="os-in-picker-search" />
+            <Label
+              htmlFor="os-in-picker-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
             <div className="relative">
               <Input
                 id="os-in-picker-search"
@@ -248,7 +253,12 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Công đoạn" htmlFor="os-in-picker-operation" />
+            <Label
+              htmlFor="os-in-picker-operation"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Công đoạn
+            </Label>
             <Select
               value={operationId ?? "all"}
               onValueChange={(value) => {

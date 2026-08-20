@@ -17,9 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import type { IqcResult } from "@/lib/types/iqc.type"
 import { iqcResultLabels } from "@/lib/types/iqc.type"
@@ -129,142 +128,154 @@ export function OqcTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-3 bg-card px-4 py-3.5 lg:flex-row lg:items-center lg:px-5">
-        <div className="relative flex-1 lg:max-w-xs">
-          <Input
-            id="oqc-q"
-            className="pr-9 text-xs placeholder:text-muted-foreground/75"
-            placeholder="Nhập mã OQC..."
-            value={q}
-            onChange={(event) => {
-              setQ(event.target.value)
-              handleQChange(event.target.value)
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault()
-                handleExecuteSearch()
-              }
-            }}
-          />
-          <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button type="button" variant="outline" className="text-xs">
-                <ListFilter className="size-3.5" />
-                Bộ lọc
-                {activeFilterCount > 0 && (
-                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
-              <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="col-span-2 space-y-1.5">
-                  <FilterLabel
-                    label="Tìm theo vật tư"
-                    htmlFor="oqc-material-keyword"
-                  />
-                  <Input
-                    id="oqc-material-keyword"
-                    className="text-xs placeholder:text-muted-foreground/75"
-                    placeholder="Nhập mã vật tư, tên vật tư..."
-                    value={materialKeyword}
-                    onChange={(event) => {
-                      setMaterialKeyword(event.target.value)
-                      handleMaterialKeywordChange(event.target.value)
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        event.preventDefault()
-                        handleMaterialKeywordChange.flush()
-                      }
-                    }}
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <FilterLabel label="Kết quả" htmlFor="oqc-result" />
-                  <Select
-                    value={search.result ?? "all"}
-                    onValueChange={handleResultChange}
-                  >
-                    <SelectTrigger id="oqc-result" className="w-full text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {resultOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <FilterLabel label="Trạng thái" htmlFor="oqc-status" />
-                  <Select
-                    value={search.status ?? "all"}
-                    onValueChange={handleStatusChange}
-                  >
-                    <SelectTrigger id="oqc-status" className="w-full text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {statusOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="col-span-2 space-y-1.5">
-                  <FilterLabel
-                    label="Từ ngày – Đến ngày"
-                    htmlFor="oqc-daterange"
-                  />
-                  <DateRangePicker
-                    id="oqc-daterange"
-                    from={search.fromDate}
-                    to={search.toDate}
-                    onChange={handleDateRangeChange}
-                  />
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="text-xs"
-            onClick={resetFilters}
-          >
-            <RotateCw className="size-3.5" />
-            Xóa bộ lọc
-          </Button>
-
-          <PendingAction
-            label="Yêu cầu QC"
-            hint="Tính năng yêu cầu QC sắp có"
-            variant="default"
-          >
-            <Plus className="size-4" />
-            Yêu cầu QC
-          </PendingAction>
-        </div>
+    <div className="flex flex-col gap-3 bg-card px-4 py-3.5 lg:flex-row lg:items-center lg:px-5">
+      <div className="relative flex-1 lg:max-w-xs">
+        <Input
+          id="oqc-q"
+          className="pr-9 text-xs placeholder:text-muted-foreground/75"
+          placeholder="Nhập mã OQC..."
+          value={q}
+          onChange={(event) => {
+            setQ(event.target.value)
+            handleQChange(event.target.value)
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault()
+              handleExecuteSearch()
+            }
+          }}
+        />
+        <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
       </div>
-    </TooltipProvider>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button type="button" variant="outline" className="text-xs">
+              <ListFilter className="size-3.5" />
+              Bộ lọc
+              {activeFilterCount > 0 && (
+                <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                  {activeFilterCount}
+                </span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
+            <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2 space-y-1.5">
+                <Label
+                  htmlFor="oqc-material-keyword"
+                  className="text-[11px] font-medium text-muted-foreground"
+                >
+                  Tìm theo vật tư
+                </Label>
+                <Input
+                  id="oqc-material-keyword"
+                  className="text-xs placeholder:text-muted-foreground/75"
+                  placeholder="Nhập mã vật tư, tên vật tư..."
+                  value={materialKeyword}
+                  onChange={(event) => {
+                    setMaterialKeyword(event.target.value)
+                    handleMaterialKeywordChange(event.target.value)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault()
+                      handleMaterialKeywordChange.flush()
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label
+                  htmlFor="oqc-result"
+                  className="text-[11px] font-medium text-muted-foreground"
+                >
+                  Kết quả
+                </Label>
+                <Select
+                  value={search.result ?? "all"}
+                  onValueChange={handleResultChange}
+                >
+                  <SelectTrigger id="oqc-result" className="w-full text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {resultOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label
+                  htmlFor="oqc-status"
+                  className="text-[11px] font-medium text-muted-foreground"
+                >
+                  Trạng thái
+                </Label>
+                <Select
+                  value={search.status ?? "all"}
+                  onValueChange={handleStatusChange}
+                >
+                  <SelectTrigger id="oqc-status" className="w-full text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="col-span-2 space-y-1.5">
+                <Label
+                  htmlFor="oqc-daterange"
+                  className="text-[11px] font-medium text-muted-foreground"
+                >
+                  Từ ngày – Đến ngày
+                </Label>
+                <DateRangePicker
+                  id="oqc-daterange"
+                  from={search.fromDate}
+                  to={search.toDate}
+                  onChange={handleDateRangeChange}
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <Button
+          type="button"
+          variant="outline"
+          className="text-xs"
+          onClick={resetFilters}
+        >
+          <RotateCw className="size-3.5" />
+          Xóa bộ lọc
+        </Button>
+
+        <PendingAction
+          label="Yêu cầu QC"
+          hint="Tính năng yêu cầu QC sắp có"
+          variant="default"
+        >
+          <Plus className="size-4" />
+          Yêu cầu QC
+        </PendingAction>
+      </div>
+    </div>
   )
 }

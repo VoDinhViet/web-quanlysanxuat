@@ -26,7 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { Label } from "@/components/ui/label"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api/options"
@@ -177,7 +177,12 @@ export const CreateOutsourcingOrderPickerSection = withForm({
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="space-y-1.5">
-            <FilterLabel label="Tìm kiếm" htmlFor="os-out-picker-search" />
+            <Label
+              htmlFor="os-out-picker-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
             <div className="relative">
               <Input
                 id="os-out-picker-search"
@@ -195,7 +200,12 @@ export const CreateOutsourcingOrderPickerSection = withForm({
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Job" htmlFor="os-out-picker-job" />
+            <Label
+              htmlFor="os-out-picker-job"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Job
+            </Label>
             <Select
               value={productionJobId ?? "all"}
               onValueChange={(value) => {
@@ -219,7 +229,12 @@ export const CreateOutsourcingOrderPickerSection = withForm({
           </div>
 
           <div className="space-y-1.5">
-            <FilterLabel label="Công đoạn" htmlFor="os-out-picker-operation" />
+            <Label
+              htmlFor="os-out-picker-operation"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Công đoạn
+            </Label>
             <Select
               value={operationId ?? "all"}
               onValueChange={(value) => {

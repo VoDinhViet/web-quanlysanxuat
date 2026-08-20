@@ -12,9 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import type {
   InventoryProductCategory,
@@ -151,201 +150,234 @@ export function InventoryProductsTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-        {/* Top Header Action Buttons */}
-        <div className="flex flex-wrap items-center justify-end gap-2 border-b border-border/60 pb-3">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="gap-1.5 text-xs"
-          >
-            <HelpCircle className="size-3.5 text-muted-foreground" />
-            <span>Hướng dẫn</span>
-          </Button>
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      {/* Top Header Action Buttons */}
+      <div className="flex flex-wrap items-center justify-end gap-2 border-b border-border/60 pb-3">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="gap-1.5 text-xs"
+        >
+          <HelpCircle className="size-3.5 text-muted-foreground" />
+          <span>Hướng dẫn</span>
+        </Button>
 
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="size-8"
-            title="Tải lại dữ liệu"
-            onClick={resetFilters}
-          >
-            <RotateCw className="size-3.5 text-muted-foreground" />
-          </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="size-8"
+          title="Tải lại dữ liệu"
+          onClick={resetFilters}
+        >
+          <RotateCw className="size-3.5 text-muted-foreground" />
+        </Button>
 
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
-            <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
+        <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+          <Download className="size-4" />
+          Xuất Excel
+        </PendingAction>
+      </div>
+
+      {/* Filters Grid */}
+      <div className="flex flex-col gap-3">
+        {/* Row 1: Mã/Tên, Khách hàng, PO, Xem theo ngày */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="tp-q"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Mã / Tên thành phẩm
+            </Label>
+            <div className="relative">
+              <Input
+                id="tp-q"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Nhập mã hoặc tên thành phẩm"
+                value={q}
+                onChange={(e) => {
+                  setQ(e.target.value)
+                  handleSearchDebounced()
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault()
+                    handleExecuteSearch()
+                  }
+                }}
+              />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="tp-client"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Khách hàng
+            </Label>
+            <Select
+              value={search.clientName ?? "all"}
+              onValueChange={handleClientChange}
+            >
+              <SelectTrigger id="tp-client" className="w-full text-xs">
+                <SelectValue placeholder="Chọn khách hàng" />
+              </SelectTrigger>
+              <SelectContent>
+                {clientOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="tp-pocode"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              PO
+            </Label>
+            <div className="relative">
+              <Input
+                id="tp-pocode"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Nhập số PO"
+                value={poCode}
+                onChange={(e) => {
+                  setPoCode(e.target.value)
+                  handleSearchDebounced()
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault()
+                    handleExecuteSearch()
+                  }
+                }}
+              />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="tp-datemode"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Xem theo ngày
+            </Label>
+            <Select
+              value={search.dateMode ?? "CURRENT"}
+              onValueChange={handleDateModeChange}
+            >
+              <SelectTrigger id="tp-datemode" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {dateModeOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* Filters Grid */}
-        <div className="flex flex-col gap-3">
-          {/* Row 1: Mã/Tên, Khách hàng, PO, Xem theo ngày */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="space-y-1.5">
-              <FilterLabel label="Mã / Tên thành phẩm" htmlFor="tp-q" />
-              <div className="relative">
-                <Input
-                  id="tp-q"
-                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Nhập mã hoặc tên thành phẩm"
-                  value={q}
-                  onChange={(e) => {
-                    setQ(e.target.value)
-                    handleSearchDebounced()
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      handleExecuteSearch()
-                    }
-                  }}
-                />
-                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <FilterLabel label="Khách hàng" htmlFor="tp-client" />
-              <Select
-                value={search.clientName ?? "all"}
-                onValueChange={handleClientChange}
-              >
-                <SelectTrigger id="tp-client" className="w-full text-xs">
-                  <SelectValue placeholder="Chọn khách hàng" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clientOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-1.5">
-              <FilterLabel label="PO" htmlFor="tp-pocode" />
-              <div className="relative">
-                <Input
-                  id="tp-pocode"
-                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Nhập số PO"
-                  value={poCode}
-                  onChange={(e) => {
-                    setPoCode(e.target.value)
-                    handleSearchDebounced()
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      handleExecuteSearch()
-                    }
-                  }}
-                />
-                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <FilterLabel label="Xem theo ngày" htmlFor="tp-datemode" />
-              <Select
-                value={search.dateMode ?? "CURRENT"}
-                onValueChange={handleDateModeChange}
-              >
-                <SelectTrigger id="tp-datemode" className="w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {dateModeOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Row 2: Nhóm sản phẩm, Trạng thái */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="tp-category"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Nhóm sản phẩm
+            </Label>
+            <Select
+              value={search.category ?? "all"}
+              onValueChange={handleCategoryChange}
+            >
+              <SelectTrigger id="tp-category" className="w-full text-xs">
+                <SelectValue placeholder="Chọn nhóm sản phẩm" />
+              </SelectTrigger>
+              <SelectContent>
+                {categoryOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          {/* Row 2: Nhóm sản phẩm, Trạng thái */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="space-y-1.5">
-              <FilterLabel label="Nhóm sản phẩm" htmlFor="tp-category" />
-              <Select
-                value={search.category ?? "all"}
-                onValueChange={handleCategoryChange}
-              >
-                <SelectTrigger id="tp-category" className="w-full text-xs">
-                  <SelectValue placeholder="Chọn nhóm sản phẩm" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="tp-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
+            <Select
+              value={search.status ?? "all"}
+              onValueChange={handleStatusChange}
+            >
+              <SelectTrigger id="tp-status" className="w-full text-xs">
+                <SelectValue placeholder="Chọn trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-            <div className="space-y-1.5">
-              <FilterLabel label="Trạng thái" htmlFor="tp-status" />
-              <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
-              >
-                <SelectTrigger id="tp-status" className="w-full text-xs">
-                  <SelectValue placeholder="Chọn trạng thái" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Row 3: Ngày & Action buttons */}
+        <div className="flex flex-col gap-3 pt-1 lg:flex-row lg:items-end lg:justify-between">
+          <div className="w-full space-y-1.5 sm:w-auto xl:w-96">
+            <Label
+              htmlFor="tp-daterange"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Ngày
+            </Label>
+            <DateRangePicker
+              id="tp-daterange"
+              from={search.fromDate}
+              to={search.toDate}
+              onChange={handleDateRangeChange}
+            />
           </div>
 
-          {/* Row 3: Ngày & Action buttons */}
-          <div className="flex flex-col gap-3 pt-1 lg:flex-row lg:items-end lg:justify-between">
-            <div className="w-full space-y-1.5 sm:w-auto xl:w-96">
-              <FilterLabel label="Ngày" htmlFor="tp-daterange" />
-              <DateRangePicker
-                id="tp-daterange"
-                from={search.fromDate}
-                to={search.toDate}
-                onChange={handleDateRangeChange}
-              />
-            </div>
-
-            <div className="flex w-full items-center justify-end gap-2 self-end lg:w-auto">
-              <Button
-                type="button"
-                variant="outline"
-                className="gap-1.5 text-xs"
-                onClick={resetFilters}
-              >
-                <RotateCw className="size-3.5" />
-                Xóa bộ lọc
-              </Button>
-              <Button
-                type="button"
-                className="gap-1.5 text-xs"
-                onClick={handleExecuteSearch}
-              >
-                <Search className="size-3.5" />
-                Tìm kiếm
-              </Button>
-            </div>
+          <div className="flex w-full items-center justify-end gap-2 self-end lg:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-1.5 text-xs"
+              onClick={resetFilters}
+            >
+              <RotateCw className="size-3.5" />
+              Xóa bộ lọc
+            </Button>
+            <Button
+              type="button"
+              className="gap-1.5 text-xs"
+              onClick={handleExecuteSearch}
+            >
+              <Search className="size-3.5" />
+              Tìm kiếm
+            </Button>
           </div>
         </div>
       </div>
-    </TooltipProvider>
+    </div>
   )
 }

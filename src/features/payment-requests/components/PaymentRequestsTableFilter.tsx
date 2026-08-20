@@ -13,9 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { PaymentRequestStatus } from "@/lib/types/payment-request.type"
@@ -104,128 +103,148 @@ export function PaymentRequestsTableFilter() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_minmax(11rem,1fr)_minmax(9rem,0.8fr)_minmax(9rem,0.8fr)_minmax(12rem,1.2fr)]">
-            {/* Từ ngày / Đến ngày */}
-            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-              <FilterLabel label="Từ ngày – Đến ngày" htmlFor="pr-date-range" />
-              <DateRangePicker
-                id="pr-date-range"
-                from={search.fromDate}
-                to={search.toDate}
-                onChange={handleDateRangeChange}
-              />
-            </div>
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_minmax(11rem,1fr)_minmax(9rem,0.8fr)_minmax(9rem,0.8fr)_minmax(12rem,1.2fr)]">
+          {/* Từ ngày / Đến ngày */}
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <Label
+              htmlFor="pr-date-range"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Từ ngày – Đến ngày
+            </Label>
+            <DateRangePicker
+              id="pr-date-range"
+              from={search.fromDate}
+              to={search.toDate}
+              onChange={handleDateRangeChange}
+            />
+          </div>
 
-            {/* Nhà cung cấp */}
-            <div className="space-y-1.5">
-              <FilterLabel label="Nhà cung cấp" htmlFor="pr-supplier" />
-              <Select
-                value={search.supplierId ?? "all"}
-                onValueChange={handleSupplierChange}
-              >
-                <SelectTrigger id="pr-supplier" className="w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {supplierFilterOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Nhà cung cấp */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="pr-supplier"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Nhà cung cấp
+            </Label>
+            <Select
+              value={search.supplierId ?? "all"}
+              onValueChange={handleSupplierChange}
+            >
+              <SelectTrigger id="pr-supplier" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {supplierFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            {/* Mã PO */}
-            <div className="space-y-1.5">
-              <FilterLabel label="Mã PO" htmlFor="pr-po-code" />
+          {/* Mã PO */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="pr-po-code"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Mã PO
+            </Label>
+            <Input
+              id="pr-po-code"
+              className="text-xs placeholder:text-muted-foreground/75"
+              placeholder="PO2405-012..."
+              value={poCode}
+              onChange={(event) => {
+                setPoCode(event.target.value)
+                handlePoCodeSearch(event.target.value)
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault()
+                  handlePoCodeSearch.flush()
+                }
+              }}
+            />
+          </div>
+
+          {/* Trạng thái */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="pr-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
+            <Select
+              value={search.status ?? "all"}
+              onValueChange={handleStatusChange}
+            >
+              <SelectTrigger id="pr-status" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Tìm kiếm mã YCTT / Mã PO */}
+          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
+            <Label
+              htmlFor="pr-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
+            <div className="relative">
               <Input
-                id="pr-po-code"
-                className="text-xs placeholder:text-muted-foreground/75"
-                placeholder="PO2405-012..."
-                value={poCode}
+                id="pr-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Mã YCTT, Mã PO..."
+                value={q}
                 onChange={(event) => {
-                  setPoCode(event.target.value)
-                  handlePoCodeSearch(event.target.value)
+                  setQ(event.target.value)
+                  handleSearch(event.target.value)
                 }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
                     event.preventDefault()
-                    handlePoCodeSearch.flush()
+                    handleSearch.flush()
                   }
                 }}
               />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
-
-            {/* Trạng thái */}
-            <div className="space-y-1.5">
-              <FilterLabel label="Trạng thái" htmlFor="pr-status" />
-              <Select
-                value={search.status ?? "all"}
-                onValueChange={handleStatusChange}
-              >
-                <SelectTrigger id="pr-status" className="w-full text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Tìm kiếm mã YCTT / Mã PO */}
-            <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-              <FilterLabel label="Tìm kiếm" htmlFor="pr-search" />
-              <div className="relative">
-                <Input
-                  id="pr-search"
-                  className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                  placeholder="Mã YCTT, Mã PO..."
-                  value={q}
-                  onChange={(event) => {
-                    setQ(event.target.value)
-                    handleSearch(event.target.value)
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handleSearch.flush()
-                    }
-                  }}
-                />
-                <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:self-end">
-            <PendingAction
-              label="Xuất Excel"
-              hint="Tính năng xuất Excel sắp có"
-            >
-              <Download className="size-4" />
-              Xuất Excel
-            </PendingAction>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="text-xs"
-              onClick={resetFilters}
-            >
-              <RotateCw className="size-4" />
-              Xóa bộ lọc
-            </Button>
           </div>
         </div>
+
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
+          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+            <Download className="size-4" />
+            Xuất Excel
+          </PendingAction>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-4" />
+            Xóa bộ lọc
+          </Button>
+        </div>
       </div>
-    </TooltipProvider>
+    </div>
   )
 }

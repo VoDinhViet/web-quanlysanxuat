@@ -3,7 +3,7 @@ import { useDebounceCallback } from "usehooks-ts"
 import { Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
+import { Label } from "@/components/ui/label"
 
 type ProductMaterialsTableFilterProps = {
   q: string | undefined
@@ -26,7 +26,12 @@ export function ProductMaterialsTableFilter({
   return (
     <div className="bg-card px-4 py-4 lg:px-5">
       <div className="max-w-sm space-y-1.5">
-        <FilterLabel label="Tìm kiếm" htmlFor="product-materials-search" />
+        <Label
+          htmlFor="product-materials-search"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Tìm kiếm
+        </Label>
         <div className="relative">
           <Input
             id="product-materials-search"
