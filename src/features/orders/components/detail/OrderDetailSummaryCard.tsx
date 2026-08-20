@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { OrderDetailActions } from "@/features/orders/components/detail/OrderDetailActions"
 import { OrderDetailStatTiles } from "@/features/orders/components/detail/OrderDetailStatTiles"
 import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
-import { resolveMockPaymentStatus } from "@/features/orders/mock/order-detail.mock"
 import {
-  orderMockPaymentStatusLabels,
+  orderPaymentStatusLabels,
+  OrderPaymentStatus,
   overdueTone,
   OrderStatus,
   paymentTermLabels,
@@ -20,7 +20,6 @@ import type {
   OrderDetail,
   OrderItem,
 } from "@/lib/types/order.type"
-import { cn } from "@/lib/utils"
 
 const deliveryToneClassName: Record<DeliveryTone, string> = {
   overdue: "text-destructive",
@@ -28,10 +27,10 @@ const deliveryToneClassName: Record<DeliveryTone, string> = {
   normal: "text-foreground",
 }
 
-const paymentStatusClassName: Record<string, string> = {
-  unpaid: "border-warning/40 bg-warning/5 text-warning",
-  partially_paid: "border-warning/40 bg-warning/5 text-warning",
-  paid: "border-success/40 bg-success/5 text-success",
+const paymentStatusClassName: Record<OrderPaymentStatus, string> = {
+  [OrderPaymentStatus.UNPAID]: "border-warning/40 bg-warning/5 text-warning",
+  [OrderPaymentStatus.PARTIAL]: "border-warning/40 bg-warning/5 text-warning",
+  [OrderPaymentStatus.PAID]: "border-success/40 bg-success/5 text-success",
 }
 
 function formatDueDateNote(order: OrderDetail): string | null {
@@ -72,10 +71,6 @@ export function OrderDetailSummaryCard({
 }: OrderDetailSummaryCardProps) {
   const dueDateNote = formatDueDateNote(order)
   const deliveryTone = resolveDeliveryTone(order)
-  // Not a real payment ledger yet — see order-detail-mock.ts. Rendered with a
-  // dashed border (not MockDataBadge's own chip) so a single mixed-in field
-  // reads as illustrative without repeating "Dữ liệu mẫu" across the grid.
-  const paymentStatus = resolveMockPaymentStatus(order)
 
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
@@ -102,7 +97,7 @@ export function OrderDetailSummaryCard({
               <p className="text-xs text-muted-foreground">
                 Tạo bởi{" "}
                 <span className="font-medium text-foreground">
-                  {order.creator?.username ?? "Hệ thống"}
+                  {order.creatorBy?.fullName ?? "Hệ thống"}
                 </span>{" "}
                 ·{" "}
                 {DateTime.fromISO(order.createdAt).toFormat("dd/MM/yyyy HH:mm")}
@@ -115,10 +110,10 @@ export function OrderDetailSummaryCard({
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <MetaField label="Khách hàng" value={order.client.name} />
+            <MetaField label="Khách hàng" value={order.client?.name ?? "--"} />
             <MetaField
               label="Điện thoại KH"
-              value={order.client.phoneNumber ?? "—"}
+              value={order.client?.phoneNumber ?? "—"}
             />
             <MetaField
               label="Ngày đặt hàng"
@@ -148,12 +143,9 @@ export function OrderDetailSummaryCard({
               value={
                 <Badge
                   variant="outline"
-                  className={cn(
-                    "border-dashed",
-                    paymentStatusClassName[paymentStatus]
-                  )}
+                  className={paymentStatusClassName[order.paymentStatus]}
                 >
-                  {orderMockPaymentStatusLabels[paymentStatus]}
+                  {orderPaymentStatusLabels[order.paymentStatus]}
                 </Badge>
               }
             />

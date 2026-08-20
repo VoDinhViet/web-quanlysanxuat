@@ -38,7 +38,7 @@ export const createOrderSchema = z.object({
     .string()
     .min(1, "Vui lòng chọn ngày giao hàng yêu cầu")
     .transform(toIsoDate),
-  deliveryAddress: z
+  consigneeAddress: z
     .string()
     .trim()
     .max(500, "Địa chỉ tối đa 500 ký tự")
@@ -87,7 +87,7 @@ export const createOrderFormDefaultValues: CreateOrderSchema = {
   assignedUserId: "",
   orderDate: "",
   dueDate: "",
-  deliveryAddress: "",
+  consigneeAddress: "",
   paymentTerm: PaymentTerm.IMMEDIATE,
   currency: Currency.VND,
   exchangeRate: "1",

@@ -12,24 +12,25 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
-import { buildMockPaymentHistory } from "@/features/orders/mock/order-detail.mock"
-import { vndFormatter } from "@/lib/currency"
-import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
+import { currencyFormatter } from "@/lib/currency"
+import type { OrderDetail, OrderPayment } from "@/lib/types/order.type"
 
-type OrderDetailPaymentHistoryCardProps = {
+type OrderDetailPaymentsCardProps = {
   order: OrderDetail
-  items: OrderItem[]
+  payments: OrderPayment[]
 }
 
-export function OrderDetailPaymentHistoryCard({
+// `amount` is recorded in the order's own currency (matching `total`/`paidAmount`, which
+// `paymentStatus` compares against) — not VND, so this uses currencyFormatter + order.currency,
+// same idiom as OrderDetailPaymentSummary. Named to match the backing resource
+// (OrderPayment/getOrderPayments), not "history" — same idiom as OrderDetailItemsCard.
+export function OrderDetailPaymentsCard({
   order,
-  items,
-}: OrderDetailPaymentHistoryCardProps) {
-  const rows = buildMockPaymentHistory(order, items)
-
+  payments,
+}: OrderDetailPaymentsCardProps) {
   return (
-    <OrderDetailSectionCard icon={Card2} title="Lịch sử thanh toán" isMock>
-      {rows.length === 0 ? (
+    <OrderDetailSectionCard icon={Card2} title="Lịch sử thanh toán">
+      {payments.length === 0 ? (
         <TableEmpty
           icon={CreditCard}
           title="Chưa có giao dịch thanh toán nào"
@@ -42,24 +43,26 @@ export function OrderDetailPaymentHistoryCard({
               <TableRow className="h-11 hover:bg-muted/45">
                 <TableHead>Ngày thanh toán</TableHead>
                 <TableHead className="text-right">Số tiền</TableHead>
-                <TableHead>Phương thức</TableHead>
                 <TableHead>Người thu</TableHead>
+                <TableHead>Ghi chú</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map((row) => (
+              {payments.map((payment) => (
                 <TableRow
-                  key={row.paidAt}
+                  key={payment.id}
                   className="bg-card hover:bg-muted/25"
                 >
                   <TableCell>
-                    {DateTime.fromISO(row.paidAt).toFormat("dd/MM/yyyy")}
+                    {DateTime.fromISO(payment.paidAt).toFormat("dd/MM/yyyy")}
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    {vndFormatter.format(row.amountVnd)}
+                    {currencyFormatter.format(payment.amount)} {order.currency}
                   </TableCell>
-                  <TableCell>{row.method}</TableCell>
-                  <TableCell>{row.collectedBy}</TableCell>
+                  <TableCell>
+                    {payment.creatorBy?.fullName ?? "Hệ thống"}
+                  </TableCell>
+                  <TableCell>{payment.note ?? "—"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

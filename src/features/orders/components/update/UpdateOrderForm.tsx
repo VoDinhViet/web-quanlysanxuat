@@ -21,6 +21,7 @@ import {
 } from "@/lib/types/file.type"
 import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
+import { buildSelectOption } from "@/lib/utils"
 
 type UpdateOrderFormProps = {
   order: OrderDetail
@@ -53,7 +54,7 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
   // function strip back out before the payload reaches the wire.
   const defaultValues: UpdateOrderSchema = {
     orderId: order.id,
-    clientId: order.client.id,
+    clientId: order.client?.id ?? "",
     assignedUserId: order.assignedUser?.id ?? "",
     orderDate: DateTime.fromISO(order.orderDate, { zone: "utc" }).toFormat(
       "yyyy-MM-dd"
@@ -61,7 +62,7 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
     dueDate: order.dueDate
       ? DateTime.fromISO(order.dueDate, { zone: "utc" }).toFormat("yyyy-MM-dd")
       : "",
-    deliveryAddress: order.deliveryAddress ?? "",
+    consigneeAddress: order.consigneeAddress ?? "",
     paymentTerm: order.paymentTerm ?? "",
     currency: order.currency,
     exchangeRate: String(order.exchangeRate),
@@ -126,10 +127,7 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
             form={form}
             disabled={isPending}
             orderCode={order.code}
-            selectedClient={{
-              value: order.client.id,
-              label: order.client.name,
-            }}
+            selectedClient={buildSelectOption(order.client)}
           />
 
           <div className="border-t border-border">

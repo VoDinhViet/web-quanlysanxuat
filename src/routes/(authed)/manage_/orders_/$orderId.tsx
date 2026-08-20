@@ -4,6 +4,7 @@ import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage"
 import {
   orderItemsQueryOptions,
+  orderPaymentsQueryOptions,
   orderQueryOptions,
 } from "@/features/orders/api/options"
 
@@ -15,6 +16,9 @@ export const Route = createFileRoute("/(authed)/manage_/orders_/$orderId")({
       context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
       context.queryClient.ensureQueryData(
         orderItemsQueryOptions(params.orderId)
+      ),
+      context.queryClient.ensureQueryData(
+        orderPaymentsQueryOptions(params.orderId)
       ),
     ]),
   component: OrderDetailPage,

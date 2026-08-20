@@ -17,23 +17,27 @@ export function OrderDetailAddressCard({ order }: OrderDetailAddressCardProps) {
           icon={Buildings2}
           label="Công ty"
           value={
-            <>
-              {order.client.name}{" "}
-              <span className="font-mono text-muted-foreground">
-                ({order.client.code})
-              </span>
-            </>
+            order.client ? (
+              <>
+                {order.client.name}{" "}
+                <span className="font-mono text-muted-foreground">
+                  ({order.client.code})
+                </span>
+              </>
+            ) : (
+              "--"
+            )
           }
         />
         <AddressRow
           icon={MapPoint}
           label="Địa chỉ"
-          value={order.deliveryAddress || "Chưa có địa chỉ giao hàng"}
+          value={order.consigneeAddress || "Chưa có địa chỉ giao hàng"}
         />
         <AddressRow
           icon={Phone}
           label="Điện thoại"
-          value={order.client.phoneNumber ?? "—"}
+          value={order.client?.phoneNumber ?? "—"}
         />
       </dl>
     </OrderDetailSectionCard>

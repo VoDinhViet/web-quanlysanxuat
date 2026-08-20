@@ -84,7 +84,7 @@ export function ProductionOrderLogsCard({
                       "dd/MM/yyyy HH:mm"
                     )}
                   </TableCell>
-                  <TableCell>{log.performer?.username ?? "Hệ thống"}</TableCell>
+                  <TableCell>{log.performerBy?.fullName ?? "--"}</TableCell>
                   <TableCell>
                     {productionOrderLogActionLabels[log.action]}
                   </TableCell>

@@ -192,7 +192,7 @@ export const UpdateOrderInfoSection = withForm({
             )}
           </form.AppField>
 
-          <form.AppField name="deliveryAddress">
+          <form.AppField name="consigneeAddress">
             {(field) => (
               <field.TextareaField
                 label="Địa chỉ giao hàng"

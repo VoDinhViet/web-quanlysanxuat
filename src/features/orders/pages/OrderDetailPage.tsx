@@ -8,12 +8,13 @@ import { OrderDetailDeliveryHistoryCard } from "@/features/orders/components/det
 import { OrderDetailInfoCard } from "@/features/orders/components/detail/OrderDetailInfoCard"
 import { OrderDetailItemsCard } from "@/features/orders/components/detail/OrderDetailItemsCard"
 import { OrderDetailNotesCard } from "@/features/orders/components/detail/OrderDetailNotesCard"
-import { OrderDetailPaymentHistoryCard } from "@/features/orders/components/detail/OrderDetailPaymentHistoryCard"
+import { OrderDetailPaymentsCard } from "@/features/orders/components/detail/OrderDetailPaymentsCard"
 import { OrderRejectionNotice } from "@/features/orders/components/detail/OrderRejectionNotice"
 import { OrderDetailSummaryCard } from "@/features/orders/components/detail/OrderDetailSummaryCard"
 import { OrderDetailTimelineCard } from "@/features/orders/components/detail/OrderDetailTimelineCard"
 import {
   orderItemsQueryOptions,
+  orderPaymentsQueryOptions,
   orderQueryOptions,
 } from "@/features/orders/api/options"
 
@@ -24,6 +25,9 @@ export function OrderDetailPage() {
 
   const { data: order } = useSuspenseQuery(orderQueryOptions(orderId))
   const { data: items } = useSuspenseQuery(orderItemsQueryOptions(orderId))
+  const { data: payments } = useSuspenseQuery(
+    orderPaymentsQueryOptions(orderId)
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -43,11 +47,11 @@ export function OrderDetailPage() {
 
         {/* minmax(0,1fr) (not 1fr) so the items table scrolls inside its own
             column instead of blowing the grid out horizontally. */}
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
           <div className="flex min-w-0 flex-col gap-4">
             <OrderDetailInfoCard order={order} />
             <OrderDetailItemsCard order={order} items={items} />
-            <OrderDetailPaymentHistoryCard order={order} items={items} />
+            <OrderDetailPaymentsCard order={order} payments={payments} />
           </div>
 
           <div className="flex min-w-0 flex-col gap-4">
@@ -56,7 +60,7 @@ export function OrderDetailPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3">
           <OrderDetailDeliveryHistoryCard order={order} items={items} />
           <OrderDetailNotesCard order={order} />
           <OrderDetailAttachmentsCard order={order} />

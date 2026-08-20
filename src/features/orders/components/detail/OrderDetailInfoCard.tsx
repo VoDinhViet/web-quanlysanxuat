@@ -4,33 +4,33 @@ import type { ReactNode } from "react"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
-import { buildMockClientProfile } from "@/features/orders/mock/order-detail.mock"
-import { paymentTermLabels } from "@/lib/types/order.type"
+import { currencyFormatter } from "@/lib/currency"
+import { OrderDiscountType, paymentTermLabels } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
-import { cn } from "@/lib/utils"
 
 type OrderDetailInfoCardProps = {
   order: OrderDetail
 }
 
 // A dense 2-column record of order facts, matching the reference layout —
-// "Điều khoản giao hàng" has no backing field on `OrderDetail` yet, so it's
-// built from buildMockClientProfile (order-detail-mock.ts) and flagged.
+// "Điều khoản giao hàng" has no backing field on `OrderDetail` yet, so it
+// falls back to "--" like every other field the API hasn't populated.
 // "Địa chỉ"/"Mã số thuế"/"Điện thoại"/"Email" read off `order.client` — the
 // order itself no longer snapshots a contact (see order.type.ts's `Order`).
 export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
-  const clientProfile = buildMockClientProfile(order)
-
   return (
     <OrderDetailSectionCard icon={InfoCircle} title="Thông tin đơn hàng">
       <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
         <div className="space-y-3">
           <InfoRow label="Mã đơn hàng" value={order.code} />
-          <InfoRow label="Khách hàng" value={order.client.name} />
-          <InfoRow label="Địa chỉ" value={order.client.address ?? "—"} />
-          <InfoRow label="Mã số thuế" value={order.client.taxCode ?? "—"} />
-          <InfoRow label="Điện thoại" value={order.client.phoneNumber ?? "—"} />
-          <InfoRow label="Email" value={order.client.email ?? "—"} />
+          <InfoRow label="Khách hàng" value={order.client?.name ?? "--"} />
+          <InfoRow label="Địa chỉ" value={order.client?.address ?? "--"} />
+          <InfoRow label="Mã số thuế" value={order.client?.taxCode ?? "--"} />
+          <InfoRow
+            label="Điện thoại"
+            value={order.client?.phoneNumber ?? "--"}
+          />
+          <InfoRow label="Email" value={order.client?.email ?? "--"} />
         </div>
 
         <div className="space-y-3">
@@ -43,38 +43,39 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
             value={
               order.dueDate
                 ? DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")
-                : "Chưa xác định"
+                : "--"
             }
           />
-          <InfoRow
-            label="Điều khoản giao hàng"
-            value={clientProfile.deliveryTerm}
-            isMock
-          />
+          <InfoRow label="Điều khoản giao hàng" value="--" />
           <InfoRow
             label="Điều khoản thanh toán"
             value={
-              order.paymentTerm ? paymentTermLabels[order.paymentTerm] : "—"
+              order.paymentTerm ? paymentTermLabels[order.paymentTerm] : "--"
             }
           />
           <InfoRow
+            label="Chiết khấu"
+            value={
+              order.discountType === OrderDiscountType.PERCENT
+                ? `${currencyFormatter.format(order.discountValue)}% (${currencyFormatter.format(order.discountAmount)} ${order.currency})`
+                : `${currencyFormatter.format(order.discountAmount)} ${order.currency}`
+            }
+          />
+          <InfoRow
+            label="Phí vận chuyển"
+            value={`${currencyFormatter.format(order.shippingFee)} ${order.currency}`}
+          />
+          <InfoRow
             label="Nhân viên kinh doanh"
-            value={order.assignedUser?.fullName ?? "—"}
+            value={order.assignedUser?.fullName ?? "--"}
           />
           <InfoRow
             label="Trạng thái"
             value={<OrderStatusBadge tone={order.status} />}
           />
-          <InfoRow label="Ghi chú" value={order.note || "Chưa có ghi chú"} />
+          <InfoRow label="Ghi chú" value={order.note || "--"} />
         </div>
       </div>
-
-      <p className="mt-4 border-t border-border pt-3 text-[11px] text-muted-foreground">
-        <span className="border-b border-dashed border-warning text-warning">
-          Gạch dưới
-        </span>{" "}
-        — dữ liệu mẫu, chờ bổ sung trường tương ứng.
-      </p>
     </OrderDetailSectionCard>
   )
 }
@@ -82,21 +83,13 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
 type InfoRowProps = {
   label: string
   value: ReactNode
-  isMock?: boolean
 }
 
-function InfoRow({ label, value, isMock }: InfoRowProps) {
+function InfoRow({ label, value }: InfoRowProps) {
   return (
     <div className="grid grid-cols-[8.5rem_1fr] items-baseline gap-2 text-sm">
       <dt className="truncate text-muted-foreground">{label}</dt>
-      <dd
-        className={cn(
-          "min-w-0 truncate font-medium text-foreground",
-          isMock && "w-fit border-b border-dashed border-warning text-warning"
-        )}
-      >
-        {value}
-      </dd>
+      <dd className="min-w-0 truncate font-medium text-foreground">{value}</dd>
     </div>
   )
 }

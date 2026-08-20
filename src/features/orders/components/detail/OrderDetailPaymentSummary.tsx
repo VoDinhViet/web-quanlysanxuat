@@ -1,7 +1,8 @@
 import { formatSignedAmount } from "@/features/orders/order-totals"
 import { currencyFormatter, vndFormatter } from "@/lib/currency"
-import { Currency } from "@/lib/types/order.type"
+import { Currency, OrderDiscountType } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
+import { cn } from "@/lib/utils"
 
 type OrderDetailPaymentSummaryProps = {
   order: OrderDetail
@@ -9,12 +10,15 @@ type OrderDetailPaymentSummaryProps = {
 
 // The subtotal/discount/VAT/shipping/total box — real, server-computed
 // (OrdersService.recalculateTotals) — sits directly under the items table it
-// totals, right-aligned so it reads like a receipt footer.
+// totals, right-aligned and styled as a torn receipt stub (see .receipt-stub
+// in styles.css) so it reads like what it is: the total due on this order.
 export function OrderDetailPaymentSummary({
   order,
 }: OrderDetailPaymentSummaryProps) {
+  const remainingAmount = order.total - order.paidAmount
+
   return (
-    <div className="ml-auto w-full max-w-sm rounded-lg border border-border bg-muted/20 p-4 sm:p-5">
+    <div className="receipt-stub ml-auto w-full max-w-sm rounded-b-lg border border-border bg-muted/30 p-4 pt-6 sm:p-5 sm:pt-7">
       <p className="text-xs font-semibold tracking-wide text-foreground uppercase">
         Thanh toán
       </p>
@@ -27,7 +31,13 @@ export function OrderDetailPaymentSummary({
           </dd>
         </div>
         <div className="flex items-center justify-between">
-          <dt className="text-muted-foreground">Chiết khấu</dt>
+          <dt className="text-muted-foreground">
+            Chiết khấu
+            {order.discountType === OrderDiscountType.PERCENT &&
+            order.discountValue > 0
+              ? ` (${currencyFormatter.format(order.discountValue)}%)`
+              : ""}
+          </dt>
           <dd className="text-foreground tabular-nums">
             {formatSignedAmount(order.discountAmount, "−")}
           </dd>
@@ -48,7 +58,7 @@ export function OrderDetailPaymentSummary({
         </div>
       </dl>
 
-      <div className="mt-3 flex items-end justify-between border-t border-dashed border-border pt-3">
+      <div className="mt-4 flex items-center justify-between gap-3 rounded-md border border-primary/15 bg-primary/5 px-3 py-2.5">
         <span className="font-heading text-sm text-foreground">
           Tổng thanh toán
         </span>
@@ -67,6 +77,26 @@ export function OrderDetailPaymentSummary({
           ≈ {vndFormatter.format(order.totalVnd)} VND
         </p>
       ) : null}
+
+      <dl className="mt-3 space-y-2 border-t border-dashed border-border pt-3 text-sm">
+        <div className="flex items-center justify-between">
+          <dt className="text-muted-foreground">Đã trả</dt>
+          <dd className="text-foreground tabular-nums">
+            {currencyFormatter.format(order.paidAmount)} {order.currency}
+          </dd>
+        </div>
+        <div className="flex items-center justify-between">
+          <dt className="text-muted-foreground">Còn phải trả</dt>
+          <dd
+            className={cn(
+              "font-medium tabular-nums",
+              remainingAmount > 0 ? "text-warning" : "text-success"
+            )}
+          >
+            {currencyFormatter.format(remainingAmount)} {order.currency}
+          </dd>
+        </div>
+      </dl>
     </div>
   )
 }

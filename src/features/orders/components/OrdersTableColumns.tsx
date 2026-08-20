@@ -25,7 +25,7 @@ export const orderColumns = [
       <span className="font-mono font-semibold text-primary">{getValue()}</span>
     ),
   }),
-  orderColumnHelper.accessor((row) => row.client.name, {
+  orderColumnHelper.accessor((row) => row.client?.name ?? "--", {
     id: "client",
     header: "Khách hàng",
     meta: { headerClassName: "min-w-44" },

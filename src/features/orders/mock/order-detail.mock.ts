@@ -6,21 +6,18 @@ import { OrderStatus } from "@/lib/types/order.type"
 import type {
   OrderDetail,
   OrderItem,
-  OrderMockClientProfile,
   OrderMockDeliveryProgress,
   OrderMockDeliveryRow,
-  OrderMockPaymentRow,
-  OrderMockPaymentStatus,
 } from "@/lib/types/order.type"
 
-// Placeholder data for the order detail page's 3 data-less sections (see the
-// matching types in order.type.ts) — same idea as
-// src/features/manage/mock/manage-dashboard.mock.ts, but seeded per order
-// (via the order's own id) instead of once globally: two different orders
-// shouldn't render identical numbers, while the SAME order must render the
-// same numbers across re-renders/refetches. Delete this file once the
-// backend ships DO tracking and a payments ledger. (The approval timeline
-// used to live here too — it's now real data, see order-timeline.ts.)
+// Placeholder data for the order detail page's one remaining data-less section (order-level
+// delivery/DO history — see the matching types in order.type.ts) — same idea as
+// src/features/manage/mock/manage-dashboard.mock.ts, but seeded per order (via the order's own
+// id) instead of once globally: two different orders shouldn't render identical numbers, while
+// the SAME order must render the same numbers across re-renders/refetches. Delete this file once
+// the backend ships DO tracking. (Payment history used to be mock too — now real, see
+// get-order-payments.api.ts. The approval timeline used to live here too — it's now real data,
+// see order-timeline.ts.)
 
 // DateTime#toISO() types as `string | null` (it only returns null for an
 // invalid DateTime) — every caller here builds off an already-valid ISO
@@ -67,17 +64,6 @@ export function buildMockDeliveryProgress(
   }
 }
 
-// Same order-wide percent applied to one line's own quantity — the mock has
-// no per-item delivery log, so every line is assumed to ship at the same
-// pace as the order overall.
-export function deriveMockItemDelivered(
-  quantity: number,
-  deliveredPercent: number
-): { delivered: number; remaining: number } {
-  const delivered = Math.round((quantity * deliveredPercent) / 100)
-  return { delivered, remaining: quantity - delivered }
-}
-
 const deliveryVehicles = ["51C-12345", "51D-67890", "50A-11223"]
 
 export function buildMockDeliveryHistory(
@@ -107,66 +93,4 @@ export function buildMockDeliveryHistory(
       vehicle: faker.helpers.arrayElement(deliveryVehicles),
     }
   })
-}
-
-const paymentMethods = ["Chuyển khoản", "Tiền mặt"]
-
-export function buildMockPaymentHistory(
-  order: OrderDetail,
-  items: OrderItem[]
-): OrderMockPaymentRow[] {
-  const progress = buildMockDeliveryProgress(order, items)
-  if (progress.deliveredPercent === 0) {
-    return []
-  }
-
-  seedFor(order)
-  const orderDate = DateTime.fromISO(order.orderDate)
-  const rowCount = order.status === OrderStatus.COMPLETED ? 2 : 1
-  const collectedBy = order.assignedUser?.fullName ?? "Kế toán"
-
-  return Array.from({ length: rowCount }, (_, index) => {
-    const share = rowCount === 1 ? 1 : 0.5
-
-    return {
-      paidAt: toIso(orderDate.plus({ days: 3 + index * 4 }), order.orderDate),
-      amountVnd: roundMoney(
-        order.totalVnd * (progress.deliveredPercent / 100) * share
-      ),
-      method: faker.helpers.arrayElement(paymentMethods),
-      collectedBy,
-    }
-  })
-}
-
-export function resolveMockPaymentStatus(
-  order: OrderDetail
-): OrderMockPaymentStatus {
-  const deliveredPercent = deliveredPercentByStatus[order.status]
-
-  if (deliveredPercent >= 100) {
-    return "paid"
-  }
-
-  return deliveredPercent > 0 ? "partially_paid" : "unpaid"
-}
-
-const deliveryTerms = [
-  "FOB - Bình Dương",
-  "CIF - Cảng Cát Lái",
-  "Giao tại kho người bán",
-  "EXW - Nhà máy",
-]
-
-// Delivery terms (FOB/CIF/…) aren't a real field on the wire yet — address/tax code now come
-// from `order.client` instead (the backend's ClientBaseResDto), so this only stands in for
-// `deliveryTerm`.
-export function buildMockClientProfile(
-  order: OrderDetail
-): OrderMockClientProfile {
-  seedFor(order)
-
-  return {
-    deliveryTerm: faker.helpers.arrayElement(deliveryTerms),
-  }
 }

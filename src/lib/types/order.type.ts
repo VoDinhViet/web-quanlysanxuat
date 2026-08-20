@@ -166,16 +166,12 @@ export type OrderClientRef = {
   address: string | null
 }
 
-export type OrderAssignedUserRef = {
+/** Mirrors the backend's UserRefResDto — shared by every order-level user relation
+ *  (assignedUser, creatorBy, approverBy, rejecterBy). */
+export type OrderUserRef = {
   id: string
   code: string
   fullName: string
-}
-
-/** Mirrors the backend's nested creator relation (OrderCreatorResDto). */
-export type OrderCreator = {
-  id: string
-  username: string
 }
 
 /** Lightweight order reference nested inside another module's response DTO (e.g.
@@ -198,7 +194,9 @@ export type OrderRef = {
 export type Order = {
   id: string
   code: string
-  client: OrderClientRef
+  // `clientId` is temporarily optional on create (docs/domains/orders.md), so a real order
+  // can have no client — every consumer must guard this, not just chain `.client.*`.
+  client: OrderClientRef | null
   orderDate: string
   dueDate: string | null
   totalVnd: number
@@ -207,8 +205,8 @@ export type Order = {
   // Kept off OrderStatus so a row can be both IN_PROGRESS and overdue.
   expired: boolean
   paymentTerm: PaymentTerm | null
-  assignedUser: OrderAssignedUserRef | null
-  creator: OrderCreator | null
+  assignedUser: OrderUserRef | null
+  creatorBy: OrderUserRef | null
   createdAt: string
   updatedAt: string
 }
@@ -233,6 +231,11 @@ export type OrderItemRef = {
 export type OrderItem = {
   id: string
   quantity: number
+  // Server-computed from inventory_transactions.orderItemId — the line's real issued/delivered
+  // quantity so far.
+  issuedQty: number
+  // Server-computed: quantity - issuedQty. Can go negative if the line was over-issued.
+  remainingQty: number
   unitPrice: number
   discountPercent: number
   // Server-computed: quantity * unitPrice * (1 - discountPercent / 100).
@@ -251,13 +254,43 @@ export type OrderAttachment = {
   file: FileResource
 }
 
+// Mirrors the backend's OrderPaymentStatus — computed at read time (SUM(order_payments.amount)
+// vs. order.total), not a stored column.
+export const OrderPaymentStatus = {
+  UNPAID: "UNPAID",
+  PARTIAL: "PARTIAL",
+  PAID: "PAID",
+} as const
+
+export type OrderPaymentStatus =
+  (typeof OrderPaymentStatus)[keyof typeof OrderPaymentStatus]
+
+export const orderPaymentStatusLabels: Record<OrderPaymentStatus, string> = {
+  [OrderPaymentStatus.UNPAID]: "Chưa thanh toán",
+  [OrderPaymentStatus.PARTIAL]: "Thanh toán một phần",
+  [OrderPaymentStatus.PAID]: "Đã thanh toán",
+}
+
+/** Mirrors the backend's OrderPaymentResDto — one row of an order's payment ledger (GET/POST
+ *  /api/orders/:orderId/payments). Append-only: a correction is a new negative-`amount` row,
+ *  never an edit/delete of an existing one. `amount` is in the order's own currency, the same
+ *  one `total`/`paidAmount` are in — not VND. */
+export type OrderPayment = {
+  id: string
+  amount: number
+  paidAt: string
+  note: string | null
+  creatorBy: OrderUserRef | null
+  createdAt: string
+}
+
 // Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
 // endpoint (GET /api/orders, `Order` above) intentionally skips items/attachments
 // for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
 // extends `Order` rather than folding everything onto one shared type. Items are their own
 // endpoint too — GET /api/orders/:id/items, `OrderItem` above — no longer embedded here.
 export type OrderDetail = Order & {
-  deliveryAddress: string | null
+  consigneeAddress: string | null
   currency: Currency
   exchangeRate: number
   // Tổng tiền hàng — server-computed sum of non-cancelled line totals.
@@ -276,12 +309,16 @@ export type OrderDetail = Order & {
   internalNote: string | null
   attachments: OrderAttachment[]
   // Approval flow (see OrderStatus doc comment) — only the most recent approve/reject is
-  // kept, no history table. `approver`/`rejecter` share the same shape as `creator`.
-  approver: OrderCreator | null
+  // kept, no history table.
+  approverBy: OrderUserRef | null
   approvedAt: string | null
-  rejecter: OrderCreator | null
+  rejecterBy: OrderUserRef | null
   rejectedAt: string | null
   rejectionReason: string | null
+  // Tổng đã trả — server-computed: SUM(order_payments.amount).
+  paidAmount: number
+  // Server-computed at read time from paidAmount vs. total — not a stored column.
+  paymentStatus: OrderPaymentStatus
 }
 
 // Mirrors the backend's OrderStatsResDto exactly (the 6 dashboard cards). Trend/ratio
@@ -346,11 +383,10 @@ export type OrderTimelineStep = {
 }
 
 // ---- UI-only mock scaffolding ----
-// The 3 types below describe placeholder data built by
-// src/features/orders/mock/order-detail.mock.ts for concepts the backend has
-// no table for yet: per-order delivered/remaining, delivery history and
-// payment history. Delete these alongside that file once DO tracking and a
-// payments ledger actually exist.
+// The 2 types below describe placeholder data built by
+// src/features/orders/mock/order-detail.mock.ts for the one concept the backend still has no
+// table for: order-level delivery/DO history. (Payment history used to be mock too — now real,
+// see OrderPayment above.) Delete these alongside that file once DO tracking exists.
 
 export type OrderMockDeliveryProgress = {
   deliveredPercent: number
@@ -366,29 +402,4 @@ export type OrderMockDeliveryRow = {
   quantity: number
   valueVnd: number
   vehicle: string
-}
-
-export type OrderMockPaymentRow = {
-  paidAt: string
-  amountVnd: number
-  method: string
-  collectedBy: string
-}
-
-export type OrderMockPaymentStatus = "unpaid" | "partially_paid" | "paid"
-
-export const orderMockPaymentStatusLabels: Record<
-  OrderMockPaymentStatus,
-  string
-> = {
-  unpaid: "Chưa thanh toán",
-  partially_paid: "Thanh toán một phần",
-  paid: "Đã thanh toán",
-}
-
-// Client-profile facts the reference layout shows but that don't exist anywhere on the wire
-// yet — only `deliveryTerm` is left here; address/taxCode now come from the real
-// `OrderClientRef` fields instead of being faked.
-export type OrderMockClientProfile = {
-  deliveryTerm: string
 }

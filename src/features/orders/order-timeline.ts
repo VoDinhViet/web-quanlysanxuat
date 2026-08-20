@@ -5,7 +5,7 @@ import type { OrderDetail, OrderTimelineStep } from "@/lib/types/order.type"
 // no backing field on OrderDetail (submit, start-production) shows no timestamp at all
 // rather than a guessed one. See OrderStatus's doc comment for the lifecycle this mirrors.
 export function buildOrderTimeline(order: OrderDetail): OrderTimelineStep[] {
-  const creatorName = order.creator?.username ?? "Hệ thống"
+  const creatorName = order.creatorBy?.fullName ?? "Hệ thống"
 
   if (order.status === OrderStatus.CANCELLED) {
     return [
@@ -65,7 +65,7 @@ export function buildOrderTimeline(order: OrderDetail): OrderTimelineStep[] {
       label: "Bị từ chối",
       state: "cancelled",
       timestamp: order.rejectedAt,
-      actor: order.rejecter?.username ?? null,
+      actor: order.rejecterBy?.fullName ?? null,
       detail: order.rejectionReason,
     })
   }
@@ -80,7 +80,7 @@ export function buildOrderTimeline(order: OrderDetail): OrderTimelineStep[] {
           ? "current"
           : "upcoming",
       timestamp: order.approvedAt,
-      actor: order.approver?.username ?? null,
+      actor: order.approverBy?.fullName ?? null,
       detail: null,
     },
     {

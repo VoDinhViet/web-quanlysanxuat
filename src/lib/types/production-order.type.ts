@@ -1,6 +1,5 @@
 import type {
   OrderClientRef,
-  OrderCreator,
   OrderItemRef,
   OrderRef,
 } from "@/lib/types/order.type"
@@ -86,6 +85,15 @@ export const productionOrderLogActionLabels: Record<
   [ProductionOrderLogAction.APPROVED]: "Duyệt LSX",
 }
 
+/** Mirrors the backend's UserRefResDto, for the log's `performerBy` relation. Not shared with
+ *  order.type.ts's OrderUserRef — each domain owns its own local ref type even when the shape
+ *  is identical, per this repo's convention. */
+export type ProductionOrderLogPerformerRef = {
+  id: string
+  code: string
+  fullName: string
+}
+
 /** Mirrors the backend's ProductionOrderLogResDto — one row of
  *  `GET /production-orders/:productionOrderId/logs`. `content` is already a ready-to-display
  *  Vietnamese sentence generated server-side at write time — not raw data to build a sentence
@@ -94,6 +102,6 @@ export type ProductionOrderLog = {
   id: string
   action: ProductionOrderLogAction
   content: string
-  performer: OrderCreator | null
+  performerBy: ProductionOrderLogPerformerRef | null
   createdAt: string
 }

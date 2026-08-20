@@ -245,3 +245,27 @@
   border-left: none;
   border-top: none;
 }
+
+/* Signature element on the order detail page's totals box (OrderDetailPaymentSummary) — a
+   scalloped top edge that reads as a ticket stub torn off the product list above it, echoing
+   the printed phiếu this total ultimately belongs to. Pure CSS mask, no image asset; degrades
+   to a plain straight edge if mask isn't supported. */
+.receipt-stub {
+  --notch: 8px;
+  -webkit-mask-image: radial-gradient(
+    circle at var(--notch) 0,
+    transparent var(--notch),
+    black calc(var(--notch) + 0.5px)
+  );
+  mask-image: radial-gradient(
+    circle at var(--notch) 0,
+    transparent var(--notch),
+    black calc(var(--notch) + 0.5px)
+  );
+  -webkit-mask-size: calc(var(--notch) * 2) var(--notch);
+  mask-size: calc(var(--notch) * 2) var(--notch);
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-position: top left;
+  mask-position: top left;
+}

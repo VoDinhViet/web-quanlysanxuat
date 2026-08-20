@@ -1,8 +1,11 @@
-import { Link } from "@tanstack/react-router"
 import { Box } from "@solar-icons/react"
 import { PackageSearch } from "lucide-react"
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
 
-import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -15,12 +18,8 @@ import {
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { OrderDetailPaymentSummary } from "@/features/orders/components/detail/OrderDetailPaymentSummary"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
-import {
-  buildMockDeliveryProgress,
-  deriveMockItemDelivered,
-} from "@/features/orders/mock/order-detail.mock"
+import { orderDetailItemColumns } from "@/features/orders/components/detail/OrderDetailItemsTableColumns"
 import { currencyFormatter } from "@/lib/currency"
-import { orderItemStatusLabels, OrderItemStatus } from "@/lib/types/order.type"
 import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
 
@@ -31,15 +30,22 @@ type OrderDetailItemsCardProps = {
   items: OrderItem[]
 }
 
-// "Đã giao"/"Còn lại" split each line by the order's own mock delivery
-// percent (see order-detail-mock.ts) — there's no per-item delivery log, so
-// every line is assumed to ship at the same pace as the order overall.
 export function OrderDetailItemsCard({
   order,
   items,
 }: OrderDetailItemsCardProps) {
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
-  const progress = buildMockDeliveryProgress(order, items)
+  const totalIssuedQty = items.reduce((sum, item) => sum + item.issuedQty, 0)
+  const totalRemainingQty = items.reduce(
+    (sum, item) => sum + item.remainingQty,
+    0
+  )
+
+  const table = useReactTable({
+    data: items,
+    columns: orderDetailItemColumns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   return (
     <OrderDetailSectionCard
@@ -53,103 +59,75 @@ export function OrderDetailItemsCard({
           description="Danh sách sản phẩm sẽ hiện ở đây khi đơn hàng được cập nhật."
         />
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-3">
           <div className="overflow-x-auto rounded-md border border-border/50">
             <Table>
               <TableHeader>
-                <TableRow className="h-12 hover:bg-muted/45">
-                  <TableHead className="w-10">#</TableHead>
-                  <TableHead>Sản phẩm</TableHead>
-                  <TableHead>ĐVT</TableHead>
-                  <TableHead className="text-right">Số lượng</TableHead>
-                  <TableHead className="text-right">Đơn giá</TableHead>
-                  <TableHead className="text-right">CK (%)</TableHead>
-                  <TableHead className="text-right">Thành tiền</TableHead>
-                  <MockColumnHead label="Đã giao" />
-                  <MockColumnHead label="Còn lại" />
-                  <TableHead className="text-center">Trạng thái</TableHead>
-                </TableRow>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="h-11 hover:bg-muted/45"
+                  >
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className={
+                          header.column.columnDef.meta?.headerClassName
+                        }
+                      >
+                        {!header.isPlaceholder &&
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
-                {items.map((item, index) => {
-                  const { delivered, remaining } = deriveMockItemDelivered(
-                    item.quantity,
-                    progress.deliveredPercent
-                  )
-
-                  return (
-                    <TableRow
-                      key={item.id}
-                      className="h-14 bg-card hover:bg-muted/25"
-                    >
-                      <TableCell className="text-muted-foreground">
-                        {index + 1}
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} className="bg-card hover:bg-muted/25">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
-                      <TableCell>
-                        <div className="min-w-0">
-                          <Link
-                            to="/manage/products/$productId"
-                            params={{ productId: item.item.id }}
-                            search={{ tab: "info" }}
-                            className="block truncate font-medium text-foreground hover:text-primary hover:underline"
-                          >
-                            {item.item.name}
-                          </Link>
-                          <p className="truncate font-mono text-[11px] text-muted-foreground">
-                            {item.item.code}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>{item.unit.name}</TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        {quantityFormatter.format(item.quantity)}
-                      </TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        {currencyFormatter.format(item.unitPrice)}
-                      </TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        {item.discountPercent}
-                      </TableCell>
-                      <TableCell className="text-right font-medium tabular-nums">
-                        {currencyFormatter.format(item.lineTotal)}
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground tabular-nums">
-                        {quantityFormatter.format(delivered)}
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground tabular-nums">
-                        {quantityFormatter.format(remaining)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            item.status === OrderItemStatus.CANCELLED
-                              ? "text-destructive"
-                              : "text-success"
-                          )}
-                        >
-                          {orderItemStatusLabels[item.status]}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
+                    ))}
+                  </TableRow>
+                ))}
               </TableBody>
               <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={3}>Tổng cộng</TableCell>
+                <TableRow className="h-11">
+                  <TableCell
+                    colSpan={3}
+                    className="font-semibold text-foreground"
+                  >
+                    Tổng cộng
+                  </TableCell>
                   <TableCell className="text-right tabular-nums">
                     {quantityFormatter.format(totalQuantity)}
                   </TableCell>
-                  <TableCell colSpan={2} />
-                  <TableCell className="text-right tabular-nums">
+                  <TableCell />
+                  <TableCell />
+                  <TableCell className="text-right text-sm font-semibold text-foreground tabular-nums">
                     {currencyFormatter.format(order.subtotal)}
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    {quantityFormatter.format(progress.deliveredQuantity)}
+                    {quantityFormatter.format(totalIssuedQty)}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {quantityFormatter.format(progress.remainingQuantity)}
+                  <TableCell
+                    className={cn(
+                      "text-right tabular-nums",
+                      totalRemainingQty < 0 && "font-semibold text-destructive"
+                    )}
+                  >
+                    {quantityFormatter.format(totalRemainingQty)}
                   </TableCell>
                   <TableCell />
                 </TableRow>
@@ -161,16 +139,5 @@ export function OrderDetailItemsCard({
         </div>
       )}
     </OrderDetailSectionCard>
-  )
-}
-
-function MockColumnHead({ label }: { label: string }) {
-  return (
-    <TableHead className="text-right">
-      <span className="inline-flex items-center gap-1">
-        {label}
-        <span className="text-[9px] font-normal text-warning">(mẫu)</span>
-      </span>
-    </TableHead>
   )
 }
