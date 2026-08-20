@@ -1,8 +1,6 @@
 import { Image } from "@unpic/react"
 import { Link, useLocation } from "@tanstack/react-router"
 import {
-  ArrowDownToLine,
-  BarChart3,
   BookText,
   Boxes,
   Building2,
@@ -12,24 +10,20 @@ import {
   Factory,
   FileText,
   GitBranch,
-  History,
   LayoutDashboard,
   Layers,
-  ListChecks,
   PackageCheck,
   PackageMinus,
   PackagePlus,
   PackageSearch,
   ReceiptText,
   Send,
-  Settings,
   ShieldCheck,
   ShoppingCart,
   Truck,
   Undo2,
   Upload,
   UserRound,
-  Users,
   Warehouse,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -94,7 +88,6 @@ const menuGroups: MenuGroup[] = [
         icon: ShoppingCart,
         href: "/manage/orders",
       },
-      { label: "Báo giá (RFQ)", icon: FileText, permission: "orders:read" },
       {
         label: "Giao hàng (DO)",
         icon: Truck,
@@ -131,11 +124,6 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/payment-requests",
       },
       {
-        label: "Nhập hàng",
-        icon: ArrowDownToLine,
-        permission: "inventory:read",
-      },
-      {
         label: "Trả NCC",
         icon: Undo2,
         href: "/manage/supplier-returns",
@@ -170,11 +158,6 @@ const menuGroups: MenuGroup[] = [
         icon: GitBranch,
         href: "/manage/production-jobs",
       },
-      {
-        label: "BOM & Định mức",
-        icon: ListChecks,
-        permission: "items:bom-manage",
-      },
     ],
   },
   {
@@ -190,16 +173,6 @@ const menuGroups: MenuGroup[] = [
         icon: Upload,
         href: "/manage/outsourcing-receipts",
       },
-      {
-        label: "Nhà cung cấp gia công",
-        icon: Users,
-        permission: "suppliers:read",
-      },
-      {
-        label: "Báo cáo gia công ngoài",
-        icon: BarChart3,
-        permission: "outsourcing:read",
-      },
     ],
   },
   {
@@ -213,7 +186,7 @@ const menuGroups: MenuGroup[] = [
       {
         label: "Xuất kho",
         icon: PackageMinus,
-        permission: "inventory:read",
+        href: "/manage/inventory-issues",
       },
       {
         label: "Tồn kho vật tư",
@@ -261,12 +234,6 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/users",
       },
       { label: "Phân quyền", icon: ShieldCheck, permission: "roles:read" },
-      { label: "Cài đặt", icon: Settings, permission: "system:manage" },
-      {
-        label: "Nhật ký hệ thống",
-        icon: History,
-        permission: "system:manage",
-      },
     ],
   },
 ]
