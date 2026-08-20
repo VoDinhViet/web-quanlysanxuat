@@ -3,18 +3,13 @@ import { createFileRoute } from "@tanstack/react-router"
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { CreateUserPage } from "@/features/users/pages/CreateUserPage"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
-import {
-  positionsQueryOptions,
-  rolesQueryOptions,
-} from "@/features/users/api/options"
 
+// `positionsQueryOptions` needs a `departmentId` the form doesn't have yet on mount (CreateUserJobInfoSection
+// fetches it itself once a department is picked); `rolesQueryOptions` needs `roles:read`, which this
+// route doesn't require (CreateUserCredentialSection fetches it itself via `useQuery`, tolerating 403).
 export const Route = createFileRoute("/(authed)/manage_/users_/create")({
   loader: ({ context }) =>
-    Promise.all([
-      context.queryClient.ensureQueryData(departmentOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(positionsQueryOptions()),
-      context.queryClient.ensureQueryData(rolesQueryOptions()),
-    ]),
+    context.queryClient.ensureQueryData(departmentOptionsQueryOptions()),
   component: CreateUserPage,
   pendingComponent: PageLoading,
 })

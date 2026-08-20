@@ -4,20 +4,25 @@ import { imageFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToUndefined,
   emptyToUndefinedIsoDate,
-  optionalEmail,
   toIsoDate,
 } from "@/lib/zod-transforms"
 
 // Wire contract for the `credential` field of PATCH /api/users/:userId. `credentialId` is
 // UI-only: present means the employee already has an ERP account, so the password may be
-// left blank (blank = keep the current password). The object transform below strips it
-// from the payload, same as orderItemFormSchema strips productLabel/productUnit
-// (orders/schemas/order-item-form.schema.ts). Password is not .trim(): leading/trailing
-// whitespace could be intentional, unlike the other optional fields below.
+// left blank (blank = keep the current password); absent means submitting this object
+// provisions a brand-new account, so the password becomes required (mirrors BE's E207). The
+// object transform below strips it from the payload, same as orderItemFormSchema strips
+// productLabel/productUnit (orders/schemas/order-item-form.schema.ts). Password is not
+// .trim(): leading/trailing whitespace could be intentional, unlike the other optional
+// fields below. `roleId` is optional, same reasoning as create-user.schema.ts.
 export const updateCredentialSchema = z
   .object({
     credentialId: z.string().optional(),
-    username: z.string().trim().min(1, "Vui lòng nhập tên đăng nhập"),
+    username: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng nhập tên đăng nhập")
+      .max(100, "Tên đăng nhập tối đa 100 ký tự"),
     email: z.email("Vui lòng nhập email đăng nhập hợp lệ"),
     password: z
       .string()
@@ -26,7 +31,8 @@ export const updateCredentialSchema = z
         "Mật khẩu tối thiểu 6 ký tự"
       )
       .transform(emptyToUndefined),
-    roleId: z.string().trim().min(1, "Vui lòng chọn vai trò"),
+    roleId: z.string().trim().transform(emptyToUndefined),
+    credentialEnabled: z.boolean(),
   })
   .superRefine(({ credentialId, password }, ctx) => {
     if (!credentialId && !password) {
@@ -64,7 +70,6 @@ export const updateUserSchema = z.object({
     .trim()
     .max(30, "Số điện thoại tối đa 30 ký tự")
     .transform(emptyToUndefined),
-  email: optionalEmail(),
   address: z
     .string()
     .trim()
@@ -99,7 +104,6 @@ export const updateUserFormDefaultValues: UpdateUserSchema = {
   dateOfBirth: "",
   idNumber: "",
   phoneNumber: "",
-  email: "",
   address: "",
   avatar: null,
   departmentId: "",

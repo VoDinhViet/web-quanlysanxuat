@@ -1,17 +1,7 @@
-import { useParams } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
-
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { UpdateUserForm } from "@/features/users/components/UpdateUserForm"
-import { userQueryOptions } from "@/features/users/api/options"
 
 export function UpdateUserPage() {
-  const { userId } = useParams({
-    from: "/(authed)/manage_/users_/$userId/update",
-  })
-
-  const { data: user } = useSuspenseQuery(userQueryOptions(userId))
-
   return (
     <main className="min-h-svh bg-background text-foreground">
       <PageTitleBar
@@ -26,7 +16,7 @@ export function UpdateUserPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <UpdateUserForm myUser={user} />
+        <UpdateUserForm />
       </div>
     </main>
   )

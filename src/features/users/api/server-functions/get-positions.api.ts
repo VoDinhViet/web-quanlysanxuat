@@ -1,10 +1,15 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
+import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { Position } from "@/lib/types/position.type"
+
+const getPositionsSchema = z.object({
+  departmentId: z.uuid(),
+})
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -19,12 +24,13 @@ function resolveGetPositionsErrorMessage(error: unknown): string {
   }
 }
 
-export const getPositions = createServerFn({ method: "GET" }).handler(
-  async (): Promise<Position[]> => {
+export const getPositions = createServerFn({ method: "GET" })
+  .validator(getPositionsSchema)
+  .handler(async ({ data }): Promise<Position[]> => {
     try {
       const response = await http.get<PaginatedResponse<Position>>(
         "/api/positions",
-        { params: { limit: 100 } }
+        { params: { limit: 100, departmentId: data.departmentId } }
       )
 
       return response.data.data
@@ -33,5 +39,4 @@ export const getPositions = createServerFn({ method: "GET" }).handler(
 
       throw new Error(resolveGetPositionsErrorMessage(error))
     }
-  }
-)
+  })

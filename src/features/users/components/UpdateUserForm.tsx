@@ -1,7 +1,11 @@
 import { DateTime } from "luxon"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate, useParams } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -10,16 +14,20 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { UpdateUserJobInfoSection } from "@/features/users/components/UpdateUserJobInfoSection"
 import { UpdateUserInfoSection } from "@/features/users/components/UpdateUserInfoSection"
 import { UpdateUserCredentialSection } from "@/features/users/components/UpdateUserCredentialSection"
+import { userQueryOptions } from "@/features/users/api/options"
 import { updateUser } from "@/features/users/api/server-functions/update-user.api"
 import { updateUserSchema } from "@/features/users/schemas/update-user.schema"
 import type { UpdateUserSchema } from "@/features/users/schemas/update-user.schema"
-import type { User } from "@/lib/types/user.type"
 
-type UpdateUserFormProps = {
-  myUser: User
-}
-
-export function UpdateUserForm({ myUser }: UpdateUserFormProps) {
+// Only ever rendered on the update route, so reading `userId` off the route params here
+// (rather than the caller passing `user` down as a prop) is safe — unlike CreateUserForm,
+// this component isn't reused on a route without that param.
+export function UpdateUserForm() {
+  const { userId } = useParams({
+    from: "/(authed)/manage_/users_/$userId/update",
+  })
+  // The route loader already prefetches this — resolves synchronously off cache.
+  const { data: user } = useSuspenseQuery(userQueryOptions(userId))
   const navigate = useNavigate({ from: "/manage/users/$userId/update" })
   const queryClient = useQueryClient()
   const updateUserFn = useServerFn(updateUser)
@@ -41,29 +49,29 @@ export function UpdateUserForm({ myUser }: UpdateUserFormProps) {
   // — updateCredentialSchema reads it to allow a blank password (blank = keep the current
   // password); an employee with no account yet gets undefined.
   const defaultValues: UpdateUserSchema = {
-    userId: myUser.id,
-    fullName: myUser.fullName,
-    gender: myUser.gender,
-    dateOfBirth: myUser.dateOfBirth
-      ? DateTime.fromISO(myUser.dateOfBirth).toFormat("yyyy-MM-dd")
+    userId: user.id,
+    fullName: user.fullName,
+    gender: user.gender,
+    dateOfBirth: user.dateOfBirth
+      ? DateTime.fromISO(user.dateOfBirth).toFormat("yyyy-MM-dd")
       : "",
-    idNumber: myUser.idNumber ?? "",
-    phoneNumber: myUser.phoneNumber ?? "",
-    email: myUser.email ?? "",
-    address: myUser.address ?? "",
-    avatar: myUser.avatar,
-    departmentId: myUser.department.id,
-    positionId: myUser.position.id,
-    hireDate: DateTime.fromISO(myUser.hireDate).toFormat("yyyy-MM-dd"),
-    note: myUser.note ?? "",
-    status: myUser.status,
-    credential: myUser.credential
+    idNumber: user.idNumber ?? "",
+    phoneNumber: user.phoneNumber ?? "",
+    address: user.address ?? "",
+    avatar: user.avatar,
+    departmentId: user.department.id,
+    positionId: user.position.id,
+    hireDate: DateTime.fromISO(user.hireDate).toFormat("yyyy-MM-dd"),
+    note: user.note ?? "",
+    status: user.status,
+    credential: user.credential
       ? {
-          credentialId: myUser.credential.id,
-          username: myUser.credential.username,
-          email: myUser.credential.email,
+          credentialId: user.credential.id,
+          username: user.credential.username,
+          email: user.credential.email,
           password: "",
-          roleId: myUser.credential.role?.id ?? "",
+          roleId: user.credential.role?.id ?? "",
+          credentialEnabled: user.credential.credentialEnabled,
         }
       : undefined,
   }
@@ -107,7 +115,7 @@ export function UpdateUserForm({ myUser }: UpdateUserFormProps) {
           <UpdateUserCredentialSection
             form={form}
             disabled={isPending}
-            hasExistingCredential={myUser.credential != null}
+            hasExistingCredential={user.credential != null}
           />
         </div>
 

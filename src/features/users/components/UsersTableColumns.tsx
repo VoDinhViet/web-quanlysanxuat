@@ -8,7 +8,7 @@ import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
-import type { EmployeeStatus, User } from "@/lib/types/user.type"
+import type { EmployeeStatus, UserListItem } from "@/lib/types/user.type"
 import { resolveAvatarUrl } from "@/lib/file-url"
 
 const statusStyles: Record<EmployeeStatus, string> = {
@@ -16,7 +16,7 @@ const statusStyles: Record<EmployeeStatus, string> = {
   RESIGNED: "bg-muted text-muted-foreground",
 }
 
-const userColumnHelper = createColumnHelper<User>()
+const userColumnHelper = createColumnHelper<UserListItem>()
 
 export const userColumns = [
   userColumnHelper.display({
@@ -69,7 +69,7 @@ export const userColumns = [
       <span className="text-muted-foreground">{getValue()}</span>
     ),
   }),
-  userColumnHelper.accessor((row) => row.credential?.role?.name, {
+  userColumnHelper.accessor((row) => row.role?.name, {
     id: "role",
     header: "Vai trò",
     meta: { headerClassName: "min-w-28" },

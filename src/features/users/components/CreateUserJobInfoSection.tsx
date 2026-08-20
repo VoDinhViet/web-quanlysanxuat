@@ -1,4 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useEffect } from "react"
+import { useField } from "@tanstack/react-form"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 
 import { withForm } from "@/hooks/use-app-form"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
@@ -15,11 +17,32 @@ export const CreateUserJobInfoSection = withForm({
     disabled: false,
   },
   render: function Render({ form, disabled }) {
-    // The route loader already prefetches both — resolves synchronously off cache.
+    // The route loader already prefetches this — resolves synchronously off cache.
     const { data: departments } = useSuspenseQuery(
       departmentOptionsQueryOptions()
     )
-    const { data: positions } = useSuspenseQuery(positionsQueryOptions())
+
+    const departmentId = useField({ form, name: "departmentId" }).state.value
+    const positionId = useField({ form, name: "positionId" }).state.value
+    // Chức vụ phụ thuộc phòng ban (BE `ensurePositionInDepartment` bắt buộc cặp khớp nhau) nên
+    // chỉ tải khi đã chọn phòng ban — không thể prefetch ở loader vì chưa biết phòng ban lúc mount.
+    const positionsQuery = useQuery({
+      ...positionsQueryOptions(departmentId),
+      enabled: !!departmentId,
+    })
+    const positions = positionsQuery.data ?? []
+
+    // Đổi phòng ban thì chức vụ đang chọn không còn hợp lệ — xoá để không gửi lên cặp lệch
+    // (BE ném `position.error.department_mismatch`).
+    useEffect(() => {
+      if (
+        positionId &&
+        positions.length > 0 &&
+        !positions.some((position) => position.id === positionId)
+      ) {
+        form.setFieldValue("positionId", "")
+      }
+    }, [positions, positionId, form])
 
     return (
       <div>
@@ -51,9 +74,15 @@ export const CreateUserJobInfoSection = withForm({
                 <field.SelectField
                   label="Chức vụ"
                   required
-                  placeholder="Chọn chức vụ"
+                  placeholder={
+                    departmentId ? "Chọn chức vụ" : "Chọn phòng ban trước"
+                  }
                   options={buildSelectOptions(positions)}
-                  disabled={disabled}
+                  disabled={disabled || !departmentId}
+                  // `useQuery({enabled: false})` reports `isPending: true` even when idle (no
+                  // department chosen yet) — gate on `departmentId` too so "Chọn phòng ban
+                  // trước" doesn't get overridden by "Đang tải...".
+                  isPending={!!departmentId && positionsQuery.isPending}
                 />
               )}
             </form.AppField>

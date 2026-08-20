@@ -1,4 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useEffect } from "react"
+import { useField } from "@tanstack/react-form"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 
 import { withForm } from "@/hooks/use-app-form"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
@@ -15,11 +17,34 @@ export const UpdateUserJobInfoSection = withForm({
     disabled: false,
   },
   render: function Render({ form, disabled }) {
-    // The route loader already prefetches both — resolves synchronously off cache.
+    // The route loader already prefetches this — resolves synchronously off cache.
     const { data: departments } = useSuspenseQuery(
       departmentOptionsQueryOptions()
     )
-    const { data: positions } = useSuspenseQuery(positionsQueryOptions())
+
+    const departmentId = useField({ form, name: "departmentId" }).state.value
+    const positionId = useField({ form, name: "positionId" }).state.value
+    // Chức vụ phụ thuộc phòng ban (BE `ensurePositionInDepartment` bắt buộc cặp khớp nhau). Route
+    // loader đã prefetch đúng cặp ban đầu (`positionsQueryOptions(user.department.id)`), nên lần
+    // render đầu resolve ngay từ cache — chỉ đổi phòng ban mới thực sự phải tải lại.
+    const positionsQuery = useQuery({
+      ...positionsQueryOptions(departmentId),
+      enabled: !!departmentId,
+    })
+    const positions = positionsQuery.data ?? []
+
+    // Đổi phòng ban thì chức vụ đang chọn không còn hợp lệ — xoá để không gửi lên cặp lệch
+    // (BE ném `position.error.department_mismatch`). Vô hại ở lần render đầu vì `positions`
+    // đã chứa đúng `positionId` ban đầu (prefetch theo cùng phòng ban).
+    useEffect(() => {
+      if (
+        positionId &&
+        positions.length > 0 &&
+        !positions.some((position) => position.id === positionId)
+      ) {
+        form.setFieldValue("positionId", "")
+      }
+    }, [positions, positionId, form])
 
     return (
       <div>
@@ -51,9 +76,14 @@ export const UpdateUserJobInfoSection = withForm({
                 <field.SelectField
                   label="Chức vụ"
                   required
-                  placeholder="Chọn chức vụ"
+                  placeholder={
+                    departmentId ? "Chọn chức vụ" : "Chọn phòng ban trước"
+                  }
                   options={buildSelectOptions(positions)}
-                  disabled={disabled}
+                  disabled={disabled || !departmentId}
+                  // `useQuery({enabled: false})` reports `isPending: true` even when idle — gate
+                  // on `departmentId` too so "Chọn phòng ban trước" doesn't get overridden.
+                  isPending={!!departmentId && positionsQuery.isPending}
                 />
               )}
             </form.AppField>

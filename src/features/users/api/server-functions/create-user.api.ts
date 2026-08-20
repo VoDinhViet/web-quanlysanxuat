@@ -5,7 +5,6 @@ import { createUserSchema } from "@/features/users/schemas/create-user.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import { resolveApiFileId } from "@/lib/file-field.schema"
-import type { User } from "@/lib/types/user.type"
 
 // The form holds the whole uploaded-file object so it can render a preview; the
 // backend only wants the file id.
@@ -24,8 +23,22 @@ function resolveCreateUserErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "user.error.username_or_email_exists":
-      return "Tên đăng nhập hoặc email đã tồn tại."
+    case "credential.error.username_or_email_exists":
+      return "Tên đăng nhập hoặc email đăng nhập đã tồn tại."
+    case "credential.error.email_exists":
+      return "Email đăng nhập đã tồn tại."
+    case "user.error.id_number_exists":
+      return "Số CCCD/CMND đã tồn tại."
+    case "department.error.not_found":
+      return "Phòng ban không còn tồn tại. Vui lòng chọn lại."
+    case "position.error.not_found":
+      return "Chức vụ không còn tồn tại. Vui lòng chọn lại."
+    case "position.error.department_mismatch":
+      return "Chức vụ không thuộc phòng ban đã chọn."
+    case "role.error.not_found":
+      return "Vai trò không còn tồn tại. Vui lòng chọn lại."
+    case "role.error.elevation_forbidden":
+      return "Bạn không thể gán vai trò có quyền cao hơn quyền của mình."
     case "file.error.not_found":
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":
@@ -35,13 +48,12 @@ function resolveCreateUserErrorMessage(error: unknown): string {
   }
 }
 
+// BE trả 204 No Content.
 export const createUser = createServerFn({ method: "POST" })
   .validator(createUserPayloadSchema)
-  .handler(async ({ data }): Promise<User> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
-      const response = await http.post<User>("/api/users", data)
-
-      return response.data
+      await http.post("/api/users", data)
     } catch (error) {
       logHttpError(error, "createUser")
 

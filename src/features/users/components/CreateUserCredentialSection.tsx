@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { Switch } from "@/components/ui/switch"
 import { withForm } from "@/hooks/use-app-form"
@@ -12,8 +12,11 @@ export const CreateUserCredentialSection = withForm({
     disabled: false,
   },
   render: function Render({ form, disabled }) {
-    // The route loader already prefetches this — resolves synchronously off cache.
-    const { data: roles } = useSuspenseQuery(rolesQueryOptions())
+    // `GET /roles` đòi `roles:read`, còn trang này chỉ đòi `users:create` — không thể prefetch
+    // ở loader (thiếu quyền sẽ làm sập cả trang qua errorComponent chung). `useQuery` để thiếu
+    // quyền chỉ làm rỗng combobox Vai trò, vốn đã optional.
+    const rolesQuery = useQuery(rolesQueryOptions())
+    const roles = rolesQuery.data ?? []
 
     return (
       <div>
@@ -91,10 +94,10 @@ export const CreateUserCredentialSection = withForm({
                   {(field) => (
                     <field.SelectField
                       label="Vai trò"
-                      required
-                      placeholder="Chọn vai trò"
+                      placeholder="Chọn vai trò (tuỳ chọn)"
                       options={buildSelectOptions(roles)}
                       disabled={fieldsDisabled}
+                      isPending={rolesQuery.isPending}
                     />
                   )}
                 </form.AppField>

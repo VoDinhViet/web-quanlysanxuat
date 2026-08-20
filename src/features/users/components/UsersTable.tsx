@@ -20,11 +20,11 @@ import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { userColumns } from "@/features/users/components/UsersTableColumns"
 import { cn } from "@/lib/utils"
-import type { User } from "@/lib/types/user.type"
+import type { UserListItem } from "@/lib/types/user.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 type UsersTableProps = {
-  rows: User[]
+  rows: UserListItem[]
   pagination: Pagination
   isPending: boolean
 }

@@ -76,17 +76,6 @@ export const CreateUserInfoSection = withForm({
                 )}
               </form.AppField>
 
-              <form.AppField name="email">
-                {(field) => (
-                  <field.TextField
-                    label="Email"
-                    type="email"
-                    placeholder="Nhập email"
-                    disabled={disabled}
-                  />
-                )}
-              </form.AppField>
-
               <form.AppField name="address">
                 {(field) => (
                   <field.TextareaField

@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { Switch } from "@/components/ui/switch"
 import { withForm } from "@/hooks/use-app-form"
@@ -16,8 +16,11 @@ export const UpdateUserCredentialSection = withForm({
     hasExistingCredential: false,
   },
   render: function Render({ form, disabled, hasExistingCredential }) {
-    // The route loader already prefetches this — resolves synchronously off cache.
-    const { data: roles } = useSuspenseQuery(rolesQueryOptions())
+    // `GET /roles` đòi `roles:read`, còn trang này chỉ đòi `users:update` — không thể prefetch
+    // ở loader (thiếu quyền sẽ làm sập cả trang qua errorComponent chung). `useQuery` để thiếu
+    // quyền chỉ làm rỗng combobox Vai trò, vốn đã optional.
+    const rolesQuery = useQuery(rolesQueryOptions())
+    const roles = rolesQuery.data ?? []
 
     return (
       <div>
@@ -33,7 +36,19 @@ export const UpdateUserCredentialSection = withForm({
             </p>
           </div>
 
-          {hasExistingCredential ? null : (
+          {hasExistingCredential ? (
+            <form.Field name="credential.credentialEnabled">
+              {(field) => (
+                <Switch
+                  checked={field.state.value}
+                  onCheckedChange={field.handleChange}
+                  disabled={disabled}
+                  className="mt-1 shrink-0"
+                  aria-label="Cho phép đăng nhập"
+                />
+              )}
+            </form.Field>
+          ) : (
             <form.Field name="credential">
               {(field) => (
                 <Switch
@@ -41,7 +56,13 @@ export const UpdateUserCredentialSection = withForm({
                   onCheckedChange={(checked) =>
                     field.handleChange(
                       checked
-                        ? { username: "", email: "", password: "", roleId: "" }
+                        ? {
+                            username: "",
+                            email: "",
+                            password: "",
+                            roleId: "",
+                            credentialEnabled: true,
+                          }
                         : undefined
                     )
                   }
@@ -59,12 +80,12 @@ export const UpdateUserCredentialSection = withForm({
             hasExistingCredential || state.values.credential != null
           }
         >
-          {(credentialEnabled) => {
+          {(showCredentialFields) => {
             // Fields stay on screen when the toggle is off so the section keeps
             // its shape — they're just inert. `credential` is undefined then, and
             // mounting a field never writes to form state (only a `defaultValue`
             // prop does), so an untoggled account still submits as "no account".
-            const fieldsDisabled = disabled || !credentialEnabled
+            const fieldsDisabled = disabled || !showCredentialFields
 
             return (
               <div className="space-y-5 px-4 pb-5 sm:px-5">
@@ -109,10 +130,10 @@ export const UpdateUserCredentialSection = withForm({
                   {(field) => (
                     <field.SelectField
                       label="Vai trò"
-                      required
-                      placeholder="Chọn vai trò"
+                      placeholder="Chọn vai trò (tuỳ chọn)"
                       options={buildSelectOptions(roles)}
                       disabled={fieldsDisabled}
+                      isPending={rolesQuery.isPending}
                     />
                   )}
                 </form.AppField>

@@ -4,7 +4,6 @@ import { imageFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToUndefined,
   emptyToUndefinedIsoDate,
-  optionalEmail,
   toIsoDate,
 } from "@/lib/zod-transforms"
 
@@ -12,10 +11,17 @@ import {
 // always provisions a brand-new account, so the password is required. Not .trim(): leading/
 // trailing whitespace could be intentional, unlike the other optional fields below.
 export const createCredentialSchema = z.object({
-  username: z.string().trim().min(1, "Vui lòng nhập tên đăng nhập"),
+  username: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng nhập tên đăng nhập")
+    .max(100, "Tên đăng nhập tối đa 100 ký tự"),
   email: z.email("Vui lòng nhập email đăng nhập hợp lệ"),
   password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
-  roleId: z.string().trim().min(1, "Vui lòng chọn vai trò"),
+  // BE để `roleId` optional — không gán vai trò vẫn tạo được tài khoản, và bắt buộc ở đây sẽ
+  // chặn người chỉ có `users:create` mà không có `roles:update` (BE ném `auth.error.forbidden`
+  // ngay khi có `roleId`, bất kể giá trị).
+  roleId: z.string().trim().transform(emptyToUndefined),
 })
 
 // Wire contract for POST /api/users — also the client-side onSubmit validator for
@@ -40,7 +46,6 @@ export const createUserSchema = z.object({
     .trim()
     .max(30, "Số điện thoại tối đa 30 ký tự")
     .transform(emptyToUndefined),
-  email: optionalEmail(),
   address: z
     .string()
     .trim()
@@ -71,7 +76,6 @@ export const createUserFormDefaultValues: CreateUserSchema = {
   dateOfBirth: "",
   idNumber: "",
   phoneNumber: "",
-  email: "",
   address: "",
   avatar: null,
   departmentId: "",
