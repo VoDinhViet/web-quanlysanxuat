@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
 // Mirrors the backend's GetMaterialInventoryReqDto (GET /api/inventory/materials). Uses
@@ -23,7 +23,7 @@ export const inventoryMaterialsSearchSchema = z.object({
   // purchase-requests-search.schema.ts.
   asOfDate: z
     .string()
-    .refine((value) => DateTime.fromISO(value).isValid, {
+    .refine((value) => isValid(parseISO(value)), {
       message: "Ngày không hợp lệ",
     })
     .optional()

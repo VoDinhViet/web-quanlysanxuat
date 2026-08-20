@@ -1,11 +1,11 @@
-import { DateTime } from "luxon"
+import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
 import { OrderStatus } from "@/lib/types/order.type"
 
 const isoDateFilter = z
   .string()
-  .refine((value) => DateTime.fromISO(value).isValid, {
+  .refine((value) => isValid(parseISO(value)), {
     message: "Ngày không hợp lệ",
   })
   .optional()
