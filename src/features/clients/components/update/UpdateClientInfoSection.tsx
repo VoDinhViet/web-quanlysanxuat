@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -16,11 +16,10 @@ export const UpdateClientInfoSection = withForm({
     disabled: false,
   },
   render: function Render({ form, disabled }) {
-    // The route loader already prefetches this — resolves synchronously off cache.
-    const { data: clientGroupOptions } = useSuspenseQuery(
-      clientGroupOptionsQueryOptions()
+    const clientGroupOptionsQuery = useQuery(clientGroupOptionsQueryOptions())
+    const clientGroupSelectOptions = buildSelectOptions(
+      clientGroupOptionsQuery.data ?? []
     )
-    const clientGroupSelectOptions = buildSelectOptions(clientGroupOptions)
 
     return (
       <div>
@@ -108,6 +107,7 @@ export const UpdateClientInfoSection = withForm({
                   placeholder="Chọn nhóm khách hàng"
                   options={clientGroupSelectOptions}
                   disabled={disabled}
+                  isPending={clientGroupOptionsQuery.isPending}
                 />
               )}
             </form.AppField>
