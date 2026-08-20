@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppSidebar } from "@/components/shared/layout/AppSidebar"
 import { currentUserQueryOptions } from "@/features/auth/api/options"
 import { requireRoutePermissions, requireSession } from "@/features/auth/guard"
+import { getSidebarDefaultOpen } from "@/lib/sidebar-state"
 
 export const Route = createFileRoute("/(authed)")({
   beforeLoad: async ({ location, context, matches }) => {
@@ -54,6 +55,7 @@ function AuthedLayout() {
   return (
     <TooltipProvider>
       <SidebarProvider
+        defaultOpen={getSidebarDefaultOpen()}
         style={
           {
             "--sidebar-width": "16.25rem",
