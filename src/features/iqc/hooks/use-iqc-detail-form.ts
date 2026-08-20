@@ -4,8 +4,8 @@ import { toast } from "sonner"
 
 import { confirmIqc } from "@/features/iqc/api/server-functions/confirm-iqc.api"
 import {
-  buildConfirmIqcFormDefaultValues,
   confirmIqcSchema,
+  getIqcDefaultValues,
 } from "@/features/iqc/schemas/confirm-iqc.schema"
 import type { ConfirmIqcFormValue } from "@/features/iqc/schemas/confirm-iqc.schema"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -35,7 +35,7 @@ export function useIqcDetailForm(iqc: IqcDetail) {
   })
 
   const form = useAppForm({
-    defaultValues: buildConfirmIqcFormDefaultValues(iqc),
+    defaultValues: getIqcDefaultValues(iqc),
     validators: {
       onSubmit: confirmIqcSchema,
     },

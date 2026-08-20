@@ -23,36 +23,17 @@ import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 import { buildSelectOption } from "@/lib/utils"
 
-type UpdateOrderFormProps = {
-  order: OrderDetail
+// OrderDetail → raw form values: nullable fields become "", ISO datetimes become the
+// yyyy-MM-dd strings the date pickers work with. {zone:"utc"} is the exact inverse of
+// toIsoDate (which writes out midnight UTC) — without it, reading back in a negative
+// offset loses a day. `items`/`attachments` carry the UI-only display fields
+// (itemLabel/itemUnit, file metadata) that orderItemFormSchema/the update server
+// function strip back out before the payload reaches the wire.
+function getOrderDefaultValues(
+  order: OrderDetail,
   items: OrderItem[]
-}
-
-export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
-  const navigate = useNavigate({ from: "/manage/orders/$orderId/update" })
-  const queryClient = useQueryClient()
-  const updateOrderFn = useServerFn(updateOrder)
-
-  const { mutate: update, isPending } = useMutation({
-    mutationFn: (value: UpdateOrderSchema) => updateOrderFn({ data: value }),
-    // Stay on the page: editing an order is often several passes over the
-    // same record, and the totals panel already labels itself "số liệu tạm
-    // tính" — the settled numbers live on the detail page. The "Quay lại"
-    // button above the form is the way out.
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["orders"] })
-      toast.success("Đã cập nhật đơn hàng")
-    },
-    onError: (error) => toast.error(error.message),
-  })
-
-  // OrderDetail → raw form values: nullable fields become "", ISO datetimes become the
-  // yyyy-MM-dd strings the date pickers work with. {zone:"utc"} is the exact inverse of
-  // toIsoDate (which writes out midnight UTC) — without it, reading back in a negative
-  // offset loses a day. `items`/`attachments` carry the UI-only display fields
-  // (itemLabel/itemUnit, file metadata) that orderItemFormSchema/the update server
-  // function strip back out before the payload reaches the wire.
-  const defaultValues: UpdateOrderSchema = {
+): UpdateOrderSchema {
+  return {
     orderId: order.id,
     clientId: order.client?.id ?? "",
     assignedUserId: order.assignedUser?.id ?? "",
@@ -88,9 +69,33 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
     })),
     attachments: order.attachments.map((attachment) => attachment.file),
   }
+}
+
+type UpdateOrderFormProps = {
+  order: OrderDetail
+  items: OrderItem[]
+}
+
+export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
+  const navigate = useNavigate({ from: "/manage/orders/$orderId/update" })
+  const queryClient = useQueryClient()
+  const updateOrderFn = useServerFn(updateOrder)
+
+  const { mutate: update, isPending } = useMutation({
+    mutationFn: (value: UpdateOrderSchema) => updateOrderFn({ data: value }),
+    // Stay on the page: editing an order is often several passes over the
+    // same record, and the totals panel already labels itself "số liệu tạm
+    // tính" — the settled numbers live on the detail page. The "Quay lại"
+    // button above the form is the way out.
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["orders"] })
+      toast.success("Đã cập nhật đơn hàng")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   const form = useAppForm({
-    defaultValues,
+    defaultValues: getOrderDefaultValues(order, items),
     validators: {
       onSubmit: updateOrderSchema,
     },

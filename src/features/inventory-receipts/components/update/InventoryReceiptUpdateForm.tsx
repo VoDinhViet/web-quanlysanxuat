@@ -14,6 +14,32 @@ import { updateInventoryReceiptSchema } from "@/features/inventory-receipts/sche
 import type { UpdateInventoryReceiptSchema } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
+function getInventoryReceiptDefaultValues(
+  detail: InventoryReceiptDetail
+): UpdateInventoryReceiptSchema {
+  return {
+    receiptId: detail.id,
+    receiptType: detail.receiptType,
+    receiptDate: DateTime.fromISO(detail.receiptDate, { zone: "utc" }).toFormat(
+      "yyyy-MM-dd"
+    ),
+    supplierId: detail.supplier?.id ?? "",
+    purchaseRequestId: detail.purchaseRequest?.id ?? "",
+    productionOrderId: detail.productionOrder?.id ?? "",
+    purchaseOrderId: detail.purchaseOrder?.id ?? "",
+    note: detail.note ?? "",
+    items: detail.items.map((item) => ({
+      itemId: item.item.id,
+      itemLabel: `${item.item.code} — ${item.item.name}`,
+      itemUnit: "",
+      purchaseOrderItemId: item.purchaseOrderItem?.id ?? "",
+      quantity: String(item.quantity),
+      unitPrice: item.unitPrice !== null ? String(item.unitPrice) : "",
+      note: item.note ?? "",
+    })),
+  }
+}
+
 type InventoryReceiptUpdateFormProps = {
   detail: InventoryReceiptDetail
 }
@@ -40,30 +66,8 @@ export function InventoryReceiptUpdateForm({
     onError: (error) => toast.error(error.message),
   })
 
-  const defaultValues: UpdateInventoryReceiptSchema = {
-    receiptId: detail.id,
-    receiptType: detail.receiptType,
-    receiptDate: DateTime.fromISO(detail.receiptDate, { zone: "utc" }).toFormat(
-      "yyyy-MM-dd"
-    ),
-    supplierId: detail.supplier?.id ?? "",
-    purchaseRequestId: detail.purchaseRequest?.id ?? "",
-    productionOrderId: detail.productionOrder?.id ?? "",
-    purchaseOrderId: detail.purchaseOrder?.id ?? "",
-    note: detail.note ?? "",
-    items: detail.items.map((item) => ({
-      itemId: item.item.id,
-      itemLabel: `${item.item.code} — ${item.item.name}`,
-      itemUnit: "",
-      purchaseOrderItemId: item.purchaseOrderItem?.id ?? "",
-      quantity: String(item.quantity),
-      unitPrice: item.unitPrice !== null ? String(item.unitPrice) : "",
-      note: item.note ?? "",
-    })),
-  }
-
   const form = useAppForm({
-    defaultValues,
+    defaultValues: getInventoryReceiptDefaultValues(detail),
     validators: {
       onSubmit: updateInventoryReceiptSchema,
     },

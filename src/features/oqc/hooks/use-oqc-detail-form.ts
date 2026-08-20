@@ -4,8 +4,8 @@ import { toast } from "sonner"
 
 import { confirmOqc } from "@/features/oqc/api/server-functions/confirm-oqc.api"
 import {
-  buildConfirmOqcFormDefaultValues,
   confirmOqcSchema,
+  getOqcDefaultValues,
 } from "@/features/oqc/schemas/confirm-oqc.schema"
 import type { ConfirmOqcFormValue } from "@/features/oqc/schemas/confirm-oqc.schema"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -30,7 +30,7 @@ export function useOqcDetailForm(oqc: OqcDetail) {
   })
 
   const form = useAppForm({
-    defaultValues: buildConfirmOqcFormDefaultValues(oqc),
+    defaultValues: getOqcDefaultValues(oqc),
     validators: {
       onSubmit: confirmOqcSchema,
     },

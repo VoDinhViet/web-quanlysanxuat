@@ -18,37 +18,14 @@ import { userQueryOptions } from "@/features/users/api/options"
 import { updateUser } from "@/features/users/api/server-functions/update-user.api"
 import { updateUserSchema } from "@/features/users/schemas/update-user.schema"
 import type { UpdateUserSchema } from "@/features/users/schemas/update-user.schema"
+import type { User } from "@/lib/types/user.type"
 
-// Only ever rendered on the update route, so reading `userId` off the route params here
-// (rather than the caller passing `user` down as a prop) is safe — unlike CreateUserForm,
-// this component isn't reused on a route without that param.
-export function UpdateUserForm() {
-  const { userId } = useParams({
-    from: "/(authed)/manage_/users_/$userId/update",
-  })
-  // The route loader already prefetches this — resolves synchronously off cache.
-  const { data: user } = useSuspenseQuery(userQueryOptions(userId))
-  const navigate = useNavigate({ from: "/manage/users/$userId/update" })
-  const queryClient = useQueryClient()
-  const updateUserFn = useServerFn(updateUser)
-
-  const { mutate: update, isPending } = useMutation({
-    mutationFn: (value: UpdateUserSchema) => updateUserFn({ data: value }),
-    // Stay on the page: editing an employee is often several passes over the
-    // same record, so a save is no reason to bounce back to the list. The
-    // "Quay lại" button above the form is the way out.
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["users"] })
-      toast.success("Đã cập nhật nhân sự")
-    },
-    onError: (error) => toast.error(error.message),
-  })
-
-  // User → raw form values: nullable fields become "", ISO datetimes become the yyyy-MM-dd
-  // strings the date pickers work with. `credential` carries the existing ERP account's id
-  // — updateCredentialSchema reads it to allow a blank password (blank = keep the current
-  // password); an employee with no account yet gets undefined.
-  const defaultValues: UpdateUserSchema = {
+// User → raw form values: nullable fields become "", ISO datetimes become the yyyy-MM-dd
+// strings the date pickers work with. `credential` carries the existing ERP account's id
+// — updateCredentialSchema reads it to allow a blank password (blank = keep the current
+// password); an employee with no account yet gets undefined.
+function getUserDefaultValues(user: User): UpdateUserSchema {
+  return {
     userId: user.id,
     fullName: user.fullName,
     gender: user.gender,
@@ -75,9 +52,35 @@ export function UpdateUserForm() {
         }
       : undefined,
   }
+}
+
+// Only ever rendered on the update route, so reading `userId` off the route params here
+// (rather than the caller passing `user` down as a prop) is safe — unlike CreateUserForm,
+// this component isn't reused on a route without that param.
+export function UpdateUserForm() {
+  const { userId } = useParams({
+    from: "/(authed)/manage_/users_/$userId/update",
+  })
+  // The route loader already prefetches this — resolves synchronously off cache.
+  const { data: user } = useSuspenseQuery(userQueryOptions(userId))
+  const navigate = useNavigate({ from: "/manage/users/$userId/update" })
+  const queryClient = useQueryClient()
+  const updateUserFn = useServerFn(updateUser)
+
+  const { mutate: update, isPending } = useMutation({
+    mutationFn: (value: UpdateUserSchema) => updateUserFn({ data: value }),
+    // Stay on the page: editing an employee is often several passes over the
+    // same record, so a save is no reason to bounce back to the list. The
+    // "Quay lại" button above the form is the way out.
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["users"] })
+      toast.success("Đã cập nhật nhân sự")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   const form = useAppForm({
-    defaultValues,
+    defaultValues: getUserDefaultValues(user),
     validators: {
       onSubmit: updateUserSchema,
     },

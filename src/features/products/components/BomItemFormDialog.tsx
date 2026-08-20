@@ -230,21 +230,23 @@ type UpdateBomItemFormProps = {
   isSaving: boolean
 }
 
+function getBomItemDefaultValues(node: BomItem): UpdateBomItemSchema {
+  return {
+    quantity: String(node.quantity),
+    sortOrder: String(node.sortOrder),
+    note: node.note ?? "",
+    drawing: node.drawing,
+  }
+}
+
 function UpdateBomItemForm({
   node,
   onSubmit,
   onCancel,
   isSaving,
 }: UpdateBomItemFormProps) {
-  const defaultValues: UpdateBomItemSchema = {
-    quantity: String(node.quantity),
-    sortOrder: String(node.sortOrder),
-    note: node.note ?? "",
-    drawing: node.drawing,
-  }
-
   const form = useAppForm({
-    defaultValues,
+    defaultValues: getBomItemDefaultValues(node),
     validators: { onSubmit: updateBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })

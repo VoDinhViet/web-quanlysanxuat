@@ -175,9 +175,7 @@ export type ConfirmIqcFormValue = {
 // The page is now a form that's always editable, seeded from the saved record (not a blank
 // create form) — every field prefills from `iqc`, including a row still NOT_INSPECTED (all
 // null on the backend, so every field below falls back to its own blank default).
-export function buildConfirmIqcFormDefaultValues(
-  iqc: IqcDetail
-): ConfirmIqcFormValue {
+export function getIqcDefaultValues(iqc: IqcDetail): ConfirmIqcFormValue {
   return {
     iqcId: iqc.id,
     inspectionLevel: iqc.inspectionLevel ?? "",
