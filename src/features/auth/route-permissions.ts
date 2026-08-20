@@ -32,6 +32,8 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/clients/create": "clients:create",
   "/manage/clients/$clientId/update": "clients:update",
 
+  "/manage/inventory-issues": "inventory:read",
+
   "/manage/inventory-materials": "inventory:read",
   "/manage/inventory-products": "inventory:read",
 
