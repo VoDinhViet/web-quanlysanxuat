@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
-import { Edit3, Eye, MoreHorizontal } from "lucide-react"
+import { Edit3, Eye, MoreHorizontal, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/buttons/IconButton"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { DeleteClientDialog } from "@/features/clients/components/DeleteClientDialog"
 import { clientStatusLabels, ClientStatus } from "@/lib/types/client.type"
 import type { Client } from "@/lib/types/client.type"
 
@@ -112,6 +114,19 @@ export const clientColumns = [
               </Link>
             </IconButton>
           </RoutePermissionGate>
+          <PermissionGate permission="clients:delete">
+            <DeleteClientDialog
+              client={client}
+              trigger={
+                <IconButton
+                  label="Xóa"
+                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                >
+                  <Trash2 className="size-3.5" />
+                </IconButton>
+              }
+            />
+          </PermissionGate>
           <IconButton
             label="Thao tác khác"
             className="text-muted-foreground hover:border-primary/30 hover:text-primary"
