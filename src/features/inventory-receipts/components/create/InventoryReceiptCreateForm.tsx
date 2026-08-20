@@ -27,7 +27,7 @@ export function InventoryReceiptCreateForm() {
 
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateInventoryReceiptSchema>(
-      "qlsx:draft:create-inventory-receipt"
+      "qlsx:draft:create-inventory-receipt-v2"
     )
   const draftRestoredRef = useRef(false)
 

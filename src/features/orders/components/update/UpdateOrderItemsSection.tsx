@@ -118,9 +118,7 @@ export const UpdateOrderItemsSection = withForm({
                             {item.quantity}
                           </TableCell>
                           <TableCell className="text-right tabular-nums">
-                            {currencyFormatter.format(
-                              Number(item.unitPrice) || 0
-                            )}
+                            {currencyFormatter.format(item.unitPrice ?? 0)}
                           </TableCell>
                           <TableCell className="text-right tabular-nums">
                             {item.discountPercent}

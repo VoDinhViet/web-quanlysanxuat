@@ -87,16 +87,11 @@ export function buildCreateOutsourcingReceiptItemColumns({
       meta: { headerClassName: "w-32 text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const inputId = `os-in-quantity-${row.index}`
-        const exceedsSent = (Number(item.quantity) || 0) > item.sentQuantity
+        const exceedsSent = (item.quantity ?? 0) > item.sentQuantity
 
         return (
           <div>
-            <label htmlFor={inputId} className="sr-only">
-              SL nhận lần này — {item.itemName}
-            </label>
             <NumericCellInput
-              id={inputId}
               value={item.quantity}
               min={1}
               disabled={disabled}
@@ -119,22 +114,15 @@ export function buildCreateOutsourcingReceiptItemColumns({
       meta: { headerClassName: "w-28 text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const inputId = `os-in-weight-${row.index}`
         return (
-          <>
-            <label htmlFor={inputId} className="sr-only">
-              Trọng lượng — {item.itemName}
-            </label>
-            <NumericCellInput
-              id={inputId}
-              value={item.weight}
-              placeholder="—"
-              disabled={disabled}
-              onValueChange={(value) =>
-                itemsField.replaceValue(row.index, { ...item, weight: value })
-              }
-            />
-          </>
+          <NumericCellInput
+            value={item.weight}
+            placeholder="—"
+            disabled={disabled}
+            onValueChange={(value) =>
+              itemsField.replaceValue(row.index, { ...item, weight: value })
+            }
+          />
         )
       },
     }),
@@ -144,22 +132,15 @@ export function buildCreateOutsourcingReceiptItemColumns({
       meta: { headerClassName: "w-28 text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const inputId = `os-in-area-${row.index}`
         return (
-          <>
-            <label htmlFor={inputId} className="sr-only">
-              Diện tích — {item.itemName}
-            </label>
-            <NumericCellInput
-              id={inputId}
-              value={item.area}
-              placeholder="—"
-              disabled={disabled}
-              onValueChange={(value) =>
-                itemsField.replaceValue(row.index, { ...item, area: value })
-              }
-            />
-          </>
+          <NumericCellInput
+            value={item.area}
+            placeholder="—"
+            disabled={disabled}
+            onValueChange={(value) =>
+              itemsField.replaceValue(row.index, { ...item, area: value })
+            }
+          />
         )
       },
     }),

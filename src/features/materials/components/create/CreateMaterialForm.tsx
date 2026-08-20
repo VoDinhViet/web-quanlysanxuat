@@ -23,7 +23,7 @@ export function CreateMaterialForm() {
   const createMaterialFn = useServerFn(createMaterial)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateMaterialSchema>(
-    "qlsx:draft:create-material"
+    "qlsx:draft:create-material-v2"
   )
   const draftRestoredRef = useRef(false)
 

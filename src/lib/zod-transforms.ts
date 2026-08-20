@@ -37,11 +37,6 @@ export function emptyToUndefined(value: string): string | undefined {
   return value.length > 0 ? value : undefined
 }
 
-/** Bản số của `emptyToUndefined` — dùng cho input số nhập bằng chuỗi. */
-export function emptyToUndefinedNumber(value: string): number | undefined {
-  return value.length > 0 ? Number(value) : undefined
-}
-
 /**
  * Chuỗi date-only (yyyy-MM-dd) từ date picker → ISO datetime.
  * Bắt buộc `{zone:"utc"}`: parse ở zone local (+07:00) rồi đọc lại theo UTC sẽ lệch 1 ngày.
@@ -59,29 +54,6 @@ export function emptyToUndefinedIsoDate(value: string): string | undefined {
  *  xoá một ô không bắt buộc phải gửi hẳn `null` — xem orders/schemas/update-order.schema.ts. */
 export function emptyToNull(value: string): string | null {
   return value.length > 0 ? value : null
-}
-
-/** Chuỗi số hợp lệ và > 0 — số lượng, đơn giá dương, tỷ giá... */
-export function isPositiveNumberString(value: string): boolean {
-  const parsed = Number(value)
-  return value.trim() !== "" && Number.isFinite(parsed) && parsed > 0
-}
-
-/** Chuỗi số hợp lệ và >= 0 — đơn giá, chiết khấu tiền, phí vận chuyển... */
-export function isNonNegativeNumberString(value: string): boolean {
-  const parsed = Number(value)
-  return value.trim() !== "" && Number.isFinite(parsed) && parsed >= 0
-}
-
-/** Chuỗi số hợp lệ trong khoảng 0-100 — VAT, chiết khấu phần trăm... */
-export function isPercentString(value: string): boolean {
-  const parsed = Number(value)
-  return (
-    value.trim() !== "" &&
-    Number.isFinite(parsed) &&
-    parsed >= 0 &&
-    parsed <= 100
-  )
 }
 
 /** Ô email không bắt buộc: ""→undefined rồi chỉ validate khi thực sự có giá trị. Dùng ở

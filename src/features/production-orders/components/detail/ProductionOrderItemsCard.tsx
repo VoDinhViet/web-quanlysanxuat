@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FieldError } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
 import {
   Table,
   TableBody,
@@ -178,22 +178,11 @@ export const ProductionOrderItemsCard = withForm({
                               <form.Field name={`items[${index}].quantity`}>
                                 {(field) => (
                                   <div className="ml-auto flex w-24 flex-col items-end gap-1">
-                                    <Input
-                                      type="number"
+                                    <NumericCellInput
                                       min={0}
-                                      step="any"
                                       value={field.state.value}
-                                      onChange={(event) =>
-                                        field.handleChange(event.target.value)
-                                      }
-                                      onBlur={field.handleBlur}
+                                      onValueChange={field.handleChange}
                                       disabled={isSaving}
-                                      aria-invalid={
-                                        field.state.meta.isTouched &&
-                                        field.state.meta.errors.length > 0
-                                      }
-                                      aria-label={`Số lượng sản xuất cho ${item.item.name}`}
-                                      className="h-8 w-24 text-right text-xs tabular-nums"
                                     />
                                     <FieldError
                                       errors={field.state.meta.errors}
@@ -232,7 +221,7 @@ export const ProductionOrderItemsCard = withForm({
                             quantityFormatter.format(
                               formItems.reduce(
                                 (sum, formItem) =>
-                                  sum + (Number(formItem.quantity) || 0),
+                                  sum + (formItem.quantity ?? 0),
                                 0
                               )
                             )

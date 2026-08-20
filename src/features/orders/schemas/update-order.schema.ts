@@ -4,9 +4,6 @@ import { orderItemFormSchema } from "@/features/orders/schemas/order-item-form.s
 import { fileFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToNull,
-  isNonNegativeNumberString,
-  isPercentString,
-  isPositiveNumberString,
   optionalEnumNullable,
   toIsoDate,
 } from "@/lib/zod-transforms"
@@ -48,26 +45,27 @@ export const updateOrderSchema = z.object({
   paymentTerm: optionalEnumNullable(PaymentTerm),
   currency: z.enum(Currency),
   exchangeRate: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Tỷ giá phải là số dương")
-    .transform(Number),
+    .number("Tỷ giá phải là số dương")
+    .positive("Tỷ giá phải là số dương")
+    .optional()
+    .pipe(z.number("Tỷ giá phải là số dương")),
   discountType: z.enum(OrderDiscountType),
   discountValue: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Chiết khấu không được âm")
-    .transform(Number),
+    .number("Chiết khấu không được âm")
+    .min(0, "Chiết khấu không được âm")
+    .optional()
+    .pipe(z.number("Chiết khấu không được âm")),
   vatPercent: z
-    .string()
-    .trim()
-    .refine(isPercentString, "VAT phải trong khoảng 0-100")
-    .transform(Number),
+    .number("VAT phải trong khoảng 0-100")
+    .min(0, "VAT phải trong khoảng 0-100")
+    .max(100, "VAT phải trong khoảng 0-100")
+    .optional()
+    .pipe(z.number("VAT phải trong khoảng 0-100")),
   shippingFee: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Phí vận chuyển không được âm")
-    .transform(Number),
+    .number("Phí vận chuyển không được âm")
+    .min(0, "Phí vận chuyển không được âm")
+    .optional()
+    .pipe(z.number("Phí vận chuyển không được âm")),
   // Only present on the update flow — CreateOrderReqDto has no field for it, the backend
   // defaults a new order to DRAFT.
   status: z.enum(OrderStatus),
@@ -101,11 +99,11 @@ export const updateOrderFormDefaultValues: UpdateOrderSchema = {
   consigneeAddress: "",
   paymentTerm: "",
   currency: Currency.VND,
-  exchangeRate: "1",
+  exchangeRate: 1,
   discountType: OrderDiscountType.PERCENT,
-  discountValue: "0",
-  vatPercent: "0",
-  shippingFee: "0",
+  discountValue: 0,
+  vatPercent: 0,
+  shippingFee: 0,
   status: OrderStatus.DRAFT,
   note: "",
   internalNote: "",

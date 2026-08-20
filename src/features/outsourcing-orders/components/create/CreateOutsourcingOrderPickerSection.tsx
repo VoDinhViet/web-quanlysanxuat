@@ -56,9 +56,9 @@ function buildPickedOutsourcingOrderItem(
     plannedQuantity: row.plannedQuantity,
     sentQuantity: row.sentQuantity,
     remainingQuantity: row.remainingQuantity,
-    quantity: String(row.remainingQuantity),
-    weight: "",
-    area: "",
+    quantity: row.remainingQuantity,
+    weight: undefined,
+    area: undefined,
     note: "",
   }
 }

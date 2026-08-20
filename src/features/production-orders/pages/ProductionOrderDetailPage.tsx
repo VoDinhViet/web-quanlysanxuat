@@ -26,8 +26,6 @@ import { updateProductionOrderSchema } from "@/features/production-orders/schema
 import type { UpdateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
-// production.items → raw form values: quantity becomes a string for the numeric <Input>,
-// parsed back to a number by updateProductionOrderSchema on submit.
 function getProductionOrderDefaultValues(
   production: ProductionOrderDetail
 ): UpdateProductionOrderSchema {
@@ -35,7 +33,7 @@ function getProductionOrderDefaultValues(
     productionOrderId: production.id,
     items: production.items.map((item) => ({
       orderItemId: item.orderItemId,
-      quantity: String(item.quantity),
+      quantity: item.quantity,
     })),
   }
 }

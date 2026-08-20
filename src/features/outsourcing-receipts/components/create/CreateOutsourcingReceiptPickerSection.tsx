@@ -62,9 +62,9 @@ function buildPickedOutsourcingReceiptItem(
     operationCode: row.operationCode,
     operationName: row.operationName,
     sentQuantity: row.quantity,
-    quantity: String(row.quantity),
-    weight: row.weight !== null ? String(row.weight) : "",
-    area: row.area !== null ? String(row.area) : "",
+    quantity: row.quantity,
+    weight: row.weight ?? undefined,
+    area: row.area ?? undefined,
     note: "",
   }
 }

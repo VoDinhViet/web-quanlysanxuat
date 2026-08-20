@@ -30,7 +30,7 @@ export function CreateOrderForm() {
   const createOrderFn = useServerFn(createOrder)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateOrderSchema>(
-    "qlsx:draft:create-order"
+    "qlsx:draft:create-order-v2"
   )
   const draftRestoredRef = useRef(false)
 

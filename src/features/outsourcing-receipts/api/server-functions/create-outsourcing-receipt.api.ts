@@ -4,11 +4,7 @@ import axios from "axios"
 import { createOutsourcingReceiptSchema } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import {
-  emptyToUndefined,
-  emptyToUndefinedNumber,
-  toIsoDate,
-} from "@/lib/zod-transforms"
+import { emptyToUndefined, toIsoDate } from "@/lib/zod-transforms"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -47,9 +43,9 @@ const createOutsourcingReceiptPayloadSchema =
       receiptDate: toIsoDate(receiptDate),
       items: items.map((item) => ({
         outsourcingOrderItemId: item.outsourcingOrderItemId,
-        quantity: Number(item.quantity),
-        weight: emptyToUndefinedNumber(item.weight),
-        area: emptyToUndefinedNumber(item.area),
+        quantity: item.quantity,
+        weight: item.weight,
+        area: item.area,
         note: emptyToUndefined(item.note),
       })),
     })

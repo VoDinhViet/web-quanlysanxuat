@@ -49,7 +49,7 @@ function buildPickedOutboundOrderItem(
     orderItemId: row.orderItemId,
     itemId: row.item.id,
     productionJobId: row.job?.id ?? null,
-    quantity: String(row.orderedQuantity),
+    quantity: row.orderedQuantity,
     note: "",
   }
 }

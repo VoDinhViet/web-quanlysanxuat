@@ -33,8 +33,8 @@ function getInventoryReceiptDefaultValues(
       itemLabel: `${item.item.code} — ${item.item.name}`,
       itemUnit: "",
       purchaseOrderItemId: item.purchaseOrderItem?.id ?? "",
-      quantity: String(item.quantity),
-      unitPrice: item.unitPrice !== null ? String(item.unitPrice) : "",
+      quantity: item.quantity,
+      unitPrice: item.unitPrice ?? undefined,
       note: item.note ?? "",
     })),
   }

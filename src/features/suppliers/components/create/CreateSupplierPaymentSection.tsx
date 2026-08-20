@@ -91,9 +91,8 @@ export const CreateSupplierPaymentSection = withForm({
 
           <form.AppField name="payment.creditLimit">
             {(field) => (
-              <field.TextField
+              <field.NumberField
                 label="Hạn mức công nợ (VND)"
-                type="number"
                 placeholder="0"
                 disabled={disabled}
               />

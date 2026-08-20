@@ -3,11 +3,7 @@ import axios from "axios"
 
 import { createOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { http, logHttpError } from "@/lib/http"
-import {
-  emptyToUndefined,
-  emptyToUndefinedNumber,
-  toIsoDate,
-} from "@/lib/zod-transforms"
+import { emptyToUndefined, toIsoDate } from "@/lib/zod-transforms"
 import type { ApiErrorResponse } from "@/lib/http"
 
 // Mirrors CreateOutsourcingOrderReqDto — chained onto the form's own schema (not a hand-written
@@ -23,9 +19,9 @@ const createOutsourcingOrderPayloadSchema =
       note: emptyToUndefined(note),
       items: items.map((item) => ({
         productionJobOperationId: item.operationId,
-        quantity: Number(item.quantity),
-        weight: emptyToUndefinedNumber(item.weight),
-        area: emptyToUndefinedNumber(item.area),
+        quantity: item.quantity,
+        weight: item.weight,
+        area: item.area,
         note: emptyToUndefined(item.note),
       })),
     })

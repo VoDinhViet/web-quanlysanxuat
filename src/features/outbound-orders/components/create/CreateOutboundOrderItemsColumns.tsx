@@ -121,18 +121,12 @@ export function buildCreateOutboundOrderItemColumns({
       cell: ({ row }) => {
         const item = row.original
         const source = lookupUnfulfilledOrderItem(item.orderItemId)
-        const inputId = `do-quantity-${row.index}`
         const exceedsOrdered =
-          source !== undefined &&
-          (Number(item.quantity) || 0) > source.orderedQuantity
+          source !== undefined && (item.quantity ?? 0) > source.orderedQuantity
 
         return (
           <div>
-            <label htmlFor={inputId} className="sr-only">
-              SL giao — {source?.item.name}
-            </label>
             <NumericCellInput
-              id={inputId}
               value={item.quantity}
               min={1}
               disabled={disabled}

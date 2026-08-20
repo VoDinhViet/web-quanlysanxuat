@@ -8,13 +8,7 @@ import {
   IqcResult,
 } from "@/lib/types/iqc.type"
 import { fileFieldSchema } from "@/lib/file-field.schema"
-import {
-  emptyToUndefined,
-  emptyToUndefinedNumber,
-  isNonNegativeNumberString,
-  isPositiveNumberString,
-  optionalEnum,
-} from "@/lib/zod-transforms"
+import { emptyToUndefined, optionalEnum } from "@/lib/zod-transforms"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 
@@ -46,15 +40,15 @@ export const confirmIqcSchema = z
       )
       .transform(Number),
     sampleSize: z
-      .string()
-      .trim()
-      .refine(isPositiveNumberString, "Cỡ mẫu phải lớn hơn 0")
-      .transform(Number),
+      .number("Cỡ mẫu phải lớn hơn 0")
+      .positive("Cỡ mẫu phải lớn hơn 0")
+      .optional()
+      .pipe(z.number("Cỡ mẫu phải lớn hơn 0")),
     defectQty: z
-      .string()
-      .trim()
-      .refine(isNonNegativeNumberString, "Số lượng lỗi không được âm")
-      .transform(Number),
+      .number("Số lượng lỗi không được âm")
+      .min(0, "Số lượng lỗi không được âm")
+      .optional()
+      .pipe(z.number("Số lượng lỗi không được âm")),
     inspectionStandard: z
       .string()
       .trim()
@@ -94,15 +88,15 @@ export const confirmIqcSchema = z
     qcEvidence: z.array(fileFieldSchema),
     // Optional even for a FAIL row — no disposition picked yet is a valid save (→ PENDING).
     disposition: optionalEnum(IqcDisposition),
-    sortOkQty: z.string().trim().transform(emptyToUndefinedNumber),
-    sortNgQty: z.string().trim().transform(emptyToUndefinedNumber),
+    sortOkQty: z.number().optional(),
+    sortNgQty: z.number().optional(),
     dispositionNote: z
       .string()
       .trim()
       .max(500, "Tối đa 500 ký tự")
       .transform(emptyToUndefined),
     dispositionEvidence: z.array(fileFieldSchema),
-    totalQuantity: z.string().trim().transform(Number),
+    totalQuantity: z.number(),
   })
   .superRefine((value, ctx) => {
     if (value.result === IqcResult.PASS && value.disposition) {
@@ -154,8 +148,8 @@ export type ConfirmIqcFormValue = {
   iqcId: string
   inspectionLevel: IqcInspectionLevel | ""
   aqlLevel: string
-  sampleSize: string
-  defectQty: string
+  sampleSize?: number
+  defectQty?: number
   inspectionStandard: string
   inspectorName: string
   measuringTools: string
@@ -165,11 +159,11 @@ export type ConfirmIqcFormValue = {
   qcDepartmentId: string
   qcEvidence: FileFieldValue[]
   disposition: IqcDisposition | ""
-  sortOkQty: string
-  sortNgQty: string
+  sortOkQty?: number
+  sortNgQty?: number
   dispositionNote: string
   dispositionEvidence: FileFieldValue[]
-  totalQuantity: string
+  totalQuantity: number
 }
 
 // The page is now a form that's always editable, seeded from the saved record (not a blank
@@ -180,8 +174,8 @@ export function getIqcDefaultValues(iqc: IqcDetail): ConfirmIqcFormValue {
     iqcId: iqc.id,
     inspectionLevel: iqc.inspectionLevel ?? "",
     aqlLevel: iqc.aqlLevel !== null ? String(iqc.aqlLevel) : "",
-    sampleSize: iqc.sampleSize !== null ? String(iqc.sampleSize) : "",
-    defectQty: iqc.defectQty !== null ? String(iqc.defectQty) : "",
+    sampleSize: iqc.sampleSize ?? undefined,
+    defectQty: iqc.defectQty ?? undefined,
     inspectionStandard: iqc.inspectionStandard ?? "",
     inspectorName: iqc.inspectorName ?? "",
     measuringTools: iqc.measuringTools ?? "",
@@ -193,12 +187,12 @@ export function getIqcDefaultValues(iqc: IqcDetail): ConfirmIqcFormValue {
     qcDepartmentId: iqc.qcDepartment?.id ?? "",
     qcEvidence: iqc.qcEvidence.map((attachment) => attachment.file),
     disposition: iqc.disposition ?? "",
-    sortOkQty: iqc.sortOkQty !== null ? String(iqc.sortOkQty) : "",
-    sortNgQty: iqc.sortNgQty !== null ? String(iqc.sortNgQty) : "",
+    sortOkQty: iqc.sortOkQty ?? undefined,
+    sortNgQty: iqc.sortNgQty ?? undefined,
     dispositionNote: iqc.dispositionNote ?? "",
     dispositionEvidence: iqc.dispositionEvidence.map(
       (attachment) => attachment.file
     ),
-    totalQuantity: String(iqc.quantity),
+    totalQuantity: iqc.quantity,
   }
 }

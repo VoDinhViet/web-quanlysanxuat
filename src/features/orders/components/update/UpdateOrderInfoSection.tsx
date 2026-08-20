@@ -68,22 +68,22 @@ const ExchangeRateField = withForm({
       }
 
       if (currency === Currency.VND) {
-        form.setFieldValue("exchangeRate", "1")
-        appliedRef.current = { currency, rate: "1" }
+        form.setFieldValue("exchangeRate", 1)
+        appliedRef.current = { currency, rate: 1 }
         return
       }
 
       // Clear while the fetch is in flight: lets the placeholder show, and
       // stops the previous currency's rate from sitting under the new
       // currency's label if this fetch fails.
-      if (current !== "") {
-        form.setFieldValue("exchangeRate", "")
-        appliedRef.current = { ...appliedRef.current, rate: "" }
+      if (current !== undefined) {
+        form.setFieldValue("exchangeRate", undefined)
+        appliedRef.current = { ...appliedRef.current, rate: undefined }
       }
 
       if (rate) {
-        form.setFieldValue("exchangeRate", String(rate))
-        appliedRef.current = { currency, rate: String(rate) }
+        form.setFieldValue("exchangeRate", rate)
+        appliedRef.current = { currency, rate }
       }
     }, [currency, rate, form])
 

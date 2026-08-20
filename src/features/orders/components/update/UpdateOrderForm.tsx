@@ -46,11 +46,11 @@ function getOrderDefaultValues(
     consigneeAddress: order.consigneeAddress ?? "",
     paymentTerm: order.paymentTerm ?? "",
     currency: order.currency,
-    exchangeRate: String(order.exchangeRate),
+    exchangeRate: order.exchangeRate,
     discountType: order.discountType,
-    discountValue: String(order.discountValue),
-    vatPercent: String(order.vatPercent),
-    shippingFee: String(order.shippingFee),
+    discountValue: order.discountValue,
+    vatPercent: order.vatPercent,
+    shippingFee: order.shippingFee,
     // Editing a REJECTED order reverts it to DRAFT server-side (OrdersService.updateOrder) — the
     // form shows that outcome up front rather than the stale REJECTED value.
     status:
@@ -61,9 +61,9 @@ function getOrderDefaultValues(
       itemId: item.item.id,
       itemLabel: item.item.name,
       itemUnit: item.unit.name,
-      quantity: String(item.quantity),
-      unitPrice: String(item.unitPrice),
-      discountPercent: String(item.discountPercent),
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      discountPercent: item.discountPercent,
       note: item.note ?? "",
       status: item.status,
     })),

@@ -105,10 +105,10 @@ const OrderTotalsPreview = withForm({
           const totals = computeOrderTotals(
             items,
             discountType,
-            Number(discountValue) || 0,
-            Number(vatPercent) || 0,
-            Number(shippingFee) || 0,
-            Number(exchangeRate) || 0
+            discountValue ?? 0,
+            vatPercent ?? 0,
+            shippingFee ?? 0,
+            exchangeRate ?? 0
           )
 
           return (
@@ -135,7 +135,7 @@ const OrderTotalsPreview = withForm({
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Phí vận chuyển</dt>
                   <dd className="text-foreground tabular-nums">
-                    {formatSignedAmount(Number(shippingFee) || 0, "+")}
+                    {formatSignedAmount(shippingFee ?? 0, "+")}
                   </dd>
                 </div>
               </dl>

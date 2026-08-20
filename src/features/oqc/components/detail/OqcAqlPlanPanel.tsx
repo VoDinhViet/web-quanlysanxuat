@@ -42,9 +42,7 @@ export function OqcAqlPlanPanel({
             variant="link"
             className="h-auto p-0 align-baseline text-xs text-blue-700 dark:text-blue-300"
             disabled={disabled}
-            onClick={() =>
-              form.setFieldValue("sampleSize", String(plan.sampleSize))
-            }
+            onClick={() => form.setFieldValue("sampleSize", plan.sampleSize)}
           >
             Dùng gợi ý
           </Button>

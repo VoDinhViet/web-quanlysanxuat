@@ -1,10 +1,15 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
 import { NumericFormat } from "react-number-format"
-import type { ComponentProps } from "react"
+import type { ComponentProps, ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
@@ -77,12 +82,14 @@ type NumberFieldProps = {
   // khấu %), nơi nhóm không có tác dụng và chỉ thêm nhiễu mắt. Mặc định bật cho các field
   // tiền (đơn giá, thành tiền, phí vận chuyển...).
   thousandSeparator?: boolean
+  // Dòng gợi ý dưới ô nhập (vd "≈ 1.234.000 VND" cho đơn giá ngoại tệ) — có slot này nên chỗ
+  // cần một gợi ý sống theo giá trị đang gõ không phải dựng lại NumericFormat bằng tay.
+  description?: ReactNode
 }
 
-// Field value is still the plain numeric string the Zod schema expects (e.g. "1234.5") —
-// react-number-format only owns the *display* formatting; `onValueChange`'s `values.value` is
-// always unformatted (no grouping, "." decimal), so no extra parsing is needed before
-// `field.handleChange`.
+// Field value là number thật (`undefined` khi ô trống) — đúng với `values.floatValue` mà
+// react-number-format trả về, và đúng với kiểu z.input mà mỗi schema số khai báo (xem
+// zod field categories trong kế hoạch). react-number-format chỉ còn lo phần hiển thị.
 export function NumberField({
   label,
   required,
@@ -90,8 +97,9 @@ export function NumberField({
   disabled,
   className,
   thousandSeparator = true,
+  description,
 }: NumberFieldProps) {
-  const field = useFieldContext<string | undefined>()
+  const field = useFieldContext<number | undefined>()
   const inputId = field.name
   const isInvalid =
     field.state.meta.isTouched && field.state.meta.errors.length > 0
@@ -110,15 +118,21 @@ export function NumberField({
         name={field.name}
         placeholder={placeholder}
         className="h-9 bg-background text-xs"
+        // `?? ""` chỉ để tránh cảnh báo controlled → uncontrolled của React khi ô trống.
         value={field.state.value ?? ""}
         thousandSeparator={thousandSeparator ? "." : undefined}
         decimalSeparator=","
         allowNegative={false}
         onBlur={field.handleBlur}
-        onValueChange={(values) => field.handleChange(values.value)}
+        onValueChange={(values) => field.handleChange(values.floatValue)}
         aria-invalid={isInvalid}
         disabled={disabled}
       />
+      {description ? (
+        <FieldDescription className="text-[11px] tabular-nums">
+          {description}
+        </FieldDescription>
+      ) : null}
       <FieldError errors={field.state.meta.errors} />
     </Field>
   )

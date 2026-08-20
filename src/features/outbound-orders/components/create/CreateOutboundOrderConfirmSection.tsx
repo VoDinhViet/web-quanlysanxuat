@@ -67,7 +67,7 @@ export const CreateOutboundOrderConfirmSection = withForm({
         : undefined
 
     const totalQuantity = items.reduce(
-      (sum, item) => sum + (Number(item.quantity) || 0),
+      (sum, item) => sum + (item.quantity ?? 0),
       0
     )
     const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")

@@ -63,7 +63,7 @@ const stepNav: Record<InventoryReceiptFromPoWizardStep, StepNavMeta> = {
   confirm: { prevStep: "items", prevLabel: "Quay lại nhập SL & QC" },
 }
 
-// Ghép giá trị wizard-local (chuỗi, UI-only field) + PO đã fetch thành đúng payload
+// Ghép giá trị wizard-local (UI-only field) + PO đã fetch thành đúng payload
 // CreateInventoryReceiptSchema mà createInventoryReceipt server function cần — không có ô nhập
 // tay nào cho warehouseId/supplierId/receiptDate/unitPrice trong 4 bước, tất cả tự suy ra từ PO.
 function buildCreateInventoryReceiptPayload(
@@ -93,7 +93,7 @@ function buildCreateInventoryReceiptPayload(
         itemUnit: item.itemUnit,
         purchaseOrderItemId: item.purchaseOrderItemId,
         quantity: item.quantity,
-        unitPrice: poLine?.unitPrice != null ? String(poLine.unitPrice) : "",
+        unitPrice: poLine?.unitPrice ?? undefined,
         note: item.note,
       }
     }),
@@ -115,7 +115,7 @@ export function InventoryReceiptCreateFromPoForm() {
 
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateInventoryReceiptFromPoFormSchema>(
-      "qlsx:draft:create-inventory-receipt-from-po-v1"
+      "qlsx:draft:create-inventory-receipt-from-po-v2"
     )
   const draftRestoredRef = useRef(false)
   // "Lưu nháp" và "Xác nhận" đều đi qua form.handleSubmit() (cùng cần validate) — ref giữ hành

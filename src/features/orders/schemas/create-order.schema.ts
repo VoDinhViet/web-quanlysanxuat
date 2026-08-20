@@ -2,14 +2,7 @@ import { z } from "zod"
 
 import { orderItemFormSchema } from "@/features/orders/schemas/order-item-form.schema"
 import { fileFieldSchema } from "@/lib/file-field.schema"
-import {
-  emptyToUndefined,
-  isNonNegativeNumberString,
-  isPercentString,
-  isPositiveNumberString,
-  optionalEnum,
-  toIsoDate,
-} from "@/lib/zod-transforms"
+import { emptyToUndefined, optionalEnum, toIsoDate } from "@/lib/zod-transforms"
 
 import {
   Currency,
@@ -46,26 +39,27 @@ export const createOrderSchema = z.object({
   paymentTerm: optionalEnum(PaymentTerm),
   currency: z.enum(Currency),
   exchangeRate: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Tỷ giá phải là số dương")
-    .transform(Number),
+    .number("Tỷ giá phải là số dương")
+    .positive("Tỷ giá phải là số dương")
+    .optional()
+    .pipe(z.number("Tỷ giá phải là số dương")),
   discountType: z.enum(OrderDiscountType),
   discountValue: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Chiết khấu không được âm")
-    .transform(Number),
+    .number("Chiết khấu không được âm")
+    .min(0, "Chiết khấu không được âm")
+    .optional()
+    .pipe(z.number("Chiết khấu không được âm")),
   vatPercent: z
-    .string()
-    .trim()
-    .refine(isPercentString, "VAT phải trong khoảng 0-100")
-    .transform(Number),
+    .number("VAT phải trong khoảng 0-100")
+    .min(0, "VAT phải trong khoảng 0-100")
+    .max(100, "VAT phải trong khoảng 0-100")
+    .optional()
+    .pipe(z.number("VAT phải trong khoảng 0-100")),
   shippingFee: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Phí vận chuyển không được âm")
-    .transform(Number),
+    .number("Phí vận chuyển không được âm")
+    .min(0, "Phí vận chuyển không được âm")
+    .optional()
+    .pipe(z.number("Phí vận chuyển không được âm")),
   note: z
     .string()
     .trim()
@@ -90,11 +84,11 @@ export const createOrderFormDefaultValues: CreateOrderSchema = {
   consigneeAddress: "",
   paymentTerm: PaymentTerm.IMMEDIATE,
   currency: Currency.VND,
-  exchangeRate: "1",
+  exchangeRate: 1,
   discountType: OrderDiscountType.PERCENT,
-  discountValue: "0",
-  vatPercent: "0",
-  shippingFee: "0",
+  discountValue: 0,
+  vatPercent: 0,
+  shippingFee: 0,
   note: "",
   internalNote: "",
   items: [],

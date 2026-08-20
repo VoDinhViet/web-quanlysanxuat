@@ -36,11 +36,10 @@ function toUpdateBomItemPayload(
   data: Omit<UpdateBomItemInput, "itemId" | "bomItemId">
 ) {
   const note = data.note.trim()
-  const sortOrder = data.sortOrder.trim()
 
   return {
-    quantity: Number(data.quantity),
-    sortOrder: sortOrder === "" ? undefined : Number(sortOrder),
+    quantity: data.quantity,
+    sortOrder: data.sortOrder,
     // Empty clears the note (null); a value updates it.
     note: note === "" ? null : note,
     drawingFileId: resolveApiFileId(data.drawing, "update"),

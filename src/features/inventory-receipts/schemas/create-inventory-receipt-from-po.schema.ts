@@ -1,7 +1,5 @@
 import { z } from "zod"
 
-import { isPositiveNumberString } from "@/lib/zod-transforms"
-
 // Bước ③ của wizard "Nhập kho từ PO" — một dòng cho mỗi dòng PO đã chọn ở bước ②. itemLabel/
 // itemUnit/requestedQuantity là UI-only (hiển thị lại không cần fetch lần 2, cùng idiom
 // inventory-receipt-item-form.schema.ts). Cố ý không có `unitPrice` — ảnh mẫu không cho sửa đơn
@@ -14,9 +12,10 @@ const inventoryReceiptFromPoItemFields = {
   itemUnit: z.string(),
   requestedQuantity: z.number(),
   quantity: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Số lượng nhận phải lớn hơn 0"),
+    .number("Số lượng nhận phải lớn hơn 0")
+    .positive("Số lượng nhận phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("Số lượng nhận phải lớn hơn 0")),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
@@ -25,7 +24,7 @@ const inventoryReceiptFromPoItemFields = {
 // rồi báo lỗi.
 export const inventoryReceiptFromPoItemSchema = z
   .object(inventoryReceiptFromPoItemFields)
-  .refine((item) => Number(item.quantity) <= item.requestedQuantity, {
+  .refine((item) => item.quantity <= item.requestedQuantity, {
     message: "SL nhận lần này không được lớn hơn SL đặt",
     path: ["quantity"],
   })

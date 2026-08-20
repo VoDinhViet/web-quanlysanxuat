@@ -61,21 +61,16 @@ export function buildPurchaseRequestQuantityColumns({
       meta: { headerClassName: "w-40 text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const inputId = `purchase-request-item-quantity-${row.index}`
-        const quantityNumber = Number(item.quantity) || 0
+        const quantityNumber = item.quantity ?? 0
         // Reference-only gợi ý, not a validation error — a request below định mức tồn is a
         // valid business reason to buy less, so this never blocks submit (see the schema's own
-        // `isPositiveNumberString` refine, the only rule that does).
+        // positive-number check, the only rule that does).
         const isBelowMinStock =
           quantityNumber > 0 && quantityNumber < item.minStock
 
         return (
           <div>
-            <label htmlFor={inputId} className="sr-only">
-              Số lượng đề xuất — {item.itemName}
-            </label>
             <NumericCellInput
-              id={inputId}
               value={item.quantity}
               min={1}
               disabled={disabled}

@@ -13,9 +13,9 @@ export function sumOutsourcingReceiptItemTotals(
 ): OutsourcingReceiptItemTotals {
   return items.reduce(
     (totals, item) => ({
-      totalQuantity: totals.totalQuantity + (Number(item.quantity) || 0),
-      totalWeight: totals.totalWeight + (Number(item.weight) || 0),
-      totalArea: totals.totalArea + (Number(item.area) || 0),
+      totalQuantity: totals.totalQuantity + (item.quantity ?? 0),
+      totalWeight: totals.totalWeight + (item.weight ?? 0),
+      totalArea: totals.totalArea + (item.area ?? 0),
     }),
     { totalQuantity: 0, totalWeight: 0, totalArea: 0 }
   )

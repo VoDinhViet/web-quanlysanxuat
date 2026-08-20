@@ -45,7 +45,7 @@ export function PurchaseRequestCreateForm() {
   // create-purchase-quotation-v2.
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreatePurchaseRequestSchema>(
-      "qlsx:draft:create-purchase-request-v2"
+      "qlsx:draft:create-purchase-request-v3"
     )
   const draftRestoredRef = useRef(false)
 

@@ -79,15 +79,11 @@ export const updateSupplierSchema = z.object({
     defaultPaymentMethod: optionalEnumNullable(PaymentMethod),
     defaultPaymentTerm: optionalEnumNullable(PaymentTerm),
     creditLimit: z
-      .string()
-      .trim()
-      .transform((value) => (value.length > 0 ? Number(value) : null))
-      .refine((value) => value === null || Number.isInteger(value), {
-        message: "Hạn mức công nợ phải là số nguyên",
-      })
-      .refine((value) => value === null || value >= 0, {
-        message: "Hạn mức công nợ không được âm",
-      }),
+      .number("Hạn mức công nợ phải là số nguyên")
+      .int("Hạn mức công nợ phải là số nguyên")
+      .min(0, "Hạn mức công nợ không được âm")
+      .optional()
+      .transform((value) => value ?? null),
     creditLimitStartDate: z
       .string()
       .trim()
@@ -123,7 +119,7 @@ export const updateSupplierFormDefaultValues: UpdateSupplierSchema = {
     bankBranch: "",
     defaultPaymentMethod: "",
     defaultPaymentTerm: "",
-    creditLimit: "",
+    creditLimit: undefined,
     creditLimitStartDate: "",
   },
 }

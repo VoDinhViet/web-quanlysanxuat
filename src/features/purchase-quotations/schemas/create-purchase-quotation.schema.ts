@@ -1,26 +1,17 @@
 import { z } from "zod"
 
-import {
-  isNonNegativeNumberString,
-  isPositiveNumberString,
-} from "@/lib/zod-transforms"
-
 // Real backend constraint: one purchase_quotations row can carry any number of vật tư, and each
 // vật tư line can carry any number of NCC (`suppliers`) — quantity lives once per item,
 // unitPrice/leadTimeDays/note live once per (item, NCC) pair
 // (CreateQuotationItemReqDto/CreateQuotationItemSupplierReqDto). One form submit is exactly one
 // POST /purchase-quotations carrying the whole item→suppliers tree — no per-supplier fan-out.
-// Wire-shape mapping (string → number, empty → undefined) happens in
-// create-purchase-quotation.api.ts's `.transform()`, not here.
 
 // unitPrice/leadTimeDays are optional even when a supplier is added to an item — an RFQ can be
 // created before that supplier has actually quoted (DRAFT), same as leaving a cell blank.
-const optionalNonNegativeNumberString = z
-  .string()
-  .trim()
-  .refine((value) => value === "" || isNonNegativeNumberString(value), {
-    message: "Giá trị không được âm",
-  })
+const optionalNonNegativeNumber = z
+  .number("Giá trị không được âm")
+  .min(0, "Giá trị không được âm")
+  .optional()
 
 // One (vật tư, NCC) pairing — supplierLabel is UI-only, carried alongside supplierId the same
 // way OrderItemFormValue carries itemLabel, so a row re-renders without a second suppliers fetch.
@@ -31,10 +22,10 @@ const optionalNonNegativeNumberString = z
 const quotationItemSupplierFields = {
   supplierId: z.string().trim().min(1, "Vui lòng chọn NCC"),
   supplierLabel: z.string(),
-  lastPrice: optionalNonNegativeNumberString,
+  lastPrice: optionalNonNegativeNumber,
   lastPurchaseDate: z.string(),
-  unitPrice: optionalNonNegativeNumberString,
-  leadTimeDays: optionalNonNegativeNumberString,
+  unitPrice: optionalNonNegativeNumber,
+  leadTimeDays: optionalNonNegativeNumber,
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
@@ -53,9 +44,10 @@ const quotationItemAllocationFields = {
   requestedQuantity: z.number(),
   neededDate: z.string(),
   quantity: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Số lượng phải lớn hơn 0"),
+    .number("Số lượng phải lớn hơn 0")
+    .positive("Số lượng phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("Số lượng phải lớn hơn 0")),
   quantityAdjustmentReason: z
     .string()
     .trim()

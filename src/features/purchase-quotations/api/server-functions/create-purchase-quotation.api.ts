@@ -3,31 +3,32 @@ import axios from "axios"
 
 import { createQuotationFormSchema } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { http, logHttpError } from "@/lib/http"
-import { emptyToUndefined, emptyToUndefinedNumber } from "@/lib/zod-transforms"
+import { emptyToUndefined } from "@/lib/zod-transforms"
 import type { ApiErrorResponse } from "@/lib/http"
 
 // Mirrors CreateQuotationReqDto exactly — one POST carries the whole item→allocations/suppliers
 // tree. Chained onto the form's own schema (not a hand-written parallel one) so `data` inside
 // `.handler()` is already wire-ready, same pattern as update-user.api.ts/create-material.api.ts.
-// Only unitPrice/leadTimeDays/note/quantityAdjustmentReason go through emptyToUndefined* — the
-// backend only allows explicit `null` for the header-level `note` (never sent here, per product
-// decision — no header note field on this form), so every other optional field must OMIT its key
-// instead, or the request 422s.
+// unitPrice/leadTimeDays are already number|undefined coming out of the form's own schema; only
+// quantityAdjustmentReason/note (still strings) go through emptyToUndefined — the backend only
+// allows explicit `null` for the header-level `note` (never sent here, per product decision — no
+// header note field on this form), so every other optional field must OMIT its key instead, or
+// the request 422s.
 const createQuotationPayloadSchema = createQuotationFormSchema.transform(
   ({ items }) => ({
     items: items.map((item) => ({
       itemId: item.itemId,
       allocations: item.allocations.map((allocation) => ({
         purchaseRequestItemId: allocation.purchaseRequestItemId,
-        quantity: Number(allocation.quantity),
+        quantity: allocation.quantity,
         quantityAdjustmentReason: emptyToUndefined(
           allocation.quantityAdjustmentReason
         ),
       })),
       suppliers: item.suppliers.map((supplier) => ({
         supplierId: supplier.supplierId,
-        unitPrice: emptyToUndefinedNumber(supplier.unitPrice),
-        leadTimeDays: emptyToUndefinedNumber(supplier.leadTimeDays),
+        unitPrice: supplier.unitPrice,
+        leadTimeDays: supplier.leadTimeDays,
         note: emptyToUndefined(supplier.note),
       })),
     })),

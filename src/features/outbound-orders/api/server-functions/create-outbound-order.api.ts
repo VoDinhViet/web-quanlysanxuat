@@ -46,7 +46,7 @@ const createOutboundOrderPayloadSchema = createOutboundOrderSchema.transform(
       orderItemId: item.orderItemId,
       itemId: item.itemId,
       productionJobId: item.productionJobId,
-      quantity: Number(item.quantity),
+      quantity: item.quantity,
       note: emptyToUndefined(item.note),
     })),
   })

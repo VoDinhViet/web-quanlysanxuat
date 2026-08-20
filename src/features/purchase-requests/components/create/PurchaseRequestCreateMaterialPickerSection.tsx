@@ -53,7 +53,7 @@ function buildPickedPurchaseRequestItem(
     itemName: material.name,
     itemUnit: material.unit.name,
     minStock: material.minStock,
-    quantity: "1",
+    quantity: 1,
     note: "",
   }
 }

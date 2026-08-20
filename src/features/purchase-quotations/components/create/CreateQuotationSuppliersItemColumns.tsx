@@ -79,7 +79,7 @@ export function buildQuotationSuppliersItemColumns({
         // no dialog needed just to change one number.
         if (item.allocations.length > 1) {
           const total = item.allocations.reduce(
-            (sum, allocation) => sum + (Number(allocation.quantity) || 0),
+            (sum, allocation) => sum + (allocation.quantity ?? 0),
             0
           )
 
@@ -109,7 +109,6 @@ export function buildQuotationSuppliersItemColumns({
         const allocation = item.allocations[0]
         return (
           <NumericCellInput
-            id={`quotation-item-quantity-${row.index}`}
             value={allocation.quantity}
             min={1}
             disabled={disabled}

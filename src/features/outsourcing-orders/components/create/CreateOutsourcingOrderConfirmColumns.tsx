@@ -61,7 +61,7 @@ export const createOutsourcingOrderConfirmColumns = [
       headerClassName: "w-28 text-right",
       cellClassName: "text-right tabular-nums",
     },
-    cell: ({ getValue }) => getValue() || "—",
+    cell: ({ getValue }) => getValue() ?? "—",
   }),
   confirmColumnHelper.accessor("area", {
     header: "Diện tích (m²)",
@@ -69,7 +69,7 @@ export const createOutsourcingOrderConfirmColumns = [
       headerClassName: "w-28 text-right",
       cellClassName: "text-right tabular-nums",
     },
-    cell: ({ getValue }) => getValue() || "—",
+    cell: ({ getValue }) => getValue() ?? "—",
   }),
   confirmColumnHelper.accessor("note", {
     header: "Ghi chú",

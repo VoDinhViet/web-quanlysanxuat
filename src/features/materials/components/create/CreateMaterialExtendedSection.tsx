@@ -63,9 +63,8 @@ export const CreateMaterialExtendedSection = withForm({
 
           <form.AppField name="specificWeight">
             {(field) => (
-              <field.TextField
+              <field.NumberField
                 label="Trọng lượng riêng (kg/m³)"
-                type="number"
                 placeholder="0"
                 disabled={disabled}
               />
@@ -74,9 +73,8 @@ export const CreateMaterialExtendedSection = withForm({
 
           <form.AppField name="minStock">
             {(field) => (
-              <field.TextField
+              <field.NumberField
                 label="Định mức tồn tối thiểu"
-                type="number"
                 placeholder="0"
                 disabled={disabled}
               />

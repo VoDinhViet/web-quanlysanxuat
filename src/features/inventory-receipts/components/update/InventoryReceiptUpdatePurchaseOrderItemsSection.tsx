@@ -59,8 +59,8 @@ export const InventoryReceiptUpdatePurchaseOrderItemsSection = withForm({
               itemLabel: `${item.code} — ${item.name}`,
               itemUnit: item.unit.name,
               purchaseOrderItemId: line.id,
-              quantity: String(line.quantity),
-              unitPrice: line.unitPrice !== null ? String(line.unitPrice) : "",
+              quantity: line.quantity,
+              unitPrice: line.unitPrice ?? undefined,
               note: "",
             }
             itemsField.pushValue(value)
@@ -68,7 +68,7 @@ export const InventoryReceiptUpdatePurchaseOrderItemsSection = withForm({
 
           const updateQuantity = (
             purchaseOrderItemId: string,
-            quantity: string
+            quantity: number | undefined
           ) => {
             const index = findIndex(purchaseOrderItemId)
             if (index < 0) return
@@ -145,7 +145,7 @@ export const InventoryReceiptUpdatePurchaseOrderItemsSection = withForm({
                                 decimalSeparator=","
                                 allowNegative={false}
                                 onValueChange={(values) =>
-                                  updateQuantity(line.id, values.value)
+                                  updateQuantity(line.id, values.floatValue)
                                 }
                               />
                             </TableCell>

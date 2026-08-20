@@ -46,7 +46,7 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
           itemLabel: `${line.purchaseRequestItem.item.code} — ${line.purchaseRequestItem.item.name}`,
           itemUnit: line.purchaseRequestItem.item.unit.name,
           requestedQuantity: line.quantity,
-          quantity: String(line.quantity),
+          quantity: line.quantity,
           note: "",
         })
       )

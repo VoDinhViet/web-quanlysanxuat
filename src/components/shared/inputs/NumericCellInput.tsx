@@ -4,11 +4,10 @@ import { NumericFormat } from "react-number-format"
 import { Input } from "@/components/ui/input"
 
 type NumericCellInputProps = {
-  value: string
-  onValueChange: (value: string) => void
+  value: number | undefined
+  onValueChange: (value: number | undefined) => void
   disabled?: boolean
   placeholder?: string
-  id?: string
   // Floor enforced on blur (e.g. a requested quantity can't commit as 0) — clamped there rather
   // than blocked while typing, so clearing the field to retype doesn't get fought mid-edit.
   min?: number
@@ -30,7 +29,6 @@ export function NumericCellInput({
   onValueChange,
   disabled,
   placeholder,
-  id,
   min,
 }: NumericCellInputProps) {
   const [localValue, setLocalValue] = useState(value)
@@ -44,8 +42,8 @@ export function NumericCellInput({
 
   const commit = () => {
     const committed =
-      min !== undefined && localValue !== "" && Number(localValue) < min
-        ? String(min)
+      min !== undefined && localValue !== undefined && localValue < min
+        ? min
         : localValue
     if (committed !== localValue) setLocalValue(committed)
     onValueChange(committed)
@@ -53,15 +51,14 @@ export function NumericCellInput({
 
   return (
     <NumericFormat
-      id={id}
       customInput={Input}
       className="h-8 w-full bg-background text-xs"
-      value={localValue}
+      value={localValue ?? ""}
       thousandSeparator="."
       decimalSeparator=","
       allowNegative={false}
       placeholder={placeholder}
-      onValueChange={(values) => setLocalValue(values.value)}
+      onValueChange={(values) => setLocalValue(values.floatValue)}
       onBlur={commit}
       disabled={disabled}
     />

@@ -176,10 +176,9 @@ function CreateBomItemForm({
 
         <form.AppField name="quantity">
           {(field) => (
-            <field.TextField
+            <field.NumberField
               label="Số lượng định mức"
               required
-              type="number"
               placeholder="Ví dụ: 1"
             />
           )}
@@ -232,8 +231,8 @@ type UpdateBomItemFormProps = {
 
 function getBomItemDefaultValues(node: BomItem): UpdateBomItemSchema {
   return {
-    quantity: String(node.quantity),
-    sortOrder: String(node.sortOrder),
+    quantity: node.quantity,
+    sortOrder: node.sortOrder,
     note: node.note ?? "",
     drawing: node.drawing,
   }
@@ -273,14 +272,15 @@ function UpdateBomItemForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <form.AppField name="quantity">
-          {(field) => (
-            <field.TextField label="Số lượng" required type="number" />
-          )}
+          {(field) => <field.NumberField label="Số lượng" required />}
         </form.AppField>
 
         <form.AppField name="sortOrder">
           {(field) => (
-            <field.TextField label="Thứ tự sắp xếp" required type="number" />
+            <field.NumberField
+              label="Thứ tự sắp xếp"
+              thousandSeparator={false}
+            />
           )}
         </form.AppField>
       </div>

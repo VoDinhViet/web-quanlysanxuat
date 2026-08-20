@@ -59,17 +59,11 @@ export function buildInventoryReceiptFromPoItemColumns({
       meta: { headerClassName: "w-36 text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const inputId = `inventory-receipt-from-po-quantity-${row.index}`
-        const exceedsOrdered =
-          (Number(item.quantity) || 0) > item.requestedQuantity
+        const exceedsOrdered = (item.quantity ?? 0) > item.requestedQuantity
 
         return (
           <div>
-            <label htmlFor={inputId} className="sr-only">
-              Số lượng nhận lần này — {item.itemLabel}
-            </label>
             <NumericCellInput
-              id={inputId}
               value={item.quantity}
               min={1}
               disabled={disabled}

@@ -24,7 +24,7 @@ export function CreateSupplierForm() {
   const createSupplierFn = useServerFn(createSupplier)
 
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateSupplierSchema>(
-    "qlsx:draft:create-supplier"
+    "qlsx:draft:create-supplier-v2"
   )
   const draftRestoredRef = useRef(false)
 

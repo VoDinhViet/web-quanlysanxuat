@@ -1,10 +1,5 @@
 import { z } from "zod"
 
-import {
-  isNonNegativeNumberString,
-  isPositiveNumberString,
-} from "@/lib/zod-transforms"
-
 // Bước ① (picker) của wizard "Nhập hàng gia công về" — một dòng cho mỗi dòng OS-OUT còn số lượng
 // chưa nhận đã chọn. Tên field khớp 1:1 PendingOrderItem (outsourcing-receipt.type.ts) —
 // outsourcingOrderId/outsourcingOrderCode/sendDate/supplierId/supplierName/productionJobCode/
@@ -27,23 +22,18 @@ const createOutsourcingReceiptItemFields = {
   operationName: z.string(),
   sentQuantity: z.number(),
   quantity: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "SL nhận phải lớn hơn 0"),
+    .number("SL nhận phải lớn hơn 0")
+    .positive("SL nhận phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("SL nhận phải lớn hơn 0")),
   weight: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value === "" || isNonNegativeNumberString(value),
-      "Trọng lượng phải là số ≥ 0"
-    ),
+    .number("Trọng lượng phải là số ≥ 0")
+    .min(0, "Trọng lượng phải là số ≥ 0")
+    .optional(),
   area: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value === "" || isNonNegativeNumberString(value),
-      "Diện tích phải là số ≥ 0"
-    ),
+    .number("Diện tích phải là số ≥ 0")
+    .min(0, "Diện tích phải là số ≥ 0")
+    .optional(),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
@@ -52,7 +42,7 @@ const createOutsourcingReceiptItemFields = {
 // tạo phiếu (E172).
 export const createOutsourcingReceiptItemSchema = z
   .object(createOutsourcingReceiptItemFields)
-  .refine((item) => Number(item.quantity) <= item.sentQuantity, {
+  .refine((item) => item.quantity <= item.sentQuantity, {
     message: "SL nhận lần này không được vượt SL đã gửi",
     path: ["quantity"],
   })

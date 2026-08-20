@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import { FulfillmentType } from "@/lib/types/outbound-order.type"
-import { isPositiveNumberString } from "@/lib/zod-transforms"
 
 // Bước ① (picker) của wizard "Tạo phiếu giao hàng" — một dòng cho mỗi dòng PO nguồn đã chọn. Chỉ
 // đúng 5 field OutboundOrderItemReqDto cần — orderItemId/itemId/productionJobId/quantity/note.
@@ -16,9 +15,10 @@ export const createOutboundOrderItemSchema = z.object({
   itemId: z.string().trim().min(1),
   productionJobId: z.string().nullable(),
   quantity: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "SL giao phải lớn hơn 0"),
+    .number("SL giao phải lớn hơn 0")
+    .positive("SL giao phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("SL giao phải lớn hơn 0")),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 })
 

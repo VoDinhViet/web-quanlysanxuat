@@ -25,9 +25,9 @@ export function computeOrderTotals(
   const subtotal = items
     .filter((item) => item.status !== OrderItemStatus.CANCELLED)
     .reduce((sum, item) => {
-      const quantity = Number(item.quantity) || 0
-      const unitPrice = Number(item.unitPrice) || 0
-      const discountPercent = Number(item.discountPercent) || 0
+      const quantity = item.quantity ?? 0
+      const unitPrice = item.unitPrice ?? 0
+      const discountPercent = item.discountPercent ?? 0
 
       return (
         sum + roundMoney(quantity * unitPrice * (1 - discountPercent / 100))
@@ -58,9 +58,9 @@ export function formatSignedAmount(amount: number, sign: "+" | "−"): string {
 // formula (round(quantity * unitPrice * (1 - discountPercent/100), 2)) — the
 // authoritative lineTotal comes back from the server after save.
 export function estimateLineTotal(item: OrderItemFormValue): number {
-  const quantity = Number(item.quantity) || 0
-  const unitPrice = Number(item.unitPrice) || 0
-  const discountPercent = Number(item.discountPercent) || 0
+  const quantity = item.quantity ?? 0
+  const unitPrice = item.unitPrice ?? 0
+  const discountPercent = item.discountPercent ?? 0
 
   return roundMoney(quantity * unitPrice * (1 - discountPercent / 100))
 }

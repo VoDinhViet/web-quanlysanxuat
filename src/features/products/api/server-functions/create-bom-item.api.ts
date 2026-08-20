@@ -51,7 +51,7 @@ function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "rootItemId">) {
   return {
     itemId: data.itemId,
     parentId: data.parentId,
-    quantity: Number(data.quantity),
+    quantity: data.quantity,
     sortOrder: data.sortOrder,
     note: note === "" ? undefined : note,
     drawingFileId: resolveApiFileId(data.drawing, "create"),

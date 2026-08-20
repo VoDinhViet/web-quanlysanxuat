@@ -115,15 +115,14 @@ export const InventoryReceiptUpdateGenericItemsSection = withForm({
                             {item.quantity}
                           </TableCell>
                           <TableCell className="text-right tabular-nums">
-                            {item.unitPrice
-                              ? vndFormatter.format(Number(item.unitPrice))
+                            {item.unitPrice !== undefined
+                              ? vndFormatter.format(item.unitPrice)
                               : "—"}
                           </TableCell>
                           <TableCell className="text-right font-medium tabular-nums">
-                            {item.unitPrice
+                            {item.unitPrice !== undefined
                               ? vndFormatter.format(
-                                  (Number(item.quantity) || 0) *
-                                    Number(item.unitPrice)
+                                  (item.quantity ?? 0) * item.unitPrice
                                 )
                               : "—"}
                           </TableCell>

@@ -60,7 +60,7 @@ export const CreateOutboundOrderItemsSection = withForm({
     })
 
     const totalQuantity = items.reduce(
-      (sum, item) => sum + (Number(item.quantity) || 0),
+      (sum, item) => sum + (item.quantity ?? 0),
       0
     )
 

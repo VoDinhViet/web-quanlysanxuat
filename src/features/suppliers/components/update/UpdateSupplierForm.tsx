@@ -16,8 +16,8 @@ import type { UpdateSupplierSchema } from "@/features/suppliers/schemas/update-s
 import { getPrimaryRepresentative } from "@/lib/types/supplier.type"
 import type { Supplier } from "@/lib/types/supplier.type"
 
-// Supplier → raw form values: nullable fields become "", numbers/dates become
-// the strings the payment section's inputs work with. `representatives` is
+// Supplier → raw form values: nullable fields become "", dates become the
+// yyyy-MM-dd strings the date picker works with. `representatives` is
 // flattened to its primary (or first) entry — the form only has flat
 // representativeName/representativePhone fields today (a known gap, see the
 // update-page plan), so anything beyond one representative isn't editable yet.
@@ -51,8 +51,7 @@ function getSupplierDefaultValues(supplier: Supplier): UpdateSupplierSchema {
       bankBranch: payment.bankBranch ?? "",
       defaultPaymentMethod: payment.defaultPaymentMethod ?? "",
       defaultPaymentTerm: payment.defaultPaymentTerm ?? "",
-      creditLimit:
-        payment.creditLimit != null ? String(payment.creditLimit) : "",
+      creditLimit: payment.creditLimit ?? undefined,
       creditLimitStartDate: payment.creditLimitStartDate
         ? DateTime.fromISO(payment.creditLimitStartDate).toFormat("yyyy-MM-dd")
         : "",

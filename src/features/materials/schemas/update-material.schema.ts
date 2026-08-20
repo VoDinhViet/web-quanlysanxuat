@@ -40,12 +40,9 @@ export const updateMaterialSchema = z.object({
   // (UpdateItemReqDto's minStock has no `nullable: true`, unlike specificWeight) — clearing the
   // input must send 0, not null, or the PATCH fails class-validator's NotEquals(null) check.
   minStock: z
-    .string()
-    .trim()
-    .transform((value) => (value.length > 0 ? Number(value) : 0))
-    .refine((value) => Number.isFinite(value) && value >= 0, {
-      message: "Định mức tồn tối thiểu phải là số không âm",
-    }),
+    .number("Định mức tồn tối thiểu phải là số không âm")
+    .min(0, "Định mức tồn tối thiểu phải là số không âm")
+    .default(0),
   materialGrade: z
     .string()
     .trim()
@@ -62,13 +59,10 @@ export const updateMaterialSchema = z.object({
     .max(255, "Kích thước / độ dày tối đa 255 ký tự")
     .transform(emptyToNull),
   specificWeight: z
-    .string()
-    .trim()
-    .transform((value) => (value.length > 0 ? Number(value) : null))
-    .refine(
-      (value) => value === null || (Number.isFinite(value) && value >= 0),
-      { message: "Trọng lượng riêng phải là số không âm" }
-    ),
+    .number("Trọng lượng riêng phải là số không âm")
+    .min(0, "Trọng lượng riêng phải là số không âm")
+    .optional()
+    .transform((value) => value ?? null),
   colorSurface: z
     .string()
     .trim()
@@ -104,11 +98,11 @@ export const updateMaterialFormDefaultValues: UpdateMaterialSchema = {
   status: ItemStatus.ACTIVE,
   note: "",
   supplierId: "",
-  minStock: "",
+  minStock: 0,
   materialGrade: "",
   technicalStandard: "",
   dimensions: "",
-  specificWeight: "",
+  specificWeight: undefined,
   colorSurface: "",
   description: "",
   origin: "",

@@ -2,11 +2,7 @@ import { z } from "zod"
 
 import { aqlLevels, IqcInspectionLevel, IqcResult } from "@/lib/types/iqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
-import {
-  emptyToUndefined,
-  isNonNegativeNumberString,
-  isPositiveNumberString,
-} from "@/lib/zod-transforms"
+import { emptyToUndefined } from "@/lib/zod-transforms"
 
 const aqlLevelValues: readonly number[] = aqlLevels
 
@@ -26,15 +22,15 @@ export const confirmOqcSchema = z.object({
     )
     .transform(Number),
   sampleSize: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Cỡ mẫu phải lớn hơn 0")
-    .transform(Number),
+    .number("Cỡ mẫu phải lớn hơn 0")
+    .positive("Cỡ mẫu phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("Cỡ mẫu phải lớn hơn 0")),
   defectQty: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Số lượng lỗi không được âm")
-    .transform(Number),
+    .number("Số lượng lỗi không được âm")
+    .min(0, "Số lượng lỗi không được âm")
+    .optional()
+    .pipe(z.number("Số lượng lỗi không được âm")),
   result: z.enum(IqcResult),
   resultNote: z
     .string()
@@ -51,8 +47,8 @@ export type ConfirmOqcFormValue = {
   oqcId: string
   inspectionLevel: IqcInspectionLevel | ""
   aqlLevel: string
-  sampleSize: string
-  defectQty: string
+  sampleSize?: number
+  defectQty?: number
   result: IqcResult | ""
   resultNote: string
 }
@@ -65,8 +61,8 @@ export function getOqcDefaultValues(oqc: OqcDetail): ConfirmOqcFormValue {
     oqcId: oqc.id,
     inspectionLevel: oqc.inspectionLevel ?? "",
     aqlLevel: oqc.aqlLevel !== null ? String(oqc.aqlLevel) : "",
-    sampleSize: oqc.sampleSize !== null ? String(oqc.sampleSize) : "",
-    defectQty: oqc.defectQty !== null ? String(oqc.defectQty) : "",
+    sampleSize: oqc.sampleSize ?? undefined,
+    defectQty: oqc.defectQty ?? undefined,
     result: oqc.result ?? "",
     resultNote: oqc.resultNote ?? "",
   }

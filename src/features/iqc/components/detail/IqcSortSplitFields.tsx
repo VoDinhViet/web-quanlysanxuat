@@ -62,8 +62,8 @@ export function IqcSortSplitFields({
         })}
       >
         {({ ok, ng }) => {
-          const hasBoth = ok !== "" && ng !== ""
-          const sum = (Number(ok) || 0) + (Number(ng) || 0)
+          const hasBoth = ok !== undefined && ng !== undefined
+          const sum = (ok ?? 0) + (ng ?? 0)
           const isMatch = hasBoth && scale(sum) === scale(quantity)
 
           return (

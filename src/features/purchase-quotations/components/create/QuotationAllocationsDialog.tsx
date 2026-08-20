@@ -92,7 +92,7 @@ function QuotationAllocationsDialogForm({
   }
 
   const total = localAllocations.reduce(
-    (sum, allocation) => sum + (Number(allocation.quantity) || 0),
+    (sum, allocation) => sum + (allocation.quantity ?? 0),
     0
   )
 
@@ -150,7 +150,6 @@ function QuotationAllocationsDialogForm({
                   </TableCell>
                   <TableCell>
                     <NumericCellInput
-                      id={`allocation-quantity-${allocation.purchaseRequestItemId}`}
                       value={allocation.quantity}
                       min={1}
                       onValueChange={(value) =>

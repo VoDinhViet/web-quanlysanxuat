@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { imageFieldSchema } from "@/lib/file-field.schema"
-import { emptyToUndefined, emptyToUndefinedNumber } from "@/lib/zod-transforms"
+import { emptyToUndefined } from "@/lib/zod-transforms"
 
 import { ItemStatus } from "@/lib/types/item.type"
 
@@ -33,13 +33,9 @@ export const createMaterialSchema = z.object({
   // Extended information (all optional)
   supplierId: z.string().trim().transform(emptyToUndefined),
   minStock: z
-    .string()
-    .trim()
-    .transform(emptyToUndefinedNumber)
-    .refine(
-      (value) => value === undefined || (Number.isFinite(value) && value >= 0),
-      { message: "Định mức tồn tối thiểu phải là số không âm" }
-    ),
+    .number("Định mức tồn tối thiểu phải là số không âm")
+    .min(0, "Định mức tồn tối thiểu phải là số không âm")
+    .optional(),
   materialGrade: z
     .string()
     .trim()
@@ -56,13 +52,9 @@ export const createMaterialSchema = z.object({
     .max(255, "Kích thước / độ dày tối đa 255 ký tự")
     .transform(emptyToUndefined),
   specificWeight: z
-    .string()
-    .trim()
-    .transform(emptyToUndefinedNumber)
-    .refine(
-      (value) => value === undefined || (Number.isFinite(value) && value >= 0),
-      { message: "Trọng lượng riêng phải là số không âm" }
-    ),
+    .number("Trọng lượng riêng phải là số không âm")
+    .min(0, "Trọng lượng riêng phải là số không âm")
+    .optional(),
   colorSurface: z
     .string()
     .trim()
@@ -95,11 +87,11 @@ export const createMaterialFormDefaultValues: CreateMaterialSchema = {
   status: ItemStatus.ACTIVE,
   note: "",
   supplierId: "",
-  minStock: "",
+  minStock: undefined,
   materialGrade: "",
   technicalStandard: "",
   dimensions: "",
-  specificWeight: "",
+  specificWeight: undefined,
   colorSurface: "",
   description: "",
   origin: "",

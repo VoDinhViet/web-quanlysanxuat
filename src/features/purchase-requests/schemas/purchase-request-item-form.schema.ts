@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { emptyToUndefined, isPositiveNumberString } from "@/lib/zod-transforms"
+import { emptyToUndefined } from "@/lib/zod-transforms"
 
 // One dòng vật tư của đề xuất mua hàng. Không có unitPrice/status như order-item-form.schema.ts
 // hay inventory-receipt-item-form.schema.ts — PR không có khái niệm giá. itemCode/itemName/
@@ -18,10 +18,10 @@ export const purchaseRequestItemFormFields = {
   // CreatePurchaseRequestItemReqDto.
   minStock: z.number(),
   quantity: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Số lượng phải lớn hơn 0")
-    .transform(Number),
+    .number("Số lượng phải lớn hơn 0")
+    .positive("Số lượng phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("Số lượng phải lớn hơn 0")),
   note: z
     .string()
     .trim()

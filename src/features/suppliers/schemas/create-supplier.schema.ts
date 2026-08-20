@@ -4,7 +4,6 @@ import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToUndefined,
   emptyToUndefinedIsoDate,
-  emptyToUndefinedNumber,
   optionalEnum,
   refineOptionalEmail,
 } from "@/lib/zod-transforms"
@@ -72,15 +71,10 @@ export const createSupplierSchema = z
       defaultPaymentMethod: optionalEnum(PaymentMethod),
       defaultPaymentTerm: optionalEnum(PaymentTerm),
       creditLimit: z
-        .string()
-        .trim()
-        .transform(emptyToUndefinedNumber)
-        .refine((value) => value === undefined || Number.isInteger(value), {
-          message: "Hạn mức công nợ phải là số nguyên",
-        })
-        .refine((value) => value === undefined || value >= 0, {
-          message: "Hạn mức công nợ không được âm",
-        }),
+        .number("Hạn mức công nợ phải là số nguyên")
+        .int("Hạn mức công nợ phải là số nguyên")
+        .min(0, "Hạn mức công nợ không được âm")
+        .optional(),
       creditLimitStartDate: z
         .string()
         .trim()
@@ -114,7 +108,7 @@ export const createSupplierFormDefaultValues: CreateSupplierSchema = {
     bankBranch: "",
     defaultPaymentMethod: "",
     defaultPaymentTerm: "",
-    creditLimit: "",
+    creditLimit: undefined,
     creditLimitStartDate: "",
   },
 }

@@ -37,7 +37,7 @@ export function CreateQuotationForm() {
 
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateQuotationFormSchema>(
-      "qlsx:draft:create-purchase-quotation-v3"
+      "qlsx:draft:create-purchase-quotation-v4"
     )
   const draftRestoredRef = useRef(false)
 

@@ -1,11 +1,6 @@
 import { z } from "zod"
 
-import {
-  emptyToUndefined,
-  emptyToUndefinedNumber,
-  isNonNegativeNumberString,
-  isPositiveNumberString,
-} from "@/lib/zod-transforms"
+import { emptyToUndefined } from "@/lib/zod-transforms"
 
 // One receipt line. Shared as-is by create-inventory-receipt.schema.ts and
 // update-inventory-receipt.schema.ts — the backend uses the same
@@ -21,18 +16,14 @@ export const inventoryReceiptItemFormFields = {
   // Dòng đơn mua tương ứng — chỉ có khi phiếu chọn chế độ "theo PO".
   purchaseOrderItemId: z.string().trim().transform(emptyToUndefined),
   quantity: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Số lượng phải lớn hơn 0")
-    .transform(Number),
+    .number("Số lượng phải lớn hơn 0")
+    .positive("Số lượng phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("Số lượng phải lớn hơn 0")),
   unitPrice: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value === "" || isNonNegativeNumberString(value),
-      "Đơn giá không được âm"
-    )
-    .transform(emptyToUndefinedNumber),
+    .number("Đơn giá không được âm")
+    .min(0, "Đơn giá không được âm")
+    .optional(),
   note: z
     .string()
     .trim()
@@ -56,7 +47,7 @@ export const inventoryReceiptItemDefaultValue: InventoryReceiptItemFormValue = {
   itemLabel: "",
   itemUnit: "",
   purchaseOrderItemId: "",
-  quantity: "1",
-  unitPrice: "",
+  quantity: 1,
+  unitPrice: undefined,
   note: "",
 }

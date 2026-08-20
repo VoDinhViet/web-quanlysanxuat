@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Check } from "lucide-react"
-import { NumericFormat } from "react-number-format"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -11,13 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useGetItemOptions } from "@/features/orders/hooks/use-get-item-options"
@@ -49,7 +41,7 @@ type OrderItemDialogProps = {
   // `unitPrice` is always entered in the order's currency (see order-item.req.dto.ts
   // on the backend: no per-line currency column).
   currency: Currency
-  exchangeRate: string
+  exchangeRate: number | undefined
 }
 
 export function OrderItemDialog({
@@ -92,7 +84,7 @@ type OrderItemDialogFormProps = {
   onSubmit: (value: OrderItemFormValue) => void
   onCancel: () => void
   currency: Currency
-  exchangeRate: string
+  exchangeRate: number | undefined
 }
 
 function OrderItemDialogForm({
@@ -179,46 +171,22 @@ function OrderItemDialogForm({
           )}
         </form.AppField>
 
-        {/* Built manually (not `field.NumberField`) to fit the live "≈ ... VND"
-            conversion hint below the input — the shared NumberField has no slot
-            for it. Label/input/error otherwise mirror NumberField exactly. */}
         <form.AppField name="unitPrice">
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0
             const vndAmount = roundMoney(
-              (Number(field.state.value) || 0) * (Number(exchangeRate) || 0)
+              (field.state.value ?? 0) * (exchangeRate ?? 0)
             )
 
             return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel
-                  htmlFor="order-item-unit-price"
-                  className="text-xs font-medium text-foreground"
-                >
-                  {`Đơn giá (${currency})`}
-                </FieldLabel>
-                <NumericFormat
-                  customInput={Input}
-                  id="order-item-unit-price"
-                  name={field.name}
-                  placeholder="0"
-                  className="h-9 bg-background text-xs"
-                  value={field.state.value}
-                  thousandSeparator="."
-                  decimalSeparator=","
-                  allowNegative={false}
-                  onBlur={field.handleBlur}
-                  onValueChange={(values) => field.handleChange(values.value)}
-                  aria-invalid={isInvalid}
-                />
-                {currency !== Currency.VND && (
-                  <FieldDescription className="text-[11px] tabular-nums">
-                    ≈ {vndFormatter.format(vndAmount)} VND
-                  </FieldDescription>
-                )}
-                <FieldError errors={field.state.meta.errors} />
-              </Field>
+              <field.NumberField
+                label={`Đơn giá (${currency})`}
+                placeholder="0"
+                description={
+                  currency !== Currency.VND
+                    ? `≈ ${vndFormatter.format(vndAmount)} VND`
+                    : undefined
+                }
+              />
             )
           }}
         </form.AppField>

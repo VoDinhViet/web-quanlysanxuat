@@ -48,7 +48,7 @@ function buildAllocation(row: PurchaseLedgerRow): QuotationItemAllocationValue {
     prCode: row.purchaseRequest.code,
     requestedQuantity: row.quantity,
     neededDate: row.neededDate,
-    quantity: String(row.quantity),
+    quantity: row.quantity,
     quantityAdjustmentReason: "",
   }
 }

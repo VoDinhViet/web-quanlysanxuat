@@ -1,20 +1,16 @@
 import { z } from "zod"
 
-import { isNonNegativeNumberString } from "@/lib/zod-transforms"
-
 // Wire contract for PATCH /api/production-orders/:productionOrderId — also the client-side
-// onSubmit validator for the decision table. Quantity is kept as a string in form state (the
-// numeric <Input>'s own type) and transformed to a number here, same idiom as other numeric
-// fields (e.g. orders' discountValue). No integer refinement or upper bound: the backend column
-// is numeric(18,3) and its DTO only enforces >= 0 — a line can be produced over the order
-// quantity on purpose.
+// onSubmit validator for the decision table. No integer refinement or upper bound: the backend
+// column is numeric(18,3) and its DTO only enforces >= 0 — a line can be produced over the
+// order quantity on purpose.
 export const updateProductionOrderItemSchema = z.object({
   orderItemId: z.uuid(),
   quantity: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Số lượng phải là số không âm")
-    .transform(Number),
+    .number("Số lượng phải là số không âm")
+    .min(0, "Số lượng phải là số không âm")
+    .optional()
+    .pipe(z.number("Số lượng phải là số không âm")),
 })
 
 export const updateProductionOrderSchema = z.object({

@@ -1,10 +1,5 @@
 import { z } from "zod"
 
-import {
-  isNonNegativeNumberString,
-  isPositiveNumberString,
-} from "@/lib/zod-transforms"
-
 // Bước ① của wizard tạo OS-OUT — một dòng cho mỗi outsourceable-operation đã chọn ở bước picker.
 // productionJobCode/itemCode/itemName/operationName/unitName/plannedQuantity/sentQuantity/
 // remainingQuantity là UI-only (hiển thị lại không cần fetch lần 2), cùng idiom
@@ -20,23 +15,18 @@ const createOutsourcingOrderItemFields = {
   sentQuantity: z.number(),
   remainingQuantity: z.number(),
   quantity: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "SL gửi phải lớn hơn 0"),
+    .number("SL gửi phải lớn hơn 0")
+    .positive("SL gửi phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("SL gửi phải lớn hơn 0")),
   weight: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value === "" || isNonNegativeNumberString(value),
-      "Trọng lượng phải là số ≥ 0"
-    ),
+    .number("Trọng lượng phải là số ≥ 0")
+    .min(0, "Trọng lượng phải là số ≥ 0")
+    .optional(),
   area: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value === "" || isNonNegativeNumberString(value),
-      "Diện tích phải là số ≥ 0"
-    ),
+    .number("Diện tích phải là số ≥ 0")
+    .min(0, "Diện tích phải là số ≥ 0")
+    .optional(),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
@@ -44,7 +34,7 @@ const createOutsourcingOrderItemFields = {
 // kiểm lại (mirror inventoryReceiptFromPoItemSchema's "SL nhận > SL đặt").
 export const createOutsourcingOrderItemSchema = z
   .object(createOutsourcingOrderItemFields)
-  .refine((item) => Number(item.quantity) <= item.remainingQuantity, {
+  .refine((item) => item.quantity <= item.remainingQuantity, {
     message: "SL gửi lần này không được vượt SL còn được phép gửi",
     path: ["quantity"],
   })
