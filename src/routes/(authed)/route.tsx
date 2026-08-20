@@ -1,15 +1,17 @@
 import { Outlet, createFileRoute, useRouter } from "@tanstack/react-router"
 import { AlertOctagon } from "lucide-react"
-import type { CSSProperties } from "react"
+import type { CSSProperties, ReactNode } from "react"
 import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { AppSidebar } from "@/components/shared/layout/AppSidebar"
 import { currentUserQueryOptions } from "@/features/auth/api/options"
 import { requireRoutePermissions, requireSession } from "@/features/auth/guard"
 import { getSidebarDefaultOpen } from "@/lib/sidebar-state"
+import { getErrorMessage } from "@/lib/utils"
 
 export const Route = createFileRoute("/(authed)")({
   beforeLoad: async ({ location, context, matches }) => {
@@ -27,6 +29,11 @@ export const Route = createFileRoute("/(authed)")({
     return { user, permissions: profile.permissions }
   },
   component: AuthedLayout,
+  // `beforeLoad` above re-runs on every navigation (it's an uncached server round trip), so
+  // this route re-enters "pending" on every click, not just first load. Without its own
+  // pendingComponent it would fall through to the router's sidebar-less
+  // defaultPendingComponent — see AuthedLayoutPending below.
+  pendingComponent: AuthedLayoutPending,
   errorComponent: AuthedErrorFallback,
 })
 
@@ -35,10 +42,7 @@ export const Route = createFileRoute("/(authed)")({
 // themselves don't catch, see CLAUDE.md "Server functions".
 function AuthedErrorFallback({ error }: ErrorComponentProps) {
   const router = useRouter()
-  const message =
-    error instanceof Error
-      ? error.message
-      : "Đã có lỗi xảy ra. Vui lòng thử lại."
+  const message = getErrorMessage(error)
 
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-4 bg-background p-6 text-center text-foreground">
@@ -51,7 +55,13 @@ function AuthedErrorFallback({ error }: ErrorComponentProps) {
   )
 }
 
-function AuthedLayout() {
+type AuthedShellProps = {
+  children: ReactNode
+}
+
+// Shared by AuthedLayout and AuthedLayoutPending so the sidebar/providers shell never
+// disappears — only the child slot (real content vs. PageLoading) differs between the two.
+function AuthedShell({ children }: AuthedShellProps) {
   return (
     <TooltipProvider>
       <SidebarProvider
@@ -65,10 +75,30 @@ function AuthedLayout() {
         <AppSidebar />
         <SidebarInset className="min-w-0">
           <div className="flex min-h-svh flex-col text-foreground">
-            <Outlet />
+            {children}
           </div>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>
+  )
+}
+
+function AuthedLayout() {
+  return (
+    <AuthedShell>
+      <Outlet />
+    </AuthedShell>
+  )
+}
+
+// Same shell as AuthedLayout, PageLoading (the same placeholder every leaf route's own
+// pendingComponent already uses) standing in for the outlet — so this route's own pending
+// window looks identical to a leaf route's, sidebar included, instead of blanking to the
+// router's sidebar-less defaultPendingComponent.
+function AuthedLayoutPending() {
+  return (
+    <AuthedShell>
+      <PageLoading />
+    </AuthedShell>
   )
 }
