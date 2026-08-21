@@ -20,6 +20,7 @@ import { Route as authedManageInventoryMaterialsRouteImport } from './routes/(au
 import { Route as authedManageInventoryProductsRouteImport } from './routes/(authed)/manage_/inventory-products'
 import { Route as authedManageInventoryReceiptsRouteImport } from './routes/(authed)/manage_/inventory-receipts'
 import { Route as authedManageIqcRouteImport } from './routes/(authed)/manage_/iqc'
+import { Route as authedManageMaterialIssuesRouteImport } from './routes/(authed)/manage_/material-issues'
 import { Route as authedManageMaterialsRouteImport } from './routes/(authed)/manage_/materials'
 import { Route as authedManageOqcRouteImport } from './routes/(authed)/manage_/oqc'
 import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage_/orders'
@@ -129,6 +130,12 @@ const authedManageIqcRoute = authedManageIqcRouteImport.update({
   path: '/manage/iqc',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManageMaterialIssuesRoute =
+  authedManageMaterialIssuesRouteImport.update({
+    id: '/manage_/material-issues',
+    path: '/manage/material-issues',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageMaterialsRoute = authedManageMaterialsRouteImport.update({
   id: '/manage_/materials',
   path: '/manage/materials',
@@ -437,6 +444,7 @@ export interface FileRoutesByFullPath {
   '/manage/inventory-products': typeof authedManageInventoryProductsRoute
   '/manage/inventory-receipts': typeof authedManageInventoryReceiptsRoute
   '/manage/iqc': typeof authedManageIqcRoute
+  '/manage/material-issues': typeof authedManageMaterialIssuesRoute
   '/manage/materials': typeof authedManageMaterialsRoute
   '/manage/oqc': typeof authedManageOqcRoute
   '/manage/orders': typeof authedManageOrdersRoute
@@ -499,6 +507,7 @@ export interface FileRoutesByTo {
   '/manage/inventory-products': typeof authedManageInventoryProductsRoute
   '/manage/inventory-receipts': typeof authedManageInventoryReceiptsRoute
   '/manage/iqc': typeof authedManageIqcRoute
+  '/manage/material-issues': typeof authedManageMaterialIssuesRoute
   '/manage/materials': typeof authedManageMaterialsRoute
   '/manage/oqc': typeof authedManageOqcRoute
   '/manage/orders': typeof authedManageOrdersRoute
@@ -564,6 +573,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/inventory-products': typeof authedManageInventoryProductsRoute
   '/(authed)/manage_/inventory-receipts': typeof authedManageInventoryReceiptsRoute
   '/(authed)/manage_/iqc': typeof authedManageIqcRoute
+  '/(authed)/manage_/material-issues': typeof authedManageMaterialIssuesRoute
   '/(authed)/manage_/materials': typeof authedManageMaterialsRoute
   '/(authed)/manage_/oqc': typeof authedManageOqcRoute
   '/(authed)/manage_/orders': typeof authedManageOrdersRoute
@@ -628,6 +638,7 @@ export interface FileRouteTypes {
     | '/manage/inventory-products'
     | '/manage/inventory-receipts'
     | '/manage/iqc'
+    | '/manage/material-issues'
     | '/manage/materials'
     | '/manage/oqc'
     | '/manage/orders'
@@ -690,6 +701,7 @@ export interface FileRouteTypes {
     | '/manage/inventory-products'
     | '/manage/inventory-receipts'
     | '/manage/iqc'
+    | '/manage/material-issues'
     | '/manage/materials'
     | '/manage/oqc'
     | '/manage/orders'
@@ -754,6 +766,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/inventory-products'
     | '/(authed)/manage_/inventory-receipts'
     | '/(authed)/manage_/iqc'
+    | '/(authed)/manage_/material-issues'
     | '/(authed)/manage_/materials'
     | '/(authed)/manage_/oqc'
     | '/(authed)/manage_/orders'
@@ -890,6 +903,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/iqc'
       fullPath: '/manage/iqc'
       preLoaderRoute: typeof authedManageIqcRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/material-issues': {
+      id: '/(authed)/manage_/material-issues'
+      path: '/manage/material-issues'
+      fullPath: '/manage/material-issues'
+      preLoaderRoute: typeof authedManageMaterialIssuesRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/materials': {
@@ -1272,6 +1292,7 @@ interface authedRouteRouteChildren {
   authedManageInventoryProductsRoute: typeof authedManageInventoryProductsRoute
   authedManageInventoryReceiptsRoute: typeof authedManageInventoryReceiptsRoute
   authedManageIqcRoute: typeof authedManageIqcRoute
+  authedManageMaterialIssuesRoute: typeof authedManageMaterialIssuesRoute
   authedManageMaterialsRoute: typeof authedManageMaterialsRoute
   authedManageOqcRoute: typeof authedManageOqcRoute
   authedManageOrdersRoute: typeof authedManageOrdersRoute
@@ -1333,6 +1354,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageInventoryProductsRoute: authedManageInventoryProductsRoute,
   authedManageInventoryReceiptsRoute: authedManageInventoryReceiptsRoute,
   authedManageIqcRoute: authedManageIqcRoute,
+  authedManageMaterialIssuesRoute: authedManageMaterialIssuesRoute,
   authedManageMaterialsRoute: authedManageMaterialsRoute,
   authedManageOqcRoute: authedManageOqcRoute,
   authedManageOrdersRoute: authedManageOrdersRoute,

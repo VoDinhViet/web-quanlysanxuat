@@ -46,6 +46,8 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/iqc": "iqc:read",
   "/manage/iqc/$iqcId": "iqc:read",
 
+  "/manage/material-issues": "inventory:read",
+
   "/manage/materials": "items:read",
   "/manage/materials/create": "items:create",
   "/manage/materials/$materialId/update": "items:update",
