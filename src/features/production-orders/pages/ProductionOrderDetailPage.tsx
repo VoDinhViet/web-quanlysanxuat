@@ -20,7 +20,7 @@ import {
   productionOrderLogsQueryOptions,
   productionOrderQueryOptions,
 } from "@/features/production-orders/api/options"
-import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
+import { getChangedProductionItems } from "@/features/production-orders/production-order-decision"
 import { updateProductionOrder } from "@/features/production-orders/api/server-functions/update-production-order.api"
 import { updateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
 import type { UpdateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
@@ -85,7 +85,7 @@ export function ProductionOrderDetailPage() {
     onSubmit: ({ value }) =>
       update({
         ...value,
-        items: findChangedProductionQuantities(value, production),
+        items: getChangedProductionItems(value, production),
       }),
   })
 
@@ -104,7 +104,7 @@ export function ProductionOrderDetailPage() {
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <form.Subscribe
           selector={(state) =>
-            findChangedProductionQuantities(state.values, production).length > 0
+            getChangedProductionItems(state.values, production).length > 0
           }
         >
           {(hasUnsavedChanges) => (

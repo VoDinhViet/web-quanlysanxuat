@@ -11,7 +11,7 @@ import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 // should go on the wire. A blanked-out input reads as `undefined`, which never equals the saved
 // number, so it always counts as changed — the save button stays enabled and the real error
 // surfaces via the schema on submit.
-export function findChangedProductionQuantities(
+export function getChangedProductionItems(
   values: UpdateProductionOrderSchema,
   production: ProductionOrderDetail
 ): UpdateProductionOrderSchema["items"] {

@@ -1,6 +1,11 @@
 import { Box } from "@solar-icons/react"
 import { PackageSearch, TriangleAlert } from "lucide-react"
-import type { ReactNode } from "react"
+import { useMemo } from "react"
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FieldError } from "@/components/ui/field"
@@ -17,55 +22,14 @@ import {
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { withForm } from "@/hooks/use-app-form"
-import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
+import { getChangedProductionItems } from "@/features/production-orders/production-order-decision"
+import { buildProductionOrderItemsColumns } from "@/features/production-orders/components/detail/ProductionOrderItemsColumns"
 import { updateProductionOrderFormDefaultValues } from "@/features/production-orders/schemas/update-production-order.schema"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
-import type {
-  ProductionOrderDetail,
-  ProductionOrderDetailItem,
-} from "@/lib/types/production-order.type"
+import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-
-type ProductionOrderItemRowProps = {
-  item: ProductionOrderDetailItem
-  index: number
-  // Rendered by the caller (where `form` is fully typed via `withForm`) rather than taking
-  // `form` as a prop here — `AnyFormApi` doesn't carry the `.Field` render-prop typings, only
-  // the concrete `useAppForm`/`withForm` instance does.
-  quantityCell: ReactNode
-}
-
-// Split out of ProductionOrderItemsCard's render (code-quality.md: split over ~150 lines).
-function ProductionOrderItemRow({
-  item,
-  index,
-  quantityCell,
-}: ProductionOrderItemRowProps) {
-  return (
-    <TableRow className="h-14 bg-card hover:bg-muted/25">
-      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-      <TableCell className="font-mono text-xs">{item.item.code}</TableCell>
-      <TableCell className="font-medium text-foreground">
-        {item.item.name}
-      </TableCell>
-      <TableCell className="text-right tabular-nums">
-        {quantityFormatter.format(item.orderQty)}
-      </TableCell>
-      <TableCell className="text-right font-medium text-info tabular-nums">
-        {quantityFormatter.format(item.onHandQty)}
-      </TableCell>
-      <TableCell className="text-right font-medium text-info tabular-nums">
-        {quantityFormatter.format(item.availableQty)}
-      </TableCell>
-      <TableCell className="text-right">{quantityCell}</TableCell>
-      <TableCell className="text-right text-muted-foreground tabular-nums">
-        {quantityFormatter.format(item.fromStockQty)}
-      </TableCell>
-    </TableRow>
-  )
-}
 
 type ProductionOrderQuantityStaticProps = {
   quantity: number
@@ -107,6 +71,47 @@ export const ProductionOrderItemsCard = withForm({
       0
     )
 
+    const columns = useMemo(
+      () =>
+        buildProductionOrderItemsColumns({
+          renderQuantityCell: (item, index) =>
+            isPending ? (
+              <PermissionGate
+                permission="production:update"
+                fallback={
+                  <ProductionOrderQuantityStatic quantity={item.quantity} />
+                }
+              >
+                <form.Field name={`items[${index}].quantity`}>
+                  {(field) => (
+                    <div className="ml-auto flex w-24 flex-col items-end gap-1">
+                      <NumericCellInput
+                        min={0}
+                        value={field.state.value}
+                        onValueChange={field.handleChange}
+                        disabled={isSaving}
+                      />
+                      <FieldError
+                        errors={field.state.meta.errors}
+                        className="text-right text-[11px]"
+                      />
+                    </div>
+                  )}
+                </form.Field>
+              </PermissionGate>
+            ) : (
+              <ProductionOrderQuantityStatic quantity={item.quantity} />
+            ),
+        }),
+      [form, isPending, isSaving]
+    )
+
+    const table = useReactTable({
+      data: items,
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+    })
+
     return (
       <form
         onSubmit={(event) => {
@@ -140,65 +145,48 @@ export const ProductionOrderItemsCard = withForm({
               <div className="overflow-x-auto rounded-md border border-border/50">
                 <Table>
                   <TableHeader>
-                    <TableRow className="h-12 hover:bg-muted/45">
-                      <TableHead className="w-10">#</TableHead>
-                      <TableHead>Mã sản phẩm</TableHead>
-                      <TableHead>Tên sản phẩm</TableHead>
-                      <TableHead className="text-right">
-                        SL theo đơn hàng
-                      </TableHead>
-                      <TableHead className="text-right">
-                        Tồn kho TP (Hiện có)
-                      </TableHead>
-                      <TableHead className="text-right">
-                        Tồn kho TP (Khả dụng)
-                      </TableHead>
-                      <TableHead className="text-right">
-                        Số lượng sản xuất
-                      </TableHead>
-                      <TableHead className="text-right">Lấy từ tồn</TableHead>
-                    </TableRow>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow
+                        key={headerGroup.id}
+                        className="h-12 hover:bg-muted/45"
+                      >
+                        {headerGroup.headers.map((header) => (
+                          <TableHead
+                            key={header.id}
+                            className={
+                              header.column.columnDef.meta?.headerClassName
+                            }
+                          >
+                            {!header.isPlaceholder &&
+                              flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    ))}
                   </TableHeader>
                   <TableBody>
-                    {items.map((item, index) => (
-                      <ProductionOrderItemRow
-                        key={item.orderItemId}
-                        item={item}
-                        index={index}
-                        quantityCell={
-                          isPending ? (
-                            <PermissionGate
-                              permission="production:update"
-                              fallback={
-                                <ProductionOrderQuantityStatic
-                                  quantity={item.quantity}
-                                />
-                              }
-                            >
-                              <form.Field name={`items[${index}].quantity`}>
-                                {(field) => (
-                                  <div className="ml-auto flex w-24 flex-col items-end gap-1">
-                                    <NumericCellInput
-                                      min={0}
-                                      value={field.state.value}
-                                      onValueChange={field.handleChange}
-                                      disabled={isSaving}
-                                    />
-                                    <FieldError
-                                      errors={field.state.meta.errors}
-                                      className="text-right text-[11px]"
-                                    />
-                                  </div>
-                                )}
-                              </form.Field>
-                            </PermissionGate>
-                          ) : (
-                            <ProductionOrderQuantityStatic
-                              quantity={item.quantity}
-                            />
-                          )
-                        }
-                      />
+                    {table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.original.orderItemId}
+                        className="h-14 bg-card hover:bg-muted/25"
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            key={cell.id}
+                            className={
+                              cell.column.columnDef.meta?.cellClassName
+                            }
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
                     ))}
                   </TableBody>
                   <TableFooter>
@@ -247,8 +235,7 @@ export const ProductionOrderItemsCard = withForm({
 
               <form.Subscribe
                 selector={(state) =>
-                  findChangedProductionQuantities(state.values, production)
-                    .length > 0
+                  getChangedProductionItems(state.values, production).length > 0
                 }
               >
                 {(hasUnsavedChanges) =>

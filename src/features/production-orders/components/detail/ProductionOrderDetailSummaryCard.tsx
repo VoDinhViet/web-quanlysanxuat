@@ -5,7 +5,6 @@ import type { ReactNode } from "react"
 
 import { ProductionOrderDetailActions } from "@/features/production-orders/components/detail/ProductionOrderDetailActions"
 import { ProductionOrderStatusBadge } from "@/features/production-orders/components/ProductionOrderBadges"
-import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 type ProductionOrderDetailSummaryCardProps = {
@@ -35,7 +34,6 @@ export function ProductionOrderDetailSummaryCard({
               search={{
                 page: 1,
                 limit: 10,
-                status: ProductionOrderStatus.PENDING,
               }}
               className="-ml-1.5 flex size-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground print:hidden"
               aria-label="Quay lại danh sách LSX"
