@@ -1,12 +1,14 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft, Diskette } from "@solar-icons/react"
+import { ClipboardCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/detail/ProductionJobDetailTabs"
+import { RequestProductionJobQcDialog } from "@/features/production-jobs/components/detail/RequestProductionJobQcDialog"
 import { StartProductionJobDialog } from "@/features/production-jobs/components/detail/StartProductionJobDialog"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
@@ -19,7 +21,10 @@ type ProductionJobDetailHeaderProps = {
 // like ProductDetailHeader.tsx. "Xác nhận" opens StartProductionJobDialog (POST
 // /production-jobs/:jobId/start) — only shown while PENDING; once IN_PROGRESS the transition is
 // one-way and there's nothing left to confirm, so the button disappears entirely rather than
-// showing disabled (same idiom as ProductionOrderDetailActions.tsx's "Duyệt LSX").
+// showing disabled (same idiom as ProductionOrderDetailActions.tsx's "Duyệt LSX"). Once
+// IN_PROGRESS, "Yêu cầu QC" takes its place — no client-side gate on completedDate/final-assembly
+// (unlike the tab this button used to live in): the backend already enforces every precondition
+// (E213/E214/...) and the dialog surfaces its message inline on failure.
 export function ProductionJobDetailHeader({
   detail,
 }: ProductionJobDetailHeaderProps) {
@@ -107,7 +112,19 @@ export function ProductionJobDetailHeader({
               }
             />
           </PermissionGate>
-        ) : null}
+        ) : (
+          <PermissionGate permission="oqc:create">
+            <RequestProductionJobQcDialog
+              job={detail}
+              trigger={
+                <Button type="button" className="gap-1.5">
+                  <ClipboardCheck className="size-4" />
+                  Yêu cầu QC
+                </Button>
+              }
+            />
+          </PermissionGate>
+        )}
       </div>
 
       <ProductionJobDetailTabs />

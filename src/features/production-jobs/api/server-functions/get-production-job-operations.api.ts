@@ -22,8 +22,8 @@ function resolveGetProductionJobOperationsErrorMessage(error: unknown): string {
 }
 
 // "Công đoạn sản xuất" tab's source — GET /production-jobs/:jobId/operations returns every BOM
-// node (part) with at least one as-used operation, plain array (not paginated), server-grouped —
-// each part carries its own `operations[]`. See ProductionJobBomItem's doc comment.
+// item with at least one as-used operation, plain array (not paginated), server-grouped — each
+// BOM item carries its own `operations[]`. See ProductionJobBomItem's doc comment.
 export const getProductionJobOperations = createServerFn({ method: "GET" })
   .validator(z.object({ productionJobId: z.uuid() }))
   .handler(async ({ data }): Promise<ProductionJobBomItem[]> => {

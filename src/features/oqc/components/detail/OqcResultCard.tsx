@@ -35,9 +35,9 @@ type OqcResultCardProps = {
   disabled?: boolean
 }
 
-// KẾT QUẢ — QC tự chọn PASS/FAIL (không suy từ bảng AQL) + ghi chú kết quả. Không có nhánh
-// disposition — mirrors IqcResultCard.tsx nhưng OQC không có khái niệm xử lý sau FAIL: FAIL chỉ
-// đơn giản chuyển "Chờ xử lý", QC lấy mẫu lại và xác nhận lại trên cùng phiếu.
+// KẾT QUẢ — QC tự chọn PASS/FAIL (không suy từ bảng AQL) + ghi chú kết quả. Nhánh disposition
+// (ACCEPT/REWORK/SCRAP) hiện ở OqcDispositionCard riêng, do OqcDetailForm.tsx render khi `result`
+// (live) = FAIL — cùng mirror IqcResultCard.tsx/IqcDispositionCard.tsx.
 export function OqcResultCard({ form, disabled }: OqcResultCardProps) {
   return (
     <OqcDetailSectionCard

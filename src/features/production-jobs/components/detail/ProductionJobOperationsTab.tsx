@@ -1,8 +1,7 @@
 import { useMemo } from "react"
-import { Download, Logs, Route, Send } from "lucide-react"
+import { Route } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { ProductionJobOperationsLegend } from "@/features/production-jobs/components/detail/ProductionJobOperationsLegend"
@@ -26,7 +25,7 @@ type ProductionJobOperationsTabProps = {
 }
 
 // Reads GET /production-jobs/:jobId/operations directly (client-driven, tab-gated) — the backend
-// already groups by BOM node (part), one array element per part with its own `operations[]`, so
+// already groups by BOM item, one array element per BOM item with its own `operations[]`, so
 // no client-side grouping is needed (see ProductionJobBomItem's doc comment). Sửa chỉ mở khi Job
 // đang IN_PROGRESS (khớp ràng buộc backend — completedQuantity/completedDate đóng băng ngoài trạng
 // thái đó).
@@ -67,30 +66,9 @@ export function ProductionJobOperationsTab({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
         <div className="flex items-center gap-2">
           <Route className="size-3.5 text-muted-foreground" />
-          <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+          <h2 className="text-xs font-semibold tracking-wide text-foreground">
             Công đoạn sản xuất
           </h2>
-        </div>
-
-        <div className="flex items-center gap-1.5">
-          <DisabledAction
-            label="Xem lịch sử cập nhật"
-            hint="chưa được xây dựng"
-          >
-            <Logs className="size-3.5" />
-          </DisabledAction>
-          <DisabledAction
-            label="Gửi đi gia công ngoài"
-            hint="chưa được xây dựng"
-          >
-            <Send className="size-3.5" />
-          </DisabledAction>
-          <DisabledAction
-            label="Cập nhật SL nhận về (gia công ngoài)"
-            hint="chưa được xây dựng"
-          >
-            <Download className="size-3.5" />
-          </DisabledAction>
         </div>
       </div>
 

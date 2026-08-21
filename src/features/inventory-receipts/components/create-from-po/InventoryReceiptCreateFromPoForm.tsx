@@ -79,6 +79,7 @@ function buildCreateInventoryReceiptPayload(
     supplierId: purchaseOrder.supplier.id,
     purchaseRequestId: "",
     productionOrderId: "",
+    productionJobId: "",
     purchaseOrderId: value.purchaseOrderId,
     requiresIqc: value.requiresIqc === "yes",
     note: "",

@@ -1,6 +1,11 @@
 import { Badge } from "@/components/ui/badge"
 import { iqcResultLabels, IqcResult } from "@/lib/types/iqc.type"
-import { oqcStatusLabels, OqcStatus } from "@/lib/types/oqc.type"
+import {
+  oqcDispositionLabels,
+  oqcStatusLabels,
+  OqcDisposition,
+  OqcStatus,
+} from "@/lib/types/oqc.type"
 import { cn } from "@/lib/utils"
 
 type BadgeStyle = {
@@ -50,6 +55,12 @@ export const oqcStatusStyles: Record<OqcStatus, BadgeStyle> = {
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
+  // Cùng tông xanh dương với IqcStatus.WAITING_RETURN — cả 2 đều là "FAIL, đã chọn hướng xử lý,
+  // đang ở vòng lặp tiếp theo", phân biệt được với PENDING (FAIL, chưa chọn gì).
+  [OqcStatus.REWORK]: {
+    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    dot: "bg-blue-500 dark:bg-blue-400",
+  },
   [OqcStatus.COMPLETED]: {
     badge: "bg-success/10 text-success",
     dot: "bg-success",
@@ -68,6 +79,43 @@ export function OqcStatusBadge({ status, className }: OqcStatusBadgeProps) {
     <Badge variant="outline" className={cn(badge, className)}>
       <span className={cn("size-1.5 rounded-full", dot)} />
       {oqcStatusLabels[status]}
+    </Badge>
+  )
+}
+
+export const oqcDispositionStyles: Record<OqcDisposition, BadgeStyle> = {
+  [OqcDisposition.ACCEPT]: {
+    badge:
+      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    dot: "bg-amber-500 dark:bg-amber-400",
+  },
+  [OqcDisposition.REWORK]: {
+    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    dot: "bg-blue-500 dark:bg-blue-400",
+  },
+  [OqcDisposition.SCRAP]: {
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
+  },
+}
+
+type OqcDispositionBadgeProps = {
+  disposition: OqcDisposition
+  className?: string
+}
+
+// Takes a non-null disposition only — PASS rows have none at all (DB check constraint
+// `chk_oqc_inspections_disposition_requires_fail`).
+export function OqcDispositionBadge({
+  disposition,
+  className,
+}: OqcDispositionBadgeProps) {
+  const { badge, dot } = oqcDispositionStyles[disposition]
+
+  return (
+    <Badge variant="outline" className={cn(badge, className)}>
+      <span className={cn("size-1.5 rounded-full", dot)} />
+      {oqcDispositionLabels[disposition]}
     </Badge>
   )
 }

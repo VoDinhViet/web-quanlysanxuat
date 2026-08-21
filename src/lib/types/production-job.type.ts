@@ -81,6 +81,12 @@ export type ProductionJobOperation = {
   createdAt: string
 }
 
+/** `FG` = node Cấp 0 (lắp ráp/đóng gói thành phẩm, luôn đứng cuối bảng "Công đoạn sản xuất",
+ *  `ProductionJobsService.copyFinalAssemblyRouting` backend) — `WIP`/`RM` = node cây BOM thường.
+ *  Riêng khỏi `ItemType` (`item.type.ts`, thu hẹp còn FG/WIP vì `Item` không bao giờ là RM) vì đây
+ *  là node cây BOM snapshot của Job, có thể là cả 3 giá trị. */
+export type ProductionJobBomItemType = "FG" | "WIP" | "RM"
+
 /** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/operations`,
  *  a plain array, not paginated) — "Công đoạn sản xuất" tab: every BOM node (part) that has at
  *  least one as-used operation, each carrying its own `operations[]` (server-grouped — no more
@@ -91,6 +97,7 @@ export type ProductionJobBomItem = {
   id: string
   code: string
   name: string
+  itemType: ProductionJobBomItemType
   operations: ProductionJobOperation[]
 }
 

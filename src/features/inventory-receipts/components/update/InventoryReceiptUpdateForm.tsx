@@ -26,6 +26,7 @@ function getInventoryReceiptDefaultValues(
     supplierId: detail.supplier?.id ?? "",
     purchaseRequestId: detail.purchaseRequest?.id ?? "",
     productionOrderId: detail.productionOrder?.id ?? "",
+    productionJobId: detail.productionJob?.id ?? "",
     purchaseOrderId: detail.purchaseOrder?.id ?? "",
     note: detail.note ?? "",
     items: detail.items.map((item) => ({
@@ -117,6 +118,14 @@ export function InventoryReceiptUpdateForm({
               ? {
                   value: detail.purchaseOrder.id,
                   label: detail.purchaseOrder.code,
+                }
+              : undefined
+          }
+          initialProductionJob={
+            detail.productionJob
+              ? {
+                  value: detail.productionJob.id,
+                  label: detail.productionJob.code,
                 }
               : undefined
           }

@@ -6,6 +6,7 @@ import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { useGetPurchaseOrderOptions } from "@/features/inventory-receipts/hooks/use-get-purchase-order-options"
+import { useGetProductionJobOptions } from "@/features/production-jobs/api"
 import { updateInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"
 import {
   InventoryReceiptType,
@@ -25,6 +26,7 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
     warehouseName: "",
     initialSupplier: undefined as ComboboxOption | undefined,
     initialPurchaseOrder: undefined as ComboboxOption | undefined,
+    initialProductionJob: undefined as ComboboxOption | undefined,
   },
   render: function Render({
     form,
@@ -33,9 +35,11 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
     warehouseName,
     initialSupplier,
     initialPurchaseOrder,
+    initialProductionJob,
   }) {
     const supplier = useGetSupplierOptions()
     const purchaseOrder = useGetPurchaseOrderOptions()
+    const productionJob = useGetProductionJobOptions()
     const receiptType = useField({ form, name: "receiptType" }).state.value
 
     useEffect(() => {
@@ -43,9 +47,13 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
         form.setFieldValue("supplierId", "")
         form.setFieldValue("purchaseOrderId", "")
       }
+      if (receiptType !== InventoryReceiptType.PRODUCTION) {
+        form.setFieldValue("productionJobId", "")
+      }
     }, [receiptType, form])
 
     const isPurchase = receiptType === InventoryReceiptType.PURCHASE
+    const isProduction = receiptType === InventoryReceiptType.PRODUCTION
 
     return (
       <div className="drafting-title-block">
@@ -141,6 +149,27 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
               />
             )}
           </form.AppField>
+
+          {isProduction && (
+            <form.Field name="productionJobId">
+              {(field) => (
+                <ComboboxField
+                  id={field.name}
+                  label="Lệnh sản xuất (Job)"
+                  placeholder="Chọn Job cần nhập kho thành phẩm"
+                  value={field.state.value || undefined}
+                  onValueChange={(next) => field.handleChange(next ?? "")}
+                  onBlur={field.handleBlur}
+                  options={productionJob.options}
+                  onSearchChange={productionJob.onSearchChange}
+                  isPending={productionJob.isFetching}
+                  initialOption={initialProductionJob}
+                  emptyMessage="Không tìm thấy Job"
+                  disabled={disabled}
+                />
+              )}
+            </form.Field>
+          )}
 
           <form.AppField name="note">
             {(field) => (

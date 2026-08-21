@@ -80,8 +80,7 @@ export const operationProgressStatusDescriptions: Record<
 }
 
 // `completedDate` được server set đúng lúc `completedQuantity` đạt `plannedQuantity` (chốt E088)
-// nên dùng thẳng nó cho trạng thái "Hoàn thành" thay vì so sánh lại 2 số — cùng cách
-// PartCompletionBadge bên dưới đang làm.
+// nên dùng thẳng nó cho trạng thái "Hoàn thành" thay vì so sánh lại 2 số.
 function resolveOperationProgressStatus(
   operation: ProductionJobOperation
 ): OperationProgressStatus {
@@ -237,39 +236,12 @@ function OperationSendActionCell({
   )
 }
 
-// Completion badge counts operations whose `completedDate` is set — the server already sets that
-// exactly when `completedQuantity` reaches the node's `plannedQuantity` (E088's own cap), so
-// re-deriving the threshold here would just duplicate that check.
-function PartCompletionBadge({
-  operations,
-}: {
-  operations: ProductionJobOperation[]
-}) {
-  const completedCount = operations.filter(
-    (operation) => operation.completedDate !== null
-  ).length
-  const allCompleted =
-    operations.length > 0 && completedCount === operations.length
-
-  return (
-    <Badge
-      variant="outline"
-      className={cn(
-        "font-mono",
-        allCompleted
-          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
-          : "text-muted-foreground"
-      )}
-    >
-      {completedCount}/{operations.length} hoàn thành
-    </Badge>
-  )
-}
-
-// One BOM node (part)'s group header — a generic icon (this endpoint carries no image field,
-// unlike the product-structure BOM) + code/name + completion badge, ahead of its operation rows
-// below.
-function PartHeaderRow({ part }: { part: ProductionJobBomItem }) {
+// One BOM item's group header — a generic icon (this endpoint carries no image field, unlike the
+// product-structure BOM) + code/name, ahead of its operation rows below. `itemType === "FG"` is
+// the node Cấp 0 backend snapshots from the FG's own routing
+// (`copyFinalAssemblyRouting`, luôn đứng cuối bảng) — gắn thẳng badge "Lắp ráp thành phẩm" tại đây,
+// không tách component riêng cho một nhãn điều kiện đơn giản như vậy.
+function BomItemHeaderRow({ bomItem }: { bomItem: ProductionJobBomItem }) {
   return (
     <TableRow className="h-14 bg-muted/10 hover:bg-muted/15">
       <TableCell colSpan={columnCount} className="py-3">
@@ -278,29 +250,121 @@ function PartHeaderRow({ part }: { part: ProductionJobBomItem }) {
             <Package className="size-4" />
           </div>
           <span className="font-mono font-semibold text-foreground">
-            {part.code}
+            {bomItem.code}
           </span>
           <span className="text-muted-foreground">-</span>
-          <span className="font-semibold text-foreground">{part.name}</span>
-          <PartCompletionBadge operations={part.operations} />
+          <span className="font-semibold text-foreground">{bomItem.name}</span>
+          {bomItem.itemType === "FG" && (
+            <Badge
+              variant="outline"
+              className="bg-violet-50 whitespace-nowrap text-violet-700 dark:bg-violet-500/10 dark:text-violet-400"
+            >
+              <span className="size-1.5 rounded-full bg-violet-500 dark:bg-violet-400" />
+              Lắp ráp thành phẩm
+            </Badge>
+          )}
         </div>
       </TableCell>
     </TableRow>
   )
 }
 
+type OperationRowProps = {
+  operation: ProductionJobOperation
+  groupIndex: number
+  operationIndex: number
+  productionJobId: string
+  canEdit: boolean
+  outsourceableByOperationId: Map<string, OutsourceableOperation>
+}
+
+// One operation row — split out of ProductionJobOperationsTable's render (code-quality.md: split
+// over ~150 lines), mirror BomItemHeaderRow being its own component for the group header above
+// it. `groupIndex`/`operationIndex` are 0-based positions the caller's `.map()` already tracks —
+// formatted here (not pre-joined by the caller) so numbering stays colocated with its own cell.
+function OperationRow({
+  operation,
+  groupIndex,
+  operationIndex,
+  productionJobId,
+  canEdit,
+  outsourceableByOperationId,
+}: OperationRowProps) {
+  return (
+    <TableRow className="h-16 bg-card hover:bg-muted/20">
+      <TableCell className="py-3">
+        <div className="flex items-start gap-2.5">
+          <span className="mt-0.5 shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
+            {groupIndex + 1}.{operationIndex + 1}
+          </span>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="font-medium text-foreground">
+                {operation.name}
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
+                ({operation.code})
+              </span>
+            </div>
+            {operation.note ? (
+              <p className="mt-1 text-[10px] text-muted-foreground">
+                {operation.note}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </TableCell>
+      <TableCell className="text-center">
+        <OperationTypeBadge type={operation.type} />
+      </TableCell>
+      <TableCell className="text-center text-foreground tabular-nums">
+        {quantityFormatter.format(operation.plannedQuantity)}
+      </TableCell>
+      <TableCell>
+        <ProductionJobOperationCompletedQuantityCell
+          productionJobId={productionJobId}
+          operation={operation}
+          canEdit={canEdit}
+        />
+      </TableCell>
+      <TableCell className="text-center text-muted-foreground">
+        <OperationSentQuantityCell
+          operation={operation}
+          outsourceableByOperationId={outsourceableByOperationId}
+        />
+      </TableCell>
+      <TableCell className="text-center">
+        <OperationStatusBadge operation={operation} />
+      </TableCell>
+      <TableCell className="text-center text-muted-foreground">
+        {operation.completedDate === null
+          ? "—"
+          : DateTime.fromISO(operation.completedDate).toFormat("dd/MM/yyyy")}
+      </TableCell>
+      <TableCell className="text-center">
+        <OperationSendActionCell
+          operation={operation}
+          outsourceableByOperationId={outsourceableByOperationId}
+        />
+      </TableCell>
+    </TableRow>
+  )
+}
+
 // Công đoạn as-used của Job (GET /production-jobs/:jobId/operations) — backend đã nhóm sẵn theo
-// BOM node (part), mỗi phần tử mảng là một part kèm operations[] của riêng nó (không cần tự dựng
-// nhóm ở FE nữa). Mỗi part hiện một khối header (code/tên + badge tiến độ) rồi tới các dòng công
-// đoạn của riêng nó, theo thứ tự backend trả (đã sort sortOrder/createdAt). "SL KẾ HOẠCH" đọc
-// thẳng `plannedQuantity` — cùng một part thì mọi công đoạn của nó có cùng số; SL hoàn thành nhập
-// được tới đúng mức đó (`max`), backend vẫn là chốt chặn thật (E088) lúc lưu. 8 cột tách bạch:
-// CÔNG ĐOẠN (STT + tên/mã/ghi chú), LOẠI (Trong xưởng/Gia công ngoài — 1 part có thể có cả 2),
-// SL KẾ HOẠCH, SL HOÀN THÀNH, SL ĐÃ GỬI (chỉ dòng Gia công ngoài — ghép từ
+// BOM item, mỗi phần tử mảng là một BOM item kèm operations[] của riêng nó (không cần tự dựng
+// nhóm ở FE nữa). Mỗi BOM item hiện một khối header (BomItemHeaderRow) rồi tới các dòng công đoạn
+// của riêng nó (OperationRow), theo thứ tự backend trả (đã sort sortOrder/createdAt). "SL KẾ
+// HOẠCH" đọc thẳng `plannedQuantity` — cùng một BOM item thì mọi công đoạn của nó có cùng số; SL
+// hoàn thành nhập được tới đúng mức đó (`max`), backend vẫn là chốt chặn thật (E088) lúc lưu. 8
+// cột tách bạch: CÔNG ĐOẠN (STT + tên/mã/ghi chú), LOẠI (Trong xưởng/Gia công ngoài — 1 BOM item
+// có thể có cả 2), SL KẾ HOẠCH, SL HOÀN THÀNH, SL ĐÃ GỬI (chỉ dòng Gia công ngoài — ghép từ
 // `outsourceableByOperationId`, xem OperationSentQuantityCell), TRẠNG THÁI (Chưa bắt đầu/Đang thực
 // hiện/Hoàn thành — suy từ completedQuantity/completedDate, không phải field riêng trên DTO),
-// NGÀY HOÀN THÀNH, THAO TÁC (chỉ dòng Gia công ngoài mới có nút Gửi gia công ngoài, khoá khi đã
-// gửi đủ định mức, xem OperationSendActionCell). Khung viền `rounded-md border` quanh bảng +
+// NGÀY HOÀN THÀNH, THAO TÁC (dòng Gia công ngoài có thêm nút Gửi gia công ngoài — khoá khi đã gửi
+// đủ định mức, xem OperationSendActionCell). "Yêu cầu QC" không còn ở đây nữa — đã gộp thành 1
+// nút duy nhất ở header tab (ProductionJobOperationsTab.tsx), chỉ hiện khi cả Job hoàn thành mọi
+// công đoạn. Khung viền `rounded-md border` quanh bảng +
 // border-r/border-b có sẵn từ Table primitive, khớp khuôn các bảng khác trong repo
 // (`ProductionOrderItemsCard.tsx`, `InventoryIssuesTable.tsx`).
 export function ProductionJobOperationsTable({
@@ -348,76 +412,19 @@ export function ProductionJobOperationsTable({
                 title="Chưa có công đoạn nào."
               />
             ) : (
-              groups.map((part, groupIndex) => (
-                <Fragment key={part.id}>
-                  <PartHeaderRow part={part} />
-                  {part.operations.map((operation, operationIndex) => (
-                    <TableRow
+              groups.map((bomItem, groupIndex) => (
+                <Fragment key={bomItem.id}>
+                  <BomItemHeaderRow bomItem={bomItem} />
+                  {bomItem.operations.map((operation, operationIndex) => (
+                    <OperationRow
                       key={operation.id}
-                      className="h-16 bg-card hover:bg-muted/20"
-                    >
-                      <TableCell className="py-3">
-                        <div className="flex items-start gap-2.5">
-                          <span className="mt-0.5 shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
-                            {groupIndex + 1}.{operationIndex + 1}
-                          </span>
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              <span className="font-medium text-foreground">
-                                {operation.name}
-                              </span>
-                              <span className="font-mono text-xs text-muted-foreground">
-                                ({operation.code})
-                              </span>
-                            </div>
-                            {operation.note ? (
-                              <p className="mt-1 text-[10px] text-muted-foreground">
-                                {operation.note}
-                              </p>
-                            ) : null}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <OperationTypeBadge type={operation.type} />
-                      </TableCell>
-                      <TableCell className="text-center text-foreground tabular-nums">
-                        {quantityFormatter.format(operation.plannedQuantity)}
-                      </TableCell>
-                      <TableCell>
-                        <ProductionJobOperationCompletedQuantityCell
-                          productionJobId={productionJobId}
-                          operation={operation}
-                          canEdit={canEdit}
-                        />
-                      </TableCell>
-                      <TableCell className="text-center text-muted-foreground">
-                        <OperationSentQuantityCell
-                          operation={operation}
-                          outsourceableByOperationId={
-                            outsourceableByOperationId
-                          }
-                        />
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <OperationStatusBadge operation={operation} />
-                      </TableCell>
-                      <TableCell className="text-center text-muted-foreground">
-                        {operation.completedDate === null
-                          ? "—"
-                          : DateTime.fromISO(operation.completedDate).toFormat(
-                              "dd/MM/yyyy"
-                            )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <OperationSendActionCell
-                          operation={operation}
-                          outsourceableByOperationId={
-                            outsourceableByOperationId
-                          }
-                        />
-                      </TableCell>
-                    </TableRow>
+                      operation={operation}
+                      groupIndex={groupIndex}
+                      operationIndex={operationIndex}
+                      productionJobId={productionJobId}
+                      canEdit={canEdit}
+                      outsourceableByOperationId={outsourceableByOperationId}
+                    />
                   ))}
                 </Fragment>
               ))

@@ -26,6 +26,7 @@ export const createInventoryReceiptSchema = z.object({
   supplierId: z.string().trim().transform(emptyToUndefined),
   purchaseRequestId: z.string().trim().transform(emptyToUndefined),
   productionOrderId: z.string().trim().transform(emptyToUndefined),
+  productionJobId: z.string().trim().transform(emptyToUndefined),
   purchaseOrderId: z.string().trim().transform(emptyToUndefined),
   // Plain optional boolean, not a ""→undefined string transform like its neighbors — only
   // InventoryReceiptCreateFromPoForm.tsx sets it (already a real boolean by submit time);
@@ -54,6 +55,7 @@ export const createInventoryReceiptFormDefaultValues: CreateInventoryReceiptSche
     supplierId: "",
     purchaseRequestId: "",
     productionOrderId: "",
+    productionJobId: "",
     purchaseOrderId: "",
     note: "",
     items: [],

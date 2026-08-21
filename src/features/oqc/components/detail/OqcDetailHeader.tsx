@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
+import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -53,7 +54,8 @@ export function OqcDetailHeader({
           <OqcResultBadge result={oqc.result} />
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-5">
+          <MetaField label="PO" value={oqc.orderCode ?? "—"} />
           <MetaField
             label="Job (LSX)"
             value={
@@ -67,14 +69,19 @@ export function OqcDetailHeader({
               </Link>
             }
           />
-          <MetaField label="PO" value={oqc.orderCode ?? "—"} />
-          <MetaField label="Mã vật tư" value={oqc.item.code} />
-          <MetaField label="Tên vật tư" value={oqc.item.name} />
-          <MetaField label="Đvt" value={oqc.item.unit.name} />
+          <MetaField label="Công đoạn" value={oqc.operation.name} />
+          <MetaField label="Mã part" value={oqc.bomItem.code} />
+          <MetaField label="Tên Part" value={oqc.bomItem.name} />
+          <MetaField label="Đvt" value={oqc.unit.name} />
           <MetaField
             label="Lot size"
             value={quantityFormatter.format(oqc.quantity)}
           />
+          <MetaField
+            label="Ngày kiểm tra"
+            value={DateTime.fromISO(oqc.inspectionDate).toFormat("dd/MM/yyyy")}
+          />
+          <MetaField label="Ghi chú" value={oqc.note ?? "—"} />
         </div>
       </div>
 

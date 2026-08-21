@@ -65,7 +65,7 @@ export function OqcAqlInputCard({ form, oqc, disabled }: OqcAqlInputCardProps) {
           <form.AppField name="sampleSize">
             {(field) => (
               <field.NumberField
-                label={`Số lượng bốc mẫu (${oqc.item.unit.name})`}
+                label={`Số lượng bốc mẫu (${oqc.unit.name})`}
                 required
                 placeholder="VD: 32"
                 thousandSeparator={false}
@@ -77,7 +77,7 @@ export function OqcAqlInputCard({ form, oqc, disabled }: OqcAqlInputCardProps) {
           <form.AppField name="defectQty">
             {(field) => (
               <field.NumberField
-                label={`Số lượng NG (${oqc.item.unit.name})`}
+                label={`Số lượng NG (${oqc.unit.name})`}
                 required
                 placeholder="VD: 0"
                 thousandSeparator={false}

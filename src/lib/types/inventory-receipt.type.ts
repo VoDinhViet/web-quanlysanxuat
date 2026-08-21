@@ -92,6 +92,14 @@ export type InventoryReceiptProductionOrderRef = {
   code: string | null
 }
 
+/** Mirrors the backend's `ProductionJobRefResDto` as nested on a receipt row — unlike
+ *  `InventoryReceiptProductionOrderRef`, `code` is never null: a Job only exists once its LSX is
+ *  `APPROVED` (`docs/domains/production.md`), by which point it already has a code. */
+export type InventoryReceiptProductionJobRef = {
+  id: string
+  code: string
+}
+
 /** Mirrors the backend's `PurchaseOrderRefResDto` as nested on a receipt row. */
 export type InventoryReceiptPurchaseOrderRef = {
   id: string
@@ -140,6 +148,7 @@ export type InventoryReceipt = {
   supplier: SupplierRef | null
   purchaseRequest: InventoryReceiptPurchaseRequestRef | null
   productionOrder: InventoryReceiptProductionOrderRef | null
+  productionJob: InventoryReceiptProductionJobRef | null
   purchaseOrder: InventoryReceiptPurchaseOrderRef | null
   note: string | null
   items: InventoryReceiptItem[]

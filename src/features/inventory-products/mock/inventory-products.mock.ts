@@ -19,8 +19,6 @@ const mockRows: InventoryProduct[] = [
     reservedQuantity: 30,
     exportableQuantity: 90,
     availableQuantity: 0,
-    category: "Bracket",
-    status: "IN_STOCK",
     poCodes: ["PO2405-001", "PO2405-004"],
   },
   {
@@ -35,8 +33,6 @@ const mockRows: InventoryProduct[] = [
     reservedQuantity: 0,
     exportableQuantity: 10,
     availableQuantity: 0,
-    category: "Cover",
-    status: "IN_STOCK",
     poCodes: ["PO2405-002"],
   },
   {
@@ -51,8 +47,6 @@ const mockRows: InventoryProduct[] = [
     reservedQuantity: 0,
     exportableQuantity: 0,
     availableQuantity: 0,
-    category: "Housing",
-    status: "OUT_OF_STOCK",
     poCodes: [],
   },
   {
@@ -67,8 +61,6 @@ const mockRows: InventoryProduct[] = [
     reservedQuantity: 20,
     exportableQuantity: 35,
     availableQuantity: -5,
-    category: "Shaft",
-    status: "LOW_STOCK",
     poCodes: ["PO2405-006"],
   },
   {
@@ -83,8 +75,6 @@ const mockRows: InventoryProduct[] = [
     reservedQuantity: 50,
     exportableQuantity: 150,
     availableQuantity: 0,
-    category: "Gear",
-    status: "IN_STOCK",
     poCodes: ["PO2405-008"],
   },
   {
@@ -99,8 +89,6 @@ const mockRows: InventoryProduct[] = [
     reservedQuantity: 5,
     exportableQuantity: 0,
     availableQuantity: 0,
-    category: "Panel",
-    status: "LOW_STOCK",
     poCodes: ["PO2405-010"],
   },
   {
@@ -115,8 +103,6 @@ const mockRows: InventoryProduct[] = [
     reservedQuantity: 10,
     exportableQuantity: 70,
     availableQuantity: -20,
-    category: "Frame",
-    status: "LOW_STOCK",
     poCodes: ["PO2405-012"],
   },
 ]
@@ -145,13 +131,8 @@ export function getMockInventoryProducts(
     )
   }
 
-  if (search.category && search.category !== "all") {
-    rows = rows.filter((r) => r.category === search.category)
-  }
-
-  if (search.status) {
-    rows = rows.filter((r) => r.status === search.status)
-  }
+  // `search.asOfDate` không lọc — mock là tồn tĩnh, không có lịch sử để cắt theo ngày; tham số
+  // vẫn đi vào query key như bình thường cho tới khi có API thật.
 
   const totalRecords = rows.length
   const totalPages = Math.max(1, Math.ceil(totalRecords / search.limit))

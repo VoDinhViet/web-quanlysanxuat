@@ -1,8 +1,12 @@
+import { useField } from "@tanstack/react-form"
+
 import { Surface } from "@/components/shared/layout/Surface"
 import { OqcAqlInputCard } from "@/features/oqc/components/detail/OqcAqlInputCard"
 import { OqcDetailHeader } from "@/features/oqc/components/detail/OqcDetailHeader"
+import { OqcDispositionCard } from "@/features/oqc/components/detail/OqcDispositionCard"
 import { OqcResultCard } from "@/features/oqc/components/detail/OqcResultCard"
 import { useOqcDetailForm } from "@/features/oqc/hooks/use-oqc-detail-form"
+import { IqcResult } from "@/lib/types/iqc.type"
 import { OqcStatus } from "@/lib/types/oqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
@@ -18,6 +22,7 @@ export function OqcDetailForm({ oqc }: OqcDetailFormProps) {
   const { form, mutation } = useOqcDetailForm(oqc)
   const isLocked = oqc.status === OqcStatus.COMPLETED
   const disabled = isLocked || mutation.isPending
+  const result = useField({ form, name: "result" }).state.value
 
   return (
     <form
@@ -35,6 +40,10 @@ export function OqcDetailForm({ oqc }: OqcDetailFormProps) {
 
       <OqcAqlInputCard form={form} oqc={oqc} disabled={disabled} />
       <OqcResultCard form={form} disabled={disabled} />
+
+      {result === IqcResult.FAIL && (
+        <OqcDispositionCard form={form} disabled={disabled} />
+      )}
     </form>
   )
 }

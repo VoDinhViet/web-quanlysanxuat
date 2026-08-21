@@ -13,17 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { DatePicker } from "@/components/shared/inputs/DatePicker"
+import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import type {
-  InventoryProductCategory,
-  InventoryProductStatus,
-} from "@/lib/types/inventory-product.type"
-import {
-  inventoryProductCategoryLabels,
-  inventoryProductStatusLabels,
-} from "@/lib/types/inventory-product.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
 
 const clientOptions = [
   { value: "all", label: "Tất cả khách hàng" },
@@ -32,21 +24,6 @@ const clientOptions = [
   { value: "GHI Industry", label: "GHI Industry" },
   { value: "JKL Co., Ltd", label: "JKL Co., Ltd" },
   { value: "MNO Solutions", label: "MNO Solutions" },
-]
-
-const categoryOptions = [
-  { value: "all", label: "Tất cả nhóm" },
-  ...buildOptionsFromLabels(inventoryProductCategoryLabels),
-]
-
-const statusOptions = [
-  { value: "all", label: "Tất cả trạng thái" },
-  ...buildOptionsFromLabels(inventoryProductStatusLabels),
-]
-
-const dateModeOptions = [
-  { value: "CURRENT", label: "Tồn hiện tại" },
-  { value: "HISTORICAL", label: "Tồn lịch sử" },
 ]
 
 export function InventoryProductsTableFilter() {
@@ -78,48 +55,9 @@ export function InventoryProductsTableFilter() {
     })
   }
 
-  const handleCategoryChange = (value: string) => {
+  const handleAsOfDateChange = (value: string) => {
     void navigate({
-      search: (prev) => ({
-        ...prev,
-        category:
-          value === "all" ? undefined : (value as InventoryProductCategory),
-        page: 1,
-      }),
-    })
-  }
-
-  const handleStatusChange = (value: string) => {
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        status: value === "all" ? undefined : (value as InventoryProductStatus),
-        page: 1,
-      }),
-    })
-  }
-
-  const handleDateModeChange = (value: string) => {
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        dateMode: value,
-        page: 1,
-      }),
-    })
-  }
-
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        fromDate: range.from,
-        toDate: range.to,
-        page: 1,
-      }),
+      search: (prev) => ({ ...prev, asOfDate: value || undefined, page: 1 }),
     })
   }
 
@@ -137,11 +75,7 @@ export function InventoryProductsTableFilter() {
           q: _q,
           clientName: _clientName,
           poCode: _poCode,
-          dateMode: _dateMode,
-          category: _category,
-          status: _status,
-          fromDate: _fromDate,
-          toDate: _toDate,
+          asOfDate: _asOfDate,
           ...rest
         } = prev
         return { ...rest, page: 1 }
@@ -182,7 +116,7 @@ export function InventoryProductsTableFilter() {
 
       {/* Filters Grid */}
       <div className="flex flex-col gap-3">
-        {/* Row 1: Mã/Tên, Khách hàng, PO, Xem theo ngày */}
+        {/* Mã/Tên, Khách hàng, PO, Xem tồn tại ngày */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <div className="space-y-1.5">
             <Label
@@ -265,117 +199,38 @@ export function InventoryProductsTableFilter() {
           </div>
 
           <div className="space-y-1.5">
-            <Label
-              htmlFor="tp-datemode"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Xem theo ngày
-            </Label>
-            <Select
-              value={search.dateMode ?? "CURRENT"}
-              onValueChange={handleDateModeChange}
-            >
-              <SelectTrigger id="tp-datemode" className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {dateModeOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Row 2: Nhóm sản phẩm, Trạng thái */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="tp-category"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Nhóm sản phẩm
-            </Label>
-            <Select
-              value={search.category ?? "all"}
-              onValueChange={handleCategoryChange}
-            >
-              <SelectTrigger id="tp-category" className="w-full text-xs">
-                <SelectValue placeholder="Chọn nhóm sản phẩm" />
-              </SelectTrigger>
-              <SelectContent>
-                {categoryOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="tp-status"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Trạng thái
-            </Label>
-            <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
-            >
-              <SelectTrigger id="tp-status" className="w-full text-xs">
-                <SelectValue placeholder="Chọn trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                {statusOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Row 3: Ngày & Action buttons */}
-        <div className="flex flex-col gap-3 pt-1 lg:flex-row lg:items-end lg:justify-between">
-          <div className="w-full space-y-1.5 sm:w-auto xl:w-96">
-            <Label
-              htmlFor="tp-daterange"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Ngày
-            </Label>
-            <DateRangePicker
-              id="tp-daterange"
-              from={search.fromDate}
-              to={search.toDate}
-              onChange={handleDateRangeChange}
+            <FilterLabel
+              label="Xem tồn tại ngày"
+              htmlFor="tp-as-of-date"
+              tooltip="Tồn kho tại thời điểm 23:59 ngày đã chọn — để trống là xem tồn hiện tại"
+            />
+            <DatePicker
+              id="tp-as-of-date"
+              value={search.asOfDate ?? ""}
+              onChange={handleAsOfDateChange}
             />
           </div>
+        </div>
 
-          <div className="flex w-full items-center justify-end gap-2 self-end lg:w-auto">
-            <Button
-              type="button"
-              variant="outline"
-              className="gap-1.5 text-xs"
-              onClick={resetFilters}
-            >
-              <RotateCw className="size-3.5" />
-              Xóa bộ lọc
-            </Button>
-            <Button
-              type="button"
-              className="gap-1.5 text-xs"
-              onClick={handleExecuteSearch}
-            >
-              <Search className="size-3.5" />
-              Tìm kiếm
-            </Button>
-          </div>
+        {/* Action buttons */}
+        <div className="flex items-center justify-end gap-2 pt-1">
+          <Button
+            type="button"
+            variant="outline"
+            className="gap-1.5 text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-3.5" />
+            Xóa bộ lọc
+          </Button>
+          <Button
+            type="button"
+            className="gap-1.5 text-xs"
+            onClick={handleExecuteSearch}
+          >
+            <Search className="size-3.5" />
+            Tìm kiếm
+          </Button>
         </div>
       </div>
     </div>

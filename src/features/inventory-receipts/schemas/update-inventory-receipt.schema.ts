@@ -20,6 +20,7 @@ export const updateInventoryReceiptSchema = z.object({
   supplierId: z.string().trim().transform(emptyToNull),
   purchaseRequestId: z.string().trim().transform(emptyToNull),
   productionOrderId: z.string().trim().transform(emptyToNull),
+  productionJobId: z.string().trim().transform(emptyToNull),
   purchaseOrderId: z.string().trim().transform(emptyToNull),
   note: z
     .string()
@@ -43,6 +44,7 @@ export const updateInventoryReceiptFormDefaultValues: UpdateInventoryReceiptSche
     supplierId: "",
     purchaseRequestId: "",
     productionOrderId: "",
+    productionJobId: "",
     purchaseOrderId: "",
     note: "",
     items: [],
