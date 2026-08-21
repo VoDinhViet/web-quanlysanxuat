@@ -53,7 +53,7 @@ export const oqcColumns = [
       return (
         <div className="min-w-0 text-xs">
           <p className="truncate font-mono font-medium text-foreground">
-            {productionJob?.code ?? "—"}
+            {productionJob.code}
           </p>
           <p className="truncate text-muted-foreground">{orderCode ?? "—"}</p>
         </div>

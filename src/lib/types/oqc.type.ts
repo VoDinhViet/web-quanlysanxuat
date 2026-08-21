@@ -30,14 +30,15 @@ export const oqcStatusDescriptions: Record<OqcStatus, string> = {
 }
 
 /** Mirrors the backend's PageOqcResDto (GET /api/oqc) — only the fields this list screen reads.
- *  `productionJob` is nullable — a Job can be hard-deleted when its production order is
- *  re-approved, and the OQC row survives with `itemId` snapshotted. `orderCode` is resolved at
- *  read time (productionJob → productionOrder → order), never stored. `result` is null until the
- *  first confirm. */
+ *  `productionJob` is guaranteed present — the backend FK it's read through
+ *  (`productionJobOperationId`) can't be orphaned: once a Job's LSX is `APPROVED`, nothing can
+ *  delete its Job/operation/BOM-item rows anymore. `orderCode` is resolved at read time
+ *  (productionJob → productionOrder → order), never stored. `result` is null until the first
+ *  confirm. */
 export type Oqc = {
   id: string
   code: string
-  productionJob: { id: string; code: string } | null
+  productionJob: { id: string; code: string }
   orderCode: string | null
   item: { id: string; code: string; name: string; unit: Unit }
   quantity: number

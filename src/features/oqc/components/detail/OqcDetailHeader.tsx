@@ -57,18 +57,14 @@ export function OqcDetailHeader({
           <MetaField
             label="Job (LSX)"
             value={
-              oqc.productionJob ? (
-                <Link
-                  to="/manage/production-jobs/$productionJobId"
-                  params={{ productionJobId: oqc.productionJob.id }}
-                  search={{ tab: "info" }}
-                  className="font-mono text-primary hover:underline"
-                >
-                  {oqc.productionJob.code}
-                </Link>
-              ) : (
-                "—"
-              )
+              <Link
+                to="/manage/production-jobs/$productionJobId"
+                params={{ productionJobId: oqc.productionJob.id }}
+                search={{ tab: "info" }}
+                className="font-mono text-primary hover:underline"
+              >
+                {oqc.productionJob.code}
+              </Link>
             }
           />
           <MetaField label="PO" value={oqc.orderCode ?? "—"} />
