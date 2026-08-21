@@ -5,8 +5,8 @@ import { productionJobQueryOptions } from "@/features/production-jobs/api/option
 import { ProductionJobDetailPage } from "@/features/production-jobs/pages/ProductionJobDetailPage"
 import { productionJobDetailSearchSchema } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
 
-// BOM/materials (bom + materials tabs) are read client-side by their own tab component — not
-// critical to the first paint of the default "info" tab, so they aren't prefetched here.
+// BOM vật tư (bom tab) is read client-side by its own tab component — not critical to the
+// first paint of the default "info" tab, so it isn't prefetched here.
 export const Route = createFileRoute(
   "/(authed)/manage_/production-jobs_/$productionJobId"
 )({

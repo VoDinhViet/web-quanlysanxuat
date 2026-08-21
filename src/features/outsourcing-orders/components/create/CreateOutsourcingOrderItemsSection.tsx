@@ -93,7 +93,7 @@ export const CreateOutsourcingOrderItemsSection = withForm({
               ) : (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    key={row.original.operationId}
+                    key={row.original.productionJobOperationId}
                     className="h-16 bg-card hover:bg-muted/25"
                   >
                     {row.getVisibleCells().map((cell) => (

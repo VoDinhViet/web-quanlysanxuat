@@ -41,21 +41,15 @@ import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 
 const limitOptions = [10, 20, 50] as const
 
+// Item form value mirrors OutsourceableOperation field-for-field (xem create-outsourcing-order.schema.ts)
+// cộng 4 field nhập mới, nên chọn 1 dòng chỉ cần spread — không liệt kê lại từng ref lồng thủ công.
 // SL gửi lần này mặc định bằng toàn bộ "Còn được phép gửi" — người dùng chỉnh xuống ở bước ② nếu
 // chỉ gửi một phần, thay vì phải gõ lại từ ô trống mỗi dòng.
 function buildPickedOutsourcingOrderItem(
   row: OutsourceableOperation
 ): CreateOutsourcingOrderItemValue {
   return {
-    operationId: row.id,
-    productionJobCode: row.productionJobCode,
-    itemCode: row.itemCode,
-    itemName: row.itemName,
-    operationName: row.operationName,
-    unitName: row.unitName,
-    plannedQuantity: row.plannedQuantity,
-    sentQuantity: row.sentQuantity,
-    remainingQuantity: row.remainingQuantity,
+    ...row,
     quantity: row.remainingQuantity,
     weight: undefined,
     area: undefined,
@@ -65,14 +59,27 @@ function buildPickedOutsourcingOrderItem(
 
 export const CreateOutsourcingOrderPickerSection = withForm({
   defaultValues: createOutsourcingOrderFormDefaultValues,
-  props: { disabled: false },
-  render: function Render({ form, disabled }) {
+  props: {
+    disabled: false,
+    // Deep-link tuỳ chọn (xem CreateOutsourcingOrderForm.tsx) — chỉ seed giá trị khởi tạo cho 2
+    // filter bên dưới, không tự động tick chọn dòng nào.
+    initialProductionJobId: undefined as string | undefined,
+    initialOperationId: undefined as string | undefined,
+  },
+  render: function Render({
+    form,
+    disabled,
+    initialProductionJobId,
+    initialOperationId,
+  }) {
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
-    const [productionJobId, setProductionJobId] = useState<string | undefined>()
-    const [operationId, setOperationId] = useState<string | undefined>()
+    const [productionJobId, setProductionJobId] = useState(
+      initialProductionJobId
+    )
+    const [operationId, setOperationId] = useState(initialOperationId)
 
     const { options: jobOptions } = useGetProductionJobOptions()
     const { options: operationOptions } = useGetOperationOptions(
@@ -97,14 +104,17 @@ export const CreateOutsourcingOrderPickerSection = withForm({
 
     const rows = useMemo(() => query.data?.data ?? [], [query.data])
     const pagination = query.data?.pagination
-    const pickedIds = useMemo(
-      () => new Set(items.map((item) => item.operationId)),
+    const pickedOperationIds = useMemo(
+      () => new Set(items.map((item) => item.productionJobOperationId)),
       [items]
     )
 
     const toggleRow = useCallback(
       (row: OutsourceableOperation) => {
-        const index = items.findIndex((item) => item.operationId === row.id)
+        const index = items.findIndex(
+          (item) =>
+            item.productionJobOperationId === row.productionJobOperationId
+        )
         if (index >= 0) {
           itemsField.removeValue(index)
         } else {
@@ -121,35 +131,44 @@ export const CreateOutsourcingOrderPickerSection = withForm({
 
     const toggleAll = useCallback(
       (checked: boolean) => {
-        const pageIds = new Set(pickableRows.map((row) => row.id))
+        const pageIds = new Set(
+          pickableRows.map((row) => row.productionJobOperationId)
+        )
         itemsField.setValue(
           checked
             ? [
                 ...items,
                 ...pickableRows
-                  .filter((row) => !pickedIds.has(row.id))
+                  .filter(
+                    (row) =>
+                      !pickedOperationIds.has(row.productionJobOperationId)
+                  )
                   .map(buildPickedOutsourcingOrderItem),
               ]
-            : items.filter((item) => !pageIds.has(item.operationId))
+            : items.filter(
+                (item) => !pageIds.has(item.productionJobOperationId)
+              )
         )
       },
-      [pickableRows, pickedIds, items, itemsField]
+      [pickableRows, pickedOperationIds, items, itemsField]
     )
 
     const allChecked =
       pickableRows.length > 0 &&
-      pickableRows.every((row) => pickedIds.has(row.id))
+      pickableRows.every((row) =>
+        pickedOperationIds.has(row.productionJobOperationId)
+      )
 
     const columns = useMemo(
       () =>
         buildCreateOutsourcingOrderPickerColumns({
-          pickedIds,
+          pickedOperationIds,
           disabled: Boolean(disabled),
           allChecked,
           onToggleRow: toggleRow,
           onToggleAll: toggleAll,
         }),
-      [pickedIds, disabled, allChecked, toggleRow, toggleAll]
+      [pickedOperationIds, disabled, allChecked, toggleRow, toggleAll]
     )
 
     const table = useReactTable({
@@ -300,7 +319,9 @@ export const CreateOutsourcingOrderPickerSection = withForm({
                 />
               ) : (
                 table.getRowModel().rows.map((row) => {
-                  const isPicked = pickedIds.has(row.original.id)
+                  const isPicked = pickedOperationIds.has(
+                    row.original.productionJobOperationId
+                  )
                   const isLocked = row.original.remainingQuantity <= 0
 
                   return (

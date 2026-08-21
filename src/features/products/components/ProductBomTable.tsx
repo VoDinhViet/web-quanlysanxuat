@@ -63,8 +63,7 @@ type FlatRow = {
 
 // GET .../bom returns a flat parent-child list (`parentId` links each node to
 // its parent, `null` = top-level) — group by parent once, then walk it
-// depth-first into a numbered, indented row list (path like "1.2"), same idiom
-// as `buildBomRows` in ProductionJobBomTab.tsx.
+// depth-first into a numbered, indented row list (path like "1.2").
 function groupByParentId(nodes: BomItem[]): Map<string | null, BomItem[]> {
   const map = new Map<string | null, BomItem[]>()
   nodes.forEach((node) => {

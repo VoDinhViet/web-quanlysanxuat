@@ -15,7 +15,8 @@ export const createOutsourcingOrderConfirmColumns = [
     meta: { headerClassName: "w-10", cellClassName: "text-muted-foreground" },
     cell: ({ row }) => row.index + 1,
   }),
-  confirmColumnHelper.accessor("productionJobCode", {
+  confirmColumnHelper.accessor((row) => row.job.code, {
+    id: "job",
     header: "Job",
     meta: {
       headerClassName: "w-24",
@@ -29,22 +30,24 @@ export const createOutsourcingOrderConfirmColumns = [
     cell: ({ row }) => (
       <div>
         <p className="truncate font-medium text-foreground">
-          {row.original.itemName}
+          {row.original.bomItem.name}
         </p>
         <p className="truncate font-mono text-[10px] text-muted-foreground">
-          {row.original.itemCode}
+          {row.original.bomItem.code}
         </p>
       </div>
     ),
   }),
-  confirmColumnHelper.accessor("operationName", {
+  confirmColumnHelper.accessor((row) => row.operation.name, {
+    id: "operation",
     header: "Công đoạn",
     meta: {
       headerClassName: "w-32",
       cellClassName: "truncate text-muted-foreground",
     },
   }),
-  confirmColumnHelper.accessor("unitName", {
+  confirmColumnHelper.accessor((row) => row.unit.name, {
+    id: "unit",
     header: "ĐVT",
     meta: { headerClassName: "w-14", cellClassName: "text-muted-foreground" },
   }),

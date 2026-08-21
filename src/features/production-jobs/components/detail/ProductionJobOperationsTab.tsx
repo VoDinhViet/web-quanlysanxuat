@@ -1,0 +1,118 @@
+import { useMemo } from "react"
+import { Download, Logs, Route, Send } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
+
+import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
+import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
+import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
+import { ProductionJobOperationsLegend } from "@/features/production-jobs/components/detail/ProductionJobOperationsLegend"
+import { ProductionJobOperationsTable } from "@/features/production-jobs/components/detail/ProductionJobOperationsTable"
+import { productionJobOperationsQueryOptions } from "@/features/production-jobs/api/options"
+import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api"
+import { ProductionJobStatus } from "@/lib/types/production-job.type"
+import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
+
+// A rough row-count guess for the loading placeholder's height — the operations list isn't
+// paginated, so there's no `search.limit` to size it off (unlike the paginated "BOM" tab).
+const operationsRowEstimate = 5
+
+// Trần cứng cho danh sách công đoạn OUTSOURCE của 1 Job — BE `PageOptionsDto` không có max, nhưng
+// số công đoạn gia công ngoài của một Job thực tế xa dưới mức này.
+const outsourceableOperationsLimit = 200
+
+type ProductionJobOperationsTabProps = {
+  productionJobId: string
+  status: ProductionJobStatus
+}
+
+// Reads GET /production-jobs/:jobId/operations directly (client-driven, tab-gated) — the backend
+// already groups by BOM node (part), one array element per part with its own `operations[]`, so
+// no client-side grouping is needed (see ProductionJobBomItem's doc comment). Sửa chỉ mở khi Job
+// đang IN_PROGRESS (khớp ràng buộc backend — completedQuantity/completedDate đóng băng ngoài trạng
+// thái đó).
+export function ProductionJobOperationsTab({
+  productionJobId,
+  status,
+}: ProductionJobOperationsTabProps) {
+  const operationsQuery = useQuery(
+    productionJobOperationsQueryOptions(productionJobId)
+  )
+  const canEdit = status === ProductionJobStatus.IN_PROGRESS
+  const groups = operationsQuery.data ?? []
+
+  // SL đã gửi/còn được phép gửi gia công ngoài không có trên GET .../operations (Production không
+  // ghi/biết gì về OS-OUT, docs/domains/production.md) — ghép từ route popup OS-OUT đã có sẵn 2
+  // số này. `enabled: canEdit` vì BE route đó chỉ trả công đoạn của Job `IN_PROGRESS`, khớp đúng
+  // điều kiện `canEdit` — Job đã COMPLETED/CANCELLED sẽ không thấy số đã gửi (giới hạn đã biết).
+  const outsourceableQuery = useQuery({
+    ...outsourceableOperationsQueryOptions({
+      productionJobId,
+      limit: outsourceableOperationsLimit,
+    }),
+    enabled: canEdit,
+  })
+  const outsourceableByOperationId = useMemo(
+    () =>
+      new Map<string, OutsourceableOperation>(
+        (outsourceableQuery.data?.data ?? []).map((row) => [
+          row.productionJobOperationId,
+          row,
+        ])
+      ),
+    [outsourceableQuery.data]
+  )
+
+  return (
+    <div className="min-w-0">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
+        <div className="flex items-center gap-2">
+          <Route className="size-3.5 text-muted-foreground" />
+          <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+            Công đoạn sản xuất
+          </h2>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <DisabledAction
+            label="Xem lịch sử cập nhật"
+            hint="chưa được xây dựng"
+          >
+            <Logs className="size-3.5" />
+          </DisabledAction>
+          <DisabledAction
+            label="Gửi đi gia công ngoài"
+            hint="chưa được xây dựng"
+          >
+            <Send className="size-3.5" />
+          </DisabledAction>
+          <DisabledAction
+            label="Cập nhật SL nhận về (gia công ngoài)"
+            hint="chưa được xây dựng"
+          >
+            <Download className="size-3.5" />
+          </DisabledAction>
+        </div>
+      </div>
+
+      {operationsQuery.isPending ? (
+        <TableQueryLoading rows={operationsRowEstimate} />
+      ) : operationsQuery.isError ? (
+        <TableQueryError
+          error={operationsQuery.error.message}
+          onRetry={() => void operationsQuery.refetch()}
+        />
+      ) : (
+        <ProductionJobOperationsTable
+          groups={groups}
+          productionJobId={productionJobId}
+          canEdit={canEdit}
+          outsourceableByOperationId={outsourceableByOperationId}
+        />
+      )}
+
+      <div className="px-4 pb-4 sm:px-5">
+        <ProductionJobOperationsLegend />
+      </div>
+    </div>
+  )
+}

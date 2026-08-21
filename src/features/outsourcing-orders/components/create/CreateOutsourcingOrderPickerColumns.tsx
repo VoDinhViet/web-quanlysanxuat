@@ -9,7 +9,7 @@ const outsourcingOrderPickerColumnHelper =
   createColumnHelper<OutsourceableOperation>()
 
 type BuildCreateOutsourcingOrderPickerColumnsArgs = {
-  pickedIds: Set<string>
+  pickedOperationIds: Set<string>
   disabled: boolean
   allChecked: boolean
   onToggleRow: (row: OutsourceableOperation) => void
@@ -20,7 +20,7 @@ type BuildCreateOutsourcingOrderPickerColumnsArgs = {
 // PurchaseRequestCreateMaterialPickerColumns.tsx (the repo's other checkbox-column picker). A row
 // đã gửi đủ định mức (`remainingQuantity <= 0`) không chọn được, bất kể prop `disabled`.
 export function buildCreateOutsourcingOrderPickerColumns({
-  pickedIds,
+  pickedOperationIds,
   disabled,
   allChecked,
   onToggleRow,
@@ -40,14 +40,17 @@ export function buildCreateOutsourcingOrderPickerColumns({
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <Checkbox
-          checked={pickedIds.has(row.original.id)}
+          checked={pickedOperationIds.has(
+            row.original.productionJobOperationId
+          )}
           disabled={disabled || row.original.remainingQuantity <= 0}
           onCheckedChange={() => onToggleRow(row.original)}
-          aria-label={`Chọn ${row.original.itemName}`}
+          aria-label={`Chọn ${row.original.bomItem.name}`}
         />
       ),
     }),
-    outsourcingOrderPickerColumnHelper.accessor("productionJobCode", {
+    outsourcingOrderPickerColumnHelper.accessor((row) => row.job.code, {
+      id: "job",
       header: "Job",
       meta: {
         headerClassName: "min-w-24",
@@ -61,19 +64,21 @@ export function buildCreateOutsourcingOrderPickerColumns({
       cell: ({ row }) => (
         <div>
           <p className="text-xs font-semibold text-foreground">
-            {row.original.itemName}
+            {row.original.bomItem.name}
           </p>
           <p className="font-mono text-[11px] text-muted-foreground">
-            {row.original.itemCode}
+            {row.original.bomItem.code}
           </p>
         </div>
       ),
     }),
-    outsourcingOrderPickerColumnHelper.accessor("operationName", {
+    outsourcingOrderPickerColumnHelper.accessor((row) => row.operation.name, {
+      id: "operation",
       header: "Công đoạn",
       meta: { headerClassName: "min-w-32" },
     }),
-    outsourcingOrderPickerColumnHelper.accessor("unitName", {
+    outsourcingOrderPickerColumnHelper.accessor((row) => row.unit.name, {
+      id: "unit",
       header: "ĐVT",
       meta: {
         headerClassName: "w-16",

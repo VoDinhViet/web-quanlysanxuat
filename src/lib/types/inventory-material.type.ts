@@ -21,7 +21,7 @@ export const inventoryStatusLabels: Record<InventoryStatus, string> = {
 export type InventoryItemType = "FG" | "WIP" | "RM"
 
 /** Mirrors the backend's InventoryItemResDto (GET /api/inventory) — field names match the backend
- *  1:1 (not translated to friendlier FE names), same convention as `ProductionJobMaterial`.
+ *  1:1 (not translated to friendlier FE names), same convention as `ProductionJobIssue`.
  *  `bomDemand` currently always comes back `0` — the backend hasn't exploded BOM yet, see
  *  `inventory.service.ts`'s own comments. `reserved` is real (Σ đơn đã duyệt chưa giao) but this
  *  screen only ever fetches `itemType=RM`, where it's always `0` (đơn hàng chỉ trỏ FG). */

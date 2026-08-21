@@ -34,7 +34,8 @@ export function buildCreateOutsourcingOrderItemColumns({
         <span className="text-muted-foreground">{row.index + 1}</span>
       ),
     }),
-    createOutsourcingOrderItemColumnHelper.accessor("productionJobCode", {
+    createOutsourcingOrderItemColumnHelper.accessor((row) => row.job.code, {
+      id: "job",
       header: "Job",
       meta: {
         headerClassName: "min-w-24",
@@ -48,19 +49,24 @@ export function buildCreateOutsourcingOrderItemColumns({
       cell: ({ row }) => (
         <div>
           <p className="text-xs font-semibold text-foreground">
-            {row.original.itemName}
+            {row.original.bomItem.name}
           </p>
           <p className="font-mono text-[11px] text-muted-foreground">
-            {row.original.itemCode}
+            {row.original.bomItem.code}
           </p>
         </div>
       ),
     }),
-    createOutsourcingOrderItemColumnHelper.accessor("operationName", {
-      header: "Công đoạn",
-      meta: { headerClassName: "min-w-28" },
-    }),
-    createOutsourcingOrderItemColumnHelper.accessor("unitName", {
+    createOutsourcingOrderItemColumnHelper.accessor(
+      (row) => row.operation.name,
+      {
+        id: "operation",
+        header: "Công đoạn",
+        meta: { headerClassName: "min-w-28" },
+      }
+    ),
+    createOutsourcingOrderItemColumnHelper.accessor((row) => row.unit.name, {
+      id: "unit",
       header: "ĐVT",
       meta: {
         headerClassName: "w-14",
@@ -165,7 +171,7 @@ export function buildCreateOutsourcingOrderItemColumns({
         return (
           <>
             <label htmlFor={inputId} className="sr-only">
-              Ghi chú — {item.itemName}
+              Ghi chú — {item.bomItem.name}
             </label>
             <TableTextCellInput
               id={inputId}

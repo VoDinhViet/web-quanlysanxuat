@@ -4,7 +4,9 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { ProductionJobBomItem } from "@/lib/types/production-job.type"
+import type { PaginatedResponse } from "@/lib/types/pagination.type"
+import type { ProductionJobIssue } from "@/lib/types/production-job.type"
+import { optional } from "@/lib/zod-transforms"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -21,12 +23,23 @@ function resolveGetProductionJobBomErrorMessage(error: unknown): string {
   }
 }
 
+const getProductionJobBomSchema = z.object({
+  productionJobId: z.uuid(),
+  page: z.number().int().min(1).optional(),
+  limit: z.number().int().min(1).optional(),
+  q: optional(z.string().trim()),
+})
+
+// Tab "BOM"'s source — GET /production-jobs/:jobId/bom returns the Job's material demand
+// (paginated), NOT the BOM tree despite the route's name. See ProductionJobIssue's doc comment.
 export const getProductionJobBom = createServerFn({ method: "GET" })
-  .validator(z.object({ productionJobId: z.uuid() }))
-  .handler(async ({ data }): Promise<ProductionJobBomItem[]> => {
+  .validator(getProductionJobBomSchema)
+  .handler(async ({ data }): Promise<PaginatedResponse<ProductionJobIssue>> => {
     try {
-      const response = await http.get<ProductionJobBomItem[]>(
-        `/api/production-jobs/${data.productionJobId}/bom`
+      const { productionJobId, ...params } = data
+      const response = await http.get<PaginatedResponse<ProductionJobIssue>>(
+        `/api/production-jobs/${productionJobId}/bom`,
+        { params }
       )
 
       return response.data

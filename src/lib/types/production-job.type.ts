@@ -1,4 +1,3 @@
-import type { BomItemType } from "@/lib/types/bom-item.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
@@ -58,13 +57,16 @@ export type ProductionJobDetail = {
   updatedAt: string
 }
 
-/** Mirrors the backend's ProductionJobOperationResDto, nested in ProductionJobBomItem below — the
- *  as-used routing snapshot copied from `routing_steps` onto a single BOM node at LSX approval
+/** Mirrors the backend's ProductionJobBomOperationResDto, nested in ProductionJobBomItem below —
+ *  the as-used routing snapshot copied from `routing_steps` onto a single BOM node at LSX approval
  *  time (`production_job_operations`). `code`/`name`/`type`/`sortOrder`/`note`/`operationId` stay
  *  frozen; `completedQuantity`/`completedDate` are the only two fields editable afterwards, via
  *  `PATCH /production-jobs/:jobId/operations/:operationId` — `completedDate` is server-set (not
  *  part of the update payload), auto-filled once `completedQuantity` reaches the parent node's
- *  `plannedQuantity`, auto-cleared if edited back down. */
+ *  planned quantity, auto-cleared if edited back down. `plannedQuantity` is the parent BOM node's
+ *  planned quantity (cumulative BOM ratio × Job quantity), frozen at LSX approval — same value on
+ *  every operation of the same node; it's also the cap `completedQuantity` is checked against
+ *  server-side (E088). */
 export type ProductionJobOperation = {
   id: string
   operationId: string | null
@@ -73,43 +75,50 @@ export type ProductionJobOperation = {
   type: OperationType
   sortOrder: number
   note: string | null
+  plannedQuantity: number
   completedQuantity: number
   completedDate: string | null
   createdAt: string
 }
 
-/** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/bom`) — one row
- *  of the Job's BOM tree, frozen at LSX approval time. A flat parent-child list (FE builds the
- *  tree via `parentId`; `parentId = null` is a top-level node, a direct child of the FG product),
- *  not a nested tree like `BomItem` — and it never includes the FG product itself, only real BOM
- *  nodes. Each node carries its own as-used `operations[]`. `plannedQuantity` (SL Job × cumulative
- *  parent-chain ratio) and `level` (1-based depth) are computed/stored server-side, not derived
- *  here. */
+/** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/operations`,
+ *  a plain array, not paginated) — "Công đoạn sản xuất" tab: every BOM node (part) that has at
+ *  least one as-used operation, each carrying its own `operations[]` (server-grouped — no more
+ *  client-side grouping needed). Despite the name, this is NOT the full BOM tree: it's scoped to
+ *  parts with operations, flat (no `parentId`) — no image, no gia công ngoài counts (see
+ *  ProductionJobOperation's doc comment for `plannedQuantity`, carried per-operation not here). */
 export type ProductionJobBomItem = {
   id: string
-  parentId: string | null
-  itemType: BomItemType
   code: string
   name: string
-  quantity: number
-  plannedQuantity: number
-  level: number
   operations: ProductionJobOperation[]
 }
 
-/** Mirrors the backend's ProductionJobMaterialResDto (`GET /production-jobs/:jobId/materials`,
- *  paginated) — flat text snapshots off `production_job_materials`, independent of the live
- *  `items`/`units` tables (`itemId` is a reference-only link, nullable). `issuedQty` has
- *  no equivalent here (no stock-issue linkage on this endpoint) — the tab renders that column as
- *  "Chưa có API" via MissingFieldValue. */
-export type ProductionJobMaterial = {
-  itemId: string | null
-  materialCode: string
-  materialName: string
-  unitCode: string
-  unitName: string
-  image: FileResource | null
-  unitQty: number | null
+/** Mirrors the backend's ProductionJobItemResDto, nested in ProductionJobIssue below — a snapshot
+ *  text ref off the shared dimension table `production_job_items` (no `id`; identity is the
+ *  content triple `(itemId, code, name)`, see docs/domains/production.md). */
+export type ProductionJobIssueItemRef = {
+  code: string
+  name: string
+}
+
+/** Mirrors the backend's ProductionJobUnitResDto, nested in ProductionJobIssue below — same
+ *  snapshot-dimension idiom as ProductionJobIssueItemRef above, off `production_job_units`. */
+export type ProductionJobIssueUnitRef = {
+  code: string
+  name: string
+}
+
+/** Mirrors the backend's ProductionJobIssueResDto (`GET /production-jobs/:jobId/bom`, paginated,
+ *  `q` filters `item.code`/`item.name`) — "BOM vật tư" tab: the Job's material demand, read off
+ *  `production_job_issues` joined to the two shared dimension tables. Despite the route's name
+ *  (`.../bom`), this is NOT the BOM tree — the tree has no read route at all (see
+ *  ProductionJobOperation's doc comment and docs/domains/production.md, "Common mistakes" #15).
+ *  `requiredQty` is BOM demand × SL Job, computed once at LSX approval — not a per-level BOM
+ *  explosion. No `id`/`itemId`/`unitQty`/`image` on this DTO. */
+export type ProductionJobIssue = {
+  item: ProductionJobIssueItemRef
+  unit: ProductionJobIssueUnitRef
   requiredQty: number
 }
 

@@ -123,18 +123,26 @@ export type OutsourcingOrderDetail = {
   updatedAt: string
 }
 
-// One row per (Job part × công đoạn OUTSOURCE) eligible to be sent for outsourcing — the
-// create-wizard picker's source. Mirrors `GET /outsourcing-orders/outsourceable-operations`
-// (OutsourceableOperationResDto), flattened by the server function from the wire's nested
-// `job`/`part`/`operation`/`unit` refs.
+// One row per công đoạn OUTSOURCE as-used of a Job — the create-wizard picker's source, also
+// reused by ProductionJobOperationsTab.tsx to know how much a Job's own operation has already
+// been sent. Mirrors `GET /outsourcing-orders/outsourceable-operations` (OutsourceableOperationResDto)
+// 1:1, wire-nested — no client-side flattening needed (get-outsourceable-operations.api.ts just
+// returns response.data). `job`/`bomItem`/`operation` are inlined (each used exactly once, no
+// other domain reuses these exact ref shapes — same idiom as `job: {id, code} | null` in
+// outbound-order.type.ts); `unit` reuses the shared `Unit` type since that ref shape repeats
+// across every domain.
 export type OutsourceableOperation = {
-  id: string // productionJobOperationId — id gửi lại khi tạo phiếu
-  productionJobCode: string
-  itemCode: string
-  itemName: string
-  operationName: string
-  unitName: string
-  plannedQuantity: number // SL định mức (theo Job) — tính từ cây BOM
-  sentQuantity: number // SL đã gửi (OS-OUT trước, DRAFT+POSTED)
-  remainingQuantity: number // Còn được phép gửi = plannedQuantity − sentQuantity
+  productionJobOperationId: string // id gửi lại khi tạo phiếu
+  itemId: string
+  job: { id: string; code: string }
+  bomItem: { code: string; name: string } // snapshot BOM của Job — không phải item gốc
+  operation: {
+    operationId: string | null // liên kết tham khảo tới công đoạn danh mục — null nếu mất liên kết
+    code: string
+    name: string
+  }
+  unit: Unit
+  plannedQuantity: number // SL định mức (theo Job) — đóng băng lúc duyệt LSX
+  sentQuantity: number // SL đã gửi (OS-OUT trước, POSTED)
+  remainingQuantity: number // Còn được phép gửi = plannedQuantity − sentQuantity (BE tính SQL)
 }

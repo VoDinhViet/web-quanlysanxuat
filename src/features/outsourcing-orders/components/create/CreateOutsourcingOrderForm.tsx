@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import { useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -17,9 +16,7 @@ import {
   CreateOutsourcingOrderTabs,
   wizardTabs,
 } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderTabs"
-import { CreateOutsourcingOrderSuccessDialog } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderSuccessDialog"
 import { createOutsourcingOrder } from "@/features/outsourcing-orders/api/server-functions/create-outsourcing-order.api"
-import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/outsourcing-order-item-totals"
 import {
   createOutsourcingOrderFormDefaultValues,
   createOutsourcingOrderSchema,
@@ -29,33 +26,44 @@ import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import type { CreateOutsourcingOrderWizardTab } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderTabs"
 import type { CreateOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 
+type CreateOutsourcingOrderFormProps = {
+  // Deep-link tuỳ chọn từ nút "Gửi gia công ngoài" trên bảng công đoạn của 1 Job
+  // (ProductionJobOperationsTable.tsx) — chỉ seed giá trị khởi tạo cho 2 filter của picker, không
+  // đổi hành vi chọn dòng nào khác.
+  initialProductionJobId?: string
+  initialOperationId?: string
+}
+
 // Vỏ wizard "Tạo phiếu OS-OUT" — rập khuôn InventoryReceiptCreateFromPoForm.tsx/
 // PurchaseRequestCreateForm.tsx, 3 tab, không có "Lưu nháp" riêng (chỉ 1 hành động submit —
 // POST /outsourcing-orders luôn tạo ở trạng thái DRAFT).
-export function CreateOutsourcingOrderForm() {
+export function CreateOutsourcingOrderForm({
+  initialProductionJobId,
+  initialOperationId,
+}: CreateOutsourcingOrderFormProps) {
   const navigate = useNavigate({ from: "/manage/outsourcing-orders/create" })
   const queryClient = useQueryClient()
   const createOutsourcingOrderFn = useServerFn(createOutsourcingOrder)
 
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateOutsourcingOrderSchema>(
-      "qlsx:draft:create-outsourcing-order-v4"
+      "qlsx:draft:create-outsourcing-order-v5"
     )
   const draftRestoredRef = useRef(false)
 
   const [tab, setTab] = useState<CreateOutsourcingOrderWizardTab>("picker")
-  const [createdCode, setCreatedCode] = useState<string | null>(null)
 
   const { mutate: create, isPending } = useMutation({
-    mutationFn: async (value: CreateOutsourcingOrderSchema) => {
-      const { code } = await createOutsourcingOrderFn({ data: value })
-
-      setCreatedCode(code)
-    },
+    mutationFn: (value: CreateOutsourcingOrderSchema) =>
+      createOutsourcingOrderFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["outsourcing-orders"] })
       toast.success("Đã tạo phiếu xuất đi gia công (OS-OUT)")
+      await navigate({
+        to: "/manage/outsourcing-orders",
+        search: { page: 1, limit: 10 },
+      })
     },
     onError: (error) => toast.error(error.message),
   })
@@ -75,8 +83,6 @@ export function CreateOutsourcingOrderForm() {
     }
   }, [draft, form])
 
-  const items = useField({ form, name: "items" }).state.value
-
   function handleTabChange(nextTab: CreateOutsourcingOrderWizardTab) {
     setTab(nextTab)
     saveDraft(form.state.values)
@@ -93,180 +99,151 @@ export function CreateOutsourcingOrderForm() {
     }
   }
 
-  function resetWizard() {
-    form.reset()
-    restoreFormDraft(form, createOutsourcingOrderFormDefaultValues)
-    clearDraft()
-    setTab("picker")
-    setCreatedCode(null)
-  }
-
   const tabIndex = wizardTabs.findIndex((t) => t.value === tab)
   const prevTab = tabIndex > 0 ? wizardTabs[tabIndex - 1] : undefined
   const nextTab =
     tabIndex < wizardTabs.length - 1 ? wizardTabs[tabIndex + 1] : undefined
 
   return (
-    <>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          event.stopPropagation()
-          form.handleSubmit()
-        }}
-        noValidate
-      >
-        <div className="overflow-hidden rounded-lg bg-card shadow-card">
-          <Tabs
-            value={tab}
-            onValueChange={handleTabValueChange}
-            className="gap-0"
+    <form
+      onSubmit={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        form.handleSubmit()
+      }}
+      noValidate
+    >
+      <div className="overflow-hidden rounded-lg bg-card shadow-card">
+        <Tabs
+          value={tab}
+          onValueChange={handleTabValueChange}
+          className="gap-0"
+        >
+          <form.Subscribe
+            selector={(state) => ({
+              hasItems: state.values.items.length > 0,
+              hasTabTwoInfo: Boolean(
+                state.values.supplierId && state.values.sendDate
+              ),
+            })}
           >
+            {({ hasItems, hasTabTwoInfo }) => (
+              <CreateOutsourcingOrderTabs
+                canGoToItems={hasItems}
+                canGoToConfirm={hasItems && hasTabTwoInfo}
+              />
+            )}
+          </form.Subscribe>
+
+          <TabsContent value="picker" className="m-0 outline-none">
+            <CreateOutsourcingOrderPickerSection
+              form={form}
+              disabled={isPending}
+              initialProductionJobId={initialProductionJobId}
+              initialOperationId={initialOperationId}
+            />
+          </TabsContent>
+          <TabsContent value="items" className="m-0 outline-none">
+            <CreateOutsourcingOrderInfoSection
+              form={form}
+              disabled={isPending}
+            />
+            <div className="border-t border-border">
+              <CreateOutsourcingOrderItemsSection
+                form={form}
+                disabled={isPending}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="confirm" className="m-0 outline-none">
+            <CreateOutsourcingOrderConfirmSection form={form} />
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+          {prevTab ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground"
+              disabled={isPending}
+              onClick={() => handleTabChange(prevTab.value)}
+            >
+              <AltArrowLeft className="size-4" />
+              Quay lại
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground"
+              disabled={isPending}
+              onClick={() =>
+                void navigate({
+                  to: "/manage/outsourcing-orders",
+                  search: { page: 1, limit: 10 },
+                })
+              }
+            >
+              Hủy
+            </Button>
+          )}
+
+          {nextTab ? (
             <form.Subscribe
               selector={(state) => ({
                 hasItems: state.values.items.length > 0,
                 hasTabTwoInfo: Boolean(
-                  state.values.supplierId &&
-                  state.values.warehouseId &&
-                  state.values.sendDate &&
-                  state.values.expectedReturnDate
+                  state.values.supplierId && state.values.sendDate
                 ),
               })}
             >
-              {({ hasItems, hasTabTwoInfo }) => (
-                <CreateOutsourcingOrderTabs
-                  canGoToItems={hasItems}
-                  canGoToConfirm={hasItems && hasTabTwoInfo}
-                />
-              )}
-            </form.Subscribe>
+              {({ hasItems, hasTabTwoInfo }) => {
+                const canAdvance =
+                  tab === "picker" ? hasItems : hasItems && hasTabTwoInfo
 
-            <TabsContent value="picker" className="m-0 outline-none">
-              <CreateOutsourcingOrderPickerSection
-                form={form}
-                disabled={isPending}
-              />
-            </TabsContent>
-            <TabsContent value="items" className="m-0 outline-none">
-              <CreateOutsourcingOrderInfoSection
-                form={form}
-                disabled={isPending}
-              />
-              <div className="border-t border-border">
-                <CreateOutsourcingOrderItemsSection
-                  form={form}
-                  disabled={isPending}
-                />
-              </div>
-            </TabsContent>
-            <TabsContent value="confirm" className="m-0 outline-none">
-              <CreateOutsourcingOrderConfirmSection form={form} />
-            </TabsContent>
-          </Tabs>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-            {prevTab ? (
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-muted-foreground hover:text-foreground"
-                disabled={isPending}
-                onClick={() => handleTabChange(prevTab.value)}
-              >
-                <AltArrowLeft className="size-4" />
-                Quay lại
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-muted-foreground hover:text-foreground"
-                disabled={isPending}
-                onClick={() =>
-                  void navigate({
-                    to: "/manage/outsourcing-orders",
-                    search: { page: 1, limit: 10 },
-                  })
-                }
-              >
-                Hủy
-              </Button>
-            )}
-
-            {nextTab ? (
-              <form.Subscribe
-                selector={(state) => ({
-                  hasItems: state.values.items.length > 0,
-                  hasTabTwoInfo: Boolean(
-                    state.values.supplierId &&
-                    state.values.warehouseId &&
-                    state.values.sendDate &&
-                    state.values.expectedReturnDate
-                  ),
-                })}
-              >
-                {({ hasItems, hasTabTwoInfo }) => {
-                  const canAdvance =
-                    tab === "picker" ? hasItems : hasItems && hasTabTwoInfo
-
-                  return (
-                    <Button
-                      type="button"
-                      disabled={!canAdvance}
-                      onClick={() => handleTabChange(nextTab.value)}
-                    >
-                      Tiếp theo: {nextTab.label}
-                      <AltArrowRight className="size-4" />
-                    </Button>
-                  )
-                }}
-              </form.Subscribe>
-            ) : (
-              <form.Subscribe
-                selector={(state) => ({
-                  canSubmit: state.canSubmit,
-                  isSubmitting: state.isSubmitting,
-                })}
-              >
-                {({ canSubmit, isSubmitting }) => (
+                return (
                   <Button
                     type="button"
-                    disabled={!canSubmit || isSubmitting || isPending}
-                    onClick={() => form.handleSubmit()}
+                    disabled={!canAdvance}
+                    onClick={() => handleTabChange(nextTab.value)}
                   >
-                    {isSubmitting || isPending ? (
-                      <>
-                        <Loader2 className="animate-spin" />
-                        Đang tạo phiếu
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="size-4" />
-                        Xác nhận tạo phiếu
-                      </>
-                    )}
+                    Tiếp theo: {nextTab.label}
+                    <AltArrowRight className="size-4" />
                   </Button>
-                )}
-              </form.Subscribe>
-            )}
-          </div>
+                )
+              }}
+            </form.Subscribe>
+          ) : (
+            <form.Subscribe
+              selector={(state) => ({
+                canSubmit: state.canSubmit,
+                isSubmitting: state.isSubmitting,
+              })}
+            >
+              {({ canSubmit, isSubmitting }) => (
+                <Button
+                  type="button"
+                  disabled={!canSubmit || isSubmitting || isPending}
+                  onClick={() => form.handleSubmit()}
+                >
+                  {isSubmitting || isPending ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      Đang tạo phiếu
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="size-4" />
+                      Xác nhận tạo phiếu
+                    </>
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+          )}
         </div>
-      </form>
-
-      {createdCode && (
-        <CreateOutsourcingOrderSuccessDialog
-          open
-          code={createdCode}
-          {...sumOutsourcingOrderItemTotals(items)}
-          onBackToList={() =>
-            void navigate({
-              to: "/manage/outsourcing-orders",
-              search: { page: 1, limit: 10 },
-            })
-          }
-          onCreateAnother={resetWizard}
-        />
-      )}
-    </>
+      </div>
+    </form>
   )
 }

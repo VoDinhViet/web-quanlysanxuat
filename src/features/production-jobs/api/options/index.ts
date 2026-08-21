@@ -4,7 +4,7 @@
 export { productionJobsQueryOptions } from "@/features/production-jobs/api/options/production-jobs.options"
 export { productionJobQueryOptions } from "@/features/production-jobs/api/options/production-job.options"
 export { productionJobBomQueryOptions } from "@/features/production-jobs/api/options/production-job-bom.options"
-export { productionJobMaterialsQueryOptions } from "@/features/production-jobs/api/options/production-job-materials.options"
+export { productionJobOperationsQueryOptions } from "@/features/production-jobs/api/options/production-job-operations.options"
 export { productionJobAttachmentsQueryOptions } from "@/features/production-jobs/api/options/production-job-attachments.options"
 export {
   productionJobNotesPageLimit,

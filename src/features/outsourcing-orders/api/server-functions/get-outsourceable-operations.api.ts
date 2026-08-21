@@ -31,47 +31,18 @@ const getOutsourceableOperationsSchema = z.object({
   operationId: optional(z.string().trim()),
 })
 
-// Wire shape of OutsourceableOperationResDto — nested job/part/operation/unit refs the backend
-// returns, narrowed to only the sub-fields actually read below (e.g. `job.id`/`unit.id`/
-// `unit.code`/`operation.code` come back on the wire too but nothing here needs them). Flattened
-// into the FE's existing OutsourceableOperation shape so PickerColumns/PickerSection keep their
-// current field names untouched.
-type OutsourceableOperationWireItem = {
-  productionJobOperationId: string
-  job: { code: string }
-  part: { code: string; name: string }
-  operation: { name: string }
-  unit: { name: string }
-  plannedQuantity: number
-  sentQuantity: number
-  remainingQuantity: number
-}
-
 export const getOutsourceableOperations = createServerFn({ method: "GET" })
   .validator(getOutsourceableOperationsSchema)
   .handler(
     async ({ data }): Promise<PaginatedResponse<OutsourceableOperation>> => {
       try {
         const response = await http.get<
-          PaginatedResponse<OutsourceableOperationWireItem>
+          PaginatedResponse<OutsourceableOperation>
         >("/api/outsourcing-orders/outsourceable-operations", {
           params: data,
         })
 
-        return {
-          ...response.data,
-          data: response.data.data.map((item) => ({
-            id: item.productionJobOperationId,
-            productionJobCode: item.job.code,
-            itemCode: item.part.code,
-            itemName: item.part.name,
-            operationName: item.operation.name,
-            unitName: item.unit.name,
-            plannedQuantity: item.plannedQuantity,
-            sentQuantity: item.sentQuantity,
-            remainingQuantity: item.remainingQuantity,
-          })),
-        }
+        return response.data
       } catch (error) {
         logHttpError(error, "getOutsourceableOperations")
 

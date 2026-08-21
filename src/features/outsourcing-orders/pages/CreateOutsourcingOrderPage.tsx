@@ -1,7 +1,13 @@
+import { useSearch } from "@tanstack/react-router"
+
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { CreateOutsourcingOrderForm } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderForm"
 
 export function CreateOutsourcingOrderPage() {
+  const search = useSearch({
+    from: "/(authed)/manage_/outsourcing-orders_/create",
+  })
+
   return (
     <main className="min-h-svh bg-background text-foreground">
       <PageTitleBar
@@ -19,7 +25,10 @@ export function CreateOutsourcingOrderPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <CreateOutsourcingOrderForm />
+        <CreateOutsourcingOrderForm
+          initialProductionJobId={search.productionJobId}
+          initialOperationId={search.operationId}
+        />
       </div>
     </main>
   )

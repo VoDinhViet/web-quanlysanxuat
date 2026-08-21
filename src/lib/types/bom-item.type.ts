@@ -17,7 +17,7 @@ export const bomItemTypeLabels: Record<BomItemType, string> = {
 // by the BOM GET (tree), and the add/update endpoints (GET/POST/PATCH under
 // /api/items/:itemId/bom). The backend returns the tree flat (`parentId`
 // links each node to its parent, no nested `children`) — build the tree
-// client-side, same idiom as ProductionJobBomTab.tsx's `buildBomRows`.
+// client-side, see `groupByParentId`/`flattenNodes` in ProductBomTable.tsx.
 export type BomItem = {
   id: string
   parentId: string | null

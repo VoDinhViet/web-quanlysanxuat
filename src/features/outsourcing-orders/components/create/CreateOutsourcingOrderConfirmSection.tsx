@@ -1,5 +1,4 @@
-import { useField } from "@tanstack/react-form"
-import { useQuery } from "@tanstack/react-query"
+import { useField, useSelector } from "@tanstack/react-form"
 import {
   flexRender,
   getCoreRowModel,
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import { createOutsourcingOrderConfirmColumns } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderConfirmColumns"
 import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/outsourcing-order-item-totals"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
@@ -61,22 +59,23 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
   props: {},
   render: function Render({ form }) {
     const supplier = useGetSupplierOptions()
-    const supplierId = useField({ form, name: "supplierId" }).state.value
-    const warehouseId = useField({ form, name: "warehouseId" }).state.value
-    const sendDate = useField({ form, name: "sendDate" }).state.value
-    const expectedReturnDate = useField({
-      form,
-      name: "expectedReturnDate",
-    }).state.value
-    const note = useField({ form, name: "note" }).state.value
+
+    // Cả 5 field chỉ dùng để hiển thị lại trên lưới thông tin phiếu bên dưới — gộp 1 lệnh
+    // `useSelector` thay vì 5 lần `useField` riêng, cùng khuyến nghị "several field values at
+    // once" ở forms-and-ui.md. Selector để thẳng inline — `useSelector` không tự suy được kiểu
+    // `state` từ `form.store` (TSource resolve thất bại qua generic), nên vẫn cần khai tay
+    // `typeof form.state` ngay tại param thay vì để trống.
+    const { supplierId, sendDate, expectedReturnDate, note } = useSelector(
+      form.store,
+      (state) => state.values
+    )
+    // `items` tách riêng (useField), vì nó còn cấp data cho useReactTable ngay dưới đây — xem lý
+    // do ở CreateOutsourcingOrderPickerSection.tsx.
     const items = useField({ form, name: "items" }).state.value
 
-    const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
-
     const selectedSupplier = supplier.suppliers.find((s) => s.id === supplierId)
-    const selectedWarehouse = warehouses.find((w) => w.id === warehouseId)
     const operationNames = Array.from(
-      new Set(items.map((item) => item.operationName))
+      new Set(items.map((item) => item.operation.name))
     ).join(", ")
     const { totalQuantity, totalWeight, totalArea } =
       sumOutsourcingOrderItemTotals(items)
@@ -125,10 +124,6 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
                   ? `${selectedSupplier.name} (${selectedSupplier.code})`
                   : "—"
               }
-            />
-            <PreviewField
-              label="Kho xuất hàng"
-              value={selectedWarehouse?.name ?? "—"}
             />
             <PreviewField
               label="Ngày gửi đi"
@@ -216,7 +211,10 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
                   <TableEmpty colSpan={9} title="Chưa có dòng nào" />
                 ) : (
                   table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.original.operationId} className="h-14">
+                    <TableRow
+                      key={row.original.productionJobOperationId}
+                      className="h-14"
+                    >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
