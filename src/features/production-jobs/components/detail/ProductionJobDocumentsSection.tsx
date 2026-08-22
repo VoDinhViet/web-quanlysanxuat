@@ -1,22 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { Documents, FileText } from "@solar-icons/react"
 import { DateTime } from "luxon"
+import prettyBytes from "pretty-bytes"
 
 import { Spinner } from "@/components/ui/spinner"
 import { productionJobAttachmentsQueryOptions } from "@/features/production-jobs/api/options"
 import { resolveFileUrl } from "@/lib/file-url"
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) {
-    return `${bytes} B`
-  }
-
-  if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(0)} KB`
-  }
-
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
 
 type ProductionJobDocumentsSectionProps = {
   productionJobId: string
@@ -56,8 +45,6 @@ export function ProductionJobDocumentsSection({
     <ul className="space-y-1.5">
       {attachments.map((file) => (
         <li key={file.id}>
-          {/* The download route is @Public(), so the signed URL opens in
-              a new tab without an auth header. */}
           <a
             href={resolveFileUrl(file.url)}
             target="_blank"
@@ -67,7 +54,7 @@ export function ProductionJobDocumentsSection({
             <FileText className="size-4 shrink-0 text-muted-foreground" />
             <span className="min-w-0 flex-1 truncate">{file.originalName}</span>
             <span className="shrink-0 text-muted-foreground">
-              {formatFileSize(file.size)}
+              {prettyBytes(file.size)}
             </span>
             <span className="hidden shrink-0 text-muted-foreground sm:inline">
               {DateTime.fromISO(file.createdAt).toFormat("dd/MM/yyyy")}

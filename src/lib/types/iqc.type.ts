@@ -37,6 +37,15 @@ export const iqcInspectionLevelLabels: Record<IqcInspectionLevel, string> = {
 // chọn AQL Level ở IqcAqlInputCard) đọc từ đây, không lặp lại mảng số.
 export const aqlLevels = [0.65, 1.0, 1.5, 2.5, 4.0, 6.5] as const
 
+// Shape của GET /api/iqc/aql-plan và GET /api/oqc/aql-plan (cùng backend `AqlPlanResDto`, dùng
+// chung — cả 2 hook use-iqc-aql-plan.ts/use-oqc-aql-verdict.ts trả về type này).
+export type AqlPlan = {
+  codeLetter: string
+  sampleSize: number
+  ac: number
+  re: number
+}
+
 export const IqcDisposition = {
   CONCESSION: "CONCESSION",
   SORT: "SORT",

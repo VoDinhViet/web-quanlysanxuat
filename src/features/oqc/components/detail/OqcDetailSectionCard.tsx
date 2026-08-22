@@ -1,10 +1,10 @@
-import type { LucideIcon } from "lucide-react"
-import type { ReactNode } from "react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 
 type OqcDetailSectionCardProps = {
-  icon: LucideIcon
+  icon: ComponentType<IconProps>
   title: string
   description?: string
   action?: ReactNode

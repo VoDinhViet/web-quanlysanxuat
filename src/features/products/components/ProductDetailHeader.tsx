@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Loader2 } from "lucide-react"
@@ -139,14 +138,8 @@ type ProductHeaderThumbnailProps = {
   name: string
 }
 
-// The signed URL expires after about an hour, so a tab left open long enough
-// gets a 401 on the image. There is no status code on an <img> error event, so
-// a retry couldn't tell "expired" from "deleted" — fall back to the icon tile
-// instead. The next refetch of the product mints a fresh link.
 function ProductHeaderThumbnail({ image, name }: ProductHeaderThumbnailProps) {
-  const [isBroken, setIsBroken] = useState(false)
-
-  if (!image || isBroken) {
+  if (!image) {
     return (
       <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         <Box className="size-5" />
@@ -160,7 +153,6 @@ function ProductHeaderThumbnail({ image, name }: ProductHeaderThumbnailProps) {
         src={resolveFileUrl(image.url)}
         alt={name}
         className="size-full object-cover"
-        onError={() => setIsBroken(true)}
       />
     </div>
   )

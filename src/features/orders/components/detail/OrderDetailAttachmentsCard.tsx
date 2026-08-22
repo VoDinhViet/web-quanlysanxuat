@@ -1,21 +1,10 @@
 import { Documents, FileText, Paperclip } from "@solar-icons/react"
 import { DateTime } from "luxon"
+import prettyBytes from "pretty-bytes"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { OrderDetail } from "@/lib/types/order.type"
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) {
-    return `${bytes} B`
-  }
-
-  if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(0)} KB`
-  }
-
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
 
 type OrderDetailAttachmentsCardProps = {
   order: OrderDetail
@@ -33,8 +22,6 @@ export function OrderDetailAttachmentsCard({
         <ul className="space-y-1.5">
           {order.attachments.map((attachment) => (
             <li key={attachment.id}>
-              {/* The download route is @Public(), so the signed URL opens in
-                  a new tab without an auth header. */}
               <a
                 href={resolveFileUrl(attachment.file.url)}
                 target="_blank"
@@ -46,7 +33,7 @@ export function OrderDetailAttachmentsCard({
                   {attachment.file.originalName}
                 </span>
                 <span className="shrink-0 text-muted-foreground">
-                  {formatFileSize(attachment.file.size)}
+                  {prettyBytes(attachment.file.size)}
                 </span>
                 <span className="hidden shrink-0 text-muted-foreground sm:inline">
                   {DateTime.fromISO(attachment.file.createdAt).toFormat(

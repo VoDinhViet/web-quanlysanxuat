@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Trash2 } from "lucide-react"
+import { TrashBinTrash } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import {
@@ -62,7 +62,7 @@ export function DeleteOqcDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
-            <Trash2 />
+            <TrashBinTrash />
           </AlertDialogMedia>
           <AlertDialogTitle>Xoá phiếu OQC</AlertDialogTitle>
           <AlertDialogDescription>

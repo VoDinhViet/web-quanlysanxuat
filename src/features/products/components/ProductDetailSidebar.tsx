@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import {
@@ -178,19 +177,13 @@ type ProductImagePreviewProps = {
   name: string
 }
 
-// The signed URL expires after about an hour, so a tab left open long enough
-// gets a 401 on the image. There is no status code on an <img> error event, so
-// a retry couldn't tell "expired" from "deleted" — fall back to the empty state
-// instead. The next refetch of the product mints a fresh link.
 function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
-  const [isBroken, setIsBroken] = useState(false)
-
-  if (!image || isBroken) {
+  if (!image) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
         <GalleryRemove className="size-7 text-muted-foreground/40" />
         <p className="text-[11px] font-medium text-muted-foreground">
-          {isBroken ? "Không tải được hình ảnh" : "Chưa có hình ảnh"}
+          Chưa có hình ảnh
         </p>
       </div>
     )
@@ -198,8 +191,7 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
 
   return (
     <div className="space-y-2">
-      {/* Opens the signed URL directly — the route is @Public() so the full-size
-          image loads in a new tab without an auth header. */}
+      {/* URL public vĩnh viễn — ảnh gốc mở thẳng ở tab mới, không cần auth header. */}
       <a
         href={resolveFileUrl(image.url)}
         target="_blank"
@@ -210,7 +202,6 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
           src={resolveFileUrl(image.url)}
           alt={name}
           className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
-          onError={() => setIsBroken(true)}
         />
 
         <span className="absolute inset-0 flex items-center justify-center bg-foreground/45 opacity-0 transition-opacity group-hover:opacity-100">

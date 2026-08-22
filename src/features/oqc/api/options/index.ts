@@ -4,3 +4,4 @@
 // unlike IQC, the backend has no GET /oqc/stats.
 export { oqcsQueryOptions } from "@/features/oqc/api/options/oqcs.options"
 export { oqcQueryOptions } from "@/features/oqc/api/options/oqc.options"
+export { oqcAqlPlanQueryOptions } from "@/features/oqc/api/options/aql-plan.options"

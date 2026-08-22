@@ -4,3 +4,4 @@
 export { iqcQueryOptions } from "@/features/iqc/api/options/iqc.options"
 export { iqcsQueryOptions } from "@/features/iqc/api/options/iqcs.options"
 export { iqcStatsQueryOptions } from "@/features/iqc/api/options/iqc-stats.options"
+export { iqcAqlPlanQueryOptions } from "@/features/iqc/api/options/aql-plan.options"

@@ -168,9 +168,9 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
   **not** `router.invalidate()`, which re-runs every loader on the page. Login/logout keep
   `router.invalidate()` (session/permissions change is a router concern, not a query-cache
   one); uploads (`uploadFile` in `src/lib/upload-file.ts`) invalidate nothing — they return
-  a file id plus a short-lived display URL into form state, not cached data. Only the id
+  a file id plus a display URL into form state, not cached data. Only the id
   reaches the backend on the entity's own create/update (`imageFileId`, `avatarFileId`,
-  `attachmentFileIds`); the URL is signed, expires in ~1h, and is host-relative, so every
+  `attachmentFileIds`); the URL is a public, permanent, host-relative static link, so every
   `<img src>` / `<a href>` goes through `resolveFileUrl` (`src/lib/file-url.ts`).
 
 ## Reads flow through React Query (loader prefetch + query cache)

@@ -3,6 +3,8 @@ import { z } from "zod"
 import { aqlLevels, IqcInspectionLevel, IqcResult } from "@/lib/types/iqc.type"
 import { OqcDisposition } from "@/lib/types/oqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
+import { fileFieldSchema } from "@/lib/file-field.schema"
+import type { FileFieldValue } from "@/lib/file-field.schema"
 import { emptyToUndefined, optionalEnum } from "@/lib/zod-transforms"
 
 const aqlLevelValues: readonly number[] = aqlLevels
@@ -40,18 +42,23 @@ export const confirmOqcSchema = z.object({
     .trim()
     .max(500, "Tối đa 500 ký tự")
     .transform(emptyToUndefined),
+  qcEvidence: z.array(fileFieldSchema),
   disposition: optionalEnum(OqcDisposition),
   dispositionNote: z
     .string()
     .trim()
     .max(500, "Tối đa 500 ký tự")
     .transform(emptyToUndefined),
+  dispositionEvidence: z.array(fileFieldSchema),
 })
+
+// The wire payload `confirmOqcSchema` accepts — what the mutation sends to `confirmOqc`.
+export type ConfirmOqcSchema = z.input<typeof confirmOqcSchema>
 
 // The form's own value type, hand-written rather than derived via `z.input` — `inspectionLevel`,
 // `result` and `disposition` all start blank (no sensible default to preselect), which
 // `z.enum(...)`'s input type can't represent. `onSubmit` narrows the blank cases out before
-// calling the mutation (see use-oqc-detail-form.ts).
+// calling the mutation (see OqcDetailForm.tsx's useOqcDetailForm).
 export type ConfirmOqcFormValue = {
   oqcId: string
   inspectionLevel: IqcInspectionLevel | ""
@@ -60,8 +67,27 @@ export type ConfirmOqcFormValue = {
   defectQty?: number
   result: IqcResult | ""
   resultNote: string
+  qcEvidence: FileFieldValue[]
   disposition: OqcDisposition | ""
   dispositionNote: string
+  dispositionEvidence: FileFieldValue[]
+}
+
+// Blank shape for `withForm`'s templating only (OqcAqlInputCard/OqcResultCard/OqcDispositionCard)
+// — the real values always come from `getOqcDefaultValues(oqc)` below, via `useAppForm` in
+// OqcDetailForm.tsx's useOqcDetailForm.
+export const confirmOqcFormDefaultValues: ConfirmOqcFormValue = {
+  oqcId: "",
+  inspectionLevel: "",
+  aqlLevel: "",
+  sampleSize: undefined,
+  defectQty: undefined,
+  result: "",
+  resultNote: "",
+  qcEvidence: [],
+  disposition: "",
+  dispositionNote: "",
+  dispositionEvidence: [],
 }
 
 // The page is now a form that's always editable, seeded from the saved record (not a blank
@@ -76,7 +102,11 @@ export function getOqcDefaultValues(oqc: OqcDetail): ConfirmOqcFormValue {
     defectQty: oqc.defectQty ?? undefined,
     result: oqc.result ?? "",
     resultNote: oqc.resultNote ?? "",
+    qcEvidence: oqc.qcEvidence.map((attachment) => attachment.file),
     disposition: oqc.disposition ?? "",
     dispositionNote: oqc.dispositionNote ?? "",
+    dispositionEvidence: oqc.dispositionEvidence.map(
+      (attachment) => attachment.file
+    ),
   }
 }

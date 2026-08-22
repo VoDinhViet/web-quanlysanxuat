@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { ImageOff, Package } from "lucide-react"
 import type { ReactNode } from "react"
@@ -137,18 +136,13 @@ type ItemImagePreviewProps = {
   name: string
 }
 
-// Same signed-URL-expires fallback idiom as ProductDetailSidebar's ProductImagePreview — a tab
-// left open past the ~1h signature window falls back to the empty state instead of a broken
-// <img>, since an error event carries no status code to tell "expired" from "deleted".
 function ItemImagePreview({ image, name }: ItemImagePreviewProps) {
-  const [isBroken, setIsBroken] = useState(false)
-
-  if (!image || isBroken) {
+  if (!image) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border bg-muted/30 text-center">
         <ImageOff className="size-6 text-muted-foreground/40" />
         <p className="text-[10px] font-medium text-muted-foreground">
-          {isBroken ? "Không tải được ảnh" : "Chưa có ảnh"}
+          Chưa có ảnh
         </p>
       </div>
     )
@@ -165,7 +159,6 @@ function ItemImagePreview({ image, name }: ItemImagePreviewProps) {
         src={resolveFileUrl(image.url)}
         alt={name}
         className="size-full object-cover"
-        onError={() => setIsBroken(true)}
       />
     </a>
   )

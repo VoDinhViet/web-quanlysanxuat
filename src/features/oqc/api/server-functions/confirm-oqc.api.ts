@@ -2,21 +2,34 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { confirmOqcSchema } from "@/features/oqc/schemas/confirm-oqc.schema"
+import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import { IqcResult } from "@/lib/types/iqc.type"
 import type { ApiErrorResponse } from "@/lib/http"
 
-// PASS force-drops disposition/dispositionNote regardless of whatever the (hidden) form fields
-// still hold — OqcDispositionCard stops rendering once `result` flips back to PASS, but its
-// fields keep their last value in form state until submit, same idiom as confirm-iqc.api.ts.
+// PASS force-drops disposition/dispositionNote/dispositionEvidence regardless of whatever the
+// (hidden) form fields still hold — OqcDispositionCard/OqcEvidenceCard (dispositionEvidence) stop
+// rendering once `result` flips back to PASS, but their fields keep their last value in form
+// state until submit, same idiom as confirm-iqc.api.ts. `qcEvidence`/`dispositionEvidence`
+// collapse to `*FileIds`, same idiom as every other attachments field.
 const confirmOqcPayloadSchema = confirmOqcSchema.transform(
-  ({ disposition, dispositionNote, ...rest }) => {
+  ({
+    disposition,
+    dispositionNote,
+    qcEvidence,
+    dispositionEvidence,
+    ...rest
+  }) => {
     const isPass = rest.result === IqcResult.PASS
 
     return {
       ...rest,
+      qcEvidenceFileIds: resolveApiAttachmentFileIds(qcEvidence),
       disposition: isPass ? undefined : disposition,
       dispositionNote: isPass ? undefined : dispositionNote,
+      dispositionEvidenceFileIds: isPass
+        ? []
+        : resolveApiAttachmentFileIds(dispositionEvidence),
     }
   }
 )
@@ -39,6 +52,8 @@ function resolveConfirmOqcErrorMessage(error: unknown): string {
       return "Kết quả bạn chọn khác gợi ý tự động — vui lòng nhập ghi chú kết quả."
     case "oqc_inspection.error.disposition_not_allowed_for_pass":
       return "Kết quả PASS thì không được chọn phương án xử lý."
+    case "file.error.not_found":
+      return "File bằng chứng không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":
       return "Bạn không có quyền lưu kết quả QC."
     default:

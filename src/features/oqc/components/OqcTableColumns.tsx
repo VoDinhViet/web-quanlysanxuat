@@ -13,12 +13,13 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 const oqcColumnHelper = createColumnHelper<Oqc>()
 
-// Thứ tự cột theo đúng spec nghiệp vụ: Mã OQC | PO | Job | Công đoạn | Mã part | Tên Part | Đvt |
-// Lot size | Kết quả | Phương án xử lý | Ngày KT | Trạng thái | Ghi chú | Thao tác. "Công đoạn"
-// nằm ngoài spec liệt kê — thêm vì OQC giờ per-operation (1 part có thể nhiều công đoạn, thiếu cột
-// này 2 dòng cùng part khác công đoạn nhìn giống hệt nhau). "Mã part"/"Tên Part" đọc từ `bomItem`
-// (snapshot BOM của Job) chứ không phải `item` sống — Đvt đọc từ `unit`, field ngang hàng `item`
-// (không lồng trong `item` như IQC), `item` hiện không cột nào hiển thị.
+// Trimmed from the mockup's 14 columns to what's needed to scan the list at a glance — same
+// idiom as iqcColumns (IqcTableColumns.tsx): mã/tên thành phẩm collapse into one "Thành phẩm"
+// column, Job/PO collapse into one, Lot size/Đvt collapse into one, "Ghi chú" dropped (still
+// readable on the detail screen's OqcLotSummaryCard). "Công đoạn" stays as its own column — OQC
+// is per-operation (1 thành phẩm có thể nhiều công đoạn), dropping it would make two rows for the
+// same thành phẩm but different công đoạn look identical. "Mã thành phẩm"/"Tên thành phẩm" đọc từ
+// `bomItem` (snapshot BOM của Job) chứ không phải `item` (không có trên response danh sách).
 export const oqcColumns = [
   oqcColumnHelper.accessor("code", {
     header: "Mã OQC",
@@ -30,25 +31,24 @@ export const oqcColumns = [
     ),
   }),
 
-  oqcColumnHelper.accessor("orderCode", {
-    header: "PO",
-    meta: { headerClassName: "min-w-24" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs text-muted-foreground">
-        {getValue() ?? "—"}
-      </span>
-    ),
-  }),
+  oqcColumnHelper.display({
+    id: "bomItem",
+    header: "Thành phẩm",
+    meta: { headerClassName: "min-w-48" },
+    cell: ({ row }) => {
+      const bomItem = row.original.bomItem
 
-  oqcColumnHelper.accessor((row) => row.productionJob.code, {
-    id: "job",
-    header: "Job",
-    meta: { headerClassName: "min-w-24" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-medium text-foreground">
-        {getValue()}
-      </span>
-    ),
+      return (
+        <div className="max-w-56 min-w-0">
+          <p className="truncate text-xs font-semibold text-foreground">
+            {bomItem.name}
+          </p>
+          <p className="truncate font-mono text-[11px] text-muted-foreground">
+            {bomItem.code}
+          </p>
+        </div>
+      )
+    },
   }),
 
   oqcColumnHelper.accessor((row) => row.operation.name, {
@@ -67,47 +67,46 @@ export const oqcColumns = [
     ),
   }),
 
-  oqcColumnHelper.accessor((row) => row.bomItem.code, {
-    id: "bomItemCode",
-    header: "Mã part",
-    meta: { headerClassName: "min-w-24" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs text-foreground">{getValue()}</span>
+  oqcColumnHelper.display({
+    id: "jobOrPo",
+    header: "Job / PO",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ row }) => (
+      <div className="max-w-32 min-w-0">
+        <p className="truncate font-mono text-xs font-medium text-foreground">
+          {row.original.productionJob.code}
+        </p>
+        <p className="truncate font-mono text-[11px] text-muted-foreground">
+          {row.original.orderCode ?? "—"}
+        </p>
+      </div>
     ),
   }),
 
-  oqcColumnHelper.accessor((row) => row.bomItem.name, {
-    id: "bomItemName",
-    header: "Tên Part",
-    meta: { headerClassName: "min-w-40" },
-    cell: ({ getValue }) => (
-      <span className="line-clamp-2 text-xs text-foreground">{getValue()}</span>
-    ),
-  }),
-
-  oqcColumnHelper.accessor((row) => row.unit.name, {
-    id: "unit",
-    header: "Đvt",
+  oqcColumnHelper.display({
+    id: "quantity",
+    header: "Lot size (ĐVT)",
     meta: {
-      headerClassName: "min-w-16 text-center",
-      cellClassName: "text-center",
-    },
-    cell: ({ getValue }) => (
-      <span className="text-xs text-muted-foreground">{getValue()}</span>
-    ),
-  }),
-
-  oqcColumnHelper.accessor("quantity", {
-    header: "Lot size",
-    meta: {
-      headerClassName: "min-w-24 text-right",
+      headerClassName: "min-w-32 text-right",
       cellClassName: "text-right",
     },
-    cell: ({ getValue }) => (
+    cell: ({ row }) => (
       <span className="font-semibold text-foreground tabular-nums">
-        {quantityFormatter.format(getValue())}
+        {quantityFormatter.format(row.original.quantity)}{" "}
+        <span className="font-normal text-muted-foreground">
+          ({row.original.unit.name})
+        </span>
       </span>
     ),
+  }),
+
+  oqcColumnHelper.accessor("inspectionDate", {
+    header: "Ngày KT",
+    meta: {
+      headerClassName: "min-w-28 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
 
   oqcColumnHelper.accessor("result", {
@@ -136,15 +135,6 @@ export const oqcColumns = [
     },
   }),
 
-  oqcColumnHelper.accessor("inspectionDate", {
-    header: "Ngày KT",
-    meta: {
-      headerClassName: "min-w-28 text-center",
-      cellClassName: "text-center",
-    },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
-  }),
-
   oqcColumnHelper.accessor("status", {
     header: "Trạng thái",
     meta: {
@@ -152,23 +142,6 @@ export const oqcColumns = [
       cellClassName: "text-center",
     },
     cell: ({ getValue }) => <OqcStatusBadge status={getValue()} />,
-  }),
-
-  oqcColumnHelper.accessor("note", {
-    header: "Ghi chú",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => {
-      const note = getValue()
-
-      return (
-        <span
-          className="line-clamp-2 text-xs text-muted-foreground"
-          title={note ?? undefined}
-        >
-          {note ?? "—"}
-        </span>
-      )
-    },
   }),
 
   oqcColumnHelper.display({

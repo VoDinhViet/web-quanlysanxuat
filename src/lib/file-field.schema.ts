@@ -8,9 +8,7 @@ import { FileKind, UploadType } from "@/lib/types/file.type"
  * the backend (as `imageFileId` / `avatarFileId` / `attachmentFileIds`); the
  * rest renders the preview and attachment list.
  *
- * `url` expires after about an hour, so it is display-only and is never sent
- * back. That means a restored draft can show a broken preview while still
- * submitting correctly — the id does not expire.
+ * `url` is display-only and is never sent back — only `id` reaches the backend.
  */
 export const fileFieldSchema = z.object({
   id: z.uuid(),

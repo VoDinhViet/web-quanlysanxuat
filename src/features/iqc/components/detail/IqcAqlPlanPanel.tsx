@@ -1,9 +1,8 @@
-import { useField } from "@tanstack/react-form"
 import { Lightbulb } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
-import { resolveAqlPlan } from "@/lib/aql-sampling"
+import { useIqcAqlPlan } from "@/features/iqc/hooks/use-iqc-aql-plan"
 
 type IqcAqlPlanPanelProps = {
   form: IqcDetailFormApi
@@ -21,14 +20,7 @@ export function IqcAqlPlanPanel({
   quantity,
   disabled,
 }: IqcAqlPlanPanelProps) {
-  const inspectionLevel = useField({ form, name: "inspectionLevel" }).state
-    .value
-  const aqlLevel = useField({ form, name: "aqlLevel" }).state.value
-
-  const plan =
-    inspectionLevel && aqlLevel
-      ? resolveAqlPlan(quantity, inspectionLevel, Number(aqlLevel))
-      : undefined
+  const { plan } = useIqcAqlPlan(form, quantity)
 
   return (
     <div className="flex items-start gap-2.5 rounded-lg border border-blue-200 bg-blue-50/60 px-3.5 py-3 dark:border-blue-500/20 dark:bg-blue-500/5">

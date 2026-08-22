@@ -41,7 +41,6 @@ export function UserAvatarField({
   disabled,
 }: UserAvatarFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
-  const [isPreviewBroken, setIsPreviewBroken] = useState(false)
   const uploadAvatarFn = useServerFn(uploadFile)
 
   const {
@@ -55,10 +54,7 @@ export function UserAvatarField({
       formData.append("type", "USER_AVATAR")
       return uploadAvatarFn({ data: formData })
     },
-    onSuccess: (result) => {
-      setIsPreviewBroken(false)
-      onChange(result)
-    },
+    onSuccess: (result) => onChange(result),
   })
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -101,10 +97,9 @@ export function UserAvatarField({
           )}
         >
           <img
-            src={resolveAvatarUrl(!isPreviewBroken ? value?.url : null)}
+            src={resolveAvatarUrl(value?.url)}
             alt="Ảnh đại diện"
             className="size-full object-cover"
-            onError={() => setIsPreviewBroken(true)}
           />
 
           {isPending ? (

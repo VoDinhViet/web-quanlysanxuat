@@ -13,7 +13,7 @@ export type AuthLoginResponse = {
 /**
  * The subset of GET /users/me used by the app: the identity fields shown in the
  * profile menu (name, username, email, avatar) plus the RBAC fields (role +
- * effective permissions) that drive permission-based UI. `avatar` is the signed,
+ * effective permissions) that drive permission-based UI. `avatar` is the
  * host-relative file URL (or null) — resolve it with `resolveFileUrl` before use.
  */
 export type AuthUserProfile = {

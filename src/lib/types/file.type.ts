@@ -16,6 +16,8 @@ export enum UploadType {
   ORDER_DOCUMENT = "ORDER_DOCUMENT",
   IQC_EVIDENCE = "IQC_EVIDENCE",
   IQC_DISPOSITION_EVIDENCE = "IQC_DISPOSITION_EVIDENCE",
+  OQC_EVIDENCE = "OQC_EVIDENCE",
+  OQC_DISPOSITION_EVIDENCE = "OQC_DISPOSITION_EVIDENCE",
 }
 
 export enum FileKind {
@@ -29,9 +31,8 @@ export enum FileKind {
  * Mirrors the backend's FileResDto — returned by POST /api/files and embedded in
  * every entity response (`product.image`, `user.avatar`, `material.image`).
  *
- * `url` is a signed link that expires (UPLOAD_URL_TTL, 1h by default) and is
- * host-relative. Never persist or share it: render it through `resolveFileUrl`
- * (src/lib/file-url.ts) and re-read the owning entity for a fresh one.
+ * `url` is a public, permanent, host-relative static link — render it through
+ * `resolveFileUrl` (src/lib/file-url.ts) to get an absolute one.
  */
 export type FileResource = {
   id: string
@@ -73,7 +74,7 @@ export const ACCEPTED_DRAWING_TYPES = {
   "application/pdf": [],
 }
 
-// IQC evidence — union of IMAGE and DOCUMENT, matching the backend's FileKind.EVIDENCE.
+// IQC/OQC evidence — union of IMAGE and DOCUMENT, matching the backend's FileKind.EVIDENCE.
 export const ACCEPTED_EVIDENCE_TYPES = {
   ...ACCEPTED_IMAGE_TYPES,
   ...ACCEPTED_DOCUMENT_TYPES,

@@ -41,9 +41,6 @@ export function MaterialImageField({
   disabled,
 }: MaterialImageFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
-  // The signed URL expires after about an hour, so a restored draft can show a
-  // dead preview. The file id is still valid, so submitting still works.
-  const [isPreviewBroken, setIsPreviewBroken] = useState(false)
   const uploadFileFn = useServerFn(uploadFile)
 
   const {
@@ -57,10 +54,7 @@ export function MaterialImageField({
       formData.append("type", "MATERIAL_IMAGE")
       return uploadFileFn({ data: formData })
     },
-    onSuccess: (result) => {
-      setIsPreviewBroken(false)
-      onChange(result)
-    },
+    onSuccess: (result) => onChange(result),
   })
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -105,17 +99,9 @@ export function MaterialImageField({
           >
             {value ? (
               <img
-                src={
-                  isPreviewBroken
-                    ? "/empty-image.svg"
-                    : resolveFileUrl(value.url)
-                }
+                src={resolveFileUrl(value.url)}
                 alt="Hình ảnh vật tư"
-                className={cn(
-                  "size-full",
-                  isPreviewBroken ? "object-contain p-4" : "object-cover"
-                )}
-                onError={() => setIsPreviewBroken(true)}
+                className="size-full object-cover"
               />
             ) : (
               <>
@@ -142,7 +128,6 @@ export function MaterialImageField({
             aria-label="Xóa hình ảnh"
             className="absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-destructive"
             onClick={() => {
-              setIsPreviewBroken(false)
               setClientError(null)
               onChange(null)
             }}

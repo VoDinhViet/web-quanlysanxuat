@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { ExternalLink, ImageOff } from "lucide-react"
@@ -96,12 +95,8 @@ type ItemImagePreviewProps = {
   name: string
 }
 
-// Same signed-URL-expires fallback idiom as SupplierReturnItemInfoSection's own
-// ItemImagePreview, sized down for a horizontal strip instead of a big square.
 function ItemImagePreview({ image, name }: ItemImagePreviewProps) {
-  const [isBroken, setIsBroken] = useState(false)
-
-  if (!image || isBroken) {
+  if (!image) {
     return (
       <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-dashed border-border bg-muted/30">
         <ImageOff className="size-5 text-muted-foreground/40" />
@@ -120,7 +115,6 @@ function ItemImagePreview({ image, name }: ItemImagePreviewProps) {
         src={resolveFileUrl(image.url)}
         alt={name}
         className="size-full object-cover"
-        onError={() => setIsBroken(true)}
       />
     </a>
   )

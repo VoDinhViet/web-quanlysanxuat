@@ -1,10 +1,10 @@
 import { useNavigate } from "@tanstack/react-router"
-import { Save, Trash2 } from "lucide-react"
+import { Diskette, TrashBinTrash } from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { DeleteOqcDialog } from "@/features/oqc/components/detail/DeleteOqcDialog"
-import type { OqcDetailFormApi } from "@/features/oqc/hooks/use-oqc-detail-form"
+import type { OqcDetailFormApi } from "@/features/oqc/components/detail/OqcDetailForm"
 import { OqcStatus } from "@/lib/types/oqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
@@ -44,7 +44,7 @@ export function OqcDetailActions({
                   variant="outline"
                   className="border-destructive/40 text-destructive"
                 >
-                  <Trash2 className="size-4" />
+                  <TrashBinTrash className="size-4" />
                   Xoá phiếu
                 </Button>
               }
@@ -62,7 +62,7 @@ export function OqcDetailActions({
                   type="submit"
                   disabled={!canSubmit || isSubmitting || isPending}
                 >
-                  <Save className="size-4" />
+                  <Diskette className="size-4" />
                   {isSubmitting || isPending ? "Đang lưu..." : "Lưu"}
                 </Button>
               )}

@@ -1,4 +1,5 @@
-import type { IqcResult, IqcInspectionLevel } from "@/lib/types/iqc.type"
+import { IqcResult } from "@/lib/types/iqc.type"
+import type { IqcAttachment, IqcInspectionLevel } from "@/lib/types/iqc.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
@@ -53,6 +54,13 @@ export const oqcDispositionLabels: Record<OqcDisposition, string> = {
   [OqcDisposition.SCRAP]: "Loại bỏ (Scrap)",
 }
 
+// OQC's own PASS/FAIL hint text for OqcResultCard's radio cards — `iqc.type.ts`'s
+// `iqcResultDescriptions` says "Vật tư" (material), the wrong noun on a finished-goods screen.
+export const oqcResultDescriptions: Record<IqcResult, string> = {
+  [IqcResult.PASS]: "Lô thành phẩm đạt yêu cầu, được phép nhập kho.",
+  [IqcResult.FAIL]: "Lô thành phẩm không đạt — chọn hướng xử lý bên dưới.",
+}
+
 // For OqcDispositionCard's radio cards.
 export const oqcDispositionDescriptions: Record<OqcDisposition, string> = {
   [OqcDisposition.ACCEPT]:
@@ -69,9 +77,7 @@ export const oqcDispositionDescriptions: Record<OqcDisposition, string> = {
  *  delete its Job/operation/BOM-item rows anymore. `operation`/`bomItem` are read-only snapshots
  *  off the as-used operation/BOM node this OQC lot belongs to (not stored columns — joined at read
  *  time). `orderCode` is resolved at read time (productionJob → productionOrder → order), never
- *  stored. `result` is null until the first confirm. `unit` is a sibling of `item`, NOT nested
- *  inside it — OQC's `item` is `ItemRefResDto` (no `unit`), unlike IQC's `ItemUnitRefResDto`
- *  (`unit` nested). Don't copy IQC's `item.unit` shape here again. */
+ *  stored. `result` is null until the first confirm. */
 export type Oqc = {
   id: string
   code: string
@@ -79,16 +85,12 @@ export type Oqc = {
   orderCode: string | null
   operation: { code: string; name: string }
   bomItem: { code: string; name: string }
-  item: { id: string; code: string; name: string }
   unit: Unit
   quantity: number
   inspectionDate: string
   result: IqcResult | null
   status: OqcStatus
   disposition: OqcDisposition | null
-  note: string | null
-  creatorBy: UserRef | null
-  createdAt: string
 }
 
 /** Mirrors the backend's OqcResDto (GET /api/oqc/:oqcId) — adds the AQL sampling fields over
@@ -97,8 +99,19 @@ export type Oqc = {
  *  never blocks confirm. `resultAuto` is the server-derived PASS/FAIL from Ac/Re — `result` wins if
  *  QC sends one, otherwise falls back to `resultAuto`. `disposition`/`dispositionNote` (the latter
  *  only) only ever set when `result = FAIL` (DB check constraint). `status === COMPLETED` locks
- *  the sheet permanently (no un-complete route exists) — `REWORK` stays open for re-confirm. */
+ *  the sheet permanently (no un-complete route exists) — `REWORK` stays open for re-confirm.
+ *  `qcEvidence`/`dispositionEvidence` are the latest attempt's attachments only (mirror IQC's
+ *  `IqcDetail`) — `dispositionEvidence` is only ever populated when `result = FAIL`, same rule as
+ *  `disposition`/`dispositionNote`.
+ *  `item`/`note`/`creatorBy`/`createdAt` only exist on this detail response — the list response
+ *  (`Oqc` above) doesn't send them, no list column reads them. `unit` is a sibling of `item`, NOT
+ *  nested inside it — OQC's `item` is `ItemRefResDto` (no `unit`), unlike IQC's `ItemUnitRefResDto`
+ *  (`unit` nested). Don't copy IQC's `item.unit` shape here again. */
 export type OqcDetail = Oqc & {
+  item: { id: string; code: string; name: string }
+  note: string | null
+  creatorBy: UserRef | null
+  createdAt: string
   inspectionLevel: IqcInspectionLevel | null
   aqlLevel: number | null
   codeLetter: string | null
@@ -109,7 +122,9 @@ export type OqcDetail = Oqc & {
   re: number | null
   resultAuto: IqcResult | null
   resultNote: string | null
+  qcEvidence: IqcAttachment[]
   dispositionNote: string | null
+  dispositionEvidence: IqcAttachment[]
   confirmerBy: UserRef | null
   confirmedAt: string | null
   resolverBy: UserRef | null

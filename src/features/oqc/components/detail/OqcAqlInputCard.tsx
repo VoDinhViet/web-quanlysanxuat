@@ -1,10 +1,20 @@
-import { ClipboardCheck } from "lucide-react"
+import { useParams } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { ClipboardCheck } from "@solar-icons/react"
 
-import { OqcAqlPlanPanel } from "@/features/oqc/components/detail/OqcAqlPlanPanel"
+import { oqcQueryOptions } from "@/features/oqc/api/options"
+import { OqcAqlTallyStrip } from "@/features/oqc/components/detail/OqcAqlTallyStrip"
 import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
-import type { OqcDetailFormApi } from "@/features/oqc/hooks/use-oqc-detail-form"
-import { aqlLevels, iqcInspectionLevelLabels } from "@/lib/types/iqc.type"
-import type { OqcDetail } from "@/lib/types/oqc.type"
+import {
+  confirmOqcFormDefaultValues,
+  confirmOqcSchema,
+} from "@/features/oqc/schemas/confirm-oqc.schema"
+import { withForm } from "@/hooks/use-app-form"
+import {
+  aqlLevels,
+  iqcInspectionLevelLabels,
+  iqcResultLabels,
+} from "@/lib/types/iqc.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const inspectionLevelOptions = buildOptionsFromLabels(iqcInspectionLevelLabels)
@@ -13,80 +23,100 @@ const aqlLevelOptions = aqlLevels.map((level) => ({
   label: `${level.toFixed(2)}%`,
 }))
 
-type OqcAqlInputCardProps = {
-  form: OqcDetailFormApi
-  oqc: OqcDetail
-  disabled?: boolean
-}
+// Inspection Level/AQL Level → cỡ mẫu/số lỗi → OqcAqlTallyStrip (bảng Ac/Re sống theo input) →
+// dòng ghi chú những gì server đã tính lúc xác nhận gần nhất (chỉ hiện khi đã từng confirm —
+// `oqc.ac !== null`), để user đối chiếu ngay số QC gõ với số server lưu, không cần suy diễn khi
+// gặp lỗi E "kết quả khác gợi ý tự động". `inspectionDate` không nằm trong ConfirmOqcReqDto (khác
+// IQC) — hiển thị read-only ở OqcLotSummaryCard, không có ở đây.
+export const OqcAqlInputCard = withForm({
+  defaultValues: confirmOqcFormDefaultValues,
+  validators: { onSubmit: confirmOqcSchema },
+  props: { disabled: false },
+  render: function Render({ form, disabled }) {
+    const { oqcId } = useParams({ from: "/(authed)/manage_/oqc_/$oqcId" })
+    const { data: oqc } = useSuspenseQuery(oqcQueryOptions(oqcId))
 
-// Inspection Level/AQL Level + gợi ý bảng AQL (tham khảo) + cỡ mẫu/số lỗi. `inspectionDate`
-// không nằm trong ConfirmOqcReqDto (khác IQC) — hiển thị read-only ở header, không có ở đây.
-export function OqcAqlInputCard({ form, oqc, disabled }: OqcAqlInputCardProps) {
-  return (
-    <OqcDetailSectionCard
-      icon={ClipboardCheck}
-      title="Thông tin kiểm tra (AQL)"
-      description="Cỡ mẫu, số lỗi và điều kiện lấy mẫu theo tiêu chuẩn AQL"
-    >
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <form.AppField name="inspectionLevel">
-            {(field) => (
-              <field.SelectField
-                label="Inspection Level"
-                required
-                placeholder="Chọn mức kiểm tra"
-                options={inspectionLevelOptions}
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
+    return (
+      <OqcDetailSectionCard
+        icon={ClipboardCheck}
+        title="Thông tin kiểm tra (AQL)"
+        description="Cỡ mẫu, số lỗi và điều kiện lấy mẫu theo tiêu chuẩn AQL"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <form.AppField name="inspectionLevel">
+              {(field) => (
+                <field.SelectField
+                  label="Inspection Level"
+                  required
+                  placeholder="Chọn mức kiểm tra"
+                  options={inspectionLevelOptions}
+                  disabled={disabled}
+                />
+              )}
+            </form.AppField>
 
-          <form.AppField name="aqlLevel">
-            {(field) => (
-              <field.SelectField
-                label="Mức AQL"
-                required
-                placeholder="Chọn mức AQL"
-                options={aqlLevelOptions}
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
+            <form.AppField name="aqlLevel">
+              {(field) => (
+                <field.SelectField
+                  label="Mức AQL"
+                  required
+                  placeholder="Chọn mức AQL"
+                  options={aqlLevelOptions}
+                  disabled={disabled}
+                />
+              )}
+            </form.AppField>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <form.AppField name="sampleSize">
+              {(field) => (
+                <field.NumberField
+                  label={`Số lượng bốc mẫu (${oqc.unit.name})`}
+                  required
+                  placeholder="VD: 32"
+                  thousandSeparator={false}
+                  disabled={disabled}
+                />
+              )}
+            </form.AppField>
+
+            <form.AppField name="defectQty">
+              {(field) => (
+                <field.NumberField
+                  label={`Số lượng NG (${oqc.unit.name})`}
+                  required
+                  placeholder="VD: 0"
+                  thousandSeparator={false}
+                  disabled={disabled}
+                />
+              )}
+            </form.AppField>
+          </div>
+
+          <OqcAqlTallyStrip
+            form={form}
+            quantity={oqc.quantity}
+            disabled={disabled}
+          />
+
+          {oqc.ac !== null && oqc.re !== null && (
+            <p className="text-[11px] text-muted-foreground">
+              Server đã ghi: code{" "}
+              <span className="font-mono">{oqc.codeLetter ?? "—"}</span> · n{" "}
+              <span className="font-mono">
+                {oqc.suggestedSampleSize ?? "—"}
+              </span>{" "}
+              · Ac <span className="font-mono">{oqc.ac}</span>/Re{" "}
+              <span className="font-mono">{oqc.re}</span> · tự động{" "}
+              <span className="font-mono">
+                {oqc.resultAuto ? iqcResultLabels[oqc.resultAuto] : "—"}
+              </span>
+            </p>
+          )}
         </div>
-
-        <OqcAqlPlanPanel
-          form={form}
-          quantity={oqc.quantity}
-          disabled={disabled}
-        />
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <form.AppField name="sampleSize">
-            {(field) => (
-              <field.NumberField
-                label={`Số lượng bốc mẫu (${oqc.unit.name})`}
-                required
-                placeholder="VD: 32"
-                thousandSeparator={false}
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
-
-          <form.AppField name="defectQty">
-            {(field) => (
-              <field.NumberField
-                label={`Số lượng NG (${oqc.unit.name})`}
-                required
-                placeholder="VD: 0"
-                thousandSeparator={false}
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
-        </div>
-      </div>
-    </OqcDetailSectionCard>
-  )
-}
+      </OqcDetailSectionCard>
+    )
+  },
+})

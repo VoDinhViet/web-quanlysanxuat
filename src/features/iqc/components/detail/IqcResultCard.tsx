@@ -17,16 +17,18 @@ const resultOptions: RadioCardOption<IqcResult>[] = [
     label: iqcResultLabels[IqcResult.PASS],
     description: iqcResultDescriptions[IqcResult.PASS],
     icon: CheckCircle,
-    activeClassName: "border-success bg-success/5",
+    activeClassName: "border-success",
     chipClassName: "bg-success/15 text-success",
+    badgeClassName: "bg-success text-success-foreground",
   },
   {
     value: IqcResult.FAIL,
     label: iqcResultLabels[IqcResult.FAIL],
     description: iqcResultDescriptions[IqcResult.FAIL],
     icon: CloseCircle,
-    activeClassName: "border-destructive bg-destructive/5",
+    activeClassName: "border-destructive",
     chipClassName: "bg-destructive/15 text-destructive",
+    badgeClassName: "bg-destructive text-destructive-foreground",
   },
 ]
 
