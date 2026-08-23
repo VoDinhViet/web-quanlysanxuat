@@ -82,7 +82,7 @@ export const updateOrderSchema = z.object({
   // Replace-all on the backend: an empty array clears the set, an omitted key keeps the
   // existing one. The form always sends both, so a save always replaces the full set.
   items: z.array(orderItemFormSchema),
-  attachments: z.array(fileFieldSchema),
+  files: z.array(fileFieldSchema),
 })
 
 export type UpdateOrderSchema = z.input<typeof updateOrderSchema>
@@ -108,5 +108,5 @@ export const updateOrderFormDefaultValues: UpdateOrderSchema = {
   note: "",
   internalNote: "",
   items: [],
-  attachments: [],
+  files: [],
 }

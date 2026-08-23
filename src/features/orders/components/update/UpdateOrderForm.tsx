@@ -21,7 +21,7 @@ import { buildSelectOption } from "@/lib/utils"
 // OrderDetail → raw form values: nullable fields become "", ISO datetimes become the
 // yyyy-MM-dd strings the date pickers work with. {zone:"utc"} is the exact inverse of
 // toIsoDate (which writes out midnight UTC) — without it, reading back in a negative
-// offset loses a day. `items`/`attachments` carry the UI-only display fields
+// offset loses a day. `items`/`files` carry the UI-only display fields
 // (itemLabel/itemUnit, file metadata) that orderItemFormSchema/the update server
 // function strip back out before the payload reaches the wire.
 function getOrderDefaultValues(
@@ -62,7 +62,7 @@ function getOrderDefaultValues(
       note: item.note ?? "",
       status: item.status,
     })),
-    attachments: order.attachments.map((attachment) => attachment.file),
+    files: order.files.map((orderFile) => orderFile.file),
   }
 }
 
@@ -135,7 +135,7 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
           </div>
 
           <div className="border-t border-border px-4 py-5 sm:px-5">
-            <form.Field name="attachments">
+            <form.Field name="files">
               {(field) => (
                 <OrderDocumentsField
                   value={field.state.value}

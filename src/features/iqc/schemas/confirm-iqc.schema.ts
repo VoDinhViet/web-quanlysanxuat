@@ -186,13 +186,13 @@ export function getIqcDefaultValues(iqc: IqcDetail): ConfirmIqcFormValue {
     result: iqc.result ?? "",
     resultNote: iqc.resultNote ?? "",
     qcDepartmentId: iqc.qcDepartment?.id ?? "",
-    qcEvidence: iqc.qcEvidence.map((attachment) => attachment.file),
+    qcEvidence: iqc.qcEvidence.map((qcFile) => qcFile.file),
     disposition: iqc.disposition ?? "",
     sortOkQty: iqc.sortOkQty ?? undefined,
     sortNgQty: iqc.sortNgQty ?? undefined,
     dispositionNote: iqc.dispositionNote ?? "",
     dispositionEvidence: iqc.dispositionEvidence.map(
-      (attachment) => attachment.file
+      (qcFile) => qcFile.file
     ),
     totalQuantity: iqc.quantity,
   }

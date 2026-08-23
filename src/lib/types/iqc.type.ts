@@ -122,10 +122,11 @@ export type Iqc = {
   createdAt: string
 }
 
-/** Mirrors the backend's IqcAttachmentResDto — one file entry inside `qcEvidence` /
- *  `dispositionEvidence` below. */
-export type IqcAttachment = {
+/** Mirrors the backend's QcFileResDto — one file entry inside `qcEvidence` /
+ *  `dispositionEvidence` below (IQC) or the flat `files` array (OQC), discriminated by `kind`. */
+export type QcFile = {
   id: string
+  kind: "QC_EVIDENCE" | "DISPOSITION_EVIDENCE"
   file: FileResource
 }
 
@@ -148,11 +149,11 @@ export type IqcDetail = Iqc & {
   re: number | null
   resultNote: string | null
   qcDepartment: Department | null
-  qcEvidence: IqcAttachment[]
+  qcEvidence: QcFile[]
   sortOkQty: number | null
   sortNgQty: number | null
   dispositionNote: string | null
-  dispositionEvidence: IqcAttachment[]
+  dispositionEvidence: QcFile[]
   supplierReturn: {
     id: string
     code: string

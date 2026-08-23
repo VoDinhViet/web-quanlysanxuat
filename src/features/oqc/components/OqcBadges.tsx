@@ -13,7 +13,7 @@ type BadgeStyle = {
   dot: string
 }
 
-export const oqcResultStyles: Record<IqcResult, BadgeStyle> = {
+const oqcResultStyles: Record<IqcResult, BadgeStyle> = {
   [IqcResult.PASS]: {
     badge: "bg-success/10 text-success",
     dot: "bg-success",
@@ -83,7 +83,7 @@ export function OqcStatusBadge({ status, className }: OqcStatusBadgeProps) {
   )
 }
 
-export const oqcDispositionStyles: Record<OqcDisposition, BadgeStyle> = {
+const oqcDispositionStyles: Record<OqcDisposition, BadgeStyle> = {
   [OqcDisposition.ACCEPT]: {
     badge:
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",

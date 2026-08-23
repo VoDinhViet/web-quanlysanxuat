@@ -248,8 +248,8 @@ export type OrderItem = {
   image: FileResource | null
 }
 
-/** Mirrors the backend's OrderAttachmentResDto — a join row carrying the registry file it points at. */
-export type OrderAttachment = {
+/** Mirrors the backend's OrderFileResDto — a join row carrying the registry file it points at. */
+export type OrderFile = {
   id: string
   file: FileResource
 }
@@ -285,7 +285,7 @@ export type OrderPayment = {
 }
 
 // Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
-// endpoint (GET /api/orders, `Order` above) intentionally skips items/attachments
+// endpoint (GET /api/orders, `Order` above) intentionally skips items/files
 // for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
 // extends `Order` rather than folding everything onto one shared type. Items are their own
 // endpoint too — GET /api/orders/:id/items, `OrderItem` above — no longer embedded here.
@@ -307,7 +307,7 @@ export type OrderDetail = Order & {
   total: number
   note: string | null
   internalNote: string | null
-  attachments: OrderAttachment[]
+  files: OrderFile[]
   // Approval flow (see OrderStatus doc comment) — only the most recent approve/reject is
   // kept, no history table.
   approverBy: OrderUserRef | null

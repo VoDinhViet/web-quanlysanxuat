@@ -106,9 +106,9 @@ export type SupplierPayment = {
   creditLimitStartDate: string | null
 }
 
-/** Mirrors the backend's SupplierAttachmentResDto — a join row carrying the
+/** Mirrors the backend's SupplierFileResDto — a join row carrying the
  *  registry file it points at. */
-export type SupplierAttachment = {
+export type SupplierFile = {
   id: string
   file: FileResource
 }
@@ -132,7 +132,7 @@ export type Supplier = {
   rating: number | null
   status: SupplierStatus
   internalNote: string | null
-  attachments: SupplierAttachment[]
+  files: SupplierFile[]
   creator: SupplierCreatorRef | null
   createdAt: string
   updatedAt: string

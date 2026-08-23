@@ -4,10 +4,7 @@ import axios from "axios"
 import { createSupplierSchema } from "@/features/suppliers/schemas/create-supplier.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import {
-  resolveApiAttachmentFileIds,
-  resolveApiFileId,
-} from "@/lib/file-field.schema"
+import { resolveApiFileId, resolveApiFileIds } from "@/lib/file-field.schema"
 import type { Supplier } from "@/lib/types/supplier.type"
 
 type SupplierRepresentativePayload = {
@@ -27,21 +24,15 @@ function buildRepresentativesPayload(
   return name ? [{ name, phoneNumber, isPrimary: true }] : []
 }
 
-// `logo`/`attachments` carry display URLs the backend has no field for — only
+// `logo`/`files` carry display URLs the backend has no field for — only
 // the file ids go on the wire, so they are destructured out rather than
 // spread. `representativeName`/`representativePhone` are the form's flat
 // fields for what the backend models as a `representatives[]` array.
 const createSupplierPayloadSchema = createSupplierSchema.transform(
-  ({
-    logo,
-    attachments,
-    representativeName,
-    representativePhone,
-    ...rest
-  }) => ({
+  ({ logo, files, representativeName, representativePhone, ...rest }) => ({
     ...rest,
     logoFileId: resolveApiFileId(logo, "create"),
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
+    fileIds: resolveApiFileIds(files),
     representatives: buildRepresentativesPayload(
       representativeName,
       representativePhone

@@ -45,7 +45,7 @@ export const CreateSupplierOtherSection = withForm({
             )}
           </form.AppField>
 
-          <form.Field name="attachments">
+          <form.Field name="files">
             {(field) => (
               <SupplierDocumentsField
                 value={field.state.value}

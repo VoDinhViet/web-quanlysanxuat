@@ -11,7 +11,6 @@ import type { OqcDetail } from "@/lib/types/oqc.type"
 type OqcDetailActionsProps = {
   form: OqcDetailFormApi
   oqc: OqcDetail
-  isLocked: boolean
   isPending: boolean
 }
 
@@ -21,11 +20,11 @@ type OqcDetailActionsProps = {
 export function OqcDetailActions({
   form,
   oqc,
-  isLocked,
   isPending,
 }: OqcDetailActionsProps) {
   const navigate = useNavigate({ from: "/manage/oqc/$oqcId" })
 
+  const isLocked = oqc.status === OqcStatus.COMPLETED
   const canDelete = oqc.status === OqcStatus.NOT_INSPECTED
 
   return (

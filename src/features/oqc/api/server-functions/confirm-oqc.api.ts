@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { confirmOqcSchema } from "@/features/oqc/schemas/confirm-oqc.schema"
-import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
+import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import { IqcResult } from "@/lib/types/iqc.type"
 import type { ApiErrorResponse } from "@/lib/http"
@@ -11,7 +11,7 @@ import type { ApiErrorResponse } from "@/lib/http"
 // (hidden) form fields still hold — OqcDispositionCard/OqcEvidenceCard (dispositionEvidence) stop
 // rendering once `result` flips back to PASS, but their fields keep their last value in form
 // state until submit, same idiom as confirm-iqc.api.ts. `qcEvidence`/`dispositionEvidence`
-// collapse to `*FileIds`, same idiom as every other attachments field.
+// collapse to `*FileIds`, same idiom as every other file field.
 const confirmOqcPayloadSchema = confirmOqcSchema.transform(
   ({
     disposition,
@@ -24,12 +24,12 @@ const confirmOqcPayloadSchema = confirmOqcSchema.transform(
 
     return {
       ...rest,
-      qcEvidenceFileIds: resolveApiAttachmentFileIds(qcEvidence),
+      qcEvidenceFileIds: resolveApiFileIds(qcEvidence),
       disposition: isPass ? undefined : disposition,
       dispositionNote: isPass ? undefined : dispositionNote,
       dispositionEvidenceFileIds: isPass
         ? []
-        : resolveApiAttachmentFileIds(dispositionEvidence),
+        : resolveApiFileIds(dispositionEvidence),
     }
   }
 )

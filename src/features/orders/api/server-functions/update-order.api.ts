@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { updateOrderSchema } from "@/features/orders/schemas/update-order.schema"
-import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
+import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import { OrderStatus } from "@/lib/types/order.type"
@@ -10,7 +10,7 @@ import { OrderStatus } from "@/lib/types/order.type"
 // Every field is already wire-ready by the time this runs — string->number mapping happens
 // field-by-field on updateOrderSchema, and the two UI-only item fields are already dropped
 // by orderItemFormSchema's own transform (order-item-form.schema.ts). All that's left is
-// collapsing attachments into attachmentFileIds — kept here, not on the schema, matching
+// collapsing files into fileIds — kept here, not on the schema, matching
 // every other feature's file-field handling (see "Server functions" in architecture.md).
 // `status` is dropped entirely when it's AWAITING_PRODUCTION or REJECTED: both are only
 // reachable through POST .../approve / .../reject — sending either here hits
@@ -19,13 +19,13 @@ import { OrderStatus } from "@/lib/types/order.type"
 // statuses here, never setting them (UpdateOrderForm already seeds DRAFT instead of REJECTED,
 // so this is a safety net, not the normal path).
 const updateOrderPayloadSchema = updateOrderSchema.transform(
-  ({ attachments, status, ...rest }) => ({
+  ({ files, status, ...rest }) => ({
     ...rest,
     ...(status === OrderStatus.AWAITING_PRODUCTION ||
     status === OrderStatus.REJECTED
       ? {}
       : { status }),
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
+    fileIds: resolveApiFileIds(files),
   })
 )
 

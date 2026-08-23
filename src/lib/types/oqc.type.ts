@@ -1,5 +1,5 @@
 import { IqcResult } from "@/lib/types/iqc.type"
-import type { IqcAttachment, IqcInspectionLevel } from "@/lib/types/iqc.type"
+import type { IqcInspectionLevel, QcFile } from "@/lib/types/iqc.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
@@ -93,41 +93,35 @@ export type Oqc = {
   disposition: OqcDisposition | null
 }
 
-/** Mirrors the backend's OqcResDto (GET /api/oqc/:oqcId) — adds the AQL sampling fields over
- *  `Oqc`, all null until `POST /oqc/:oqcId/confirm` runs. `codeLetter`/`suggestedSampleSize`/`ac`/
- *  `re` are computed at response time from the same AQL lookup table IQC uses — advisory only,
- *  never blocks confirm. `resultAuto` is the server-derived PASS/FAIL from Ac/Re — `result` wins if
- *  QC sends one, otherwise falls back to `resultAuto`. `disposition`/`dispositionNote` (the latter
- *  only) only ever set when `result = FAIL` (DB check constraint). `status === COMPLETED` locks
- *  the sheet permanently (no un-complete route exists) — `REWORK` stays open for re-confirm.
- *  `qcEvidence`/`dispositionEvidence` are the latest attempt's attachments only (mirror IQC's
- *  `IqcDetail`) — `dispositionEvidence` is only ever populated when `result = FAIL`, same rule as
+/** Mirrors the backend's OqcResDto (GET /api/oqc/:oqcId) — adds the AQL/confirm fields over
+ *  `Oqc`, all null until `POST /oqc/:oqcId/confirm` runs. The AQL lookup numbers (code letter/n/
+ *  Ac/Re) and the server-derived PASS/FAIL are deliberately NOT here — the screen reads them live
+ *  from `GET /oqc/aql-plan` via `useOqcAqlVerdict`, keyed by whatever inspectionLevel/aqlLevel is
+ *  currently typed; a copy frozen on this response would go stale mid-edit.
+ *  `disposition`/`dispositionNote` (the latter only) only ever set when `result = FAIL` (DB check
+ *  constraint). `status === COMPLETED` locks the sheet permanently (no un-complete route exists) —
+ *  `REWORK` stays open for re-confirm. `files` is the latest attempt's evidence — both kinds
+ *  (`QC_EVIDENCE`/`DISPOSITION_EVIDENCE`) mixed in one flat array; the screen filters by `kind`
+ *  itself (unlike IQC's `IqcDetail`, which gets them pre-split as `qcEvidence`/`dispositionEvidence`).
+ *  A `DISPOSITION_EVIDENCE` entry is only ever present when `result = FAIL`, same rule as
  *  `disposition`/`dispositionNote`.
- *  `item`/`note`/`creatorBy`/`createdAt` only exist on this detail response — the list response
- *  (`Oqc` above) doesn't send them, no list column reads them. `unit` is a sibling of `item`, NOT
+ *  `item`/`creatorBy`/`createdAt` only exist on this detail response — the list response (`Oqc`
+ *  above) doesn't send them, no list column reads them. `unit` is a sibling of `item`, NOT
  *  nested inside it — OQC's `item` is `ItemRefResDto` (no `unit`), unlike IQC's `ItemUnitRefResDto`
  *  (`unit` nested). Don't copy IQC's `item.unit` shape here again. */
 export type OqcDetail = Oqc & {
   item: { id: string; code: string; name: string }
-  note: string | null
   creatorBy: UserRef | null
   createdAt: string
   inspectionLevel: IqcInspectionLevel | null
   aqlLevel: number | null
-  codeLetter: string | null
-  suggestedSampleSize: number | null
   sampleSize: number | null
   defectQty: number | null
-  ac: number | null
-  re: number | null
-  resultAuto: IqcResult | null
   resultNote: string | null
-  qcEvidence: IqcAttachment[]
   dispositionNote: string | null
-  dispositionEvidence: IqcAttachment[]
+  files: QcFile[]
   confirmerBy: UserRef | null
   confirmedAt: string | null
   resolverBy: UserRef | null
   resolvedAt: string | null
-  updatedAt: string
 }

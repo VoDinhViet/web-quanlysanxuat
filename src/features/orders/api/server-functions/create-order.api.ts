@@ -2,20 +2,20 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { createOrderSchema } from "@/features/orders/schemas/create-order.schema"
-import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
+import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 
 // Every field is already wire-ready by the time this runs — string->number
 // mapping happens field-by-field on createOrderSchema/orderItemFormFields, and
 // the two UI-only item fields are already dropped by orderItemFormSchema's own
-// transform (order-item-form.schema.ts). All that's left is collapsing attachments
-// into attachmentFileIds — kept here, not on the schema, matching every other
+// transform (order-item-form.schema.ts). All that's left is collapsing files
+// into fileIds — kept here, not on the schema, matching every other
 // feature's file-field handling (see "Server functions" in architecture.md).
 const createOrderPayloadSchema = createOrderSchema.transform(
-  ({ attachments, ...rest }) => ({
+  ({ files, ...rest }) => ({
     ...rest,
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
+    fileIds: resolveApiFileIds(files),
   })
 )
 

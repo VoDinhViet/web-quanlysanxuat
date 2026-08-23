@@ -102,11 +102,13 @@ export function getOqcDefaultValues(oqc: OqcDetail): ConfirmOqcFormValue {
     defectQty: oqc.defectQty ?? undefined,
     result: oqc.result ?? "",
     resultNote: oqc.resultNote ?? "",
-    qcEvidence: oqc.qcEvidence.map((attachment) => attachment.file),
+    qcEvidence: oqc.files
+      .filter((qcFile) => qcFile.kind === "QC_EVIDENCE")
+      .map((qcFile) => qcFile.file),
     disposition: oqc.disposition ?? "",
     dispositionNote: oqc.dispositionNote ?? "",
-    dispositionEvidence: oqc.dispositionEvidence.map(
-      (attachment) => attachment.file
-    ),
+    dispositionEvidence: oqc.files
+      .filter((qcFile) => qcFile.kind === "DISPOSITION_EVIDENCE")
+      .map((qcFile) => qcFile.file),
   }
 }

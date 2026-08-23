@@ -43,7 +43,7 @@ function getSupplierDefaultValues(supplier: Supplier): UpdateSupplierSchema {
     countryId: supplier.country?.id ?? "",
     status: supplier.status,
     internalNote: supplier.internalNote ?? "",
-    attachments: supplier.attachments.map((attachment) => attachment.file),
+    files: supplier.files.map((supplierFile) => supplierFile.file),
     payment: {
       bankName: payment.bankName ?? "",
       bankAccountNumber: payment.bankAccountNumber ?? "",

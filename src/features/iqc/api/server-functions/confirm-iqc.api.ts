@@ -2,14 +2,14 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { confirmIqcSchema } from "@/features/iqc/schemas/confirm-iqc.schema"
-import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
+import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import { IqcResult } from "@/lib/types/iqc.type"
 import type { ApiErrorResponse } from "@/lib/http"
 
 // `totalQuantity` is FE-only (see confirm-iqc.schema.ts) — dropped here, never sent.
 // `qcEvidence`/`dispositionEvidence` collapse to `*FileIds`, same idiom as every other
-// attachments field (see createOrderPayloadSchema). PASS force-drops the whole disposition
+// file field (see createOrderPayloadSchema). PASS force-drops the whole disposition
 // group regardless of whatever the (hidden) form fields still hold — IqcDispositionCard stops
 // rendering once `result` flips back to PASS, but its fields keep their last value in form
 // state until submit, so this is the one place that actually enforces "PASS has no disposition".
@@ -19,14 +19,14 @@ const confirmIqcPayloadSchema = confirmIqcSchema.transform(
 
     return {
       ...rest,
-      qcEvidenceFileIds: resolveApiAttachmentFileIds(qcEvidence),
+      qcEvidenceFileIds: resolveApiFileIds(qcEvidence),
       disposition: isPass ? undefined : rest.disposition,
       sortOkQty: isPass ? undefined : rest.sortOkQty,
       sortNgQty: isPass ? undefined : rest.sortNgQty,
       dispositionNote: isPass ? undefined : rest.dispositionNote,
       dispositionEvidenceFileIds: isPass
         ? []
-        : resolveApiAttachmentFileIds(dispositionEvidence),
+        : resolveApiFileIds(dispositionEvidence),
     }
   }
 )

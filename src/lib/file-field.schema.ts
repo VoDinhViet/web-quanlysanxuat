@@ -5,8 +5,8 @@ import { FileKind, UploadType } from "@/lib/types/file.type"
 /**
  * Form-state shape for one uploaded file — mirrors the backend's FileResDto in
  * full (see `FileResource`, file.type.ts). `id` is the only part that reaches
- * the backend (as `imageFileId` / `avatarFileId` / `attachmentFileIds`); the
- * rest renders the preview and attachment list.
+ * the backend (as `imageFileId` / `avatarFileId` / `fileIds`); the
+ * rest renders the preview and file list.
  *
  * `url` is display-only and is never sent back — only `id` reaches the backend.
  */
@@ -37,7 +37,7 @@ export function resolveApiFileId(
   return mode === "create" ? file?.id : (file?.id ?? null)
 }
 
-/** Attachments array → wire ids — identical shape on create and update. */
-export function resolveApiAttachmentFileIds(files: FileFieldValue[]): string[] {
+/** File array → wire ids — identical shape on create and update. */
+export function resolveApiFileIds(files: FileFieldValue[]): string[] {
   return files.map((file) => file.id)
 }

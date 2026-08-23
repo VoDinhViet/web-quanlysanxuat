@@ -12,9 +12,9 @@ type ProductionJobDocumentsSectionProps = {
 }
 
 // Sub-section of "Thông tin chung" (ProductionJobInfoTab.tsx's InfoSection) — Job has no
-// attachment table of its own, so this reads through the FG product's own documents
+// file table of its own, so this reads through the FG product's own documents
 // (GET /production-jobs/:jobId/attachments). Read-only: there is no upload/delete route at the
-// Job level. Markup mirrors OrderDetailAttachmentsCard.tsx (flat FileResource instead of the
+// Job level. Markup mirrors OrderDetailFilesCard.tsx (flat FileResource instead of the
 // nested `{id, file}` join shape).
 export function ProductionJobDocumentsSection({
   productionJobId,

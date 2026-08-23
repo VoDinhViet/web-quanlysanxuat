@@ -70,7 +70,7 @@ export const updateSupplierSchema = z.object({
     .trim()
     .max(1000, "Ghi chú nội bộ tối đa 1000 ký tự")
     .transform(emptyToNull),
-  attachments: z.array(fileFieldSchema),
+  files: z.array(fileFieldSchema),
   payment: z.object({
     bankName: z.string().trim().transform(emptyToNull),
     bankAccountNumber: z.string().trim().transform(emptyToNull),
@@ -111,7 +111,7 @@ export const updateSupplierFormDefaultValues: UpdateSupplierSchema = {
   countryId: "",
   status: SupplierStatus.ACTIVE,
   internalNote: "",
-  attachments: [],
+  files: [],
   payment: {
     bankName: "",
     bankAccountNumber: "",

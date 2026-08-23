@@ -74,7 +74,7 @@ export function CreateOrderForm() {
           </div>
 
           <div className="border-t border-border px-4 py-5 sm:px-5">
-            <form.Field name="attachments">
+            <form.Field name="files">
               {(field) => (
                 <OrderDocumentsField
                   value={field.state.value}

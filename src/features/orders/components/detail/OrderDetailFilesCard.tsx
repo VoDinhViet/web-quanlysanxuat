@@ -6,37 +6,35 @@ import { OrderDetailSectionCard } from "@/features/orders/components/detail/Orde
 import { resolveFileUrl } from "@/lib/file-url"
 import type { OrderDetail } from "@/lib/types/order.type"
 
-type OrderDetailAttachmentsCardProps = {
+type OrderDetailFilesCardProps = {
   order: OrderDetail
 }
 
-export function OrderDetailAttachmentsCard({
-  order,
-}: OrderDetailAttachmentsCardProps) {
+export function OrderDetailFilesCard({ order }: OrderDetailFilesCardProps) {
   return (
     <OrderDetailSectionCard
       icon={Paperclip}
-      title={`Tài liệu đính kèm (${order.attachments.length})`}
+      title={`Tài liệu đính kèm (${order.files.length})`}
     >
-      {order.attachments.length > 0 ? (
+      {order.files.length > 0 ? (
         <ul className="space-y-1.5">
-          {order.attachments.map((attachment) => (
-            <li key={attachment.id}>
+          {order.files.map((orderFile) => (
+            <li key={orderFile.id}>
               <a
-                href={resolveFileUrl(attachment.file.url)}
+                href={resolveFileUrl(orderFile.file.url)}
                 target="_blank"
                 rel="noreferrer"
                 className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary"
               >
                 <FileText className="size-4 shrink-0 text-muted-foreground" />
                 <span className="min-w-0 flex-1 truncate">
-                  {attachment.file.originalName}
+                  {orderFile.file.originalName}
                 </span>
                 <span className="shrink-0 text-muted-foreground">
-                  {prettyBytes(attachment.file.size)}
+                  {prettyBytes(orderFile.file.size)}
                 </span>
                 <span className="hidden shrink-0 text-muted-foreground sm:inline">
-                  {DateTime.fromISO(attachment.file.createdAt).toFormat(
+                  {DateTime.fromISO(orderFile.file.createdAt).toFormat(
                     "dd/MM/yyyy"
                   )}
                 </span>

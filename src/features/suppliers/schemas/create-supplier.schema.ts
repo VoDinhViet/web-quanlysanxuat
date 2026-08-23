@@ -62,7 +62,7 @@ export const createSupplierSchema = z
       .trim()
       .max(1000, "Ghi chú nội bộ tối đa 1000 ký tự")
       .transform(emptyToUndefined),
-    attachments: z.array(fileFieldSchema),
+    files: z.array(fileFieldSchema),
     payment: z.object({
       bankName: z.string().trim().transform(emptyToUndefined),
       bankAccountNumber: z.string().trim().transform(emptyToUndefined),
@@ -100,7 +100,7 @@ export const createSupplierFormDefaultValues: CreateSupplierSchema = {
   countryId: "",
   status: SupplierStatus.ACTIVE,
   internalNote: "",
-  attachments: [],
+  files: [],
   payment: {
     bankName: "",
     bankAccountNumber: "",

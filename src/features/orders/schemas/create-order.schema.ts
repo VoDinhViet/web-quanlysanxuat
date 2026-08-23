@@ -71,7 +71,7 @@ export const createOrderSchema = z.object({
     .max(1000, "Ghi chú nội bộ tối đa 1000 ký tự")
     .transform(emptyToUndefined),
   items: z.array(orderItemFormSchema),
-  attachments: z.array(fileFieldSchema),
+  files: z.array(fileFieldSchema),
 })
 
 export type CreateOrderSchema = z.input<typeof createOrderSchema>
@@ -92,5 +92,5 @@ export const createOrderFormDefaultValues: CreateOrderSchema = {
   note: "",
   internalNote: "",
   items: [],
-  attachments: [],
+  files: [],
 }

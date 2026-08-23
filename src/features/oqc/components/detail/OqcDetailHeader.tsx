@@ -8,7 +8,6 @@ import {
 } from "@/features/oqc/components/OqcBadges"
 import { OqcDetailActions } from "@/features/oqc/components/detail/OqcDetailActions"
 import type { OqcDetailFormApi } from "@/features/oqc/components/detail/OqcDetailForm"
-import { OqcStatus } from "@/lib/types/oqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
 type OqcDetailHeaderProps = {
@@ -25,8 +24,6 @@ export function OqcDetailHeader({
   oqc,
   isPending,
 }: OqcDetailHeaderProps) {
-  const isLocked = oqc.status === OqcStatus.COMPLETED
-
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
       <div className="flex flex-wrap items-center gap-3">
@@ -49,12 +46,7 @@ export function OqcDetailHeader({
         <OqcResultBadge result={oqc.result} />
       </div>
 
-      <OqcDetailActions
-        form={form}
-        oqc={oqc}
-        isLocked={isLocked}
-        isPending={isPending}
-      />
+      <OqcDetailActions form={form} oqc={oqc} isPending={isPending} />
     </div>
   )
 }
