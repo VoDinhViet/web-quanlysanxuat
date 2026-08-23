@@ -137,6 +137,22 @@ export type InventoryRequisitionItem = {
   note: string | null
 }
 
+/** Mirrors the backend's `RequisitionLineResDto` — một dòng trong 2 popup chọn vật tư
+ *  (`job-bom-lines` / `issuable-items`). Không có `id` dòng: chưa được lưu, key theo `item.id`.
+ *  `bomQuantity`/`issuedQuantity`/`suggestedQuantity` luôn null ở `issuable-items` (không có Job
+ *  để tính). Khác `InventoryRequisitionItem` (dòng đã lưu của một phiếu) ở chỗ có
+ *  `suggestedQuantity` nhưng chưa có `id`/`quantity`/`note`. */
+export type InventoryRequisitionLine = {
+  item: InventoryRequisitionItemRef
+  bomQuantity: number | null
+  issuedQuantity: number | null
+  onHand: number
+  reservedQuantity: number
+  issuableQuantity: number
+  availableQuantity: number
+  suggestedQuantity: number | null
+}
+
 /** Mirrors the backend's `InventoryIssueRefResDto` — the phiếu xuất kho auto-generated when a
  *  requisition is issued. No detail route exists for `inventory-issues` yet, so this is only
  *  ever shown as plain text, never linked. */

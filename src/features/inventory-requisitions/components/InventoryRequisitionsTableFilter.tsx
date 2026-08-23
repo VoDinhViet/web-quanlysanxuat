@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { ClipboardPen, FileOutput, RotateCw } from "lucide-react"
+import { FileOutput, RotateCw } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import {
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { inventoryRequisitionStatusLabels } from "@/lib/types/inventory-requisition.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
@@ -65,21 +65,14 @@ export function InventoryRequisitionsTableFilter() {
           Tạo phiếu lãnh
         </p>
         <div className="flex flex-wrap gap-2">
-          <PendingAction
-            label="Lãnh từ LSX"
-            hint="Tính năng tạo phiếu lãnh từ LSX sắp có"
-            variant="default"
-          >
-            <FileOutput className="size-3.5" />
-            Lãnh từ LSX
-          </PendingAction>
-          <PendingAction
-            label="Lãnh thủ công"
-            hint="Tính năng tạo phiếu lãnh thủ công sắp có"
-          >
-            <ClipboardPen className="size-3.5" />
-            Lãnh thủ công
-          </PendingAction>
+          <RoutePermissionGate route="/manage/inventory-requisitions/create">
+            <Button className="text-xs" asChild>
+              <Link to="/manage/inventory-requisitions/create">
+                <FileOutput className="size-3.5" />
+                Tạo phiếu lãnh
+              </Link>
+            </Button>
+          </RoutePermissionGate>
         </div>
       </div>
 
