@@ -15,8 +15,8 @@ export const inventoryReceiptsSearchSchema = z.object({
   supplierId: z.string().trim().min(1).optional().catch(undefined),
   productionOrderId: z.string().trim().min(1).optional().catch(undefined),
   purchaseOrderId: z.string().trim().min(1).optional().catch(undefined),
-  fromDate: z.string().trim().min(1).optional().catch(undefined),
-  toDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.string().trim().min(1).optional().catch(undefined),
+  endDate: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type InventoryReceiptsSearchSchema = z.infer<

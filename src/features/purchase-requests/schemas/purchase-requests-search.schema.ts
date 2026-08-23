@@ -21,8 +21,8 @@ export const purchaseRequestsSearchSchema = z.object({
   q: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(PurchaseRequestStatus).optional().catch(undefined),
   departmentId: z.string().trim().min(1).optional().catch(undefined),
-  createdDateFrom: isoDateFilter,
-  createdDateTo: isoDateFilter,
+  createdStartDate: isoDateFilter,
+  createdEndDate: isoDateFilter,
 })
 
 export type PurchaseRequestsSearchSchema = z.infer<

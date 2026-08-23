@@ -108,8 +108,8 @@ export function OutsourcingReceiptsTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        fromDate: range.from,
-        toDate: range.to,
+        startDate: range.from,
+        endDate: range.to,
         page: 1,
       }),
     })
@@ -129,8 +129,8 @@ export function OutsourcingReceiptsTableFilter() {
           supplierId: _supplierId,
           status: _status,
           requiresIqc: _requiresIqc,
-          fromDate: _fromDate,
-          toDate: _toDate,
+          startDate: _startDate,
+          endDate: _endDate,
           ...rest
         } = prev
         return { ...rest, page: 1 }
@@ -263,8 +263,8 @@ export function OutsourcingReceiptsTableFilter() {
         </Label>
         <DateRangePicker
           id="os-in-daterange"
-          from={search.fromDate}
-          to={search.toDate}
+          from={search.startDate}
+          to={search.endDate}
           onChange={handleDateRangeChange}
         />
       </div>

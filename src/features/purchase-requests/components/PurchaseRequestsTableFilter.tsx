@@ -69,8 +69,8 @@ export function PurchaseRequestsTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        createdDateFrom: range.from,
-        createdDateTo: range.to,
+        createdStartDate: range.from,
+        createdEndDate: range.to,
         page: 1,
       }),
     })
@@ -92,8 +92,8 @@ export function PurchaseRequestsTableFilter() {
           q: _q,
           status: _status,
           departmentId: _departmentId,
-          createdDateFrom: _createdDateFrom,
-          createdDateTo: _createdDateTo,
+          createdStartDate: _createdStartDate,
+          createdEndDate: _createdEndDate,
           ...rest
         } = prev
         return { ...rest, page: 1 }
@@ -141,8 +141,8 @@ export function PurchaseRequestsTableFilter() {
             </Label>
             <DateRangePicker
               id="purchase-requests-date-range"
-              from={search.createdDateFrom}
-              to={search.createdDateTo}
+              from={search.createdStartDate}
+              to={search.createdEndDate}
               onChange={handleDateRangeChange}
             />
           </div>

@@ -13,21 +13,21 @@ type OrdersQueryParams = {
   q?: string
   status?: OrderStatus
   assignedUserId?: string
-  fromDate?: string
-  toDate?: string
+  startDate?: string
+  endDate?: string
   order?: SortOrder
 }
 
 // Empty `q` has to drop out entirely — the backend 422s on a present-but-empty `q` (see
-// get-client-options.ts). `orderDateFrom`/`orderDateTo` rename to `fromDate`/`toDate` here —
+// get-client-options.ts). `orderDateFrom`/`orderDateTo` rename to `startDate`/`endDate` here —
 // GetOrdersReqDto's field names, which filter on `dueDate`, not `orderDate` (the URL param
 // names stay as-is so existing shared links keep working; only the wire shape changes).
 const getOrdersParamsSchema = ordersSearchSchema.transform(
   ({ q, orderDateFrom, orderDateTo, ...rest }): OrdersQueryParams => ({
     ...rest,
     q: q || undefined,
-    fromDate: orderDateFrom,
-    toDate: orderDateTo,
+    startDate: orderDateFrom,
+    endDate: orderDateTo,
   })
 )
 

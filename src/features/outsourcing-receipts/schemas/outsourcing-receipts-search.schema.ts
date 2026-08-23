@@ -22,8 +22,8 @@ export const outsourcingReceiptsSearchSchema = z.object({
     .optional()
     .catch(undefined),
   requiresIqc: z.boolean().optional().catch(undefined),
-  fromDate: z.string().trim().min(1).optional().catch(undefined),
-  toDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.string().trim().min(1).optional().catch(undefined),
+  endDate: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type OutsourcingReceiptsSearchSchema = z.infer<

@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import type { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
 import { outsourcingOrderStatusLabels } from "@/lib/types/outsourcing-order.type"
@@ -51,20 +50,6 @@ export function OutsourcingOrdersTableFilter() {
     })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        fromDate: range.from,
-        toDate: range.to,
-        page: 1,
-      }),
-    })
-  }
-
   const handleExecuteSearch = () => {
     handleSearchDebounced.flush()
   }
@@ -74,13 +59,7 @@ export function OutsourcingOrdersTableFilter() {
     setQ("")
     void navigate({
       search: (prev) => {
-        const {
-          q: _q,
-          status: _status,
-          fromDate: _fromDate,
-          toDate: _toDate,
-          ...rest
-        } = prev
+        const { q: _q, status: _status, ...rest } = prev
         return { ...rest, page: 1 }
       },
     })
@@ -147,21 +126,6 @@ export function OutsourcingOrdersTableFilter() {
             ))}
           </SelectContent>
         </Select>
-      </div>
-
-      <div className="w-56 space-y-1.5">
-        <Label
-          htmlFor="os-out-daterange"
-          className="text-[11px] font-medium text-muted-foreground"
-        >
-          Từ ngày – Đến ngày
-        </Label>
-        <DateRangePicker
-          id="os-out-daterange"
-          from={search.fromDate}
-          to={search.toDate}
-          onChange={handleDateRangeChange}
-        />
       </div>
 
       <Button

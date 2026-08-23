@@ -7,8 +7,6 @@ export const outsourcingOrdersSearchSchema = z.object({
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
   q: z.string().trim().min(1).optional().catch(undefined), // Mã phiếu, NCC, công đoạn
   status: z.enum(OutsourcingOrderStatus).optional().catch(undefined),
-  fromDate: z.string().trim().min(1).optional().catch(undefined),
-  toDate: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type OutsourcingOrdersSearchSchema = z.infer<

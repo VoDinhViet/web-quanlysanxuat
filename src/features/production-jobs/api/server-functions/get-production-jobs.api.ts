@@ -7,14 +7,14 @@ import type { ApiErrorResponse } from "@/lib/http"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
-// `dueDateFrom`/`dueDateTo` rename to `fromDate`/`toDate` here — GetProductionJobsReqDto's field
+// `dueDateFrom`/`dueDateTo` rename to `startDate`/`endDate` here — GetProductionJobsReqDto's field
 // names (the URL param names stay as-is so existing links keep working; only the wire shape
 // changes).
 const getProductionJobsParamsSchema = productionJobsSearchSchema.transform(
   ({ dueDateFrom, dueDateTo, ...rest }) => ({
     ...rest,
-    fromDate: dueDateFrom,
-    toDate: dueDateTo,
+    startDate: dueDateFrom,
+    endDate: dueDateTo,
   })
 )
 

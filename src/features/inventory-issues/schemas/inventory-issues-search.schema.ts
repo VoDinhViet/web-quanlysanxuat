@@ -15,8 +15,8 @@ export const inventoryIssuesSearchSchema = z.object({
   productionOrderId: z.string().trim().min(1).optional().catch(undefined),
   productionJobId: z.string().trim().min(1).optional().catch(undefined),
   departmentId: z.string().trim().min(1).optional().catch(undefined),
-  fromDate: z.string().trim().min(1).optional().catch(undefined),
-  toDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.string().trim().min(1).optional().catch(undefined),
+  endDate: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type InventoryIssuesSearchSchema = z.infer<

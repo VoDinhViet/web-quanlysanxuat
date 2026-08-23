@@ -56,8 +56,8 @@ export function PurchaseLedgerTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        createdDateFrom: range.from,
-        createdDateTo: range.to,
+        createdStartDate: range.from,
+        createdEndDate: range.to,
         page: 1,
       }),
     })
@@ -70,8 +70,8 @@ export function PurchaseLedgerTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        neededDateFrom: range.from,
-        neededDateTo: range.to,
+        neededStartDate: range.from,
+        neededEndDate: range.to,
         page: 1,
       }),
     })
@@ -87,10 +87,10 @@ export function PurchaseLedgerTableFilter() {
         const {
           q: _q,
           status: _status,
-          createdDateFrom: _createdDateFrom,
-          createdDateTo: _createdDateTo,
-          neededDateFrom: _neededDateFrom,
-          neededDateTo: _neededDateTo,
+          createdStartDate: _createdStartDate,
+          createdEndDate: _createdEndDate,
+          neededStartDate: _neededStartDate,
+          neededEndDate: _neededEndDate,
           ...rest
         } = prev
         return { ...rest, page: 1 }
@@ -138,8 +138,8 @@ export function PurchaseLedgerTableFilter() {
             </Label>
             <DateRangePicker
               id="purchase-ledger-created-range"
-              from={search.createdDateFrom}
-              to={search.createdDateTo}
+              from={search.createdStartDate}
+              to={search.createdEndDate}
               onChange={handleCreatedDateRangeChange}
             />
           </div>
@@ -153,8 +153,8 @@ export function PurchaseLedgerTableFilter() {
             </Label>
             <DateRangePicker
               id="purchase-ledger-needed-range"
-              from={search.neededDateFrom}
-              to={search.neededDateTo}
+              from={search.neededStartDate}
+              to={search.neededEndDate}
               onChange={handleNeededDateRangeChange}
             />
           </div>

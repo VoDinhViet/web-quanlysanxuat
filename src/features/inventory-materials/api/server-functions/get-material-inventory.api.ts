@@ -24,7 +24,7 @@ function resolveGetMaterialInventoryErrorMessage(error: unknown): string {
 
 // `asOfDate` means "tồn tại thời điểm 23:59 ngày này" (see GetInventoryReqDto's own doc comment
 // on the backend), but the backend's `lte(transactionDate, asOfDate)` doesn't add
-// that end-of-day offset itself — unlike getInventoryTransactions's `toDate`, which does. A bare
+// that end-of-day offset itself — unlike getInventoryTransactions's `endDate`, which does. A bare
 // "yyyy-MM-dd" would parse as UTC midnight and drop same-(Vietnam-)day transactions, so the
 // end-of-day instant has to be built here, in Asia/Ho_Chi_Minh, before it goes on the wire.
 function toEndOfDayUtcIso(value: string): string {

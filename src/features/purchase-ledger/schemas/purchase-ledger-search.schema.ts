@@ -10,10 +10,10 @@ export const purchaseLedgerSearchSchema = z.object({
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
   q: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(PurchaseLedgerStatus).optional().catch(undefined),
-  createdDateFrom: z.string().trim().min(1).optional().catch(undefined),
-  createdDateTo: z.string().trim().min(1).optional().catch(undefined),
-  neededDateFrom: z.string().trim().min(1).optional().catch(undefined),
-  neededDateTo: z.string().trim().min(1).optional().catch(undefined),
+  createdStartDate: z.string().trim().min(1).optional().catch(undefined),
+  createdEndDate: z.string().trim().min(1).optional().catch(undefined),
+  neededStartDate: z.string().trim().min(1).optional().catch(undefined),
+  neededEndDate: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type PurchaseLedgerSearchSchema = z.infer<

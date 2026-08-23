@@ -70,8 +70,8 @@ export function InventoryIssuesTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        fromDate: range.from,
-        toDate: range.to,
+        startDate: range.from,
+        endDate: range.to,
         page: 1,
       }),
     })
@@ -86,8 +86,8 @@ export function InventoryIssuesTableFilter() {
           q: _q,
           issueType: _issueType,
           status: _status,
-          fromDate: _fromDate,
-          toDate: _toDate,
+          startDate: _startDate,
+          endDate: _endDate,
           ...rest
         } = prev
         return { ...rest, page: 1 }
@@ -188,8 +188,8 @@ export function InventoryIssuesTableFilter() {
             </Label>
             <DateRangePicker
               id="xk-date-range"
-              from={search.fromDate}
-              to={search.toDate}
+              from={search.startDate}
+              to={search.endDate}
               onChange={handleDateRangeChange}
             />
           </div>

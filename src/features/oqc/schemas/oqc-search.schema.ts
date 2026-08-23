@@ -15,8 +15,8 @@ export const oqcSearchSchema = z.object({
   result: z.enum(IqcResult).optional().catch(undefined),
   status: z.enum(OqcStatus).optional().catch(undefined),
   disposition: z.enum(OqcDisposition).optional().catch(undefined),
-  fromDate: z.string().trim().min(1).optional().catch(undefined),
-  toDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.string().trim().min(1).optional().catch(undefined),
+  endDate: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type OqcSearchSchema = z.infer<typeof oqcSearchSchema>

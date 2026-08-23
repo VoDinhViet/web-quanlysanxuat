@@ -7,14 +7,14 @@ import type { ApiErrorResponse } from "@/lib/http"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
-// `dueDateFrom`/`dueDateTo` rename to `fromDate`/`toDate` here — GetProductionOrdersReqDto's
+// `dueDateFrom`/`dueDateTo` rename to `startDate`/`endDate` here — GetProductionOrdersReqDto's
 // field names (the URL param names stay as-is so existing links keep working; only the wire
 // shape changes).
 const getProductionOrdersParamsSchema = productionOrdersSearchSchema.transform(
   ({ dueDateFrom, dueDateTo, ...rest }) => ({
     ...rest,
-    fromDate: dueDateFrom,
-    toDate: dueDateTo,
+    startDate: dueDateFrom,
+    endDate: dueDateTo,
   })
 )
 

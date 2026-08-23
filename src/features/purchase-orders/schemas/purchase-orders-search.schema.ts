@@ -4,7 +4,7 @@ import { PurchaseOrderProgress } from "@/lib/types/purchase-order.type"
 
 // Date filter params pass straight through as plain strings, same idiom as
 // purchase-ledger-search.schema.ts — the value is always the ISO "yyyy-MM-dd" DateRangePicker
-// already produces, so re-validating it here is redundant. Named `progress`/`fromDate`/`toDate`
+// already produces, so re-validating it here is redundant. Named `progress`/`startDate`/`endDate`
 // to match GetPurchaseOrdersReqDto 1:1 — no wire rename needed in the server function.
 export const purchaseOrdersSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
@@ -12,8 +12,8 @@ export const purchaseOrdersSearchSchema = z.object({
   q: z.string().trim().min(1).optional().catch(undefined),
   progress: z.enum(PurchaseOrderProgress).optional().catch(undefined),
   supplierId: z.string().trim().min(1).optional().catch(undefined),
-  fromDate: z.string().trim().min(1).optional().catch(undefined),
-  toDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.string().trim().min(1).optional().catch(undefined),
+  endDate: z.string().trim().min(1).optional().catch(undefined),
   // Independent from `progress` (matches GetPurchaseOrdersReqDto.hasRemainingReceipt) — PO đã
   // ORDERED và còn hàng chưa nhập đủ (progress ORDERED hoặc RECEIVING). Chưa dùng ở trang danh
   // sách PO (route ở đó không set field này); dùng bởi bước chọn PO của
