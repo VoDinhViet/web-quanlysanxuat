@@ -162,7 +162,7 @@ const menuGroups: MenuGroup[] = [
       {
         label: "Lãnh vật tư",
         icon: ClipboardMinus,
-        href: "/manage/material-issues",
+        href: "/manage/inventory-requisitions",
       },
     ],
   },

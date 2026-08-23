@@ -15,27 +15,27 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
-import { materialIssuesColumns } from "@/features/material-issues/components/MaterialIssuesTableColumns"
+import { inventoryRequisitionsColumns } from "@/features/inventory-requisitions/components/InventoryRequisitionsTableColumns"
 import { cn } from "@/lib/utils"
-import type { MaterialIssue } from "@/lib/types/material-issue.type"
+import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
-type MaterialIssuesTableProps = {
-  rows: MaterialIssue[]
+type InventoryRequisitionsTableProps = {
+  rows: InventoryRequisition[]
   pagination: Pagination
   isPending: boolean
 }
 
 // Bảng danh sách phiếu lãnh vật tư — tự dựng useReactTable/flexRender, cùng idiom
 // InventoryIssuesTable.
-export function MaterialIssuesTable({
+export function InventoryRequisitionsTable({
   rows,
   pagination,
   isPending,
-}: MaterialIssuesTableProps) {
+}: InventoryRequisitionsTableProps) {
   const table = useReactTable({
     data: rows,
-    columns: materialIssuesColumns,
+    columns: inventoryRequisitionsColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 

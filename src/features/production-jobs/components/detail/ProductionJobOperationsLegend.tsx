@@ -60,7 +60,7 @@ const actions: ActionRow[] = [
 
 // Chú thích cho tab "Công đoạn sản xuất" — nằm full-width dưới bảng (ProductionJobOperationsTab.tsx),
 // 3 cột ngang trên màn lớn, xếp chồng dọc trên mobile — đúng khuôn card tĩnh
-// InventoryIssuesLegend.tsx/MaterialIssuesLegend.tsx (không Collapsible — không Legend nào trong
+// InventoryIssuesLegend.tsx/InventoryRequisitionsLegend.tsx (không Collapsible — không Legend nào trong
 // repo thu gọn được), chỉ đổi 2 cột thành 3. Mục 1 lấy thẳng
 // operationProgressStatusStyles/Descriptions từ ProductionJobOperationsTable.tsx nên không thể
 // lệch màu/nhãn với badge "Trạng thái" thật. Mục 2 chỉ có 1 chức năng thật (Cập nhật SL hoàn

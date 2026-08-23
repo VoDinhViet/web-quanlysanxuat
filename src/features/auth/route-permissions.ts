@@ -44,10 +44,12 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/inventory-receipts/$inventoryReceiptId": "inventory:read",
   "/manage/inventory-receipts/$inventoryReceiptId/update": "inventory:update",
 
+  "/manage/inventory-requisitions": "inventory-requisitions:read",
+  "/manage/inventory-requisitions/$requisitionId":
+    "inventory-requisitions:read",
+
   "/manage/iqc": "iqc:read",
   "/manage/iqc/$iqcId": "iqc:read",
-
-  "/manage/material-issues": "inventory:read",
 
   "/manage/materials": "items:read",
   "/manage/materials/create": "items:create",

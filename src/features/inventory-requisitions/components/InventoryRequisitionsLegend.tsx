@@ -1,14 +1,14 @@
 import { Info, Lightbulb } from "lucide-react"
 
 import {
-  MaterialIssueStatus,
-  materialIssueStatusDescriptions,
-} from "@/lib/types/material-issue.type"
-import { MaterialIssueStatusBadge } from "@/features/material-issues/components/MaterialIssueBadges"
+  InventoryRequisitionStatus,
+  inventoryRequisitionStatusDescriptions,
+} from "@/lib/types/inventory-requisition.type"
+import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/InventoryRequisitionBadges"
 
-const statuses = Object.values(MaterialIssueStatus)
+const statuses = Object.values(InventoryRequisitionStatus)
 
-export function MaterialIssuesLegend() {
+export function InventoryRequisitionsLegend() {
   return (
     <div className="grid grid-cols-1 gap-4 rounded-lg bg-card p-4 text-xs shadow-card sm:p-5 lg:grid-cols-2">
       {/* Ghi chú trạng thái */}
@@ -20,12 +20,12 @@ export function MaterialIssuesLegend() {
         <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {statuses.map((status) => (
             <li key={status} className="flex items-start gap-2">
-              <MaterialIssueStatusBadge
+              <InventoryRequisitionStatusBadge
                 status={status}
                 className="mt-0.5 shrink-0 text-[10px]"
               />
               <span className="text-muted-foreground">
-                {materialIssueStatusDescriptions[status]}
+                {inventoryRequisitionStatusDescriptions[status]}
               </span>
             </li>
           ))}
@@ -45,8 +45,9 @@ export function MaterialIssuesLegend() {
           </p>
           <p>
             • Chỉ phiếu{" "}
-            <strong className="font-medium text-foreground">Chờ duyệt</strong>{" "}
-            mới có thể chỉnh sửa hoặc xóa.
+            <strong className="font-medium text-foreground">Nháp</strong> hoặc{" "}
+            <strong className="font-medium text-foreground">Từ chối</strong> mới
+            có thể chỉnh sửa hoặc xóa.
           </p>
         </div>
       </div>

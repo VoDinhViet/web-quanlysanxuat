@@ -1,16 +1,17 @@
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { MaterialIssueStatusBadge } from "@/features/material-issues/components/MaterialIssueBadges"
+import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/InventoryRequisitionBadges"
 import {
-  MaterialIssueActionsCell,
-  MaterialIssueSourceCell,
-} from "@/features/material-issues/components/MaterialIssuesTableCells"
-import type { MaterialIssue } from "@/lib/types/material-issue.type"
+  InventoryRequisitionActionsCell,
+  InventoryRequisitionSourceCell,
+} from "@/features/inventory-requisitions/components/InventoryRequisitionsTableCells"
+import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
 
-const col = createColumnHelper<MaterialIssue>()
+const col = createColumnHelper<InventoryRequisition>()
 
-export const materialIssuesColumns = [
+export const inventoryRequisitionsColumns = [
   col.display({
     id: "stt",
     header: "STT",
@@ -24,14 +25,18 @@ export const materialIssuesColumns = [
   col.accessor("code", {
     header: "Mã phiếu lãnh",
     meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+    cell: ({ getValue, row }) => (
+      <Link
+        to="/manage/inventory-requisitions/$requisitionId"
+        params={{ requisitionId: row.original.id }}
+        className="font-mono text-xs font-semibold text-primary hover:underline"
+      >
         {getValue()}
-      </span>
+      </Link>
     ),
   }),
 
-  col.accessor("issueDate", {
+  col.accessor("requisitionDate", {
     header: "Ngày lãnh",
     meta: {
       headerClassName: "min-w-32 text-center",
@@ -46,14 +51,14 @@ export const materialIssuesColumns = [
     header: "PO / Lý do",
     meta: { headerClassName: "min-w-36" },
     cell: ({ row }) => (
-      <MaterialIssueSourceCell
-        productionOrderCode={row.original.productionOrderCode}
+      <InventoryRequisitionSourceCell
+        productionOrder={row.original.productionOrder}
         reason={row.original.reason}
       />
     ),
   }),
 
-  col.accessor("job", {
+  col.accessor("productionJob", {
     header: "Job",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
@@ -66,13 +71,13 @@ export const materialIssuesColumns = [
   col.accessor("department", {
     header: "Bộ phận",
     meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => getValue().name,
+    cell: ({ getValue }) => getValue()?.name ?? "—",
   }),
 
-  col.accessor("creator", {
+  col.accessor("creatorBy", {
     header: "Người tạo",
     meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => getValue().fullName,
+    cell: ({ getValue }) => getValue()?.fullName ?? "—",
   }),
 
   col.accessor("status", {
@@ -81,13 +86,9 @@ export const materialIssuesColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => <MaterialIssueStatusBadge status={getValue()} />,
-  }),
-
-  col.accessor("note", {
-    header: "Ghi chú",
-    meta: { headerClassName: "min-w-40" },
-    cell: ({ getValue }) => getValue() ?? "—",
+    cell: ({ getValue }) => (
+      <InventoryRequisitionStatusBadge status={getValue()} />
+    ),
   }),
 
   col.display({
@@ -97,6 +98,8 @@ export const materialIssuesColumns = [
       headerClassName: "min-w-40 text-center",
       cellClassName: "font-normal",
     },
-    cell: ({ row }) => <MaterialIssueActionsCell issue={row.original} />,
+    cell: ({ row }) => (
+      <InventoryRequisitionActionsCell requisition={row.original} />
+    ),
   }),
 ]
