@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Loader2 } from "lucide-react"
@@ -139,7 +140,18 @@ type ProductHeaderThumbnailProps = {
 }
 
 function ProductHeaderThumbnail({ image, name }: ProductHeaderThumbnailProps) {
-  if (!image) {
+  // File đã upload nhưng bị dọn (orphan sweep/xoá) sẽ 404 khi hiển thị lại — bắt qua `onError` để
+  // rơi về đúng fallback "chưa có ảnh" thay vì ảnh vỡ trần trụi. Reset ngay trong lúc render khi
+  // đổi sản phẩm — "adjusting state when a prop changes" theo khuyến nghị của React, không dùng
+  // effect vì compiler chặn setState đồng bộ trong effect.
+  const [isBroken, setIsBroken] = useState(false)
+  const [prevImageId, setPrevImageId] = useState(image?.id)
+  if (image?.id !== prevImageId) {
+    setPrevImageId(image?.id)
+    setIsBroken(false)
+  }
+
+  if (!image || isBroken) {
     return (
       <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         <Box className="size-5" />
@@ -153,6 +165,7 @@ function ProductHeaderThumbnail({ image, name }: ProductHeaderThumbnailProps) {
         src={resolveFileUrl(image.url)}
         alt={name}
         className="size-full object-cover"
+        onError={() => setIsBroken(true)}
       />
     </div>
   )

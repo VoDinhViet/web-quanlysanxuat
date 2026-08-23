@@ -1,13 +1,12 @@
 import { Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { DateTime } from "luxon"
-import { Info, Logs, Paperclip, StickyNote } from "lucide-react"
+import { Info, Logs, StickyNote } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { productionOrderQueryOptions } from "@/features/production-orders/api"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
-import { ProductionJobDocumentsSection } from "@/features/production-jobs/components/detail/ProductionJobDocumentsSection"
 import { ProductionJobLogSection } from "@/features/production-jobs/components/detail/ProductionJobLogSection"
 import { ProductionJobNotesSection } from "@/features/production-jobs/components/detail/ProductionJobNotesSection"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
@@ -16,7 +15,7 @@ type ProductionJobInfoTabProps = {
   detail: ProductionJobDetail
 }
 
-// "Thông tin chung" tab — cột chính (tóm tắt + Lịch sử) và cột phụ (Tài liệu/Ghi chú) chia 2
+// "Thông tin chung" tab — cột chính (tóm tắt + Lịch sử) và cột phụ (Ghi chú) chia 2
 // phần, cùng bố cục `grid-cols-[minmax(0,1fr)_340px]` + `border-l` mà ProductDetailPage.tsx dùng
 // cho ProductDetailSidebar — không bịa layout mới. Trong mỗi cột, các khối tách nhau bằng đường
 // kẻ (`InfoSection`'s `not-first:border-t`) chứ không phải card lồng card. `InfoSection` chỉ lo
@@ -118,12 +117,6 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
       </div>
 
       <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
-        <InfoSection title="Tài liệu đính kèm" icon={Paperclip}>
-          <div className="p-4 sm:p-5">
-            <ProductionJobDocumentsSection productionJobId={detail.id} />
-          </div>
-        </InfoSection>
-
         <InfoSection title="Ghi chú" icon={StickyNote}>
           <div className="p-4 sm:p-5">
             <ProductionJobNotesSection productionJobId={detail.id} />

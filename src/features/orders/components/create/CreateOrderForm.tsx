@@ -24,8 +24,10 @@ export function CreateOrderForm() {
   const queryClient = useQueryClient()
   const createOrderFn = useServerFn(createOrder)
 
+  // v3: field `attachments` đổi tên thành `files` (attachments-to-files-registry rename) — bump
+  // để nháp cũ (còn field `attachments`) không âm thầm làm rớt file đã đính kèm khi khôi phục.
   const { draft, saveDraft, clearDraft } = useFormDraft<CreateOrderSchema>(
-    "qlsx:draft:create-order-v2"
+    "qlsx:draft:create-order-v3"
   )
   const draftRestoredRef = useRef(false)
 

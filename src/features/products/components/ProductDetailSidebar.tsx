@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import {
@@ -178,7 +179,18 @@ type ProductImagePreviewProps = {
 }
 
 function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
-  if (!image) {
+  // File đã upload nhưng bị dọn (orphan sweep/xoá) sẽ 404 khi hiển thị lại — bắt qua `onError` để
+  // rơi về đúng fallback "chưa có hình ảnh" (link "Xem ảnh gốc" cũng vô nghĩa nếu ảnh đã mất).
+  // Reset ngay trong lúc render khi đổi sản phẩm — "adjusting state when a prop changes" theo
+  // khuyến nghị của React, không dùng effect vì compiler chặn setState đồng bộ trong effect.
+  const [isBroken, setIsBroken] = useState(false)
+  const [prevImageId, setPrevImageId] = useState(image?.id)
+  if (image?.id !== prevImageId) {
+    setPrevImageId(image?.id)
+    setIsBroken(false)
+  }
+
+  if (!image || isBroken) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
         <GalleryRemove className="size-7 text-muted-foreground/40" />
@@ -202,6 +214,7 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
           src={resolveFileUrl(image.url)}
           alt={name}
           className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
+          onError={() => setIsBroken(true)}
         />
 
         <span className="absolute inset-0 flex items-center justify-center bg-foreground/45 opacity-0 transition-opacity group-hover:opacity-100">

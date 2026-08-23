@@ -133,7 +133,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
         >
           <Avatar className="size-10">
             <AvatarImage
-              src={resolveAvatarUrl(profile?.avatar)}
+              src={resolveAvatarUrl(profile?.avatar?.url)}
               alt={profile?.fullName ?? "--"}
             />
             <AvatarFallback className="bg-muted">
@@ -159,7 +159,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
         <div className="flex items-start gap-3 px-2 py-1.5">
           <Avatar className="size-10">
             <AvatarImage
-              src={resolveAvatarUrl(profile?.avatar)}
+              src={resolveAvatarUrl(profile?.avatar?.url)}
               alt={profile?.fullName ?? "--"}
             />
             <AvatarFallback className="bg-muted">

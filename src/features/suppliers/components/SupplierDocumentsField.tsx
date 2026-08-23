@@ -31,7 +31,12 @@ function resolveDropRejectionMessage(
 
 type SupplierDocumentsFieldProps = {
   value: FileFieldValue[]
-  onChange: (value: FileFieldValue[]) => void
+  // Chấp nhận cả updater function (không chỉ giá trị) — bắt buộc để tránh race khi thả nhiều
+  // file liên tiếp (xem onDropAccepted bên dưới): `field.handleChange` của TanStack Form vốn đã
+  // hỗ trợ dạng này (`Updater<TData>`).
+  onChange: (
+    value: FileFieldValue[] | ((prev: FileFieldValue[]) => FileFieldValue[])
+  ) => void
   disabled?: boolean
 }
 
@@ -73,7 +78,10 @@ export function SupplierDocumentsField({
         .map((result) => result.value)
 
       if (uploaded.length > 0) {
-        onChange([...value, ...uploaded])
+        // Updater, không phải `[...value, ...uploaded]` đọc `value` đóng gói lúc bắt đầu upload —
+        // thả file A rồi thả tiếp file B trước khi A xong sẽ làm callback của B ghi đè mất A nếu
+        // dùng snapshot cũ.
+        onChange((prev) => [...prev, ...uploaded])
       }
 
       const failedCount = results.length - uploaded.length
@@ -88,7 +96,7 @@ export function SupplierDocumentsField({
   })
 
   const removeFile = (id: string) => {
-    onChange(value.filter((file) => file.id !== id))
+    onChange((prev) => prev.filter((file) => file.id !== id))
   }
 
   const errorMessage = clientError ?? error?.message

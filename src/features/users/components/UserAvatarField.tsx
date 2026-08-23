@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query"
 import { Camera, Loader2 } from "lucide-react"
 import { ErrorCode, useDropzone } from "react-dropzone"
 
-import { resolveAvatarUrl } from "@/lib/file-url"
+import { defaultAvatarUrl, resolveAvatarUrl } from "@/lib/file-url"
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_IMAGE_SIZE_BYTES,
@@ -41,6 +41,17 @@ export function UserAvatarField({
   disabled,
 }: UserAvatarFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
+  // File đã upload nhưng bị dọn (orphan sweep sau 24h nếu không gắn vào user nào, hoặc bị xoá) sẽ
+  // 404 khi hiển thị lại — bắt qua `onError` để rơi về `defaultAvatarUrl` (cùng fallback
+  // `resolveAvatarUrl` đã dùng cho trường hợp chưa có avatar) thay vì ảnh vỡ trần trụi. Reset
+  // ngay trong lúc render khi đổi avatar (upload mới/xoá) — "adjusting state when a prop changes"
+  // theo khuyến nghị của React, không dùng effect vì compiler chặn setState đồng bộ trong effect.
+  const [isPreviewBroken, setIsPreviewBroken] = useState(false)
+  const [prevValueId, setPrevValueId] = useState(value?.id)
+  if (value?.id !== prevValueId) {
+    setPrevValueId(value?.id)
+    setIsPreviewBroken(false)
+  }
   const uploadAvatarFn = useServerFn(uploadFile)
 
   const {
@@ -97,9 +108,12 @@ export function UserAvatarField({
           )}
         >
           <img
-            src={resolveAvatarUrl(value?.url)}
+            src={
+              isPreviewBroken ? defaultAvatarUrl : resolveAvatarUrl(value?.url)
+            }
             alt="Ảnh đại diện"
             className="size-full object-cover"
+            onError={() => setIsPreviewBroken(true)}
           />
 
           {isPending ? (

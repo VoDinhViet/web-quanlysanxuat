@@ -1,3 +1,5 @@
+import type { FileResource } from "@/lib/types/file.type"
+
 export type CurrentSession = {
   userId: string
 }
@@ -13,14 +15,16 @@ export type AuthLoginResponse = {
 /**
  * The subset of GET /users/me used by the app: the identity fields shown in the
  * profile menu (name, username, email, avatar) plus the RBAC fields (role +
- * effective permissions) that drive permission-based UI. `avatar` is the
- * host-relative file URL (or null) — resolve it with `resolveFileUrl` before use.
+ * effective permissions) that drive permission-based UI. `avatar` mirrors the
+ * backend's `FileResDto | null` (via `FileField('avatarFile', ...)` on
+ * `CurrentUserResDto`) — resolve `avatar.url` with `resolveFileUrl`/`resolveAvatarUrl`
+ * before use, never the object itself.
  */
 export type AuthUserProfile = {
   fullName: string | null
   username: string
   email: string
-  avatar: string | null
+  avatar: FileResource | null
   role: { code: string; name: string } | null
   permissions: string[]
 }

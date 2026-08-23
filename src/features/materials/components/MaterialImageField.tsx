@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
-import { ImageUp, Loader2, X } from "lucide-react"
+import { ImageOff, ImageUp, Loader2, X } from "lucide-react"
 import { ErrorCode, useDropzone } from "react-dropzone"
 
 import { resolveFileUrl } from "@/lib/file-url"
@@ -41,6 +41,17 @@ export function MaterialImageField({
   disabled,
 }: MaterialImageFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
+  // File đã upload nhưng bị dọn (orphan sweep sau 24h nếu không gắn vào vật tư nào, hoặc bị xoá)
+  // sẽ 404 khi hiển thị lại — bắt qua `onError` để rơi về icon thay vì ảnh vỡ trần trụi, cùng
+  // idiom QcEvidenceThumbnail.tsx. Reset ngay trong lúc render khi đổi ảnh (upload mới/xoá) —
+  // "adjusting state when a prop changes" theo khuyến nghị của React, không dùng effect vì
+  // compiler chặn setState đồng bộ trong effect.
+  const [isPreviewBroken, setIsPreviewBroken] = useState(false)
+  const [prevValueId, setPrevValueId] = useState(value?.id)
+  if (value?.id !== prevValueId) {
+    setPrevValueId(value?.id)
+    setIsPreviewBroken(false)
+  }
   const uploadFileFn = useServerFn(uploadFile)
 
   const {
@@ -97,12 +108,15 @@ export function MaterialImageField({
               isDragActive && "border-primary bg-primary/5"
             )}
           >
-            {value ? (
+            {value && !isPreviewBroken ? (
               <img
                 src={resolveFileUrl(value.url)}
                 alt="Hình ảnh vật tư"
                 className="size-full object-cover"
+                onError={() => setIsPreviewBroken(true)}
               />
+            ) : value ? (
+              <ImageOff className="size-6 text-muted-foreground/60" />
             ) : (
               <>
                 <ImageUp className="size-6 text-muted-foreground/60" />
