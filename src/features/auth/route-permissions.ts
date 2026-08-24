@@ -108,6 +108,10 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/purchase-requests/create": "purchase-requests:create",
   "/manage/purchase-requests/$purchaseRequestId": "purchase-requests:read",
 
+  "/manage/roles": "roles:read",
+  "/manage/roles/create": "roles:create",
+  "/manage/roles/$roleId/update": "roles:update",
+
   "/manage/supplier-returns": "inventory:read",
   "/manage/supplier-returns/$supplierReturnId": "inventory:read",
 

@@ -45,28 +45,15 @@ import { hasPermission } from "@/features/auth/permissions"
 import { requiredPermissionForPath } from "@/features/auth/route-permissions"
 import { usePermissions } from "@/hooks/use-permissions"
 import type { ManageRoutePath } from "@/features/auth/route-permissions"
-import type { PermissionCode } from "@/lib/types/permission.type"
 
 type MenuItem = {
   label: string
   icon: LucideIcon
   // Typed against the generated route tree, not a plain `string` — a href pointing at a route
-  // that doesn't exist is now a compile error instead of a silent `<a>` fallback. A domain with no
-  // page yet omits `href` entirely (see the placeholder items below) rather than pointing it at a
-  // path that isn't real yet. A linked item derives its required permission from
-  // `routePermissions` via this href — it must NOT also set `permission` below.
-  href?: ManageRoutePath
-  // Placeholder items only (no page yet, so no route to derive from). Ignored when `href`
-  // is set — the route map wins. Every item — linked or placeholder — must resolve to some
-  // permission, so a menu entry can never outlive the group-emptying filter below.
-  permission?: PermissionCode
-}
-
-/** The permission required to see `item` — via its route if linked, else its own field. */
-function requiredPermission(item: MenuItem): PermissionCode | null {
-  return item.href
-    ? requiredPermissionForPath(item.href)
-    : (item.permission ?? null)
+  // that doesn't exist is now a compile error instead of a silent `<a>` fallback. The required
+  // permission is derived from `routePermissions` via this href (see `requiredPermissionForPath`),
+  // so a menu entry can never disagree with the route it links to.
+  href: ManageRoutePath
 }
 
 type MenuGroup = {
@@ -239,7 +226,7 @@ const menuGroups: MenuGroup[] = [
         icon: UserRound,
         href: "/manage/users",
       },
-      { label: "Phân quyền", icon: ShieldCheck, permission: "roles:read" },
+      { label: "Phân quyền", icon: ShieldCheck, href: "/manage/roles" },
     ],
   },
 ]
@@ -251,14 +238,13 @@ export function AppSidebar() {
   const location = useLocation()
   const permissions = usePermissions()
 
-  // Hide items the user can't open — a linked item reuses the same access map the router
-  // guard reads, so a menu entry can never disagree with its route — then drop any group
-  // left empty.
+  // Hide items the user can't open — reuses the same access map the router guard reads, so
+  // a menu entry can never disagree with its route — then drop any group left empty.
   const visibleGroups = menuGroups
     .map((group) => ({
       ...group,
       items: group.items.filter((item) => {
-        const required = requiredPermission(item)
+        const required = requiredPermissionForPath(item.href)
         return required === null || hasPermission(permissions, required)
       }),
     }))
@@ -366,22 +352,14 @@ function MenuButton({ item, pathname }: { item: MenuItem; pathname: string }) {
     <SidebarMenuItem>
       <SidebarMenuButton
         tooltip={item.label}
-        asChild={Boolean(item.href)}
+        asChild
         isActive={isActive}
         className={menuButtonClass}
-        type={item.href ? undefined : "button"}
       >
-        {item.href ? (
-          <Link to={item.href}>
-            <Icon />
-            <span>{item.label}</span>
-          </Link>
-        ) : (
-          <>
-            <Icon />
-            <span>{item.label}</span>
-          </>
-        )}
+        <Link to={item.href}>
+          <Icon />
+          <span>{item.label}</span>
+        </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
