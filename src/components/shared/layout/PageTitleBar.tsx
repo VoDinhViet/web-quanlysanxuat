@@ -230,13 +230,13 @@ export function PageTitleBar({
     // Always navigate away regardless of outcome — a failed backend revoke
     // shouldn't strand the user on an authenticated page.
     onSettled: async () => {
+      // Clear before navigating (mirrors LoginForm.tsx) — the server already cleared the
+      // session by the time this runs, so an observer still mounted during the async
+      // navigate() window would only ever refetch into a 401, never stale data. Still,
+      // clearing first removes that pointless refetch entirely instead of relying on timing.
+      queryClient.clear()
       await router.invalidate()
       await router.navigate({ to: "/login" })
-      // Clear only after leaving the authed tree — clearing while its components (this
-      // one included) are still mounted would make every live observer refetch against a
-      // dead session. Needed so a later login as a different user doesn't inherit this
-      // one's cached permissions/data (staleTime 60s).
-      queryClient.clear()
     },
   })
 
