@@ -191,9 +191,7 @@ export function getIqcDefaultValues(iqc: IqcDetail): ConfirmIqcFormValue {
     sortOkQty: iqc.sortOkQty ?? undefined,
     sortNgQty: iqc.sortNgQty ?? undefined,
     dispositionNote: iqc.dispositionNote ?? "",
-    dispositionEvidence: iqc.dispositionEvidence.map(
-      (qcFile) => qcFile.file
-    ),
+    dispositionEvidence: iqc.dispositionEvidence.map((qcFile) => qcFile.file),
     totalQuantity: iqc.quantity,
   }
 }

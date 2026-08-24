@@ -18,7 +18,8 @@ const emptyStateCopy: Record<
   },
   [ProductionOrderStatus.COMPLETED]: {
     title: "Chưa có lệnh sản xuất nào hoàn thành",
-    description: "LSX tự chuyển hoàn thành khi mọi Job của nó đã sản xuất xong.",
+    description:
+      "LSX tự chuyển hoàn thành khi mọi Job của nó đã sản xuất xong.",
   },
 }
 

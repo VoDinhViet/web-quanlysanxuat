@@ -107,11 +107,7 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
       icon: Magnifer,
       iconClassName:
         "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
-      trend: formatTrend(
-        stats.jobsWaitingQcTrendCount,
-        "hôm qua",
-        formatCount
-      ),
+      trend: formatTrend(stats.jobsWaitingQcTrendCount, "hôm qua", formatCount),
     },
     {
       label: "NCR chưa xử lý",
