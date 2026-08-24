@@ -4,6 +4,7 @@ import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { OutboundOrderConfirmDialog } from "@/features/outbound-orders/components/detail/OutboundOrderConfirmDialog"
+import { OutboundOrderDeliverDialog } from "@/features/outbound-orders/components/detail/OutboundOrderDeliverDialog"
 import { OutboundOrderStatus } from "@/lib/types/outbound-order.type"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
@@ -11,11 +12,11 @@ type OutboundOrderDetailActionsProps = {
   order: OutboundOrderDetail
 }
 
-// BE outbound-orders chỉ có đúng một route chuyển trạng thái: POST :id/confirm (DRAFT →
-// PENDING_DELIVERY, gate OQC E205) — không có duyệt/xác nhận giao thật/hủy/in phiếu, xem
-// docs/domains/inventory.md mục "Giao hàng". "Xác nhận DO" bên dưới gọi route đó, gated bằng
-// permission thật (outbound:update) mà route đòi. Ba nút còn lại vẫn PendingAction vì BE thật sự
-// chưa có endpoint — không phải chỗ nào cũng ghép được.
+// BE outbound-orders có 2 route chuyển trạng thái: POST :id/confirm (DRAFT → PENDING_DELIVERY,
+// gate OQC E205) và POST :id/deliver (PENDING_DELIVERY → DELIVERED, tự trừ tồn + đóng đơn) — không
+// có duyệt/hủy/in phiếu, xem docs/domains/inventory.md mục "Giao hàng". "Xác nhận DO"/"Xác nhận đã
+// giao" bên dưới gọi 2 route đó, gated bằng cùng permission thật (outbound:update) mà cả hai route
+// đòi. Hai nút còn lại vẫn PendingAction vì BE thật sự chưa có endpoint.
 export function OutboundOrderDetailActions({
   order,
 }: OutboundOrderDetailActionsProps) {
@@ -50,13 +51,17 @@ export function OutboundOrderDetailActions({
       )}
 
       {status === OutboundOrderStatus.PENDING_DELIVERY && (
-        <PendingAction
-          label="Xác nhận đã giao"
-          hint="chưa có tính năng xác nhận giao hàng"
-        >
-          <CheckCircle className="size-4" />
-          Xác nhận đã giao
-        </PendingAction>
+        <PermissionGate permission="outbound:update">
+          <OutboundOrderDeliverDialog
+            order={order}
+            trigger={
+              <Button type="button">
+                <CheckCircle className="size-4" />
+                Xác nhận đã giao
+              </Button>
+            }
+          />
+        </PermissionGate>
       )}
     </div>
   )

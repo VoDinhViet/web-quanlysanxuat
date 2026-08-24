@@ -30,6 +30,7 @@ import { createInventoryRequisitionFormDefaultValues } from "@/features/inventor
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import { cn } from "@/lib/utils"
+import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 
 type SourceOptionValue =
@@ -83,13 +84,16 @@ export const CreateInventoryRequisitionSourceSection = withForm({
     const isJobFlow = type === InventoryRequisitionType.PRODUCTION
 
     // Chọn Job bằng bảng thay vì combobox: cùng 1 endpoint dropdown vốn có
-    // (getProductionJobOptions — chỉ Job đang IN_PROGRESS, cap 100, có `q`), nhưng nó vẫn trả
-    // nguyên `ProductionJob` (không chỉ id/code) nên đủ cột để render một bảng chọn thật, dễ nhận
-    // diện Job hơn một dropdown chỉ có mã.
+    // (getProductionJobOptions — lọc IN_PROGRESS, cap 100, có `q` — một Job đã QC xong không còn gì
+    // để xuất vật tư sản xuất nữa), nhưng nó vẫn trả nguyên `ProductionJob` (không chỉ id/code) nên
+    // đủ cột để render một bảng chọn thật, dễ nhận diện Job hơn một dropdown chỉ có mã.
     const [jobQ, setJobQ] = useState("")
     const [debouncedJobQ] = useDebounceValue(jobQ, 300)
     const jobsQuery = useQuery({
-      ...productionJobOptionsQueryOptions(debouncedJobQ),
+      ...productionJobOptionsQueryOptions(
+        debouncedJobQ,
+        ProductionJobStatus.IN_PROGRESS
+      ),
       placeholderData: keepPreviousData,
     })
     const jobs = jobsQuery.data ?? []

@@ -6,11 +6,14 @@ import type {
 
 /** Mirrors the backend's real `production_orders.status` column (`GET /production-orders`,
  *  `GET /production-orders/:productionOrderId`) — one enum for both the list queue and the
- *  detail snapshot, since both read the same column. `PENDING → APPROVED` is one-way, via
- *  `POST /production-orders/:id/approve` — there is no route back, and no `CANCELLED` value. */
+ *  detail snapshot, since both read the same column. `PENDING → APPROVED` via `POST
+ *  /production-orders/:id/approve`; `APPROVED → COMPLETED` là cascade tự động khi mọi Job của
+ *  LSX hoàn thành (không qua route tay, xem
+ *  be-quanlysanxuat/docs/decisions/production-lifecycle-closing.md). Không có `CANCELLED`. */
 export enum ProductionOrderStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
+  COMPLETED = "COMPLETED",
 }
 
 export const productionOrderStatusLabels: Record<
@@ -19,6 +22,7 @@ export const productionOrderStatusLabels: Record<
 > = {
   [ProductionOrderStatus.PENDING]: "Chờ duyệt",
   [ProductionOrderStatus.APPROVED]: "Đã duyệt",
+  [ProductionOrderStatus.COMPLETED]: "Hoàn thành",
 }
 
 /** Mirrors the backend's ProductionOrderResDto — one row of `GET /production-orders`, the LSX
@@ -69,11 +73,13 @@ export type ProductionOrderDetail = {
   items: ProductionOrderDetailItem[]
 }
 
-/** Mirrors the backend's `production_order_logs.action` column. */
+/** Mirrors the backend's `production_order_logs.action` column. `COMPLETED` ghi khi LSX tự đóng
+ *  (cascade, không phải hành động tay của user). */
 export enum ProductionOrderLogAction {
   CREATED = "CREATED",
   QUANTITY_UPDATED = "QUANTITY_UPDATED",
   APPROVED = "APPROVED",
+  COMPLETED = "COMPLETED",
 }
 
 export const productionOrderLogActionLabels: Record<
@@ -83,6 +89,7 @@ export const productionOrderLogActionLabels: Record<
   [ProductionOrderLogAction.CREATED]: "Tạo LSX",
   [ProductionOrderLogAction.QUANTITY_UPDATED]: "Cập nhật SL sản xuất",
   [ProductionOrderLogAction.APPROVED]: "Duyệt LSX",
+  [ProductionOrderLogAction.COMPLETED]: "Hoàn thành LSX",
 }
 
 /** Mirrors the backend's UserRefResDto, for the log's `performerBy` relation. Not shared with

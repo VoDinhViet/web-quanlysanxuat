@@ -4,17 +4,23 @@ import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
 import type { ItemRef } from "@/lib/types/item.type"
 
 /** Mirrors the backend's real `production_jobs.status` column (`GET /production-jobs`,
- *  `GET /production-jobs/:jobId`). Rút còn 2 giá trị 2026-08-01 theo yêu cầu nghiệp vụ — không
- *  còn `WAITING`, một chiều `PENDING → IN_PROGRESS`, không có đường lùi và không có điểm kết
- *  thúc nào khác `IN_PROGRESS` (xem `src/database/schemas/production.ts`, backend). */
+ *  `GET /production-jobs/:jobId`). Khôi phục điểm kết thúc 2026-08-24 — `PENDING → IN_PROGRESS →
+ *  WAITING_QC → WAITING_DELIVERY → COMPLETED`, một chiều, không đường lùi (xem
+ *  `be-quanlysanxuat/docs/decisions/production-lifecycle-closing.md`). */
 export enum ProductionJobStatus {
   PENDING = "PENDING",
   IN_PROGRESS = "IN_PROGRESS",
+  WAITING_QC = "WAITING_QC",
+  WAITING_DELIVERY = "WAITING_DELIVERY",
+  COMPLETED = "COMPLETED",
 }
 
 export const productionJobStatusLabels: Record<ProductionJobStatus, string> = {
   [ProductionJobStatus.PENDING]: "Chưa SX",
   [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
+  [ProductionJobStatus.WAITING_QC]: "Chờ QC",
+  [ProductionJobStatus.WAITING_DELIVERY]: "Chờ giao hàng",
+  [ProductionJobStatus.COMPLETED]: "Hoàn thành",
 }
 
 /** Mirrors the backend's ProductionJobResDto — one row of `GET /production-jobs`, the "Quản lý

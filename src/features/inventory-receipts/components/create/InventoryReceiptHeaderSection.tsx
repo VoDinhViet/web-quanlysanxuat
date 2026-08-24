@@ -24,7 +24,9 @@ export const InventoryReceiptHeaderSection = withForm({
     const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
     const supplier = useGetSupplierOptions()
     const purchaseOrder = useGetPurchaseOrderOptions()
-    const productionJob = useGetProductionJobOptions()
+    // `null` — mọi trạng thái Job, không chỉ IN_PROGRESS: lúc nhập kho, Job đã QC xong nên thường
+    // là WAITING_DELIVERY.
+    const productionJob = useGetProductionJobOptions(null)
     const receiptType = useField({ form, name: "receiptType" }).state.value
 
     // Ẩn NCC/PO/Job khỏi UI khi đổi sang loại phiếu khác thì cũng xoá giá trị đang giữ — tránh gửi

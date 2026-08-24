@@ -24,7 +24,9 @@ export const InventoryReceiptCreateFromJobHeaderSection = withForm({
   },
   render: function Render({ form, disabled, initialProductionJob }) {
     const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
-    const productionJob = useGetProductionJobOptions()
+    // `null` — mọi trạng thái Job, không chỉ IN_PROGRESS: lúc cần nhập kho, Job đã QC xong nên
+    // thường là WAITING_DELIVERY; sửa lại phiếu nháp cũ cũng cần thấy Job đã COMPLETED.
+    const productionJob = useGetProductionJobOptions(null)
 
     return (
       <div className="drafting-title-block">

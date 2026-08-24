@@ -26,9 +26,9 @@ function resolveConfirmOutboundOrderErrorMessage(error: unknown): string {
   }
 }
 
-// DRAFT → PENDING_DELIVERY — route chuyển trạng thái duy nhất của outbound-orders (BE chưa có
-// duyệt/xác nhận giao thật/trừ tồn, xem docs/domains/inventory.md mục "Giao hàng"). Không có body,
-// không idempotent (gọi lại khi đã confirm trả outbound_order.error.not_confirmable).
+// DRAFT → PENDING_DELIVERY — gate OQC E205, chưa trừ tồn kho (bước trừ tồn thật là
+// deliver-outbound-order.api.ts, PENDING_DELIVERY → DELIVERED). Không có body, không idempotent
+// (gọi lại khi đã confirm trả outbound_order.error.not_confirmable).
 export const confirmOutboundOrder = createServerFn({ method: "POST" })
   .validator(z.object({ outboundOrderId: z.uuid() }))
   .handler(async ({ data }): Promise<void> => {

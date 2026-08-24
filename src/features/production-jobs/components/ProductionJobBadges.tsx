@@ -19,6 +19,19 @@ const statusStyles: Record<ProductionJobStatus, StatusBadgeStyle> = {
     badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
+  [ProductionJobStatus.WAITING_QC]: {
+    badge:
+      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    dot: "bg-amber-500 dark:bg-amber-400",
+  },
+  [ProductionJobStatus.WAITING_DELIVERY]: {
+    badge: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
+    dot: "bg-sky-500 dark:bg-sky-400",
+  },
+  [ProductionJobStatus.COMPLETED]: {
+    badge: "bg-success/10 text-success",
+    dot: "bg-success",
+  },
 }
 
 type ProductionJobStatusBadgeProps = {

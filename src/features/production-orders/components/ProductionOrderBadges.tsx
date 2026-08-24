@@ -20,6 +20,10 @@ const toneStyles: Record<ProductionOrderStatus, ToneBadgeStyle> = {
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [ProductionOrderStatus.APPROVED]: {
+    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    dot: "bg-blue-500 dark:bg-blue-400",
+  },
+  [ProductionOrderStatus.COMPLETED]: {
     badge: "bg-success/10 text-success",
     dot: "bg-success",
   },

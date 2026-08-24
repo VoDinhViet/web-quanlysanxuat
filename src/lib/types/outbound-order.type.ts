@@ -6,10 +6,9 @@ import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
 // Khớp đúng `OutboundOrderStatus` bên BE (be-quanlysanxuat/src/database/schemas/inventory/
-// outbound-orders.ts) — 5 giá trị khai sẵn cho phase sau (duyệt, xác nhận giao), nhưng service
-// hiện chỉ ghi DRAFT (phase 1: chưa duyệt/chưa xác nhận giao/chưa đụng tồn kho, xem
-// docs/domains/inventory.md, mục "Giao hàng"). Giữ đủ 5 giá trị vì BE đã khai enum thật, khác
-// OutsourcingReceiptProgress trước đây (không có nguồn BE nào cả).
+// outbound-orders.ts). Service ghi DRAFT (tạo), PENDING_DELIVERY (confirm, gate OQC), DELIVERED
+// (deliver, tự trừ tồn + đóng đơn) — xem docs/domains/inventory.md, mục "Giao hàng". Chưa route
+// nào ghi PENDING_APPROVAL/CANCELLED — không có duyệt/hủy DO ở BE.
 export const OutboundOrderStatus = {
   DRAFT: "DRAFT",
   PENDING_APPROVAL: "PENDING_APPROVAL",

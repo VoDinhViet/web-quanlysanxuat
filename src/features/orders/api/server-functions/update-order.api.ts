@@ -49,6 +49,8 @@ function resolveUpdateOrderErrorMessage(error: unknown): string {
       return "Một sản phẩm trong đơn hàng không tồn tại."
     case "order.error.status_not_settable_directly":
       return "Không thể đặt trạng thái này trực tiếp."
+    case "order.error.has_approved_production_order":
+      return "Đơn hàng đã có lệnh sản xuất được duyệt, không thể huỷ."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":

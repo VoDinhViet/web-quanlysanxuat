@@ -39,7 +39,8 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
   }) {
     const supplier = useGetSupplierOptions()
     const purchaseOrder = useGetPurchaseOrderOptions()
-    const productionJob = useGetProductionJobOptions()
+    // `null` — mọi trạng thái Job: sửa phiếu nháp cũ vẫn cần thấy Job dù đã COMPLETED.
+    const productionJob = useGetProductionJobOptions(null)
     const receiptType = useField({ form, name: "receiptType" }).state.value
 
     useEffect(() => {

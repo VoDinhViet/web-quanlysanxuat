@@ -21,8 +21,8 @@ import { productionJobQueryOptions } from "@/features/production-jobs/api"
 import { InventoryReceiptType } from "@/lib/types/inventory-receipt.type"
 
 type InventoryReceiptCreateFromJobFormProps = {
-  // Deep-link tuỳ chọn (nút "Nhập kho thành phẩm" trên tab Công đoạn của 1 Job,
-  // ProductionJobOperationsTab.tsx — lối vào duy nhất, thuộc tính năng Quản lý sản xuất) — chỉ là
+  // Deep-link tuỳ chọn (nút "Nhập kho thành phẩm" trên header chi tiết Job,
+  // ProductionJobDetailHeader.tsx — lối vào duy nhất, chỉ hiện khi Job WAITING_DELIVERY) — chỉ là
   // giá trị khởi tạo cho combobox Job bên dưới, không khoá gì.
   initialProductionJobId: string | undefined
 }

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft, Diskette } from "@solar-icons/react"
-import { ClipboardCheck } from "lucide-react"
+import { Box, ClipboardCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -18,13 +18,14 @@ type ProductionJobDetailHeaderProps = {
 }
 
 // Identity, the header facts and the tab strip read as one unit, so they share a single block
-// like ProductDetailHeader.tsx. "Xác nhận" opens StartProductionJobDialog (POST
-// /production-jobs/:jobId/start) — only shown while PENDING; once IN_PROGRESS the transition is
-// one-way and there's nothing left to confirm, so the button disappears entirely rather than
-// showing disabled (same idiom as ProductionOrderDetailActions.tsx's "Duyệt LSX"). Once
-// IN_PROGRESS, "Yêu cầu QC" takes its place — no client-side gate on completedDate/final-assembly
-// (unlike the tab this button used to live in): the backend already enforces every precondition
-// (E213/E214/...) and the dialog surfaces its message inline on failure.
+// like ProductDetailHeader.tsx. One action button per status, matching the one-way lifecycle
+// PENDING → IN_PROGRESS → WAITING_QC → WAITING_DELIVERY → COMPLETED (docs/decisions/
+// production-lifecycle-closing.md, backend repo): "Xác nhận" (start), nothing while IN_PROGRESS
+// (still running operations), "Yêu cầu QC" once WAITING_QC, "Nhập kho thành phẩm" once
+// WAITING_DELIVERY (deep-links into create-from-job, which seeds its Job combobox from this id),
+// nothing once COMPLETED. No client-side gate beyond the status switch itself — the backend
+// enforces every precondition (E213/E214/E196/E197/...) and each dialog/page surfaces its own
+// error inline.
 export function ProductionJobDetailHeader({
   detail,
 }: ProductionJobDetailHeaderProps) {
@@ -100,7 +101,7 @@ export function ProductionJobDetailHeader({
           </dl>
         </div>
 
-        {detail.status === ProductionJobStatus.PENDING ? (
+        {detail.status === ProductionJobStatus.PENDING && (
           <PermissionGate permission="production:update">
             <StartProductionJobDialog
               job={detail}
@@ -112,7 +113,9 @@ export function ProductionJobDetailHeader({
               }
             />
           </PermissionGate>
-        ) : (
+        )}
+
+        {detail.status === ProductionJobStatus.WAITING_QC && (
           <PermissionGate permission="oqc:create">
             <RequestProductionJobQcDialog
               job={detail}
@@ -123,6 +126,20 @@ export function ProductionJobDetailHeader({
                 </Button>
               }
             />
+          </PermissionGate>
+        )}
+
+        {detail.status === ProductionJobStatus.WAITING_DELIVERY && (
+          <PermissionGate permission="inventory:create">
+            <Button type="button" className="gap-1.5" asChild>
+              <Link
+                to="/manage/inventory-receipts/create-from-job"
+                search={{ productionJobId: detail.id }}
+              >
+                <Box className="size-4" />
+                Nhập kho thành phẩm
+              </Link>
+            </Button>
           </PermissionGate>
         )}
       </div>
