@@ -6,15 +6,17 @@ import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
 // Khớp đúng `OutboundOrderStatus` bên BE (be-quanlysanxuat/src/database/schemas/inventory/
-// outbound-orders.ts). Service ghi DRAFT (tạo), PENDING_DELIVERY (confirm, gate OQC), DELIVERED
-// (deliver, tự trừ tồn + đóng đơn) — xem docs/domains/inventory.md, mục "Giao hàng". Chưa route
-// nào ghi PENDING_APPROVAL/CANCELLED — không có duyệt/hủy DO ở BE.
+// outbound-orders.ts). Vòng đời: DRAFT --send--> PENDING_APPROVAL --approve--> PENDING_DELIVERY
+// --deliver--> DELIVERED (điểm cuối), nhánh PENDING_APPROVAL --reject--> REJECTED --send-->
+// PENDING_APPROVAL. Gate OQC (E205) chạy ở cả send và approve. Xem docs/domains/inventory.md,
+// mục "Giao hàng". CANCELLED khai sẵn, chưa route nào ghi.
 export const OutboundOrderStatus = {
   DRAFT: "DRAFT",
   PENDING_APPROVAL: "PENDING_APPROVAL",
   PENDING_DELIVERY: "PENDING_DELIVERY",
   DELIVERED: "DELIVERED",
   CANCELLED: "CANCELLED",
+  REJECTED: "REJECTED",
 } as const
 
 export type OutboundOrderStatus =
@@ -26,6 +28,7 @@ export const outboundOrderStatusLabels: Record<OutboundOrderStatus, string> = {
   [OutboundOrderStatus.PENDING_DELIVERY]: "Chờ xác nhận giao",
   [OutboundOrderStatus.DELIVERED]: "Đã giao",
   [OutboundOrderStatus.CANCELLED]: "Đã hủy",
+  [OutboundOrderStatus.REJECTED]: "Bị từ chối",
 }
 
 // Khớp đúng `FulfillmentType` bên BE (cùng file schema) — tên giữ nguyên không tiền tố "Outbound",
@@ -47,9 +50,9 @@ export const fulfillmentTypeLabels: Record<FulfillmentType, string> = {
 }
 
 // Mirrors PageOutboundOrderResDto (GET /outbound-orders, danh sách) 1:1 — riêng biệt với
-// OutboundOrderDetail bên dưới (không compose type này lên cái kia, hai endpoint hiện trả cùng
-// field nhưng là hai DTO khác nhau bên BE, sẽ phân kỳ khi phase duyệt/giao được thêm). Không có
-// warehouse — BE bỏ warehouseId khỏi outbound_orders.
+// OutboundOrderDetail bên dưới (không compose type này lên cái kia): list không trả audit trail
+// send/approve/reject, chỉ detail mới có. Không có warehouse — BE bỏ warehouseId khỏi
+// outbound_orders.
 export type OutboundOrder = {
   id: string
   code: string // e.g. DO-250608-001
@@ -63,9 +66,9 @@ export type OutboundOrder = {
   updatedAt: string
 }
 
-// Mirrors OutboundOrderResDto (GET /outbound-orders/:id) — hiện giống hệt OutboundOrder ở trên
-// (BE chưa có field nào riêng cho chi tiết ở phase 1) nhưng khai riêng theo đúng nguyên tắc
-// list/detail độc lập (xem outsourcing-order.type.ts).
+// Mirrors OutboundOrderResDto (GET /outbound-orders/:id) — khai riêng theo đúng nguyên tắc
+// list/detail độc lập (xem outsourcing-order.type.ts). senderBy/approverBy/rejecterBy (+ *At) là
+// audit trail của send/approve/reject; rejectionReason chỉ có ý nghĩa khi status = REJECTED.
 export type OutboundOrderDetail = {
   id: string
   code: string
@@ -75,6 +78,13 @@ export type OutboundOrderDetail = {
   status: OutboundOrderStatus
   note: string | null
   creatorBy: UserRef | null
+  senderBy: UserRef | null
+  sentAt: string | null
+  approverBy: UserRef | null
+  approvedAt: string | null
+  rejecterBy: UserRef | null
+  rejectedAt: string | null
+  rejectionReason: string | null
   createdAt: string
   updatedAt: string
 }

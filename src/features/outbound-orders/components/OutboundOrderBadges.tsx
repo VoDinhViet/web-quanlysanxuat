@@ -33,6 +33,10 @@ export const outboundOrderStatusStyles: Record<
     badge: "bg-destructive/10 text-destructive",
     dot: "bg-destructive",
   },
+  REJECTED: {
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
+  },
 }
 
 export function OutboundOrderStatusBadge({

@@ -16,29 +16,27 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { confirmOutboundOrder } from "@/features/outbound-orders/api/server-functions/confirm-outbound-order.api"
+import { approveOutboundOrder } from "@/features/outbound-orders/api/server-functions/approve-outbound-order.api"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
-type OutboundOrderConfirmDialogProps = {
+type OutboundOrderApproveDialogProps = {
   order: OutboundOrderDetail
   trigger: ReactNode
 }
 
-// DRAFT → PENDING_DELIVERY. Backend chưa có route hủy/quay lại nên đây là bước không hoàn tác
-// được — nêu thẳng trong description. Không tự pre-check gate OQC phía client (DO detail không có
-// dữ liệu QC coverage của Job) — cùng nguyên tắc ApproveRequisitionDialog.tsx: chỉ hiện lỗi backend
-// trả về, không tự tính trước.
-export function OutboundOrderConfirmDialog({
+// PENDING_APPROVAL → PENDING_DELIVERY — director-level, cần outbound:approve. Chưa trừ tồn kho,
+// bước trừ tồn thật là OutboundOrderDeliverDialog.tsx.
+export function OutboundOrderApproveDialog({
   order,
   trigger,
-}: OutboundOrderConfirmDialogProps) {
+}: OutboundOrderApproveDialogProps) {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
-  const confirmOutboundOrderFn = useServerFn(confirmOutboundOrder)
+  const approveOutboundOrderFn = useServerFn(approveOutboundOrder)
 
   const mutation = useMutation({
     mutationFn: () =>
-      confirmOutboundOrderFn({ data: { outboundOrderId: order.id } }),
+      approveOutboundOrderFn({ data: { outboundOrderId: order.id } }),
     onSuccess: async () => {
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["outbound-orders"] })
@@ -59,9 +57,9 @@ export function OutboundOrderConfirmDialog({
           <AlertDialogMedia>
             <CheckCircle />
           </AlertDialogMedia>
-          <AlertDialogTitle>Xác nhận phiếu giao hàng này?</AlertDialogTitle>
+          <AlertDialogTitle>Duyệt phiếu giao hàng này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Phiếu ${order.code} sẽ chuyển sang trạng thái "Chờ xác nhận giao" — chưa trừ tồn kho. Thao tác này không thể hoàn tác.`}
+            {`Phiếu ${order.code} sẽ chuyển sang trạng thái "Chờ xác nhận giao" — chưa trừ tồn kho.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -80,7 +78,7 @@ export function OutboundOrderConfirmDialog({
               mutation.mutate()
             }}
           >
-            {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
+            {mutation.isPending ? "Đang xử lý..." : "Duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

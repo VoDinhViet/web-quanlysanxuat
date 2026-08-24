@@ -1,5 +1,6 @@
-import { Info, StickyNote, User } from "lucide-react"
+import { CalendarCheck, Info, StickyNote, User, UserCheck } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
@@ -8,9 +9,10 @@ type OutboundOrderInfoCardProps = {
   order: OutboundOrderDetail
 }
 
-// Ghi chú + người tạo — hai field thật còn lại chưa có chỗ hiển thị (client/fulfillmentDate/
-// fulfillmentType đã có ở header's meta grid). Địa chỉ giao/tài xế/SĐT cũ đã bỏ — BE chưa có field
-// nào cho vận chuyển ở phase 1 (docs/domains/inventory.md, mục "Giao hàng").
+// Ghi chú + người tạo + người/ngày duyệt (ẩn khi chưa duyệt) — hai field thật còn lại chưa có chỗ
+// hiển thị (client/fulfillmentDate/fulfillmentType đã có ở header's meta grid). Địa chỉ giao/tài
+// xế/SĐT cũ đã bỏ — BE chưa có field nào cho vận chuyển (docs/domains/inventory.md, mục "Giao
+// hàng"). Lý do từ chối đã có OutboundOrderRejectionNotice.tsx riêng, không lặp lại ở đây.
 export function OutboundOrderInfoCard({ order }: OutboundOrderInfoCardProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
@@ -26,6 +28,24 @@ export function OutboundOrderInfoCard({ order }: OutboundOrderInfoCardProps) {
           label="Người tạo"
           value={order.creatorBy?.fullName ?? "—"}
         />
+
+        {order.approverBy && (
+          <InfoTile
+            icon={UserCheck}
+            label="Người duyệt"
+            value={order.approverBy.fullName}
+          />
+        )}
+
+        {order.approvedAt && (
+          <InfoTile
+            icon={CalendarCheck}
+            label="Ngày duyệt"
+            value={DateTime.fromISO(order.approvedAt).toFormat(
+              "dd/MM/yyyy HH:mm"
+            )}
+          />
+        )}
       </div>
     </section>
   )

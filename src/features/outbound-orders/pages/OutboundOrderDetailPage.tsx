@@ -10,6 +10,7 @@ import {
 import { OutboundOrderDetailHeader } from "@/features/outbound-orders/components/detail/OutboundOrderDetailHeader"
 import { OutboundOrderItemsSection } from "@/features/outbound-orders/components/detail/OutboundOrderItemsSection"
 import { OutboundOrderInfoCard } from "@/features/outbound-orders/components/detail/OutboundOrderInfoCard"
+import { OutboundOrderRejectionNotice } from "@/features/outbound-orders/components/detail/OutboundOrderRejectionNotice"
 
 export function OutboundOrderDetailPage() {
   const { outboundOrderId } = useParams({
@@ -40,6 +41,8 @@ export function OutboundOrderDetailPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+        <OutboundOrderRejectionNotice order={order} />
+
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           {/* Main content */}
           <Surface>

@@ -1,10 +1,17 @@
-import { CheckCircle, CloseCircle, Printer } from "@solar-icons/react"
+import {
+  CheckCircle,
+  CloseCircle,
+  Printer,
+  SendSquare,
+} from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { OutboundOrderConfirmDialog } from "@/features/outbound-orders/components/detail/OutboundOrderConfirmDialog"
+import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/detail/OutboundOrderApproveDialog"
 import { OutboundOrderDeliverDialog } from "@/features/outbound-orders/components/detail/OutboundOrderDeliverDialog"
+import { OutboundOrderRejectDialog } from "@/features/outbound-orders/components/detail/OutboundOrderRejectDialog"
+import { OutboundOrderSendDialog } from "@/features/outbound-orders/components/detail/OutboundOrderSendDialog"
 import { OutboundOrderStatus } from "@/lib/types/outbound-order.type"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
@@ -12,11 +19,12 @@ type OutboundOrderDetailActionsProps = {
   order: OutboundOrderDetail
 }
 
-// BE outbound-orders có 2 route chuyển trạng thái: POST :id/confirm (DRAFT → PENDING_DELIVERY,
-// gate OQC E205) và POST :id/deliver (PENDING_DELIVERY → DELIVERED, tự trừ tồn + đóng đơn) — không
-// có duyệt/hủy/in phiếu, xem docs/domains/inventory.md mục "Giao hàng". "Xác nhận DO"/"Xác nhận đã
-// giao" bên dưới gọi 2 route đó, gated bằng cùng permission thật (outbound:update) mà cả hai route
-// đòi. Hai nút còn lại vẫn PendingAction vì BE thật sự chưa có endpoint.
+// BE outbound-orders có 4 route chuyển trạng thái: POST :id/send (DRAFT/REJECTED →
+// PENDING_APPROVAL, gate OQC E205), POST :id/approve (PENDING_APPROVAL → PENDING_DELIVERY, cũng
+// gate E205), POST :id/reject (PENDING_APPROVAL → REJECTED, lý do bắt buộc) và POST :id/deliver
+// (PENDING_DELIVERY → DELIVERED, tự trừ tồn + đóng đơn) — xem docs/domains/inventory.md mục "Giao
+// hàng". send/deliver gated bằng outbound:update (người lập/kho), approve/reject bằng
+// outbound:approve (Giám đốc). Hai nút còn lại vẫn PendingAction vì BE thật sự chưa có endpoint.
 export function OutboundOrderDetailActions({
   order,
 }: OutboundOrderDetailActionsProps) {
@@ -29,25 +37,49 @@ export function OutboundOrderDetailActions({
         In phiếu DO
       </PendingAction>
 
-      {status === OutboundOrderStatus.DRAFT && (
-        <>
-          <PermissionGate permission="outbound:update">
-            <OutboundOrderConfirmDialog
-              order={order}
-              trigger={
-                <Button type="button">
-                  <CheckCircle className="size-4" />
-                  Xác nhận DO
-                </Button>
-              }
-            />
-          </PermissionGate>
+      {(status === OutboundOrderStatus.DRAFT ||
+        status === OutboundOrderStatus.REJECTED) && (
+        <PermissionGate permission="outbound:update">
+          <OutboundOrderSendDialog
+            order={order}
+            trigger={
+              <Button type="button">
+                <SendSquare className="size-4" />
+                Gửi duyệt DO
+              </Button>
+            }
+          />
+        </PermissionGate>
+      )}
 
-          <PendingAction label="Hủy đơn DO" hint="chưa có tính năng hủy DO">
-            <CloseCircle className="size-4" />
-            Hủy đơn DO
-          </PendingAction>
-        </>
+      {status === OutboundOrderStatus.DRAFT && (
+        <PendingAction label="Hủy đơn DO" hint="chưa có tính năng hủy DO">
+          <CloseCircle className="size-4" />
+          Hủy đơn DO
+        </PendingAction>
+      )}
+
+      {status === OutboundOrderStatus.PENDING_APPROVAL && (
+        <PermissionGate permission="outbound:approve">
+          <OutboundOrderRejectDialog
+            order={order}
+            trigger={
+              <Button type="button" variant="outline">
+                <CloseCircle className="size-4" />
+                Từ chối
+              </Button>
+            }
+          />
+          <OutboundOrderApproveDialog
+            order={order}
+            trigger={
+              <Button type="button">
+                <CheckCircle className="size-4" />
+                Duyệt
+              </Button>
+            }
+          />
+        </PermissionGate>
       )}
 
       {status === OutboundOrderStatus.PENDING_DELIVERY && (
