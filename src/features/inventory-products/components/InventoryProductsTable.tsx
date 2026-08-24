@@ -17,11 +17,11 @@ import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
 import { inventoryProductsColumns } from "@/features/inventory-products/components/InventoryProductsTableColumns"
 import { cn } from "@/lib/utils"
-import type { InventoryProduct } from "@/lib/types/inventory-product.type"
+import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 type InventoryProductsTableProps = {
-  rows: InventoryProduct[]
+  rows: ProductInventoryItem[]
   pagination: Pagination
   isPending: boolean
 }

@@ -6,37 +6,33 @@ import {
   ProductImageCell,
   QuantityCell,
 } from "@/features/inventory-products/components/InventoryProductsTableCells"
-import type { InventoryProduct } from "@/lib/types/inventory-product.type"
+import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 
-const col = createColumnHelper<InventoryProduct>()
+const col = createColumnHelper<ProductInventoryItem>()
+
+// A right-aligned header with a decorative ⓘ + a static formula sub-line — same shape
+// inventory-materials uses for its own quantity columns.
+function QuantityColumnHeader({
+  label,
+  formula,
+}: {
+  label: string
+  formula: string
+}) {
+  return (
+    <div className="flex flex-col items-end text-right">
+      <span className="inline-flex items-center gap-1">
+        {label}
+        <HelpCircle className="size-3 text-muted-foreground/70" />
+      </span>
+      <span className="text-[10px] font-normal text-muted-foreground/80">
+        ({formula})
+      </span>
+    </div>
+  )
+}
 
 export const inventoryProductsColumns = [
-  col.display({
-    id: "select",
-    header: ({ table }) => (
-      <input
-        type="checkbox"
-        className="size-3.5 cursor-pointer rounded border-border accent-primary"
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-        aria-label="Chọn tất cả"
-      />
-    ),
-    meta: {
-      headerClassName: "w-9 min-w-9 text-center",
-      cellClassName: "text-center",
-    },
-    cell: ({ row }) => (
-      <input
-        type="checkbox"
-        className="size-3.5 cursor-pointer rounded border-border accent-primary"
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        aria-label={`Chọn sản phẩm ${row.original.code}`}
-      />
-    ),
-  }),
-
   col.display({
     id: "stt",
     header: "STT",
@@ -72,7 +68,8 @@ export const inventoryProductsColumns = [
     meta: { headerClassName: "min-w-36" },
   }),
 
-  col.accessor("unit", {
+  col.accessor((row) => row.unit.name, {
+    id: "unit",
     header: "ĐVT",
     meta: {
       headerClassName: "min-w-16 text-center",
@@ -80,22 +77,9 @@ export const inventoryProductsColumns = [
     },
   }),
 
-  col.accessor("clientName", {
-    header: "Khách hàng",
-    meta: { headerClassName: "min-w-36" },
-  }),
-
-  col.accessor("poDemandQuantity", {
+  col.accessor("onHand", {
     header: () => (
-      <div className="flex flex-col items-end text-right">
-        <span className="inline-flex items-center gap-1">
-          Tổng nhu cầu PO
-          <HelpCircle className="size-3 text-muted-foreground/70" />
-        </span>
-        <span className="text-[10px] font-normal text-muted-foreground/80">
-          (Chưa giao)
-        </span>
-      </div>
+      <QuantityColumnHeader label="Tồn thực tế" formula="Σ nhập - Σ xuất" />
     ),
     meta: {
       headerClassName: "min-w-36 text-right",
@@ -104,36 +88,9 @@ export const inventoryProductsColumns = [
     cell: ({ getValue }) => <QuantityCell value={getValue()} variant="blue" />,
   }),
 
-  col.accessor("actualQuantity", {
+  col.accessor("reserved", {
     header: () => (
-      <div className="flex flex-col items-end text-right">
-        <span className="inline-flex items-center gap-1">
-          Tồn thực tế
-          <HelpCircle className="size-3 text-muted-foreground/70" />
-        </span>
-        <span className="text-[10px] font-normal text-muted-foreground/80">
-          (Đã QC đạt)
-        </span>
-      </div>
-    ),
-    meta: {
-      headerClassName: "min-w-36 text-right",
-      cellClassName: "text-right",
-    },
-    cell: ({ getValue }) => <QuantityCell value={getValue()} variant="blue" />,
-  }),
-
-  col.accessor("reservedQuantity", {
-    header: () => (
-      <div className="flex flex-col items-end text-right">
-        <span className="inline-flex items-center gap-1">
-          Đã giữ
-          <HelpCircle className="size-3 text-muted-foreground/70" />
-        </span>
-        <span className="text-[10px] font-normal text-muted-foreground/80">
-          (DO chưa giao)
-        </span>
-      </div>
+      <QuantityColumnHeader label="Đã giữ" formula="Đơn đã duyệt chưa giao" />
     ),
     meta: {
       headerClassName: "min-w-32 text-right",
@@ -144,36 +101,12 @@ export const inventoryProductsColumns = [
     ),
   }),
 
-  col.accessor("exportableQuantity", {
+  col.accessor("available", {
     header: () => (
-      <div className="flex flex-col items-end text-right">
-        <span className="inline-flex items-center gap-1">
-          Có thể xuất
-          <HelpCircle className="size-3 text-muted-foreground/70" />
-        </span>
-        <span className="text-[10px] font-normal text-muted-foreground/80">
-          (Tồn thực tế - Đã giữ)
-        </span>
-      </div>
-    ),
-    meta: {
-      headerClassName: "min-w-40 text-right",
-      cellClassName: "text-right",
-    },
-    cell: ({ getValue }) => <QuantityCell value={getValue()} variant="green" />,
-  }),
-
-  col.accessor("availableQuantity", {
-    header: () => (
-      <div className="flex flex-col items-end text-right">
-        <span className="inline-flex items-center gap-1">
-          Tồn TP khả dụng
-          <HelpCircle className="size-3 text-muted-foreground/70" />
-        </span>
-        <span className="text-[10px] font-normal text-muted-foreground/80">
-          (Tồn thực tế - Nhu cầu PO)
-        </span>
-      </div>
+      <QuantityColumnHeader
+        label="Tồn TP khả dụng"
+        formula="Tồn thực tế - Đã giữ - BOM"
+      />
     ),
     meta: {
       headerClassName: "min-w-44 text-right",

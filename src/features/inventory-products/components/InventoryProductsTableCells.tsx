@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Image } from "@unpic/react"
 import {
   Package,
   MoreHorizontal,
@@ -20,19 +21,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { InventoryProduct } from "@/lib/types/inventory-product.type"
+import { resolveFileUrl } from "@/lib/file-url"
+import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { cn } from "@/lib/utils"
 
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-export function ProductImageCell({ product }: { product: InventoryProduct }) {
+export function ProductImageCell({
+  product,
+}: {
+  product: ProductInventoryItem
+}) {
+  const imageUrl = product.image ? resolveFileUrl(product.image.url) : null
+
   return (
-    <div className="flex size-9 items-center justify-center rounded-md border border-border bg-muted/40">
-      {product.imageUrl ? (
-        <img
-          src={product.imageUrl}
+    <div className="flex size-9 items-center justify-center overflow-hidden rounded-md border border-border bg-muted/40">
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
           alt={product.name}
-          className="size-8 rounded object-cover"
+          layout="fullWidth"
+          objectFit="cover"
+          className="size-full"
         />
       ) : (
         <Package className="size-5 text-muted-foreground/70" />
@@ -73,7 +83,7 @@ export function QuantityCell({
 export function InventoryProductActionsCell({
   product,
 }: {
-  product: InventoryProduct
+  product: ProductInventoryItem
 }) {
   const [detailOpen, setDetailOpen] = useState(false)
 
@@ -126,43 +136,21 @@ export function InventoryProductActionsCell({
 
           <div className="space-y-3 pt-2 text-xs">
             <div className="flex justify-between border-b border-border/60 pb-2">
-              <span className="text-muted-foreground">Khách hàng:</span>
-              <span className="font-semibold text-foreground">
-                {product.clientName}
-              </span>
-            </div>
-            <div className="flex justify-between border-b border-border/60 pb-2">
               <span className="text-muted-foreground">Đơn vị tính:</span>
               <span className="font-semibold text-foreground">
-                {product.unit}
+                {product.unit.name}
               </span>
             </div>
             <div className="flex justify-between border-b border-border/60 pb-2">
-              <span className="text-muted-foreground">Tổng nhu cầu PO:</span>
+              <span className="text-muted-foreground">Tồn thực tế:</span>
               <span className="font-semibold text-blue-600">
-                {numberFmt.format(product.poDemandQuantity)}
+                {numberFmt.format(product.onHand)}
               </span>
             </div>
             <div className="flex justify-between border-b border-border/60 pb-2">
-              <span className="text-muted-foreground">
-                Tồn thực tế (Đã QC):
-              </span>
-              <span className="font-semibold text-blue-600">
-                {numberFmt.format(product.actualQuantity)}
-              </span>
-            </div>
-            <div className="flex justify-between border-b border-border/60 pb-2">
-              <span className="text-muted-foreground">
-                Đã giữ (DO chưa giao):
-              </span>
+              <span className="text-muted-foreground">Đã giữ:</span>
               <span className="font-semibold text-amber-600">
-                {numberFmt.format(product.reservedQuantity)}
-              </span>
-            </div>
-            <div className="flex justify-between border-b border-border/60 pb-2">
-              <span className="text-muted-foreground">Có thể xuất:</span>
-              <span className="font-semibold text-emerald-600">
-                {numberFmt.format(product.exportableQuantity)}
+                {numberFmt.format(product.reserved)}
               </span>
             </div>
             <div className="flex justify-between pb-1">
@@ -170,12 +158,10 @@ export function InventoryProductActionsCell({
               <span
                 className={cn(
                   "font-bold",
-                  product.availableQuantity < 0
-                    ? "text-rose-600"
-                    : "text-foreground"
+                  product.available < 0 ? "text-rose-600" : "text-foreground"
                 )}
               >
-                {numberFmt.format(product.availableQuantity)}
+                {numberFmt.format(product.available)}
               </span>
             </div>
           </div>

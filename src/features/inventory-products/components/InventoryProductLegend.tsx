@@ -3,17 +3,9 @@ export function InventoryProductLegend() {
     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg bg-card p-4 text-xs shadow-card sm:p-5">
       <div className="flex items-center gap-2">
         <span className="size-2 rounded-full bg-blue-500" />
-        <span className="font-semibold text-foreground">Tổng nhu cầu PO:</span>
-        <span className="text-muted-foreground">
-          Tổng số lượng các PO chưa giao liên quan đến thành phẩm
-        </span>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <span className="size-2 rounded-full bg-blue-500" />
         <span className="font-semibold text-foreground">Tồn thực tế:</span>
         <span className="text-muted-foreground">
-          Tổng thành phẩm đã QC PASS nhưng chưa giao
+          Σ nhập kho - Σ xuất kho trên các phiếu chưa xoá
         </span>
       </div>
 
@@ -21,21 +13,15 @@ export function InventoryProductLegend() {
         <span className="size-2 rounded-full bg-amber-500" />
         <span className="font-semibold text-foreground">Đã giữ:</span>
         <span className="text-muted-foreground">
-          Tổng SL đã đưa vào DO đã duyệt nhưng chưa xác nhận giao
+          Σ SL trên các đơn hàng đã duyệt còn mở, trừ phần đã xuất giao
         </span>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <span className="size-2 rounded-full bg-emerald-500" />
-        <span className="font-semibold text-foreground">Có thể xuất:</span>
-        <span className="text-muted-foreground">Tồn thực tế - Đã giữ</span>
       </div>
 
       <div className="flex items-center gap-2">
         <span className="size-2 rounded-full bg-rose-500" />
         <span className="font-semibold text-foreground">Tồn TP khả dụng:</span>
         <span className="text-muted-foreground">
-          Tồn thực tế - Tổng nhu cầu PO
+          Tồn thực tế - Đã giữ - Nhu cầu BOM (hiện luôn 0 — chưa nổ BOM)
         </span>
       </div>
     </div>
