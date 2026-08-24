@@ -8,7 +8,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
 import { AppSidebar } from "@/components/shared/layout/AppSidebar"
-import { currentUserQueryOptions } from "@/features/auth/api/options"
+import {
+  currentPermissionsQueryOptions,
+  currentUserQueryOptions,
+} from "@/features/auth/api/options"
 import { requireRoutePermissions, requireSession } from "@/features/auth/guard"
 import { getSidebarDefaultOpen } from "@/lib/sidebar-state"
 import { getErrorMessage } from "@/lib/utils"
@@ -16,17 +19,20 @@ import { getErrorMessage } from "@/lib/utils"
 export const Route = createFileRoute("/(authed)")({
   beforeLoad: async ({ location, context, matches }) => {
     const user = await requireSession(location)
-    // Load the profile + effective permissions once (cached) so every nested
-    // route and component can read them without refetching.
-    const profile = await context.queryClient.ensureQueryData(
-      currentUserQueryOptions
-    )
+    // Load the profile + effective permissions once (cached, separate queries) so every
+    // nested route and component can read them without refetching. `permissions` is the
+    // only value this beforeLoad needs back — listed first so the destructure doesn't need
+    // an empty slot for the profile.
+    const [permissions] = await Promise.all([
+      context.queryClient.ensureQueryData(currentPermissionsQueryOptions),
+      context.queryClient.ensureQueryData(currentUserQueryOptions),
+    ])
 
     // One check for the whole destination — `matches` includes the child routes about to
     // render, so no page under `(authed)` needs its own guard (see route-permissions.ts).
-    requireRoutePermissions(profile.permissions, matches)
+    requireRoutePermissions(permissions, matches)
 
-    return { user, permissions: profile.permissions }
+    return { user, permissions }
   },
   component: AuthedLayout,
   // `beforeLoad` above re-runs on every navigation (it's an uncached server round trip), so

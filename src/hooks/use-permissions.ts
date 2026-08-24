@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { currentUserQueryOptions } from "@/features/auth/api/options"
+import { currentPermissionsQueryOptions } from "@/features/auth/api/options"
 import { hasPermission } from "@/features/auth/permissions"
 import type { PermissionCode } from "@/lib/types/permission.type"
 
 /** The signed-in user's effective permission codes (empty until loaded). */
 export function usePermissions(): string[] {
-  const { data } = useQuery(currentUserQueryOptions)
+  const { data } = useQuery(currentPermissionsQueryOptions)
 
-  return data?.permissions ?? []
+  return data ?? []
 }
 
 /** Whether the signed-in user satisfies `required` (superadmin passes all). */
