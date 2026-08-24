@@ -1,7 +1,8 @@
 import { RefreshCw } from "lucide-react"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
 import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { ManageAlerts } from "@/features/manage/components/ManageAlerts"
 import { ManageAnalyticsRow } from "@/features/manage/components/ManageAnalyticsRow"
@@ -11,6 +12,22 @@ import { ManageProductionRow } from "@/features/manage/components/ManageProducti
 import { ManageStatCards } from "@/features/manage/components/ManageStatCards"
 
 export function ManagePage() {
+  const search = useSearch({ from: "/(authed)/manage" })
+  const navigate = useNavigate({ from: "/manage" })
+
+  const handleDateRangeChange = (range: {
+    from: string | undefined
+    to: string | undefined
+  }) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        startDate: range.from,
+        endDate: range.to,
+      }),
+    })
+  }
+
   return (
     <main className="min-h-svh bg-background text-foreground">
       <PageTitleBar
@@ -20,19 +37,29 @@ export function ManagePage() {
       />
 
       <div className="w-full space-y-5 p-4 sm:p-5 lg:p-6">
-        {/* Decorative — no state/filtering wired up (mock data, no API). */}
+        {/* Chỉ 6 thẻ KPI (ManageStatCards) đọc theo khoảng ngày này — các widget khác bên dưới
+            vẫn còn mock, chưa có API. */}
         <div className="flex justify-end gap-2">
-          <Input
-            type="date"
-            readOnly
-            defaultValue="2024-05-20"
-            className="w-auto"
+          <DateRangePicker
+            id="manage-date-range"
+            from={search.startDate}
+            to={search.endDate}
+            onChange={handleDateRangeChange}
           />
           <Button
             type="button"
             variant="outline"
             size="icon"
             aria-label="Làm mới"
+            onClick={() =>
+              void navigate({
+                search: (prev) => ({
+                  ...prev,
+                  startDate: undefined,
+                  endDate: undefined,
+                }),
+              })
+            }
           >
             <RefreshCw />
           </Button>

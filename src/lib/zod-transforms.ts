@@ -1,3 +1,4 @@
+import { isValid, parseISO } from "date-fns"
 import { DateTime } from "luxon"
 import { z } from "zod"
 import type { ZodString } from "zod"
@@ -68,6 +69,17 @@ export function optionalEmail() {
       message: "Email không đúng định dạng",
     })
 }
+
+/** Chuỗi ngày ISO (yyyy-MM-dd) cho search-param filter — không hợp lệ thì `.catch(undefined)` thay
+ * vì lỗi, vì đây chỉ là filter tuỳ chọn, không phải input bắt buộc. Trước đây mỗi search schema
+ * (orders/production-orders/purchase-requests/...) tự khai lại khối này. */
+export const isoDateFilter = z
+  .string()
+  .refine((value) => isValid(parseISO(value)), {
+    message: "Ngày không hợp lệ",
+  })
+  .optional()
+  .catch(undefined)
 
 /** Chỉ báo lỗi khi có giá trị (field email đã transform ""→undefined trước đó) — dùng
  * `.superRefine(refineOptionalEmail("email"))` (hoặc tên field khác, vd "contactEmail") trên
