@@ -1,7 +1,10 @@
 import type { ReactNode } from "react"
 
 import { hasPermission } from "@/features/auth/permissions"
-import { requiredPermissionForPath } from "@/features/auth/route-permissions"
+import {
+  isRouteAvailable,
+  requiredPermissionForPath,
+} from "@/features/auth/route-permissions"
 import { usePermissions } from "@/hooks/use-permissions"
 import type { ManageRoutePath } from "@/features/auth/route-permissions"
 
@@ -27,7 +30,8 @@ export function RoutePermissionGate({
   const permissions = usePermissions()
   const required = requiredPermissionForPath(route)
 
-  return required === null || hasPermission(permissions, required) ? (
+  return isRouteAvailable(route) &&
+    (required === null || hasPermission(permissions, required)) ? (
     <>{children}</>
   ) : (
     <>{fallback}</>

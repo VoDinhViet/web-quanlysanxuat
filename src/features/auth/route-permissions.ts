@@ -145,3 +145,27 @@ export function requiredPermissionForPath(
 ): PermissionCode | null {
   return routePermissionsByPath[path] ?? null
 }
+
+/**
+ * Route chỉ tồn tại khi chạy `pnpm dev`. Build production có `import.meta.env.DEV = false`
+ * ngay lúc compile, nên router guard đá về `/manage` còn sidebar bỏ luôn mục menu — cùng
+ * hai chốt chặn mà phân quyền đang dùng. Màn Phân quyền sửa thẳng catalogue quyền của hệ
+ * thống, chưa mở cho người dùng thật trong giai đoạn nghiệm thu.
+ *
+ * Khai `ReadonlySet<string>` (không phải `Set<ManageRoutePath>`) vì `match.fullPath` trải
+ * rộng hơn `ManageRoutePath` — cùng lý do với `routePermissionsByPath` ở trên.
+ */
+const devOnlyRoutes: ReadonlySet<string> = new Set<ManageRoutePath>([
+  "/manage/roles",
+  "/manage/roles/create",
+  "/manage/roles/$roleId/update",
+])
+
+/**
+ * Route này có tồn tại trong bản build hiện tại không. Chỉ `false` với `devOnlyRoutes` ở
+ * build production. Đọc kèm `requiredPermissionForPath` ở cả guard lẫn sidebar, nên một
+ * route đã ẩn thì không nơi nào mở hay link tới được.
+ */
+export function isRouteAvailable(path: MatchedRoutePath): boolean {
+  return import.meta.env.DEV || !devOnlyRoutes.has(path)
+}
