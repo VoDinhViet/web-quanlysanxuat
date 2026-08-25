@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
-import { Loader2 } from "lucide-react"
+import { Loader2, Trash2 } from "lucide-react"
 import { AltArrowLeft, Box, Diskette, Printer } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { DeleteProductDialog } from "@/features/products/components/DeleteProductDialog"
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -121,6 +122,22 @@ export function ProductDetailHeader({
             <Printer className="size-4" />
             In
           </Button>
+
+          <PermissionGate permission="items:delete">
+            <DeleteProductDialog
+              product={product}
+              trigger={
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="size-4" />
+                  Xóa
+                </Button>
+              }
+            />
+          </PermissionGate>
         </div>
       </div>
 

@@ -23,6 +23,7 @@ export const PERMISSION_CODES = [
   "items:read",
   "items:create",
   "items:update",
+  "items:delete",
   "items:copy",
   "items:bom-manage",
 
@@ -122,6 +123,7 @@ export const permissionLabels: Record<PermissionCode, string> = {
   "items:read": "Xem sản phẩm & vật tư",
   "items:create": "Tạo sản phẩm & vật tư",
   "items:update": "Sửa sản phẩm & vật tư",
+  "items:delete": "Xoá sản phẩm & vật tư",
   "items:copy": "Sao chép sản phẩm & vật tư",
   "items:bom-manage": "Quản lý BOM & quy trình",
 
@@ -225,6 +227,7 @@ export const permissionGroups: PermissionGroup[] = [
       "items:read",
       "items:create",
       "items:update",
+      "items:delete",
       "items:copy",
       "items:bom-manage",
     ],

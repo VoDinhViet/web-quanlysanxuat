@@ -2,11 +2,12 @@ import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Image } from "@unpic/react"
 import { DateTime } from "luxon"
-import { Copy, Eye, ImageOff } from "lucide-react"
+import { Copy, Eye, ImageOff, Trash2 } from "lucide-react"
 
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { CopyProductDialog } from "@/features/products/components/CopyProductDialog"
+import { DeleteProductDialog } from "@/features/products/components/DeleteProductDialog"
 import {
   ProductStatusBadge,
   ProductTypeBadge,
@@ -143,6 +144,19 @@ export const productColumns = [
                   className="text-muted-foreground hover:border-primary/30 hover:text-primary"
                 >
                   <Copy className="size-3.5" />
+                </IconButton>
+              }
+            />
+          </PermissionGate>
+          <PermissionGate permission="items:delete">
+            <DeleteProductDialog
+              product={product}
+              trigger={
+                <IconButton
+                  label="Xóa"
+                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                >
+                  <Trash2 className="size-3.5" />
                 </IconButton>
               }
             />
