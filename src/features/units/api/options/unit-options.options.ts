@@ -1,11 +1,10 @@
 import { queryOptions } from "@tanstack/react-query"
 
 import { getUnits } from "@/features/units/api/server-functions/get-units.api"
-import type { UnitScope } from "@/features/units/api/server-functions/get-units.api"
+import type { UnitScope } from "@/lib/types/unit.type"
 
-// `units` has no UI of its own (no components/pages) — it's an api-only
-// feature, same as operations/countries: a reference resource with more than
-// one consumer (materials, products), so it isn't owned by either.
+// Reference-option list read by materials/products, scoped to the kind of
+// entity being created/updated (see get-units.api.ts's comment on `scope`).
 export const unitOptionsQueryOptions = (scope: UnitScope) =>
   queryOptions({
     queryKey: ["units", "options", scope],

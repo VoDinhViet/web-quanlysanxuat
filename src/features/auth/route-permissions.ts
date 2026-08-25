@@ -119,6 +119,13 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/suppliers/create": "suppliers:create",
   "/manage/suppliers/$supplierId/update": "suppliers:update",
 
+  // Units has no `units:*` permission of its own — it reuses `items:*`, matching the
+  // backend's route guards (`items:create`/`items:update`; there is no `items:delete`, so
+  // delete is also gated on `items:update`). Create/update aren't routes — they're dialogs
+  // opened from this list page — so they gate themselves with `PermissionGate` instead of
+  // an entry here (see UnitsPage.tsx/UnitsTableColumns.tsx).
+  "/manage/units": "items:read",
+
   // No `users:read` exists in the backend catalogue — reading the staff list is gated on
   // `users:update`, matching the backend's own guard.
   "/manage/users": "users:update",
