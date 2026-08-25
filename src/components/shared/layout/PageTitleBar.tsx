@@ -32,6 +32,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/shared/layout/ThemeToggle"
 import { currentUserQueryOptions } from "@/features/auth/api/options"
 import { logout } from "@/features/auth/api/server-functions/logout.api"
@@ -189,18 +194,27 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User />
-          Hồ sơ cá nhân
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Settings />
-          Cài đặt tài khoản
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CircleHelp />
-          Trợ giúp
-        </DropdownMenuItem>
+        {[
+          { label: "Hồ sơ cá nhân", icon: User },
+          { label: "Cài đặt tài khoản", icon: Settings },
+          { label: "Trợ giúp", icon: CircleHelp },
+        ].map(({ label, icon: Icon }) => (
+          <Tooltip key={label}>
+            <TooltipTrigger asChild>
+              <DropdownMenuItem
+                aria-disabled="true"
+                className="text-muted-foreground"
+                onSelect={(event) => event.preventDefault()}
+              >
+                <Icon />
+                {label}
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              {label} — tính năng sắp có
+            </TooltipContent>
+          </Tooltip>
+        ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"

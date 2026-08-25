@@ -5,6 +5,11 @@ import { ErrorCode, useDropzone } from "react-dropzone"
 import { FileText, Loader2, Paperclip, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { resolveFileUrl } from "@/lib/file-url"
 import {
   ACCEPTED_DOCUMENT_TYPES,
@@ -174,16 +179,21 @@ export function SupplierDocumentsField({
                 <FileText className="size-4 shrink-0 text-muted-foreground" />
                 <span className="truncate">{file.originalName}</span>
               </a>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                disabled={disabled}
-                aria-label={`Xóa ${file.originalName}`}
-                onClick={() => removeFile(file.id)}
-              >
-                <X className="size-3.5" />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    disabled={disabled}
+                    aria-label={`Xóa ${file.originalName}`}
+                    onClick={() => removeFile(file.id)}
+                  >
+                    <X className="size-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Xóa file</TooltipContent>
+              </Tooltip>
             </li>
           ))}
         </ul>
