@@ -21,6 +21,7 @@ import {
   createOutsourcingReceiptSchema,
 } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import type { CreateOutsourcingReceiptWizardTab } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptTabs"
 
 // Vỏ wizard "Nhập hàng gia công về" (OS-IN) — rập khuôn CreateOutsourcingOrderForm.tsx, 3 tab.
@@ -72,8 +73,11 @@ export function CreateOutsourcingReceiptForm() {
   const nextTab =
     tabIndex < wizardTabs.length - 1 ? wizardTabs[tabIndex + 1] : undefined
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

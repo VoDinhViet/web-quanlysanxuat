@@ -18,6 +18,7 @@ import {
   PackagePlus,
   PackageSearch,
   ReceiptText,
+  Ruler,
   Send,
   ShieldCheck,
   ShoppingCart,
@@ -26,6 +27,7 @@ import {
   Upload,
   UserRound,
   Warehouse,
+  Wrench,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -218,6 +220,16 @@ const menuGroups: MenuGroup[] = [
         label: "Vật tư",
         icon: Layers,
         href: "/manage/materials",
+      },
+      {
+        label: "Đơn vị tính",
+        icon: Ruler,
+        href: "/manage/units",
+      },
+      {
+        label: "Công đoạn",
+        icon: Wrench,
+        href: "/manage/operations",
       },
     ],
   },

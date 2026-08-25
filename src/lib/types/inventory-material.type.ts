@@ -21,10 +21,10 @@ export const inventoryStatusLabels: Record<InventoryStatus, string> = {
 export type InventoryItemType = "FG" | "WIP" | "RM"
 
 /** Mirrors the backend's InventoryItemResDto (GET /api/inventory) — field names match the backend
- *  1:1 (not translated to friendlier FE names), same convention as `ProductionJobIssue`.
- *  `bomDemand` currently always comes back `0` — the backend hasn't exploded BOM yet, see
- *  `inventory.service.ts`'s own comments. `reserved` is real (Σ đơn đã duyệt chưa giao) but this
- *  screen only ever fetches `itemType=RM`, where it's always `0` (đơn hàng chỉ trỏ FG). */
+ *  1:1 (not translated to friendlier FE names), same convention as `ProductionJobIssue`. On this
+ *  screen (`itemType=RM`), `reserved`/`bomDemand` are real numbers since be-quanlysanxuat's
+ *  BUG-031/032 fix: `reserved` = Σ phiếu lãnh vật tư `APPROVED`; `bomDemand` = nhu cầu BOM Job
+ *  đang mở chưa có phiếu lãnh nào giữ. See `inventory.service.ts`'s own comments. */
 export type MaterialInventoryItem = {
   id: string
   code: string
@@ -35,9 +35,9 @@ export type MaterialInventoryItem = {
   image: { url: string } | null
   /** Tồn thực tế: Σ nhập − Σ xuất trên các phiếu chưa xoá */
   onHand: number
-  /** Đã giữ — luôn 0 trên màn này (chỉ khác 0 với FG có đơn mở) */
+  /** Đã giữ — Σ SL các phiếu lãnh vật tư đang APPROVED */
   reserved: number
-  /** Tổng nhu cầu BOM: luôn 0 ở đợt này — chưa nổ BOM */
+  /** Nhu cầu BOM chưa có phiếu lãnh nào giữ */
   bomDemand: number
   /** Tồn khả dụng = onHand − reserved − bomDemand */
   available: number

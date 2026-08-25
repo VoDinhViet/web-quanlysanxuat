@@ -7,6 +7,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { InventoryReceiptHeaderSection } from "@/features/inventory-receipts/components/create/InventoryReceiptHeaderSection"
 import { InventoryReceiptItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptItemsSection"
@@ -61,8 +62,11 @@ export function InventoryReceiptCreateForm() {
     }
   }, [draft, form])
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

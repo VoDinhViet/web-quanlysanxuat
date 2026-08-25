@@ -7,6 +7,8 @@ import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
 const col = createColumnHelper<OutboundOrder>()
 
 export const outboundOrdersColumns = [
@@ -50,13 +52,14 @@ export const outboundOrdersColumns = [
     meta: { headerClassName: "min-w-36" },
   }),
 
-  // PO / Lý do: danh sách (PageOutboundOrderResDto) không trả field này — mỗi dòng PO nguồn nằm ở
-  // cấp item (GET :id/items), không denormalize lên header. Chỉ trang chi tiết còn có.
-  col.display({
+  col.accessor("orderCodes", {
     id: "poOrReason",
     header: "PO / Lý do",
     meta: { headerClassName: "min-w-32" },
-    cell: () => "--",
+    cell: ({ getValue }) => {
+      const orderCodes = getValue()
+      return orderCodes.length > 0 ? orderCodes.join(", ") : "—"
+    },
   }),
 
   col.accessor("fulfillmentType", {
@@ -68,16 +71,13 @@ export const outboundOrdersColumns = [
     cell: ({ getValue }) => fulfillmentTypeLabels[getValue()],
   }),
 
-  // Tổng SL giao: danh sách không trả field này (không có SQL-computed tổng dòng) — chỉ trang chi
-  // tiết còn có, tự tính từ items (GET :id/items).
-  col.display({
-    id: "totalQuantity",
+  col.accessor("totalQuantity", {
     header: "Tổng SL giao",
     meta: {
       headerClassName: "min-w-24 text-right",
       cellClassName: "text-right text-xs",
     },
-    cell: () => "--",
+    cell: ({ getValue }) => quantityFormatter.format(getValue()),
   }),
 
   col.accessor("status", {

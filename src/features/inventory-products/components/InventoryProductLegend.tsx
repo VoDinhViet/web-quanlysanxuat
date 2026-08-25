@@ -13,7 +13,7 @@ export function InventoryProductLegend() {
         <span className="size-2 rounded-full bg-amber-500" />
         <span className="font-semibold text-foreground">Đã giữ:</span>
         <span className="text-muted-foreground">
-          Σ SL trên các đơn hàng đã duyệt còn mở, trừ phần đã xuất giao
+          Σ SL trên lệnh xuất hàng (DO) đang chờ duyệt/chờ giao
         </span>
       </div>
 
@@ -21,7 +21,7 @@ export function InventoryProductLegend() {
         <span className="size-2 rounded-full bg-rose-500" />
         <span className="font-semibold text-foreground">Tồn TP khả dụng:</span>
         <span className="text-muted-foreground">
-          Tồn thực tế - Đã giữ - Nhu cầu BOM (hiện luôn 0 — chưa nổ BOM)
+          Tồn thực tế - Đã giữ - Nhu cầu chưa có DO nào giữ
         </span>
       </div>
     </div>

@@ -90,7 +90,10 @@ export const inventoryProductsColumns = [
 
   col.accessor("reserved", {
     header: () => (
-      <QuantityColumnHeader label="Đã giữ" formula="Đơn đã duyệt chưa giao" />
+      <QuantityColumnHeader
+        label="Đã giữ"
+        formula="Lệnh xuất hàng (DO) đang chờ duyệt/giao"
+      />
     ),
     meta: {
       headerClassName: "min-w-32 text-right",

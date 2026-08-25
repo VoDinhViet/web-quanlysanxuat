@@ -22,6 +22,7 @@ import {
   createOutsourcingOrderSchema,
 } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import type { CreateOutsourcingOrderWizardTab } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderTabs"
 import type { CreateOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
@@ -104,8 +105,11 @@ export function CreateOutsourcingOrderForm({
   const nextTab =
     tabIndex < wizardTabs.length - 1 ? wizardTabs[tabIndex + 1] : undefined
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

@@ -21,6 +21,7 @@ import {
   createOutboundOrderSchema,
 } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import type { CreateOutboundOrderWizardTab } from "@/features/outbound-orders/components/create/CreateOutboundOrderTabs"
 
 // Vỏ wizard "Tạo phiếu giao hàng" (DO) — rập khuôn CreateOutsourcingReceiptForm.tsx, 3 tab.
@@ -69,8 +70,11 @@ export function CreateOutboundOrderForm() {
   const nextTab =
     tabIndex < wizardTabs.length - 1 ? wizardTabs[tabIndex + 1] : undefined
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

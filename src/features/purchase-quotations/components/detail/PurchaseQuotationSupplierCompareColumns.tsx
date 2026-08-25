@@ -26,6 +26,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
   return [
     purchaseQuotationSupplierColumnHelper.display({
       id: "select",
+      header: "Trúng thầu",
       meta: { headerClassName: "w-10 text-[10px]", cellClassName: "pl-3" },
       cell: ({ row }) => {
         const supplier = row.original

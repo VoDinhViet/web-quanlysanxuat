@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { countryOptionsQueryOptions } from "@/features/countries/api"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
 import { supplierStatusLabels } from "@/lib/types/supplier.type"
 import type { SupplierStatus } from "@/lib/types/supplier.type"
@@ -29,6 +30,9 @@ export function SuppliersTableFilter() {
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: supplierGroupOptions } = useSuspenseQuery(
     supplierGroupOptionsQueryOptions()
+  )
+  const { data: countryOptions } = useSuspenseQuery(
+    countryOptionsQueryOptions()
   )
   const [q, setQ] = useState(search.q ?? "")
 
@@ -59,6 +63,13 @@ export function SuppliersTableFilter() {
     })
   }
 
+  const handleCountryChange = (value: string) => {
+    const countryId = value === "all" ? undefined : value
+    void navigate({
+      search: (prev) => ({ ...prev, countryId, page: 1 }),
+    })
+  }
+
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
@@ -70,6 +81,7 @@ export function SuppliersTableFilter() {
           q: _q,
           status: _status,
           supplierGroupId: _supplierGroupId,
+          countryId: _countryId,
           order: _order,
           ...rest
         } = prev
@@ -81,8 +93,8 @@ export function SuppliersTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-3 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
-          <div className="space-y-1.5 sm:col-span-3 lg:col-span-1">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
+          <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="suppliers-search"
               className="text-[11px] font-medium text-muted-foreground"
@@ -152,6 +164,31 @@ export function SuppliersTableFilter() {
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
                 {supplierGroupOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="suppliers-country"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Quốc gia
+            </Label>
+            <Select
+              value={search.countryId ?? "all"}
+              onValueChange={handleCountryChange}
+            >
+              <SelectTrigger id="suppliers-country" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                {countryOptions.map((option) => (
                   <SelectItem key={option.id} value={option.id}>
                     {option.name}
                   </SelectItem>

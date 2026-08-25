@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Image } from "@unpic/react"
-import { Edit3, Trash2 } from "lucide-react"
+import { Edit3, Eye, Trash2 } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
@@ -152,6 +152,20 @@ export const supplierColumns = [
 
       return (
         <div className="flex items-center justify-center gap-1.5">
+          <RoutePermissionGate route="/manage/suppliers/$supplierId">
+            <IconButton
+              label="Xem chi tiết"
+              asChild
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+            >
+              <Link
+                to="/manage/suppliers/$supplierId"
+                params={{ supplierId: supplier.id }}
+              >
+                <Eye className="size-3.5" />
+              </Link>
+            </IconButton>
+          </RoutePermissionGate>
           <RoutePermissionGate route="/manage/suppliers/$supplierId/update">
             <IconButton
               label="Chỉnh sửa"

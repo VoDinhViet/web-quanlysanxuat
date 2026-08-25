@@ -60,6 +60,10 @@ export type OutboundOrder = {
   fulfillmentDate: string
   fulfillmentType: FulfillmentType
   status: OutboundOrderStatus
+  // Mã đơn hàng nguồn — mảng, không phải 1 mã: một DO có thể gộp nhiều dòng PO từ nhiều đơn hàng
+  // khác nhau. Rỗng khi phiếu chưa có dòng nào.
+  orderCodes: string[]
+  totalQuantity: number
   note: string | null
   creatorBy: UserRef | null
   createdAt: string

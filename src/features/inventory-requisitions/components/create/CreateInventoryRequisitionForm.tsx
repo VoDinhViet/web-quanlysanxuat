@@ -23,6 +23,7 @@ import {
 } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import { productionJobQueryOptions } from "@/features/production-jobs/api"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import type { CreateInventoryRequisitionWizardStep } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionStepsTabs"
 import type { CreateInventoryRequisitionSchema } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
@@ -149,8 +150,11 @@ export function CreateInventoryRequisitionForm({
     if (nextStep) setStep(nextStep.value)
   }
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

@@ -7,6 +7,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { CreateUserCredentialSection } from "@/features/users/components/CreateUserCredentialSection"
 import { CreateUserJobInfoSection } from "@/features/users/components/CreateUserJobInfoSection"
@@ -56,8 +57,11 @@ export function CreateUserForm() {
     }
   }, [draft, form])
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

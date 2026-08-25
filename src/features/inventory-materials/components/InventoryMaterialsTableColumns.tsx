@@ -108,9 +108,9 @@ export const inventoryMaterialColumns = [
     ),
   }),
 
-  // "Đã giữ"/"Tổng nhu cầu BOM" luôn = 0 với vật tư hiện nay (backend chưa có dữ liệu thật cho 2
-  // field này, xem inventory-material.type.ts) — không đáng làm cột riêng, gộp thành dòng phụ nhỏ
-  // dưới số Tồn khả dụng thay vì chiếm thêm 2 cột.
+  // "Đã giữ"/"Tổng nhu cầu BOM" giờ là số thật (be-quanlysanxuat BUG-031/032, xem
+  // inventory-material.type.ts) — vẫn gộp thành dòng phụ nhỏ dưới số Tồn khả dụng thay vì tách
+  // cột riêng, giữ nguyên layout cũ.
   inventoryColumnHelper.accessor("available", {
     header: () => (
       <QuantityColumnHeader label="Tồn khả dụng" formula="TT - Đã giữ - BOM" />

@@ -16,6 +16,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { PurchaseRequestCreateHeaderSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateHeaderSection"
 import { PurchaseRequestCreateMaterialPickerSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerSection"
@@ -101,8 +102,11 @@ export function PurchaseRequestCreateForm() {
     }
   }, [draft, form])
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

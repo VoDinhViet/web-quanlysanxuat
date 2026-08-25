@@ -1,6 +1,10 @@
 import { z } from "zod"
 
-import { emptyToUndefined, refineOptionalEmail } from "@/lib/zod-transforms"
+import {
+  emptyToUndefined,
+  refineOptionalEmail,
+  refineOptionalPhoneNumber,
+} from "@/lib/zod-transforms"
 
 // One contact row shared by the create and update client schemas. `isPrimary` has no UI — the
 // array transform below marks the first row primary, matching the list page's "Người liên hệ
@@ -20,7 +24,11 @@ const clientContactFields = {
 }
 
 export const clientContactsSchema = z
-  .array(z.object(clientContactFields))
+  .array(
+    z
+      .object(clientContactFields)
+      .superRefine(refineOptionalPhoneNumber("phoneNumber"))
+  )
   .transform((contacts) =>
     contacts.map((contact, index) => ({ ...contact, isPrimary: index === 0 }))
   )
@@ -42,6 +50,7 @@ export const clientContactFormSchema = z
     note: z.string().trim(),
   })
   .superRefine(refineOptionalEmail("email"))
+  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 // One contact row as the form/dialog edits it (before the array transform adds `isPrimary`).
 // Shared by the contacts table and its add/edit dialog.

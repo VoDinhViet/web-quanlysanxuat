@@ -4,6 +4,7 @@ import { imageFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToUndefined,
   emptyToUndefinedIsoDate,
+  refineOptionalPhoneNumber,
   toIsoDate,
 } from "@/lib/zod-transforms"
 
@@ -51,46 +52,48 @@ export const updateCredentialSchema = z
 // withForm-invariance conflict), so mutationFn receives the form value as-is — no manual
 // id merge at the call site. Deliberately shares no field definitions with
 // create-user.schema.ts: the two flows evolve independently.
-export const updateUserSchema = z.object({
-  userId: z.uuid(),
-  fullName: z
-    .string()
-    .trim()
-    .min(1, "Vui lòng nhập họ và tên")
-    .max(255, "Họ và tên tối đa 255 ký tự"),
-  gender: z.enum(["MALE", "FEMALE", "OTHER"]),
-  dateOfBirth: z.string().trim().transform(emptyToUndefinedIsoDate),
-  idNumber: z
-    .string()
-    .trim()
-    .max(20, "Số CCCD/CMND tối đa 20 ký tự")
-    .transform(emptyToUndefined),
-  phoneNumber: z
-    .string()
-    .trim()
-    .max(30, "Số điện thoại tối đa 30 ký tự")
-    .transform(emptyToUndefined),
-  address: z
-    .string()
-    .trim()
-    .max(500, "Địa chỉ tối đa 500 ký tự")
-    .transform(emptyToUndefined),
-  avatar: imageFieldSchema,
-  departmentId: z.string().trim().min(1, "Vui lòng chọn phòng ban"),
-  positionId: z.string().trim().min(1, "Vui lòng chọn chức vụ"),
-  hireDate: z
-    .string()
-    .trim()
-    .min(1, "Vui lòng chọn ngày vào làm")
-    .transform(toIsoDate),
-  note: z
-    .string()
-    .trim()
-    .max(1000, "Ghi chú tối đa 1000 ký tự")
-    .transform(emptyToUndefined),
-  status: z.enum(["WORKING", "RESIGNED"]),
-  credential: updateCredentialSchema.optional(),
-})
+export const updateUserSchema = z
+  .object({
+    userId: z.uuid(),
+    fullName: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng nhập họ và tên")
+      .max(255, "Họ và tên tối đa 255 ký tự"),
+    gender: z.enum(["MALE", "FEMALE", "OTHER"]),
+    dateOfBirth: z.string().trim().transform(emptyToUndefinedIsoDate),
+    idNumber: z
+      .string()
+      .trim()
+      .max(20, "Số CCCD/CMND tối đa 20 ký tự")
+      .transform(emptyToUndefined),
+    phoneNumber: z
+      .string()
+      .trim()
+      .max(30, "Số điện thoại tối đa 30 ký tự")
+      .transform(emptyToUndefined),
+    address: z
+      .string()
+      .trim()
+      .max(500, "Địa chỉ tối đa 500 ký tự")
+      .transform(emptyToUndefined),
+    avatar: imageFieldSchema,
+    departmentId: z.string().trim().min(1, "Vui lòng chọn phòng ban"),
+    positionId: z.string().trim().min(1, "Vui lòng chọn chức vụ"),
+    hireDate: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng chọn ngày vào làm")
+      .transform(toIsoDate),
+    note: z
+      .string()
+      .trim()
+      .max(1000, "Ghi chú tối đa 1000 ký tự")
+      .transform(emptyToUndefined),
+    status: z.enum(["WORKING", "RESIGNED"]),
+    credential: updateCredentialSchema.optional(),
+  })
+  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 export type UpdateUserSchema = z.input<typeof updateUserSchema>
 

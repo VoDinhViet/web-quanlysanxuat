@@ -56,6 +56,10 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/materials/create": "items:create",
   "/manage/materials/$materialId/update": "items:update",
 
+  "/manage/operations": "operations:read",
+  "/manage/operations/create": "operations:create",
+  "/manage/operations/$operationId/update": "operations:update",
+
   "/manage/oqc": "oqc:read",
   "/manage/oqc/$oqcId": "oqc:read",
 
@@ -98,6 +102,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/purchase-ledger": "purchasing:read",
 
   "/manage/purchase-orders": "purchasing:read",
+  "/manage/purchase-orders/create": "purchasing:create",
   "/manage/purchase-orders/$purchaseOrderId": "purchasing:read",
 
   "/manage/purchase-quotations": "purchasing:read",
@@ -117,6 +122,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
 
   "/manage/suppliers": "suppliers:read",
   "/manage/suppliers/create": "suppliers:create",
+  "/manage/suppliers/$supplierId": "suppliers:read",
   "/manage/suppliers/$supplierId/update": "suppliers:update",
 
   // Units has no `units:*` permission of its own — it reuses `items:*`, matching the

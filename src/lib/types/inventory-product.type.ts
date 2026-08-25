@@ -22,8 +22,8 @@ export type InventoryItemType = "FG" | "WIP" | "RM"
  *  the backend 1:1 (not translated to friendlier FE names), same convention as
  *  `MaterialInventoryItem` (`@/lib/types/inventory-material.type.ts`), its RM-side twin — kept
  *  separate rather than shared/imported, per this repo's established convention for this feature
- *  pair. `bomDemand` currently always comes back `0` — the backend hasn't exploded BOM yet, so
- *  `available === onHand − reserved` on every row until it does. */
+ *  pair. Since be-quanlysanxuat's BUG-031/032 fix, `reserved`/`bomDemand` are real on both twins
+ *  (previously `bomDemand` was always `0`) — see `inventory.service.ts`'s own comments. */
 export type ProductInventoryItem = {
   id: string
   code: string
@@ -35,10 +35,10 @@ export type ProductInventoryItem = {
   image: { url: string } | null
   /** Tồn thực tế: Σ nhập − Σ xuất trên các phiếu chưa xoá */
   onHand: number
-  /** Đã giữ: Σ SL đơn hàng đã duyệt còn mở, trừ phần đã xuất giao. Thật và khác 0 với FG — khác
-   *  `MaterialInventoryItem.reserved`, luôn 0 với RM (đơn hàng chỉ trỏ FG). */
+  /** Đã giữ — Σ SL lệnh xuất hàng (DO) đang PENDING_APPROVAL/PENDING_DELIVERY. Khác
+   *  `MaterialInventoryItem.reserved` (RM: Σ phiếu lãnh vật tư APPROVED) — nguồn chứng từ khác nhau. */
   reserved: number
-  /** Tổng nhu cầu BOM: luôn 0 ở đợt này — chưa nổ BOM */
+  /** Nhu cầu đơn hàng mở chưa có DO nào giữ */
   bomDemand: number
   /** Tồn khả dụng = onHand − reserved − bomDemand */
   available: number

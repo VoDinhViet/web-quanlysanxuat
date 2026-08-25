@@ -6,6 +6,7 @@ import {
   emptyToUndefinedIsoDate,
   optionalEnum,
   refineOptionalEmail,
+  refineOptionalPhoneNumber,
 } from "@/lib/zod-transforms"
 
 import {
@@ -82,6 +83,8 @@ export const createSupplierSchema = z
     }),
   })
   .superRefine(refineOptionalEmail("email"))
+  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
+  .superRefine(refineOptionalPhoneNumber("representativePhone"))
 
 export type CreateSupplierSchema = z.input<typeof createSupplierSchema>
 

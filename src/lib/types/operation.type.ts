@@ -1,3 +1,5 @@
+import type { UserRef } from "@/lib/types/user.type"
+
 export enum OperationType {
   INHOUSE = "INHOUSE",
   OUTSOURCE = "OUTSOURCE",
@@ -13,6 +15,11 @@ export const operationTypeLabels: Record<OperationType, string> = {
   [OperationType.OUTSOURCE]: "Outsource",
 }
 
+export const operationStatusLabels: Record<OperationStatus, string> = {
+  [OperationStatus.ACTIVE]: "Đang dùng",
+  [OperationStatus.INACTIVE]: "Ngừng dùng",
+}
+
 /**
  * Mirrors backend's OperationResDto / OperationRefResDto — the master catalog operation entity.
  */
@@ -25,6 +32,24 @@ export type Operation = {
 
 /** Legacy alias for backward compatibility */
 export type OperationRef = Operation
+
+/**
+ * Mirrors backend's OperationResDto (GET/POST/PATCH /operations) — the full catalogue record for
+ * the management screen. Deliberately separate from `Operation`/`OperationRef` above, which stay
+ * the narrow picker shape consumed by BOM/routing steps — widening those would ripple into every
+ * consumer that only needs id/code/name/type.
+ */
+export type OperationDetail = {
+  id: string
+  code: string
+  name: string
+  type: OperationType
+  note: string | null
+  status: OperationStatus
+  creatorBy: UserRef
+  createdAt: string
+  updatedAt: string
+}
 
 /**
  * Mirrors backend's ProductOperationResDto / BomOperationResDto — one step of a product or BOM item routing.

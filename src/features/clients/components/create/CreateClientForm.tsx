@@ -7,6 +7,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { CreateClientContactsSection } from "@/features/clients/components/create/CreateClientContactsSection"
 import { CreateClientInfoSection } from "@/features/clients/components/create/CreateClientInfoSection"
@@ -53,8 +54,11 @@ export function CreateClientForm() {
     }
   }, [draft, form])
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

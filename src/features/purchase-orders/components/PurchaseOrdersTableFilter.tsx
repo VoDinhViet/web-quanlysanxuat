@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { Link, useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { purchaseOrderProgressLabels } from "@/lib/types/purchase-order.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -211,16 +210,12 @@ export function PurchaseOrdersTableFilter() {
             Làm mới
           </Button>
 
-          {/* variant="default" (primary) — matches the reference mockup's primary-colored
-                "+ Tạo PO thủ công" button even though the create screen isn't built yet. */}
-          <PendingAction
-            label="Tạo PO thủ công"
-            hint="Tính năng tạo PO thủ công sắp có"
-            variant="default"
-          >
-            <Plus className="size-4" />
-            Tạo PO thủ công
-          </PendingAction>
+          <Button asChild className="text-xs">
+            <Link to="/manage/purchase-orders/create">
+              <Plus className="size-4" />
+              Tạo PO thủ công
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

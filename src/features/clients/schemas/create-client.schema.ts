@@ -1,7 +1,11 @@
 import { z } from "zod"
 
 import { clientContactsSchema } from "@/features/clients/schemas/client-contact.schema"
-import { emptyToUndefined, refineOptionalEmail } from "@/lib/zod-transforms"
+import {
+  emptyToUndefined,
+  refineOptionalEmail,
+  refineOptionalPhoneNumber,
+} from "@/lib/zod-transforms"
 
 import { ClientStatus } from "@/lib/types/client.type"
 
@@ -42,6 +46,7 @@ export const createClientSchema = z
     contacts: clientContactsSchema,
   })
   .superRefine(refineOptionalEmail("email"))
+  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 export type CreateClientSchema = z.input<typeof createClientSchema>
 

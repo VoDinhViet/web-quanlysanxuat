@@ -1,6 +1,11 @@
 import type { ComponentProps, ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type IconButtonProps = {
   label: string
@@ -19,21 +24,25 @@ export function IconButton({
   ...props
 }: IconButtonProps) {
   return (
-    // Rest props are forwarded (after the `type` default so a passed type wins)
-    // so Radix triggers (`SheetTrigger asChild`, `AlertDialogTrigger asChild`)
-    // can attach their onClick/aria props — dropping them leaves the trigger
-    // rendered but inert.
-    <Button
-      type={asChild ? undefined : "button"}
-      {...props}
-      variant="outline"
-      size={size}
-      aria-label={label}
-      title={label}
-      asChild={asChild}
-      className={className}
-    >
-      {children}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {/* Rest props are forwarded (after the `type` default so a passed type wins)
+        so Radix triggers (`SheetTrigger asChild`, `AlertDialogTrigger asChild`)
+        can attach their onClick/aria props — dropping them leaves the trigger
+        rendered but inert. */}
+        <Button
+          type={asChild ? undefined : "button"}
+          {...props}
+          variant="outline"
+          size={size}
+          aria-label={label}
+          asChild={asChild}
+          className={className}
+        >
+          {children}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   )
 }

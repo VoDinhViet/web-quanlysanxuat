@@ -21,7 +21,9 @@ import type { Supplier } from "@/lib/types/supplier.type"
 // flattened to its primary (or first) entry — the form only has flat
 // representativeName/representativePhone fields today (a known gap, see the
 // update-page plan), so anything beyond one representative isn't editable yet.
-function getSupplierDefaultValues(supplier: Supplier): UpdateSupplierSchema {
+export function getSupplierDefaultValues(
+  supplier: Supplier
+): UpdateSupplierSchema {
   const { payment } = supplier
   const primaryRepresentative = getPrimaryRepresentative(
     supplier.representatives

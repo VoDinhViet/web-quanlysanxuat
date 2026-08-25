@@ -7,6 +7,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { CreateOrderInfoSection } from "@/features/orders/components/create/CreateOrderInfoSection"
 import { CreateOrderItemsSection } from "@/features/orders/components/create/CreateOrderItemsSection"
@@ -57,8 +58,11 @@ export function CreateOrderForm() {
     }
   }, [draft, form])
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

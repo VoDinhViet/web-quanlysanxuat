@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { countryOptionsQueryOptions } from "@/features/countries/api"
 import { SuppliersPage } from "@/features/suppliers/pages/SuppliersPage"
 import { suppliersSearchSchema } from "@/features/suppliers/schemas/suppliers-search.schema"
 import {
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/(authed)/manage_/suppliers")({
         suppliersQueryOptions(suppliersSearchSchema.parse(location.search))
       ),
       context.queryClient.ensureQueryData(supplierGroupOptionsQueryOptions()),
+      context.queryClient.ensureQueryData(countryOptionsQueryOptions()),
     ])
   },
   component: SuppliersPage,

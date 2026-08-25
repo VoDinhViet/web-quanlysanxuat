@@ -27,6 +27,9 @@ export const PERMISSION_CODES = [
   "items:bom-manage",
 
   "operations:read",
+  "operations:create",
+  "operations:update",
+  "operations:delete",
 
   "suppliers:read",
   "suppliers:create",
@@ -123,6 +126,9 @@ export const permissionLabels: Record<PermissionCode, string> = {
   "items:bom-manage": "Quản lý BOM & quy trình",
 
   "operations:read": "Xem công đoạn",
+  "operations:create": "Tạo công đoạn",
+  "operations:update": "Sửa công đoạn",
+  "operations:delete": "Xoá công đoạn",
 
   "suppliers:read": "Xem nhà cung cấp",
   "suppliers:create": "Tạo nhà cung cấp",
@@ -223,7 +229,15 @@ export const permissionGroups: PermissionGroup[] = [
       "items:bom-manage",
     ],
   },
-  { label: "Công đoạn", codes: ["operations:read"] },
+  {
+    label: "Công đoạn",
+    codes: [
+      "operations:read",
+      "operations:create",
+      "operations:update",
+      "operations:delete",
+    ],
+  },
   {
     label: "Nhà cung cấp",
     codes: [

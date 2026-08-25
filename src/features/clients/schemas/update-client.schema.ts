@@ -1,7 +1,11 @@
 import { z } from "zod"
 
 import { clientContactsSchema } from "@/features/clients/schemas/client-contact.schema"
-import { emptyToNull, optionalEmail } from "@/lib/zod-transforms"
+import {
+  emptyToNull,
+  optionalEmail,
+  refineOptionalPhoneNumber,
+} from "@/lib/zod-transforms"
 
 import { ClientStatus } from "@/lib/types/client.type"
 
@@ -13,40 +17,42 @@ import { ClientStatus } from "@/lib/types/client.type"
 // on a PATCH an omitted key means "leave unchanged", not "not provided", so every optional field
 // here transforms ""→null (an explicit clear) instead of ""→undefined — see UpdateClientReqDto's
 // `nullable: true` fields on the backend.
-export const updateClientSchema = z.object({
-  clientId: z.uuid(),
-  name: z
-    .string()
-    .trim()
-    .min(1, "Vui lòng nhập tên khách hàng")
-    .max(255, "Tên khách hàng tối đa 255 ký tự"),
-  clientGroupId: z.string().trim().min(1, "Vui lòng chọn nhóm khách hàng"),
-  taxCode: z
-    .string()
-    .trim()
-    .max(50, "Mã số thuế tối đa 50 ký tự")
-    .transform(emptyToNull),
-  phoneNumber: z
-    .string()
-    .trim()
-    .max(30, "Số điện thoại tối đa 30 ký tự")
-    .transform(emptyToNull),
-  // optionalEmail() transforms ""→undefined; a PATCH needs an explicit null to actually clear
-  // the field (an omitted key means "leave unchanged"), so re-map the last step.
-  email: optionalEmail().transform((value) => value ?? null),
-  address: z
-    .string()
-    .trim()
-    .max(500, "Địa chỉ tối đa 500 ký tự")
-    .transform(emptyToNull),
-  note: z
-    .string()
-    .trim()
-    .max(1000, "Ghi chú tối đa 1000 ký tự")
-    .transform(emptyToNull),
-  status: z.enum(ClientStatus),
-  contacts: clientContactsSchema,
-})
+export const updateClientSchema = z
+  .object({
+    clientId: z.uuid(),
+    name: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng nhập tên khách hàng")
+      .max(255, "Tên khách hàng tối đa 255 ký tự"),
+    clientGroupId: z.string().trim().min(1, "Vui lòng chọn nhóm khách hàng"),
+    taxCode: z
+      .string()
+      .trim()
+      .max(50, "Mã số thuế tối đa 50 ký tự")
+      .transform(emptyToNull),
+    phoneNumber: z
+      .string()
+      .trim()
+      .max(30, "Số điện thoại tối đa 30 ký tự")
+      .transform(emptyToNull),
+    // optionalEmail() transforms ""→undefined; a PATCH needs an explicit null to actually clear
+    // the field (an omitted key means "leave unchanged"), so re-map the last step.
+    email: optionalEmail().transform((value) => value ?? null),
+    address: z
+      .string()
+      .trim()
+      .max(500, "Địa chỉ tối đa 500 ký tự")
+      .transform(emptyToNull),
+    note: z
+      .string()
+      .trim()
+      .max(1000, "Ghi chú tối đa 1000 ký tự")
+      .transform(emptyToNull),
+    status: z.enum(ClientStatus),
+    contacts: clientContactsSchema,
+  })
+  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 export type UpdateClientSchema = z.input<typeof updateClientSchema>
 

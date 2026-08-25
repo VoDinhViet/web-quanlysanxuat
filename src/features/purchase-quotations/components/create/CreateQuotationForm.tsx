@@ -26,6 +26,7 @@ import {
   createQuotationFormSchema,
 } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { useAppForm } from "@/hooks/use-app-form"
+import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import type { CreateQuotationWizardStep } from "@/features/purchase-quotations/components/create/CreateQuotationStepsTabs"
 import type { CreateQuotationFormSchema } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
@@ -91,8 +92,11 @@ export function CreateQuotationForm() {
     }
   }, [draft, form])
 
+  const formRef = useAutoFocusFirstField<HTMLFormElement>()
+
   return (
     <form
+      ref={formRef}
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()

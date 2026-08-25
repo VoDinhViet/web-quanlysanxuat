@@ -103,3 +103,32 @@ export function refineOptionalEmail<TFieldName extends string>(
     }
   }
 }
+
+/** Mirror của `PHONE_NUMBER_PATTERN` bên BE (`field.decorators.ts`) — sửa một bên thì phải sửa
+ *  cả bên kia, nếu không FE chặn khác BE. Không giới hạn riêng số VN: `+` đầu (tuỳ chọn) rồi
+ *  8-15 chữ số (độ dài tối đa theo chuẩn E.164). */
+const PHONE_NUMBER_REGEX = /^\+?\d{8,15}$/
+const PHONE_NUMBER_MESSAGE =
+  'Số điện thoại không hợp lệ — chỉ nhận chữ số (có thể có dấu "+" ở đầu), 8-15 chữ số.'
+
+/** Bản SĐT của `refineOptionalEmail`: chỉ báo lỗi khi có giá trị (field đã transform
+ * ""→undefined/null trước đó) — dùng `.superRefine(refineOptionalPhoneNumber("phoneNumber"))`
+ * (hoặc tên field khác, vd "representativePhone") trên schema object đã có field đó. */
+export function refineOptionalPhoneNumber<TFieldName extends string>(
+  fieldName: TFieldName
+) {
+  return function (
+    value: Record<TFieldName, string | null | undefined>,
+    ctx: z.RefinementCtx
+  ): void {
+    const phoneNumber = value[fieldName]
+
+    if (phoneNumber && !PHONE_NUMBER_REGEX.test(phoneNumber)) {
+      ctx.addIssue({
+        code: "custom",
+        path: [fieldName],
+        message: PHONE_NUMBER_MESSAGE,
+      })
+    }
+  }
+}
