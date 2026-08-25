@@ -81,6 +81,7 @@ export function CreateOutsourcingReceiptForm() {
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()
+        if (form.state.isSubmitting) return
         form.handleSubmit()
       }}
       noValidate
@@ -185,7 +186,10 @@ export function CreateOutsourcingReceiptForm() {
                 <Button
                   type="button"
                   disabled={!canSubmit || isSubmitting || isPending}
-                  onClick={() => form.handleSubmit()}
+                  onClick={() => {
+                    if (form.state.isSubmitting) return
+                    form.handleSubmit()
+                  }}
                 >
                   {isSubmitting || isPending ? (
                     <>

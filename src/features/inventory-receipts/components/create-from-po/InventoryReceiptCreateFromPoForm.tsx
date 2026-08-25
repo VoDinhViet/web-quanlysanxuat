@@ -209,6 +209,7 @@ export function InventoryReceiptCreateFromPoForm() {
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()
+        if (form.state.isSubmitting) return
         form.handleSubmit()
       }}
       noValidate
@@ -328,6 +329,7 @@ export function InventoryReceiptCreateFromPoForm() {
                 disabled={isPending}
                 onClick={() => {
                   shouldConfirmRef.current = false
+                  if (form.state.isSubmitting) return
                   form.handleSubmit()
                 }}
               >
@@ -347,6 +349,7 @@ export function InventoryReceiptCreateFromPoForm() {
                     disabled={!canSubmit || isSubmitting || isPending}
                     onClick={() => {
                       shouldConfirmRef.current = true
+                      if (form.state.isSubmitting) return
                       form.handleSubmit()
                     }}
                   >

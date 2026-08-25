@@ -98,7 +98,10 @@ export function ProductDetailPage() {
               product={product}
               activeTab={tab}
               isSaving={isPending}
-              onSave={() => void form.handleSubmit()}
+              onSave={() => {
+                if (form.state.isSubmitting) return
+                void form.handleSubmit()
+              }}
             />
 
             {/* `minmax(0,1fr)` (not `1fr`) so a wide table scrolls inside its own

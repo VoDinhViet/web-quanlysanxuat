@@ -112,7 +112,10 @@ export function ProductionOrderDetailPage() {
               production={production}
               hasUnsavedChanges={hasUnsavedChanges}
               isSaving={isPending}
-              onSave={() => void form.handleSubmit()}
+              onSave={() => {
+                if (form.state.isSubmitting) return
+                void form.handleSubmit()
+              }}
             />
           )}
         </form.Subscribe>

@@ -83,6 +83,7 @@ function PurchaseOrderCancelForm({
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()
+        if (form.state.isSubmitting) return
         form.handleSubmit()
       }}
       noValidate

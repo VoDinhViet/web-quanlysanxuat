@@ -22,21 +22,24 @@ const outsourceableOperationsLimit = 200
 type ProductionJobOperationsTabProps = {
   productionJobId: string
   status: ProductionJobStatus
+  operationsApprovedAt: string | null
 }
 
 // Reads GET /production-jobs/:jobId/operations directly (client-driven, tab-gated) — the backend
 // already groups by BOM item, one array element per BOM item with its own `operations[]`, so
 // no client-side grouping is needed (see ProductionJobBomItem's doc comment). Sửa chỉ mở khi Job
-// đang IN_PROGRESS (khớp ràng buộc backend — completedQuantity/completedDate đóng băng ngoài trạng
-// thái đó).
+// đang IN_PROGRESS **và** đã qua "Duyệt công đoạn" (khớp ràng buộc backend E087/E250 —
+// completedQuantity/rejectedQuantity/completedDate đóng băng ngoài hai điều kiện đó).
 export function ProductionJobOperationsTab({
   productionJobId,
   status,
+  operationsApprovedAt,
 }: ProductionJobOperationsTabProps) {
   const operationsQuery = useQuery(
     productionJobOperationsQueryOptions(productionJobId)
   )
-  const canEdit = status === ProductionJobStatus.IN_PROGRESS
+  const canEdit =
+    status === ProductionJobStatus.IN_PROGRESS && operationsApprovedAt !== null
   const groups = operationsQuery.data ?? []
 
   // SL đã gửi/còn được phép gửi gia công ngoài không có trên GET .../operations (Production không

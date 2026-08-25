@@ -70,6 +70,7 @@ export function InventoryReceiptCreateForm() {
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()
+        if (form.state.isSubmitting) return
         form.handleSubmit()
       }}
       noValidate

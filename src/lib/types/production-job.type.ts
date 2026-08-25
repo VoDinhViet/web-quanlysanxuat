@@ -59,6 +59,10 @@ export type ProductionJobDetail = {
   status: ProductionJobStatus
   startedBy: string | null
   startedAt: string | null
+  // Thêm 2026-08-25 — ai/khi nào duyệt công đoạn (`POST .../approve-operations`). null thì
+  // `PATCH .../operations/:operationId` còn bị chặn (E250), xem ProductionJobOperation.
+  operationsApprovedBy: string | null
+  operationsApprovedAt: string | null
   createdAt: string
   updatedAt: string
 }
@@ -66,13 +70,14 @@ export type ProductionJobDetail = {
 /** Mirrors the backend's ProductionJobBomOperationResDto, nested in ProductionJobBomItem below —
  *  the as-used routing snapshot copied from `routing_steps` onto a single BOM node at LSX approval
  *  time (`production_job_operations`). `code`/`name`/`type`/`sortOrder`/`note`/`operationId` stay
- *  frozen; `completedQuantity`/`completedDate` are the only two fields editable afterwards, via
- *  `PATCH /production-jobs/:jobId/operations/:operationId` — `completedDate` is server-set (not
- *  part of the update payload), auto-filled once `completedQuantity` reaches the parent node's
- *  planned quantity, auto-cleared if edited back down. `plannedQuantity` is the parent BOM node's
- *  planned quantity (cumulative BOM ratio × Job quantity), frozen at LSX approval — same value on
- *  every operation of the same node; it's also the cap `completedQuantity` is checked against
- *  server-side (E088). */
+ *  frozen; `completedQuantity`/`rejectedQuantity`/`completedDate` are the only fields editable
+ *  afterwards, via `PATCH /production-jobs/:jobId/operations/:operationId` — only runs once the Job
+ *  has `operationsApprovedAt` set (E250 otherwise, see ProductionJobDetail). `completedDate` is
+ *  server-set (not part of the update payload), auto-filled once `completedQuantity` (pass count
+ *  only, NG doesn't count) reaches the parent node's planned quantity, auto-cleared if edited back
+ *  down. `plannedQuantity` is the parent BOM node's planned quantity (cumulative BOM ratio × Job
+ *  quantity), frozen at LSX approval — same value on every operation of the same node; it's also the
+ *  cap `completedQuantity + rejectedQuantity` is checked against server-side (E252). */
 export type ProductionJobOperation = {
   id: string
   operationId: string | null
@@ -83,6 +88,7 @@ export type ProductionJobOperation = {
   note: string | null
   plannedQuantity: number
   completedQuantity: number
+  rejectedQuantity: number
   completedDate: string | null
   createdAt: string
 }

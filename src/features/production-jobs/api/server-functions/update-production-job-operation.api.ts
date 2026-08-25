@@ -20,10 +20,12 @@ function resolveUpdateProductionJobOperationErrorMessage(
       return "Không tìm thấy Job."
     case "production_job.error.invalid_status_transition":
       return "Chỉ có thể cập nhật khi Job đang sản xuất."
+    case "production_job.error.operations_not_approved":
+      return "Job chưa được duyệt công đoạn — bấm Duyệt công đoạn trước."
     case "production_job_operation.error.not_found":
       return "Không tìm thấy công đoạn."
-    case "production_job_operation.error.completed_exceeds_planned":
-      return "SL hoàn thành không được vượt SL kế hoạch."
+    case "production_job_operation.error.completed_plus_rejected_exceeds_planned":
+      return "Tổng SL hoàn thành + SL không đạt không được vượt SL kế hoạch."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -33,16 +35,22 @@ const updateProductionJobOperationSchema = z.object({
   productionJobId: z.uuid(),
   operationId: z.uuid(),
   completedQuantity: z.number().min(0),
+  rejectedQuantity: z.number().min(0),
 })
 
 export const updateProductionJobOperation = createServerFn({ method: "POST" })
   .validator(updateProductionJobOperationSchema)
   .handler(async ({ data }): Promise<ProductionJobOperation> => {
     try {
-      const { productionJobId, operationId, completedQuantity } = data
+      const {
+        productionJobId,
+        operationId,
+        completedQuantity,
+        rejectedQuantity,
+      } = data
       const response = await http.patch<ProductionJobOperation>(
         `/api/production-jobs/${productionJobId}/operations/${operationId}`,
-        { completedQuantity }
+        { completedQuantity, rejectedQuantity }
       )
 
       return response.data

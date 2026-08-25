@@ -65,6 +65,7 @@ export function ProductionJobDetailPage() {
               <ProductionJobOperationsTab
                 productionJobId={productionJobId}
                 status={detail.status}
+                operationsApprovedAt={detail.operationsApprovedAt}
               />
             </TabsContent>
           </Tabs>

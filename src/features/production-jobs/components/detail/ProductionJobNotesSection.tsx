@@ -82,6 +82,7 @@ export function ProductionJobNotesSection({
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
+            if (form.state.isSubmitting) return
             form.handleSubmit()
           }}
           className="flex flex-col gap-2 border-t border-border pt-3"

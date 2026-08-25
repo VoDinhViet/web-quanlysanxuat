@@ -13,6 +13,7 @@ import {
   currentUserQueryOptions,
 } from "@/features/auth/api/options"
 import { requireRoutePermissions, requireSession } from "@/features/auth/guard"
+import { useSessionWatchdog } from "@/features/auth/hooks/use-session-watchdog"
 import { getSidebarDefaultOpen } from "@/lib/sidebar-state"
 import { getErrorMessage } from "@/lib/utils"
 
@@ -90,6 +91,8 @@ function AuthedShell({ children }: AuthedShellProps) {
 }
 
 function AuthedLayout() {
+  useSessionWatchdog()
+
   return (
     <AuthedShell>
       <Outlet />

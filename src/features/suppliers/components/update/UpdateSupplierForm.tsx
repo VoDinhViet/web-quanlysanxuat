@@ -96,6 +96,7 @@ export function UpdateSupplierForm({ supplier }: UpdateSupplierFormProps) {
       onSubmit={(event) => {
         event.preventDefault()
         event.stopPropagation()
+        if (form.state.isSubmitting) return
         form.handleSubmit()
       }}
       noValidate

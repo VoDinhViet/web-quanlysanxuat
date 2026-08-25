@@ -13,8 +13,11 @@ export function useUpdateProductionJobOperation(productionJobId: string) {
   const updateFn = useServerFn(updateProductionJobOperation)
 
   return useMutation({
-    mutationFn: (input: { operationId: string; completedQuantity: number }) =>
-      updateFn({ data: { productionJobId, ...input } }),
+    mutationFn: (input: {
+      operationId: string
+      completedQuantity: number
+      rejectedQuantity: number
+    }) => updateFn({ data: { productionJobId, ...input } }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["production-jobs"] })
     },

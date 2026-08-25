@@ -1,11 +1,17 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft, Diskette } from "@solar-icons/react"
-import { Box, ClipboardCheck } from "lucide-react"
+import { Box, CircleCheck, ClipboardCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/PermissionGate"
+import { ApproveProductionJobOperationsDialog } from "@/features/production-jobs/components/detail/ApproveProductionJobOperationsDialog"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/detail/ProductionJobDetailTabs"
 import { RequestProductionJobQcDialog } from "@/features/production-jobs/components/detail/RequestProductionJobQcDialog"
@@ -20,12 +26,15 @@ type ProductionJobDetailHeaderProps = {
 // Identity, the header facts and the tab strip read as one unit, so they share a single block
 // like ProductDetailHeader.tsx. One action button per status, matching the one-way lifecycle
 // PENDING → IN_PROGRESS → WAITING_QC → WAITING_DELIVERY → COMPLETED (docs/decisions/
-// production-lifecycle-closing.md, backend repo): "Xác nhận" (start), nothing while IN_PROGRESS
-// (still running operations), "Yêu cầu QC" once WAITING_QC, "Nhập kho thành phẩm" once
-// WAITING_DELIVERY (deep-links into create-from-job, which seeds its Job combobox from this id),
-// nothing once COMPLETED. No client-side gate beyond the status switch itself — the backend
-// enforces every precondition (E213/E214/E196/E197/...) and each dialog/page surfaces its own
-// error inline.
+// production-lifecycle-closing.md, backend repo): "Xác nhận" (start), "Yêu cầu QC" once
+// WAITING_QC, "Nhập kho thành phẩm" once WAITING_DELIVERY (deep-links into create-from-job, which
+// seeds its Job combobox from this id), nothing once COMPLETED — these three are hidden outside
+// their status. "Duyệt công đoạn" is the one exception: always rendered once the viewer has
+// `production:approve`, disabled (not hidden) outside IN_PROGRESS or once already approved
+// (operationsApprovedAt set) — a Tooltip explains why, same idiom as
+// ProductionJobOperationsTable.tsx's OperationSendActionCell. No client-side gate beyond the
+// status switch itself — the backend enforces every precondition (E213/E214/E196/E197/E250/E251/
+// ...) and each dialog/page surfaces its own error inline.
 export function ProductionJobDetailHeader({
   detail,
 }: ProductionJobDetailHeaderProps) {
@@ -115,6 +124,10 @@ export function ProductionJobDetailHeader({
           </PermissionGate>
         )}
 
+        <PermissionGate permission="production:approve">
+          <ApproveOperationsButton job={detail} />
+        </PermissionGate>
+
         {detail.status === ProductionJobStatus.WAITING_QC && (
           <PermissionGate permission="oqc:create">
             <RequestProductionJobQcDialog
@@ -146,6 +159,42 @@ export function ProductionJobDetailHeader({
 
       <ProductionJobDetailTabs />
     </>
+  )
+}
+
+// Disabled (not hidden) outside IN_PROGRESS or once already approved — a plain <Button disabled>
+// swallows pointer events so the Tooltip needs the <span> wrapper trick to still fire, same idiom
+// as ProductionJobOperationsTable.tsx's OperationSendActionCell.
+function ApproveOperationsButton({ job }: { job: ProductionJobDetail }) {
+  const disabledReason =
+    job.status !== ProductionJobStatus.IN_PROGRESS
+      ? "Chỉ duyệt được khi Job đang sản xuất."
+      : job.operationsApprovedAt
+        ? "Job này đã được duyệt công đoạn."
+        : null
+
+  const button = (
+    <Button
+      type="button"
+      className="gap-1.5"
+      disabled={disabledReason !== null}
+    >
+      <CircleCheck className="size-4" />
+      Duyệt công đoạn
+    </Button>
+  )
+
+  if (disabledReason === null) {
+    return <ApproveProductionJobOperationsDialog job={job} trigger={button} />
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="inline-block">{button}</span>
+      </TooltipTrigger>
+      <TooltipContent>{disabledReason}</TooltipContent>
+    </Tooltip>
   )
 }
 
