@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
+import { useGetClientOptions } from "@/features/clients/api"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { useGetPurchaseOrderOptions } from "@/features/inventory-receipts/hooks/use-get-purchase-order-options"
 import { useGetProductionJobOptions } from "@/features/production-jobs/api"
@@ -23,6 +24,7 @@ export const InventoryReceiptHeaderSection = withForm({
   render: function Render({ form, disabled }) {
     const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
     const supplier = useGetSupplierOptions()
+    const client = useGetClientOptions()
     const purchaseOrder = useGetPurchaseOrderOptions()
     // `null` — mọi trạng thái Job, không chỉ IN_PROGRESS: lúc nhập kho, Job đã QC xong nên thường
     // là WAITING_DELIVERY.
@@ -36,12 +38,16 @@ export const InventoryReceiptHeaderSection = withForm({
         form.setFieldValue("supplierId", "")
         form.setFieldValue("purchaseOrderId", "")
       }
+      if (receiptType !== InventoryReceiptType.RETURN) {
+        form.setFieldValue("clientId", "")
+      }
       if (receiptType !== InventoryReceiptType.PRODUCTION) {
         form.setFieldValue("productionJobId", "")
       }
     }, [receiptType, form])
 
     const isPurchase = receiptType === InventoryReceiptType.PURCHASE
+    const isReturn = receiptType === InventoryReceiptType.RETURN
     const isProduction = receiptType === InventoryReceiptType.PRODUCTION
 
     return (
@@ -123,6 +129,26 @@ export const InventoryReceiptHeaderSection = withForm({
                   onSearchChange={purchaseOrder.onSearchChange}
                   isPending={purchaseOrder.isFetching}
                   emptyMessage="Không tìm thấy PO đang ở trạng thái đã đặt hàng"
+                  disabled={disabled}
+                />
+              )}
+            </form.Field>
+          )}
+
+          {isReturn && (
+            <form.Field name="clientId">
+              {(field) => (
+                <ComboboxField
+                  id={field.name}
+                  label="Khách hàng gửi trả"
+                  placeholder="Chọn khách hàng"
+                  value={field.state.value || undefined}
+                  onValueChange={(next) => field.handleChange(next ?? "")}
+                  onBlur={field.handleBlur}
+                  options={client.options}
+                  onSearchChange={client.onSearchChange}
+                  isPending={client.isFetching}
+                  emptyMessage="Không tìm thấy khách hàng"
                   disabled={disabled}
                 />
               )}

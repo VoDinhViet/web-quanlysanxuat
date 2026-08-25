@@ -64,8 +64,10 @@ export function IqcPrintDialog({
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
             <p>
-              <strong className="font-semibold">Nhà cung cấp:</strong>{" "}
-              {iqc.supplier.name}
+              <strong className="font-semibold">
+                {iqc.client ? "Khách hàng:" : "Nhà cung cấp:"}
+              </strong>{" "}
+              {iqc.supplier?.name ?? iqc.client?.name ?? "—"}
             </p>
             <p>
               <strong className="font-semibold">Vật tư:</strong> {iqc.item.code}{" "}

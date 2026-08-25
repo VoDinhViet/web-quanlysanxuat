@@ -57,8 +57,8 @@ export function IqcGeneralInfoCard({
           <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
             <InfoTile
               icon={Buildings2}
-              label="Nhà cung cấp"
-              value={iqc.supplier.name}
+              label={iqc.client ? "Khách hàng" : "Nhà cung cấp"}
+              value={iqc.supplier?.name ?? iqc.client?.name ?? "—"}
             />
             <InfoTile
               icon={Document}

@@ -1,3 +1,4 @@
+import type { ClientRef } from "@/lib/types/client.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { WarehouseRef } from "@/lib/types/warehouse.type"
@@ -146,6 +147,7 @@ export type InventoryReceipt = {
   status: InventoryReceiptStatus
   receiptDate: string
   supplier: SupplierRef | null
+  client: ClientRef | null
   purchaseRequest: InventoryReceiptPurchaseRequestRef | null
   productionOrder: InventoryReceiptProductionOrderRef | null
   productionJob: InventoryReceiptProductionJobRef | null

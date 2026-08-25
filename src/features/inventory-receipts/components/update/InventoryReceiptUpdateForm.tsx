@@ -24,6 +24,7 @@ function getInventoryReceiptDefaultValues(
       "yyyy-MM-dd"
     ),
     supplierId: detail.supplier?.id ?? "",
+    clientId: detail.client?.id ?? "",
     purchaseRequestId: detail.purchaseRequest?.id ?? "",
     productionOrderId: detail.productionOrder?.id ?? "",
     productionJobId: detail.productionJob?.id ?? "",
@@ -112,6 +113,11 @@ export function InventoryReceiptUpdateForm({
           initialSupplier={
             detail.supplier
               ? { value: detail.supplier.id, label: detail.supplier.name }
+              : undefined
+          }
+          initialClient={
+            detail.client
+              ? { value: detail.client.id, label: detail.client.name }
               : undefined
           }
           initialPurchaseOrder={

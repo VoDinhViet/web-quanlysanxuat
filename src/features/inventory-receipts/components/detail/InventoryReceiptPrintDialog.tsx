@@ -78,6 +78,7 @@ export function InventoryReceiptPrintDialog({
               <InventoryReceiptSourceCell
                 purchaseOrder={detail.purchaseOrder}
                 supplier={detail.supplier}
+                client={detail.client}
                 purchaseRequest={detail.purchaseRequest}
                 productionOrder={detail.productionOrder}
               />

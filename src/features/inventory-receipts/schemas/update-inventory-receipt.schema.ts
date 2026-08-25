@@ -18,6 +18,7 @@ export const updateInventoryReceiptSchema = z.object({
     .min(1, "Vui lòng chọn ngày chứng từ")
     .transform(toIsoDate),
   supplierId: z.string().trim().transform(emptyToNull),
+  clientId: z.string().trim().transform(emptyToNull),
   purchaseRequestId: z.string().trim().transform(emptyToNull),
   productionOrderId: z.string().trim().transform(emptyToNull),
   productionJobId: z.string().trim().transform(emptyToNull),
@@ -42,6 +43,7 @@ export const updateInventoryReceiptFormDefaultValues: UpdateInventoryReceiptSche
     receiptType: InventoryReceiptType.PURCHASE,
     receiptDate: "",
     supplierId: "",
+    clientId: "",
     purchaseRequestId: "",
     productionOrderId: "",
     productionJobId: "",

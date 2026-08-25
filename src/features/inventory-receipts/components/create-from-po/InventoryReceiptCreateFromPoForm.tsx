@@ -77,6 +77,7 @@ function buildCreateInventoryReceiptPayload(
     receiptType: InventoryReceiptType.PURCHASE,
     receiptDate,
     supplierId: purchaseOrder.supplier.id,
+    clientId: "",
     purchaseRequestId: "",
     productionOrderId: "",
     productionJobId: "",

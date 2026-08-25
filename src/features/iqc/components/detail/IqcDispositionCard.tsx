@@ -59,11 +59,21 @@ type IqcDispositionCardProps = {
 // đó (1 useField duy nhất dùng chung với cả bằng chứng quyết định, tránh 2 subscription trùng
 // nhau). Không chọn phương án nào vẫn lưu được (→ Chờ xử lý) — SL OK/NG chỉ hiện khi SORT. Đây
 // là điểm quyết định thứ hai của trang (sau KẾT QUẢ) nên dùng cùng khuôn thẻ radio lớn.
+// Hàng sinh từ phiếu RETURN gắn khách hàng (không có `supplier`) không có phương án trả-lại-khách
+// — server chặn cứng (E254, `resolveConfirmIqcErrorMessage`), ẩn luôn SORT/RETURN khỏi UI thay vì
+// để chọn rồi báo lỗi sau khi lưu.
 export function IqcDispositionCard({
   form,
   iqc,
   disabled,
 }: IqcDispositionCardProps) {
+  const canReturnToSupplier = iqc.supplier !== null
+  const options = canReturnToSupplier
+    ? dispositionOptions
+    : dispositionOptions.filter(
+        (option) => option.value === IqcDisposition.CONCESSION
+      )
+
   return (
     <IqcDetailSectionCard
       icon={ChecklistMinimalistic}
@@ -71,11 +81,18 @@ export function IqcDispositionCard({
       description="Chọn hướng xử lý cho lô hàng không đạt (FAIL)"
     >
       <div className="space-y-4">
+        {!canReturnToSupplier && (
+          <p className="rounded-lg bg-muted px-3 py-2.5 text-xs font-medium text-muted-foreground">
+            Hàng khách trả — chưa có phương án trả-lại-khách, chỉ chọn được
+            "Chấp nhận có điều kiện".
+          </p>
+        )}
+
         <form.Field name="disposition">
           {(field) => (
             <RadioCardField
               field={field}
-              options={dispositionOptions}
+              options={options}
               disabled={disabled}
               columns={3}
             />

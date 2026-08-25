@@ -1,3 +1,4 @@
+import type { ClientRef } from "@/lib/types/client.type"
 import type { Department } from "@/lib/types/department.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
@@ -104,13 +105,15 @@ export const iqcStatusDescriptions: Record<IqcStatus, string> = {
  *  `result` is null for a `NOT_INSPECTED` row (chưa chạy AQL sampling); `disposition` is only ever
  *  set when `result` is FAIL (DB check constraint `chk_iqc_inspections_disposition_requires_fail`);
  *  `purchaseOrder`/`reason` are the "PO / Lý do" column's two mutually-exclusive sources (see
- *  docs/domains/quality.md). */
+ *  docs/domains/quality.md). `supplier`/`client` are also mutually exclusive — `client` only set
+ *  when the row was generated from a client RETURN receipt (BUG-038/065). */
 export type Iqc = {
   id: string
   code: string
   inventoryReceipt: { id: string; code: string } | null
   purchaseOrder: { id: string; code: string } | null
-  supplier: SupplierRef
+  supplier: SupplierRef | null
+  client: ClientRef | null
   item: { id: string; code: string; name: string; unit: Unit }
   quantity: number
   inspectionDate: string

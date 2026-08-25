@@ -4,6 +4,7 @@ import { useField } from "@tanstack/react-form"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
+import { useGetClientOptions } from "@/features/clients/api"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { useGetPurchaseOrderOptions } from "@/features/inventory-receipts/hooks/use-get-purchase-order-options"
 import { useGetProductionJobOptions } from "@/features/production-jobs/api"
@@ -25,6 +26,7 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
     receiptCode: "",
     warehouseName: "",
     initialSupplier: undefined as ComboboxOption | undefined,
+    initialClient: undefined as ComboboxOption | undefined,
     initialPurchaseOrder: undefined as ComboboxOption | undefined,
     initialProductionJob: undefined as ComboboxOption | undefined,
   },
@@ -34,10 +36,12 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
     receiptCode,
     warehouseName,
     initialSupplier,
+    initialClient,
     initialPurchaseOrder,
     initialProductionJob,
   }) {
     const supplier = useGetSupplierOptions()
+    const client = useGetClientOptions()
     const purchaseOrder = useGetPurchaseOrderOptions()
     // `null` — mọi trạng thái Job: sửa phiếu nháp cũ vẫn cần thấy Job dù đã COMPLETED.
     const productionJob = useGetProductionJobOptions(null)
@@ -48,12 +52,16 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
         form.setFieldValue("supplierId", "")
         form.setFieldValue("purchaseOrderId", "")
       }
+      if (receiptType !== InventoryReceiptType.RETURN) {
+        form.setFieldValue("clientId", "")
+      }
       if (receiptType !== InventoryReceiptType.PRODUCTION) {
         form.setFieldValue("productionJobId", "")
       }
     }, [receiptType, form])
 
     const isPurchase = receiptType === InventoryReceiptType.PURCHASE
+    const isReturn = receiptType === InventoryReceiptType.RETURN
     const isProduction = receiptType === InventoryReceiptType.PRODUCTION
 
     return (
@@ -125,6 +133,27 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
                   isPending={purchaseOrder.isFetching}
                   initialOption={initialPurchaseOrder}
                   emptyMessage="Không tìm thấy PO đang ở trạng thái đã đặt hàng"
+                  disabled={disabled}
+                />
+              )}
+            </form.Field>
+          )}
+
+          {isReturn && (
+            <form.Field name="clientId">
+              {(field) => (
+                <ComboboxField
+                  id={field.name}
+                  label="Khách hàng gửi trả"
+                  placeholder="Chọn khách hàng"
+                  value={field.state.value || undefined}
+                  onValueChange={(next) => field.handleChange(next ?? "")}
+                  onBlur={field.handleBlur}
+                  options={client.options}
+                  onSearchChange={client.onSearchChange}
+                  isPending={client.isFetching}
+                  initialOption={initialClient}
+                  emptyMessage="Không tìm thấy khách hàng"
                   disabled={disabled}
                 />
               )}

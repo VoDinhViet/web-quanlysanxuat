@@ -20,7 +20,9 @@ function resolveUpdateInventoryReceiptErrorMessage(error: unknown): string {
     case "inventory_document.error.item_not_found":
       return "Một vật tư trong phiếu không tồn tại."
     case "inventory_document.error.invalid_reference":
-      return "Nhà cung cấp/đề xuất mua/LSX tham chiếu không tồn tại."
+      return "Nhà cung cấp/khách hàng/đề xuất mua/LSX tham chiếu không tồn tại."
+    case "inventory_receipt.error.supplier_client_exclusive":
+      return "Chỉ được chọn một trong hai: Nhà cung cấp hoặc Khách hàng."
     case "purchase_order.error.not_found":
       return "Đơn mua hàng không tồn tại."
     case "purchase_order.error.not_ordered":

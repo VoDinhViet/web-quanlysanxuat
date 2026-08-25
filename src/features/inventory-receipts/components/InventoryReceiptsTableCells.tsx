@@ -31,21 +31,25 @@ import type {
   InventoryReceiptPurchaseOrderRef,
   InventoryReceiptPurchaseRequestRef,
 } from "@/lib/types/inventory-receipt.type"
+import type { ClientRef } from "@/lib/types/client.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 
 type InventoryReceiptSourceCellProps = {
   purchaseOrder: InventoryReceiptPurchaseOrderRef | null
   supplier: SupplierRef | null
+  client: ClientRef | null
   purchaseRequest: InventoryReceiptPurchaseRequestRef | null
   productionOrder: InventoryReceiptProductionOrderRef | null
 }
 
-// Ưu tiên hiển thị PO → NCC → PR → "—". `productionOrder` không tham gia hiển thị (phiếu từ
-// LSX hiếm khi cũng gắn NCC/PO) nhưng vẫn nhận qua props để chữ ký khớp đủ 4 nguồn gốc có thể có
+// Ưu tiên hiển thị PO → NCC → Khách hàng → PR → "—". `supplier`/`client` loại trừ lẫn nhau
+// (E253) nên không bao giờ cùng có giá trị. `productionOrder` không tham gia hiển thị (phiếu từ
+// LSX hiếm khi cũng gắn NCC/PO) nhưng vẫn nhận qua props để chữ ký khớp đủ 5 nguồn gốc có thể có
 // trên một phiếu — tránh gọi nhầm thiếu tham số khi thêm cột khác sau này.
 export function InventoryReceiptSourceCell({
   purchaseOrder,
   supplier,
+  client,
   purchaseRequest,
 }: InventoryReceiptSourceCellProps) {
   if (purchaseOrder) {
@@ -58,6 +62,10 @@ export function InventoryReceiptSourceCell({
 
   if (supplier) {
     return <span className="text-xs text-foreground">{supplier.name}</span>
+  }
+
+  if (client) {
+    return <span className="text-xs text-foreground">{client.name}</span>
   }
 
   if (purchaseRequest) {

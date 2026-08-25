@@ -69,6 +69,7 @@ export const inventoryReceiptsColumns = [
       <InventoryReceiptSourceCell
         purchaseOrder={row.original.purchaseOrder}
         supplier={row.original.supplier}
+        client={row.original.client}
         purchaseRequest={row.original.purchaseRequest}
         productionOrder={row.original.productionOrder}
       />
