@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query"
-import { useSearch } from "@tanstack/react-router"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -15,11 +14,8 @@ const gridClassName =
 
 // Route loader only prefetches this (see routes/(authed)/manage.tsx) — it doesn't block the
 // route, so this component reads it itself via a plain useQuery instead of useSuspenseQuery.
-// Reads the current date-range search directly (not via props) — same reasoning as
-// OrdersPage.tsx: it's its own consumer of the route search.
 export function ManageStatCards() {
-  const search = useSearch({ from: "/(authed)/manage" })
-  const statsQuery = useQuery(reportStatsQueryOptions(search))
+  const statsQuery = useQuery(reportStatsQueryOptions())
 
   if (statsQuery.isPending) {
     return (
