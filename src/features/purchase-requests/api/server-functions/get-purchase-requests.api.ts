@@ -4,10 +4,25 @@ import axios from "axios"
 import { purchaseRequestsSearchSchema } from "@/features/purchase-requests/schemas/purchase-requests-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import { toUtcVnDayStart } from "@/lib/zod-transforms"
 import type { PurchaseRequest } from "@/lib/types/purchase-request.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
+
+// `createdAt` (cột timestamp) cần instant UTC đúng ranh giới ngày giờ VN — không đụng `neededDate`,
+// cột `date` gửi nguyên chuỗi.
+const getPurchaseRequestsParamsSchema = purchaseRequestsSearchSchema.transform(
+  ({ createdStartDate, createdEndDate, ...rest }) => ({
+    ...rest,
+    createdStartDate: createdStartDate
+      ? toUtcVnDayStart(createdStartDate)
+      : undefined,
+    createdEndDate: createdEndDate
+      ? toUtcVnDayStart(createdEndDate)
+      : undefined,
+  })
+)
 
 function resolveGetPurchaseRequestsErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
@@ -23,7 +38,7 @@ function resolveGetPurchaseRequestsErrorMessage(error: unknown): string {
 }
 
 export const getPurchaseRequests = createServerFn({ method: "GET" })
-  .validator(purchaseRequestsSearchSchema)
+  .validator(getPurchaseRequestsParamsSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<PurchaseRequest>> => {
     try {
       const response = await http.get<PaginatedResponse<PurchaseRequest>>(

@@ -4,10 +4,25 @@ import axios from "axios"
 import { purchaseLedgerSearchSchema } from "@/features/purchase-ledger/schemas/purchase-ledger-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import { toUtcVnDayStart } from "@/lib/zod-transforms"
 import type { PurchaseLedgerApiRow } from "@/lib/types/purchase-ledger.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
+
+// `createdAt` (cột timestamp) cần instant UTC đúng ranh giới ngày giờ VN — không đụng
+// neededStartDate/neededEndDate, lọc lên `neededDate` là cột `date`, gửi nguyên chuỗi.
+const getPurchaseLedgerParamsSchema = purchaseLedgerSearchSchema.transform(
+  ({ createdStartDate, createdEndDate, ...rest }) => ({
+    ...rest,
+    createdStartDate: createdStartDate
+      ? toUtcVnDayStart(createdStartDate)
+      : undefined,
+    createdEndDate: createdEndDate
+      ? toUtcVnDayStart(createdEndDate)
+      : undefined,
+  })
+)
 
 function resolveGetPurchaseLedgerErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
@@ -23,7 +38,7 @@ function resolveGetPurchaseLedgerErrorMessage(error: unknown): string {
 }
 
 export const getPurchaseLedger = createServerFn({ method: "GET" })
-  .validator(purchaseLedgerSearchSchema)
+  .validator(getPurchaseLedgerParamsSchema)
   .handler(
     async ({ data }): Promise<PaginatedResponse<PurchaseLedgerApiRow>> => {
       try {

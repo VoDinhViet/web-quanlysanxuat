@@ -81,6 +81,21 @@ export const isoDateFilter = z
   .optional()
   .catch(undefined)
 
+/** "yyyy-MM-dd" (giờ VN) → instant UTC của 00:00 giờ VN ngày đó. Dùng khi filter khoảng ngày lọc
+ * lên cột `timestamp` — BE tự cộng thêm 1 ngày cho biên trên (`exclusiveEndOfDay`), nên hàm này
+ * dùng chung cho cả startDate lẫn endDate. Không dùng cho filter lên cột `date` (gửi nguyên chuỗi,
+ * không quy đổi). */
+export function toUtcVnDayStart(value: string): string {
+  const iso = DateTime.fromISO(value, { zone: "Asia/Ho_Chi_Minh" })
+    .startOf("day")
+    .toUTC()
+    .toISO()
+
+  if (!iso) throw new Error("Invalid date")
+
+  return iso
+}
+
 /** Chỉ báo lỗi khi có giá trị (field email đã transform ""→undefined trước đó) — dùng
  * `.superRefine(refineOptionalEmail("email"))` (hoặc tên field khác, vd "contactEmail") trên
  * schema object đã có field đó. Dùng cho object cần refinement cấp object; nếu object đó

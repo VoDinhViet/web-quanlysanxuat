@@ -4,10 +4,20 @@ import axios from "axios"
 import { paymentRequestsSearchSchema } from "@/features/payment-requests/schemas/payment-requests-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import { toUtcVnDayStart } from "@/lib/zod-transforms"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
+
+// `createdAt` (cột timestamp) cần instant UTC đúng ranh giới ngày giờ VN.
+const getPaymentRequestsParamsSchema = paymentRequestsSearchSchema.transform(
+  ({ startDate, endDate, ...rest }) => ({
+    ...rest,
+    startDate: startDate ? toUtcVnDayStart(startDate) : undefined,
+    endDate: endDate ? toUtcVnDayStart(endDate) : undefined,
+  })
+)
 
 function resolveGetPaymentRequestsErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
@@ -23,7 +33,7 @@ function resolveGetPaymentRequestsErrorMessage(error: unknown): string {
 }
 
 export const getPaymentRequests = createServerFn({ method: "GET" })
-  .validator(paymentRequestsSearchSchema)
+  .validator(getPaymentRequestsParamsSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<PaymentRequest>> => {
     try {
       const response = await http.get<PaginatedResponse<PaymentRequest>>(
