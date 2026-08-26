@@ -32,12 +32,21 @@ import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { BomNodeTypeBadge } from "@/features/products/components/ProductBadges"
 import { ProductOperationsPanel } from "@/features/products/components/ProductOperationsPanel"
-import type { BomItem } from "@/lib/types/bom-item.type"
+import type { BomItem, BomItemType } from "@/lib/types/bom-item.type"
 import type { ProductOperation } from "@/lib/types/operation.type"
 import { formatOperationSequence } from "@/lib/types/operation.type"
 import type { Item } from "@/lib/types/item.type"
+import { ItemType } from "@/lib/types/item.type"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
+
+// BOM một chiều: FG → WIP → RM. Loại node mới suy từ parentId, không cho chọn tay.
+function resolveChildItemType(
+  parentId: string | null,
+  rootType: ItemType
+): BomItemType {
+  return parentId === null && rootType === ItemType.FG ? "WIP" : "RM"
+}
 
 // The root row's own routing (Cấp 0) — fetched separately since the BOM GET
 // only returns the tree's child nodes, not the product itself. Each BOM node
@@ -51,7 +60,7 @@ export type RootOperations = {
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 export type BomTableActions = {
-  onCreate: (parentId: string | null) => void
+  onCreate: (parentId: string | null, itemType: BomItemType) => void
   onUpdate: (node: BomItem) => void
   onDelete: (node: BomItem) => void
 }
@@ -292,7 +301,9 @@ export function ProductBomTable({
               type="button"
               size="sm"
               className="gap-1.5 text-xs"
-              onClick={() => actions.onCreate(null)}
+              onClick={() =>
+                actions.onCreate(null, resolveChildItemType(null, product.type))
+              }
             >
               <Plus className="size-3.5" />
               Thêm thành phần
@@ -524,10 +535,19 @@ export function ProductBomTable({
                                 setExpandedIds((prev) =>
                                   new Set(prev).add(node.id)
                                 )
-                                actions.onCreate(node.id)
+                                actions.onCreate(
+                                  node.id,
+                                  resolveChildItemType(node.id, product.type)
+                                )
                               }}
                               onAddSibling={() =>
-                                actions.onCreate(node.parentId)
+                                actions.onCreate(
+                                  node.parentId,
+                                  resolveChildItemType(
+                                    node.parentId,
+                                    product.type
+                                  )
+                                )
                               }
                               onUpdate={actions.onUpdate}
                               onDelete={actions.onDelete}

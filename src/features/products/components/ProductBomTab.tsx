@@ -13,7 +13,11 @@ import {
   itemOperationsQueryOptions,
 } from "@/features/products/api/options"
 import type { Item } from "@/lib/types/item.type"
-import type { BomItem, BomItemDialogState } from "@/lib/types/bom-item.type"
+import type {
+  BomItem,
+  BomItemDialogState,
+  BomItemType,
+} from "@/lib/types/bom-item.type"
 
 type ProductBomTabProps = {
   product: Item
@@ -46,8 +50,8 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
     }
   )
 
-  function openCreate(parentId: string | null) {
-    setDialog({ mode: "create", parentId })
+  function openCreate(parentId: string | null, itemType: BomItemType) {
+    setDialog({ mode: "create", parentId, itemType })
   }
 
   function openUpdate(node: BomItem) {

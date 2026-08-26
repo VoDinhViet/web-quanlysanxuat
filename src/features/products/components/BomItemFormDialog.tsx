@@ -10,13 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { BomItemDrawingField } from "@/features/products/components/BomItemDrawingField"
@@ -28,7 +21,6 @@ import {
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
 import type { CreateBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
-import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import type {
   BomItem,
   BomItemDialogState,
@@ -63,6 +55,7 @@ export function BomItemFormDialog({
         {dialog.mode === "create" ? (
           <CreateBomItemForm
             container={contentNode}
+            itemType={dialog.itemType}
             onSubmit={(value) => onCreate(value, dialog.parentId)}
             onCancel={() => onOpenChange(false)}
             isSaving={isSaving}
@@ -82,6 +75,7 @@ export function BomItemFormDialog({
 
 type CreateBomItemFormProps = {
   container: HTMLDivElement | null
+  itemType: BomItemType
   onSubmit: (value: CreateBomItemSchema) => void
   onCancel: () => void
   isSaving: boolean
@@ -89,6 +83,7 @@ type CreateBomItemFormProps = {
 
 function CreateBomItemForm({
   container,
+  itemType,
   onSubmit,
   onCancel,
   isSaving,
@@ -98,8 +93,7 @@ function CreateBomItemForm({
     validators: { onSubmit: createBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
-  const [nodeType, setNodeType] = useState<BomItemType>("WIP")
-  const productOptions = useGetBomProductOptions(nodeType)
+  const productOptions = useGetBomProductOptions(itemType)
 
   return (
     <form
@@ -117,40 +111,18 @@ function CreateBomItemForm({
           Thêm thành phần BOM
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Thêm bán thành phẩm (WIP) hoặc vật tư (RM) vào cấu trúc sản phẩm.
+          {itemType === "WIP"
+            ? "Chọn bán thành phẩm lắp vào thành phẩm này."
+            : "Chọn vật tư tiêu hao cho hạng mục này."}
         </DialogDescription>
       </DialogHeader>
 
       <div className="grid gap-4.5">
-        <label className="space-y-1.5">
-          <span className="block text-xs font-medium text-foreground">
-            Loại thành phần
-          </span>
-          <Select
-            value={nodeType}
-            onValueChange={(next) => {
-              const nextType = next as BomItemType
-              setNodeType(nextType)
-              // The previously picked item no longer matches the new type's
-              // option list — clear the selection instead of leaving a stale id.
-              form.setFieldValue("itemId", "")
-            }}
-          >
-            <SelectTrigger className="w-full text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="WIP">{bomItemTypeLabels.WIP}</SelectItem>
-              <SelectItem value="RM">{bomItemTypeLabels.RM}</SelectItem>
-            </SelectContent>
-          </Select>
-        </label>
-
         <form.AppField name="itemId">
           {(field) => (
             <ComboboxField
               label={
-                nodeType === "WIP"
+                itemType === "WIP"
                   ? "Chọn bán thành phẩm (WIP)"
                   : "Chọn vật tư (RM)"
               }

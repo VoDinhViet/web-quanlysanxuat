@@ -49,26 +49,13 @@ export type BomItem = {
 /**
  * Trạng thái mở/đóng Modal Dialog của BOM Item:
  * - `{ mode: "closed" }`: Đóng dialog.
- * - `{ mode: "create"; parentId: string | null }`: Mở dialog thêm mới hạng mục.
+ * - `{ mode: "create"; parentId; itemType }`: Mở dialog thêm mới hạng mục —
+ *   `itemType` đã được suy ra từ vị trí thêm (xem `resolveChildItemType` trong
+ *   ProductBomTable.tsx), cây BOM đi một chiều FG → WIP → RM nên người dùng
+ *   không tự chọn loại nữa.
  * - `{ mode: "update"; node: BomItem }`: Mở dialog cập nhật thông tin hạng mục.
  */
 export type BomItemDialogState =
   | { mode: "closed" }
-  | { mode: "create"; parentId: string | null }
+  | { mode: "create"; parentId: string | null; itemType: BomItemType }
   | { mode: "update"; node: BomItem }
-
-// One row of an item's BOM materials list — GET /api/items/:itemId/materials
-// (ItemMaterialResDto). Read-only derived view: an RM leaf is added to the
-// tree via the same create-bom-item endpoint as a WIP node (see
-// BomItemFormDialog), not a separate materials CRUD.
-export type BomMaterial = {
-  id: string
-  itemId: string
-  code: string
-  name: string
-  unit: Unit
-  image: FileResource | string | null
-  quantity: number
-  sortOrder: number
-  note: string | null
-}
