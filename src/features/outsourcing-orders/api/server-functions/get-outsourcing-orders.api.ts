@@ -7,15 +7,6 @@ import type { ApiErrorResponse } from "@/lib/http"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 
-// `status` ở search schema là OutsourcingOrderStatus (khớp BE's OutsourcingOrderProgress) — map
-// sang param `progress` bên BE, không phải `status` (đó là DB status DRAFT/POSTED/CANCELLED,
-// khái niệm khác — xem outsourcing-order.type.ts). `q` gửi thẳng, BE lọc theo Mã phiếu (code).
-const getOutsourcingOrdersParamsSchema =
-  outsourcingOrdersSearchSchema.transform(({ status, ...rest }) => ({
-    ...rest,
-    progress: status,
-  }))
-
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
 function resolveGetOutsourcingOrdersErrorMessage(error: unknown): string {
@@ -31,14 +22,10 @@ function resolveGetOutsourcingOrdersErrorMessage(error: unknown): string {
   }
 }
 
-// PageOutsourcingOrderResDto (GET /outsourcing-orders, danh sách) khớp thẳng OutsourcingOrder —
-// không cần map lại (cùng idiom get-outsourcing-receipts.api.ts). BE tính totalQuantity/
-// receivedQuantity/remainingQuantity thẳng ở dòng danh sách (SQL subquery), nhưng vẫn không có
-// items/progress (chỉ OutsourcingOrderResDto, chi tiết từng phiếu, mới có — xem
-// get-outsourcing-order.api.ts); `status` ở đây là DB status thật (DRAFT/POSTED/CANCELLED),
-// không phải progress đã suy diễn.
+// PageOutsourcingOrderResDto (GET /outsourcing-orders, danh sách) khớp thẳng OutsourcingOrder.
+// `status` gửi thẳng BE (POSTED/CANCELLED).
 export const getOutsourcingOrders = createServerFn({ method: "GET" })
-  .validator(getOutsourcingOrdersParamsSchema)
+  .validator(outsourcingOrdersSearchSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<OutsourcingOrder>> => {
     try {
       const response = await http.get<PaginatedResponse<OutsourcingOrder>>(

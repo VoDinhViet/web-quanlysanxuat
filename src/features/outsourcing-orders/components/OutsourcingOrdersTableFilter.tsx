@@ -14,13 +14,21 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
-import type { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
-import { outsourcingOrderStatusLabels } from "@/lib/types/outsourcing-order.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import {
+  InventoryDocumentStatus,
+  outsourcingOrderDocStatusLabels,
+} from "@/lib/types/outsourcing-order.type"
 
 const statusOptions = [
   { value: "all", label: "Tất cả trạng thái" },
-  ...buildOptionsFromLabels(outsourcingOrderStatusLabels),
+  {
+    value: InventoryDocumentStatus.POSTED,
+    label: outsourcingOrderDocStatusLabels[InventoryDocumentStatus.POSTED],
+  },
+  {
+    value: InventoryDocumentStatus.CANCELLED,
+    label: outsourcingOrderDocStatusLabels[InventoryDocumentStatus.CANCELLED],
+  },
 ]
 
 export function OutsourcingOrdersTableFilter() {
@@ -44,7 +52,12 @@ export function OutsourcingOrdersTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        status: value === "all" ? undefined : (value as OutsourcingOrderStatus),
+        status:
+          value === "all"
+            ? undefined
+            : (value as
+                | InventoryDocumentStatus.POSTED
+                | InventoryDocumentStatus.CANCELLED),
         page: 1,
       }),
     })
