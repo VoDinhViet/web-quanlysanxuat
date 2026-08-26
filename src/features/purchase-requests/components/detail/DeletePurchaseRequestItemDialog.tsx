@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Trash2 } from "lucide-react"
+import { toast } from "sonner"
 import type { ReactNode } from "react"
 
 import {
@@ -48,17 +49,14 @@ export function DeletePurchaseRequestItemDialog({
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
     },
+    onError: (error) => {
+      setOpen(false)
+      toast.error(error.message)
+    },
   })
 
   return (
-    <AlertDialog
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next)
-        // A previous failure shouldn't greet the user on reopen.
-        if (next) mutation.reset()
-      }}
-    >
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -70,10 +68,6 @@ export function DeletePurchaseRequestItemDialog({
             {`"${itemName}" (${itemCode}) sẽ bị xóa khỏi đề xuất.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
-
-        {mutation.error ? (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        ) : null}
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>

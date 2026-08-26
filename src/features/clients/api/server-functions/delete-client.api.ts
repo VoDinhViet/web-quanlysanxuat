@@ -15,6 +15,8 @@ function resolveDeleteClientErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "client.error.not_found":
       return "Không tìm thấy khách hàng."
+    case "client.error.in_use":
+      return "Khách hàng đang được sử dụng ở đơn hàng, không thể xoá."
     case "auth.error.forbidden":
       return "Bạn không có quyền thực hiện thao tác này."
     default:

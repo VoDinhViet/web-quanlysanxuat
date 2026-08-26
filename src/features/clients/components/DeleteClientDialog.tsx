@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Trash2 } from "lucide-react"
+import { toast } from "sonner"
 import type { ReactNode } from "react"
 
 import {
@@ -38,17 +39,14 @@ export function DeleteClientDialog({
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["clients"] })
     },
+    onError: (error) => {
+      setOpen(false)
+      toast.error(error.message)
+    },
   })
 
   return (
-    <AlertDialog
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next)
-        // A previous failure shouldn't greet the user on reopen.
-        if (next) mutation.reset()
-      }}
-    >
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -60,10 +58,6 @@ export function DeleteClientDialog({
             {`"${client.name}" (${client.code}) sẽ bị xóa khỏi danh sách khách hàng.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
-
-        {mutation.error ? (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        ) : null}
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>

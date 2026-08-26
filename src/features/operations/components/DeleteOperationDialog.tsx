@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Trash2 } from "lucide-react"
+import { toast } from "sonner"
 import type { ReactNode } from "react"
 
 import {
@@ -39,17 +40,14 @@ export function DeleteOperationDialog({
       setOpen(false)
       await queryClient.invalidateQueries({ queryKey: ["operations"] })
     },
+    onError: (error) => {
+      setOpen(false)
+      toast.error(error.message)
+    },
   })
 
   return (
-    <AlertDialog
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next)
-        // A previous failure shouldn't greet the user on reopen.
-        if (next) mutation.reset()
-      }}
-    >
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -61,10 +59,6 @@ export function DeleteOperationDialog({
             {`"${operation.name}" (${operation.code}) sẽ bị xóa khỏi danh mục công đoạn. Công đoạn đang được dùng trong quy trình/BOM sẽ không xóa được.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
-
-        {mutation.error ? (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        ) : null}
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>

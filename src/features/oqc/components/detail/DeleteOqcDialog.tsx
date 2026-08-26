@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { TrashBinTrash } from "@solar-icons/react"
+import { toast } from "sonner"
 import type { ReactNode } from "react"
 
 import {
@@ -47,17 +48,14 @@ export function DeleteOqcDialog({
       await queryClient.invalidateQueries({ queryKey: ["oqc"] })
       onDeleted?.()
     },
+    onError: (error) => {
+      setOpen(false)
+      toast.error(error.message)
+    },
   })
 
   return (
-    <AlertDialog
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next)
-        // A previous failure shouldn't greet the user on reopen.
-        if (next) mutation.reset()
-      }}
-    >
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -69,10 +67,6 @@ export function DeleteOqcDialog({
             {`Bạn chắc chắn muốn xoá phiếu "${oqc.code}"? Thao tác này không thể hoàn tác.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
-
-        {mutation.error ? (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        ) : null}
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>
