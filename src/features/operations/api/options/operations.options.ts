@@ -1,10 +1,11 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { getOperationsList } from "@/features/operations/api/server-functions/get-operations-list.api"
+import { getOperations } from "@/features/operations/api/server-functions/get-operations.api"
+import type { OperationsSearchSchema } from "@/features/operations/schemas/operations-search.schema"
 
-export const operationsQueryOptions = () =>
+export const operationsQueryOptions = (search: OperationsSearchSchema = {}) =>
   queryOptions({
-    queryKey: ["operations", "list"],
-    queryFn: () => getOperationsList(),
+    queryKey: ["operations", "list", search],
+    queryFn: () => getOperations({ data: search }),
     staleTime: 5 * 60_000,
   })

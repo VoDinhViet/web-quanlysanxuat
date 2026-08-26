@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Edit3, Trash2 } from "lucide-react"
+import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/buttons/IconButton"
@@ -70,6 +71,11 @@ export const operationColumns = [
         </Badge>
       )
     },
+  }),
+  operationColumnHelper.accessor("createdAt", {
+    header: "Ngày tạo",
+    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    meta: { headerClassName: "min-w-28" },
   }),
   operationColumnHelper.display({
     id: "actions",
