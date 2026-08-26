@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 import { z } from "zod"
 
+import { fileFieldSchema, resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 
@@ -28,14 +29,28 @@ function resolvePostSupplierReturnErrorMessage(error: unknown): string {
   }
 }
 
+// `note`/`files` tuỳ chọn — bằng chứng xuất trả, cùng khuôn
+// create-job-operation-report.api.ts (`files` → `fileIds` qua resolveApiFileIds).
+const postSupplierReturnParamsSchema = z
+  .object({
+    supplierReturnId: z.uuid(),
+    note: z.string().trim().max(500).optional(),
+    files: z.array(fileFieldSchema).default([]),
+  })
+  .transform(({ files, ...rest }) => ({
+    ...rest,
+    fileIds: resolveApiFileIds(files),
+  }))
+
 // DRAFT → POSTED — trừ tồn (nếu phiếu nhập gốc liên kết đã POSTED, xem
 // docs/workflows/supplier-return.md) và tự chuyển IQC liên kết sang Hoàn thành. Xem
 // SupplierReturnDetailActions.tsx.
 export const postSupplierReturn = createServerFn({ method: "POST" })
-  .validator(z.object({ supplierReturnId: z.uuid() }))
+  .validator(postSupplierReturnParamsSchema)
   .handler(async ({ data }): Promise<void> => {
     try {
-      await http.post(`/api/supplier-returns/${data.supplierReturnId}/post`, {})
+      const { supplierReturnId, ...body } = data
+      await http.post(`/api/supplier-returns/${supplierReturnId}/post`, body)
     } catch (error) {
       logHttpError(error, "postSupplierReturn")
 

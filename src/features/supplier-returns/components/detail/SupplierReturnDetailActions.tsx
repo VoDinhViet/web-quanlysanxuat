@@ -1,6 +1,4 @@
 import { useState } from "react"
-import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Printer } from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/PermissionGate"
@@ -14,8 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { postSupplierReturn } from "@/features/supplier-returns/api/server-functions/post-supplier-return.api"
+import { SupplierReturnEvidenceField } from "@/features/supplier-returns/components/detail/SupplierReturnEvidenceField"
+import { usePostSupplierReturn } from "@/features/supplier-returns/hooks/use-post-supplier-return"
+import { postSupplierReturnSchema } from "@/features/supplier-returns/schemas/post-supplier-return.schema"
+import { useAppForm } from "@/hooks/use-app-form"
 import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
+import type { FileFieldValue } from "@/lib/file-field.schema"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 
 type SupplierReturnDetailActionsProps = {
@@ -24,29 +26,25 @@ type SupplierReturnDetailActionsProps = {
 
 // Header-level actions, same idiom as PurchaseOrderDetailActions.tsx — lives in
 // SupplierReturnDetailHeader's action slot rather than a separate sticky footer. "Xác nhận
-// xuất" is real (POST /supplier-returns/:id/post — see docs/workflows/supplier-return.md);
-// "Hủy phiếu"/"Lưu" stay disabled, the module still has no cancel/edit route (B2's deliberate
-// scope cut — undoing a POSTED return needs an "un-complete IQC" path the backend doesn't have
-// yet).
+// xuất" is real (POST /supplier-returns/:id/post — see docs/workflows/supplier-return.md), dialog
+// now carries an optional ghi chú/đính kèm form (same idiom as JobOperationReportForm.tsx, just
+// without the SL fields); "Hủy phiếu"/"Lưu" stay disabled, the module still has no cancel/edit
+// route (B2's deliberate scope cut — undoing a POSTED return needs an "un-complete IQC" path the
+// backend doesn't have yet).
 export function SupplierReturnDetailActions({
   detail,
 }: SupplierReturnDetailActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const queryClient = useQueryClient()
-  const postSupplierReturnFn = useServerFn(postSupplierReturn)
 
-  const postMutation = useMutation({
-    mutationFn: () =>
-      postSupplierReturnFn({ data: { supplierReturnId: detail.id } }),
-    onSuccess: async () => {
-      // IQC liên kết đổi trạng thái (WAITING_RETURN → COMPLETED) trong cùng thao tác — invalidate
-      // cả 2 cache.
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["supplier-returns"] }),
-        queryClient.invalidateQueries({ queryKey: ["iqc"] }),
-      ])
-      setConfirmOpen(false)
-    },
+  const postMutation = usePostSupplierReturn({
+    supplierReturnId: detail.id,
+    onSuccess: () => setConfirmOpen(false),
+  })
+
+  const form = useAppForm({
+    defaultValues: { note: "", files: [] as FileFieldValue[] },
+    validators: { onSubmit: postSupplierReturnSchema },
+    onSubmit: ({ value }) => postMutation.mutate(value),
   })
 
   const isDraft = detail.status === InventoryDocumentStatus.DRAFT
@@ -55,6 +53,7 @@ export function SupplierReturnDetailActions({
     setConfirmOpen(open)
     if (!open) {
       postMutation.reset()
+      form.reset()
     }
   }
 
@@ -99,27 +98,57 @@ export function SupplierReturnDetailActions({
             </DialogDescription>
           </DialogHeader>
 
-          {postMutation.error && (
-            <p className="text-sm text-destructive">
-              {postMutation.error.message}
-            </p>
-          )}
+          <form
+            onSubmit={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              if (form.state.isSubmitting) return
+              void form.handleSubmit()
+            }}
+            noValidate
+            className="space-y-4"
+          >
+            <form.AppField name="note">
+              {(field) => (
+                <field.TextareaField
+                  label="Ghi chú xuất trả (nếu có)"
+                  placeholder="Nhập ghi chú (nếu có)"
+                  maxLength={500}
+                  disabled={postMutation.isPending}
+                />
+              )}
+            </form.AppField>
 
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => closeConfirm(false)}
-              disabled={postMutation.isPending}
-            >
-              Đóng
-            </Button>
-            <Button
-              onClick={() => postMutation.mutate()}
-              disabled={postMutation.isPending}
-            >
-              {postMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
-            </Button>
-          </DialogFooter>
+            <form.AppField name="files">
+              {(field) => (
+                <SupplierReturnEvidenceField
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  disabled={postMutation.isPending}
+                />
+              )}
+            </form.AppField>
+
+            {postMutation.error && (
+              <p className="text-sm text-destructive">
+                {postMutation.error.message}
+              </p>
+            )}
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => closeConfirm(false)}
+                disabled={postMutation.isPending}
+              >
+                Đóng
+              </Button>
+              <Button type="submit" disabled={postMutation.isPending}>
+                {postMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

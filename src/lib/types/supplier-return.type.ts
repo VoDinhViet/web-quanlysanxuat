@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
@@ -49,12 +50,17 @@ export type SupplierReturn = {
 
 /** Mirrors the backend's `SupplierReturnResDto` (`GET /api/supplier-returns/:id`) field-for-field
  *  — the detail page's read. Superset of `SupplierReturn` above (adds `warehouse`/`note`/
- *  `posterBy`/`postedAt`), same "list row is a subset of detail" split as
- *  `PurchaseOrder`/`PurchaseOrderDetail`. `posterBy`/`postedAt` are only set once `status` reaches
- *  `POSTED`. */
+ *  `posterBy`/`postedAt`/`returnReason`/`postNote`/`files`), same "list row is a subset of detail"
+ *  split as `PurchaseOrder`/`PurchaseOrderDetail`. `posterBy`/`postedAt`/`postNote`/`files` are
+ *  only set once `status` reaches `POSTED` — `postNote`/`files` come from the `post` call itself
+ *  (both optional there, so still `null`/`[]` on a POSTED return with neither). `returnReason` is
+ *  not its own column — the backend reads it off the linked IQC inspection's `dispositionNote`. */
 export type SupplierReturnDetail = SupplierReturn & {
   warehouse: WarehouseRef
   note: string | null
   posterBy: UserRef | null
   postedAt: string | null
+  returnReason: string | null
+  postNote: string | null
+  files: FileResource[]
 }

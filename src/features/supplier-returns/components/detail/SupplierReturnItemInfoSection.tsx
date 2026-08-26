@@ -2,7 +2,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { ImageOff, Package } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { MissingSectionAlert } from "@/components/shared/feedback/MissingSectionAlert"
 import { itemQueryOptions } from "@/features/products/api"
 import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/detail/SupplierReturnDetailSectionCard"
 import { SupplierReturnCodeCell } from "@/features/supplier-returns/components/SupplierReturnsTableCells"
@@ -88,10 +87,9 @@ export function SupplierReturnItemInfoSection({
           <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             Lý do trả
           </p>
-          <MissingSectionAlert>
-            Chưa có API lưu lý do trả vật tư — mục này sẽ hiển thị khi backend
-            hỗ trợ.
-          </MissingSectionAlert>
+          <p className="text-sm text-foreground">
+            {detail.returnReason ?? "—"}
+          </p>
         </div>
       </div>
     </SupplierReturnDetailSectionCard>
