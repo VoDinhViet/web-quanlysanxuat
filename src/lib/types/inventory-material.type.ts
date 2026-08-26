@@ -23,8 +23,9 @@ export type InventoryItemType = "FG" | "WIP" | "RM"
 /** Mirrors the backend's InventoryItemResDto (GET /api/inventory) — field names match the backend
  *  1:1 (not translated to friendlier FE names), same convention as `ProductionJobIssue`. On this
  *  screen (`itemType=RM`), `reserved`/`bomDemand` are real numbers since be-quanlysanxuat's
- *  BUG-031/032 fix: `reserved` = Σ phiếu lãnh vật tư `APPROVED`; `bomDemand` = nhu cầu BOM Job
- *  đang mở chưa có phiếu lãnh nào giữ. See `inventory.service.ts`'s own comments. */
+ *  BUG-031/032 fix: `reserved` = Σ phiếu lãnh vật tư `APPROVED` (mọi `type`); `bomDemand` = nhu cầu
+ *  BOM Job đang mở chưa có phiếu lãnh **sản xuất** (`type = PRODUCTION`) nào giữ — phiếu `type =
+ *  OTHER` không gắn Job nên không trừ vào đây (BE fix, xem `inventory.service.ts`'s own comments). */
 export type MaterialInventoryItem = {
   id: string
   code: string
@@ -37,7 +38,7 @@ export type MaterialInventoryItem = {
   onHand: number
   /** Đã giữ — Σ SL các phiếu lãnh vật tư đang APPROVED */
   reserved: number
-  /** Nhu cầu BOM chưa có phiếu lãnh nào giữ */
+  /** Nhu cầu BOM chưa có phiếu lãnh sản xuất (`type = PRODUCTION`) nào giữ */
   bomDemand: number
   /** Tồn khả dụng = onHand − reserved − bomDemand */
   available: number
