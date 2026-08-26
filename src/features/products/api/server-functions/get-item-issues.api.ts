@@ -4,13 +4,13 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { BomMaterial } from "@/lib/types/bom-item.type"
+import type { ItemIssue } from "@/lib/types/item.type"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import { optional } from "@/lib/zod-transforms"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
-function resolveGetBomMaterialsErrorMessage(error: unknown): string {
+function resolveGetItemIssuesErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
     return GENERIC_ERROR_MESSAGE
   }
@@ -23,27 +23,27 @@ function resolveGetBomMaterialsErrorMessage(error: unknown): string {
   }
 }
 
-const getBomMaterialsSchema = z.object({
+const getItemIssuesSchema = z.object({
   itemId: z.uuid(),
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),
   q: optional(z.string().trim()),
 })
 
-export const getBomMaterials = createServerFn({ method: "GET" })
-  .validator(getBomMaterialsSchema)
-  .handler(async ({ data }): Promise<PaginatedResponse<BomMaterial>> => {
+export const getItemIssues = createServerFn({ method: "GET" })
+  .validator(getItemIssuesSchema)
+  .handler(async ({ data }): Promise<PaginatedResponse<ItemIssue>> => {
     try {
       const { itemId, ...params } = data
-      const response = await http.get<PaginatedResponse<BomMaterial>>(
-        `/api/items/${itemId}/materials`,
+      const response = await http.get<PaginatedResponse<ItemIssue>>(
+        `/api/items/${itemId}/issues`,
         { params }
       )
 
       return response.data
     } catch (error) {
-      logHttpError(error, "getBomMaterials")
+      logHttpError(error, "getItemIssues")
 
-      throw new Error(resolveGetBomMaterialsErrorMessage(error))
+      throw new Error(resolveGetItemIssuesErrorMessage(error))
     }
   })

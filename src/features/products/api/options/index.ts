@@ -5,7 +5,7 @@
 export { itemsQueryOptions } from "@/features/products/api/options/items.options"
 export { itemQueryOptions } from "@/features/products/api/options/item.options"
 export { itemBomQueryOptions } from "@/features/products/api/options/item-bom.options"
-export { bomMaterialsQueryOptions } from "@/features/products/api/options/bom-materials.options"
+export { itemIssuesQueryOptions } from "@/features/products/api/options/item-issues.options"
 export { itemOperationsQueryOptions } from "@/features/products/api/options/item-operations.options"
 export { itemOptionsQueryOptions } from "@/features/products/api/options/item-options.options"
 export { orderItemOptionsQueryOptions } from "@/features/products/api/options/order-item-options.options"

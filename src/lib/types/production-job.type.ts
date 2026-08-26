@@ -133,8 +133,10 @@ export type ProductionJobIssueUnitRef = {
  *  `production_job_issues` joined to the two shared dimension tables. Despite the route's name
  *  (`.../bom`), this is NOT the BOM tree — the tree has no read route at all (see
  *  ProductionJobOperation's doc comment and docs/domains/production.md, "Common mistakes" #15).
- *  `requiredQty` is BOM demand × SL Job, computed once at LSX approval — not a per-level BOM
- *  explosion. No `id`/`itemId`/`unitQty`/`image` on this DTO. */
+ *  `requiredQty` is BOM demand exploded through every ancestor WIP node × SL Job, computed once
+ *  at LSX approval (BUG-086 fix, 2026-08-26) — same concept as ItemIssue.requiredQty in
+ *  item.type.ts, different seed (SL Job here vs. 1 unit of the root item there). No
+ *  `id`/`itemId`/`unitQty`/`image` on this DTO. */
 export type ProductionJobIssue = {
   item: ProductionJobIssueItemRef
   unit: ProductionJobIssueUnitRef

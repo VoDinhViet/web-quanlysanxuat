@@ -12,7 +12,7 @@ import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { ProductDetailHeader } from "@/features/products/components/ProductDetailHeader"
 import { ProductDetailSidebar } from "@/features/products/components/ProductDetailSidebar"
 import { ProductBomTab } from "@/features/products/components/ProductBomTab"
-import { ProductMaterialsTab } from "@/features/products/components/ProductMaterialsTab"
+import { ProductIssuesTab } from "@/features/products/components/ProductIssuesTab"
 import { ProductInfoTab } from "@/features/products/components/ProductInfoTab"
 import { updateProductSchema } from "@/features/products/schemas/update-product.schema"
 import { productDetailTabSchema } from "@/features/products/schemas/product-detail-search.schema"
@@ -127,7 +127,7 @@ export function ProductDetailPage() {
                 </TabsContent>
 
                 <TabsContent value="materials" className="m-0 outline-none">
-                  <ProductMaterialsTab product={product} />
+                  <ProductIssuesTab product={product} />
                 </TabsContent>
               </div>
 

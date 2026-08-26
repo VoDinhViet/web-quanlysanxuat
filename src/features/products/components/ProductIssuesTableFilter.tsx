@@ -5,15 +5,15 @@ import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-type ProductMaterialsTableFilterProps = {
+type ProductIssuesTableFilterProps = {
   q: string | undefined
   onSearchChange: (q: string | undefined) => void
 }
 
-export function ProductMaterialsTableFilter({
+export function ProductIssuesTableFilter({
   q,
   onSearchChange,
-}: ProductMaterialsTableFilterProps) {
+}: ProductIssuesTableFilterProps) {
   const [value, setValue] = useState(q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — same delay as

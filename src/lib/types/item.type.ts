@@ -69,3 +69,29 @@ export type Item = {
   createdAt: string
   updatedAt: string
 }
+
+// Mirrors the backend's ItemIssueResDto (GET /api/items/:itemId/issues,
+// paginated, `q` filters code/name) — "Thành phần vật tư" tab: every RM
+// this item's BOM tree consumes, one row per material (grouped by
+// `itemId`, not per `bom_items` node — the same material can appear under
+// several parent nodes in the tree, so this list has no
+// `id`/`sortOrder`/`note`, those are per-node, not per-material; see
+// BomItem in bom-item.type.ts for the raw per-node tree instead).
+//
+// `requiredQty` is the exploded amount for 1 unit of the root item —
+// multiplied cumulatively through every ancestor WIP node's own quantity,
+// then summed across all occurrences of that material. Same field name as
+// the production-job material demand (`ProductionJobIssue.requiredQty`,
+// see production-job.type.ts) — same concept, different seed (1 unit of
+// the root item here vs. the Job quantity there). Named `*Issue` to match
+// that Job-side concept, not the unrelated `Material` type (material.type.ts,
+// the RM master-data shape) or `inventory-issues` (real stock-issue
+// documents) — deliberate, not a typo.
+export type ItemIssue = {
+  itemId: string
+  code: string
+  name: string
+  unit: Unit
+  image: FileResource | string | null
+  requiredQty: number
+}

@@ -15,27 +15,27 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { TablePagination } from "@/components/shared/data/TablePagination"
-import { bomMaterialColumns } from "@/features/products/components/ProductMaterialsTableColumns"
+import { itemIssueColumns } from "@/features/products/components/ProductIssuesTableColumns"
 import { cn } from "@/lib/utils"
-import type { BomMaterial } from "@/lib/types/bom-item.type"
+import type { ItemIssue } from "@/lib/types/item.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
-type ProductMaterialsTableProps = {
-  rows: BomMaterial[]
+type ProductIssuesTableProps = {
+  rows: ItemIssue[]
   pagination: Pagination
   isPending: boolean
 }
 
 // Bảng vật tư trong cấu trúc sản phẩm (tab BOM) — tự dựng useReactTable/flexRender thay vì qua
 // một khung DataTable dùng chung, để mỗi bảng tự do tiến hoá riêng.
-export function ProductMaterialsTable({
+export function ProductIssuesTable({
   rows,
   pagination,
   isPending,
-}: ProductMaterialsTableProps) {
+}: ProductIssuesTableProps) {
   const table = useReactTable({
     data: rows,
-    columns: bomMaterialColumns,
+    columns: itemIssueColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 

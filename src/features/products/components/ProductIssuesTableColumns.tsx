@@ -3,14 +3,14 @@ import { Image } from "@unpic/react"
 import { ImageOff } from "lucide-react"
 
 import { resolveFileUrl } from "@/lib/file-url"
-import type { BomMaterial } from "@/lib/types/bom-item.type"
+import type { ItemIssue } from "@/lib/types/item.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const bomMaterialColumnHelper = createColumnHelper<BomMaterial>()
+const col = createColumnHelper<ItemIssue>()
 
-export const bomMaterialColumns = [
-  bomMaterialColumnHelper.display({
+export const itemIssueColumns = [
+  col.display({
     id: "index",
     header: "#",
     cell: ({ row }) => row.index + 1,
@@ -19,7 +19,7 @@ export const bomMaterialColumns = [
       cellClassName: "text-center text-muted-foreground",
     },
   }),
-  bomMaterialColumnHelper.display({
+  col.display({
     id: "material",
     header: "Vật tư",
     meta: { headerClassName: "min-w-64" },
@@ -58,22 +58,17 @@ export const bomMaterialColumns = [
       )
     },
   }),
-  bomMaterialColumnHelper.accessor((row) => row.unit.name, {
+  col.accessor((row) => row.unit.name, {
     id: "unit",
     header: "ĐVT",
     meta: { headerClassName: "min-w-20" },
   }),
-  bomMaterialColumnHelper.accessor("quantity", {
+  col.accessor("requiredQty", {
     header: "Định mức / 1 bộ",
     meta: {
       headerClassName: "min-w-32 text-right",
       cellClassName: "text-right font-medium text-foreground",
     },
     cell: ({ getValue }) => quantityFormatter.format(getValue()),
-  }),
-  bomMaterialColumnHelper.accessor("note", {
-    header: "Ghi chú",
-    meta: { headerClassName: "min-w-40" },
-    cell: ({ getValue }) => getValue() || "—",
   }),
 ]

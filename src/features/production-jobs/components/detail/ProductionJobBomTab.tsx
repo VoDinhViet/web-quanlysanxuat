@@ -18,7 +18,7 @@ type ProductionJobBomTabProps = {
 // Tab "BOM" — vật tư cần cho Job này, đọc trực tiếp GET /production-jobs/:jobId/bom
 // (phân trang, cùng route tên "bom" nhưng trả bảng nhu cầu vật tư đã gộp, không phải cây BOM —
 // xem doc comment ProductionJobIssue), cùng pattern client-driven useQuery với
-// ProductMaterialsTab.tsx. Các cột đọc thẳng snapshot text lồng trong `item`/`unit`
+// ProductIssuesTab.tsx. Các cột đọc thẳng snapshot text lồng trong `item`/`unit`
 // (item.code/item.name/unit.name), độc lập materials/units sống. Không còn "Định mức" (`unitQty`)
 // hay "Tiến độ xuất kho" (`issuedQty`) — cả hai không có trên DTO thật, không bịa số.
 export function ProductionJobBomTab({

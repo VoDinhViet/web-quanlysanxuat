@@ -3,19 +3,19 @@ import { useQuery } from "@tanstack/react-query"
 
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { ProductMaterialsTable } from "@/features/products/components/ProductMaterialsTable"
-import { ProductMaterialsTableFilter } from "@/features/products/components/ProductMaterialsTableFilter"
-import { bomMaterialsQueryOptions } from "@/features/products/api/options"
+import { ProductIssuesTable } from "@/features/products/components/ProductIssuesTable"
+import { ProductIssuesTableFilter } from "@/features/products/components/ProductIssuesTableFilter"
+import { itemIssuesQueryOptions } from "@/features/products/api/options"
 import type { Item } from "@/lib/types/item.type"
 
-type ProductMaterialsTabProps = {
+type ProductIssuesTabProps = {
   product: Item
 }
 
 const defaultPage = 1
 const defaultLimit = 10
 
-export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
+export function ProductIssuesTab({ product }: ProductIssuesTabProps) {
   const search = useSearch({ from: "/(authed)/manage_/products_/$productId" })
   const navigate = useNavigate({ from: "/manage/products/$productId" })
 
@@ -23,7 +23,7 @@ export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
   const limit = search.limit ?? defaultLimit
 
   const materialsQuery = useQuery(
-    bomMaterialsQueryOptions(product.id, { page, limit, q: search.q })
+    itemIssuesQueryOptions(product.id, { page, limit, q: search.q })
   )
 
   const handleSearchChange = (q: string | undefined) => {
@@ -35,7 +35,7 @@ export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
 
   return (
     <div className="flex min-w-0 flex-col">
-      <ProductMaterialsTableFilter
+      <ProductIssuesTableFilter
         q={search.q}
         onSearchChange={handleSearchChange}
       />
@@ -48,7 +48,7 @@ export function ProductMaterialsTab({ product }: ProductMaterialsTabProps) {
           onRetry={() => void materialsQuery.refetch()}
         />
       ) : (
-        <ProductMaterialsTable
+        <ProductIssuesTable
           rows={materialsQuery.data.data}
           pagination={materialsQuery.data.pagination}
           isPending={materialsQuery.isFetching}
