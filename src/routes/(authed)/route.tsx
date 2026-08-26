@@ -19,7 +19,7 @@ import { getErrorMessage } from "@/lib/utils"
 
 export const Route = createFileRoute("/(authed)")({
   beforeLoad: async ({ location, context, matches }) => {
-    const user = await requireSession(location)
+    const user = await requireSession(location, context.queryClient)
     // Load the profile + effective permissions once (cached, separate queries) so every
     // nested route and component can read them without refetching. `permissions` is the
     // only value this beforeLoad needs back — listed first so the destructure doesn't need
@@ -36,10 +36,12 @@ export const Route = createFileRoute("/(authed)")({
     return { user, permissions }
   },
   component: AuthedLayout,
-  // `beforeLoad` above re-runs on every navigation (it's an uncached server round trip), so
-  // this route re-enters "pending" on every click, not just first load. Without its own
-  // pendingComponent it would fall through to the router's sidebar-less
-  // defaultPendingComponent — see AuthedLayoutPending below.
+  // `beforeLoad` above re-runs on every navigation, but every read in it (including
+  // requireSession, via currentSessionQueryOptions) is cached with a 60s staleTime — so it
+  // resolves well under defaultPendingMs on any navigation within that window, and this route
+  // only actually enters "pending" once the cache goes stale. Without its own pendingComponent
+  // it would fall through to the router's sidebar-less defaultPendingComponent for that rare
+  // case — see AuthedLayoutPending below.
   pendingComponent: AuthedLayoutPending,
   errorComponent: AuthedErrorFallback,
 })
@@ -66,8 +68,13 @@ type AuthedShellProps = {
   children: ReactNode
 }
 
-// Shared by AuthedLayout and AuthedLayoutPending so the sidebar/providers shell never
-// disappears — only the child slot (real content vs. LayoutPagePending) differs between the two.
+// Shared by AuthedLayout and AuthedLayoutPending so the two look identical, sidebar included,
+// on the rare navigation that does hit this route's pending state — only the child slot (real
+// content vs. LayoutPagePending) differs between the two. NOTE this does NOT prevent a remount:
+// AuthedLayout/AuthedLayoutPending are still two distinct component functions swapped at the
+// same tree position, so React unmounts and remounts everything below, AuthedShell included,
+// whenever the swap happens — sharing this function only makes that (now rare, see
+// pendingComponent above) remount visually seamless instead of skipping it.
 function AuthedShell({ children }: AuthedShellProps) {
   return (
     <TooltipProvider>

@@ -1,24 +1,30 @@
 import { redirect } from "@tanstack/react-router"
 
 import { hasPermission } from "@/features/auth/permissions"
+import { currentSessionQueryOptions } from "@/features/auth/api/options"
 import {
   isRouteAvailable,
   requiredPermissionForPath,
 } from "@/features/auth/route-permissions"
-import { getCurrentSession } from "@/features/auth/api/server-functions/get-current-session.api"
 import type { CurrentSession } from "@/lib/types/login.type"
+import type { QueryClient } from "@tanstack/react-query"
 import type { MakeRouteMatchUnion } from "@tanstack/react-router"
 
 /**
  * The single place that decides whether a protected route may render. Called from the
  * `(authed)` layout's `beforeLoad` so every route nested under it inherits the guard —
- * do not duplicate this check elsewhere (see CLAUDE.md "Layer boundaries").
+ * do not duplicate this check elsewhere (see CLAUDE.md "Layer boundaries"). Reads the
+ * session through `currentSessionQueryOptions` (cached, default 60s staleTime) rather than
+ * calling the server function directly — an uncached round trip on every navigation used to
+ * push `beforeLoad` past `defaultPendingMs` and remount the whole sidebar shell (see
+ * `(authed)/route.tsx`).
  */
-export async function requireSession(location: {
-  href: string
-}): Promise<CurrentSession> {
+export async function requireSession(
+  location: { href: string },
+  queryClient: QueryClient
+): Promise<CurrentSession> {
   try {
-    return await getCurrentSession()
+    return await queryClient.ensureQueryData(currentSessionQueryOptions)
   } catch {
     throw redirect({
       to: "/login",
