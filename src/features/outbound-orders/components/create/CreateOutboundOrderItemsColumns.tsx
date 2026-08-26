@@ -116,7 +116,11 @@ export function buildCreateOutboundOrderItemColumns({
     }),
     createOutboundOrderItemColumnHelper.display({
       id: "quantity",
-      header: "SL giao",
+      header: () => (
+        <>
+          SL giao <span className="text-destructive">*</span>
+        </>
+      ),
       meta: { headerClassName: "w-32 text-right" },
       cell: ({ row }) => {
         const item = row.original

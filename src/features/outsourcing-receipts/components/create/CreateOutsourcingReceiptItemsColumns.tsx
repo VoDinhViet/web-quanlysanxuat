@@ -83,7 +83,11 @@ export function buildCreateOutsourcingReceiptItemColumns({
     }),
     createOutsourcingReceiptItemColumnHelper.display({
       id: "quantity",
-      header: "SL nhận lần này",
+      header: () => (
+        <>
+          SL nhận lần này <span className="text-destructive">*</span>
+        </>
+      ),
       meta: { headerClassName: "w-32 text-right" },
       cell: ({ row }) => {
         const item = row.original

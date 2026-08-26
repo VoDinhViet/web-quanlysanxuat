@@ -57,7 +57,11 @@ export function buildPurchaseRequestQuantityColumns({
     }),
     purchaseRequestQuantityColumnHelper.display({
       id: "quantity",
-      header: "Số lượng đề xuất",
+      header: () => (
+        <>
+          Số lượng đề xuất <span className="text-destructive">*</span>
+        </>
+      ),
       meta: { headerClassName: "w-40 text-right" },
       cell: ({ row }) => {
         const item = row.original

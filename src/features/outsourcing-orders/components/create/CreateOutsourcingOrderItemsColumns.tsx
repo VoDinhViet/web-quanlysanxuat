@@ -99,7 +99,11 @@ export function buildCreateOutsourcingOrderItemColumns({
     }),
     createOutsourcingOrderItemColumnHelper.display({
       id: "quantity",
-      header: "SL gửi lần này",
+      header: () => (
+        <>
+          SL gửi lần này <span className="text-destructive">*</span>
+        </>
+      ),
       meta: { headerClassName: "w-32 text-right" },
       cell: ({ row }) => {
         const item = row.original
