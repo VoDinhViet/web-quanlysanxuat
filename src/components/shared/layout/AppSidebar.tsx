@@ -7,6 +7,7 @@ import {
   ClipboardCheck,
   ClipboardList,
   ClipboardMinus,
+  Cog,
   CreditCard,
   Factory,
   FileText,
@@ -150,6 +151,11 @@ const menuGroups: MenuGroup[] = [
         label: "Quản lý sản xuất",
         icon: GitBranch,
         href: "/manage/production-jobs",
+      },
+      {
+        label: "Thực hiện sản xuất",
+        icon: Cog,
+        href: "/manage/production-execution",
       },
       {
         label: "Lãnh vật tư",

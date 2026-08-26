@@ -18,6 +18,9 @@ export enum UploadType {
   IQC_DISPOSITION_EVIDENCE = "IQC_DISPOSITION_EVIDENCE",
   OQC_EVIDENCE = "OQC_EVIDENCE",
   OQC_DISPOSITION_EVIDENCE = "OQC_DISPOSITION_EVIDENCE",
+  // Ảnh đính kèm khi báo cáo hoàn thành một công đoạn — màn "Thực hiện sản xuất"
+  // (POST /production-execution/operations/:jobOperationId/reports).
+  PRODUCTION_OPERATION_EVIDENCE = "PRODUCTION_OPERATION_EVIDENCE",
 }
 
 export enum FileKind {

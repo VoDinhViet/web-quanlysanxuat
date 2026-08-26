@@ -29,6 +29,7 @@ import { Route as authedManageOutboundOrdersRouteImport } from './routes/(authed
 import { Route as authedManageOutsourcingOrdersRouteImport } from './routes/(authed)/manage_/outsourcing-orders'
 import { Route as authedManageOutsourcingReceiptsRouteImport } from './routes/(authed)/manage_/outsourcing-receipts'
 import { Route as authedManagePaymentRequestsRouteImport } from './routes/(authed)/manage_/payment-requests'
+import { Route as authedManageProductionExecutionRouteImport } from './routes/(authed)/manage_/production-execution'
 import { Route as authedManageProductionJobsRouteImport } from './routes/(authed)/manage_/production-jobs'
 import { Route as authedManageProductionOrdersRouteImport } from './routes/(authed)/manage_/production-orders'
 import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
@@ -61,6 +62,7 @@ import { Route as authedManageOutsourcingOrdersCreateRouteImport } from './route
 import { Route as authedManageOutsourcingReceiptsOutsourcingReceiptIdRouteImport } from './routes/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId'
 import { Route as authedManageOutsourcingReceiptsCreateRouteImport } from './routes/(authed)/manage_/outsourcing-receipts_/create'
 import { Route as authedManagePaymentRequestsPaymentRequestIdRouteImport } from './routes/(authed)/manage_/payment-requests_/$paymentRequestId'
+import { Route as authedManageProductionExecutionProductionJobIdRouteImport } from './routes/(authed)/manage_/production-execution_/$productionJobId'
 import { Route as authedManageProductionJobsProductionJobIdRouteImport } from './routes/(authed)/manage_/production-jobs_/$productionJobId'
 import { Route as authedManageProductionOrdersProductionOrderIdRouteImport } from './routes/(authed)/manage_/production-orders_/$productionOrderId'
 import { Route as authedManageProductsProductIdRouteImport } from './routes/(authed)/manage_/products_/$productId'
@@ -190,6 +192,12 @@ const authedManagePaymentRequestsRoute =
   authedManagePaymentRequestsRouteImport.update({
     id: '/manage_/payment-requests',
     path: '/manage/payment-requests',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageProductionExecutionRoute =
+  authedManageProductionExecutionRouteImport.update({
+    id: '/manage_/production-execution',
+    path: '/manage/production-execution',
     getParentRoute: () => authedRouteRoute,
   } as any)
 const authedManageProductionJobsRoute =
@@ -377,6 +385,12 @@ const authedManagePaymentRequestsPaymentRequestIdRoute =
     path: '/manage/payment-requests/$paymentRequestId',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageProductionExecutionProductionJobIdRoute =
+  authedManageProductionExecutionProductionJobIdRouteImport.update({
+    id: '/manage_/production-execution_/$productionJobId',
+    path: '/manage/production-execution/$productionJobId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageProductionJobsProductionJobIdRoute =
   authedManageProductionJobsProductionJobIdRouteImport.update({
     id: '/manage_/production-jobs_/$productionJobId',
@@ -533,6 +547,7 @@ export interface FileRoutesByFullPath {
   '/manage/outsourcing-orders': typeof authedManageOutsourcingOrdersRoute
   '/manage/outsourcing-receipts': typeof authedManageOutsourcingReceiptsRoute
   '/manage/payment-requests': typeof authedManagePaymentRequestsRoute
+  '/manage/production-execution': typeof authedManageProductionExecutionRoute
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
   '/manage/products': typeof authedManageProductsRoute
@@ -565,6 +580,7 @@ export interface FileRoutesByFullPath {
   '/manage/outsourcing-receipts/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   '/manage/outsourcing-receipts/create': typeof authedManageOutsourcingReceiptsCreateRoute
   '/manage/payment-requests/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  '/manage/production-execution/$productionJobId': typeof authedManageProductionExecutionProductionJobIdRoute
   '/manage/production-jobs/$productionJobId': typeof authedManageProductionJobsProductionJobIdRoute
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
@@ -608,6 +624,7 @@ export interface FileRoutesByTo {
   '/manage/outsourcing-orders': typeof authedManageOutsourcingOrdersRoute
   '/manage/outsourcing-receipts': typeof authedManageOutsourcingReceiptsRoute
   '/manage/payment-requests': typeof authedManagePaymentRequestsRoute
+  '/manage/production-execution': typeof authedManageProductionExecutionRoute
   '/manage/production-jobs': typeof authedManageProductionJobsRoute
   '/manage/production-orders': typeof authedManageProductionOrdersRoute
   '/manage/products': typeof authedManageProductsRoute
@@ -640,6 +657,7 @@ export interface FileRoutesByTo {
   '/manage/outsourcing-receipts/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   '/manage/outsourcing-receipts/create': typeof authedManageOutsourcingReceiptsCreateRoute
   '/manage/payment-requests/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  '/manage/production-execution/$productionJobId': typeof authedManageProductionExecutionProductionJobIdRoute
   '/manage/production-jobs/$productionJobId': typeof authedManageProductionJobsProductionJobIdRoute
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
@@ -686,6 +704,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/outsourcing-orders': typeof authedManageOutsourcingOrdersRoute
   '/(authed)/manage_/outsourcing-receipts': typeof authedManageOutsourcingReceiptsRoute
   '/(authed)/manage_/payment-requests': typeof authedManagePaymentRequestsRoute
+  '/(authed)/manage_/production-execution': typeof authedManageProductionExecutionRoute
   '/(authed)/manage_/production-jobs': typeof authedManageProductionJobsRoute
   '/(authed)/manage_/production-orders': typeof authedManageProductionOrdersRoute
   '/(authed)/manage_/products': typeof authedManageProductsRoute
@@ -718,6 +737,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   '/(authed)/manage_/outsourcing-receipts_/create': typeof authedManageOutsourcingReceiptsCreateRoute
   '/(authed)/manage_/payment-requests_/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  '/(authed)/manage_/production-execution_/$productionJobId': typeof authedManageProductionExecutionProductionJobIdRoute
   '/(authed)/manage_/production-jobs_/$productionJobId': typeof authedManageProductionJobsProductionJobIdRoute
   '/(authed)/manage_/production-orders_/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/(authed)/manage_/products_/$productId': typeof authedManageProductsProductIdRoute
@@ -763,6 +783,7 @@ export interface FileRouteTypes {
     | '/manage/outsourcing-orders'
     | '/manage/outsourcing-receipts'
     | '/manage/payment-requests'
+    | '/manage/production-execution'
     | '/manage/production-jobs'
     | '/manage/production-orders'
     | '/manage/products'
@@ -795,6 +816,7 @@ export interface FileRouteTypes {
     | '/manage/outsourcing-receipts/$outsourcingReceiptId'
     | '/manage/outsourcing-receipts/create'
     | '/manage/payment-requests/$paymentRequestId'
+    | '/manage/production-execution/$productionJobId'
     | '/manage/production-jobs/$productionJobId'
     | '/manage/production-orders/$productionOrderId'
     | '/manage/products/$productId'
@@ -838,6 +860,7 @@ export interface FileRouteTypes {
     | '/manage/outsourcing-orders'
     | '/manage/outsourcing-receipts'
     | '/manage/payment-requests'
+    | '/manage/production-execution'
     | '/manage/production-jobs'
     | '/manage/production-orders'
     | '/manage/products'
@@ -870,6 +893,7 @@ export interface FileRouteTypes {
     | '/manage/outsourcing-receipts/$outsourcingReceiptId'
     | '/manage/outsourcing-receipts/create'
     | '/manage/payment-requests/$paymentRequestId'
+    | '/manage/production-execution/$productionJobId'
     | '/manage/production-jobs/$productionJobId'
     | '/manage/production-orders/$productionOrderId'
     | '/manage/products/$productId'
@@ -915,6 +939,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/outsourcing-orders'
     | '/(authed)/manage_/outsourcing-receipts'
     | '/(authed)/manage_/payment-requests'
+    | '/(authed)/manage_/production-execution'
     | '/(authed)/manage_/production-jobs'
     | '/(authed)/manage_/production-orders'
     | '/(authed)/manage_/products'
@@ -947,6 +972,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId'
     | '/(authed)/manage_/outsourcing-receipts_/create'
     | '/(authed)/manage_/payment-requests_/$paymentRequestId'
+    | '/(authed)/manage_/production-execution_/$productionJobId'
     | '/(authed)/manage_/production-jobs_/$productionJobId'
     | '/(authed)/manage_/production-orders_/$productionOrderId'
     | '/(authed)/manage_/products_/$productId'
@@ -1118,6 +1144,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/payment-requests'
       fullPath: '/manage/payment-requests'
       preLoaderRoute: typeof authedManagePaymentRequestsRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/production-execution': {
+      id: '/(authed)/manage_/production-execution'
+      path: '/manage/production-execution'
+      fullPath: '/manage/production-execution'
+      preLoaderRoute: typeof authedManageProductionExecutionRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/production-jobs': {
@@ -1344,6 +1377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManagePaymentRequestsPaymentRequestIdRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/production-execution_/$productionJobId': {
+      id: '/(authed)/manage_/production-execution_/$productionJobId'
+      path: '/manage/production-execution/$productionJobId'
+      fullPath: '/manage/production-execution/$productionJobId'
+      preLoaderRoute: typeof authedManageProductionExecutionProductionJobIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/manage_/production-jobs_/$productionJobId': {
       id: '/(authed)/manage_/production-jobs_/$productionJobId'
       path: '/manage/production-jobs/$productionJobId'
@@ -1552,6 +1592,7 @@ interface authedRouteRouteChildren {
   authedManageOutsourcingOrdersRoute: typeof authedManageOutsourcingOrdersRoute
   authedManageOutsourcingReceiptsRoute: typeof authedManageOutsourcingReceiptsRoute
   authedManagePaymentRequestsRoute: typeof authedManagePaymentRequestsRoute
+  authedManageProductionExecutionRoute: typeof authedManageProductionExecutionRoute
   authedManageProductionJobsRoute: typeof authedManageProductionJobsRoute
   authedManageProductionOrdersRoute: typeof authedManageProductionOrdersRoute
   authedManageProductsRoute: typeof authedManageProductsRoute
@@ -1584,6 +1625,7 @@ interface authedRouteRouteChildren {
   authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute: typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   authedManageOutsourcingReceiptsCreateRoute: typeof authedManageOutsourcingReceiptsCreateRoute
   authedManagePaymentRequestsPaymentRequestIdRoute: typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  authedManageProductionExecutionProductionJobIdRoute: typeof authedManageProductionExecutionProductionJobIdRoute
   authedManageProductionJobsProductionJobIdRoute: typeof authedManageProductionJobsProductionJobIdRoute
   authedManageProductionOrdersProductionOrderIdRoute: typeof authedManageProductionOrdersProductionOrderIdRoute
   authedManageProductsProductIdRoute: typeof authedManageProductsProductIdRoute
@@ -1626,6 +1668,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageOutsourcingOrdersRoute: authedManageOutsourcingOrdersRoute,
   authedManageOutsourcingReceiptsRoute: authedManageOutsourcingReceiptsRoute,
   authedManagePaymentRequestsRoute: authedManagePaymentRequestsRoute,
+  authedManageProductionExecutionRoute: authedManageProductionExecutionRoute,
   authedManageProductionJobsRoute: authedManageProductionJobsRoute,
   authedManageProductionOrdersRoute: authedManageProductionOrdersRoute,
   authedManageProductsRoute: authedManageProductsRoute,
@@ -1670,6 +1713,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
     authedManageOutsourcingReceiptsCreateRoute,
   authedManagePaymentRequestsPaymentRequestIdRoute:
     authedManagePaymentRequestsPaymentRequestIdRoute,
+  authedManageProductionExecutionProductionJobIdRoute:
+    authedManageProductionExecutionProductionJobIdRoute,
   authedManageProductionJobsProductionJobIdRoute:
     authedManageProductionJobsProductionJobIdRoute,
   authedManageProductionOrdersProductionOrderIdRoute:

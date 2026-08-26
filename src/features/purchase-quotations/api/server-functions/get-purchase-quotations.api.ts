@@ -12,13 +12,14 @@ const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
 // `createdAt` (cột timestamp) cần instant UTC đúng ranh giới ngày giờ VN — startDate/endDate vốn là
 // "yyyy-MM-dd" giờ VN từ DateRangePicker, phải quy đổi trước khi gửi BE.
-const getPurchaseQuotationsParamsSchema = purchaseQuotationsSearchSchema.transform(
-  ({ startDate, endDate, ...rest }) => ({
-    ...rest,
-    startDate: startDate ? toUtcVnDayStart(startDate) : undefined,
-    endDate: endDate ? toUtcVnDayStart(endDate) : undefined,
-  })
-)
+const getPurchaseQuotationsParamsSchema =
+  purchaseQuotationsSearchSchema.transform(
+    ({ startDate, endDate, ...rest }) => ({
+      ...rest,
+      startDate: startDate ? toUtcVnDayStart(startDate) : undefined,
+      endDate: endDate ? toUtcVnDayStart(endDate) : undefined,
+    })
+  )
 
 function resolveGetPurchaseQuotationsErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {

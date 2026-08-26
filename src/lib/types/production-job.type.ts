@@ -156,3 +156,52 @@ export type ProductionJobNote = {
   creator: ProductionJobNoteCreator | null
   createdAt: string
 }
+
+/** Mirrors `GET /production-execution/operations` — một dòng / công đoạn có ít nhất 1 Job khớp
+ *  filter, dùng để dựng dãy thẻ "CHỌN CÔNG ĐOẠN". `jobCount` đếm số Job phân biệt, không phải số
+ *  dòng (Job × Part). */
+export type ProductionOperationSummary = {
+  operationId: string
+  code: string
+  name: string
+  type: OperationType
+  jobCount: number
+}
+
+/** Trạng thái tiến độ của MỘT công đoạn trên MỘT Job — gộp qua mọi part của Job có công đoạn đó
+ *  (`ProductionJobByOperation.operationStatus` bên dưới). Khác `OperationProgressStatus` cục bộ
+ *  của `ProductionJobOperationsTable.tsx` (trạng thái một dòng công đoạn/part đơn lẻ, nhãn khác:
+ *  "Chưa bắt đầu"/"Đang thực hiện"/"Hoàn thành") — đây là mức Job, đúng 3 nhãn trong khung "GHI
+ *  CHÚ" của màn "Thực hiện sản xuất". */
+export type ProductionOperationProgressStatus =
+  | "NOT_STARTED"
+  | "IN_PROGRESS"
+  | "DONE"
+
+export const productionOperationProgressStatusLabels: Record<
+  ProductionOperationProgressStatus,
+  string
+> = {
+  NOT_STARTED: "Chưa làm",
+  IN_PROGRESS: "Đang làm",
+  DONE: "Hoàn thành",
+}
+
+/** Mirrors `GET /production-execution/jobs` — một dòng / (Job × công đoạn), số lượng gộp (SUM)
+ *  qua mọi part của Job có công đoạn đó. Nguồn cho bảng "DANH SÁCH CÔNG VIỆC" của màn "Thực hiện
+ *  sản xuất". */
+export type ProductionJobByOperation = {
+  jobId: string
+  jobCode: string
+  orderCode: string
+  item: { code: string; name: string }
+  quantity: number
+  orderDate: string
+  dueDate: string | null
+  jobStatus: ProductionJobStatus
+  plannedQuantity: number
+  completedQuantity: number
+  rejectedQuantity: number
+  operationCompletedDate: string | null
+  operationStatus: ProductionOperationProgressStatus
+}

@@ -50,14 +50,17 @@ export const iqcColumns = [
     },
   }),
 
-  iqcColumnHelper.accessor((row) => row.supplier?.name ?? row.client?.name ?? "—", {
-    id: "supplier",
-    header: "NCC / Khách hàng",
-    meta: { headerClassName: "min-w-36" },
-    cell: ({ getValue }) => (
-      <span className="block max-w-40 truncate">{getValue()}</span>
-    ),
-  }),
+  iqcColumnHelper.accessor(
+    (row) => row.supplier?.name ?? row.client?.name ?? "—",
+    {
+      id: "supplier",
+      header: "NCC / Khách hàng",
+      meta: { headerClassName: "min-w-36" },
+      cell: ({ getValue }) => (
+        <span className="block max-w-40 truncate">{getValue()}</span>
+      ),
+    }
+  ),
 
   iqcColumnHelper.display({
     id: "quantity",

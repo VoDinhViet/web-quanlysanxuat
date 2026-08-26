@@ -87,6 +87,9 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/payment-requests": "purchasing:read",
   "/manage/payment-requests/$paymentRequestId": "purchasing:read",
 
+  "/manage/production-execution": "production:read",
+  "/manage/production-execution/$productionJobId": "production:read",
+
   "/manage/production-jobs": "production:read",
   "/manage/production-jobs/$productionJobId": "production:read",
 
