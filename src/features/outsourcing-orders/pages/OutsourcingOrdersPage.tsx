@@ -2,7 +2,6 @@ import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { OutsourcingTabs } from "@/components/shared/layout/OutsourcingTabs"
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
@@ -12,7 +11,7 @@ import { OutsourcingOrdersTable } from "@/features/outsourcing-orders/components
 import { OutsourcingOrdersTableFilter } from "@/features/outsourcing-orders/components/OutsourcingOrdersTableFilter"
 
 export function OutsourcingOrdersPage() {
-  const search = useSearch({ from: "/(authed)/manage_/outsourcing-orders" })
+  const search = useSearch({ from: "/(authed)/manage_/outsourcing-orders/" })
 
   const outsourcingOrdersQuery = useQuery({
     ...outsourcingOrdersQueryOptions(search),
@@ -20,40 +19,28 @@ export function OutsourcingOrdersPage() {
   })
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Gia công ngoài"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
-          { label: "Gia công ngoài" },
-          { label: "Xuất đi gia công (OS-OUT)" },
-        ]}
-        notificationCount={5}
-      />
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+        <OutsourcingTabs />
+        <OutsourcingOrdersTableFilter />
 
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <OutsourcingTabs />
-          <OutsourcingOrdersTableFilter />
+        {outsourcingOrdersQuery.isPending ? (
+          <TableQueryLoading rows={search.limit} />
+        ) : outsourcingOrdersQuery.isError ? (
+          <TableQueryError
+            error={outsourcingOrdersQuery.error.message}
+            onRetry={() => void outsourcingOrdersQuery.refetch()}
+          />
+        ) : (
+          <OutsourcingOrdersTable
+            rows={outsourcingOrdersQuery.data.data}
+            pagination={outsourcingOrdersQuery.data.pagination}
+            isPending={outsourcingOrdersQuery.isFetching}
+          />
+        )}
+      </Surface>
 
-          {outsourcingOrdersQuery.isPending ? (
-            <TableQueryLoading rows={search.limit} />
-          ) : outsourcingOrdersQuery.isError ? (
-            <TableQueryError
-              error={outsourcingOrdersQuery.error.message}
-              onRetry={() => void outsourcingOrdersQuery.refetch()}
-            />
-          ) : (
-            <OutsourcingOrdersTable
-              rows={outsourcingOrdersQuery.data.data}
-              pagination={outsourcingOrdersQuery.data.pagination}
-              isPending={outsourcingOrdersQuery.isFetching}
-            />
-          )}
-        </Surface>
-
-        <OutsourcingOrderLegend />
-      </div>
-    </main>
+      <OutsourcingOrderLegend />
+    </div>
   )
 }

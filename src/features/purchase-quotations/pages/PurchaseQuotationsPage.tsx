@@ -1,7 +1,6 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
@@ -14,7 +13,9 @@ export function PurchaseQuotationsPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list, which resolves
   // via a plain useQuery so filter/pagination changes only update the table, not the whole route.
   // The filter reads/writes this same route search itself.
-  const search = useSearch({ from: "/(authed)/manage_/purchase-quotations" })
+  const search = useSearch({
+    from: "/(authed)/manage_/purchase-quotations/",
+  })
 
   const purchaseQuotationsQuery = useQuery({
     ...purchaseQuotationsQueryOptions(search),
@@ -22,39 +23,27 @@ export function PurchaseQuotationsPage() {
   })
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Báo giá NCC"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
-          { label: "Quản lý mua hàng" },
-          { label: "Báo giá NCC" },
-        ]}
-        notificationCount={5}
-      />
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+        <PurchaseQuotationsTableFilter />
 
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <PurchaseQuotationsTableFilter />
+        {purchaseQuotationsQuery.isPending ? (
+          <TableQueryLoading rows={search.limit} />
+        ) : purchaseQuotationsQuery.isError ? (
+          <TableQueryError
+            error={purchaseQuotationsQuery.error.message}
+            onRetry={() => void purchaseQuotationsQuery.refetch()}
+          />
+        ) : (
+          <PurchaseQuotationsTable
+            rows={purchaseQuotationsQuery.data.data}
+            pagination={purchaseQuotationsQuery.data.pagination}
+            isPending={purchaseQuotationsQuery.isFetching}
+          />
+        )}
+      </Surface>
 
-          {purchaseQuotationsQuery.isPending ? (
-            <TableQueryLoading rows={search.limit} />
-          ) : purchaseQuotationsQuery.isError ? (
-            <TableQueryError
-              error={purchaseQuotationsQuery.error.message}
-              onRetry={() => void purchaseQuotationsQuery.refetch()}
-            />
-          ) : (
-            <PurchaseQuotationsTable
-              rows={purchaseQuotationsQuery.data.data}
-              pagination={purchaseQuotationsQuery.data.pagination}
-              isPending={purchaseQuotationsQuery.isFetching}
-            />
-          )}
-        </Surface>
-
-        <PurchaseQuotationLegend />
-      </div>
-    </main>
+      <PurchaseQuotationLegend />
+    </div>
   )
 }

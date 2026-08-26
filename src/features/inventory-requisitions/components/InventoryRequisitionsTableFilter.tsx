@@ -24,8 +24,10 @@ const statusOptions = [
 ]
 
 export function InventoryRequisitionsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/inventory-requisitions" })
-  const navigate = useNavigate({ from: "/manage/inventory-requisitions" })
+  const search = useSearch({
+    from: "/(authed)/manage_/inventory-requisitions/",
+  })
+  const navigate = useNavigate({ from: "/manage/inventory-requisitions/" })
   const [q, setQ] = useState(search.q ?? "")
 
   const handleSearch = useDebounceCallback((term: string) => {

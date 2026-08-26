@@ -20,7 +20,7 @@ import { createSupplier } from "@/features/suppliers/api/server-functions/create
 import type { CreateSupplierSchema } from "@/features/suppliers/schemas/create-supplier.schema"
 
 export function CreateSupplierForm() {
-  const navigate = useNavigate({ from: "/manage/suppliers/create" })
+  const navigate = useNavigate({ from: "/manage/suppliers/create/" })
   const queryClient = useQueryClient()
   const createSupplierFn = useServerFn(createSupplier)
 

@@ -1,7 +1,6 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
@@ -10,7 +9,7 @@ import { PaymentRequestsTable } from "@/features/payment-requests/components/Pay
 import { PaymentRequestsTableFilter } from "@/features/payment-requests/components/PaymentRequestsTableFilter"
 
 export function PaymentRequestsPage() {
-  const search = useSearch({ from: "/(authed)/manage_/payment-requests" })
+  const search = useSearch({ from: "/(authed)/manage_/payment-requests/" })
 
   const paymentRequestsQuery = useQuery({
     ...paymentRequestsQueryOptions(search),
@@ -18,37 +17,25 @@ export function PaymentRequestsPage() {
   })
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Yêu cầu thanh toán"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
-          { label: "Quản lý mua hàng" },
-          { label: "Yêu cầu thanh toán" },
-        ]}
-        notificationCount={5}
-      />
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+        <PaymentRequestsTableFilter />
 
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <PaymentRequestsTableFilter />
-
-          {paymentRequestsQuery.isPending ? (
-            <TableQueryLoading rows={search.limit} />
-          ) : paymentRequestsQuery.isError ? (
-            <TableQueryError
-              error={paymentRequestsQuery.error.message}
-              onRetry={() => void paymentRequestsQuery.refetch()}
-            />
-          ) : (
-            <PaymentRequestsTable
-              rows={paymentRequestsQuery.data.data}
-              pagination={paymentRequestsQuery.data.pagination}
-              isPending={paymentRequestsQuery.isFetching}
-            />
-          )}
-        </Surface>
-      </div>
-    </main>
+        {paymentRequestsQuery.isPending ? (
+          <TableQueryLoading rows={search.limit} />
+        ) : paymentRequestsQuery.isError ? (
+          <TableQueryError
+            error={paymentRequestsQuery.error.message}
+            onRetry={() => void paymentRequestsQuery.refetch()}
+          />
+        ) : (
+          <PaymentRequestsTable
+            rows={paymentRequestsQuery.data.data}
+            pagination={paymentRequestsQuery.data.pagination}
+            isPending={paymentRequestsQuery.isFetching}
+          />
+        )}
+      </Surface>
+    </div>
   )
 }

@@ -26,8 +26,8 @@ const statusFilterOptions: SelectOption[] = [
 ]
 
 export function UsersTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/users" })
-  const navigate = useNavigate({ from: "/manage/users" })
+  const search = useSearch({ from: "/(authed)/manage_/users/" })
+  const navigate = useNavigate({ from: "/manage/users/" })
   const [q, setQ] = useState(search.q ?? "")
 
   const handleSearch = useDebounceCallback((term: string) => {

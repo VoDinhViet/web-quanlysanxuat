@@ -24,8 +24,8 @@ import { buildOptionsFromLabels } from "@/lib/utils"
 const statusOptions = buildOptionsFromLabels(supplierStatusLabels)
 
 export function SuppliersTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/suppliers" })
-  const navigate = useNavigate({ from: "/manage/suppliers" })
+  const search = useSearch({ from: "/(authed)/manage_/suppliers/" })
+  const navigate = useNavigate({ from: "/manage/suppliers/" })
 
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: supplierGroupOptions } = useSuspenseQuery(

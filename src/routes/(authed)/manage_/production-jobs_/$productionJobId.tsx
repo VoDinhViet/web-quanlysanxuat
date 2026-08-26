@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { productionJobQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobDetailPage } from "@/features/production-jobs/pages/ProductionJobDetailPage"
 import { productionJobDetailSearchSchema } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
@@ -16,5 +16,5 @@ export const Route = createFileRoute(
       productionJobQueryOptions(params.productionJobId)
     ),
   component: ProductionJobDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

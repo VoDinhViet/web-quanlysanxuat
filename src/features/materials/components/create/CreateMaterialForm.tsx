@@ -19,7 +19,7 @@ import { createMaterial } from "@/features/materials/api/server-functions/create
 import type { CreateMaterialSchema } from "@/features/materials/schemas/create-material.schema"
 
 export function CreateMaterialForm() {
-  const navigate = useNavigate({ from: "/manage/materials/create" })
+  const navigate = useNavigate({ from: "/manage/materials/create/" })
   const queryClient = useQueryClient()
   const createMaterialFn = useServerFn(createMaterial)
 

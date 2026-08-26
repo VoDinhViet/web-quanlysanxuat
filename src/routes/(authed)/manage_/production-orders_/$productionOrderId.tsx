@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { orderQueryOptions } from "@/features/orders/api"
 import {
   productionOrderLogsQueryOptions,
@@ -32,5 +32,5 @@ export const Route = createFileRoute(
     )
   },
   component: ProductionOrderDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

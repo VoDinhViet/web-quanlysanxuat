@@ -32,8 +32,8 @@ const statusOptions: SelectOption[] = [
 ]
 
 export function SupplierReturnsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/supplier-returns" })
-  const navigate = useNavigate({ from: "/manage/supplier-returns" })
+  const search = useSearch({ from: "/(authed)/manage_/supplier-returns/" })
+  const navigate = useNavigate({ from: "/manage/supplier-returns/" })
 
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: supplierOptions } = useSuspenseQuery(

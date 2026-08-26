@@ -27,8 +27,8 @@ const statusFilterOptions = [
 ]
 
 export function PurchaseRequestsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/purchase-requests" })
-  const navigate = useNavigate({ from: "/manage/purchase-requests" })
+  const search = useSearch({ from: "/(authed)/manage_/purchase-requests/" })
+  const navigate = useNavigate({ from: "/manage/purchase-requests/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Reference list with a fixed key — the loader already prefetched it, resolves synchronously.

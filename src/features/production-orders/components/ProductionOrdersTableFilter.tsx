@@ -25,8 +25,8 @@ const statusFilterOptions = [
 ]
 
 export function ProductionOrdersTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/production-orders" })
-  const navigate = useNavigate({ from: "/manage/production-orders" })
+  const search = useSearch({ from: "/(authed)/manage_/production-orders/" })
+  const navigate = useNavigate({ from: "/manage/production-orders/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as

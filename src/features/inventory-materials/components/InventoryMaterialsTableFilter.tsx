@@ -30,8 +30,8 @@ const statusOptions: SelectOption[] = [
 export function InventoryMaterialsTableFilter() {
   // useSearch keys off the file-based route id; useNavigate's `from` keys off the
   // resolved URL path — same split InventoryMaterialsPage uses for its own copy.
-  const search = useSearch({ from: "/(authed)/manage_/inventory-materials" })
-  const navigate = useNavigate({ from: "/manage/inventory-materials" })
+  const search = useSearch({ from: "/(authed)/manage_/inventory-materials/" })
+  const navigate = useNavigate({ from: "/manage/inventory-materials/" })
 
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: supplierOptions } = useSuspenseQuery(

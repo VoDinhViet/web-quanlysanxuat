@@ -6,7 +6,7 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { AppSidebar } from "@/components/shared/layout/AppSidebar"
 import {
   currentPermissionsQueryOptions,
@@ -67,7 +67,7 @@ type AuthedShellProps = {
 }
 
 // Shared by AuthedLayout and AuthedLayoutPending so the sidebar/providers shell never
-// disappears — only the child slot (real content vs. PageLoading) differs between the two.
+// disappears — only the child slot (real content vs. LayoutPagePending) differs between the two.
 function AuthedShell({ children }: AuthedShellProps) {
   return (
     <TooltipProvider>
@@ -100,14 +100,14 @@ function AuthedLayout() {
   )
 }
 
-// Same shell as AuthedLayout, PageLoading (the same placeholder every leaf route's own
+// Same shell as AuthedLayout, LayoutPagePending (the same placeholder every leaf route's own
 // pendingComponent already uses) standing in for the outlet — so this route's own pending
 // window looks identical to a leaf route's, sidebar included, instead of blanking to the
 // router's sidebar-less defaultPendingComponent.
 function AuthedLayoutPending() {
   return (
     <AuthedShell>
-      <PageLoading />
+      <LayoutPagePending />
     </AuthedShell>
   )
 }

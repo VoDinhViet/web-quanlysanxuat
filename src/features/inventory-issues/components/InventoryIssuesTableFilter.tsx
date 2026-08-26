@@ -36,8 +36,8 @@ const statusOptions = [
 ]
 
 export function InventoryIssuesTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/inventory-issues" })
-  const navigate = useNavigate({ from: "/manage/inventory-issues" })
+  const search = useSearch({ from: "/(authed)/manage_/inventory-issues/" })
+  const navigate = useNavigate({ from: "/manage/inventory-issues/" })
   const [q, setQ] = useState(search.q ?? "")
 
   const handleSearch = useDebounceCallback((term: string) => {

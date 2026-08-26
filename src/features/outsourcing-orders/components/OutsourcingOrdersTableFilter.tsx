@@ -32,8 +32,8 @@ const statusOptions = [
 ]
 
 export function OutsourcingOrdersTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/outsourcing-orders" })
-  const navigate = useNavigate({ from: "/manage/outsourcing-orders" })
+  const search = useSearch({ from: "/(authed)/manage_/outsourcing-orders/" })
+  const navigate = useNavigate({ from: "/manage/outsourcing-orders/" })
 
   const [q, setQ] = useState(search.q ?? "")
 

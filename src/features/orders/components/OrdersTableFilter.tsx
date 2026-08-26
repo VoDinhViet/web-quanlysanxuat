@@ -28,8 +28,8 @@ const statusFilterOptions = [
 ]
 
 export function OrdersTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/orders" })
-  const navigate = useNavigate({ from: "/manage/orders" })
+  const search = useSearch({ from: "/(authed)/manage_/orders/" })
+  const navigate = useNavigate({ from: "/manage/orders/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — the same delay the

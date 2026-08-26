@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage"
 import {
   orderItemsQueryOptions,
@@ -22,5 +22,5 @@ export const Route = createFileRoute("/(authed)/manage_/orders_/$orderId")({
       ),
     ]),
   component: OrderDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

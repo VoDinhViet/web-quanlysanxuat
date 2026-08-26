@@ -37,8 +37,8 @@ const statusOptions = [
 ]
 
 export function InventoryReceiptsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/inventory-receipts" })
-  const navigate = useNavigate({ from: "/manage/inventory-receipts" })
+  const search = useSearch({ from: "/(authed)/manage_/inventory-receipts/" })
+  const navigate = useNavigate({ from: "/manage/inventory-receipts/" })
   const [q, setQ] = useState(search.q ?? "")
 
   const handleSearch = useDebounceCallback((term: string) => {

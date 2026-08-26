@@ -46,8 +46,10 @@ const requiresIqcOptions = [
 ]
 
 export function OutsourcingReceiptsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/outsourcing-receipts" })
-  const navigate = useNavigate({ from: "/manage/outsourcing-receipts" })
+  const search = useSearch({
+    from: "/(authed)/manage_/outsourcing-receipts/",
+  })
+  const navigate = useNavigate({ from: "/manage/outsourcing-receipts/" })
 
   const { data: supplierOptions } = useSuspenseQuery(
     supplierOptionsQueryOptions()

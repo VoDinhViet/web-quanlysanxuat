@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { UpdateMaterialPage } from "@/features/materials/pages/UpdateMaterialPage"
 import { materialQueryOptions } from "@/features/materials/api/options"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
@@ -18,5 +18,5 @@ export const Route = createFileRoute(
       context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
     ]),
   component: UpdateMaterialPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { InventoryReceiptUpdatePage } from "@/features/inventory-receipts/pages/InventoryReceiptUpdatePage"
 import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/options"
 import { canUpdateInventoryReceipt } from "@/lib/types/inventory-receipt.type"
@@ -24,5 +24,5 @@ export const Route = createFileRoute(
     }
   },
   component: InventoryReceiptUpdatePage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

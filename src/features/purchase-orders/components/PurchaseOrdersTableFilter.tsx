@@ -26,8 +26,8 @@ const statusFilterOptions = [
 ]
 
 export function PurchaseOrdersTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/purchase-orders" })
-  const navigate = useNavigate({ from: "/manage/purchase-orders" })
+  const search = useSearch({ from: "/(authed)/manage_/purchase-orders/" })
+  const navigate = useNavigate({ from: "/manage/purchase-orders/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // The route loader already prefetches this — resolves synchronously off cache.

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { ProductDetailPage } from "@/features/products/pages/ProductDetailPage"
 import { productDetailSearchSchema } from "@/features/products/schemas/product-detail-search.schema"
 import { itemQueryOptions } from "@/features/products/api/options"
@@ -14,5 +14,5 @@ export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
       context.queryClient.ensureQueryData(unitOptionsQueryOptions("PRODUCT")),
     ]),
   component: ProductDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

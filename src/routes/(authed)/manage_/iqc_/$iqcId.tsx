@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { iqcQueryOptions } from "@/features/iqc/api/options"
 import { IqcDetailPage } from "@/features/iqc/pages/IqcDetailPage"
@@ -21,5 +21,5 @@ export const Route = createFileRoute("/(authed)/manage_/iqc_/$iqcId")({
     await context.queryClient.ensureQueryData(itemQueryOptions(iqc.item.id))
   },
   component: IqcDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

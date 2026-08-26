@@ -40,8 +40,8 @@ const dispositionOptions: SelectOption[] = [
 // "Yêu cầu QC" ở header chi tiết Job (ProductionJobDetailHeader.tsx), gọi thẳng
 // POST /production-jobs/:jobId/qc, không điều hướng sang màn OQC.
 export function OqcTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/oqc" })
-  const navigate = useNavigate({ from: "/manage/oqc" })
+  const search = useSearch({ from: "/(authed)/manage_/oqc/" })
+  const navigate = useNavigate({ from: "/manage/oqc/" })
 
   const [q, setQ] = useState(search.q ?? "")
 

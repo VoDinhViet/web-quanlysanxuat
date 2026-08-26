@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { UpdateUserPage } from "@/features/users/pages/UpdateUserPage"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import {
@@ -27,6 +27,6 @@ export const Route = createFileRoute("/(authed)/manage_/users_/$userId/update")(
       ])
     },
     component: UpdateUserPage,
-    pendingComponent: PageLoading,
+    pendingComponent: LayoutPagePending,
   }
 )

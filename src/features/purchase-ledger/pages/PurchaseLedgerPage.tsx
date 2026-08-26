@@ -1,7 +1,6 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
@@ -14,7 +13,7 @@ export function PurchaseLedgerPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list, which resolves
   // via a plain useQuery so filter/pagination changes only update the table, not the whole
   // route. The filter reads/writes this same route search itself.
-  const search = useSearch({ from: "/(authed)/manage_/purchase-ledger" })
+  const search = useSearch({ from: "/(authed)/manage_/purchase-ledger/" })
 
   const purchaseLedgerQuery = useQuery({
     ...purchaseLedgerQueryOptions(search),
@@ -22,39 +21,27 @@ export function PurchaseLedgerPage() {
   })
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Danh mục mua hàng"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
-          { label: "Quản lý mua hàng" },
-          { label: "Danh mục mua hàng" },
-        ]}
-        notificationCount={5}
-      />
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+        <PurchaseLedgerTableFilter />
 
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <PurchaseLedgerTableFilter />
+        {purchaseLedgerQuery.isPending ? (
+          <TableQueryLoading rows={search.limit} />
+        ) : purchaseLedgerQuery.isError ? (
+          <TableQueryError
+            error={purchaseLedgerQuery.error.message}
+            onRetry={() => void purchaseLedgerQuery.refetch()}
+          />
+        ) : (
+          <PurchaseLedgerTable
+            rows={purchaseLedgerQuery.data.data}
+            pagination={purchaseLedgerQuery.data.pagination}
+            isPending={purchaseLedgerQuery.isFetching}
+          />
+        )}
+      </Surface>
 
-          {purchaseLedgerQuery.isPending ? (
-            <TableQueryLoading rows={search.limit} />
-          ) : purchaseLedgerQuery.isError ? (
-            <TableQueryError
-              error={purchaseLedgerQuery.error.message}
-              onRetry={() => void purchaseLedgerQuery.refetch()}
-            />
-          ) : (
-            <PurchaseLedgerTable
-              rows={purchaseLedgerQuery.data.data}
-              pagination={purchaseLedgerQuery.data.pagination}
-              isPending={purchaseLedgerQuery.isFetching}
-            />
-          )}
-        </Surface>
-
-        <PurchaseLedgerLegend />
-      </div>
-    </main>
+      <PurchaseLedgerLegend />
+    </div>
   )
 }

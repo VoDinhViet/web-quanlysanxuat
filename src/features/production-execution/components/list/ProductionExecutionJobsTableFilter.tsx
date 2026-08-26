@@ -31,8 +31,10 @@ const statusFilterOptions = [
 // Cùng khuôn ProductionJobsTableFilter.tsx — reset chỉ xoá filter, giữ nguyên `operationId` (thẻ
 // công đoạn đang chọn ở panel 1 không phải một filter tuỳ chọn, đổi nó là đổi màn).
 export function ProductionExecutionJobsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/production-execution" })
-  const navigate = useNavigate({ from: "/manage/production-execution" })
+  const search = useSearch({
+    from: "/(authed)/manage_/production-execution/",
+  })
+  const navigate = useNavigate({ from: "/manage/production-execution/" })
   const [q, setQ] = useState(search.q ?? "")
 
   const client = useGetClientOptions()

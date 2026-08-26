@@ -27,8 +27,8 @@ const statusOptions = [
 ]
 
 export function PaymentRequestsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/payment-requests" })
-  const navigate = useNavigate({ from: "/manage/payment-requests" })
+  const search = useSearch({ from: "/(authed)/manage_/payment-requests/" })
+  const navigate = useNavigate({ from: "/manage/payment-requests/" })
   const [q, setQ] = useState(search.q ?? "")
   const [poCode, setPoCode] = useState(search.poCode ?? "")
 

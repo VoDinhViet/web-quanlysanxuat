@@ -17,7 +17,7 @@ import { createItem } from "@/features/products/api/server-functions/create-item
 import type { CreateProductSchema } from "@/features/products/schemas/create-product.schema"
 
 export function CreateProductForm() {
-  const navigate = useNavigate({ from: "/manage/products/create" })
+  const navigate = useNavigate({ from: "/manage/products/create/" })
   const queryClient = useQueryClient()
   const createItemFn = useServerFn(createItem)
 

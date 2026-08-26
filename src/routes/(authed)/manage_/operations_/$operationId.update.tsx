@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { operationQueryOptions } from "@/features/operations/api/options"
 import { UpdateOperationPage } from "@/features/operations/pages/UpdateOperationPage"
 
@@ -12,5 +12,5 @@ export const Route = createFileRoute(
       operationQueryOptions(params.operationId)
     ),
   component: UpdateOperationPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

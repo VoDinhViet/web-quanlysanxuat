@@ -3,10 +3,16 @@ import type { MakeRouteMatchUnion } from "@tanstack/react-router"
 import type { PermissionCode } from "@/lib/types/permission.type"
 import type { FileRouteTypes } from "@/routeTree.gen"
 
-/** Every `/manage` route, with `$param` placeholders exactly as a route match reports them. */
-export type ManageRoutePath = Extract<
-  FileRouteTypes["fullPaths"],
-  `/manage${string}`
+/**
+ * Every `/manage` route, with `$param` placeholders exactly as a route match reports them.
+ * A route split into its own layout route + data-owning child (see `architecture.md`'s
+ * "Layer boundaries") produces an extra index-route fullPath ending in "/" — the same page,
+ * same permission as its layout's own entry below, so it's excluded here rather than needing
+ * a near-duplicate key per split route.
+ */
+export type ManageRoutePath = Exclude<
+  Extract<FileRouteTypes["fullPaths"], `/manage${string}`>,
+  `${string}/`
 >
 
 /** The `fullPath` of any matched route — spans the whole tree, including the root's `""`. */

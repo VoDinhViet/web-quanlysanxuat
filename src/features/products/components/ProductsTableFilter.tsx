@@ -50,8 +50,8 @@ const typeFilterOptions: {
 ]
 
 export function ProductsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/products" })
-  const navigate = useNavigate({ from: "/manage/products" })
+  const search = useSearch({ from: "/(authed)/manage_/products/" })
+  const navigate = useNavigate({ from: "/manage/products/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // The route loader prefetches this hook's own q="" query, so `client.clients`

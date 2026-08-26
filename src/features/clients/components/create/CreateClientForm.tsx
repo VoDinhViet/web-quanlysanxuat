@@ -19,7 +19,7 @@ import { createClient } from "@/features/clients/api/server-functions/create-cli
 import type { CreateClientSchema } from "@/features/clients/schemas/create-client.schema"
 
 export function CreateClientForm() {
-  const navigate = useNavigate({ from: "/manage/clients/create" })
+  const navigate = useNavigate({ from: "/manage/clients/create/" })
   const queryClient = useQueryClient()
   const createClientFn = useServerFn(createClient)
 

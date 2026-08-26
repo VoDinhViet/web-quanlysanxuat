@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/options"
 import { InventoryReceiptDetailPage } from "@/features/inventory-receipts/pages/InventoryReceiptDetailPage"
 
@@ -12,5 +12,5 @@ export const Route = createFileRoute(
       inventoryReceiptQueryOptions(params.inventoryReceiptId)
     ),
   component: InventoryReceiptDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

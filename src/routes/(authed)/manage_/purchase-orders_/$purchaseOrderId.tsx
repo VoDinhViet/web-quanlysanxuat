@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api/options"
 import { PurchaseOrderDetailPage } from "@/features/purchase-orders/pages/PurchaseOrderDetailPage"
 
@@ -14,5 +14,5 @@ export const Route = createFileRoute(
       purchaseOrderQueryOptions(params.purchaseOrderId)
     ),
   component: PurchaseOrderDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

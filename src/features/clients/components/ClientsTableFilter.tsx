@@ -24,8 +24,8 @@ import { buildOptionsFromLabels } from "@/lib/utils"
 const statusOptions = buildOptionsFromLabels(clientStatusLabels)
 
 export function ClientsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/clients" })
-  const navigate = useNavigate({ from: "/manage/clients" })
+  const search = useSearch({ from: "/(authed)/manage_/clients/" })
+  const navigate = useNavigate({ from: "/manage/clients/" })
 
   const clientGroupOptionsQuery = useQuery(clientGroupOptionsQueryOptions())
   const [q, setQ] = useState(search.q ?? "")

@@ -39,8 +39,8 @@ const fulfillmentTypeFilterOptions = [
 ]
 
 export function OutboundOrdersTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/outbound-orders" })
-  const navigate = useNavigate({ from: "/manage/outbound-orders" })
+  const search = useSearch({ from: "/(authed)/manage_/outbound-orders/" })
+  const navigate = useNavigate({ from: "/manage/outbound-orders/" })
 
   const [q, setQ] = useState(search.q ?? "")
 

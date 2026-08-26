@@ -23,8 +23,8 @@ import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 
 export function MaterialsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/materials" })
-  const navigate = useNavigate({ from: "/manage/materials" })
+  const search = useSearch({ from: "/(authed)/manage_/materials/" })
+  const navigate = useNavigate({ from: "/manage/materials/" })
 
   const [q, setQ] = useState(search.q ?? "")
 

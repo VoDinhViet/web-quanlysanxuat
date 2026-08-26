@@ -26,8 +26,8 @@ const statusFilterOptions = [
 ]
 
 export function ProductionJobsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/production-jobs" })
-  const navigate = useNavigate({ from: "/manage/production-jobs" })
+  const search = useSearch({ from: "/(authed)/manage_/production-jobs/" })
+  const navigate = useNavigate({ from: "/manage/production-jobs/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // The route loader prefetches this hook's own q="" query, so `client.clients`

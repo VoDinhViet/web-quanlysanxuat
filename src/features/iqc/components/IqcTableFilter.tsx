@@ -37,8 +37,8 @@ const statusOptions: SelectOption[] = [
 ]
 
 export function IqcTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/iqc" })
-  const navigate = useNavigate({ from: "/manage/iqc" })
+  const search = useSearch({ from: "/(authed)/manage_/iqc/" })
+  const navigate = useNavigate({ from: "/manage/iqc/" })
 
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: supplierOptions } = useSuspenseQuery(

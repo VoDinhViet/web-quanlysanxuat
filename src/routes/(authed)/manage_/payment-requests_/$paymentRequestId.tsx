@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/feedback/PageLoading"
+import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
 import { paymentRequestQueryOptions } from "@/features/payment-requests/api/options"
 import { PaymentRequestDetailPage } from "@/features/payment-requests/pages/PaymentRequestDetailPage"
 
@@ -12,5 +12,5 @@ export const Route = createFileRoute(
       paymentRequestQueryOptions(params.paymentRequestId)
     ),
   component: PaymentRequestDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

@@ -11,8 +11,8 @@ import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 
 export function InventoryProductsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/inventory-products" })
-  const navigate = useNavigate({ from: "/manage/inventory-products" })
+  const search = useSearch({ from: "/(authed)/manage_/inventory-products/" })
+  const navigate = useNavigate({ from: "/manage/inventory-products/" })
 
   const [q, setQ] = useState(search.q ?? "")
 

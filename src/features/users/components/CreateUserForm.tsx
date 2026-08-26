@@ -20,7 +20,7 @@ import { createUser } from "@/features/users/api/server-functions/create-user.ap
 import type { CreateUserSchema } from "@/features/users/schemas/create-user.schema"
 
 export function CreateUserForm() {
-  const navigate = useNavigate({ from: "/manage/users/create" })
+  const navigate = useNavigate({ from: "/manage/users/create/" })
   const queryClient = useQueryClient()
   const createUserFn = useServerFn(createUser)
 

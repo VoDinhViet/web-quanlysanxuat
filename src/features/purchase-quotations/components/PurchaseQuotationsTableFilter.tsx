@@ -24,8 +24,10 @@ const statusFilterOptions = [
 ]
 
 export function PurchaseQuotationsTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/purchase-quotations" })
-  const navigate = useNavigate({ from: "/manage/purchase-quotations" })
+  const search = useSearch({
+    from: "/(authed)/manage_/purchase-quotations/",
+  })
+  const navigate = useNavigate({ from: "/manage/purchase-quotations/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as

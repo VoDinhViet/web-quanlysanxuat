@@ -2,7 +2,6 @@ import { useEffect } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
@@ -15,8 +14,10 @@ import {
 } from "@/features/production-execution/api/options"
 
 export function ProductionExecutionPage() {
-  const search = useSearch({ from: "/(authed)/manage_/production-execution" })
-  const navigate = useNavigate({ from: "/manage/production-execution" })
+  const search = useSearch({
+    from: "/(authed)/manage_/production-execution/",
+  })
+  const navigate = useNavigate({ from: "/manage/production-execution/" })
   const { operationId, limit, q, status, clientId, dueDateFrom, dueDateTo } =
     search
 
@@ -58,43 +59,31 @@ export function ProductionExecutionPage() {
   })
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Thực hiện sản xuất"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
-          { label: "Sản xuất" },
-          { label: "Thực hiện sản xuất" },
-        ]}
-        notificationCount={5}
-      />
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <Surface contentClassName="min-h-[calc(100svh-22rem)]">
+        <ProductionExecutionJobsTableFilter />
 
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <Surface contentClassName="min-h-[calc(100svh-22rem)]">
-          <ProductionExecutionJobsTableFilter />
+        {!operationId ? (
+          <div className="flex flex-1 items-center justify-center p-10 text-center text-sm text-muted-foreground">
+            Chọn một công đoạn để xem danh sách công việc.
+          </div>
+        ) : jobsQuery.isPending ? (
+          <TableQueryLoading rows={limit} />
+        ) : jobsQuery.isError ? (
+          <TableQueryError
+            error={jobsQuery.error.message}
+            onRetry={() => void jobsQuery.refetch()}
+          />
+        ) : (
+          <ProductionExecutionJobsTable
+            rows={jobsQuery.data.data}
+            pagination={jobsQuery.data.pagination}
+            isPending={jobsQuery.isFetching}
+          />
+        )}
+      </Surface>
 
-          {!operationId ? (
-            <div className="flex flex-1 items-center justify-center p-10 text-center text-sm text-muted-foreground">
-              Chọn một công đoạn để xem danh sách công việc.
-            </div>
-          ) : jobsQuery.isPending ? (
-            <TableQueryLoading rows={limit} />
-          ) : jobsQuery.isError ? (
-            <TableQueryError
-              error={jobsQuery.error.message}
-              onRetry={() => void jobsQuery.refetch()}
-            />
-          ) : (
-            <ProductionExecutionJobsTable
-              rows={jobsQuery.data.data}
-              pagination={jobsQuery.data.pagination}
-              isPending={jobsQuery.isFetching}
-            />
-          )}
-        </Surface>
-
-        <ProductionExecutionLegend />
-      </div>
-    </main>
+      <ProductionExecutionLegend />
+    </div>
   )
 }

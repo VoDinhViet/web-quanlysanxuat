@@ -15,7 +15,7 @@ export function ProductionExecutionJobActionsCell({
   productionJobId,
 }: ProductionExecutionJobActionsCellProps) {
   const { operationId } = useSearch({
-    from: "/(authed)/manage_/production-execution",
+    from: "/(authed)/manage_/production-execution/",
   })
 
   return (

@@ -25,8 +25,8 @@ const statusFilterOptions = [
 ]
 
 export function PurchaseLedgerTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/purchase-ledger" })
-  const navigate = useNavigate({ from: "/manage/purchase-ledger" })
+  const search = useSearch({ from: "/(authed)/manage_/purchase-ledger/" })
+  const navigate = useNavigate({ from: "/manage/purchase-ledger/" })
   const [q, setQ] = useState(search.q ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as

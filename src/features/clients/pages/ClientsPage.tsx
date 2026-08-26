@@ -1,7 +1,6 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
@@ -15,7 +14,7 @@ export function ClientsPage() {
   // changes only update the table, not the whole route. The filter reads/
   // writes this same route search itself (its own useSearch/useNavigate)
   // rather than through props.
-  const search = useSearch({ from: "/(authed)/manage_/clients" })
+  const search = useSearch({ from: "/(authed)/manage_/clients/" })
 
   const clientsQuery = useQuery({
     ...clientsQueryOptions(search),
@@ -23,37 +22,25 @@ export function ClientsPage() {
   })
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Danh sách khách hàng"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
-          { label: "Khách hàng" },
-          { label: "Danh sách khách hàng" },
-        ]}
-        notificationCount={5}
-      />
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <Surface contentClassName="min-h-[calc(100svh-13rem)]">
+        <ClientsTableFilter />
 
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-          <ClientsTableFilter />
-
-          {clientsQuery.isPending ? (
-            <TableQueryLoading rows={search.limit} />
-          ) : clientsQuery.isError ? (
-            <TableQueryError
-              error={clientsQuery.error.message}
-              onRetry={() => void clientsQuery.refetch()}
-            />
-          ) : (
-            <ClientsTable
-              rows={clientsQuery.data.data}
-              pagination={clientsQuery.data.pagination}
-              isPending={clientsQuery.isFetching}
-            />
-          )}
-        </Surface>
-      </div>
-    </main>
+        {clientsQuery.isPending ? (
+          <TableQueryLoading rows={search.limit} />
+        ) : clientsQuery.isError ? (
+          <TableQueryError
+            error={clientsQuery.error.message}
+            onRetry={() => void clientsQuery.refetch()}
+          />
+        ) : (
+          <ClientsTable
+            rows={clientsQuery.data.data}
+            pagination={clientsQuery.data.pagination}
+            isPending={clientsQuery.isFetching}
+          />
+        )}
+      </Surface>
+    </div>
   )
 }

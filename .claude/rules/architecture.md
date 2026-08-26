@@ -2,10 +2,21 @@
 
 - A route file (`src/routes/**`) may only contain `createFileRoute`, `validateSearch`,
   `beforeLoad`, `loader`, `pendingComponent`, and a `component` pointing at a page in
-  `src/features/`. `pendingComponent` is always the shared `PageLoading`
-  (`src/components/shared/feedback/PageLoading.tsx`) — never a route-specific loading component.
-  Exception: a layout route (e.g. `src/routes/(authed)/route.tsx`) may hold the provider/
-  shell JSX itself.
+  `src/features/`. A route that hasn't split into its own layout + data-owning child route
+  (see below) always uses the shared `LayoutPagePending`
+  (`src/components/shared/feedback/LayoutPagePending.tsx`) as its `pendingComponent` — never a
+  route-specific loading component. Exception: a layout route (e.g.
+  `src/routes/(authed)/route.tsx`) may hold the provider/shell JSX itself. A list route may
+  also split into its own page-level layout route (a directory's `route.tsx`, holding a real
+  `PageTitleBar` + `<Outlet/>`, no loader — so the header never blocks) plus a data-owning
+  child route in the same directory (usually `index.tsx`, keeping the normal
+  `validateSearch`/`loader`/`component`/`pendingComponent` shape) — see `production-jobs`
+  (`src/routes/(authed)/manage_/production-jobs/`) for the pilot. The child's
+  `pendingComponent` is `PagePending` (`src/components/shared/feedback/PagePending.tsx`, the
+  content-only spinner) instead of `LayoutPagePending`'s full-page header placeholder, since
+  the parent layout already renders the real header — using `LayoutPagePending` there would
+  stack its header placeholder under the real one. This is an opt-in exception for a route
+  that needs it, not the default shape for every list route — most stay flat.
 - All business logic lives in `src/features/<domain>/`. A feature may read another feature's
   data only through that feature's `api/index.ts` barrel (e.g. `import { unitOptionsQueryOptions }
 from "@/features/units/api"`) — never by importing its `components/`, `pages/`, `hooks/`,
