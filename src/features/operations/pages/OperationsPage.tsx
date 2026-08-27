@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, Search } from "lucide-react"
@@ -7,9 +7,10 @@ import { Plus, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Surface } from "@/components/shared/layout/Surface"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { PermissionGate } from "@/components/shared/PermissionGate"
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
+import { CreateOperationDialog } from "@/features/operations/components/CreateOperationDialog"
 import { OperationsTable } from "@/features/operations/components/OperationsTable"
 import { operationsQueryOptions } from "@/features/operations/api/options"
 
@@ -56,14 +57,16 @@ export function OperationsPage() {
             <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
           </div>
 
-          <RoutePermissionGate route="/manage/operations/create">
-            <Button asChild size="sm" className="text-xs">
-              <Link to="/manage/operations/create">
-                <Plus className="size-4" />
-                Tạo công đoạn
-              </Link>
-            </Button>
-          </RoutePermissionGate>
+          <PermissionGate permission="operations:create">
+            <CreateOperationDialog
+              trigger={
+                <Button size="sm" className="text-xs">
+                  <Plus className="size-4" />
+                  Tạo công đoạn
+                </Button>
+              }
+            />
+          </PermissionGate>
         </div>
 
         {operationsQuery.isPending ? (

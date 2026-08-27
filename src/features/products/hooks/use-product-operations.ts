@@ -8,7 +8,10 @@ import { deleteBomOperation } from "@/features/products/api/server-functions/del
 import { deleteItemOperation } from "@/features/products/api/server-functions/delete-item-operation.api"
 import { updateBomOperation } from "@/features/products/api/server-functions/update-bom-operation.api"
 import { updateItemOperation } from "@/features/products/api/server-functions/update-item-operation.api"
-import type { ProductOperation } from "@/lib/types/operation.type"
+import type {
+  OperationType,
+  ProductOperation,
+} from "@/lib/types/operation.type"
 
 export type OperationsTarget = {
   productId: string
@@ -19,6 +22,7 @@ export type MoveDirection = "up" | "down"
 
 export type CreateOperationInput = {
   operationId: string
+  type: OperationType
   sortOrder: number
   note?: string
 }
@@ -46,6 +50,7 @@ function useCreateOperation(target: OperationsTarget) {
             itemId: target.productId,
             bomItemId: target.bomItemId,
             operationId: input.operationId,
+            type: input.type,
             sortOrder: input.sortOrder,
             note: input.note,
           },
@@ -56,6 +61,7 @@ function useCreateOperation(target: OperationsTarget) {
         data: {
           itemId: target.productId,
           operationId: input.operationId,
+          type: input.type,
           sortOrder: input.sortOrder,
           note: input.note,
         },
@@ -178,7 +184,7 @@ function useDeleteOperation(target: OperationsTarget) {
 }
 
 export interface UseProductOperationsResult {
-  create: (operationId: string, note?: string) => void
+  create: (operationId: string, type: OperationType, note?: string) => void
   update: (stepId: string, input: UpdateOperationInput) => void
   move: (index: number, direction: MoveDirection) => void
   remove: (stepId: string) => void
@@ -199,12 +205,13 @@ export function useProductOperations(
   const moveOperation = useMoveOperation(target)
   const deleteOperation = useDeleteOperation(target)
 
-  function create(operationId: string, note?: string) {
+  function create(operationId: string, type: OperationType, note?: string) {
     const nextSortOrder =
       operations.reduce((max, item) => Math.max(max, item.sortOrder), -1) + 1
 
     createOperation.mutate({
       operationId,
+      type,
       sortOrder: nextSortOrder,
       note,
     })

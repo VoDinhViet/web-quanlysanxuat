@@ -18,6 +18,7 @@ import { TablePagination } from "@/components/shared/data/TablePagination"
 import { inventoryMaterialColumns } from "@/features/inventory-materials/components/InventoryMaterialsTableColumns"
 import { cn } from "@/lib/utils"
 import type { MaterialInventoryItem } from "@/lib/types/inventory-material.type"
+import { resolveInventoryStatus } from "@/lib/types/inventory-material.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
 type InventoryMaterialsTableProps = {
@@ -31,7 +32,7 @@ type InventoryMaterialsTableProps = {
 function inventoryRowClassName(
   item: MaterialInventoryItem
 ): string | undefined {
-  return item.status === "SHORTAGE"
+  return resolveInventoryStatus(item.available, item.minStock) === "SHORTAGE"
     ? "border-l-2 border-l-destructive"
     : undefined
 }

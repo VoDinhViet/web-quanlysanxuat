@@ -48,8 +48,8 @@ type OperationTypeContent = {
 }
 
 // Tint recipe mirrors SuppliersTableColumns' status badges: shadcn Badge
-// (variant="outline") + a bg-<token>/15 text-<token> tint. Read-only — an
-// operation's type belongs to the master catalog entry, not to this routing step.
+// (variant="outline") + a bg-<token>/15 text-<token> tint. `type` is chosen per
+// routing step at attach time below, not a master catalog attribute.
 const operationTypeStyles: Record<OperationType, string> = {
   [OperationType.INHOUSE]: "bg-primary/15 text-primary",
   [OperationType.OUTSOURCE]:
@@ -97,18 +97,18 @@ export function ProductOperationsPanel({
 }) {
   const canManage = useHasPermission("items:bom-manage")
   const { create, move, remove } = useProductOperations(target, operations)
-  const [typeFilter, setTypeFilter] = useState<OperationType>(
-    OperationType.INHOUSE
-  )
-  const operationPicker = useGetOperationOptions(typeFilter)
+  const operationPicker = useGetOperationOptions()
   const [selectedOperationId, setSelectedOperationId] = useState<
     string | undefined
   >(undefined)
+  const [selectedType, setSelectedType] = useState<OperationType>(
+    OperationType.INHOUSE
+  )
   const [note, setNote] = useState("")
 
   function handleAdd() {
     if (!selectedOperationId) return
-    create(selectedOperationId, note.trim() || undefined)
+    create(selectedOperationId, selectedType, note.trim() || undefined)
     setSelectedOperationId(undefined)
     setNote("")
   }
@@ -165,7 +165,7 @@ export function ProductOperationsPanel({
                   {step.operation.name}
                 </TableCell>
                 <TableCell>
-                  <OperationTypeBadge type={step.operation.type} />
+                  <OperationTypeBadge type={step.type} />
                 </TableCell>
                 <TableCell className="font-medium text-muted-foreground">
                   {step.note ?? "—"}
@@ -219,8 +219,10 @@ export function ProductOperationsPanel({
               </TableCell>
               <TableCell>
                 <Select
-                  value={typeFilter}
-                  onValueChange={(next) => setTypeFilter(next as OperationType)}
+                  value={selectedType}
+                  onValueChange={(next) =>
+                    setSelectedType(next as OperationType)
+                  }
                 >
                   <SelectTrigger className="h-9 w-full text-xs">
                     <SelectValue />

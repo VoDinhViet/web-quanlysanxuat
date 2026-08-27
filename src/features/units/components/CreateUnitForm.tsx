@@ -1,7 +1,6 @@
-import { useEffect, useRef } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
+import { Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -12,7 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useAppForm } from "@/hooks/use-app-form"
-import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { UnitScopesField } from "@/features/units/components/UnitScopesField"
 import { createUnit } from "@/features/units/api/server-functions/create-unit.api"
 import {
@@ -30,15 +28,9 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
   const queryClient = useQueryClient()
   const createUnitFn = useServerFn(createUnit)
 
-  const { draft, saveDraft, clearDraft } = useFormDraft<CreateUnitSchema>(
-    "qlsx:draft:create-unit"
-  )
-  const draftRestoredRef = useRef(false)
-
   const { mutate: create, isPending } = useMutation({
     mutationFn: (value: CreateUnitSchema) => createUnitFn({ data: value }),
     onSuccess: async () => {
-      clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["units"] })
       onSuccess()
     },
@@ -52,14 +44,6 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
     },
     onSubmit: ({ value }) => create(value),
   })
-
-  // Auto-restore a saved draft into the form once, after localStorage hydrates.
-  useEffect(() => {
-    if (!draftRestoredRef.current && draft) {
-      draftRestoredRef.current = true
-      restoreFormDraft(form, draft)
-    }
-  }, [draft, form])
 
   return (
     <form
@@ -77,95 +61,54 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
           Thêm đơn vị tính
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Mã, tên và phạm vi sử dụng của đơn vị tính
+          Tên và phạm vi sử dụng của đơn vị tính — mã được cấp tự động
         </DialogDescription>
       </DialogHeader>
 
-      <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
-        <form.AppField name="code">
-          {(field) => (
-            <field.TextField
-              label="Mã đơn vị tính"
-              required
-              placeholder="Nhập mã đơn vị tính, vd. THUNG"
-              disabled={isPending}
-            />
-          )}
-        </form.AppField>
-
-        <form.AppField name="name">
-          {(field) => (
-            <field.TextField
-              label="Tên đơn vị tính"
-              required
-              placeholder="Nhập tên đơn vị tính, vd. Thùng"
-              disabled={isPending}
-            />
-          )}
-        </form.AppField>
-      </div>
+      <form.AppField name="name">
+        {(field) => (
+          <field.TextField
+            label="Tên đơn vị tính"
+            required
+            placeholder="Nhập tên đơn vị tính, vd. Thùng"
+            disabled={isPending}
+          />
+        )}
+      </form.AppField>
 
       <UnitScopesField form={form} disabled={isPending} />
 
-      <DialogFooter className="flex-wrap items-center gap-2 sm:justify-between">
+      <DialogFooter className="gap-2">
         <Button
           type="button"
-          variant="ghost"
-          className="text-muted-foreground hover:text-foreground"
+          variant="outline"
           disabled={isPending}
           onClick={onCancel}
         >
           Hủy
         </Button>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            disabled={isPending}
-            onClick={() => {
-              form.reset()
-              restoreFormDraft(form, createUnitFormDefaultValues)
-              clearDraft()
-            }}
-          >
-            <RotateCcw className="size-4" />
-            Đặt lại
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isPending}
-            onClick={() => {
-              saveDraft(form.state.values)
-              toast.success("Đã lưu nháp")
-            }}
-          >
-            <FileText className="size-4" />
-            Lưu nháp
-          </Button>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
-            {([canSubmit, isSubmitting]) => (
-              <Button
-                type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
-              >
-                {isSubmitting || isPending ? (
-                  <>
-                    <Loader2 className="animate-spin" />
-                    Đang lưu
-                  </>
-                ) : (
-                  <>
-                    <Save />
-                    Lưu đơn vị tính
-                  </>
-                )}
-              </Button>
-            )}
-          </form.Subscribe>
-        </div>
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+        >
+          {([canSubmit, isSubmitting]) => (
+            <Button
+              type="submit"
+              disabled={!canSubmit || isSubmitting || isPending}
+            >
+              {isSubmitting || isPending ? (
+                <>
+                  <Loader2 className="animate-spin" />
+                  Đang lưu
+                </>
+              ) : (
+                <>
+                  <Save />
+                  Lưu đơn vị tính
+                </>
+              )}
+            </Button>
+          )}
+        </form.Subscribe>
       </DialogFooter>
     </form>
   )

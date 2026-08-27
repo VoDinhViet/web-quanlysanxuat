@@ -1,9 +1,11 @@
 import type { UserRef } from "@/lib/types/user.type"
 
-export enum OperationType {
-  INHOUSE = "INHOUSE",
-  OUTSOURCE = "OUTSOURCE",
-}
+export const OperationType = {
+  INHOUSE: "INHOUSE",
+  OUTSOURCE: "OUTSOURCE",
+} as const
+
+export type OperationType = (typeof OperationType)[keyof typeof OperationType]
 
 export enum OperationStatus {
   ACTIVE = "ACTIVE",
@@ -22,12 +24,13 @@ export const operationStatusLabels: Record<OperationStatus, string> = {
 
 /**
  * Mirrors backend's OperationResDto / OperationRefResDto — the master catalog operation entity.
+ * No `type` here — Inhouse/Outsource isn't a fixed catalog attribute, it's chosen per BOM
+ * attachment (see `ProductOperation` below).
  */
 export type Operation = {
   id: string
   code: string
   name: string
-  type: OperationType
 }
 
 /** Legacy alias for backward compatibility */
@@ -43,7 +46,6 @@ export type OperationDetail = {
   id: string
   code: string
   name: string
-  type: OperationType
   note: string | null
   status: OperationStatus
   creatorBy: UserRef
@@ -52,13 +54,16 @@ export type OperationDetail = {
 }
 
 /**
- * Mirrors backend's ProductOperationResDto / BomOperationResDto — one step of a product or BOM item routing.
+ * Mirrors backend's ProductOperationResDto / BomOperationResDto — one step of a product or BOM item
+ * routing. `type` lives here, not on `Operation` — the same catalog operation can be Inhouse on one
+ * routing and Outsource on another, chosen when it's attached (see ProductOperationsPanel).
  */
 export type ProductOperation = {
   id: string
   sortOrder: number
   note: string | null
   operation: Operation
+  type: OperationType
   createdAt: string
   updatedAt: string
 }

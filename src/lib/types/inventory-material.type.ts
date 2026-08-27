@@ -1,8 +1,9 @@
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 
-/** Tình trạng tồn kho — tính lúc đọc trên backend (không lưu cột nào), giá trị khớp
- *  1:1 với backend's `StockStatus` (be-quanlysanxuat/src/api/inventory/inventory.constant.ts).
+/** Tình trạng tồn kho — backend không còn trả field này (chỉ còn dùng để lọc, `?status=`), FE tự
+ *  suy từ `available`/`minStock` bằng `resolveInventoryStatus` để hiển thị. Ba ngưỡng khớp 1:1 với
+ *  backend's `StockStatus` (be-quanlysanxuat/src/api/inventory/inventory.constant.ts):
  *  - NORMAL: available >= minStock (Bình thường)
  *  - WARNING: 0 <= available < minStock (Cảnh báo)
  *  - SHORTAGE: available < 0 (Thiếu) */
@@ -14,23 +15,28 @@ export const inventoryStatusLabels: Record<InventoryStatus, string> = {
   SHORTAGE: "Thiếu",
 }
 
-/** Backend's full `ItemType` (FG/WIP/RM) — wider than this app's own `ItemType`
- *  (`@/lib/types/item.type.ts`), which is narrowed to FG/WIP only for the items/BOM feature. This
- *  call fetches `itemType=RM` but the response still carries `type` for every row, so mirror the
- *  full backend enum here instead of reusing the narrowed one. */
-export type InventoryItemType = "FG" | "WIP" | "RM"
+export function resolveInventoryStatus(
+  available: number,
+  minStock: number
+): InventoryStatus {
+  if (available < 0) {
+    return "SHORTAGE"
+  }
+  if (available < minStock) {
+    return "WARNING"
+  }
+  return "NORMAL"
+}
 
-/** Mirrors the backend's InventoryItemResDto (GET /api/inventory) — field names match the backend
- *  1:1 (not translated to friendlier FE names), same convention as `ProductionJobIssue`. On this
- *  screen (`itemType=RM`), `reserved`/`bomDemand` are real numbers since be-quanlysanxuat's
- *  BUG-031/032 fix: `reserved` = Σ phiếu lãnh vật tư `APPROVED` (mọi `type`); `bomDemand` = nhu cầu
- *  BOM Job đang mở chưa có phiếu lãnh **sản xuất** (`type = PRODUCTION`) nào giữ — phiếu `type =
- *  OTHER` không gắn Job nên không trừ vào đây (BE fix, xem `inventory.service.ts`'s own comments). */
+/** Mirrors the backend's InventoryMaterialResDto (GET /api/inventory-materials) — field names
+ *  match the backend 1:1 (not translated to friendlier FE names). No `type` (route is already
+ *  RM-only, backend stopped sending it). `reserved` = Σ phiếu lãnh vật tư `APPROVED` (mọi `type`);
+ *  `bomDemand` = nhu cầu BOM Job đang mở chưa có phiếu lãnh **sản xuất** (`type = PRODUCTION`) nào
+ *  giữ — phiếu `type = OTHER` không gắn Job nên không trừ vào đây. */
 export type MaterialInventoryItem = {
   id: string
   code: string
   name: string
-  type: InventoryItemType
   unit: Unit
   supplier: SupplierRef | null
   image: { url: string } | null
@@ -44,5 +50,4 @@ export type MaterialInventoryItem = {
   available: number
   /** Định mức tồn tối thiểu */
   minStock: number
-  status: InventoryStatus
 }

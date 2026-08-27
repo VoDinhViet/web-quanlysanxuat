@@ -34,7 +34,6 @@ import { pendingOrderItemsQueryOptions } from "@/features/outsourcing-receipts/a
 import { buildCreateOutsourcingReceiptPickerColumns } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptPickerColumns"
 import { createOutsourcingReceiptFormDefaultValues } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import { withForm } from "@/hooks/use-app-form"
-import { OperationType } from "@/lib/types/operation.type"
 import { cn } from "@/lib/utils"
 import type { CreateOutsourcingReceiptItemValue } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import type { PendingOrderItem } from "@/lib/types/outsourcing-receipt.type"
@@ -92,9 +91,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
     const items = itemsField.state.value
     const lockedSupplierId = items.length > 0 ? items[0].supplierId : undefined
 
-    const { options: operationOptions } = useGetOperationOptions(
-      OperationType.OUTSOURCE
-    )
+    const { options: operationOptions } = useGetOperationOptions()
 
     const query = useQuery({
       ...pendingOrderItemsQueryOptions({

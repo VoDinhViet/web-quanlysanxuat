@@ -1,7 +1,7 @@
 import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
-// Mirrors the backend's GetMaterialInventoryReqDto (GET /api/inventory/materials). Uses
+// Mirrors the backend's GetInventoryMaterialsReqDto (GET /api/inventory-materials). Uses
 // `.catch()` on every field so a hand-mangled URL degrades gracefully instead of throwing and
 // taking the route down. No `materialGroupId`/`materialTypeId` — the backend dropped "nhóm hàng
 // hoá"/"loại vật tư" as concepts when products+materials merged into `items` (`type` is the only

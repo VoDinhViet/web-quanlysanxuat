@@ -3,9 +3,8 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { Plus, Wrench } from "lucide-react"
+import { ClipboardList } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -14,24 +13,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { CreateOperationDialog } from "@/features/operations/components/CreateOperationDialog"
-import { operationColumns } from "@/features/operations/components/OperationsTableColumns"
+import { TablePagination } from "@/components/shared/data/TablePagination"
+import { inventoryProductLedgerColumns } from "@/features/inventory-products/components/detail/InventoryProductLedgerColumns"
 import { cn } from "@/lib/utils"
-import type { OperationDetail } from "@/lib/types/operation.type"
+import type { ProductLedgerEntry } from "@/lib/types/product-ledger.type"
+import type { Pagination } from "@/lib/types/pagination.type"
 
-type OperationsTableProps = {
-  rows: OperationDetail[]
+type InventoryProductLedgerTableProps = {
+  rows: ProductLedgerEntry[]
+  pagination: Pagination
   isPending: boolean
 }
 
-// Bảng danh sách công đoạn — không phân trang, vì GET /operations trả cả danh mục (không quá vài
-// chục dòng) chứ không phải offset/limit như các danh sách khác, cùng khuôn RolesTable.
-export function OperationsTable({ rows, isPending }: OperationsTableProps) {
+// The stock-card ledger table — same useReactTable/flexRender boilerplate as
+// PurchaseLedgerTable.tsx, this app's other from-scratch ledger table. Reads
+// GET /api/inventory-products/:itemId/ledger (be-quanlysanxuat's ProductLedgerEntryResDto).
+export function InventoryProductLedgerTable({
+  rows,
+  pagination,
+  isPending,
+}: InventoryProductLedgerTableProps) {
   const table = useReactTable({
     data: rows,
-    columns: operationColumns,
+    columns: inventoryProductLedgerColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -44,21 +49,9 @@ export function OperationsTable({ rows, isPending }: OperationsTableProps) {
     >
       {rows.length === 0 ? (
         <TableEmpty
-          icon={Wrench}
-          title="Chưa có công đoạn nào"
-          description="Bắt đầu bằng cách thêm công đoạn đầu tiên vào danh mục của bạn."
-          action={
-            <PermissionGate permission="operations:create">
-              <CreateOperationDialog
-                trigger={
-                  <Button size="sm" className="text-xs">
-                    <Plus className="size-4" />
-                    Tạo công đoạn
-                  </Button>
-                }
-              />
-            </PermissionGate>
-          }
+          icon={ClipboardList}
+          title="Chưa có giao dịch tồn kho nào"
+          description="Lịch sử nhập/xuất của thành phẩm này sẽ hiển thị tại đây."
         />
       ) : (
         <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
@@ -107,6 +100,8 @@ export function OperationsTable({ rows, isPending }: OperationsTableProps) {
           </Table>
         </div>
       )}
+
+      <TablePagination pagination={pagination} className="pt-4" />
     </div>
   )
 }

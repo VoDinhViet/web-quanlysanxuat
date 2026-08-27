@@ -8,6 +8,7 @@ import {
   MaterialQuantityCell,
 } from "@/features/inventory-materials/components/InventoryMaterialsTableCells"
 import type { MaterialInventoryItem } from "@/lib/types/inventory-material.type"
+import { resolveInventoryStatus } from "@/lib/types/inventory-material.type"
 
 const stockFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -143,14 +144,17 @@ export const inventoryMaterialColumns = [
     ),
   }),
 
-  inventoryColumnHelper.accessor("status", {
+  inventoryColumnHelper.display({
+    id: "status",
     header: "Trạng thái",
     meta: {
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => (
-      <InventoryMaterialStatusBadge status={getValue()} />
+    cell: ({ row }) => (
+      <InventoryMaterialStatusBadge
+        status={resolveInventoryStatus(row.original.available, row.original.minStock)}
+      />
     ),
   }),
 

@@ -34,7 +34,6 @@ import { buildCreateOutsourcingOrderPickerColumns } from "@/features/outsourcing
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { useGetProductionJobOptions } from "@/features/production-jobs/api"
 import { withForm } from "@/hooks/use-app-form"
-import { OperationType } from "@/lib/types/operation.type"
 import { cn } from "@/lib/utils"
 import type { CreateOutsourcingOrderItemValue } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
@@ -82,9 +81,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
     const [operationId, setOperationId] = useState(initialOperationId)
 
     const { options: jobOptions } = useGetProductionJobOptions()
-    const { options: operationOptions } = useGetOperationOptions(
-      OperationType.OUTSOURCE
-    )
+    const { options: operationOptions } = useGetOperationOptions()
 
     // `useField`, not `form.Field`'s render-prop — useReactTable/useMemo below are real hooks,
     // same reasoning as PurchaseRequestCreateMaterialPickerSection.tsx.

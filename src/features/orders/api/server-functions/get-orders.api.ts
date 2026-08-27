@@ -13,6 +13,7 @@ type OrdersQueryParams = {
   q?: string
   status?: OrderStatus
   assignedUserId?: string
+  itemId?: string
   startDate?: string
   endDate?: string
   order?: SortOrder

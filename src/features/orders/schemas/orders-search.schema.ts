@@ -21,6 +21,14 @@ export const ordersSearchSchema = z.object({
   q: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(OrderStatus).optional().catch(undefined),
   assignedUserId: z.string().trim().min(1).optional().catch(undefined),
+  // Used programmatically by the finished-goods inventory detail screen's "PO liên quan" card
+  // (InventoryProductRecentActivityCards.tsx), via `ordersQueryOptions({itemId, limit: 10, ...})`
+  // (only the first row is used) through this feature's `api/index.ts` barrel — not a filter on
+  // this screen's own filter bar. The item lives on an order *line*, so this means joining
+  // through `order_items.item_id`, not an `orders`-table column — backend prerequisite, not yet
+  // on GetOrdersReqDto; proceeding on the assumption it lands alongside this frontend change,
+  // per the plan.
+  itemId: z.uuid().optional().catch(undefined),
   orderDateFrom: isoDateFilter,
   orderDateTo: isoDateFilter,
   order: z.enum(["ASC", "DESC"]).optional().catch(undefined),

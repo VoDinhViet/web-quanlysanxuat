@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Edit3, Trash2 } from "lucide-react"
 import { DateTime } from "luxon"
@@ -6,11 +5,10 @@ import { DateTime } from "luxon"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { DeleteOperationDialog } from "@/features/operations/components/DeleteOperationDialog"
+import { UpdateOperationDialog } from "@/features/operations/components/UpdateOperationDialog"
 import {
   operationStatusLabels,
-  operationTypeLabels,
   OperationStatus,
 } from "@/lib/types/operation.type"
 import type { OperationDetail } from "@/lib/types/operation.type"
@@ -45,13 +43,6 @@ export const operationColumns = [
       <p className="truncate text-xs font-medium text-foreground">
         {getValue()}
       </p>
-    ),
-  }),
-  operationColumnHelper.accessor("type", {
-    header: "Hình thức",
-    meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => (
-      <Badge variant="outline">{operationTypeLabels[getValue()]}</Badge>
     ),
   }),
   operationColumnHelper.accessor("note", {
@@ -89,20 +80,19 @@ export const operationColumns = [
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <RoutePermissionGate route="/manage/operations/$operationId/update">
-            <IconButton
-              label="Chỉnh sửa"
-              asChild
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <Link
-                to="/manage/operations/$operationId/update"
-                params={{ operationId: operation.id }}
-              >
-                <Edit3 className="size-3.5" />
-              </Link>
-            </IconButton>
-          </RoutePermissionGate>
+          <PermissionGate permission="operations:update">
+            <UpdateOperationDialog
+              operation={operation}
+              trigger={
+                <IconButton
+                  label="Chỉnh sửa"
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                >
+                  <Edit3 className="size-3.5" />
+                </IconButton>
+              }
+            />
+          </PermissionGate>
           <PermissionGate permission="operations:delete">
             <DeleteOperationDialog
               operation={operation}

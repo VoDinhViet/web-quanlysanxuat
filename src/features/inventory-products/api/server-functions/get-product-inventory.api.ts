@@ -22,8 +22,8 @@ function resolveGetProductInventoryErrorMessage(error: unknown): string {
   }
 }
 
-// `asOfDate` means "tồn tại thời điểm 23:59 ngày này" (see GetInventoryReqDto's own doc comment
-// on the backend), but the backend's `lte(transactionDate, asOfDate)` doesn't add
+// `asOfDate` means "tồn tại thời điểm 23:59 ngày này" (see GetInventoryProductsReqDto's own doc
+// comment on the backend), but the backend's `lte(transactionDate, asOfDate)` doesn't add
 // that end-of-day offset itself — unlike getInventoryTransactions's `endDate`, which does. A bare
 // "yyyy-MM-dd" would parse as UTC midnight and drop same-(Vietnam-)day transactions, so the
 // end-of-day instant has to be built here, in Asia/Ho_Chi_Minh, before it goes on the wire.
@@ -57,11 +57,11 @@ export const getProductInventory = createServerFn({ method: "GET" })
   .handler(
     async ({ data }): Promise<PaginatedResponse<ProductInventoryItem>> => {
       try {
-        // `itemType: "FG"` là bắt buộc, không phải trang trí — bỏ trống thì backend mặc định lọc
-        // gộp FG+RM (xem GetInventoryReqDto), lẫn cả vật tư vào màn tồn kho thành phẩm.
+        // `/api/inventory-products` chỉ trả FG (be-quanlysanxuat's InventoryProductsService) —
+        // không còn cần tự gửi `itemType` như route `/api/inventory` cũ.
         const response = await http.get<
           PaginatedResponse<ProductInventoryItem>
-        >("/api/inventory", { params: { ...data, itemType: "FG" } })
+        >("/api/inventory-products", { params: data })
 
         return response.data
       } catch (error) {

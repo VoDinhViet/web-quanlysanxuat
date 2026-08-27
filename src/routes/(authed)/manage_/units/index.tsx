@@ -12,10 +12,6 @@ export const Route = createFileRoute("/(authed)/manage_/units/")({
   // UnitsPage via useQuery instead — see `(authed)/manage_/clients/index.tsx`, the pattern
   // this mirrors.
   loader: ({ context, location }) => {
-    // UnitStatCards reads the unfiltered catalog on its own (mirrors suppliers'
-    // SupplierStatCards) — seed the cache without blocking the route/grid on it.
-    void context.queryClient.prefetchQuery(unitsQueryOptions({}))
-
     return context.queryClient.ensureQueryData(
       unitsQueryOptions(unitsSearchSchema.parse(location.search))
     )

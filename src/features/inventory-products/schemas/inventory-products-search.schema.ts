@@ -1,15 +1,15 @@
 import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
-// Mirrors the subset of GetInventoryReqDto (GET /api/inventory) this screen sends; the call is
-// pinned to itemType=FG in get-product-inventory.api.ts.
-// Bỏ `clientName`/`poCode`/`poCodes` — mock cũ tự nghĩ ra: `InventoryItemResDto` không trả
-// `client` và `GetInventoryReqDto` không nhận `clientId` (cột `items.client_id` có thật trong DB
-// nhưng endpoint tồn kho không chiếu ra); "PO" thì không tồn tại ở đâu cả — `orders` chỉ có `code`
-// nội bộ, và dòng tồn kho không liên kết ngược về đơn nào.
-// Không có `supplierId`/`status`/`warehouseId` — NCC chỉ có ý nghĩa với RM (luôn null trên FG),
-// trạng thái không có cột nào hiển thị, và bảng không có cột Kho. DTO vẫn nhận các tham số này
-// server-side, FE màn này chỉ không gửi.
+// Mirrors the subset of GetInventoryProductsReqDto (GET /api/inventory-products) this screen
+// sends — the route is already FG-only, no more `itemType` pin needed.
+// Bỏ `clientName`/`poCode`/`poCodes` — mock cũ tự nghĩ ra: `InventoryProductResDto` không trả
+// `client` và backend không nhận `clientId` (cột `items.client_id` có thật trong DB nhưng endpoint
+// tồn kho không chiếu ra); "PO" thì không tồn tại ở đâu cả — `orders` chỉ có `code` nội bộ, và
+// dòng tồn kho không liên kết ngược về đơn nào.
+// Không có `status`/`warehouseId` — `status` không còn cột nào hiển thị (backend chỉ dùng để lọc,
+// không trả field), bảng không có cột Kho. DTO vẫn nhận `status`/`warehouseId` server-side, FE màn
+// này chỉ không gửi. `supplierId` không còn tồn tại trên DTO này nữa — chỉ RM (`GetInventoryMaterialsReqDto`) có.
 // `asOfDate`: `yyyy-MM-dd`, calendar date picked in "Xem tồn tại ngày". Undefined = tồn hiện tại.
 export const inventoryProductsSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
