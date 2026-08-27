@@ -1,6 +1,12 @@
 import { Fragment, useState } from "react"
 import { Image } from "@unpic/react"
-import { AltArrowDown, ArrowRightDown, Layers, Route } from "@solar-icons/react"
+import {
+  AltArrowDown,
+  ArrowRightDown,
+  InfoCircle,
+  Layers,
+  Route,
+} from "@solar-icons/react"
 import { FileText, ImageOff, Pencil, Plus, Trash2 } from "lucide-react"
 
 import { ButtonGroup } from "@/components/ui/button-group"
@@ -119,6 +125,52 @@ function LevelBadge({ level }: { level: number }) {
     <span className="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-400">
       <span className="size-2 rounded-full bg-amber-500" />
       {level}
+    </span>
+  )
+}
+
+// Short usage hint above the tree — the table has no other on-screen
+// explanation of the add/công đoạn affordances, so a first-time user has
+// nothing to go on beyond the icon tooltips.
+function BomTableGuidance() {
+  return (
+    <div className="flex items-start gap-2 text-xs text-muted-foreground">
+      <InfoCircle className="mt-0.5 size-4 shrink-0 text-primary" />
+      <p>
+        Cây kết cấu (BOM) thể hiện các bán thành phẩm và vật tư lắp ráp nên sản
+        phẩm. Nhấn <span className="font-medium text-foreground">"+"</span> để
+        thêm thành phần con, bấm biểu tượng công đoạn để xem hoặc chỉnh sửa quy
+        trình sản xuất.
+      </p>
+    </div>
+  )
+}
+
+// Same 3 dot colors as LevelBadge — the tree only ever goes FG(0) → WIP(1) →
+// RM(2), RM being a backend-enforced leaf (E052), so there's no "2+" tier to
+// account for.
+function LevelLegend() {
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-dashed border-border pt-3 text-xs">
+      <span className="font-semibold text-foreground">Thứ cấp:</span>
+      <LevelLegendItem dotClassName="bg-emerald-500" label="0: Thành phẩm" />
+      <LevelLegendItem dotClassName="bg-blue-500" label="1: Bán thành phẩm" />
+      <LevelLegendItem dotClassName="bg-amber-500" label="2: Vật tư" />
+    </div>
+  )
+}
+
+function LevelLegendItem({
+  dotClassName,
+  label,
+}: {
+  dotClassName: string
+  label: string
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+      <span className={cn("size-2 rounded-full", dotClassName)} />
+      {label}
     </span>
   )
 }
@@ -284,247 +336,252 @@ export function ProductBomTable({
   const isRootOperationsExpanded = expandedOperationIds.has("root")
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
-      <Table>
-        <TableHeader>
-          <TableRow className="h-12 hover:bg-muted/45">
-            <TableHead className="w-14">STT</TableHead>
-            <TableHead className="w-48">MÃ BẢN VẼ</TableHead>
-            <TableHead className="min-w-44">TÊN BẢN VẼ</TableHead>
-            <TableHead className="w-28">LOẠI</TableHead>
-            <TableHead className="w-20">CẤP</TableHead>
-            <TableHead className="w-24 text-center">SỐ LƯỢNG</TableHead>
-            <TableHead className="w-20">ĐVT</TableHead>
-            <TableHead className="min-w-64">CÔNG ĐOẠN</TableHead>
-            <TableHead className="w-44 text-right">THAO TÁC</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {/* Item root row — "Cấp 0" */}
-          <TableRow className="h-14 bg-muted/10">
-            <TableCell className="font-mono font-bold text-foreground">
-              0
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
-                  {product.image ? (
-                    <Image
-                      src={resolveFileUrl(product.image.url)}
-                      alt={product.name}
-                      layout="fullWidth"
-                      objectFit="cover"
-                      className="size-full"
-                    />
-                  ) : (
-                    <ImageOff className="size-3.5 text-muted-foreground/50" />
-                  )}
-                </div>
-                <span className="font-mono font-bold text-foreground">
-                  {product.code}
-                </span>
-              </div>
-            </TableCell>
-            <TableCell
-              className="max-w-48 truncate font-bold text-foreground"
-              title={product.name}
-            >
-              {product.name}
-            </TableCell>
-            <TableCell>
-              <ProductTypeBadge type={product.type} />
-            </TableCell>
-            <TableCell>
-              <LevelBadge level={0} />
-            </TableCell>
-            <TableCell className="text-center font-semibold text-foreground tabular-nums">
-              1
-            </TableCell>
-            <TableCell className="text-muted-foreground">—</TableCell>
-            <TableCell
-              className="max-w-64 truncate"
-              title={formatOperationSequence(rootOperations.operations)}
-            >
-              <OperationSummaryText
-                operations={rootOperations.operations}
-                isPending={rootOperations.isPending}
-              />
-            </TableCell>
-            <TableCell className="text-right">
-              <div className="flex justify-end gap-1">
-                <OperationsToggleButton
-                  isExpanded={isRootOperationsExpanded}
-                  onToggle={() => toggleOperationsExpanded("root")}
-                />
-                {actions !== undefined ? (
-                  <PermissionGate permission="items:bom-manage">
-                    <IconButton
-                      label="Thêm thành phần"
-                      onClick={() =>
-                        actions.onCreate(
-                          null,
-                          resolveChildItemType(null, product.type)
-                        )
-                      }
-                      className="border border-border/60 hover:bg-muted"
-                    >
-                      <Plus className="size-3.5" />
-                    </IconButton>
-                  </PermissionGate>
-                ) : null}
-              </div>
-            </TableCell>
-          </TableRow>
+    <div className="space-y-3">
+      <BomTableGuidance />
+      <LevelLegend />
 
-          {isRootOperationsExpanded ? (
-            <TableRow className="bg-muted/10 hover:bg-muted/10">
-              <TableCell colSpan={columnCount} className="p-0">
-                <ProductOperationsPanel
-                  target={{ productId: product.id }}
+      <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow className="h-12 hover:bg-muted/45">
+              <TableHead className="w-14">STT</TableHead>
+              <TableHead className="w-48">MÃ BẢN VẼ</TableHead>
+              <TableHead className="min-w-44">TÊN BẢN VẼ</TableHead>
+              <TableHead className="w-28">LOẠI</TableHead>
+              <TableHead className="w-20">CẤP</TableHead>
+              <TableHead className="w-24 text-center">SỐ LƯỢNG</TableHead>
+              <TableHead className="w-20">ĐVT</TableHead>
+              <TableHead className="min-w-64">CÔNG ĐOẠN</TableHead>
+              <TableHead className="w-44 text-right">THAO TÁC</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* Item root row — "Cấp 0" */}
+            <TableRow className="h-14 bg-muted/10">
+              <TableCell className="font-mono font-bold text-foreground">
+                0
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
+                    {product.image ? (
+                      <Image
+                        src={resolveFileUrl(product.image.url)}
+                        alt={product.name}
+                        layout="fullWidth"
+                        objectFit="cover"
+                        className="size-full"
+                      />
+                    ) : (
+                      <ImageOff className="size-3.5 text-muted-foreground/50" />
+                    )}
+                  </div>
+                  <span className="font-mono font-bold text-foreground">
+                    {product.code}
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell
+                className="max-w-48 truncate font-bold text-foreground"
+                title={product.name}
+              >
+                {product.name}
+              </TableCell>
+              <TableCell>
+                <ProductTypeBadge type={product.type} />
+              </TableCell>
+              <TableCell>
+                <LevelBadge level={0} />
+              </TableCell>
+              <TableCell className="text-center font-semibold text-foreground tabular-nums">
+                1
+              </TableCell>
+              <TableCell className="text-muted-foreground">—</TableCell>
+              <TableCell
+                className="max-w-64 truncate"
+                title={formatOperationSequence(rootOperations.operations)}
+              >
+                <OperationSummaryText
                   operations={rootOperations.operations}
                   isPending={rootOperations.isPending}
                 />
               </TableCell>
+              <TableCell className="text-right">
+                <div className="flex justify-end gap-1">
+                  <OperationsToggleButton
+                    isExpanded={isRootOperationsExpanded}
+                    onToggle={() => toggleOperationsExpanded("root")}
+                  />
+                  {actions !== undefined ? (
+                    <PermissionGate permission="items:bom-manage">
+                      <IconButton
+                        label="Thêm thành phần"
+                        onClick={() =>
+                          actions.onCreate(
+                            null,
+                            resolveChildItemType(null, product.type)
+                          )
+                        }
+                        className="border border-border/60 hover:bg-muted"
+                      >
+                        <Plus className="size-3.5" />
+                      </IconButton>
+                    </PermissionGate>
+                  ) : null}
+                </div>
+              </TableCell>
             </TableRow>
-          ) : null}
 
-          {/* Child BOM rows — always fully expanded, no collapse toggle. */}
-          {rows.map(({ node, path }) => {
-            return (
-              <Fragment key={node.id}>
-                <TableRow className="h-14">
-                  <TableCell className="font-mono font-bold text-muted-foreground">
-                    {path}
-                  </TableCell>
-                  <TableCell>
-                    <div
-                      className="flex items-center gap-1.5"
-                      style={{ paddingLeft: `${(node.level - 1) * 16}px` }}
-                    >
-                      <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
-                        {node.image ? (
-                          <Image
-                            src={resolveFileUrl(node.image.url)}
-                            alt={node.name}
-                            layout="fullWidth"
-                            objectFit="cover"
-                            className="size-full"
-                          />
-                        ) : (
-                          <ImageOff className="size-3.5 text-muted-foreground/50" />
-                        )}
+            {isRootOperationsExpanded ? (
+              <TableRow className="bg-muted/10 hover:bg-muted/10">
+                <TableCell colSpan={columnCount} className="p-0">
+                  <ProductOperationsPanel
+                    target={{ productId: product.id }}
+                    operations={rootOperations.operations}
+                    isPending={rootOperations.isPending}
+                  />
+                </TableCell>
+              </TableRow>
+            ) : null}
+
+            {/* Child BOM rows — always fully expanded, no collapse toggle. */}
+            {rows.map(({ node, path }) => {
+              return (
+                <Fragment key={node.id}>
+                  <TableRow className="h-14">
+                    <TableCell className="font-mono font-bold text-muted-foreground">
+                      {path}
+                    </TableCell>
+                    <TableCell>
+                      <div
+                        className="flex items-center gap-1.5"
+                        style={{ paddingLeft: `${(node.level - 1) * 16}px` }}
+                      >
+                        <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
+                          {node.image ? (
+                            <Image
+                              src={resolveFileUrl(node.image.url)}
+                              alt={node.name}
+                              layout="fullWidth"
+                              objectFit="cover"
+                              className="size-full"
+                            />
+                          ) : (
+                            <ImageOff className="size-3.5 text-muted-foreground/50" />
+                          )}
+                        </div>
+                        <span className="font-mono font-bold text-foreground">
+                          {node.code}
+                        </span>
+                        {node.drawing ? (
+                          <a
+                            href={resolveFileUrl(node.drawing.url)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-muted-foreground hover:text-foreground"
+                            aria-label="Xem bản vẽ"
+                            title="Xem bản vẽ"
+                          >
+                            <FileText className="size-3.5" />
+                          </a>
+                        ) : null}
                       </div>
-                      <span className="font-mono font-bold text-foreground">
-                        {node.code}
-                      </span>
-                      {node.drawing ? (
-                        <a
-                          href={resolveFileUrl(node.drawing.url)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-muted-foreground hover:text-foreground"
-                          aria-label="Xem bản vẽ"
-                          title="Xem bản vẽ"
-                        >
-                          <FileText className="size-3.5" />
-                        </a>
-                      ) : null}
-                    </div>
-                  </TableCell>
-                  <TableCell
-                    className="max-w-48 truncate font-semibold text-foreground"
-                    title={node.name}
-                  >
-                    {node.name}
-                  </TableCell>
-                  <TableCell>
-                    <BomNodeTypeBadge type={node.itemType} />
-                  </TableCell>
-                  <TableCell>
-                    <LevelBadge level={node.level} />
-                  </TableCell>
-                  <TableCell className="text-center font-semibold text-foreground tabular-nums">
-                    {quantityFormatter.format(node.quantity)}
-                  </TableCell>
-                  <TableCell
-                    className="font-medium text-muted-foreground"
-                    title={node.unit.code}
-                  >
-                    {node.unit.name}
-                  </TableCell>
-                  <TableCell
-                    className="max-w-64 truncate"
-                    title={
-                      node.itemType === "WIP"
-                        ? formatOperationSequence(node.operations)
-                        : undefined
-                    }
-                  >
-                    {node.itemType === "WIP" ? (
-                      <OperationSummaryText
-                        operations={node.operations}
-                        isPending={false}
-                      />
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
+                    </TableCell>
+                    <TableCell
+                      className="max-w-48 truncate font-semibold text-foreground"
+                      title={node.name}
+                    >
+                      {node.name}
+                    </TableCell>
+                    <TableCell>
+                      <BomNodeTypeBadge type={node.itemType} />
+                    </TableCell>
+                    <TableCell>
+                      <LevelBadge level={node.level} />
+                    </TableCell>
+                    <TableCell className="text-center font-semibold text-foreground tabular-nums">
+                      {quantityFormatter.format(node.quantity)}
+                    </TableCell>
+                    <TableCell
+                      className="font-medium text-muted-foreground"
+                      title={node.unit.code}
+                    >
+                      {node.unit.name}
+                    </TableCell>
+                    <TableCell
+                      className="max-w-64 truncate"
+                      title={
+                        node.itemType === "WIP"
+                          ? formatOperationSequence(node.operations)
+                          : undefined
+                      }
+                    >
                       {node.itemType === "WIP" ? (
-                        <OperationsToggleButton
-                          isExpanded={expandedOperationIds.has(node.id)}
-                          onToggle={() => toggleOperationsExpanded(node.id)}
+                        <OperationSummaryText
+                          operations={node.operations}
+                          isPending={false}
                         />
-                      ) : null}
-                      {actions !== undefined ? (
-                        <PermissionGate permission="items:bom-manage">
-                          <BomRowActions
-                            node={node}
-                            onAddChild={() =>
-                              actions.onCreate(
-                                node.id,
-                                resolveChildItemType(node.id, product.type)
-                              )
-                            }
-                            onAddSibling={() =>
-                              actions.onCreate(
-                                node.parentId,
-                                resolveChildItemType(
-                                  node.parentId,
-                                  product.type
-                                )
-                              )
-                            }
-                            onUpdate={actions.onUpdate}
-                            onDelete={actions.onDelete}
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        {node.itemType === "WIP" ? (
+                          <OperationsToggleButton
+                            isExpanded={expandedOperationIds.has(node.id)}
+                            onToggle={() => toggleOperationsExpanded(node.id)}
                           />
-                        </PermissionGate>
-                      ) : null}
-                    </div>
-                  </TableCell>
-                </TableRow>
-
-                {node.itemType === "WIP" &&
-                expandedOperationIds.has(node.id) ? (
-                  <TableRow className="bg-muted/10 hover:bg-muted/10">
-                    <TableCell colSpan={columnCount} className="p-0">
-                      <ProductOperationsPanel
-                        target={{
-                          productId: product.id,
-                          bomItemId: node.id,
-                        }}
-                        operations={node.operations}
-                        isPending={false}
-                      />
+                        ) : null}
+                        {actions !== undefined ? (
+                          <PermissionGate permission="items:bom-manage">
+                            <BomRowActions
+                              node={node}
+                              onAddChild={() =>
+                                actions.onCreate(
+                                  node.id,
+                                  resolveChildItemType(node.id, product.type)
+                                )
+                              }
+                              onAddSibling={() =>
+                                actions.onCreate(
+                                  node.parentId,
+                                  resolveChildItemType(
+                                    node.parentId,
+                                    product.type
+                                  )
+                                )
+                              }
+                              onUpdate={actions.onUpdate}
+                              onDelete={actions.onDelete}
+                            />
+                          </PermissionGate>
+                        ) : null}
+                      </div>
                     </TableCell>
                   </TableRow>
-                ) : null}
-              </Fragment>
-            )
-          })}
-        </TableBody>
-      </Table>
+
+                  {node.itemType === "WIP" &&
+                  expandedOperationIds.has(node.id) ? (
+                    <TableRow className="bg-muted/10 hover:bg-muted/10">
+                      <TableCell colSpan={columnCount} className="p-0">
+                        <ProductOperationsPanel
+                          target={{
+                            productId: product.id,
+                            bomItemId: node.id,
+                          }}
+                          operations={node.operations}
+                          isPending={false}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                </Fragment>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }

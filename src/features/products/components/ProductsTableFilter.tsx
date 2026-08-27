@@ -13,17 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { PendingAction } from "@/components/shared/buttons/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
-import { useGetClientOptions } from "@/features/clients/api"
 import {
   itemStatusLabels,
   itemTypeLabels,
   ItemStatus,
   ItemType,
 } from "@/lib/types/item.type"
-import { buildSelectOption } from "@/lib/utils"
 
 const statusFilterOptions: {
   value: ItemStatus | "all"
@@ -54,14 +51,6 @@ export function ProductsTableFilter() {
   const navigate = useNavigate({ from: "/manage/products/" })
   const [q, setQ] = useState(search.q ?? "")
 
-  // The route loader prefetches this hook's own q="" query, so `client.clients`
-  // already has data on first render — no separate suspense query needed just
-  // to seed the combobox's selected-label.
-  const client = useGetClientOptions()
-  const selectedClient = client.clients.find(
-    (option) => option.id === search.clientId
-  )
-
   // Filters as the user types, 300ms after the last keystroke — the same delay the
   // combobox option hooks use. An empty term becomes `undefined` so the search
   // schema's `.optional()` drops `q` from the URL entirely.
@@ -76,12 +65,6 @@ export function ProductsTableFilter() {
       replace: true,
     })
   }, 300)
-
-  const handleClientChange = (value: string | undefined) => {
-    void navigate({
-      search: (prev) => ({ ...prev, clientId: value, page: 1 }),
-    })
-  }
 
   const handleTypeChange = (value: string) => {
     const type = value === "all" ? undefined : (value as ItemType)
@@ -104,7 +87,6 @@ export function ProductsTableFilter() {
           q: _q,
           type: _type,
           status: _status,
-          clientId: _clientId,
           order: _order,
           ...rest
         } = prev
@@ -116,7 +98,7 @@ export function ProductsTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.6fr)_minmax(9rem,1fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.6fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)]">
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="products-search"
@@ -143,27 +125,6 @@ export function ProductsTableFilter() {
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="products-client"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Khách hàng
-            </Label>
-            <ComboboxField
-              id="products-client"
-              value={search.clientId}
-              onValueChange={handleClientChange}
-              options={client.options}
-              onSearchChange={client.onSearchChange}
-              isPending={client.isFetching}
-              initialOption={buildSelectOption(selectedClient)}
-              emptyMessage="Không tìm thấy khách hàng"
-              placeholder="Tìm khách hàng..."
-              className="text-xs"
-            />
           </div>
 
           <div className="space-y-1.5">

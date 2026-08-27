@@ -1,3 +1,7 @@
+import { Bolt, Box, LayersMinimalistic } from "@solar-icons/react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
+
 import { Badge } from "@/components/ui/badge"
 import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import type { BomItemType } from "@/lib/types/bom-item.type"
@@ -44,9 +48,17 @@ export function ProductStatusBadge({
   )
 }
 
-const typeStyles: Record<ItemType, string> = {
-  [ItemType.FG]: "bg-primary/10 text-primary",
-  [ItemType.WIP]: "bg-warning/10 text-warning",
+type TypeBadgeStyle = {
+  badge: string
+  icon: ComponentType<IconProps>
+}
+
+const typeStyles: Record<ItemType, TypeBadgeStyle> = {
+  [ItemType.FG]: { badge: "bg-primary/10 text-primary", icon: Box },
+  [ItemType.WIP]: {
+    badge: "bg-warning/10 text-warning",
+    icon: LayersMinimalistic,
+  },
 }
 
 type ProductTypeBadgeProps = {
@@ -55,16 +67,19 @@ type ProductTypeBadgeProps = {
 }
 
 export function ProductTypeBadge({ type, className }: ProductTypeBadgeProps) {
+  const { badge, icon: Icon } = typeStyles[type]
+
   return (
-    <Badge variant="outline" className={cn(typeStyles[type], className)}>
+    <Badge variant="outline" className={cn(badge, className)}>
+      <Icon />
       {itemTypeLabels[type]}
     </Badge>
   )
 }
 
-const bomNodeTypeStyles: Record<BomItemType, string> = {
-  WIP: "bg-warning/10 text-warning",
-  RM: "bg-info/10 text-info",
+const bomNodeTypeStyles: Record<BomItemType, TypeBadgeStyle> = {
+  WIP: { badge: "bg-warning/10 text-warning", icon: LayersMinimalistic },
+  RM: { badge: "bg-info/10 text-info", icon: Bolt },
 }
 
 type BomNodeTypeBadgeProps = {
@@ -76,8 +91,11 @@ type BomNodeTypeBadgeProps = {
 // tree — both node types render in the same table now that RM leaves live
 // directly in bom_items (see docs/decisions/items-merge.md on the backend).
 export function BomNodeTypeBadge({ type, className }: BomNodeTypeBadgeProps) {
+  const { badge, icon: Icon } = bomNodeTypeStyles[type]
+
   return (
-    <Badge variant="outline" className={cn(bomNodeTypeStyles[type], className)}>
+    <Badge variant="outline" className={cn(badge, className)}>
+      <Icon />
       {bomItemTypeLabels[type]}
     </Badge>
   )
