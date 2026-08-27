@@ -271,19 +271,6 @@ export const orderPaymentStatusLabels: Record<OrderPaymentStatus, string> = {
   [OrderPaymentStatus.PAID]: "Đã thanh toán",
 }
 
-/** Mirrors the backend's OrderPaymentResDto — one row of an order's payment ledger (GET/POST
- *  /api/orders/:orderId/payments). Append-only: a correction is a new negative-`amount` row,
- *  never an edit/delete of an existing one. `amount` is in the order's own currency, the same
- *  one `total`/`paidAmount` are in — not VND. */
-export type OrderPayment = {
-  id: string
-  amount: number
-  paidAt: string
-  note: string | null
-  creatorBy: OrderUserRef | null
-  createdAt: string
-}
-
 // Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
 // endpoint (GET /api/orders, `Order` above) intentionally skips items/files
 // for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
@@ -385,8 +372,8 @@ export type OrderTimelineStep = {
 // ---- UI-only mock scaffolding ----
 // The 2 types below describe placeholder data built by
 // src/features/orders/mock/order-detail.mock.ts for the one concept the backend still has no
-// table for: order-level delivery/DO history. (Payment history used to be mock too — now real,
-// see OrderPayment above.) Delete these alongside that file once DO tracking exists.
+// table for: order-level delivery/DO history. Delete these alongside that file once DO
+// tracking exists.
 
 export type OrderMockDeliveryProgress = {
   deliveredPercent: number

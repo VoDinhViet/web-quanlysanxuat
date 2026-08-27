@@ -8,13 +8,11 @@ import { OrderDetailDeliveryHistoryCard } from "@/features/orders/components/det
 import { OrderDetailInfoCard } from "@/features/orders/components/detail/OrderDetailInfoCard"
 import { OrderDetailItemsCard } from "@/features/orders/components/detail/OrderDetailItemsCard"
 import { OrderDetailNotesCard } from "@/features/orders/components/detail/OrderDetailNotesCard"
-import { OrderDetailPaymentsCard } from "@/features/orders/components/detail/OrderDetailPaymentsCard"
 import { OrderRejectionNotice } from "@/features/orders/components/detail/OrderRejectionNotice"
 import { OrderDetailSummaryCard } from "@/features/orders/components/detail/OrderDetailSummaryCard"
 import { OrderDetailTimelineCard } from "@/features/orders/components/detail/OrderDetailTimelineCard"
 import {
   orderItemsQueryOptions,
-  orderPaymentsQueryOptions,
   orderQueryOptions,
 } from "@/features/orders/api/options"
 
@@ -25,9 +23,6 @@ export function OrderDetailPage() {
 
   const { data: order } = useSuspenseQuery(orderQueryOptions(orderId))
   const { data: items } = useSuspenseQuery(orderItemsQueryOptions(orderId))
-  const { data: payments } = useSuspenseQuery(
-    orderPaymentsQueryOptions(orderId)
-  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -51,7 +46,6 @@ export function OrderDetailPage() {
           <div className="flex min-w-0 flex-col gap-4">
             <OrderDetailInfoCard order={order} />
             <OrderDetailItemsCard order={order} items={items} />
-            <OrderDetailPaymentsCard order={order} payments={payments} />
           </div>
 
           <div className="flex min-w-0 flex-col gap-4">

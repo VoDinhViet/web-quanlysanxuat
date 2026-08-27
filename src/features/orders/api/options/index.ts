@@ -6,5 +6,4 @@ export { ordersQueryOptions } from "@/features/orders/api/options/orders.options
 export { orderStatsQueryOptions } from "@/features/orders/api/options/order-stats.options"
 export { orderQueryOptions } from "@/features/orders/api/options/order.options"
 export { orderItemsQueryOptions } from "@/features/orders/api/options/order-items.options"
-export { orderPaymentsQueryOptions } from "@/features/orders/api/options/order-payments.options"
 export { exchangeRateQueryOptions } from "@/features/orders/api/options/exchange-rate.options"

@@ -249,23 +249,42 @@
 /* Signature element on the order detail page's totals box (OrderDetailPaymentSummary) — a
    scalloped top edge that reads as a ticket stub torn off the product list above it, echoing
    the printed phiếu this total ultimately belongs to. Pure CSS mask, no image asset; degrades
-   to a plain straight edge if mask isn't supported. */
+   to a plain straight edge if mask isn't supported.
+
+   Two mask layers: the radial-gradient draws the scalloped notches in a thin strip at the
+   top; the linear-gradient is a plain opaque rectangle covering everything below that strip.
+   Both are required — a single non-repeating mask tile only defines the top notch band, and
+   per the CSS Masking spec, everything outside a non-repeated tile is transparent (i.e.
+   hidden), so without the second layer the entire box below the notches disappears. */
 .receipt-stub {
   --notch: 8px;
-  -webkit-mask-image: radial-gradient(
-    circle at var(--notch) 0,
-    transparent var(--notch),
-    black calc(var(--notch) + 0.5px)
-  );
-  mask-image: radial-gradient(
-    circle at var(--notch) 0,
-    transparent var(--notch),
-    black calc(var(--notch) + 0.5px)
-  );
-  -webkit-mask-size: calc(var(--notch) * 2) var(--notch);
-  mask-size: calc(var(--notch) * 2) var(--notch);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-position: top left;
-  mask-position: top left;
+  -webkit-mask-image:
+    radial-gradient(
+      circle at var(--notch) 0,
+      transparent var(--notch),
+      black calc(var(--notch) + 0.5px)
+    ),
+    linear-gradient(black, black);
+  mask-image:
+    radial-gradient(
+      circle at var(--notch) 0,
+      transparent var(--notch),
+      black calc(var(--notch) + 0.5px)
+    ),
+    linear-gradient(black, black);
+  -webkit-mask-size:
+    calc(var(--notch) * 2) var(--notch),
+    100% calc(100% - var(--notch));
+  mask-size:
+    calc(var(--notch) * 2) var(--notch),
+    100% calc(100% - var(--notch));
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-position:
+    top left,
+    bottom left;
+  mask-position:
+    top left,
+    bottom left;
+  mask-composite: add;
 }
