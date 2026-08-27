@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { CheckCircle } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
@@ -10,10 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { BomItemDrawingField } from "@/features/products/components/BomItemDrawingField"
-import { useGetBomProductOptions } from "@/features/products/hooks/use-get-bom-product-options"
+import { BomItemPickerField } from "@/features/products/components/BomItemPickerField"
 import {
   createBomItemDefaultValues,
   createBomItemSchema,
@@ -26,6 +24,7 @@ import type {
   BomItemDialogState,
   BomItemType,
 } from "@/lib/types/bom-item.type"
+import { cn } from "@/lib/utils"
 
 type BomItemFormDialogProps = {
   dialog: BomItemDialogState
@@ -42,19 +41,18 @@ export function BomItemFormDialog({
   onUpdate,
   isSaving,
 }: BomItemFormDialogProps) {
-  // The product-picker combobox portals its popup into this node instead of
-  // `<body>` — see ComboboxField's `container` doc for why.
-  const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
-
   return (
     <Dialog open={dialog.mode !== "closed"} onOpenChange={onOpenChange}>
       <DialogContent
-        ref={setContentNode}
-        className="shadow-lg ring-0 sm:max-w-lg"
+        className={cn(
+          "shadow-lg ring-0",
+          dialog.mode === "create"
+            ? "max-h-[90vh] overflow-y-auto sm:max-w-4xl"
+            : "sm:max-w-lg"
+        )}
       >
         {dialog.mode === "create" ? (
           <CreateBomItemForm
-            container={contentNode}
             itemType={dialog.itemType}
             onSubmit={(value) => onCreate(value, dialog.parentId)}
             onCancel={() => onOpenChange(false)}
@@ -74,7 +72,6 @@ export function BomItemFormDialog({
 }
 
 type CreateBomItemFormProps = {
-  container: HTMLDivElement | null
   itemType: BomItemType
   onSubmit: (value: CreateBomItemSchema) => void
   onCancel: () => void
@@ -82,7 +79,6 @@ type CreateBomItemFormProps = {
 }
 
 function CreateBomItemForm({
-  container,
   itemType,
   onSubmit,
   onCancel,
@@ -93,7 +89,6 @@ function CreateBomItemForm({
     validators: { onSubmit: createBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
-  const productOptions = useGetBomProductOptions(itemType)
 
   return (
     <form
@@ -104,7 +99,7 @@ function CreateBomItemForm({
         form.handleSubmit()
       }}
       noValidate
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-6"
     >
       <DialogHeader className="gap-1">
         <DialogTitle className="text-base font-semibold">
@@ -117,64 +112,56 @@ function CreateBomItemForm({
         </DialogDescription>
       </DialogHeader>
 
-      <div className="grid gap-4.5">
+      {/* Picker on the left (needs the room for search + table + pagination),
+          this node's own details stacked in a narrower column on the right —
+          picking and describing happen side by side instead of one long
+          vertical scroll. */}
+      <div className="grid gap-5 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <form.AppField name="itemId">
           {(field) => (
-            <ComboboxField
-              label={
-                itemType === "WIP"
-                  ? "Chọn bán thành phẩm (WIP)"
-                  : "Chọn vật tư (RM)"
-              }
-              required
-              placeholder="Tìm mã hoặc tên..."
-              value={field.state.value || undefined}
-              onValueChange={(next) => field.handleChange(next ?? "")}
+            <BomItemPickerField
+              itemType={itemType}
+              value={field.state.value}
+              onValueChange={field.handleChange}
               onBlur={field.handleBlur}
-              options={productOptions.options}
-              onSearchChange={productOptions.onSearchChange}
-              isPending={productOptions.isFetching}
               isInvalid={
                 field.state.meta.isTouched && field.state.meta.errors.length > 0
               }
               errors={field.state.meta.errors}
-              // Rendered inside BomItemFormDialog's Radix Dialog — portal the
-              // popup into the dialog's own DOM subtree (see ComboboxField's
-              // `container` doc) so the option click commits instead of
-              // being swallowed.
-              container={container}
             />
           )}
         </form.AppField>
 
-        <form.AppField name="quantity">
-          {(field) => (
-            <field.NumberField
-              label="Số lượng định mức"
-              required
-              placeholder="Ví dụ: 1"
-            />
-          )}
-        </form.AppField>
+        <div className="flex flex-col gap-4.5">
+          <form.AppField name="quantity">
+            {(field) => (
+              <field.NumberField
+                label="Số lượng định mức"
+                required
+                placeholder="Ví dụ: 1"
+              />
+            )}
+          </form.AppField>
 
-        <form.AppField name="note">
-          {(field) => (
-            <field.TextareaField
-              label="Ghi chú thành phần"
-              placeholder="Ghi chú quy cách hoặc thông tin thêm (nếu có)..."
-            />
-          )}
-        </form.AppField>
+          <form.AppField name="note">
+            {(field) => (
+              <field.TextareaField
+                label="Ghi chú thành phần"
+                placeholder="Ghi chú quy cách hoặc thông tin thêm (nếu có)..."
+              />
+            )}
+          </form.AppField>
 
-        <form.AppField name="drawing">
-          {(field) => (
-            <BomItemDrawingField
-              value={field.state.value}
-              onChange={field.handleChange}
-              disabled={isSaving}
-            />
-          )}
-        </form.AppField>
+          <form.AppField name="drawing">
+            {(field) => (
+              <BomItemDrawingField
+                value={field.state.value}
+                onChange={field.handleChange}
+                disabled={isSaving}
+              />
+            )}
+          </form.AppField>
+        </div>
       </div>
 
       <DialogFooter className="gap-2 pt-1">

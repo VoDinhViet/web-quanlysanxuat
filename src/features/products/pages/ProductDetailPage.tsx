@@ -19,7 +19,7 @@ import { productDetailTabSchema } from "@/features/products/schemas/product-deta
 import { updateItem } from "@/features/products/api/server-functions/update-item.api"
 import { itemQueryOptions } from "@/features/products/api/options"
 import { useAppForm } from "@/hooks/use-app-form"
-import { buildSelectOption } from "@/lib/utils"
+import { buildSelectOption, cn } from "@/lib/utils"
 import type { UpdateProductSchema } from "@/features/products/schemas/update-product.schema"
 import type { Item } from "@/lib/types/item.type"
 
@@ -105,8 +105,17 @@ export function ProductDetailPage() {
             />
 
             {/* `minmax(0,1fr)` (not `1fr`) so a wide table scrolls inside its own
-                column instead of blowing the grid out horizontally. */}
-            <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
+                column instead of blowing the grid out horizontally. The "boms"
+                tab's BOM table already runs wide (STT/mã/tên/cấp/số lượng/đvt/
+                công đoạn/thao tác), so it drops the sidebar column entirely and
+                takes the full width rather than fighting it for space. */}
+            <div
+              className={cn(
+                "grid grid-cols-1",
+                tab !== "boms" &&
+                  "xl:grid-cols-[minmax(0,1fr)_340px] 2xl:grid-cols-[minmax(0,1fr)_380px]"
+              )}
+            >
               <div className="min-w-0">
                 {/* forceMount: Radix unmounts inactive panels by default, which
                   would discard unsaved form state on every tab switch. */}
@@ -133,9 +142,11 @@ export function ProductDetailPage() {
 
               {/* A grid item stretches by default, so the rule runs the full
                   height of the row instead of stopping at the content. */}
-              <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
-                <ProductDetailSidebar product={product} />
-              </aside>
+              {tab !== "boms" ? (
+                <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
+                  <ProductDetailSidebar product={product} />
+                </aside>
+              ) : null}
             </div>
           </Tabs>
         </section>

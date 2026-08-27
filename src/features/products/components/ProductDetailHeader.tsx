@@ -1,8 +1,14 @@
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
-import { Loader2, Trash2 } from "lucide-react"
-import { AltArrowLeft, Box, Diskette, Printer } from "@solar-icons/react"
+import { Loader2 } from "lucide-react"
+import {
+  AltArrowLeft,
+  Box,
+  Diskette,
+  Printer,
+  TrashBinTrash,
+} from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/PermissionGate"
@@ -130,9 +136,9 @@ export function ProductDetailHeader({
                 <Button
                   type="button"
                   variant="outline"
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  className="border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive"
                 >
-                  <Trash2 className="size-4" />
+                  <TrashBinTrash className="size-4" />
                   Xóa
                 </Button>
               }
