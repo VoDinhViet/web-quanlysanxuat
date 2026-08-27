@@ -4,15 +4,16 @@ import axios from "axios"
 import { updateProductSchema } from "@/features/products/schemas/update-product.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import { resolveApiFileId } from "@/lib/file-field.schema"
+import { resolveApiFileId, resolveApiFileIds } from "@/lib/file-field.schema"
 
-// `image` carries a display URL the backend has no field for — only the file id goes on the
-// wire. `updateProductSchema` already leaves every other field wire-ready (emptyToNull-
-// transformed), so this only maps the image field id.
+// `image`/`files` carry a display URL the backend has no field for — only the file id(s) go on
+// the wire. `updateProductSchema` already leaves every other field wire-ready (emptyToNull-
+// transformed), so this only maps the file fields.
 const updateProductPayloadSchema = updateProductSchema.transform(
-  ({ image, ...rest }) => ({
+  ({ image, files, ...rest }) => ({
     ...rest,
     imageFileId: resolveApiFileId(image, "update"),
+    fileIds: resolveApiFileIds(files),
   })
 )
 

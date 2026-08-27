@@ -6,16 +6,20 @@ import {
   CalendarAdd,
   ClockCircle,
   Copy,
+  Documents,
+  FileText,
   Gallery,
   GalleryRemove,
   InfoCircle,
   Layers,
   MagniferZoomIn,
   Notes,
+  Paperclip,
   RecordCircle,
   Ruler,
   User,
 } from "@solar-icons/react"
+import prettyBytes from "pretty-bytes"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
@@ -24,7 +28,7 @@ import {
   ProductTypeBadge,
 } from "@/features/products/components/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
-import type { Item } from "@/lib/types/item.type"
+import type { Item, ItemFile } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"
 
 type ProductDetailSidebarProps = {
@@ -112,6 +116,14 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
             gallery in the mockup arrives with its backend in a later phase. */}
         <ProductImagePreview image={product.image} name={product.name} />
       </SidebarSection>
+
+      <SidebarSection
+        title={`Tài liệu đính kèm (${product.files.length})`}
+        icon={Paperclip}
+        padded
+      >
+        <ProductDocumentsList files={product.files} />
+      </SidebarSection>
     </>
   )
 }
@@ -172,6 +184,48 @@ function SummaryRow({
         {value}
       </dd>
     </div>
+  )
+}
+
+type ProductDocumentsListProps = {
+  files: ItemFile[]
+}
+
+// Chỉ-đọc — sửa/xoá tài liệu ở tab "Thông tin sản phẩm" (ProductDocumentsField). Không bọc card
+// riêng, ngồi thẳng trong `SidebarSection` như mọi khối khác của sidebar.
+function ProductDocumentsList({ files }: ProductDocumentsListProps) {
+  if (files.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
+        <Documents className="size-7 text-muted-foreground/40" />
+        <p className="text-[11px] font-medium text-muted-foreground">
+          Chưa có tài liệu đính kèm
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <ul className="space-y-1.5">
+      {files.map((itemFile) => (
+        <li key={itemFile.id}>
+          <a
+            href={resolveFileUrl(itemFile.file.url)}
+            target="_blank"
+            rel="noreferrer"
+            className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+          >
+            <FileText className="size-4 shrink-0 text-muted-foreground" />
+            <span className="min-w-0 flex-1 truncate">
+              {itemFile.file.originalName}
+            </span>
+            <span className="shrink-0 text-muted-foreground">
+              {prettyBytes(itemFile.file.size)}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
   )
 }
 

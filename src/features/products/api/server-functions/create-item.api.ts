@@ -4,14 +4,15 @@ import axios from "axios"
 import { createProductSchema } from "@/features/products/schemas/create-product.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import { resolveApiFileId } from "@/lib/file-field.schema"
+import { resolveApiFileId, resolveApiFileIds } from "@/lib/file-field.schema"
 
 // The form holds the whole uploaded-file object so it can render a preview; the
-// backend only wants the file id.
+// backend only wants the file id(s).
 const createProductPayloadSchema = createProductSchema.transform(
-  ({ image, ...rest }) => ({
+  ({ image, files, ...rest }) => ({
     ...rest,
     imageFileId: resolveApiFileId(image, "create"),
+    fileIds: resolveApiFileIds(files),
   })
 )
 

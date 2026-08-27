@@ -34,6 +34,7 @@ function getProductDefaultValues(product: Item): UpdateProductSchema {
     type: product.type,
     clientId: product.client?.id ?? "",
     image: product.image,
+    files: product.files.map((itemFile) => itemFile.file),
     status: product.status,
     note: product.note ?? "",
   }

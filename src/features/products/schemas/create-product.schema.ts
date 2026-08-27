@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { imageFieldSchema } from "@/lib/file-field.schema"
+import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
 import { emptyToUndefined } from "@/lib/zod-transforms"
 import { ItemStatus, ItemType } from "@/lib/types/item.type"
 
@@ -25,6 +25,7 @@ export const createProductSchema = z.object({
   type: z.enum(ItemType),
   clientId: z.string().trim().transform(emptyToUndefined),
   image: imageFieldSchema,
+  files: z.array(fileFieldSchema),
   status: z.enum(ItemStatus),
   note: z
     .string()
@@ -42,6 +43,7 @@ export const createProductFormDefaultValues: CreateProductSchema = {
   type: ItemType.FG,
   clientId: "",
   image: null,
+  files: [],
   status: ItemStatus.ACTIVE,
   note: "",
 }

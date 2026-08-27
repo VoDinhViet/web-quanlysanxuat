@@ -3,6 +3,7 @@ import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ProductDocumentsField } from "@/features/products/components/ProductDocumentsField"
 import { ProductImageField } from "@/features/products/components/ProductImageField"
 import { updateProductFormDefaultValues } from "@/features/products/schemas/update-product.schema"
 import { useGetClientOptions } from "@/features/clients/api"
@@ -137,6 +138,17 @@ export const UpdateProductInfoSection = withForm({
                   />
                 )}
               </form.AppField>
+
+              <form.Field name="files">
+                {(field) => (
+                  <ProductDocumentsField
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    disabled={disabled}
+                    className="sm:col-span-2 lg:col-span-3"
+                  />
+                )}
+              </form.Field>
             </div>
 
             <form.Field name="image">

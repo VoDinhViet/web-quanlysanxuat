@@ -44,6 +44,14 @@ export type ItemCreator = {
   fullName: string
 }
 
+/** Mirrors the backend's ItemFileResDto — one row of the item's attached-documents
+ *  list (item_files), distinct from the single `image` field and from a BOM
+ *  node's own `drawingFileId`. */
+export type ItemFile = {
+  id: string
+  file: FileResource
+}
+
 /**
  * Mirrors the backend's ItemResDto/ItemDetailResDto (GET /api/items,
  * GET /api/items/:id) narrowed to the fields this feature (FG/WIP only) reads.
@@ -66,6 +74,7 @@ export type Item = {
   // originally-created item.
   clonedFrom: ItemRef | null
   creator: ItemCreator | null
+  files: ItemFile[]
   createdAt: string
   updatedAt: string
 }
