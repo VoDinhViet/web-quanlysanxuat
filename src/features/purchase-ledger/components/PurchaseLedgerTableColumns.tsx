@@ -31,7 +31,10 @@ export const purchaseLedgerColumns = [
   purchaseLedgerColumnHelper.display({
     id: "source",
     header: "PO / Lý do",
-    meta: { headerClassName: "min-w-36" },
+    meta: {
+      headerClassName: "min-w-36",
+      cellClassName: "max-w-56 truncate",
+    },
     cell: ({ row }) => (
       <PurchaseLedgerSourceCell
         productionOrder={row.original.productionOrder}
