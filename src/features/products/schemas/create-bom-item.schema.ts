@@ -3,8 +3,9 @@ import { z } from "zod"
 import { fileFieldSchema } from "@/lib/file-field.schema"
 
 // Raw form shape for adding a BOM node — a node links to either a WIP
-// (sub-assembly) or an RM (vật tư) item, picked via a type toggle in
-// BomItemFormDialog. Empty note → undefined happens in the server function,
+// (sub-assembly) or an RM (vật tư) item, the type picked from the menu the
+// user clicked in ProductBomTable (BomRowActions/RootAddButton) before the
+// dialog even opened. Empty note → undefined happens in the server function,
 // not here. The integer-quantity rule (WIP only) is enforced by the backend
 // and surfaced as a Vietnamese message, so it isn't duplicated client-side.
 export const createBomItemSchema = z.object({

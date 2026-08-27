@@ -1,15 +1,15 @@
 import { Fragment, useState } from "react"
 import { Image } from "@unpic/react"
 import {
-  AltArrowDown,
   ArrowRightDown,
+  Bolt,
   InfoCircle,
   Layers,
+  LayersMinimalistic,
   Route,
 } from "@solar-icons/react"
 import { FileText, ImageOff, Pencil, Plus, Trash2 } from "lucide-react"
 
-import { ButtonGroup } from "@/components/ui/button-group"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -23,6 +23,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { IconButton } from "@/components/shared/buttons/IconButton"
@@ -32,6 +34,7 @@ import {
   ProductTypeBadge,
 } from "@/features/products/components/ProductBadges"
 import { ProductOperationsPanel } from "@/features/products/components/ProductOperationsPanel"
+import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import type { BomItem, BomItemType } from "@/lib/types/bom-item.type"
 import type { ProductOperation } from "@/lib/types/operation.type"
 import { formatOperationSequence } from "@/lib/types/operation.type"
@@ -40,13 +43,11 @@ import { ItemType } from "@/lib/types/item.type"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 
-// BOM một chiều: FG → WIP → RM. Loại node mới suy từ parentId, không cho chọn tay.
-function resolveChildItemType(
-  parentId: string | null,
-  rootType: ItemType
-): BomItemType {
-  return parentId === null && rootType === ItemType.FG ? "WIP" : "RM"
-}
+// Loại node mới không còn suy một chiều từ parentId — một bán thành phẩm
+// (WIP) có thể chứa cả bán thành phẩm khác lẫn vật tư (RM), người dùng chọn
+// qua menu "Thêm thành phần"/"Cấp con". Vật tư luôn là lá (backend E052) nên
+// không có menu chọn loại con cho dòng RM. Gốc là thành phẩm (FG) vẫn chỉ
+// nhận bán thành phẩm, giữ đúng ý nghĩa "thành phẩm lắp từ các cụm".
 
 // The root row's own routing (Cấp 0) — fetched separately since the BOM GET
 // only returns the tree's child nodes, not the product itself. Each BOM node
@@ -138,40 +139,13 @@ function BomTableGuidance() {
       <InfoCircle className="mt-0.5 size-4 shrink-0 text-primary" />
       <p>
         Cây kết cấu (BOM) thể hiện các bán thành phẩm và vật tư lắp ráp nên sản
-        phẩm. Nhấn <span className="font-medium text-foreground">"+"</span> để
-        thêm thành phần con, bấm biểu tượng công đoạn để xem hoặc chỉnh sửa quy
-        trình sản xuất.
+        phẩm — một bán thành phẩm có thể chứa bán thành phẩm khác hoặc vật tư,
+        còn vật tư luôn là cấp cuối. Nhấn{" "}
+        <span className="font-medium text-foreground">"+"</span> để thêm thành
+        phần con, bấm biểu tượng công đoạn để xem hoặc chỉnh sửa quy trình sản
+        xuất.
       </p>
     </div>
-  )
-}
-
-// Same 3 dot colors as LevelBadge — the tree only ever goes FG(0) → WIP(1) →
-// RM(2), RM being a backend-enforced leaf (E052), so there's no "2+" tier to
-// account for.
-function LevelLegend() {
-  return (
-    <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-dashed border-border pt-3 text-xs">
-      <span className="font-semibold text-foreground">Thứ cấp:</span>
-      <LevelLegendItem dotClassName="bg-emerald-500" label="0: Thành phẩm" />
-      <LevelLegendItem dotClassName="bg-blue-500" label="1: Bán thành phẩm" />
-      <LevelLegendItem dotClassName="bg-amber-500" label="2: Vật tư" />
-    </div>
-  )
-}
-
-function LevelLegendItem({
-  dotClassName,
-  label,
-}: {
-  dotClassName: string
-  label: string
-}) {
-  return (
-    <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-      <span className={cn("size-2 rounded-full", dotClassName)} />
-      {label}
-    </span>
   )
 }
 
@@ -221,12 +195,12 @@ function OperationsToggleButton({
   )
 }
 
-// Add entry point — a split button per row. A WIP row's primary action nests
-// a child ("Cấp con") — the common case, filling in the BOM tree with the
-// WIP's materials/sub-assemblies — with the rarer "Cùng cấp" (add a parallel
-// sibling) tucked into the dropdown segment. An RM row is always a leaf
-// (backend E052), so it only ever gets the plain "Cùng cấp" button — no
-// second segment to pick from.
+// Add entry point per row. A WIP row can nest either another WIP
+// sub-assembly or an RM material underneath it, plus add a parallel sibling
+// of its own type — all three collapse into one dropdown so there's a single
+// "Thêm thành phần" affordance to learn. An RM row is always a leaf (backend
+// E052), so it only ever gets the plain "Cùng cấp" button — no children to
+// choose a type for.
 function BomRowActions({
   node,
   onAddChild,
@@ -235,7 +209,7 @@ function BomRowActions({
   onDelete,
 }: {
   node: BomItem
-  onAddChild: () => void
+  onAddChild: (itemType: BomItemType) => void
   onAddSibling: () => void
   onUpdate: (node: BomItem) => void
   onDelete: (node: BomItem) => void
@@ -243,31 +217,32 @@ function BomRowActions({
   return (
     <>
       {node.itemType === "WIP" ? (
-        <ButtonGroup>
-          <IconButton
-            label="Thêm cấp con"
-            onClick={onAddChild}
-            className="border border-border/60 hover:bg-muted"
-          >
-            <ArrowRightDown className="size-3.5" />
-          </IconButton>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <IconButton
-                label="Thêm tuỳ chọn khác"
-                className="border border-border/60 hover:bg-muted"
-              >
-                <AltArrowDown className="size-3" />
-              </IconButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={onAddSibling}>
-                <Layers />
-                Cùng cấp
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </ButtonGroup>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              label="Thêm thành phần"
+              className="border border-border/60 hover:bg-muted"
+            >
+              <ArrowRightDown className="size-3.5" />
+            </IconButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-44">
+            <DropdownMenuLabel>Thêm cấp con</DropdownMenuLabel>
+            <DropdownMenuItem onSelect={() => onAddChild("WIP")}>
+              <LayersMinimalistic />
+              {bomItemTypeLabels.WIP}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onAddChild("RM")}>
+              <Bolt />
+              {bomItemTypeLabels.RM}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={onAddSibling}>
+              <Layers />
+              Cùng cấp
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
         <IconButton
           label="Thêm cùng cấp"
@@ -294,6 +269,55 @@ function BomRowActions({
         <Trash2 className="size-3.5" />
       </IconButton>
     </>
+  )
+}
+
+// Root row's own "+". An FG root's tree always starts with a WIP
+// sub-assembly, so the button adds one directly. A WIP root (this item is
+// itself a sub-assembly, viewed on its own detail page) can attach either a
+// nested WIP or an RM material straight at the top, so it expands into the
+// same two-option menu as a WIP row's "Cấp con".
+function RootAddButton({
+  productType,
+  onCreate,
+}: {
+  productType: ItemType
+  onCreate: (itemType: BomItemType) => void
+}) {
+  if (productType === ItemType.FG) {
+    return (
+      <IconButton
+        label="Thêm thành phần"
+        onClick={() => onCreate("WIP")}
+        className="border border-border/60 hover:bg-muted"
+      >
+        <Plus className="size-3.5" />
+      </IconButton>
+    )
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <IconButton
+          label="Thêm thành phần"
+          className="border border-border/60 hover:bg-muted"
+        >
+          <Plus className="size-3.5" />
+        </IconButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-44">
+        <DropdownMenuLabel>Thêm thành phần</DropdownMenuLabel>
+        <DropdownMenuItem onSelect={() => onCreate("WIP")}>
+          <LayersMinimalistic />
+          {bomItemTypeLabels.WIP}
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => onCreate("RM")}>
+          <Bolt />
+          {bomItemTypeLabels.RM}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -338,7 +362,6 @@ export function ProductBomTable({
   return (
     <div className="space-y-3">
       <BomTableGuidance />
-      <LevelLegend />
 
       <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
         <Table>
@@ -414,18 +437,12 @@ export function ProductBomTable({
                   />
                   {actions !== undefined ? (
                     <PermissionGate permission="items:bom-manage">
-                      <IconButton
-                        label="Thêm thành phần"
-                        onClick={() =>
-                          actions.onCreate(
-                            null,
-                            resolveChildItemType(null, product.type)
-                          )
+                      <RootAddButton
+                        productType={product.type}
+                        onCreate={(itemType) =>
+                          actions.onCreate(null, itemType)
                         }
-                        className="border border-border/60 hover:bg-muted"
-                      >
-                        <Plus className="size-3.5" />
-                      </IconButton>
+                      />
                     </PermissionGate>
                   ) : null}
                 </div>
@@ -537,20 +554,11 @@ export function ProductBomTable({
                           <PermissionGate permission="items:bom-manage">
                             <BomRowActions
                               node={node}
-                              onAddChild={() =>
-                                actions.onCreate(
-                                  node.id,
-                                  resolveChildItemType(node.id, product.type)
-                                )
+                              onAddChild={(itemType) =>
+                                actions.onCreate(node.id, itemType)
                               }
                               onAddSibling={() =>
-                                actions.onCreate(
-                                  node.parentId,
-                                  resolveChildItemType(
-                                    node.parentId,
-                                    product.type
-                                  )
-                                )
+                                actions.onCreate(node.parentId, node.itemType)
                               }
                               onUpdate={actions.onUpdate}
                               onDelete={actions.onDelete}

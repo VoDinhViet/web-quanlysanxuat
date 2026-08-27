@@ -50,9 +50,10 @@ export type BomItem = {
  * Trạng thái mở/đóng Modal Dialog của BOM Item:
  * - `{ mode: "closed" }`: Đóng dialog.
  * - `{ mode: "create"; parentId; itemType }`: Mở dialog thêm mới hạng mục —
- *   `itemType` đã được suy ra từ vị trí thêm (xem `resolveChildItemType` trong
- *   ProductBomTable.tsx), cây BOM đi một chiều FG → WIP → RM nên người dùng
- *   không tự chọn loại nữa.
+ *   `itemType` đến từ mục menu người dùng chọn khi bấm "Thêm thành phần"
+ *   (xem `BomRowActions`/`RootAddButton` trong ProductBomTable.tsx): một
+ *   bán thành phẩm (WIP) có thể chứa cả WIP lẫn vật tư (RM), còn RM luôn là
+ *   lá nên không có menu chọn loại con.
  * - `{ mode: "update"; node: BomItem }`: Mở dialog cập nhật thông tin hạng mục.
  */
 export type BomItemDialogState =
