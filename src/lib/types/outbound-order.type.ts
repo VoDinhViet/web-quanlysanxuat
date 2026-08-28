@@ -9,7 +9,8 @@ import type { UserRef } from "@/lib/types/user.type"
 // outbound-orders.ts). Vòng đời: DRAFT --send--> PENDING_APPROVAL --approve--> PENDING_DELIVERY
 // --deliver--> DELIVERED (điểm cuối), nhánh PENDING_APPROVAL --reject--> REJECTED --send-->
 // PENDING_APPROVAL. Gate OQC (E205) chạy ở cả send và approve. Xem docs/domains/inventory.md,
-// mục "Giao hàng". CANCELLED khai sẵn, chưa route nào ghi.
+// mục "Giao hàng". DRAFT/PENDING_APPROVAL/PENDING_DELIVERY --cancel--> CANCELLED (điểm cuối,
+// BUG-090); DRAFT có thêm đường xoá hẳn (không qua CANCELLED).
 export const OutboundOrderStatus = {
   DRAFT: "DRAFT",
   PENDING_APPROVAL: "PENDING_APPROVAL",
@@ -29,6 +30,11 @@ export const outboundOrderStatusLabels: Record<OutboundOrderStatus, string> = {
   [OutboundOrderStatus.DELIVERED]: "Đã giao",
   [OutboundOrderStatus.CANCELLED]: "Đã hủy",
   [OutboundOrderStatus.REJECTED]: "Bị từ chối",
+}
+
+// Sửa (PATCH) chỉ hợp lệ khi còn DRAFT (BE gate E259) — khuôn canUpdateInventoryReceipt.
+export function canUpdateOutboundOrder(status: OutboundOrderStatus): boolean {
+  return status === OutboundOrderStatus.DRAFT
 }
 
 // Khớp đúng `FulfillmentType` bên BE (cùng file schema) — tên giữ nguyên không tiền tố "Outbound",
@@ -81,6 +87,12 @@ export type OutboundOrderDetail = {
   fulfillmentType: FulfillmentType
   status: OutboundOrderStatus
   note: string | null
+  // 4 field vận chuyển (BUG-090, mở rộng theo UI Spec) — tất cả nullable, sửa được ở cả Create
+  // lẫn Sửa (edit-inline trên trang Chi tiết).
+  deliveryAddress: string | null
+  receiverName: string | null
+  receiverPhone: string | null
+  vehicle: string | null
   creatorBy: UserRef | null
   senderBy: UserRef | null
   sentAt: string | null
@@ -95,22 +107,33 @@ export type OutboundOrderDetail = {
 
 // Mirrors OutboundOrderItemResDto (1 dòng của phiếu — mỗi dòng ứng với 1 dòng PO nguồn).
 // `order`/`productionJob` khai inline {id, code} thay vì tái dùng OrderRef/một job-ref type toàn
-// cục — cả hai type đó có nhiều field hơn hẳn những gì endpoint này thực sự trả về.
+// cục — cả hai type đó có nhiều field hơn hẳn những gì endpoint này thực sự trả về. 5 field tồn
+// kho cuối (BUG-090) cùng khuôn UnfulfilledOrderItem bên dưới — `heldQuantity` đã loại chính
+// phiếu đang xem/sửa (BE truyền `excludeOutboundOrderId = outboundOrderId`).
 export type OutboundOrderItem = {
   id: string
   order: { id: string; code: string }
+  // Dòng PO nguồn (order_items) — round-trip nguyên vẹn khi Sửa (BUG-090), không hiển thị/sửa
+  // trực tiếp trên UI.
+  orderItemId: string
   productionJob: { id: string; code: string } | null
   item: ItemRef
   unit: Unit
   quantity: number // SL giao dòng này
   note: string | null
+  orderedQuantity: number
+  issuedQuantity: number
+  onHandQuantity: number
+  heldQuantity: number
+  availableQuantity: number
 }
 
-// One row per dòng PO chưa hoàn thành, eligible cho bước ① wizard "Tạo phiếu giao hàng" — mirrors
-// GET /outbound-orders/unfulfilled-order-items (UnfulfilledOrderItemResDto) 1:1. BE chưa tính
-// SL đã giao/tồn TP/đã giữ/có thể giao ở endpoint này (chỉ trả orderedQuantity — SL đặt của dòng
-// PO gốc), và chưa lọc theo q/operationId dù DTO có khai (service không dùng tới) — giới hạn thật
-// (không vượt SL đặt) được BE kiểm khi tạo phiếu (E193).
+// One row per dòng PO chưa hoàn thành, eligible cho bước ① wizard "Tạo phiếu giao hàng" (và popup
+// "Thêm từ PO/Job" khi Sửa) — mirrors GET /outbound-orders/unfulfilled-order-items
+// (UnfulfilledOrderItemResDto) 1:1. 5 field tồn kho cuối (BUG-090) — `availableQuantity =
+// onHandQuantity − heldQuantity`, chỉ để hiển thị, không thay `E194` (vẫn tính lại ở BE khi lưu).
+// Chưa lọc theo q/operationId dù DTO có khai (service không dùng tới) — giới hạn thật (không vượt
+// SL đặt) được BE kiểm khi tạo phiếu (E193, dự phòng, chưa route nào ném).
 export type UnfulfilledOrderItem = {
   orderItemId: string
   client: ClientRef
@@ -119,4 +142,8 @@ export type UnfulfilledOrderItem = {
   item: ItemRef
   unit: Unit
   orderedQuantity: number
+  issuedQuantity: number
+  onHandQuantity: number
+  heldQuantity: number
+  availableQuantity: number
 }

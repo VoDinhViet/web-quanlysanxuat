@@ -92,11 +92,56 @@ const itemColumns = [
     },
   }),
 
+  col.accessor("orderedQuantity", {
+    header: "SL PO",
+    meta: {
+      headerClassName: "min-w-20 text-right",
+      cellClassName: "text-right",
+    },
+    cell: ({ getValue }) => numberFmt.format(getValue()),
+  }),
+
+  col.accessor("issuedQuantity", {
+    header: "Đã giao",
+    meta: {
+      headerClassName: "min-w-20 text-right",
+      cellClassName: "text-right",
+    },
+    cell: ({ getValue }) => numberFmt.format(getValue()),
+  }),
+
+  col.accessor("onHandQuantity", {
+    header: "Tồn TP",
+    meta: {
+      headerClassName: "min-w-20 text-right",
+      cellClassName: "text-right",
+    },
+    cell: ({ getValue }) => numberFmt.format(getValue()),
+  }),
+
+  col.accessor("heldQuantity", {
+    header: "Đã giữ",
+    meta: {
+      headerClassName: "min-w-20 text-right",
+      cellClassName: "text-right",
+    },
+    cell: ({ getValue }) => numberFmt.format(getValue()),
+  }),
+
+  col.accessor("availableQuantity", {
+    header: "Có thể giao",
+    meta: {
+      headerClassName: "min-w-24 text-right",
+      cellClassName: "text-right tabular-nums font-semibold text-emerald-600",
+    },
+    cell: ({ getValue }) => numberFmt.format(getValue()),
+  }),
+
   col.accessor("quantity", {
     header: "SL giao",
     meta: {
       headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums font-semibold text-emerald-600",
+      cellClassName: "text-right tabular-nums font-semibold",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),

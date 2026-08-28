@@ -94,6 +94,7 @@ export const PERMISSION_CODES = [
   "outbound:create",
   "outbound:update",
   "outbound:approve",
+  "outbound:delete",
 
   "reports:read",
 ] as const
@@ -194,6 +195,7 @@ export const permissionLabels: Record<PermissionCode, string> = {
   "outbound:create": "Tạo phiếu giao hàng",
   "outbound:update": "Sửa phiếu giao hàng",
   "outbound:approve": "Duyệt phiếu giao hàng",
+  "outbound:delete": "Xóa phiếu giao hàng",
 
   "reports:read": "Xem báo cáo tổng quan",
 }
@@ -331,6 +333,7 @@ export const permissionGroups: PermissionGroup[] = [
       "outbound:create",
       "outbound:update",
       "outbound:approve",
+      "outbound:delete",
     ],
   },
   { label: "Báo cáo", codes: ["reports:read"] },

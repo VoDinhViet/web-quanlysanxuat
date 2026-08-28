@@ -161,6 +161,7 @@ function DeliveryActivityCard({ itemId }: CardProps) {
             <Link
               to="/manage/outbound-orders/$outboundOrderId"
               params={{ outboundOrderId: outboundOrder.id }}
+              search={{ mode: "view" }}
               className="text-primary hover:underline"
             >
               {outboundOrder.code}

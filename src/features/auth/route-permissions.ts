@@ -79,6 +79,8 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
 
   "/manage/outbound-orders": "outbound:read",
   "/manage/outbound-orders/create": "outbound:create",
+  // No separate `/update` route (BUG-090) — sửa là edit-inline trên chính trang chi tiết
+  // (`?mode=edit`), gate bằng PermissionGate quanh nút "Sửa" chứ không phải route riêng.
   "/manage/outbound-orders/$outboundOrderId": "outbound:read",
 
   // The list route had no guard at all before this map — the only one missed. Its create/

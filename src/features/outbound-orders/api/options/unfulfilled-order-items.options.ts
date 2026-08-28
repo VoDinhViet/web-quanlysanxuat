@@ -5,6 +5,8 @@ import { getUnfulfilledOrderItems } from "@/features/outbound-orders/api/server-
 type UnfulfilledOrderItemsParams = {
   page?: number
   limit?: number
+  clientId?: string
+  excludeOutboundOrderId?: string
 }
 
 export const unfulfilledOrderItemsQueryOptions = (

@@ -172,6 +172,46 @@ export const CreateOutboundOrderItemsSection = withForm({
             )}
           </form.AppField>
 
+          <form.AppField name="deliveryAddress">
+            {(field) => (
+              <field.TextareaField
+                label="Địa chỉ giao hàng"
+                placeholder="Địa chỉ giao hàng (nếu có)"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="receiverName">
+            {(field) => (
+              <field.TextField
+                label="Người nhận"
+                placeholder="Tên người nhận (nếu có)"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="receiverPhone">
+            {(field) => (
+              <field.TextField
+                label="Điện thoại"
+                placeholder="Điện thoại người nhận (nếu có)"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="vehicle">
+            {(field) => (
+              <field.TextField
+                label="Phương tiện"
+                placeholder="Phương tiện (nếu có)"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
           <form.AppField name="note">
             {(field) => (
               <field.TextareaField

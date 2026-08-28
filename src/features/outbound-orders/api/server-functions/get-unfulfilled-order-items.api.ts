@@ -22,12 +22,16 @@ function resolveGetUnfulfilledOrderItemsErrorMessage(error: unknown): string {
   }
 }
 
-// Khớp GetUnfulfilledOrderItemsReqDto (extends PageOptionsDto) — chỉ page/limit thật sự lọc được:
-// DTO có khai q/operationId nhưng getUnfulfilledOrderItems's `where` clause bên BE không dùng tới
-// (đã soi lại service code), nên không gửi lên để tránh giả vờ có filter hoạt động.
+// Khớp GetUnfulfilledOrderItemsReqDto (extends PageOptionsDto) — chỉ page/limit thật sự lọc được
+// cùng q gốc; DTO có khai q/operationId nhưng getUnfulfilledOrderItems's `where` clause bên BE
+// không dùng tới (đã soi lại service code), nên không gửi lên để tránh giả vờ có filter hoạt
+// động. `clientId`/`excludeOutboundOrderId` (BUG-090) dùng khi mở popup "Thêm từ PO/Job" từ trang
+// Sửa — xem OutboundOrderAddItemsDialog.tsx.
 const getUnfulfilledOrderItemsSchema = z.object({
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),
+  clientId: z.uuid().optional(),
+  excludeOutboundOrderId: z.uuid().optional(),
 })
 
 export const getUnfulfilledOrderItems = createServerFn({ method: "GET" })

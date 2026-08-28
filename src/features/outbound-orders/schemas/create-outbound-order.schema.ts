@@ -35,6 +35,12 @@ export const createOutboundOrderSchema = z.object({
   fulfillmentDate: z.string().trim().min(1, "Vui lòng chọn ngày giao"),
   fulfillmentType: z.enum(FulfillmentType),
   note: z.string().trim(),
+  // 4 field vận chuyển (BUG-090, mở rộng theo UI Spec) — tất cả tuỳ chọn, không bắt buộc dù
+  // PICKUP không có địa chỉ giao (xem update-outbound-order.schema.ts's field y hệt).
+  deliveryAddress: z.string().trim(),
+  receiverName: z.string().trim(),
+  receiverPhone: z.string().trim(),
+  vehicle: z.string().trim(),
   items: z
     .array(createOutboundOrderItemSchema)
     .min(1, "Cần chọn ít nhất một dòng cần giao"),
@@ -49,5 +55,9 @@ export const createOutboundOrderFormDefaultValues: CreateOutboundOrderSchema = {
   fulfillmentDate: "",
   fulfillmentType: FulfillmentType.STANDARD,
   note: "",
+  deliveryAddress: "",
+  receiverName: "",
+  receiverPhone: "",
+  vehicle: "",
   items: [],
 }

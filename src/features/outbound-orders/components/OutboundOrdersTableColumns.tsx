@@ -29,6 +29,7 @@ export const outboundOrdersColumns = [
       <Link
         to="/manage/outbound-orders/$outboundOrderId"
         params={{ outboundOrderId: row.original.id }}
+        search={{ mode: "view" }}
         className="font-mono text-xs font-semibold text-primary hover:underline"
       >
         {getValue()}

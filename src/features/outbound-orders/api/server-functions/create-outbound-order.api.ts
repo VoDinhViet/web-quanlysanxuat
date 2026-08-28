@@ -38,10 +38,23 @@ function resolveCreateOutboundOrderErrorMessage(error: unknown): string {
 // create-outbound-order.schema.ts), chỉ còn ép kiểu quantity/note ở đây. itemId/productionJobId
 // là snapshot từ dòng đã chọn ở picker, gửi thẳng không resolve lại.
 const createOutboundOrderPayloadSchema = createOutboundOrderSchema.transform(
-  ({ items, fulfillmentDate, note, ...rest }) => ({
+  ({
+    items,
+    fulfillmentDate,
+    note,
+    deliveryAddress,
+    receiverName,
+    receiverPhone,
+    vehicle,
+    ...rest
+  }) => ({
     ...rest,
     fulfillmentDate: toIsoDate(fulfillmentDate),
     note: emptyToUndefined(note),
+    deliveryAddress: emptyToUndefined(deliveryAddress),
+    receiverName: emptyToUndefined(receiverName),
+    receiverPhone: emptyToUndefined(receiverPhone),
+    vehicle: emptyToUndefined(vehicle),
     items: items.map((item) => ({
       orderItemId: item.orderItemId,
       itemId: item.itemId,

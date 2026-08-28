@@ -11,13 +11,18 @@ import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 
 type OutboundOrderDetailHeaderProps = {
   order: OutboundOrderDetail
+  // Khi đang Sửa (BUG-090, edit-inline): ẩn meta grid tĩnh (form OutboundOrderEditForm.tsx thay
+  // thế bằng field editable) và ẩn hàng nút thao tác (Gửi duyệt/Duyệt/Hủy... không hợp lý khi
+  // đang sửa dở) — chỉ back/mã phiếu/badge còn hiển thị.
+  isEditing: boolean
 }
 
-// Meta grid chỉ giữ field BE thật sự trả (client/fulfillmentDate/fulfillmentType) — địa chỉ
-// giao/tài xế/SĐT/tổng SL giao không có nguồn dữ liệu (BE chưa có, xem OutboundOrderInfoCard.tsx
-// cho Ghi chú/Người tạo). Không có kho xuất — BE bỏ warehouseId khỏi outbound_orders.
+// Meta grid giữ field BE thật sự trả — client/fulfillmentDate/fulfillmentType (gốc) +
+// deliveryAddress/receiverName/receiverPhone/vehicle (BUG-090, mở rộng theo UI Spec, đều
+// nullable). Không có kho xuất — BE bỏ warehouseId khỏi outbound_orders.
 export function OutboundOrderDetailHeader({
   order,
+  isEditing,
 }: OutboundOrderDetailHeaderProps) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5">
@@ -42,22 +47,31 @@ export function OutboundOrderDetailHeader({
           <OutboundOrderStatusBadge status={order.status} />
         </div>
 
-        <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-3">
-          <MetaField label="Khách hàng" value={order.client.name} />
-          <MetaField
-            label="Ngày giao"
-            value={DateTime.fromISO(order.fulfillmentDate).toFormat(
-              "dd/MM/yyyy"
-            )}
-          />
-          <MetaField
-            label="Hình thức giao"
-            value={fulfillmentTypeLabels[order.fulfillmentType]}
-          />
-        </div>
+        {!isEditing && (
+          <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-3">
+            <MetaField label="Khách hàng" value={order.client.name} />
+            <MetaField
+              label="Ngày giao"
+              value={DateTime.fromISO(order.fulfillmentDate).toFormat(
+                "dd/MM/yyyy"
+              )}
+            />
+            <MetaField
+              label="Hình thức giao"
+              value={fulfillmentTypeLabels[order.fulfillmentType]}
+            />
+            <MetaField
+              label="Địa chỉ giao hàng"
+              value={order.deliveryAddress ?? "—"}
+            />
+            <MetaField label="Người nhận" value={order.receiverName ?? "—"} />
+            <MetaField label="Điện thoại" value={order.receiverPhone ?? "—"} />
+            <MetaField label="Phương tiện" value={order.vehicle ?? "—"} />
+          </div>
+        )}
       </div>
 
-      <OutboundOrderDetailActions order={order} />
+      {!isEditing && <OutboundOrderDetailActions order={order} />}
     </div>
   )
 }
