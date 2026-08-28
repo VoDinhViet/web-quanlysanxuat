@@ -3,7 +3,9 @@
 - TanStack Form + Zod as the single schema source: `noValidate` on `<form>`, manual
   `preventDefault`/`stopPropagation` in the submit handler, derive form types with
   `z.infer<typeof schema>`, gate error styling on `field.state.meta.isTouched` (see
-  `src/features/auth/components/LoginForm.tsx`).
+  `src/components/shared/inputs/AppFormFields.tsx`). Exception:
+  `src/features/auth/components/LoginForm.tsx` is a deliberate react-hook-form + `Field`
+  (`src/components/ui/field.tsx`) trial — don't follow it as the pattern for a new form.
 - Form schemas mirror the backend DTO's shape, including nested optional objects
   (e.g. `credential: createCredentialSchema.optional()` in
   `create-user.schema.ts`) — a toggle-gated section stores the nested object or

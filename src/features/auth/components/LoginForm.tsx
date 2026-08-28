@@ -1,11 +1,14 @@
-import { useForm } from "@tanstack/react-form"
+import { useState } from "react"
 import { useNavigate, useRouter, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Loader2, LogIn } from "lucide-react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+import { Eye, EyeOff, Loader2, LogIn } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
   FieldError,
@@ -13,18 +16,20 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { LoginKeepSignedInField } from "@/features/auth/components/LoginKeepSignedInField"
-import { LoginPasswordField } from "@/features/auth/components/LoginPasswordField"
 import { loginWithEmailPassword } from "@/features/auth/api/server-functions/login-with-email-password.api"
 import { loginSchema } from "@/features/auth/schemas/login.schema"
 import { resolveInternalRedirect } from "@/lib/redirect"
 import type { LoginSchema } from "@/features/auth/schemas/login.schema"
 
+// Ngoại lệ có chủ ý: form này dùng react-hook-form + `Field` (ui/field.tsx) thay vì
+// TanStack Form + `useAppForm` mà mọi form khác trong repo dùng — bản thử nghiệm, xem
+// .claude/rules/forms-and-ui.md.
 export function LoginForm() {
   const { redirectTo } = useSearch({ from: "/(auth)/login" })
   const navigate = useNavigate()
   const router = useRouter()
   const queryClient = useQueryClient()
+  const [showPassword, setShowPassword] = useState(false)
 
   const loginWithEmailPasswordFn = useServerFn(loginWithEmailPassword)
 
@@ -44,16 +49,13 @@ export function LoginForm() {
     onError: (error) => toast.error(error.message),
   })
 
-  const form = useForm({
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       identifier: "",
       password: "",
       keepSignedIn: false,
     },
-    validators: {
-      onSubmit: loginSchema,
-    },
-    onSubmit: ({ value }) => login(value),
   })
 
   return (
@@ -71,102 +73,117 @@ export function LoginForm() {
       </div>
 
       <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          event.stopPropagation()
-          if (form.state.isSubmitting) return
-          form.handleSubmit()
-        }}
+        onSubmit={form.handleSubmit((value) => login(value))}
         noValidate
         className="space-y-6"
       >
         <FieldGroup className="gap-6">
-          <form.Field name="identifier">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && field.state.meta.errors.length > 0
+          <Controller
+            control={form.control}
+            name="identifier"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel
+                  htmlFor={field.name}
+                  className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
+                >
+                  Email hoặc tên đăng nhập
+                </FieldLabel>
+                <Input
+                  {...field}
+                  id={field.name}
+                  type="text"
+                  placeholder="Nhập email hoặc tên đăng nhập"
+                  autoComplete="username"
+                  autoFocus
+                  className="h-12"
+                  aria-invalid={!!fieldState.error}
+                  disabled={isPending}
+                />
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
 
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel
-                    htmlFor={field.name}
-                    className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
-                  >
-                    Email hoặc tên đăng nhập
-                  </FieldLabel>
+          <Controller
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel
+                  htmlFor={field.name}
+                  className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
+                >
+                  Mật khẩu
+                </FieldLabel>
+                <div className="relative">
                   <Input
+                    {...field}
                     id={field.name}
-                    name={field.name}
-                    type="text"
-                    placeholder="Nhập email hoặc tên đăng nhập"
-                    autoComplete="username"
-                    autoFocus
-                    className="h-12"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    aria-invalid={isInvalid}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Nhập mật khẩu"
+                    autoComplete="current-password"
+                    className="h-12 pr-11"
+                    aria-invalid={!!fieldState.error}
                     disabled={isPending}
                   />
-                  <FieldError errors={field.state.meta.errors} />
-                </Field>
-              )
-            }}
-          </form.Field>
-
-          <form.Field name="password">
-            {(field) => (
-              <LoginPasswordField
-                name={field.name}
-                value={field.state.value}
-                errors={field.state.meta.errors}
-                isInvalid={
-                  field.state.meta.isTouched &&
-                  field.state.meta.errors.length > 0
-                }
-                disabled={isPending}
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-              />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="absolute top-1/2 right-2 -translate-y-1/2"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </Button>
+                </div>
+                <FieldError errors={[fieldState.error]} />
+              </Field>
             )}
-          </form.Field>
+          />
 
-          <form.Field name="keepSignedIn">
-            {(field) => (
-              <LoginKeepSignedInField
-                name={field.name}
-                checked={field.state.value}
-                disabled={isPending}
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-              />
+          <Controller
+            control={form.control}
+            name="keepSignedIn"
+            render={({ field }) => (
+              <Field orientation="horizontal">
+                <Checkbox
+                  id={field.name}
+                  name={field.name}
+                  checked={field.value}
+                  onCheckedChange={(value) => field.onChange(value === true)}
+                  onBlur={field.onBlur}
+                  disabled={isPending}
+                />
+                <FieldLabel
+                  htmlFor={field.name}
+                  className="cursor-pointer text-sm font-normal text-muted-foreground hover:text-foreground"
+                >
+                  Ghi nhớ đăng nhập
+                </FieldLabel>
+              </Field>
             )}
-          </form.Field>
+          />
 
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          <Button
+            type="submit"
+            size="lg"
+            className="h-13 w-full text-base font-semibold tracking-[0.04em]"
+            disabled={form.formState.isSubmitting || isPending}
           >
-            {([canSubmit, isSubmitting]) => (
-              <Button
-                type="submit"
-                size="lg"
-                className="h-13 w-full text-base font-semibold tracking-[0.04em]"
-                disabled={!canSubmit || isSubmitting || isPending}
-              >
-                {isSubmitting || isPending ? (
-                  <>
-                    <Loader2 className="animate-spin" />
-                    Đang đăng nhập
-                  </>
-                ) : (
-                  <>
-                    Đăng nhập hệ thống
-                    <LogIn />
-                  </>
-                )}
-              </Button>
+            {form.formState.isSubmitting || isPending ? (
+              <>
+                <Loader2 className="animate-spin" />
+                Đang đăng nhập
+              </>
+            ) : (
+              <>
+                Đăng nhập hệ thống
+                <LogIn />
+              </>
             )}
-          </form.Subscribe>
+          </Button>
         </FieldGroup>
       </form>
     </div>
