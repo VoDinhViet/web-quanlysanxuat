@@ -18,6 +18,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
+import { getStepNav } from "@/lib/wizard-steps"
 import { PurchaseRequestCreateHeaderSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateHeaderSection"
 import { PurchaseRequestCreateMaterialPickerSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerSection"
 import { PurchaseRequestCreateQuantitySection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateQuantitySection"
@@ -102,6 +103,11 @@ export function PurchaseRequestCreateForm() {
     }
   }, [draft, form])
 
+  const { prevStep, prevLabel, nextStep, nextLabel } = getStepNav(
+    purchaseRequestCreateStepItems,
+    step
+  )
+
   const formRef = useAutoFocusFirstField<HTMLFormElement>()
 
   return (
@@ -143,8 +149,19 @@ export function PurchaseRequestCreateForm() {
             </TabsContent>
           </Tabs>
 
-          {step === "materials" ? (
-            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+            {prevStep ? (
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-muted-foreground hover:text-foreground"
+                disabled={isPending}
+                onClick={() => setStep(prevStep)}
+              >
+                <ArrowLeft className="size-4" />
+                {prevLabel}
+              </Button>
+            ) : (
               <Button
                 type="button"
                 variant="ghost"
@@ -158,27 +175,18 @@ export function PurchaseRequestCreateForm() {
               >
                 Hủy
               </Button>
+            )}
+
+            {nextStep ? (
               <Button
                 type="button"
                 disabled={!canGoToQuantities}
-                onClick={() => setStep("quantities")}
+                onClick={() => setStep(nextStep)}
               >
-                Tiếp tục: nhập số lượng
+                {nextLabel}
                 <ArrowRight className="size-4" />
               </Button>
-            </div>
-          ) : (
-            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-muted-foreground hover:text-foreground"
-                disabled={isPending}
-                onClick={() => setStep("materials")}
-              >
-                <ArrowLeft className="size-4" />
-                Quay lại chọn vật tư
-              </Button>
+            ) : (
               <div className="flex flex-wrap items-center gap-2">
                 <Button
                   type="button"
@@ -232,8 +240,8 @@ export function PurchaseRequestCreateForm() {
                   )}
                 </form.Subscribe>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="sticky top-6 h-fit rounded-lg bg-card p-4 shadow-card sm:p-5">

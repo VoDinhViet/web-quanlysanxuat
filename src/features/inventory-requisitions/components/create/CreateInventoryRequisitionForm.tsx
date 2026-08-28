@@ -25,6 +25,7 @@ import { productionJobQueryOptions } from "@/features/production-jobs/api"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
+import { getStepNav } from "@/lib/wizard-steps"
 import type { CreateInventoryRequisitionWizardStep } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionStepsTabs"
 import type { CreateInventoryRequisitionSchema } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 
@@ -126,21 +127,7 @@ export function CreateInventoryRequisitionForm({
     Boolean(warehouseId) && (!isJobFlow || Boolean(productionJobId))
   const canGoToInfo = items.length > 0
 
-  // Nút "Tiếp theo" chỉ render khi step !== "info" (nhánh else của submit-vs-next bên dưới), nên
-  // ở đây step chỉ còn "source" hoặc "items" — gộp disabled/target/label vào một chỗ thay vì 3
-  // ternary `step === "source"` rải rác.
-  const nextStepConfig =
-    step === "source"
-      ? {
-          disabled: !canGoToItems,
-          target: "items" as const,
-          label: "Tiếp theo: Chọn vật tư",
-        }
-      : {
-          disabled: !canGoToInfo,
-          target: "info" as const,
-          label: "Tiếp theo: SL & thông tin",
-        }
+  const canAdvance = step === "source" ? canGoToItems : canGoToInfo
 
   // Radix widens onValueChange to `string`; `find` narrows it back without a cast.
   function handleStepChange(value: string) {
@@ -149,6 +136,11 @@ export function CreateInventoryRequisitionForm({
     )
     if (nextStep) setStep(nextStep.value)
   }
+
+  const { prevStep, prevLabel, nextStep, nextLabel } = getStepNav(
+    createInventoryRequisitionStepItems,
+    step
+  )
 
   const formRef = useAutoFocusFirstField<HTMLFormElement>()
 
@@ -195,7 +187,18 @@ export function CreateInventoryRequisitionForm({
       </Tabs>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
-        {step === "source" ? (
+        {prevStep ? (
+          <Button
+            type="button"
+            variant="ghost"
+            className="text-muted-foreground hover:text-foreground"
+            disabled={isPending}
+            onClick={() => setStep(prevStep)}
+          >
+            <ArrowLeft className="size-4" />
+            {prevLabel}
+          </Button>
+        ) : (
           <Button
             type="button"
             variant="ghost"
@@ -210,20 +213,18 @@ export function CreateInventoryRequisitionForm({
           >
             Hủy
           </Button>
-        ) : (
-          <Button
-            type="button"
-            variant="ghost"
-            className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() => setStep(step === "info" ? "items" : "source")}
-          >
-            <ArrowLeft className="size-4" />
-            Quay lại
-          </Button>
         )}
 
-        {step === "info" ? (
+        {nextStep ? (
+          <Button
+            type="button"
+            disabled={!canAdvance}
+            onClick={() => setStep(nextStep)}
+          >
+            {nextLabel}
+            <ArrowRight className="size-4" />
+          </Button>
+        ) : (
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
           >
@@ -246,15 +247,6 @@ export function CreateInventoryRequisitionForm({
               </Button>
             )}
           </form.Subscribe>
-        ) : (
-          <Button
-            type="button"
-            disabled={nextStepConfig.disabled}
-            onClick={() => setStep(nextStepConfig.target)}
-          >
-            {nextStepConfig.label}
-            <ArrowRight className="size-4" />
-          </Button>
         )}
       </div>
     </form>

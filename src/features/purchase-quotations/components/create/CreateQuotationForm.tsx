@@ -28,6 +28,7 @@ import {
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
+import { getStepNav } from "@/lib/wizard-steps"
 import type { CreateQuotationWizardStep } from "@/features/purchase-quotations/components/create/CreateQuotationStepsTabs"
 import type { CreateQuotationFormSchema } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
@@ -92,6 +93,11 @@ export function CreateQuotationForm() {
     }
   }, [draft, form])
 
+  const { prevStep, prevLabel, nextStep, nextLabel } = getStepNav(
+    createQuotationStepItems,
+    step
+  )
+
   const formRef = useAutoFocusFirstField<HTMLFormElement>()
 
   return (
@@ -125,8 +131,19 @@ export function CreateQuotationForm() {
           </TabsContent>
         </Tabs>
 
-        {step === "items" ? (
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+          {prevStep ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground"
+              disabled={isPending}
+              onClick={() => setStep(prevStep)}
+            >
+              <AltArrowLeft className="size-4" />
+              {prevLabel}
+            </Button>
+          ) : (
             <Button
               type="button"
               variant="ghost"
@@ -140,31 +157,22 @@ export function CreateQuotationForm() {
             >
               Hủy
             </Button>
+          )}
+
+          {nextStep ? (
             <form.Subscribe selector={(state) => state.values.items.length}>
               {(itemCount) => (
                 <Button
                   type="button"
                   disabled={itemCount === 0}
-                  onClick={() => setStep("suppliers")}
+                  onClick={() => setStep(nextStep)}
                 >
-                  Tiếp theo: Khai báo NCC & báo giá
+                  {nextLabel}
                   <AltArrowRight className="size-4" />
                 </Button>
               )}
             </form.Subscribe>
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-            <Button
-              type="button"
-              variant="ghost"
-              className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() => setStep("items")}
-            >
-              <AltArrowLeft className="size-4" />
-              Quay lại chọn vật tư
-            </Button>
+          ) : (
             <div className="flex flex-wrap items-center gap-2">
               <Button
                 type="button"
@@ -215,8 +223,8 @@ export function CreateQuotationForm() {
                 )}
               </form.Subscribe>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </form>
   )

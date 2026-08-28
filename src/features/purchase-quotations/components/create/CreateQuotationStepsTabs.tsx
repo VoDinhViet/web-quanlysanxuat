@@ -4,18 +4,28 @@ import type { ComponentType } from "react"
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import type { WizardStepNavItem } from "@/lib/wizard-steps"
 
 export type CreateQuotationWizardStep = "items" | "suppliers"
 
-type CreateQuotationStepItem = {
-  value: CreateQuotationWizardStep
+type CreateQuotationStepItem = WizardStepNavItem<CreateQuotationWizardStep> & {
   label: string
   icon: ComponentType<IconProps>
 }
 
 export const createQuotationStepItems: CreateQuotationStepItem[] = [
-  { value: "items", label: "1. Chọn vật tư", icon: Box },
-  { value: "suppliers", label: "2. Khai báo NCC & báo giá", icon: TagPrice },
+  {
+    value: "items",
+    label: "1. Chọn vật tư",
+    icon: Box,
+    nextLabel: "Tiếp theo: Khai báo NCC & báo giá",
+  },
+  {
+    value: "suppliers",
+    label: "2. Khai báo NCC & báo giá",
+    icon: TagPrice,
+    prevLabel: "Quay lại chọn vật tư",
+  },
 ]
 
 type CreateQuotationStepsTabsProps = {

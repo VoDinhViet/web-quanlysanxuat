@@ -4,21 +4,28 @@ import type { LucideProps } from "lucide-react"
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import type { WizardStepNavItem } from "@/lib/wizard-steps"
 
 export type PurchaseRequestCreateWizardStep = "materials" | "quantities"
 
-type PurchaseRequestCreateStepItem = {
-  value: PurchaseRequestCreateWizardStep
-  label: string
-  icon: ComponentType<LucideProps>
-}
+type PurchaseRequestCreateStepItem =
+  WizardStepNavItem<PurchaseRequestCreateWizardStep> & {
+    label: string
+    icon: ComponentType<LucideProps>
+  }
 
 export const purchaseRequestCreateStepItems: PurchaseRequestCreateStepItem[] = [
-  { value: "materials", label: "1. Chọn vật tư", icon: Package },
+  {
+    value: "materials",
+    label: "1. Chọn vật tư",
+    icon: Package,
+    nextLabel: "Tiếp tục: nhập số lượng",
+  },
   {
     value: "quantities",
     label: "2. Số lượng & thông tin",
     icon: ClipboardList,
+    prevLabel: "Quay lại chọn vật tư",
   },
 ]
 
