@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { InventoryReceiptCreateFromJobHeaderSection } from "@/features/inventory-receipts/components/create-from-job/InventoryReceiptCreateFromJobHeaderSection"
-import { InventoryReceiptGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptGenericItemsSection"
+import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateGenericItemsSection"
 import { createInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/create-inventory-receipt.api"
 import {
   createInventoryReceiptFormDefaultValues,
@@ -130,7 +130,7 @@ export function InventoryReceiptCreateFromJobForm({
         />
 
         <div className="border-t border-border">
-          <InventoryReceiptGenericItemsSection
+          <InventoryReceiptCreateGenericItemsSection
             form={form}
             disabled={isPending}
           />

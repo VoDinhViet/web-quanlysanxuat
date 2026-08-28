@@ -3,16 +3,16 @@ import { DateTime } from "luxon"
 
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
-type InventoryReceiptInfoCardProps = {
+type InventoryReceiptDetailInfoCardProps = {
   detail: InventoryReceiptDetail
 }
 
 // Backend không có bảng lịch sử trạng thái riêng (`inventory_receipts` chỉ giữ
 // createdBy/createdAt/postedBy/postedAt, không có cột huỷ) — card này gộp các mốc thời gian thật
 // đang có thay vì dựng một timeline giả nhiều bước, xem docs/domains/inventory.md.
-export function InventoryReceiptInfoCard({
+export function InventoryReceiptDetailInfoCard({
   detail,
-}: InventoryReceiptInfoCardProps) {
+}: InventoryReceiptDetailInfoCardProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
       <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">

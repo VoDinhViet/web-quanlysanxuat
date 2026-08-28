@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
-import { InventoryReceiptPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptPrintDialog"
+import { InventoryReceiptDetailPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailPrintDialog"
 import { deleteInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/delete-inventory-receipt.api"
 import { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
 import type {
@@ -179,7 +179,7 @@ export function InventoryReceiptActionsCell({
       </div>
 
       {/* Print Dialog */}
-      <InventoryReceiptPrintDialog
+      <InventoryReceiptDetailPrintDialog
         open={printOpen}
         onOpenChange={setPrintOpen}
         detail={receipt}

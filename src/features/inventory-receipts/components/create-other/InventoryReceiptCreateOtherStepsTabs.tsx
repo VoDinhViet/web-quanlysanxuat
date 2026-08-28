@@ -1,4 +1,4 @@
-import { Box, CheckCircle, Checklist, Eye } from "@solar-icons/react"
+import { CheckCircle, Checklist, Documents } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
@@ -6,64 +6,50 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import type { WizardStepNavItem } from "@/lib/wizard-steps"
 
-export type InventoryReceiptFromPoWizardStep =
-  | "po"
-  | "preview"
-  | "items"
-  | "confirm"
+export type InventoryReceiptOtherWizardStep = "info" | "items" | "confirm"
 
-type StepItem = WizardStepNavItem<InventoryReceiptFromPoWizardStep> & {
+type StepItem = WizardStepNavItem<InventoryReceiptOtherWizardStep> & {
   label: string
   icon: ComponentType<IconProps>
 }
 
 export const stepItems: StepItem[] = [
   {
-    value: "po",
-    label: "1. Chọn PO cần nhập",
-    icon: Box,
-    nextLabel: "Tiếp theo: Xem trước đơn mua",
-  },
-  {
-    value: "preview",
-    label: "2. Xem trước đơn mua",
-    icon: Eye,
-    prevLabel: "Quay lại chọn PO",
-    nextLabel: "Tiếp theo: Nhập SL & QC",
+    value: "info",
+    label: "1. Thông tin chung",
+    icon: Documents,
+    nextLabel: "Tiếp theo: Vật tư",
   },
   {
     value: "items",
-    label: "3. Nhập SL & QC",
+    label: "2. Vật tư",
     icon: Checklist,
-    prevLabel: "Quay lại xem trước đơn mua",
+    prevLabel: "Quay lại thông tin chung",
     nextLabel: "Tiếp theo: Xác nhận",
   },
   {
     value: "confirm",
-    label: "4. Lưu nháp / Xác nhận",
+    label: "3. Lưu nháp / Xác nhận",
     icon: CheckCircle,
-    prevLabel: "Quay lại nhập SL & QC",
+    prevLabel: "Quay lại vật tư",
   },
 ]
 
-type InventoryReceiptCreateFromPoStepsTabsProps = {
-  canGoToPreview: boolean
+type InventoryReceiptCreateOtherStepsTabsProps = {
   canGoToItems: boolean
   canGoToConfirm: boolean
 }
 
 // Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
-// InventoryReceiptCreateFromPoForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers
-// — the panels live in the page"). 4 bước, mỗi bước có điều kiện riêng để mở khoá (xem
-// InventoryReceiptCreateFromPoForm.tsx's canGoToX). Bước ① luôn mở được để quay lại đổi PO.
-export function InventoryReceiptCreateFromPoStepsTabs({
-  canGoToPreview,
+// InventoryReceiptCreateOtherForm.tsx, cùng khuôn InventoryReceiptCreateFromPoStepsTabs.tsx (3
+// bước thay 4 — làn này không có bước "chọn PO"/"xem trước PO"). Bước ① luôn mở được để quay lại
+// sửa thông tin chung.
+export function InventoryReceiptCreateOtherStepsTabs({
   canGoToItems,
   canGoToConfirm,
-}: InventoryReceiptCreateFromPoStepsTabsProps) {
-  const disabledByStep: Record<InventoryReceiptFromPoWizardStep, boolean> = {
-    po: false,
-    preview: !canGoToPreview,
+}: InventoryReceiptCreateOtherStepsTabsProps) {
+  const disabledByStep: Record<InventoryReceiptOtherWizardStep, boolean> = {
+    info: false,
     items: !canGoToItems,
     confirm: !canGoToConfirm,
   }

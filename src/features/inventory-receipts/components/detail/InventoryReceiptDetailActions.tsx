@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/PermissionGate"
-import { InventoryReceiptPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptPrintDialog"
+import { InventoryReceiptDetailPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailPrintDialog"
 import { cancelInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/cancel-inventory-receipt.api"
 import { confirmInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/confirm-inventory-receipt.api"
 import { postInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/post-inventory-receipt.api"
@@ -142,7 +142,7 @@ export function InventoryReceiptDetailActions({
         </p>
       )}
 
-      <InventoryReceiptPrintDialog
+      <InventoryReceiptDetailPrintDialog
         open={printOpen}
         onOpenChange={setPrintOpen}
         detail={detail}

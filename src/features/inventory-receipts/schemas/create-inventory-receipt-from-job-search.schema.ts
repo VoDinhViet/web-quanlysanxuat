@@ -5,10 +5,10 @@ import { z } from "zod"
 // tiết Job, ProductionJobDetailHeader.tsx — lối vào duy nhất, chỉ hiện khi Job WAITING_DELIVERY),
 // cùng khuôn create-outsourcing-order-search.schema.ts. Vào thẳng route không kèm param này vẫn
 // hoạt động như cũ — combobox chỉ trống.
-export const createInventoryReceiptSearchSchema = z.object({
+export const createInventoryReceiptFromJobSearchSchema = z.object({
   productionJobId: z.string().trim().min(1).optional().catch(undefined),
 })
 
-export type CreateInventoryReceiptSearchSchema = z.infer<
-  typeof createInventoryReceiptSearchSchema
+export type CreateInventoryReceiptFromJobSearchSchema = z.infer<
+  typeof createInventoryReceiptFromJobSearchSchema
 >

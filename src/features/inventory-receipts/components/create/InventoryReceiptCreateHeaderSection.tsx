@@ -18,7 +18,7 @@ import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
 const receiptTypeOptions = buildOptionsFromLabels(inventoryReceiptTypeLabels)
 
-export const InventoryReceiptHeaderSection = withForm({
+export const InventoryReceiptCreateHeaderSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {

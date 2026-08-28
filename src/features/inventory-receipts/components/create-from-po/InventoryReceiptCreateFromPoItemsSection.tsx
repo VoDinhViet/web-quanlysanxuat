@@ -18,8 +18,11 @@ import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildInventoryReceiptFromPoItemColumns } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoItemsColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { inventoryReceiptAssetTypeLabels } from "@/lib/types/inventory-receipt.type"
+import { buildOptionsFromLabels } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
+const assetTypeOptions = buildOptionsFromLabels(inventoryReceiptAssetTypeLabels)
 
 // Bước ③ — bật/tắt yêu cầu QC (IQC) cho cả phiếu, rồi nhập SL nhận thực tế + ghi chú cho từng
 // dòng đã seed từ bước ②. Footer + 2 khối ghi chú nghiệp vụ theo đúng ảnh mẫu.
@@ -58,20 +61,32 @@ export const InventoryReceiptCreateFromPoItemsSection = withForm({
           </p>
         </div>
 
-        <form.AppField name="requiresIqc">
-          {(field) => (
-            <field.RadioPillField
-              label="Yêu cầu QC (IQC) cho phiếu này"
-              required
-              className="mt-4"
-              disabled={disabled}
-              options={[
-                { value: "no", label: "Không yêu cầu QC" },
-                { value: "yes", label: "Yêu cầu QC" },
-              ]}
-            />
-          )}
-        </form.AppField>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <form.AppField name="requiresIqc">
+            {(field) => (
+              <field.RadioPillField
+                label="Yêu cầu QC (IQC) cho phiếu này"
+                required
+                disabled={disabled}
+                options={[
+                  { value: "no", label: "Không yêu cầu QC" },
+                  { value: "yes", label: "Yêu cầu QC" },
+                ]}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="assetType">
+            {(field) => (
+              <field.RadioPillField
+                label="Loại tài sản"
+                required
+                disabled={disabled}
+                options={assetTypeOptions}
+              />
+            )}
+          </form.AppField>
+        </div>
 
         <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
           <Table>

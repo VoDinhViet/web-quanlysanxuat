@@ -99,21 +99,6 @@ export function InventoryReceiptsTableFilter() {
 
   return (
     <div className="flex flex-col gap-5 bg-card px-4 py-4 lg:px-5">
-      {/* Top creation section */}
-      <div className="border-b border-border/60 pb-4">
-        <p className="mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-          Tạo phiếu nhập kho
-        </p>
-        <RoutePermissionGate route="/manage/inventory-receipts/create-from-po">
-          <Button variant="outline" className="text-xs" asChild>
-            <Link to="/manage/inventory-receipts/create-from-po">
-              <Plus className="size-3.5" />
-              Nhập từ PO
-            </Link>
-          </Button>
-        </RoutePermissionGate>
-      </div>
-
       {/* Filters section — DANH SÁCH PHIẾU NHẬP KHO */}
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(10rem,1fr)_minmax(10rem,1fr)_minmax(12rem,1.2fr)]">
@@ -228,6 +213,18 @@ export function InventoryReceiptsTableFilter() {
             <RotateCw className="size-4" />
             Xóa bộ lọc
           </Button>
+
+          <RoutePermissionGate route="/manage/inventory-receipts/create-receipt">
+            <Button className="text-xs" asChild>
+              <Link
+                to="/manage/inventory-receipts/create-receipt"
+                search={{ lane: "po" }}
+              >
+                <Plus className="size-3.5" />
+                Tạo phiếu nhập
+              </Link>
+            </Button>
+          </RoutePermissionGate>
         </div>
       </div>
     </div>

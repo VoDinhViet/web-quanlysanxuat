@@ -67,9 +67,27 @@ export const inventoryReceiptTypeLabels: Record<InventoryReceiptType, string> =
   {
     [InventoryReceiptType.PURCHASE]: "Mua hàng",
     [InventoryReceiptType.PRODUCTION]: "Từ sản xuất",
-    [InventoryReceiptType.RETURN]: "Trả hàng",
+    [InventoryReceiptType.RETURN]: "Từ khách hàng",
     [InventoryReceiptType.ADJUSTMENT]: "Điều chỉnh",
   }
+
+// Nhãn phân loại tài sản — chọn tay độc lập, không tách inventory_balances theo chủ sở hữu, xem
+// docs/domains/inventory.md (be-quanlysanxuat) mục "Nhập từ khách hàng".
+export const InventoryReceiptAssetType = {
+  COMPANY: "COMPANY",
+  CLIENT: "CLIENT",
+} as const
+
+export type InventoryReceiptAssetType =
+  (typeof InventoryReceiptAssetType)[keyof typeof InventoryReceiptAssetType]
+
+export const inventoryReceiptAssetTypeLabels: Record<
+  InventoryReceiptAssetType,
+  string
+> = {
+  [InventoryReceiptAssetType.COMPANY]: "Vật tư công ty",
+  [InventoryReceiptAssetType.CLIENT]: "Vật tư khách hàng",
+}
 
 /** Mirrors the backend's `UserRefResDto` as nested on a receipt row — declared locally rather
  *  than imported from `user.type.ts`, same idiom as `PurchaseRequestUserRef`/`PurchaseOrderUserRef`:
@@ -144,6 +162,7 @@ export type InventoryReceipt = {
   code: string
   warehouse: WarehouseRef
   receiptType: InventoryReceiptType
+  assetType: InventoryReceiptAssetType
   status: InventoryReceiptStatus
   receiptDate: string
   supplier: SupplierRef | null

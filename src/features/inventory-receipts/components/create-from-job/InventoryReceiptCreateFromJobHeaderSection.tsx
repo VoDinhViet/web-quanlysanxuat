@@ -9,7 +9,7 @@ import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import { buildSelectOptions } from "@/lib/utils"
 
 // Đầu mục riêng cho InventoryReceiptCreateFromJobForm.tsx — không tái dùng
-// InventoryReceiptHeaderSection.tsx (đầu mục của form phiếu nhập kho chung, 4 loại phiếu). Luồng
+// InventoryReceiptCreateHeaderSection.tsx (đầu mục của form phiếu nhập kho chung, 4 loại phiếu). Luồng
 // này chỉ có đúng 1 loại phiếu (PRODUCTION, cố định ở defaultValues của form cha, không có UI nào
 // đổi được) nên không cần field "Loại phiếu", không cần NCC/PO/PR/LSX-text — chỉ giữ lại đúng
 // những gì luồng nhập thành phẩm cần: Kho nhận, Ngày chứng từ, Job, Ghi chú.

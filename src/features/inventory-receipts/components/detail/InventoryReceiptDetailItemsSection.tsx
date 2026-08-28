@@ -102,13 +102,13 @@ const itemColumns = [
   }),
 ]
 
-type InventoryReceiptItemsSectionProps = {
+type InventoryReceiptDetailItemsSectionProps = {
   detail: InventoryReceiptDetail
 }
 
-export function InventoryReceiptItemsSection({
+export function InventoryReceiptDetailItemsSection({
   detail,
-}: InventoryReceiptItemsSectionProps) {
+}: InventoryReceiptDetailItemsSectionProps) {
   const table = useReactTable({
     data: detail.items,
     columns: itemColumns,

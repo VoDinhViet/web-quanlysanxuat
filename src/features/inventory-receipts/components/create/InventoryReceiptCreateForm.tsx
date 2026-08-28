@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { InventoryReceiptHeaderSection } from "@/features/inventory-receipts/components/create/InventoryReceiptHeaderSection"
-import { InventoryReceiptItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptItemsSection"
+import { InventoryReceiptCreateHeaderSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateHeaderSection"
+import { InventoryReceiptCreateItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateItemsSection"
 import { createInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/create-inventory-receipt.api"
 import {
   createInventoryReceiptFormDefaultValues,
@@ -77,10 +77,13 @@ export function InventoryReceiptCreateForm() {
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <InventoryReceiptHeaderSection form={form} disabled={isPending} />
+        <InventoryReceiptCreateHeaderSection form={form} disabled={isPending} />
 
         <div className="border-t border-border">
-          <InventoryReceiptItemsSection form={form} disabled={isPending} />
+          <InventoryReceiptCreateItemsSection
+            form={form}
+            disabled={isPending}
+          />
         </div>
       </div>
 

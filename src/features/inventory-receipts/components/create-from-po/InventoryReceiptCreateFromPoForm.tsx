@@ -34,34 +34,11 @@ import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { InventoryReceiptType } from "@/lib/types/inventory-receipt.type"
+import { getStepNav } from "@/lib/wizard-steps"
 import type { InventoryReceiptFromPoWizardStep } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoStepsTabs"
 import type { CreateInventoryReceiptSchema } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 import type { CreateInventoryReceiptFromPoFormSchema } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
-
-type StepNavMeta = {
-  prevStep?: InventoryReceiptFromPoWizardStep
-  prevLabel?: string
-  nextStep?: InventoryReceiptFromPoWizardStep
-  nextLabel?: string
-}
-
-const stepNav: Record<InventoryReceiptFromPoWizardStep, StepNavMeta> = {
-  po: { nextStep: "preview", nextLabel: "Tiếp theo: Xem trước đơn mua" },
-  preview: {
-    prevStep: "po",
-    prevLabel: "Quay lại chọn PO",
-    nextStep: "items",
-    nextLabel: "Tiếp theo: Nhập SL & QC",
-  },
-  items: {
-    prevStep: "preview",
-    prevLabel: "Quay lại xem trước đơn mua",
-    nextStep: "confirm",
-    nextLabel: "Tiếp theo: Xác nhận",
-  },
-  confirm: { prevStep: "items", prevLabel: "Quay lại nhập SL & QC" },
-}
 
 // Ghép giá trị wizard-local (UI-only field) + PO đã fetch thành đúng payload
 // CreateInventoryReceiptSchema mà createInventoryReceipt server function cần — không có ô nhập
@@ -75,6 +52,7 @@ function buildCreateInventoryReceiptPayload(
     code: "",
     warehouseId: purchaseOrder.receiptWarehouse?.id ?? "",
     receiptType: InventoryReceiptType.PURCHASE,
+    assetType: value.assetType,
     receiptDate,
     supplierId: purchaseOrder.supplier.id,
     clientId: "",
@@ -109,7 +87,7 @@ function buildCreateInventoryReceiptPayload(
 // người dùng refresh giữa chừng, tự lưu mỗi lần đổi bước qua `handleStepChange`.
 export function InventoryReceiptCreateFromPoForm() {
   const navigate = useNavigate({
-    from: "/manage/inventory-receipts/create-from-po",
+    from: "/manage/inventory-receipts/create-receipt",
   })
   const queryClient = useQueryClient()
   const createReceiptFn = useServerFn(createInventoryReceipt)
@@ -203,7 +181,10 @@ export function InventoryReceiptCreateFromPoForm() {
     }
   }
 
-  const { prevStep, prevLabel, nextStep, nextLabel } = stepNav[step]
+  const { prevStep, prevLabel, nextStep, nextLabel } = getStepNav(
+    stepItems,
+    step
+  )
 
   return (
     <form

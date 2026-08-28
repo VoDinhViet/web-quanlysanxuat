@@ -3,7 +3,10 @@ import { z } from "zod"
 import { inventoryReceiptItemFormSchema } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
 import { emptyToUndefined, toIsoDate } from "@/lib/zod-transforms"
 
-import { InventoryReceiptType } from "@/lib/types/inventory-receipt.type"
+import {
+  InventoryReceiptAssetType,
+  InventoryReceiptType,
+} from "@/lib/types/inventory-receipt.type"
 
 // Wire contract for POST /api/inventory-receipts — also the client-side onSubmit
 // validator for InventoryReceiptCreateForm. `code` bỏ trống để BE tự sinh
@@ -19,6 +22,10 @@ export const createInventoryReceiptSchema = z.object({
     .transform(emptyToUndefined),
   warehouseId: z.string().trim().min(1, "Vui lòng chọn kho nhận"),
   receiptType: z.enum(InventoryReceiptType),
+  // Optional cùng lý do requiresIqc bên dưới — mọi làn tạo phiếu đều có select thật cho field
+  // này (giá trị luôn xác định trước khi submit), chỉ optional ở tầng wire vì BE tự default
+  // COMPANY khi thiếu key.
+  assetType: z.enum(InventoryReceiptAssetType).optional(),
   receiptDate: z
     .string()
     .min(1, "Vui lòng chọn ngày chứng từ")

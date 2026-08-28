@@ -10,7 +10,7 @@ export const PurchaseRequestCreateHeaderSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     // Không loader ở route create — danh sách phòng ban là 1 useQuery nhỏ ngay trong
-    // component, cùng lý do InventoryReceiptHeaderSection.tsx không prefetch kho/NCC.
+    // component, cùng lý do InventoryReceiptCreateHeaderSection.tsx không prefetch kho/NCC.
     const { data: departments = [] } = useQuery(departmentOptionsQueryOptions())
 
     return (

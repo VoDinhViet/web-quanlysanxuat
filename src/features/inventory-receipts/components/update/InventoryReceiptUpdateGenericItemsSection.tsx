@@ -13,12 +13,12 @@ import {
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
-import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/create/InventoryReceiptItemDialog"
+import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/InventoryReceiptItemDialog"
 import { updateInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"
 import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
 import { vndFormatter } from "@/lib/currency"
 
-// Bản update của InventoryReceiptGenericItemsSection.tsx — nội dung giống hệt, chỉ khác
+// Bản update của InventoryReceiptCreateGenericItemsSection.tsx — nội dung giống hệt, chỉ khác
 // `defaultValues` để khớp kiểu form update (`withForm` bind theo shape riêng của từng form,
 // không dùng chung được giữa create/update — cùng cách orders tách CreateOrderItemsSection.tsx/
 // UpdateOrderItemsSection.tsx). InventoryReceiptItemDialog tái dùng nguyên vẹn vì nó tự quản lý

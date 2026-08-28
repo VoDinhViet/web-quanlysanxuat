@@ -27,10 +27,13 @@ type InventoryReceiptItemDialogProps = {
   onSubmit: (value: InventoryReceiptItemFormValue) => void
 }
 
-// Chế độ chọn vật tư chung (không theo PO) — xem InventoryReceiptGenericItemsSection.tsx.
-// Không có currency/discountPercent/status như OrderItemDialog.tsx: phiếu nhập kho không có
-// khái niệm này. `purchaseOrderItemId` không xuất hiện ở đây — dialog này chỉ dùng khi phiếu
-// chưa chọn PO nguồn.
+// Chế độ chọn vật tư chung (không theo PO) — dùng chung bởi
+// create/InventoryReceiptCreateGenericItemsSection.tsx và
+// update/InventoryReceiptUpdateGenericItemsSection.tsx, nên đặt ở `components/` root thay vì
+// dưới `create/` (xem project-and-commands.md, "anything shared across screens ... stays at
+// the components/ root"). Không có currency/discountPercent/status như OrderItemDialog.tsx:
+// phiếu nhập kho không có khái niệm này. `purchaseOrderItemId` không xuất hiện ở đây — dialog
+// này chỉ dùng khi phiếu chưa chọn PO nguồn.
 export function InventoryReceiptItemDialog({
   open,
   onOpenChange,

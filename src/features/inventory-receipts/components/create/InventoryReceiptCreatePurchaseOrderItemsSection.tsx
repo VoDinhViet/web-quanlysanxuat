@@ -20,12 +20,12 @@ import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipt
 import { vndFormatter } from "@/lib/currency"
 
 // Chế độ chọn dòng từ PO đã đặt — hiện khi phiếu gắn `purchaseOrderId`
-// (xem InventoryReceiptItemsSection.tsx). Mỗi dòng PO là một checkbox; chọn tự tạo dòng phiếu
-// với `purchaseOrderItemId` trỏ về dòng đó, mặc định SL/Đơn giá lấy từ dòng PO nhưng cho sửa.
-// Cố ý KHÔNG hiển thị "đã nhận trước đó / còn lại" — BE mới tính SL nhận ở mức PO tổng, chưa
-// tính theo từng dòng (`docs/domains/inventory.md`, xem plan Phần 1.4) — ghi rõ trong UI thay vì
-// giả vờ có.
-export const InventoryReceiptPurchaseOrderItemsSection = withForm({
+// (xem InventoryReceiptCreateItemsSection.tsx). Mỗi dòng PO là một checkbox; chọn tự tạo dòng
+// phiếu với `purchaseOrderItemId` trỏ về dòng đó, mặc định SL/Đơn giá lấy từ dòng PO nhưng cho
+// sửa. Cố ý KHÔNG hiển thị "đã nhận trước đó / còn lại" — BE mới tính SL nhận ở mức PO tổng,
+// chưa tính theo từng dòng (`docs/domains/inventory.md`, xem plan Phần 1.4) — ghi rõ trong UI
+// thay vì giả vờ có.
+export const InventoryReceiptCreatePurchaseOrderItemsSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {

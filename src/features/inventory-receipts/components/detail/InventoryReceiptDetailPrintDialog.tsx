@@ -14,7 +14,7 @@ import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
 import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
 import { vndFormatter } from "@/lib/currency"
 
-type InventoryReceiptPrintDialogProps = {
+type InventoryReceiptDetailPrintDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   // Nhận thẳng qua prop thay vì tự fetch — cả trang danh sách (InventoryReceipt) lẫn trang chi
@@ -23,11 +23,11 @@ type InventoryReceiptPrintDialogProps = {
   detail: InventoryReceipt
 }
 
-export function InventoryReceiptPrintDialog({
+export function InventoryReceiptDetailPrintDialog({
   open,
   onOpenChange,
   detail,
-}: InventoryReceiptPrintDialogProps) {
+}: InventoryReceiptDetailPrintDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">

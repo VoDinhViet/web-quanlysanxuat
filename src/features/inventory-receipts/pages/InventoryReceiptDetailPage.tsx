@@ -5,8 +5,8 @@ import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
 import { Surface } from "@/components/shared/layout/Surface"
 import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/options"
 import { InventoryReceiptDetailHeader } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailHeader"
-import { InventoryReceiptItemsSection } from "@/features/inventory-receipts/components/detail/InventoryReceiptItemsSection"
-import { InventoryReceiptInfoCard } from "@/features/inventory-receipts/components/detail/InventoryReceiptInfoCard"
+import { InventoryReceiptDetailItemsSection } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailItemsSection"
+import { InventoryReceiptDetailInfoCard } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailInfoCard"
 
 export function InventoryReceiptDetailPage() {
   const { inventoryReceiptId } = useParams({
@@ -38,12 +38,12 @@ export function InventoryReceiptDetailPage() {
           {/* Main content */}
           <Surface>
             <InventoryReceiptDetailHeader detail={detail} />
-            <InventoryReceiptItemsSection detail={detail} />
+            <InventoryReceiptDetailItemsSection detail={detail} />
           </Surface>
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
-            <InventoryReceiptInfoCard detail={detail} />
+            <InventoryReceiptDetailInfoCard detail={detail} />
           </div>
         </div>
       </div>

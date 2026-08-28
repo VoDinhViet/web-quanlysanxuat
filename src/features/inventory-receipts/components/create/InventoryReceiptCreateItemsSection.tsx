@@ -1,13 +1,13 @@
 import { useField } from "@tanstack/react-form"
 
 import { withForm } from "@/hooks/use-app-form"
-import { InventoryReceiptGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptGenericItemsSection"
-import { InventoryReceiptPurchaseOrderItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptPurchaseOrderItemsSection"
+import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateGenericItemsSection"
+import { InventoryReceiptCreatePurchaseOrderItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreatePurchaseOrderItemsSection"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 
 // Dispatcher giữa 2 chế độ chọn dòng vật tư — theo PO (đã chọn `purchaseOrderId` ở header) hay
 // chọn tay (mặc định). Xem plan Phần 4.
-export const InventoryReceiptItemsSection = withForm({
+export const InventoryReceiptCreateItemsSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
@@ -15,12 +15,15 @@ export const InventoryReceiptItemsSection = withForm({
       .value
 
     return purchaseOrderId ? (
-      <InventoryReceiptPurchaseOrderItemsSection
+      <InventoryReceiptCreatePurchaseOrderItemsSection
         form={form}
         disabled={disabled}
       />
     ) : (
-      <InventoryReceiptGenericItemsSection form={form} disabled={disabled} />
+      <InventoryReceiptCreateGenericItemsSection
+        form={form}
+        disabled={disabled}
+      />
     )
   },
 })

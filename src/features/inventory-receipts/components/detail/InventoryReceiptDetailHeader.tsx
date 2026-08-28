@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button"
 import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/InventoryReceiptBadges"
 import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/InventoryReceiptsTableCells"
 import { InventoryReceiptDetailActions } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailActions"
-import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
+import {
+  inventoryReceiptAssetTypeLabels,
+  inventoryReceiptTypeLabels,
+} from "@/lib/types/inventory-receipt.type"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
 type InventoryReceiptDetailHeaderProps = {
@@ -61,6 +64,10 @@ export function InventoryReceiptDetailHeader({
             <MetaField
               label="Loại phiếu"
               value={inventoryReceiptTypeLabels[detail.receiptType]}
+            />
+            <MetaField
+              label="Loại tài sản"
+              value={inventoryReceiptAssetTypeLabels[detail.assetType]}
             />
             <MetaField label="Kho nhận" value={detail.warehouse.name} />
           </div>

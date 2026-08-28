@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { InventoryReceiptAssetType } from "@/lib/types/inventory-receipt.type"
+
 // Bước ③ của wizard "Nhập kho từ PO" — một dòng cho mỗi dòng PO đã chọn ở bước ②. itemLabel/
 // itemUnit/requestedQuantity là UI-only (hiển thị lại không cần fetch lần 2, cùng idiom
 // inventory-receipt-item-form.schema.ts). Cố ý không có `unitPrice` — ảnh mẫu không cho sửa đơn
@@ -40,6 +42,7 @@ export type InventoryReceiptFromPoItemValue = z.input<
 export const createInventoryReceiptFromPoFormSchema = z.object({
   purchaseOrderId: z.string().trim().min(1, "Vui lòng chọn PO cần nhập"),
   requiresIqc: z.enum(["no", "yes"]),
+  assetType: z.enum(InventoryReceiptAssetType),
   items: z
     .array(inventoryReceiptFromPoItemSchema)
     .min(1, "Cần ít nhất một dòng vật tư"),
@@ -53,5 +56,6 @@ export const createInventoryReceiptFromPoFormDefaultValues: CreateInventoryRecei
   {
     purchaseOrderId: "",
     requiresIqc: "no",
+    assetType: InventoryReceiptAssetType.COMPANY,
     items: [],
   }

@@ -9,6 +9,7 @@ import { supplierQueryOptions } from "@/features/suppliers/api"
 import { withForm } from "@/hooks/use-app-form"
 import {
   InventoryReceiptStatus,
+  inventoryReceiptAssetTypeLabels,
   inventoryReceiptStatusDescriptions,
 } from "@/lib/types/inventory-receipt.type"
 import { getPrimaryRepresentative } from "@/lib/types/supplier.type"
@@ -47,6 +48,7 @@ export const InventoryReceiptCreateFromPoConfirmSection = withForm({
       .value
     const requiresIqc =
       useField({ form, name: "requiresIqc" }).state.value === "yes"
+    const assetType = useField({ form, name: "assetType" }).state.value
 
     const { data: purchaseOrder } = useQuery({
       ...purchaseOrderQueryOptions(purchaseOrderId),
@@ -74,9 +76,12 @@ export const InventoryReceiptCreateFromPoConfirmSection = withForm({
           </p>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 rounded-md border border-dashed border-border/50 bg-card p-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <PreviewField label="Nguồn nhập" value="Từ PO (Nhà cung cấp)" />
-          <PreviewField label="Loại tài sản" value="Vật tư công ty" />
+          <PreviewField
+            label="Loại tài sản"
+            value={inventoryReceiptAssetTypeLabels[assetType]}
+          />
           <PreviewField label="Ngày nhập (dự kiến)" value={today} />
           <PreviewField
             label="PO / Lý do"

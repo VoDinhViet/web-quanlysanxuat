@@ -13,7 +13,7 @@ import {
 import { IconButton } from "@/components/shared/buttons/IconButton"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
-import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/create/InventoryReceiptItemDialog"
+import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/InventoryReceiptItemDialog"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
 import { vndFormatter } from "@/lib/currency"
@@ -21,7 +21,7 @@ import { vndFormatter } from "@/lib/currency"
 // Chế độ chọn vật tư chung — mặc định khi phiếu chưa gắn `purchaseOrderId`. Không có cột ĐVT:
 // itemOptionsQueryOptions (qua useGetMaterialOptions) chỉ trả {id,code,name}, không có unit —
 // xem comment trong use-get-material-options.ts.
-export const InventoryReceiptGenericItemsSection = withForm({
+export const InventoryReceiptCreateGenericItemsSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
