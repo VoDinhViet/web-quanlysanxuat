@@ -70,7 +70,9 @@ export function SupplierReturnEvidenceField({
 
       const failedCount = results.length - uploaded.length
       if (failedCount > 0) {
-        setClientError(`${failedCount} file tải lên thất bại. Vui lòng thử lại.`)
+        setClientError(
+          `${failedCount} file tải lên thất bại. Vui lòng thử lại.`
+        )
       }
     },
     onDropRejected: (rejections) =>

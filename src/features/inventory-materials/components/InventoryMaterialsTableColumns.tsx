@@ -153,7 +153,10 @@ export const inventoryMaterialColumns = [
     },
     cell: ({ row }) => (
       <InventoryMaterialStatusBadge
-        status={resolveInventoryStatus(row.original.available, row.original.minStock)}
+        status={resolveInventoryStatus(
+          row.original.available,
+          row.original.minStock
+        )}
       />
     ),
   }),

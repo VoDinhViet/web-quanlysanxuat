@@ -34,20 +34,18 @@ const getProductLedgerSchema = z.object({
 
 export const getProductLedger = createServerFn({ method: "GET" })
   .validator(getProductLedgerSchema)
-  .handler(
-    async ({ data }): Promise<PaginatedResponse<ProductLedgerEntry>> => {
-      const { itemId, ...params } = data
-      try {
-        const response = await http.get<PaginatedResponse<ProductLedgerEntry>>(
-          `/api/inventory-products/${itemId}/ledger`,
-          { params }
-        )
+  .handler(async ({ data }): Promise<PaginatedResponse<ProductLedgerEntry>> => {
+    const { itemId, ...params } = data
+    try {
+      const response = await http.get<PaginatedResponse<ProductLedgerEntry>>(
+        `/api/inventory-products/${itemId}/ledger`,
+        { params }
+      )
 
-        return response.data
-      } catch (error) {
-        logHttpError(error, "getProductLedger")
+      return response.data
+    } catch (error) {
+      logHttpError(error, "getProductLedger")
 
-        throw new Error(resolveGetProductLedgerErrorMessage(error))
-      }
+      throw new Error(resolveGetProductLedgerErrorMessage(error))
     }
-  )
+  })

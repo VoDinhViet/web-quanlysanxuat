@@ -95,7 +95,10 @@ export const productLedgerMovementTypeLabels: Record<
 // nhập ra số âm, phiếu xuất ra số dương) mới phân biệt được. Mirrors be-quanlysanxuat's đã-gỡ
 // `resolveProductStockMovementType` (chuyển hẳn xuống FE theo yêu cầu, không còn ở backend).
 export function resolveProductLedgerMovementType(
-  entry: Pick<ProductLedgerEntry, "quantity" | "inventoryReceipt" | "inventoryIssue">
+  entry: Pick<
+    ProductLedgerEntry,
+    "quantity" | "inventoryReceipt" | "inventoryIssue"
+  >
 ): ProductLedgerMovementType {
   if (entry.inventoryReceipt) {
     if (entry.quantity < 0) {
