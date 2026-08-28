@@ -24,7 +24,7 @@ export function PurchaseQuotationDetailPage() {
       <PageTitleBar
         title="Chi tiết báo giá NCC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Báo giá NCC", href: "/manage/purchase-quotations" },
           { label: detail.code },

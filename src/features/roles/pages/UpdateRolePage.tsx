@@ -17,7 +17,7 @@ export function UpdateRolePage() {
       <PageTitleBar
         title="Chỉnh sửa vai trò"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Hệ thống" },
           { label: "Vai trò", href: "/manage/roles" },
           { label: "Chỉnh sửa vai trò" },

@@ -20,7 +20,7 @@ export function UpdateOrderPage() {
       <PageTitleBar
         title="Cập nhật đơn hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Bán hàng" },
           { label: "Đơn hàng (SO)", href: "/manage/orders" },
           { label: order.code },

@@ -17,7 +17,7 @@ function OrdersLayout() {
       <PageTitleBar
         title="Đơn hàng (Sales Order)"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Bán hàng" },
           { label: "Danh sách đơn hàng" },
         ]}

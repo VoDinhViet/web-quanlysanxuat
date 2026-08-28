@@ -1,11 +1,14 @@
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import * as RechartsPrimitive from "recharts"
 
 import { ChartContainer } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
-import {
-  productionProgress,
-  productionProgressTotal,
-} from "@/features/manage/mock/manage-dashboard.mock"
+import { Skeleton } from "@/components/ui/skeleton"
+import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
+import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
+import { useProductionProgress } from "@/features/manage/hooks/use-production-progress"
+import { cn } from "@/lib/utils"
 
 type DonutSlice = {
   label: string
@@ -100,11 +103,51 @@ export function ManageDonutChart({
 }
 
 export function ManageProductionChart() {
+  const { slices, total, isPending, isFetching, isError } =
+    useProductionProgress()
+  const search = useSearch({ from: "/(authed)/manage" })
+  const navigate = useNavigate({ from: "/manage" })
+
+  const handleDateChange = (range: {
+    from: string | undefined
+    to: string | undefined
+  }) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        startDate: range.from,
+        endDate: range.to,
+      }),
+    })
+  }
+
+  if (isPending) {
+    return <Skeleton className="h-64 rounded-lg" />
+  }
+
   return (
-    <ManageDonutChart
-      slices={productionProgress}
-      total={productionProgressTotal}
-      totalLabel="job"
-    />
+    <div className="flex flex-col gap-3 rounded-lg bg-card p-4 shadow-card">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <ManageCardTitle>Tiến độ sản xuất (tất cả job)</ManageCardTitle>
+        <div className="max-w-56">
+          <DateRangePicker
+            id="manage-production-progress-date-range"
+            from={search.startDate}
+            to={search.endDate}
+            onChange={handleDateChange}
+          />
+        </div>
+      </div>
+      <div className={cn(isFetching && "opacity-60 transition-opacity")}>
+        {isError ? (
+          <p className="py-8 text-center text-xs text-muted-foreground">
+            Không tải được dữ liệu tiến độ sản xuất.
+          </p>
+        ) : (
+          <ManageDonutChart slices={slices} total={total} totalLabel="job" />
+        )}
+      </div>
+      <ManageCardLink />
+    </div>
   )
 }

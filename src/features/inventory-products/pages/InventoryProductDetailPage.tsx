@@ -26,7 +26,7 @@ export function InventoryProductDetailPage() {
       <PageTitleBar
         title="Chi tiết thành phẩm tồn kho"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý kho", href: "/manage/inventory-products" },
           { label: "Tồn kho thành phẩm", href: "/manage/inventory-products" },
           { label: item.code },

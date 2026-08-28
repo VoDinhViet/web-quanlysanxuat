@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import type { ComponentProps } from "react"
 
 import {
@@ -81,23 +81,27 @@ export function ComboboxField({
     initialOption ?? null
   )
 
-  // Reconcile with an externally-changed `value` (e.g. the filter "Làm mới"
-  // button clearing it). Picking from the list already updates both, so this
-  // only acts on outside changes.
-  useEffect(() => {
+  // Reconcile with an externally-changed `value` (e.g. the filter "Làm mới" button
+  // clearing it) or a late-resolving `initialOption` (its query loads after this
+  // value is already set) — computed during render, not an effect, per React's
+  // "adjust state when a prop changes" pattern (avoids the extra synchronous
+  // re-render an effect-based setState would cause). Picking from the list already
+  // updates both together, so this only fires on outside changes.
+  const [prevValue, setPrevValue] = useState(value)
+  const [prevInitialOption, setPrevInitialOption] = useState(initialOption)
+  if (value !== prevValue || initialOption !== prevInitialOption) {
+    setPrevValue(value)
+    setPrevInitialOption(initialOption)
+
     if (!value) {
       setSelectedOption(null)
-      return
+    } else if (
+      selectedOption?.value !== value &&
+      initialOption?.value === value
+    ) {
+      setSelectedOption(initialOption)
     }
-
-    setSelectedOption((current) => {
-      if (current?.value === value) {
-        return current
-      }
-
-      return initialOption?.value === value ? initialOption : current
-    })
-  }, [value, initialOption])
+  }
 
   const items = useMemo(() => {
     if (

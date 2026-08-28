@@ -1,53 +1,26 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
 import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
-import { ManageInventoryChart } from "@/features/manage/components/ManageInventoryChart"
-import { ManageNcrByTypeChart } from "@/features/manage/components/ManageNcrByTypeChart"
 import { ManageQcRateChart } from "@/features/manage/components/ManageQcRateChart"
 import { ManageQuickActions } from "@/features/manage/components/ManageQuickActions"
 
-/** Mockup row: inventory bar chart, QC line chart, NCR-by-type donut, quick actions. */
+/** QC line chart + quick actions. */
 export function ManageAnalyticsRow() {
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
-      <Card size="sm">
-        <CardHeader>
-          <ManageCardTitle>Tồn kho cảnh báo</ManageCardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <ManageInventoryChart />
-          <ManageCardLink />
-        </CardContent>
-      </Card>
-
-      <Card size="sm">
-        <CardHeader>
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className="flex flex-col gap-3 rounded-lg bg-card p-4 shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <ManageCardTitle>Tỷ lệ đạt QC</ManageCardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <ManageQcRateChart />
-          <ManageCardLink />
-        </CardContent>
-      </Card>
+        </div>
+        <ManageQcRateChart />
+        <ManageCardLink />
+      </div>
 
-      <Card size="sm">
-        <CardHeader>
-          <ManageCardTitle>NCR theo loại lỗi (tháng)</ManageCardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <ManageNcrByTypeChart />
-          <ManageCardLink />
-        </CardContent>
-      </Card>
-
-      <Card size="sm">
-        <CardHeader>
+      <div className="flex flex-col gap-3 rounded-lg bg-card p-4 shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <ManageCardTitle>Thao tác nhanh</ManageCardTitle>
-        </CardHeader>
-        <CardContent>
-          <ManageQuickActions />
-        </CardContent>
-      </Card>
+        </div>
+        <ManageQuickActions />
+      </div>
     </div>
   )
 }

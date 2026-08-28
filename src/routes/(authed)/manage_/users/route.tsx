@@ -17,7 +17,7 @@ function UsersLayout() {
       <PageTitleBar
         title="Danh sách nhân sự"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Hệ thống" },
           { label: "Danh sách nhân sự" },
         ]}

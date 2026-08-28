@@ -83,7 +83,7 @@ export function ProductDetailPage() {
       <PageTitleBar
         title="Chi tiết sản phẩm"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản phẩm", href: "/manage/products" },
           { label: product.code },
         ]}

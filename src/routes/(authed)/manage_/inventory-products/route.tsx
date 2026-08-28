@@ -17,7 +17,7 @@ function InventoryProductsLayout() {
       <PageTitleBar
         title="Danh sách tồn kho thành phẩm"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý kho" },
           { label: "Tồn kho thành phẩm" },
         ]}

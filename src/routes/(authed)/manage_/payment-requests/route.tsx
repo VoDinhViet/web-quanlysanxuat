@@ -17,7 +17,7 @@ function PaymentRequestsLayout() {
       <PageTitleBar
         title="Yêu cầu thanh toán"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Yêu cầu thanh toán" },
         ]}

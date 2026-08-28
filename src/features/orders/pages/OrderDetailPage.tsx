@@ -29,7 +29,7 @@ export function OrderDetailPage() {
       <PageTitleBar
         title="Chi tiết đơn hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Đơn hàng (SO)", href: "/manage/orders" },
           { label: order.code },
         ]}

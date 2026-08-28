@@ -28,7 +28,7 @@ export function OutsourcingOrderDetailPage() {
       <PageTitleBar
         title="Chi tiết phiếu gửi gia công ngoài"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Gia công ngoài" },
           {
             label: "Xuất đi gia công (OS-OUT)",

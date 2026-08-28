@@ -17,7 +17,7 @@ function CreateClientLayout() {
       <PageTitleBar
         title="Tạo khách hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Khách hàng", href: "/manage/clients" },
           { label: "Tạo khách hàng" },
         ]}

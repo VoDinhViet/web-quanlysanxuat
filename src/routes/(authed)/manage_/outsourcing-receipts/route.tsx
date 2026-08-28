@@ -17,7 +17,7 @@ function OutsourcingReceiptsLayout() {
       <PageTitleBar
         title="Nhập về gia công ngoài (OS-IN)"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Gia công ngoài" },
           { label: "Nhập về (OS-IN)" },
         ]}

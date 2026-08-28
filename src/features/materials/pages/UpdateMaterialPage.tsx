@@ -17,7 +17,7 @@ export function UpdateMaterialPage() {
       <PageTitleBar
         title="Chỉnh sửa vật tư"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản xuất" },
           { label: "Vật tư", href: "/manage/materials" },
           { label: "Chỉnh sửa vật tư" },

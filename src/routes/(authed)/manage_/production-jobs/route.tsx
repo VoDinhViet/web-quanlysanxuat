@@ -18,7 +18,7 @@ function ProductionJobsLayout() {
       <PageTitleBar
         title="Quản lý sản xuất"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý sản xuất" },
           { label: "Danh sách Job" },
         ]}

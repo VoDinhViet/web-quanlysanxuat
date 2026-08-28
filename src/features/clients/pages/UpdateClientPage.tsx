@@ -17,7 +17,7 @@ export function UpdateClientPage() {
       <PageTitleBar
         title="Chỉnh sửa khách hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Khách hàng", href: "/manage/clients" },
           { label: "Chỉnh sửa khách hàng" },
         ]}

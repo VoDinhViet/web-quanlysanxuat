@@ -17,7 +17,7 @@ function SupplierReturnsLayout() {
       <PageTitleBar
         title="Trả NCC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Trả NCC" },
         ]}

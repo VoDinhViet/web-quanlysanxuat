@@ -9,6 +9,6 @@ export const getSidebarDefaultOpen = createIsomorphicFn()
   .client(() => {
     const cookie = document.cookie
       .split("; ")
-      .find((cookie) => cookie.startsWith("sidebar_state="))
+      .find((entry) => entry.startsWith("sidebar_state="))
     return cookie?.split("=")[1] !== "false"
   })

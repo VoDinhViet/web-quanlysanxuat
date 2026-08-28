@@ -17,7 +17,7 @@ function InventoryReceiptsLayout() {
       <PageTitleBar
         title="Nhập kho"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý kho" },
           { label: "Nhập kho" },
         ]}

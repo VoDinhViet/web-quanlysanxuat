@@ -37,7 +37,7 @@ export function OutboundOrderDetailPage() {
       <PageTitleBar
         title="Chi tiết đơn giao hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý bán hàng" },
           {
             label: "Giao hàng (DO)",

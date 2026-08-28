@@ -17,7 +17,7 @@ function ClientsLayout() {
       <PageTitleBar
         title="Danh sách khách hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Khách hàng" },
           { label: "Danh sách khách hàng" },
         ]}

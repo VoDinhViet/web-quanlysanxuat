@@ -15,7 +15,7 @@ export function OqcDetailPage() {
       <PageTitleBar
         title="Chi tiết OQC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Kiểm tra chất lượng (QC)" },
           { label: "OQC", href: "/manage/oqc" },
           { label: oqc.code },

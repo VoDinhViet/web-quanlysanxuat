@@ -22,7 +22,7 @@ export function InventoryRequisitionDetailPage() {
       <PageTitleBar
         title="Chi tiết phiếu lãnh vật tư"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý sản xuất" },
           { label: "Lãnh vật tư", href: "/manage/inventory-requisitions" },
           { label: detail.code },

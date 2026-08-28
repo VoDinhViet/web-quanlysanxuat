@@ -7,7 +7,7 @@ export function PurchaseRequestCreatePage() {
       <PageTitleBar
         title="Tạo đề xuất mua hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Đề xuất mua hàng", href: "/manage/purchase-requests" },
           { label: "Tạo đề xuất mua hàng" },

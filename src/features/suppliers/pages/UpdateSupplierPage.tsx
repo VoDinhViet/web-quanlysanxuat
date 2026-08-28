@@ -17,7 +17,7 @@ export function UpdateSupplierPage() {
       <PageTitleBar
         title="Chỉnh Sửa Nhà Cung Cấp"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Mua hàng" },
           { label: "Nhà cung cấp", href: "/manage/suppliers" },
           { label: "Chỉnh Sửa Nhà Cung Cấp" },

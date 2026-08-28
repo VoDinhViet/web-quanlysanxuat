@@ -17,7 +17,7 @@ function PurchaseQuotationsLayout() {
       <PageTitleBar
         title="Báo giá NCC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Báo giá NCC" },
         ]}

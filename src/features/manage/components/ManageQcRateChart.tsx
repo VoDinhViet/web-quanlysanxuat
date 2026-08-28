@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import * as RechartsPrimitive from "recharts"
 
 import {
@@ -6,7 +7,9 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
-import { qcRatePoints } from "@/features/manage/mock/manage-dashboard.mock"
+import { Skeleton } from "@/components/ui/skeleton"
+import { qcPassRateQueryOptions } from "@/features/reports/api"
+import { DateTime } from "luxon"
 
 const iqcColor = "var(--color-chart-1)"
 const oqcColor = "var(--color-chart-2)"
@@ -21,7 +24,25 @@ const qcRateSeries = [
   { key: "oqcPassRate", label: "OQC đạt (%)", color: oqcColor },
 ]
 
+function formatDay(value: string): string {
+  return DateTime.fromISO(value).toFormat("dd/MM")
+}
+
 export function ManageQcRateChart() {
+  const query = useQuery(qcPassRateQueryOptions())
+
+  if (query.isPending) {
+    return <Skeleton className="h-64 w-full" />
+  }
+
+  if (query.isError) {
+    return (
+      <p className="py-8 text-center text-xs text-muted-foreground">
+        Không tải được dữ liệu tỷ lệ đạt QC.
+      </p>
+    )
+  }
+
   return (
     <div className="space-y-3">
       <ul className="flex flex-wrap items-center gap-4 text-xs">
@@ -40,7 +61,7 @@ export function ManageQcRateChart() {
       </ul>
       <ChartContainer config={chartConfig} className="aspect-auto h-52 w-full">
         <RechartsPrimitive.LineChart
-          data={qcRatePoints}
+          data={query.data}
           margin={{ left: -8, right: 8, top: 4 }}
         >
           <RechartsPrimitive.CartesianGrid
@@ -52,6 +73,7 @@ export function ManageQcRateChart() {
             tickLine={false}
             axisLine={false}
             fontSize={11}
+            tickFormatter={formatDay}
           />
           <RechartsPrimitive.YAxis
             tickLine={false}
@@ -61,7 +83,15 @@ export function ManageQcRateChart() {
             ticks={[0, 25, 50, 75, 100]}
             tickFormatter={(value) => `${value}%`}
           />
-          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartTooltip
+            content={
+              <ChartTooltipContent
+                labelFormatter={(value) =>
+                  typeof value === "string" ? formatDay(value) : value
+                }
+              />
+            }
+          />
           <RechartsPrimitive.Line
             type="monotone"
             dataKey="iqcPassRate"

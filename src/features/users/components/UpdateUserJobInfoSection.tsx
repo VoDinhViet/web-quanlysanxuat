@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useField } from "@tanstack/react-form"
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 
@@ -31,7 +31,10 @@ export const UpdateUserJobInfoSection = withForm({
       ...positionsQueryOptions(departmentId),
       enabled: !!departmentId,
     })
-    const positions = positionsQuery.data ?? []
+    const positions = useMemo(
+      () => positionsQuery.data ?? [],
+      [positionsQuery.data]
+    )
 
     // Đổi phòng ban thì chức vụ đang chọn không còn hợp lệ — xoá để không gửi lên cặp lệch
     // (BE ném `position.error.department_mismatch`). Vô hại ở lần render đầu vì `positions`

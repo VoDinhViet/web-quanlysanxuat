@@ -17,7 +17,7 @@ function OqcLayout() {
       <PageTitleBar
         title="Danh sách OQC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Kiểm tra chất lượng (QC)" },
           { label: "OQC" },
         ]}

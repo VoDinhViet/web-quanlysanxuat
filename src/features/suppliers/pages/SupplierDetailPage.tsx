@@ -29,7 +29,7 @@ export function SupplierDetailPage() {
       <PageTitleBar
         title="Chi Tiết Nhà Cung Cấp"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Mua hàng" },
           { label: "Nhà cung cấp", href: "/manage/suppliers" },
           { label: supplier.code },

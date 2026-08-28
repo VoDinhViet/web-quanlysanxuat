@@ -7,7 +7,7 @@ export function CreatePurchaseOrderPage() {
       <PageTitleBar
         title="Tạo PO thủ công"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Đơn mua hàng", href: "/manage/purchase-orders" },
           { label: "Tạo PO thủ công" },

@@ -7,7 +7,7 @@ export function CreateOutboundOrderPage() {
       <PageTitleBar
         title="Tạo phiếu giao hàng (DO)"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý bán hàng", href: "/manage/outbound-orders" },
           { label: "Giao hàng (DO)", href: "/manage/outbound-orders" },
           { label: "Tạo phiếu" },

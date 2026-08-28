@@ -71,11 +71,11 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
     },
     {
       label: "PO trễ hạn",
-      value: stats.overdueOrders,
+      value: stats.orderDueDate,
       unit: "đơn",
       icon: ClockCircle,
       iconClassName: "bg-destructive/15 text-destructive",
-      trend: formatTrend(stats.overdueOrdersTrendCount, "hôm qua", formatCount),
+      trend: formatTrend(stats.orderDueDateTrendCount, "hôm qua", formatCount),
     },
     {
       label: "PO sắp giao",

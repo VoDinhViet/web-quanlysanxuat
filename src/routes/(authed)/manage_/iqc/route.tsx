@@ -17,7 +17,7 @@ function IqcLayout() {
       <PageTitleBar
         title="Danh sách IQC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Kiểm tra chất lượng (QC)" },
           { label: "IQC" },
         ]}

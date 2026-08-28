@@ -17,7 +17,7 @@ function OperationsLayout() {
       <PageTitleBar
         title="Danh mục công đoạn"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Danh mục" },
           { label: "Danh mục công đoạn" },
         ]}

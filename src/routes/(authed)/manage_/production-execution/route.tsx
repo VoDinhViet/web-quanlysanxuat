@@ -17,7 +17,7 @@ function ProductionExecutionLayout() {
       <PageTitleBar
         title="Thực hiện sản xuất"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản xuất" },
           { label: "Thực hiện sản xuất" },
         ]}

@@ -15,7 +15,7 @@ export function IqcDetailPage() {
       <PageTitleBar
         title="Chi tiết IQC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Kiểm tra chất lượng (QC)" },
           { label: "IQC", href: "/manage/iqc" },
           { label: iqc.code },

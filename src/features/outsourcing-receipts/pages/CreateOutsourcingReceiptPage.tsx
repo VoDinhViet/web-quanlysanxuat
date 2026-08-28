@@ -7,7 +7,7 @@ export function CreateOutsourcingReceiptPage() {
       <PageTitleBar
         title="Nhập hàng gia công về (OS-IN)"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Gia công ngoài", href: "/manage/outsourcing-receipts" },
           {
             label: "Nhập về (OS-IN)",

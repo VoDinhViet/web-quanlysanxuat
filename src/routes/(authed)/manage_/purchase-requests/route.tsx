@@ -17,7 +17,7 @@ function PurchaseRequestsLayout() {
       <PageTitleBar
         title="Quản lý mua hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Đề xuất mua hàng" },
         ]}

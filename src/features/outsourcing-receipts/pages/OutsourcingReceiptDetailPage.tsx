@@ -28,7 +28,7 @@ export function OutsourcingReceiptDetailPage() {
       <PageTitleBar
         title="Chi tiết phiếu nhận gia công ngoài"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Gia công ngoài" },
           { label: "Nhập về (OS-IN)", href: "/manage/outsourcing-receipts" },
           { label: receipt.code },

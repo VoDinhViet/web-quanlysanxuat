@@ -23,7 +23,7 @@ export function SupplierReturnDetailPage() {
       <PageTitleBar
         title="Chi tiết phiếu trả NCC"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Trả NCC", href: "/manage/supplier-returns" },
           { label: detail.code },

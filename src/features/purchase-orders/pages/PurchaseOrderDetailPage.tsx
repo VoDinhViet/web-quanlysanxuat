@@ -34,7 +34,7 @@ export function PurchaseOrderDetailPage() {
       <PageTitleBar
         title="Chi tiết đơn mua hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Đơn mua hàng (PO)", href: "/manage/purchase-orders" },
           { label: purchaseOrder.code },

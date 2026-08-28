@@ -41,7 +41,7 @@ export function ProductionJobDetailPage() {
       <PageTitleBar
         title="Chi tiết Job"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý sản xuất", href: "/manage/production-jobs" },
           { label: detail.code },
         ]}

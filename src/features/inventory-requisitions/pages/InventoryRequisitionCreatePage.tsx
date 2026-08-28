@@ -18,7 +18,7 @@ export function InventoryRequisitionCreatePage() {
       <PageTitleBar
         title="Tạo phiếu lãnh vật tư"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý sản xuất" },
           { label: "Lãnh vật tư", href: "/manage/inventory-requisitions" },
           { label: "Tạo phiếu" },

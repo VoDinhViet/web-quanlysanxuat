@@ -17,7 +17,7 @@ function CreateProductLayout() {
       <PageTitleBar
         title="Tạo sản phẩm"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản phẩm", href: "/manage/products" },
           { label: "Tạo sản phẩm" },
         ]}

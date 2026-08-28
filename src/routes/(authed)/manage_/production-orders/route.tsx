@@ -17,7 +17,7 @@ function ProductionOrdersLayout() {
       <PageTitleBar
         title="Lệnh sản xuất (LSX)"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản xuất" },
           { label: "Danh sách LSX" },
         ]}

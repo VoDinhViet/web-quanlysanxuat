@@ -7,7 +7,7 @@ export function UpdateUserPage() {
       <PageTitleBar
         title="Chỉnh Sửa Nhân Sự"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Nhân sự", href: "/manage/users" },
           { label: "Danh sách nhân sự", href: "/manage/users" },
           { label: "Chỉnh Sửa Nhân Sự" },

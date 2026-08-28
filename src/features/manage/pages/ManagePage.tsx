@@ -10,7 +10,7 @@ export function ManagePage() {
   return (
     <main className="min-h-svh bg-background text-foreground">
       <PageTitleBar
-        title="Dashboard"
+        title="Bảng điều khiển"
         breadcrumbs={[{ label: "Tổng quan điều hành" }]}
         notificationCount={5}
       />

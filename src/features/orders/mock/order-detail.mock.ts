@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 
 import { roundMoney } from "@/lib/utils"
@@ -26,12 +25,12 @@ function toIso(dateTime: DateTime, fallback: string): string {
   return dateTime.toISO() ?? fallback
 }
 
-function seedFor(order: OrderDetail): void {
+function hashOrderId(order: OrderDetail): number {
   let hash = 0
   for (let index = 0; index < order.id.length; index++) {
     hash = (hash * 31 + order.id.charCodeAt(index)) | 0
   }
-  faker.seed(Math.abs(hash))
+  return Math.abs(hash)
 }
 
 // Share of the order considered "delivered" so far — a stand-in for real DO
@@ -75,7 +74,7 @@ export function buildMockDeliveryHistory(
     return []
   }
 
-  seedFor(order)
+  const hash = hashOrderId(order)
   const orderDate = DateTime.fromISO(order.orderDate)
   const rowCount = order.status === OrderStatus.COMPLETED ? 2 : 1
 
@@ -90,7 +89,7 @@ export function buildMockDeliveryHistory(
       ),
       quantity: Math.round(progress.deliveredQuantity * share),
       valueVnd: roundMoney(progress.deliveredVnd * share),
-      vehicle: faker.helpers.arrayElement(deliveryVehicles),
+      vehicle: deliveryVehicles[(hash + index) % deliveryVehicles.length],
     }
   })
 }

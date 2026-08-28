@@ -17,7 +17,7 @@ function RolesLayout() {
       <PageTitleBar
         title="Danh sách vai trò"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Hệ thống" },
           { label: "Danh sách vai trò" },
         ]}

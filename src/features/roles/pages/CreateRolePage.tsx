@@ -7,7 +7,7 @@ export function CreateRolePage() {
       <PageTitleBar
         title="Tạo vai trò"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Hệ thống" },
           { label: "Vai trò", href: "/manage/roles" },
           { label: "Tạo vai trò" },

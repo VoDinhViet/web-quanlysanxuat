@@ -17,7 +17,7 @@ function SuppliersLayout() {
       <PageTitleBar
         title="Quản lý nhà cung cấp"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Mua hàng" },
           { label: "Nhà cung cấp" },
         ]}

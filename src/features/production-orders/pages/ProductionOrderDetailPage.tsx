@@ -94,7 +94,7 @@ export function ProductionOrderDetailPage() {
       <PageTitleBar
         title="Chi tiết lệnh sản xuất"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Lệnh sản xuất (LSX)", href: "/manage/production-orders" },
           { label: order.code },
         ]}

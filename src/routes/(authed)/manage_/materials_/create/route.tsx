@@ -17,7 +17,7 @@ function CreateMaterialLayout() {
       <PageTitleBar
         title="Tạo vật tư"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản xuất" },
           { label: "Vật tư", href: "/manage/materials" },
           { label: "Tạo vật tư" },

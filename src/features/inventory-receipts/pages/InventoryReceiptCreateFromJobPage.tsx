@@ -13,7 +13,7 @@ export function InventoryReceiptCreateFromJobPage() {
       <PageTitleBar
         title="Nhập kho thành phẩm"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý kho" },
           { label: "Nhập kho", href: "/manage/inventory-receipts" },
           { label: "Nhập kho thành phẩm" },

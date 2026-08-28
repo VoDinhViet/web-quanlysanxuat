@@ -18,7 +18,7 @@ export function InventoryReceiptUpdatePage() {
       <PageTitleBar
         title="Cập nhật phiếu nhập kho"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý kho" },
           { label: "Nhập kho", href: "/manage/inventory-receipts" },
           { label: detail.code },

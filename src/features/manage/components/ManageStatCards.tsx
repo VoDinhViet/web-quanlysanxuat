@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { reportStatsQueryOptions } from "@/features/reports/api"
 import {
@@ -21,15 +20,16 @@ export function ManageStatCards() {
     return (
       <div className={gridClassName}>
         {Array.from({ length: 6 }, (_, index) => (
-          <Card key={index} size="sm">
-            <CardContent className="flex items-start gap-3">
-              <Skeleton className="size-11 shrink-0 rounded-xl" />
-              <div className="min-w-0 flex-1 space-y-1.5">
-                <Skeleton className="h-3 w-20" />
-                <Skeleton className="h-7 w-16" />
-              </div>
-            </CardContent>
-          </Card>
+          <div
+            key={index}
+            className="flex items-start gap-3 rounded-lg bg-card p-4 shadow-card"
+          >
+            <Skeleton className="size-11 shrink-0 rounded-xl" />
+            <div className="min-w-0 flex-1 space-y-1.5">
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-7 w-16" />
+            </div>
+          </div>
         ))}
       </div>
     )
@@ -49,42 +49,43 @@ export function ManageStatCards() {
         const TrendIcon = getTrendIcon(stat.trend?.direction)
 
         return (
-          <Card key={stat.label} size="sm">
-            <CardContent className="flex items-start gap-3">
-              <div
-                className={cn(
-                  "flex size-11 shrink-0 items-center justify-center rounded-xl",
-                  stat.iconClassName
-                )}
-              >
-                <stat.icon className="size-5" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs font-bold text-foreground uppercase">
-                  {stat.label}
+          <div
+            key={stat.label}
+            className="flex items-start gap-3 rounded-lg bg-card p-4 shadow-card"
+          >
+            <div
+              className={cn(
+                "flex size-11 shrink-0 items-center justify-center rounded-xl",
+                stat.iconClassName
+              )}
+            >
+              <stat.icon className="size-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-foreground uppercase">
+                {stat.label}
+              </p>
+              <p className="text-2xl font-bold text-foreground">
+                {stat.value}{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  {stat.unit}
+                </span>
+              </p>
+              {stat.trend ? (
+                <p
+                  className={cn(
+                    "flex items-center gap-1 text-[11px]",
+                    stat.trend.direction === "up" && "text-success",
+                    stat.trend.direction === "down" && "text-destructive",
+                    !stat.trend.direction && "text-muted-foreground"
+                  )}
+                >
+                  {TrendIcon && <TrendIcon className="size-3" />}
+                  {stat.trend.text}
                 </p>
-                <p className="text-2xl font-bold text-foreground">
-                  {stat.value}{" "}
-                  <span className="text-xs font-normal text-muted-foreground">
-                    {stat.unit}
-                  </span>
-                </p>
-                {stat.trend ? (
-                  <p
-                    className={cn(
-                      "flex items-center gap-1 text-[11px]",
-                      stat.trend.direction === "up" && "text-success",
-                      stat.trend.direction === "down" && "text-destructive",
-                      !stat.trend.direction && "text-muted-foreground"
-                    )}
-                  >
-                    {TrendIcon && <TrendIcon className="size-3" />}
-                    {stat.trend.text}
-                  </p>
-                ) : null}
-              </div>
-            </CardContent>
-          </Card>
+              ) : null}
+            </div>
+          </div>
         )
       })}
     </div>

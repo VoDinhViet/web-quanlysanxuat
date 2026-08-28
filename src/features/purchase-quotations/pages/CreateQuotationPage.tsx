@@ -7,7 +7,7 @@ export function CreateQuotationPage() {
       <PageTitleBar
         title="Tạo RFQ"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Báo giá NCC", href: "/manage/purchase-quotations" },
           { label: "Tạo RFQ" },

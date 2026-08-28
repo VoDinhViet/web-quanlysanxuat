@@ -17,7 +17,7 @@ function UnitsLayout() {
       <PageTitleBar
         title="Danh mục đơn vị tính"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Danh mục" },
           { label: "Đơn vị tính" },
         ]}

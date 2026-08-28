@@ -34,7 +34,7 @@ export function PurchaseRequestDetailPage() {
       <PageTitleBar
         title="Chi tiết đề xuất mua hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Đề xuất mua hàng", href: "/manage/purchase-requests" },
           { label: purchaseRequest.code },
