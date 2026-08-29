@@ -5,9 +5,9 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { ProductionExecutionJobsTable } from "@/features/production-execution/components/list/ProductionExecutionJobsTable"
-import { ProductionExecutionJobsTableFilter } from "@/features/production-execution/components/list/ProductionExecutionJobsTableFilter"
-import { ProductionExecutionLegend } from "@/features/production-execution/components/list/ProductionExecutionLegend"
+import { ProductionExecutionJobsTable } from "@/features/production-execution/components/sections/ProductionExecutionJobsTable"
+import { ProductionExecutionJobsTableFilter } from "@/features/production-execution/components/sections/ProductionExecutionJobsTableFilter"
+import { ProductionExecutionLegend } from "@/features/production-execution/components/primitives/ProductionExecutionLegend"
 import {
   productionJobsByOperationQueryOptions,
   productionOperationSummaryQueryOptions,

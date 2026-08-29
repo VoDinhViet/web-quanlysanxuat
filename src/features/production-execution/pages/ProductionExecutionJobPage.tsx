@@ -9,7 +9,7 @@ import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { ProductionExecutionPartsTable } from "@/features/production-execution/components/detail/ProductionExecutionPartsTable"
+import { ProductionExecutionPartsTable } from "@/features/production-execution/components/sections/ProductionExecutionPartsTable"
 import {
   productionJobOperationsQueryOptions,
   productionJobQueryOptions,
@@ -18,7 +18,7 @@ import {
   ProductionJobStatus,
   productionJobStatusLabels,
 } from "@/lib/types/production-job.type"
-import type { ProductionExecutionPartRow } from "@/features/production-execution/components/detail/ProductionExecutionPartsTableColumns"
+import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
 
 // Job chưa `start`, hoặc đã start nhưng chưa qua "Duyệt công đoạn" — 2 điều kiện BE chặn PATCH
 // .../operations/:operationId (E087/E250), cùng logic canEdit của

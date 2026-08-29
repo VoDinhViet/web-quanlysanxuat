@@ -2,8 +2,8 @@ import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Box } from "lucide-react"
 
-import { ProductionExecutionJobActionsCell } from "@/features/production-execution/components/list/ProductionExecutionJobTableCells"
-import { OperationProgressBar } from "@/features/production-execution/components/OperationProgressBar"
+import { ProductionExecutionJobActionsCell } from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
+import { OperationProgressBar } from "@/features/production-execution/components/primitives/OperationProgressBar"
 import type { ProductionJobByOperation } from "@/lib/types/production-job.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

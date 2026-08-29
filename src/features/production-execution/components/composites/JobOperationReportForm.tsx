@@ -9,11 +9,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { JobOperationReportEvidenceField } from "@/features/production-execution/components/detail/JobOperationReportEvidenceField"
+import { JobOperationReportEvidenceField } from "@/features/production-execution/components/composites/JobOperationReportEvidenceField"
 import { useCreateJobOperationReport } from "@/features/production-execution/hooks/use-create-job-operation-report"
 import { createJobOperationReportSchema } from "@/features/production-execution/schemas/create-job-operation-report.schema"
 import { useAppForm } from "@/hooks/use-app-form"
-import type { ProductionExecutionPartRow } from "@/features/production-execution/components/detail/ProductionExecutionPartsTableColumns"
+import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

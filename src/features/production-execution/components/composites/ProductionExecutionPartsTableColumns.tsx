@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { JobOperationReportDialog } from "@/features/production-execution/components/detail/JobOperationReportDialog"
+import { JobOperationReportDialog } from "@/features/production-execution/components/composites/JobOperationReportDialog"
 import type {
   ProductionJobBomItem,
   ProductionJobOperation,

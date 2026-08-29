@@ -15,8 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildProductionExecutionPartColumns } from "@/features/production-execution/components/detail/ProductionExecutionPartsTableColumns"
-import type { ProductionExecutionPartRow } from "@/features/production-execution/components/detail/ProductionExecutionPartsTableColumns"
+import { buildProductionExecutionPartColumns } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
+import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
 
 type ProductionExecutionPartsTableProps = {
   rows: ProductionExecutionPartRow[]

@@ -2,8 +2,8 @@ import { useState } from "react"
 import type { ReactNode } from "react"
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { JobOperationReportForm } from "@/features/production-execution/components/detail/JobOperationReportForm"
-import type { ProductionExecutionPartRow } from "@/features/production-execution/components/detail/ProductionExecutionPartsTableColumns"
+import { JobOperationReportForm } from "@/features/production-execution/components/composites/JobOperationReportForm"
+import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
 
 type JobOperationReportDialogProps = {
   partRow: ProductionExecutionPartRow
