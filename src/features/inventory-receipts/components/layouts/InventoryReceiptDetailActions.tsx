@@ -21,13 +21,13 @@ import { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
 type InventoryReceiptDetailActionsProps = {
-  detail: InventoryReceiptDetail
+  inventoryReceipt: InventoryReceiptDetail
 }
 
 type ConfirmAction = "confirm" | "post" | "cancel" | null
 
 export function InventoryReceiptDetailActions({
-  detail,
+  inventoryReceipt,
 }: InventoryReceiptDetailActionsProps) {
   const [printOpen, setPrintOpen] = useState(false)
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null)
@@ -41,7 +41,7 @@ export function InventoryReceiptDetailActions({
 
   const confirmMutation = useMutation({
     mutationFn: () =>
-      confirmInventoryReceiptFn({ data: { receiptId: detail.id } }),
+      confirmInventoryReceiptFn({ data: { receiptId: inventoryReceipt.id } }),
     onSuccess: async () => {
       await invalidate()
       setConfirmAction(null)
@@ -50,7 +50,7 @@ export function InventoryReceiptDetailActions({
 
   const postMutation = useMutation({
     mutationFn: () =>
-      postInventoryReceiptFn({ data: { receiptId: detail.id } }),
+      postInventoryReceiptFn({ data: { receiptId: inventoryReceipt.id } }),
     onSuccess: async () => {
       await invalidate()
       setConfirmAction(null)
@@ -59,21 +59,24 @@ export function InventoryReceiptDetailActions({
 
   const cancelMutation = useMutation({
     mutationFn: () =>
-      cancelInventoryReceiptFn({ data: { receiptId: detail.id } }),
+      cancelInventoryReceiptFn({ data: { receiptId: inventoryReceipt.id } }),
     onSuccess: async () => {
       await invalidate()
       setConfirmAction(null)
     },
   })
 
-  const isDraft = detail.status === InventoryReceiptStatus.DRAFT
-  const isPendingIqc = detail.status === InventoryReceiptStatus.PENDING_IQC
-  const isPosted = detail.status === InventoryReceiptStatus.POSTED
-  const isCancelled = detail.status === InventoryReceiptStatus.CANCELLED
+  const isDraft = inventoryReceipt.status === InventoryReceiptStatus.DRAFT
+  const isPendingIqc =
+    inventoryReceipt.status === InventoryReceiptStatus.PENDING_IQC
+  const isPosted = inventoryReceipt.status === InventoryReceiptStatus.POSTED
+  const isCancelled =
+    inventoryReceipt.status === InventoryReceiptStatus.CANCELLED
   // `post` accepts both PENDING_RECEIPT and PENDING_IQC (backend re-checks IQC completion itself,
   // E153 if not done yet) — same button for both, no local IQC-completion lookup needed.
   const canPost =
-    detail.status === InventoryReceiptStatus.PENDING_RECEIPT || isPendingIqc
+    inventoryReceipt.status === InventoryReceiptStatus.PENDING_RECEIPT ||
+    isPendingIqc
 
   const activeMutation =
     confirmAction === "confirm"
@@ -145,7 +148,7 @@ export function InventoryReceiptDetailActions({
       <InventoryReceiptDetailPrintDialog
         open={printOpen}
         onOpenChange={setPrintOpen}
-        detail={detail}
+        inventoryReceipt={inventoryReceipt}
       />
 
       {confirmAction && (
@@ -164,7 +167,7 @@ export function InventoryReceiptDetailActions({
                   <>
                     Xác nhận phiếu{" "}
                     <span className="font-mono font-semibold text-foreground">
-                      {detail.code}
+                      {inventoryReceipt.code}
                     </span>{" "}
                     — nếu phiếu yêu cầu QC sẽ chuyển sang chờ kiểm tra chất
                     lượng (IQC), ngược lại chuyển thẳng sang chờ nhập kho. Chưa
@@ -174,7 +177,7 @@ export function InventoryReceiptDetailActions({
                   <>
                     Xác nhận phiếu{" "}
                     <span className="font-mono font-semibold text-foreground">
-                      {detail.code}
+                      {inventoryReceipt.code}
                     </span>{" "}
                     sẽ cộng tồn kho theo các dòng vật tư đã khai báo. Sau khi
                     xác nhận, phiếu không thể sửa được nữa.
@@ -183,7 +186,7 @@ export function InventoryReceiptDetailActions({
                   <>
                     Phiếu{" "}
                     <span className="font-mono font-semibold text-foreground">
-                      {detail.code}
+                      {inventoryReceipt.code}
                     </span>{" "}
                     đã được nhập kho — hủy sẽ đảo ngược bút toán và trừ lại tồn
                     kho đã cộng. Nếu vật tư đã được tiêu đi, thao tác này sẽ
@@ -193,7 +196,7 @@ export function InventoryReceiptDetailActions({
                   <>
                     Bạn chắc chắn muốn hủy phiếu{" "}
                     <span className="font-mono font-semibold text-foreground">
-                      {detail.code}
+                      {inventoryReceipt.code}
                     </span>
                     ? Phiếu chưa cộng tồn kho nên không ảnh hưởng số liệu.
                   </>

@@ -9,7 +9,7 @@ export function InventoryReceiptUpdatePage() {
   const { inventoryReceiptId } = useParams({
     from: "/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update",
   })
-  const { data: detail } = useSuspenseQuery(
+  const { data: inventoryReceipt } = useSuspenseQuery(
     inventoryReceiptQueryOptions(inventoryReceiptId)
   )
 
@@ -21,13 +21,13 @@ export function InventoryReceiptUpdatePage() {
           { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý kho" },
           { label: "Nhập kho", href: "/manage/inventory-receipts" },
-          { label: detail.code },
+          { label: inventoryReceipt.code },
           { label: "Cập nhật" },
         ]}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <InventoryReceiptUpdateForm detail={detail} />
+        <InventoryReceiptUpdateForm inventoryReceipt={inventoryReceipt} />
       </div>
     </main>
   )

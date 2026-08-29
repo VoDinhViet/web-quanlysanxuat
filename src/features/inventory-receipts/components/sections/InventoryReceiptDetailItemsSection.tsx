@@ -103,23 +103,23 @@ const itemColumns = [
 ]
 
 type InventoryReceiptDetailItemsSectionProps = {
-  detail: InventoryReceiptDetail
+  inventoryReceipt: InventoryReceiptDetail
 }
 
 export function InventoryReceiptDetailItemsSection({
-  detail,
+  inventoryReceipt,
 }: InventoryReceiptDetailItemsSectionProps) {
   const table = useReactTable({
-    data: detail.items,
+    data: inventoryReceipt.items,
     columns: itemColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
-  const totalQuantity = detail.items.reduce(
+  const totalQuantity = inventoryReceipt.items.reduce(
     (sum, item) => sum + item.quantity,
     0
   )
-  const totalAmount = detail.items.reduce(
+  const totalAmount = inventoryReceipt.items.reduce(
     (sum, item) =>
       sum + (item.unitPrice !== null ? item.quantity * item.unitPrice : 0),
     0
@@ -132,7 +132,7 @@ export function InventoryReceiptDetailItemsSection({
         Danh sách vật tư nhập kho
       </h3>
 
-      {detail.items.length === 0 ? (
+      {inventoryReceipt.items.length === 0 ? (
         <TableEmpty
           icon={PackageSearch}
           title="Chưa có vật tư nào"
@@ -175,7 +175,7 @@ export function InventoryReceiptDetailItemsSection({
         </Table>
       )}
 
-      {detail.items.length > 0 && (
+      {inventoryReceipt.items.length > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
           <div className="flex items-center gap-2 text-xs">
             <span className="font-semibold tracking-wide text-muted-foreground uppercase">

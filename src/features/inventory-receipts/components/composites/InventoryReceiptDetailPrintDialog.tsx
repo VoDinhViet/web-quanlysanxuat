@@ -20,13 +20,13 @@ type InventoryReceiptDetailPrintDialogProps = {
   // Nhận thẳng qua prop thay vì tự fetch — cả trang danh sách (InventoryReceipt) lẫn trang chi
   // tiết (InventoryReceiptDetail, cấu trúc rộng hơn nên gán được vào đây) đều đã có sẵn dữ liệu
   // này trong tay khi mở dialog in.
-  detail: InventoryReceipt
+  inventoryReceipt: InventoryReceipt
 }
 
 export function InventoryReceiptDetailPrintDialog({
   open,
   onOpenChange,
-  detail,
+  inventoryReceipt,
 }: InventoryReceiptDetailPrintDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,7 +34,7 @@ export function InventoryReceiptDetailPrintDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Printer className="size-5 text-primary" />
-            Bản in - Phiếu nhập kho ({detail.code})
+            Bản in - Phiếu nhập kho ({inventoryReceipt.code})
           </DialogTitle>
         </DialogHeader>
 
@@ -50,11 +50,11 @@ export function InventoryReceiptDetailPrintDialog({
               </p>
             </div>
             <div className="text-right font-mono">
-              <p className="text-base font-bold">{detail.code}</p>
+              <p className="text-base font-bold">{inventoryReceipt.code}</p>
               <p className="text-xs text-muted-foreground">
-                {DateTime.fromISO(detail.receiptDate, { zone: "utc" }).toFormat(
-                  "dd/MM/yyyy"
-                )}
+                {DateTime.fromISO(inventoryReceipt.receiptDate, {
+                  zone: "utc",
+                }).toFormat("dd/MM/yyyy")}
               </p>
             </div>
           </div>
@@ -64,37 +64,38 @@ export function InventoryReceiptDetailPrintDialog({
               PHIẾU NHẬP KHO
             </h1>
             <p className="text-xs text-muted-foreground italic">
-              Loại phiếu: {inventoryReceiptTypeLabels[detail.receiptType]}
+              Loại phiếu:{" "}
+              {inventoryReceiptTypeLabels[inventoryReceipt.receiptType]}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
             <p>
               <strong className="font-semibold">Kho nhận:</strong>{" "}
-              {detail.warehouse.name}
+              {inventoryReceipt.warehouse.name}
             </p>
             <p className="flex items-center gap-1">
               <strong className="font-semibold">PO / Lý do:</strong>{" "}
               <InventoryReceiptSourceCell
-                purchaseOrder={detail.purchaseOrder}
-                supplier={detail.supplier}
-                client={detail.client}
-                purchaseRequest={detail.purchaseRequest}
-                productionOrder={detail.productionOrder}
+                purchaseOrder={inventoryReceipt.purchaseOrder}
+                supplier={inventoryReceipt.supplier}
+                client={inventoryReceipt.client}
+                purchaseRequest={inventoryReceipt.purchaseRequest}
+                productionOrder={inventoryReceipt.productionOrder}
               />
             </p>
             <p>
               <strong className="font-semibold">Người tạo:</strong>{" "}
-              {detail.creatorBy?.fullName ?? "—"}
+              {inventoryReceipt.creatorBy?.fullName ?? "—"}
             </p>
             <p>
               <strong className="font-semibold">Người xác nhận:</strong>{" "}
-              {detail.posterBy?.fullName ?? "—"}
+              {inventoryReceipt.posterBy?.fullName ?? "—"}
             </p>
-            {detail.note && (
+            {inventoryReceipt.note && (
               <p className="col-span-2">
                 <strong className="font-semibold">Ghi chú:</strong>{" "}
-                {detail.note}
+                {inventoryReceipt.note}
               </p>
             )}
           </div>
@@ -113,7 +114,7 @@ export function InventoryReceiptDetailPrintDialog({
               </tr>
             </thead>
             <tbody>
-              {detail.items.map((item, idx) => (
+              {inventoryReceipt.items.map((item, idx) => (
                 <tr key={item.id}>
                   <td className="border border-border p-2 text-center">
                     {idx + 1}
@@ -140,13 +141,13 @@ export function InventoryReceiptDetailPrintDialog({
             <div>
               <p className="font-semibold">Người lập phiếu</p>
               <p className="mt-12 text-muted-foreground">
-                {detail.creatorBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
+                {inventoryReceipt.creatorBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
               </p>
             </div>
             <div>
               <p className="font-semibold">Người xác nhận nhập kho</p>
               <p className="mt-12 text-muted-foreground">
-                {detail.posterBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
+                {inventoryReceipt.posterBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
               </p>
             </div>
             <div>

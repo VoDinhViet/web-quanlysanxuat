@@ -182,7 +182,7 @@ export function InventoryReceiptActionsCell({
       <InventoryReceiptDetailPrintDialog
         open={printOpen}
         onOpenChange={setPrintOpen}
-        detail={receipt}
+        inventoryReceipt={receipt}
       />
 
       {/* Delete Confirm Dialog */}

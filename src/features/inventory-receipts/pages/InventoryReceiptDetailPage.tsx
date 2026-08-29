@@ -13,7 +13,7 @@ export function InventoryReceiptDetailPage() {
     from: "/(authed)/manage_/inventory-receipts_/$inventoryReceiptId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: inventoryReceipt } = useSuspenseQuery(
     inventoryReceiptQueryOptions(inventoryReceiptId)
   )
 
@@ -28,7 +28,7 @@ export function InventoryReceiptDetailPage() {
             label: "Nhập kho",
             href: "/manage/inventory-receipts",
           },
-          { label: detail.code },
+          { label: inventoryReceipt.code },
         ]}
       />
 
@@ -36,13 +36,17 @@ export function InventoryReceiptDetailPage() {
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           {/* Main content */}
           <Surface>
-            <InventoryReceiptDetailHeader detail={detail} />
-            <InventoryReceiptDetailItemsSection detail={detail} />
+            <InventoryReceiptDetailHeader inventoryReceipt={inventoryReceipt} />
+            <InventoryReceiptDetailItemsSection
+              inventoryReceipt={inventoryReceipt}
+            />
           </Surface>
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
-            <InventoryReceiptDetailInfoCard detail={detail} />
+            <InventoryReceiptDetailInfoCard
+              inventoryReceipt={inventoryReceipt}
+            />
           </div>
         </div>
       </div>

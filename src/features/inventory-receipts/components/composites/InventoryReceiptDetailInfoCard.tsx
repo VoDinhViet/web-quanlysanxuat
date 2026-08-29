@@ -4,14 +4,14 @@ import { DateTime } from "luxon"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
 type InventoryReceiptDetailInfoCardProps = {
-  detail: InventoryReceiptDetail
+  inventoryReceipt: InventoryReceiptDetail
 }
 
 // Backend không có bảng lịch sử trạng thái riêng (`inventory_receipts` chỉ giữ
 // createdBy/createdAt/postedBy/postedAt, không có cột huỷ) — card này gộp các mốc thời gian thật
 // đang có thay vì dựng một timeline giả nhiều bước, xem docs/domains/inventory.md.
 export function InventoryReceiptDetailInfoCard({
-  detail,
+  inventoryReceipt,
 }: InventoryReceiptDetailInfoCardProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
@@ -23,19 +23,19 @@ export function InventoryReceiptDetailInfoCard({
       <div className="flex flex-col gap-3 px-4 py-3.5 sm:px-5">
         <InfoRow
           label="Tạo lúc"
-          value={`${DateTime.fromISO(detail.createdAt).toFormat("dd/MM/yyyy HH:mm")}${detail.creatorBy ? ` · ${detail.creatorBy.fullName}` : ""}`}
+          value={`${DateTime.fromISO(inventoryReceipt.createdAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryReceipt.creatorBy ? ` · ${inventoryReceipt.creatorBy.fullName}` : ""}`}
         />
 
-        {detail.postedAt && (
+        {inventoryReceipt.postedAt && (
           <InfoRow
             label="Xác nhận nhập kho lúc"
-            value={`${DateTime.fromISO(detail.postedAt).toFormat("dd/MM/yyyy HH:mm")}${detail.posterBy ? ` · ${detail.posterBy.fullName}` : ""}`}
+            value={`${DateTime.fromISO(inventoryReceipt.postedAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryReceipt.posterBy ? ` · ${inventoryReceipt.posterBy.fullName}` : ""}`}
           />
         )}
 
         <InfoRow
           label="Cập nhật lần cuối"
-          value={DateTime.fromISO(detail.updatedAt).toFormat(
+          value={DateTime.fromISO(inventoryReceipt.updatedAt).toFormat(
             "dd/MM/yyyy HH:mm"
           )}
         />

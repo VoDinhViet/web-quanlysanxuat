@@ -15,22 +15,22 @@ import type { UpdateInventoryReceiptSchema } from "@/features/inventory-receipts
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
 function getInventoryReceiptDefaultValues(
-  detail: InventoryReceiptDetail
+  inventoryReceipt: InventoryReceiptDetail
 ): UpdateInventoryReceiptSchema {
   return {
-    receiptId: detail.id,
-    receiptType: detail.receiptType,
-    receiptDate: DateTime.fromISO(detail.receiptDate, { zone: "utc" }).toFormat(
-      "yyyy-MM-dd"
-    ),
-    supplierId: detail.supplier?.id ?? "",
-    clientId: detail.client?.id ?? "",
-    purchaseRequestId: detail.purchaseRequest?.id ?? "",
-    productionOrderId: detail.productionOrder?.id ?? "",
-    productionJobId: detail.productionJob?.id ?? "",
-    purchaseOrderId: detail.purchaseOrder?.id ?? "",
-    note: detail.note ?? "",
-    items: detail.items.map((item) => ({
+    receiptId: inventoryReceipt.id,
+    receiptType: inventoryReceipt.receiptType,
+    receiptDate: DateTime.fromISO(inventoryReceipt.receiptDate, {
+      zone: "utc",
+    }).toFormat("yyyy-MM-dd"),
+    supplierId: inventoryReceipt.supplier?.id ?? "",
+    clientId: inventoryReceipt.client?.id ?? "",
+    purchaseRequestId: inventoryReceipt.purchaseRequest?.id ?? "",
+    productionOrderId: inventoryReceipt.productionOrder?.id ?? "",
+    productionJobId: inventoryReceipt.productionJob?.id ?? "",
+    purchaseOrderId: inventoryReceipt.purchaseOrder?.id ?? "",
+    note: inventoryReceipt.note ?? "",
+    items: inventoryReceipt.items.map((item) => ({
       itemId: item.item.id,
       itemLabel: `${item.item.code} — ${item.item.name}`,
       itemUnit: "",
@@ -43,14 +43,14 @@ function getInventoryReceiptDefaultValues(
 }
 
 type InventoryReceiptUpdateFormProps = {
-  detail: InventoryReceiptDetail
+  inventoryReceipt: InventoryReceiptDetail
 }
 
 // updateInventoryReceipt trả void — không có gì mới để hiển thị ngoài chính state đã sửa, nên
 // onSuccess ở lại trang này (invalidate + toast) thay vì điều hướng, cùng cách UpdateOrderForm.tsx
 // làm ("sửa phiếu thường qua nhiều lượt", nút "Quay lại" phía trên form mới là lối ra).
 export function InventoryReceiptUpdateForm({
-  detail,
+  inventoryReceipt,
 }: InventoryReceiptUpdateFormProps) {
   const navigate = useNavigate({
     from: "/manage/inventory-receipts/$inventoryReceiptId/update",
@@ -69,7 +69,7 @@ export function InventoryReceiptUpdateForm({
   })
 
   const form = useAppForm({
-    defaultValues: getInventoryReceiptDefaultValues(detail),
+    defaultValues: getInventoryReceiptDefaultValues(inventoryReceipt),
     validators: {
       onSubmit: updateInventoryReceiptSchema,
     },
@@ -97,7 +97,7 @@ export function InventoryReceiptUpdateForm({
           >
             <Link
               to="/manage/inventory-receipts/$inventoryReceiptId"
-              params={{ inventoryReceiptId: detail.id }}
+              params={{ inventoryReceiptId: inventoryReceipt.id }}
             >
               <ArrowLeft className="size-4" />
               Quay lại
@@ -108,31 +108,37 @@ export function InventoryReceiptUpdateForm({
         <InventoryReceiptUpdateHeaderSection
           form={form}
           disabled={isPending}
-          receiptCode={detail.code}
-          warehouseName={detail.warehouse.name}
+          receiptCode={inventoryReceipt.code}
+          warehouseName={inventoryReceipt.warehouse.name}
           initialSupplier={
-            detail.supplier
-              ? { value: detail.supplier.id, label: detail.supplier.name }
+            inventoryReceipt.supplier
+              ? {
+                  value: inventoryReceipt.supplier.id,
+                  label: inventoryReceipt.supplier.name,
+                }
               : undefined
           }
           initialClient={
-            detail.client
-              ? { value: detail.client.id, label: detail.client.name }
+            inventoryReceipt.client
+              ? {
+                  value: inventoryReceipt.client.id,
+                  label: inventoryReceipt.client.name,
+                }
               : undefined
           }
           initialPurchaseOrder={
-            detail.purchaseOrder
+            inventoryReceipt.purchaseOrder
               ? {
-                  value: detail.purchaseOrder.id,
-                  label: detail.purchaseOrder.code,
+                  value: inventoryReceipt.purchaseOrder.id,
+                  label: inventoryReceipt.purchaseOrder.code,
                 }
               : undefined
           }
           initialProductionJob={
-            detail.productionJob
+            inventoryReceipt.productionJob
               ? {
-                  value: detail.productionJob.id,
-                  label: detail.productionJob.code,
+                  value: inventoryReceipt.productionJob.id,
+                  label: inventoryReceipt.productionJob.code,
                 }
               : undefined
           }
@@ -154,7 +160,7 @@ export function InventoryReceiptUpdateForm({
           onClick={() =>
             void navigate({
               to: "/manage/inventory-receipts/$inventoryReceiptId",
-              params: { inventoryReceiptId: detail.id },
+              params: { inventoryReceiptId: inventoryReceipt.id },
             })
           }
         >
