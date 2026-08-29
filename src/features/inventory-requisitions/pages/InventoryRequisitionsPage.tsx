@@ -3,8 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { PageBody } from "@/components/shared/layouts/PageBody"
 import { Surface } from "@/components/shared/layouts/Surface"
-import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
+import { TableQueryBoundary } from "@/components/shared/sections/TableQueryBoundary"
 import { inventoryRequisitionsQueryOptions } from "@/features/inventory-requisitions/api/options"
 import { InventoryRequisitionsTable } from "@/features/inventory-requisitions/components/sections/InventoryRequisitionsTable"
 import { InventoryRequisitionsTableFilter } from "@/features/inventory-requisitions/components/sections/InventoryRequisitionsTableFilter"
@@ -25,20 +24,18 @@ export function InventoryRequisitionsPage() {
       <Surface contentClassName="min-h-[calc(100svh-13rem)]">
         <InventoryRequisitionsTableFilter />
 
-        {inventoryRequisitionsQuery.isPending ? (
-          <TableQueryLoading rows={search.limit} />
-        ) : inventoryRequisitionsQuery.isError ? (
-          <TableQueryError
-            error={inventoryRequisitionsQuery.error.message}
-            onRetry={() => void inventoryRequisitionsQuery.refetch()}
-          />
-        ) : (
-          <InventoryRequisitionsTable
-            rows={inventoryRequisitionsQuery.data.data}
-            pagination={inventoryRequisitionsQuery.data.pagination}
-            isPending={inventoryRequisitionsQuery.isFetching}
-          />
-        )}
+        <TableQueryBoundary
+          query={inventoryRequisitionsQuery}
+          loadingRows={search.limit}
+        >
+          {(data) => (
+            <InventoryRequisitionsTable
+              rows={data.data}
+              pagination={data.pagination}
+              isPending={inventoryRequisitionsQuery.isFetching}
+            />
+          )}
+        </TableQueryBoundary>
       </Surface>
 
       <InventoryRequisitionsLegend />

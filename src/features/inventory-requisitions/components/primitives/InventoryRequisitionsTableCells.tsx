@@ -1,6 +1,7 @@
 import { CircleX, Pencil, Printer, Trash2 } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { RowActions } from "@/components/shared/primitives/RowActions"
 import { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
 import type {
   InventoryRequisition,
@@ -52,7 +53,7 @@ export function InventoryRequisitionActionsCell({
     requisition.status !== InventoryRequisitionStatus.CANCELLED
 
   return (
-    <div className="flex items-center justify-center gap-1.5">
+    <RowActions>
       <DisabledAction label="In phiếu" hint="chưa được xây dựng">
         <Printer className="size-3.5" />
       </DisabledAction>
@@ -74,6 +75,6 @@ export function InventoryRequisitionActionsCell({
           <CircleX className="size-3.5" />
         </DisabledAction>
       )}
-    </div>
+    </RowActions>
   )
 }

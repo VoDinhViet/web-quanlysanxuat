@@ -1,20 +1,9 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { ClipboardMinus } from "lucide-react"
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { DataTable } from "@/components/shared/composites/DataTable"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { inventoryRequisitionsColumns } from "@/features/inventory-requisitions/components/composites/InventoryRequisitionsTableColumns"
 import { cn } from "@/lib/utils"
 import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
@@ -46,59 +35,17 @@ export function InventoryRequisitionsTable({
         isPending && "pointer-events-none opacity-50"
       )}
     >
-      {rows.length === 0 ? (
-        <TableEmpty
-          icon={ClipboardMinus}
-          title="Chưa có phiếu lãnh vật tư nào"
-          description="Phiếu lãnh vật tư sẽ hiển thị tại đây sau khi được lập."
-        />
-      ) : (
-        <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-12 hover:bg-muted/45"
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="h-14 bg-card hover:bg-muted/25"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+      <DataTable
+        table={table}
+        isEmpty={rows.length === 0}
+        emptyState={
+          <TableEmpty
+            icon={ClipboardMinus}
+            title="Chưa có phiếu lãnh vật tư nào"
+            description="Phiếu lãnh vật tư sẽ hiển thị tại đây sau khi được lập."
+          />
+        }
+      />
 
       <TablePagination pagination={pagination} className="pt-4" />
     </div>
