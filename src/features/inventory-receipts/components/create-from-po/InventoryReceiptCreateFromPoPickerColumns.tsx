@@ -1,10 +1,63 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { DateTime } from "luxon"
 
+import { Badge } from "@/components/ui/badge"
 import { RadioGroupItem } from "@/components/ui/radio-group"
-import { PurchaseOrderProgressBadge } from "@/features/purchase-orders/components/PurchaseOrderBadges"
 import { vndFormatter } from "@/lib/currency"
+import {
+  purchaseOrderProgressLabels,
+  PurchaseOrderProgress,
+} from "@/lib/types/purchase-order.type"
 import type { PurchaseOrder } from "@/lib/types/purchase-order.type"
+import { cn } from "@/lib/utils"
+
+// Local, temporary copy of PurchaseOrderProgressBadge's palette (purchase-orders/components/
+// PurchaseOrderBadges.tsx) — a picker column can't import another feature's components/ (see
+// architecture.md's cross-feature import rule). Collapses into the shared StatusBadge kit
+// component once inventory-receipts migrates to it.
+type ProgressBadgeStyle = { badge: string; dot: string }
+
+const purchaseOrderProgressStyles: Record<
+  PurchaseOrderProgress,
+  ProgressBadgeStyle
+> = {
+  [PurchaseOrderProgress.DRAFT]: {
+    badge: "border-dashed bg-transparent text-muted-foreground",
+    dot: "bg-muted-foreground/60",
+  },
+  [PurchaseOrderProgress.ORDERED]: {
+    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    dot: "bg-blue-500 dark:bg-blue-400",
+  },
+  [PurchaseOrderProgress.RECEIVING]: {
+    badge:
+      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    dot: "bg-amber-500 dark:bg-amber-400",
+  },
+  [PurchaseOrderProgress.COMPLETED]: {
+    badge: "bg-success/10 text-success",
+    dot: "bg-success",
+  },
+  [PurchaseOrderProgress.CANCELLED]: {
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
+  },
+}
+
+function PurchaseOrderProgressBadge({
+  progress,
+}: {
+  progress: PurchaseOrderProgress
+}) {
+  const { badge, dot } = purchaseOrderProgressStyles[progress]
+
+  return (
+    <Badge variant="outline" className={cn(badge)}>
+      <span className={cn("size-1.5 rounded-full", dot)} />
+      {purchaseOrderProgressLabels[progress]}
+    </Badge>
+  )
+}
 
 const purchaseOrderPickerColumnHelper = createColumnHelper<PurchaseOrder>()
 
