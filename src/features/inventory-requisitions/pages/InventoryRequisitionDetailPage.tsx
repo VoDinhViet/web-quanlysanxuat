@@ -1,7 +1,9 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { DetailColumns } from "@/components/shared/layouts/DetailColumns"
+import { PageBody } from "@/components/shared/layouts/PageBody"
+import { PageShell } from "@/components/shared/layouts/PageShell"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { inventoryRequisitionQueryOptions } from "@/features/inventory-requisitions/api/options"
 import { InventoryRequisitionDetailHeader } from "@/features/inventory-requisitions/components/layouts/InventoryRequisitionDetailHeader"
@@ -18,31 +20,25 @@ export function InventoryRequisitionDetailPage() {
   )
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Chi tiết phiếu lãnh vật tư"
-        breadcrumbs={[
-          { label: "Bảng điều khiển", href: "/manage" },
-          { label: "Quản lý sản xuất" },
-          { label: "Lãnh vật tư", href: "/manage/inventory-requisitions" },
-          { label: detail.code },
-        ]}
-      />
-
-      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-          {/* Main content */}
-          <Surface>
-            <InventoryRequisitionDetailHeader detail={detail} />
-            <InventoryRequisitionItemsSection detail={detail} />
-          </Surface>
-
-          {/* Sidebar */}
-          <div className="flex flex-col gap-4">
-            <InventoryRequisitionInfoCard detail={detail} />
-          </div>
-        </div>
-      </div>
-    </main>
+    <PageShell
+      title="Chi tiết phiếu lãnh vật tư"
+      breadcrumbs={[
+        { label: "Quản lý sản xuất" },
+        { label: "Lãnh vật tư", href: "/manage/inventory-requisitions" },
+        { label: detail.code },
+      ]}
+    >
+      <PageBody>
+        <DetailColumns
+          main={
+            <Surface>
+              <InventoryRequisitionDetailHeader detail={detail} />
+              <InventoryRequisitionItemsSection detail={detail} />
+            </Surface>
+          }
+          sidebar={<InventoryRequisitionInfoCard detail={detail} />}
+        />
+      </PageBody>
+    </PageShell>
   )
 }

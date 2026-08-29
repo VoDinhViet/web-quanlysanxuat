@@ -41,7 +41,7 @@ import { currentUserQueryOptions, useLogout } from "@/features/auth/api"
 import { resolveAvatarUrl } from "@/lib/file-url"
 import type { FileRouteTypes } from "@/routeTree.gen"
 
-type PageTitleBreadcrumb = {
+export type PageTitleBreadcrumb = {
   label: string
   // Typed against the generated route tree — see AppSidebar.tsx's MenuItem.href for why. A
   // href-less, non-last crumb renders as plain text (a group label, not a link) below.

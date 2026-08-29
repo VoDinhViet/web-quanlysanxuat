@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router"
 
-import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { PageShell } from "@/components/shared/layouts/PageShell"
 
 // Layout route for /manage/inventory-requisitions — renders the real header
 // immediately (no loader of its own, so it never enters a pending state) and
@@ -15,17 +15,11 @@ export const Route = createFileRoute(
 
 function InventoryRequisitionsLayout() {
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Danh sách lãnh vật tư"
-        breadcrumbs={[
-          { label: "Bảng điều khiển", href: "/manage" },
-          { label: "Quản lý sản xuất" },
-          { label: "Lãnh vật tư" },
-        ]}
-      />
-
+    <PageShell
+      title="Danh sách lãnh vật tư"
+      breadcrumbs={[{ label: "Quản lý sản xuất" }, { label: "Lãnh vật tư" }]}
+    >
       <Outlet />
-    </main>
+    </PageShell>
   )
 }

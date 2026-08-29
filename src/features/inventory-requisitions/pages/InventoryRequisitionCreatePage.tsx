@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { PageBody } from "@/components/shared/layouts/PageBody"
+import { PageShell } from "@/components/shared/layouts/PageShell"
 import { CreateInventoryRequisitionForm } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionForm"
 import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 
@@ -14,22 +15,19 @@ export function InventoryRequisitionCreatePage() {
   )
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Tạo phiếu lãnh vật tư"
-        breadcrumbs={[
-          { label: "Bảng điều khiển", href: "/manage" },
-          { label: "Quản lý sản xuất" },
-          { label: "Lãnh vật tư", href: "/manage/inventory-requisitions" },
-          { label: "Tạo phiếu" },
-        ]}
-      />
-
-      <div className="w-full p-4 sm:p-5 lg:p-6">
+    <PageShell
+      title="Tạo phiếu lãnh vật tư"
+      breadcrumbs={[
+        { label: "Quản lý sản xuất" },
+        { label: "Lãnh vật tư", href: "/manage/inventory-requisitions" },
+        { label: "Tạo phiếu" },
+      ]}
+    >
+      <PageBody>
         <CreateInventoryRequisitionForm
           warehouseId={rmWarehouses[0]?.id ?? ""}
         />
-      </div>
-    </main>
+      </PageBody>
+    </PageShell>
   )
 }
