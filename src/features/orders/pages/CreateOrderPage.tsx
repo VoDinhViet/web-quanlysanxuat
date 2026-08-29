@@ -12,7 +12,6 @@ export function CreateOrderPage() {
           { label: "Đơn hàng (SO)", href: "/manage/orders" },
           { label: "Tạo đơn hàng" },
         ]}
-        notificationCount={5}
       />
 
       <div className="order-drafting w-full p-4 sm:p-5 lg:p-6">

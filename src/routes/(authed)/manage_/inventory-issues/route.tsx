@@ -21,7 +21,6 @@ function InventoryIssuesLayout() {
           { label: "Quản lý kho" },
           { label: "Xuất kho" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

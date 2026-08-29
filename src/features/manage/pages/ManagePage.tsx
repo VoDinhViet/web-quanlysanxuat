@@ -12,7 +12,6 @@ export function ManagePage() {
       <PageTitleBar
         title="Bảng điều khiển"
         breadcrumbs={[{ label: "Tổng quan điều hành" }]}
-        notificationCount={5}
       />
 
       <div className="w-full space-y-5 p-4 sm:p-5 lg:p-6">

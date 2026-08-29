@@ -21,7 +21,6 @@ function ProductsLayout() {
           { label: "Sản phẩm" },
           { label: "Danh sách sản phẩm" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

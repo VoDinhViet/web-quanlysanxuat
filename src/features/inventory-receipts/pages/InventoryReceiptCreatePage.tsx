@@ -12,7 +12,6 @@ export function InventoryReceiptCreatePage() {
           { label: "Nhập kho", href: "/manage/inventory-receipts" },
           { label: "Tạo phiếu nhập kho" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

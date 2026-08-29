@@ -21,7 +21,6 @@ function SupplierReturnsLayout() {
           { label: "Quản lý mua hàng" },
           { label: "Trả NCC" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

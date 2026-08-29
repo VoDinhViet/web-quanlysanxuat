@@ -22,7 +22,6 @@ function ProductionJobsLayout() {
           { label: "Quản lý sản xuất" },
           { label: "Danh sách Job" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

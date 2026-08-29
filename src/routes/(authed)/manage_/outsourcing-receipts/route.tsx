@@ -21,7 +21,6 @@ function OutsourcingReceiptsLayout() {
           { label: "Gia công ngoài" },
           { label: "Nhập về (OS-IN)" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

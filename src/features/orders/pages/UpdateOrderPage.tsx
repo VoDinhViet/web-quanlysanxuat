@@ -26,7 +26,6 @@ export function UpdateOrderPage() {
           { label: order.code },
           { label: "Cập nhật" },
         ]}
-        notificationCount={5}
       />
 
       <div className="order-drafting w-full p-4 sm:p-5 lg:p-6">

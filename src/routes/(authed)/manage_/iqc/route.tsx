@@ -21,7 +21,6 @@ function IqcLayout() {
           { label: "Kiểm tra chất lượng (QC)" },
           { label: "IQC" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

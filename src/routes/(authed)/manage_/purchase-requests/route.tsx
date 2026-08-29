@@ -21,7 +21,6 @@ function PurchaseRequestsLayout() {
           { label: "Quản lý mua hàng" },
           { label: "Đề xuất mua hàng" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

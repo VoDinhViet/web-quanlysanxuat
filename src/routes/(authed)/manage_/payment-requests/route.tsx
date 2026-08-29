@@ -21,7 +21,6 @@ function PaymentRequestsLayout() {
           { label: "Quản lý mua hàng" },
           { label: "Yêu cầu thanh toán" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

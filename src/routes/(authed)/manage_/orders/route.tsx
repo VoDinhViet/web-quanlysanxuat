@@ -21,7 +21,6 @@ function OrdersLayout() {
           { label: "Bán hàng" },
           { label: "Danh sách đơn hàng" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

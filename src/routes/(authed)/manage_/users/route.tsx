@@ -21,7 +21,6 @@ function UsersLayout() {
           { label: "Hệ thống" },
           { label: "Danh sách nhân sự" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

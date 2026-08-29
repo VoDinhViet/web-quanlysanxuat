@@ -18,7 +18,6 @@ export function InventoryReceiptCreateFromJobPage() {
           { label: "Nhập kho", href: "/manage/inventory-receipts" },
           { label: "Nhập kho thành phẩm" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

@@ -22,7 +22,6 @@ export function UpdateRolePage() {
           { label: "Vai trò", href: "/manage/roles" },
           { label: "Chỉnh sửa vai trò" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

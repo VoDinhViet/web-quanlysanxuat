@@ -21,7 +21,6 @@ function OutsourcingOrdersLayout() {
           { label: "Gia công ngoài" },
           { label: "Xuất đi gia công (OS-OUT)" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

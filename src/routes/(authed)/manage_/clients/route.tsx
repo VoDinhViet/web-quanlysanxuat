@@ -21,7 +21,6 @@ function ClientsLayout() {
           { label: "Khách hàng" },
           { label: "Danh sách khách hàng" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

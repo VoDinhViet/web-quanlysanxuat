@@ -21,7 +21,6 @@ function CreateProductLayout() {
           { label: "Sản phẩm", href: "/manage/products" },
           { label: "Tạo sản phẩm" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

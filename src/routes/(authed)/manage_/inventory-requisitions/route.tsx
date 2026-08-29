@@ -23,7 +23,6 @@ function InventoryRequisitionsLayout() {
           { label: "Quản lý sản xuất" },
           { label: "Lãnh vật tư" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

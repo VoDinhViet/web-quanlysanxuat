@@ -31,7 +31,6 @@ export function PaymentRequestDetailPage() {
           },
           { label: detail.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">

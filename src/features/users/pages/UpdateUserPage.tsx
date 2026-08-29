@@ -12,7 +12,6 @@ export function UpdateUserPage() {
           { label: "Danh sách nhân sự", href: "/manage/users" },
           { label: "Chỉnh Sửa Nhân Sự" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

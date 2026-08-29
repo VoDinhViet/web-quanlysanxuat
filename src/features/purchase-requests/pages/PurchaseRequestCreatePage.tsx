@@ -12,7 +12,6 @@ export function PurchaseRequestCreatePage() {
           { label: "Đề xuất mua hàng", href: "/manage/purchase-requests" },
           { label: "Tạo đề xuất mua hàng" },
         ]}
-        notificationCount={5}
       />
 
       <div className="requisition-sheet flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">

@@ -20,7 +20,6 @@ export function IqcDetailPage() {
           { label: "IQC", href: "/manage/iqc" },
           { label: iqc.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">

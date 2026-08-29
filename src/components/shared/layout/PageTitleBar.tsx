@@ -53,7 +53,6 @@ type PageTitleBreadcrumb = {
 type PageTitleBarProps = {
   title: string
   breadcrumbs: PageTitleBreadcrumb[]
-  notificationCount?: number
 }
 
 type PageBreadcrumbsProps = {
@@ -229,11 +228,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
   )
 }
 
-export function PageTitleBar({
-  title,
-  breadcrumbs,
-  notificationCount = 0,
-}: PageTitleBarProps) {
+export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
   const { toggleSidebar } = useSidebar()
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -280,20 +275,19 @@ export function PageTitleBar({
       </div>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="relative"
-          aria-label="Thông báo"
-        >
-          <Bell />
-          {notificationCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] leading-none font-bold text-destructive-foreground ring-2 ring-card">
-              {notificationCount > 9 ? "9+" : notificationCount}
-            </span>
-          )}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Thông báo"
+            >
+              <Bell />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Thông báo — tính năng sắp có</TooltipContent>
+        </Tooltip>
 
         <Button
           type="button"

@@ -21,7 +21,6 @@ function UnitsLayout() {
           { label: "Danh mục" },
           { label: "Đơn vị tính" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

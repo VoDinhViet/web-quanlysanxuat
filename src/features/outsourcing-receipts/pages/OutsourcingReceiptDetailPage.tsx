@@ -33,7 +33,6 @@ export function OutsourcingReceiptDetailPage() {
           { label: "Nhập về (OS-IN)", href: "/manage/outsourcing-receipts" },
           { label: receipt.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">

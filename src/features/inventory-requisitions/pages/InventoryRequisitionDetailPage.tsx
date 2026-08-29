@@ -27,7 +27,6 @@ export function InventoryRequisitionDetailPage() {
           { label: "Lãnh vật tư", href: "/manage/inventory-requisitions" },
           { label: detail.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">

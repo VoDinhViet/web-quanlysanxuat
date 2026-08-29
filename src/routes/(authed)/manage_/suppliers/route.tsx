@@ -21,7 +21,6 @@ function SuppliersLayout() {
           { label: "Mua hàng" },
           { label: "Nhà cung cấp" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

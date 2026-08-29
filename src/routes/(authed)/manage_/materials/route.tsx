@@ -21,7 +21,6 @@ function MaterialsLayout() {
           { label: "Sản xuất" },
           { label: "Vật tư" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

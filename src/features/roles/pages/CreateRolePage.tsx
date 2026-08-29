@@ -12,7 +12,6 @@ export function CreateRolePage() {
           { label: "Vai trò", href: "/manage/roles" },
           { label: "Tạo vai trò" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

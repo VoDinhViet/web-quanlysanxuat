@@ -98,7 +98,6 @@ export function ProductionOrderDetailPage() {
           { label: "Lệnh sản xuất (LSX)", href: "/manage/production-orders" },
           { label: order.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">

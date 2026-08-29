@@ -21,7 +21,6 @@ function PurchaseLedgerLayout() {
           { label: "Quản lý mua hàng" },
           { label: "Danh mục mua hàng" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

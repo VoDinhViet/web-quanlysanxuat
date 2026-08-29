@@ -20,7 +20,6 @@ export function OqcDetailPage() {
           { label: "OQC", href: "/manage/oqc" },
           { label: oqc.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

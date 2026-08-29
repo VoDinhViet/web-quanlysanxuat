@@ -21,7 +21,6 @@ function InventoryReceiptsLayout() {
           { label: "Quản lý kho" },
           { label: "Nhập kho" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

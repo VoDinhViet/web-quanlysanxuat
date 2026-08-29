@@ -21,7 +21,6 @@ function ProductionExecutionLayout() {
           { label: "Sản xuất" },
           { label: "Thực hiện sản xuất" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

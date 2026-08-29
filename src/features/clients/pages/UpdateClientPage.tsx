@@ -21,7 +21,6 @@ export function UpdateClientPage() {
           { label: "Khách hàng", href: "/manage/clients" },
           { label: "Chỉnh sửa khách hàng" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

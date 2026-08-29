@@ -22,7 +22,6 @@ export function UpdateSupplierPage() {
           { label: "Nhà cung cấp", href: "/manage/suppliers" },
           { label: "Chỉnh Sửa Nhà Cung Cấp" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

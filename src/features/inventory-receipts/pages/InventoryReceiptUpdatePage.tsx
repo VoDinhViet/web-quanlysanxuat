@@ -24,7 +24,6 @@ export function InventoryReceiptUpdatePage() {
           { label: detail.code },
           { label: "Cập nhật" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

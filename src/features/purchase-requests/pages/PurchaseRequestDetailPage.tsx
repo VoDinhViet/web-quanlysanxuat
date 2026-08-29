@@ -39,7 +39,6 @@ export function PurchaseRequestDetailPage() {
           { label: "Đề xuất mua hàng", href: "/manage/purchase-requests" },
           { label: purchaseRequest.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">

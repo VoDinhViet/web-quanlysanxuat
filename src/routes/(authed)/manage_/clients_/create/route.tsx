@@ -21,7 +21,6 @@ function CreateClientLayout() {
           { label: "Khách hàng", href: "/manage/clients" },
           { label: "Tạo khách hàng" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

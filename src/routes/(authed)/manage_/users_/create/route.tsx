@@ -22,7 +22,6 @@ function CreateUserLayout() {
           { label: "Danh sách nhân sự", href: "/manage/users" },
           { label: "Thêm nhân sự" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

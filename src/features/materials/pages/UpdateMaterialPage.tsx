@@ -22,7 +22,6 @@ export function UpdateMaterialPage() {
           { label: "Vật tư", href: "/manage/materials" },
           { label: "Chỉnh sửa vật tư" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

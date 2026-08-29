@@ -22,7 +22,6 @@ function CreateSupplierLayout() {
           { label: "Nhà cung cấp", href: "/manage/suppliers" },
           { label: "Thêm nhà cung cấp" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

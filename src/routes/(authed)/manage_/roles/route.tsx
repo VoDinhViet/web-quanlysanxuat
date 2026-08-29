@@ -21,7 +21,6 @@ function RolesLayout() {
           { label: "Hệ thống" },
           { label: "Danh sách vai trò" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

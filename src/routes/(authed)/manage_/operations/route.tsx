@@ -21,7 +21,6 @@ function OperationsLayout() {
           { label: "Danh mục" },
           { label: "Danh mục công đoạn" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

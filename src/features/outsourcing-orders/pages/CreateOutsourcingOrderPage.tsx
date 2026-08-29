@@ -21,7 +21,6 @@ export function CreateOutsourcingOrderPage() {
           },
           { label: "Tạo phiếu" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

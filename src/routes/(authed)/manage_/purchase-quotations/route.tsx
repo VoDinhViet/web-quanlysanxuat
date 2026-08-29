@@ -21,7 +21,6 @@ function PurchaseQuotationsLayout() {
           { label: "Quản lý mua hàng" },
           { label: "Báo giá NCC" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

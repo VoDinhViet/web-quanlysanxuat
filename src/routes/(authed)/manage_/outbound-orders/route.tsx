@@ -21,7 +21,6 @@ function OutboundOrdersLayout() {
           { label: "Quản lý bán hàng" },
           { label: "Giao hàng (DO)" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />

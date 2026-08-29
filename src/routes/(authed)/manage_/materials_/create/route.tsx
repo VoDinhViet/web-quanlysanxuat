@@ -22,7 +22,6 @@ function CreateMaterialLayout() {
           { label: "Vật tư", href: "/manage/materials" },
           { label: "Tạo vật tư" },
         ]}
-        notificationCount={5}
       />
 
       <Outlet />
