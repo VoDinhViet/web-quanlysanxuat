@@ -8,14 +8,14 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { CreateInventoryRequisitionInfoSection } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionInfoSection"
-import { CreateInventoryRequisitionItemsSection } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionItemsSection"
-import { CreateInventoryRequisitionPickerSection } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionPickerSection"
-import { CreateInventoryRequisitionSourceSection } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionSourceSection"
+import { CreateInventoryRequisitionInfoSection } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionInfoSection"
+import { CreateInventoryRequisitionItemsSection } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionItemsSection"
+import { CreateInventoryRequisitionPickerSection } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionPickerSection"
+import { CreateInventoryRequisitionSourceSection } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionSourceSection"
 import {
   CreateInventoryRequisitionStepsTabs,
   createInventoryRequisitionStepItems,
-} from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionStepsTabs"
+} from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionStepsTabs"
 import { createInventoryRequisition } from "@/features/inventory-requisitions/api/server-functions/create-inventory-requisition.api"
 import {
   createInventoryRequisitionFormDefaultValues,
@@ -26,7 +26,7 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import { getStepNav } from "@/lib/wizard-steps"
-import type { CreateInventoryRequisitionWizardStep } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionStepsTabs"
+import type { CreateInventoryRequisitionWizardStep } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionStepsTabs"
 import type { CreateInventoryRequisitionSchema } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 
 type CreateInventoryRequisitionFormProps = {

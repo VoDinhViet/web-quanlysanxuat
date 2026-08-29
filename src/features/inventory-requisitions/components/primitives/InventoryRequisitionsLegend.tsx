@@ -4,7 +4,7 @@ import {
   InventoryRequisitionStatus,
   inventoryRequisitionStatusDescriptions,
 } from "@/lib/types/inventory-requisition.type"
-import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/InventoryRequisitionBadges"
+import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionBadges"
 
 const statuses = Object.values(InventoryRequisitionStatus)
 

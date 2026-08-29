@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { inventoryRequisitionsColumns } from "@/features/inventory-requisitions/components/InventoryRequisitionsTableColumns"
+import { inventoryRequisitionsColumns } from "@/features/inventory-requisitions/components/composites/InventoryRequisitionsTableColumns"
 import { cn } from "@/lib/utils"
 import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
 import type { Pagination } from "@/lib/types/pagination.type"

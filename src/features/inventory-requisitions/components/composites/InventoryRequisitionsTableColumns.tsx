@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/InventoryRequisitionBadges"
+import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionBadges"
 import {
   InventoryRequisitionActionsCell,
   InventoryRequisitionSourceCell,
-} from "@/features/inventory-requisitions/components/InventoryRequisitionsTableCells"
+} from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionsTableCells"
 import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
 
 const col = createColumnHelper<InventoryRequisition>()

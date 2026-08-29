@@ -8,7 +8,7 @@ import { TableTextCellInput } from "@/components/shared/primitives/TableTextCell
 import {
   ColumnHeaderWithHint,
   formatNullableQuantity,
-} from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionPickerColumns"
+} from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
 import type { InventoryRequisitionItemFormValue } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

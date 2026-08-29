@@ -4,9 +4,9 @@ import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/InventoryRequisitionBadges"
-import { InventoryRequisitionSourceCell } from "@/features/inventory-requisitions/components/InventoryRequisitionsTableCells"
-import { InventoryRequisitionDetailActions } from "@/features/inventory-requisitions/components/detail/InventoryRequisitionDetailActions"
+import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionBadges"
+import { InventoryRequisitionSourceCell } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionsTableCells"
+import { InventoryRequisitionDetailActions } from "@/features/inventory-requisitions/components/layouts/InventoryRequisitionDetailActions"
 import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisition.type"
 
 type InventoryRequisitionDetailHeaderProps = {

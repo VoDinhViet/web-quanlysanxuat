@@ -4,9 +4,9 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { inventoryRequisitionQueryOptions } from "@/features/inventory-requisitions/api/options"
-import { InventoryRequisitionDetailHeader } from "@/features/inventory-requisitions/components/detail/InventoryRequisitionDetailHeader"
-import { InventoryRequisitionInfoCard } from "@/features/inventory-requisitions/components/detail/InventoryRequisitionInfoCard"
-import { InventoryRequisitionItemsSection } from "@/features/inventory-requisitions/components/detail/InventoryRequisitionItemsSection"
+import { InventoryRequisitionDetailHeader } from "@/features/inventory-requisitions/components/layouts/InventoryRequisitionDetailHeader"
+import { InventoryRequisitionInfoCard } from "@/features/inventory-requisitions/components/composites/InventoryRequisitionInfoCard"
+import { InventoryRequisitionItemsSection } from "@/features/inventory-requisitions/components/sections/InventoryRequisitionItemsSection"
 
 export function InventoryRequisitionDetailPage() {
   const { requisitionId } = useParams({

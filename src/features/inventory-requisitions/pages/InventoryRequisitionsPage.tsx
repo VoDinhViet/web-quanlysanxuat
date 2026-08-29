@@ -5,9 +5,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { inventoryRequisitionsQueryOptions } from "@/features/inventory-requisitions/api/options"
-import { InventoryRequisitionsTable } from "@/features/inventory-requisitions/components/InventoryRequisitionsTable"
-import { InventoryRequisitionsTableFilter } from "@/features/inventory-requisitions/components/InventoryRequisitionsTableFilter"
-import { InventoryRequisitionsLegend } from "@/features/inventory-requisitions/components/InventoryRequisitionsLegend"
+import { InventoryRequisitionsTable } from "@/features/inventory-requisitions/components/sections/InventoryRequisitionsTable"
+import { InventoryRequisitionsTableFilter } from "@/features/inventory-requisitions/components/sections/InventoryRequisitionsTableFilter"
+import { InventoryRequisitionsLegend } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionsLegend"
 
 export function InventoryRequisitionsPage() {
   const search = useSearch({
