@@ -4,7 +4,7 @@ import {
   PurchaseRequestItemActionsCell,
   PurchaseRequestItemNoteCell,
   PurchaseRequestItemQuantityCell,
-} from "@/features/purchase-requests/components/detail/PurchaseRequestItemCells"
+} from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
 import type { PurchaseRequestItem } from "@/lib/types/purchase-request.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

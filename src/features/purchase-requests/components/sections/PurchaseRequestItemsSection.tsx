@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildPurchaseRequestItemColumns } from "@/features/purchase-requests/components/detail/PurchaseRequestItemsTableColumns"
+import { buildPurchaseRequestItemColumns } from "@/features/purchase-requests/components/composites/PurchaseRequestItemsTableColumns"
 import type { PurchaseRequestItem } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestItemsSectionProps = {

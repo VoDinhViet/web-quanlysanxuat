@@ -1,11 +1,11 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/PurchaseRequestBadges"
+import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/primitives/PurchaseRequestBadges"
 import {
   PurchaseRequestActionsCell,
   PurchaseRequestSourceCell,
-} from "@/features/purchase-requests/components/PurchaseRequestTableCells"
+} from "@/features/purchase-requests/components/primitives/PurchaseRequestTableCells"
 import type { PurchaseRequest } from "@/lib/types/purchase-request.type"
 
 const purchaseRequestColumnHelper = createColumnHelper<PurchaseRequest>()

@@ -4,8 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { PurchaseRequestsTable } from "@/features/purchase-requests/components/PurchaseRequestsTable"
-import { PurchaseRequestsTableFilter } from "@/features/purchase-requests/components/PurchaseRequestsTableFilter"
+import { PurchaseRequestsTable } from "@/features/purchase-requests/components/sections/PurchaseRequestsTable"
+import { PurchaseRequestsTableFilter } from "@/features/purchase-requests/components/sections/PurchaseRequestsTableFilter"
 import { purchaseRequestsQueryOptions } from "@/features/purchase-requests/api/options"
 
 export function PurchaseRequestsPage() {

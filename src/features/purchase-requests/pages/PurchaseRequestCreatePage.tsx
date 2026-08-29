@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { PurchaseRequestCreateForm } from "@/features/purchase-requests/components/create/PurchaseRequestCreateForm"
+import { PurchaseRequestCreateForm } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateForm"
 
 export function PurchaseRequestCreatePage() {
   return (

@@ -14,8 +14,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { updatePurchaseRequestItem } from "@/features/purchase-requests/api/server-functions/update-purchase-request-item.api"
-import { DeletePurchaseRequestItemDialog } from "@/features/purchase-requests/components/detail/DeletePurchaseRequestItemDialog"
-import { PurchaseRequestItemNoteDialog } from "@/features/purchase-requests/components/detail/PurchaseRequestItemNoteDialog"
+import { DeletePurchaseRequestItemDialog } from "@/features/purchase-requests/components/composites/DeletePurchaseRequestItemDialog"
+import { PurchaseRequestItemNoteDialog } from "@/features/purchase-requests/components/composites/PurchaseRequestItemNoteDialog"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 

@@ -2,7 +2,7 @@ import { EllipsisVertical, Printer } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
-import { PurchaseRequestApprovalActions } from "@/features/purchase-requests/components/detail/PurchaseRequestApprovalActions"
+import { PurchaseRequestApprovalActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestApprovalActions"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestDetailActionsProps = {

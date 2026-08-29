@@ -4,8 +4,8 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/PurchaseRequestBadges"
-import { PurchaseRequestDetailActions } from "@/features/purchase-requests/components/detail/PurchaseRequestDetailActions"
+import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/primitives/PurchaseRequestBadges"
+import { PurchaseRequestDetailActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestDetailActions"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestDetailHeaderProps = {

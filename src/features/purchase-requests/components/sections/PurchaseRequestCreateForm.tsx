@@ -19,20 +19,20 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { getStepNav } from "@/lib/wizard-steps"
-import { PurchaseRequestCreateHeaderSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateHeaderSection"
-import { PurchaseRequestCreateMaterialPickerSection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerSection"
-import { PurchaseRequestCreateQuantitySection } from "@/features/purchase-requests/components/create/PurchaseRequestCreateQuantitySection"
+import { PurchaseRequestCreateHeaderSection } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateHeaderSection"
+import { PurchaseRequestCreateMaterialPickerSection } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateMaterialPickerSection"
+import { PurchaseRequestCreateQuantitySection } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateQuantitySection"
 import {
   PurchaseRequestCreateStepsTabs,
   purchaseRequestCreateStepItems,
-} from "@/features/purchase-requests/components/create/PurchaseRequestCreateStepsTabs"
-import { PurchaseRequestCreateTallySheet } from "@/features/purchase-requests/components/create/PurchaseRequestCreateTallySheet"
+} from "@/features/purchase-requests/components/sections/PurchaseRequestCreateStepsTabs"
+import { PurchaseRequestCreateTallySheet } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateTallySheet"
 import { createPurchaseRequest } from "@/features/purchase-requests/api/server-functions/create-purchase-request.api"
 import {
   createPurchaseRequestFormDefaultValues,
   createPurchaseRequestSchema,
 } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
-import type { PurchaseRequestCreateWizardStep } from "@/features/purchase-requests/components/create/PurchaseRequestCreateStepsTabs"
+import type { PurchaseRequestCreateWizardStep } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateStepsTabs"
 import type { CreatePurchaseRequestSchema } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
 
 export function PurchaseRequestCreateForm() {
