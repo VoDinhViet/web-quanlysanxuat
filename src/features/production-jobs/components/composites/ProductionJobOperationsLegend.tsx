@@ -12,8 +12,8 @@ import type { ComponentType } from "react"
 import {
   operationProgressStatusDescriptions,
   operationProgressStatusStyles,
-} from "@/features/production-jobs/components/detail/ProductionJobOperationsTable"
-import type { OperationProgressStatus } from "@/features/production-jobs/components/detail/ProductionJobOperationsTable"
+} from "@/features/production-jobs/components/composites/ProductionJobOperationsTable"
+import type { OperationProgressStatus } from "@/features/production-jobs/components/composites/ProductionJobOperationsTable"
 import { cn } from "@/lib/utils"
 
 const statuses = Object.keys(

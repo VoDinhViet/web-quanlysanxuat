@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { ProductionJobBomTable } from "@/features/production-jobs/components/detail/ProductionJobBomTable"
+import { ProductionJobBomTable } from "@/features/production-jobs/components/composites/ProductionJobBomTable"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
 
 type ProductionJobBomTabProps = {

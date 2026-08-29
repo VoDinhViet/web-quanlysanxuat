@@ -4,8 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { ProductionJobsTable } from "@/features/production-jobs/components/ProductionJobsTable"
-import { ProductionJobsTableFilter } from "@/features/production-jobs/components/ProductionJobsTableFilter"
+import { ProductionJobsTable } from "@/features/production-jobs/components/sections/ProductionJobsTable"
+import { ProductionJobsTableFilter } from "@/features/production-jobs/components/sections/ProductionJobsTableFilter"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
 
 export function ProductionJobsPage() {

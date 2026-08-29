@@ -11,16 +11,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { ApproveProductionJobOperationsDialog } from "@/features/production-jobs/components/detail/ApproveProductionJobOperationsDialog"
-import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
-import { ProductionJobDetailTabs } from "@/features/production-jobs/components/detail/ProductionJobDetailTabs"
-import { RequestProductionJobQcDialog } from "@/features/production-jobs/components/detail/RequestProductionJobQcDialog"
-import { StartProductionJobDialog } from "@/features/production-jobs/components/detail/StartProductionJobDialog"
+import { ApproveProductionJobOperationsDialog } from "@/features/production-jobs/components/composites/ApproveProductionJobOperationsDialog"
+import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
+import { ProductionJobDetailTabs } from "@/features/production-jobs/components/layouts/ProductionJobDetailTabs"
+import { RequestProductionJobQcDialog } from "@/features/production-jobs/components/composites/RequestProductionJobQcDialog"
+import { StartProductionJobDialog } from "@/features/production-jobs/components/composites/StartProductionJobDialog"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type ProductionJobDetailHeaderProps = {
-  detail: ProductionJobDetail
+  productionJob: ProductionJobDetail
 }
 
 // Identity, the header facts and the tab strip read as one unit, so they share a single block
@@ -36,7 +36,7 @@ type ProductionJobDetailHeaderProps = {
 // status switch itself — the backend enforces every precondition (E213/E214/E196/E197/E250/E251/
 // ...) and each dialog/page surfaces its own error inline.
 export function ProductionJobDetailHeader({
-  detail,
+  productionJob,
 }: ProductionJobDetailHeaderProps) {
   return (
     <>
@@ -59,9 +59,9 @@ export function ProductionJobDetailHeader({
             </Button>
 
             <span className="font-mono text-lg font-bold text-foreground">
-              {detail.code}
+              {productionJob.code}
             </span>
-            <ProductionJobStatusBadge status={detail.status} />
+            <ProductionJobStatusBadge status={productionJob.status} />
           </div>
 
           <dl className="grid grid-cols-1 gap-x-8 gap-y-1.5 sm:grid-cols-3">
@@ -70,39 +70,47 @@ export function ProductionJobDetailHeader({
               value={
                 <Link
                   to="/manage/products/$productId"
-                  params={{ productId: detail.itemId }}
+                  params={{ productId: productionJob.itemId }}
                   search={{ tab: "info" }}
                   className="text-primary hover:underline"
                 >
-                  {detail.item.code} — {detail.item.name}
+                  {productionJob.item.code} — {productionJob.item.name}
                 </Link>
               }
             />
-            <InfoField label="SL sản xuất" value={`${detail.quantity} Bộ`} />
+            <InfoField
+              label="SL sản xuất"
+              value={`${productionJob.quantity} Bộ`}
+            />
             <InfoField
               label="PO / HĐ"
               value={
                 <Link
                   to="/manage/orders/$orderId"
-                  params={{ orderId: detail.order.id }}
+                  params={{ orderId: productionJob.order.id }}
                   className="text-primary hover:underline"
                 >
-                  {detail.order.code}
+                  {productionJob.order.code}
                 </Link>
               }
               mono
             />
-            <InfoField label="Khách hàng" value={detail.client?.name ?? "—"} />
+            <InfoField
+              label="Khách hàng"
+              value={productionJob.client?.name ?? "—"}
+            />
             <InfoField
               label="Ngày tạo"
-              value={DateTime.fromISO(detail.createdAt).toFormat("dd/MM/yyyy")}
+              value={DateTime.fromISO(productionJob.createdAt).toFormat(
+                "dd/MM/yyyy"
+              )}
             />
             <InfoField
               label="Ngày giao hàng"
               value={
-                detail.order.dueDate === null
+                productionJob.order.dueDate === null
                   ? "—"
-                  : DateTime.fromISO(detail.order.dueDate).toFormat(
+                  : DateTime.fromISO(productionJob.order.dueDate).toFormat(
                       "dd/MM/yyyy"
                     )
               }
@@ -110,10 +118,10 @@ export function ProductionJobDetailHeader({
           </dl>
         </div>
 
-        {detail.status === ProductionJobStatus.PENDING && (
+        {productionJob.status === ProductionJobStatus.PENDING && (
           <PermissionGate permission="production:update">
             <StartProductionJobDialog
-              job={detail}
+              job={productionJob}
               trigger={
                 <Button type="button" className="gap-1.5">
                   <Diskette className="size-4" />
@@ -125,13 +133,13 @@ export function ProductionJobDetailHeader({
         )}
 
         <PermissionGate permission="production:approve">
-          <ApproveOperationsButton job={detail} />
+          <ApproveOperationsButton job={productionJob} />
         </PermissionGate>
 
-        {detail.status === ProductionJobStatus.WAITING_QC && (
+        {productionJob.status === ProductionJobStatus.WAITING_QC && (
           <PermissionGate permission="oqc:create">
             <RequestProductionJobQcDialog
-              job={detail}
+              job={productionJob}
               trigger={
                 <Button type="button" className="gap-1.5">
                   <ClipboardCheck className="size-4" />
@@ -142,12 +150,12 @@ export function ProductionJobDetailHeader({
           </PermissionGate>
         )}
 
-        {detail.status === ProductionJobStatus.WAITING_DELIVERY && (
+        {productionJob.status === ProductionJobStatus.WAITING_DELIVERY && (
           <PermissionGate permission="inventory:create">
             <Button type="button" className="gap-1.5" asChild>
               <Link
                 to="/manage/inventory-receipts/create-from-job"
-                search={{ productionJobId: detail.id }}
+                search={{ productionJobId: productionJob.id }}
               >
                 <Box className="size-4" />
                 Nhập kho thành phẩm

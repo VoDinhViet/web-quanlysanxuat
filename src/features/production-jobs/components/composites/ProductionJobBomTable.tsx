@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { productionJobBomColumns } from "@/features/production-jobs/components/detail/ProductionJobBomTableColumns"
+import { productionJobBomColumns } from "@/features/production-jobs/components/composites/ProductionJobBomTableColumns"
 import type { ProductionJobIssue } from "@/lib/types/production-job.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 

@@ -4,10 +4,10 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
-import { ProductionJobBomTab } from "@/features/production-jobs/components/detail/ProductionJobBomTab"
-import { ProductionJobDetailHeader } from "@/features/production-jobs/components/detail/ProductionJobDetailHeader"
-import { ProductionJobInfoTab } from "@/features/production-jobs/components/detail/ProductionJobInfoTab"
-import { ProductionJobOperationsTab } from "@/features/production-jobs/components/detail/ProductionJobOperationsTab"
+import { ProductionJobBomTab } from "@/features/production-jobs/components/sections/ProductionJobBomTab"
+import { ProductionJobDetailHeader } from "@/features/production-jobs/components/layouts/ProductionJobDetailHeader"
+import { ProductionJobInfoTab } from "@/features/production-jobs/components/sections/ProductionJobInfoTab"
+import { ProductionJobOperationsTab } from "@/features/production-jobs/components/sections/ProductionJobOperationsTab"
 import { productionJobQueryOptions } from "@/features/production-jobs/api/options"
 import { productionJobDetailTabs } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
 
@@ -22,7 +22,7 @@ export function ProductionJobDetailPage() {
     from: "/manage/production-jobs/$productionJobId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: productionJob } = useSuspenseQuery(
     productionJobQueryOptions(productionJobId)
   )
 
@@ -43,17 +43,17 @@ export function ProductionJobDetailPage() {
         breadcrumbs={[
           { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý sản xuất", href: "/manage/production-jobs" },
-          { label: detail.code },
+          { label: productionJob.code },
         ]}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface>
           <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
-            <ProductionJobDetailHeader detail={detail} />
+            <ProductionJobDetailHeader productionJob={productionJob} />
 
             <TabsContent value="info" className="m-0 outline-none">
-              <ProductionJobInfoTab detail={detail} />
+              <ProductionJobInfoTab productionJob={productionJob} />
             </TabsContent>
 
             <TabsContent value="bom" className="m-0 outline-none">
@@ -63,8 +63,8 @@ export function ProductionJobDetailPage() {
             <TabsContent value="operations" className="m-0 outline-none">
               <ProductionJobOperationsTab
                 productionJobId={productionJobId}
-                status={detail.status}
-                operationsApprovedAt={detail.operationsApprovedAt}
+                status={productionJob.status}
+                operationsApprovedAt={productionJob.operationsApprovedAt}
               />
             </TabsContent>
           </Tabs>

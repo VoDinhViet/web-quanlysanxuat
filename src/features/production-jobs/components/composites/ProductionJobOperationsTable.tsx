@@ -21,7 +21,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { ProductionJobOperationCompletedQuantityCell } from "@/features/production-jobs/components/detail/ProductionJobOperationCompletedQuantityCell"
+import { ProductionJobOperationCompletedQuantityCell } from "@/features/production-jobs/components/primitives/ProductionJobOperationCompletedQuantityCell"
 import type {
   ProductionJobBomItem,
   ProductionJobOperation,

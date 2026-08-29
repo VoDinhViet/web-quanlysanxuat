@@ -6,13 +6,13 @@ import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { productionOrderQueryOptions } from "@/features/production-orders/api"
-import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
-import { ProductionJobLogSection } from "@/features/production-jobs/components/detail/ProductionJobLogSection"
-import { ProductionJobNotesSection } from "@/features/production-jobs/components/detail/ProductionJobNotesSection"
+import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
+import { ProductionJobLogSection } from "@/features/production-jobs/components/composites/ProductionJobLogSection"
+import { ProductionJobNotesSection } from "@/features/production-jobs/components/sections/ProductionJobNotesSection"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type ProductionJobInfoTabProps = {
-  detail: ProductionJobDetail
+  productionJob: ProductionJobDetail
 }
 
 // "Thông tin chung" tab — cột chính (tóm tắt + Lịch sử) và cột phụ (Ghi chú) chia 2
@@ -22,12 +22,14 @@ type ProductionJobInfoTabProps = {
 // tiêu đề + đường kẻ; padding nội dung do từng khối tự quyết (xem từng call site bên dưới).
 // Không có dòng "Đã nhập"/"Còn lại" — `producedQty`/`rejectedQty` đã bị xoá khỏi
 // `production_jobs` phía backend (chưa có route báo sản lượng), không phải chỉ chưa expose.
-export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
+export function ProductionJobInfoTab({
+  productionJob,
+}: ProductionJobInfoTabProps) {
   // Mã LSX không có trên GET /production-jobs/:jobId (chỉ có productionOrderId dạng UUID) — đọc
   // riêng qua production-orders, client-side, không chặn paint của tab (giống cách BOM/Operations
   // tab tự đọc dữ liệu riêng).
   const productionOrderQuery = useQuery(
-    productionOrderQueryOptions(detail.productionOrderId)
+    productionOrderQueryOptions(productionJob.productionOrderId)
   )
 
   return (
@@ -36,13 +38,15 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
         <InfoSection title="Thông tin chung" icon={Info}>
           <dl className="grid grid-cols-1 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
             <div className="divide-y divide-border">
-              <SummaryRow label="Mã Job" value={detail.code} mono />
+              <SummaryRow label="Mã Job" value={productionJob.code} mono />
               <SummaryRow
                 label="LSX"
                 value={
                   <Link
                     to="/manage/production-orders/$productionOrderId"
-                    params={{ productionOrderId: detail.productionOrderId }}
+                    params={{
+                      productionOrderId: productionJob.productionOrderId,
+                    }}
                     className="text-primary hover:underline"
                   >
                     {productionOrderQuery.isPending
@@ -54,18 +58,18 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
               />
               <SummaryRow
                 label="Khách hàng"
-                value={detail.client?.name ?? "—"}
+                value={productionJob.client?.name ?? "—"}
               />
               <SummaryRow
                 label="Sản phẩm"
                 value={
                   <Link
                     to="/manage/products/$productId"
-                    params={{ productId: detail.itemId }}
+                    params={{ productId: productionJob.itemId }}
                     search={{ tab: "info" }}
                     className="text-primary hover:underline"
                   >
-                    {detail.item.code} — {detail.item.name}
+                    {productionJob.item.code} — {productionJob.item.name}
                   </Link>
                 }
               />
@@ -74,36 +78,41 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
                 value={
                   <Link
                     to="/manage/orders/$orderId"
-                    params={{ orderId: detail.order.id }}
+                    params={{ orderId: productionJob.order.id }}
                     className="text-primary hover:underline"
                   >
-                    {detail.order.code}
+                    {productionJob.order.code}
                   </Link>
                 }
                 mono
               />
             </div>
             <div className="divide-y divide-border">
-              <SummaryRow label="SL sản xuất" value={`${detail.quantity} Bộ`} />
+              <SummaryRow
+                label="SL sản xuất"
+                value={`${productionJob.quantity} Bộ`}
+              />
               <SummaryRow
                 label="Ngày tạo"
-                value={DateTime.fromISO(detail.createdAt).toFormat(
+                value={DateTime.fromISO(productionJob.createdAt).toFormat(
                   "dd/MM/yyyy"
                 )}
               />
               <SummaryRow
                 label="Ngày giao hàng"
                 value={
-                  detail.order.dueDate === null
+                  productionJob.order.dueDate === null
                     ? "—"
-                    : DateTime.fromISO(detail.order.dueDate).toFormat(
+                    : DateTime.fromISO(productionJob.order.dueDate).toFormat(
                         "dd/MM/yyyy"
                       )
                 }
               />
               <SummaryRow
                 label="Trạng thái"
-                value={<ProductionJobStatusBadge status={detail.status} />}
+                value={
+                  <ProductionJobStatusBadge status={productionJob.status} />
+                }
               />
             </div>
           </dl>
@@ -119,7 +128,7 @@ export function ProductionJobInfoTab({ detail }: ProductionJobInfoTabProps) {
       <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
         <InfoSection title="Ghi chú" icon={StickyNote}>
           <div className="p-4 sm:p-5">
-            <ProductionJobNotesSection productionJobId={detail.id} />
+            <ProductionJobNotesSection productionJobId={productionJob.id} />
           </div>
         </InfoSection>
       </aside>

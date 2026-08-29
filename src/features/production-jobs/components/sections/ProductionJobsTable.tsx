@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { productionJobColumns } from "@/features/production-jobs/components/ProductionJobsTableColumns"
+import { productionJobColumns } from "@/features/production-jobs/components/composites/ProductionJobsTableColumns"
 import { cn } from "@/lib/utils"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 import type { Pagination } from "@/lib/types/pagination.type"

@@ -1,11 +1,11 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
+import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
 import {
   ProductImageCell,
   ProductionJobActionsCell,
-} from "@/features/production-jobs/components/ProductionJobTableCells"
+} from "@/features/production-jobs/components/primitives/ProductionJobTableCells"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 
 const productionJobColumnHelper = createColumnHelper<ProductionJob>()
