@@ -3,7 +3,7 @@ import { Info } from "lucide-react"
 import {
   purchaseLedgerStatusStyles,
   purchaseLedgerWarningStyles,
-} from "@/features/purchase-ledger/components/PurchaseLedgerBadges"
+} from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import {
   purchaseLedgerStatusDescriptions,
   purchaseLedgerStatusLabels,

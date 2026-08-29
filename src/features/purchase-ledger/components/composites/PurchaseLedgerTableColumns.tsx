@@ -1,13 +1,13 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/PurchaseLedgerBadges"
+import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import {
   PurchaseLedgerActionsCell,
   PurchaseLedgerQuantityCell,
   PurchaseLedgerSourceCell,
   PurchaseLedgerWarningCell,
-} from "@/features/purchase-ledger/components/PurchaseLedgerTableCells"
+} from "@/features/purchase-ledger/components/primitives/PurchaseLedgerTableCells"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
 const purchaseLedgerColumnHelper = createColumnHelper<PurchaseLedgerRow>()

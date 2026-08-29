@@ -1,7 +1,7 @@
 import { Eye } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
-import { PurchaseLedgerWarningBadge } from "@/features/purchase-ledger/components/PurchaseLedgerBadges"
+import { PurchaseLedgerWarningBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import { cn } from "@/lib/utils"
 import type {
   PurchaseLedgerProductionOrderRef,

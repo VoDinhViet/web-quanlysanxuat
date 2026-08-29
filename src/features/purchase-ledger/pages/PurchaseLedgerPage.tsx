@@ -5,9 +5,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api/options"
-import { PurchaseLedgerLegend } from "@/features/purchase-ledger/components/PurchaseLedgerLegend"
-import { PurchaseLedgerTable } from "@/features/purchase-ledger/components/PurchaseLedgerTable"
-import { PurchaseLedgerTableFilter } from "@/features/purchase-ledger/components/PurchaseLedgerTableFilter"
+import { PurchaseLedgerLegend } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerLegend"
+import { PurchaseLedgerTable } from "@/features/purchase-ledger/components/sections/PurchaseLedgerTable"
+import { PurchaseLedgerTableFilter } from "@/features/purchase-ledger/components/sections/PurchaseLedgerTableFilter"
 
 export function PurchaseLedgerPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list, which resolves

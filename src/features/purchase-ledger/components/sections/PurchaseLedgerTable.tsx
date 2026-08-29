@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { purchaseLedgerColumns } from "@/features/purchase-ledger/components/PurchaseLedgerTableColumns"
+import { purchaseLedgerColumns } from "@/features/purchase-ledger/components/composites/PurchaseLedgerTableColumns"
 import { cn } from "@/lib/utils"
 import { PurchaseLedgerWarning } from "@/lib/types/purchase-ledger.type"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
