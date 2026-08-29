@@ -10,8 +10,8 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { CreateOperationDialog } from "@/features/operations/components/CreateOperationDialog"
-import { OperationsTable } from "@/features/operations/components/OperationsTable"
+import { CreateOperationDialog } from "@/features/operations/components/composites/CreateOperationDialog"
+import { OperationsTable } from "@/features/operations/components/sections/OperationsTable"
 import { operationsQueryOptions } from "@/features/operations/api/options"
 
 export function OperationsPage() {

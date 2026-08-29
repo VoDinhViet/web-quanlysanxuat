@@ -5,8 +5,8 @@ import { DateTime } from "luxon"
 import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { DeleteOperationDialog } from "@/features/operations/components/DeleteOperationDialog"
-import { UpdateOperationDialog } from "@/features/operations/components/UpdateOperationDialog"
+import { DeleteOperationDialog } from "@/features/operations/components/composites/DeleteOperationDialog"
+import { UpdateOperationDialog } from "@/features/operations/components/composites/UpdateOperationDialog"
 import {
   operationStatusLabels,
   OperationStatus,

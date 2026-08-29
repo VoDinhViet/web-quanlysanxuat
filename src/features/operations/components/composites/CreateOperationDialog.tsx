@@ -2,7 +2,7 @@ import { useState } from "react"
 import type { ReactNode } from "react"
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { CreateOperationForm } from "@/features/operations/components/CreateOperationForm"
+import { CreateOperationForm } from "@/features/operations/components/composites/CreateOperationForm"
 
 type CreateOperationDialogProps = {
   trigger: ReactNode

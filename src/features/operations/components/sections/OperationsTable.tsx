@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/table"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { CreateOperationDialog } from "@/features/operations/components/CreateOperationDialog"
-import { operationColumns } from "@/features/operations/components/OperationsTableColumns"
+import { CreateOperationDialog } from "@/features/operations/components/composites/CreateOperationDialog"
+import { operationColumns } from "@/features/operations/components/composites/OperationsTableColumns"
 import { cn } from "@/lib/utils"
 import type { OperationDetail } from "@/lib/types/operation.type"
 

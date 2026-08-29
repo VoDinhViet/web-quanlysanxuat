@@ -2,7 +2,7 @@ import { useState } from "react"
 import type { ReactNode } from "react"
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { UpdateOperationForm } from "@/features/operations/components/UpdateOperationForm"
+import { UpdateOperationForm } from "@/features/operations/components/composites/UpdateOperationForm"
 import type { OperationDetail } from "@/lib/types/operation.type"
 
 type UpdateOperationDialogProps = {
