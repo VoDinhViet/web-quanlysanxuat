@@ -6,7 +6,7 @@ import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitio
 import {
   InventoryRequisitionActionsCell,
   InventoryRequisitionSourceCell,
-} from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionsTableCells"
+} from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionTableCells"
 import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
 
 const col = createColumnHelper<InventoryRequisition>()

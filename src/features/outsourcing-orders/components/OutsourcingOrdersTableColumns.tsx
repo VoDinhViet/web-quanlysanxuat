@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
 import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
-import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/OutsourcingOrdersTableCells"
+import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/OutsourcingOrderTableCells"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
 const col = createColumnHelper<OutsourcingOrder>()

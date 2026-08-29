@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
 import { OutsourcingReceiptDocStatusBadge } from "@/features/outsourcing-receipts/components/OutsourcingReceiptBadges"
-import { OutsourcingReceiptActionsCell } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTableCells"
+import { OutsourcingReceiptActionsCell } from "@/features/outsourcing-receipts/components/OutsourcingReceiptTableCells"
 import type { OutsourcingReceipt } from "@/lib/types/outsourcing-receipt.type"
 
 const outsourcingReceiptColumnHelper = createColumnHelper<OutsourcingReceipt>()

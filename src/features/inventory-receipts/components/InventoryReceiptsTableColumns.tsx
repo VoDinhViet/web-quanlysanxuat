@@ -6,7 +6,7 @@ import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/compo
 import {
   InventoryReceiptActionsCell,
   InventoryReceiptSourceCell,
-} from "@/features/inventory-receipts/components/InventoryReceiptsTableCells"
+} from "@/features/inventory-receipts/components/InventoryReceiptTableCells"
 import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
 import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
 

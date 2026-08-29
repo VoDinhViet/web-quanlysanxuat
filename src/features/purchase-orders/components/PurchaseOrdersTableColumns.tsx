@@ -7,7 +7,7 @@ import {
   PurchaseOrderActionsCell,
   PurchaseOrderAmountCell,
   PurchaseOrderSourceCell,
-} from "@/features/purchase-orders/components/PurchaseOrdersTableCells"
+} from "@/features/purchase-orders/components/PurchaseOrderTableCells"
 import type { PurchaseOrder } from "@/lib/types/purchase-order.type"
 
 const purchaseOrderColumnHelper = createColumnHelper<PurchaseOrder>()

@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 
 import { itemQueryOptions } from "@/features/products/api"
 import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/detail/SupplierReturnDetailSectionCard"
-import { SupplierReturnCodeCell } from "@/features/supplier-returns/components/SupplierReturnsTableCells"
+import { SupplierReturnCodeCell } from "@/features/supplier-returns/components/SupplierReturnTableCells"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 import type { FileResource } from "@/lib/types/file.type"

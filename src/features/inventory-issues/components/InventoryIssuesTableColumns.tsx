@@ -5,7 +5,7 @@ import { InventoryIssueStatusBadge } from "@/features/inventory-issues/component
 import {
   InventoryIssueActionsCell,
   InventoryIssueSourceCell,
-} from "@/features/inventory-issues/components/InventoryIssuesTableCells"
+} from "@/features/inventory-issues/components/InventoryIssueTableCells"
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
 

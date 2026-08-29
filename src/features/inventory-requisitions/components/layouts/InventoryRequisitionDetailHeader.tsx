@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { DetailHeader } from "@/components/shared/layouts/DetailHeader"
 import { MetaField } from "@/components/shared/primitives/InfoFields"
 import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionBadges"
-import { InventoryRequisitionSourceCell } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionsTableCells"
+import { InventoryRequisitionSourceCell } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionTableCells"
 import { InventoryRequisitionDetailActions } from "@/features/inventory-requisitions/components/layouts/InventoryRequisitionDetailActions"
 import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisition.type"
 

@@ -5,7 +5,7 @@ import {
   InventoryProductActionsCell,
   ProductImageCell,
   QuantityCell,
-} from "@/features/inventory-products/components/InventoryProductsTableCells"
+} from "@/features/inventory-products/components/InventoryProductTableCells"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 
 const col = createColumnHelper<ProductInventoryItem>()

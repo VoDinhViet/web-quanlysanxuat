@@ -28,7 +28,7 @@ export const inventoryDocumentStatusLabels: Record<
  *  this list screen reads. Drops `warehouse`/`creatorBy`/`updatedAt`, which the response carries
  *  but the mockup doesn't show. `purchaseOrder`/`inventoryReceipt` are null whenever the return
  *  isn't linked to a PO/phiếu nhập — the table renders that as a flagged placeholder, not a plain
- *  empty dash (see MissingFieldValue usage in SupplierReturnsTableCells.tsx). */
+ *  empty dash (see MissingFieldValue usage in SupplierReturnTableCells.tsx). */
 export type SupplierReturn = {
   id: string
   code: string

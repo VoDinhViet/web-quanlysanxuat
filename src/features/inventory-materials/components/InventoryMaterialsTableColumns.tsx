@@ -6,7 +6,7 @@ import { InventoryMaterialStatusBadge } from "@/features/inventory-materials/com
 import {
   MaterialImageCell,
   MaterialQuantityCell,
-} from "@/features/inventory-materials/components/InventoryMaterialsTableCells"
+} from "@/features/inventory-materials/components/InventoryMaterialTableCells"
 import type { MaterialInventoryItem } from "@/lib/types/inventory-material.type"
 import { resolveInventoryStatus } from "@/lib/types/inventory-material.type"
 

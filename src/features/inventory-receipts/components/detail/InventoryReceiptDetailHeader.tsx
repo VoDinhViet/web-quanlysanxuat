@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/InventoryReceiptBadges"
-import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/InventoryReceiptsTableCells"
+import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/InventoryReceiptTableCells"
 import { InventoryReceiptDetailActions } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailActions"
 import {
   inventoryReceiptAssetTypeLabels,

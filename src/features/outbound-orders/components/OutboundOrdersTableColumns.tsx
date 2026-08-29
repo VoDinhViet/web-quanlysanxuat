@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
 import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/OutboundOrderBadges"
-import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/OutboundOrdersTableCells"
+import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/OutboundOrderTableCells"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 

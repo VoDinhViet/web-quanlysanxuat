@@ -6,7 +6,7 @@ import { PaymentRequestStatusBadge } from "@/features/payment-requests/component
 import {
   PaymentRequestActionsCell,
   PaymentRequestAmountCell,
-} from "@/features/payment-requests/components/PaymentRequestsTableCells"
+} from "@/features/payment-requests/components/PaymentRequestTableCells"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"
 
 const col = createColumnHelper<PaymentRequest>()

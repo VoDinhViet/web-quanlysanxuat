@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { InventoryIssueSourceCell } from "@/features/inventory-issues/components/InventoryIssuesTableCells"
+import { InventoryIssueSourceCell } from "@/features/inventory-issues/components/InventoryIssueTableCells"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"
 

@@ -27,7 +27,7 @@ type DeleteOutboundOrderDialogProps = {
 }
 
 // Cùng khuôn DeleteOqcDialog.tsx — chỉ nên render khi order.status === DRAFT (BE cũng chặn lại
-// bằng E258 nếu không, xem OutboundOrdersTableCells.tsx's caller).
+// bằng E258 nếu không, xem OutboundOrderTableCells.tsx's caller).
 export function DeleteOutboundOrderDialog({
   order,
   trigger,

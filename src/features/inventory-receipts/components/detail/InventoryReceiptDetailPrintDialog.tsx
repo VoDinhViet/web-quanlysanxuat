@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/InventoryReceiptsTableCells"
+import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/InventoryReceiptTableCells"
 import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
 import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
 import { vndFormatter } from "@/lib/currency"
