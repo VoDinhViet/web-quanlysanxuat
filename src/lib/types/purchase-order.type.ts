@@ -171,20 +171,3 @@ export type PurchaseOrderDetail = {
   createdAt: string
   updatedAt: string
 }
-
-/** Declared locally rather than shared with `purchase-quotation.type.ts`'s equivalent — same
- *  "domain types don't cross features" convention already applied to that pair. */
-export type PurchaseOrderTimelineStepState =
-  | "done"
-  | "current"
-  | "upcoming"
-  | "cancelled"
-
-export type PurchaseOrderTimelineStep = {
-  key: string
-  label: string
-  state: PurchaseOrderTimelineStepState
-  timestamp: string | null
-  actor: string | null
-  detail: string | null
-}

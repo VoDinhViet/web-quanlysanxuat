@@ -1,10 +1,11 @@
 import { OrderStatus } from "@/lib/types/order.type"
-import type { OrderDetail, OrderTimelineStep } from "@/lib/types/order.type"
+import type { OrderDetail } from "@/lib/types/order.type"
+import type { TimelineStep } from "@/lib/types/timeline.type"
 
 // Every timestamp/actor here comes straight off `order` — no invented data. A step with
 // no backing field on OrderDetail (submit, start-production) shows no timestamp at all
 // rather than a guessed one. See OrderStatus's doc comment for the lifecycle this mirrors.
-export function buildOrderTimeline(order: OrderDetail): OrderTimelineStep[] {
+export function buildOrderTimeline(order: OrderDetail): TimelineStep[] {
   const creatorName = order.creatorBy?.fullName ?? "Hệ thống"
 
   if (order.status === OrderStatus.CANCELLED) {
@@ -39,7 +40,7 @@ export function buildOrderTimeline(order: OrderDetail): OrderTimelineStep[] {
   const isProducing = order.status === OrderStatus.IN_PROGRESS
   const isCompleted = order.status === OrderStatus.COMPLETED
 
-  const steps: OrderTimelineStep[] = [
+  const steps: TimelineStep[] = [
     {
       key: "created",
       label: "Tạo đơn hàng",

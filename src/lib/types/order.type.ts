@@ -334,23 +334,6 @@ export function resolveDeliveryTone(order: Order): DeliveryTone {
   return daysLeft <= nearDueDays ? "near-due" : "normal"
 }
 
-// Built by src/features/orders/logic/order-timeline.ts from real OrderDetail fields
-// (createdAt/creator, approvedAt/approver, rejectedAt/rejecter, updatedAt) — no mock data.
-export type OrderTimelineStepState =
-  | "done"
-  | "current"
-  | "upcoming"
-  | "cancelled"
-
-export type OrderTimelineStep = {
-  key: string
-  label: string
-  state: OrderTimelineStepState
-  timestamp: string | null
-  actor: string | null
-  detail: string | null
-}
-
 // ---- UI-only mock scaffolding ----
 // The 2 types below describe placeholder data built by
 // src/features/orders/mock/order-detail.mock.ts for the one concept the backend still has no

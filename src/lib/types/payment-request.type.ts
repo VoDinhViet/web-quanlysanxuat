@@ -88,15 +88,3 @@ export type PaymentRequestDetail = {
   cancelledBy: PaymentRequestUserRef | null
   cancelledAt: string | null
 }
-
-/** Declared locally rather than shared with `purchase-order.type.ts`'s equivalent — same
- *  "domain types don't cross features" convention already applied between other feature pairs. */
-export type PaymentRequestTimelineStepState = "done" | "current" | "cancelled"
-
-export type PaymentRequestTimelineStep = {
-  key: string
-  label: string
-  state: PaymentRequestTimelineStepState
-  timestamp: string | null
-  actor: string | null
-}

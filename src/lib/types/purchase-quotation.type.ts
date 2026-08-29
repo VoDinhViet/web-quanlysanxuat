@@ -119,24 +119,6 @@ export type PurchaseQuotationDetail = {
   updatedAt: string
 }
 
-/** Local copy of `OrderTimelineStepState`/`OrderTimelineStep` (`order.type.ts`) — domain types
- *  don't reach across features, so this feature keeps its own identical shape rather than
- *  importing orders'. */
-export type PurchaseQuotationTimelineStepState =
-  | "done"
-  | "current"
-  | "upcoming"
-  | "cancelled"
-
-export type PurchaseQuotationTimelineStep = {
-  key: string
-  label: string
-  state: PurchaseQuotationTimelineStepState
-  timestamp: string | null
-  actor: string | null
-  detail: string | null
-}
-
 /** Mirrors `PageQuotationResDto` (`be-quanlysanxuat/src/api/purchase-quotations/dto/
  *  page-quotation.res.dto.ts`) exactly, field-for-field — the list response. There is
  *  deliberately no `supplier` here: a quotation's suppliers now live per vật tư

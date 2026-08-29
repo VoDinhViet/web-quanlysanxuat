@@ -1,8 +1,6 @@
 import { PurchaseOrderStatus } from "@/lib/types/purchase-order.type"
-import type {
-  PurchaseOrderDetail,
-  PurchaseOrderTimelineStep,
-} from "@/lib/types/purchase-order.type"
+import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
+import type { TimelineStep } from "@/lib/types/timeline.type"
 
 // Every step's state derives from `status`, never from a timestamp's mere presence — mirror
 // purchase-quotation-timeline.ts's reasoning. Unlike RFQ (which always sends → then may reject,
@@ -12,9 +10,9 @@ import type {
 // would claim a step that never occurred.
 export function buildPurchaseOrderTimeline(
   purchaseOrder: PurchaseOrderDetail
-): PurchaseOrderTimelineStep[] {
+): TimelineStep[] {
   const creatorName = purchaseOrder.creatorBy?.fullName ?? "Hệ thống"
-  const createdStep: PurchaseOrderTimelineStep = {
+  const createdStep: TimelineStep = {
     key: "created",
     label: "Tạo đơn mua hàng",
     state: "done",
@@ -24,7 +22,7 @@ export function buildPurchaseOrderTimeline(
   }
 
   if (purchaseOrder.status === PurchaseOrderStatus.CANCELLED) {
-    const cancelledStep: PurchaseOrderTimelineStep = {
+    const cancelledStep: TimelineStep = {
       key: "cancelled",
       label: "Huỷ PO",
       state: "cancelled",

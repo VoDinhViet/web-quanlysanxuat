@@ -1,46 +1,8 @@
-import { CheckCircle, CloseCircle, Route } from "@solar-icons/react"
-import { DateTime } from "luxon"
-import type { IconProps } from "@solar-icons/react"
-import type { ComponentType } from "react"
+import { Route } from "@solar-icons/react"
 
-import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
+import { TimelineCard } from "@/components/shared/composites/TimelineCard"
 import { buildOrderTimeline } from "@/features/orders/logic/order-timeline"
-import type {
-  OrderDetail,
-  OrderTimelineStepState,
-} from "@/lib/types/order.type"
-import { cn } from "@/lib/utils"
-
-type NodeVisual = {
-  circleClassName: string
-  icon: ComponentType<IconProps> | null
-}
-
-function resolveNodeVisual(state: OrderTimelineStepState): NodeVisual {
-  switch (state) {
-    case "done":
-      return {
-        circleClassName: "bg-success text-success-foreground",
-        icon: CheckCircle,
-      }
-    case "current":
-      return {
-        circleClassName:
-          "bg-primary text-primary-foreground animate-pulse motion-reduce:animate-none",
-        icon: null,
-      }
-    case "cancelled":
-      return {
-        circleClassName: "bg-destructive text-destructive-foreground",
-        icon: CloseCircle,
-      }
-    case "upcoming":
-      return {
-        circleClassName: "border-2 border-border bg-card text-muted-foreground",
-        icon: null,
-      }
-  }
-}
+import type { OrderDetail } from "@/lib/types/order.type"
 
 type OrderDetailTimelineCardProps = {
   order: OrderDetail
@@ -48,69 +10,19 @@ type OrderDetailTimelineCardProps = {
 
 // The one deliberate visual anchor of the page — every other section stays
 // quiet. Every node and timestamp comes straight from the order's real
-// approval fields (order-timeline.ts) — no mock data.
+// approval fields (order-timeline.ts) — no mock data. `text-primary` note
+// tone: this domain's rejection note reads as a clarifying remark, not the
+// destructive-red used by purchase-orders/purchase-quotations.
 export function OrderDetailTimelineCard({
   order,
 }: OrderDetailTimelineCardProps) {
-  const steps = buildOrderTimeline(order)
-
   return (
-    <OrderDetailSectionCard icon={Route} title="Quy trình đơn hàng">
-      <ol>
-        {steps.map((step, index) => {
-          const visual = resolveNodeVisual(step.state)
-          const isLast = index === steps.length - 1
-
-          return (
-            <li key={step.key} className="flex gap-3">
-              <div className="flex flex-col items-center">
-                <span
-                  className={cn(
-                    "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
-                    visual.circleClassName
-                  )}
-                >
-                  {visual.icon ? <visual.icon className="size-4" /> : index + 1}
-                </span>
-                {isLast ? null : (
-                  <span
-                    className={cn(
-                      "w-px flex-1",
-                      step.state === "done" ? "bg-success" : "bg-border"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div className={cn("min-w-0", isLast ? "pb-0" : "pb-6")}>
-                <p
-                  className={cn(
-                    "text-sm font-medium",
-                    step.state === "upcoming"
-                      ? "text-muted-foreground"
-                      : "text-foreground"
-                  )}
-                >
-                  {step.label}
-                </p>
-                {step.timestamp ? (
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {DateTime.fromISO(step.timestamp).toFormat(
-                      "dd/MM/yyyy HH:mm"
-                    )}
-                    {step.actor ? ` · ${step.actor}` : ""}
-                  </p>
-                ) : null}
-                {step.detail ? (
-                  <p className="mt-1 text-xs font-medium text-primary">
-                    {step.detail}
-                  </p>
-                ) : null}
-              </div>
-            </li>
-          )
-        })}
-      </ol>
-    </OrderDetailSectionCard>
+    <TimelineCard
+      icon={Route}
+      title="Quy trình đơn hàng"
+      steps={buildOrderTimeline(order)}
+      noteToneClassName="text-primary"
+      className="h-fit"
+    />
   )
 }

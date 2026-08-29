@@ -1,8 +1,6 @@
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
-import type {
-  PurchaseQuotationDetail,
-  PurchaseQuotationTimelineStep,
-} from "@/lib/types/purchase-quotation.type"
+import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
+import type { TimelineStep } from "@/lib/types/timeline.type"
 
 // Every step's state derives from `status`, never from a timestamp's mere presence — a
 // recalled quotation (APPROVED → DRAFT) keeps its old `approvedAt`/`approverBy` as history (the
@@ -11,7 +9,7 @@ import type {
 // this timeline honest across a recall.
 export function buildQuotationTimeline(
   detail: PurchaseQuotationDetail
-): PurchaseQuotationTimelineStep[] {
+): TimelineStep[] {
   const creatorName = detail.creatorBy?.fullName ?? "Hệ thống"
 
   if (detail.status === PurchaseQuotationStatus.CANCELLED) {

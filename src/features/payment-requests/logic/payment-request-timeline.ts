@@ -1,24 +1,24 @@
 import { PaymentRequestStatus } from "@/lib/types/payment-request.type"
-import type {
-  PaymentRequestDetail,
-  PaymentRequestTimelineStep,
-} from "@/lib/types/payment-request.type"
+import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
+import type { TimelineStep } from "@/lib/types/timeline.type"
 
 // Every step's state derives from `status`, never from a timestamp's mere presence — same
 // reasoning as purchase-order-timeline.ts. A payment request only ever leaves PENDING once,
-// into either PAID or CANCELLED, so at most 2 steps are ever shown.
+// into either PAID or CANCELLED, so at most 2 steps are ever shown. `detail` stays null on
+// every step — PaymentRequestStatusHistoryCard's "dot" variant never renders a note row.
 export function buildPaymentRequestTimeline(
   detail: PaymentRequestDetail
-): PaymentRequestTimelineStep[] {
-  const createdStep: PaymentRequestTimelineStep = {
+): TimelineStep[] {
+  const createdStep: TimelineStep = {
     key: "created",
     label: "Tạo yêu cầu thanh toán",
     state: "done",
     timestamp: detail.createdAt,
     actor: detail.createdBy?.fullName ?? "Hệ thống",
+    detail: null,
   }
 
-  const secondStep: PaymentRequestTimelineStep =
+  const secondStep: TimelineStep =
     detail.status === PaymentRequestStatus.PAID
       ? {
           key: "paid",
@@ -26,6 +26,7 @@ export function buildPaymentRequestTimeline(
           state: "done",
           timestamp: detail.paidAt,
           actor: detail.paidBy?.fullName ?? null,
+          detail: null,
         }
       : detail.status === PaymentRequestStatus.CANCELLED
         ? {
@@ -34,6 +35,7 @@ export function buildPaymentRequestTimeline(
             state: "cancelled",
             timestamp: detail.cancelledAt,
             actor: detail.cancelledBy?.fullName ?? null,
+            detail: null,
           }
         : {
             key: "pending",
@@ -41,6 +43,7 @@ export function buildPaymentRequestTimeline(
             state: "current",
             timestamp: null,
             actor: null,
+            detail: null,
           }
 
   return [createdStep, secondStep]
