@@ -2,11 +2,11 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { Eye, HelpCircle } from "lucide-react"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
-import { InventoryMaterialStatusBadge } from "@/features/inventory-materials/components/InventoryMaterialStatusBadge"
+import { InventoryMaterialStatusBadge } from "@/features/inventory-materials/components/primitives/InventoryMaterialStatusBadge"
 import {
   MaterialImageCell,
   MaterialQuantityCell,
-} from "@/features/inventory-materials/components/InventoryMaterialTableCells"
+} from "@/features/inventory-materials/components/primitives/InventoryMaterialTableCells"
 import type { MaterialInventoryItem } from "@/lib/types/inventory-material.type"
 import { resolveInventoryStatus } from "@/lib/types/inventory-material.type"
 

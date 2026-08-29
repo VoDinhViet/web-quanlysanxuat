@@ -4,8 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { InventoryMaterialsTable } from "@/features/inventory-materials/components/InventoryMaterialsTable"
-import { InventoryMaterialsTableFilter } from "@/features/inventory-materials/components/InventoryMaterialsTableFilter"
+import { InventoryMaterialsTable } from "@/features/inventory-materials/components/sections/InventoryMaterialsTable"
+import { InventoryMaterialsTableFilter } from "@/features/inventory-materials/components/sections/InventoryMaterialsTableFilter"
 import { materialInventoryQueryOptions } from "@/features/inventory-materials/api/options"
 
 export function InventoryMaterialsPage() {
