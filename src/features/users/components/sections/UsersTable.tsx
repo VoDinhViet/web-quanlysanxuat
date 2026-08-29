@@ -18,7 +18,7 @@ import {
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { userColumns } from "@/features/users/components/UsersTableColumns"
+import { userColumns } from "@/features/users/components/composites/UsersTableColumns"
 import { cn } from "@/lib/utils"
 import type { UserListItem } from "@/lib/types/user.type"
 import type { Pagination } from "@/lib/types/pagination.type"

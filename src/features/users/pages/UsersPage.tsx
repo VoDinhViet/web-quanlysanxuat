@@ -4,8 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { UsersTable } from "@/features/users/components/UsersTable"
-import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
+import { UsersTable } from "@/features/users/components/sections/UsersTable"
+import { UsersTableFilter } from "@/features/users/components/sections/UsersTableFilter"
 import { usersQueryOptions } from "@/features/users/api/options"
 
 export function UsersPage() {

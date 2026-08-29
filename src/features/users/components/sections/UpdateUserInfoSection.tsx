@@ -1,13 +1,13 @@
 import { withForm } from "@/hooks/use-app-form"
-import { UserAvatarField } from "@/features/users/components/UserAvatarField"
-import { createUserFormDefaultValues } from "@/features/users/schemas/create-user.schema"
+import { UserAvatarField } from "@/features/users/components/composites/UserAvatarField"
+import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
 import { genderLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const genderOptions = buildOptionsFromLabels(genderLabels)
 
-export const CreateUserInfoSection = withForm({
-  defaultValues: createUserFormDefaultValues,
+export const UpdateUserInfoSection = withForm({
+  defaultValues: updateUserFormDefaultValues,
   props: {
     disabled: false,
   },

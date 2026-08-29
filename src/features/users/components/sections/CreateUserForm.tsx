@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { CreateUserCredentialSection } from "@/features/users/components/CreateUserCredentialSection"
-import { CreateUserJobInfoSection } from "@/features/users/components/CreateUserJobInfoSection"
-import { CreateUserInfoSection } from "@/features/users/components/CreateUserInfoSection"
+import { CreateUserCredentialSection } from "@/features/users/components/sections/CreateUserCredentialSection"
+import { CreateUserJobInfoSection } from "@/features/users/components/sections/CreateUserJobInfoSection"
+import { CreateUserInfoSection } from "@/features/users/components/sections/CreateUserInfoSection"
 import {
   createUserFormDefaultValues,
   createUserSchema,

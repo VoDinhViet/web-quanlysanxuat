@@ -1,4 +1,4 @@
-import { CreateUserForm } from "@/features/users/components/CreateUserForm"
+import { CreateUserForm } from "@/features/users/components/sections/CreateUserForm"
 
 export function CreateUserPage() {
   return (

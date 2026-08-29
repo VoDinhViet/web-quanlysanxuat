@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { UpdateUserForm } from "@/features/users/components/UpdateUserForm"
+import { UpdateUserForm } from "@/features/users/components/sections/UpdateUserForm"
 
 export function UpdateUserPage() {
   return (
