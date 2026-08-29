@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Building2 } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/detail/SupplierReturnDetailSectionCard"
+import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/layouts/SupplierReturnDetailSectionCard"
 import { supplierQueryOptions } from "@/features/suppliers/api"
 
 type SupplierReturnSupplierInfoCardProps = {

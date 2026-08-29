@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { SupplierReturnEvidenceField } from "@/features/supplier-returns/components/detail/SupplierReturnEvidenceField"
+import { SupplierReturnEvidenceField } from "@/features/supplier-returns/components/composites/SupplierReturnEvidenceField"
 import { usePostSupplierReturn } from "@/features/supplier-returns/hooks/use-post-supplier-return"
 import { postSupplierReturnSchema } from "@/features/supplier-returns/schemas/post-supplier-return.schema"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -21,7 +21,7 @@ import type { FileFieldValue } from "@/lib/file-field.schema"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 
 type SupplierReturnDetailActionsProps = {
-  detail: SupplierReturnDetail
+  supplierReturn: SupplierReturnDetail
 }
 
 // Header-level actions, same idiom as PurchaseOrderDetailActions.tsx — lives in
@@ -32,12 +32,12 @@ type SupplierReturnDetailActionsProps = {
 // route (B2's deliberate scope cut — undoing a POSTED return needs an "un-complete IQC" path the
 // backend doesn't have yet).
 export function SupplierReturnDetailActions({
-  detail,
+  supplierReturn,
 }: SupplierReturnDetailActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   const postMutation = usePostSupplierReturn({
-    supplierReturnId: detail.id,
+    supplierReturnId: supplierReturn.id,
     onSuccess: () => setConfirmOpen(false),
   })
 
@@ -47,7 +47,7 @@ export function SupplierReturnDetailActions({
     onSubmit: ({ value }) => postMutation.mutate(value),
   })
 
-  const isDraft = detail.status === InventoryDocumentStatus.DRAFT
+  const isDraft = supplierReturn.status === InventoryDocumentStatus.DRAFT
 
   const closeConfirm = (open: boolean) => {
     setConfirmOpen(open)
@@ -90,7 +90,7 @@ export function SupplierReturnDetailActions({
             <DialogDescription>
               Xác nhận phiếu{" "}
               <span className="font-mono font-semibold text-foreground">
-                {detail.code}
+                {supplierReturn.code}
               </span>{" "}
               sẽ trừ tồn kho (nếu phiếu nhập kho liên quan đã nhập kho) và tự
               động hoàn tất phiếu IQC liên kết. Sau khi xác nhận, phiếu không

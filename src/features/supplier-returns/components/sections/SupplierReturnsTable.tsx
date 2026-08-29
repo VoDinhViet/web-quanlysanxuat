@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { supplierReturnsColumns } from "@/features/supplier-returns/components/SupplierReturnsTableColumns"
+import { supplierReturnsColumns } from "@/features/supplier-returns/components/composites/SupplierReturnsTableColumns"
 import { cn } from "@/lib/utils"
 import type { SupplierReturn } from "@/lib/types/supplier-return.type"
 import type { Pagination } from "@/lib/types/pagination.type"

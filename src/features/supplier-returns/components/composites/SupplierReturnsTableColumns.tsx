@@ -1,8 +1,8 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/SupplierReturnBadges"
-import { SupplierReturnActionsCell } from "@/features/supplier-returns/components/SupplierReturnTableCells"
+import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/primitives/SupplierReturnBadges"
+import { SupplierReturnActionsCell } from "@/features/supplier-returns/components/primitives/SupplierReturnTableCells"
 import type { SupplierReturn } from "@/lib/types/supplier-return.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

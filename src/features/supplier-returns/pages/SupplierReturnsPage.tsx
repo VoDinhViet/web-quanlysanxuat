@@ -5,8 +5,8 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { supplierReturnsQueryOptions } from "@/features/supplier-returns/api/options"
-import { SupplierReturnsTable } from "@/features/supplier-returns/components/SupplierReturnsTable"
-import { SupplierReturnsTableFilter } from "@/features/supplier-returns/components/SupplierReturnsTableFilter"
+import { SupplierReturnsTable } from "@/features/supplier-returns/components/sections/SupplierReturnsTable"
+import { SupplierReturnsTableFilter } from "@/features/supplier-returns/components/sections/SupplierReturnsTableFilter"
 
 export function SupplierReturnsPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list, which resolves

@@ -4,12 +4,12 @@ import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { SupplierReturnDetailActions } from "@/features/supplier-returns/components/detail/SupplierReturnDetailActions"
-import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/SupplierReturnBadges"
+import { SupplierReturnDetailActions } from "@/features/supplier-returns/components/layouts/SupplierReturnDetailActions"
+import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/primitives/SupplierReturnBadges"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 
 type SupplierReturnDetailHeaderProps = {
-  detail: SupplierReturnDetail
+  supplierReturn: SupplierReturnDetail
 }
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -18,7 +18,7 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 // same shell as PurchaseOrderDetailHeader.tsx, which embeds PurchaseOrderDetailActions the same
 // way instead of a separate sticky footer.
 export function SupplierReturnDetailHeader({
-  detail,
+  supplierReturn,
 }: SupplierReturnDetailHeaderProps) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
@@ -38,9 +38,9 @@ export function SupplierReturnDetailHeader({
           </Button>
 
           <span className="font-mono text-lg font-bold text-foreground">
-            {detail.code}
+            {supplierReturn.code}
           </span>
-          <SupplierReturnStatusBadge status={detail.status} />
+          <SupplierReturnStatusBadge status={supplierReturn.status} />
         </div>
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
@@ -49,27 +49,30 @@ export function SupplierReturnDetailHeader({
             value={
               <span>
                 <span className="font-mono text-primary">
-                  {detail.item.code}
+                  {supplierReturn.item.code}
                 </span>{" "}
-                · {detail.item.name}
+                · {supplierReturn.item.name}
               </span>
             }
           />
           <MetaField
             label="SL trả"
-            value={`${quantityFormatter.format(detail.quantity)} ${detail.item.unit.name}`}
+            value={`${quantityFormatter.format(supplierReturn.quantity)} ${supplierReturn.item.unit.name}`}
           />
-          <MetaField label="Kho xuất trả" value={detail.warehouse.name} />
+          <MetaField
+            label="Kho xuất trả"
+            value={supplierReturn.warehouse.name}
+          />
           <MetaField
             label="Ngày tạo phiếu"
-            value={DateTime.fromISO(detail.createdAt).toFormat(
+            value={DateTime.fromISO(supplierReturn.createdAt).toFormat(
               "dd/MM/yyyy HH:mm"
             )}
           />
         </div>
       </div>
 
-      <SupplierReturnDetailActions detail={detail} />
+      <SupplierReturnDetailActions supplierReturn={supplierReturn} />
     </div>
   )
 }

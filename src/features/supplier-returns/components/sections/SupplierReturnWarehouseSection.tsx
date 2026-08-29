@@ -2,14 +2,14 @@ import { DateTime } from "luxon"
 import { FileText, PackageCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/detail/SupplierReturnDetailSectionCard"
+import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/layouts/SupplierReturnDetailSectionCard"
 import { resolveFileUrl } from "@/lib/file-url"
 import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 import type { FileResource } from "@/lib/types/file.type"
 
 type SupplierReturnWarehouseSectionProps = {
-  detail: SupplierReturnDetail
+  supplierReturn: SupplierReturnDetail
 }
 
 // "Kho xuất trả" now lives in the header's meta grid. This card is about the export event
@@ -17,9 +17,9 @@ type SupplierReturnWarehouseSectionProps = {
 // POSTED — `postNote`/`files` come from the `post` call's optional body (see
 // SupplierReturnDetailActions.tsx), so a POSTED return can still legitimately have neither.
 export function SupplierReturnWarehouseSection({
-  detail,
+  supplierReturn,
 }: SupplierReturnWarehouseSectionProps) {
-  const isPosted = detail.status === InventoryDocumentStatus.POSTED
+  const isPosted = supplierReturn.status === InventoryDocumentStatus.POSTED
 
   return (
     <SupplierReturnDetailSectionCard
@@ -28,15 +28,15 @@ export function SupplierReturnWarehouseSection({
       description={isPosted ? "Đã xuất trả kho" : "Chờ kho xác nhận xuất trả"}
     >
       <div className="space-y-4">
-        {isPosted && detail.postedAt ? (
+        {isPosted && supplierReturn.postedAt ? (
           <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
             <InfoField
               label="Người xuất trả"
-              value={detail.posterBy?.fullName ?? "—"}
+              value={supplierReturn.posterBy?.fullName ?? "—"}
             />
             <InfoField
               label="Ngày xuất trả"
-              value={DateTime.fromISO(detail.postedAt).toFormat(
+              value={DateTime.fromISO(supplierReturn.postedAt).toFormat(
                 "dd/MM/yyyy HH:mm"
               )}
             />
@@ -53,12 +53,12 @@ export function SupplierReturnWarehouseSection({
             <dl>
               <InfoField
                 label="Ghi chú xuất trả"
-                value={detail.postNote ?? "Không có ghi chú."}
+                value={supplierReturn.postNote ?? "Không có ghi chú."}
               />
             </dl>
 
-            {detail.files.length > 0 ? (
-              <EvidenceGallery files={detail.files} />
+            {supplierReturn.files.length > 0 ? (
+              <EvidenceGallery files={supplierReturn.files} />
             ) : (
               <p className="text-xs text-muted-foreground">
                 Không có file đính kèm.

@@ -3,8 +3,8 @@ import { ImageOff, Package } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { itemQueryOptions } from "@/features/products/api"
-import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/detail/SupplierReturnDetailSectionCard"
-import { SupplierReturnCodeCell } from "@/features/supplier-returns/components/SupplierReturnTableCells"
+import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/layouts/SupplierReturnDetailSectionCard"
+import { SupplierReturnCodeCell } from "@/features/supplier-returns/components/primitives/SupplierReturnTableCells"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 import type { FileResource } from "@/lib/types/file.type"
@@ -12,20 +12,22 @@ import type { FileResource } from "@/lib/types/file.type"
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 type SupplierReturnItemInfoSectionProps = {
-  detail: SupplierReturnDetail
+  supplierReturn: SupplierReturnDetail
 }
 
 // Vật tư trả (image + fields) + Tham chiếu (IQC/nhập kho/PO) + Lý do trả folded into one card —
 // same "several related blocks under one header, separated by dividers" idiom as
 // IqcGeneralInfoCard.tsx, replacing what used to be 3 separate, mostly-thin cards
 // (SupplierReturnReferenceCard + this section + SupplierReturnReasonSection). Everything except
-// the image comes off `detail`/`detail.item` — already in the phiếu trả response, no extra wait.
+// the image comes off `supplierReturn`/`supplierReturn.item` — already in the phiếu trả response, no extra wait.
 // The image is `GET /api/items/:id`-only, so it (and only it) depends on itemQueryOptions,
 // prefetched by the route loader alongside supplierQueryOptions.
 export function SupplierReturnItemInfoSection({
-  detail,
+  supplierReturn,
 }: SupplierReturnItemInfoSectionProps) {
-  const { data: item } = useSuspenseQuery(itemQueryOptions(detail.item.id))
+  const { data: item } = useSuspenseQuery(
+    itemQueryOptions(supplierReturn.item.id)
+  )
 
   return (
     <SupplierReturnDetailSectionCard
@@ -36,7 +38,10 @@ export function SupplierReturnItemInfoSection({
       <div className="space-y-5">
         <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:gap-5">
           <div className="w-28 shrink-0">
-            <ItemImagePreview image={item.image} name={detail.item.name} />
+            <ItemImagePreview
+              image={item.image}
+              name={supplierReturn.item.name}
+            />
           </div>
 
           <dl className="grid flex-1 grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
@@ -44,23 +49,23 @@ export function SupplierReturnItemInfoSection({
               label="Mã vật tư"
               value={
                 <span className="font-mono text-primary">
-                  {detail.item.code}
+                  {supplierReturn.item.code}
                 </span>
               }
             />
-            <InfoField label="Tên vật tư" value={detail.item.name} />
-            <InfoField label="ĐVT" value={detail.item.unit.name} />
+            <InfoField label="Tên vật tư" value={supplierReturn.item.name} />
+            <InfoField label="ĐVT" value={supplierReturn.item.unit.name} />
             <InfoField
               label="SL trả"
               value={
                 <span className="font-mono text-primary">
-                  {quantityFormatter.format(detail.quantity)}
+                  {quantityFormatter.format(supplierReturn.quantity)}
                 </span>
               }
             />
             <InfoField
               label="Ghi chú vật tư"
-              value={detail.note ?? "—"}
+              value={supplierReturn.note ?? "—"}
               className="sm:col-span-2"
             />
           </dl>
@@ -71,14 +76,17 @@ export function SupplierReturnItemInfoSection({
             Tham chiếu
           </p>
           <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
-            <ReferenceField label="Mã IQC" code={detail.iqc?.code ?? null} />
+            <ReferenceField
+              label="Mã IQC"
+              code={supplierReturn.iqc?.code ?? null}
+            />
             <ReferenceField
               label="Mã nhập kho"
-              code={detail.inventoryReceipt?.code ?? null}
+              code={supplierReturn.inventoryReceipt?.code ?? null}
             />
             <ReferenceField
               label="PO"
-              code={detail.purchaseOrder?.code ?? null}
+              code={supplierReturn.purchaseOrder?.code ?? null}
             />
           </dl>
         </div>
@@ -88,7 +96,7 @@ export function SupplierReturnItemInfoSection({
             Lý do trả
           </p>
           <p className="text-sm text-foreground">
-            {detail.returnReason ?? "—"}
+            {supplierReturn.returnReason ?? "—"}
           </p>
         </div>
       </div>
