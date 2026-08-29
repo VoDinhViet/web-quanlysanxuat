@@ -1,6 +1,7 @@
 import { useState } from "react"
 import prettyBytes from "pretty-bytes"
-import { FileSpreadsheet, FileText, FileType, ImageOff, X } from "lucide-react"
+import { FileSpreadsheet, FileText, FileType, X } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 import { ErrorCode } from "react-dropzone"
 import type { FileRejection } from "react-dropzone"
 
@@ -92,7 +93,7 @@ export function QcEvidenceThumbnail({
       {docBadge ? (
         <docBadge.icon className="size-6" />
       ) : (
-        <ImageOff className="size-6" />
+        <Gallery className="size-6" />
       )}
     </div>
   )

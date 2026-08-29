@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { ExternalLink, ImageOff } from "lucide-react"
+import { ExternalLink } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -99,7 +100,7 @@ function ItemImagePreview({ image, name }: ItemImagePreviewProps) {
   if (!image) {
     return (
       <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-dashed border-border bg-muted/30">
-        <ImageOff className="size-5 text-muted-foreground/40" />
+        <Gallery className="size-5 text-muted-foreground/40" />
       </div>
     )
   }

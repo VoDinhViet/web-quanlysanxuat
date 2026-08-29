@@ -1,5 +1,5 @@
 import { Image } from "@unpic/react"
-import { ImageOff } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
@@ -25,7 +25,7 @@ export function MaterialImageCell({ item }: { item: MaterialInventoryItem }) {
           className="size-full"
         />
       ) : (
-        <ImageOff className="size-4 text-muted-foreground/50" />
+        <Gallery className="size-4 text-muted-foreground/50" />
       )}
     </div>
   )

@@ -3,12 +3,13 @@ import { Image } from "@unpic/react"
 import {
   ArrowRightDown,
   Bolt,
+  Gallery,
   InfoCircle,
   Layers,
   LayersMinimalistic,
   Route,
 } from "@solar-icons/react"
-import { FileText, ImageOff, Pencil, Plus, Trash2 } from "lucide-react"
+import { FileText, Pencil, Plus, Trash2 } from "lucide-react"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -396,7 +397,7 @@ export function ProductBomTable({
                         className="size-full"
                       />
                     ) : (
-                      <ImageOff className="size-3.5 text-muted-foreground/50" />
+                      <Gallery className="size-3.5 text-muted-foreground/50" />
                     )}
                   </div>
                   <span className="font-mono font-bold text-foreground">
@@ -484,7 +485,7 @@ export function ProductBomTable({
                               className="size-full"
                             />
                           ) : (
-                            <ImageOff className="size-3.5 text-muted-foreground/50" />
+                            <Gallery className="size-3.5 text-muted-foreground/50" />
                           )}
                         </div>
                         <span className="font-mono font-bold text-foreground">

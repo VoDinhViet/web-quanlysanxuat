@@ -1,7 +1,5 @@
 import { API_BASE_URL } from "@/lib/constants"
 
-export const defaultAvatarUrl = "https://github.com/evilrabbit.png"
-
 /**
  * The backend mints `FileResDto.url` host-relative (e.g. `/2026/07/20/<uuid>.png`, served
  * statically by `ServeStaticModule`), but the app and the API are different origins in
@@ -12,8 +10,4 @@ export const defaultAvatarUrl = "https://github.com/evilrabbit.png"
  */
 export function resolveFileUrl(url: string): string {
   return `${API_BASE_URL}${url}`
-}
-
-export function resolveAvatarUrl(url?: string | null): string {
-  return url ? resolveFileUrl(url) : defaultAvatarUrl
 }

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { Image } from "@unpic/react"
-import { Eye, Package } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
+import { Eye } from "lucide-react"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -27,7 +28,7 @@ export function ProductImageCell({
           className="size-full"
         />
       ) : (
-        <Package className="size-5 text-muted-foreground/70" />
+        <Gallery className="size-5 text-muted-foreground/70" />
       )}
     </div>
   )

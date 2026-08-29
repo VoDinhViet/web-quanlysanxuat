@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { ImageOff, Package } from "lucide-react"
+import { Package } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { itemQueryOptions } from "@/features/products/api"
@@ -146,7 +147,7 @@ function ItemImagePreview({ image, name }: ItemImagePreviewProps) {
   if (!image) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border bg-muted/30 text-center">
-        <ImageOff className="size-6 text-muted-foreground/40" />
+        <Gallery className="size-6 text-muted-foreground/40" />
         <p className="text-[10px] font-medium text-muted-foreground">
           Chưa có ảnh
         </p>

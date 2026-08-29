@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
-import { Edit3, MoreHorizontal, ShieldCheck, UserRound } from "lucide-react"
+import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -9,9 +10,9 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import type { EmployeeStatus, UserListItem } from "@/lib/types/user.type"
-import { resolveAvatarUrl } from "@/lib/file-url"
+import { resolveFileUrl } from "@/lib/file-url"
 
-const statusStyles: Record<EmployeeStatus, string> = {
+const employeeStatusStyles: Record<EmployeeStatus, string> = {
   WORKING: "bg-success/15 text-success",
   RESIGNED: "bg-muted text-muted-foreground",
 }
@@ -38,15 +39,17 @@ export const userColumns = [
       return (
         <div className="flex min-w-0 items-center gap-3">
           <Avatar className="size-9">
-            <AvatarImage
-              src={resolveAvatarUrl(user.avatar?.url)}
-              alt={user.fullName}
-            />
+            {user.avatar && (
+              <AvatarImage
+                src={resolveFileUrl(user.avatar.url)}
+                alt={user.fullName}
+              />
+            )}
             <AvatarFallback className="bg-muted">
-              <UserRound className="size-5 text-muted-foreground" />
+              <Gallery className="size-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
-          <span className="truncate text-xs font-medium text-foreground">
+          <span className="max-w-48 min-w-0 truncate text-xs font-medium text-foreground">
             {user.fullName}
           </span>
         </div>
@@ -92,7 +95,7 @@ export const userColumns = [
       const status = getValue()
 
       return (
-        <Badge variant="outline" className={statusStyles[status]}>
+        <Badge variant="outline" className={employeeStatusStyles[status]}>
           {employeeStatusLabels[status]}
         </Badge>
       )

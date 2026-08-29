@@ -1,5 +1,6 @@
 import { Image } from "@unpic/react"
 import { Link } from "@tanstack/react-router"
+import { Gallery } from "@solar-icons/react"
 import { Eye, Pencil } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -26,11 +27,7 @@ export function ProductImageCell({ image }: { image: FileResource | null }) {
           className="size-full"
         />
       ) : (
-        <img
-          src="/empty-image.svg"
-          alt=""
-          className="size-full object-contain p-2"
-        />
+        <Gallery className="size-4 text-muted-foreground/50" />
       )}
     </AspectRatio>
   )

@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { Image } from "@unpic/react"
-import { GalleryRemove } from "@solar-icons/react"
+import { Gallery } from "@solar-icons/react"
 import { Circle, CircleCheck } from "lucide-react"
 
 import { resolveFileUrl } from "@/lib/file-url"
@@ -61,7 +61,7 @@ export function buildBomItemPickerColumns({
                 className="size-full"
               />
             ) : (
-              <GalleryRemove className="size-3 text-muted-foreground/50" />
+              <Gallery className="size-3 text-muted-foreground/50" />
             )}
           </div>
           <div className="min-w-0">

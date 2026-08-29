@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Image } from "@unpic/react"
+import { Gallery } from "@solar-icons/react"
 import { Edit3, Eye, Trash2 } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -53,11 +54,7 @@ export const supplierColumns = [
               className="size-full"
             />
           ) : (
-            <img
-              src="/empty-image.svg"
-              alt=""
-              className="size-full object-contain p-2"
-            />
+            <Gallery className="size-4 text-muted-foreground/50" />
           )}
         </AspectRatio>
       )

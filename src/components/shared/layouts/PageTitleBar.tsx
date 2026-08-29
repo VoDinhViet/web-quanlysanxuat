@@ -8,8 +8,8 @@ import {
   Menu,
   Settings,
   User,
-  UserRound,
 } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/shared/layouts/ThemeToggle"
 import { currentUserQueryOptions, useLogout } from "@/features/auth/api"
-import { resolveAvatarUrl } from "@/lib/file-url"
+import { resolveFileUrl } from "@/lib/file-url"
 import type { FileRouteTypes } from "@/routeTree.gen"
 
 export type PageTitleBreadcrumb = {
@@ -134,12 +134,14 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
           aria-label="Tài khoản người dùng"
         >
           <Avatar className="size-10">
-            <AvatarImage
-              src={resolveAvatarUrl(profile?.avatar?.url)}
-              alt={profile?.fullName ?? "--"}
-            />
+            {profile?.avatar && (
+              <AvatarImage
+                src={resolveFileUrl(profile.avatar.url)}
+                alt={profile.fullName ?? "--"}
+              />
+            )}
             <AvatarFallback className="bg-muted">
-              <UserRound className="size-5 text-muted-foreground" />
+              <Gallery className="size-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
 
@@ -160,12 +162,14 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
       <DropdownMenuContent align="end" className="w-64">
         <div className="flex items-start gap-3 px-2 py-1.5">
           <Avatar className="size-10">
-            <AvatarImage
-              src={resolveAvatarUrl(profile?.avatar?.url)}
-              alt={profile?.fullName ?? "--"}
-            />
+            {profile?.avatar && (
+              <AvatarImage
+                src={resolveFileUrl(profile.avatar.url)}
+                alt={profile.fullName ?? "--"}
+              />
+            )}
             <AvatarFallback className="bg-muted">
-              <UserRound className="size-5 text-muted-foreground" />
+              <Gallery className="size-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
 

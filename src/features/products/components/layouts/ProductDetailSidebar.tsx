@@ -9,7 +9,6 @@ import {
   Documents,
   FileText,
   Gallery,
-  GalleryRemove,
   InfoCircle,
   Layers,
   MagniferZoomIn,
@@ -249,7 +248,7 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
   if (!image || isBroken) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
-        <GalleryRemove className="size-7 text-muted-foreground/40" />
+        <Gallery className="size-7 text-muted-foreground/40" />
         <p className="text-[11px] font-medium text-muted-foreground">
           Chưa có hình ảnh
         </p>

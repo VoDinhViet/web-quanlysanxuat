@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Image } from "@unpic/react"
-import { CircleCheck, CirclePause, Edit3, ImageOff } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
+import { CircleCheck, CirclePause, Edit3 } from "lucide-react"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
@@ -47,7 +48,7 @@ export const materialColumns = [
                 className="size-full"
               />
             ) : (
-              <ImageOff className="size-4 text-muted-foreground/50" />
+              <Gallery className="size-4 text-muted-foreground/50" />
             )}
           </div>
           <div className="min-w-0">

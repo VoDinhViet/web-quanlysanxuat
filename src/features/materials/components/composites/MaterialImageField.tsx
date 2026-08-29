@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
-import { ImageOff, ImageUp, Loader2, X } from "lucide-react"
+import { ImageUp, Loader2, X } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 import { ErrorCode, useDropzone } from "react-dropzone"
 
 import { resolveFileUrl } from "@/lib/file-url"
@@ -116,7 +117,7 @@ export function MaterialImageField({
                 onError={() => setIsPreviewBroken(true)}
               />
             ) : value ? (
-              <ImageOff className="size-6 text-muted-foreground/60" />
+              <Gallery className="size-6 text-muted-foreground/60" />
             ) : (
               <>
                 <ImageUp className="size-6 text-muted-foreground/60" />

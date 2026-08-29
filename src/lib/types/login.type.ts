@@ -17,8 +17,8 @@ export type AuthLoginResponse = {
  * profile menu (name, username, email, avatar) plus the RBAC fields (role +
  * effective permissions) that drive permission-based UI. `avatar` mirrors the
  * backend's `FileResDto | null` (via `FileField('avatarFile', ...)` on
- * `CurrentUserResDto`) — resolve `avatar.url` with `resolveFileUrl`/`resolveAvatarUrl`
- * before use, never the object itself.
+ * `CurrentUserResDto`) — resolve `avatar.url` with `resolveFileUrl` before use, never
+ * the object itself.
  */
 export type AuthUserProfile = {
   fullName: string | null
