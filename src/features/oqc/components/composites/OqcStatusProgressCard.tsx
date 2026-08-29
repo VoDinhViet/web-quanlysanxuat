@@ -1,7 +1,7 @@
 import { Route } from "@solar-icons/react"
 
-import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
-import { oqcStatusStyles } from "@/features/oqc/components/OqcBadges"
+import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
+import { oqcStatusStyles } from "@/features/oqc/components/primitives/OqcBadges"
 import {
   oqcStatusDescriptions,
   oqcStatusLabels,

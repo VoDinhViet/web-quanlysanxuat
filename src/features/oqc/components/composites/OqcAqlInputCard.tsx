@@ -3,8 +3,8 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { ClipboardCheck } from "@solar-icons/react"
 
 import { oqcQueryOptions } from "@/features/oqc/api/options"
-import { OqcAqlTallyStrip } from "@/features/oqc/components/detail/OqcAqlTallyStrip"
-import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
+import { OqcAqlTallyStrip } from "@/features/oqc/components/composites/OqcAqlTallyStrip"
+import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import {
   confirmOqcFormDefaultValues,
   confirmOqcSchema,

@@ -3,8 +3,8 @@ import { Diskette, TrashBinTrash } from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
-import { DeleteOqcDialog } from "@/features/oqc/components/detail/DeleteOqcDialog"
-import type { OqcDetailFormApi } from "@/features/oqc/components/detail/OqcDetailForm"
+import { DeleteOqcDialog } from "@/features/oqc/components/composites/DeleteOqcDialog"
+import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
 import { OqcStatus } from "@/lib/types/oqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 

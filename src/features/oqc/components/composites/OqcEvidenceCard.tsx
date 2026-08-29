@@ -9,7 +9,7 @@ import {
   QcEvidenceThumbnail,
   resolveDropRejectionMessage,
 } from "@/components/shared/composites/QcEvidenceThumbnail"
-import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
+import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import {
   confirmOqcFormDefaultValues,
   confirmOqcSchema,

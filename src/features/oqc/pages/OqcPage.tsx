@@ -5,8 +5,8 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { oqcsQueryOptions } from "@/features/oqc/api/options"
-import { OqcTable } from "@/features/oqc/components/OqcTable"
-import { OqcTableFilter } from "@/features/oqc/components/OqcTableFilter"
+import { OqcTable } from "@/features/oqc/components/sections/OqcTable"
+import { OqcTableFilter } from "@/features/oqc/components/sections/OqcTableFilter"
 
 // No stat cards — unlike IQC, the backend has no GET /oqc/stats, so the content area doesn't
 // reserve the extra ~6rem IqcPage's Surface does.

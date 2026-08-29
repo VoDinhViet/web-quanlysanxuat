@@ -7,7 +7,7 @@ import {
 
 import { RadioCardField } from "@/components/shared/composites/RadioCardField"
 import type { RadioCardOption } from "@/components/shared/composites/RadioCardField"
-import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
+import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import {
   confirmOqcFormDefaultValues,
   confirmOqcSchema,

@@ -1,7 +1,7 @@
 import { History } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
-import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
+import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 import { cn } from "@/lib/utils"
 

@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { oqcQueryOptions } from "@/features/oqc/api/options"
-import { OqcDetailForm } from "@/features/oqc/components/detail/OqcDetailForm"
+import { OqcDetailForm } from "@/features/oqc/components/sections/OqcDetailForm"
 
 export function OqcDetailPage() {
   const { oqcId } = useParams({ from: "/(authed)/manage_/oqc_/$oqcId" })

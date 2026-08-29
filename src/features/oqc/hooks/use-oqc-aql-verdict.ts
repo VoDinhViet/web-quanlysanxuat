@@ -2,7 +2,7 @@ import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { oqcAqlPlanQueryOptions } from "@/features/oqc/api/options"
-import type { OqcDetailFormApi } from "@/features/oqc/components/detail/OqcDetailForm"
+import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
 import type { AqlPlan } from "@/lib/types/iqc.type"
 import { IqcInspectionLevel, IqcResult } from "@/lib/types/iqc.type"
 

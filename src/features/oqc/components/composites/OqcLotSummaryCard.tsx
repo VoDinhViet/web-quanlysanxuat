@@ -10,8 +10,8 @@ import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
-import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
-import { OqcFinishedGoodStrip } from "@/features/oqc/components/detail/OqcFinishedGoodStrip"
+import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
+import { OqcFinishedGoodStrip } from "@/features/oqc/components/composites/OqcFinishedGoodStrip"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
 type OqcLotSummaryCardProps = {

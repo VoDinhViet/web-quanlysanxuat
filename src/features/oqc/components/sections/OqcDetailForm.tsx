@@ -6,14 +6,14 @@ import { toast } from "sonner"
 
 import { Surface } from "@/components/shared/layouts/Surface"
 import { confirmOqc } from "@/features/oqc/api/server-functions/confirm-oqc.api"
-import { OqcActivityLogCard } from "@/features/oqc/components/detail/OqcActivityLogCard"
-import { OqcAqlInputCard } from "@/features/oqc/components/detail/OqcAqlInputCard"
-import { OqcDetailHeader } from "@/features/oqc/components/detail/OqcDetailHeader"
-import { OqcDispositionCard } from "@/features/oqc/components/detail/OqcDispositionCard"
-import { OqcEvidenceCard } from "@/features/oqc/components/detail/OqcEvidenceCard"
-import { OqcLotSummaryCard } from "@/features/oqc/components/detail/OqcLotSummaryCard"
-import { OqcResultCard } from "@/features/oqc/components/detail/OqcResultCard"
-import { OqcStatusProgressCard } from "@/features/oqc/components/detail/OqcStatusProgressCard"
+import { OqcActivityLogCard } from "@/features/oqc/components/composites/OqcActivityLogCard"
+import { OqcAqlInputCard } from "@/features/oqc/components/composites/OqcAqlInputCard"
+import { OqcDetailHeader } from "@/features/oqc/components/layouts/OqcDetailHeader"
+import { OqcDispositionCard } from "@/features/oqc/components/composites/OqcDispositionCard"
+import { OqcEvidenceCard } from "@/features/oqc/components/composites/OqcEvidenceCard"
+import { OqcLotSummaryCard } from "@/features/oqc/components/composites/OqcLotSummaryCard"
+import { OqcResultCard } from "@/features/oqc/components/composites/OqcResultCard"
+import { OqcStatusProgressCard } from "@/features/oqc/components/composites/OqcStatusProgressCard"
 import {
   confirmOqcSchema,
   getOqcDefaultValues,

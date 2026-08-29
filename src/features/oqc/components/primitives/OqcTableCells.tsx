@@ -3,7 +3,7 @@ import { Eye, Trash2 } from "lucide-react"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { DeleteOqcDialog } from "@/features/oqc/components/detail/DeleteOqcDialog"
+import { DeleteOqcDialog } from "@/features/oqc/components/composites/DeleteOqcDialog"
 import { OqcStatus } from "@/lib/types/oqc.type"
 import type { Oqc } from "@/lib/types/oqc.type"
 

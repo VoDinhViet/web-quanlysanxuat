@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button"
 import {
   OqcResultBadge,
   OqcStatusBadge,
-} from "@/features/oqc/components/OqcBadges"
-import { OqcDetailActions } from "@/features/oqc/components/detail/OqcDetailActions"
-import type { OqcDetailFormApi } from "@/features/oqc/components/detail/OqcDetailForm"
+} from "@/features/oqc/components/primitives/OqcBadges"
+import { OqcDetailActions } from "@/features/oqc/components/layouts/OqcDetailActions"
+import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
 type OqcDetailHeaderProps = {

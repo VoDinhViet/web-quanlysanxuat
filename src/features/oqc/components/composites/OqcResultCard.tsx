@@ -5,7 +5,7 @@ import { CheckCircle, CloseCircle } from "@solar-icons/react"
 import { RadioCardField } from "@/components/shared/composites/RadioCardField"
 import type { RadioCardOption } from "@/components/shared/composites/RadioCardField"
 import { oqcQueryOptions } from "@/features/oqc/api/options"
-import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
+import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import { useOqcAqlVerdict } from "@/features/oqc/hooks/use-oqc-aql-verdict"
 import {
   confirmOqcFormDefaultValues,

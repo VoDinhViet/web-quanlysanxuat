@@ -5,8 +5,8 @@ import {
   OqcDispositionBadge,
   OqcResultBadge,
   OqcStatusBadge,
-} from "@/features/oqc/components/OqcBadges"
-import { OqcActionsCell } from "@/features/oqc/components/OqcTableCells"
+} from "@/features/oqc/components/primitives/OqcBadges"
+import { OqcActionsCell } from "@/features/oqc/components/primitives/OqcTableCells"
 import type { Oqc } from "@/lib/types/oqc.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

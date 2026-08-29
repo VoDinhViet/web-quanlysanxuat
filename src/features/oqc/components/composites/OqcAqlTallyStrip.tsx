@@ -3,7 +3,7 @@ import { Lightbulb, Ruler } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import { useOqcAqlVerdict } from "@/features/oqc/hooks/use-oqc-aql-verdict"
-import type { OqcDetailFormApi } from "@/features/oqc/components/detail/OqcDetailForm"
+import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
 import { IqcResult } from "@/lib/types/iqc.type"
 import { cn } from "@/lib/utils"
 
