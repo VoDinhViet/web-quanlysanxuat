@@ -4,7 +4,7 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
-import { buildOrderTimeline } from "@/features/orders/order-timeline"
+import { buildOrderTimeline } from "@/features/orders/logic/order-timeline"
 import type {
   OrderDetail,
   OrderTimelineStepState,

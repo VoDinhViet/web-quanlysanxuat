@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { buildPurchaseOrderTimeline } from "@/features/purchase-orders/purchase-order-timeline"
+import { buildPurchaseOrderTimeline } from "@/features/purchase-orders/logic/purchase-order-timeline"
 import type {
   PurchaseOrderDetail,
   PurchaseOrderTimelineStepState,

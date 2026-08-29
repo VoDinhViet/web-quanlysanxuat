@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
 import { buildCreateOutsourcingOrderItemColumns } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderItemsColumns"
-import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/outsourcing-order-item-totals"
+import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/logic/outsourcing-order-item-totals"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { withForm } from "@/hooks/use-app-form"
 

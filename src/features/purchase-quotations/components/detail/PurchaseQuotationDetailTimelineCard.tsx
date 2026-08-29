@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { buildQuotationTimeline } from "@/features/purchase-quotations/purchase-quotation-timeline"
+import { buildQuotationTimeline } from "@/features/purchase-quotations/logic/purchase-quotation-timeline"
 import type {
   PurchaseQuotationDetail,
   PurchaseQuotationTimelineStepState,

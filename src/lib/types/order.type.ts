@@ -334,7 +334,7 @@ export function resolveDeliveryTone(order: Order): DeliveryTone {
   return daysLeft <= nearDueDays ? "near-due" : "normal"
 }
 
-// Built by src/features/orders/order-timeline.ts from real OrderDetail fields
+// Built by src/features/orders/logic/order-timeline.ts from real OrderDetail fields
 // (createdAt/creator, approvedAt/approver, rejectedAt/rejecter, updatedAt) — no mock data.
 export type OrderTimelineStepState =
   | "done"

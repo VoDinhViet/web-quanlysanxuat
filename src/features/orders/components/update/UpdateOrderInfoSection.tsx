@@ -7,7 +7,7 @@ import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
 import { exchangeRateQueryOptions } from "@/features/orders/api/options"
-import { resolveExchangeRatePlaceholder } from "@/features/orders/resolve-exchange-rate-placeholder"
+import { resolveExchangeRatePlaceholder } from "@/features/orders/logic/resolve-exchange-rate-placeholder"
 import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
 import {
   currencyLabels,

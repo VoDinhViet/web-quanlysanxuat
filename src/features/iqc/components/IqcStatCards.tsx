@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { iqcStatsQueryOptions } from "@/features/iqc/api/options"
-import { buildIqcStatTiles } from "@/features/iqc/components/iqc-stat-tiles"
+import { buildIqcStatTiles } from "@/features/iqc/logic/iqc-stat-tiles"
 import { cn } from "@/lib/utils"
 
 // Seven across only from 2xl up — a narrower card cannot hold the icon tile + 2-line label/value

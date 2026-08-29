@@ -1,7 +1,7 @@
 import { History } from "lucide-react"
 import { DateTime } from "luxon"
 
-import { buildPaymentRequestTimeline } from "@/features/payment-requests/payment-request-timeline"
+import { buildPaymentRequestTimeline } from "@/features/payment-requests/logic/payment-request-timeline"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 import { cn } from "@/lib/utils"
 

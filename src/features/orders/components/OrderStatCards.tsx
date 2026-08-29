@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { buildOrderStatTiles } from "@/features/orders/components/order-stat-tiles"
-import type { OrderStatTrendTone } from "@/features/orders/components/order-stat-tiles"
+import { buildOrderStatTiles } from "@/features/orders/logic/order-stat-tiles"
+import type { OrderStatTrendTone } from "@/features/orders/logic/order-stat-tiles"
 import { orderStatsQueryOptions } from "@/features/orders/api/options"
 import { cn } from "@/lib/utils"
 

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 const countFormatter = new Intl.NumberFormat("vi-VN")
 // `issuedPercent` is already computed on a 0–100 scale (see below) — plain number format +
 // "%", not Intl's `style: "percent"` (which expects a 0–1 fraction), same idiom as
-// order-stat-tiles.ts's percentFormatter.
+// logic/order-stat-tiles.ts's percentFormatter.
 const percentFormatter = new Intl.NumberFormat("vi-VN")
 
 type StatTile = {
