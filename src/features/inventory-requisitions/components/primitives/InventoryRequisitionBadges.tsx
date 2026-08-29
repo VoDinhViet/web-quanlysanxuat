@@ -1,12 +1,7 @@
-import { Badge } from "@/components/ui/badge"
+import { StatusBadge } from "@/components/shared/primitives/StatusBadge"
+import type { BadgeStyle } from "@/components/shared/primitives/StatusBadge"
 import type { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
 import { inventoryRequisitionStatusLabels } from "@/lib/types/inventory-requisition.type"
-import { cn } from "@/lib/utils"
-
-type BadgeStyle = {
-  badge: string
-  dot: string
-}
 
 export const inventoryRequisitionStatusStyles: Record<
   InventoryRequisitionStatus,
@@ -47,12 +42,11 @@ export function InventoryRequisitionStatusBadge({
   status,
   className,
 }: InventoryRequisitionStatusBadgeProps) {
-  const { badge, dot } = inventoryRequisitionStatusStyles[status]
-
   return (
-    <Badge variant="outline" className={cn(badge, className)}>
-      <span className={cn("size-1.5 rounded-full", dot)} />
-      {inventoryRequisitionStatusLabels[status]}
-    </Badge>
+    <StatusBadge
+      style={inventoryRequisitionStatusStyles[status]}
+      label={inventoryRequisitionStatusLabels[status]}
+      className={className}
+    />
   )
 }
