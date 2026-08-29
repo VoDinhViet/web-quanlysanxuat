@@ -20,14 +20,14 @@ import { useAppForm } from "@/hooks/use-app-form"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type RejectQuotationDialogProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
   trigger: ReactNode
 }
 
 // PENDING_APPROVAL → CANCELLED (terminal), reason required — mirrors
 // RejectPurchaseRequestDialog.tsx. A Dialog (not AlertDialog) because it needs an input field.
 export function RejectQuotationDialog({
-  detail,
+  purchaseQuotation,
   trigger,
 }: RejectQuotationDialogProps) {
   const [open, setOpen] = useState(false)
@@ -38,25 +38,31 @@ export function RejectQuotationDialog({
       <DialogContent className="sm:max-w-md">
         {/* Radix unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
-        <RejectQuotationForm detail={detail} onClose={() => setOpen(false)} />
+        <RejectQuotationForm
+          purchaseQuotation={purchaseQuotation}
+          onClose={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   )
 }
 
 type RejectQuotationFormProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
   onClose: () => void
 }
 
-function RejectQuotationForm({ detail, onClose }: RejectQuotationFormProps) {
+function RejectQuotationForm({
+  purchaseQuotation,
+  onClose,
+}: RejectQuotationFormProps) {
   const queryClient = useQueryClient()
   const rejectPurchaseQuotationFn = useServerFn(rejectPurchaseQuotation)
 
   const mutation = useMutation({
     mutationFn: (reason: string) =>
       rejectPurchaseQuotationFn({
-        data: { purchaseQuotationId: detail.id, reason },
+        data: { purchaseQuotationId: purchaseQuotation.id, reason },
       }),
     onSuccess: async () => {
       onClose()
@@ -88,7 +94,7 @@ function RejectQuotationForm({ detail, onClose }: RejectQuotationFormProps) {
       <DialogHeader className="gap-1">
         <DialogTitle className="flex items-center gap-2 text-base font-semibold">
           <CloseCircle className="size-4 text-destructive" />
-          Từ chối báo giá {detail.code}
+          Từ chối báo giá {purchaseQuotation.code}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
           Báo giá sẽ chuyển sang trạng thái "Đã hủy". Đây là quyết định cuối —

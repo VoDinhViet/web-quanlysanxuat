@@ -5,19 +5,19 @@ import { buildQuotationTimeline } from "@/features/purchase-quotations/logic/pur
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationDetailTimelineCardProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
 }
 
-// Every node/timestamp comes straight off `detail` via buildQuotationTimeline, no invented
+// Every node/timestamp comes straight off `purchaseQuotation` via buildQuotationTimeline, no invented
 // data.
 export function PurchaseQuotationDetailTimelineCard({
-  detail,
+  purchaseQuotation,
 }: PurchaseQuotationDetailTimelineCardProps) {
   return (
     <TimelineCard
       icon={Route}
       title="Quy trình duyệt"
-      steps={buildQuotationTimeline(detail)}
+      steps={buildQuotationTimeline(purchaseQuotation)}
     />
   )
 }

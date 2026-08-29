@@ -8,17 +8,17 @@ import type { TimelineStep } from "@/lib/types/timeline.type"
 // `sentAt` from a previous cycle. Reading `status` as the single source of truth is what keeps
 // this timeline honest across a recall.
 export function buildQuotationTimeline(
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
 ): TimelineStep[] {
-  const creatorName = detail.creatorBy?.fullName ?? "Hệ thống"
+  const creatorName = purchaseQuotation.creatorBy?.fullName ?? "Hệ thống"
 
-  if (detail.status === PurchaseQuotationStatus.CANCELLED) {
+  if (purchaseQuotation.status === PurchaseQuotationStatus.CANCELLED) {
     return [
       {
         key: "created",
         label: "Tạo báo giá",
         state: "done",
-        timestamp: detail.createdAt,
+        timestamp: purchaseQuotation.createdAt,
         actor: creatorName,
         detail: null,
       },
@@ -26,30 +26,31 @@ export function buildQuotationTimeline(
         key: "sent",
         label: "Gửi duyệt",
         state: "done",
-        timestamp: detail.sentAt,
-        actor: detail.senderBy?.fullName ?? null,
+        timestamp: purchaseQuotation.sentAt,
+        actor: purchaseQuotation.senderBy?.fullName ?? null,
         detail: null,
       },
       {
         key: "rejected",
         label: "Bị từ chối",
         state: "cancelled",
-        timestamp: detail.cancelledAt,
-        actor: detail.cancellerBy?.fullName ?? null,
-        detail: detail.cancellationReason,
+        timestamp: purchaseQuotation.cancelledAt,
+        actor: purchaseQuotation.cancellerBy?.fullName ?? null,
+        detail: purchaseQuotation.cancellationReason,
       },
     ]
   }
 
-  const sentDone = detail.status !== PurchaseQuotationStatus.DRAFT
-  const isApprovedNow = detail.status === PurchaseQuotationStatus.APPROVED
+  const sentDone = purchaseQuotation.status !== PurchaseQuotationStatus.DRAFT
+  const isApprovedNow =
+    purchaseQuotation.status === PurchaseQuotationStatus.APPROVED
 
   return [
     {
       key: "created",
       label: "Tạo báo giá",
       state: "done",
-      timestamp: detail.createdAt,
+      timestamp: purchaseQuotation.createdAt,
       actor: creatorName,
       detail: null,
     },
@@ -57,16 +58,18 @@ export function buildQuotationTimeline(
       key: "sent",
       label: "Gửi duyệt",
       state: sentDone ? "done" : "current",
-      timestamp: sentDone ? detail.sentAt : null,
-      actor: sentDone ? (detail.senderBy?.fullName ?? null) : null,
+      timestamp: sentDone ? purchaseQuotation.sentAt : null,
+      actor: sentDone ? (purchaseQuotation.senderBy?.fullName ?? null) : null,
       detail: null,
     },
     {
       key: "approved",
       label: "Duyệt báo giá",
       state: isApprovedNow ? "done" : sentDone ? "current" : "upcoming",
-      timestamp: isApprovedNow ? detail.approvedAt : null,
-      actor: isApprovedNow ? (detail.approverBy?.fullName ?? null) : null,
+      timestamp: isApprovedNow ? purchaseQuotation.approvedAt : null,
+      actor: isApprovedNow
+        ? (purchaseQuotation.approverBy?.fullName ?? null)
+        : null,
       detail: null,
     },
   ]

@@ -20,7 +20,7 @@ import { sendPurchaseQuotation } from "@/features/purchase-quotations/api/server
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type SendQuotationDialogProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
   trigger: ReactNode
 }
 
@@ -29,7 +29,7 @@ type SendQuotationDialogProps = {
 // dialog surfaces those as mutation.error.message rather than pre-computing the same check
 // client-side.
 export function SendQuotationDialog({
-  detail,
+  purchaseQuotation,
   trigger,
 }: SendQuotationDialogProps) {
   const [open, setOpen] = useState(false)
@@ -39,7 +39,7 @@ export function SendQuotationDialog({
   const mutation = useMutation({
     mutationFn: () =>
       sendPurchaseQuotationFn({
-        data: { purchaseQuotationId: detail.id },
+        data: { purchaseQuotationId: purchaseQuotation.id },
       }),
     onSuccess: async () => {
       setOpen(false)
@@ -65,7 +65,7 @@ export function SendQuotationDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Gửi duyệt báo giá này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Báo giá ${detail.code} sẽ chuyển sang trạng thái "Chờ duyệt" và không sửa được nữa.`}
+            {`Báo giá ${purchaseQuotation.code} sẽ chuyển sang trạng thái "Chờ duyệt" và không sửa được nữa.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

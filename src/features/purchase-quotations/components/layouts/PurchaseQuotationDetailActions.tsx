@@ -8,20 +8,20 @@ import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationDetailActionsProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
 }
 
 // Header-level status actions. Duyệt/Từ chối are deliberately NOT here — PENDING_APPROVAL
 // selects a winning NCC per vật tư inline in the compare table, so those two actions live in
 // PurchaseQuotationApprovalBar's sticky bar instead, to avoid two places doing the same job.
 export function PurchaseQuotationDetailActions({
-  detail,
+  purchaseQuotation,
 }: PurchaseQuotationDetailActionsProps) {
-  if (detail.status === PurchaseQuotationStatus.DRAFT) {
+  if (purchaseQuotation.status === PurchaseQuotationStatus.DRAFT) {
     return (
       <PermissionGate permission="purchasing:update">
         <SendQuotationDialog
-          detail={detail}
+          purchaseQuotation={purchaseQuotation}
           trigger={
             <Button type="button">
               <SendSquare className="size-4" />
@@ -33,11 +33,11 @@ export function PurchaseQuotationDetailActions({
     )
   }
 
-  if (detail.status === PurchaseQuotationStatus.APPROVED) {
+  if (purchaseQuotation.status === PurchaseQuotationStatus.APPROVED) {
     return (
       <PermissionGate permission="purchasing:update">
         <RecallQuotationDialog
-          detail={detail}
+          purchaseQuotation={purchaseQuotation}
           trigger={
             <Button type="button" variant="outline">
               Thu hồi về nháp

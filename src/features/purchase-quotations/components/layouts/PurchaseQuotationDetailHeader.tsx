@@ -9,12 +9,12 @@ import { PurchaseQuotationDetailActions } from "@/features/purchase-quotations/c
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationDetailHeaderProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
 }
 
 // Identity + info row, same single-block idiom as PurchaseRequestDetailHeader.tsx.
 export function PurchaseQuotationDetailHeader({
-  detail,
+  purchaseQuotation,
 }: PurchaseQuotationDetailHeaderProps) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
@@ -36,28 +36,31 @@ export function PurchaseQuotationDetailHeader({
           </Button>
 
           <span className="font-mono text-lg font-bold text-foreground">
-            {detail.code}
+            {purchaseQuotation.code}
           </span>
-          <PurchaseQuotationStatusBadge status={detail.status} />
+          <PurchaseQuotationStatusBadge status={purchaseQuotation.status} />
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <MetaField
             label="Người tạo"
-            value={detail.creatorBy?.fullName ?? "—"}
+            value={purchaseQuotation.creatorBy?.fullName ?? "—"}
           />
           <MetaField
             label="Ngày tạo"
-            value={DateTime.fromISO(detail.createdAt).toFormat(
+            value={DateTime.fromISO(purchaseQuotation.createdAt).toFormat(
               "dd/MM/yyyy HH:mm"
             )}
           />
-          <MetaField label="Số vật tư" value={String(detail.items.length)} />
-          <MetaField label="Ghi chú" value={detail.note ?? "—"} />
+          <MetaField
+            label="Số vật tư"
+            value={String(purchaseQuotation.items.length)}
+          />
+          <MetaField label="Ghi chú" value={purchaseQuotation.note ?? "—"} />
         </div>
       </div>
 
-      <PurchaseQuotationDetailActions detail={detail} />
+      <PurchaseQuotationDetailActions purchaseQuotation={purchaseQuotation} />
     </div>
   )
 }

@@ -9,7 +9,7 @@ import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationGeneratedOrdersCardProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
 }
 
 // Chỉ có ý nghĩa sau khi RFQ đã APPROVED (approve mới sinh PO nháp) — client-interactive read
@@ -19,12 +19,13 @@ type PurchaseQuotationGeneratedOrdersCardProps = {
 // components/ của feature purchase-orders, import cross-feature qua đó là phạm "Layer
 // boundaries" (chỉ được đọc chéo qua api/index.ts barrel).
 export function PurchaseQuotationGeneratedOrdersCard({
-  detail,
+  purchaseQuotation,
 }: PurchaseQuotationGeneratedOrdersCardProps) {
-  const isApproved = detail.status === PurchaseQuotationStatus.APPROVED
+  const isApproved =
+    purchaseQuotation.status === PurchaseQuotationStatus.APPROVED
 
   const ordersQuery = useQuery({
-    ...purchaseOrdersByQuotationOptions(detail.id),
+    ...purchaseOrdersByQuotationOptions(purchaseQuotation.id),
     enabled: isApproved,
   })
 

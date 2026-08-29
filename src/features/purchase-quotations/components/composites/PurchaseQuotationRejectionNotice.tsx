@@ -5,18 +5,18 @@ import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationRejectionNoticeProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
 }
 
 // Mirrors PurchaseRequestRejectionNotice.tsx. CANCELLED is a terminal status here (no route
 // accepts it back) — unlike purchase-requests' REJECTED, there's no "resend" path, so this only
 // ever needs to gate on `status === CANCELLED`, no DRAFT-carryover case.
 export function PurchaseQuotationRejectionNotice({
-  detail,
+  purchaseQuotation,
 }: PurchaseQuotationRejectionNoticeProps) {
   if (
-    detail.status !== PurchaseQuotationStatus.CANCELLED ||
-    !detail.cancellationReason
+    purchaseQuotation.status !== PurchaseQuotationStatus.CANCELLED ||
+    !purchaseQuotation.cancellationReason
   ) {
     return null
   }
@@ -28,11 +28,15 @@ export function PurchaseQuotationRejectionNotice({
         <p className="text-sm font-semibold text-destructive">
           Báo giá bị từ chối
         </p>
-        <p className="text-sm text-foreground">{detail.cancellationReason}</p>
-        {detail.cancellerBy && detail.cancelledAt ? (
+        <p className="text-sm text-foreground">
+          {purchaseQuotation.cancellationReason}
+        </p>
+        {purchaseQuotation.cancellerBy && purchaseQuotation.cancelledAt ? (
           <p className="text-xs text-muted-foreground">
-            {detail.cancellerBy.fullName} ·{" "}
-            {DateTime.fromISO(detail.cancelledAt).toFormat("dd/MM/yyyy HH:mm")}
+            {purchaseQuotation.cancellerBy.fullName} ·{" "}
+            {DateTime.fromISO(purchaseQuotation.cancelledAt).toFormat(
+              "dd/MM/yyyy HH:mm"
+            )}
           </p>
         ) : null}
       </div>

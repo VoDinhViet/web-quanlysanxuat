@@ -15,7 +15,7 @@ export function PurchaseQuotationDetailPage() {
     from: "/(authed)/manage_/purchase-quotations_/$purchaseQuotationId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: purchaseQuotation } = useSuspenseQuery(
     purchaseQuotationQueryOptions(purchaseQuotationId)
   )
 
@@ -27,22 +27,32 @@ export function PurchaseQuotationDetailPage() {
           { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý mua hàng" },
           { label: "Báo giá NCC", href: "/manage/purchase-quotations" },
-          { label: detail.code },
+          { label: purchaseQuotation.code },
         ]}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <PurchaseQuotationRejectionNotice detail={detail} />
+        <PurchaseQuotationRejectionNotice
+          purchaseQuotation={purchaseQuotation}
+        />
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           <Surface>
-            <PurchaseQuotationDetailHeader detail={detail} />
-            <PurchaseQuotationDetailQuotesSection detail={detail} />
+            <PurchaseQuotationDetailHeader
+              purchaseQuotation={purchaseQuotation}
+            />
+            <PurchaseQuotationDetailQuotesSection
+              purchaseQuotation={purchaseQuotation}
+            />
           </Surface>
 
           <div className="flex flex-col gap-4">
-            <PurchaseQuotationDetailTimelineCard detail={detail} />
-            <PurchaseQuotationGeneratedOrdersCard detail={detail} />
+            <PurchaseQuotationDetailTimelineCard
+              purchaseQuotation={purchaseQuotation}
+            />
+            <PurchaseQuotationGeneratedOrdersCard
+              purchaseQuotation={purchaseQuotation}
+            />
           </div>
         </div>
       </div>

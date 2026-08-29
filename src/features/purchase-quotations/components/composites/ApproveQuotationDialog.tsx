@@ -23,7 +23,7 @@ import type {
 } from "@/lib/types/purchase-quotation.type"
 
 type ApproveQuotationDialogProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
   // quotationItemId -> quotationItemSupplierId, one entry per vật tư — collected by
   // PurchaseQuotationDetailQuotesSection's inline radio selection, passed down here only to be
   // confirmed and sent as-is.
@@ -35,7 +35,7 @@ type ApproveQuotationDialogProps = {
 // picking a winning NCC for every vật tư inline in the compare table (PurchaseQuotationApprovalBar
 // only enables this trigger once `selectedSuppliers` covers every item).
 export function ApproveQuotationDialog({
-  detail,
+  purchaseQuotation,
   selectedSuppliers,
   trigger,
 }: ApproveQuotationDialogProps) {
@@ -49,7 +49,7 @@ export function ApproveQuotationDialog({
     mutationFn: () =>
       approvePurchaseQuotationFn({
         data: {
-          purchaseQuotationId: detail.id,
+          purchaseQuotationId: purchaseQuotation.id,
           selectedSuppliers: Object.entries(selectedSuppliers).map(
             ([quotationItemId, quotationItemSupplierId]) => ({
               quotationItemId,
@@ -85,7 +85,7 @@ export function ApproveQuotationDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Duyệt báo giá này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Báo giá ${detail.code} sẽ chuyển sang trạng thái "Đã duyệt". Hệ thống sẽ tạo ${distinctSupplierCount} đơn mua nháp cho ${distinctSupplierCount} NCC thắng thầu.`}
+            {`Báo giá ${purchaseQuotation.code} sẽ chuyển sang trạng thái "Đã duyệt". Hệ thống sẽ tạo ${distinctSupplierCount} đơn mua nháp cho ${distinctSupplierCount} NCC thắng thầu.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

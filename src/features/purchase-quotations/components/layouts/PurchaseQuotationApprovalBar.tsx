@@ -9,7 +9,7 @@ import type {
 } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationApprovalBarProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
   selectedSuppliers: PurchaseQuotationSupplierSelection
   totalItems: number
 }
@@ -20,7 +20,7 @@ type PurchaseQuotationApprovalBarProps = {
 // backend's all-or-nothing `supplier_not_selected` rule client-side for a smoother flow (the
 // backend still re-validates).
 export function PurchaseQuotationApprovalBar({
-  detail,
+  purchaseQuotation,
   selectedSuppliers,
   totalItems,
 }: PurchaseQuotationApprovalBarProps) {
@@ -45,7 +45,7 @@ export function PurchaseQuotationApprovalBar({
 
       <div className="flex items-center gap-2">
         <RejectQuotationDialog
-          detail={detail}
+          purchaseQuotation={purchaseQuotation}
           trigger={
             <Button
               type="button"
@@ -58,7 +58,7 @@ export function PurchaseQuotationApprovalBar({
           }
         />
         <ApproveQuotationDialog
-          detail={detail}
+          purchaseQuotation={purchaseQuotation}
           selectedSuppliers={selectedSuppliers}
           trigger={
             <Button type="button" disabled={!isComplete}>

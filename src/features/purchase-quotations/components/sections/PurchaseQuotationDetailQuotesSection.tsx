@@ -27,7 +27,7 @@ import type {
 } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationDetailQuotesSectionProps = {
-  detail: PurchaseQuotationDetail
+  purchaseQuotation: PurchaseQuotationDetail
 }
 
 // Read-only twin of CreateQuotationSuppliersSection.tsx (same outer+nested table shell, same
@@ -37,17 +37,18 @@ type PurchaseQuotationDetailQuotesSectionProps = {
 // owns the resulting "which NCC won which vật tư" selection until it's submitted via
 // PurchaseQuotationApprovalBar.
 export function PurchaseQuotationDetailQuotesSection({
-  detail,
+  purchaseQuotation,
 }: PurchaseQuotationDetailQuotesSectionProps) {
   const canApprove = useHasPermission("purchasing:approve")
   const selectable =
-    detail.status === PurchaseQuotationStatus.PENDING_APPROVAL && canApprove
+    purchaseQuotation.status === PurchaseQuotationStatus.PENDING_APPROVAL &&
+    canApprove
 
   const [selectedSuppliers, setSelectedSuppliers] =
     useState<PurchaseQuotationSupplierSelection>({})
 
   const table = useReactTable({
-    data: detail.items,
+    data: purchaseQuotation.items,
     columns: purchaseQuotationItemsColumns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -66,7 +67,7 @@ export function PurchaseQuotationDetailQuotesSection({
       </div>
 
       <div className="overflow-hidden">
-        {detail.items.length === 0 ? (
+        {purchaseQuotation.items.length === 0 ? (
           <TableEmpty
             icon={PackageSearch}
             title="Chưa có vật tư nào"
@@ -140,7 +141,8 @@ export function PurchaseQuotationDetailQuotesSection({
                           }))
                         }
                         isApproved={
-                          detail.status === PurchaseQuotationStatus.APPROVED
+                          purchaseQuotation.status ===
+                          PurchaseQuotationStatus.APPROVED
                         }
                       />
                     </TableCell>
@@ -154,9 +156,9 @@ export function PurchaseQuotationDetailQuotesSection({
 
       {selectable && (
         <PurchaseQuotationApprovalBar
-          detail={detail}
+          purchaseQuotation={purchaseQuotation}
           selectedSuppliers={selectedSuppliers}
-          totalItems={detail.items.length}
+          totalItems={purchaseQuotation.items.length}
         />
       )}
     </div>
