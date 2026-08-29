@@ -1,4 +1,4 @@
-import { CreateSupplierForm } from "@/features/suppliers/components/create/CreateSupplierForm"
+import { CreateSupplierForm } from "@/features/suppliers/components/sections/CreateSupplierForm"
 
 export function CreateSupplierPage() {
   return (

@@ -2,7 +2,7 @@ import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { UpdateSupplierForm } from "@/features/suppliers/components/update/UpdateSupplierForm"
+import { UpdateSupplierForm } from "@/features/suppliers/components/sections/UpdateSupplierForm"
 import { supplierQueryOptions } from "@/features/suppliers/api/options"
 
 export function UpdateSupplierPage() {

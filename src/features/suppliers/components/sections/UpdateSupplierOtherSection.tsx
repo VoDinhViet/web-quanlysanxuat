@@ -1,6 +1,6 @@
 import { withForm } from "@/hooks/use-app-form"
 import { updateSupplierFormDefaultValues } from "@/features/suppliers/schemas/update-supplier.schema"
-import { SupplierDocumentsField } from "@/features/suppliers/components/SupplierDocumentsField"
+import { SupplierDocumentsField } from "@/features/suppliers/components/composites/SupplierDocumentsField"
 import { supplierStatusLabels } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 

@@ -3,17 +3,17 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
-import { SupplierLogoField } from "@/features/suppliers/components/SupplierLogoField"
+import { SupplierLogoField } from "@/features/suppliers/components/composites/SupplierLogoField"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
-import { updateSupplierFormDefaultValues } from "@/features/suppliers/schemas/update-supplier.schema"
+import { createSupplierFormDefaultValues } from "@/features/suppliers/schemas/create-supplier.schema"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
 import { supplierTypeLabels } from "@/lib/types/supplier.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
 const supplierTypeOptions = buildOptionsFromLabels(supplierTypeLabels)
 
-export const UpdateSupplierInfoSection = withForm({
-  defaultValues: updateSupplierFormDefaultValues,
+export const CreateSupplierInfoSection = withForm({
+  defaultValues: createSupplierFormDefaultValues,
   props: {
     disabled: false,
   },

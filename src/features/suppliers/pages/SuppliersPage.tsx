@@ -4,9 +4,9 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { SupplierStatCards } from "@/features/suppliers/components/SupplierStatCards"
-import { SuppliersTable } from "@/features/suppliers/components/SuppliersTable"
-import { SuppliersTableFilter } from "@/features/suppliers/components/SuppliersTableFilter"
+import { SupplierStatCards } from "@/features/suppliers/components/sections/SupplierStatCards"
+import { SuppliersTable } from "@/features/suppliers/components/sections/SuppliersTable"
+import { SuppliersTableFilter } from "@/features/suppliers/components/sections/SuppliersTableFilter"
 import { suppliersQueryOptions } from "@/features/suppliers/api/options"
 
 export function SuppliersPage() {
