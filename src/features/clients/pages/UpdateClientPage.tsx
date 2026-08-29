@@ -2,7 +2,7 @@ import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { UpdateClientForm } from "@/features/clients/components/update/UpdateClientForm"
+import { UpdateClientForm } from "@/features/clients/components/sections/UpdateClientForm"
 import { clientQueryOptions } from "@/features/clients/api/options"
 
 export function UpdateClientPage() {

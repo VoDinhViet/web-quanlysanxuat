@@ -13,7 +13,7 @@ import {
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
-import { ClientContactDialog } from "@/features/clients/components/ClientContactDialog"
+import { ClientContactDialog } from "@/features/clients/components/composites/ClientContactDialog"
 import { createClientFormDefaultValues } from "@/features/clients/schemas/create-client.schema"
 import type { ClientContactInput } from "@/features/clients/schemas/client-contact.schema"
 

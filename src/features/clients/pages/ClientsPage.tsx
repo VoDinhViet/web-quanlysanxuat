@@ -4,8 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { ClientsTable } from "@/features/clients/components/ClientsTable"
-import { ClientsTableFilter } from "@/features/clients/components/ClientsTableFilter"
+import { ClientsTable } from "@/features/clients/components/sections/ClientsTable"
+import { ClientsTableFilter } from "@/features/clients/components/sections/ClientsTableFilter"
 import { clientsQueryOptions } from "@/features/clients/api/options"
 
 export function ClientsPage() {

@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { CreateClientContactsSection } from "@/features/clients/components/create/CreateClientContactsSection"
-import { CreateClientInfoSection } from "@/features/clients/components/create/CreateClientInfoSection"
+import { CreateClientContactsSection } from "@/features/clients/components/sections/CreateClientContactsSection"
+import { CreateClientInfoSection } from "@/features/clients/components/sections/CreateClientInfoSection"
 import {
   createClientFormDefaultValues,
   createClientSchema,

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { DeleteClientDialog } from "@/features/clients/components/DeleteClientDialog"
+import { DeleteClientDialog } from "@/features/clients/components/composites/DeleteClientDialog"
 import { clientStatusLabels, ClientStatus } from "@/lib/types/client.type"
 import type { Client } from "@/lib/types/client.type"
 

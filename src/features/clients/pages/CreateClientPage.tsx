@@ -1,4 +1,4 @@
-import { CreateClientForm } from "@/features/clients/components/create/CreateClientForm"
+import { CreateClientForm } from "@/features/clients/components/sections/CreateClientForm"
 
 export function CreateClientPage() {
   return (
