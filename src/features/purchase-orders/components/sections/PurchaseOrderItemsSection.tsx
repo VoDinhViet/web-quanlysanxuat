@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildPurchaseOrderItemColumns } from "@/features/purchase-orders/components/detail/PurchaseOrderItemsTableColumns"
+import { buildPurchaseOrderItemColumns } from "@/features/purchase-orders/components/composites/PurchaseOrderItemsTableColumns"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderItemsSectionProps = {

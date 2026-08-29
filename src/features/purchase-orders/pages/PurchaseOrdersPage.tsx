@@ -5,9 +5,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api/options"
-import { PurchaseOrderLegend } from "@/features/purchase-orders/components/PurchaseOrderLegend"
-import { PurchaseOrdersTable } from "@/features/purchase-orders/components/PurchaseOrdersTable"
-import { PurchaseOrdersTableFilter } from "@/features/purchase-orders/components/PurchaseOrdersTableFilter"
+import { PurchaseOrderLegend } from "@/features/purchase-orders/components/primitives/PurchaseOrderLegend"
+import { PurchaseOrdersTable } from "@/features/purchase-orders/components/sections/PurchaseOrdersTable"
+import { PurchaseOrdersTableFilter } from "@/features/purchase-orders/components/sections/PurchaseOrdersTableFilter"
 
 export function PurchaseOrdersPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list, which resolves

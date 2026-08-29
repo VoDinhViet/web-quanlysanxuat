@@ -2,9 +2,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { AltArrowDown } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
-import { PurchaseOrderAdjustmentReasonDialog } from "@/features/purchase-orders/components/detail/PurchaseOrderAdjustmentReasonDialog"
-import { PurchaseOrderItemQuantityCell } from "@/features/purchase-orders/components/detail/PurchaseOrderItemQuantityCell"
-import { PurchaseOrderItemUnitPriceCell } from "@/features/purchase-orders/components/detail/PurchaseOrderItemUnitPriceCell"
+import { PurchaseOrderAdjustmentReasonDialog } from "@/features/purchase-orders/components/composites/PurchaseOrderAdjustmentReasonDialog"
+import { PurchaseOrderItemQuantityCell } from "@/features/purchase-orders/components/primitives/PurchaseOrderItemQuantityCell"
+import { PurchaseOrderItemUnitPriceCell } from "@/features/purchase-orders/components/primitives/PurchaseOrderItemUnitPriceCell"
 import { cn } from "@/lib/utils"
 import type { PurchaseOrderItemDetail } from "@/lib/types/purchase-order.type"
 

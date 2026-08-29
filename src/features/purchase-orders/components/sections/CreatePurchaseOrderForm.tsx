@@ -6,9 +6,9 @@ import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { CreatePurchaseOrderInfoSection } from "@/features/purchase-orders/components/create/CreatePurchaseOrderInfoSection"
-import { CreatePurchaseOrderItemsPickerSection } from "@/features/purchase-orders/components/create/CreatePurchaseOrderItemsPickerSection"
-import { CreatePurchaseOrderItemsSection } from "@/features/purchase-orders/components/create/CreatePurchaseOrderItemsSection"
+import { CreatePurchaseOrderInfoSection } from "@/features/purchase-orders/components/sections/CreatePurchaseOrderInfoSection"
+import { CreatePurchaseOrderItemsPickerSection } from "@/features/purchase-orders/components/sections/CreatePurchaseOrderItemsPickerSection"
+import { CreatePurchaseOrderItemsSection } from "@/features/purchase-orders/components/sections/CreatePurchaseOrderItemsSection"
 import { createPurchaseOrder } from "@/features/purchase-orders/api/server-functions/create-purchase-order.api"
 import {
   createPurchaseOrderFormDefaultValues,

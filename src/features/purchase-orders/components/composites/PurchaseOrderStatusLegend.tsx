@@ -1,6 +1,6 @@
 import { Info } from "lucide-react"
 
-import { purchaseOrderStatusStyles } from "@/features/purchase-orders/components/PurchaseOrderBadges"
+import { purchaseOrderStatusStyles } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
 import {
   purchaseOrderStatusDescriptions,
   purchaseOrderStatusLabels,

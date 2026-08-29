@@ -2,12 +2,12 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { PurchaseOrderProgressBadge } from "@/features/purchase-orders/components/PurchaseOrderBadges"
+import { PurchaseOrderProgressBadge } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
 import {
   PurchaseOrderActionsCell,
   PurchaseOrderAmountCell,
   PurchaseOrderSourceCell,
-} from "@/features/purchase-orders/components/PurchaseOrderTableCells"
+} from "@/features/purchase-orders/components/primitives/PurchaseOrderTableCells"
 import type { PurchaseOrder } from "@/lib/types/purchase-order.type"
 
 const purchaseOrderColumnHelper = createColumnHelper<PurchaseOrder>()
