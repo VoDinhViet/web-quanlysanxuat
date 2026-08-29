@@ -1,19 +1,12 @@
-import { useState } from "react"
 import { Link, useNavigate, useSearch } from "@tanstack/react-router"
-import { useDebounceCallback } from "usehooks-ts"
-import { FileOutput, RotateCw } from "lucide-react"
+import { FileOutput } from "lucide-react"
 
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { FilterSelect } from "@/components/shared/primitives/FilterSelect"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { TableSearchInput } from "@/components/shared/primitives/TableSearchInput"
+import { TableFilterBar } from "@/components/shared/sections/TableFilterBar"
+import { useFilterSearchTerm } from "@/hooks/use-filter-search-term"
 import { inventoryRequisitionStatusLabels } from "@/lib/types/inventory-requisition.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
@@ -28,19 +21,21 @@ export function InventoryRequisitionsTableFilter() {
     from: "/(authed)/manage_/inventory-requisitions/",
   })
   const navigate = useNavigate({ from: "/manage/inventory-requisitions/" })
-  const [q, setQ] = useState(search.q ?? "")
 
-  const handleSearch = useDebounceCallback((term: string) => {
-    const trimmed = term.trim()
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        q: trimmed.length > 0 ? trimmed : undefined,
-        page: 1,
-      }),
-      replace: true,
-    })
-  }, 300)
+  const searchTerm = useFilterSearchTerm({
+    initialValue: search.q ?? "",
+    onSearch: (term) => {
+      const trimmed = term.trim()
+      void navigate({
+        search: (prev) => ({
+          ...prev,
+          q: trimmed.length > 0 ? trimmed : undefined,
+          page: 1,
+        }),
+        replace: true,
+      })
+    },
+  })
 
   const handleStatusChange = (value: string) => {
     const status =
@@ -49,8 +44,7 @@ export function InventoryRequisitionsTableFilter() {
   }
 
   const resetFilters = () => {
-    handleSearch.cancel()
-    setQ("")
+    searchTerm.reset()
     void navigate({
       search: (prev) => {
         const { q: _q, status: _status, ...rest } = prev
@@ -60,91 +54,39 @@ export function InventoryRequisitionsTableFilter() {
   }
 
   return (
-    <div className="flex flex-col gap-5 bg-card px-4 py-4 lg:px-5">
-      {/* Top creation section */}
-      <div className="border-b border-border/60 pb-4">
-        <p className="mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-          Tạo phiếu lãnh
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <RoutePermissionGate route="/manage/inventory-requisitions/create">
-            <Button className="text-xs" asChild>
-              <Link to="/manage/inventory-requisitions/create">
-                <FileOutput className="size-3.5" />
-                Tạo phiếu lãnh
-              </Link>
-            </Button>
-          </RoutePermissionGate>
-        </div>
-      </div>
-
-      {/* Filters section */}
-      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)]">
-          {/* Mã phiếu lãnh */}
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="lv-code"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Mã phiếu lãnh
-            </Label>
-            <Input
-              id="lv-code"
-              className="text-xs placeholder:text-muted-foreground/75"
-              placeholder="Nhập mã phiếu lãnh..."
-              value={q}
-              onChange={(event) => {
-                setQ(event.target.value)
-                handleSearch(event.target.value)
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault()
-                  handleSearch.flush()
-                }
-              }}
-            />
-          </div>
-
-          {/* Trạng thái */}
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="lv-status"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Trạng thái
-            </Label>
-            <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
-            >
-              <SelectTrigger id="lv-status" className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {statusOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <Button
-            type="button"
-            variant="outline"
-            className="text-xs"
-            onClick={resetFilters}
-          >
-            <RotateCw className="size-4" />
-            Xóa bộ lọc
+    <TableFilterBar
+      createLabel="Tạo phiếu lãnh"
+      createAction={
+        <RoutePermissionGate route="/manage/inventory-requisitions/create">
+          <Button className="text-xs" asChild>
+            <Link to="/manage/inventory-requisitions/create">
+              <FileOutput className="size-3.5" />
+              Tạo phiếu lãnh
+            </Link>
           </Button>
+        </RoutePermissionGate>
+      }
+      fields={
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)]">
+          <TableSearchInput
+            id="lv-code"
+            label="Mã phiếu lãnh"
+            placeholder="Nhập mã phiếu lãnh..."
+            value={searchTerm.value}
+            onChange={searchTerm.onChange}
+            onKeyDown={searchTerm.onEnterKeyDown}
+          />
+
+          <FilterSelect
+            id="lv-status"
+            label="Trạng thái"
+            value={search.status ?? "all"}
+            options={statusOptions}
+            onValueChange={handleStatusChange}
+          />
         </div>
-      </div>
-    </div>
+      }
+      onReset={resetFilters}
+    />
   )
 }
