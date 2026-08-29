@@ -10,7 +10,7 @@ import {
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { OutsourcingReceiptDetailSectionCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailSectionCard"
+import { OutsourcingReceiptDetailSectionCard } from "@/features/outsourcing-receipts/components/layouts/OutsourcingReceiptDetailSectionCard"
 import { InventoryDocumentStatus } from "@/lib/types/outsourcing-receipt.type"
 import type { OutsourcingReceiptDetail } from "@/lib/types/outsourcing-receipt.type"
 

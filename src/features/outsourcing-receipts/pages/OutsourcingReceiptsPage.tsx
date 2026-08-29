@@ -6,9 +6,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { outsourcingReceiptsQueryOptions } from "@/features/outsourcing-receipts/api/options"
-import { OutsourcingReceiptLegend } from "@/features/outsourcing-receipts/components/OutsourcingReceiptLegend"
-import { OutsourcingReceiptsTable } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTable"
-import { OutsourcingReceiptsTableFilter } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTableFilter"
+import { OutsourcingReceiptLegend } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptLegend"
+import { OutsourcingReceiptsTable } from "@/features/outsourcing-receipts/components/sections/OutsourcingReceiptsTable"
+import { OutsourcingReceiptsTableFilter } from "@/features/outsourcing-receipts/components/sections/OutsourcingReceiptsTableFilter"
 
 export function OutsourcingReceiptsPage() {
   const search = useSearch({

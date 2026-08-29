@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { OutsourcingReceiptDetailActions } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailActions"
-import { OutsourcingReceiptDocStatusBadge } from "@/features/outsourcing-receipts/components/OutsourcingReceiptBadges"
+import { OutsourcingReceiptDetailActions } from "@/features/outsourcing-receipts/components/layouts/OutsourcingReceiptDetailActions"
+import { OutsourcingReceiptDocStatusBadge } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptBadges"
 import type {
   OutsourcingReceiptDetail,
   OutsourcingReceiptItem,

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { outsourcingReceiptsColumns } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTableColumns"
+import { outsourcingReceiptsColumns } from "@/features/outsourcing-receipts/components/composites/OutsourcingReceiptsTableColumns"
 import { cn } from "@/lib/utils"
 import type { OutsourcingReceipt } from "@/lib/types/outsourcing-receipt.type"
 import type { Pagination } from "@/lib/types/pagination.type"

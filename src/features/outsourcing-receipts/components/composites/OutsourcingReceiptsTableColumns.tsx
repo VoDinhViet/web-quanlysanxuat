@@ -2,8 +2,8 @@ import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
-import { OutsourcingReceiptDocStatusBadge } from "@/features/outsourcing-receipts/components/OutsourcingReceiptBadges"
-import { OutsourcingReceiptActionsCell } from "@/features/outsourcing-receipts/components/OutsourcingReceiptTableCells"
+import { OutsourcingReceiptDocStatusBadge } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptBadges"
+import { OutsourcingReceiptActionsCell } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptTableCells"
 import type { OutsourcingReceipt } from "@/lib/types/outsourcing-receipt.type"
 
 const outsourcingReceiptColumnHelper = createColumnHelper<OutsourcingReceipt>()

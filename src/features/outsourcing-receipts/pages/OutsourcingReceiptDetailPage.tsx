@@ -7,9 +7,9 @@ import {
   outsourcingReceiptItemsQueryOptions,
   outsourcingReceiptQueryOptions,
 } from "@/features/outsourcing-receipts/api/options"
-import { OutsourcingReceiptDetailHeader } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailHeader"
-import { OutsourcingReceiptInfoCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptInfoCard"
-import { OutsourcingReceiptItemsCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptItemsCard"
+import { OutsourcingReceiptDetailHeader } from "@/features/outsourcing-receipts/components/layouts/OutsourcingReceiptDetailHeader"
+import { OutsourcingReceiptInfoCard } from "@/features/outsourcing-receipts/components/composites/OutsourcingReceiptInfoCard"
+import { OutsourcingReceiptItemsCard } from "@/features/outsourcing-receipts/components/composites/OutsourcingReceiptItemsCard"
 
 export function OutsourcingReceiptDetailPage() {
   const { outsourcingReceiptId } = useParams({

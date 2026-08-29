@@ -8,13 +8,13 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { CreateOutsourcingReceiptConfirmSection } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptConfirmSection"
-import { CreateOutsourcingReceiptItemsSection } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptItemsSection"
-import { CreateOutsourcingReceiptPickerSection } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptPickerSection"
+import { CreateOutsourcingReceiptConfirmSection } from "@/features/outsourcing-receipts/components/sections/CreateOutsourcingReceiptConfirmSection"
+import { CreateOutsourcingReceiptItemsSection } from "@/features/outsourcing-receipts/components/sections/CreateOutsourcingReceiptItemsSection"
+import { CreateOutsourcingReceiptPickerSection } from "@/features/outsourcing-receipts/components/sections/CreateOutsourcingReceiptPickerSection"
 import {
   CreateOutsourcingReceiptTabs,
   wizardTabs,
-} from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptTabs"
+} from "@/features/outsourcing-receipts/components/sections/CreateOutsourcingReceiptTabs"
 import { createOutsourcingReceipt } from "@/features/outsourcing-receipts/api/server-functions/create-outsourcing-receipt.api"
 import {
   createOutsourcingReceiptFormDefaultValues,
@@ -22,7 +22,7 @@ import {
 } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
-import type { CreateOutsourcingReceiptWizardTab } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptTabs"
+import type { CreateOutsourcingReceiptWizardTab } from "@/features/outsourcing-receipts/components/sections/CreateOutsourcingReceiptTabs"
 
 // Vỏ wizard "Nhập hàng gia công về" (OS-IN) — rập khuôn CreateOutsourcingOrderForm.tsx, 3 tab.
 // POST /outsourcing-receipts trả về void (không có mã phiếu để hiện lại), nên không có dialog

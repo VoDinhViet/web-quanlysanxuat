@@ -15,8 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { OutsourcingReceiptDetailSectionCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailSectionCard"
-import { outsourcingReceiptItemsColumns } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptItemsColumns"
+import { OutsourcingReceiptDetailSectionCard } from "@/features/outsourcing-receipts/components/layouts/OutsourcingReceiptDetailSectionCard"
+import { outsourcingReceiptItemsColumns } from "@/features/outsourcing-receipts/components/composites/OutsourcingReceiptItemsColumns"
 import type { OutsourcingReceiptItem } from "@/lib/types/outsourcing-receipt.type"
 
 type OutsourcingReceiptItemsCardProps = {

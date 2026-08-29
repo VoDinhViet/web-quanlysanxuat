@@ -1,6 +1,6 @@
 import { Info } from "lucide-react"
 
-import { outsourcingReceiptDocStatusStyles } from "@/features/outsourcing-receipts/components/OutsourcingReceiptBadges"
+import { outsourcingReceiptDocStatusStyles } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptBadges"
 import {
   InventoryDocumentStatus,
   outsourcingReceiptStatusDescriptions,

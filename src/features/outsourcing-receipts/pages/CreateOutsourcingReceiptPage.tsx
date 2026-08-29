@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { CreateOutsourcingReceiptForm } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptForm"
+import { CreateOutsourcingReceiptForm } from "@/features/outsourcing-receipts/components/sections/CreateOutsourcingReceiptForm"
 
 export function CreateOutsourcingReceiptPage() {
   return (
