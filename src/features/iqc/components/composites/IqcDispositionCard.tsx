@@ -7,8 +7,8 @@ import {
 
 import { RadioCardField } from "@/components/shared/composites/RadioCardField"
 import type { RadioCardOption } from "@/components/shared/composites/RadioCardField"
-import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
-import { IqcSortSplitFields } from "@/features/iqc/components/detail/IqcSortSplitFields"
+import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
+import { IqcSortSplitFields } from "@/features/iqc/components/composites/IqcSortSplitFields"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {
   iqcDispositionDescriptions,

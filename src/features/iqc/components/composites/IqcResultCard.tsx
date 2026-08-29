@@ -2,7 +2,7 @@ import { Checklist, CheckCircle, CloseCircle } from "@solar-icons/react"
 
 import { RadioCardField } from "@/components/shared/composites/RadioCardField"
 import type { RadioCardOption } from "@/components/shared/composites/RadioCardField"
-import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
+import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {
   iqcResultDescriptions,

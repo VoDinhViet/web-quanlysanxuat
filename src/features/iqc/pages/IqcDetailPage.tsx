@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { iqcQueryOptions } from "@/features/iqc/api/options"
-import { IqcDetailForm } from "@/features/iqc/components/detail/IqcDetailForm"
+import { IqcDetailForm } from "@/features/iqc/components/sections/IqcDetailForm"
 
 export function IqcDetailPage() {
   const { iqcId } = useParams({ from: "/(authed)/manage_/iqc_/$iqcId" })

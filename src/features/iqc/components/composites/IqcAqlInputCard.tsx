@@ -1,7 +1,7 @@
 import { ClipboardCheck } from "@solar-icons/react"
 
-import { IqcAqlPlanPanel } from "@/features/iqc/components/detail/IqcAqlPlanPanel"
-import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
+import { IqcAqlPlanPanel } from "@/features/iqc/components/composites/IqcAqlPlanPanel"
+import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import { aqlLevels, iqcInspectionLevelLabels } from "@/lib/types/iqc.type"
 import type { IqcDetail } from "@/lib/types/iqc.type"

@@ -5,11 +5,11 @@ import {
   IqcDispositionBadge,
   IqcResultBadge,
   IqcStatusBadge,
-} from "@/features/iqc/components/IqcBadges"
+} from "@/features/iqc/components/primitives/IqcBadges"
 import {
   IqcActionsCell,
   IqcPoOrReasonCell,
-} from "@/features/iqc/components/IqcTableCells"
+} from "@/features/iqc/components/primitives/IqcTableCells"
 import type { Iqc } from "@/lib/types/iqc.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

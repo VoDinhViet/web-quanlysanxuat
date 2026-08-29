@@ -3,8 +3,8 @@ import { InfoCircle } from "@solar-icons/react"
 
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { Button } from "@/components/ui/button"
-import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
-import { iqcStatusStyles } from "@/features/iqc/components/IqcBadges"
+import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
+import { iqcStatusStyles } from "@/features/iqc/components/primitives/IqcBadges"
 import {
   iqcStatusDescriptions,
   iqcStatusLabels,

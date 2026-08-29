@@ -8,7 +8,7 @@ import {
   QcEvidenceThumbnail,
   resolveDropRejectionMessage,
 } from "@/components/shared/composites/QcEvidenceThumbnail"
-import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
+import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {
   ACCEPTED_EVIDENCE_TYPES,

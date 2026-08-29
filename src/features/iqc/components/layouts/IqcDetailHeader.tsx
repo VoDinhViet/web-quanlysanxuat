@@ -3,11 +3,11 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { IqcDetailActions } from "@/features/iqc/components/detail/IqcDetailActions"
+import { IqcDetailActions } from "@/features/iqc/components/layouts/IqcDetailActions"
 import {
   IqcResultBadge,
   IqcStatusBadge,
-} from "@/features/iqc/components/IqcBadges"
+} from "@/features/iqc/components/primitives/IqcBadges"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import { IqcStatus } from "@/lib/types/iqc.type"
 import type { IqcDetail } from "@/lib/types/iqc.type"

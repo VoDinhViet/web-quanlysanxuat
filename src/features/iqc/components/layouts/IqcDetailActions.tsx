@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { IqcPrintDialog } from "@/features/iqc/components/detail/IqcPrintDialog"
+import { IqcPrintDialog } from "@/features/iqc/components/composites/IqcPrintDialog"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 

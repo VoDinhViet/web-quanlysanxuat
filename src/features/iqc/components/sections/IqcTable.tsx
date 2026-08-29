@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { iqcColumns } from "@/features/iqc/components/IqcTableColumns"
+import { iqcColumns } from "@/features/iqc/components/composites/IqcTableColumns"
 import { cn } from "@/lib/utils"
 import type { Iqc } from "@/lib/types/iqc.type"
 import type { Pagination } from "@/lib/types/pagination.type"

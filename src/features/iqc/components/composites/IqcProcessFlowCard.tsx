@@ -1,6 +1,6 @@
 import { Route } from "@solar-icons/react"
 
-import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
+import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import { cn } from "@/lib/utils"
 
 type FlowNodeProps = {

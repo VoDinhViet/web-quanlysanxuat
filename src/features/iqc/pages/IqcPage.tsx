@@ -5,9 +5,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { iqcsQueryOptions } from "@/features/iqc/api/options"
-import { IqcStatCards } from "@/features/iqc/components/IqcStatCards"
-import { IqcTable } from "@/features/iqc/components/IqcTable"
-import { IqcTableFilter } from "@/features/iqc/components/IqcTableFilter"
+import { IqcStatCards } from "@/features/iqc/components/sections/IqcStatCards"
+import { IqcTable } from "@/features/iqc/components/sections/IqcTable"
+import { IqcTableFilter } from "@/features/iqc/components/sections/IqcTableFilter"
 
 export function IqcPage() {
   // useSearch keys off the file-based route id. The loader prefetches this query; it's a plain

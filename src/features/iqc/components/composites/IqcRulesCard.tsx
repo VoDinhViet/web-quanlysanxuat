@@ -1,6 +1,6 @@
 import { DangerTriangle } from "@solar-icons/react"
 
-import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
+import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 
 const rules = [
   "Bảng AQL chỉ mang tính tham khảo — QC tự chọn PASS/FAIL, không bị chặn bởi cỡ mẫu/Ac/Re tra được.",
