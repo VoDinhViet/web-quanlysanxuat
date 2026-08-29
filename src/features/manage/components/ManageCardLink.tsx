@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { cn } from "@/lib/utils"
-import type { ManageRoutePath } from "@/features/auth/route-permissions"
+import type { ManageRoutePath } from "@/lib/route-permissions"
 
 type ManageCardLinkProps = {
   label?: string

@@ -1,11 +1,11 @@
 import { redirect } from "@tanstack/react-router"
 
-import { hasPermission } from "@/features/auth/permissions"
 import { currentSessionQueryOptions } from "@/features/auth/api/options"
+import { hasPermission } from "@/lib/permissions"
 import {
   isRouteAvailable,
   requiredPermissionForPath,
-} from "@/features/auth/route-permissions"
+} from "@/lib/route-permissions"
 import type { CurrentSession } from "@/lib/types/login.type"
 import type { QueryClient } from "@tanstack/react-query"
 import type { MakeRouteMatchUnion } from "@tanstack/react-router"

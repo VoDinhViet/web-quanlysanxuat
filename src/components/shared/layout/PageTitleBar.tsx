@@ -1,6 +1,5 @@
-import { Link, useRouter } from "@tanstack/react-router"
-import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Link } from "@tanstack/react-router"
+import { useQuery } from "@tanstack/react-query"
 import {
   Bell,
   ChevronDown,
@@ -38,8 +37,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/shared/layout/ThemeToggle"
-import { currentUserQueryOptions } from "@/features/auth/api/options"
-import { logout } from "@/features/auth/api/server-functions/logout.api"
+import { currentUserQueryOptions, useLogout } from "@/features/auth/api"
 import { resolveAvatarUrl } from "@/lib/file-url"
 import type { FileRouteTypes } from "@/routeTree.gen"
 
@@ -230,27 +228,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
 
 export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
   const { toggleSidebar } = useSidebar()
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  const logoutFn = useServerFn(logout)
-
-  const logoutMutation = useMutation({
-    mutationFn: () => logoutFn(),
-    // Always navigate away regardless of outcome — a failed backend revoke
-    // shouldn't strand the user on an authenticated page.
-    onSettled: async () => {
-      // Clear before navigating (mirrors LoginForm.tsx) — the server already cleared the
-      // session by the time this runs, so an observer still mounted during the async
-      // navigate() window would only ever refetch into a 401, never stale data. Still,
-      // clearing first removes that pointless refetch entirely instead of relying on timing.
-      queryClient.clear()
-      await router.invalidate()
-      await router.navigate({ to: "/login" })
-    },
-  })
-
-  const isLoggingOut = logoutMutation.isPending
-  const handleLogout = () => logoutMutation.mutate()
+  const { mutate: logout, isPending: isLoggingOut } = useLogout()
 
   return (
     <header className="flex min-h-22 w-full items-center justify-between gap-4 bg-card px-4 py-4 text-card-foreground shadow-card sm:px-6">
@@ -301,7 +279,7 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
 
         <ThemeToggle />
 
-        <UserMenu isLoggingOut={isLoggingOut} onLogout={handleLogout} />
+        <UserMenu isLoggingOut={isLoggingOut} onLogout={() => logout()} />
       </div>
     </header>
   )

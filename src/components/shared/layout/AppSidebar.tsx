@@ -44,21 +44,13 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { hasPermission } from "@/features/auth/permissions"
-import {
-  isRouteAvailable,
-  requiredPermissionForPath,
-} from "@/features/auth/route-permissions"
-import { usePermissions } from "@/hooks/use-permissions"
-import type { ManageRoutePath } from "@/features/auth/route-permissions"
+import type { ManageRoutePath } from "@/lib/route-permissions"
 
 type MenuItem = {
   label: string
   icon: LucideIcon
-  // Typed against the generated route tree, not a plain `string` — a href pointing at a route
-  // that doesn't exist is now a compile error instead of a silent `<a>` fallback. The required
-  // permission is derived from `routePermissions` via this href (see `requiredPermissionForPath`),
-  // so a menu entry can never disagree with the route it links to.
+  // Typed against the generated route tree — a href to a route that doesn't exist is a
+  // compile error, not a silent fallback link.
   href: ManageRoutePath
 }
 
@@ -257,24 +249,6 @@ const menuButtonClass =
 
 export function AppSidebar() {
   const location = useLocation()
-  const permissions = usePermissions()
-
-  // Hide items the user can't open — reuses the same access map the router guard reads, so
-  // a menu entry can never disagree with its route — then drop any group left empty. A
-  // dev-only route (isRouteAvailable) drops out first, before permission is even checked.
-  const visibleGroups = menuGroups
-    .map((group) => ({
-      ...group,
-      items: group.items.filter((item) => {
-        if (!isRouteAvailable(item.href)) {
-          return false
-        }
-
-        const required = requiredPermissionForPath(item.href)
-        return required === null || hasPermission(permissions, required)
-      }),
-    }))
-    .filter((group) => group.items.length > 0)
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
@@ -306,7 +280,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="gap-3 px-2.5 py-4">
-        {visibleGroups.map((group) => (
+        {menuGroups.map((group) => (
           <MenuGroup
             key={group.label}
             group={group}

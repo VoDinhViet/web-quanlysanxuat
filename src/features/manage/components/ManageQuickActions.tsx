@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
 import { cn } from "@/lib/utils"
-import type { ManageRoutePath } from "@/features/auth/route-permissions"
+import type { ManageRoutePath } from "@/lib/route-permissions"
 
 type QuickAction = {
   label: string
