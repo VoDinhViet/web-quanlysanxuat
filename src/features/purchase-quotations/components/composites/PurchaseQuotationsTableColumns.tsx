@@ -1,8 +1,8 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/PurchaseQuotationBadges"
-import { PurchaseQuotationActionsCell } from "@/features/purchase-quotations/components/PurchaseQuotationTableCells"
+import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationBadges"
+import { PurchaseQuotationActionsCell } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationTableCells"
 import type { PurchaseQuotationRow } from "@/lib/types/purchase-quotation.type"
 
 const purchaseQuotationColumnHelper = createColumnHelper<PurchaseQuotationRow>()

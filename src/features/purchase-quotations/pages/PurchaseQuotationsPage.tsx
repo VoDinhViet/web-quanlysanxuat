@@ -5,9 +5,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { purchaseQuotationsQueryOptions } from "@/features/purchase-quotations/api/options"
-import { PurchaseQuotationLegend } from "@/features/purchase-quotations/components/PurchaseQuotationLegend"
-import { PurchaseQuotationsTable } from "@/features/purchase-quotations/components/PurchaseQuotationsTable"
-import { PurchaseQuotationsTableFilter } from "@/features/purchase-quotations/components/PurchaseQuotationsTableFilter"
+import { PurchaseQuotationLegend } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationLegend"
+import { PurchaseQuotationsTable } from "@/features/purchase-quotations/components/sections/PurchaseQuotationsTable"
+import { PurchaseQuotationsTableFilter } from "@/features/purchase-quotations/components/sections/PurchaseQuotationsTableFilter"
 
 export function PurchaseQuotationsPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list, which resolves

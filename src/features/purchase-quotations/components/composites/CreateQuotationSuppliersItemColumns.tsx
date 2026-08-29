@@ -11,7 +11,7 @@ import {
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
-import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/create/QuotationAllocationsDialog"
+import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/composites/QuotationAllocationsDialog"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 const quotationItemColumnHelper = createColumnHelper<PickedQuotationItemValue>()

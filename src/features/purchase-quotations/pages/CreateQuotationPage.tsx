@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { CreateQuotationForm } from "@/features/purchase-quotations/components/create/CreateQuotationForm"
+import { CreateQuotationForm } from "@/features/purchase-quotations/components/sections/CreateQuotationForm"
 
 export function CreateQuotationPage() {
   return (

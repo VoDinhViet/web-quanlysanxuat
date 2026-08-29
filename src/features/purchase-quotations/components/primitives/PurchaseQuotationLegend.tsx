@@ -1,6 +1,6 @@
 import { Info } from "lucide-react"
 
-import { purchaseQuotationStatusStyles } from "@/features/purchase-quotations/components/PurchaseQuotationBadges"
+import { purchaseQuotationStatusStyles } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationBadges"
 import {
   purchaseQuotationStatusDescriptions,
   purchaseQuotationStatusLabels,

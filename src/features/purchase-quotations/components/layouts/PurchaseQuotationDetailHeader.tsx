@@ -4,8 +4,8 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/PurchaseQuotationBadges"
-import { PurchaseQuotationDetailActions } from "@/features/purchase-quotations/components/detail/PurchaseQuotationDetailActions"
+import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationBadges"
+import { PurchaseQuotationDetailActions } from "@/features/purchase-quotations/components/layouts/PurchaseQuotationDetailActions"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationDetailHeaderProps = {

@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
-import type { QuotationSupplierSelection } from "@/features/purchase-quotations/components/create/QuotationAddSupplierDialog"
+import type { QuotationSupplierSelection } from "@/features/purchase-quotations/components/composites/QuotationAddSupplierDialog"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 export interface UseQuotationAddSupplierDialogResult {

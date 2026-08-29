@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
-import { QuotationAddSupplierItems } from "@/features/purchase-quotations/components/create/QuotationAddSupplierItems"
+import { QuotationAddSupplierItems } from "@/features/purchase-quotations/components/composites/QuotationAddSupplierItems"
 import { useQuotationSupplierChecklist } from "@/features/purchase-quotations/hooks/use-quotation-supplier-checklist"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"

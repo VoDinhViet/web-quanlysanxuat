@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { purchaseQuotationAllocationsColumns } from "@/features/purchase-quotations/components/detail/PurchaseQuotationAllocationsColumns"
+import { purchaseQuotationAllocationsColumns } from "@/features/purchase-quotations/components/composites/PurchaseQuotationAllocationsColumns"
 import { cn } from "@/lib/utils"
 import type { PurchaseQuotationItemDetail } from "@/lib/types/purchase-quotation.type"
 

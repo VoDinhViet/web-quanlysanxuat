@@ -1,8 +1,8 @@
 import { CloseCircle } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
-import { ApproveQuotationDialog } from "@/features/purchase-quotations/components/detail/ApproveQuotationDialog"
-import { RejectQuotationDialog } from "@/features/purchase-quotations/components/detail/RejectQuotationDialog"
+import { ApproveQuotationDialog } from "@/features/purchase-quotations/components/composites/ApproveQuotationDialog"
+import { RejectQuotationDialog } from "@/features/purchase-quotations/components/composites/RejectQuotationDialog"
 import type {
   PurchaseQuotationDetail,
   PurchaseQuotationSupplierSelection,

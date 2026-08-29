@@ -15,10 +15,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { purchaseQuotationItemsColumns } from "@/features/purchase-quotations/components/detail/PurchaseQuotationItemsTableColumns"
-import { PurchaseQuotationAllocationsTable } from "@/features/purchase-quotations/components/detail/PurchaseQuotationAllocationsTable"
-import { PurchaseQuotationApprovalBar } from "@/features/purchase-quotations/components/detail/PurchaseQuotationApprovalBar"
-import { PurchaseQuotationSupplierCompareTable } from "@/features/purchase-quotations/components/detail/PurchaseQuotationSupplierCompareTable"
+import { purchaseQuotationItemsColumns } from "@/features/purchase-quotations/components/composites/PurchaseQuotationItemsTableColumns"
+import { PurchaseQuotationAllocationsTable } from "@/features/purchase-quotations/components/composites/PurchaseQuotationAllocationsTable"
+import { PurchaseQuotationApprovalBar } from "@/features/purchase-quotations/components/layouts/PurchaseQuotationApprovalBar"
+import { PurchaseQuotationSupplierCompareTable } from "@/features/purchase-quotations/components/composites/PurchaseQuotationSupplierCompareTable"
 import { useHasPermission } from "@/hooks/use-permissions"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type {

@@ -15,9 +15,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildQuotationSuppliersItemColumns } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersItemColumns"
-import { QuotationAddSupplierDialog } from "@/features/purchase-quotations/components/create/QuotationAddSupplierDialog"
-import { QuotationCompareQuoteTable } from "@/features/purchase-quotations/components/create/QuotationCompareQuoteTable"
+import { buildQuotationSuppliersItemColumns } from "@/features/purchase-quotations/components/composites/CreateQuotationSuppliersItemColumns"
+import { QuotationAddSupplierDialog } from "@/features/purchase-quotations/components/composites/QuotationAddSupplierDialog"
+import { QuotationCompareQuoteTable } from "@/features/purchase-quotations/components/composites/QuotationCompareQuoteTable"
 import { useQuotationAddSupplierDialog } from "@/features/purchase-quotations/hooks/use-quotation-add-supplier-dialog"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"

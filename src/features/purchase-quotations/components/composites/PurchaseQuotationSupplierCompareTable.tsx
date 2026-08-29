@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { buildPurchaseQuotationSupplierCompareColumns } from "@/features/purchase-quotations/components/detail/PurchaseQuotationSupplierCompareColumns"
+import { buildPurchaseQuotationSupplierCompareColumns } from "@/features/purchase-quotations/components/composites/PurchaseQuotationSupplierCompareColumns"
 import { cn } from "@/lib/utils"
 import type { PurchaseQuotationItemDetail } from "@/lib/types/purchase-quotation.type"
 

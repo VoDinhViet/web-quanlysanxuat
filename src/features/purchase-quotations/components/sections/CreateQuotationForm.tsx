@@ -14,12 +14,12 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { CreateQuotationItemsPickerSection } from "@/features/purchase-quotations/components/create/CreateQuotationItemsPickerSection"
+import { CreateQuotationItemsPickerSection } from "@/features/purchase-quotations/components/sections/CreateQuotationItemsPickerSection"
 import {
   CreateQuotationStepsTabs,
   createQuotationStepItems,
-} from "@/features/purchase-quotations/components/create/CreateQuotationStepsTabs"
-import { CreateQuotationSuppliersSection } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersSection"
+} from "@/features/purchase-quotations/components/sections/CreateQuotationStepsTabs"
+import { CreateQuotationSuppliersSection } from "@/features/purchase-quotations/components/sections/CreateQuotationSuppliersSection"
 import { createPurchaseQuotation } from "@/features/purchase-quotations/api/server-functions/create-purchase-quotation.api"
 import {
   createQuotationFormDefaultValues,
@@ -29,7 +29,7 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { getStepNav } from "@/lib/wizard-steps"
-import type { CreateQuotationWizardStep } from "@/features/purchase-quotations/components/create/CreateQuotationStepsTabs"
+import type { CreateQuotationWizardStep } from "@/features/purchase-quotations/components/sections/CreateQuotationStepsTabs"
 import type { CreateQuotationFormSchema } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 export function CreateQuotationForm() {

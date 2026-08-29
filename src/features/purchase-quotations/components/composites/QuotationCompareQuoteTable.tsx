@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { buildQuotationSuppliersQuoteColumns } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersQuoteColumns"
+import { buildQuotationSuppliersQuoteColumns } from "@/features/purchase-quotations/components/composites/CreateQuotationSuppliersQuoteColumns"
 import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 

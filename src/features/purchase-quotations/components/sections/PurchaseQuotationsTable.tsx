@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { purchaseQuotationsColumns } from "@/features/purchase-quotations/components/PurchaseQuotationsTableColumns"
+import { purchaseQuotationsColumns } from "@/features/purchase-quotations/components/composites/PurchaseQuotationsTableColumns"
 import { cn } from "@/lib/utils"
 import type { PurchaseQuotationRow } from "@/lib/types/purchase-quotation.type"
 import type { Pagination } from "@/lib/types/pagination.type"

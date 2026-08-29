@@ -4,11 +4,11 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options"
-import { PurchaseQuotationDetailHeader } from "@/features/purchase-quotations/components/detail/PurchaseQuotationDetailHeader"
-import { PurchaseQuotationDetailQuotesSection } from "@/features/purchase-quotations/components/detail/PurchaseQuotationDetailQuotesSection"
-import { PurchaseQuotationDetailTimelineCard } from "@/features/purchase-quotations/components/detail/PurchaseQuotationDetailTimelineCard"
-import { PurchaseQuotationGeneratedOrdersCard } from "@/features/purchase-quotations/components/detail/PurchaseQuotationGeneratedOrdersCard"
-import { PurchaseQuotationRejectionNotice } from "@/features/purchase-quotations/components/detail/PurchaseQuotationRejectionNotice"
+import { PurchaseQuotationDetailHeader } from "@/features/purchase-quotations/components/layouts/PurchaseQuotationDetailHeader"
+import { PurchaseQuotationDetailQuotesSection } from "@/features/purchase-quotations/components/sections/PurchaseQuotationDetailQuotesSection"
+import { PurchaseQuotationDetailTimelineCard } from "@/features/purchase-quotations/components/composites/PurchaseQuotationDetailTimelineCard"
+import { PurchaseQuotationGeneratedOrdersCard } from "@/features/purchase-quotations/components/composites/PurchaseQuotationGeneratedOrdersCard"
+import { PurchaseQuotationRejectionNotice } from "@/features/purchase-quotations/components/composites/PurchaseQuotationRejectionNotice"
 
 export function PurchaseQuotationDetailPage() {
   const { purchaseQuotationId } = useParams({
