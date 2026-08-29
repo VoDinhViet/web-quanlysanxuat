@@ -7,7 +7,7 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { RolesTable } from "@/features/roles/components/RolesTable"
+import { RolesTable } from "@/features/roles/components/sections/RolesTable"
 import { rolesQueryOptions } from "@/features/roles/api/options"
 
 export function RolesPage() {

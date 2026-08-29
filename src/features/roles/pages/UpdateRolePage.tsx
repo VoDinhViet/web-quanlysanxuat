@@ -2,7 +2,7 @@ import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { UpdateRoleForm } from "@/features/roles/components/UpdateRoleForm"
+import { UpdateRoleForm } from "@/features/roles/components/sections/UpdateRoleForm"
 import { roleQueryOptions } from "@/features/roles/api/options"
 
 export function UpdateRolePage() {

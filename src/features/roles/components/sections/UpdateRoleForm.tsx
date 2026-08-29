@@ -6,7 +6,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
-import { RolePermissionsField } from "@/features/roles/components/RolePermissionsField"
+import { RolePermissionsField } from "@/features/roles/components/composites/RolePermissionsField"
 import { updateRole } from "@/features/roles/api/server-functions/update-role.api"
 import { updateRoleSchema } from "@/features/roles/schemas/update-role.schema"
 import type { UpdateRoleSchema } from "@/features/roles/schemas/update-role.schema"

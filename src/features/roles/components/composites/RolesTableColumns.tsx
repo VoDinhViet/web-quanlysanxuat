@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { DeleteRoleDialog } from "@/features/roles/components/DeleteRoleDialog"
+import { DeleteRoleDialog } from "@/features/roles/components/composites/DeleteRoleDialog"
 import type { Role } from "@/lib/types/role.type"
 
 const roleColumnHelper = createColumnHelper<Role>()

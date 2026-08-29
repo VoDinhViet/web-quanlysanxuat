@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { RolePermissionsField } from "@/features/roles/components/RolePermissionsField"
+import { RolePermissionsField } from "@/features/roles/components/composites/RolePermissionsField"
 import { createRole } from "@/features/roles/api/server-functions/create-role.api"
 import {
   createRoleFormDefaultValues,
