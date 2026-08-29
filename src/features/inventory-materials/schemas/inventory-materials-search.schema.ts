@@ -1,5 +1,6 @@
-import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
+
+import { isoDateFilter } from "@/lib/zod-transforms"
 
 // Mirrors the backend's GetInventoryMaterialsReqDto (GET /api/inventory-materials). Uses
 // `.catch()` on every field so a hand-mangled URL degrades gracefully instead of throwing and
@@ -19,15 +20,8 @@ export const inventoryMaterialsSearchSchema = z.object({
   // `yyyy-MM-dd`, calendar date picked in the "Xem tồn tại ngày" field. Undefined = current
   // stock. The Asia/Ho_Chi_Minh end-of-day instant is built in
   // get-material-inventory.api.ts's `.validator()`, not here — this schema only carries the
-  // plain calendar date for the picker/URL. Same `isoDateFilter` shape as
-  // purchase-requests-search.schema.ts.
-  asOfDate: z
-    .string()
-    .refine((value) => isValid(parseISO(value)), {
-      message: "Ngày không hợp lệ",
-    })
-    .optional()
-    .catch(undefined),
+  // plain calendar date for the picker/URL.
+  asOfDate: isoDateFilter,
 })
 
 export type InventoryMaterialsSearchSchema = z.infer<

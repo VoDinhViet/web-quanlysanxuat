@@ -1,5 +1,6 @@
-import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
+
+import { isoDateFilter } from "@/lib/zod-transforms"
 
 // Mirrors the subset of GetInventoryProductsReqDto (GET /api/inventory-products) this screen
 // sends — the route is already FG-only, no more `itemType` pin needed.
@@ -15,13 +16,7 @@ export const inventoryProductsSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(20),
   q: z.string().trim().min(1).optional().catch(undefined), // Mã hoặc tên thành phẩm
-  asOfDate: z
-    .string()
-    .refine((value) => isValid(parseISO(value)), {
-      message: "Ngày không hợp lệ",
-    })
-    .optional()
-    .catch(undefined),
+  asOfDate: isoDateFilter,
 })
 
 export type InventoryProductsSearchSchema = z.infer<

@@ -1,15 +1,7 @@
-import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
 import { OrderStatus } from "@/lib/types/order.type"
-
-const isoDateFilter = z
-  .string()
-  .refine((value) => isValid(parseISO(value)), {
-    message: "Ngày không hợp lệ",
-  })
-  .optional()
-  .catch(undefined)
+import { isoDateFilter } from "@/lib/zod-transforms"
 
 // The backend's GetOrdersReqDto has no `paymentTerm` or `overdue` filter and no `salesRepId`
 // (it's `assignedUserId`) — a URL carrying the old `status=OVERDUE`/`paymentTerm` params from

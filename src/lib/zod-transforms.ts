@@ -1,4 +1,3 @@
-import { isValid, parseISO } from "date-fns"
 import { DateTime } from "luxon"
 import { z } from "zod"
 import type { ZodString } from "zod"
@@ -75,7 +74,7 @@ export function optionalEmail() {
  * (orders/production-orders/purchase-requests/...) tự khai lại khối này. */
 export const isoDateFilter = z
   .string()
-  .refine((value) => isValid(parseISO(value)), {
+  .refine((value) => DateTime.fromISO(value).isValid, {
     message: "Ngày không hợp lệ",
   })
   .optional()

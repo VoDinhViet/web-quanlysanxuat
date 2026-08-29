@@ -1,4 +1,3 @@
-import { isValid, parseISO } from "date-fns"
 import { DateTime } from "luxon"
 import { z } from "zod"
 
@@ -71,7 +70,7 @@ export const confirmIqcSchema = z
       .string()
       .trim()
       .refine(
-        (value) => value.length === 0 || isValid(parseISO(value)),
+        (value) => value.length === 0 || DateTime.fromISO(value).isValid,
         "Ngày kiểm tra không hợp lệ"
       )
       .transform((value) =>
