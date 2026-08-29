@@ -1,10 +1,12 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
+import { Image } from "@unpic/react"
 import { Camera, Loader2 } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 import { ErrorCode, useDropzone } from "react-dropzone"
 
-import { defaultAvatarUrl, resolveAvatarUrl } from "@/lib/file-url"
+import { resolveFileUrl } from "@/lib/file-url"
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_IMAGE_SIZE_BYTES,
@@ -29,29 +31,18 @@ function resolveDropRejectionMessage(
   }
 }
 
-type UserAvatarFieldProps = {
+type ImageUploaderProps = {
   value: FileFieldValue | null
   onChange: (value: FileFieldValue | null) => void
   disabled?: boolean
 }
 
-export function UserAvatarField({
+export function ImageUploader({
   value,
   onChange,
   disabled,
-}: UserAvatarFieldProps) {
+}: ImageUploaderProps) {
   const [clientError, setClientError] = useState<string | null>(null)
-  // File đã upload nhưng bị dọn (orphan sweep sau 24h nếu không gắn vào user nào, hoặc bị xoá) sẽ
-  // 404 khi hiển thị lại — bắt qua `onError` để rơi về `defaultAvatarUrl` (cùng fallback
-  // `resolveAvatarUrl` đã dùng cho trường hợp chưa có avatar) thay vì ảnh vỡ trần trụi. Reset
-  // ngay trong lúc render khi đổi avatar (upload mới/xoá) — "adjusting state when a prop changes"
-  // theo khuyến nghị của React, không dùng effect vì compiler chặn setState đồng bộ trong effect.
-  const [isPreviewBroken, setIsPreviewBroken] = useState(false)
-  const [prevValueId, setPrevValueId] = useState(value?.id)
-  if (value?.id !== prevValueId) {
-    setPrevValueId(value?.id)
-    setIsPreviewBroken(false)
-  }
   const uploadAvatarFn = useServerFn(uploadFile)
 
   const {
@@ -107,14 +98,17 @@ export function UserAvatarField({
             isDragActive && "border-primary bg-primary/5"
           )}
         >
-          <img
-            src={
-              isPreviewBroken ? defaultAvatarUrl : resolveAvatarUrl(value?.url)
-            }
-            alt="Ảnh đại diện"
-            className="size-full object-cover"
-            onError={() => setIsPreviewBroken(true)}
-          />
+          {value?.url ? (
+            <Image
+              src={resolveFileUrl(value.url)}
+              alt="Ảnh đại diện"
+              layout="fullWidth"
+              objectFit="cover"
+              className="size-full"
+            />
+          ) : (
+            <Gallery className="size-10 text-muted-foreground" />
+          )}
 
           {isPending ? (
             <div className="absolute inset-0 flex items-center justify-center rounded-full bg-background/70">

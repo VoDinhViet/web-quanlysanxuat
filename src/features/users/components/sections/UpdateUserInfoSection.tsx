@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/use-app-form"
-import { UserAvatarField } from "@/features/users/components/composites/UserAvatarField"
+import { ImageUploader } from "@/features/users/components/composites/ImageUploader"
 import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
 import { genderLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -90,7 +90,7 @@ export const UpdateUserInfoSection = withForm({
 
             <form.Field name="avatar">
               {(field) => (
-                <UserAvatarField
+                <ImageUploader
                   value={field.state.value}
                   onChange={field.handleChange}
                   disabled={disabled}

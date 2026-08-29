@@ -3,9 +3,17 @@
 - TanStack Form + Zod as the single schema source: `noValidate` on `<form>`, manual
   `preventDefault`/`stopPropagation` in the submit handler, derive form types with
   `z.infer<typeof schema>`, gate error styling on `field.state.meta.isTouched` (see
-  `src/components/shared/inputs/AppFormFields.tsx`). Exception:
-  `src/features/auth/components/LoginForm.tsx` is a deliberate react-hook-form + `Field`
-  (`src/components/ui/field.tsx`) trial — don't follow it as the pattern for a new form.
+  `src/components/shared/composites/AppFormFields.tsx`). Two deliberate react-hook-form + `Field`
+  (`src/components/ui/field.tsx`) trials, neither the pattern for a new form yet:
+  `src/features/auth/components/sections/LoginForm.tsx` (3 flat fields, the original trial) and
+  `src/features/users/components/sections/CreateUserForm.tsx` (17 fields, a nested optional
+  object, dependent selects, localStorage draft, file upload — a harder form chosen specifically
+  to stress-test RHF beyond LoginForm's small surface). Both bind every field with a plain inline
+  `<Controller name="..." control={form.control} render={({field, fieldState}) => ...}>` — no
+  shared RHF field kit; each `Field`/`FieldLabel`/`FieldError` block is written out at the call
+  site, same idiom as `LoginForm.tsx`. `UpdateUserForm.tsx` and its sections are unchanged (still
+  TanStack Form), so `users` is a deliberate mixed feature for comparison, not evidence either
+  form library won.
 - Form schemas mirror the backend DTO's shape, including nested optional objects
   (e.g. `credential: createCredentialSchema.optional()` in
   `create-user.schema.ts`) — a toggle-gated section stores the nested object or
