@@ -1,11 +1,11 @@
 ## Governing principle
 
-> **Component dùng chung sở hữu phần vỏ**: layout, spacing, state machine, markup, *hình dạng*
+> **Component dùng chung sở hữu phần vỏ**: layout, spacing, state machine, markup, _hình dạng_
 > plumbing của query/mutation.
 > **Domain sở hữu phần ruột**: columns, nhãn tiếng Việt, map status→tone, query key, business
 > gate.
 
-Test trước khi viết component mới: *xoá tên entity khỏi file này, còn lại gì đặc thù không?* —
+Test trước khi viết component mới: _xoá tên entity khỏi file này, còn lại gì đặc thù không?_ —
 nếu không còn gì, nó thuộc `src/components/shared/`; nếu còn logic vòng đời/nghiệp vụ thật, nó ở
 lại feature.
 
@@ -20,50 +20,55 @@ file chưa ai dùng. `inventory-requisitions` là feature mẫu cho phần lớn
 (`TimelineCard`, `StatusNotice`) ghép cùng 2+ feature khác ngay từ đầu vì đó là nơi bản sao thật
 sự nằm. Khi một feature khác cần một trong các component này, import thẳng — đừng viết lại.
 
+> **Phase 4 (mở rộng kit sang feature thứ 2) đã dừng.** Thử ghép `purchase-requests` lên
+> `StatusBadge`, `ConfirmActionDialog`/`ReasonDialog`, rồi `DetailHeader` — cả 3 lần đều bị yêu
+> cầu revert (xem "Cố ý KHÔNG abstract" bên dưới), và quyết định cuối là **không tiếp tục thử
+> ghép thêm feature nào vào shared kit nữa** cho tới khi có chỉ đạo khác. Bảng dưới đây liệt kê
+> đúng những gì còn sống, tất cả vẫn chỉ phục vụ `inventory-requisitions` (trừ `TimelineCard`/
+> `StatusNotice`, vốn đã ghép nhiều feature từ Phase 2 gốc, không phải mở rộng thêm). Đừng tự ý
+> gộp một component feature khác vào bảng này — hỏi trước.
+
 ## Bảng component
 
 ### `src/components/shared/layouts/`
 
-| Component | Prop chính | Call site |
-|---|---|---|
-| `PageShell` | `title: string`, `breadcrumbs: PageTitleBreadcrumb[]` (chỉ crumb sau "Bảng điều khiển" — component tự thêm), `children` | `src/routes/(authed)/manage_/inventory-requisitions/route.tsx` |
-| `PageBody` | `className?`, `children` — `flex flex-col gap-4` luôn bật, vô hại với 1 con duy nhất | `InventoryRequisitionsPage.tsx` |
-| `DetailColumns` | `main: ReactNode`, `sidebar: ReactNode`, `className?` — sidebar cố định 320px | `InventoryRequisitionDetailPage.tsx` |
-| `SectionCard` | `icon`, `title`, `action?`, `className?`, `contentClassName?` (thay hẳn padding mặc định, không merge), `children` | `InventoryRequisitionInfoCard.tsx` |
-| `DetailHeader` | `back: ReactNode` (nút Back đầy đủ, giữ type-check route tại call site), `code`, `badge`, `meta: ReactNode` (caller tự dựng grid), `actions?` | `InventoryRequisitionDetailHeader.tsx` |
-| `WizardStepsTabs` | `steps: {value, label, icon: ComponentType<LucideProps>, disabled?}[]` — chỉ vẽ `TabsList`/`TabsTrigger`, `Tabs` root + `TabsContent` ở form | `CreateInventoryRequisitionStepsTabs.tsx` |
+| Component         | Prop chính                                                                                                                                   | Call site                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `PageShell`       | `title: string`, `breadcrumbs: PageTitleBreadcrumb[]` (chỉ crumb sau "Bảng điều khiển" — component tự thêm), `children`                      | `src/routes/(authed)/manage_/inventory-requisitions/route.tsx` |
+| `PageBody`        | `className?`, `children` — `flex flex-col gap-4` luôn bật, vô hại với 1 con duy nhất                                                         | `InventoryRequisitionsPage.tsx`                                |
+| `DetailColumns`   | `main: ReactNode`, `sidebar: ReactNode`, `className?` — sidebar cố định 320px                                                                | `InventoryRequisitionDetailPage.tsx`                           |
+| `WizardStepsTabs` | `steps: {value, label, icon: ComponentType<LucideProps>, disabled?}[]` — chỉ vẽ `TabsList`/`TabsTrigger`, `Tabs` root + `TabsContent` ở form | `CreateInventoryRequisitionStepsTabs.tsx`                      |
 
 ### `src/components/shared/sections/`
 
-| Component | Prop chính | Call site |
-|---|---|---|
-| `TableQueryBoundary` | `query: UseQueryResult<TData, Error>`, `loadingRows: number`, `children: (data: TData) => ReactNode` (render-prop — `data` chỉ narrow bên trong component) | `InventoryRequisitionsPage.tsx` |
-| `TableFilterBar` | `createLabel?`, `createAction?` (cả 2 vắng = bỏ hẳn khối "tạo mới"), `fields: ReactNode` (caller tự dựng grid), `onReset` | `InventoryRequisitionsTableFilter.tsx` |
+| Component            | Prop chính                                                                                                                                                 | Call site                              |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `TableQueryBoundary` | `query: UseQueryResult<TData, Error>`, `loadingRows: number`, `children: (data: TData) => ReactNode` (render-prop — `data` chỉ narrow bên trong component) | `InventoryRequisitionsPage.tsx`        |
+| `TableFilterBar`     | `createLabel?`, `createAction?` (cả 2 vắng = bỏ hẳn khối "tạo mới"), `fields: ReactNode` (caller tự dựng grid), `onReset`                                  | `InventoryRequisitionsTableFilter.tsx` |
 
 ### `src/components/shared/composites/`
 
-| Component | Prop chính | Call site |
-|---|---|---|
-| `TimelineCard` | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?` | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
-| `DataTable` | `table: Table<TData>` (từ `useReactTable`), `isEmpty`, `emptyState: ReactNode` | `InventoryRequisitionsTable.tsx` |
-| `LocalPagination` | `pagination: Pagination`, `limitOptions: readonly number[]`, `onPageChange`, `onLimitChange`, `disabled?` — em của `TablePagination` cho phân trang không có URL để patch | `CreateInventoryRequisitionPickerSection.tsx` |
-| `TablePagination` | `pagination: Pagination`, `className?` — tự patch `page`/`limit` search param qua `navigate({to: "."})` | mọi list page (Phase 0) |
-| `StatusLegend` | `icon`, `title`, `items: {key, badge: ReactNode, description}[]` | `InventoryRequisitionsLegend.tsx` |
-| `StatusNotice` | `title`, `reason`, `actorName?`, `timestamp?` (format `dd/MM/yyyy HH:mm` nội bộ), `extra?: ReactNode` | `PurchaseOrderCancellationNotice.tsx` (+ `PurchaseRequestRejectionNotice.tsx`) |
+| Component         | Prop chính                                                                                                                                                                | Call site                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `TimelineCard`    | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?`                                                                               | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
+| `DataTable`       | `table: Table<TData>` (từ `useReactTable`), `isEmpty`, `emptyState: ReactNode`                                                                                            | `InventoryRequisitionsTable.tsx`                                                         |
+| `LocalPagination` | `pagination: Pagination`, `limitOptions: readonly number[]`, `onPageChange`, `onLimitChange`, `disabled?` — em của `TablePagination` cho phân trang không có URL để patch | `CreateInventoryRequisitionPickerSection.tsx`                                            |
+| `TablePagination` | `pagination: Pagination`, `className?` — tự patch `page`/`limit` search param qua `navigate({to: "."})`                                                                   | mọi list page (Phase 0)                                                                  |
+| `StatusLegend`    | `icon`, `title`, `items: {key, badge: ReactNode, description}[]`                                                                                                          | `InventoryRequisitionsLegend.tsx`                                                        |
+| `StatusNotice`    | `title`, `reason`, `actorName?`, `timestamp?` (format `dd/MM/yyyy HH:mm` nội bộ), `extra?: ReactNode`                                                                     | `PurchaseOrderCancellationNotice.tsx` (+ `PurchaseRequestRejectionNotice.tsx`)           |
 
 ### `src/components/shared/primitives/`
 
-| Component | Prop chính | Call site |
-|---|---|---|
-| `MetaField` / `InfoRow` (`InfoFields.tsx`) | `{label, value: ReactNode}` — `MetaField` truncate (lưới cố định), `InfoRow` wrap (sidebar rộng) | `InventoryRequisitionDetailHeader.tsx` / `InventoryRequisitionInfoCard.tsx` |
-| `RowActions` | `children`, `className?` — chỉ bọc `flex items-center justify-center gap-1.5`, action con vẫn ở call site | `InventoryRequisitionsTableCells.tsx` |
-| `TableSearchInput` | `id`, `label`, `placeholder`, `value`, `onChange`, `onKeyDown?` — ghép với `useFilterSearchTerm` | `InventoryRequisitionsTableFilter.tsx` |
-| `FilterSelect` | `id`, `label`, `value`, `options: {value,label}[]`, `onValueChange` | `InventoryRequisitionsTableFilter.tsx` |
+| Component          | Prop chính                                                                                                | Call site                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `RowActions`       | `children`, `className?` — chỉ bọc `flex items-center justify-center gap-1.5`, action con vẫn ở call site | `InventoryRequisitionsTableCells.tsx`  |
+| `TableSearchInput` | `id`, `label`, `placeholder`, `value`, `onChange`, `onKeyDown?` — ghép với `useFilterSearchTerm`          | `InventoryRequisitionsTableFilter.tsx` |
+| `FilterSelect`     | `id`, `label`, `value`, `options: {value,label}[]`, `onValueChange`                                       | `InventoryRequisitionsTableFilter.tsx` |
 
 ### `src/hooks/`
 
-| Hook | Trả về | Call site |
-|---|---|---|
+| Hook                                                    | Trả về                                                                                                                           | Call site                              |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
 | `useFilterSearchTerm({initialValue, onSearch, delay?})` | `{value, onChange, onEnterKeyDown, reset}` — debounce + Enter-to-flush; `onSearch` (viết search param của route) vẫn ở call site | `InventoryRequisitionsTableFilter.tsx` |
 
 ## Cố ý KHÔNG abstract (và lý do)
@@ -88,18 +93,27 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
   `cn(dot, className)` của riêng nó thay vì qua một shell chung. `Record<XStatus, BadgeStyle>`
   bản thân nó vẫn luôn ở lại feature dù có shell chung hay không — chọn status nào là
   "warning"/"destructive" là quyết định sản phẩm.
+- **Detail header shell / info card shell** (back-link + code + badge + meta grid; card với
+  header icon+title + nội dung) — thử gộp thành `layouts/DetailHeader` + `layouts/SectionCard` +
+  `primitives/InfoFields` (`MetaField`/`InfoRow`) ở Phase 2.3 (dùng bởi `inventory-requisitions`),
+  rồi thử ghép thêm `purchase-requests` ở Phase 4; **cả ba component và cả migration gốc đều bị
+  revert**, cùng lý do với `StatusBadge`/`ConfirmActionDialog` ở trên dù không tìm thấy khác biệt
+  cấu trúc nào giữa 2 domain — mỗi domain tự dựng lại block back+code+badge+meta-grid và
+  `<section>` card của riêng nó, với `MetaField`/`InfoRow` là hàm private ở cuối file thay vì
+  import từ `primitives/`.
 - **`*TableColumns`** — định nghĩa cột (label tiếng Việt, cell renderer) luôn ở feature.
 - **`resetFilters`/`handleXChange`** — đóng gói closure ghi `navigate({search: ...})` giữ type
   theo đúng search schema của route đó; một signature chung sẽ ép `as` cast ở mọi call site.
-- **`<Link to=... params=...>` của row action / nút Back trong `DetailHeader`** — extract ra khỏi
-  call site sẽ mất type-check route param; cả hai ở lại làm slot (`children`/`back`).
+- **`<Link to=... params=...>` của row action / nút Back trong detail header** — extract ra khỏi
+  call site sẽ mất type-check route param; cả hai ở lại làm slot tại call site (không qua shell
+  chung — xem revert ở trên).
 - **Nội dung `TableEmpty`** (icon/title/description) — luôn là prop của call site, `DataTable`
-  chỉ quyết định *khi nào* hiện nó, không quyết định nó nói gì.
+  chỉ quyết định _khi nào_ hiện nó, không quyết định nó nói gì.
 - **`reject-*.schema.ts`** — là `.validator()` của server function tương ứng (trust boundary),
   không rút thành schema dùng chung dù hình dạng field giống nhau.
 - **`StatusLegend` flavor A** (`dl`/`dt`/`dd`, dùng bởi `OrderStatusLegend`/`PurchaseOrderLegend`/
   …) — chưa hợp nhất với flavor B (`ul`/`li` + badge thật của domain đó, qua slot `badge:
-  ReactNode`) đã ship cho `inventory-requisitions`; 2 fork khác hẳn cấu trúc (đếm dot đơn giản có "1 shell" là ranh giới
+ReactNode`) đã ship cho `inventory-requisitions`; 2 fork khác hẳn cấu trúc (đếm dot đơn giản có "1 shell" là ranh giới
   của Phase 2.4). Hợp nhất khi feature dùng flavor A thực sự migrate.
 - **`StatusNotice` fork A** (shadcn `Alert`, dùng bởi `orders`/`outbound-orders`) — chưa hợp nhất
   với fork B (hand-rolled div) đã ship cho `purchase-orders`/`purchase-requests`. Icon package
