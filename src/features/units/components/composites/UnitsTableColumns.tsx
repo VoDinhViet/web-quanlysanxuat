@@ -3,9 +3,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { DeleteUnitDialog } from "@/features/units/components/DeleteUnitDialog"
-import { UnitScopeBadge } from "@/features/units/components/UnitBadges"
-import { UpdateUnitDialog } from "@/features/units/components/UpdateUnitDialog"
+import { DeleteUnitDialog } from "@/features/units/components/composites/DeleteUnitDialog"
+import { UnitScopeBadge } from "@/features/units/components/primitives/UnitBadges"
+import { UpdateUnitDialog } from "@/features/units/components/composites/UpdateUnitDialog"
 import type { UnitDetail } from "@/lib/types/unit.type"
 
 const unitColumnHelper = createColumnHelper<UnitDetail>()

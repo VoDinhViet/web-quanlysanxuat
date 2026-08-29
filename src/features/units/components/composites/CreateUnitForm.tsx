@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useAppForm } from "@/hooks/use-app-form"
-import { UnitScopesField } from "@/features/units/components/UnitScopesField"
+import { UnitScopesField } from "@/features/units/components/composites/UnitScopesField"
 import { createUnit } from "@/features/units/api/server-functions/create-unit.api"
 import {
   createUnitFormDefaultValues,

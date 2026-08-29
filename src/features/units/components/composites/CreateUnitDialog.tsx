@@ -2,25 +2,22 @@ import { useState } from "react"
 import type { ReactNode } from "react"
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { UpdateUnitForm } from "@/features/units/components/UpdateUnitForm"
-import type { UnitDetail } from "@/lib/types/unit.type"
+import { CreateUnitForm } from "@/features/units/components/composites/CreateUnitForm"
 
-type UpdateUnitDialogProps = {
-  unit: UnitDetail
+type CreateUnitDialogProps = {
   trigger: ReactNode
 }
 
-export function UpdateUnitDialog({ unit, trigger }: UpdateUnitDialogProps) {
+export function CreateUnitDialog({ trigger }: CreateUnitDialogProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-lg">
-        {/* Radix unmounts content while closed, so the form re-mounts and re-seeds from
-            `unit` fresh on every open. */}
-        <UpdateUnitForm
-          unit={unit}
+        {/* Radix unmounts content while closed, so the form (and its draft-restore effect)
+            re-mounts fresh on every open. */}
+        <CreateUnitForm
           onSuccess={() => setOpen(false)}
           onCancel={() => setOpen(false)}
         />
