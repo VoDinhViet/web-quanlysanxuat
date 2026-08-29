@@ -1,6 +1,6 @@
 import { Info } from "lucide-react"
 
-import { outsourcingOrderDocStatusStyles } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
+import { outsourcingOrderDocStatusStyles } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
 import {
   InventoryDocumentStatus,
   outsourcingOrderDocStatusDescriptions,

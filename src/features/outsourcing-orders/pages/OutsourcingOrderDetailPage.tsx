@@ -7,9 +7,9 @@ import {
   outsourcingOrderItemsQueryOptions,
   outsourcingOrderQueryOptions,
 } from "@/features/outsourcing-orders/api/options"
-import { OutsourcingOrderDetailHeader } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderDetailHeader"
-import { OutsourcingOrderInfoCard } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderInfoCard"
-import { OutsourcingOrderItemsCard } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderItemsCard"
+import { OutsourcingOrderDetailHeader } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailHeader"
+import { OutsourcingOrderInfoCard } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderInfoCard"
+import { OutsourcingOrderItemsCard } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderItemsCard"
 
 export function OutsourcingOrderDetailPage() {
   const { outsourcingOrderId } = useParams({

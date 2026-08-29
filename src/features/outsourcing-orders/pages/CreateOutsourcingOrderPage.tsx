@@ -1,7 +1,7 @@
 import { useSearch } from "@tanstack/react-router"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { CreateOutsourcingOrderForm } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderForm"
+import { CreateOutsourcingOrderForm } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderForm"
 
 export function CreateOutsourcingOrderPage() {
   const search = useSearch({

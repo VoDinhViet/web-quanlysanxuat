@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
-import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/OutsourcingOrderTableCells"
+import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
+import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderTableCells"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
 const col = createColumnHelper<OutsourcingOrder>()

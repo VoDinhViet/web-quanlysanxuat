@@ -8,14 +8,14 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { CreateOutsourcingOrderConfirmSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderConfirmSection"
-import { CreateOutsourcingOrderInfoSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderInfoSection"
-import { CreateOutsourcingOrderItemsSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderItemsSection"
-import { CreateOutsourcingOrderPickerSection } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderPickerSection"
+import { CreateOutsourcingOrderConfirmSection } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderConfirmSection"
+import { CreateOutsourcingOrderInfoSection } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderInfoSection"
+import { CreateOutsourcingOrderItemsSection } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderItemsSection"
+import { CreateOutsourcingOrderPickerSection } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderPickerSection"
 import {
   CreateOutsourcingOrderTabs,
   wizardTabs,
-} from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderTabs"
+} from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderTabs"
 import { createOutsourcingOrder } from "@/features/outsourcing-orders/api/server-functions/create-outsourcing-order.api"
 import {
   createOutsourcingOrderFormDefaultValues,
@@ -24,7 +24,7 @@ import {
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import type { CreateOutsourcingOrderWizardTab } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderTabs"
+import type { CreateOutsourcingOrderWizardTab } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderTabs"
 import type { CreateOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 
 type CreateOutsourcingOrderFormProps = {

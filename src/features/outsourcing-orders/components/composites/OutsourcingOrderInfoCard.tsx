@@ -3,7 +3,7 @@ import { Calendar, Info, StickyNote, User } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderDetailSectionCard"
+import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailSectionCard"
 import { InventoryDocumentStatus } from "@/lib/types/outsourcing-order.type"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 

@@ -15,8 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderDetailSectionCard"
-import { outsourcingOrderItemsColumns } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderItemsColumns"
+import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailSectionCard"
+import { outsourcingOrderItemsColumns } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderItemsColumns"
 import type { OutsourcingOrderItem } from "@/lib/types/outsourcing-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

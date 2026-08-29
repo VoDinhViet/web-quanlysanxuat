@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { OutsourcingOrderDetailActions } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderDetailActions"
-import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/OutsourcingOrderBadges"
+import { OutsourcingOrderDetailActions } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailActions"
+import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderDetailHeaderProps = {

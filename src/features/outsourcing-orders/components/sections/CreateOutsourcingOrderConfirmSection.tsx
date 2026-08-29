@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
-import { createOutsourcingOrderConfirmColumns } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderConfirmColumns"
+import { createOutsourcingOrderConfirmColumns } from "@/features/outsourcing-orders/components/composites/CreateOutsourcingOrderConfirmColumns"
 import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/logic/outsourcing-order-item-totals"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { withForm } from "@/hooks/use-app-form"

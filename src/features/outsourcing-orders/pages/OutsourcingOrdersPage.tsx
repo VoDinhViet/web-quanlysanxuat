@@ -6,9 +6,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { outsourcingOrdersQueryOptions } from "@/features/outsourcing-orders/api/options"
-import { OutsourcingOrderLegend } from "@/features/outsourcing-orders/components/OutsourcingOrderLegend"
-import { OutsourcingOrdersTable } from "@/features/outsourcing-orders/components/OutsourcingOrdersTable"
-import { OutsourcingOrdersTableFilter } from "@/features/outsourcing-orders/components/OutsourcingOrdersTableFilter"
+import { OutsourcingOrderLegend } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderLegend"
+import { OutsourcingOrdersTable } from "@/features/outsourcing-orders/components/sections/OutsourcingOrdersTable"
+import { OutsourcingOrdersTableFilter } from "@/features/outsourcing-orders/components/sections/OutsourcingOrdersTableFilter"
 
 export function OutsourcingOrdersPage() {
   const search = useSearch({ from: "/(authed)/manage_/outsourcing-orders/" })
