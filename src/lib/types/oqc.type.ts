@@ -8,28 +8,31 @@ import type { UserRef } from "@/lib/types/user.type"
 // toàn cục theo quy ước repo), không định nghĩa lại. Import trực tiếp ở call site:
 // `import { IqcResult, iqcResultLabels, ... } from "@/lib/types/iqc.type"`.
 
+// Giá trị đổi 2026-08-29 (`NOT_INSPECTED→DRAFT`, `REWORK→IN_PROGRESS`) — backend bỏ lớp dịch status,
+// API giờ trả thẳng vocabulary DB (`docs/decisions/quality-schema-rename.md` ở be-quanlysanxuat, D5
+// cập nhật). Không nhầm với `OqcDisposition.REWORK` bên dưới — field khác, giữ nguyên "REWORK".
 export const OqcStatus = {
-  NOT_INSPECTED: "NOT_INSPECTED",
+  DRAFT: "DRAFT",
   PENDING: "PENDING",
-  REWORK: "REWORK",
+  IN_PROGRESS: "IN_PROGRESS",
   COMPLETED: "COMPLETED",
 } as const
 
 export type OqcStatus = (typeof OqcStatus)[keyof typeof OqcStatus]
 
 export const oqcStatusLabels: Record<OqcStatus, string> = {
-  [OqcStatus.NOT_INSPECTED]: "Chờ kiểm",
+  [OqcStatus.DRAFT]: "Chờ kiểm",
   [OqcStatus.PENDING]: "FAIL - chờ xử lý",
-  [OqcStatus.REWORK]: "Đang rework",
+  [OqcStatus.IN_PROGRESS]: "Đang rework",
   [OqcStatus.COMPLETED]: "Đã QC",
 }
 
 // For OqcStatusBadge-adjacent hint text — same idiom as iqcStatusDescriptions.
 export const oqcStatusDescriptions: Record<OqcStatus, string> = {
-  [OqcStatus.NOT_INSPECTED]: "Đã tạo, chờ QC nhập kết quả kiểm tra",
+  [OqcStatus.DRAFT]: "Đã tạo, chờ QC nhập kết quả kiểm tra",
   [OqcStatus.PENDING]:
     "FAIL, chưa chọn hướng xử lý — QC lấy mẫu lại và xác nhận lại trên cùng phiếu",
-  [OqcStatus.REWORK]:
+  [OqcStatus.IN_PROGRESS]:
     "FAIL, đã chọn xử lý REWORK — trả xưởng sửa lại, QC lấy mẫu lại và xác nhận lại trên cùng phiếu tới khi PASS",
   [OqcStatus.COMPLETED]:
     "PASS, hoặc FAIL đã ACCEPT/SCRAP — đã khoá vĩnh viễn, mở khoá nhập kho thành phẩm cho lô này",

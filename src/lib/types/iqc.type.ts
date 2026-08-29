@@ -77,27 +77,30 @@ export const iqcDispositionDescriptions: Record<IqcDisposition, string> = {
   [IqcDisposition.RETURN]: "Trả toàn bộ lô hàng về nhà cung cấp.",
 }
 
+// Giá trị đổi 2026-08-29 (`NOT_INSPECTED→DRAFT`, `WAITING_RETURN→IN_PROGRESS`) — backend bỏ lớp
+// dịch status, API giờ trả thẳng vocabulary DB (`docs/decisions/quality-schema-rename.md` ở
+// be-quanlysanxuat, D5 cập nhật).
 export const IqcStatus = {
-  NOT_INSPECTED: "NOT_INSPECTED",
+  DRAFT: "DRAFT",
   PENDING: "PENDING",
-  WAITING_RETURN: "WAITING_RETURN",
+  IN_PROGRESS: "IN_PROGRESS",
   COMPLETED: "COMPLETED",
 } as const
 
 export type IqcStatus = (typeof IqcStatus)[keyof typeof IqcStatus]
 
 export const iqcStatusLabels: Record<IqcStatus, string> = {
-  [IqcStatus.NOT_INSPECTED]: "Chưa kiểm",
+  [IqcStatus.DRAFT]: "Chưa kiểm",
   [IqcStatus.PENDING]: "Chờ xử lý",
-  [IqcStatus.WAITING_RETURN]: "Chờ trả NCC",
+  [IqcStatus.IN_PROGRESS]: "Chờ trả NCC",
   [IqcStatus.COMPLETED]: "Hoàn thành",
 }
 
 // For IqcStatusLegend.tsx — same idiom as purchaseOrderStatusDescriptions.
 export const iqcStatusDescriptions: Record<IqcStatus, string> = {
-  [IqcStatus.NOT_INSPECTED]: "Đã tạo, chờ QC nhập kết quả kiểm tra",
+  [IqcStatus.DRAFT]: "Đã tạo, chờ QC nhập kết quả kiểm tra",
   [IqcStatus.PENDING]: "FAIL, đang chờ chọn hướng xử lý",
-  [IqcStatus.WAITING_RETURN]: "Đang chờ trả hàng về NCC",
+  [IqcStatus.IN_PROGRESS]: "Đang chờ trả hàng về NCC",
   [IqcStatus.COMPLETED]: "Đã hoàn tất kiểm tra (PASS hoặc đã xử lý xong)",
 }
 

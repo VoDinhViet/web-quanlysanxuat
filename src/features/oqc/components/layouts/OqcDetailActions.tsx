@@ -25,7 +25,7 @@ export function OqcDetailActions({
   const navigate = useNavigate({ from: "/manage/oqc/$oqcId" })
 
   const isLocked = oqc.status === OqcStatus.COMPLETED
-  const canDelete = oqc.status === OqcStatus.NOT_INSPECTED
+  const canDelete = oqc.status === OqcStatus.DRAFT
 
   return (
     <div className="flex flex-col items-end gap-2">

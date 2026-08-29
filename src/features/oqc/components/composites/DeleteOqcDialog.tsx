@@ -30,8 +30,8 @@ type DeleteOqcDialogProps = {
 
 // Dùng chung ở cả OqcTableCells.tsx (nút Xoá trên danh sách) và OqcDetailActions.tsx (nút "Xoá
 // phiếu" trên trang chi tiết) — mirror DeleteClientDialog.tsx (AlertDialog, không phải Dialog
-// trần). Chỉ nên render khi `oqc.status === NOT_INSPECTED` — caller tự kiểm điều kiện đó trước khi
-// render trigger (BE cũng chặn lại bằng E178 nếu không).
+// trần). Chỉ nên render khi `oqc.status === DRAFT` — caller tự kiểm điều kiện đó trước khi render
+// trigger (BE cũng chặn lại bằng E178 nếu không).
 export function DeleteOqcDialog({
   oqc,
   trigger,

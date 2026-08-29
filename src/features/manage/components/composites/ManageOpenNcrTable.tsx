@@ -28,17 +28,23 @@ const openNcrKindLabels: Record<OpenNcr["kind"], string> = {
   OUTGOING: "OQC",
 }
 
-const openNcrStatusLabels: Record<OpenNcr["status"], string> = {
-  PENDING: "Chờ xử lý",
-  WAITING_RETURN: "Chờ trả NCC",
-  REWORK: "Đang rework",
+// `status = IN_PROGRESS` gộp 2 tình huống khác nhau tuỳ nguồn (IQC: chờ trả NCC; OQC: đang rework)
+// từ 2026-08-29 — tra theo cả `kind` lẫn `status`, không chỉ `status` như trước.
+const openNcrStatusLabels: Record<OpenNcr["kind"], Record<OpenNcr["status"], string>> = {
+  INCOMING: { PENDING: "Chờ xử lý", IN_PROGRESS: "Chờ trả NCC" },
+  OUTGOING: { PENDING: "Chờ xử lý", IN_PROGRESS: "Đang rework" },
 }
 
-const openNcrStatusStyles: Record<OpenNcr["status"], string> = {
-  PENDING: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-  WAITING_RETURN: "bg-destructive/15 text-destructive",
-  REWORK:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+const openNcrStatusStyles: Record<OpenNcr["kind"], Record<OpenNcr["status"], string>> = {
+  INCOMING: {
+    PENDING: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+    IN_PROGRESS: "bg-destructive/15 text-destructive",
+  },
+  OUTGOING: {
+    PENDING: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+    IN_PROGRESS:
+      "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  },
 }
 
 const columnHelper = createColumnHelper<OpenNcr>()
@@ -60,12 +66,12 @@ const columns = [
   }),
   columnHelper.accessor("status", {
     header: "Trạng thái",
-    cell: ({ getValue }) => {
-      const status = getValue()
+    cell: ({ row }) => {
+      const { kind, status } = row.original
 
       return (
-        <Badge variant="outline" className={openNcrStatusStyles[status]}>
-          {openNcrStatusLabels[status]}
+        <Badge variant="outline" className={openNcrStatusStyles[kind][status]}>
+          {openNcrStatusLabels[kind][status]}
         </Badge>
       )
     },

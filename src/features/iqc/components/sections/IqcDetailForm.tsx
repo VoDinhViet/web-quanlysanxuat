@@ -24,12 +24,12 @@ type IqcDetailFormProps = {
 // plain `type="submit"` button, no separate per-card mutations like the old confirm/resolve
 // flows had. `result` is read live here (one subscription) to gate both §5 QUYẾT ĐỊNH XỬ LÝ and
 // its evidence card — hidden until the user picks FAIL, matching IqcResultCard's own radio
-// cards. Locked (`isLocked`) once `status` reaches WAITING_RETURN — every field disables, and
+// cards. Locked (`isLocked`) once `status` reaches IN_PROGRESS — every field disables, and
 // IqcDetailActions hides the Lưu button entirely (see confirm's E159).
 export function IqcDetailForm({ iqc }: IqcDetailFormProps) {
   const { form, mutation } = useIqcDetailForm(iqc)
   const result = useField({ form, name: "result" }).state.value
-  const isLocked = iqc.status === IqcStatus.WAITING_RETURN
+  const isLocked = iqc.status === IqcStatus.IN_PROGRESS
   const disabled = isLocked || mutation.isPending
 
   return (

@@ -46,7 +46,7 @@ export function OqcResultBadge({ result, className }: OqcResultBadgeProps) {
 }
 
 export const oqcStatusStyles: Record<OqcStatus, BadgeStyle> = {
-  [OqcStatus.NOT_INSPECTED]: {
+  [OqcStatus.DRAFT]: {
     badge: "bg-muted text-muted-foreground",
     dot: "bg-muted-foreground/60",
   },
@@ -55,9 +55,9 @@ export const oqcStatusStyles: Record<OqcStatus, BadgeStyle> = {
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
-  // Cùng tông xanh dương với IqcStatus.WAITING_RETURN — cả 2 đều là "FAIL, đã chọn hướng xử lý,
+  // Cùng tông xanh dương với IqcStatus.IN_PROGRESS — cả 2 đều là "FAIL, đã chọn hướng xử lý,
   // đang ở vòng lặp tiếp theo", phân biệt được với PENDING (FAIL, chưa chọn gì).
-  [OqcStatus.REWORK]: {
+  [OqcStatus.IN_PROGRESS]: {
     badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
     dot: "bg-blue-500 dark:bg-blue-400",
   },

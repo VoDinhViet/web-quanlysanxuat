@@ -55,7 +55,7 @@ export function IqcStatusLegend({
             </dt>
             <dd className="space-y-1.5 text-[11px] text-muted-foreground">
               <p>{iqcStatusDescriptions[status]}</p>
-              {status === IqcStatus.WAITING_RETURN &&
+              {status === IqcStatus.IN_PROGRESS &&
                 (supplierReturn ? (
                   <Button
                     variant="link"

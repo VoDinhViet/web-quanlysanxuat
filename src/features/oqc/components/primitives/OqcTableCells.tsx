@@ -26,7 +26,7 @@ export function OqcActionsCell({ oqc }: OqcActionsCellProps) {
         </Link>
       </IconButton>
 
-      {oqc.status === OqcStatus.NOT_INSPECTED && (
+      {oqc.status === OqcStatus.DRAFT && (
         <PermissionGate permission="oqc:delete">
           <DeleteOqcDialog
             oqc={oqc}

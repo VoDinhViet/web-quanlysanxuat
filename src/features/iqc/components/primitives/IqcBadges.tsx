@@ -89,7 +89,7 @@ export function IqcDispositionBadge({
 }
 
 export const iqcStatusStyles: Record<IqcStatus, BadgeStyle> = {
-  [IqcStatus.NOT_INSPECTED]: {
+  [IqcStatus.DRAFT]: {
     badge: "bg-muted text-muted-foreground",
     dot: "bg-muted-foreground/60",
   },
@@ -98,7 +98,7 @@ export const iqcStatusStyles: Record<IqcStatus, BadgeStyle> = {
       "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
-  [IqcStatus.WAITING_RETURN]: {
+  [IqcStatus.IN_PROGRESS]: {
     badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
