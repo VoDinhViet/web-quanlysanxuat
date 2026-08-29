@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { InventoryIssueSourceCell } from "@/features/inventory-issues/components/InventoryIssueTableCells"
+import { InventoryIssueSourceCell } from "@/features/inventory-issues/components/primitives/InventoryIssueTableCells"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"
 
@@ -18,13 +18,13 @@ type InventoryIssuePrintDialogProps = {
   onOpenChange: (open: boolean) => void
   // Nhận thẳng qua prop, không tự fetch — trang danh sách đã có sẵn dữ liệu này (bao gồm
   // items) khi mở dialog in, cùng idiom với InventoryReceiptPrintDialog.
-  detail: InventoryIssue
+  inventoryIssue: InventoryIssue
 }
 
 export function InventoryIssuePrintDialog({
   open,
   onOpenChange,
-  detail,
+  inventoryIssue,
 }: InventoryIssuePrintDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -32,7 +32,7 @@ export function InventoryIssuePrintDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Printer className="size-5 text-primary" />
-            Bản in - Phiếu xuất kho ({detail.code})
+            Bản in - Phiếu xuất kho ({inventoryIssue.code})
           </DialogTitle>
         </DialogHeader>
 
@@ -48,11 +48,11 @@ export function InventoryIssuePrintDialog({
               </p>
             </div>
             <div className="text-right font-mono">
-              <p className="text-base font-bold">{detail.code}</p>
+              <p className="text-base font-bold">{inventoryIssue.code}</p>
               <p className="text-xs text-muted-foreground">
-                {DateTime.fromISO(detail.issueDate, { zone: "utc" }).toFormat(
-                  "dd/MM/yyyy"
-                )}
+                {DateTime.fromISO(inventoryIssue.issueDate, {
+                  zone: "utc",
+                }).toFormat("dd/MM/yyyy")}
               </p>
             </div>
           </div>
@@ -62,35 +62,35 @@ export function InventoryIssuePrintDialog({
               PHIẾU XUẤT KHO
             </h1>
             <p className="text-xs text-muted-foreground italic">
-              Loại phiếu: {inventoryIssueTypeLabels[detail.issueType]}
+              Loại phiếu: {inventoryIssueTypeLabels[inventoryIssue.issueType]}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
             <p>
               <strong className="font-semibold">Kho xuất:</strong>{" "}
-              {detail.warehouse.name}
+              {inventoryIssue.warehouse.name}
             </p>
             <p className="flex items-center gap-1">
               <strong className="font-semibold">Đối tượng:</strong>{" "}
               <InventoryIssueSourceCell
-                productionOrder={detail.productionOrder}
-                productionJob={detail.productionJob}
-                department={detail.department}
+                productionOrder={inventoryIssue.productionOrder}
+                productionJob={inventoryIssue.productionJob}
+                department={inventoryIssue.department}
               />
             </p>
             <p>
               <strong className="font-semibold">Người tạo:</strong>{" "}
-              {detail.creatorBy?.fullName ?? "—"}
+              {inventoryIssue.creatorBy?.fullName ?? "—"}
             </p>
             <p>
               <strong className="font-semibold">Người xuất:</strong>{" "}
-              {detail.posterBy?.fullName ?? "—"}
+              {inventoryIssue.posterBy?.fullName ?? "—"}
             </p>
-            {detail.note && (
+            {inventoryIssue.note && (
               <p className="col-span-2">
                 <strong className="font-semibold">Ghi chú:</strong>{" "}
-                {detail.note}
+                {inventoryIssue.note}
               </p>
             )}
           </div>
@@ -109,7 +109,7 @@ export function InventoryIssuePrintDialog({
               </tr>
             </thead>
             <tbody>
-              {detail.items.map((item, idx) => (
+              {inventoryIssue.items.map((item, idx) => (
                 <tr key={item.id}>
                   <td className="border border-border p-2 text-center">
                     {idx + 1}
@@ -134,13 +134,13 @@ export function InventoryIssuePrintDialog({
             <div>
               <p className="font-semibold">Người lập phiếu</p>
               <p className="mt-12 text-muted-foreground">
-                {detail.creatorBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
+                {inventoryIssue.creatorBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
               </p>
             </div>
             <div>
               <p className="font-semibold">Thủ kho</p>
               <p className="mt-12 text-muted-foreground">
-                {detail.posterBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
+                {inventoryIssue.posterBy?.fullName ?? "(Ký & ghi rõ họ tên)"}
               </p>
             </div>
             <div>

@@ -1,11 +1,11 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { InventoryIssueStatusBadge } from "@/features/inventory-issues/components/InventoryIssueBadges"
+import { InventoryIssueStatusBadge } from "@/features/inventory-issues/components/primitives/InventoryIssueBadges"
 import {
   InventoryIssueActionsCell,
   InventoryIssueSourceCell,
-} from "@/features/inventory-issues/components/InventoryIssueTableCells"
+} from "@/features/inventory-issues/components/primitives/InventoryIssueTableCells"
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
 
