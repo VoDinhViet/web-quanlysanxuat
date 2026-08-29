@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/PaymentRequestBadges"
+import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/primitives/PaymentRequestBadges"
 import {
   PaymentRequestActionsCell,
   PaymentRequestAmountCell,
-} from "@/features/payment-requests/components/PaymentRequestTableCells"
+} from "@/features/payment-requests/components/primitives/PaymentRequestTableCells"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"
 
 const col = createColumnHelper<PaymentRequest>()

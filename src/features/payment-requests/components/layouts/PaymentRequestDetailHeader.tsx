@@ -4,17 +4,17 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/PaymentRequestBadges"
-import { PaymentRequestDetailActions } from "@/features/payment-requests/components/detail/PaymentRequestDetailActions"
+import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/primitives/PaymentRequestBadges"
+import { PaymentRequestDetailActions } from "@/features/payment-requests/components/layouts/PaymentRequestDetailActions"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestDetailHeaderProps = {
-  detail: PaymentRequestDetail
+  paymentRequest: PaymentRequestDetail
 }
 
 // Same MetaField grid as PurchaseOrderDetailHeader.tsx — 3-column layout.
 export function PaymentRequestDetailHeader({
-  detail,
+  paymentRequest,
 }: PaymentRequestDetailHeaderProps) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5">
@@ -34,9 +34,9 @@ export function PaymentRequestDetailHeader({
           </Button>
 
           <span className="font-mono text-lg font-bold text-foreground">
-            {detail.code}
+            {paymentRequest.code}
           </span>
-          <PaymentRequestStatusBadge status={detail.status} />
+          <PaymentRequestStatusBadge status={paymentRequest.status} />
         </div>
 
         {/* Meta fields — 3 columns */}
@@ -48,32 +48,42 @@ export function PaymentRequestDetailHeader({
               value={
                 <Link
                   to="/manage/purchase-orders/$purchaseOrderId"
-                  params={{ purchaseOrderId: detail.purchaseOrder.id }}
+                  params={{ purchaseOrderId: paymentRequest.purchaseOrder.id }}
                   className="font-mono text-primary hover:underline"
                 >
-                  {detail.purchaseOrder.code}
+                  {paymentRequest.purchaseOrder.code}
                 </Link>
               }
             />
-            <MetaField label="Nhà cung cấp" value={detail.supplier.name} />
-            <MetaField label="Địa chỉ" value={detail.supplier.address} />
+            <MetaField
+              label="Nhà cung cấp"
+              value={paymentRequest.supplier.name}
+            />
+            <MetaField
+              label="Địa chỉ"
+              value={paymentRequest.supplier.address}
+            />
           </div>
 
           {/* Column 2: Ngày PO / Ngày hoàn thành PO / Ngày tạo YCTT */}
           <div className="flex flex-col gap-4">
             <MetaField
               label="Ngày PO"
-              value={DateTime.fromISO(detail.purchaseOrder.orderDate).toFormat(
+              value={DateTime.fromISO(
+                paymentRequest.purchaseOrder.orderDate
+              ).toFormat("dd/MM/yyyy")}
+            />
+            <MetaField
+              label="Hạn thanh toán"
+              value={DateTime.fromISO(paymentRequest.dueDate).toFormat(
                 "dd/MM/yyyy"
               )}
             />
             <MetaField
-              label="Hạn thanh toán"
-              value={DateTime.fromISO(detail.dueDate).toFormat("dd/MM/yyyy")}
-            />
-            <MetaField
               label="Ngày tạo YCTT"
-              value={DateTime.fromISO(detail.createdAt).toFormat("dd/MM/yyyy")}
+              value={DateTime.fromISO(paymentRequest.createdAt).toFormat(
+                "dd/MM/yyyy"
+              )}
             />
           </div>
 
@@ -82,22 +92,27 @@ export function PaymentRequestDetailHeader({
             <MetaField
               label="Giá trị PO"
               value={
-                new Intl.NumberFormat("vi-VN").format(detail.poValue) + " VND"
+                new Intl.NumberFormat("vi-VN").format(paymentRequest.poValue) +
+                " VND"
               }
             />
             <MetaField
               label="Giá trị yêu cầu TT"
               value={
-                new Intl.NumberFormat("vi-VN").format(detail.requestValue) +
-                " VND"
+                new Intl.NumberFormat("vi-VN").format(
+                  paymentRequest.requestValue
+                ) + " VND"
               }
             />
-            <MetaField label="Điện thoại" value={detail.supplier.phoneNumber} />
+            <MetaField
+              label="Điện thoại"
+              value={paymentRequest.supplier.phoneNumber}
+            />
           </div>
         </div>
       </div>
 
-      <PaymentRequestDetailActions detail={detail} />
+      <PaymentRequestDetailActions paymentRequest={paymentRequest} />
     </div>
   )
 }

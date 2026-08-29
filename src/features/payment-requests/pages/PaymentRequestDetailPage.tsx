@@ -4,17 +4,17 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { paymentRequestQueryOptions } from "@/features/payment-requests/api/options"
-import { PaymentRequestDetailHeader } from "@/features/payment-requests/components/detail/PaymentRequestDetailHeader"
-import { PaymentRequestItemsSection } from "@/features/payment-requests/components/detail/PaymentRequestItemsSection"
-import { PaymentRequestInfoCard } from "@/features/payment-requests/components/detail/PaymentRequestInfoCard"
-import { PaymentRequestStatusHistoryCard } from "@/features/payment-requests/components/detail/PaymentRequestStatusHistoryCard"
+import { PaymentRequestDetailHeader } from "@/features/payment-requests/components/layouts/PaymentRequestDetailHeader"
+import { PaymentRequestItemsSection } from "@/features/payment-requests/components/sections/PaymentRequestItemsSection"
+import { PaymentRequestInfoCard } from "@/features/payment-requests/components/composites/PaymentRequestInfoCard"
+import { PaymentRequestStatusHistoryCard } from "@/features/payment-requests/components/composites/PaymentRequestStatusHistoryCard"
 
 export function PaymentRequestDetailPage() {
   const { paymentRequestId } = useParams({
     from: "/(authed)/manage_/payment-requests_/$paymentRequestId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: paymentRequest } = useSuspenseQuery(
     paymentRequestQueryOptions(paymentRequestId)
   )
 
@@ -29,7 +29,7 @@ export function PaymentRequestDetailPage() {
             label: "Yêu cầu thanh toán",
             href: "/manage/payment-requests",
           },
-          { label: detail.code },
+          { label: paymentRequest.code },
         ]}
       />
 
@@ -37,14 +37,14 @@ export function PaymentRequestDetailPage() {
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           {/* Main content */}
           <Surface>
-            <PaymentRequestDetailHeader detail={detail} />
-            <PaymentRequestItemsSection detail={detail} />
+            <PaymentRequestDetailHeader paymentRequest={paymentRequest} />
+            <PaymentRequestItemsSection paymentRequest={paymentRequest} />
           </Surface>
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
-            <PaymentRequestInfoCard detail={detail} />
-            <PaymentRequestStatusHistoryCard detail={detail} />
+            <PaymentRequestInfoCard paymentRequest={paymentRequest} />
+            <PaymentRequestStatusHistoryCard paymentRequest={paymentRequest} />
           </div>
         </div>
       </div>

@@ -7,34 +7,34 @@ import type { TimelineStep } from "@/lib/types/timeline.type"
 // into either PAID or CANCELLED, so at most 2 steps are ever shown. `detail` stays null on
 // every step — PaymentRequestStatusHistoryCard's "dot" variant never renders a note row.
 export function buildPaymentRequestTimeline(
-  detail: PaymentRequestDetail
+  paymentRequest: PaymentRequestDetail
 ): TimelineStep[] {
   const createdStep: TimelineStep = {
     key: "created",
     label: "Tạo yêu cầu thanh toán",
     state: "done",
-    timestamp: detail.createdAt,
-    actor: detail.createdBy?.fullName ?? "Hệ thống",
+    timestamp: paymentRequest.createdAt,
+    actor: paymentRequest.createdBy?.fullName ?? "Hệ thống",
     detail: null,
   }
 
   const secondStep: TimelineStep =
-    detail.status === PaymentRequestStatus.PAID
+    paymentRequest.status === PaymentRequestStatus.PAID
       ? {
           key: "paid",
           label: "Đã thanh toán",
           state: "done",
-          timestamp: detail.paidAt,
-          actor: detail.paidBy?.fullName ?? null,
+          timestamp: paymentRequest.paidAt,
+          actor: paymentRequest.paidBy?.fullName ?? null,
           detail: null,
         }
-      : detail.status === PaymentRequestStatus.CANCELLED
+      : paymentRequest.status === PaymentRequestStatus.CANCELLED
         ? {
             key: "cancelled",
             label: "Đã hủy",
             state: "cancelled",
-            timestamp: detail.cancelledAt,
-            actor: detail.cancelledBy?.fullName ?? null,
+            timestamp: paymentRequest.cancelledAt,
+            actor: paymentRequest.cancelledBy?.fullName ?? null,
             detail: null,
           }
         : {

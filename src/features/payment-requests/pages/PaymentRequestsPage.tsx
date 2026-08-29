@@ -5,8 +5,8 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { paymentRequestsQueryOptions } from "@/features/payment-requests/api/options"
-import { PaymentRequestsTable } from "@/features/payment-requests/components/PaymentRequestsTable"
-import { PaymentRequestsTableFilter } from "@/features/payment-requests/components/PaymentRequestsTableFilter"
+import { PaymentRequestsTable } from "@/features/payment-requests/components/sections/PaymentRequestsTable"
+import { PaymentRequestsTableFilter } from "@/features/payment-requests/components/sections/PaymentRequestsTableFilter"
 
 export function PaymentRequestsPage() {
   const search = useSearch({ from: "/(authed)/manage_/payment-requests/" })

@@ -93,21 +93,21 @@ const itemColumns = [
 ]
 
 type PaymentRequestItemsSectionProps = {
-  detail: PaymentRequestDetail
+  paymentRequest: PaymentRequestDetail
 }
 
 // Section header + table — no pagination; PO line counts are small. Same "tiêu đề dải" idiom as
 // PurchaseOrderItemsSection.tsx.
 export function PaymentRequestItemsSection({
-  detail,
+  paymentRequest,
 }: PaymentRequestItemsSectionProps) {
   const table = useReactTable({
-    data: detail.items,
+    data: paymentRequest.items,
     columns: itemColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
-  const totalAmount = detail.items.reduce(
+  const totalAmount = paymentRequest.items.reduce(
     (sum, item) => sum + item.lineTotal,
     0
   )
@@ -119,7 +119,7 @@ export function PaymentRequestItemsSection({
         Danh sách vật tư / hàng hóa
       </h3>
 
-      {detail.items.length === 0 ? (
+      {paymentRequest.items.length === 0 ? (
         <TableEmpty
           icon={PackageSearch}
           title="Chưa có vật tư nào"
@@ -163,7 +163,7 @@ export function PaymentRequestItemsSection({
       )}
 
       {/* Footer total row */}
-      {detail.items.length > 0 && (
+      {paymentRequest.items.length > 0 && (
         <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
           <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             Tổng cộng

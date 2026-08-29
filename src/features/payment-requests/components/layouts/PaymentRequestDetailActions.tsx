@@ -18,13 +18,13 @@ import { markPaymentRequestPaid } from "@/features/payment-requests/api/server-f
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestDetailActionsProps = {
-  detail: PaymentRequestDetail
+  paymentRequest: PaymentRequestDetail
 }
 
 // Only shows actions for PENDING requests.
 // Dùng Dialog confirm trước khi thực hiện — cùng pattern PurchaseOrderConfirmDialog.tsx.
 export function PaymentRequestDetailActions({
-  detail,
+  paymentRequest,
 }: PaymentRequestDetailActionsProps) {
   const queryClient = useQueryClient()
   const markPaymentRequestPaidFn = useServerFn(markPaymentRequestPaid)
@@ -33,14 +33,18 @@ export function PaymentRequestDetailActions({
   const mutation = useMutation({
     mutationFn: (status: "PAID" | "CANCELLED") =>
       status === "PAID"
-        ? markPaymentRequestPaidFn({ data: { paymentRequestId: detail.id } })
-        : cancelPaymentRequestFn({ data: { paymentRequestId: detail.id } }),
-    // No body on success (204) — invalidate list + detail so both refetch the new status.
+        ? markPaymentRequestPaidFn({
+            data: { paymentRequestId: paymentRequest.id },
+          })
+        : cancelPaymentRequestFn({
+            data: { paymentRequestId: paymentRequest.id },
+          }),
+    // No body on success (204) — invalidate list + paymentRequest so both refetch the new status.
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
   })
 
-  if (detail.status !== "PENDING") return null
+  if (paymentRequest.status !== "PENDING") return null
 
   return (
     <div className="flex shrink-0 flex-col items-end gap-2">
@@ -59,7 +63,9 @@ export function PaymentRequestDetailActions({
                 <DialogTitle>Xác nhận thanh toán</DialogTitle>
                 <DialogDescription>
                   Xác nhận yêu cầu thanh toán{" "}
-                  <span className="font-mono font-semibold">{detail.code}</span>{" "}
+                  <span className="font-mono font-semibold">
+                    {paymentRequest.code}
+                  </span>{" "}
                   đã được chi? Hành động này không thể hoàn tác.
                 </DialogDescription>
               </DialogHeader>
@@ -102,7 +108,9 @@ export function PaymentRequestDetailActions({
                 <DialogTitle>Hủy yêu cầu thanh toán</DialogTitle>
                 <DialogDescription>
                   Bạn chắc chắn muốn hủy yêu cầu thanh toán{" "}
-                  <span className="font-mono font-semibold">{detail.code}</span>
+                  <span className="font-mono font-semibold">
+                    {paymentRequest.code}
+                  </span>
                   ? Hành động này không thể hoàn tác.
                 </DialogDescription>
               </DialogHeader>

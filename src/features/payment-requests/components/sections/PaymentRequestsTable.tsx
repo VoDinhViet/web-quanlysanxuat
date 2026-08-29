@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { paymentRequestsColumns } from "@/features/payment-requests/components/PaymentRequestsTableColumns"
+import { paymentRequestsColumns } from "@/features/payment-requests/components/composites/PaymentRequestsTableColumns"
 import { cn } from "@/lib/utils"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"
 import type { Pagination } from "@/lib/types/pagination.type"

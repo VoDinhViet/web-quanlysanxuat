@@ -5,20 +5,20 @@ import { buildPaymentRequestTimeline } from "@/features/payment-requests/logic/p
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestStatusHistoryCardProps = {
-  detail: PaymentRequestDetail
+  paymentRequest: PaymentRequestDetail
 }
 
 // Vertical timeline sidebar card, driven by buildPaymentRequestTimeline(). Uses the "dot"
 // variant — smaller nodes, denser spacing, no note row — same idiom as the "circle" variant
 // used by PurchaseOrderDetailTimelineCard.tsx and friends.
 export function PaymentRequestStatusHistoryCard({
-  detail,
+  paymentRequest,
 }: PaymentRequestStatusHistoryCardProps) {
   return (
     <TimelineCard
       icon={History}
       title="Lịch sử trạng thái"
-      steps={buildPaymentRequestTimeline(detail)}
+      steps={buildPaymentRequestTimeline(paymentRequest)}
       variant="dot"
     />
   )
