@@ -5,8 +5,8 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { outboundOrdersQueryOptions } from "@/features/outbound-orders/api/options"
-import { OutboundOrdersTable } from "@/features/outbound-orders/components/OutboundOrdersTable"
-import { OutboundOrdersTableFilter } from "@/features/outbound-orders/components/OutboundOrdersTableFilter"
+import { OutboundOrdersTable } from "@/features/outbound-orders/components/sections/OutboundOrdersTable"
+import { OutboundOrdersTableFilter } from "@/features/outbound-orders/components/sections/OutboundOrdersTableFilter"
 
 export function OutboundOrdersPage() {
   const search = useSearch({ from: "/(authed)/manage_/outbound-orders/" })

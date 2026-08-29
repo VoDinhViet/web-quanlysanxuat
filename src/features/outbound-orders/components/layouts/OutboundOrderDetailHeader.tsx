@@ -4,8 +4,8 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/OutboundOrderBadges"
-import { OutboundOrderDetailActions } from "@/features/outbound-orders/components/detail/OutboundOrderDetailActions"
+import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
+import { OutboundOrderDetailActions } from "@/features/outbound-orders/components/layouts/OutboundOrderDetailActions"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 

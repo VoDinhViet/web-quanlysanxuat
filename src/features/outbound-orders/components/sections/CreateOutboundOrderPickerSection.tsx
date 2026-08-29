@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options"
-import { buildCreateOutboundOrderPickerColumns } from "@/features/outbound-orders/components/create/CreateOutboundOrderPickerColumns"
+import { buildCreateOutboundOrderPickerColumns } from "@/features/outbound-orders/components/composites/CreateOutboundOrderPickerColumns"
 import { useUnfulfilledOrderItemLookup } from "@/features/outbound-orders/hooks/use-unfulfilled-order-item-lookup"
 import { createOutboundOrderFormDefaultValues } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import { withForm } from "@/hooks/use-app-form"

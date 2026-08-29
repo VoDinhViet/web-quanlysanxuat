@@ -7,11 +7,11 @@ import {
   outboundOrderItemsQueryOptions,
   outboundOrderQueryOptions,
 } from "@/features/outbound-orders/api/options"
-import { OutboundOrderDetailHeader } from "@/features/outbound-orders/components/detail/OutboundOrderDetailHeader"
-import { OutboundOrderEditForm } from "@/features/outbound-orders/components/detail/OutboundOrderEditForm"
-import { OutboundOrderItemsSection } from "@/features/outbound-orders/components/detail/OutboundOrderItemsSection"
-import { OutboundOrderInfoCard } from "@/features/outbound-orders/components/detail/OutboundOrderInfoCard"
-import { OutboundOrderRejectionNotice } from "@/features/outbound-orders/components/detail/OutboundOrderRejectionNotice"
+import { OutboundOrderDetailHeader } from "@/features/outbound-orders/components/layouts/OutboundOrderDetailHeader"
+import { OutboundOrderEditForm } from "@/features/outbound-orders/components/sections/OutboundOrderEditForm"
+import { OutboundOrderItemsSection } from "@/features/outbound-orders/components/sections/OutboundOrderItemsSection"
+import { OutboundOrderInfoCard } from "@/features/outbound-orders/components/composites/OutboundOrderInfoCard"
+import { OutboundOrderRejectionNotice } from "@/features/outbound-orders/components/composites/OutboundOrderRejectionNotice"
 import { canUpdateOutboundOrder } from "@/lib/types/outbound-order.type"
 
 export function OutboundOrderDetailPage() {

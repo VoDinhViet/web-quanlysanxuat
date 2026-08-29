@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { CreateOutboundOrderForm } from "@/features/outbound-orders/components/create/CreateOutboundOrderForm"
+import { CreateOutboundOrderForm } from "@/features/outbound-orders/components/sections/CreateOutboundOrderForm"
 
 export function CreateOutboundOrderPage() {
   return (

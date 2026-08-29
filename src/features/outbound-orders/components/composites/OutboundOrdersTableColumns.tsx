@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/OutboundOrderBadges"
-import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/OutboundOrderTableCells"
+import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
+import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/primitives/OutboundOrderTableCells"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 

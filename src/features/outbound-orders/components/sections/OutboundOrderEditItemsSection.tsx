@@ -17,11 +17,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { OutboundOrderAddItemsDialog } from "@/features/outbound-orders/components/detail/OutboundOrderAddItemsDialog"
-import { buildOutboundOrderEditItemColumns } from "@/features/outbound-orders/components/detail/OutboundOrderEditItemsColumns"
+import { OutboundOrderAddItemsDialog } from "@/features/outbound-orders/components/composites/OutboundOrderAddItemsDialog"
+import { buildOutboundOrderEditItemColumns } from "@/features/outbound-orders/components/composites/OutboundOrderEditItemsColumns"
 import { updateOutboundOrderFormDefaultValues } from "@/features/outbound-orders/schemas/update-outbound-order.schema"
 import { withForm } from "@/hooks/use-app-form"
-import type { OutboundOrderItemDisplay } from "@/features/outbound-orders/components/detail/OutboundOrderEditItemsColumns"
+import type { OutboundOrderItemDisplay } from "@/features/outbound-orders/components/composites/OutboundOrderEditItemsColumns"
 import type {
   OutboundOrderItem,
   UnfulfilledOrderItem,

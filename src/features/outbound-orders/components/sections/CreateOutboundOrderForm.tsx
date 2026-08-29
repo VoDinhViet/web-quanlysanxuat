@@ -8,13 +8,13 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { CreateOutboundOrderConfirmSection } from "@/features/outbound-orders/components/create/CreateOutboundOrderConfirmSection"
-import { CreateOutboundOrderItemsSection } from "@/features/outbound-orders/components/create/CreateOutboundOrderItemsSection"
-import { CreateOutboundOrderPickerSection } from "@/features/outbound-orders/components/create/CreateOutboundOrderPickerSection"
+import { CreateOutboundOrderConfirmSection } from "@/features/outbound-orders/components/sections/CreateOutboundOrderConfirmSection"
+import { CreateOutboundOrderItemsSection } from "@/features/outbound-orders/components/sections/CreateOutboundOrderItemsSection"
+import { CreateOutboundOrderPickerSection } from "@/features/outbound-orders/components/sections/CreateOutboundOrderPickerSection"
 import {
   CreateOutboundOrderTabs,
   wizardTabs,
-} from "@/features/outbound-orders/components/create/CreateOutboundOrderTabs"
+} from "@/features/outbound-orders/components/sections/CreateOutboundOrderTabs"
 import { createOutboundOrder } from "@/features/outbound-orders/api/server-functions/create-outbound-order.api"
 import {
   createOutboundOrderFormDefaultValues,
@@ -22,7 +22,7 @@ import {
 } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
-import type { CreateOutboundOrderWizardTab } from "@/features/outbound-orders/components/create/CreateOutboundOrderTabs"
+import type { CreateOutboundOrderWizardTab } from "@/features/outbound-orders/components/sections/CreateOutboundOrderTabs"
 
 // Vỏ wizard "Tạo phiếu giao hàng" (DO) — rập khuôn CreateOutsourcingReceiptForm.tsx, 3 tab.
 // POST /outbound-orders trả về void (không có mã phiếu để hiện lại), nên không có dialog thành

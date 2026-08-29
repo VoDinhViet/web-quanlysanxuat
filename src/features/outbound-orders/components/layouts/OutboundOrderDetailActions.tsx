@@ -10,11 +10,11 @@ import { Link } from "@tanstack/react-router"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
-import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/detail/OutboundOrderApproveDialog"
-import { OutboundOrderCancelDialog } from "@/features/outbound-orders/components/detail/OutboundOrderCancelDialog"
-import { OutboundOrderDeliverDialog } from "@/features/outbound-orders/components/detail/OutboundOrderDeliverDialog"
-import { OutboundOrderRejectDialog } from "@/features/outbound-orders/components/detail/OutboundOrderRejectDialog"
-import { OutboundOrderSendDialog } from "@/features/outbound-orders/components/detail/OutboundOrderSendDialog"
+import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/composites/OutboundOrderApproveDialog"
+import { OutboundOrderCancelDialog } from "@/features/outbound-orders/components/composites/OutboundOrderCancelDialog"
+import { OutboundOrderDeliverDialog } from "@/features/outbound-orders/components/composites/OutboundOrderDeliverDialog"
+import { OutboundOrderRejectDialog } from "@/features/outbound-orders/components/composites/OutboundOrderRejectDialog"
+import { OutboundOrderSendDialog } from "@/features/outbound-orders/components/composites/OutboundOrderSendDialog"
 import {
   canUpdateOutboundOrder,
   OutboundOrderStatus,

@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildCreateOutboundOrderConfirmColumns } from "@/features/outbound-orders/components/create/CreateOutboundOrderConfirmColumns"
+import { buildCreateOutboundOrderConfirmColumns } from "@/features/outbound-orders/components/composites/CreateOutboundOrderConfirmColumns"
 import { useUnfulfilledOrderItemLookup } from "@/features/outbound-orders/hooks/use-unfulfilled-order-item-lookup"
 import { createOutboundOrderFormDefaultValues } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import { withForm } from "@/hooks/use-app-form"

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { outboundOrdersColumns } from "@/features/outbound-orders/components/OutboundOrdersTableColumns"
+import { outboundOrdersColumns } from "@/features/outbound-orders/components/composites/OutboundOrdersTableColumns"
 import { cn } from "@/lib/utils"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 import type { Pagination } from "@/lib/types/pagination.type"

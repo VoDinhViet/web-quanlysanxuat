@@ -4,7 +4,7 @@ import { Eye, Pencil, Printer, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { DeleteOutboundOrderDialog } from "@/features/outbound-orders/components/DeleteOutboundOrderDialog"
+import { DeleteOutboundOrderDialog } from "@/features/outbound-orders/components/composites/DeleteOutboundOrderDialog"
 import { OutboundOrderStatus } from "@/lib/types/outbound-order.type"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 
