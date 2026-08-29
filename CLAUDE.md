@@ -14,3 +14,4 @@ Detailed conventions are split into topic files:
 @.claude/rules/type-safety-and-security.md
 @.claude/rules/forms-and-ui.md
 @.claude/rules/code-quality.md
+@.claude/rules/ui-kit.md
