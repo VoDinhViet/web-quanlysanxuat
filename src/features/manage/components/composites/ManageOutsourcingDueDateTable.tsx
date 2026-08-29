@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -16,73 +15,49 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
-import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
-import { jobDueDateQueryOptions } from "@/features/reports/api"
-import {
-  ProductionJobStatus,
-  productionJobStatusLabels,
-} from "@/lib/types/production-job.type"
-import type { JobDueDate } from "@/lib/types/report.type"
+import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
+import { ManageCardTitle } from "@/features/manage/components/primitives/ManageCardTitle"
+import { outsourcingOrderDueDateQueryOptions } from "@/features/reports/api"
+import type { OutsourcingOrderDueDate } from "@/lib/types/report.type"
 import { cn } from "@/lib/utils"
 import { DateTime } from "luxon"
 
-const productionJobStatusStyles: Record<ProductionJobStatus, string> = {
-  [ProductionJobStatus.PENDING]: "bg-muted text-muted-foreground",
-  [ProductionJobStatus.IN_PROGRESS]:
-    "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-  [ProductionJobStatus.WAITING_QC]:
-    "bg-cyan-100 text-cyan-700 dark:bg-cyan-500/15 dark:text-cyan-400",
-  [ProductionJobStatus.WAITING_DELIVERY]:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-  [ProductionJobStatus.COMPLETED]: "bg-success/15 text-success",
-}
-
-function daysSinceDueDate(dueDate: string): number {
+function daysSinceDueDate(expectedReturnDate: string): number {
   return Math.max(
     0,
-    Math.floor(DateTime.now().diff(DateTime.fromISO(dueDate), "days").days)
+    Math.floor(
+      DateTime.now().diff(DateTime.fromISO(expectedReturnDate), "days").days
+    )
   )
 }
 
-const columnHelper = createColumnHelper<JobDueDate>()
+const columnHelper = createColumnHelper<OutsourcingOrderDueDate>()
 
 const columns = [
   columnHelper.accessor("code", {
-    header: "Job",
+    header: "OS",
     meta: { cellClassName: "text-xs font-medium" },
   }),
-  columnHelper.accessor("orderCode", {
-    header: "PO",
-    meta: { cellClassName: "text-xs" },
+  columnHelper.accessor("supplierName", {
+    header: "NCC",
+    meta: { cellClassName: "max-w-16 truncate text-xs" },
   }),
-  columnHelper.accessor("dueDate", {
-    header: "Ngày giao",
+  columnHelper.accessor("expectedReturnDate", {
+    header: "Ngày hẹn",
     meta: { cellClassName: "text-xs" },
     cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
   columnHelper.display({
     id: "daysSinceDueDate",
-    header: "Trễ hạn",
+    header: "Trễ",
     meta: { cellClassName: "text-xs text-destructive" },
-    cell: ({ row }) => `${daysSinceDueDate(row.original.dueDate)} ngày`,
-  }),
-  columnHelper.accessor("status", {
-    header: "Trạng thái",
-    cell: ({ getValue }) => {
-      const status = getValue()
-
-      return (
-        <Badge variant="outline" className={productionJobStatusStyles[status]}>
-          {productionJobStatusLabels[status]}
-        </Badge>
-      )
-    },
+    cell: ({ row }) =>
+      `${daysSinceDueDate(row.original.expectedReturnDate)} ngày`,
   }),
 ]
 
-export function ManageJobDueDateTable() {
-  const query = useQuery(jobDueDateQueryOptions())
+export function ManageOutsourcingDueDateTable() {
+  const query = useQuery(outsourcingOrderDueDateQueryOptions())
   const table = useReactTable({
     data: query.data ?? [],
     columns,
@@ -98,7 +73,7 @@ export function ManageJobDueDateTable() {
   return (
     <div className="flex flex-col gap-3 rounded-lg bg-card p-4 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <ManageCardTitle>Job trễ hạn</ManageCardTitle>
+        <ManageCardTitle>Gia công ngoài trễ hạn</ManageCardTitle>
       </div>
       <div className={cn(query.isFetching && "opacity-60 transition-opacity")}>
         <Table className="[&_td]:border-r-0 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:first:pl-4 [&_th]:last:pr-4">

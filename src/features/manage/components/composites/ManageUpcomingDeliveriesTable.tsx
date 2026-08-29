@@ -15,8 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
-import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
+import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
+import { ManageCardTitle } from "@/features/manage/components/primitives/ManageCardTitle"
 import { useUpcomingDeliveries } from "@/features/manage/hooks/use-upcoming-deliveries"
 import { outboundOrderStatusLabels } from "@/lib/types/outbound-order.type"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"

@@ -1,10 +1,10 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { ManageAlerts } from "@/features/manage/components/ManageAlerts"
-import { ManageAnalyticsRow } from "@/features/manage/components/ManageAnalyticsRow"
-import { ManageFooter } from "@/features/manage/components/ManageFooter"
-import { ManageOperationsRow } from "@/features/manage/components/ManageOperationsRow"
-import { ManageProductionRow } from "@/features/manage/components/ManageProductionRow"
-import { ManageStatCards } from "@/features/manage/components/ManageStatCards"
+import { ManageAlerts } from "@/features/manage/components/sections/ManageAlerts"
+import { ManageAnalyticsRow } from "@/features/manage/components/layouts/ManageAnalyticsRow"
+import { ManageFooter } from "@/features/manage/components/sections/ManageFooter"
+import { ManageOperationsRow } from "@/features/manage/components/layouts/ManageOperationsRow"
+import { ManageProductionRow } from "@/features/manage/components/layouts/ManageProductionRow"
+import { ManageStatCards } from "@/features/manage/components/sections/ManageStatCards"
 
 export function ManagePage() {
   return (

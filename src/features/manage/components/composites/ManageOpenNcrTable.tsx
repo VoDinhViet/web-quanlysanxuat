@@ -16,8 +16,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
-import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
+import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
+import { ManageCardTitle } from "@/features/manage/components/primitives/ManageCardTitle"
 import { openNcrQueryOptions } from "@/features/reports/api"
 import type { OpenNcr } from "@/lib/types/report.type"
 import { cn } from "@/lib/utils"

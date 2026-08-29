@@ -1,7 +1,7 @@
-import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
-import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
-import { ManageQcRateChart } from "@/features/manage/components/ManageQcRateChart"
-import { ManageQuickActions } from "@/features/manage/components/ManageQuickActions"
+import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
+import { ManageCardTitle } from "@/features/manage/components/primitives/ManageCardTitle"
+import { ManageQcRateChart } from "@/features/manage/components/composites/ManageQcRateChart"
+import { ManageQuickActions } from "@/features/manage/components/composites/ManageQuickActions"
 
 /** QC line chart + quick actions. */
 export function ManageAnalyticsRow() {

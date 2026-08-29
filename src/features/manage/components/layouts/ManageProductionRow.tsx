@@ -1,5 +1,5 @@
-import { ManageJobDueDateTable } from "@/features/manage/components/ManageJobDueDateTable"
-import { ManageProductionChart } from "@/features/manage/components/ManageProductionChart"
+import { ManageJobDueDateTable } from "@/features/manage/components/composites/ManageJobDueDateTable"
+import { ManageProductionChart } from "@/features/manage/components/composites/ManageProductionChart"
 
 /** "Tiến độ sản xuất" + "Job trễ hạn". */
 export function ManageProductionRow() {
