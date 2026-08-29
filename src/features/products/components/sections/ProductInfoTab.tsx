@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/use-app-form"
-import { UpdateProductInfoSection } from "@/features/products/components/UpdateProductInfoSection"
+import { UpdateProductInfoSection } from "@/features/products/components/sections/UpdateProductInfoSection"
 import { updateProductFormDefaultValues } from "@/features/products/schemas/update-product.schema"
 import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 

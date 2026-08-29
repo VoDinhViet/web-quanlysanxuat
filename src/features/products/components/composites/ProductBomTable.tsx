@@ -32,8 +32,8 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import {
   BomNodeTypeBadge,
   ProductTypeBadge,
-} from "@/features/products/components/ProductBadges"
-import { ProductOperationsPanel } from "@/features/products/components/ProductOperationsPanel"
+} from "@/features/products/components/primitives/ProductBadges"
+import { ProductOperationsPanel } from "@/features/products/components/composites/ProductOperationsPanel"
 import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import type { BomItem, BomItemType } from "@/lib/types/bom-item.type"
 import type { ProductOperation } from "@/lib/types/operation.type"

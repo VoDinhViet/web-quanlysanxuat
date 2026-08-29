@@ -4,8 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { ProductsTable } from "@/features/products/components/ProductsTable"
-import { ProductsTableFilter } from "@/features/products/components/ProductsTableFilter"
+import { ProductsTable } from "@/features/products/components/sections/ProductsTable"
+import { ProductsTableFilter } from "@/features/products/components/sections/ProductsTableFilter"
 import { itemsQueryOptions } from "@/features/products/api/options"
 
 export function ProductsPage() {

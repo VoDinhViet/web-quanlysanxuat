@@ -26,7 +26,7 @@ import type { ComponentType, ReactNode } from "react"
 import {
   ProductStatusBadge,
   ProductTypeBadge,
-} from "@/features/products/components/ProductBadges"
+} from "@/features/products/components/primitives/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Item, ItemFile } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"

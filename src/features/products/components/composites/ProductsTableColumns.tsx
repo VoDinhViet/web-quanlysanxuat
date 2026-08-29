@@ -6,12 +6,12 @@ import { Copy, Eye, ImageOff, Trash2 } from "lucide-react"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { CopyProductDialog } from "@/features/products/components/CopyProductDialog"
-import { DeleteProductDialog } from "@/features/products/components/DeleteProductDialog"
+import { CopyProductDialog } from "@/features/products/components/composites/CopyProductDialog"
+import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
 import {
   ProductStatusBadge,
   ProductTypeBadge,
-} from "@/features/products/components/ProductBadges"
+} from "@/features/products/components/primitives/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Item } from "@/lib/types/item.type"
 

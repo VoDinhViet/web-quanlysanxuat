@@ -1,6 +1,6 @@
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { CreateProductForm } from "@/features/products/components/CreateProductForm"
-import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
+import { CreateProductForm } from "@/features/products/components/sections/CreateProductForm"
+import { ProductDetailTabs } from "@/features/products/components/layouts/ProductDetailTabs"
 
 const lockedTabsHint =
   "Lưu thông tin sản phẩm trước để mở khoá bước này — cấu trúc và vật tư cần mã sản phẩm đã tạo."

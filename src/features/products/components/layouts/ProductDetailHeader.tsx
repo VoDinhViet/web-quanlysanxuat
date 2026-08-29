@@ -12,9 +12,9 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { DeleteProductDialog } from "@/features/products/components/DeleteProductDialog"
-import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
-import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"
+import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
+import { ProductStatusBadge } from "@/features/products/components/primitives/ProductBadges"
+import { ProductDetailTabs } from "@/features/products/components/layouts/ProductDetailTabs"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductDetailTab } from "@/features/products/schemas/product-detail-search.schema"
 import type { Item } from "@/lib/types/item.type"

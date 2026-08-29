@@ -4,9 +4,9 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { BomItemFormDialog } from "@/features/products/components/BomItemFormDialog"
-import { DeleteBomItemDialog } from "@/features/products/components/DeleteBomItemDialog"
-import { ProductBomTable } from "@/features/products/components/ProductBomTable"
+import { BomItemFormDialog } from "@/features/products/components/composites/BomItemFormDialog"
+import { DeleteBomItemDialog } from "@/features/products/components/composites/DeleteBomItemDialog"
+import { ProductBomTable } from "@/features/products/components/composites/ProductBomTable"
 import { useProductBom } from "@/features/products/hooks/use-product-bom"
 import {
   itemBomQueryOptions,

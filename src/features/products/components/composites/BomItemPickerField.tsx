@@ -35,10 +35,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildBomItemPickerColumns } from "@/features/products/components/BomItemPickerColumns"
+import { buildBomItemPickerColumns } from "@/features/products/components/composites/BomItemPickerColumns"
 import { materialsQueryOptions } from "@/features/materials/api"
 import { itemsQueryOptions } from "@/features/products/api/options"
-import type { BomItemPickerRow } from "@/features/products/components/BomItemPickerColumns"
+import type { BomItemPickerRow } from "@/features/products/components/composites/BomItemPickerColumns"
 import type { BomItemType } from "@/lib/types/bom-item.type"
 import { ItemType } from "@/lib/types/item.type"
 import { cn } from "@/lib/utils"

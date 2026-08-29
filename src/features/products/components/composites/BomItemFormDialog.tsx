@@ -10,8 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useAppForm } from "@/hooks/use-app-form"
-import { BomItemDrawingField } from "@/features/products/components/BomItemDrawingField"
-import { BomItemPickerField } from "@/features/products/components/BomItemPickerField"
+import { BomItemDrawingField } from "@/features/products/components/composites/BomItemDrawingField"
+import { BomItemPickerField } from "@/features/products/components/composites/BomItemPickerField"
 import {
   createBomItemDefaultValues,
   createBomItemSchema,

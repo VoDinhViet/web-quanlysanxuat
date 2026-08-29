@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query"
 
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { ProductIssuesTable } from "@/features/products/components/ProductIssuesTable"
-import { ProductIssuesTableFilter } from "@/features/products/components/ProductIssuesTableFilter"
+import { ProductIssuesTable } from "@/features/products/components/composites/ProductIssuesTable"
+import { ProductIssuesTableFilter } from "@/features/products/components/sections/ProductIssuesTableFilter"
 import { itemIssuesQueryOptions } from "@/features/products/api/options"
 import type { Item } from "@/lib/types/item.type"
 

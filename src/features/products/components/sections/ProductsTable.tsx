@@ -1,10 +1,12 @@
+import { Link } from "@tanstack/react-router"
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ClipboardList } from "lucide-react"
+import { PackageOpen, Plus } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -13,29 +15,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { itemIssueColumns } from "@/features/products/components/ProductIssuesTableColumns"
+import { productColumns } from "@/features/products/components/composites/ProductsTableColumns"
 import { cn } from "@/lib/utils"
-import type { ItemIssue } from "@/lib/types/item.type"
+import type { Item } from "@/lib/types/item.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
-type ProductIssuesTableProps = {
-  rows: ItemIssue[]
+type ProductsTableProps = {
+  rows: Item[]
   pagination: Pagination
   isPending: boolean
 }
 
-// Bảng vật tư trong cấu trúc sản phẩm (tab BOM) — tự dựng useReactTable/flexRender thay vì qua
-// một khung DataTable dùng chung, để mỗi bảng tự do tiến hoá riêng.
-export function ProductIssuesTable({
+// Bảng danh sách sản phẩm — tự dựng useReactTable/flexRender thay vì qua một khung DataTable dùng
+// chung, để mỗi trang danh sách tự do tiến hoá riêng.
+export function ProductsTable({
   rows,
   pagination,
   isPending,
-}: ProductIssuesTableProps) {
+}: ProductsTableProps) {
   const table = useReactTable({
     data: rows,
-    columns: itemIssueColumns,
+    columns: productColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -48,9 +51,19 @@ export function ProductIssuesTable({
     >
       {rows.length === 0 ? (
         <TableEmpty
-          icon={ClipboardList}
-          title="Chưa có vật tư nào"
-          description='Thêm vật tư vào cấu trúc sản phẩm ở tab "Cấu trúc & Công đoạn" để hiển thị tại đây.'
+          icon={PackageOpen}
+          title="Chưa có sản phẩm nào"
+          description="Bắt đầu bằng cách thêm sản phẩm đầu tiên vào danh mục của bạn."
+          action={
+            <RoutePermissionGate route="/manage/products/create">
+              <Button asChild size="sm" className="text-xs">
+                <Link to="/manage/products/create">
+                  <Plus className="size-4" />
+                  Thêm sản phẩm
+                </Link>
+              </Button>
+            </RoutePermissionGate>
+          }
         />
       ) : (
         <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
