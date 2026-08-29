@@ -1,19 +1,16 @@
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
 import { CircleX } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
+import { ReasonDialog } from "@/components/shared/composites/ReasonDialog"
 import { useAppForm } from "@/hooks/use-app-form"
 import { rejectInventoryRequisition } from "@/features/inventory-requisitions/api/server-functions/reject-inventory-requisition.api"
 import { rejectInventoryRequisitionSchema } from "@/features/inventory-requisitions/schemas/reject-inventory-requisition.schema"
@@ -30,17 +27,10 @@ export function RejectRequisitionDialog({
   detail,
   trigger,
 }: RejectRequisitionDialogProps) {
-  const [open, setOpen] = useState(false)
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        {/* Radix unmounts content while closed, so the form (and its mutation state)
-            re-mounts fresh each time the dialog opens. */}
-        <RejectRequisitionForm detail={detail} onClose={() => setOpen(false)} />
-      </DialogContent>
-    </Dialog>
+    <ReasonDialog trigger={trigger}>
+      {(close) => <RejectRequisitionForm detail={detail} onClose={close} />}
+    </ReasonDialog>
   )
 }
 
