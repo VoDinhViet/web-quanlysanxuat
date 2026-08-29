@@ -13,9 +13,9 @@ import { toast } from "sonner"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { useAppForm } from "@/hooks/use-app-form"
 import { orderQueryOptions } from "@/features/orders/api"
-import { ProductionOrderDetailSummaryCard } from "@/features/production-orders/components/detail/ProductionOrderDetailSummaryCard"
-import { ProductionOrderItemsCard } from "@/features/production-orders/components/detail/ProductionOrderItemsCard"
-import { ProductionOrderLogsCard } from "@/features/production-orders/components/detail/ProductionOrderLogsCard"
+import { ProductionOrderDetailSummaryCard } from "@/features/production-orders/components/composites/ProductionOrderDetailSummaryCard"
+import { ProductionOrderItemsCard } from "@/features/production-orders/components/composites/ProductionOrderItemsCard"
+import { ProductionOrderLogsCard } from "@/features/production-orders/components/composites/ProductionOrderLogsCard"
 import {
   productionOrderLogsQueryOptions,
   productionOrderQueryOptions,

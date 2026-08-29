@@ -1,11 +1,11 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { ProductionOrderStatusBadge } from "@/features/production-orders/components/ProductionOrderBadges"
+import { ProductionOrderStatusBadge } from "@/features/production-orders/components/primitives/ProductionOrderBadges"
 import {
   DueDateCell,
   ProductionOrderActionsCell,
-} from "@/features/production-orders/components/ProductionOrderTableCells"
+} from "@/features/production-orders/components/primitives/ProductionOrderTableCells"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 
 const productionOrderColumnHelper = createColumnHelper<ProductionOrder>()

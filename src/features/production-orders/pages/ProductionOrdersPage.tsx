@@ -5,8 +5,8 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { productionOrdersQueryOptions } from "@/features/production-orders/api/options"
-import { ProductionOrdersTable } from "@/features/production-orders/components/ProductionOrdersTable"
-import { ProductionOrdersTableFilter } from "@/features/production-orders/components/ProductionOrdersTableFilter"
+import { ProductionOrdersTable } from "@/features/production-orders/components/sections/ProductionOrdersTable"
+import { ProductionOrdersTableFilter } from "@/features/production-orders/components/sections/ProductionOrdersTableFilter"
 
 export function ProductionOrdersPage() {
   // useSearch keys off the file-based route id. The filter reads/writes this

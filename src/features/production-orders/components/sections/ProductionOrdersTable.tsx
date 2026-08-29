@@ -13,8 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { ProductionOrdersEmptyState } from "@/features/production-orders/components/ProductionOrdersEmptyState"
-import { productionOrderColumns } from "@/features/production-orders/components/ProductionOrdersTableColumns"
+import { ProductionOrdersEmptyState } from "@/features/production-orders/components/layouts/ProductionOrdersEmptyState"
+import { productionOrderColumns } from "@/features/production-orders/components/composites/ProductionOrdersTableColumns"
 import { cn } from "@/lib/utils"
 import type {
   ProductionOrder,

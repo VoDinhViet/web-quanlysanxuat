@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { ApproveProductionOrderDialog } from "@/features/production-orders/components/detail/ApproveProductionOrderDialog"
+import { ApproveProductionOrderDialog } from "@/features/production-orders/components/composites/ApproveProductionOrderDialog"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 

@@ -3,8 +3,8 @@ import { DateTime } from "luxon"
 import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { ProductionOrderDetailActions } from "@/features/production-orders/components/detail/ProductionOrderDetailActions"
-import { ProductionOrderStatusBadge } from "@/features/production-orders/components/ProductionOrderBadges"
+import { ProductionOrderDetailActions } from "@/features/production-orders/components/layouts/ProductionOrderDetailActions"
+import { ProductionOrderStatusBadge } from "@/features/production-orders/components/primitives/ProductionOrderBadges"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 type ProductionOrderDetailSummaryCardProps = {
