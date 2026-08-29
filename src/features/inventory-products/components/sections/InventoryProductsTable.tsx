@@ -3,7 +3,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ClipboardList } from "lucide-react"
+import { Boxes } from "lucide-react"
 
 import {
   Table,
@@ -15,28 +15,27 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TablePagination } from "@/components/shared/composites/TablePagination"
-import { inventoryProductLedgerColumns } from "@/features/inventory-products/components/detail/InventoryProductLedgerColumns"
+import { inventoryProductsColumns } from "@/features/inventory-products/components/composites/InventoryProductsTableColumns"
 import { cn } from "@/lib/utils"
-import type { ProductLedgerEntry } from "@/lib/types/product-ledger.type"
+import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
-type InventoryProductLedgerTableProps = {
-  rows: ProductLedgerEntry[]
+type InventoryProductsTableProps = {
+  rows: ProductInventoryItem[]
   pagination: Pagination
   isPending: boolean
 }
 
-// The stock-card ledger table — same useReactTable/flexRender boilerplate as
-// PurchaseLedgerTable.tsx, this app's other from-scratch ledger table. Reads
-// GET /api/inventory-products/:itemId/ledger (be-quanlysanxuat's ProductLedgerEntryResDto).
-export function InventoryProductLedgerTable({
+// Bảng tồn kho thành phẩm — tự dựng useReactTable/flexRender thay vì qua một khung DataTable dùng
+// chung, để mỗi trang danh sách tự do tiến hoá riêng.
+export function InventoryProductsTable({
   rows,
   pagination,
   isPending,
-}: InventoryProductLedgerTableProps) {
+}: InventoryProductsTableProps) {
   const table = useReactTable({
     data: rows,
-    columns: inventoryProductLedgerColumns,
+    columns: inventoryProductsColumns,
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -49,9 +48,9 @@ export function InventoryProductLedgerTable({
     >
       {rows.length === 0 ? (
         <TableEmpty
-          icon={ClipboardList}
-          title="Chưa có giao dịch tồn kho nào"
-          description="Lịch sử nhập/xuất của thành phẩm này sẽ hiển thị tại đây."
+          icon={Boxes}
+          title="Chưa có thành phẩm nào trong kho"
+          description="Dữ liệu tồn kho thành phẩm sẽ hiển thị khi có kết quả nhập kho thành phẩm."
         />
       ) : (
         <div className="overflow-x-auto rounded-md border border-border/50 bg-card">

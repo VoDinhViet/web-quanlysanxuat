@@ -1,13 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { DateTime } from "luxon"
 
-import { ProductLedgerMovementTypeBadge } from "@/features/inventory-products/components/detail/InventoryProductLedgerBadges"
+import { ProductLedgerMovementTypeBadge } from "@/features/inventory-products/components/primitives/InventoryProductLedgerBadges"
 import {
   InventoryProductLedgerBalanceCell,
   InventoryProductLedgerDescriptionCell,
   InventoryProductLedgerQuantityCell,
   InventoryProductLedgerReferenceCell,
-} from "@/features/inventory-products/components/detail/InventoryProductLedgerCells"
+} from "@/features/inventory-products/components/primitives/InventoryProductLedgerCells"
 import type { ProductLedgerEntry } from "@/lib/types/product-ledger.type"
 import { resolveProductLedgerMovementType } from "@/lib/types/product-ledger.type"
 

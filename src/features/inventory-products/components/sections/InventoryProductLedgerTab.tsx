@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { InventoryProductLedgerTable } from "@/features/inventory-products/components/detail/InventoryProductLedgerTable"
+import { InventoryProductLedgerTable } from "@/features/inventory-products/components/composites/InventoryProductLedgerTable"
 import { productLedgerQueryOptions } from "@/features/inventory-products/api/options"
 
 type InventoryProductLedgerTabProps = {

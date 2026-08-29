@@ -5,9 +5,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { inventoryProductsQueryOptions } from "@/features/inventory-products/api/options"
-import { InventoryProductsTable } from "@/features/inventory-products/components/InventoryProductsTable"
-import { InventoryProductsTableFilter } from "@/features/inventory-products/components/InventoryProductsTableFilter"
-import { InventoryProductLegend } from "@/features/inventory-products/components/InventoryProductLegend"
+import { InventoryProductsTable } from "@/features/inventory-products/components/sections/InventoryProductsTable"
+import { InventoryProductsTableFilter } from "@/features/inventory-products/components/sections/InventoryProductsTableFilter"
+import { InventoryProductLegend } from "@/features/inventory-products/components/primitives/InventoryProductLegend"
 
 export function InventoryProductsPage() {
   const search = useSearch({ from: "/(authed)/manage_/inventory-products/" })
