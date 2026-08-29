@@ -45,8 +45,6 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 | Component | Prop chính | Call site |
 |---|---|---|
 | `TimelineCard` | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?` | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
-| `ConfirmActionDialog` | `trigger`, `icon`, `title`, `description`, `confirmLabel`, `cancelLabel?`, `destructive?`, `onConfirm: () => Promise<unknown>` (mutation + invalidate ở call site, invalidate không `await`), `isPending`, `error?`, `onOpenChange?` | `ApproveRequisitionDialog.tsx` (+ Cancel/Issue/Send) |
-| `ReasonDialog` | `trigger`, `children: (close: () => void) => ReactNode` — Radix unmount khi đóng tự reset mutation, không cần `onOpenChange` | `RejectRequisitionDialog.tsx` |
 | `DataTable` | `table: Table<TData>` (từ `useReactTable`), `isEmpty`, `emptyState: ReactNode` | `InventoryRequisitionsTable.tsx` |
 | `LocalPagination` | `pagination: Pagination`, `limitOptions: readonly number[]`, `onPageChange`, `onLimitChange`, `disabled?` — em của `TablePagination` cho phân trang không có URL để patch | `CreateInventoryRequisitionPickerSection.tsx` |
 | `TablePagination` | `pagination: Pagination`, `className?` — tự patch `page`/`limit` search param qua `navigate({to: "."})` | mọi list page (Phase 0) |
@@ -73,8 +71,15 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 - **4 `build*Timeline`** (`orders`/`purchase-orders`/`purchase-quotations`/`payment-requests`) —
   mỗi hàm ghi luật vòng đời riêng thật (nhánh gửi-lại, trạng thái nào coi là "hiện tại"); chỉ
   shell hiển thị (`TimelineCard`) dùng chung.
-- **`useMutation` + query key trong mọi dialog** — `ConfirmActionDialog`/`ReasonDialog` không
-  bao giờ giữ mutation hay query key; ẩn nó đi sẽ mất khả năng đọc invalidate ở mỗi call site.
+- **Dialog xác nhận 1 hành động / dialog có lý do** (`AlertDialog` hoặc `Dialog` +
+  `useState(open)` + `useMutation`) — thử gộp thành `composites/ConfirmActionDialog` +
+  `ReasonDialog` ở Phase 2.5 (5 dialog `inventory-requisitions`), rồi thử ghép thêm 4 dialog
+  `purchase-requests` ở Phase 4; **cả hai component và toàn bộ 9 migration đều bị revert**, cùng
+  đợt với `StatusBadge` ở trên và cùng lý do — mỗi dialog quay lại tự dựng
+  `AlertDialog`/`Dialog` + state + `useMutation` của riêng nó. (`DeletePurchaseRequestItemDialog.tsx`
+  vốn đã có hành vi khác biệt thật — đóng dialog + toast thay vì ở lại hiện lỗi inline khi
+  mutation lỗi — nên việc revert này cũng xoá luôn phần "giả lập" hành vi đó qua try/catch trong
+  `onConfirm` mà lần migrate trước phải thêm vào.)
 - **Status badge shell** (`<Badge variant="outline">` + dot span) — thử gộp thành
   `primitives/StatusBadge` ở Phase 2.4 (dùng bởi `inventory-requisitions`), rồi thử ghép thêm
   `purchase-requests` ở Phase 4; **cả hai đều bị revert**. Dù shell nhìn giống hệt ở 2 bản đầu,
