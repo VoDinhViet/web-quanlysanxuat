@@ -58,7 +58,6 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 | Component | Prop chính | Call site |
 |---|---|---|
 | `MetaField` / `InfoRow` (`InfoFields.tsx`) | `{label, value: ReactNode}` — `MetaField` truncate (lưới cố định), `InfoRow` wrap (sidebar rộng) | `InventoryRequisitionDetailHeader.tsx` / `InventoryRequisitionInfoCard.tsx` |
-| `StatusBadge` | `style: {badge, dot}` (domain tự giữ `Record<XStatus, BadgeStyle>`), `label`, `className?` | `InventoryRequisitionBadges.tsx` |
 | `RowActions` | `children`, `className?` — chỉ bọc `flex items-center justify-center gap-1.5`, action con vẫn ở call site | `InventoryRequisitionsTableCells.tsx` |
 | `TableSearchInput` | `id`, `label`, `placeholder`, `value`, `onChange`, `onKeyDown?` — ghép với `useFilterSearchTerm` | `InventoryRequisitionsTableFilter.tsx` |
 | `FilterSelect` | `id`, `label`, `value`, `options: {value,label}[]`, `onValueChange` | `InventoryRequisitionsTableFilter.tsx` |
@@ -76,8 +75,14 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
   shell hiển thị (`TimelineCard`) dùng chung.
 - **`useMutation` + query key trong mọi dialog** — `ConfirmActionDialog`/`ReasonDialog` không
   bao giờ giữ mutation hay query key; ẩn nó đi sẽ mất khả năng đọc invalidate ở mỗi call site.
-- **`Record<XStatus, BadgeStyle>`** — chọn status nào là "warning"/"destructive" là quyết định
-  sản phẩm, khác nhau mỗi domain dù shell `StatusBadge` giống hệt.
+- **Status badge shell** (`<Badge variant="outline">` + dot span) — thử gộp thành
+  `primitives/StatusBadge` ở Phase 2.4 (dùng bởi `inventory-requisitions`), rồi thử ghép thêm
+  `purchase-requests` ở Phase 4; **cả hai đều bị revert**. Dù shell nhìn giống hệt ở 2 bản đầu,
+  quyết định là badge không đảm bảo luôn cùng hình dạng ở domain khác (như `StatCardSection` —
+  xem bên dưới), nên mỗi domain giữ nguyên `<Badge>` + `Record<XStatus, BadgeStyle>` +
+  `cn(dot, className)` của riêng nó thay vì qua một shell chung. `Record<XStatus, BadgeStyle>`
+  bản thân nó vẫn luôn ở lại feature dù có shell chung hay không — chọn status nào là
+  "warning"/"destructive" là quyết định sản phẩm.
 - **`*TableColumns`** — định nghĩa cột (label tiếng Việt, cell renderer) luôn ở feature.
 - **`resetFilters`/`handleXChange`** — đóng gói closure ghi `navigate({search: ...})` giữ type
   theo đúng search schema của route đó; một signature chung sẽ ép `as` cast ở mọi call site.
@@ -88,8 +93,8 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 - **`reject-*.schema.ts`** — là `.validator()` của server function tương ứng (trust boundary),
   không rút thành schema dùng chung dù hình dạng field giống nhau.
 - **`StatusLegend` flavor A** (`dl`/`dt`/`dd`, dùng bởi `OrderStatusLegend`/`PurchaseOrderLegend`/
-  …) — chưa hợp nhất với flavor B (`ul`/`li` + `StatusBadge` thật) đã ship cho
-  `inventory-requisitions`; 2 fork khác hẳn cấu trúc (đếm dot đơn giản có "1 shell" là ranh giới
+  …) — chưa hợp nhất với flavor B (`ul`/`li` + badge thật của domain đó, qua slot `badge:
+  ReactNode`) đã ship cho `inventory-requisitions`; 2 fork khác hẳn cấu trúc (đếm dot đơn giản có "1 shell" là ranh giới
   của Phase 2.4). Hợp nhất khi feature dùng flavor A thực sự migrate.
 - **`StatusNotice` fork A** (shadcn `Alert`, dùng bởi `orders`/`outbound-orders`) — chưa hợp nhất
   với fork B (hand-rolled div) đã ship cho `purchase-orders`/`purchase-requests`. Icon package
