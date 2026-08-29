@@ -6,18 +6,10 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import { useDebounceValue } from "usehooks-ts"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -27,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
+import { LocalPagination } from "@/components/shared/composites/LocalPagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildCreateInventoryRequisitionPickerColumns } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
 import { requisitionLinesQueryOptions } from "@/features/inventory-requisitions/api/options"
@@ -288,53 +281,17 @@ export const CreateInventoryRequisitionPickerSection = withForm({
         </div>
 
         {pagination && (
-          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Select
-                value={String(limit)}
-                onValueChange={(value) => {
-                  setLimit(Number(value) as (typeof limitOptions)[number])
-                  setPage(1)
-                }}
-                disabled={disabled}
-              >
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {limitOptions.map((option) => (
-                    <SelectItem key={option} value={String(option)}>
-                      {option} / trang
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                disabled={disabled || pagination.currentPage <= 1}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                <ChevronLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                disabled={
-                  disabled || pagination.currentPage >= pagination.totalPages
-                }
-                onClick={() => setPage((p) => p + 1)}
-              >
-                <ChevronRight className="size-4" />
-              </Button>
-            </div>
-          </div>
+          <LocalPagination
+            pagination={pagination}
+            limitOptions={limitOptions}
+            onPageChange={setPage}
+            onLimitChange={(nextLimit) => {
+              setLimit(nextLimit as (typeof limitOptions)[number])
+              setPage(1)
+            }}
+            disabled={disabled}
+            className="mt-3"
+          />
         )}
       </div>
     )
