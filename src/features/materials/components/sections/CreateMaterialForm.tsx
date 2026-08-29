@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { CreateMaterialExtendedSection } from "@/features/materials/components/create/CreateMaterialExtendedSection"
-import { CreateMaterialInfoSection } from "@/features/materials/components/create/CreateMaterialInfoSection"
+import { CreateMaterialExtendedSection } from "@/features/materials/components/sections/CreateMaterialExtendedSection"
+import { CreateMaterialInfoSection } from "@/features/materials/components/sections/CreateMaterialInfoSection"
 import {
   createMaterialFormDefaultValues,
   createMaterialSchema,

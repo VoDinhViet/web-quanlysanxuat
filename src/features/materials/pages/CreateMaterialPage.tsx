@@ -1,4 +1,4 @@
-import { CreateMaterialForm } from "@/features/materials/components/create/CreateMaterialForm"
+import { CreateMaterialForm } from "@/features/materials/components/sections/CreateMaterialForm"
 
 export function CreateMaterialPage() {
   return (

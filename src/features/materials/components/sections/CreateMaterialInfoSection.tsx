@@ -4,8 +4,8 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
-import { MaterialImageField } from "@/features/materials/components/MaterialImageField"
-import { updateMaterialFormDefaultValues } from "@/features/materials/schemas/update-material.schema"
+import { MaterialImageField } from "@/features/materials/components/composites/MaterialImageField"
+import { createMaterialFormDefaultValues } from "@/features/materials/schemas/create-material.schema"
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { itemStatusLabels } from "@/lib/types/item.type"
@@ -14,8 +14,8 @@ import type { ComboboxOption } from "@/components/shared/composites/ComboboxFiel
 
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 
-export const UpdateMaterialInfoSection = withForm({
-  defaultValues: updateMaterialFormDefaultValues,
+export const CreateMaterialInfoSection = withForm({
+  defaultValues: createMaterialFormDefaultValues,
   props: {
     disabled: false,
     selectedClient: undefined as ComboboxOption | undefined,

@@ -4,8 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
-import { MaterialsTable } from "@/features/materials/components/MaterialsTable"
-import { MaterialsTableFilter } from "@/features/materials/components/MaterialsTableFilter"
+import { MaterialsTable } from "@/features/materials/components/sections/MaterialsTable"
+import { MaterialsTableFilter } from "@/features/materials/components/sections/MaterialsTableFilter"
 import { materialsQueryOptions } from "@/features/materials/api/options"
 
 export function MaterialsPage() {
