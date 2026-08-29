@@ -1,12 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
+import { OrderStatusBadge } from "@/features/orders/components/primitives/OrderBadges"
 import {
   DateCell,
   DueDateCell,
   MoneyCell,
   OrderActionsCell,
-} from "@/features/orders/components/OrderTableCells"
+} from "@/features/orders/components/primitives/OrderTableCells"
 import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
 import type { Order } from "@/lib/types/order.type"
 

@@ -2,7 +2,7 @@ import { Documents, FileText, Paperclip } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import prettyBytes from "pretty-bytes"
 
-import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
+import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { OrderDetail } from "@/lib/types/order.type"
 

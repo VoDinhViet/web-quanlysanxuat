@@ -2,9 +2,9 @@ import { CheckCircle, CloseCircle, SendSquare } from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
-import { ApproveOrderDialog } from "@/features/orders/components/detail/ApproveOrderDialog"
-import { ReqOrderApprovalDialog } from "@/features/orders/components/detail/ReqOrderApprovalDialog"
-import { RejectOrderDialog } from "@/features/orders/components/detail/RejectOrderDialog"
+import { ApproveOrderDialog } from "@/features/orders/components/composites/ApproveOrderDialog"
+import { ReqOrderApprovalDialog } from "@/features/orders/components/composites/ReqOrderApprovalDialog"
+import { RejectOrderDialog } from "@/features/orders/components/composites/RejectOrderDialog"
 import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 

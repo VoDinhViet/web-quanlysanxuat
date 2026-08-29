@@ -14,15 +14,15 @@ import {
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
-import { OrderItemDialog } from "@/features/orders/components/OrderItemDialog"
+import { OrderItemDialog } from "@/features/orders/components/composites/OrderItemDialog"
 import { estimateLineTotal } from "@/features/orders/logic/order-totals"
-import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
+import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
 import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
 import { currencyFormatter } from "@/lib/currency"
 import { orderItemStatusLabels, OrderItemStatus } from "@/lib/types/order.type"
 
-export const UpdateOrderItemsSection = withForm({
-  defaultValues: updateOrderFormDefaultValues,
+export const CreateOrderItemsSection = withForm({
+  defaultValues: createOrderFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [dialogOpen, setDialogOpen] = useState(false)

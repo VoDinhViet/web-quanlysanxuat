@@ -2,7 +2,7 @@ import { LockKeyhole, Notes } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
-import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
+import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
 import type { OrderDetail } from "@/lib/types/order.type"
 
 type OrderDetailNotesCardProps = {

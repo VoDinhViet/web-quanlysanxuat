@@ -4,9 +4,9 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Badge } from "@/components/ui/badge"
-import { OrderDetailActions } from "@/features/orders/components/detail/OrderDetailActions"
-import { OrderDetailStatTiles } from "@/features/orders/components/detail/OrderDetailStatTiles"
-import { OrderStatusBadge } from "@/features/orders/components/OrderBadges"
+import { OrderDetailActions } from "@/features/orders/components/layouts/OrderDetailActions"
+import { OrderDetailStatTiles } from "@/features/orders/components/composites/OrderDetailStatTiles"
+import { OrderStatusBadge } from "@/features/orders/components/primitives/OrderBadges"
 import {
   orderPaymentStatusLabels,
   OrderPaymentStatus,

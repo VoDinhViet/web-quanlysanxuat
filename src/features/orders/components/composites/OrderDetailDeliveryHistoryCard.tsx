@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
+import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
 import { buildMockDeliveryHistory } from "@/features/orders/mock/order-detail.mock"
 import { vndFormatter } from "@/lib/currency"
 import type { OrderDetail, OrderItem } from "@/lib/types/order.type"

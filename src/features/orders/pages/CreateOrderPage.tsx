@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { CreateOrderForm } from "@/features/orders/components/create/CreateOrderForm"
+import { CreateOrderForm } from "@/features/orders/components/sections/CreateOrderForm"
 
 export function CreateOrderPage() {
   return (

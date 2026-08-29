@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { OrderApprovalActions } from "@/features/orders/components/detail/OrderApprovalActions"
+import { OrderApprovalActions } from "@/features/orders/components/layouts/OrderApprovalActions"
 import {
   canUpdateOrder,
   resolveOrderUpdateDisabledHint,

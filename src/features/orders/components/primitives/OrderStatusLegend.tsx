@@ -3,7 +3,7 @@ import { Info } from "lucide-react"
 import {
   orderBadgeLabels,
   orderBadgeStyles,
-} from "@/features/orders/components/OrderBadges"
+} from "@/features/orders/components/primitives/OrderBadges"
 import {
   orderStatusDescriptions,
   overdueDescription,
@@ -11,7 +11,7 @@ import {
   OrderStatus,
 } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
-import type { OrderBadgeTone } from "@/features/orders/components/OrderBadges"
+import type { OrderBadgeTone } from "@/features/orders/components/primitives/OrderBadges"
 
 // Display order follows the table's typical flow rather than the enum order:
 // active states first, then the waiting states, then the exception.

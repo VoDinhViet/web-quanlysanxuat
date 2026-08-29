@@ -16,9 +16,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { OrderDetailPaymentSummary } from "@/features/orders/components/detail/OrderDetailPaymentSummary"
-import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
-import { orderDetailItemColumns } from "@/features/orders/components/detail/OrderDetailItemsTableColumns"
+import { OrderDetailPaymentSummary } from "@/features/orders/components/composites/OrderDetailPaymentSummary"
+import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
+import { orderDetailItemColumns } from "@/features/orders/components/composites/OrderDetailItemsTableColumns"
 import { currencyFormatter } from "@/lib/currency"
 import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 import { cn } from "@/lib/utils"
