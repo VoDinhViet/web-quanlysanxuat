@@ -31,10 +31,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { useProductOperations } from "@/features/products/hooks/use-product-operations"
 import type { OperationsTarget } from "@/features/products/hooks/use-product-operations"

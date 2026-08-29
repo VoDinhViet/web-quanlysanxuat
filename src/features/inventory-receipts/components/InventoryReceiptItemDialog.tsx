@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useGetMaterialOptions } from "@/features/inventory-receipts/hooks/use-get-material-options"
 import {

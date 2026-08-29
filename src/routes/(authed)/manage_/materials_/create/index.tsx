@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { CreateMaterialPage } from "@/features/materials/pages/CreateMaterialPage"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"

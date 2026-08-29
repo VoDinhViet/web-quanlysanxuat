@@ -13,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { purchaseOrdersColumns } from "@/features/purchase-orders/components/PurchaseOrdersTableColumns"
 import { cn } from "@/lib/utils"
 import type { PurchaseOrder } from "@/lib/types/purchase-order.type"

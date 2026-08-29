@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import {
   itemStatusLabels,
   itemTypeLabels,

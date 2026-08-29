@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { UpdateUserPage } from "@/features/users/pages/UpdateUserPage"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import {

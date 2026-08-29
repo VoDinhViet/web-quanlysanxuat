@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
 import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
 import { openNcrQueryOptions } from "@/features/reports/api"
@@ -37,7 +37,8 @@ const openNcrStatusLabels: Record<OpenNcr["status"], string> = {
 const openNcrStatusStyles: Record<OpenNcr["status"], string> = {
   PENDING: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
   WAITING_RETURN: "bg-destructive/15 text-destructive",
-  REWORK: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  REWORK:
+    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
 }
 
 const columnHelper = createColumnHelper<OpenNcr>()

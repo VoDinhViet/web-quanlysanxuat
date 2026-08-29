@@ -8,9 +8,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/inputs/TableTextCellInput"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/create/QuotationAllocationsDialog"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 

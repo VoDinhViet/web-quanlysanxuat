@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildQuotationAddSupplierItemsColumns } from "@/features/purchase-quotations/components/create/QuotationAddSupplierItemsColumns"
 import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"

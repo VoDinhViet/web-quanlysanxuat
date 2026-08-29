@@ -7,7 +7,7 @@ import { Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
+import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
 import { InventoryReceiptCreateFromJobHeaderSection } from "@/features/inventory-receipts/components/create-from-job/InventoryReceiptCreateFromJobHeaderSection"
 import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateGenericItemsSection"

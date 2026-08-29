@@ -1,6 +1,6 @@
 import { FieldLabel } from "@/components/ui/field"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
 import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"

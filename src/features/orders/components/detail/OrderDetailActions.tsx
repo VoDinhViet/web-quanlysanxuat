@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { OrderApprovalActions } from "@/features/orders/components/detail/OrderApprovalActions"
 import {
   canUpdateOrder,

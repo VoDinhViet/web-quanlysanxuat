@@ -2,9 +2,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/inputs/TableTextCellInput"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { InventoryReceiptFromPoItemValue } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

@@ -1,6 +1,6 @@
 import { CheckCircle, CloseCircle, SendSquare } from "@solar-icons/react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { ApproveOrderDialog } from "@/features/orders/components/detail/ApproveOrderDialog"
 import { ReqOrderApprovalDialog } from "@/features/orders/components/detail/ReqOrderApprovalDialog"

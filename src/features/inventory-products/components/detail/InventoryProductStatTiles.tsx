@@ -4,7 +4,7 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
+import { IconButton } from "@/components/shared/primitives/IconButton"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { cn } from "@/lib/utils"
 

@@ -4,7 +4,7 @@ import { DateTime } from "luxon"
 import { useState } from "react"
 import { toast } from "sonner"
 
-import { DatePicker } from "@/components/shared/inputs/DatePicker"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
 
 type PurchaseOrderExpectedDateFieldProps = {

@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { purchaseOrderProgressLabels } from "@/lib/types/purchase-order.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"

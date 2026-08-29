@@ -14,8 +14,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { CreateOperationDialog } from "@/features/operations/components/CreateOperationDialog"
 import { operationColumns } from "@/features/operations/components/OperationsTableColumns"
 import { cn } from "@/lib/utils"

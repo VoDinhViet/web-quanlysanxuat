@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router"
 import { Eye, Pencil } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
-import { IconButton } from "@/components/shared/buttons/IconButton"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { IconButton } from "@/components/shared/primitives/IconButton"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { FileResource } from "@/lib/types/file.type"
 

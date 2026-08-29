@@ -13,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { supplierReturnsColumns } from "@/features/supplier-returns/components/SupplierReturnsTableColumns"
 import { cn } from "@/lib/utils"
 import type { SupplierReturn } from "@/lib/types/supplier-return.type"

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { DatePickerField } from "@/components/shared/inputs/DatePickerField"
+import { DatePickerField } from "@/components/shared/composites/DatePickerField"
 import { useFieldContext } from "@/hooks/use-app-form-context"
 import { cn } from "@/lib/utils"
 

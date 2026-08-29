@@ -27,8 +27,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import {
   BomNodeTypeBadge,
   ProductTypeBadge,

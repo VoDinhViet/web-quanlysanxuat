@@ -13,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PermissionGate } from "@/components/shared/PermissionGate"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { CreateUnitDialog } from "@/features/units/components/CreateUnitDialog"
 import { unitColumns } from "@/features/units/components/UnitsTableColumns"
 import { cn } from "@/lib/utils"

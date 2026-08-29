@@ -21,9 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/inputs/TableTextCellInput"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { QuotationItemAllocationValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 type QuotationAllocationsDialogProps = {

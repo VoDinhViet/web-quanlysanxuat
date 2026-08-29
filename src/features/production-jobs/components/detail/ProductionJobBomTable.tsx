@@ -12,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { productionJobBomColumns } from "@/features/production-jobs/components/detail/ProductionJobBomTableColumns"
 import type { ProductionJobIssue } from "@/lib/types/production-job.type"
 import type { Pagination } from "@/lib/types/pagination.type"

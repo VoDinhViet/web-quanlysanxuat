@@ -2,9 +2,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
-import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/inputs/TableTextCellInput"
-import { IconButton } from "@/components/shared/buttons/IconButton"
+import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
+import { IconButton } from "@/components/shared/primitives/IconButton"
 import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/schemas/purchase-request-item-form.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

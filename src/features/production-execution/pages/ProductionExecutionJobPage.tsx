@@ -5,10 +5,10 @@ import { AltArrowLeft } from "@solar-icons/react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { Surface } from "@/components/shared/layout/Surface"
-import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { Surface } from "@/components/shared/layouts/Surface"
+import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
+import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { ProductionExecutionPartsTable } from "@/features/production-execution/components/detail/ProductionExecutionPartsTable"
 import {
   productionJobOperationsQueryOptions,

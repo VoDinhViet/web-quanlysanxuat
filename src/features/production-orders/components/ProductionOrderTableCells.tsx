@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
+import { IconButton } from "@/components/shared/primitives/IconButton"
 import type { DeliveryTone } from "@/lib/types/order.type"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"

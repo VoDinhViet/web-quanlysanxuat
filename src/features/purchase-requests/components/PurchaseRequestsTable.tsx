@@ -15,9 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { purchaseRequestColumns } from "@/features/purchase-requests/components/PurchaseRequestsTableColumns"
 import { cn } from "@/lib/utils"
 import type { PurchaseRequest } from "@/lib/types/purchase-request.type"

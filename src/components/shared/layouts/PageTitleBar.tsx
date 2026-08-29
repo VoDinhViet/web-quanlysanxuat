@@ -36,7 +36,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { ThemeToggle } from "@/components/shared/layout/ThemeToggle"
+import { ThemeToggle } from "@/components/shared/layouts/ThemeToggle"
 import { currentUserQueryOptions, useLogout } from "@/features/auth/api"
 import { resolveAvatarUrl } from "@/lib/file-url"
 import type { FileRouteTypes } from "@/routeTree.gen"

@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { CreateInventoryRequisitionForm } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionForm"
 import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 

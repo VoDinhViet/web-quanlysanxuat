@@ -7,7 +7,7 @@ import { Loader2, Paperclip } from "lucide-react"
 import {
   QcEvidenceThumbnail,
   resolveDropRejectionMessage,
-} from "@/components/shared/inputs/QcEvidenceThumbnail"
+} from "@/components/shared/composites/QcEvidenceThumbnail"
 import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {

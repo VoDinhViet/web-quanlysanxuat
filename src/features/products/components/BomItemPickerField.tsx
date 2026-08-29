@@ -34,7 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildBomItemPickerColumns } from "@/features/products/components/BomItemPickerColumns"
 import { materialsQueryOptions } from "@/features/materials/api"
 import { itemsQueryOptions } from "@/features/products/api/options"

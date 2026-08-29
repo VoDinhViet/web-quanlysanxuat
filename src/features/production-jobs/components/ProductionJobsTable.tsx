@@ -13,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { productionJobColumns } from "@/features/production-jobs/components/ProductionJobsTableColumns"
 import { cn } from "@/lib/utils"
 import type { ProductionJob } from "@/lib/types/production-job.type"

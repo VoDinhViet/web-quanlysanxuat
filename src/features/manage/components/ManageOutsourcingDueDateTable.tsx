@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
 import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
 import { outsourcingOrderDueDateQueryOptions } from "@/features/reports/api"
@@ -51,7 +51,8 @@ const columns = [
     id: "daysSinceDueDate",
     header: "Trễ",
     meta: { cellClassName: "text-xs text-destructive" },
-    cell: ({ row }) => `${daysSinceDueDate(row.original.expectedReturnDate)} ngày`,
+    cell: ({ row }) =>
+      `${daysSinceDueDate(row.original.expectedReturnDate)} ngày`,
   }),
 ]
 

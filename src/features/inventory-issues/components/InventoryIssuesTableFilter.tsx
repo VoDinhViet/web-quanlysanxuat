@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import type {
   InventoryIssueStatus,
   InventoryIssueType,

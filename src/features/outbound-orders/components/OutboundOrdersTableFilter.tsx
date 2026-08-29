@@ -13,10 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
 import {
   fulfillmentTypeLabels,

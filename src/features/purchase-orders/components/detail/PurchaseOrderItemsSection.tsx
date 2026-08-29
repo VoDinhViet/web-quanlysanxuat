@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildPurchaseOrderItemColumns } from "@/features/purchase-orders/components/detail/PurchaseOrderItemsTableColumns"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 

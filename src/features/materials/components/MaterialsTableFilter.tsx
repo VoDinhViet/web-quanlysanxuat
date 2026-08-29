@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import type { ItemStatus } from "@/lib/types/item.type"

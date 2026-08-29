@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 
 // Layout route for /manage/suppliers — renders the real header immediately
 // (no loader of its own, so it never enters a pending state) and an Outlet

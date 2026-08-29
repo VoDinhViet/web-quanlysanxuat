@@ -3,8 +3,8 @@ import { Edit3, Trash2 } from "lucide-react"
 import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteOperationDialog } from "@/features/operations/components/DeleteOperationDialog"
 import { UpdateOperationDialog } from "@/features/operations/components/UpdateOperationDialog"
 import {

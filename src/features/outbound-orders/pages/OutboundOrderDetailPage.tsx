@@ -1,8 +1,8 @@
 import { useParams, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { Surface } from "@/components/shared/layout/Surface"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { Surface } from "@/components/shared/layouts/Surface"
 import {
   outboundOrderItemsQueryOptions,
   outboundOrderQueryOptions,

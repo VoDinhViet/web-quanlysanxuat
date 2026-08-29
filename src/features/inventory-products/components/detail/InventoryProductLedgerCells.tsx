@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
 
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import type { ProductLedgerEntry } from "@/lib/types/product-ledger.type"
 import {
   productLedgerMovementTypeLabels,

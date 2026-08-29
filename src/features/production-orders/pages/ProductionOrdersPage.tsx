@@ -1,9 +1,9 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { Surface } from "@/components/shared/layout/Surface"
-import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
-import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
+import { Surface } from "@/components/shared/layouts/Surface"
+import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { productionOrdersQueryOptions } from "@/features/production-orders/api/options"
 import { ProductionOrdersTable } from "@/features/production-orders/components/ProductionOrdersTable"
 import { ProductionOrdersTableFilter } from "@/features/production-orders/components/ProductionOrdersTableFilter"

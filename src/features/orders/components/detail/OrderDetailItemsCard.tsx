@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { OrderDetailPaymentSummary } from "@/features/orders/components/detail/OrderDetailPaymentSummary"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { orderDetailItemColumns } from "@/features/orders/components/detail/OrderDetailItemsTableColumns"

@@ -14,8 +14,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import {
   Tooltip,
   TooltipContent,

@@ -25,7 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options"
 import { buildCreateOutboundOrderPickerColumns } from "@/features/outbound-orders/components/create/CreateOutboundOrderPickerColumns"
 import { useUnfulfilledOrderItemLookup } from "@/features/outbound-orders/hooks/use-unfulfilled-order-item-lookup"

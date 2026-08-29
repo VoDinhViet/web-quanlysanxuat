@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { useAppForm } from "@/hooks/use-app-form"
 import { orderQueryOptions } from "@/features/orders/api"
 import { ProductionOrderDetailSummaryCard } from "@/features/production-orders/components/detail/ProductionOrderDetailSummaryCard"

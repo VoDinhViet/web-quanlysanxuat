@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { InfoCircle } from "@solar-icons/react"
 
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { Button } from "@/components/ui/button"
 import { IqcDetailSectionCard } from "@/features/iqc/components/detail/IqcDetailSectionCard"
 import { iqcStatusStyles } from "@/features/iqc/components/IqcBadges"

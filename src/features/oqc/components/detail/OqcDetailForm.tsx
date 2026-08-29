@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ClipboardList, Documents } from "@solar-icons/react"
 import { toast } from "sonner"
 
-import { Surface } from "@/components/shared/layout/Surface"
+import { Surface } from "@/components/shared/layouts/Surface"
 import { confirmOqc } from "@/features/oqc/api/server-functions/confirm-oqc.api"
 import { OqcActivityLogCard } from "@/features/oqc/components/detail/OqcActivityLogCard"
 import { OqcAqlInputCard } from "@/features/oqc/components/detail/OqcAqlInputCard"

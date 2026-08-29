@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import type { OutboundOrderItem } from "@/lib/types/outbound-order.type"
 
 const col = createColumnHelper<OutboundOrderItem>()

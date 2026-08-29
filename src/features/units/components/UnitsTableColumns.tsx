@@ -1,8 +1,8 @@
 import { Edit3, Trash2 } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteUnitDialog } from "@/features/units/components/DeleteUnitDialog"
 import { UnitScopeBadge } from "@/features/units/components/UnitBadges"
 import { UpdateUnitDialog } from "@/features/units/components/UpdateUnitDialog"

@@ -28,7 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildInventoryReceiptFromPoPickerColumns } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPickerColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api"

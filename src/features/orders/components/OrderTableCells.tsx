@@ -2,9 +2,9 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import {
   canUpdateOrder,
   resolveDeliveryTone,

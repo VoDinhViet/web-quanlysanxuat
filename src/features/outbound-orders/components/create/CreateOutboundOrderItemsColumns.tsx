@@ -3,9 +3,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/inputs/TableTextCellInput"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
+import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { CreateOutboundOrderItemValue } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 

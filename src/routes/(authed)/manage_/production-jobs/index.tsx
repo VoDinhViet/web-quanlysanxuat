@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobsPage } from "@/features/production-jobs/pages/ProductionJobsPage"
 import { productionJobsSearchSchema } from "@/features/production-jobs/schemas/production-jobs-search.schema"

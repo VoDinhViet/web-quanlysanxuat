@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { Edit3, Eye } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { Button } from "@/components/ui/button"
 
 // "PO / Lý do" — theo docs/domains/quality.md: có PO thì hiện mã PO, không thì hiện lý do tự do

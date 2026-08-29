@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import type { IqcResult } from "@/lib/types/iqc.type"
 import { iqcResultLabels } from "@/lib/types/iqc.type"
 import type { OqcDisposition, OqcStatus } from "@/lib/types/oqc.type"

@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import { inventoryDocumentStatusLabels } from "@/lib/types/supplier-return.type"

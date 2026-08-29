@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildQuotationSuppliersItemColumns } from "@/features/purchase-quotations/components/create/CreateQuotationSuppliersItemColumns"
 import { QuotationAddSupplierDialog } from "@/features/purchase-quotations/components/create/QuotationAddSupplierDialog"
 import { QuotationCompareQuoteTable } from "@/features/purchase-quotations/components/create/QuotationCompareQuoteTable"

@@ -3,9 +3,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { Edit3, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteRoleDialog } from "@/features/roles/components/DeleteRoleDialog"
 import type { Role } from "@/lib/types/role.type"
 

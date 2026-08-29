@@ -15,8 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { roleColumns } from "@/features/roles/components/RolesTableColumns"
 import { cn } from "@/lib/utils"
 import type { Role } from "@/lib/types/role.type"

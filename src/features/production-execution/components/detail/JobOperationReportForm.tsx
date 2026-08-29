@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { JobOperationReportEvidenceField } from "@/features/production-execution/components/detail/JobOperationReportEvidenceField"
 import { useCreateJobOperationReport } from "@/features/production-execution/hooks/use-create-job-operation-report"
 import { createJobOperationReportSchema } from "@/features/production-execution/schemas/create-job-operation-report.schema"

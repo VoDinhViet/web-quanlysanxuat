@@ -1,6 +1,6 @@
 import { Factory } from "lucide-react"
 
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 
 const emptyStateCopy: Record<

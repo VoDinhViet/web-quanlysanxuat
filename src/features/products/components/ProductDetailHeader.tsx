@@ -11,7 +11,7 @@ import {
 } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteProductDialog } from "@/features/products/components/DeleteProductDialog"
 import { ProductStatusBadge } from "@/features/products/components/ProductBadges"
 import { ProductDetailTabs } from "@/features/products/components/ProductDetailTabs"

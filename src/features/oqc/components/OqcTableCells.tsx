@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { Eye, Trash2 } from "lucide-react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteOqcDialog } from "@/features/oqc/components/detail/DeleteOqcDialog"
 import { OqcStatus } from "@/lib/types/oqc.type"
 import type { Oqc } from "@/lib/types/oqc.type"

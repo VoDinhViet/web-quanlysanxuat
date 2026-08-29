@@ -1,7 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { Pencil, Trash2 } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import type { ProductionJobIssue } from "@/lib/types/production-job.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")

@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { Printer } from "lucide-react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,

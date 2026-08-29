@@ -28,7 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { pendingOrderItemsQueryOptions } from "@/features/outsourcing-receipts/api/options"
 import { buildCreateOutsourcingReceiptPickerColumns } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptPickerColumns"

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { oqcsQueryOptions } from "@/features/oqc/api/options"
 import { OqcPage } from "@/features/oqc/pages/OqcPage"
 import { oqcSearchSchema } from "@/features/oqc/schemas/oqc-search.schema"

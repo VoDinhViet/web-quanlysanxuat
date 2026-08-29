@@ -27,8 +27,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { useGetClientOptions } from "@/features/clients/api"
 import { materialsQueryOptions } from "@/features/materials/api"
 import { buildPurchaseRequestMaterialPickerColumns } from "@/features/purchase-requests/components/create/PurchaseRequestCreateMaterialPickerColumns"

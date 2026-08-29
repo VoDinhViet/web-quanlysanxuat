@@ -8,8 +8,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useUpdateProductionJobOperation } from "@/features/production-jobs/hooks/use-update-production-job-operation"
 import type { ProductionJobOperation } from "@/lib/types/production-job.type"

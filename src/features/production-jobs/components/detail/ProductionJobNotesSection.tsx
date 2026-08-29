@@ -9,7 +9,7 @@ import {
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ProductionJobNoteList } from "@/features/production-jobs/components/detail/ProductionJobNoteList"
 import {
   productionJobNotesPageLimit,

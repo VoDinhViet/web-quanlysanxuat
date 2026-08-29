@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { Diskette, TrashBinTrash } from "@solar-icons/react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { DeleteOqcDialog } from "@/features/oqc/components/detail/DeleteOqcDialog"
 import type { OqcDetailFormApi } from "@/features/oqc/components/detail/OqcDetailForm"

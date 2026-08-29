@@ -6,7 +6,7 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { oqcsQueryOptions } from "@/features/oqc/api"
 import { outboundOrdersQueryOptions } from "@/features/outbound-orders/api"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api"

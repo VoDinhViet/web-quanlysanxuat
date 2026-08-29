@@ -14,10 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Surface } from "@/components/shared/layout/Surface"
-import { PermissionGate } from "@/components/shared/PermissionGate"
-import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
+import { Surface } from "@/components/shared/layouts/Surface"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
+import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { CreateUnitDialog } from "@/features/units/components/CreateUnitDialog"
 import { UnitsTable } from "@/features/units/components/UnitsTable"
 import { unitsQueryOptions } from "@/features/units/api/options"

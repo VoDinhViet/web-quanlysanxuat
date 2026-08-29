@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildCreateInventoryRequisitionItemColumns } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionItemsColumns"
 import { createInventoryRequisitionFormDefaultValues } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import { withForm } from "@/hooks/use-app-form"

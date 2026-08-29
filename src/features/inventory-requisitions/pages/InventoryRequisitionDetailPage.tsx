@@ -1,8 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { Surface } from "@/components/shared/layout/Surface"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { Surface } from "@/components/shared/layouts/Surface"
 import { inventoryRequisitionQueryOptions } from "@/features/inventory-requisitions/api/options"
 import { InventoryRequisitionDetailHeader } from "@/features/inventory-requisitions/components/detail/InventoryRequisitionDetailHeader"
 import { InventoryRequisitionInfoCard } from "@/features/inventory-requisitions/components/detail/InventoryRequisitionInfoCard"

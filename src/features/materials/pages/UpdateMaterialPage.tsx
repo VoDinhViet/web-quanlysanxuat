@@ -1,7 +1,7 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { UpdateMaterialForm } from "@/features/materials/components/update/UpdateMaterialForm"
 import { materialQueryOptions } from "@/features/materials/api/options"
 

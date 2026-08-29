@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createOutsourcingReceiptConfirmColumns } from "@/features/outsourcing-receipts/components/create/CreateOutsourcingReceiptConfirmColumns"
 import { sumOutsourcingReceiptItemTotals } from "@/features/outsourcing-receipts/logic/outsourcing-receipt-item-totals"
 import { createOutsourcingReceiptFormDefaultValues } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"

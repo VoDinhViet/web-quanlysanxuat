@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { purchaseQuotationStatusLabels } from "@/lib/types/purchase-quotation.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"

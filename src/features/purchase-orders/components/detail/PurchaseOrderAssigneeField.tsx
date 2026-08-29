@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
 
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
 import { useGetUserOptions } from "@/features/purchase-orders/hooks/use-get-user-options"
 import type { PurchaseOrderUserRef } from "@/lib/types/purchase-order.type"

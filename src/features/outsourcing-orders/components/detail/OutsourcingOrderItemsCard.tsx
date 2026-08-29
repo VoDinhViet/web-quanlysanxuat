@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderDetailSectionCard"
 import { outsourcingOrderItemsColumns } from "@/features/outsourcing-orders/components/detail/OutsourcingOrderItemsColumns"
 import type { OutsourcingOrderItem } from "@/lib/types/outsourcing-order.type"

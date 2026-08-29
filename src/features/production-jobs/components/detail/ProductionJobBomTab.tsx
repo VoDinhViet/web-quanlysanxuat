@@ -5,9 +5,9 @@ import { useDebounceCallback } from "usehooks-ts"
 import { Plus, Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
-import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
+import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { ProductionJobBomTable } from "@/features/production-jobs/components/detail/ProductionJobBomTable"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
 

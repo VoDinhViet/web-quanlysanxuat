@@ -6,8 +6,8 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
-import { AppSidebar } from "@/components/shared/layout/AppSidebar"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
+import { AppSidebar } from "@/components/shared/layouts/AppSidebar"
 import {
   currentPermissionsQueryOptions,
   currentUserQueryOptions,

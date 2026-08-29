@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api"
 import { buildPurchaseOrderItemsPickerColumns } from "@/features/purchase-orders/components/create/CreatePurchaseOrderItemsPickerColumns"
 import { createPurchaseOrderFormDefaultValues } from "@/features/purchase-orders/schemas/create-purchase-order.schema"

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api/options"
 import { PurchaseOrderDetailPage } from "@/features/purchase-orders/pages/PurchaseOrderDetailPage"
 

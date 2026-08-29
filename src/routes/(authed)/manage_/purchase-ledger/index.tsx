@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api/options"
 import { PurchaseLedgerPage } from "@/features/purchase-ledger/pages/PurchaseLedgerPage"
 import { purchaseLedgerSearchSchema } from "@/features/purchase-ledger/schemas/purchase-ledger-search.schema"

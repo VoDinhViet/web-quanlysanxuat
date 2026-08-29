@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options"
 import { cn } from "@/lib/utils"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"

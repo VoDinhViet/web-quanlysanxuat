@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { MockDataBadge } from "@/components/shared/feedback/MockDataBadge"
+import { MockDataBadge } from "@/components/shared/primitives/MockDataBadge"
 
 type ProductionJobLogRow = {
   id: string

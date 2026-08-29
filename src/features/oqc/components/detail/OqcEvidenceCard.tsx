@@ -8,7 +8,7 @@ import { Loader2, Paperclip } from "lucide-react"
 import {
   QcEvidenceThumbnail,
   resolveDropRejectionMessage,
-} from "@/components/shared/inputs/QcEvidenceThumbnail"
+} from "@/components/shared/composites/QcEvidenceThumbnail"
 import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
 import {
   confirmOqcFormDefaultValues,

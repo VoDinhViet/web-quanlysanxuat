@@ -1,6 +1,6 @@
 import { CircleX, Pencil, Printer, Trash2 } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
 import type {
   InventoryRequisition,

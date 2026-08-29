@@ -1,6 +1,6 @@
 import { CircleCheck, CircleX, Send } from "lucide-react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { ApprovePurchaseRequestDialog } from "@/features/purchase-requests/components/detail/ApprovePurchaseRequestDialog"
 import { RejectPurchaseRequestDialog } from "@/features/purchase-requests/components/detail/RejectPurchaseRequestDialog"

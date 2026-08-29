@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { Image } from "@unpic/react"
 import { Eye, Package } from "lucide-react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
+import { IconButton } from "@/components/shared/primitives/IconButton"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { cn } from "@/lib/utils"

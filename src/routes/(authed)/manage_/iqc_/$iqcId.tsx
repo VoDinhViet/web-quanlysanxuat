@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { departmentOptionsQueryOptions } from "@/features/departments/api"
 import { iqcQueryOptions } from "@/features/iqc/api/options"
 import { IqcDetailPage } from "@/features/iqc/pages/IqcDetailPage"

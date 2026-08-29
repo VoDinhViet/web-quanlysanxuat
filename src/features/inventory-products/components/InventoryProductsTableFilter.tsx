@@ -6,9 +6,9 @@ import { Download, RotateCw, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { DatePicker } from "@/components/shared/inputs/DatePicker"
-import { FilterLabel } from "@/components/shared/inputs/FilterLabel"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
+import { FilterLabel } from "@/components/shared/primitives/FilterLabel"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 
 export function InventoryProductsTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/inventory-products/" })

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { paymentRequestsQueryOptions } from "@/features/payment-requests/api/options"
 import { PaymentRequestsPage } from "@/features/payment-requests/pages/PaymentRequestsPage"
 import { paymentRequestsSearchSchema } from "@/features/payment-requests/schemas/payment-requests-search.schema"

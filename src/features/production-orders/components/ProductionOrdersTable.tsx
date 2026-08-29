@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { ProductionOrdersEmptyState } from "@/features/production-orders/components/ProductionOrdersEmptyState"
 import { productionOrderColumns } from "@/features/production-orders/components/ProductionOrdersTableColumns"
 import { cn } from "@/lib/utils"

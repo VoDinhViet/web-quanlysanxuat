@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api"
 import { buildQuotationItemsPickerColumns } from "@/features/purchase-quotations/components/create/CreateQuotationItemsPickerColumns"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"

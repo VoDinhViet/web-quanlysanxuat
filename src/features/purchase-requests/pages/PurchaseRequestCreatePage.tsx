@@ -1,4 +1,4 @@
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { PurchaseRequestCreateForm } from "@/features/purchase-requests/components/create/PurchaseRequestCreateForm"
 
 export function PurchaseRequestCreatePage() {

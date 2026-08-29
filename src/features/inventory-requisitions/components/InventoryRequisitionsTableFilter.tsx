@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { inventoryRequisitionStatusLabels } from "@/lib/types/inventory-requisition.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"

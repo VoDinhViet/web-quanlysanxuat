@@ -1,9 +1,9 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { Surface } from "@/components/shared/layout/Surface"
-import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
-import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
+import { Surface } from "@/components/shared/layouts/Surface"
+import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
+import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { UsersTable } from "@/features/users/components/UsersTable"
 import { UsersTableFilter } from "@/features/users/components/UsersTableFilter"
 import { usersQueryOptions } from "@/features/users/api/options"

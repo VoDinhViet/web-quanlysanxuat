@@ -7,7 +7,7 @@ import { Loader2, Paperclip } from "lucide-react"
 import {
   QcEvidenceThumbnail,
   resolveDropRejectionMessage,
-} from "@/components/shared/inputs/QcEvidenceThumbnail"
+} from "@/components/shared/composites/QcEvidenceThumbnail"
 import {
   ACCEPTED_EVIDENCE_TYPES,
   MAX_DOCUMENT_SIZE_BYTES,

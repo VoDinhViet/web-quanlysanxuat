@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api/options"
 import { buildCreateOutsourcingOrderPickerColumns } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderPickerColumns"

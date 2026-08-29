@@ -15,8 +15,8 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { InventoryIssuePrintDialog } from "@/features/inventory-issues/components/InventoryIssuePrintDialog"
 import { cancelInventoryIssue } from "@/features/inventory-issues/api/server-functions/cancel-inventory-issue.api"
 import { postInventoryIssue } from "@/features/inventory-issues/api/server-functions/post-inventory-issue.api"

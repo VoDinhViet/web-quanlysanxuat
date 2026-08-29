@@ -1,8 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { Surface } from "@/components/shared/layout/Surface"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { Surface } from "@/components/shared/layouts/Surface"
 import { supplierReturnQueryOptions } from "@/features/supplier-returns/api/options"
 import { SupplierReturnDetailHeader } from "@/features/supplier-returns/components/detail/SupplierReturnDetailHeader"
 import { SupplierReturnItemInfoSection } from "@/features/supplier-returns/components/detail/SupplierReturnItemInfoSection"

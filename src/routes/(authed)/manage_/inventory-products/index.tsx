@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { inventoryProductsQueryOptions } from "@/features/inventory-products/api/options"
 import { InventoryProductsPage } from "@/features/inventory-products/pages/InventoryProductsPage"
 import { inventoryProductsSearchSchema } from "@/features/inventory-products/schemas/inventory-products-search.schema"

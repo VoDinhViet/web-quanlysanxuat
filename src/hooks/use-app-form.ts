@@ -9,7 +9,7 @@ import {
   SwitchField,
   TextareaField,
   TextField,
-} from "@/components/shared/inputs/AppFormFields"
+} from "@/components/shared/composites/AppFormFields"
 import { fieldContext, formContext } from "@/hooks/use-app-form-context"
 
 export const { useAppForm, withForm } = createFormHook({

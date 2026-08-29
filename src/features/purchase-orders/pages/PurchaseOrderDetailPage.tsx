@@ -1,8 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
-import { Surface } from "@/components/shared/layout/Surface"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { Surface } from "@/components/shared/layouts/Surface"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api/options"
 import { PurchaseOrderCancellationNotice } from "@/features/purchase-orders/components/detail/PurchaseOrderCancellationNotice"
 import { PurchaseOrderDetailHeader } from "@/features/purchase-orders/components/detail/PurchaseOrderDetailHeader"

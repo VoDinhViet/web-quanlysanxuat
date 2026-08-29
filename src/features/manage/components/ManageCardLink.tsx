@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
 
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { cn } from "@/lib/utils"
 import type { ManageRoutePath } from "@/lib/route-permissions"
 

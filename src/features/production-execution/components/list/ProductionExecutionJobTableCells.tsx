@@ -1,7 +1,7 @@
 import { Link, useSearch } from "@tanstack/react-router"
 import { Eye } from "lucide-react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
+import { IconButton } from "@/components/shared/primitives/IconButton"
 
 type ProductionExecutionJobActionsCellProps = {
   productionJobId: string

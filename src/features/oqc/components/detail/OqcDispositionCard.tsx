@@ -5,8 +5,8 @@ import {
   TrashBinTrash,
 } from "@solar-icons/react"
 
-import { RadioCardField } from "@/components/shared/inputs/RadioCardField"
-import type { RadioCardOption } from "@/components/shared/inputs/RadioCardField"
+import { RadioCardField } from "@/components/shared/composites/RadioCardField"
+import type { RadioCardOption } from "@/components/shared/composites/RadioCardField"
 import { OqcDetailSectionCard } from "@/features/oqc/components/detail/OqcDetailSectionCard"
 import {
   confirmOqcFormDefaultValues,

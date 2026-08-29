@@ -13,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { paymentRequestsColumns } from "@/features/payment-requests/components/PaymentRequestsTableColumns"
 import { cn } from "@/lib/utils"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"

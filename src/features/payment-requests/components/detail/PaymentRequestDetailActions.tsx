@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { cancelPaymentRequest } from "@/features/payment-requests/api/server-functions/cancel-payment-request.api"
 import { markPaymentRequestPaid } from "@/features/payment-requests/api/server-functions/mark-payment-request-paid.api"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"

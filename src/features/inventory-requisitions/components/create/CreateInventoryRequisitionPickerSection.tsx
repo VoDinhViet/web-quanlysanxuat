@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildCreateInventoryRequisitionPickerColumns } from "@/features/inventory-requisitions/components/create/CreateInventoryRequisitionPickerColumns"
 import { requisitionLinesQueryOptions } from "@/features/inventory-requisitions/api/options"
 import { createInventoryRequisitionFormDefaultValues } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { productionJobQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobDetailPage } from "@/features/production-jobs/pages/ProductionJobDetailPage"
 import { productionJobDetailSearchSchema } from "@/features/production-jobs/schemas/production-job-detail-search.schema"

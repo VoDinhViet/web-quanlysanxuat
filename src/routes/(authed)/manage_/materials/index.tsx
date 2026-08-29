@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { MaterialsPage } from "@/features/materials/pages/MaterialsPage"
 import { materialsQueryOptions } from "@/features/materials/api/options"
 import { materialsSearchSchema } from "@/features/materials/schemas/materials-search.schema"

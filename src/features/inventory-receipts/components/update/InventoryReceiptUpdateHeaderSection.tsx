@@ -1,8 +1,8 @@
 import { useEffect } from "react"
 import { useField } from "@tanstack/react-form"
 
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
 import { useGetSupplierOptions } from "@/features/suppliers/api"

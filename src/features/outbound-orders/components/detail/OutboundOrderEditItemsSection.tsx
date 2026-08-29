@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { OutboundOrderAddItemsDialog } from "@/features/outbound-orders/components/detail/OutboundOrderAddItemsDialog"
 import { buildOutboundOrderEditItemColumns } from "@/features/outbound-orders/components/detail/OutboundOrderEditItemsColumns"
 import { updateOutboundOrderFormDefaultValues } from "@/features/outbound-orders/schemas/update-outbound-order.schema"

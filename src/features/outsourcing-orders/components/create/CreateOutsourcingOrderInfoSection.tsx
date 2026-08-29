@@ -1,4 +1,4 @@
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { withForm } from "@/hooks/use-app-form"

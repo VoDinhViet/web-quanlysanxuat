@@ -13,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { outsourcingReceiptsColumns } from "@/features/outsourcing-receipts/components/OutsourcingReceiptsTableColumns"
 import { cn } from "@/lib/utils"
 import type { OutsourcingReceipt } from "@/lib/types/outsourcing-receipt.type"

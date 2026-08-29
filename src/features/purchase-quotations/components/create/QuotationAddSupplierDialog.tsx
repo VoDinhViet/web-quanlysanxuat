@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { QuotationAddSupplierItems } from "@/features/purchase-quotations/components/create/QuotationAddSupplierItems"
 import { useQuotationSupplierChecklist } from "@/features/purchase-quotations/hooks/use-quotation-supplier-checklist"
 import { useGetSupplierOptions } from "@/features/suppliers/api"

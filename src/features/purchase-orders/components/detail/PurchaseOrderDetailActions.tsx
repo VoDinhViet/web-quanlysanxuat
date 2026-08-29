@@ -1,6 +1,6 @@
 import { CheckCircle, CloseCircle } from "@solar-icons/react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { PurchaseOrderCancelDialog } from "@/features/purchase-orders/components/detail/PurchaseOrderCancelDialog"
 import { PurchaseOrderConfirmDialog } from "@/features/purchase-orders/components/detail/PurchaseOrderConfirmDialog"

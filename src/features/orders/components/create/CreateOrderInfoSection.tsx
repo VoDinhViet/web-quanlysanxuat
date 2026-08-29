@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
 import { exchangeRateQueryOptions } from "@/features/orders/api/options"

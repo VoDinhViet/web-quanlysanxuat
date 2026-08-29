@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { productionOrdersQueryOptions } from "@/features/production-orders/api/options"
 import { ProductionOrdersPage } from "@/features/production-orders/pages/ProductionOrdersPage"
 import { productionOrdersSearchSchema } from "@/features/production-orders/schemas/production-orders-search.schema"

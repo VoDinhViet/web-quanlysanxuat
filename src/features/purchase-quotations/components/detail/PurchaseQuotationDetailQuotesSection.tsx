@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { purchaseQuotationItemsColumns } from "@/features/purchase-quotations/components/detail/PurchaseQuotationItemsTableColumns"
 import { PurchaseQuotationAllocationsTable } from "@/features/purchase-quotations/components/detail/PurchaseQuotationAllocationsTable"
 import { PurchaseQuotationApprovalBar } from "@/features/purchase-quotations/components/detail/PurchaseQuotationApprovalBar"

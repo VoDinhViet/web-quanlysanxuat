@@ -1,6 +1,6 @@
 import { SendSquare } from "@solar-icons/react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { RecallQuotationDialog } from "@/features/purchase-quotations/components/detail/RecallQuotationDialog"
 import { SendQuotationDialog } from "@/features/purchase-quotations/components/detail/SendQuotationDialog"

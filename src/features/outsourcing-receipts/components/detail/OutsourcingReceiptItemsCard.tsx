@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { OutsourcingReceiptDetailSectionCard } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptDetailSectionCard"
 import { outsourcingReceiptItemsColumns } from "@/features/outsourcing-receipts/components/detail/OutsourcingReceiptItemsColumns"
 import type { OutsourcingReceiptItem } from "@/lib/types/outsourcing-receipt.type"

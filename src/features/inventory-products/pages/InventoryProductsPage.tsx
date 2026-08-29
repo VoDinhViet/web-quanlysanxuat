@@ -1,9 +1,9 @@
 import { useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { Surface } from "@/components/shared/layout/Surface"
-import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
-import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoading"
+import { Surface } from "@/components/shared/layouts/Surface"
+import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
+import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { inventoryProductsQueryOptions } from "@/features/inventory-products/api/options"
 import { InventoryProductsTable } from "@/features/inventory-products/components/InventoryProductsTable"
 import { InventoryProductsTableFilter } from "@/features/inventory-products/components/InventoryProductsTableFilter"

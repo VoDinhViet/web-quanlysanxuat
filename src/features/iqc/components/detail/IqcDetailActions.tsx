@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { Diskette, MenuDots, Printer } from "@solar-icons/react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,

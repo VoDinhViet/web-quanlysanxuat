@@ -1,4 +1,4 @@
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { ManageAlerts } from "@/features/manage/components/ManageAlerts"
 import { ManageAnalyticsRow } from "@/features/manage/components/ManageAnalyticsRow"
 import { ManageFooter } from "@/features/manage/components/ManageFooter"

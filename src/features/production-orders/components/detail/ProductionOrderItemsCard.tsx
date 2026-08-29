@@ -9,7 +9,7 @@ import {
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FieldError } from "@/components/ui/field"
-import { NumericCellInput } from "@/components/shared/inputs/NumericCellInput"
+import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import {
   Table,
   TableBody,
@@ -19,8 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { withForm } from "@/hooks/use-app-form"
 import { getChangedProductionItems } from "@/features/production-orders/logic/production-order-decision"
 import { buildProductionOrderItemsColumns } from "@/features/production-orders/components/detail/ProductionOrderItemsColumns"

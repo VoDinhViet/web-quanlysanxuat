@@ -1,8 +1,8 @@
 import { CircleCheck, CircleX, PackageCheck, Printer, Send } from "lucide-react"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { ApproveRequisitionDialog } from "@/features/inventory-requisitions/components/detail/ApproveRequisitionDialog"
 import { CancelRequisitionDialog } from "@/features/inventory-requisitions/components/detail/CancelRequisitionDialog"
 import { IssueRequisitionDialog } from "@/features/inventory-requisitions/components/detail/IssueRequisitionDialog"

@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { ProductDocumentsField } from "@/features/products/components/ProductDocumentsField"
 import { ProductImageField } from "@/features/products/components/ProductImageField"
 import { createProductFormDefaultValues } from "@/features/products/schemas/create-product.schema"
@@ -10,7 +10,7 @@ import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { itemStatusLabels, itemTypeLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
-import type { ComboboxOption } from "@/components/shared/inputs/ComboboxField"
+import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 const typeOptions = buildOptionsFromLabels(itemTypeLabels)

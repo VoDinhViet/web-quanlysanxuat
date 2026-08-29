@@ -1,6 +1,6 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
 
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 
 // Lives beside the "Thẻ kho thành phẩm" section label in InventoryProductDetailPage.tsx, not
 // inside the ledger panel itself. Applies immediately on change — same immediate-apply

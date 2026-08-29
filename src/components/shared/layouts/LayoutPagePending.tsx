@@ -1,4 +1,4 @@
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 
 // Route-level pendingComponent for a route that hasn't split into its own
 // layout + data-owning child route — keeps the header strip in place (same

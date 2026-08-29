@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { InventoryReceiptDetailPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailPrintDialog"
 import { cancelInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/cancel-inventory-receipt.api"
 import { confirmInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/confirm-inventory-receipt.api"

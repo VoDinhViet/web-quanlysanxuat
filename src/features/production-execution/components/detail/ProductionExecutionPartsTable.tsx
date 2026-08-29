@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildProductionExecutionPartColumns } from "@/features/production-execution/components/detail/ProductionExecutionPartsTableColumns"
 import type { ProductionExecutionPartRow } from "@/features/production-execution/components/detail/ProductionExecutionPartsTableColumns"
 

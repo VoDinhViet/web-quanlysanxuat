@@ -2,7 +2,7 @@ import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { InventoryReceiptCreateReceiptTabs } from "@/features/inventory-receipts/components/InventoryReceiptCreateReceiptTabs"
 import { InventoryReceiptCreateFromPoForm } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoForm"
 import { InventoryReceiptCreateOtherForm } from "@/features/inventory-receipts/components/create-other/InventoryReceiptCreateOtherForm"

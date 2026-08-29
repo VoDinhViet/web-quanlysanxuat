@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
 import { supplierStatusLabels } from "@/lib/types/supplier.type"

@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { OrderDetailSectionCard } from "@/features/orders/components/detail/OrderDetailSectionCard"
 import { buildMockDeliveryHistory } from "@/features/orders/mock/order-detail.mock"
 import { vndFormatter } from "@/lib/currency"

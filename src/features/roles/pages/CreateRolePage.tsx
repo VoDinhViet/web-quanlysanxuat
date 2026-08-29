@@ -1,4 +1,4 @@
-import { PageTitleBar } from "@/components/shared/layout/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { CreateRoleForm } from "@/features/roles/components/CreateRoleForm"
 
 export function CreateRolePage() {

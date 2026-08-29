@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { operationsQueryOptions } from "@/features/operations/api/options"
 import { OperationsPage } from "@/features/operations/pages/OperationsPage"
 import { operationsSearchSchema } from "@/features/operations/schemas/operations-search.schema"

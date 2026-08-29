@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ApproveProductionJobOperationsDialog } from "@/features/production-jobs/components/detail/ApproveProductionJobOperationsDialog"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/detail/ProductionJobDetailTabs"

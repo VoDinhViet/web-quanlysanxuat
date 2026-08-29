@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { Eye } from "lucide-react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
+import { IconButton } from "@/components/shared/primitives/IconButton"
 import type { OutsourcingReceipt } from "@/lib/types/outsourcing-receipt.type"
 
 type OutsourcingReceiptActionsCellProps = {

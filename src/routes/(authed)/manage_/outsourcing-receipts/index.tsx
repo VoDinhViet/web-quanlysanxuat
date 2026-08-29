@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { outsourcingReceiptsQueryOptions } from "@/features/outsourcing-receipts/api/options"
 import { OutsourcingReceiptsPage } from "@/features/outsourcing-receipts/pages/OutsourcingReceiptsPage"
 import { outsourcingReceiptsSearchSchema } from "@/features/outsourcing-receipts/schemas/outsourcing-receipts-search.schema"

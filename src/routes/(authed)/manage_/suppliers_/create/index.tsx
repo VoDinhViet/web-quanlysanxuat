@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PagePending } from "@/components/shared/feedback/PagePending"
+import { PagePending } from "@/components/shared/layouts/PagePending"
 import { countryOptionsQueryOptions } from "@/features/countries/api"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
 import { CreateSupplierPage } from "@/features/suppliers/pages/CreateSupplierPage"

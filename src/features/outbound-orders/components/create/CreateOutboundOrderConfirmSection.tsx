@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildCreateOutboundOrderConfirmColumns } from "@/features/outbound-orders/components/create/CreateOutboundOrderConfirmColumns"
 import { useUnfulfilledOrderItemLookup } from "@/features/outbound-orders/hooks/use-unfulfilled-order-item-lookup"
 import { createOutboundOrderFormDefaultValues } from "@/features/outbound-orders/schemas/create-outbound-order.schema"

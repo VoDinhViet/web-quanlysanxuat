@@ -14,8 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import {
   InventoryDocumentStatus,

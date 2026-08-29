@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { ManageCardLink } from "@/features/manage/components/ManageCardLink"
 import { ManageCardTitle } from "@/features/manage/components/ManageCardTitle"
 import { jobDueDateQueryOptions } from "@/features/reports/api"

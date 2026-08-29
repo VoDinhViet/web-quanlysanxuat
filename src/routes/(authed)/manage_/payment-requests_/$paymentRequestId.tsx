@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { LayoutPagePending } from "@/components/shared/feedback/LayoutPagePending"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { paymentRequestQueryOptions } from "@/features/payment-requests/api/options"
 import { PaymentRequestDetailPage } from "@/features/payment-requests/pages/PaymentRequestDetailPage"
 

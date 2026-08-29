@@ -8,7 +8,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 import { SolarProvider } from "@solar-icons/react"
 import type { QueryClient } from "@tanstack/react-query"
 
-import { ThemeProvider } from "@/components/shared/layout/ThemeProvider"
+import { ThemeProvider } from "@/components/shared/layouts/ThemeProvider"
 import { Toaster } from "@/components/ui/sonner"
 // Side-effect import, must run before any DateTime.fromISO() call on either
 // server or client — see src/lib/luxon-config.ts for why.

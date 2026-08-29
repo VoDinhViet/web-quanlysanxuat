@@ -10,8 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
 import { ClientContactDialog } from "@/features/clients/components/ClientContactDialog"
 import { updateClientFormDefaultValues } from "@/features/clients/schemas/update-client.schema"

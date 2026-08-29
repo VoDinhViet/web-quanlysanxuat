@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { createOutsourcingOrderConfirmColumns } from "@/features/outsourcing-orders/components/create/CreateOutsourcingOrderConfirmColumns"
 import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/logic/outsourcing-order-item-totals"

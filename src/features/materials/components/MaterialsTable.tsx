@@ -15,9 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { RoutePermissionGate } from "@/components/shared/RoutePermissionGate"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { materialColumns } from "@/features/materials/components/MaterialsTableColumns"
 import { cn } from "@/lib/utils"
 import type { Material } from "@/lib/types/material.type"

@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 import { iqcResultLabels, iqcStatusLabels } from "@/lib/types/iqc.type"

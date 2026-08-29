@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { ComboboxField } from "@/components/shared/inputs/ComboboxField"
-import { DateRangePicker } from "@/components/shared/inputs/DateRangePicker"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { useGetClientOptions } from "@/features/clients/api"
 import { productionJobStatusLabels } from "@/lib/types/production-job.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"

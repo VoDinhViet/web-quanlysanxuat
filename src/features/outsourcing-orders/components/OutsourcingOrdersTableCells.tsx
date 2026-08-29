@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { EllipsisVertical, Eye, Printer } from "lucide-react"
 
-import { IconButton } from "@/components/shared/buttons/IconButton"
-import { DisabledAction } from "@/components/shared/buttons/DisabledAction"
+import { IconButton } from "@/components/shared/primitives/IconButton"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderActionsCellProps = {

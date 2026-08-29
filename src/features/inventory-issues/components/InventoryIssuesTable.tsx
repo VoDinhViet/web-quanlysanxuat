@@ -13,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TableEmpty } from "@/components/shared/feedback/TableEmpty"
-import { TablePagination } from "@/components/shared/data/TablePagination"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { TablePagination } from "@/components/shared/composites/TablePagination"
 import { inventoryIssuesColumns } from "@/features/inventory-issues/components/InventoryIssuesTableColumns"
 import { cn } from "@/lib/utils"
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"

@@ -7,9 +7,9 @@ import {
 } from "@solar-icons/react"
 import { Link } from "@tanstack/react-router"
 
-import { PermissionGate } from "@/components/shared/PermissionGate"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/buttons/PendingAction"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/detail/OutboundOrderApproveDialog"
 import { OutboundOrderCancelDialog } from "@/features/outbound-orders/components/detail/OutboundOrderCancelDialog"
 import { OutboundOrderDeliverDialog } from "@/features/outbound-orders/components/detail/OutboundOrderDeliverDialog"
