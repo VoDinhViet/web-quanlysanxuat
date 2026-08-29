@@ -1,9 +1,7 @@
 import { withForm } from "@/hooks/use-app-form"
 import { updateSupplierFormDefaultValues } from "@/features/suppliers/schemas/update-supplier.schema"
-import {
-  paymentMethodLabels,
-  paymentTermLabels,
-} from "@/lib/types/supplier.type"
+import { paymentMethodLabels } from "@/lib/types/supplier.type"
+import { paymentTermLabels } from "@/lib/types/payment-term.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const paymentMethodOptions = buildOptionsFromLabels(paymentMethodLabels)

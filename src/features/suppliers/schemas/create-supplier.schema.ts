@@ -11,10 +11,10 @@ import {
 
 import {
   PaymentMethod,
-  PaymentTerm,
   SupplierStatus,
   SupplierType,
 } from "@/lib/types/supplier.type"
+import { PaymentTerm } from "@/lib/types/payment-term.type"
 
 // Wire contract for POST /api/suppliers — also the client-side onSubmit validator for
 // CreateSupplierForm. Every optional field transforms "" straight to undefined here, so the

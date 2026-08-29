@@ -12,8 +12,8 @@ import {
   Currency,
   OrderDiscountType,
   OrderStatus,
-  PaymentTerm,
 } from "@/lib/types/order.type"
+import { PaymentTerm } from "@/lib/types/payment-term.type"
 
 // Wire contract for PATCH /api/orders/:orderId — also the client-side onSubmit validator
 // for UpdateOrderForm. `orderId` lives directly in the form's own state (the update flow's

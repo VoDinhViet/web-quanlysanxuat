@@ -14,12 +14,12 @@ import {
   Currency,
   orderStatusLabels,
   OrderStatus,
-  paymentTermLabels,
 } from "@/lib/types/order.type"
+import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const currencyOptions = buildOptionsFromLabels(currencyLabels)
-const paymentTermOptions = buildOptionsFromLabels(paymentTermLabels)
+const paymentTermOptions = buildOptionsFromLabels(paymentTermShortLabels)
 // AWAITING_PRODUCTION/REJECTED excluded: only reachable via the "Duyệt"/"Từ chối" actions
 // (approve-order.api.ts/reject-order.api.ts), never settable directly through this form
 // (order.error.status_not_settable_directly) — see the matching drop in update-order.api.ts.

@@ -12,10 +12,10 @@ import {
 
 import {
   PaymentMethod,
-  PaymentTerm,
   SupplierStatus,
   SupplierType,
 } from "@/lib/types/supplier.type"
+import { PaymentTerm } from "@/lib/types/payment-term.type"
 
 // Wire contract for PATCH /api/suppliers/:id — also the client-side onSubmit validator for
 // UpdateSupplierForm. `supplierId` lives directly in the form's own state (the update flow's

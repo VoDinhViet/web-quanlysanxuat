@@ -1,3 +1,4 @@
+import type { PaymentTerm } from "@/lib/types/payment-term.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { WarehouseRef } from "@/lib/types/warehouse.type"
@@ -30,29 +31,6 @@ export const purchaseOrderStatusDescriptions: Record<
   [PurchaseOrderStatus.DRAFT]: "Đang soạn, chưa đặt với NCC",
   [PurchaseOrderStatus.ORDERED]: "Đã đặt với NCC, chờ nhận hàng",
   [PurchaseOrderStatus.CANCELLED]: "Đơn đã bị hủy",
-}
-
-/** Mirrors the backend's `payment_term` pg enum (`be-quanlysanxuat/src/database/schemas/
- *  suppliers/supplier-payment-info.ts`), reused as-is on `purchase_orders.paymentTerm`. Declared
- *  locally here rather than imported from `supplier.type.ts`/`order.type.ts` — same "features
- *  must not import each other" convention already applied between those two (see `order.type.ts`'s
- *  comment on its own `PaymentTerm`). Wording follows `supplier.type.ts`'s "Net X ngày" style
- *  (điều khoản trả cho NCC — cùng miền nghiệp vụ mua hàng), not `order.type.ts`'s "TT X ngày"
- *  (điều khoản thu từ khách hàng). */
-export const PaymentTerm = {
-  IMMEDIATE: "IMMEDIATE",
-  NET_15: "NET_15",
-  NET_30: "NET_30",
-  NET_60: "NET_60",
-} as const
-
-export type PaymentTerm = (typeof PaymentTerm)[keyof typeof PaymentTerm]
-
-export const paymentTermLabels: Record<PaymentTerm, string> = {
-  [PaymentTerm.IMMEDIATE]: "Thanh toán ngay",
-  [PaymentTerm.NET_15]: "Net 15 ngày",
-  [PaymentTerm.NET_30]: "Net 30 ngày",
-  [PaymentTerm.NET_60]: "Net 60 ngày",
 }
 
 /** What the UI actually shows/filters by — `docs/domains/purchasing.md` (backend repo) flags

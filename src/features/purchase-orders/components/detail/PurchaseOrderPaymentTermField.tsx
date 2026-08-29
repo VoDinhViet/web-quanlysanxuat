@@ -11,8 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
-import { paymentTermLabels, PaymentTerm } from "@/lib/types/purchase-order.type"
-import type { PaymentTerm as PaymentTermType } from "@/lib/types/purchase-order.type"
+import { paymentTermLabels, PaymentTerm } from "@/lib/types/payment-term.type"
+import type { PaymentTerm as PaymentTermType } from "@/lib/types/payment-term.type"
 
 type PurchaseOrderPaymentTermFieldProps = {
   purchaseOrderId: string

@@ -1,4 +1,5 @@
 import type { FileResource } from "@/lib/types/file.type"
+import type { PaymentTerm } from "@/lib/types/payment-term.type"
 
 export enum SupplierStatus {
   ACTIVE = "ACTIVE",
@@ -32,20 +33,6 @@ export enum PaymentMethod {
 export const paymentMethodLabels: Record<PaymentMethod, string> = {
   [PaymentMethod.CASH]: "Tiền mặt",
   [PaymentMethod.BANK_TRANSFER]: "Chuyển khoản",
-}
-
-export enum PaymentTerm {
-  IMMEDIATE = "IMMEDIATE",
-  NET_15 = "NET_15",
-  NET_30 = "NET_30",
-  NET_60 = "NET_60",
-}
-
-export const paymentTermLabels: Record<PaymentTerm, string> = {
-  [PaymentTerm.IMMEDIATE]: "Thanh toán ngay",
-  [PaymentTerm.NET_15]: "Net 15 ngày",
-  [PaymentTerm.NET_30]: "Net 30 ngày",
-  [PaymentTerm.NET_60]: "Net 60 ngày",
 }
 
 /** Mirrors the backend's nested supplier-group relation (GET /api/supplier-groups). */

@@ -12,9 +12,9 @@ import {
   OrderPaymentStatus,
   overdueTone,
   OrderStatus,
-  paymentTermLabels,
   resolveDeliveryTone,
 } from "@/lib/types/order.type"
+import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
 import type {
   DeliveryTone,
   OrderDetail,
@@ -135,7 +135,9 @@ export function OrderDetailSummaryCard({
             <MetaField
               label="Điều khoản thanh toán"
               value={
-                order.paymentTerm ? paymentTermLabels[order.paymentTerm] : "—"
+                order.paymentTerm
+                  ? paymentTermShortLabels[order.paymentTerm]
+                  : "—"
               }
             />
             <MetaField

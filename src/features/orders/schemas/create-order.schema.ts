@@ -4,11 +4,8 @@ import { orderItemFormSchema } from "@/features/orders/schemas/order-item-form.s
 import { fileFieldSchema } from "@/lib/file-field.schema"
 import { emptyToUndefined, optionalEnum, toIsoDate } from "@/lib/zod-transforms"
 
-import {
-  Currency,
-  OrderDiscountType,
-  PaymentTerm,
-} from "@/lib/types/order.type"
+import { Currency, OrderDiscountType } from "@/lib/types/order.type"
+import { PaymentTerm } from "@/lib/types/payment-term.type"
 
 // Wire contract for POST /api/orders — also the client-side onSubmit validator for
 // CreateOrderForm. Every optional field transforms "" straight to undefined here, so the

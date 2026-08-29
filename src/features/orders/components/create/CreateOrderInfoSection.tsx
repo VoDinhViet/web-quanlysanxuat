@@ -8,15 +8,12 @@ import { useGetClientOptions } from "@/features/clients/api"
 import { exchangeRateQueryOptions } from "@/features/orders/api/options"
 import { resolveExchangeRatePlaceholder } from "@/features/orders/resolve-exchange-rate-placeholder"
 import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
-import {
-  currencyLabels,
-  Currency,
-  paymentTermLabels,
-} from "@/lib/types/order.type"
+import { currencyLabels, Currency } from "@/lib/types/order.type"
+import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const currencyOptions = buildOptionsFromLabels(currencyLabels)
-const paymentTermOptions = buildOptionsFromLabels(paymentTermLabels)
+const paymentTermOptions = buildOptionsFromLabels(paymentTermShortLabels)
 
 // Auto-fills a starting rate on a non-VND currency pick (GET open.er-api.com
 // via get-exchange-rate.api.ts), but the field stays editable — this only

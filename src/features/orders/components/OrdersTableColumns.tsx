@@ -7,7 +7,7 @@ import {
   MoneyCell,
   OrderActionsCell,
 } from "@/features/orders/components/OrderTableCells"
-import { paymentTermLabels } from "@/lib/types/order.type"
+import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
 import type { Order } from "@/lib/types/order.type"
 
 const moneyColumnMeta = {
@@ -66,7 +66,7 @@ export const orderColumns = [
       const paymentTerm = getValue()
       return (
         <span className="text-muted-foreground">
-          {paymentTerm ? paymentTermLabels[paymentTerm] : "—"}
+          {paymentTerm ? paymentTermShortLabels[paymentTerm] : "—"}
         </span>
       )
     },

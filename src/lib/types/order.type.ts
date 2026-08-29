@@ -2,6 +2,7 @@ import { DateTime } from "luxon"
 
 import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
+import type { PaymentTerm } from "@/lib/types/payment-term.type"
 import type { Unit } from "@/lib/types/unit.type"
 
 // Mirrors the backend's OrderStatus exactly. DRAFT → PENDING_CONFIRMATION (submit) →
@@ -83,25 +84,6 @@ export function resolveOrderUpdateDisabledHint(status: OrderStatus): string {
 export const overdueTone = "OVERDUE"
 export const overdueLabel = "Trễ hạn"
 export const overdueDescription = "Đơn hàng đã quá ngày giao"
-
-// Payment terms as worded on a sales order. The suppliers slice has a similar
-// enum with purchasing wording ("Net 30 ngày"); features must not import each
-// other, and promoting to src/lib is an abstraction at the second use.
-export const PaymentTerm = {
-  IMMEDIATE: "IMMEDIATE",
-  NET_15: "NET_15",
-  NET_30: "NET_30",
-  NET_60: "NET_60",
-} as const
-
-export type PaymentTerm = (typeof PaymentTerm)[keyof typeof PaymentTerm]
-
-export const paymentTermLabels: Record<PaymentTerm, string> = {
-  [PaymentTerm.IMMEDIATE]: "TT ngay",
-  [PaymentTerm.NET_15]: "TT 15 ngày",
-  [PaymentTerm.NET_30]: "TT 30 ngày",
-  [PaymentTerm.NET_60]: "TT 60 ngày",
-}
 
 export const Currency = {
   VND: "VND",
