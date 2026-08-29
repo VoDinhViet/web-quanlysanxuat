@@ -1,7 +1,7 @@
 import { useField } from "@tanstack/react-form"
 import { DateTime } from "luxon"
 
-import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/InventoryReceiptBadges"
+import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import { createInventoryReceiptOtherFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-other.schema"
 import { withForm } from "@/hooks/use-app-form"
 import {

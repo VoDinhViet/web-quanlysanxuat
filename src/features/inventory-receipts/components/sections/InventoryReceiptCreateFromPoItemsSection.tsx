@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildInventoryReceiptFromPoItemColumns } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoItemsColumns"
+import { buildInventoryReceiptFromPoItemColumns } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateFromPoItemsColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { inventoryReceiptAssetTypeLabels } from "@/lib/types/inventory-receipt.type"

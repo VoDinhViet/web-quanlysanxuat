@@ -1,8 +1,8 @@
 import { useField } from "@tanstack/react-form"
 
 import { withForm } from "@/hooks/use-app-form"
-import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateGenericItemsSection"
-import { InventoryReceiptCreatePurchaseOrderItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreatePurchaseOrderItemsSection"
+import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateGenericItemsSection"
+import { InventoryReceiptCreatePurchaseOrderItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreatePurchaseOrderItemsSection"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 
 // Dispatcher giữa 2 chế độ chọn dòng vật tư — theo PO (đã chọn `purchaseOrderId` ở header) hay

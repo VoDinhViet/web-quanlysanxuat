@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildInventoryReceiptFromPoPickerColumns } from "@/features/inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPickerColumns"
+import { buildInventoryReceiptFromPoPickerColumns } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateFromPoPickerColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api"
 import { withForm } from "@/hooks/use-app-form"

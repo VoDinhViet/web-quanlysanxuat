@@ -1,5 +1,5 @@
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { InventoryReceiptCreateForm } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateForm"
+import { InventoryReceiptCreateForm } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateForm"
 
 export function InventoryReceiptCreatePage() {
   return (

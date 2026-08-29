@@ -1,7 +1,7 @@
 import { useSearch } from "@tanstack/react-router"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { InventoryReceiptCreateFromJobForm } from "@/features/inventory-receipts/components/create-from-job/InventoryReceiptCreateFromJobForm"
+import { InventoryReceiptCreateFromJobForm } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateFromJobForm"
 
 export function InventoryReceiptCreateFromJobPage() {
   const { productionJobId } = useSearch({

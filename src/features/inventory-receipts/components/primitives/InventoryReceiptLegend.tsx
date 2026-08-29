@@ -4,7 +4,7 @@ import {
   InventoryReceiptStatus,
   inventoryReceiptStatusDescriptions,
 } from "@/lib/types/inventory-receipt.type"
-import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/InventoryReceiptBadges"
+import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 
 const statuses = Object.values(InventoryReceiptStatus)
 

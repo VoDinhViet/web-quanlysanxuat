@@ -4,9 +4,9 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/InventoryReceiptBadges"
-import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/InventoryReceiptTableCells"
-import { InventoryReceiptDetailActions } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailActions"
+import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
+import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/primitives/InventoryReceiptTableCells"
+import { InventoryReceiptDetailActions } from "@/features/inventory-receipts/components/layouts/InventoryReceiptDetailActions"
 import {
   inventoryReceiptAssetTypeLabels,
   inventoryReceiptTypeLabels,

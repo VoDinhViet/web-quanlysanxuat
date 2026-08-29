@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { InventoryReceiptCreateHeaderSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateHeaderSection"
-import { InventoryReceiptCreateItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateItemsSection"
+import { InventoryReceiptCreateHeaderSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateHeaderSection"
+import { InventoryReceiptCreateItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateItemsSection"
 import { createInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/create-inventory-receipt.api"
 import {
   createInventoryReceiptFormDefaultValues,

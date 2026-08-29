@@ -13,18 +13,16 @@ import {
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
-import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/InventoryReceiptItemDialog"
-import { updateInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"
+import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/composites/InventoryReceiptItemDialog"
+import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
 import { vndFormatter } from "@/lib/currency"
 
-// Bản update của InventoryReceiptCreateGenericItemsSection.tsx — nội dung giống hệt, chỉ khác
-// `defaultValues` để khớp kiểu form update (`withForm` bind theo shape riêng của từng form,
-// không dùng chung được giữa create/update — cùng cách orders tách CreateOrderItemsSection.tsx/
-// UpdateOrderItemsSection.tsx). InventoryReceiptItemDialog tái dùng nguyên vẹn vì nó tự quản lý
-// form riêng, không bind theo shape của form cha.
-export const InventoryReceiptUpdateGenericItemsSection = withForm({
-  defaultValues: updateInventoryReceiptFormDefaultValues,
+// Chế độ chọn vật tư chung — mặc định khi phiếu chưa gắn `purchaseOrderId`. Không có cột ĐVT:
+// itemOptionsQueryOptions (qua useGetMaterialOptions) chỉ trả {id,code,name}, không có unit —
+// xem comment trong use-get-material-options.ts.
+export const InventoryReceiptCreateGenericItemsSection = withForm({
+  defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [dialogOpen, setDialogOpen] = useState(false)

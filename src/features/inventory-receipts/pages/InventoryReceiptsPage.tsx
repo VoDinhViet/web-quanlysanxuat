@@ -5,9 +5,9 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { inventoryReceiptsQueryOptions } from "@/features/inventory-receipts/api/options"
-import { InventoryReceiptsTable } from "@/features/inventory-receipts/components/InventoryReceiptsTable"
-import { InventoryReceiptsTableFilter } from "@/features/inventory-receipts/components/InventoryReceiptsTableFilter"
-import { InventoryReceiptLegend } from "@/features/inventory-receipts/components/InventoryReceiptLegend"
+import { InventoryReceiptsTable } from "@/features/inventory-receipts/components/sections/InventoryReceiptsTable"
+import { InventoryReceiptsTableFilter } from "@/features/inventory-receipts/components/sections/InventoryReceiptsTableFilter"
+import { InventoryReceiptLegend } from "@/features/inventory-receipts/components/primitives/InventoryReceiptLegend"
 
 export function InventoryReceiptsPage() {
   const search = useSearch({ from: "/(authed)/manage_/inventory-receipts/" })

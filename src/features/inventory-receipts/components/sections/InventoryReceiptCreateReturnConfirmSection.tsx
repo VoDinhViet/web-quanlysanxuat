@@ -2,7 +2,7 @@ import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 import { DateTime } from "luxon"
 
-import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/InventoryReceiptBadges"
+import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
 import { clientQueryOptions } from "@/features/clients/api"
 import { withForm } from "@/hooks/use-app-form"

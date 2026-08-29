@@ -4,9 +4,9 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/options"
-import { InventoryReceiptDetailHeader } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailHeader"
-import { InventoryReceiptDetailItemsSection } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailItemsSection"
-import { InventoryReceiptDetailInfoCard } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailInfoCard"
+import { InventoryReceiptDetailHeader } from "@/features/inventory-receipts/components/layouts/InventoryReceiptDetailHeader"
+import { InventoryReceiptDetailItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptDetailItemsSection"
+import { InventoryReceiptDetailInfoCard } from "@/features/inventory-receipts/components/composites/InventoryReceiptDetailInfoCard"
 
 export function InventoryReceiptDetailPage() {
   const { inventoryReceiptId } = useParams({

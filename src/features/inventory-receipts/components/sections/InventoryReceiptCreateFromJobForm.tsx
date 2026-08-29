@@ -9,8 +9,8 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
-import { InventoryReceiptCreateFromJobHeaderSection } from "@/features/inventory-receipts/components/create-from-job/InventoryReceiptCreateFromJobHeaderSection"
-import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateGenericItemsSection"
+import { InventoryReceiptCreateFromJobHeaderSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateFromJobHeaderSection"
+import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateGenericItemsSection"
 import { createInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/create-inventory-receipt.api"
 import {
   createInventoryReceiptFormDefaultValues,

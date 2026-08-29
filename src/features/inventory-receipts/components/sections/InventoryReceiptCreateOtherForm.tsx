@@ -9,14 +9,14 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateGenericItemsSection"
-import { InventoryReceiptCreateOtherConfirmSection } from "@/features/inventory-receipts/components/create-other/InventoryReceiptCreateOtherConfirmSection"
-import { InventoryReceiptCreateOtherHeaderSection } from "@/features/inventory-receipts/components/create-other/InventoryReceiptCreateOtherHeaderSection"
-import { InventoryReceiptCreateOtherHelpPanel } from "@/features/inventory-receipts/components/create-other/InventoryReceiptCreateOtherHelpPanel"
+import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateGenericItemsSection"
+import { InventoryReceiptCreateOtherConfirmSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateOtherConfirmSection"
+import { InventoryReceiptCreateOtherHeaderSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateOtherHeaderSection"
+import { InventoryReceiptCreateOtherHelpPanel } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateOtherHelpPanel"
 import {
   InventoryReceiptCreateOtherStepsTabs,
   stepItems,
-} from "@/features/inventory-receipts/components/create-other/InventoryReceiptCreateOtherStepsTabs"
+} from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateOtherStepsTabs"
 import { confirmInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/confirm-inventory-receipt.api"
 import { createInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/create-inventory-receipt.api"
 import { postInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/post-inventory-receipt.api"
@@ -26,7 +26,7 @@ import {
 } from "@/features/inventory-receipts/schemas/create-inventory-receipt-other.schema"
 import { useAppForm } from "@/hooks/use-app-form"
 import { getStepNav } from "@/lib/wizard-steps"
-import type { InventoryReceiptOtherWizardStep } from "@/features/inventory-receipts/components/create-other/InventoryReceiptCreateOtherStepsTabs"
+import type { InventoryReceiptOtherWizardStep } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateOtherStepsTabs"
 import type { CreateInventoryReceiptSchema } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 
 type SubmitAction = "draft" | "confirm" | "post"

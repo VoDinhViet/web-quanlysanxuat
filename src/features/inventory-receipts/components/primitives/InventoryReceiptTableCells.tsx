@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { InventoryReceiptDetailPrintDialog } from "@/features/inventory-receipts/components/detail/InventoryReceiptDetailPrintDialog"
+import { InventoryReceiptDetailPrintDialog } from "@/features/inventory-receipts/components/composites/InventoryReceiptDetailPrintDialog"
 import { deleteInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/delete-inventory-receipt.api"
 import { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
 import type {

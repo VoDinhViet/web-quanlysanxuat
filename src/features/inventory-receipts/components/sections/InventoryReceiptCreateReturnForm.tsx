@@ -9,14 +9,14 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/create/InventoryReceiptCreateGenericItemsSection"
-import { InventoryReceiptCreateReturnConfirmSection } from "@/features/inventory-receipts/components/create-return/InventoryReceiptCreateReturnConfirmSection"
-import { InventoryReceiptCreateReturnHeaderSection } from "@/features/inventory-receipts/components/create-return/InventoryReceiptCreateReturnHeaderSection"
-import { InventoryReceiptCreateReturnHelpPanel } from "@/features/inventory-receipts/components/create-return/InventoryReceiptCreateReturnHelpPanel"
+import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateGenericItemsSection"
+import { InventoryReceiptCreateReturnConfirmSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnConfirmSection"
+import { InventoryReceiptCreateReturnHeaderSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnHeaderSection"
+import { InventoryReceiptCreateReturnHelpPanel } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateReturnHelpPanel"
 import {
   InventoryReceiptCreateReturnStepsTabs,
   stepItems,
-} from "@/features/inventory-receipts/components/create-return/InventoryReceiptCreateReturnStepsTabs"
+} from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnStepsTabs"
 import { confirmInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/confirm-inventory-receipt.api"
 import { createInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/create-inventory-receipt.api"
 import { postInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/post-inventory-receipt.api"
@@ -26,7 +26,7 @@ import {
 } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
 import { useAppForm } from "@/hooks/use-app-form"
 import { getStepNav } from "@/lib/wizard-steps"
-import type { InventoryReceiptReturnWizardStep } from "@/features/inventory-receipts/components/create-return/InventoryReceiptCreateReturnStepsTabs"
+import type { InventoryReceiptReturnWizardStep } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnStepsTabs"
 import type { CreateInventoryReceiptSchema } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 
 type SubmitAction = "draft" | "confirm" | "post"
