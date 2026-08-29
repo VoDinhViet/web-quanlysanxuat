@@ -1,6 +1,4 @@
-import { DateTime } from "luxon"
-import { TriangleAlert } from "lucide-react"
-
+import { StatusNotice } from "@/components/shared/composites/StatusNotice"
 import { PurchaseOrderStatus } from "@/lib/types/purchase-order.type"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
@@ -21,24 +19,11 @@ export function PurchaseOrderCancellationNotice({
   }
 
   return (
-    <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4 sm:p-5">
-      <TriangleAlert className="mt-0.5 size-5 shrink-0 text-destructive" />
-      <div className="min-w-0 space-y-1">
-        <p className="text-sm font-semibold text-destructive">
-          Đơn mua hàng đã bị huỷ
-        </p>
-        <p className="text-sm text-foreground">
-          {purchaseOrder.cancellationReason}
-        </p>
-        {purchaseOrder.cancellerBy && purchaseOrder.cancelledAt ? (
-          <p className="text-xs text-muted-foreground">
-            {purchaseOrder.cancellerBy.fullName} ·{" "}
-            {DateTime.fromISO(purchaseOrder.cancelledAt).toFormat(
-              "dd/MM/yyyy HH:mm"
-            )}
-          </p>
-        ) : null}
-      </div>
-    </div>
+    <StatusNotice
+      title="Đơn mua hàng đã bị huỷ"
+      reason={purchaseOrder.cancellationReason}
+      actorName={purchaseOrder.cancellerBy?.fullName}
+      timestamp={purchaseOrder.cancelledAt}
+    />
   )
 }

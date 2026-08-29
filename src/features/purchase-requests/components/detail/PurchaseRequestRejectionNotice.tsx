@@ -1,6 +1,4 @@
-import { DateTime } from "luxon"
-import { TriangleAlert } from "lucide-react"
-
+import { StatusNotice } from "@/components/shared/composites/StatusNotice"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
@@ -26,30 +24,19 @@ export function PurchaseRequestRejectionNotice({
   }
 
   return (
-    <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4 sm:p-5">
-      <TriangleAlert className="mt-0.5 size-5 shrink-0 text-destructive" />
-      <div className="min-w-0 space-y-1">
-        <p className="text-sm font-semibold text-destructive">
-          Đề xuất bị từ chối
-        </p>
-        <p className="text-sm text-foreground">
-          {purchaseRequest.rejectionReason}
-        </p>
-        {purchaseRequest.rejecterBy && purchaseRequest.rejectedAt ? (
-          <p className="text-xs text-muted-foreground">
-            {purchaseRequest.rejecterBy.fullName} ·{" "}
-            {DateTime.fromISO(purchaseRequest.rejectedAt).toFormat(
-              "dd/MM/yyyy HH:mm"
-            )}
-          </p>
-        ) : null}
-        {purchaseRequest.status === PurchaseRequestStatus.REJECTED ? (
+    <StatusNotice
+      title="Đề xuất bị từ chối"
+      reason={purchaseRequest.rejectionReason}
+      actorName={purchaseRequest.rejecterBy?.fullName}
+      timestamp={purchaseRequest.rejectedAt}
+      extra={
+        purchaseRequest.status === PurchaseRequestStatus.REJECTED ? (
           <p className="text-xs text-muted-foreground">
             Sửa hoặc xóa một dòng vật tư bên dưới để đưa đề xuất về trạng thái
             Nháp và gửi duyệt lại.
           </p>
-        ) : null}
-      </div>
-    </div>
+        ) : null
+      }
+    />
   )
 }
