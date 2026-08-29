@@ -6,7 +6,7 @@ import { TableQueryLoading } from "@/components/shared/feedback/TableQueryLoadin
 import { TableQueryError } from "@/components/shared/feedback/TableQueryError"
 import { InventoryMaterialsTable } from "@/features/inventory-materials/components/InventoryMaterialsTable"
 import { InventoryMaterialsTableFilter } from "@/features/inventory-materials/components/InventoryMaterialsTableFilter"
-import { materialInventoryQueryOptions } from "@/features/inventory-materials/api/options/material-inventory.options"
+import { materialInventoryQueryOptions } from "@/features/inventory-materials/api/options"
 
 export function InventoryMaterialsPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list +
