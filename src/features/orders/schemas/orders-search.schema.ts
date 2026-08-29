@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import { OrderStatus } from "@/lib/types/order.type"
 import { isoDateFilter } from "@/lib/zod-transforms"
 
@@ -8,8 +9,7 @@ import { isoDateFilter } from "@/lib/zod-transforms"
 // before this schema changed just falls through each field's own `.catch(undefined)` instead
 // of crashing.
 export const ordersSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
+  ...paginationSearchFields(),
   q: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(OrderStatus).optional().catch(undefined),
   assignedUserId: z.string().trim().min(1).optional().catch(undefined),

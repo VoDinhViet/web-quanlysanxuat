@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import { isoDateFilter } from "@/lib/zod-transforms"
 
@@ -9,8 +10,7 @@ import { isoDateFilter } from "@/lib/zod-transforms"
 // ProductionExecutionPage.tsx) rather than baking in a guess here, so the jobs table stays
 // `enabled: Boolean(search.operationId)` until then.
 export const productionExecutionSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
+  ...paginationSearchFields(),
   q: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(ProductionJobStatus).optional().catch(undefined),
   clientId: z.string().trim().min(1).optional().catch(undefined),

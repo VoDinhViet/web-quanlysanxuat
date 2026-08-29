@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import { InventoryDocumentStatus } from "@/lib/types/outsourcing-receipt.type"
 
 // Mirrors the backend's GetOutsourcingReceiptsReqDto (GET /api/outsourcing-receipts). Every
@@ -13,8 +14,7 @@ import { InventoryDocumentStatus } from "@/lib/types/outsourcing-receipt.type"
 // `OutsourcingReceiptStatus` enum never produces DRAFT (docs/decisions/outsourcing-no-draft.md),
 // and its `@EnumFieldOptional` validator 400s on any other value.
 export const outsourcingReceiptsSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
+  ...paginationSearchFields(),
   q: z.string().trim().min(1).optional().catch(undefined),
   supplierId: z.string().trim().min(1).optional().catch(undefined),
   status: z

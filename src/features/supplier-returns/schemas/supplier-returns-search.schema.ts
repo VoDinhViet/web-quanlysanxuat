@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 
 // Mirrors the backend's GetSupplierReturnsReqDto (GET /api/supplier-returns). Every optional
@@ -12,8 +13,7 @@ import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 // - `nkCode` — no "Mã NK" column exists on this list anymore (moved to the detail page, see
 //   SupplierReturnsTableColumns.tsx), so filtering by it would match rows with no visible reason.
 export const supplierReturnsSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
+  ...paginationSearchFields(),
   materialKeyword: z.string().trim().min(1).optional().catch(undefined),
   supplierId: z.string().trim().min(1).optional().catch(undefined),
   poCode: z.string().trim().min(1).optional().catch(undefined),

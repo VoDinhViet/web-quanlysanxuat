@@ -1,10 +1,10 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 // Search schema for the payment-requests list page.
 // Field names follow the same conventions as purchase-orders-search.schema.ts.
 export const paymentRequestsSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
+  ...paginationSearchFields(),
   // Mã YCTT / Mã PO keyword
   q: z.string().trim().min(1).optional().catch(undefined),
   // Filter by supplier

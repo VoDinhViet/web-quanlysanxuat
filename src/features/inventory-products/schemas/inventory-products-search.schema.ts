@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import { isoDateFilter } from "@/lib/zod-transforms"
 
 // Mirrors the subset of GetInventoryProductsReqDto (GET /api/inventory-products) this screen
@@ -13,8 +14,7 @@ import { isoDateFilter } from "@/lib/zod-transforms"
 // này chỉ không gửi. `supplierId` không còn tồn tại trên DTO này nữa — chỉ RM (`GetInventoryMaterialsReqDto`) có.
 // `asOfDate`: `yyyy-MM-dd`, calendar date picked in "Xem tồn tại ngày". Undefined = tồn hiện tại.
 export const inventoryProductsSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(20),
+  ...paginationSearchFields(20),
   q: z.string().trim().min(1).optional().catch(undefined), // Mã hoặc tên thành phẩm
   asOfDate: isoDateFilter,
 })

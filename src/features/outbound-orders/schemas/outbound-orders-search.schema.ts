@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import {
   FulfillmentType,
   OutboundOrderStatus,
@@ -14,8 +15,7 @@ import {
 // not yet on GetOutboundOrdersReqDto; proceeding on the assumption it lands alongside this
 // frontend change, per the plan.
 export const outboundOrdersSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(20),
+  ...paginationSearchFields(20),
   q: z.string().trim().min(1).optional().catch(undefined), // Mã DO
   clientId: z.string().trim().min(1).optional().catch(undefined),
   itemId: z.uuid().optional().catch(undefined),

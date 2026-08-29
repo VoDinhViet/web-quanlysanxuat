@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import { isoDateFilter } from "@/lib/zod-transforms"
 
 // Mirrors the backend's GetInventoryMaterialsReqDto (GET /api/inventory-materials). Uses
@@ -12,8 +13,7 @@ import { isoDateFilter } from "@/lib/zod-transforms"
 // with no visible reason (the DTO still accepts it server-side, this frontend just stopped
 // sending it).
 export const inventoryMaterialsSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
+  ...paginationSearchFields(),
   q: z.string().trim().min(1).optional().catch(undefined),
   supplierId: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(["NORMAL", "WARNING", "SHORTAGE"]).optional().catch(undefined),

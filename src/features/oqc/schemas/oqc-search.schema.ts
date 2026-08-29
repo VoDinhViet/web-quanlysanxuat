@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { paginationSearchFields } from "@/lib/pagination.schema"
 import { IqcResult } from "@/lib/types/iqc.type"
 import { OqcDisposition, OqcStatus } from "@/lib/types/oqc.type"
 
@@ -15,8 +16,7 @@ import { OqcDisposition, OqcStatus } from "@/lib/types/oqc.type"
 // GetOqcsReqDto doesn't accept `itemId` yet — proceeding on the assumption it lands alongside
 // this frontend change, per the plan.
 export const oqcSearchSchema = z.object({
-  page: z.number().int().min(1).catch(1),
-  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
+  ...paginationSearchFields(),
   q: z.string().trim().min(1).optional().catch(undefined),
   itemId: z.uuid().optional().catch(undefined),
   result: z.enum(IqcResult).optional().catch(undefined),
