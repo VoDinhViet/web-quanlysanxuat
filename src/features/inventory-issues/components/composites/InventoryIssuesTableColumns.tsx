@@ -51,12 +51,6 @@ export const inventoryIssuesColumns = col.columns([
     cell: ({ getValue }) => inventoryIssueTypeLabels[getValue()],
   }),
 
-  col.accessor("warehouse", {
-    header: "Kho",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => getValue().name,
-  }),
-
   // Không có field PO trên phiếu xuất (chỉ phiếu nhập mới có) — hiển thị ghi chú tự do,
   // sẽ có dữ liệu phong phú hơn khi phiếu lãnh/DO-link được thêm ở backend.
   col.accessor("note", {
