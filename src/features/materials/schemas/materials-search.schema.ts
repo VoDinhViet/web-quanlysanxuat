@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-import { paginationSearchFields } from "@/lib/pagination.schema"
 import { ItemStatus } from "@/lib/types/item.type"
 
 // Mirrors the backend's GetItemsReqDto (page, limit, q, order inherited from PageOptionsDto;
@@ -9,7 +8,8 @@ import { ItemStatus } from "@/lib/types/item.type"
 // dropped when products+materials merged into `items` (be-quanlysanxuat/docs/decisions/
 // items-merge.md), `type` is the only classifier left and this endpoint already fixes it to RM.
 export const materialsSearchSchema = z.object({
-  ...paginationSearchFields(),
+  page: z.number().int().min(1).catch(1),
+  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
   q: z.string().trim().min(1).optional().catch(undefined),
   clientId: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(ItemStatus).optional().catch(undefined),

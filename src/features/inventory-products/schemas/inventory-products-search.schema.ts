@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-import { paginationSearchFields } from "@/lib/pagination.schema"
 import { isoDateFilter } from "@/lib/zod-transforms"
 
 // Mirrors the subset of GetInventoryProductsReqDto (GET /api/inventory-products) this screen
@@ -9,12 +8,13 @@ import { isoDateFilter } from "@/lib/zod-transforms"
 // `client` và backend không nhận `clientId` (cột `items.client_id` có thật trong DB nhưng endpoint
 // tồn kho không chiếu ra); "PO" thì không tồn tại ở đâu cả — `orders` chỉ có `code` nội bộ, và
 // dòng tồn kho không liên kết ngược về đơn nào.
-// Không có `status`/`warehouseId` — `status` không còn cột nào hiển thị (backend chỉ dùng để lọc,
-// không trả field), bảng không có cột Kho. DTO vẫn nhận `status`/`warehouseId` server-side, FE màn
-// này chỉ không gửi. `supplierId` không còn tồn tại trên DTO này nữa — chỉ RM (`GetInventoryMaterialsReqDto`) có.
+// Không có `status` — không còn cột nào hiển thị (backend chỉ dùng để lọc, không trả field). DTO
+// vẫn nhận `status` server-side, FE màn này chỉ không gửi. `supplierId` không còn tồn tại trên DTO
+// này nữa — chỉ RM (`GetInventoryMaterialsReqDto`) có.
 // `asOfDate`: `yyyy-MM-dd`, calendar date picked in "Xem tồn tại ngày". Undefined = tồn hiện tại.
 export const inventoryProductsSearchSchema = z.object({
-  ...paginationSearchFields(20),
+  page: z.number().int().min(1).catch(1),
+  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(20),
   q: z.string().trim().min(1).optional().catch(undefined), // Mã hoặc tên thành phẩm
   asOfDate: isoDateFilter,
 })

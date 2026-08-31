@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-import { paginationSearchFields } from "@/lib/pagination.schema"
 import { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 
 // Mirrors the backend's GetIqcsReqDto (GET /api/iqc). Every optional field carries
@@ -12,7 +11,8 @@ import { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 // `materialKeyword`/`poCode` removed — backend dropped them (they 500'd `GET /iqc`, a correlated
 // `exists()` subquery colliding with the relational query API's own FROM alias).
 export const iqcSearchSchema = z.object({
-  ...paginationSearchFields(),
+  page: z.number().int().min(1).catch(1),
+  limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
   q: z.string().trim().min(1).optional().catch(undefined),
   supplierId: z.string().trim().min(1).optional().catch(undefined),
   result: z.enum(IqcResult).optional().catch(undefined),
