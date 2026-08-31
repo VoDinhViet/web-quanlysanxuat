@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { UpdateUserPage } from "@/features/users/pages/UpdateUserPage"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import {
   positionsQueryOptions,
   userQueryOptions,
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/(authed)/manage_/users_/$userId/update")(
       )
 
       await Promise.all([
-        context.queryClient.ensureQueryData(departmentOptionsQueryOptions()),
+        context.queryClient.ensureQueryData(departmentQueryOptions()),
         context.queryClient.ensureQueryData(
           positionsQueryOptions(user.department.id)
         ),

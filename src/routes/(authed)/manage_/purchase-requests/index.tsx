@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PagePending } from "@/components/shared/layouts/PagePending"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { purchaseRequestsQueryOptions } from "@/features/purchase-requests/api/options"
 import { PurchaseRequestsPage } from "@/features/purchase-requests/pages/PurchaseRequestsPage"
 import { purchaseRequestsSearchSchema } from "@/features/purchase-requests/schemas/purchase-requests-search.schema"
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/(authed)/manage_/purchase-requests/")({
           purchaseRequestsSearchSchema.parse(location.search)
         )
       ),
-      context.queryClient.ensureQueryData(departmentOptionsQueryOptions()),
+      context.queryClient.ensureQueryData(departmentQueryOptions()),
     ]),
   component: PurchaseRequestsPage,
   // The parent route.tsx already renders the real PageTitleBar and never

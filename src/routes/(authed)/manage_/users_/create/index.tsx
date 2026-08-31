@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PagePending } from "@/components/shared/layouts/PagePending"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { CreateUserPage } from "@/features/users/pages/CreateUserPage"
 
 // `positionsQueryOptions` needs a `departmentId` the form doesn't have yet on mount (CreateUserJobInfoSection
@@ -9,7 +9,7 @@ import { CreateUserPage } from "@/features/users/pages/CreateUserPage"
 // route doesn't require (CreateUserCredentialSection fetches it itself via `useQuery`, tolerating 403).
 export const Route = createFileRoute("/(authed)/manage_/users_/create/")({
   loader: ({ context }) =>
-    context.queryClient.ensureQueryData(departmentOptionsQueryOptions()),
+    context.queryClient.ensureQueryData(departmentQueryOptions()),
   component: CreateUserPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not
