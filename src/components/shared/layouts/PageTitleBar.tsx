@@ -259,27 +259,37 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
       <div className="flex shrink-0 items-center gap-2 sm:gap-4">
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label="Thông báo"
-            >
-              <Bell />
-            </Button>
+            <span tabIndex={0}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                disabled
+                aria-label="Thông báo"
+              >
+                <Bell />
+              </Button>
+            </span>
           </TooltipTrigger>
           <TooltipContent>Thông báo — tính năng sắp có</TooltipContent>
         </Tooltip>
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="hidden sm:inline-flex"
-          aria-label="Trợ giúp"
-        >
-          <CircleHelp />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span tabIndex={0} className="hidden sm:inline-flex">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                disabled
+                aria-label="Trợ giúp"
+              >
+                <CircleHelp />
+              </Button>
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>Trợ giúp — tính năng sắp có</TooltipContent>
+        </Tooltip>
 
         <ThemeToggle />
 
