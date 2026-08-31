@@ -147,7 +147,7 @@ export function ManageProductionChart() {
           <ManageDonutChart slices={slices} total={total} totalLabel="job" />
         )}
       </div>
-      <ManageCardLink />
+      <ManageCardLink to="/manage/production-jobs" />
     </div>
   )
 }

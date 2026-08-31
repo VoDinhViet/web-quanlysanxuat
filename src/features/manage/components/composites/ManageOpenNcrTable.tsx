@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { Link } from "@tanstack/react-router"
 import {
   createColumnHelper,
   flexRender,
@@ -6,6 +7,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -15,8 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
 import { ManageCardTitle } from "@/features/manage/components/primitives/ManageCardTitle"
 import { openNcrQueryOptions } from "@/features/reports/api"
 import type { OpenNcr } from "@/lib/types/report.type"
@@ -30,12 +38,18 @@ const openNcrKindLabels: Record<OpenNcr["kind"], string> = {
 
 // `status = IN_PROGRESS` gộp 2 tình huống khác nhau tuỳ nguồn (IQC: chờ trả NCC; OQC: đang rework)
 // từ 2026-08-29 — tra theo cả `kind` lẫn `status`, không chỉ `status` như trước.
-const openNcrStatusLabels: Record<OpenNcr["kind"], Record<OpenNcr["status"], string>> = {
+const openNcrStatusLabels: Record<
+  OpenNcr["kind"],
+  Record<OpenNcr["status"], string>
+> = {
   INCOMING: { PENDING: "Chờ xử lý", IN_PROGRESS: "Chờ trả NCC" },
   OUTGOING: { PENDING: "Chờ xử lý", IN_PROGRESS: "Đang rework" },
 }
 
-const openNcrStatusStyles: Record<OpenNcr["kind"], Record<OpenNcr["status"], string>> = {
+const openNcrStatusStyles: Record<
+  OpenNcr["kind"],
+  Record<OpenNcr["status"], string>
+> = {
   INCOMING: {
     PENDING: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
     IN_PROGRESS: "bg-destructive/15 text-destructive",
@@ -145,7 +159,35 @@ export function ManageOpenNcrTable() {
           </TableBody>
         </Table>
       </div>
-      <ManageCardLink label="Xem tất cả →" />
+      <div className="flex justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="link"
+              className="h-auto p-0 text-[11px] font-medium"
+            >
+              Xem tất cả →
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <RoutePermissionGate route="/manage/iqc">
+              <DropdownMenuItem asChild>
+                <Link to="/manage/iqc" search={{ page: 1, limit: 10 }}>
+                  Xem IQC
+                </Link>
+              </DropdownMenuItem>
+            </RoutePermissionGate>
+            <RoutePermissionGate route="/manage/oqc">
+              <DropdownMenuItem asChild>
+                <Link to="/manage/oqc" search={{ page: 1, limit: 10 }}>
+                  Xem OQC
+                </Link>
+              </DropdownMenuItem>
+            </RoutePermissionGate>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   )
 }

@@ -5,7 +5,9 @@ import type { IconProps } from "@solar-icons/react"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { reportAlertsQueryOptions } from "@/features/reports/api"
+import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
 import { cn } from "@/lib/utils"
+import type { ManageRoutePath } from "@/lib/route-permissions"
 
 type AlertConfig = {
   label: string
@@ -15,6 +17,7 @@ type AlertConfig = {
   subtitle: string | null
   count: number | undefined
   isPending: boolean
+  to: ManageRoutePath
 }
 
 export function ManageAlerts() {
@@ -30,6 +33,7 @@ export function ManageAlerts() {
       subtitle: null,
       count: alertsQuery.data?.jobDueDate,
       isPending: alertsQuery.isPending,
+      to: "/manage/production-jobs",
     },
     {
       label: "OS trễ hạn",
@@ -40,6 +44,7 @@ export function ManageAlerts() {
       subtitle: null,
       count: alertsQuery.data?.outsourcingOrderDueDate,
       isPending: alertsQuery.isPending,
+      to: "/manage/outsourcing-orders",
     },
     {
       label: "NCR chưa xử lý",
@@ -50,6 +55,7 @@ export function ManageAlerts() {
       subtitle: null,
       count: alertsQuery.data?.openNcr,
       isPending: alertsQuery.isPending,
+      to: "/manage/iqc",
     },
     {
       label: "DO sắp giao",
@@ -60,6 +66,7 @@ export function ManageAlerts() {
       subtitle: "Trong 3 ngày tới",
       count: alertsQuery.data?.upcomingDeliveries,
       isPending: alertsQuery.isPending,
+      to: "/manage/outbound-orders",
     },
   ]
 
@@ -93,9 +100,12 @@ export function ManageAlerts() {
                   <span className="text-lg">{alert.count ?? "—"}</span>{" "}
                   {alert.label}
                 </p>
-                <p className="text-[11px] font-medium text-foreground/80">
-                  {alert.subtitle ?? "Xem chi tiết →"}
-                </p>
+                {alert.subtitle && (
+                  <p className="text-[11px] font-medium text-foreground/80">
+                    {alert.subtitle}
+                  </p>
+                )}
+                <ManageCardLink to={alert.to} className="justify-start" />
               </div>
             </div>
           )

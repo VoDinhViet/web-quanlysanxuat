@@ -12,7 +12,7 @@ export function ManageAnalyticsRow() {
           <ManageCardTitle>Tỷ lệ đạt QC</ManageCardTitle>
         </div>
         <ManageQcRateChart />
-        <ManageCardLink />
+        <ManageCardLink to="/manage/oqc" />
       </div>
 
       <div className="flex flex-col gap-3 rounded-lg bg-card p-4 shadow-card">

@@ -148,7 +148,7 @@ export function ManageJobDueDateTable() {
           </TableBody>
         </Table>
       </div>
-      <ManageCardLink label="Xem tất cả →" />
+      <ManageCardLink label="Xem tất cả →" to="/manage/production-jobs" />
     </div>
   )
 }

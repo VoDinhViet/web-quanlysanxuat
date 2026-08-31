@@ -123,7 +123,7 @@ export function ManageOutsourcingDueDateTable() {
           </TableBody>
         </Table>
       </div>
-      <ManageCardLink label="Xem tất cả →" />
+      <ManageCardLink label="Xem tất cả →" to="/manage/outsourcing-orders" />
     </div>
   )
 }

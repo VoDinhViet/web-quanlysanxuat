@@ -114,7 +114,7 @@ export function ManageUpcomingDeliveriesTable() {
           )}
         </TableBody>
       </Table>
-      <ManageCardLink label="Xem tất cả →" />
+      <ManageCardLink label="Xem tất cả →" to="/manage/outbound-orders" />
     </div>
   )
 }
