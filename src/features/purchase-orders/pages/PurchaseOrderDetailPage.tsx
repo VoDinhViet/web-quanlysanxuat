@@ -22,8 +22,8 @@ export function PurchaseOrderDetailPage() {
     purchaseOrderQueryOptions(purchaseOrderId)
   )
 
-  // Header fields (assignee/paymentTerm/receiptWarehouse/note/expectedDate) + item fields (SL
-  // đặt/đơn giá/lý do điều chỉnh SL) đều chỉ sửa được khi còn DRAFT. Xác nhận đặt hàng/Huỷ PO
+  // Header fields (assignee/paymentTerm/note/expectedDate) + item fields (SL đặt/đơn giá/lý do
+  // điều chỉnh SL) đều chỉ sửa được khi còn DRAFT. Xác nhận đặt hàng/Huỷ PO
   // (PurchaseOrderDetailActions.tsx) kiểm quyền riêng của chính mình, không phụ thuộc `editable`.
   const editable =
     useHasPermission("purchasing:update") &&

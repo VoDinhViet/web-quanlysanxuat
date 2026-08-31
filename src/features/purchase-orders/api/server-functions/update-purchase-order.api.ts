@@ -27,7 +27,7 @@ function resolveUpdatePurchaseOrderErrorMessage(error: unknown): string {
 
 // Header fields editable on the PO, all only while DRAFT — see PurchaseOrderDetailHeader.tsx's
 // field components. `expectedDate` can't be cleared back to `null` (backend keeps it
-// non-nullable-optional); the other 3 accept explicit `null` to clear (backend's
+// non-nullable-optional); the other 2 accept explicit `null` to clear (backend's
 // `if (value)` guard skips validation on falsy, including `null`, and clears the column).
 export const updatePurchaseOrder = createServerFn({ method: "POST" })
   .validator(
@@ -39,7 +39,6 @@ export const updatePurchaseOrder = createServerFn({ method: "POST" })
         .optional(),
       assignedUserId: z.uuid().nullable().optional(),
       paymentTerm: z.enum(PaymentTerm).nullable().optional(),
-      receiptWarehouseId: z.uuid().nullable().optional(),
       note: z.string().trim().max(1000).nullable().optional(),
     })
   )
@@ -49,7 +48,6 @@ export const updatePurchaseOrder = createServerFn({ method: "POST" })
         expectedDate: data.expectedDate,
         assignedUserId: data.assignedUserId,
         paymentTerm: data.paymentTerm,
-        receiptWarehouseId: data.receiptWarehouseId,
         note: data.note,
       })
     } catch (error) {

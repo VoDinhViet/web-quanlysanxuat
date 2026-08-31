@@ -75,13 +75,6 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
           )}
         </div>
 
-        {purchaseOrder && !purchaseOrder.receiptWarehouse && (
-          <p className="mt-3 text-xs text-destructive">
-            PO này chưa khai báo kho nhận — không thể tạo phiếu nhập kho từ PO
-            này. Vui lòng bổ sung kho nhận trên PO trước.
-          </p>
-        )}
-
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
           <Table>
             <TableHeader>

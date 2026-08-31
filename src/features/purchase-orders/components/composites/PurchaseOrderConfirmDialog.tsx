@@ -25,9 +25,8 @@ type PurchaseOrderConfirmDialogProps = {
 }
 
 // DRAFT → ORDERED (terminal short of a cancel). `trigger`'s own disabled state (set by
-// PurchaseOrderDetailActions.tsx from the same 3 conditions the backend enforces — expectedDate
-// set, receiptWarehouse chosen, every item priced) is the client-side precheck; the backend still
-// re-validates.
+// PurchaseOrderDetailActions.tsx from the same 2 conditions the backend enforces — expectedDate
+// set, every item priced) is the client-side precheck; the backend still re-validates.
 export function PurchaseOrderConfirmDialog({
   purchaseOrder,
   trigger,

@@ -106,8 +106,8 @@ export function InventoryReceiptCreateFromPoForm() {
 
   const { mutate: submit, isPending } = useMutation({
     mutationFn: async (value: CreateInventoryReceiptFromPoFormSchema) => {
-      if (!purchaseOrder?.receiptWarehouse) {
-        throw new Error("PO chưa khai báo kho nhận — vui lòng chọn PO khác.")
+      if (!purchaseOrder) {
+        throw new Error("Chưa chọn đơn mua hàng — vui lòng chọn PO khác.")
       }
 
       const receiptDate = DateTime.now().toFormat("yyyy-MM-dd")
@@ -212,9 +212,7 @@ export function InventoryReceiptCreateFromPoForm() {
             {({ hasPurchaseOrder, hasItems }) => (
               <InventoryReceiptCreateFromPoStepsTabs
                 canGoToPreview={hasPurchaseOrder}
-                canGoToItems={
-                  hasPurchaseOrder && Boolean(purchaseOrder?.receiptWarehouse)
-                }
+                canGoToItems={hasPurchaseOrder}
                 canGoToConfirm={hasItems}
               />
             )}
@@ -287,8 +285,7 @@ export function InventoryReceiptCreateFromPoForm() {
                   step === "po"
                     ? hasPurchaseOrder
                     : step === "preview"
-                      ? hasPurchaseOrder &&
-                        Boolean(purchaseOrder?.receiptWarehouse)
+                      ? hasPurchaseOrder
                       : hasItems
 
                 return (

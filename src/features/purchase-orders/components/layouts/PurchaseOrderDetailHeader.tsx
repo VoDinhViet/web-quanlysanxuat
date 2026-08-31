@@ -9,7 +9,6 @@ import { PurchaseOrderDetailActions } from "@/features/purchase-orders/component
 import { PurchaseOrderExpectedDateField } from "@/features/purchase-orders/components/composites/PurchaseOrderExpectedDateField"
 import { PurchaseOrderNoteField } from "@/features/purchase-orders/components/composites/PurchaseOrderNoteField"
 import { PurchaseOrderPaymentTermField } from "@/features/purchase-orders/components/composites/PurchaseOrderPaymentTermField"
-import { PurchaseOrderReceiptWarehouseField } from "@/features/purchase-orders/components/composites/PurchaseOrderReceiptWarehouseField"
 import { PurchaseOrderStatusBadge } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
@@ -124,11 +123,6 @@ export function PurchaseOrderDetailHeader({
             <PurchaseOrderExpectedDateField
               purchaseOrderId={purchaseOrder.id}
               expectedDate={purchaseOrder.expectedDate}
-              editable={editable}
-            />
-            <PurchaseOrderReceiptWarehouseField
-              purchaseOrderId={purchaseOrder.id}
-              receiptWarehouse={purchaseOrder.receiptWarehouse}
               editable={editable}
             />
             <PurchaseOrderNoteField

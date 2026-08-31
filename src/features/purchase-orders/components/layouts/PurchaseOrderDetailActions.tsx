@@ -24,7 +24,6 @@ export function PurchaseOrderDetailActions({
   const isConfirmable =
     purchaseOrder.status === PurchaseOrderStatus.DRAFT &&
     purchaseOrder.expectedDate !== null &&
-    purchaseOrder.receiptWarehouse !== null &&
     purchaseOrder.items.every((item) => item.unitPrice !== null)
 
   return (
@@ -63,8 +62,7 @@ export function PurchaseOrderDetailActions({
 
       {purchaseOrder.status === PurchaseOrderStatus.DRAFT && !isConfirmable && (
         <p className="max-w-64 text-right text-[11px] text-muted-foreground">
-          Cần nhập ngày giao dự kiến, chọn kho nhận hàng và đơn giá cho mọi dòng
-          trước khi xác nhận.
+          Cần nhập ngày giao dự kiến và đơn giá cho mọi dòng trước khi xác nhận.
         </p>
       )}
     </div>
