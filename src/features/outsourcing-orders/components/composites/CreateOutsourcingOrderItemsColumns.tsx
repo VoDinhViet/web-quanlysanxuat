@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
@@ -9,8 +10,10 @@ import type { CreateOutsourcingOrderItemValue } from "@/features/outsourcing-ord
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const createOutsourcingOrderItemColumnHelper =
-  createColumnHelper<CreateOutsourcingOrderItemValue>()
+const createOutsourcingOrderItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  CreateOutsourcingOrderItemValue
+>()
 
 type BuildCreateOutsourcingOrderItemColumnsArgs = {
   itemsField: AnyFieldApi
@@ -25,7 +28,7 @@ export function buildCreateOutsourcingOrderItemColumns({
   itemsField,
   disabled,
 }: BuildCreateOutsourcingOrderItemColumnsArgs) {
-  return [
+  return createOutsourcingOrderItemColumnHelper.columns([
     createOutsourcingOrderItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -208,5 +211,5 @@ export function buildCreateOutsourcingOrderItemColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

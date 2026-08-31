@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Eye, HelpCircle } from "lucide-react"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
@@ -12,7 +13,10 @@ import { resolveInventoryStatus } from "@/lib/types/inventory-material.type"
 
 const stockFormatter = new Intl.NumberFormat("vi-VN")
 
-const inventoryColumnHelper = createColumnHelper<MaterialInventoryItem>()
+const inventoryColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  MaterialInventoryItem
+>()
 
 // A right-aligned header with a decorative ⓘ + a static formula sub-line — mirrors
 // inventory-products' header shape exactly (no hover tooltip, the formula is just printed).
@@ -36,7 +40,7 @@ function QuantityColumnHeader({
   )
 }
 
-export const inventoryMaterialColumns = [
+export const inventoryMaterialColumns = inventoryColumnHelper.columns([
   inventoryColumnHelper.display({
     id: "index",
     header: "STT",
@@ -179,4 +183,4 @@ export const inventoryMaterialColumns = [
       </div>
     ),
   }),
-]
+])

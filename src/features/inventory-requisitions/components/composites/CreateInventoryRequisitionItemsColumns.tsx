@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { Trash2 } from "lucide-react"
 
@@ -13,8 +14,10 @@ import type { InventoryRequisitionItemFormValue } from "@/features/inventory-req
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const createInventoryRequisitionItemColumnHelper =
-  createColumnHelper<InventoryRequisitionItemFormValue>()
+const createInventoryRequisitionItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  InventoryRequisitionItemFormValue
+>()
 
 type BuildCreateInventoryRequisitionItemColumnsArgs = {
   itemsField: AnyFieldApi
@@ -29,7 +32,7 @@ export function buildCreateInventoryRequisitionItemColumns({
   itemsField,
   disabled,
 }: BuildCreateInventoryRequisitionItemColumnsArgs) {
-  return [
+  return createInventoryRequisitionItemColumnHelper.columns([
     createInventoryRequisitionItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -182,5 +185,5 @@ export function buildCreateInventoryRequisitionItemColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

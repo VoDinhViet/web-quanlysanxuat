@@ -1,10 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -31,9 +27,12 @@ function daysSinceDueDate(expectedReturnDate: string): number {
   )
 }
 
-const columnHelper = createColumnHelper<OutsourcingOrderDueDate>()
+const columnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  OutsourcingOrderDueDate
+>()
 
-const columns = [
+const columns = columnHelper.columns([
   columnHelper.accessor("code", {
     header: "OS",
     meta: { cellClassName: "text-xs font-medium" },
@@ -54,14 +53,14 @@ const columns = [
     cell: ({ row }) =>
       `${daysSinceDueDate(row.original.expectedReturnDate)} ngày`,
   }),
-]
+])
 
 export function ManageOutsourcingDueDateTable() {
   const query = useQuery(outsourcingOrderDueDateQueryOptions())
-  const table = useReactTable({
+  const table = useTable({
     data: query.data ?? [],
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   if (query.isPending) {

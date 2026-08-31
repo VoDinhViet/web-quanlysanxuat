@@ -1,13 +1,16 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const unfulfilledOrderItemColumnHelper =
-  createColumnHelper<UnfulfilledOrderItem>()
+const unfulfilledOrderItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  UnfulfilledOrderItem
+>()
 
 type BuildCreateOutboundOrderPickerColumnsArgs = {
   pickedIds: Set<string>
@@ -33,7 +36,7 @@ export function buildCreateOutboundOrderPickerColumns({
   onToggleRow,
   onToggleAll,
 }: BuildCreateOutboundOrderPickerColumnsArgs) {
-  return [
+  return unfulfilledOrderItemColumnHelper.columns([
     unfulfilledOrderItemColumnHelper.display({
       id: "select",
       header: () => (
@@ -133,5 +136,5 @@ export function buildCreateOutboundOrderPickerColumns({
         </span>
       ),
     }),
-  ]
+  ])
 }

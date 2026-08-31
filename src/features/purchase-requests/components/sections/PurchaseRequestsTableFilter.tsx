@@ -16,7 +16,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { purchaseRequestStatusLabels } from "@/lib/types/purchase-request.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
@@ -32,9 +32,7 @@ export function PurchaseRequestsTableFilter() {
   const [q, setQ] = useState(search.q ?? "")
 
   // Reference list with a fixed key — the loader already prefetched it, resolves synchronously.
-  const { data: departments } = useSuspenseQuery(
-    departmentOptionsQueryOptions()
-  )
+  const { data: departments } = useSuspenseQuery(departmentQueryOptions())
   const departmentOptions = [
     { value: "all", label: "Tất cả" },
     ...buildSelectOptions(departments),

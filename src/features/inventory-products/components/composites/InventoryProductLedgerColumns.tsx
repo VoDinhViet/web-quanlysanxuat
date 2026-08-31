@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 
 import { ProductLedgerMovementTypeBadge } from "@/features/inventory-products/components/primitives/InventoryProductLedgerBadges"
@@ -11,7 +12,10 @@ import {
 import type { ProductLedgerEntry } from "@/lib/types/product-ledger.type"
 import { resolveProductLedgerMovementType } from "@/lib/types/product-ledger.type"
 
-const productLedgerColumnHelper = createColumnHelper<ProductLedgerEntry>()
+const productLedgerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  ProductLedgerEntry
+>()
 
 const quantityColumnMeta = {
   headerClassName: "min-w-24 text-right",
@@ -21,7 +25,7 @@ const quantityColumnMeta = {
 // No "Số PO" sortable column — dropped from the mockup: zero sortable-column precedent exists
 // anywhere in this codebase (every table is getCoreRowModel() only); "Diễn giải" already surfaces
 // Job/Đơn/DO liên quan (xem InventoryProductLedgerDescriptionCell).
-export const inventoryProductLedgerColumns = [
+export const inventoryProductLedgerColumns = productLedgerColumnHelper.columns([
   productLedgerColumnHelper.display({
     id: "index",
     header: "STT",
@@ -108,4 +112,4 @@ export const inventoryProductLedgerColumns = [
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => getValue() ?? "—",
   }),
-]
+])

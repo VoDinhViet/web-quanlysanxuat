@@ -1,9 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Plus, ShieldCheck } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -29,10 +26,10 @@ type RolesTableProps = {
 // Bảng danh sách vai trò — không phân trang, vì GET /roles trả cả danh mục (không quá vài chục
 // dòng) chứ không phải offset/limit như các danh sách khác.
 export function RolesTable({ rows, isPending }: RolesTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: roleColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

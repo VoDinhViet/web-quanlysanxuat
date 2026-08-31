@@ -1,12 +1,15 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 import { CheckCircle } from "@solar-icons/react"
 
 import { RadioGroupItem } from "@/components/ui/radio-group"
 import type { PurchaseQuotationItemSupplierDetail } from "@/lib/types/purchase-quotation.type"
 
-const purchaseQuotationSupplierColumnHelper =
-  createColumnHelper<PurchaseQuotationItemSupplierDetail>()
+const purchaseQuotationSupplierColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseQuotationItemSupplierDetail
+>()
 
 const priceFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -23,7 +26,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
   selectable,
   isApproved,
 }: BuildPurchaseQuotationSupplierCompareColumnsArgs) {
-  return [
+  return purchaseQuotationSupplierColumnHelper.columns([
     purchaseQuotationSupplierColumnHelper.display({
       id: "select",
       header: "Trúng thầu",
@@ -105,5 +108,5 @@ export function buildPurchaseQuotationSupplierCompareColumns({
       header: "Ghi chú",
       meta: { headerClassName: "text-[10px]", cellClassName: "truncate" },
     }),
-  ]
+  ])
 }

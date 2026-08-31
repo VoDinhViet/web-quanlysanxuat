@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { AddCircle, TrashBinTrash } from "@solar-icons/react"
 
@@ -14,7 +15,10 @@ import { TableTextCellInput } from "@/components/shared/primitives/TableTextCell
 import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/composites/QuotationAllocationsDialog"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
-const quotationItemColumnHelper = createColumnHelper<PickedQuotationItemValue>()
+const quotationItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PickedQuotationItemValue
+>()
 
 type BuildQuotationSuppliersItemColumnsArgs = {
   itemsField: AnyFieldApi
@@ -30,7 +34,7 @@ export function buildQuotationSuppliersItemColumns({
   disabled,
   onOpenAddSupplier,
 }: BuildQuotationSuppliersItemColumnsArgs) {
-  return [
+  return quotationItemColumnHelper.columns([
     quotationItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -204,5 +208,5 @@ export function buildQuotationSuppliersItemColumns({
         )
       },
     }),
-  ]
+  ])
 }

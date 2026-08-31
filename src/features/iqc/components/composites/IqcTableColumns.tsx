@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import {
   IqcDispositionBadge,
@@ -14,12 +15,12 @@ import type { Iqc } from "@/lib/types/iqc.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const iqcColumnHelper = createColumnHelper<Iqc>()
+const iqcColumnHelper = createColumnHelper<typeof appTableFeatures, Iqc>()
 
 // Trimmed from the mockup's 14 columns to what's needed to scan the list at a glance — "#", "Mã
 // NK" (now only a filter, see IqcTableFilter.tsx's "Mở rộng"), and "Ghi chú" dropped; mã/tên vật
 // tư collapse into one "Vật tư" column, same identity-cell idiom as SupplierReturnsTableColumns.
-export const iqcColumns = [
+export const iqcColumns = iqcColumnHelper.columns([
   iqcColumnHelper.accessor("code", {
     header: "Mã IQC",
     meta: { headerClassName: "min-w-28" },
@@ -144,4 +145,4 @@ export const iqcColumns = [
     },
     cell: ({ row }) => <IqcActionsCell iqcId={row.original.id} />,
   }),
-]
+])

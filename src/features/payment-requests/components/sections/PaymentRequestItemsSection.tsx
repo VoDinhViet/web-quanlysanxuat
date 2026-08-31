@@ -9,21 +9,17 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import type {
   PaymentRequestDetail,
   PaymentRequestItem,
 } from "@/lib/types/payment-request.type"
 
-const col = createColumnHelper<PaymentRequestItem>()
+const col = createColumnHelper<typeof appTableFeatures, PaymentRequestItem>()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-const itemColumns = [
+const itemColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -90,7 +86,7 @@ const itemColumns = [
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
-]
+])
 
 type PaymentRequestItemsSectionProps = {
   paymentRequest: PaymentRequestDetail
@@ -101,10 +97,10 @@ type PaymentRequestItemsSectionProps = {
 export function PaymentRequestItemsSection({
   paymentRequest,
 }: PaymentRequestItemsSectionProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: paymentRequest.items,
     columns: itemColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   const totalAmount = paymentRequest.items.reduce(

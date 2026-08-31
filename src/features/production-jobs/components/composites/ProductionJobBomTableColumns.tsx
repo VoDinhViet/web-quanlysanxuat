@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Pencil, Trash2 } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
@@ -6,12 +7,12 @@ import type { ProductionJobIssue } from "@/lib/types/production-job.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const col = createColumnHelper<ProductionJobIssue>()
+const col = createColumnHelper<typeof appTableFeatures, ProductionJobIssue>()
 
 // "Sửa"/"Xoá" là DisabledAction — production_job_issues chỉ có đúng một đường ghi (transaction
 // duyệt LSX), chưa có route thêm/sửa/xoá độc lập nào (xem docs/domains/production.md,
 // Invariants; và "Thêm vật tư" cùng lý do trong ProductionJobBomTab.tsx).
-export const productionJobBomColumns = [
+export const productionJobBomColumns = col.columns([
   col.display({
     id: "index",
     header: "STT",
@@ -71,4 +72,4 @@ export const productionJobBomColumns = [
       </div>
     ),
   }),
-]
+])

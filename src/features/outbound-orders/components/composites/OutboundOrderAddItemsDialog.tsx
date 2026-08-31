@@ -1,11 +1,7 @@
 import { useState } from "react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import type { ReactNode } from "react"
 
@@ -33,7 +29,7 @@ import { cn } from "@/lib/utils"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-const col = createColumnHelper<UnfulfilledOrderItem>()
+const col = createColumnHelper<typeof appTableFeatures, UnfulfilledOrderItem>()
 
 type OutboundOrderAddItemsDialogProps = {
   clientId: string
@@ -74,7 +70,7 @@ export function OutboundOrderAddItemsDialog({
   const rows = query.data?.data ?? []
   const pagination = query.data?.pagination
 
-  const columns = [
+  const columns = col.columns([
     col.accessor((row) => row.order.code, {
       id: "orderCode",
       header: "PO",
@@ -139,12 +135,12 @@ export function OutboundOrderAddItemsDialog({
         )
       },
     }),
-  ]
+  ])
 
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

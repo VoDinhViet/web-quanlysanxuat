@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Plus, Wrench } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -29,10 +26,10 @@ type OperationsTableProps = {
 // Bảng danh sách công đoạn — không phân trang, vì GET /operations trả cả danh mục (không quá vài
 // chục dòng) chứ không phải offset/limit như các danh sách khác, cùng khuôn RolesTable.
 export function OperationsTable({ rows, isPending }: OperationsTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: operationColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

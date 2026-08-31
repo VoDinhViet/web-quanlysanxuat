@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Edit3, Trash2 } from "lucide-react"
 import { DateTime } from "luxon"
 
@@ -18,9 +19,12 @@ const statusStyles: Record<OperationStatus, string> = {
   [OperationStatus.INACTIVE]: "bg-muted text-muted-foreground",
 }
 
-const operationColumnHelper = createColumnHelper<OperationDetail>()
+const operationColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  OperationDetail
+>()
 
-export const operationColumns = [
+export const operationColumns = operationColumnHelper.columns([
   operationColumnHelper.display({
     id: "index",
     header: "#",
@@ -110,4 +114,4 @@ export const operationColumns = [
       )
     },
   }),
-]
+])

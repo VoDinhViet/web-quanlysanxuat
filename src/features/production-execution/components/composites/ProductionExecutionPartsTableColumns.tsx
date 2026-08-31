@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,7 +23,10 @@ export type ProductionExecutionPartRow = {
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const columnHelper = createColumnHelper<ProductionExecutionPartRow>()
+const columnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  ProductionExecutionPartRow
+>()
 
 type BuildColumnsArgs = {
   // null = có thể báo cáo; ngược lại là lý do bị khoá — dialog tự hiện lý do này thay vì để bấm
@@ -37,7 +41,7 @@ type BuildColumnsArgs = {
 export function buildProductionExecutionPartColumns({
   disabledReason,
 }: BuildColumnsArgs) {
-  return [
+  return columnHelper.columns([
     columnHelper.accessor((row) => row.bomItem.code, {
       id: "code",
       header: "Part",
@@ -109,5 +113,5 @@ export function buildProductionExecutionPartColumns({
         </Tooltip>
       ),
     }),
-  ]
+  ])
 }

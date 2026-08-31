@@ -1,10 +1,7 @@
 import { Box } from "@solar-icons/react"
 import { PackageSearch } from "lucide-react"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -41,10 +38,10 @@ export function OrderDetailItemsCard({
     0
   )
 
-  const table = useReactTable({
+  const table = useTable({
     data: items,
     columns: orderDetailItemColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ListChecks, PackageSearch } from "lucide-react"
 
 import {
@@ -35,10 +32,10 @@ type OutsourcingOrderItemsCardProps = {
 export function OutsourcingOrderItemsCard({
   items,
 }: OutsourcingOrderItemsCardProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: items,
     columns: outsourcingOrderItemsColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   // totalQuantity tự tính từ items (không lấy detail.totalQuantity — endpoint chi tiết hiện

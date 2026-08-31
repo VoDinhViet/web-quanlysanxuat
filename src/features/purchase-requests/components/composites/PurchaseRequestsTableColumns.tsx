@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/primitives/PurchaseRequestBadges"
 import {
@@ -8,9 +9,12 @@ import {
 } from "@/features/purchase-requests/components/primitives/PurchaseRequestTableCells"
 import type { PurchaseRequest } from "@/lib/types/purchase-request.type"
 
-const purchaseRequestColumnHelper = createColumnHelper<PurchaseRequest>()
+const purchaseRequestColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseRequest
+>()
 
-export const purchaseRequestColumns = [
+export const purchaseRequestColumns = purchaseRequestColumnHelper.columns([
   purchaseRequestColumnHelper.accessor("code", {
     header: "Mã phiếu",
     meta: { headerClassName: "min-w-28" },
@@ -78,4 +82,4 @@ export const purchaseRequestColumns = [
       <PurchaseRequestActionsCell purchaseRequestId={row.original.id} />
     ),
   }),
-]
+])

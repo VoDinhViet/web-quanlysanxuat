@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -27,10 +24,10 @@ type PurchaseQuotationAllocationsTableProps = {
 export function PurchaseQuotationAllocationsTable({
   item,
 }: PurchaseQuotationAllocationsTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: item.allocations,
     columns: purchaseQuotationAllocationsColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

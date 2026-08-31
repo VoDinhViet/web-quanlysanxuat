@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ClipboardList } from "lucide-react"
 
 import {
@@ -43,10 +40,10 @@ export function PurchaseLedgerTable({
   pagination,
   isPending,
 }: PurchaseLedgerTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: purchaseLedgerColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ListChecks, PackageSearch } from "lucide-react"
 
 import {
@@ -34,10 +31,10 @@ const decimalFormatter = new Intl.NumberFormat("vi-VN", {
 export function OutsourcingReceiptItemsCard({
   items,
 }: OutsourcingReceiptItemsCardProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: items,
     columns: outsourcingReceiptItemsColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)

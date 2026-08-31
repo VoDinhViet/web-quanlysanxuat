@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ClipboardCheck } from "lucide-react"
 
 import {
@@ -29,10 +26,10 @@ type OqcTableProps = {
 // Bảng danh sách OQC — tự dựng useReactTable/flexRender thay vì qua một khung DataTable dùng
 // chung, để mỗi trang danh sách tự do tiến hoá riêng.
 export function OqcTable({ rows, pagination, isPending }: OqcTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: oqcColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

@@ -1,10 +1,7 @@
 import { useMemo } from "react"
 import { useField } from "@tanstack/react-form"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -44,10 +41,10 @@ export const CreateOutsourcingReceiptItemsSection = withForm({
       [itemsField, disabled]
     )
 
-    const table = useReactTable({
+    const table = useTable({
       data: items,
       columns,
-      getCoreRowModel: getCoreRowModel(),
+      features: appTableFeatures,
     })
 
     const { totalQuantity, totalWeight, totalArea } =

@@ -1,9 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Plus, UserRound } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -32,10 +29,10 @@ type UsersTableProps = {
 // Bảng danh sách nhân sự — tự dựng useReactTable/flexRender thay vì qua một khung DataTable dùng
 // chung, để mỗi trang danh sách tự do tiến hoá riêng.
 export function UsersTable({ rows, pagination, isPending }: UsersTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: userColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

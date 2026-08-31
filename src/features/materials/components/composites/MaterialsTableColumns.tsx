@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { CircleCheck, CirclePause, Edit3 } from "lucide-react"
@@ -15,9 +16,12 @@ import type { Material } from "@/lib/types/material.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const materialColumnHelper = createColumnHelper<Material>()
+const materialColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  Material
+>()
 
-export const materialColumns = [
+export const materialColumns = materialColumnHelper.columns([
   materialColumnHelper.display({
     id: "index",
     header: "#",
@@ -144,4 +148,4 @@ export const materialColumns = [
       )
     },
   }),
-]
+])

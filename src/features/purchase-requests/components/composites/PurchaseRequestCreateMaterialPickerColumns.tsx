@@ -1,11 +1,15 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import type { Material } from "@/lib/types/material.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const purchaseRequestMaterialPickerColumnHelper = createColumnHelper<Material>()
+const purchaseRequestMaterialPickerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  Material
+>()
 
 type BuildPurchaseRequestMaterialPickerColumnsArgs = {
   pickedIds: Set<string>
@@ -27,7 +31,7 @@ export function buildPurchaseRequestMaterialPickerColumns({
   onToggleRow,
   onToggleAll,
 }: BuildPurchaseRequestMaterialPickerColumnsArgs) {
-  return [
+  return purchaseRequestMaterialPickerColumnHelper.columns([
     purchaseRequestMaterialPickerColumnHelper.display({
       id: "select",
       header: () => (
@@ -92,5 +96,5 @@ export function buildPurchaseRequestMaterialPickerColumns({
         ),
       }
     ),
-  ]
+  ])
 }

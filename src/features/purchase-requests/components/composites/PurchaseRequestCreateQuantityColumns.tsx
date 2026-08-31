@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
@@ -9,8 +10,10 @@ import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const purchaseRequestQuantityColumnHelper =
-  createColumnHelper<PurchaseRequestItemFormValue>()
+const purchaseRequestQuantityColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseRequestItemFormValue
+>()
 
 type BuildPurchaseRequestQuantityColumnsArgs = {
   itemsField: AnyFieldApi
@@ -24,7 +27,7 @@ export function buildPurchaseRequestQuantityColumns({
   itemsField,
   disabled,
 }: BuildPurchaseRequestQuantityColumnsArgs) {
-  return [
+  return purchaseRequestQuantityColumnHelper.columns([
     purchaseRequestQuantityColumnHelper.display({
       id: "index",
       header: "STT",
@@ -135,5 +138,5 @@ export function buildPurchaseRequestQuantityColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

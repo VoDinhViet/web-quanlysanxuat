@@ -1,10 +1,6 @@
 import { PackageSearch } from "lucide-react"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -21,10 +17,13 @@ import type {
 } from "@/lib/types/inventory-receipt.type"
 import { vndFormatter } from "@/lib/currency"
 
-const col = createColumnHelper<InventoryReceiptItemDetail>()
+const col = createColumnHelper<
+  typeof appTableFeatures,
+  InventoryReceiptItemDetail
+>()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-const itemColumns = [
+const itemColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -100,7 +99,7 @@ const itemColumns = [
     meta: { headerClassName: "min-w-36" },
     cell: ({ getValue }) => getValue() ?? "—",
   }),
-]
+])
 
 type InventoryReceiptDetailItemsSectionProps = {
   inventoryReceipt: InventoryReceiptDetail
@@ -109,10 +108,10 @@ type InventoryReceiptDetailItemsSectionProps = {
 export function InventoryReceiptDetailItemsSection({
   inventoryReceipt,
 }: InventoryReceiptDetailItemsSectionProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: inventoryReceipt.items,
     columns: itemColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   const totalQuantity = inventoryReceipt.items.reduce(

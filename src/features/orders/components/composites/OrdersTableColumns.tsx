@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { OrderStatusBadge } from "@/features/orders/components/primitives/OrderBadges"
 import {
@@ -15,9 +16,9 @@ const moneyColumnMeta = {
   cellClassName: "text-right tabular-nums whitespace-nowrap",
 }
 
-const orderColumnHelper = createColumnHelper<Order>()
+const orderColumnHelper = createColumnHelper<typeof appTableFeatures, Order>()
 
-export const orderColumns = [
+export const orderColumns = orderColumnHelper.columns([
   orderColumnHelper.accessor("code", {
     header: "Mã đơn hàng",
     meta: { headerClassName: "min-w-32" },
@@ -88,4 +89,4 @@ export const orderColumns = [
     },
     cell: ({ row }) => <OrderActionsCell order={row.original} />,
   }),
-]
+])

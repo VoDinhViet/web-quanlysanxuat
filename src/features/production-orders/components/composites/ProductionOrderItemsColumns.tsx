@@ -1,12 +1,15 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import type { ReactNode } from "react"
 
 import type { ProductionOrderDetailItem } from "@/lib/types/production-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const productionOrderItemsColumnHelper =
-  createColumnHelper<ProductionOrderDetailItem>()
+const productionOrderItemsColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  ProductionOrderDetailItem
+>()
 
 type BuildProductionOrderItemsColumnsArgs = {
   // Rendered by the caller (where `form` is fully typed via `withForm`) rather than taking
@@ -21,7 +24,7 @@ type BuildProductionOrderItemsColumnsArgs = {
 export function buildProductionOrderItemsColumns({
   renderQuantityCell,
 }: BuildProductionOrderItemsColumnsArgs) {
-  return [
+  return productionOrderItemsColumnHelper.columns([
     productionOrderItemsColumnHelper.display({
       id: "index",
       header: "#",
@@ -78,5 +81,5 @@ export function buildProductionOrderItemsColumns({
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
-  ]
+  ])
 }

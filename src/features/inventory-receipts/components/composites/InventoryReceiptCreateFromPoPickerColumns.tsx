@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
@@ -59,13 +60,16 @@ function PurchaseOrderProgressBadge({
   )
 }
 
-const purchaseOrderPickerColumnHelper = createColumnHelper<PurchaseOrder>()
+const purchaseOrderPickerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseOrder
+>()
 
 // Own useReactTable columns for bước ① — chọn đúng 1 PO (radio, không phải checkbox nhiều dòng
 // như CreateQuotationItemsPickerColumns.tsx), rút gọn từ PurchaseOrdersTableColumns.tsx (bỏ RFQ
 // nguồn/PR nguồn/người phụ trách/thao tác — không cần thiết ở bước chọn PO của wizard này).
 export function buildInventoryReceiptFromPoPickerColumns() {
-  return [
+  return purchaseOrderPickerColumnHelper.columns([
     purchaseOrderPickerColumnHelper.display({
       id: "select",
       meta: { headerClassName: "w-10" },
@@ -128,5 +132,5 @@ export function buildInventoryReceiptFromPoPickerColumns() {
         <PurchaseOrderProgressBadge progress={getValue()} />
       ),
     }),
-  ]
+  ])
 }

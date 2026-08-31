@@ -1,9 +1,6 @@
 import { useMemo } from "react"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Package } from "lucide-react"
 
 import {
@@ -35,10 +32,10 @@ export function ProductionExecutionPartsTable({
     [disabledReason]
   )
 
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   if (rows.length === 0) {

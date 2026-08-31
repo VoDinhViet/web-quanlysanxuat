@@ -51,7 +51,6 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 | Component         | Prop chính                                                                                                                                                                | Call site                                                                                |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `TimelineCard`    | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?`                                                                               | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
-| `DataTable`       | `table: Table<TData>` (từ `useReactTable`), `isEmpty`, `emptyState: ReactNode`                                                                                            | `InventoryRequisitionsTable.tsx`                                                         |
 | `LocalPagination` | `pagination: Pagination`, `limitOptions: readonly number[]`, `onPageChange`, `onLimitChange`, `disabled?` — em của `TablePagination` cho phân trang không có URL để patch | `CreateInventoryRequisitionPickerSection.tsx`                                            |
 | `TablePagination` | `pagination: Pagination`, `className?` — tự patch `page`/`limit` search param qua `navigate({to: "."})`                                                                   | mọi list page (Phase 0)                                                                  |
 | `StatusLegend`    | `icon`, `title`, `items: {key, badge: ReactNode, description}[]`                                                                                                          | `InventoryRequisitionsLegend.tsx`                                                        |
@@ -107,8 +106,11 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 - **`<Link to=... params=...>` của row action / nút Back trong detail header** — extract ra khỏi
   call site sẽ mất type-check route param; cả hai ở lại làm slot tại call site (không qua shell
   chung — xem revert ở trên).
-- **Nội dung `TableEmpty`** (icon/title/description) — luôn là prop của call site, `DataTable`
-  chỉ quyết định _khi nào_ hiện nó, không quyết định nó nói gì.
+- **`DataTable`** (shell `useReactTable`/`flexRender` dùng chung, ghép ở Phase 0) — chỉ có đúng 1
+  caller (`InventoryRequisitionsTable.tsx`) nên bị bỏ theo yêu cầu để mỗi bảng tự dựng shell
+  `Table`/`TableHeader`/`TableBody`/`flexRender` độc lập, không qua component chung nữa.
+- **Nội dung `TableEmpty`** (icon/title/description) — luôn là prop của call site; mỗi bảng tự
+  quyết định _khi nào_ hiện nó ngay trong JSX của mình.
 - **`reject-*.schema.ts`** — là `.validator()` của server function tương ứng (trust boundary),
   không rút thành schema dùng chung dù hình dạng field giống nhau.
 - **`StatusLegend` flavor A** (`dl`/`dt`/`dd`, dùng bởi `OrderStatusLegend`/`PurchaseOrderLegend`/

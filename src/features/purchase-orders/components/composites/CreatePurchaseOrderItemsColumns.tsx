@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
@@ -7,8 +8,10 @@ import { NumericCellInput } from "@/components/shared/primitives/NumericCellInpu
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { PickedPurchaseOrderItemValue } from "@/features/purchase-orders/schemas/create-purchase-order.schema"
 
-const purchaseOrderItemColumnHelper =
-  createColumnHelper<PickedPurchaseOrderItemValue>()
+const purchaseOrderItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PickedPurchaseOrderItemValue
+>()
 
 type BuildPurchaseOrderItemsColumnsArgs = {
   itemsField: AnyFieldApi
@@ -22,7 +25,7 @@ export function buildPurchaseOrderItemsColumns({
   itemsField,
   disabled,
 }: BuildPurchaseOrderItemsColumnsArgs) {
-  return [
+  return purchaseOrderItemColumnHelper.columns([
     purchaseOrderItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -135,5 +138,5 @@ export function buildPurchaseOrderItemsColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

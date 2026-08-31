@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/primitives/SupplierReturnBadges"
 import { SupplierReturnActionsCell } from "@/features/supplier-returns/components/primitives/SupplierReturnTableCells"
@@ -7,12 +8,15 @@ import type { SupplierReturn } from "@/lib/types/supplier-return.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const supplierReturnColumnHelper = createColumnHelper<SupplierReturn>()
+const supplierReturnColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  SupplierReturn
+>()
 
 // Trimmed to what's needed to scan the list at a glance — Mã IQC/Mã NK/PO moved to the detail
 // page (opened from "Thao tác"), and mã/tên vật tư + SL trả/ĐVT each collapse into one column,
 // same identity-cell idiom as ProductsTableColumns.
-export const supplierReturnsColumns = [
+export const supplierReturnsColumns = supplierReturnColumnHelper.columns([
   supplierReturnColumnHelper.accessor("code", {
     header: "Mã trả NCC",
     meta: { headerClassName: "min-w-28" },
@@ -93,4 +97,4 @@ export const supplierReturnsColumns = [
       <SupplierReturnActionsCell supplierReturn={row.original} />
     ),
   }),
-]
+])

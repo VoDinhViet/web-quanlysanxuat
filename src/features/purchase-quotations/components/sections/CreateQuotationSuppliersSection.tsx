@@ -1,10 +1,7 @@
 import { Fragment, useMemo } from "react"
 import { useField } from "@tanstack/react-form"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -41,10 +38,10 @@ export const CreateQuotationSuppliersSection = withForm({
       [itemsField, disabled, addSupplierDialog.openForItem]
     )
 
-    const table = useReactTable({
+    const table = useTable({
       data: items,
       columns,
-      getCoreRowModel: getCoreRowModel(),
+      features: appTableFeatures,
     })
 
     const suppliedCount = items.filter(

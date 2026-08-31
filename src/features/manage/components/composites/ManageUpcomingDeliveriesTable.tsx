@@ -1,9 +1,5 @@
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -22,9 +18,12 @@ import { outboundOrderStatusLabels } from "@/lib/types/outbound-order.type"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 import { DateTime } from "luxon"
 
-const columnHelper = createColumnHelper<OutboundOrder>()
+const columnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  OutboundOrder
+>()
 
-const columns = [
+const columns = columnHelper.columns([
   columnHelper.accessor("code", {
     header: "DO",
     meta: { cellClassName: "text-xs font-medium" },
@@ -50,14 +49,14 @@ const columns = [
       </Badge>
     ),
   }),
-]
+])
 
 export function ManageUpcomingDeliveriesTable() {
   const upcomingDeliveries = useUpcomingDeliveries()
-  const table = useReactTable({
+  const table = useTable({
     data: upcomingDeliveries.top5,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   if (upcomingDeliveries.isPending) {

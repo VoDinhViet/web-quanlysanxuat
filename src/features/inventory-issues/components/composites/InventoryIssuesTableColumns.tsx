@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { InventoryIssueStatusBadge } from "@/features/inventory-issues/components/primitives/InventoryIssueBadges"
 import {
@@ -9,9 +10,9 @@ import {
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
 
-const col = createColumnHelper<InventoryIssue>()
+const col = createColumnHelper<typeof appTableFeatures, InventoryIssue>()
 
-export const inventoryIssuesColumns = [
+export const inventoryIssuesColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -101,4 +102,4 @@ export const inventoryIssuesColumns = [
     },
     cell: ({ row }) => <InventoryIssueActionsCell issue={row.original} />,
   }),
-]
+])

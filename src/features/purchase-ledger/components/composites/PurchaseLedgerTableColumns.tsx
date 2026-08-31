@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import {
@@ -10,7 +11,10 @@ import {
 } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerTableCells"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
-const purchaseLedgerColumnHelper = createColumnHelper<PurchaseLedgerRow>()
+const purchaseLedgerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseLedgerRow
+>()
 
 // Shared by the 3 quantity columns — same idiom as OrdersTableColumns' moneyColumnMeta.
 const quantityColumnMeta = {
@@ -18,7 +22,7 @@ const quantityColumnMeta = {
   cellClassName: "text-right",
 }
 
-export const purchaseLedgerColumns = [
+export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
   purchaseLedgerColumnHelper.accessor((row) => row.purchaseRequest.code, {
     id: "purchaseRequestCode",
     header: "Mã PR",
@@ -134,4 +138,4 @@ export const purchaseLedgerColumns = [
     },
     cell: () => <PurchaseLedgerActionsCell />,
   }),
-]
+])

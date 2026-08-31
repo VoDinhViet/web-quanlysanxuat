@@ -1,10 +1,7 @@
 import { useState } from "react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import {
   AltArrowLeft,
   AltArrowRight,
@@ -111,10 +108,10 @@ export function BomItemPickerField({
   }
 
   const columns = buildBomItemPickerColumns({ selectedId: value })
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

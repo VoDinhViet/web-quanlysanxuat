@@ -1,5 +1,6 @@
 import { Edit3, Trash2 } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
@@ -8,9 +9,12 @@ import { UnitScopeBadge } from "@/features/units/components/primitives/UnitBadge
 import { UpdateUnitDialog } from "@/features/units/components/composites/UpdateUnitDialog"
 import type { UnitDetail } from "@/lib/types/unit.type"
 
-const unitColumnHelper = createColumnHelper<UnitDetail>()
+const unitColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  UnitDetail
+>()
 
-export const unitColumns = [
+export const unitColumns = unitColumnHelper.columns([
   unitColumnHelper.display({
     id: "index",
     header: "#",
@@ -88,4 +92,4 @@ export const unitColumns = [
       )
     },
   }),
-]
+])

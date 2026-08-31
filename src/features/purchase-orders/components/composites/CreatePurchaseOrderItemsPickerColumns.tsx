@@ -1,11 +1,14 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
-const purchaseOrderItemsPickerColumnHelper =
-  createColumnHelper<PurchaseLedgerRow>()
+const purchaseOrderItemsPickerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseLedgerRow
+>()
 
 type BuildPurchaseOrderItemsPickerColumnsArgs = {
   pickedIds: Set<string>
@@ -20,7 +23,7 @@ export function buildPurchaseOrderItemsPickerColumns({
   disabled,
   onToggleRow,
 }: BuildPurchaseOrderItemsPickerColumnsArgs) {
-  return [
+  return purchaseOrderItemsPickerColumnHelper.columns([
     purchaseOrderItemsPickerColumnHelper.display({
       id: "select",
       meta: { headerClassName: "w-10" },
@@ -80,5 +83,5 @@ export function buildPurchaseOrderItemsPickerColumns({
         </span>
       ),
     }),
-  ]
+  ])
 }

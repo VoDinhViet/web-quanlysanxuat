@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import {
@@ -10,9 +11,9 @@ import {
 import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
 import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
 
-const col = createColumnHelper<InventoryReceipt>()
+const col = createColumnHelper<typeof appTableFeatures, InventoryReceipt>()
 
-export const inventoryReceiptsColumns = [
+export const inventoryReceiptsColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -100,4 +101,4 @@ export const inventoryReceiptsColumns = [
     },
     cell: ({ row }) => <InventoryReceiptActionsCell receipt={row.original} />,
   }),
-]
+])

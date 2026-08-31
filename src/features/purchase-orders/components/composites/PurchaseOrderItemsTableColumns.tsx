@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { AltArrowDown } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
@@ -11,15 +12,17 @@ import type { PurchaseOrderItemDetail } from "@/lib/types/purchase-order.type"
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const priceFormatter = new Intl.NumberFormat("vi-VN")
 
-const purchaseOrderItemColumnHelper =
-  createColumnHelper<PurchaseOrderItemDetail>()
+const purchaseOrderItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseOrderItemDetail
+>()
 
 // A factory (paired with `useMemo` at the call site) rather than a module-scope constant — the
 // last 2 columns gate on `editable` (permission + PO status), same reason
 // buildPurchaseRequestItemColumns is a factory. Both editable cells own their own mutation
 // (read `purchaseOrderId` via `useParams`), so no per-row callbacks are threaded through here.
 export function buildPurchaseOrderItemColumns(editable: boolean) {
-  return [
+  return purchaseOrderItemColumnHelper.columns([
     purchaseOrderItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -167,5 +170,5 @@ export function buildPurchaseOrderItemColumns(editable: boolean) {
           : priceFormatter.format(quantity * unitPrice)
       },
     }),
-  ]
+  ])
 }

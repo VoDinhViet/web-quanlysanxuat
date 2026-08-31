@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
@@ -10,8 +11,10 @@ import type { CreateOutsourcingReceiptItemValue } from "@/features/outsourcing-r
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const createOutsourcingReceiptItemColumnHelper =
-  createColumnHelper<CreateOutsourcingReceiptItemValue>()
+const createOutsourcingReceiptItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  CreateOutsourcingReceiptItemValue
+>()
 
 type BuildCreateOutsourcingReceiptItemColumnsArgs = {
   itemsField: AnyFieldApi
@@ -25,7 +28,7 @@ export function buildCreateOutsourcingReceiptItemColumns({
   itemsField,
   disabled,
 }: BuildCreateOutsourcingReceiptItemColumnsArgs) {
-  return [
+  return createOutsourcingReceiptItemColumnHelper.columns([
     createOutsourcingReceiptItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -191,5 +194,5 @@ export function buildCreateOutsourcingReceiptItemColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

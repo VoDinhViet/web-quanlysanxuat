@@ -1,9 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ClipboardList, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -36,10 +33,10 @@ export function PurchaseRequestsTable({
   pagination,
   isPending,
 }: PurchaseRequestsTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: purchaseRequestColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

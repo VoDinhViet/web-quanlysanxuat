@@ -1,11 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { PackageSearch } from "lucide-react"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -19,10 +15,10 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import type { OutboundOrderItem } from "@/lib/types/outbound-order.type"
 
-const col = createColumnHelper<OutboundOrderItem>()
+const col = createColumnHelper<typeof appTableFeatures, OutboundOrderItem>()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-const itemColumns = [
+const itemColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -151,7 +147,7 @@ const itemColumns = [
     meta: { headerClassName: "min-w-36" },
     cell: ({ getValue }) => getValue() ?? "—",
   }),
-]
+])
 
 type OutboundOrderItemsSectionProps = {
   items: OutboundOrderItem[]
@@ -162,10 +158,10 @@ type OutboundOrderItemsSectionProps = {
 export function OutboundOrderItemsSection({
   items,
 }: OutboundOrderItemsSectionProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: items,
     columns: itemColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)

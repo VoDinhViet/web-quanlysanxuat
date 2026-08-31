@@ -1,10 +1,7 @@
 import { useMemo, useState } from "react"
 import { useField } from "@tanstack/react-form"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -117,10 +114,10 @@ export const OutboundOrderEditItemsSection = withForm({
       [itemsField, disabled, displayByOrderItemId]
     )
 
-    const table = useReactTable({
+    const table = useTable({
       data: formItems,
       columns,
-      getCoreRowModel: getCoreRowModel(),
+      features: appTableFeatures,
     })
 
     const totalQuantity = formItems.reduce(

@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import type { OutsourcingOrderItem } from "@/lib/types/outsourcing-order.type"
 
@@ -7,12 +8,15 @@ const decimalFormatter = new Intl.NumberFormat("vi-VN", {
   maximumFractionDigits: 2,
 })
 
-const itemColumnHelper = createColumnHelper<OutsourcingOrderItem>()
+const itemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  OutsourcingOrderItem
+>()
 
 // Bảng chi tiết chỉ đọc của trang chi tiết OS-OUT — không có ở OS-IN (mỗi phiếu OS-IN chỉ 1 dòng
 // vật tư), cùng idiom createOutsourcingOrderConfirmColumns.tsx (hằng module scope, không phải
 // hàm build...).
-export const outsourcingOrderItemsColumns = [
+export const outsourcingOrderItemsColumns = itemColumnHelper.columns([
   itemColumnHelper.display({
     id: "index",
     header: "STT",
@@ -114,4 +118,4 @@ export const outsourcingOrderItemsColumns = [
     },
     cell: ({ getValue }) => getValue() ?? "—",
   }),
-]
+])

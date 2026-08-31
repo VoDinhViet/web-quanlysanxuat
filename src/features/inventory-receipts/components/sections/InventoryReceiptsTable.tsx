@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ArrowDownToLine } from "lucide-react"
 
 import {
@@ -33,10 +30,10 @@ export function InventoryReceiptsTable({
   pagination,
   isPending,
 }: InventoryReceiptsTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: inventoryReceiptsColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

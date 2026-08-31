@@ -1,8 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Plus, Ruler } from "lucide-react"
 
 import {
@@ -29,10 +26,10 @@ type UnitsTableProps = {
 // Bảng danh sách đơn vị tính — không phân trang, vì GET /units trả cả danh mục (không quá vài chục
 // dòng) chứ không phải offset/limit như các danh sách khác.
 export function UnitsTable({ rows, isPending }: UnitsTableProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns: unitColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

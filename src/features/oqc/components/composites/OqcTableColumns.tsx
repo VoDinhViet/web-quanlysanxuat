@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import {
   OqcDispositionBadge,
@@ -11,7 +12,7 @@ import type { Oqc } from "@/lib/types/oqc.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const oqcColumnHelper = createColumnHelper<Oqc>()
+const oqcColumnHelper = createColumnHelper<typeof appTableFeatures, Oqc>()
 
 // Trimmed from the mockup's 14 columns to what's needed to scan the list at a glance — same
 // idiom as iqcColumns (IqcTableColumns.tsx): mã/tên thành phẩm collapse into one "Thành phẩm"
@@ -20,7 +21,7 @@ const oqcColumnHelper = createColumnHelper<Oqc>()
 // is per-operation (1 thành phẩm có thể nhiều công đoạn), dropping it would make two rows for the
 // same thành phẩm but different công đoạn look identical. "Mã thành phẩm"/"Tên thành phẩm" đọc từ
 // `bomItem` (snapshot BOM của Job) chứ không phải `item` (không có trên response danh sách).
-export const oqcColumns = [
+export const oqcColumns = oqcColumnHelper.columns([
   oqcColumnHelper.accessor("code", {
     header: "Mã OQC",
     meta: { headerClassName: "min-w-28" },
@@ -153,4 +154,4 @@ export const oqcColumns = [
     },
     cell: ({ row }) => <OqcActionsCell oqc={row.original} />,
   }),
-]
+])

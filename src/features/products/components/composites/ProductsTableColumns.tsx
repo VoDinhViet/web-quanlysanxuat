@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { DateTime } from "luxon"
@@ -16,9 +17,9 @@ import {
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Item } from "@/lib/types/item.type"
 
-const productColumnHelper = createColumnHelper<Item>()
+const productColumnHelper = createColumnHelper<typeof appTableFeatures, Item>()
 
-export const productColumns = [
+export const productColumns = productColumnHelper.columns([
   productColumnHelper.display({
     id: "index",
     header: "#",
@@ -166,4 +167,4 @@ export const productColumns = [
       )
     },
   }),
-]
+])

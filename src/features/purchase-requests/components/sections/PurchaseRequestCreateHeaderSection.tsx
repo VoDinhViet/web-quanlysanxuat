@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { withForm } from "@/hooks/use-app-form"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { createPurchaseRequestFormDefaultValues } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
 import { buildSelectOptions } from "@/lib/utils"
 
@@ -11,7 +11,7 @@ export const PurchaseRequestCreateHeaderSection = withForm({
   render: function Render({ form, disabled }) {
     // Không loader ở route create — danh sách phòng ban là 1 useQuery nhỏ ngay trong
     // component, cùng lý do InventoryReceiptCreateHeaderSection.tsx không prefetch kho/NCC.
-    const { data: departments = [] } = useQuery(departmentOptionsQueryOptions())
+    const { data: departments = [] } = useQuery(departmentQueryOptions())
 
     return (
       <div className="px-4 py-5 sm:px-5">

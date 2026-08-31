@@ -1,11 +1,8 @@
 import { useState } from "react"
 import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { useDebounceValue } from "usehooks-ts"
 import { AltArrowLeft, AltArrowRight, Magnifer } from "@solar-icons/react"
 
@@ -66,10 +63,10 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
     const rows = poQuery.data?.data ?? []
     const pagination = poQuery.data?.pagination
 
-    const reactTable = useReactTable({
+    const reactTable = useTable({
       data: rows,
       columns,
-      getCoreRowModel: getCoreRowModel(),
+      features: appTableFeatures,
     })
 
     return (

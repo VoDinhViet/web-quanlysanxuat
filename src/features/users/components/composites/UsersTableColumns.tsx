@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
 import { Gallery } from "@solar-icons/react"
 
@@ -17,9 +18,12 @@ const employeeStatusStyles: Record<EmployeeStatus, string> = {
   RESIGNED: "bg-muted text-muted-foreground",
 }
 
-const userColumnHelper = createColumnHelper<UserListItem>()
+const userColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  UserListItem
+>()
 
-export const userColumns = [
+export const userColumns = userColumnHelper.columns([
   userColumnHelper.display({
     id: "index",
     header: "#",
@@ -145,4 +149,4 @@ export const userColumns = [
       )
     },
   }),
-]
+])

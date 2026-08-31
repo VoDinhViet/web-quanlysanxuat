@@ -1,12 +1,16 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import type { CreateOutboundOrderItemValue } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const confirmColumnHelper = createColumnHelper<CreateOutboundOrderItemValue>()
+const confirmColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  CreateOutboundOrderItemValue
+>()
 
 // Bảng chi tiết chỉ đọc của bước ③ — mirror cột của CreateOutboundOrderItemsColumns.tsx (item
 // value chỉ giữ 5 field gửi BE, Order/Job/Item/Unit/SL đặt tra lại qua
@@ -18,7 +22,7 @@ export function buildCreateOutboundOrderConfirmColumns(
     orderItemId: string
   ) => UnfulfilledOrderItem | undefined
 ) {
-  return [
+  return confirmColumnHelper.columns([
     confirmColumnHelper.display({
       id: "index",
       header: "STT",
@@ -115,5 +119,5 @@ export function buildCreateOutboundOrderConfirmColumns(
       },
       cell: ({ getValue }) => getValue() || "—",
     }),
-  ]
+  ])
 }

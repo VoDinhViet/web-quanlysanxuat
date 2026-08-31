@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Box } from "lucide-react"
 
 import { ProductionExecutionJobActionsCell } from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
@@ -8,14 +9,17 @@ import type { ProductionJobByOperation } from "@/lib/types/production-job.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const columnHelper = createColumnHelper<ProductionJobByOperation>()
+const columnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  ProductionJobByOperation
+>()
 
 // Bảng "DANH SÁCH CÔNG VIỆC" — cột "Tiến độ" thay hẳn badge "Trạng thái" cũ: cùng lúc trả lời
 // "đang ở đâu" (thanh + %) và "còn bao nhiêu" (x/y pcs), đọc thẳng plannedQuantity/
 // completedQuantity đã có trên ProductionJobByOperation (số của ĐÚNG công đoạn đang chọn, gộp qua
 // mọi part — khác `quantity`, là SL thành phẩm của cả Job). Cột icon đầu dòng chỉ trang trí (data
 // hiện chưa có ảnh sản phẩm ở endpoint này) — dùng 1 icon trung tính, không suy diễn hình thật.
-export const productionExecutionJobColumns = [
+export const productionExecutionJobColumns = columnHelper.columns([
   columnHelper.display({
     id: "icon",
     header: "",
@@ -115,4 +119,4 @@ export const productionExecutionJobColumns = [
       <ProductionExecutionJobActionsCell productionJobId={row.original.jobId} />
     ),
   }),
-]
+])

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/primitives/PaymentRequestBadges"
 import {
@@ -9,9 +10,9 @@ import {
 } from "@/features/payment-requests/components/primitives/PaymentRequestTableCells"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"
 
-const col = createColumnHelper<PaymentRequest>()
+const col = createColumnHelper<typeof appTableFeatures, PaymentRequest>()
 
-export const paymentRequestsColumns = [
+export const paymentRequestsColumns = col.columns([
   col.accessor("code", {
     header: "Mã yêu cầu TT",
     meta: { headerClassName: "min-w-36" },
@@ -105,4 +106,4 @@ export const paymentRequestsColumns = [
       <PaymentRequestActionsCell paymentRequestId={row.original.id} />
     ),
   }),
-]
+])

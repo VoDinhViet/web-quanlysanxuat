@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Info } from "lucide-react"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -41,8 +42,10 @@ export function ColumnHeaderWithHint({
   )
 }
 
-const inventoryRequisitionPickerColumnHelper =
-  createColumnHelper<InventoryRequisitionLine>()
+const inventoryRequisitionPickerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  InventoryRequisitionLine
+>()
 
 type BuildCreateInventoryRequisitionPickerColumnsArgs = {
   pickedIds: Set<string>
@@ -63,7 +66,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
   onToggleRow,
   onToggleAll,
 }: BuildCreateInventoryRequisitionPickerColumnsArgs) {
-  return [
+  return inventoryRequisitionPickerColumnHelper.columns([
     inventoryRequisitionPickerColumnHelper.display({
       id: "select",
       header: () => (
@@ -209,5 +212,5 @@ export function buildCreateInventoryRequisitionPickerColumns({
       },
       cell: ({ getValue }) => formatNullableQuantity(getValue()),
     }),
-  ]
+  ])
 }

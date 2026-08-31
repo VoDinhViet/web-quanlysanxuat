@@ -1,10 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
-const quotationAddSupplierItemsColumnHelper =
-  createColumnHelper<PickedQuotationItemValue>()
+const quotationAddSupplierItemsColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PickedQuotationItemValue
+>()
 
 type BuildQuotationAddSupplierItemsColumnsArgs = {
   checkedIds: Set<string>
@@ -30,7 +33,7 @@ export function buildQuotationAddSupplierItemsColumns({
   onToggleItem,
   onToggleAll,
 }: BuildQuotationAddSupplierItemsColumnsArgs) {
-  return [
+  return quotationAddSupplierItemsColumnHelper.columns([
     quotationAddSupplierItemsColumnHelper.display({
       id: "select",
       header: () => (
@@ -102,5 +105,5 @@ export function buildQuotationAddSupplierItemsColumns({
           0
         ),
     }),
-  ]
+  ])
 }

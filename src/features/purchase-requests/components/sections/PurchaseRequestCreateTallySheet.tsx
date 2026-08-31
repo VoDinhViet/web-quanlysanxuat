@@ -4,7 +4,7 @@ import { DateTime } from "luxon"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { withForm } from "@/hooks/use-app-form"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { createPurchaseRequestFormDefaultValues } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
 
 // Above this many picked lines, the list caps its height and scrolls instead of growing forever
@@ -26,7 +26,7 @@ export const PurchaseRequestCreateTallySheet = withForm({
   defaultValues: createPurchaseRequestFormDefaultValues,
   props: {},
   render: function Render({ form }) {
-    const { data: departments = [] } = useQuery(departmentOptionsQueryOptions())
+    const { data: departments = [] } = useQuery(departmentQueryOptions())
 
     return (
       <div className="space-y-5">

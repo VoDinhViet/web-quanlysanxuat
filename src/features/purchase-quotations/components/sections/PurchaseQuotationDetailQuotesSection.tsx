@@ -1,9 +1,6 @@
 import { Fragment, useState } from "react"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { PackageSearch } from "lucide-react"
 
 import {
@@ -47,10 +44,10 @@ export function PurchaseQuotationDetailQuotesSection({
   const [selectedSuppliers, setSelectedSuppliers] =
     useState<PurchaseQuotationSupplierSelection>({})
 
-  const table = useReactTable({
+  const table = useTable({
     data: purchaseQuotation.items,
     columns: purchaseQuotationItemsColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

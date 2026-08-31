@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 
@@ -12,9 +13,9 @@ import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const col = createColumnHelper<OrderItem>()
+const col = createColumnHelper<typeof appTableFeatures, OrderItem>()
 
-export const orderDetailItemColumns = [
+export const orderDetailItemColumns = col.columns([
   col.display({
     id: "index",
     header: "#",
@@ -156,4 +157,4 @@ export const orderDetailItemColumns = [
       )
     },
   }),
-]
+])

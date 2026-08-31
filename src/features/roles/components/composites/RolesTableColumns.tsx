@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Edit3, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -9,9 +10,9 @@ import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermiss
 import { DeleteRoleDialog } from "@/features/roles/components/composites/DeleteRoleDialog"
 import type { Role } from "@/lib/types/role.type"
 
-const roleColumnHelper = createColumnHelper<Role>()
+const roleColumnHelper = createColumnHelper<typeof appTableFeatures, Role>()
 
-export const roleColumns = [
+export const roleColumns = roleColumnHelper.columns([
   roleColumnHelper.display({
     id: "index",
     header: "#",
@@ -93,4 +94,4 @@ export const roleColumns = [
       )
     },
   }),
-]
+])

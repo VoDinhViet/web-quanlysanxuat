@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 
@@ -7,9 +8,9 @@ import type { ItemIssue } from "@/lib/types/item.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const col = createColumnHelper<ItemIssue>()
+const col = createColumnHelper<typeof appTableFeatures, ItemIssue>()
 
-export const itemIssueColumns = [
+export const itemIssueColumns = col.columns([
   col.display({
     id: "index",
     header: "#",
@@ -71,4 +72,4 @@ export const itemIssueColumns = [
     },
     cell: ({ getValue }) => quantityFormatter.format(getValue()),
   }),
-]
+])

@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { Circle, CircleCheck } from "lucide-react"
@@ -19,7 +20,10 @@ export type BomItemPickerRow = {
   client: { name: string } | null
 }
 
-const bomItemPickerColumnHelper = createColumnHelper<BomItemPickerRow>()
+const bomItemPickerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  BomItemPickerRow
+>()
 
 type BuildBomItemPickerColumnsArgs = {
   selectedId: string
@@ -34,7 +38,7 @@ type BuildBomItemPickerColumnsArgs = {
 export function buildBomItemPickerColumns({
   selectedId,
 }: BuildBomItemPickerColumnsArgs) {
-  return [
+  return bomItemPickerColumnHelper.columns([
     bomItemPickerColumnHelper.display({
       id: "select",
       header: "",
@@ -91,5 +95,5 @@ export function buildBomItemPickerColumns({
         <span className="text-xs text-muted-foreground">{getValue()}</span>
       ),
     }),
-  ]
+  ])
 }

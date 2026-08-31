@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionBadges"
 import {
@@ -9,9 +10,9 @@ import {
 } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionTableCells"
 import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
 
-const col = createColumnHelper<InventoryRequisition>()
+const col = createColumnHelper<typeof appTableFeatures, InventoryRequisition>()
 
-export const inventoryRequisitionsColumns = [
+export const inventoryRequisitionsColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -102,4 +103,4 @@ export const inventoryRequisitionsColumns = [
       <InventoryRequisitionActionsCell requisition={row.original} />
     ),
   }),
-]
+])

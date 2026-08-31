@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -7,7 +8,10 @@ import type { PendingOrderItem } from "@/lib/types/outsourcing-receipt.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const pendingOrderItemColumnHelper = createColumnHelper<PendingOrderItem>()
+const pendingOrderItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PendingOrderItem
+>()
 
 type BuildCreateOutsourcingReceiptPickerColumnsArgs = {
   pickedIds: Set<string>
@@ -31,7 +35,7 @@ export function buildCreateOutsourcingReceiptPickerColumns({
   onToggleRow,
   onToggleAll,
 }: BuildCreateOutsourcingReceiptPickerColumnsArgs) {
-  return [
+  return pendingOrderItemColumnHelper.columns([
     pendingOrderItemColumnHelper.display({
       id: "select",
       header: () => (
@@ -134,5 +138,5 @@ export function buildCreateOutsourcingReceiptPickerColumns({
         </span>
       ),
     }),
-  ]
+  ])
 }

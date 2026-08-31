@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
@@ -9,8 +10,10 @@ import type { InventoryReceiptFromPoItemValue } from "@/features/inventory-recei
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const inventoryReceiptFromPoItemColumnHelper =
-  createColumnHelper<InventoryReceiptFromPoItemValue>()
+const inventoryReceiptFromPoItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  InventoryReceiptFromPoItemValue
+>()
 
 type BuildInventoryReceiptFromPoItemColumnsArgs = {
   itemsField: AnyFieldApi
@@ -25,7 +28,7 @@ export function buildInventoryReceiptFromPoItemColumns({
   itemsField,
   disabled,
 }: BuildInventoryReceiptFromPoItemColumnsArgs) {
-  return [
+  return inventoryReceiptFromPoItemColumnHelper.columns([
     inventoryReceiptFromPoItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -123,5 +126,5 @@ export function buildInventoryReceiptFromPoItemColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

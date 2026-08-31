@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { ProductionOrderStatusBadge } from "@/features/production-orders/components/primitives/ProductionOrderBadges"
 import {
@@ -8,10 +9,13 @@ import {
 } from "@/features/production-orders/components/primitives/ProductionOrderTableCells"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 
-const productionOrderColumnHelper = createColumnHelper<ProductionOrder>()
+const productionOrderColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  ProductionOrder
+>()
 
 // No "Ngày tạo"/"Người tạo" columns — ProductionOrderResDto doesn't expose createdAt/creator.
-export const productionOrderColumns = [
+export const productionOrderColumns = productionOrderColumnHelper.columns([
   productionOrderColumnHelper.accessor("orderCode", {
     header: "Số đơn hàng (SO)",
     meta: { headerClassName: "min-w-32" },
@@ -57,4 +61,4 @@ export const productionOrderColumns = [
     },
     cell: ({ row }) => <ProductionOrderActionsCell row={row.original} />,
   }),
-]
+])

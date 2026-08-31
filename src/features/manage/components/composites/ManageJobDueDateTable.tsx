@@ -1,10 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -45,9 +41,9 @@ function daysSinceDueDate(dueDate: string): number {
   )
 }
 
-const columnHelper = createColumnHelper<JobDueDate>()
+const columnHelper = createColumnHelper<typeof appTableFeatures, JobDueDate>()
 
-const columns = [
+const columns = columnHelper.columns([
   columnHelper.accessor("code", {
     header: "Job",
     meta: { cellClassName: "text-xs font-medium" },
@@ -79,14 +75,14 @@ const columns = [
       )
     },
   }),
-]
+])
 
 export function ManageJobDueDateTable() {
   const query = useQuery(jobDueDateQueryOptions())
-  const table = useReactTable({
+  const table = useTable({
     data: query.data ?? [],
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   if (query.isPending) {

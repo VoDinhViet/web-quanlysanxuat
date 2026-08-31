@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import type { OutsourcingReceiptItem } from "@/lib/types/outsourcing-receipt.type"
 
@@ -8,12 +9,15 @@ const decimalFormatter = new Intl.NumberFormat("vi-VN", {
   maximumFractionDigits: 2,
 })
 
-const itemColumnHelper = createColumnHelper<OutsourcingReceiptItem>()
+const itemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  OutsourcingReceiptItem
+>()
 
 // Bảng chi tiết chỉ đọc của trang chi tiết OS-IN — cùng idiom outsourcingOrderItemsColumns.tsx,
 // cộng cột "OS-OUT" (link) vì ở đây mỗi dòng có thể trỏ tới một OS-OUT khác nhau (khác OS-OUT nơi
 // mọi dòng cùng 1 phiếu nên không cần cột này).
-export const outsourcingReceiptItemsColumns = [
+export const outsourcingReceiptItemsColumns = itemColumnHelper.columns([
   itemColumnHelper.display({
     id: "index",
     header: "STT",
@@ -103,4 +107,4 @@ export const outsourcingReceiptItemsColumns = [
     },
     cell: ({ getValue }) => getValue() ?? "—",
   }),
-]
+])

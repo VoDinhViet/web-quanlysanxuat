@@ -1,7 +1,7 @@
 import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { createInventoryRequisitionFormDefaultValues } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
@@ -16,7 +16,7 @@ export const CreateInventoryRequisitionInfoSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const type = useField({ form, name: "type" }).state.value
-    const { data: departments = [] } = useQuery(departmentOptionsQueryOptions())
+    const { data: departments = [] } = useQuery(departmentQueryOptions())
 
     return (
       <div className="px-4 py-5 sm:px-5">

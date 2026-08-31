@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { Edit3, Eye, Trash2 } from "lucide-react"
@@ -20,9 +21,12 @@ const statusStyles: Record<SupplierStatus, string> = {
   [SupplierStatus.STOPPED]: "bg-destructive/15 text-destructive",
 }
 
-const supplierColumnHelper = createColumnHelper<Supplier>()
+const supplierColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  Supplier
+>()
 
-export const supplierColumns = [
+export const supplierColumns = supplierColumnHelper.columns([
   supplierColumnHelper.display({
     id: "index",
     header: "#",
@@ -194,4 +198,4 @@ export const supplierColumns = [
       )
     },
   }),
-]
+])

@@ -1,10 +1,7 @@
 import { useMemo } from "react"
 import type { AnyFieldApi } from "@tanstack/react-form"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -49,10 +46,10 @@ export function QuotationCompareQuoteTable({
     [itemsField, itemIndex, item, disabled]
   )
 
-  const quoteTable = useReactTable({
+  const quoteTable = useTable({
     data: item.suppliers,
     columns: quoteColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

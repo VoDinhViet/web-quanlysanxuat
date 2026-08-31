@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
@@ -11,8 +12,10 @@ import type {
   QuotationItemSupplierValue,
 } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
-const quotationQuoteColumnHelper =
-  createColumnHelper<QuotationItemSupplierValue>()
+const quotationQuoteColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  QuotationItemSupplierValue
+>()
 
 type BuildQuotationSuppliersQuoteColumnsArgs = {
   itemsField: AnyFieldApi
@@ -42,7 +45,7 @@ export function buildQuotationSuppliersQuoteColumns({
       ),
     })
 
-  return [
+  return quotationQuoteColumnHelper.columns([
     quotationQuoteColumnHelper.accessor("supplierLabel", {
       header: "Nhà cung cấp",
       meta: {
@@ -72,7 +75,6 @@ export function buildQuotationSuppliersQuoteColumns({
       meta: { headerClassName: "w-32 text-[10px]" },
       cell: ({ row }) => (
         <DatePicker
-          id={`quotation-quote-last-purchase-date-${itemIndex}-${row.index}`}
           value={row.original.lastPurchaseDate}
           onChange={(value) =>
             updateQuote(row.index, { lastPurchaseDate: value })
@@ -144,5 +146,5 @@ export function buildQuotationSuppliersQuoteColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

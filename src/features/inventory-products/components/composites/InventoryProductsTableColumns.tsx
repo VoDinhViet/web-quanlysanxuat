@@ -1,5 +1,6 @@
 import { HelpCircle } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import {
   InventoryProductActionsCell,
@@ -8,7 +9,7 @@ import {
 } from "@/features/inventory-products/components/primitives/InventoryProductTableCells"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 
-const col = createColumnHelper<ProductInventoryItem>()
+const col = createColumnHelper<typeof appTableFeatures, ProductInventoryItem>()
 
 // A right-aligned header with a decorative ⓘ + a static formula sub-line — same shape
 // inventory-materials uses for its own quantity columns.
@@ -32,7 +33,7 @@ function QuantityColumnHeader({
   )
 }
 
-export const inventoryProductsColumns = [
+export const inventoryProductsColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -129,4 +130,4 @@ export const inventoryProductsColumns = [
     },
     cell: ({ row }) => <InventoryProductActionsCell product={row.original} />,
   }),
-]
+])

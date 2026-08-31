@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import {
   PurchaseRequestItemActionsCell,
@@ -9,8 +10,10 @@ import type { PurchaseRequestItem } from "@/lib/types/purchase-request.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const purchaseRequestItemColumnHelper =
-  createColumnHelper<PurchaseRequestItem>()
+const purchaseRequestItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseRequestItem
+>()
 
 // A factory (paired with `useMemo` at the call site) rather than a module-scope constant — the
 // last 3 columns gate on `editable`, which changes per-page (permission + phiếu status), so they
@@ -18,7 +21,7 @@ const purchaseRequestItemColumnHelper =
 // those 3 cells now owns its own mutation (reads `purchaseRequestId` via `useParams`), so no
 // per-row callbacks are threaded through here anymore.
 export function buildPurchaseRequestItemColumns(editable: boolean) {
-  return [
+  return purchaseRequestItemColumnHelper.columns([
     purchaseRequestItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -140,5 +143,5 @@ export function buildPurchaseRequestItemColumns(editable: boolean) {
         />
       ),
     }),
-  ]
+  ])
 }

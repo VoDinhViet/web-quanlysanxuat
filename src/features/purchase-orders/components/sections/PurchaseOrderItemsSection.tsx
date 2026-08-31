@@ -1,10 +1,7 @@
 import { PackageSearch } from "lucide-react"
 import { useMemo } from "react"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -52,10 +49,10 @@ export function PurchaseOrderItemsSection({
     [purchaseOrder.items]
   )
 
-  const table = useReactTable({
+  const table = useTable({
     data: items,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

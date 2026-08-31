@@ -1,11 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { Info, PackageOpen, PackageSearch, TriangleAlert } from "lucide-react"
 import { useMemo } from "react"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -35,10 +32,10 @@ export function PurchaseRequestItemsSection({
     [editable]
   )
 
-  const table = useReactTable({
+  const table = useTable({
     data: rows,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   return (

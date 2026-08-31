@@ -1,11 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -61,9 +57,9 @@ const openNcrStatusStyles: Record<
   },
 }
 
-const columnHelper = createColumnHelper<OpenNcr>()
+const columnHelper = createColumnHelper<typeof appTableFeatures, OpenNcr>()
 
-const columns = [
+const columns = columnHelper.columns([
   columnHelper.accessor("code", {
     header: "NCR",
     meta: { cellClassName: "text-xs font-medium" },
@@ -90,14 +86,14 @@ const columns = [
       )
     },
   }),
-]
+])
 
 export function ManageOpenNcrTable() {
   const query = useQuery(openNcrQueryOptions())
-  const table = useReactTable({
+  const table = useTable({
     data: query.data ?? [],
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   if (query.isPending) {

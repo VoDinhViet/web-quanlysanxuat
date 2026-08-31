@@ -1,13 +1,17 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationBadges"
 import { PurchaseQuotationActionsCell } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationTableCells"
 import type { PurchaseQuotationRow } from "@/lib/types/purchase-quotation.type"
 
-const purchaseQuotationColumnHelper = createColumnHelper<PurchaseQuotationRow>()
+const purchaseQuotationColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  PurchaseQuotationRow
+>()
 
-export const purchaseQuotationsColumns = [
+export const purchaseQuotationsColumns = purchaseQuotationColumnHelper.columns([
   purchaseQuotationColumnHelper.accessor("code", {
     header: "Mã RFQ",
     meta: { headerClassName: "min-w-28" },
@@ -101,4 +105,4 @@ export const purchaseQuotationsColumns = [
       <PurchaseQuotationActionsCell purchaseQuotationId={row.original.id} />
     ),
   }),
-]
+])

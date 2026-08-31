@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
@@ -28,7 +29,10 @@ export type OutboundOrderItemDisplay = {
   availableQuantity: number
 }
 
-const editItemColumnHelper = createColumnHelper<UpdateOutboundOrderItemValue>()
+const editItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  UpdateOutboundOrderItemValue
+>()
 
 type BuildOutboundOrderEditItemColumnsArgs = {
   itemsField: AnyFieldApi
@@ -44,7 +48,7 @@ export function buildOutboundOrderEditItemColumns({
   disabled,
   displayByOrderItemId,
 }: BuildOutboundOrderEditItemColumnsArgs) {
-  return [
+  return editItemColumnHelper.columns([
     editItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -216,5 +220,5 @@ export function buildOutboundOrderEditItemColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

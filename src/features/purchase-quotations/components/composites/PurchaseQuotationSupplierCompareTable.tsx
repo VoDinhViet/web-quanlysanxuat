@@ -1,9 +1,6 @@
 import { useMemo } from "react"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import { RadioGroup } from "@/components/ui/radio-group"
 import {
@@ -42,10 +39,10 @@ export function PurchaseQuotationSupplierCompareTable({
     [selectable, isApproved]
   )
 
-  const table = useReactTable({
+  const table = useTable({
     data: item.suppliers,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   const tableElement = (

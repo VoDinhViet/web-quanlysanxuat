@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
@@ -11,8 +12,10 @@ import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const createOutboundOrderItemColumnHelper =
-  createColumnHelper<CreateOutboundOrderItemValue>()
+const createOutboundOrderItemColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  CreateOutboundOrderItemValue
+>()
 
 type BuildCreateOutboundOrderItemColumnsArgs = {
   itemsField: AnyFieldApi
@@ -33,7 +36,7 @@ export function buildCreateOutboundOrderItemColumns({
   disabled,
   lookupUnfulfilledOrderItem,
 }: BuildCreateOutboundOrderItemColumnsArgs) {
-  return [
+  return createOutboundOrderItemColumnHelper.columns([
     createOutboundOrderItemColumnHelper.display({
       id: "index",
       header: "STT",
@@ -191,5 +194,5 @@ export function buildCreateOutboundOrderItemColumns({
         </IconButton>
       ),
     }),
-  ]
+  ])
 }

@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
 import {
@@ -8,13 +9,16 @@ import {
 } from "@/features/production-jobs/components/primitives/ProductionJobTableCells"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 
-const productionJobColumnHelper = createColumnHelper<ProductionJob>()
+const productionJobColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  ProductionJob
+>()
 
 // No "Mã SP"/"Tên sản phẩm" columns — ProductionJobResDto (list) dropped the nested `product`
 // object 2026-07-31 in favor of a flat `image`, keeping only the columns the table needs (see
 // production-job.type.ts). Those two columns aren't recoverable from this endpoint; the full
 // product reference is only on GET /production-jobs/:jobId.
-export const productionJobColumns = [
+export const productionJobColumns = productionJobColumnHelper.columns([
   productionJobColumnHelper.display({
     id: "image",
     header: "",
@@ -88,4 +92,4 @@ export const productionJobColumns = [
       <ProductionJobActionsCell productionJobId={row.original.id} />
     ),
   }),
-]
+])

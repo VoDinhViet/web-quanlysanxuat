@@ -1,11 +1,8 @@
 import { useCallback, useMemo, useState } from "react"
 import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
 import { toast } from "sonner"
 import { useDebounceValue } from "usehooks-ts"
@@ -195,10 +192,10 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
       [pickedIds, disabled, allChecked, lockedSupplierId, toggleRow, toggleAll]
     )
 
-    const table = useReactTable({
+    const table = useTable({
       data: rows,
       columns,
-      getCoreRowModel: getCoreRowModel(),
+      features: appTableFeatures,
     })
 
     return (

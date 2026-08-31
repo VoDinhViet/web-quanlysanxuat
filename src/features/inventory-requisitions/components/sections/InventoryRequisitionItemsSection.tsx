@@ -1,10 +1,6 @@
 import { PackageSearch } from "lucide-react"
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import {
   Table,
@@ -20,13 +16,16 @@ import type {
   InventoryRequisitionItem,
 } from "@/lib/types/inventory-requisition.type"
 
-const col = createColumnHelper<InventoryRequisitionItem>()
+const col = createColumnHelper<
+  typeof appTableFeatures,
+  InventoryRequisitionItem
+>()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
 // "6 số" (SL BOM/Đã lãnh/Tồn/Đã giữ/Có thể lãnh/Khả dụng) — snapshot đọc-thời-điểm từ backend, xem
 // docs/domains/inventory.md mục "Phiếu lãnh vật tư". bomQuantity/issuedQuantity null khi phiếu
 // type = OTHER (không gắn Job).
-const itemColumns = [
+const itemColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -132,7 +131,7 @@ const itemColumns = [
     meta: { headerClassName: "min-w-36" },
     cell: ({ getValue }) => getValue() ?? "—",
   }),
-]
+])
 
 type InventoryRequisitionItemsSectionProps = {
   detail: InventoryRequisitionDetail
@@ -141,10 +140,10 @@ type InventoryRequisitionItemsSectionProps = {
 export function InventoryRequisitionItemsSection({
   detail,
 }: InventoryRequisitionItemsSectionProps) {
-  const table = useReactTable({
+  const table = useTable({
     data: detail.items,
     columns: itemColumns,
-    getCoreRowModel: getCoreRowModel(),
+    features: appTableFeatures,
   })
 
   const totalQuantity = detail.items.reduce(

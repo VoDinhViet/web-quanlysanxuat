@@ -1,12 +1,15 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const outsourcingOrderPickerColumnHelper =
-  createColumnHelper<OutsourceableOperation>()
+const outsourcingOrderPickerColumnHelper = createColumnHelper<
+  typeof appTableFeatures,
+  OutsourceableOperation
+>()
 
 type BuildCreateOutsourcingOrderPickerColumnsArgs = {
   pickedOperationIds: Set<string>
@@ -26,7 +29,7 @@ export function buildCreateOutsourcingOrderPickerColumns({
   onToggleRow,
   onToggleAll,
 }: BuildCreateOutsourcingOrderPickerColumnsArgs) {
-  return [
+  return outsourcingOrderPickerColumnHelper.columns([
     outsourcingOrderPickerColumnHelper.display({
       id: "select",
       header: () => (
@@ -116,5 +119,5 @@ export function buildCreateOutsourcingOrderPickerColumns({
           </span>
         ),
     }),
-  ]
+  ])
 }

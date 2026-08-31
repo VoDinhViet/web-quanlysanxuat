@@ -1,14 +1,15 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { OutsourcingOrderStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
 import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderTableCells"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
-const col = createColumnHelper<OutsourcingOrder>()
+const col = createColumnHelper<typeof appTableFeatures, OutsourcingOrder>()
 
-export const outsourcingOrdersColumns = [
+export const outsourcingOrdersColumns = col.columns([
   col.accessor("code", {
     header: "Mã phiếu",
     meta: { headerClassName: "min-w-32" },
@@ -103,4 +104,4 @@ export const outsourcingOrdersColumns = [
       <OutsourcingOrderActionsCell outsourcingOrder={row.original} />
     ),
   }),
-]
+])

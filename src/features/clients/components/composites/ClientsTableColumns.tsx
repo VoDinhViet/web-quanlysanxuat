@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 import { Edit3, Eye, MoreHorizontal, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -15,9 +16,9 @@ const statusStyles: Record<ClientStatus, string> = {
   [ClientStatus.PAUSED]: "bg-warning/15 text-warning",
 }
 
-const clientColumnHelper = createColumnHelper<Client>()
+const clientColumnHelper = createColumnHelper<typeof appTableFeatures, Client>()
 
-export const clientColumns = [
+export const clientColumns = clientColumnHelper.columns([
   clientColumnHelper.display({
     id: "index",
     header: "#",
@@ -137,4 +138,4 @@ export const clientColumns = [
       )
     },
   }),
-]
+])

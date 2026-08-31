@@ -1,11 +1,8 @@
 import { Box } from "@solar-icons/react"
 import { PackageSearch, TriangleAlert } from "lucide-react"
 import { useMemo } from "react"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FieldError } from "@/components/ui/field"
@@ -106,10 +103,10 @@ export const ProductionOrderItemsCard = withForm({
       [form, isPending, isSaving]
     )
 
-    const table = useReactTable({
+    const table = useTable({
       data: items,
       columns,
-      getCoreRowModel: getCoreRowModel(),
+      features: appTableFeatures,
     })
 
     return (

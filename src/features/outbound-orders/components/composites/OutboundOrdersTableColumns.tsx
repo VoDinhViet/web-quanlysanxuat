@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
 
 import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
 import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/primitives/OutboundOrderTableCells"
@@ -9,9 +10,9 @@ import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const col = createColumnHelper<OutboundOrder>()
+const col = createColumnHelper<typeof appTableFeatures, OutboundOrder>()
 
-export const outboundOrdersColumns = [
+export const outboundOrdersColumns = col.columns([
   col.display({
     id: "stt",
     header: "STT",
@@ -99,4 +100,4 @@ export const outboundOrdersColumns = [
     },
     cell: ({ row }) => <OutboundOrderActionsCell order={row.original} />,
   }),
-]
+])

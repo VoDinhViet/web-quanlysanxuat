@@ -1,9 +1,6 @@
 import { useField } from "@tanstack/react-form"
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 import { FileText } from "lucide-react"
 
@@ -61,10 +58,10 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
       sumOutsourcingReceiptItemTotals(items)
     const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")
 
-    const table = useReactTable({
+    const table = useTable({
       data: items,
       columns: createOutsourcingReceiptConfirmColumns,
-      getCoreRowModel: getCoreRowModel(),
+      features: appTableFeatures,
     })
 
     return (

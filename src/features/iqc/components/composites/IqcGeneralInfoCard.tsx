@@ -10,7 +10,7 @@ import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import { IqcMaterialStrip } from "@/features/iqc/components/composites/IqcMaterialStrip"
 import { IqcPoOrReasonCell } from "@/features/iqc/components/primitives/IqcTableCells"
@@ -28,16 +28,14 @@ type IqcGeneralInfoCardProps = {
 // tạo, ngày tạo, gộp từ IqcDetailReferenceCard cũ đã xoá) + Bộ phận QC (field
 // duy nhất user sửa được ở card này — reference list đọc trực tiếp ở leaf theo quy ước
 // "Reference-option lists" của architecture.md, route loader đã prefetch
-// departmentOptionsQueryOptions). Tham chiếu render dạng ô label/icon/value xếp chồng, mỗi ô có
+// departmentQueryOptions). Tham chiếu render dạng ô label/icon/value xếp chồng, mỗi ô có
 // icon riêng cho dễ quét mắt, thay vì hàng dt/dd dẹt.
 export function IqcGeneralInfoCard({
   form,
   iqc,
   disabled,
 }: IqcGeneralInfoCardProps) {
-  const { data: departments } = useSuspenseQuery(
-    departmentOptionsQueryOptions()
-  )
+  const { data: departments } = useSuspenseQuery(departmentQueryOptions())
 
   return (
     <IqcDetailSectionCard
