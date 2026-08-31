@@ -41,7 +41,8 @@ export const outsourcingOrderStatusDescriptions: Record<
   [OutsourcingOrderStatus.SENT]: "Đã gửi, chưa nhận được dòng nào",
   [OutsourcingOrderStatus.PARTIAL]: "Đã nhận một phần, còn dòng chưa đủ",
   [OutsourcingOrderStatus.WAITING_QC]: "Đã nhận đủ, còn IQC chưa xong",
-  [OutsourcingOrderStatus.COMPLETED]: "Đã nhận đủ, IQC đã xong (hoặc không cần IQC)",
+  [OutsourcingOrderStatus.COMPLETED]:
+    "Đã nhận đủ, IQC đã xong (hoặc không cần IQC)",
   [OutsourcingOrderStatus.CANCELLED]: "Phiếu đã bị hủy",
 }
 

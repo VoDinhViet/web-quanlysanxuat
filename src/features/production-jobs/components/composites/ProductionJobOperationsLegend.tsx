@@ -1,12 +1,5 @@
 import { Diskette } from "@solar-icons/react"
-import {
-  Download,
-  Info,
-  Lightbulb,
-  Logs,
-  MousePointerClick,
-  Send,
-} from "lucide-react"
+import { Info, Lightbulb, Logs, MousePointerClick, Send } from "lucide-react"
 import type { ComponentType } from "react"
 
 import {
@@ -49,12 +42,6 @@ const actions: ActionRow[] = [
     label: "Gửi đi gia công ngoài",
     description:
       "Ghi nhận số lượng đã gửi cho công đoạn gia công ngoài. Chưa được xây dựng.",
-  },
-  {
-    icon: Download,
-    label: "Cập nhật SL nhận về (gia công ngoài)",
-    description:
-      "Ghi nhận số lượng đã nhận về từ gia công ngoài. Chưa được xây dựng.",
   },
 ]
 
@@ -128,16 +115,17 @@ export function ProductionJobOperationsLegend() {
             duyệt.
           </p>
           <p>
-            • SL hoàn thành là số lượng thực tế đã hoàn thành tại xưởng — nhập
-            trực tiếp vào bảng.
+            • SL hoàn thành công đoạn Trong xưởng là số lượng thực tế đã hoàn
+            thành tại xưởng — nhập trực tiếp vào bảng.
+          </p>
+          <p>
+            • SL hoàn thành công đoạn Gia công ngoài tự cập nhật theo SL đã nhận
+            về (OS-IN) — không nhập tay được.
           </p>
           <p>
             • Ngày hoàn thành tự điền khi SL hoàn thành đạt đủ SL kế hoạch, tự
-            xoá nếu sửa lại xuống dưới mức đó.
-          </p>
-          <p>
-            • Theo dõi gửi/nhận gia công ngoài (có thể nhiều lần, tự động cộng
-            dồn) sẽ được bổ sung sau.
+            xoá nếu sửa lại xuống dưới mức đó (hoặc huỷ OS-IN làm SL nhận tụt
+            xuống, với công đoạn Gia công ngoài).
           </p>
         </div>
       </div>

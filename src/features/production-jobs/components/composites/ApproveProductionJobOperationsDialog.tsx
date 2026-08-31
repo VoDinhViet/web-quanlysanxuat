@@ -59,7 +59,9 @@ export function ApproveProductionJobOperationsDialog({
           <AlertDialogMedia>
             <CircleCheck />
           </AlertDialogMedia>
-          <AlertDialogTitle>Duyệt công đoạn của Job này?</AlertDialogTitle>
+          <AlertDialogTitle>
+            Xác nhận sản xuất công đoạn của Job này?
+          </AlertDialogTitle>
           <AlertDialogDescription>
             Job {job.code} sẽ mở khoá nhập SL hoàn thành/SL không đạt cho từng
             công đoạn. Sau khi duyệt, không thể quay lại trạng thái trước đó.
@@ -81,7 +83,7 @@ export function ApproveProductionJobOperationsDialog({
               mutation.mutate()
             }}
           >
-            {mutation.isPending ? "Đang xử lý..." : "Duyệt công đoạn"}
+            {mutation.isPending ? "Đang xử lý..." : "Xác nhận sản xuất"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

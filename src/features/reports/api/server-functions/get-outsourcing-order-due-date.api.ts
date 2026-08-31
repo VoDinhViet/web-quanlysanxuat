@@ -7,9 +7,7 @@ import type { OutsourcingOrderDueDate } from "@/lib/types/report.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
-function resolveGetOutsourcingOrderDueDateErrorMessage(
-  error: unknown
-): string {
+function resolveGetOutsourcingOrderDueDateErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
     return GENERIC_ERROR_MESSAGE
   }

@@ -37,7 +37,7 @@ const dispositionOptions: SelectOption[] = [
 ]
 
 // Không còn nút/tác vụ tạo OQC thủ công trên danh sách nữa — lối vào duy nhất giờ là nút
-// "Yêu cầu QC" ở header chi tiết Job (ProductionJobDetailHeader.tsx), gọi thẳng
+// "Yêu cầu OQC" ở header chi tiết Job (ProductionJobDetailHeader.tsx), gọi thẳng
 // POST /production-jobs/:jobId/qc, không điều hướng sang màn OQC.
 export function OqcTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/oqc/" })

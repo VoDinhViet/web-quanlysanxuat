@@ -66,6 +66,8 @@ export function CreateQuotationForm() {
       onSubmit: createQuotationFormSchema,
     },
     onSubmit: ({ value }) => create(value),
+    onSubmitInvalid: () =>
+      toast.error("Vui lòng kiểm tra lại thông tin đã nhập trước khi tạo RFQ."),
   })
 
   const [step, setStep] = useState<CreateQuotationWizardStep>("items")

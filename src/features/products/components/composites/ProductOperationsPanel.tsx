@@ -165,7 +165,7 @@ export function ProductOperationsPanel({
                   {step.operation.name}
                 </TableCell>
                 <TableCell>
-                  <OperationTypeBadge type={step.type} />
+                  <OperationTypeBadge type={step.operation.type} />
                 </TableCell>
                 <TableCell className="font-medium text-muted-foreground">
                   {step.note ?? "—"}

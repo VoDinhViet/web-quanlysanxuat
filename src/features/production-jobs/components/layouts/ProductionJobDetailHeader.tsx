@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft, Diskette } from "@solar-icons/react"
-import { Box, CircleCheck, ClipboardCheck } from "lucide-react"
+import { CircleCheck, ClipboardCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -24,17 +24,17 @@ type ProductionJobDetailHeaderProps = {
 }
 
 // Identity, the header facts and the tab strip read as one unit, so they share a single block
-// like ProductDetailHeader.tsx. One action button per status, matching the one-way lifecycle
-// PENDING → IN_PROGRESS → WAITING_QC → WAITING_DELIVERY → COMPLETED (docs/decisions/
-// production-lifecycle-closing.md, backend repo): "Xác nhận" (start), "Yêu cầu QC" once
-// WAITING_QC, "Nhập kho thành phẩm" once WAITING_DELIVERY (deep-links into create-from-job, which
-// seeds its Job combobox from this id), nothing once COMPLETED — these three are hidden outside
-// their status. "Duyệt công đoạn" is the one exception: always rendered once the viewer has
-// `production:approve`, disabled (not hidden) outside IN_PROGRESS or once already approved
-// (operationsApprovedAt set) — a Tooltip explains why, same idiom as
-// ProductionJobOperationsTable.tsx's OperationSendActionCell. No client-side gate beyond the
-// status switch itself — the backend enforces every precondition (E213/E214/E196/E197/E250/E251/
-// ...) and each dialog/page surfaces its own error inline.
+// like ProductDetailHeader.tsx. 3 action buttons side by side (once the viewer has the matching
+// permission), following the one-way lifecycle PENDING → IN_PROGRESS → WAITING_QC →
+// WAITING_DELIVERY → COMPLETED (docs/decisions/production-lifecycle-closing.md, backend repo):
+// "Xác nhận" (start, hidden outside PENDING), "Xác nhận sản xuất" (duyệt công đoạn, disabled
+// outside IN_PROGRESS/đã duyệt — pre-existing pattern), "Yêu cầu OQC" (disabled outside
+// WAITING_QC). Only "Yêu cầu OQC" và "Xác nhận sản xuất" stay always-rendered+disabled — "Xác
+// nhận" hides instead, and there is no "Nhập kho thành phẩm" button here: WAITING_DELIVERY only
+// happens after OQC coverage, and the receipt itself is created from the Inventory Receipts
+// module, not deep-linked from this header. No client-side gate beyond each button's own
+// disabledReason — the backend enforces every precondition (E213/E214/E196/E197/E250/E251/...)
+// and each dialog surfaces its own error inline.
 export function ProductionJobDetailHeader({
   productionJob,
 }: ProductionJobDetailHeaderProps) {
@@ -118,51 +118,19 @@ export function ProductionJobDetailHeader({
           </dl>
         </div>
 
-        {productionJob.status === ProductionJobStatus.PENDING && (
+        <div className="flex flex-wrap items-center gap-2">
           <PermissionGate permission="production:update">
-            <StartProductionJobDialog
-              job={productionJob}
-              trigger={
-                <Button type="button" className="gap-1.5">
-                  <Diskette className="size-4" />
-                  Xác nhận
-                </Button>
-              }
-            />
+            <StartJobButton job={productionJob} />
           </PermissionGate>
-        )}
 
-        <PermissionGate permission="production:approve">
-          <ApproveOperationsButton job={productionJob} />
-        </PermissionGate>
+          <PermissionGate permission="production:approve">
+            <ApproveOperationsButton job={productionJob} />
+          </PermissionGate>
 
-        {productionJob.status === ProductionJobStatus.WAITING_QC && (
           <PermissionGate permission="oqc:create">
-            <RequestProductionJobQcDialog
-              job={productionJob}
-              trigger={
-                <Button type="button" className="gap-1.5">
-                  <ClipboardCheck className="size-4" />
-                  Yêu cầu QC
-                </Button>
-              }
-            />
+            <RequestOqcButton job={productionJob} />
           </PermissionGate>
-        )}
-
-        {productionJob.status === ProductionJobStatus.WAITING_DELIVERY && (
-          <PermissionGate permission="inventory:create">
-            <Button type="button" className="gap-1.5" asChild>
-              <Link
-                to="/manage/inventory-receipts/create-from-job"
-                search={{ productionJobId: productionJob.id }}
-              >
-                <Box className="size-4" />
-                Nhập kho thành phẩm
-              </Link>
-            </Button>
-          </PermissionGate>
-        )}
+        </div>
       </div>
 
       <ProductionJobDetailTabs />
@@ -176,9 +144,9 @@ export function ProductionJobDetailHeader({
 function ApproveOperationsButton({ job }: { job: ProductionJobDetail }) {
   const disabledReason =
     job.status !== ProductionJobStatus.IN_PROGRESS
-      ? "Chỉ duyệt được khi Job đang sản xuất."
+      ? "Chỉ xác nhận sản xuất được khi Job đang sản xuất."
       : job.operationsApprovedAt
-        ? "Job này đã được duyệt công đoạn."
+        ? "Job này đã được xác nhận sản xuất."
         : null
 
   const button = (
@@ -188,12 +156,68 @@ function ApproveOperationsButton({ job }: { job: ProductionJobDetail }) {
       disabled={disabledReason !== null}
     >
       <CircleCheck className="size-4" />
-      Duyệt công đoạn
+      Xác nhận sản xuất
     </Button>
   )
 
   if (disabledReason === null) {
     return <ApproveProductionJobOperationsDialog job={job} trigger={button} />
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="inline-block">{button}</span>
+      </TooltipTrigger>
+      <TooltipContent>{disabledReason}</TooltipContent>
+    </Tooltip>
+  )
+}
+
+// Khác ApproveOperationsButton/RequestOqcButton — ẩn hẳn (không disable) ngoài PENDING, theo đúng
+// yêu cầu chỉ giữ disable-not-hide cho "Yêu cầu OQC".
+function StartJobButton({ job }: { job: ProductionJobDetail }) {
+  if (job.status !== ProductionJobStatus.PENDING) {
+    return null
+  }
+
+  return (
+    <StartProductionJobDialog
+      job={job}
+      trigger={
+        <Button type="button" className="gap-1.5">
+          <Diskette className="size-4" />
+          Xác nhận
+        </Button>
+      }
+    />
+  )
+}
+
+// Cùng khuôn ApproveOperationsButton — chỉ bật khi WAITING_QC và Job chưa có phiếu OQC nào
+// (`job.oqcRequested`, ProductionJobDetailResDto — BE chặn tạo lần 2 cho cùng công đoạn Cấp 0,
+// E198). Đọc thẳng từ chi tiết Job đã fetch sẵn, không gọi thêm API list riêng.
+function RequestOqcButton({ job }: { job: ProductionJobDetail }) {
+  const disabledReason =
+    job.status !== ProductionJobStatus.WAITING_QC
+      ? "Chỉ yêu cầu OQC được khi Job đã xong công đoạn (chờ QC)."
+      : job.oqcRequested
+        ? "Job này đã được tạo phiếu OQC."
+        : null
+
+  const button = (
+    <Button
+      type="button"
+      className="gap-1.5"
+      disabled={disabledReason !== null}
+    >
+      <ClipboardCheck className="size-4" />
+      {job.oqcRequested ? "Đã tạo OQC" : "Yêu cầu OQC"}
+    </Button>
+  )
+
+  if (disabledReason === null) {
+    return <RequestProductionJobQcDialog job={job} trigger={button} />
   }
 
   return (

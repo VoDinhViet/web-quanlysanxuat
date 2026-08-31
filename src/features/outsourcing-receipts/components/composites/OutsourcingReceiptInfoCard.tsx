@@ -45,7 +45,7 @@ export function OutsourcingReceiptInfoCard({
             receipt.requiresIqc
               ? isPosted
                 ? "Có — đã sinh phiếu IQC, xem trong danh sách IQC"
-                : "Có — sẽ sinh phiếu IQC khi xác nhận đã nhận"
+                : "Có — sẽ sinh phiếu IQC ngay khi tạo phiếu"
               : "Không"
           }
         />

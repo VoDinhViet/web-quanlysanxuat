@@ -324,7 +324,7 @@ function OperationRow({
         <ProductionJobOperationCompletedQuantityCell
           productionJobId={productionJobId}
           operation={operation}
-          canEdit={canEdit}
+          canEdit={canEdit && operation.type !== OperationType.OUTSOURCE}
         />
       </TableCell>
       <TableCell className="text-center text-muted-foreground">
@@ -362,9 +362,9 @@ function OperationRow({
 // `outsourceableByOperationId`, xem OperationSentQuantityCell), TRẠNG THÁI (Chưa bắt đầu/Đang thực
 // hiện/Hoàn thành — suy từ completedQuantity/completedDate, không phải field riêng trên DTO),
 // NGÀY HOÀN THÀNH, THAO TÁC (dòng Gia công ngoài có thêm nút Gửi gia công ngoài — khoá khi đã gửi
-// đủ định mức, xem OperationSendActionCell). "Yêu cầu QC" không còn ở đây nữa — đã gộp thành 1 nút
-// duy nhất ở header chi tiết Job (ProductionJobDetailHeader.tsx), chỉ hiện khi Job WAITING_QC (mọi
-// công đoạn đã hoàn thành). Khung viền `rounded-md border` quanh bảng +
+// đủ định mức, xem OperationSendActionCell). "Yêu cầu OQC" không còn ở đây nữa — đã gộp thành 1
+// nút duy nhất ở header chi tiết Job (ProductionJobDetailHeader.tsx), disabled ngoài Job
+// WAITING_QC (mọi công đoạn đã hoàn thành). Khung viền `rounded-md border` quanh bảng +
 // border-r/border-b có sẵn từ Table primitive, khớp khuôn các bảng khác trong repo
 // (`ProductionOrderItemsCard.tsx`, `InventoryIssuesTable.tsx`).
 export function ProductionJobOperationsTable({

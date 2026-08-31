@@ -21,7 +21,7 @@ function resolveUpdateProductionJobOperationErrorMessage(
     case "production_job.error.invalid_status_transition":
       return "Chỉ có thể cập nhật khi Job đang sản xuất."
     case "production_job.error.operations_not_approved":
-      return "Job chưa được duyệt công đoạn — bấm Duyệt công đoạn trước."
+      return "Job chưa được xác nhận sản xuất — bấm Xác nhận sản xuất trước."
     case "production_job_operation.error.not_found":
       return "Không tìm thấy công đoạn."
     case "production_job_operation.error.completed_plus_rejected_exceeds_planned":

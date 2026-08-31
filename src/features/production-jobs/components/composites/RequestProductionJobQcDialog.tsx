@@ -61,7 +61,7 @@ export function RequestProductionJobQcDialog({
             <ClipboardCheck />
           </AlertDialogMedia>
           <AlertDialogTitle>
-            Yêu cầu QC thành phẩm cho Job này?
+            Yêu cầu OQC thành phẩm cho Job này?
           </AlertDialogTitle>
           <AlertDialogDescription>
             Job {job.code} sẽ được tạo 1 phiếu OQC cho công đoạn lắp ráp cuối
@@ -84,7 +84,7 @@ export function RequestProductionJobQcDialog({
               mutation.mutate()
             }}
           >
-            {mutation.isPending ? "Đang xử lý..." : "Yêu cầu QC"}
+            {mutation.isPending ? "Đang xử lý..." : "Yêu cầu OQC"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

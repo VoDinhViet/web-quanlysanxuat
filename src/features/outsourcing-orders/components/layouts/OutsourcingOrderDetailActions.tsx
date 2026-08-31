@@ -104,8 +104,8 @@ export function OutsourcingOrderDetailActions({
                   {order.code}
                 </span>{" "}
                 đã trừ tồn kho xuất — hủy sẽ đảo ngược bút toán và cộng lại tồn
-                kho đã trừ. Nếu phiếu đã có OS-IN (nhận hàng) liên kết chưa
-                hủy, thao tác sẽ thất bại.
+                kho đã trừ. Nếu phiếu đã có OS-IN (nhận hàng) liên kết chưa hủy,
+                thao tác sẽ thất bại.
               </DialogDescription>
             </DialogHeader>
 

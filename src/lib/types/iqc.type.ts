@@ -64,7 +64,7 @@ export const iqcDispositionLabels: Record<IqcDisposition, string> = {
 
 // For IqcResultCard's radio cards — one short sentence explaining what picking this result means.
 export const iqcResultDescriptions: Record<IqcResult, string> = {
-  [IqcResult.PASS]: "Vật tư đạt yêu cầu chất lượng, cho phép nhập kho.",
+  [IqcResult.PASS]: "Vật tư đạt yêu cầu chất lượng kiểm tra.",
   [IqcResult.FAIL]: "Vật tư không đạt, cần chọn hướng xử lý bên dưới.",
 }
 

@@ -81,7 +81,7 @@ export function IqcResultCard({ form, disabled }: IqcResultCardProps) {
                 )}
               >
                 {isPass
-                  ? "✓ Đạt yêu cầu — vật tư được phép nhập kho sau khi lưu."
+                  ? "✓ Đạt yêu cầu chất lượng kiểm tra."
                   : "✗ Không đạt — chọn phương án xử lý ở khối bên dưới."}
               </p>
             )

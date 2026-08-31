@@ -49,10 +49,10 @@ export function useQuotationAddSupplierDialog(
             {
               supplierId,
               supplierLabel,
-              lastPrice: "",
+              lastPrice: undefined,
               lastPurchaseDate: "",
-              unitPrice: "",
-              leadTimeDays: "",
+              unitPrice: undefined,
+              leadTimeDays: undefined,
               note: "",
             },
           ],

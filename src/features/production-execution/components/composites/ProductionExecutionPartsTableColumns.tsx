@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { JobOperationReportDialog } from "@/features/production-execution/components/composites/JobOperationReportDialog"
+import { OperationType } from "@/lib/types/operation.type"
 import type {
   ProductionJobBomItem,
   ProductionJobOperation,
@@ -93,25 +94,37 @@ export function buildProductionExecutionPartColumns({
         headerClassName: "w-40 text-center",
         cellClassName: "text-center",
       },
-      cell: ({ row }) => (
-        <Tooltip>
-          <JobOperationReportDialog
-            partRow={row.original}
-            disabledReason={disabledReason}
-            trigger={
-              <TooltipTrigger asChild>
-                <Button type="button" size="sm">
-                  Nhập báo cáo
-                </Button>
-              </TooltipTrigger>
-            }
-          />
-          <TooltipContent>
-            {disabledReason ??
-              "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho Part này."}
-          </TooltipContent>
-        </Tooltip>
-      ),
+      cell: ({ row }) => {
+        // Công đoạn OUTSOURCE tự cập nhật SL hoàn thành từ OS-IN, không nhập tay —
+        // docs/decisions/outsourced-operation-progress-writeback.md phía be-quanlysanxuat, khớp
+        // E260. `disabledReason` (job-level) ưu tiên trước — job chưa start/chưa duyệt công đoạn
+        // thì mọi dòng đều khoá như nhau, không cần phân biệt loại công đoạn.
+        const reason =
+          disabledReason ??
+          (row.original.operation.type === OperationType.OUTSOURCE
+            ? "Công đoạn gia công ngoài tự cập nhật khi nhận hàng (OS-IN), không nhập tay."
+            : null)
+
+        return (
+          <Tooltip>
+            <JobOperationReportDialog
+              partRow={row.original}
+              disabledReason={reason}
+              trigger={
+                <TooltipTrigger asChild>
+                  <Button type="button" size="sm">
+                    Nhập báo cáo
+                  </Button>
+                </TooltipTrigger>
+              }
+            />
+            <TooltipContent>
+              {reason ??
+                "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho Part này."}
+            </TooltipContent>
+          </Tooltip>
+        )
+      },
     }),
   ])
 }

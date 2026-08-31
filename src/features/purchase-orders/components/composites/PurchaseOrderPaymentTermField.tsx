@@ -1,6 +1,6 @@
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import {
@@ -45,6 +45,15 @@ export function PurchaseOrderPaymentTermField({
       setValue(paymentTerm ?? PaymentTerm.IMMEDIATE)
     },
   })
+
+  // paymentTerm null only ever means "never committed" (e.g. a PO generated from an old RFQ) —
+  // the select already shows IMMEDIATE as its default, so persist that default for real instead
+  // of leaving the backend field null until the user happens to touch the dropdown themselves.
+  useEffect(() => {
+    if (editable && paymentTerm === null) {
+      save(PaymentTerm.IMMEDIATE)
+    }
+  }, [editable, paymentTerm, save])
 
   if (!editable) {
     return (

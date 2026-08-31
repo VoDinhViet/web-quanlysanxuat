@@ -63,6 +63,9 @@ export type ProductionJobDetail = {
   // `PATCH .../operations/:operationId` còn bị chặn (E250), xem ProductionJobOperation.
   operationsApprovedBy: string | null
   operationsApprovedAt: string | null
+  // true thì nút "Yêu cầu OQC" ở ProductionJobDetailHeader.tsx khoá lại — BE chặn tạo phiếu OQC
+  // lần 2 cho cùng công đoạn Cấp 0 (E198).
+  oqcRequested: boolean
   createdAt: string
   updatedAt: string
 }

@@ -20,7 +20,7 @@ import {
 } from "@/lib/types/production-job.type"
 import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
 
-// Job chưa `start`, hoặc đã start nhưng chưa qua "Duyệt công đoạn" — 2 điều kiện BE chặn PATCH
+// Job chưa `start`, hoặc đã start nhưng chưa qua "Xác nhận sản xuất" — 2 điều kiện BE chặn PATCH
 // .../operations/:operationId (E087/E250), cùng logic canEdit của
 // ProductionJobOperationsTab.tsx (màn "Quản lý sản xuất"). Job đã rời IN_PROGRESS (WAITING_QC trở
 // đi) nghĩa là mọi công đoạn Cấp 0 đã xong — không còn gì để báo cáo thêm.
@@ -35,7 +35,7 @@ function resolveReportDisabledReason(
     return "Job đã hoàn thành mọi công đoạn — không thể báo cáo thêm."
   }
   if (operationsApprovedAt === null) {
-    return 'Công đoạn của Job này chưa được duyệt — bấm "Duyệt công đoạn" ở trang Quản lý sản xuất trước.'
+    return 'Công đoạn của Job này chưa được xác nhận sản xuất — bấm "Xác nhận sản xuất" ở trang Quản lý sản xuất trước.'
   }
   return null
 }
