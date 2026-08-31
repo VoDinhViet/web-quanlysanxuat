@@ -42,7 +42,7 @@ import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 // Ghép giá trị wizard-local (UI-only field) + PO đã fetch thành đúng payload
 // CreateInventoryReceiptSchema mà createInventoryReceipt server function cần — không có ô nhập
-// tay nào cho warehouseId/supplierId/receiptDate/unitPrice trong 4 bước, tất cả tự suy ra từ PO.
+// tay nào cho supplierId/receiptDate/unitPrice trong 4 bước, tất cả tự suy ra từ PO.
 function buildCreateInventoryReceiptPayload(
   value: CreateInventoryReceiptFromPoFormSchema,
   purchaseOrder: PurchaseOrderDetail,
@@ -50,7 +50,6 @@ function buildCreateInventoryReceiptPayload(
 ): CreateInventoryReceiptSchema {
   return {
     code: "",
-    warehouseId: purchaseOrder.receiptWarehouse?.id ?? "",
     receiptType: InventoryReceiptType.PURCHASE,
     assetType: value.assetType,
     receiptDate,

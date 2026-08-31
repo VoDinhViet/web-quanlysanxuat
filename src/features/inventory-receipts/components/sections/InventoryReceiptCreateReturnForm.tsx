@@ -31,29 +31,17 @@ import type { CreateInventoryReceiptSchema } from "@/features/inventory-receipts
 
 type SubmitAction = "draft" | "confirm" | "post"
 
-type InventoryReceiptCreateReturnFormProps = {
-  // Kho RM ("Kho nguyên vật liệu") — InventoryReceiptCreateReceiptPage.tsx đã prefetch qua route
-  // loader, chỉ đúng 1 kho loại này. Không có picker nào cho field này (xem
-  // InventoryReceiptCreateReturnHeaderSection.tsx), cùng khuôn CreateInventoryRequisitionForm.tsx's
-  // warehouseId prop.
-  warehouseId: string
-}
-
-// Vỏ wizard "Khách hàng" — 3 bước, cùng khuôn InventoryReceiptCreateOtherForm.tsx. Khác ở header
-// section (combobox khách hàng thay "Nguồn nhập"/"PO / Lý do") và schema (bắt buộc clientId, note
-// tuỳ chọn — "clientId" đóng vai trò mở khoá bước ② thay "note" của làn "Khác"). Cố tình KHÔNG
-// trừu tượng hoá dùng chung với InventoryReceiptCreateOtherForm.tsx dù giống nhau phần lớn — mới
-// 2 lần dùng, chưa tới ngưỡng "3rd use" (code-quality.md).
+// Vỏ wizard "Khách hàng" — 3 bước. Khác `InventoryReceiptCreateFromPoForm.tsx` ở header section
+// (combobox khách hàng thay "Nguồn nhập"/"PO / Lý do") và schema (bắt buộc clientId, note
+// tuỳ chọn — "clientId" đóng vai trò mở khoá bước ② thay "note" của làn "Khác").
 //
 // 3 hành động cuối form đều đi qua createInventoryReceipt trước (backend luôn tạo DRAFT), rồi tuỳ
 // nút bấm gọi tiếp confirm/post — actionRef giữ hành động vừa bấm, cùng khuôn
-// InventoryReceiptCreateOtherForm.tsx/InventoryReceiptCreateFromPoForm.tsx:
+// InventoryReceiptCreateFromPoForm.tsx:
 //   - "Lưu nháp (Draft)"                              → create                    → DRAFT
 //   - "Xác nhận (Chờ IQC)" (radio = Yêu cầu QC)        → create → confirm          → PENDING_IQC
 //   - "Xác nhận & Nhập kho (Không qua IQC)"            → create → confirm → post   → POSTED
-export function InventoryReceiptCreateReturnForm({
-  warehouseId,
-}: InventoryReceiptCreateReturnFormProps) {
+export function InventoryReceiptCreateReturnForm() {
   const navigate = useNavigate({
     from: "/manage/inventory-receipts/create-receipt",
   })
@@ -113,13 +101,8 @@ export function InventoryReceiptCreateReturnForm({
     },
   })
 
-  const defaultValues: CreateInventoryReceiptSchema = {
-    ...createInventoryReceiptReturnFormDefaultValues,
-    warehouseId,
-  }
-
   const form = useAppForm({
-    defaultValues,
+    defaultValues: createInventoryReceiptReturnFormDefaultValues,
     validators: {
       onSubmit: createInventoryReceiptReturnSchema,
     },

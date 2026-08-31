@@ -109,7 +109,6 @@ export function InventoryReceiptUpdateForm({
           form={form}
           disabled={isPending}
           receiptCode={inventoryReceipt.code}
-          warehouseName={inventoryReceipt.warehouse.name}
           initialSupplier={
             inventoryReceipt.supplier
               ? {

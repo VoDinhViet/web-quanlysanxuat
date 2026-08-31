@@ -1,10 +1,7 @@
-import type {
-  InventoryReceiptStatus,
-  InventoryReceiptType,
-} from "@/lib/types/inventory-receipt.type"
-import type { InventoryIssueType } from "@/lib/types/inventory-issue.type"
+import { InventoryReceiptType } from "@/lib/types/inventory-receipt.type"
+import type { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
+import { InventoryIssueType } from "@/lib/types/inventory-issue.type"
 import type { UserRef } from "@/lib/types/user.type"
-import type { WarehouseRef } from "@/lib/types/warehouse.type"
 
 // Local twins — id+code (plus the couple of extra fields the backend's XRefResDto actually
 // returns), not the full XRef types other features use. Kept local rather than importing across
@@ -52,7 +49,6 @@ export type ProductLedgerEntry = {
   /** Có dấu — dương là nhập, âm là xuất. */
   quantity: number
   balanceAfter: number
-  warehouse: WarehouseRef
   inventoryReceipt: ProductLedgerReceiptRef | null
   inventoryIssue: ProductLedgerIssueRef | null
   productionJob: ProductLedgerJobRef | null
@@ -95,42 +91,38 @@ export const productLedgerMovementTypeLabels: Record<
 // nhập ra số âm, phiếu xuất ra số dương) mới phân biệt được. Mirrors be-quanlysanxuat's đã-gỡ
 // `resolveProductStockMovementType` (chuyển hẳn xuống FE theo yêu cầu, không còn ở backend).
 export function resolveProductLedgerMovementType(
-  entry: Pick<
+  ledger: Pick<
     ProductLedgerEntry,
     "quantity" | "inventoryReceipt" | "inventoryIssue"
   >
 ): ProductLedgerMovementType {
-  if (entry.inventoryReceipt) {
-    if (entry.quantity < 0) {
+  if (ledger.inventoryReceipt) {
+    if (ledger.quantity < 0) {
       return ProductLedgerMovementType.REVERSAL
     }
-    switch (entry.inventoryReceipt.receiptType) {
-      case "PRODUCTION":
+    switch (ledger.inventoryReceipt.receiptType) {
+      case InventoryReceiptType.PRODUCTION:
         return ProductLedgerMovementType.PRODUCTION_RECEIPT
-      case "RETURN":
+      case InventoryReceiptType.RETURN:
         return ProductLedgerMovementType.CUSTOMER_RETURN
-      case "PURCHASE":
+      case InventoryReceiptType.PURCHASE:
         return ProductLedgerMovementType.PURCHASE_RECEIPT
-      case "ADJUSTMENT":
-        return ProductLedgerMovementType.ADJUSTMENT
     }
   }
 
-  if (entry.inventoryIssue) {
-    if (entry.quantity > 0) {
+  if (ledger.inventoryIssue) {
+    if (ledger.quantity > 0) {
       return ProductLedgerMovementType.REVERSAL
     }
-    switch (entry.inventoryIssue.issueType) {
-      case "SALES":
+    switch (ledger.inventoryIssue.issueType) {
+      case InventoryIssueType.SALES:
         return ProductLedgerMovementType.DELIVERY
-      case "ADJUSTMENT":
-        return ProductLedgerMovementType.ADJUSTMENT
       default:
         return ProductLedgerMovementType.OTHER_ISSUE
     }
   }
 
-  return entry.quantity >= 0
+  return ledger.quantity >= 0
     ? ProductLedgerMovementType.ADJUSTMENT
     : ProductLedgerMovementType.OTHER_ISSUE
 }

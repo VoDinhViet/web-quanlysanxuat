@@ -33,10 +33,9 @@ function PreviewField({ label, value }: PreviewFieldProps) {
   )
 }
 
-// Bước ③ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận, cùng khuôn
-// InventoryReceiptCreateOtherConfirmSection.tsx. Khác "Khác": có 1 field suy từ fetch riêng
-// (`clientQueryOptions`, lấy tên khách hàng để hiển thị — form state chỉ giữ `clientId`), cùng
-// cách InventoryReceiptCreateFromPoConfirmSection.tsx fetch supplierQueryOptions.
+// Bước ③ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận. Có 1 field suy từ fetch
+// riêng (`clientQueryOptions`, lấy tên khách hàng để hiển thị — form state chỉ giữ `clientId`),
+// cùng cách InventoryReceiptCreateFromPoConfirmSection.tsx fetch supplierQueryOptions.
 export const InventoryReceiptCreateReturnConfirmSection = withForm({
   defaultValues: createInventoryReceiptReturnFormDefaultValues,
   props: { disabled: false },

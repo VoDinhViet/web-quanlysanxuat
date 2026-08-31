@@ -17,14 +17,12 @@ import { buildOptionsFromLabels } from "@/lib/utils"
 
 const receiptTypeOptions = buildOptionsFromLabels(inventoryReceiptTypeLabels)
 
-// Không có `warehouseId`/`code` — cả hai bất biến sau khi tạo phiếu (`update-inventory-receipt.
-// schema.ts` không có field warehouseId), hiển thị read-only qua props thay vì field.
+// Không có `code` — bất biến sau khi tạo phiếu, hiển thị read-only qua prop thay vì field.
 export const InventoryReceiptUpdateHeaderSection = withForm({
   defaultValues: updateInventoryReceiptFormDefaultValues,
   props: {
     disabled: false,
     receiptCode: "",
-    warehouseName: "",
     initialSupplier: undefined as ComboboxOption | undefined,
     initialClient: undefined as ComboboxOption | undefined,
     initialPurchaseOrder: undefined as ComboboxOption | undefined,
@@ -34,7 +32,6 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
     form,
     disabled,
     receiptCode,
-    warehouseName,
     initialSupplier,
     initialClient,
     initialPurchaseOrder,
@@ -71,7 +68,7 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
             Phiếu nhập kho
           </h2>
           <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-            Mã phiếu: {receiptCode} · Kho nhận: {warehouseName}
+            Mã phiếu: {receiptCode}
           </p>
         </div>
 

@@ -10,7 +10,7 @@ import { materialInventoryQueryOptions } from "@/features/inventory-materials/ap
 
 export function InventoryMaterialsPage() {
   // useSearch keys off the file-based route id. The loader prefetched the list +
-  // warehouse options; the list is read via useQuery so filter/pagination changes
+  // supplier options; the list is read via useQuery so filter/pagination changes
   // only update the table (not the whole route), while the reference lists resolve
   // synchronously via useSuspenseQuery. The filter reads/writes this same route
   // search itself (its own useSearch/useNavigate) rather than through props.

@@ -29,20 +29,11 @@ import { getStepNav } from "@/lib/wizard-steps"
 import type { CreateInventoryRequisitionWizardStep } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionStepsTabs"
 import type { CreateInventoryRequisitionSchema } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 
-type CreateInventoryRequisitionFormProps = {
-  // Kho RM ("Kho nguyên vật liệu") — route loader đã prefetch, Page đọc qua useSuspenseQuery rồi
-  // truyền thẳng xuống đây làm defaultValues.warehouseId. Không có picker nào cho field này (chỉ
-  // có đúng 1 kho loại RM), nên field cố định ngay từ lúc mount, không cần tự fetch+set qua effect.
-  warehouseId: string
-}
-
 // Vỏ wizard "Lãnh vật tư" — 1 route/form duy nhất cho cả 2 nguồn lãnh, chọn bằng radio ở bước ①
 // (CreateInventoryRequisitionSourceSection.tsx, field `type`). Không dùng useFormDraft
 // (localStorage) như inventory-receipts' wizard — phiếu đã ở DRAFT thật trên server ngay khi tạo,
 // một "nháp" cục bộ song song sẽ gây nhầm lẫn, không phải giúp ích.
-export function CreateInventoryRequisitionForm({
-  warehouseId,
-}: CreateInventoryRequisitionFormProps) {
+export function CreateInventoryRequisitionForm() {
   const navigate = useNavigate({
     from: "/manage/inventory-requisitions/create",
   })
@@ -65,13 +56,8 @@ export function CreateInventoryRequisitionForm({
     onError: (error) => toast.error(error.message),
   })
 
-  const defaultValues: CreateInventoryRequisitionSchema = {
-    ...createInventoryRequisitionFormDefaultValues,
-    warehouseId,
-  }
-
   const form = useAppForm({
-    defaultValues,
+    defaultValues: createInventoryRequisitionFormDefaultValues,
     validators: {
       onSubmit: createInventoryRequisitionSchema,
     },
@@ -89,9 +75,8 @@ export function CreateInventoryRequisitionForm({
 
   // Đổi nguồn lãnh hoặc Job thì xoá sạch dòng đã chọn — "6 số" trong snapshot mỗi dòng được tính
   // theo đúng nguồn/Job lúc chọn, giữ dòng cũ là submit số đã hỏng. Đổi sang thủ công thì xoá luôn
-  // `productionJobId` để payload không mang Job cũ theo. `warehouseId` không cần theo dõi ở đây:
-  // nó là defaultValues cố định từ prop (route loader đã resolve trước khi form mount). Ref-guard
-  // để không reset ngay lần render đầu.
+  // `productionJobId` để payload không mang Job cũ theo. Ref-guard để không reset ngay lần render
+  // đầu.
   const prevSourceRef = useRef({ type, productionJobId })
   useEffect(() => {
     const prev = prevSourceRef.current
@@ -123,8 +108,7 @@ export function CreateInventoryRequisitionForm({
     form.setFieldValue("productionOrderId", job.productionOrderId)
   }, [productionJobId, jobQuery.data, form])
 
-  const canGoToItems =
-    Boolean(warehouseId) && (!isJobFlow || Boolean(productionJobId))
+  const canGoToItems = !isJobFlow || Boolean(productionJobId)
   const canGoToInfo = items.length > 0
 
   const canAdvance = step === "source" ? canGoToItems : canGoToInfo

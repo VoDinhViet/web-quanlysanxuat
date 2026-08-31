@@ -1,5 +1,3 @@
-import type { WarehouseRef } from "@/lib/types/warehouse.type"
-
 // Lifecycle (be-quanlysanxuat/docs/workflows/inventory-requisition.md):
 // DRAFT --send--> PENDING_APPROVAL --approve--> APPROVED --issue--> ISSUED (điểm cuối)
 //                        |
@@ -93,7 +91,6 @@ export type InventoryRequisition = {
   requisitionDate: string
   type: InventoryRequisitionType
   status: InventoryRequisitionStatus
-  warehouse: WarehouseRef
   department: InventoryRequisitionDepartmentRef | null
   // LSX liên quan — productionOrder.order.code là mã PO hiển thị ở cột "PO / Lý do".
   productionOrder: InventoryRequisitionProductionOrderRef | null

@@ -21,8 +21,6 @@ function resolveApproveOutboundOrderErrorMessage(error: unknown): string {
       return "Còn lệnh sản xuất chưa qua hết kiểm tra chất lượng (OQC). Không thể duyệt."
     case "outbound_order.error.quantity_exceeds_deliverable":
       return "Có dòng vượt số lượng có thể giao — kiểm tra lại tồn kho hoặc lệnh xuất khác đang giữ hàng."
-    case "outbound_order.error.fg_warehouse_ambiguous":
-      return "Không xác định được kho thành phẩm để xuất. Liên hệ quản trị kiểm tra danh mục kho."
     case "auth.error.forbidden":
       return "Bạn không có quyền duyệt phiếu giao hàng này."
     default:

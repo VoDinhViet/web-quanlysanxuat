@@ -53,19 +53,18 @@ function buildPickedRequisitionItem(
 }
 
 // Thông báo rỗng bảng — tách hàm riêng cho dễ đọc/debug thay vì ternary lồng ngay trong JSX. Có
-// đúng 3 trạng thái loại trừ lẫn nhau: chưa chọn Job (chỉ luồng LSX), đang chờ dữ liệu
-// (`warehouseId` chưa resolve hoặc query đang pending), hoặc đã tải xong mà không có dòng nào.
+// đúng 3 trạng thái loại trừ lẫn nhau: chưa chọn Job (chỉ luồng LSX), đang chờ query, hoặc đã tải
+// xong mà không có dòng nào.
 function resolveRequisitionLinesEmptyTitle(params: {
   isJobFlow: boolean
   hasProductionJobId: boolean
-  hasWarehouseId: boolean
   isPending: boolean
 }): string {
   if (params.isJobFlow && !params.hasProductionJobId) {
     return "Chọn Job ở bước ① trước"
   }
 
-  if (params.isPending || !params.hasWarehouseId) {
+  if (params.isPending) {
     return "Đang tải..."
   }
 
@@ -73,11 +72,11 @@ function resolveRequisitionLinesEmptyTitle(params: {
 }
 
 // Checkbox picker rập khuôn PurchaseRequestCreateMaterialPickerSection.tsx — đọc lại
-// type/warehouseId/productionJobId của form qua useField (`warehouseId` tự gắn bởi component cha,
-// `productionJobId` chọn ở bước Job của luồng LSX). Cả 2 luồng dùng chung 1 API
-// (requisitionLinesQueryOptions) — productionJobId optional quyết định có khoanh vùng theo định
-// mức BOM của Job hay không, không phải hai nguồn dữ liệu khác nhau. useField, không phải
-// form.Field's render-prop: useReactTable/useMemo bên dưới là hook thật, chỉ gọi được ở top level.
+// type/productionJobId của form qua useField (`productionJobId` chọn ở bước Job của luồng LSX).
+// Cả 2 luồng dùng chung 1 API (requisitionLinesQueryOptions) — productionJobId optional quyết
+// định có khoanh vùng theo định mức BOM của Job hay không, không phải hai nguồn dữ liệu khác
+// nhau. useField, không phải form.Field's render-prop: useReactTable/useMemo bên dưới là hook
+// thật, chỉ gọi được ở top level.
 export const CreateInventoryRequisitionPickerSection = withForm({
   defaultValues: createInventoryRequisitionFormDefaultValues,
   props: { disabled: false },
@@ -88,7 +87,6 @@ export const CreateInventoryRequisitionPickerSection = withForm({
     const [debouncedQ] = useDebounceValue(q, 300)
 
     const type = useField({ form, name: "type" }).state.value
-    const warehouseId = useField({ form, name: "warehouseId" }).state.value
     const productionJobId = useField({ form, name: "productionJobId" }).state
       .value
     const isJobFlow = type === InventoryRequisitionType.PRODUCTION
@@ -98,14 +96,13 @@ export const CreateInventoryRequisitionPickerSection = withForm({
 
     const linesQuery = useQuery({
       ...requisitionLinesQueryOptions({
-        warehouseId,
         productionJobId: isJobFlow ? productionJobId || undefined : undefined,
         page,
         limit,
         q: debouncedQ.trim() || undefined,
       }),
       placeholderData: keepPreviousData,
-      enabled: Boolean(warehouseId) && (!isJobFlow || Boolean(productionJobId)),
+      enabled: !isJobFlow || Boolean(productionJobId),
     })
 
     const toggleRow = useCallback(
@@ -242,7 +239,6 @@ export const CreateInventoryRequisitionPickerSection = withForm({
                   title={resolveRequisitionLinesEmptyTitle({
                     isJobFlow,
                     hasProductionJobId: Boolean(productionJobId),
-                    hasWarehouseId: Boolean(warehouseId),
                     isPending: linesQuery.isPending,
                   })}
                 />

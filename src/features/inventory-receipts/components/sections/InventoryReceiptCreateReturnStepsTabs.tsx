@@ -41,9 +41,7 @@ type InventoryReceiptCreateReturnStepsTabsProps = {
 }
 
 // Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
-// InventoryReceiptCreateReturnForm.tsx, cùng khuôn InventoryReceiptCreateOtherStepsTabs.tsx (giữ
-// song song, không trừu tượng hoá dùng chung — cùng lý do đã ghi ở
-// InventoryReceiptCreateReturnForm.tsx). Bước ① luôn mở được để quay lại đổi khách hàng.
+// InventoryReceiptCreateReturnForm.tsx. Bước ① luôn mở được để quay lại đổi khách hàng.
 export function InventoryReceiptCreateReturnStepsTabs({
   canGoToItems,
   canGoToConfirm,

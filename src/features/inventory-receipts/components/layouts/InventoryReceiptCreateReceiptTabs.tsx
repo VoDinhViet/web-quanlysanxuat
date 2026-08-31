@@ -1,4 +1,4 @@
-import { Box, Buildings2, Documents } from "@solar-icons/react"
+import { Box, Buildings2 } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
@@ -14,13 +14,12 @@ type LaneItem = {
 const laneItems: LaneItem[] = [
   { value: "po", label: "Từ PO", icon: Box },
   { value: "return", label: "Khách hàng", icon: Buildings2 },
-  { value: "other", label: "Khác", icon: Documents },
 ]
 
 // Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
 // InventoryReceiptCreateReceiptPage.tsx, cùng cách ProductDetailTabs.tsx tách ("Only the
 // triggers — the panels live in the page"). Không có prop khoá/disable như
-// InventoryReceiptCreateFromPoStepsTabs.tsx — 3 làn không phụ thuộc dữ liệu lẫn nhau, luôn tự
+// InventoryReceiptCreateFromPoStepsTabs.tsx — 2 làn không phụ thuộc dữ liệu lẫn nhau, luôn tự
 // do chuyển qua lại.
 export function InventoryReceiptCreateReceiptTabs() {
   return (

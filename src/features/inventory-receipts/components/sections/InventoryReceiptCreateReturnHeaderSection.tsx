@@ -10,9 +10,9 @@ import { buildOptionsFromLabels, cn } from "@/lib/utils"
 const assetTypeOptions = buildOptionsFromLabels(inventoryReceiptAssetTypeLabels)
 
 // Bước ① của wizard "Khách hàng" — tính năng nhận vật tư DO khách hàng cung cấp (không phải
-// khách hàng trả lại hàng đã mua), cùng khuôn InventoryReceiptCreateOtherHeaderSection.tsx (chỉ 1
-// loại phiếu cố định RETURN, không có field "Loại phiếu"/"Kho nhận" — chỉ đúng 1 kho loại RM, form
-// cha tự gắn warehouseId), khác ở combobox "Khách hàng cung cấp" thay cho ô "Nguồn nhập" tĩnh.
+// khách hàng trả lại hàng đã mua). Chỉ 1 loại phiếu cố định RETURN, không có field "Loại phiếu",
+// khác InventoryReceiptCreateHeaderSection.tsx ở combobox "Khách hàng cung cấp" thay cho các
+// combobox NCC/PO/Job.
 export const InventoryReceiptCreateReturnHeaderSection = withForm({
   defaultValues: createInventoryReceiptReturnFormDefaultValues,
   props: { disabled: false },
@@ -83,8 +83,10 @@ export const InventoryReceiptCreateReturnHeaderSection = withForm({
             )}
           </form.AppField>
 
-          {/* `requiresIqc` là boolean trong form state — cùng lý do đã ghi ở
-              InventoryReceiptCreateOtherHeaderSection.tsx. */}
+          {/* `requiresIqc` là boolean trong form state (không đổi sang chuỗi "no"/"yes" như
+              InventoryReceiptCreateFromPoItemsSection.tsx's field.RadioPillField) — đổi type sẽ làm
+              form mất khả năng tái dùng InventoryReceiptCreateGenericItemsSection bên dưới, vốn
+              khoá cứng theo CreateInventoryReceiptSchema. */}
           <form.Field name="requiresIqc">
             {(field) => (
               <div className="space-y-1.5 sm:col-span-2 lg:col-span-4">

@@ -20,7 +20,6 @@ export const createInventoryReceiptSchema = z.object({
     .trim()
     .max(50, "Mã tối đa 50 ký tự")
     .transform(emptyToUndefined),
-  warehouseId: z.string().trim().min(1, "Vui lòng chọn kho nhận"),
   receiptType: z.enum(InventoryReceiptType),
   // Optional cùng lý do requiresIqc bên dưới — mọi làn tạo phiếu đều có select thật cho field
   // này (giá trị luôn xác định trước khi submit), chỉ optional ở tầng wire vì BE tự default
@@ -57,7 +56,6 @@ export type CreateInventoryReceiptSchema = z.input<
 export const createInventoryReceiptFormDefaultValues: CreateInventoryReceiptSchema =
   {
     code: "",
-    warehouseId: "",
     receiptType: InventoryReceiptType.PURCHASE,
     receiptDate: "",
     supplierId: "",

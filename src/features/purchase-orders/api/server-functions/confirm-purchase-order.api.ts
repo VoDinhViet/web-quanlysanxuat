@@ -19,10 +19,10 @@ function resolveConfirmPurchaseOrderErrorMessage(error: unknown): string {
       return "Đơn mua hàng đã đổi trạng thái. Vui lòng tải lại trang."
     case "purchase_order.error.missing_expected_date":
       return "Chưa có ngày giao dự kiến."
-    case "purchase_order.error.missing_receipt_warehouse":
-      return "Hệ thống chưa có kho nguyên vật liệu để làm kho nhận. Vui lòng liên hệ quản trị."
     case "purchase_order.error.missing_unit_price":
       return "Có dòng vật tư chưa nhập đơn giá."
+    case "purchase_order.error.missing_payment_term":
+      return "Chưa chọn điều khoản thanh toán."
     case "auth.error.forbidden":
       return "Bạn không có quyền xác nhận đặt hàng."
     default:
@@ -32,8 +32,8 @@ function resolveConfirmPurchaseOrderErrorMessage(error: unknown): string {
 
 // DRAFT → ORDERED — see PurchaseOrderConfirmDialog.tsx, which pre-checks the same 2 conditions
 // (expectedDate set, every item has unitPrice) client-side for a smoother flow; the backend still
-// re-validates (also gates on paymentTerm/receiptWarehouse, both no longer user-facing —
-// PurchaseOrderPaymentTermField self-persists a default, receiptWarehouse is backend-assigned).
+// re-validates (also gates on paymentTerm, no longer user-facing — PurchaseOrderPaymentTermField
+// self-persists a default).
 export const confirmPurchaseOrder = createServerFn({ method: "POST" })
   .validator(z.object({ purchaseOrderId: z.uuid() }))
   .handler(async ({ data }): Promise<void> => {

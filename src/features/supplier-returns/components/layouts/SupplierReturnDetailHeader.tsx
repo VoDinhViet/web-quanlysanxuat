@@ -60,10 +60,6 @@ export function SupplierReturnDetailHeader({
             value={`${quantityFormatter.format(supplierReturn.quantity)} ${supplierReturn.item.unit.name}`}
           />
           <MetaField
-            label="Kho xuất trả"
-            value={supplierReturn.warehouse.name}
-          />
-          <MetaField
             label="Ngày tạo phiếu"
             value={DateTime.fromISO(supplierReturn.createdAt).toFormat(
               "dd/MM/yyyy HH:mm"

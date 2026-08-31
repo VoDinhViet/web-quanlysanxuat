@@ -17,8 +17,6 @@ function resolveDeliverOutboundOrderErrorMessage(error: unknown): string {
       return "Không tìm thấy phiếu giao hàng."
     case "outbound_order.error.not_deliverable":
       return "Phiếu đã đổi trạng thái. Vui lòng tải lại trang."
-    case "outbound_order.error.fg_warehouse_ambiguous":
-      return "Không xác định được kho thành phẩm để xuất. Liên hệ quản trị kiểm tra danh mục kho."
     case "inventory_document.error.insufficient_stock":
       return "Tồn kho thành phẩm không đủ để xuất giao."
     case "auth.error.forbidden":

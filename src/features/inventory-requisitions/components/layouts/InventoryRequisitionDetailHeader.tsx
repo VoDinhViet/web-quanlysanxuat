@@ -54,7 +54,6 @@ export function InventoryRequisitionDetailHeader({
                 />
               }
             />
-            <MetaField label="Kho lãnh" value={detail.warehouse.name} />
             <MetaField label="Bộ phận" value={detail.department?.name ?? "—"} />
           </div>
 

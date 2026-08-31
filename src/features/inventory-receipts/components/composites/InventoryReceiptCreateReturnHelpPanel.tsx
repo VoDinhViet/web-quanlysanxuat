@@ -40,8 +40,8 @@ const processingLogic = [
   "Số lượng nhập được phép là số dương (> 0).",
 ]
 
-// Sidebar tĩnh cạnh form — khuôn InventoryReceiptCreateOtherHelpPanel.tsx (không có "Ví dụ sử
-// dụng" — chỉ 1 tình huống, khách hàng cung cấp vật tư, không cần liệt kê ví dụ).
+// Sidebar tĩnh cạnh form — không có "Ví dụ sử dụng" (chỉ 1 tình huống, khách hàng cung cấp vật
+// tư, không cần liệt kê ví dụ).
 export function InventoryReceiptCreateReturnHelpPanel() {
   return (
     <div className="space-y-4 rounded-lg bg-card p-4 shadow-card sm:p-5">

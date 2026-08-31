@@ -1,6 +1,5 @@
 import { useEffect } from "react"
 import { useField } from "@tanstack/react-form"
-import { useQuery } from "@tanstack/react-query"
 
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
@@ -9,12 +8,11 @@ import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { useGetPurchaseOrderOptions } from "@/features/inventory-receipts/hooks/use-get-purchase-order-options"
 import { useGetProductionJobOptions } from "@/features/production-jobs/api"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
 import {
   InventoryReceiptType,
   inventoryReceiptTypeLabels,
 } from "@/lib/types/inventory-receipt.type"
-import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
+import { buildOptionsFromLabels } from "@/lib/utils"
 
 const receiptTypeOptions = buildOptionsFromLabels(inventoryReceiptTypeLabels)
 
@@ -22,7 +20,6 @@ export const InventoryReceiptCreateHeaderSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
-    const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
     const supplier = useGetSupplierOptions()
     const client = useGetClientOptions()
     const purchaseOrder = useGetPurchaseOrderOptions()
@@ -62,18 +59,6 @@ export const InventoryReceiptCreateHeaderSection = withForm({
         </div>
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-5 px-4 py-5 sm:grid-cols-2 sm:px-5 lg:grid-cols-4">
-          <form.AppField name="warehouseId">
-            {(field) => (
-              <field.SelectField
-                label="Kho nhận"
-                required
-                placeholder="Chọn kho nhận"
-                options={buildSelectOptions(warehouses)}
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
-
           <form.AppField name="receiptType">
             {(field) => (
               <field.SelectField

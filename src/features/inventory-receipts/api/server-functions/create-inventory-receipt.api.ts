@@ -13,10 +13,6 @@ function resolveCreateInventoryReceiptErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "warehouse.error.not_found":
-      return "Kho nhận không tồn tại."
-    case "warehouse.error.inactive":
-      return "Kho nhận không còn hoạt động."
     case "inventory_document.error.code_exists":
       return "Mã phiếu nhập kho đã tồn tại."
     case "inventory_document.error.item_not_found":

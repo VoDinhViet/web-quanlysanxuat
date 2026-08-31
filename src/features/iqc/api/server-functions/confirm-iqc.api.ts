@@ -51,8 +51,6 @@ function resolveConfirmIqcErrorMessage(error: unknown): string {
       return "Chỉ nhập SL OK/SL NG khi chọn phương án Phân loại."
     case "iqc_inspection.error.sort_quantity_required":
       return "Vui lòng nhập đủ SL OK và SL NG cho phương án Phân loại."
-    case "iqc_inspection.error.missing_warehouse_for_return":
-      return "Không xác định được kho nhận hàng trả — kiểm tra lại phiếu nhập/PO liên quan."
     case "iqc_inspection.error.disposition_requires_supplier":
       return "Hàng khách trả không có phương án Phân loại/Trả hàng — chỉ chọn được Chấp nhận có điều kiện."
     case "department.error.not_found":

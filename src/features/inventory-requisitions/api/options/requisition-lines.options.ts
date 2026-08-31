@@ -3,7 +3,6 @@ import { queryOptions } from "@tanstack/react-query"
 import { getRequisitionLines } from "@/features/inventory-requisitions/api/server-functions/get-requisition-lines.api"
 
 type RequisitionLinesParams = {
-  warehouseId: string
   productionJobId?: string
   page: number
   limit: number

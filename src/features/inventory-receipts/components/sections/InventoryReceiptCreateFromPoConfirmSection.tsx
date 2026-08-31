@@ -95,10 +95,6 @@ export const InventoryReceiptCreateFromPoConfirmSection = withForm({
             label="Nhà cung cấp"
             value={purchaseOrder?.supplier.name ?? "—"}
           />
-          <PreviewField
-            label="Kho nhận"
-            value={purchaseOrder?.receiptWarehouse?.name ?? "—"}
-          />
           <PreviewField label="Liên hệ" value={representative?.name ?? "—"} />
           <PreviewField
             label="Điện thoại"

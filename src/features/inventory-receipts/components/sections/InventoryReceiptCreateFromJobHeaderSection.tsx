@@ -1,18 +1,14 @@
-import { useQuery } from "@tanstack/react-query"
-
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetProductionJobOptions } from "@/features/production-jobs/api"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
-import { warehouseOptionsQueryOptions } from "@/features/warehouses/api"
-import { buildSelectOptions } from "@/lib/utils"
 
 // Đầu mục riêng cho InventoryReceiptCreateFromJobForm.tsx — không tái dùng
 // InventoryReceiptCreateHeaderSection.tsx (đầu mục của form phiếu nhập kho chung, 4 loại phiếu). Luồng
 // này chỉ có đúng 1 loại phiếu (PRODUCTION, cố định ở defaultValues của form cha, không có UI nào
 // đổi được) nên không cần field "Loại phiếu", không cần NCC/PO/PR/LSX-text — chỉ giữ lại đúng
-// những gì luồng nhập thành phẩm cần: Kho nhận, Ngày chứng từ, Job, Ghi chú.
+// những gì luồng nhập thành phẩm cần: Ngày chứng từ, Job, Ghi chú.
 export const InventoryReceiptCreateFromJobHeaderSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: {
@@ -23,7 +19,6 @@ export const InventoryReceiptCreateFromJobHeaderSection = withForm({
     initialProductionJob: undefined as ComboboxOption | undefined,
   },
   render: function Render({ form, disabled, initialProductionJob }) {
-    const { data: warehouses = [] } = useQuery(warehouseOptionsQueryOptions())
     // `null` — mọi trạng thái Job, không chỉ IN_PROGRESS: lúc cần nhập kho, Job đã QC xong nên
     // thường là WAITING_DELIVERY; sửa lại phiếu nháp cũ cũng cần thấy Job đã COMPLETED.
     const productionJob = useGetProductionJobOptions(null)
@@ -40,18 +35,6 @@ export const InventoryReceiptCreateFromJobHeaderSection = withForm({
         </div>
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-5 px-4 py-5 sm:grid-cols-2 sm:px-5 lg:grid-cols-3">
-          <form.AppField name="warehouseId">
-            {(field) => (
-              <field.SelectField
-                label="Kho nhận"
-                required
-                placeholder="Chọn kho nhận"
-                options={buildSelectOptions(warehouses)}
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
-
           <form.AppField name="receiptDate">
             {(field) => (
               <field.DateField

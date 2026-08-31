@@ -1,7 +1,6 @@
 import type { PaymentTerm } from "@/lib/types/payment-term.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
-import type { WarehouseRef } from "@/lib/types/warehouse.type"
 
 /** Mirrors the backend's `purchase_orders.status` column exactly — only 3 values are ever
  *  stored (`be-quanlysanxuat/src/database/schemas/purchasing/purchase-orders.ts`). "Đang nhận
@@ -109,7 +108,6 @@ export type PurchaseOrder = {
   expectedDate: string | null
   assignedUser: PurchaseOrderUserRef | null
   paymentTerm: PaymentTerm | null
-  receiptWarehouse: WarehouseRef | null
   itemCount: number
   totalAmount: number
   progress: PurchaseOrderProgress
@@ -158,7 +156,6 @@ export type PurchaseOrderDetail = {
   expectedDate: string | null
   assignedUser: PurchaseOrderUserRef | null
   paymentTerm: PaymentTerm | null
-  receiptWarehouse: WarehouseRef | null
   note: string | null
   quotation: { id: string; code: string } | null
   items: PurchaseOrderItemDetail[]

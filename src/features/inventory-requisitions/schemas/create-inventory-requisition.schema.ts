@@ -62,7 +62,6 @@ export const createInventoryRequisitionSchema = z
       .min(1, "Vui lòng chọn ngày lãnh")
       .transform(toIsoDate),
     type: z.enum(InventoryRequisitionType),
-    warehouseId: z.string().trim().min(1, "Vui lòng chọn kho lãnh"),
     departmentId: z.string().trim().transform(emptyToUndefined),
     productionOrderId: z.string().trim().transform(emptyToUndefined),
     productionJobId: z.string().trim().transform(emptyToUndefined),
@@ -98,7 +97,6 @@ export const createInventoryRequisitionFormDefaultValues: CreateInventoryRequisi
   {
     requisitionDate: "",
     type: InventoryRequisitionType.PRODUCTION,
-    warehouseId: "",
     departmentId: "",
     productionOrderId: "",
     productionJobId: "",

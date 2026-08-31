@@ -6,7 +6,7 @@ import { emptyToNull, toIsoDate } from "@/lib/zod-transforms"
 import { InventoryReceiptType } from "@/lib/types/inventory-receipt.type"
 
 // Wire contract for PATCH /api/inventory-receipts/:receiptId — chỉ hợp lệ khi phiếu
-// còn DRAFT (`E098`). `warehouseId`/`code` bất biến nên không có ở đây. Form luôn hiện
+// còn DRAFT (`E098`). `code` bất biến nên không có ở đây. Form luôn hiện
 // đủ giá trị hiện tại rồi gửi lại toàn bộ mỗi lần lưu (cùng cách updateOrderSchema làm
 // với `items` — "thiếu key = không đổi" chỉ có ý nghĩa ở tầng backend, không phải cách
 // form này hoạt động), nên field bắt buộc vẫn bắt buộc ở đây dù DTO backend optional.

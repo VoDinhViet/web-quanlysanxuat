@@ -11,7 +11,6 @@ import { optional } from "@/lib/zod-transforms"
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
 const getRequisitionLinesSchema = z.object({
-  warehouseId: z.uuid(),
   productionJobId: z.uuid().optional(),
   page: z.number(),
   limit: z.number(),

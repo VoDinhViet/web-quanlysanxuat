@@ -10,8 +10,8 @@ import {
 
 // Validator cho làn "Khách hàng" (?lane=return trên route create-receipt,
 // InventoryReceiptCreateReturnForm.tsx) — dùng lại nguyên createInventoryReceiptSchema, chỉ
-// refine thêm bắt buộc `clientId` (khách hàng cung cấp vật tư). `note` để tuỳ chọn — đã có combobox
-// khách hàng xác định nguồn rõ ràng, không cần ép nhập lý do như làn "Khác". `refine` (không
+// refine thêm bắt buộc `clientId` (khách hàng trả lại thành phẩm đã mua). `note` để tuỳ chọn — đã
+// có combobox khách hàng xác định nguồn rõ ràng, không cần ép nhập lý do như làn "Khác". `refine` (không
 // `.extend()`) giữ nguyên z.input y hệt CreateInventoryReceiptSchema — cần thiết để
 // InventoryReceiptCreateGenericItemsSection (withForm khoá cứng theo type đó) tái dùng được
 // thẳng, không phải ép kiểu ở call site.
@@ -22,8 +22,9 @@ export const createInventoryReceiptReturnSchema =
   })
 
 // receiptType cố định RETURN, requiresIqc khởi tạo false (radio QC ở
-// InventoryReceiptCreateReturnHeaderSection.tsx) — annotate kiểu tường minh thay vì suy luận,
-// cùng lý do đã ghi ở create-inventory-receipt-other.schema.ts.
+// InventoryReceiptCreateReturnHeaderSection.tsx) — annotate kiểu tường minh thay vì suy luận:
+// spread một literal `receiptType: "RETURN"` vào object literal sẽ ép cả object type hẹp lại
+// thành literal đó thay vì union InventoryReceiptType mà createInventoryReceiptSchema validate.
 export const createInventoryReceiptReturnFormDefaultValues: CreateInventoryReceiptSchema =
   {
     ...createInventoryReceiptFormDefaultValues,
