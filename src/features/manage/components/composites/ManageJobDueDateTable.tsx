@@ -49,7 +49,7 @@ const columns = columnHelper.columns([
     meta: { cellClassName: "text-xs font-medium" },
   }),
   columnHelper.accessor("orderCode", {
-    header: "PO",
+    header: "SO",
     meta: { cellClassName: "text-xs" },
   }),
   columnHelper.accessor("dueDate", {

@@ -57,7 +57,7 @@ export function getTrendIcon(direction: TrendDirection | undefined) {
 export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
   return [
     {
-      label: "PO đang chạy",
+      label: "SO đang chạy",
       value: stats.runningOrders,
       unit: "đơn",
       icon: Delivery,
@@ -70,7 +70,7 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
       ),
     },
     {
-      label: "PO trễ hạn",
+      label: "SO trễ hạn",
       value: stats.orderDueDate,
       unit: "đơn",
       icon: ClockCircle,
@@ -78,7 +78,7 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
       trend: formatTrend(stats.orderDueDateTrendCount, "hôm qua", formatCount),
     },
     {
-      label: "PO sắp giao",
+      label: "SO sắp giao",
       value: stats.upcomingDueOrders,
       unit: "đơn",
       icon: Box,
