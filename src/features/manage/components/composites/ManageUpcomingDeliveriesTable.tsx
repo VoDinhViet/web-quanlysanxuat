@@ -31,7 +31,7 @@ const columns = columnHelper.columns([
   columnHelper.accessor((row) => row.client.name, {
     id: "client",
     header: "Khách hàng",
-    meta: { cellClassName: "max-w-28 truncate text-xs" },
+    meta: { cellClassName: "max-w-20 truncate text-xs" },
   }),
   columnHelper.accessor("fulfillmentDate", {
     header: "Ngày giao",
@@ -43,7 +43,7 @@ const columns = columnHelper.columns([
     cell: ({ getValue }) => (
       <Badge
         variant="outline"
-        className="bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
+        className="max-w-24 truncate bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
       >
         {outboundOrderStatusLabels[getValue()]}
       </Badge>
@@ -70,7 +70,7 @@ export function ManageUpcomingDeliveriesTable() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <ManageCardTitle>DO sắp giao</ManageCardTitle>
       </div>
-      <Table className="[&_td]:border-r-0 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:first:pl-4 [&_th]:last:pr-4">
+      <Table className="[&_td]:border-r-0 [&_td]:px-1 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:px-1 [&_th]:first:pl-4 [&_th]:last:pr-4">
         <TableHeader className="bg-transparent">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">

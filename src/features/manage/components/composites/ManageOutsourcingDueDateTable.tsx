@@ -39,7 +39,7 @@ const columns = columnHelper.columns([
   }),
   columnHelper.accessor("supplierName", {
     header: "NCC",
-    meta: { cellClassName: "max-w-16 truncate text-xs" },
+    meta: { cellClassName: "max-w-14 truncate text-xs" },
   }),
   columnHelper.accessor("expectedReturnDate", {
     header: "Ngày hẹn",
@@ -75,7 +75,7 @@ export function ManageOutsourcingDueDateTable() {
         <ManageCardTitle>Gia công ngoài trễ hạn</ManageCardTitle>
       </div>
       <div className={cn(query.isFetching && "opacity-60 transition-opacity")}>
-        <Table className="[&_td]:border-r-0 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:first:pl-4 [&_th]:last:pr-4">
+        <Table className="[&_td]:border-r-0 [&_td]:px-1 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:px-1 [&_th]:first:pl-4 [&_th]:last:pr-4">
           <TableHeader className="bg-transparent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
