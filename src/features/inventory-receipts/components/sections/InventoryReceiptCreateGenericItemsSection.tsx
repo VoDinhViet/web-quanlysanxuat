@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useField } from "@tanstack/react-form"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -16,17 +17,23 @@ import { withForm } from "@/hooks/use-app-form"
 import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/composites/InventoryReceiptItemDialog"
 import { createInventoryReceiptFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
 import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
+import { resolveInventoryReceiptItemType } from "@/lib/types/inventory-receipt.type"
 import { vndFormatter } from "@/lib/currency"
 
-// Chế độ chọn vật tư chung — mặc định khi phiếu chưa gắn `purchaseOrderId`. Không có cột ĐVT:
-// itemOptionsQueryOptions (qua useGetMaterialOptions) chỉ trả {id,code,name}, không có unit —
-// xem comment trong use-get-material-options.ts.
+// Chế độ chọn vật tư/thành phẩm chung — mặc định khi phiếu chưa gắn `purchaseOrderId`. Loại vật
+// phẩm (`itemType`) suy từ `receiptType` đang chọn qua `resolveInventoryReceiptItemType` — không
+// hardcode "RM": PURCHASE tìm vật tư, RETURN/PRODUCTION tìm thành phẩm. Không có cột ĐVT:
+// itemOptionsQueryOptions (qua useGetInventoryReceiptItemOptions) chỉ trả {id,code,name}, không
+// có unit.
 export const InventoryReceiptCreateGenericItemsSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [editingIndex, setEditingIndex] = useState<number | null>(null)
+    const receiptType = useField({ form, name: "receiptType" }).state.value
+    const itemType = resolveInventoryReceiptItemType(receiptType)
+    const itemNoun = itemType === "FG" ? "thành phẩm" : "vật tư"
 
     return (
       <form.Field name="items" mode="array">
@@ -59,10 +66,10 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h2 className="font-heading text-base font-semibold text-foreground">
-                    Danh sách vật tư
+                    Danh sách {itemNoun}
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Phiếu cần ít nhất một dòng vật tư
+                    Phiếu cần ít nhất một dòng {itemNoun}
                   </p>
                 </div>
                 <Button
@@ -73,7 +80,7 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
                   onClick={openAdd}
                 >
                   <Plus className="size-4" />
-                  Thêm vật tư
+                  Thêm {itemNoun}
                 </Button>
               </div>
 
@@ -82,7 +89,9 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
                   <TableHeader>
                     <TableRow className="h-12 hover:bg-muted/45">
                       <TableHead className="w-12">#</TableHead>
-                      <TableHead>Vật tư</TableHead>
+                      <TableHead>
+                        {itemType === "FG" ? "Thành phẩm" : "Vật tư"}
+                      </TableHead>
                       <TableHead className="text-right">Số lượng</TableHead>
                       <TableHead className="text-right">Đơn giá</TableHead>
                       <TableHead className="text-right">Thành tiền</TableHead>
@@ -96,8 +105,8 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
                     {items.length === 0 ? (
                       <TableEmpty
                         colSpan={7}
-                        title="Chưa có vật tư nào"
-                        description="Bấm “Thêm vật tư” để thêm."
+                        title={`Chưa có ${itemNoun} nào`}
+                        description={`Bấm “Thêm ${itemNoun}” để thêm.`}
                       />
                     ) : (
                       items.map((item, index) => (
@@ -159,6 +168,7 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
                 onOpenChange={setDialogOpen}
                 initialValue={editingItem}
                 onSubmit={handleSubmit}
+                itemType={itemType}
               />
             </div>
           )

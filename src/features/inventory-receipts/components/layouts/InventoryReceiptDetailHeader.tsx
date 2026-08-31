@@ -4,7 +4,10 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
+import {
+  InventoryReceiptItemTypeBadge,
+  InventoryReceiptStatusBadge,
+} from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/primitives/InventoryReceiptTableCells"
 import { InventoryReceiptDetailActions } from "@/features/inventory-receipts/components/layouts/InventoryReceiptDetailActions"
 import {
@@ -33,7 +36,10 @@ export function InventoryReceiptDetailHeader({
           >
             <Link
               to="/manage/inventory-receipts"
-              search={{ page: 1, limit: 10 }}
+              search={{
+                page: 1,
+                limit: 10,
+              }}
             >
               <AltArrowLeft className="size-4" />
               <span className="hidden sm:inline">Quay lại</span>
@@ -63,17 +69,20 @@ export function InventoryReceiptDetailHeader({
             />
             <MetaField
               label="Loại phiếu"
-              value={inventoryReceiptTypeLabels[inventoryReceipt.receiptType]}
+              value={
+                <span className="inline-flex items-center gap-2">
+                  {inventoryReceiptTypeLabels[inventoryReceipt.receiptType]}
+                  <InventoryReceiptItemTypeBadge
+                    receiptType={inventoryReceipt.receiptType}
+                  />
+                </span>
+              }
             />
             <MetaField
               label="Loại tài sản"
               value={
                 inventoryReceiptAssetTypeLabels[inventoryReceipt.assetType]
               }
-            />
-            <MetaField
-              label="Kho nhận"
-              value={inventoryReceipt.warehouse.name}
             />
           </div>
 

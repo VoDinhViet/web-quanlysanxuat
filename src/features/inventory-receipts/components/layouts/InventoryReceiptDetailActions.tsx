@@ -12,8 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { InventoryReceiptDetailPrintDialog } from "@/features/inventory-receipts/components/composites/InventoryReceiptDetailPrintDialog"
 import { cancelInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/cancel-inventory-receipt.api"
 import { confirmInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/confirm-inventory-receipt.api"
 import { postInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/post-inventory-receipt.api"
@@ -29,7 +29,6 @@ type ConfirmAction = "confirm" | "post" | "cancel" | null
 export function InventoryReceiptDetailActions({
   inventoryReceipt,
 }: InventoryReceiptDetailActionsProps) {
-  const [printOpen, setPrintOpen] = useState(false)
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null)
   const queryClient = useQueryClient()
   const confirmInventoryReceiptFn = useServerFn(confirmInventoryReceipt)
@@ -97,14 +96,10 @@ export function InventoryReceiptDetailActions({
   return (
     <div className="flex shrink-0 flex-col items-end gap-2">
       <div className="flex flex-wrap items-center gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setPrintOpen(true)}
-        >
+        <PendingAction label="In phiếu" hint="tính năng sắp có">
           <Printer className="size-4" />
           In phiếu
-        </Button>
+        </PendingAction>
 
         {isDraft && (
           <PermissionGate permission="inventory:update">
@@ -144,12 +139,6 @@ export function InventoryReceiptDetailActions({
           Chỉ nhập kho được sau khi mọi phiếu IQC của phiếu này đã hoàn tất.
         </p>
       )}
-
-      <InventoryReceiptDetailPrintDialog
-        open={printOpen}
-        onOpenChange={setPrintOpen}
-        inventoryReceipt={inventoryReceipt}
-      />
 
       {confirmAction && (
         <Dialog open onOpenChange={closeConfirm}>

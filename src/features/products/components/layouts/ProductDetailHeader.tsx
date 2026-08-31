@@ -11,6 +11,7 @@ import {
 } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
 import { ProductStatusBadge } from "@/features/products/components/primitives/ProductBadges"
@@ -120,14 +121,10 @@ export function ProductDetailHeader({
             </p>
           )}
 
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => window.print()}
-          >
+          <PendingAction label="In" hint="tính năng sắp có">
             <Printer className="size-4" />
             In
-          </Button>
+          </PendingAction>
 
           <PermissionGate permission="items:delete">
             <DeleteProductDialog

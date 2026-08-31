@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { PackageSearch } from "lucide-react"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
@@ -15,6 +16,7 @@ import type {
   InventoryReceiptDetail,
   InventoryReceiptItemDetail,
 } from "@/lib/types/inventory-receipt.type"
+import { resolveInventoryReceiptItemType } from "@/lib/types/inventory-receipt.type"
 import { vndFormatter } from "@/lib/currency"
 
 const col = createColumnHelper<
@@ -23,83 +25,96 @@ const col = createColumnHelper<
 >()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-const itemColumns = col.columns([
-  col.display({
-    id: "stt",
-    header: "STT",
-    meta: {
-      headerClassName: "w-12 text-center",
-      cellClassName: "text-center text-muted-foreground",
-    },
-    cell: ({ row }) => row.index + 1,
-  }),
+// itemNoun: "vật tư" (PURCHASE) hay "thành phẩm" (PRODUCTION/RETURN) — theo
+// resolveInventoryReceiptItemType(receiptType), cùng khuôn InventoryReceiptCreateGenericItemsSection.tsx.
+function buildInventoryReceiptDetailItemColumns({
+  itemNoun,
+}: {
+  itemNoun: string
+}) {
+  return col.columns([
+    col.display({
+      id: "stt",
+      header: "STT",
+      meta: {
+        headerClassName: "w-12 text-center",
+        cellClassName: "text-center text-muted-foreground",
+      },
+      cell: ({ row }) => row.index + 1,
+    }),
 
-  col.accessor("item.code", {
-    header: "Mã vật tư",
-    meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold">{getValue()}</span>
-    ),
-  }),
+    col.accessor("item.code", {
+      header: `Mã ${itemNoun}`,
+      meta: { headerClassName: "min-w-28" },
+      cell: ({ getValue }) => (
+        <span className="font-mono text-xs font-semibold">{getValue()}</span>
+      ),
+    }),
 
-  col.accessor("item.name", {
-    header: "Tên vật tư",
-    meta: { headerClassName: "min-w-48" },
-  }),
+    col.accessor("item.name", {
+      header: `Tên ${itemNoun}`,
+      meta: { headerClassName: "min-w-48" },
+    }),
 
-  col.display({
-    id: "purchaseOrderQuantity",
-    header: "SL đặt (PO)",
-    meta: {
-      headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums text-muted-foreground",
-    },
-    cell: ({ row }) =>
-      row.original.purchaseOrderItem
-        ? numberFmt.format(row.original.purchaseOrderItem.quantity)
-        : "—",
-  }),
+    col.display({
+      id: "purchaseOrderQuantity",
+      header: "SL đặt (PO)",
+      meta: {
+        headerClassName: "min-w-24 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ row }) =>
+        row.original.purchaseOrderItem
+          ? numberFmt.format(row.original.purchaseOrderItem.quantity)
+          : "—",
+    }),
 
-  col.accessor("quantity", {
-    header: "SL nhận",
-    meta: {
-      headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums font-semibold",
-    },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
-  }),
+    col.accessor("quantity", {
+      header: "SL nhận",
+      meta: {
+        headerClassName: "min-w-24 text-right",
+        cellClassName: "text-right tabular-nums font-semibold",
+      },
+      cell: ({ getValue }) => numberFmt.format(getValue()),
+    }),
 
-  col.accessor("unitPrice", {
-    header: "Đơn giá",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right tabular-nums",
-    },
-    cell: ({ getValue }) => {
-      const unitPrice = getValue()
-      return unitPrice !== null ? vndFormatter.format(unitPrice) : "—"
-    },
-  }),
+    col.accessor("unit.name", {
+      header: "ĐVT",
+      meta: { headerClassName: "min-w-20" },
+    }),
 
-  col.display({
-    id: "lineTotal",
-    header: "Thành tiền",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right tabular-nums font-semibold",
-    },
-    cell: ({ row }) =>
-      row.original.unitPrice !== null
-        ? vndFormatter.format(row.original.quantity * row.original.unitPrice)
-        : "—",
-  }),
+    col.accessor("unitPrice", {
+      header: "Đơn giá",
+      meta: {
+        headerClassName: "min-w-28 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ getValue }) => {
+        const unitPrice = getValue()
+        return unitPrice !== null ? vndFormatter.format(unitPrice) : "—"
+      },
+    }),
 
-  col.accessor("note", {
-    header: "Ghi chú",
-    meta: { headerClassName: "min-w-36" },
-    cell: ({ getValue }) => getValue() ?? "—",
-  }),
-])
+    col.display({
+      id: "lineTotal",
+      header: "Thành tiền",
+      meta: {
+        headerClassName: "min-w-28 text-right",
+        cellClassName: "text-right tabular-nums font-semibold",
+      },
+      cell: ({ row }) =>
+        row.original.unitPrice !== null
+          ? vndFormatter.format(row.original.quantity * row.original.unitPrice)
+          : "—",
+    }),
+
+    col.accessor("note", {
+      header: "Ghi chú",
+      meta: { headerClassName: "min-w-36" },
+      cell: ({ getValue }) => getValue() ?? "—",
+    }),
+  ])
+}
 
 type InventoryReceiptDetailItemsSectionProps = {
   inventoryReceipt: InventoryReceiptDetail
@@ -108,9 +123,18 @@ type InventoryReceiptDetailItemsSectionProps = {
 export function InventoryReceiptDetailItemsSection({
   inventoryReceipt,
 }: InventoryReceiptDetailItemsSectionProps) {
+  const itemNoun =
+    resolveInventoryReceiptItemType(inventoryReceipt.receiptType) === "FG"
+      ? "thành phẩm"
+      : "vật tư"
+  const columns = useMemo(
+    () => buildInventoryReceiptDetailItemColumns({ itemNoun }),
+    [itemNoun]
+  )
+
   const table = useTable({
     data: inventoryReceipt.items,
-    columns: itemColumns,
+    columns,
     features: appTableFeatures,
   })
 
@@ -128,14 +152,14 @@ export function InventoryReceiptDetailItemsSection({
     <div className="border-b border-border not-first:border-t">
       <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-semibold tracking-wide text-foreground uppercase sm:px-5">
         <PackageSearch className="size-3.5 text-muted-foreground" />
-        Danh sách vật tư nhập kho
+        Danh sách {itemNoun} nhập kho
       </h3>
 
       {inventoryReceipt.items.length === 0 ? (
         <TableEmpty
           icon={PackageSearch}
-          title="Chưa có vật tư nào"
-          description="Phiếu nhập kho này chưa có dòng vật tư nào."
+          title={`Chưa có ${itemNoun} nào`}
+          description={`Phiếu nhập kho này chưa có dòng ${itemNoun} nào.`}
         />
       ) : (
         <Table>

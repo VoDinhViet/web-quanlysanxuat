@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { useAppForm } from "@/hooks/use-app-form"
-import { useGetMaterialOptions } from "@/features/inventory-receipts/hooks/use-get-material-options"
+import { useGetInventoryReceiptItemOptions } from "@/features/inventory-receipts/hooks/use-get-inventory-receipt-item-options"
 import {
   inventoryReceiptItemDefaultValue,
   inventoryReceiptItemFormSchema,
@@ -25,9 +25,12 @@ type InventoryReceiptItemDialogProps = {
   // `null` = add mode; a row value = edit mode.
   initialValue: InventoryReceiptItemFormValue | null
   onSubmit: (value: InventoryReceiptItemFormValue) => void
+  // "RM" (vật tư) hay "FG" (thành phẩm) — theo `resolveInventoryReceiptItemType(receiptType)`
+  // ở nơi gọi, quyết định combobox tìm trong tập item nào.
+  itemType: "RM" | "FG"
 }
 
-// Chế độ chọn vật tư chung (không theo PO) — dùng chung bởi
+// Chế độ chọn vật tư/thành phẩm chung (không theo PO) — dùng chung bởi
 // create/InventoryReceiptCreateGenericItemsSection.tsx và
 // update/InventoryReceiptUpdateGenericItemsSection.tsx, nên đặt ở `components/` root thay vì
 // dưới `create/` (xem project-and-commands.md, "anything shared across screens ... stays at
@@ -39,6 +42,7 @@ export function InventoryReceiptItemDialog({
   onOpenChange,
   initialValue,
   onSubmit,
+  itemType,
 }: InventoryReceiptItemDialogProps) {
   // Combobox vật tư phải portal popup vào bên trong DOM subtree của dialog này — cùng lý do
   // ComboboxField.tsx đã ghi (Radix FocusScope nuốt click bên ngoài dialog).
@@ -57,6 +61,7 @@ export function InventoryReceiptItemDialog({
           initialValue={initialValue}
           onSubmit={onSubmit}
           onCancel={() => onOpenChange(false)}
+          itemType={itemType}
         />
       </DialogContent>
     </Dialog>
@@ -68,6 +73,7 @@ type InventoryReceiptItemDialogFormProps = {
   initialValue: InventoryReceiptItemFormValue | null
   onSubmit: (value: InventoryReceiptItemFormValue) => void
   onCancel: () => void
+  itemType: "RM" | "FG"
 }
 
 function InventoryReceiptItemDialogForm({
@@ -75,9 +81,11 @@ function InventoryReceiptItemDialogForm({
   initialValue,
   onSubmit,
   onCancel,
+  itemType,
 }: InventoryReceiptItemDialogFormProps) {
   const isEditing = initialValue !== null
-  const material = useGetMaterialOptions()
+  const itemNoun = itemType === "FG" ? "thành phẩm" : "vật tư"
+  const material = useGetInventoryReceiptItemOptions(itemType)
 
   const form = useAppForm({
     defaultValues: initialValue ?? inventoryReceiptItemDefaultValue,
@@ -100,10 +108,10 @@ function InventoryReceiptItemDialogForm({
     >
       <DialogHeader className="gap-1">
         <DialogTitle className="text-base font-semibold">
-          {isEditing ? "Sửa dòng vật tư" : "Thêm dòng vật tư"}
+          {isEditing ? `Sửa dòng ${itemNoun}` : `Thêm dòng ${itemNoun}`}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Thông tin dòng vật tư trong phiếu nhập kho
+          Thông tin dòng {itemNoun} trong phiếu nhập kho
         </DialogDescription>
       </DialogHeader>
 
@@ -113,9 +121,9 @@ function InventoryReceiptItemDialogForm({
             {(field) => (
               <ComboboxField
                 id="inventory-receipt-item-material"
-                label="Vật tư"
+                label={itemType === "FG" ? "Thành phẩm" : "Vật tư"}
                 required
-                placeholder="Tìm mã hoặc tên vật tư..."
+                placeholder={`Tìm mã hoặc tên ${itemNoun}...`}
                 value={field.state.value || undefined}
                 onValueChange={(next) => {
                   field.handleChange(next ?? "")
@@ -144,7 +152,7 @@ function InventoryReceiptItemDialogForm({
                       }
                     : undefined
                 }
-                emptyMessage="Không tìm thấy vật tư"
+                emptyMessage={`Không tìm thấy ${itemNoun}`}
                 container={container}
               />
             )}

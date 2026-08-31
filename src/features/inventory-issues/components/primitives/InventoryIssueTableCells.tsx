@@ -15,9 +15,9 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { InventoryIssuePrintDialog } from "@/features/inventory-issues/components/composites/InventoryIssuePrintDialog"
 import { cancelInventoryIssue } from "@/features/inventory-issues/api/server-functions/cancel-inventory-issue.api"
 import { postInventoryIssue } from "@/features/inventory-issues/api/server-functions/post-inventory-issue.api"
 import { InventoryIssueStatus } from "@/lib/types/inventory-issue.type"
@@ -77,7 +77,6 @@ type InventoryIssueActionsCellProps = {
 export function InventoryIssueActionsCell({
   issue,
 }: InventoryIssueActionsCellProps) {
-  const [printOpen, setPrintOpen] = useState(false)
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null)
   const queryClient = useQueryClient()
   const postInventoryIssueFn = useServerFn(postInventoryIssue)
@@ -108,13 +107,9 @@ export function InventoryIssueActionsCell({
   return (
     <>
       <div className="flex items-center justify-center gap-1.5">
-        <IconButton
-          label="In phiếu"
-          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-          onClick={() => setPrintOpen(true)}
-        >
+        <DisabledAction label="In phiếu">
           <Printer className="size-3.5" />
-        </IconButton>
+        </DisabledAction>
 
         {isDraft && (
           <PermissionGate permission="inventory:update">
@@ -140,12 +135,6 @@ export function InventoryIssueActionsCell({
           </PermissionGate>
         )}
       </div>
-
-      <InventoryIssuePrintDialog
-        open={printOpen}
-        onOpenChange={setPrintOpen}
-        inventoryIssue={issue}
-      />
 
       <AlertDialog
         open={confirmAction !== null}

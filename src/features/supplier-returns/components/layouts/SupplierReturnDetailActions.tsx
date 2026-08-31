@@ -78,10 +78,10 @@ export function SupplierReturnDetailActions({
         </PermissionGate>
       )}
 
-      <Button type="button" variant="outline" onClick={() => window.print()}>
+      <PendingAction label="In phiếu" hint="tính năng sắp có">
         <Printer className="size-4" />
         In phiếu
-      </Button>
+      </PendingAction>
 
       <Dialog open={confirmOpen} onOpenChange={closeConfirm}>
         <DialogContent>

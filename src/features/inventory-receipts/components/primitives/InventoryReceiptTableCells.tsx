@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { InventoryReceiptDetailPrintDialog } from "@/features/inventory-receipts/components/composites/InventoryReceiptDetailPrintDialog"
 import { deleteInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/delete-inventory-receipt.api"
 import { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
 import type {
@@ -86,7 +85,6 @@ type InventoryReceiptActionsCellProps = {
 export function InventoryReceiptActionsCell({
   receipt,
 }: InventoryReceiptActionsCellProps) {
-  const [printOpen, setPrintOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const queryClient = useQueryClient()
   const deleteInventoryReceiptFn = useServerFn(deleteInventoryReceipt)
@@ -144,7 +142,7 @@ export function InventoryReceiptActionsCell({
               </Link>
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => setPrintOpen(true)}>
+            <DropdownMenuItem disabled title="Tính năng sắp có">
               <Printer className="mr-2 size-4" />
               In phiếu nhập kho
             </DropdownMenuItem>
@@ -177,13 +175,6 @@ export function InventoryReceiptActionsCell({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {/* Print Dialog */}
-      <InventoryReceiptDetailPrintDialog
-        open={printOpen}
-        onOpenChange={setPrintOpen}
-        inventoryReceipt={receipt}
-      />
 
       {/* Delete Confirm Dialog */}
       <Dialog

@@ -1,7 +1,7 @@
 import type { ClientRef } from "@/lib/types/client.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
-import type { WarehouseRef } from "@/lib/types/warehouse.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 // PENDING_RECEIPT/PENDING_IQC sit between DRAFT and POSTED — reached via `confirm`
 // (InventoryReceiptsController's `POST :id/confirm`), which the create-from-PO wizard calls
@@ -57,7 +57,6 @@ export const InventoryReceiptType = {
   PURCHASE: "PURCHASE",
   PRODUCTION: "PRODUCTION",
   RETURN: "RETURN",
-  ADJUSTMENT: "ADJUSTMENT",
 } as const
 
 export type InventoryReceiptType =
@@ -68,8 +67,29 @@ export const inventoryReceiptTypeLabels: Record<InventoryReceiptType, string> =
     [InventoryReceiptType.PURCHASE]: "Mua hàng",
     [InventoryReceiptType.PRODUCTION]: "Từ sản xuất",
     [InventoryReceiptType.RETURN]: "Từ khách hàng",
-    [InventoryReceiptType.ADJUSTMENT]: "Điều chỉnh",
   }
+
+export type InventoryReceiptItemType = "RM" | "FG"
+
+export const inventoryReceiptItemTypeLabels: Record<
+  InventoryReceiptItemType,
+  string
+> = {
+  RM: "Vật tư",
+  FG: "Thành phẩm",
+}
+
+// Loại vật phẩm hợp lệ cho combobox chọn dòng — PURCHASE luôn là nguyên vật liệu mua về (RM);
+// RETURN/PRODUCTION luôn là thành phẩm (khách trả hàng đã mua / hàng ra từ Job sản xuất), không
+// receiptType nào trộn cả hai loại trên cùng 1 phiếu. Dùng bởi
+// InventoryReceiptCreateGenericItemsSection.tsx/InventoryReceiptUpdateGenericItemsSection.tsx để
+// truyền đúng `type` xuống GET /items/options — không dùng `ItemType` (chỉ FG/WIP, item.type.ts)
+// vì RM không nằm trong union đó.
+export function resolveInventoryReceiptItemType(
+  receiptType: InventoryReceiptType
+): InventoryReceiptItemType {
+  return receiptType === InventoryReceiptType.PURCHASE ? "RM" : "FG"
+}
 
 // Nhãn phân loại tài sản — chọn tay độc lập, không tách inventory_balances theo chủ sở hữu, xem
 // docs/domains/inventory.md (be-quanlysanxuat) mục "Nhập từ khách hàng".
@@ -138,6 +158,7 @@ export type InventoryReceiptPurchaseOrderItemRef = {
 export type InventoryReceiptItem = {
   id: string
   item: ItemRef
+  unit: Unit
   quantity: number
   unitPrice: number | null
   note: string | null
@@ -160,7 +181,6 @@ export type InventoryReceiptItemDetail = InventoryReceiptItem & {
 export type InventoryReceipt = {
   id: string
   code: string
-  warehouse: WarehouseRef
   receiptType: InventoryReceiptType
   assetType: InventoryReceiptAssetType
   status: InventoryReceiptStatus

@@ -3,7 +3,10 @@ import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
-import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
+import {
+  InventoryReceiptItemTypeBadge,
+  InventoryReceiptStatusBadge,
+} from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import {
   InventoryReceiptActionsCell,
   InventoryReceiptSourceCell,
@@ -56,10 +59,13 @@ export const inventoryReceiptsColumns = col.columns([
     cell: ({ getValue }) => inventoryReceiptTypeLabels[getValue()],
   }),
 
-  col.accessor("warehouse", {
-    header: "Kho",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => getValue().name,
+  col.accessor("receiptType", {
+    id: "itemType",
+    header: "Loại hàng",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ getValue }) => (
+      <InventoryReceiptItemTypeBadge receiptType={getValue()} />
+    ),
   }),
 
   col.display({

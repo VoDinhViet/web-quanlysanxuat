@@ -1,5 +1,5 @@
 import type { ItemRef } from "@/lib/types/item.type"
-import type { WarehouseRef } from "@/lib/types/warehouse.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 // Shares the backend's `InventoryDocumentStatus` enum at the DB/DTO level with
 // inventory-receipts, but the issues controller has no `confirm` step — an issue only ever
@@ -37,7 +37,6 @@ export const InventoryIssueType = {
   PRODUCTION: "PRODUCTION",
   SALES: "SALES",
   RETURN: "RETURN",
-  ADJUSTMENT: "ADJUSTMENT",
 } as const
 
 export type InventoryIssueType =
@@ -47,7 +46,6 @@ export const inventoryIssueTypeLabels: Record<InventoryIssueType, string> = {
   [InventoryIssueType.PRODUCTION]: "Sản xuất",
   [InventoryIssueType.SALES]: "Bán hàng",
   [InventoryIssueType.RETURN]: "Trả hàng",
-  [InventoryIssueType.ADJUSTMENT]: "Điều chỉnh",
 }
 
 /** Mirrors the backend's `UserRefResDto` as nested on an issue row — declared locally
@@ -88,6 +86,7 @@ export type InventoryIssueDepartmentRef = {
 export type InventoryIssueItem = {
   id: string
   item: ItemRef
+  unit: Unit
   quantity: number
   orderItemId: string | null
   note: string | null
@@ -99,7 +98,6 @@ export type InventoryIssueItem = {
 export type InventoryIssue = {
   id: string
   code: string
-  warehouse: WarehouseRef
   issueType: InventoryIssueType
   status: InventoryIssueStatus
   issueDate: string

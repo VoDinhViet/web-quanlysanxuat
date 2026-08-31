@@ -1,7 +1,7 @@
-import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { Diskette, MenuDots, Printer } from "@solar-icons/react"
 
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { IqcPrintDialog } from "@/features/iqc/components/composites/IqcPrintDialog"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 
@@ -30,21 +29,16 @@ export function IqcDetailActions({
   isLocked,
   isPending,
 }: IqcDetailActionsProps) {
-  const [printOpen, setPrintOpen] = useState(false)
   const hasOtherLinks =
     !!iqc.inventoryReceipt || !!iqc.purchaseOrder || !!iqc.supplierReturn
 
   return (
     <div className="flex flex-col items-end gap-2">
       <div className="flex flex-wrap items-center gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setPrintOpen(true)}
-        >
+        <PendingAction label="In phiếu" hint="tính năng sắp có">
           <Printer className="size-4" />
           In phiếu
-        </Button>
+        </PendingAction>
 
         {hasOtherLinks && (
           <DropdownMenu>
@@ -117,8 +111,6 @@ export function IqcDetailActions({
           Đã chốt đường trả NCC — không sửa được kết quả IQC nữa.
         </p>
       )}
-
-      <IqcPrintDialog open={printOpen} onOpenChange={setPrintOpen} iqc={iqc} />
     </div>
   )
 }
