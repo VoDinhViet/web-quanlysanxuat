@@ -1,20 +1,16 @@
 // Domain types for Gia công ngoài — Xuất đi gia công (OS-OUT).
 
-import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
-// Re-exported so call sites can import the shared `inventory_document_status` enum straight from
-// this domain's own type file, same as outsourcing-receipt.type.ts.
-export { InventoryDocumentStatus }
-
-// Khớp đúng `OutsourcingOrderProgress` bên BE (be-quanlysanxuat/src/api/outsourcing-orders/
-// outsourcing-orders.constant.ts + OutsourcingOrdersService.resolveOrderProgress) — không phải
-// DB `status` (chỉ DRAFT/POSTED/CANCELLED, quá thô cho UI). BE không tính "quá hạn" thành 1 giá
-// trị riêng nên không có OVERDUE.
+// Khớp `OutsourcingOrderStatus` bên BE (be-quanlysanxuat/src/database/schemas/inventory/
+// outsourcing-orders.ts) — vừa là trạng thái chứng từ vừa là tiến độ nhận hàng, gộp làm một cột
+// DB (`docs/decisions/outsourcing-order-status-progress-merge.md` phía be-quanlysanxuat), không
+// còn 2 khái niệm tách riêng. `SENT` set thẳng lúc tạo (không có nháp,
+// `docs/decisions/outsourcing-no-draft.md`) — không có DRAFT trong enum này. BE cũng không tính
+// "quá hạn" thành 1 giá trị riêng nên không có OVERDUE.
 export const OutsourcingOrderStatus = {
-  DRAFT: "DRAFT",
   SENT: "SENT",
   PARTIAL: "PARTIAL",
   WAITING_QC: "WAITING_QC",
@@ -29,7 +25,6 @@ export const outsourcingOrderStatusLabels: Record<
   OutsourcingOrderStatus,
   string
 > = {
-  [OutsourcingOrderStatus.DRAFT]: "Nháp",
   [OutsourcingOrderStatus.SENT]: "Đang gia công",
   [OutsourcingOrderStatus.PARTIAL]: "Về 1 phần",
   [OutsourcingOrderStatus.WAITING_QC]: "Chờ QC",
@@ -37,43 +32,29 @@ export const outsourcingOrderStatusLabels: Record<
   [OutsourcingOrderStatus.CANCELLED]: "Đã hủy",
 }
 
-// Own label map for the raw DB status (chỉ DRAFT/POSTED/CANCELLED) — distinct copy from
-// `outsourcingOrderStatusLabels` (progress), same idiom as `outsourcingReceiptStatusLabels` in
-// outsourcing-receipt.type.ts. Used by the list table's Trạng thái column: `PageOutsourcingOrderResDto`
-// (GET /outsourcing-orders) no longer computes `progress` — only the detail endpoint
-// (GET /outsourcing-orders/:id, OutsourcingOrderDetail below) still returns it.
-export const outsourcingOrderDocStatusLabels: Record<
-  InventoryDocumentStatus,
+// Mô tả dài cho Legend (OutsourcingOrderLegend.tsx) — cùng khuôn `purchaseOrderProgressDescriptions`
+// (purchase-order.type.ts).
+export const outsourcingOrderStatusDescriptions: Record<
+  OutsourcingOrderStatus,
   string
 > = {
-  [InventoryDocumentStatus.DRAFT]: "Nháp",
-  [InventoryDocumentStatus.POSTED]: "Đã gửi",
-  [InventoryDocumentStatus.CANCELLED]: "Đã huỷ",
-}
-
-export const outsourcingOrderDocStatusDescriptions: Record<
-  InventoryDocumentStatus,
-  string
-> = {
-  [InventoryDocumentStatus.DRAFT]: "Phiếu chưa xác nhận gửi.",
-  [InventoryDocumentStatus.POSTED]: "Đã xác nhận gửi hàng.",
-  [InventoryDocumentStatus.CANCELLED]: "Phiếu đã bị hủy.",
+  [OutsourcingOrderStatus.SENT]: "Đã gửi, chưa nhận được dòng nào",
+  [OutsourcingOrderStatus.PARTIAL]: "Đã nhận một phần, còn dòng chưa đủ",
+  [OutsourcingOrderStatus.WAITING_QC]: "Đã nhận đủ, còn IQC chưa xong",
+  [OutsourcingOrderStatus.COMPLETED]: "Đã nhận đủ, IQC đã xong (hoặc không cần IQC)",
+  [OutsourcingOrderStatus.CANCELLED]: "Phiếu đã bị hủy",
 }
 
 // Mirrors PageOutsourcingOrderResDto (GET /outsourcing-orders, danh sách) 1:1 — riêng biệt với
 // OutsourcingOrderDetail bên dưới (không compose type này lên cái kia): hai endpoint khác nhau
-// thật sự. BE tính totalQuantity/receivedQuantity/remainingQuantity thẳng bằng SQL subquery cho
-// danh sách; endpoint chi tiết hiện không có 3 field này (cũng không có warehouse/progress/items
-// — query đã bị rút gọn, xem comment tại OutsourcingOrderDetail). `status` là DB status thật
-// (DRAFT/POSTED/CANCELLED), không phải business progress `OutsourcingOrderStatus` ở trên — BE
-// list vẫn chưa trả progress.
+// thật sự.
 export type OutsourcingOrder = {
   id: string
   code: string // e.g. OS-OUT-0001
   supplier: SupplierRef
   sendDate: string
   expectedReturnDate: string | null // có thể chưa đặt
-  status: InventoryDocumentStatus
+  status: OutsourcingOrderStatus
   note: string | null
   creatorBy: UserRef | null
   totalQuantity: number // Tổng SL gửi mọi dòng
@@ -104,17 +85,19 @@ export type OutsourcingOrderItem = {
 }
 
 // Mirrors OutsourcingOrderResDto (GET /outsourcing-orders/:id) — riêng biệt với OutsourcingOrder
-// ở trên (xem comment tại đó). BE hiện chưa join warehouse và chưa tính lại progress/totalQuantity/
-// items cho endpoint chi tiết (query đã được rút gọn, chờ bổ sung lại) — trang chi tiết
-// (OutsourcingOrderDetailHeader/ItemsCard) tự xử lý phần thiếu, không giả định các field này có
-// mặt. `posterBy`/`postedAt` null tới khi `status` đạt POSTED.
+// ở trên (xem comment tại đó). BE hiện chưa join warehouse/items cho endpoint chi tiết (trang chi
+// tiết đọc items qua route riêng, `GET /outsourcing-orders/:id/items`). `posterBy`/`postedAt` luôn
+// có giá trị — mọi phiếu đều `postedAt` ngay lúc tạo, không có trạng thái nháp.
 export type OutsourcingOrderDetail = {
   id: string
   code: string
   supplier: SupplierRef
   sendDate: string
   expectedReturnDate: string | null
-  status: InventoryDocumentStatus
+  status: OutsourcingOrderStatus
+  totalQuantity: number
+  receivedQuantity: number
+  remainingQuantity: number
   note: string | null
   creatorBy: UserRef | null
   posterBy: UserRef | null

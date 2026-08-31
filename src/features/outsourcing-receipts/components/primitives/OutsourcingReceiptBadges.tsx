@@ -11,9 +11,9 @@ type BadgeStyle = {
 }
 
 // Badge cho raw DB status (POSTED/CANCELLED — DRAFT không còn phát sinh, docs/decisions/
-// outsourcing-no-draft.md phía be-quanlysanxuat) — BE bỏ hẳn `progress` (không còn dữ liệu để
-// tính "Về 1 phần"/"Chờ QC"/"Hoàn thành"), dùng thẳng status thay thế. Mirror
-// outsourcingOrderDocStatusStyles/OutsourcingOrderDocStatusBadge bên OS-OUT.
+// outsourcing-no-draft.md phía be-quanlysanxuat) — OS-IN không có khái niệm tiến độ riêng như
+// OS-OUT (docs/decisions/outsourcing-order-status-progress-merge.md phía be-quanlysanxuat, chỉ áp
+// dụng cho outsourcing_orders), status 2 giá trị này là đủ.
 export const outsourcingReceiptDocStatusStyles: Record<
   InventoryDocumentStatus,
   BadgeStyle

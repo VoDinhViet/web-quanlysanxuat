@@ -19,7 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { cancelOutsourcingOrder } from "@/features/outsourcing-orders/api/server-functions/cancel-outsourcing-order.api"
-import { InventoryDocumentStatus } from "@/lib/types/outsourcing-order.type"
+import { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderDetailActionsProps = {
@@ -29,8 +29,9 @@ type OutsourcingOrderDetailActionsProps = {
 type ConfirmAction = "cancel" | null
 
 // BE bỏ hẳn trạng thái nháp (docs/decisions/outsourcing-no-draft.md phía be-quanlysanxuat) —
-// POST / giờ POSTED ngay, PATCH/DELETE/:id/post bị xoá hẳn. Chỉ còn "Hủy phiếu" (đảo bút toán nếu
-// đã POSTED, chặn nếu còn OS-IN chưa hủy) — dữ liệu DRAFT cũ (nếu còn) vẫn hủy được bình thường.
+// POST / giờ SENT ngay, PATCH/DELETE/:id/post bị xoá hẳn. Chỉ còn "Hủy phiếu" (đảo bút toán, chặn
+// nếu còn OS-IN chưa hủy) — hiện khi chưa CANCELLED (mọi trạng thái khác đều đã trừ tồn ngay lúc
+// tạo, docs/decisions/outsourcing-order-status-progress-merge.md).
 export function OutsourcingOrderDetailActions({
   order,
 }: OutsourcingOrderDetailActionsProps) {
@@ -50,7 +51,7 @@ export function OutsourcingOrderDetailActions({
     },
   })
 
-  const isCancelled = order.status === InventoryDocumentStatus.CANCELLED
+  const isCancelled = order.status === OutsourcingOrderStatus.CANCELLED
 
   const closeConfirm = (open: boolean) => {
     if (!open) {
@@ -98,25 +99,13 @@ export function OutsourcingOrderDetailActions({
             <DialogHeader>
               <DialogTitle>Hủy phiếu gia công ngoài</DialogTitle>
               <DialogDescription>
-                {order.status === InventoryDocumentStatus.POSTED ? (
-                  <>
-                    Phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
-                      {order.code}
-                    </span>{" "}
-                    đã trừ tồn kho xuất — hủy sẽ đảo ngược bút toán và cộng lại
-                    tồn kho đã trừ. Nếu phiếu đã có OS-IN (nhận hàng) liên kết
-                    chưa hủy, thao tác sẽ thất bại.
-                  </>
-                ) : (
-                  <>
-                    Bạn chắc chắn muốn hủy phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
-                      {order.code}
-                    </span>
-                    ? Phiếu chưa trừ tồn nên không ảnh hưởng số liệu.
-                  </>
-                )}
+                Phiếu{" "}
+                <span className="font-mono font-semibold text-foreground">
+                  {order.code}
+                </span>{" "}
+                đã trừ tồn kho xuất — hủy sẽ đảo ngược bút toán và cộng lại tồn
+                kho đã trừ. Nếu phiếu đã có OS-IN (nhận hàng) liên kết chưa
+                hủy, thao tác sẽ thất bại.
               </DialogDescription>
             </DialogHeader>
 

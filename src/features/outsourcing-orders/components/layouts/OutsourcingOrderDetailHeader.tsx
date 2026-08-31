@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { OutsourcingOrderDetailActions } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailActions"
-import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
+import { OutsourcingOrderStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderDetailHeaderProps = {
@@ -13,9 +13,8 @@ type OutsourcingOrderDetailHeaderProps = {
 }
 
 // Identity row + at-a-glance meta grid + header-level actions — same shell as
-// OutsourcingReceiptDetailHeader.tsx. Badge dùng `status` (DB status thô) — endpoint chi tiết
-// hiện chưa tính `progress` (xem outsourcing-order.type.ts), cùng badge cột Trạng thái của bảng
-// danh sách.
+// OutsourcingReceiptDetailHeader.tsx. Badge dùng `status` (đã gộp tiến độ nhận hàng), cùng badge
+// cột Trạng thái của bảng danh sách.
 export function OutsourcingOrderDetailHeader({
   order,
 }: OutsourcingOrderDetailHeaderProps) {
@@ -42,7 +41,7 @@ export function OutsourcingOrderDetailHeader({
           <span className="font-mono text-lg font-bold text-foreground">
             {order.code}
           </span>
-          <OutsourcingOrderDocStatusBadge status={order.status} />
+          <OutsourcingOrderStatusBadge status={order.status} />
         </div>
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3">

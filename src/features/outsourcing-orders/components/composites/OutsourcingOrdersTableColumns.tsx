@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { OutsourcingOrderDocStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
+import { OutsourcingOrderStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
 import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderTableCells"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
@@ -77,9 +77,7 @@ export const outsourcingOrdersColumns = [
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => (
-      <OutsourcingOrderDocStatusBadge status={getValue()} />
-    ),
+    cell: ({ getValue }) => <OutsourcingOrderStatusBadge status={getValue()} />,
   }),
 
   col.accessor("expectedReturnDate", {

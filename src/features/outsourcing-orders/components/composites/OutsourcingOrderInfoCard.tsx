@@ -4,21 +4,19 @@ import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailSectionCard"
-import { InventoryDocumentStatus } from "@/lib/types/outsourcing-order.type"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderInfoCardProps = {
   order: OutsourcingOrderDetail
 }
 
-// Ghi chú + người tạo, cộng người/ngày xác nhận gửi khi phiếu đã qua DRAFT — cùng khuôn
-// OutsourcingReceiptInfoCard.tsx's `isPosted &&` block. NCC/kho xuất/ngày đã có ở header's meta
-// grid nên không lặp lại ở đây.
+// Ghi chú + người tạo + người/ngày xác nhận gửi — mọi phiếu đều có `postedAt` ngay lúc tạo, không
+// có trạng thái nháp (docs/decisions/outsourcing-no-draft.md phía be-quanlysanxuat), nên không cần
+// điều kiện ẩn/hiện như OutsourcingReceiptInfoCard.tsx's `isPosted &&` block. NCC/kho xuất/ngày đã
+// có ở header's meta grid nên không lặp lại ở đây.
 export function OutsourcingOrderInfoCard({
   order,
 }: OutsourcingOrderInfoCardProps) {
-  const isDraft = order.status === InventoryDocumentStatus.DRAFT
-
   return (
     <OutsourcingOrderDetailSectionCard
       icon={Info}
@@ -32,26 +30,20 @@ export function OutsourcingOrderInfoCard({
           label="Người tạo"
           value={order.creatorBy?.fullName ?? "—"}
         />
-        {!isDraft && (
-          <>
-            <InfoTile
-              icon={User}
-              label="Người xác nhận"
-              value={order.posterBy?.fullName ?? "—"}
-            />
-            <InfoTile
-              icon={Calendar}
-              label="Ngày xác nhận"
-              value={
-                order.postedAt
-                  ? DateTime.fromISO(order.postedAt).toFormat(
-                      "dd/MM/yyyy HH:mm"
-                    )
-                  : "—"
-              }
-            />
-          </>
-        )}
+        <InfoTile
+          icon={User}
+          label="Người xác nhận"
+          value={order.posterBy?.fullName ?? "—"}
+        />
+        <InfoTile
+          icon={Calendar}
+          label="Ngày xác nhận"
+          value={
+            order.postedAt
+              ? DateTime.fromISO(order.postedAt).toFormat("dd/MM/yyyy HH:mm")
+              : "—"
+          }
+        />
       </dl>
     </OutsourcingOrderDetailSectionCard>
   )

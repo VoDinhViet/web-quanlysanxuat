@@ -14,21 +14,15 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import {
-  InventoryDocumentStatus,
-  outsourcingOrderDocStatusLabels,
-} from "@/lib/types/outsourcing-order.type"
+import { outsourcingOrderStatusLabels } from "@/lib/types/outsourcing-order.type"
+import type { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
+import { buildOptionsFromLabels } from "@/lib/utils"
 
+// 5 giá trị (status đã gộp tiến độ, docs/decisions/outsourcing-order-status-progress-merge.md phía
+// be-quanlysanxuat) — khuôn PurchaseOrdersTableFilter.tsx's `statusFilterOptions`.
 const statusOptions = [
   { value: "all", label: "Tất cả trạng thái" },
-  {
-    value: InventoryDocumentStatus.POSTED,
-    label: outsourcingOrderDocStatusLabels[InventoryDocumentStatus.POSTED],
-  },
-  {
-    value: InventoryDocumentStatus.CANCELLED,
-    label: outsourcingOrderDocStatusLabels[InventoryDocumentStatus.CANCELLED],
-  },
+  ...buildOptionsFromLabels(outsourcingOrderStatusLabels),
 ]
 
 export function OutsourcingOrdersTableFilter() {
@@ -52,12 +46,7 @@ export function OutsourcingOrdersTableFilter() {
     void navigate({
       search: (prev) => ({
         ...prev,
-        status:
-          value === "all"
-            ? undefined
-            : (value as
-                | InventoryDocumentStatus.POSTED
-                | InventoryDocumentStatus.CANCELLED),
+        status: value === "all" ? undefined : (value as OutsourcingOrderStatus),
         page: 1,
       }),
     })
@@ -117,7 +106,7 @@ export function OutsourcingOrdersTableFilter() {
         </div>
       </div>
 
-      <div className="w-40 space-y-1.5">
+      <div className="w-44 space-y-1.5">
         <Label
           htmlFor="os-out-status"
           className="text-[11px] font-medium text-muted-foreground"
