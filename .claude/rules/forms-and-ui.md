@@ -3,17 +3,20 @@
 - TanStack Form + Zod as the single schema source: `noValidate` on `<form>`, manual
   `preventDefault`/`stopPropagation` in the submit handler, derive form types with
   `z.infer<typeof schema>`, gate error styling on `field.state.meta.isTouched` (see
-  `src/components/shared/composites/AppFormFields.tsx`). Two deliberate react-hook-form + `Field`
-  (`src/components/ui/field.tsx`) trials, neither the pattern for a new form yet:
+  `src/components/shared/composites/AppFormFields.tsx`). Deliberate react-hook-form + `Field`
+  (`src/components/ui/field.tsx`) trials, not yet the pattern for a new form:
   `src/features/auth/components/sections/LoginForm.tsx` (3 flat fields, the original trial) and
-  `src/features/users/components/sections/CreateUserForm.tsx` (17 fields, a nested optional
-  object, dependent selects, localStorage draft, file upload — a harder form chosen specifically
-  to stress-test RHF beyond LoginForm's small surface). Both bind every field with a plain inline
-  `<Controller name="..." control={form.control} render={({field, fieldState}) => ...}>` — no
-  shared RHF field kit; each `Field`/`FieldLabel`/`FieldError` block is written out at the call
-  site, same idiom as `LoginForm.tsx`. `UpdateUserForm.tsx` and its sections are unchanged (still
-  TanStack Form), so `users` is a deliberate mixed feature for comparison, not evidence either
-  form library won.
+  the entire `users` feature — `CreateUserForm.tsx` and `UpdateUserForm.tsx` (17 fields, a nested
+  optional object, dependent selects, file upload; `CreateUserForm.tsx` also has a localStorage
+  draft — a harder form chosen specifically to stress-test RHF beyond LoginForm's small surface).
+  Every field binds with a plain inline `<Controller name="..." control={form.control}
+render={({field, fieldState}) => ...}>` — no shared RHF field kit; each
+  `Field`/`FieldLabel`/`FieldError` block is written out at the call site, same idiom as
+  `LoginForm.tsx`. `Create*Section.tsx` and `Update*Section.tsx` stay separate component trees
+  per flow — same "create and update evolve independently" reasoning as their schemas (see
+  "Server functions" in `architecture.md`) — even though most of their markup is copied 1:1
+  between the two; this is still not evidence either form library won: the rest of the repo
+  (~50 forms) stays on TanStack Form until a conclusion is reached.
 - Form schemas mirror the backend DTO's shape, including nested optional objects
   (e.g. `credential: createCredentialSchema.optional()` in
   `create-user.schema.ts`) — a toggle-gated section stores the nested object or

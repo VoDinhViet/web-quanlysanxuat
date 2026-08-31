@@ -203,11 +203,9 @@ export function InventoryMaterialsTableFilter() {
           <div className="space-y-1.5">
             <FilterLabel
               label="Xem tồn tại ngày"
-              htmlFor="inventory-materials-as-of-date"
               tooltip="Tồn kho tại thời điểm 23:59 ngày đã chọn — để trống là xem tồn hiện tại"
             />
             <DatePicker
-              id="inventory-materials-as-of-date"
               value={search.asOfDate ?? ""}
               onChange={handleAsOfDateChange}
             />

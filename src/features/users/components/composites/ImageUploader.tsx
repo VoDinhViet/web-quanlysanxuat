@@ -110,11 +110,11 @@ export function ImageUploader({
             <Gallery className="size-10 text-muted-foreground" />
           )}
 
-          {isPending ? (
+          {isPending && (
             <div className="absolute inset-0 flex items-center justify-center rounded-full bg-background/70">
               <Loader2 className="size-6 animate-spin text-muted-foreground" />
             </div>
-          ) : null}
+          )}
         </div>
 
         <span
@@ -130,9 +130,9 @@ export function ImageUploader({
         JPG, PNG, WEBP, GIF · tối đa 5MB
       </p>
 
-      {errorMessage ? (
+      {errorMessage && (
         <p className="max-w-40 text-xs text-destructive">{errorMessage}</p>
-      ) : null}
+      )}
     </div>
   )
 }

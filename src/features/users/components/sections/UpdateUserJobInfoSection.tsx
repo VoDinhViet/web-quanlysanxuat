@@ -1,129 +1,281 @@
 import { useEffect, useMemo } from "react"
-import { useField } from "@tanstack/react-form"
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { Controller, useWatch } from "react-hook-form"
+import { useQuery } from "@tanstack/react-query"
+import type { UseFormReturn } from "react-hook-form"
 
-import { withForm } from "@/hooks/use-app-form"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { departmentQueryOptions } from "@/features/departments/api"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { positionsQueryOptions } from "@/features/users/api/options"
-import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
+import type { UpdateUserSchema } from "@/features/users/schemas/update-user.schema"
 
 const employeeStatusOptions = buildOptionsFromLabels(employeeStatusLabels)
 
-export const UpdateUserJobInfoSection = withForm({
-  defaultValues: updateUserFormDefaultValues,
-  props: {
-    disabled: false,
-  },
-  render: function Render({ form, disabled }) {
-    // The route loader already prefetches this — resolves synchronously off cache.
-    const { data: departments } = useSuspenseQuery(
-      departmentOptionsQueryOptions()
-    )
+type UpdateUserJobInfoSectionProps = {
+  form: UseFormReturn<UpdateUserSchema>
+  disabled: boolean
+}
 
-    const departmentId = useField({ form, name: "departmentId" }).state.value
-    const positionId = useField({ form, name: "positionId" }).state.value
-    // Chức vụ phụ thuộc phòng ban (BE `ensurePositionInDepartment` bắt buộc cặp khớp nhau). Route
-    // loader đã prefetch đúng cặp ban đầu (`positionsQueryOptions(user.department.id)`), nên lần
-    // render đầu resolve ngay từ cache — chỉ đổi phòng ban mới thực sự phải tải lại.
-    const positionsQuery = useQuery({
-      ...positionsQueryOptions(departmentId),
-      enabled: !!departmentId,
-    })
-    const positions = useMemo(
-      () => positionsQuery.data ?? [],
-      [positionsQuery.data]
-    )
+// Each field is a plain <Controller> render-prop, same idiom as CreateUserJobInfoSection.tsx —
+// no shared RHF field kit (see forms-and-ui.md).
+export function UpdateUserJobInfoSection({
+  form,
+  disabled,
+}: UpdateUserJobInfoSectionProps) {
+  // The route loader already prefetches this, so `isPending` resolves to `false` on the very
+  // first render off cache — kept as a plain `useQuery` (not `useSuspenseQuery`) so the field
+  // degrades gracefully with its own "Đang tải..." state instead of suspending the whole page
+  // if that ever weren't true.
+  const departmentsQuery = useQuery(departmentQueryOptions())
+  const departments = departmentsQuery.data ?? []
 
-    // Đổi phòng ban thì chức vụ đang chọn không còn hợp lệ — xoá để không gửi lên cặp lệch
-    // (BE ném `position.error.department_mismatch`). Vô hại ở lần render đầu vì `positions`
-    // đã chứa đúng `positionId` ban đầu (prefetch theo cùng phòng ban).
-    useEffect(() => {
-      if (
-        positionId &&
-        positions.length > 0 &&
-        !positions.some((position) => position.id === positionId)
-      ) {
-        form.setFieldValue("positionId", "")
-      }
-    }, [positions, positionId, form])
+  const departmentId = useWatch({
+    control: form.control,
+    name: "departmentId",
+  })
+  const positionId = useWatch({ control: form.control, name: "positionId" })
+  // Chức vụ phụ thuộc phòng ban (BE `ensurePositionInDepartment` bắt buộc cặp khớp nhau). Route
+  // loader đã prefetch đúng cặp ban đầu (`positionsQueryOptions(user.department.id)`), nên lần
+  // render đầu resolve ngay từ cache — chỉ đổi phòng ban mới thực sự phải tải lại.
+  const positionsQuery = useQuery({
+    ...positionsQueryOptions(departmentId),
+    enabled: !!departmentId,
+  })
+  const positions = useMemo(
+    () => positionsQuery.data ?? [],
+    [positionsQuery.data]
+  )
+  const positionOptions = buildSelectOptions(positions)
 
-    return (
-      <div>
-        <div className="px-4 py-4 sm:px-5">
-          <h2 className="font-heading text-base font-semibold text-foreground">
-            Thông tin công việc
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Phân công và tình trạng làm việc
-          </p>
-        </div>
+  // Đổi phòng ban thì chức vụ đang chọn không còn hợp lệ — xoá để không gửi lên cặp lệch
+  // (BE ném `position.error.department_mismatch`). Vô hại ở lần render đầu vì `positions`
+  // đã chứa đúng `positionId` ban đầu (prefetch theo cùng phòng ban).
+  useEffect(() => {
+    if (
+      positionId &&
+      positions.length > 0 &&
+      !positions.some((position) => position.id === positionId)
+    ) {
+      form.setValue("positionId", "")
+    }
+  }, [positions, positionId, form])
 
-        <div className="px-4 pb-5 sm:px-5">
-          <div className="space-y-5">
-            <form.AppField name="departmentId">
-              {(field) => (
-                <field.SelectField
-                  label="Phòng ban"
-                  required
-                  placeholder="Chọn phòng ban"
-                  options={buildSelectOptions(departments)}
-                  disabled={disabled}
-                />
-              )}
-            </form.AppField>
+  return (
+    <div>
+      <div className="px-4 py-4 sm:px-5">
+        <h2 className="font-heading text-base font-semibold text-foreground">
+          Thông tin công việc
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Phân công và tình trạng làm việc
+        </p>
+      </div>
 
-            <form.AppField name="positionId">
-              {(field) => (
-                <field.SelectField
-                  label="Chức vụ"
-                  required
-                  placeholder={
-                    departmentId ? "Chọn chức vụ" : "Chọn phòng ban trước"
+      <div className="px-4 pb-5 sm:px-5">
+        <div className="space-y-5">
+          <Controller
+            control={form.control}
+            name="departmentId"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel
+                  htmlFor={field.name}
+                  className="text-xs font-medium text-foreground"
+                >
+                  Phòng ban <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={disabled || departmentsQuery.isPending}
+                >
+                  <SelectTrigger
+                    id={field.name}
+                    onBlur={field.onBlur}
+                    aria-invalid={!!fieldState.error}
+                    className="h-9 w-full bg-background text-xs"
+                  >
+                    <SelectValue
+                      placeholder={
+                        departmentsQuery.isFetching
+                          ? "Đang tải..."
+                          : "Chọn phòng ban"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {departments.length === 0 ? (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        Không có dữ liệu
+                      </div>
+                    ) : (
+                      buildSelectOptions(departments).map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value}
+                          className="text-xs"
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="positionId"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel
+                  htmlFor={field.name}
+                  className="text-xs font-medium text-foreground"
+                >
+                  Chức vụ <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Select
+                  // While positions for the current department are still loading, the field's
+                  // stored value can be a stale id from the previous department (the mismatch
+                  // effect below only clears it once the new list has loaded) — masking it to
+                  // "" here forces the placeholder to render "Đang tải..." instead of Radix
+                  // showing a blank trigger for a value that matches no item yet.
+                  value={positionsQuery.isPending ? "" : field.value}
+                  onValueChange={field.onChange}
+                  disabled={
+                    disabled || !departmentId || positionsQuery.isPending
                   }
-                  options={buildSelectOptions(positions)}
-                  disabled={disabled || !departmentId}
-                  // `useQuery({enabled: false})` reports `isPending: true` even when idle — gate
-                  // on `departmentId` too so "Chọn phòng ban trước" doesn't get overridden.
-                  isPending={!!departmentId && positionsQuery.isPending}
-                />
-              )}
-            </form.AppField>
+                >
+                  <SelectTrigger
+                    id={field.name}
+                    onBlur={field.onBlur}
+                    aria-invalid={!!fieldState.error}
+                    className="h-9 w-full bg-background text-xs"
+                  >
+                    <SelectValue
+                      placeholder={
+                        // `useQuery({enabled: false})` reports `isPending: true` even when idle
+                        // (no department chosen yet) — gate on `departmentId` too so "Chọn
+                        // phòng ban trước" doesn't get overridden by "Đang tải...".
+                        !departmentId
+                          ? "Chọn phòng ban trước"
+                          : positionsQuery.isPending
+                            ? "Đang tải..."
+                            : "Chọn chức vụ"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {positionOptions.length === 0 ? (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        Không có dữ liệu
+                      </div>
+                    ) : (
+                      positionOptions.map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value}
+                          className="text-xs"
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
 
-            <form.AppField name="hireDate">
-              {(field) => (
-                <field.DateField
-                  label="Ngày vào làm"
-                  required
+          <Controller
+            control={form.control}
+            name="hireDate"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel className="text-xs font-medium text-foreground">
+                  Ngày vào làm <span className="text-destructive">*</span>
+                </FieldLabel>
+                <DatePicker
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
                   disabled={disabled}
                 />
-              )}
-            </form.AppField>
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
 
-            <form.AppField name="note">
-              {(field) => (
-                <field.TextareaField
-                  label="Ghi chú"
+          <Controller
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <Field>
+                <FieldLabel
+                  htmlFor={field.name}
+                  className="text-xs font-medium text-foreground"
+                >
+                  Ghi chú
+                </FieldLabel>
+                <Textarea
+                  {...field}
+                  id={field.name}
                   placeholder="Nhập ghi chú (nếu có)"
+                  className="min-h-20 resize-none bg-background text-xs"
                   disabled={disabled}
                 />
-              )}
-            </form.AppField>
+              </Field>
+            )}
+          />
 
-            <form.AppField name="status">
-              {(field) => (
-                <field.RadioPillField
-                  label="Tình trạng nhân sự"
-                  required
-                  options={employeeStatusOptions}
+          <Controller
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <div className="space-y-1.5">
+                <span className="block text-xs font-medium text-foreground">
+                  Tình trạng nhân sự <span className="text-destructive">*</span>
+                </span>
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onChange}
                   disabled={disabled}
-                />
-              )}
-            </form.AppField>
-          </div>
+                  className="flex flex-row flex-wrap gap-2"
+                >
+                  {employeeStatusOptions.map((option) => (
+                    <FieldLabel
+                      key={option.value}
+                      htmlFor={`status-${option.value}`}
+                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground has-data-checked:border-primary has-data-checked:bg-primary/5 has-data-checked:text-primary"
+                    >
+                      <RadioGroupItem
+                        value={option.value}
+                        id={`status-${option.value}`}
+                      />
+                      {option.label}
+                    </FieldLabel>
+                  ))}
+                </RadioGroup>
+              </div>
+            )}
+          />
         </div>
       </div>
-    )
-  },
-})
+    </div>
+  )
+}

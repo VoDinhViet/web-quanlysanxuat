@@ -5,7 +5,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-import { DatePicker } from "@/features/users/components/composites/DatePicker"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { ImageUploader } from "@/features/users/components/composites/ImageUploader"
 import { genderLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -109,7 +109,6 @@ export function CreateUserInfoSection({
                     value={field.value}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
-                    isInvalid={!!fieldState.error}
                     disabled={disabled}
                   />
                   <FieldError errors={[fieldState.error]} />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react"
 import { Controller, useWatch } from "react-hook-form"
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import type { UseFormReturn } from "react-hook-form"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
-import { DatePicker } from "@/features/users/components/composites/DatePicker"
+import { departmentQueryOptions } from "@/features/departments/api"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { positionsQueryOptions } from "@/features/users/api/options"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -33,10 +33,12 @@ export function CreateUserJobInfoSection({
   form,
   disabled,
 }: CreateUserJobInfoSectionProps) {
-  // The route loader already prefetches this — resolves synchronously off cache.
-  const { data: departments } = useSuspenseQuery(
-    departmentOptionsQueryOptions()
-  )
+  // The route loader already prefetches this, so `isPending` resolves to `false` on the very
+  // first render off cache — kept as a plain `useQuery` (not `useSuspenseQuery`) so the field
+  // degrades gracefully with its own "Đang tải..." state instead of suspending the whole page
+  // if that ever weren't true.
+  const departmentsQuery = useQuery(departmentQueryOptions())
+  const departments = departmentsQuery.data ?? []
 
   const departmentId = useWatch({ control: form.control, name: "departmentId" })
   const positionId = useWatch({ control: form.control, name: "positionId" })
@@ -89,9 +91,9 @@ export function CreateUserJobInfoSection({
                   Phòng ban <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
-                  value={field.value}
+                  value={departmentsQuery.isPending ? "" : field.value}
                   onValueChange={field.onChange}
-                  disabled={disabled}
+                  disabled={disabled || departmentsQuery.isPending}
                 >
                   <SelectTrigger
                     id={field.name}
@@ -99,18 +101,30 @@ export function CreateUserJobInfoSection({
                     aria-invalid={!!fieldState.error}
                     className="h-9 w-full bg-background text-xs"
                   >
-                    <SelectValue placeholder="Chọn phòng ban" />
+                    <SelectValue
+                      placeholder={
+                        departmentsQuery.isPending
+                          ? "Đang tải..."
+                          : "Chọn phòng ban"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    {buildSelectOptions(departments).map((option) => (
-                      <SelectItem
-                        key={option.value}
-                        value={option.value}
-                        className="text-xs"
-                      >
-                        {option.label}
-                      </SelectItem>
-                    ))}
+                    {departments.length === 0 ? (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        Không có dữ liệu
+                      </div>
+                    ) : (
+                      buildSelectOptions(departments).map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value}
+                          className="text-xs"
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
                 <FieldError errors={[fieldState.error]} />
@@ -130,9 +144,16 @@ export function CreateUserJobInfoSection({
                   Chức vụ <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
-                  value={field.value}
+                  // While positions for the current department are still loading, the field's
+                  // stored value can be a stale id from the previous department (the mismatch
+                  // effect below only clears it once the new list has loaded) — masking it to
+                  // "" here forces the placeholder to render "Đang tải..." instead of Radix
+                  // showing a blank trigger for a value that matches no item yet.
+                  value={positionsQuery.isPending ? "" : field.value}
                   onValueChange={field.onChange}
-                  disabled={disabled || !departmentId}
+                  disabled={
+                    disabled || !departmentId || positionsQuery.isPending
+                  }
                 >
                   <SelectTrigger
                     id={field.name}
@@ -154,15 +175,21 @@ export function CreateUserJobInfoSection({
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    {positionOptions.map((option) => (
-                      <SelectItem
-                        key={option.value}
-                        value={option.value}
-                        className="text-xs"
-                      >
-                        {option.label}
-                      </SelectItem>
-                    ))}
+                    {positionOptions.length === 0 ? (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        Không có dữ liệu
+                      </div>
+                    ) : (
+                      positionOptions.map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value}
+                          className="text-xs"
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
                 <FieldError errors={[fieldState.error]} />
@@ -182,7 +209,6 @@ export function CreateUserJobInfoSection({
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
-                  isInvalid={!!fieldState.error}
                   disabled={disabled}
                 />
                 <FieldError errors={[fieldState.error]} />

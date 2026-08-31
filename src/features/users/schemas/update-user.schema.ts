@@ -47,11 +47,10 @@ export const updateCredentialSchema = z
   .transform(({ credentialId, ...credential }) => credential)
 
 // Wire contract for PATCH /api/users/:userId — also the client-side onSubmit validator for
-// UpdateUserForm. `userId` lives directly in the form's own state (the update flow's
-// sections are its own components, not shared with CreateUserForm, so there's no
-// withForm-invariance conflict), so mutationFn receives the form value as-is — no manual
-// id merge at the call site. Deliberately shares no field definitions with
-// create-user.schema.ts: the two flows evolve independently.
+// UpdateUserForm. `userId` lives directly in the form's own state (the update flow's sections
+// are their own components, not shared with CreateUserForm), so mutationFn receives the form
+// value as-is — no manual id merge at the call site. Deliberately shares no field definitions
+// with create-user.schema.ts: the two flows evolve independently.
 export const updateUserSchema = z
   .object({
     userId: z.uuid(),
@@ -96,23 +95,3 @@ export const updateUserSchema = z
   .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 export type UpdateUserSchema = z.input<typeof updateUserSchema>
-
-// Only used for withForm's type inference in the update flow's own sections — the real
-// values always come from UpdateUserForm's own `defaultValues`, so `userId: ""` here is
-// harmless.
-export const updateUserFormDefaultValues: UpdateUserSchema = {
-  userId: "",
-  fullName: "",
-  gender: "MALE",
-  dateOfBirth: "",
-  idNumber: "",
-  phoneNumber: "",
-  address: "",
-  avatar: null,
-  departmentId: "",
-  positionId: "",
-  hireDate: "",
-  note: "",
-  status: "WORKING",
-  credential: undefined,
-}

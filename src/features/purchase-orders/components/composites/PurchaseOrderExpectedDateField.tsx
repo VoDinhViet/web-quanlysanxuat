@@ -56,14 +56,10 @@ export function PurchaseOrderExpectedDateField({
 
   return (
     <div className="min-w-0 space-y-1">
-      <label
-        htmlFor="purchase-order-expected-date"
-        className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
-      >
+      <label className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
         Ngày giao dự kiến <span className="text-destructive">*</span>
       </label>
       <DatePicker
-        id="purchase-order-expected-date"
         value={value}
         onChange={(nextValue) => {
           setValue(nextValue)
