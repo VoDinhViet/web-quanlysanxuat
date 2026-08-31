@@ -26,6 +26,8 @@ function resolveCreateOutboundOrderErrorMessage(error: unknown): string {
       return "Có dòng không cùng khách hàng với phiếu — vui lòng chọn lại."
     case "outbound_order.error.quantity_exceeds_ordered":
       return "SL giao vượt SL đặt của dòng PO."
+    case "outbound_order.error.quantity_exceeds_deliverable":
+      return "Có dòng vượt số lượng có thể giao — kiểm tra lại tồn kho hoặc lệnh xuất khác đang giữ hàng."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo phiếu giao hàng."
     default:
