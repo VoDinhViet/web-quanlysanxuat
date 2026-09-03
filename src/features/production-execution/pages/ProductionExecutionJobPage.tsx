@@ -19,14 +19,14 @@ import {
   productionJobStatusLabels,
 } from "@/lib/types/production-job.type"
 import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
+import type { ProductionJobBomItem } from "@/lib/types/production-job.type"
 
-// Job chưa `start`, hoặc đã start nhưng chưa qua "Xác nhận sản xuất" — 2 điều kiện BE chặn PATCH
-// .../operations/:operationId (E087/E250), cùng logic canEdit của
+// Job chưa `start` — chặn PATCH .../operations/:operationId (E087), cùng logic canEdit của
 // ProductionJobOperationsTab.tsx (màn "Quản lý sản xuất"). Job đã rời IN_PROGRESS (WAITING_QC trở
-// đi) nghĩa là mọi công đoạn Cấp 0 đã xong — không còn gì để báo cáo thêm.
+// đi) nghĩa là mọi công đoạn Cấp 0 đã xong — không còn gì để báo cáo thêm. Backend's separate
+// "Duyệt công đoạn" gate was removed 2026-09-03 — "Xác nhận" alone is the only condition now.
 function resolveReportDisabledReason(
-  status: ProductionJobStatus,
-  operationsApprovedAt: string | null
+  status: ProductionJobStatus
 ): string | null {
   if (status === ProductionJobStatus.PENDING) {
     return 'Job chưa bắt đầu sản xuất — bấm "Xác nhận" ở trang Quản lý sản xuất trước.'
@@ -34,10 +34,17 @@ function resolveReportDisabledReason(
   if (status !== ProductionJobStatus.IN_PROGRESS) {
     return "Job đã hoàn thành mọi công đoạn — không thể báo cáo thêm."
   }
-  if (operationsApprovedAt === null) {
-    return 'Công đoạn của Job này chưa được xác nhận sản xuất — bấm "Xác nhận sản xuất" ở trang Quản lý sản xuất trước.'
-  }
   return null
+}
+
+// BE đã lọc sẵn theo operationId (GET .../operations?operationId=...) — chỉ còn việc flatten mỗi
+// BOM item's operations[] (nhóm theo Part phía BE) thành từng dòng "DANH SÁCH PART" riêng.
+function buildProductionExecutionPartRows(
+  bomItems: ProductionJobBomItem[]
+): ProductionExecutionPartRow[] {
+  return bomItems.flatMap((bomItem) =>
+    bomItem.operations.map((operation) => ({ bomItem, operation }))
+  )
 }
 
 export function ProductionExecutionJobPage() {
@@ -51,29 +58,22 @@ export function ProductionExecutionJobPage() {
   const { data: job } = useSuspenseQuery(
     productionJobQueryOptions(productionJobId)
   )
-  const operationsQuery = useQuery(
-    productionJobOperationsQueryOptions(productionJobId)
+  const operationsQuery = useQuery({
+    ...productionJobOperationsQueryOptions(productionJobId, operationId),
+    enabled: !!operationId,
+  })
+
+  const partRows = useMemo(
+    () =>
+      operationsQuery.data
+        ? buildProductionExecutionPartRows(operationsQuery.data)
+        : [],
+    [operationsQuery.data]
   )
-
-  // Lọc đúng công đoạn đang chọn khỏi mọi công đoạn của mỗi Part (BE trả cả, chưa lọc — C1 trong
-  // kế hoạch).
-  const partRows: ProductionExecutionPartRow[] = useMemo(() => {
-    if (!operationId || !operationsQuery.data) return []
-
-    return operationsQuery.data.flatMap((bomItem) => {
-      const operation = bomItem.operations.find(
-        (item) => item.operationId === operationId
-      )
-      return operation ? [{ bomItem, operation }] : []
-    })
-  }, [operationsQuery.data, operationId])
 
   const operationName = partRows.at(0)?.operation.name
 
-  const disabledReason = resolveReportDisabledReason(
-    job.status,
-    job.operationsApprovedAt
-  )
+  const disabledReason = resolveReportDisabledReason(job.status)
 
   return (
     <main className="min-h-svh bg-background text-foreground">

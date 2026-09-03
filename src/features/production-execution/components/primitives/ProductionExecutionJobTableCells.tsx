@@ -10,7 +10,8 @@ type ProductionExecutionJobActionsCellProps = {
 // Đọc `operationId` qua useSearch (route search hiện tại của chính trang danh sách) thay vì nhận
 // qua prop cột — giữ `productionExecutionJobColumns` ở module scope (forms-and-ui.md: columns
 // không được tạo lại mỗi render), cùng idiom OperationSendActionCell.tsx đọc `productionJobId` qua
-// useParams. Trang chi tiết cần đúng operationId này để lọc bảng Part (C1 trong kế hoạch).
+// useParams. Trang chi tiết cần đúng operationId này để BE lọc bảng Part
+// (GET .../operations?operationId=...).
 export function ProductionExecutionJobActionsCell({
   productionJobId,
 }: ProductionExecutionJobActionsCellProps) {

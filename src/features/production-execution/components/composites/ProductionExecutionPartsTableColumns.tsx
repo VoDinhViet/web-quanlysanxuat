@@ -15,8 +15,8 @@ import type {
 } from "@/lib/types/production-job.type"
 
 // Một dòng của bảng "DANH SÁCH PART" — Part (BOM item) ghép với đúng công đoạn đang chọn của nó
-// (đã lọc sẵn ở ProductionExecutionJobPage.tsx, xem C1 trong kế hoạch: GET .../operations trả mọi
-// công đoạn của mỗi part, không riêng công đoạn đang chọn).
+// (GET .../operations?operationId=... đã lọc sẵn phía BE, ProductionExecutionJobPage.tsx chỉ
+// flatten kết quả).
 export type ProductionExecutionPartRow = {
   bomItem: ProductionJobBomItem
   operation: ProductionJobOperation
@@ -97,8 +97,8 @@ export function buildProductionExecutionPartColumns({
       cell: ({ row }) => {
         // Công đoạn OUTSOURCE tự cập nhật SL hoàn thành từ OS-IN, không nhập tay —
         // docs/decisions/outsourced-operation-progress-writeback.md phía be-quanlysanxuat, khớp
-        // E260. `disabledReason` (job-level) ưu tiên trước — job chưa start/chưa duyệt công đoạn
-        // thì mọi dòng đều khoá như nhau, không cần phân biệt loại công đoạn.
+        // E260. `disabledReason` (job-level) ưu tiên trước — job chưa start thì mọi dòng đều khoá
+        // như nhau, không cần phân biệt loại công đoạn.
         const reason =
           disabledReason ??
           (row.original.operation.type === OperationType.OUTSOURCE
