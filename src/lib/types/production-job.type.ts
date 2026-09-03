@@ -59,8 +59,9 @@ export type ProductionJobDetail = {
   status: ProductionJobStatus
   startedBy: string | null
   startedAt: string | null
-  // Thêm 2026-08-25 — ai/khi nào duyệt công đoạn (`POST .../approve-operations`). null thì
-  // `PATCH .../operations/:operationId` còn bị chặn (E250), xem ProductionJobOperation.
+  // Thêm 2026-08-25 — từng ghi bởi `POST .../approve-operations` (route đó đã xoá 2026-09-03,
+  // bỏ bước duyệt công đoạn riêng). Giữ lại cho dữ liệu cũ, không còn route nào ghi và không
+  // còn gate nào đọc — `PATCH .../operations/:operationId` mở ngay khi Job `IN_PROGRESS`.
   operationsApprovedBy: string | null
   operationsApprovedAt: string | null
   // true thì nút "Yêu cầu OQC" ở ProductionJobDetailHeader.tsx khoá lại — BE chặn tạo phiếu OQC
@@ -75,7 +76,7 @@ export type ProductionJobDetail = {
  *  time (`production_job_operations`). `code`/`name`/`type`/`sortOrder`/`note`/`operationId` stay
  *  frozen; `completedQuantity`/`rejectedQuantity`/`completedDate` are the only fields editable
  *  afterwards, via `PATCH /production-jobs/:jobId/operations/:operationId` — only runs once the Job
- *  has `operationsApprovedAt` set (E250 otherwise, see ProductionJobDetail). `completedDate` is
+ *  is `IN_PROGRESS` (E087 otherwise, see ProductionJobDetail). `completedDate` is
  *  server-set (not part of the update payload), auto-filled once `completedQuantity` (pass count
  *  only, NG doesn't count) reaches the parent node's planned quantity, auto-cleared if edited back
  *  down. `plannedQuantity` is the parent BOM node's planned quantity (cumulative BOM ratio × Job
