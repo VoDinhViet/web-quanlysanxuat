@@ -163,6 +163,49 @@ export type ProductionJobNote = {
   createdAt: string
 }
 
+/** Mirrors the backend's `production_job_logs.action` — cố ý không trùng tên
+ *  `ProductionJobStatus` (`CREATED`/`STARTED` thay cho `PENDING`/`IN_PROGRESS`). Chỉ 2 giá trị đó
+ *  là hành động của người dùng; 3 giá trị còn lại là mốc chuyển tự động, không có actor. */
+export enum ProductionJobLogAction {
+  CREATED = "CREATED",
+  STARTED = "STARTED",
+  WAITING_QC = "WAITING_QC",
+  WAITING_DELIVERY = "WAITING_DELIVERY",
+  COMPLETED = "COMPLETED",
+}
+
+// Động từ mô tả hành động vừa xảy ra — khác `productionJobStatusLabels` phía trên (danh từ trạng
+// thái hiện tại), cùng tinh thần `productionOrderLogActionLabels`.
+export const productionJobLogActionLabels: Record<
+  ProductionJobLogAction,
+  string
+> = {
+  [ProductionJobLogAction.CREATED]: "Tạo Job",
+  [ProductionJobLogAction.STARTED]: "Bắt đầu SX",
+  [ProductionJobLogAction.WAITING_QC]: "Chuyển chờ QC",
+  [ProductionJobLogAction.WAITING_DELIVERY]: "Chuyển chờ giao hàng",
+  [ProductionJobLogAction.COMPLETED]: "Hoàn thành Job",
+}
+
+/** Mirrors the backend's UserRefResDto nested in ProductionJobLogResDto. */
+export type ProductionJobLogPerformerRef = {
+  id: string
+  code: string
+  fullName: string
+}
+
+/** Mirrors the backend's ProductionJobLogResDto (`GET /production-jobs/:jobId/logs`, paginated,
+ *  sorted desc(createdAt) — audit log thật, khác `ProductionJobNote` (hội thoại tự do, asc)).
+ *  `content` là câu tiếng Việt dựng sẵn ở backend lúc ghi — không tự suy diễn/dựng câu ở đây.
+ *  `performerBy` NULL nghĩa là mốc tự động (không có actor), không phải user bị xoá. */
+export type ProductionJobLog = {
+  id: string
+  action: ProductionJobLogAction
+  content: string
+  performerBy: ProductionJobLogPerformerRef | null
+  createdAt: string
+}
+
 /** Mirrors `GET /production-execution/operations` — một dòng / công đoạn có ít nhất 1 Job khớp
  *  filter, dùng để dựng dãy thẻ "CHỌN CÔNG ĐOẠN". `jobCount` đếm số Job phân biệt, không phải số
  *  dòng (Job × Part). */

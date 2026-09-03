@@ -22,13 +22,13 @@ export const productionJobColumns = productionJobColumnHelper.columns([
   productionJobColumnHelper.display({
     id: "image",
     header: "",
-    meta: { headerClassName: "w-14", cellClassName: "pr-0" },
+    meta: { headerClassName: "w-16" },
     cell: ({ row }) => <ProductImageCell image={row.original.image} />,
   }),
   productionJobColumnHelper.accessor((row) => row.client?.name ?? "—", {
     id: "client",
     header: "KH",
-    meta: { headerClassName: "min-w-36 pl-0" },
+    meta: { headerClassName: "min-w-36" },
   }),
   productionJobColumnHelper.accessor("orderCode", {
     header: "PO",

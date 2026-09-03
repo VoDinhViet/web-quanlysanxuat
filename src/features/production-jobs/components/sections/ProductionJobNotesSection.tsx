@@ -10,7 +10,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { ProductionJobNoteList } from "@/features/production-jobs/components/composites/ProductionJobNoteList"
+import { ProductionJobNotes } from "@/features/production-jobs/components/composites/ProductionJobNotes"
 import {
   productionJobNotesPageLimit,
   productionJobNotesQueryOptions,
@@ -29,7 +29,7 @@ type ProductionJobNotesSectionProps = {
 // this route already back the "materials" tab's list (production-job-detail-search.schema.ts), and this
 // is a secondary section on a page with no pagination state of its own — same idiom as
 // productionOrderLogsQueryOptions/ProductionOrderLogsCard. Feed rendering lives in the sibling
-// ProductionJobNoteList to keep this file focused on the mutation/form it owns.
+// ProductionJobNotes to keep this file focused on the mutation/form it owns.
 export function ProductionJobNotesSection({
   productionJobId,
 }: ProductionJobNotesSectionProps) {
@@ -67,7 +67,7 @@ export function ProductionJobNotesSection({
 
   return (
     <div className="flex flex-col gap-3">
-      <ProductionJobNoteList
+      <ProductionJobNotes
         notes={notesQuery.data?.data}
         pagination={notesQuery.data?.pagination}
         isPending={notesQuery.isPending}

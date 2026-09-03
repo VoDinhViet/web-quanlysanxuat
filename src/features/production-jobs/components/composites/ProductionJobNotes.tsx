@@ -6,7 +6,7 @@ import { Spinner } from "@/components/ui/spinner"
 import type { ProductionJobNote } from "@/lib/types/production-job.type"
 import type { Pagination } from "@/lib/types/pagination.type"
 
-type ProductionJobNoteListProps = {
+type ProductionJobNotesProps = {
   notes: ProductionJobNote[] | undefined
   pagination: Pagination | undefined
   isPending: boolean
@@ -17,14 +17,14 @@ type ProductionJobNoteListProps = {
 
 // Feed + pager half of ProductionJobNotesSection, split out to keep that file under the ~150-line
 // guideline — the form/mutation stays in the parent since it owns the mutation.
-export function ProductionJobNoteList({
+export function ProductionJobNotes({
   notes,
   pagination,
   isPending,
   isError,
   errorMessage,
   onPageChange,
-}: ProductionJobNoteListProps) {
+}: ProductionJobNotesProps) {
   return (
     <>
       {isPending ? (
