@@ -61,7 +61,6 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 | Component          | Prop chính                                                                                                | Call site                              |
 | ------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------- |
 | `RowActions`       | `children`, `className?` — chỉ bọc `flex items-center justify-center gap-1.5`, action con vẫn ở call site | `InventoryRequisitionsTableCells.tsx`  |
-| `TableSearchInput` | `id`, `label`, `placeholder`, `value`, `onChange`, `onKeyDown?` — ghép với `useFilterSearchTerm`          | `InventoryRequisitionsTableFilter.tsx` |
 | `FilterSelect`     | `id`, `label`, `value`, `options: {value,label}[]`, `onValueChange`                                       | `InventoryRequisitionsTableFilter.tsx` |
 
 ### `src/hooks/`

@@ -10,8 +10,8 @@ type TableFilterBarProps = {
   createLabel?: string
   createAction?: ReactNode
   // The filter fields' own grid — its column template varies by field count/width per domain,
-  // so it's a slot rather than a fixed `grid` div here. See TableSearchInput/FilterSelect for
-  // the individual field shells.
+  // so it's a slot rather than a fixed `grid` div here. See FilterSelect for a field shell;
+  // a search input stays inline at the call site, same as every other feature's filter bar.
   fields: ReactNode
   onReset: () => void
   className?: string

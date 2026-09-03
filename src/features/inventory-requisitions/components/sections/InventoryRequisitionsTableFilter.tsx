@@ -1,10 +1,11 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router"
-import { FileOutput } from "lucide-react"
+import { FileOutput, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { FilterSelect } from "@/components/shared/primitives/FilterSelect"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { TableSearchInput } from "@/components/shared/primitives/TableSearchInput"
 import { TableFilterBar } from "@/components/shared/sections/TableFilterBar"
 import { useFilterSearchTerm } from "@/hooks/use-filter-search-term"
 import { inventoryRequisitionStatusLabels } from "@/lib/types/inventory-requisition.type"
@@ -68,14 +69,25 @@ export function InventoryRequisitionsTableFilter() {
       }
       fields={
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)]">
-          <TableSearchInput
-            id="lv-code"
-            label="Mã phiếu lãnh"
-            placeholder="Nhập mã phiếu lãnh..."
-            value={searchTerm.value}
-            onChange={searchTerm.onChange}
-            onKeyDown={searchTerm.onEnterKeyDown}
-          />
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="lv-code"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Mã phiếu lãnh
+            </Label>
+            <div className="relative">
+              <Input
+                id="lv-code"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Nhập mã phiếu lãnh..."
+                value={searchTerm.value}
+                onChange={(event) => searchTerm.onChange(event.target.value)}
+                onKeyDown={searchTerm.onEnterKeyDown}
+              />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </div>
 
           <FilterSelect
             id="lv-status"
