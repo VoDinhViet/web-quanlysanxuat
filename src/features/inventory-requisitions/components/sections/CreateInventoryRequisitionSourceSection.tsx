@@ -73,8 +73,8 @@ function formatDueDate(dueDate: string | null): string {
 
 // Bước ① — chọn nguồn lãnh bằng thẻ radio lớn (LSX/thủ công dùng chung 1 route/form, không tách
 // route nữa). Combobox Job chỉ hiện khi chọn "Lãnh từ LSX". Hiệu ứng phụ khi đổi nguồn/Job (reset
-// `items`, tự điền `productionOrderId`) sống ở component cha (cùng idiom appliedJobIdRef của
-// InventoryReceiptCreateFromJobForm.tsx) — section này chỉ vẽ field.
+// `items`, tự điền `productionOrderId`) sống ở component cha (idiom appliedJobIdRef của
+// CreateInventoryRequisitionForm.tsx) — section này chỉ vẽ field.
 export const CreateInventoryRequisitionSourceSection = withForm({
   defaultValues: createInventoryRequisitionFormDefaultValues,
   props: { disabled: false },

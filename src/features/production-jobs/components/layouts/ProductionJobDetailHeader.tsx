@@ -30,11 +30,12 @@ type ProductionJobDetailHeaderProps = {
 // the only one needed: the backend's separate "duyệt công đoạn" step was removed 2026-09-03, so
 // operation-quantity entry unlocks the moment the Job is IN_PROGRESS, no extra confirm), "Yêu
 // cầu OQC" (disabled outside WAITING_QC). Only "Yêu cầu OQC" stays always-rendered+disabled —
-// "Xác nhận" hides instead, and there is no "Nhập kho thành phẩm" button here: WAITING_DELIVERY
-// only happens after OQC coverage, and the receipt itself is created from the Inventory Receipts
-// module, not deep-linked from this header. No client-side gate beyond each button's own
-// disabledReason — the backend enforces every precondition (E213/E214/E196/E197/...) and each
-// dialog surfaces its own error inline.
+// "Xác nhận" hides instead, and there is no "Nhập kho thành phẩm" button here: the backend
+// auto-generates the FG receipt at PENDING_RECEIPT the moment OQC coverage closes the Job
+// (closeJobIfQcCovered, backend repo) — kho only opens that receipt's detail page to `post` it,
+// there is no manual create screen left to deep-link to. No client-side gate beyond each
+// button's own disabledReason — the backend enforces every precondition
+// (E213/E214/E196/E197/...) and each dialog surfaces its own error inline.
 export function ProductionJobDetailHeader({
   productionJob,
 }: ProductionJobDetailHeaderProps) {

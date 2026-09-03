@@ -89,8 +89,7 @@ export function CreateInventoryRequisitionForm() {
   }, [type, productionJobId, form])
 
   // Backend không tự suy ra LSX từ Job — cột "PO / Lý do" ở danh sách/chi tiết đọc thẳng
-  // productionOrderId nên phải tự điền ngay khi chọn Job, cùng idiom appliedJobIdRef của
-  // InventoryReceiptCreateFromJobForm.tsx.
+  // productionOrderId nên phải tự điền ngay khi chọn Job (appliedJobIdRef bên dưới).
   const jobQuery = useQuery({
     ...productionJobQueryOptions(productionJobId),
     enabled: isJobFlow && Boolean(productionJobId),
