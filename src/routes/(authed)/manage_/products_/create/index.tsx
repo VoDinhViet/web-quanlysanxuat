@@ -6,7 +6,10 @@ import { unitOptionsQueryOptions } from "@/features/units/api"
 
 export const Route = createFileRoute("/(authed)/manage_/products_/create/")({
   loader: ({ context }) =>
-    context.queryClient.ensureQueryData(unitOptionsQueryOptions("PRODUCT")),
+    context.queryClient.query({
+      ...unitOptionsQueryOptions("PRODUCT"),
+      staleTime: "static",
+    }),
   component: CreateProductPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

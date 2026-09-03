@@ -12,8 +12,14 @@ export const Route = createFileRoute(
 )({
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(clientQueryOptions(params.clientId)),
-      context.queryClient.ensureQueryData(clientGroupOptionsQueryOptions()),
+      context.queryClient.query({
+        ...clientQueryOptions(params.clientId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...clientGroupOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: UpdateClientPage,
   pendingComponent: LayoutPagePending,

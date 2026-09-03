@@ -8,9 +8,10 @@ export const Route = createFileRoute(
   "/(authed)/manage_/inventory-receipts_/$inventoryReceiptId"
 )({
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      inventoryReceiptQueryOptions(params.inventoryReceiptId)
-    ),
+    context.queryClient.query({
+      ...inventoryReceiptQueryOptions(params.inventoryReceiptId),
+      staleTime: "static",
+    }),
   component: InventoryReceiptDetailPage,
   pendingComponent: LayoutPagePending,
 })

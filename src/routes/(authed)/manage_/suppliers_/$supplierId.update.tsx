@@ -13,11 +13,18 @@ export const Route = createFileRoute(
 )({
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        supplierQueryOptions(params.supplierId)
-      ),
-      context.queryClient.ensureQueryData(supplierGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(countryOptionsQueryOptions()),
+      context.queryClient.query({
+        ...supplierQueryOptions(params.supplierId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierGroupOptionsQueryOptions(),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...countryOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: UpdateSupplierPage,
   pendingComponent: LayoutPagePending,

@@ -8,11 +8,12 @@ import { inventoryProductsSearchSchema } from "@/features/inventory-products/sch
 export const Route = createFileRoute("/(authed)/manage_/inventory-products/")({
   validateSearch: inventoryProductsSearchSchema,
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      inventoryProductsQueryOptions(
+    context.queryClient.query({
+      ...inventoryProductsQueryOptions(
         inventoryProductsSearchSchema.parse(location.search)
-      )
-    ),
+      ),
+      staleTime: "static",
+    }),
   component: InventoryProductsPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

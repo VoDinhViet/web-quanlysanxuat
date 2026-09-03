@@ -19,23 +19,28 @@ export const Route = createFileRoute("/(authed)/manage_/production-execution/")(
       const search = productionExecutionSearchSchema.parse(location.search)
 
       return Promise.all([
-        context.queryClient.ensureQueryData(
-          productionOperationSummaryQueryOptions({
+        context.queryClient.query({
+          ...productionOperationSummaryQueryOptions({
             q: search.q,
             status: search.status,
             clientId: search.clientId,
             dueDateFrom: search.dueDateFrom,
             dueDateTo: search.dueDateTo,
-          })
-        ),
+          }),
+          staleTime: "static",
+        }),
         // Chỉ khi URL đã mang sẵn operationId (link chia sẻ/bookmark) — lần vào đầu không có, trang
         // tự chọn thẻ đầu tiên phía client sau khi operation-summary về (ProductionExecutionPage.tsx).
         search.operationId
-          ? context.queryClient.ensureQueryData(
-              productionJobsByOperationQueryOptions(search)
-            )
+          ? context.queryClient.query({
+              ...productionJobsByOperationQueryOptions(search),
+              staleTime: "static",
+            })
           : Promise.resolve(),
-        context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
+        context.queryClient.query({
+          ...clientOptionsQueryOptions(""),
+          staleTime: "static",
+        }),
       ])
     },
     component: ProductionExecutionPage,

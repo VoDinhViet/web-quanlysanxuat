@@ -12,12 +12,16 @@ export const Route = createFileRoute("/(authed)/manage_/payment-requests/")({
   // not the whole outlet — same pattern as purchase-ledger/index.tsx / purchase-orders/index.tsx.
   loader: ({ context, location }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        paymentRequestsQueryOptions(
+      context.queryClient.query({
+        ...paymentRequestsQueryOptions(
           paymentRequestsSearchSchema.parse(location.search)
-        )
-      ),
-      context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
+        ),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: PaymentRequestsPage,
   // The parent route.tsx already renders the real PageTitleBar and never

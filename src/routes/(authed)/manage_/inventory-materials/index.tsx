@@ -15,12 +15,16 @@ export const Route = createFileRoute("/(authed)/manage_/inventory-materials/")({
   // without an `as` cast.
   loader: ({ context, location }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        materialInventoryQueryOptions(
+      context.queryClient.query({
+        ...materialInventoryQueryOptions(
           inventoryMaterialsSearchSchema.parse(location.search)
-        )
-      ),
-      context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
+        ),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: InventoryMaterialsPage,
   // The parent route.tsx already renders the real PageTitleBar and never

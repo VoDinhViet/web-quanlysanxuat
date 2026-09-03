@@ -8,8 +8,14 @@ import { CreateSupplierPage } from "@/features/suppliers/pages/CreateSupplierPag
 export const Route = createFileRoute("/(authed)/manage_/suppliers_/create/")({
   loader: ({ context }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(supplierGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(countryOptionsQueryOptions()),
+      context.queryClient.query({
+        ...supplierGroupOptionsQueryOptions(),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...countryOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: CreateSupplierPage,
   // The parent route.tsx already renders the real PageTitleBar and never

@@ -16,11 +16,18 @@ export const Route = createFileRoute("/(authed)/manage_/iqc/")({
   // IqcPage via useQuery instead.
   loader: ({ context, location }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        iqcsQueryOptions(iqcSearchSchema.parse(location.search))
-      ),
-      context.queryClient.ensureQueryData(iqcStatsQueryOptions()),
-      context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
+      context.queryClient.query({
+        ...iqcsQueryOptions(iqcSearchSchema.parse(location.search)),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...iqcStatsQueryOptions(),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: IqcPage,
   // The parent route.tsx already renders the real PageTitleBar and never

@@ -12,9 +12,10 @@ export const Route = createFileRoute(
   "/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update"
 )({
   loader: async ({ context, params }) => {
-    const detail = await context.queryClient.ensureQueryData(
-      inventoryReceiptQueryOptions(params.inventoryReceiptId)
-    )
+    const detail = await context.queryClient.query({
+      ...inventoryReceiptQueryOptions(params.inventoryReceiptId),
+      staleTime: "static",
+    })
 
     if (!canUpdateInventoryReceipt(detail.status)) {
       throw redirect({

@@ -13,11 +13,12 @@ export const Route = createFileRoute(
   // re-trigger this loader and blank the outlet). The list itself is read client-side in
   // InventoryRequisitionsPage via useQuery instead — same idiom as inventory-issues/index.tsx.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      inventoryRequisitionsQueryOptions(
+    context.queryClient.query({
+      ...inventoryRequisitionsQueryOptions(
         inventoryRequisitionsSearchSchema.parse(location.search)
-      )
-    ),
+      ),
+      staleTime: "static",
+    }),
   component: InventoryRequisitionsPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

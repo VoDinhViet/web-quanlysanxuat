@@ -12,9 +12,10 @@ export const Route = createFileRoute(
 )({
   validateSearch: productionJobDetailSearchSchema,
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      productionJobQueryOptions(params.productionJobId)
-    ),
+    context.queryClient.query({
+      ...productionJobQueryOptions(params.productionJobId),
+      staleTime: "static",
+    }),
   component: ProductionJobDetailPage,
   pendingComponent: LayoutPagePending,
 })

@@ -8,8 +8,14 @@ import { unitOptionsQueryOptions } from "@/features/units/api"
 export const Route = createFileRoute("/(authed)/manage_/materials_/create/")({
   loader: ({ context }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(unitOptionsQueryOptions("MATERIAL")),
-      context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
+      context.queryClient.query({
+        ...unitOptionsQueryOptions("MATERIAL"),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: CreateMaterialPage,
   // The parent route.tsx already renders the real PageTitleBar and never

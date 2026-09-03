@@ -15,10 +15,14 @@ export const Route = createFileRoute(
   validateSearch: inventoryProductDetailSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(itemQueryOptions(params.itemId)),
-      context.queryClient.ensureQueryData(
-        itemInventoryQueryOptions(params.itemId)
-      ),
+      context.queryClient.query({
+        ...itemQueryOptions(params.itemId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...itemInventoryQueryOptions(params.itemId),
+        staleTime: "static",
+      }),
     ]),
   component: InventoryProductDetailPage,
   pendingComponent: LayoutPagePending,

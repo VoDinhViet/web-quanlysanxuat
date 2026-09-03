@@ -16,9 +16,10 @@ export const Route = createFileRoute("/(authed)/manage_/users/")({
   // server-function error bubbles to the `errorComponent` on the (authed)
   // layout route — see .claude/rules/architecture.md.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      usersQueryOptions(usersSearchSchema.parse(location.search))
-    ),
+    context.queryClient.query({
+      ...usersQueryOptions(usersSearchSchema.parse(location.search)),
+      staleTime: "static",
+    }),
   component: UsersPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

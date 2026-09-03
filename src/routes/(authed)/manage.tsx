@@ -1,3 +1,4 @@
+import { noop } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
 import { ManagePage } from "@/features/manage/pages/ManagePage"
@@ -25,18 +26,22 @@ export const Route = createFileRoute("/(authed)/manage")({
   // đây được các hook tương ứng (src/features/manage/hooks/) export lại nguyên bản — không tự
   // tính tham số ở loader, để không bao giờ lệch query key với hook thật sự đọc dữ liệu.
   loader: ({ context, location }) => {
-    void context.queryClient.prefetchQuery(reportStatsQueryOptions())
-    void context.queryClient.prefetchQuery(reportAlertsQueryOptions())
-    void context.queryClient.prefetchQuery(
-      productionProgressQueryOptions(manageSearchSchema.parse(location.search))
-    )
-    void context.queryClient.prefetchQuery(upcomingDeliveriesQueryOptions())
-    void context.queryClient.prefetchQuery(
-      outsourcingOrderDueDateQueryOptions()
-    )
-    void context.queryClient.prefetchQuery(jobDueDateQueryOptions())
-    void context.queryClient.prefetchQuery(openNcrQueryOptions())
-    void context.queryClient.prefetchQuery(qcPassRateQueryOptions())
+    void context.queryClient.query(reportStatsQueryOptions()).catch(noop)
+    void context.queryClient.query(reportAlertsQueryOptions()).catch(noop)
+    void context.queryClient
+      .query(
+        productionProgressQueryOptions(
+          manageSearchSchema.parse(location.search)
+        )
+      )
+      .catch(noop)
+    void context.queryClient.query(upcomingDeliveriesQueryOptions()).catch(noop)
+    void context.queryClient
+      .query(outsourcingOrderDueDateQueryOptions())
+      .catch(noop)
+    void context.queryClient.query(jobDueDateQueryOptions()).catch(noop)
+    void context.queryClient.query(openNcrQueryOptions()).catch(noop)
+    void context.queryClient.query(qcPassRateQueryOptions()).catch(noop)
   },
   component: ManagePage,
 })

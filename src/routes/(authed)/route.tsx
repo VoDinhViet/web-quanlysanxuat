@@ -28,8 +28,14 @@ export const Route = createFileRoute("/(authed)")({
     // only value this beforeLoad needs back — listed first so the destructure doesn't need
     // an empty slot for the profile.
     const [permissions] = await Promise.all([
-      context.queryClient.ensureQueryData(currentPermissionsQueryOptions),
-      context.queryClient.ensureQueryData(currentUserQueryOptions),
+      context.queryClient.query({
+        ...currentPermissionsQueryOptions,
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...currentUserQueryOptions,
+        staleTime: "static",
+      }),
     ])
 
     // One check for the whole destination — `matches` includes the child routes about to
@@ -40,11 +46,12 @@ export const Route = createFileRoute("/(authed)")({
   },
   component: AuthedLayout,
   // `beforeLoad` above re-runs on every navigation, but every read in it (including
-  // requireSession, via currentSessionQueryOptions) is cached with a 60s staleTime — so it
-  // resolves well under defaultPendingMs on any navigation within that window, and this route
-  // only actually enters "pending" once the cache goes stale. Without its own pendingComponent
-  // it would fall through to the router's sidebar-less defaultPendingComponent for that rare
-  // case — see AuthedLayoutPending below.
+  // requireSession, via currentSessionQueryOptions) is a `query({ ..., staleTime: "static" })`
+  // read-through — it returns whatever's cached and only fetches on a true cache miss — so it
+  // resolves well under defaultPendingMs on any warm navigation, and this route only actually
+  // enters "pending" once the cache entry itself is gone (evicted, or the very first load).
+  // Without its own pendingComponent it would fall through to the router's sidebar-less
+  // defaultPendingComponent for that rare case — see AuthedLayoutPending below.
   pendingComponent: AuthedLayoutPending,
   errorComponent: AuthedErrorFallback,
 })

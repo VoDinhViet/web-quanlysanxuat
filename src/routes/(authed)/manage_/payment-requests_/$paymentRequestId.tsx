@@ -8,9 +8,10 @@ export const Route = createFileRoute(
   "/(authed)/manage_/payment-requests_/$paymentRequestId"
 )({
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      paymentRequestQueryOptions(params.paymentRequestId)
-    ),
+    context.queryClient.query({
+      ...paymentRequestQueryOptions(params.paymentRequestId),
+      staleTime: "static",
+    }),
   component: PaymentRequestDetailPage,
   pendingComponent: LayoutPagePending,
 })

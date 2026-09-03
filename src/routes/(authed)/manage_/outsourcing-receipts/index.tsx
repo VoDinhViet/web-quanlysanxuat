@@ -11,12 +11,16 @@ export const Route = createFileRoute("/(authed)/manage_/outsourcing-receipts/")(
     validateSearch: outsourcingReceiptsSearchSchema,
     loader: ({ context, location }) =>
       Promise.all([
-        context.queryClient.ensureQueryData(
-          outsourcingReceiptsQueryOptions(
+        context.queryClient.query({
+          ...outsourcingReceiptsQueryOptions(
             outsourcingReceiptsSearchSchema.parse(location.search)
-          )
-        ),
-        context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
+          ),
+          staleTime: "static",
+        }),
+        context.queryClient.query({
+          ...supplierOptionsQueryOptions(),
+          staleTime: "static",
+        }),
       ]),
     component: OutsourcingReceiptsPage,
     // The parent route.tsx already renders the real PageTitleBar and never

@@ -16,10 +16,14 @@ export const Route = createFileRoute(
 )({
   loader: async ({ context, params }) => {
     const [order] = await Promise.all([
-      context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
-      context.queryClient.ensureQueryData(
-        orderItemsQueryOptions(params.orderId)
-      ),
+      context.queryClient.query({
+        ...orderQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...orderItemsQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
     ])
 
     // Backend rejects a PATCH on a finished order (order.error.not_editable); PENDING_CONFIRMATION

@@ -1,3 +1,4 @@
+import { noop } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PagePending } from "@/components/shared/layouts/PagePending"
@@ -19,11 +20,12 @@ export const Route = createFileRoute("/(authed)/manage_/orders/")({
   loader: ({ context, location }) => {
     // Stats are a secondary block on this page (OrderStatCards) — seed the
     // cache without blocking the route/table on it.
-    void context.queryClient.prefetchQuery(orderStatsQueryOptions())
+    void context.queryClient.query(orderStatsQueryOptions()).catch(noop)
 
-    return context.queryClient.ensureQueryData(
-      ordersQueryOptions(ordersSearchSchema.parse(location.search))
-    )
+    return context.queryClient.query({
+      ...ordersQueryOptions(ordersSearchSchema.parse(location.search)),
+      staleTime: "static",
+    })
   },
   component: OrdersPage,
   // The parent route.tsx already renders the real PageTitleBar and never

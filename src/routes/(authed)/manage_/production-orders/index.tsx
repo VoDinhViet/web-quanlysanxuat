@@ -12,11 +12,12 @@ export const Route = createFileRoute("/(authed)/manage_/production-orders/")({
   // the outlet. The list itself is read client-side in
   // ProductionOrdersPage via useQuery instead.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      productionOrdersQueryOptions(
+    context.queryClient.query({
+      ...productionOrdersQueryOptions(
         productionOrdersSearchSchema.parse(location.search)
-      )
-    ),
+      ),
+      staleTime: "static",
+    }),
   component: ProductionOrdersPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

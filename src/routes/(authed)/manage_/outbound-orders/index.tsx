@@ -8,11 +8,12 @@ import { outboundOrdersSearchSchema } from "@/features/outbound-orders/schemas/o
 export const Route = createFileRoute("/(authed)/manage_/outbound-orders/")({
   validateSearch: outboundOrdersSearchSchema,
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      outboundOrdersQueryOptions(
+    context.queryClient.query({
+      ...outboundOrdersQueryOptions(
         outboundOrdersSearchSchema.parse(location.search)
-      )
-    ),
+      ),
+      staleTime: "static",
+    }),
   component: OutboundOrdersPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

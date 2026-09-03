@@ -10,9 +10,10 @@ export const Route = createFileRoute(
   "/(authed)/manage_/purchase-requests_/$purchaseRequestId"
 )({
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      purchaseRequestQueryOptions(params.purchaseRequestId)
-    ),
+    context.queryClient.query({
+      ...purchaseRequestQueryOptions(params.purchaseRequestId),
+      staleTime: "static",
+    }),
   component: PurchaseRequestDetailPage,
   pendingComponent: LayoutPagePending,
 })

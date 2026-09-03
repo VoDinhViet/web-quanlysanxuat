@@ -11,9 +11,10 @@ export const Route = createFileRoute("/(authed)/manage_/oqc/")({
   // re-trigger this loader and blank the outlet. The list itself is read client-side in
   // OqcPage via useQuery instead.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      oqcsQueryOptions(oqcSearchSchema.parse(location.search))
-    ),
+    context.queryClient.query({
+      ...oqcsQueryOptions(oqcSearchSchema.parse(location.search)),
+      staleTime: "static",
+    }),
   component: OqcPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

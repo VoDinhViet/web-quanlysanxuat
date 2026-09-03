@@ -14,9 +14,10 @@ import type { MakeRouteMatchUnion } from "@tanstack/react-router"
  * The single place that decides whether a protected route may render. Called from the
  * `(authed)` layout's `beforeLoad` so every route nested under it inherits the guard —
  * do not duplicate this check elsewhere (see CLAUDE.md "Layer boundaries"). Reads the
- * session through `currentSessionQueryOptions` (cached, default 60s staleTime) rather than
- * calling the server function directly — an uncached round trip on every navigation used to
- * push `beforeLoad` past `defaultPendingMs` and remount the whole sidebar shell (see
+ * session through `currentSessionQueryOptions` via `query({ ...options, staleTime: "static" })`
+ * — a read-through that returns whatever's cached and only fetches on a true cache miss —
+ * rather than calling the server function directly. An uncached round trip on every navigation
+ * used to push `beforeLoad` past `defaultPendingMs` and remount the whole sidebar shell (see
  * `(authed)/route.tsx`).
  */
 export async function requireSession(
@@ -24,7 +25,10 @@ export async function requireSession(
   queryClient: QueryClient
 ): Promise<CurrentSession> {
   try {
-    return await queryClient.ensureQueryData(currentSessionQueryOptions)
+    return await queryClient.query({
+      ...currentSessionQueryOptions,
+      staleTime: "static",
+    })
   } catch {
     throw redirect({
       to: "/login",

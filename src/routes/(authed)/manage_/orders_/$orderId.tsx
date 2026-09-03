@@ -12,10 +12,14 @@ import {
 export const Route = createFileRoute("/(authed)/manage_/orders_/$orderId")({
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
-      context.queryClient.ensureQueryData(
-        orderItemsQueryOptions(params.orderId)
-      ),
+      context.queryClient.query({
+        ...orderQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...orderItemsQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
     ]),
   component: OrderDetailPage,
   pendingComponent: LayoutPagePending,

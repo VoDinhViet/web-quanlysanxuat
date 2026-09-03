@@ -12,12 +12,14 @@ export const Route = createFileRoute(
 )({
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        outsourcingOrderQueryOptions(params.outsourcingOrderId)
-      ),
-      context.queryClient.ensureQueryData(
-        outsourcingOrderItemsQueryOptions(params.outsourcingOrderId)
-      ),
+      context.queryClient.query({
+        ...outsourcingOrderQueryOptions(params.outsourcingOrderId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...outsourcingOrderItemsQueryOptions(params.outsourcingOrderId),
+        staleTime: "static",
+      }),
     ]),
   component: OutsourcingOrderDetailPage,
   pendingComponent: LayoutPagePending,

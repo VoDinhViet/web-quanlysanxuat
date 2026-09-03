@@ -7,7 +7,10 @@ import { UpdateRolePage } from "@/features/roles/pages/UpdateRolePage"
 export const Route = createFileRoute("/(authed)/manage_/roles_/$roleId/update")(
   {
     loader: ({ context, params }) =>
-      context.queryClient.ensureQueryData(roleQueryOptions(params.roleId)),
+      context.queryClient.query({
+        ...roleQueryOptions(params.roleId),
+        staleTime: "static",
+      }),
     component: UpdateRolePage,
     pendingComponent: LayoutPagePending,
   }

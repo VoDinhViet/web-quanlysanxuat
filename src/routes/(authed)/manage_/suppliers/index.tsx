@@ -1,3 +1,4 @@
+import { noop } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PagePending } from "@/components/shared/layouts/PagePending"
@@ -27,14 +28,21 @@ export const Route = createFileRoute("/(authed)/manage_/suppliers/")({
   loader: ({ context, location }) => {
     // Stats are a secondary block on this page (SupplierStatCards) — seed the
     // cache without blocking the route/table on it.
-    void context.queryClient.prefetchQuery(supplierStatsQueryOptions())
+    void context.queryClient.query(supplierStatsQueryOptions()).catch(noop)
 
     return Promise.all([
-      context.queryClient.ensureQueryData(
-        suppliersQueryOptions(suppliersSearchSchema.parse(location.search))
-      ),
-      context.queryClient.ensureQueryData(supplierGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(countryOptionsQueryOptions()),
+      context.queryClient.query({
+        ...suppliersQueryOptions(suppliersSearchSchema.parse(location.search)),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierGroupOptionsQueryOptions(),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...countryOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ])
   },
   component: SuppliersPage,

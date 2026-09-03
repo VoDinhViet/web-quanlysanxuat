@@ -17,12 +17,14 @@ export const Route = createFileRoute(
   validateSearch: outboundOrderDetailSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        outboundOrderQueryOptions(params.outboundOrderId)
-      ),
-      context.queryClient.ensureQueryData(
-        outboundOrderItemsQueryOptions(params.outboundOrderId)
-      ),
+      context.queryClient.query({
+        ...outboundOrderQueryOptions(params.outboundOrderId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...outboundOrderItemsQueryOptions(params.outboundOrderId),
+        staleTime: "static",
+      }),
     ]),
   component: OutboundOrderDetailPage,
   pendingComponent: LayoutPagePending,

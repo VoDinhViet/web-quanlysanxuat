@@ -10,9 +10,10 @@ export const Route = createFileRoute("/(authed)/manage_/operations/")({
   // No loaderDeps: a search-box navigation must not create a new route match — see
   // `(authed)/manage_/units/index.tsx`, the pattern this mirrors.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      operationsQueryOptions(operationsSearchSchema.parse(location.search))
-    ),
+    context.queryClient.query({
+      ...operationsQueryOptions(operationsSearchSchema.parse(location.search)),
+      staleTime: "static",
+    }),
   component: OperationsPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

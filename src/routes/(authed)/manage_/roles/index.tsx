@@ -6,7 +6,7 @@ import { RolesPage } from "@/features/roles/pages/RolesPage"
 
 export const Route = createFileRoute("/(authed)/manage_/roles/")({
   loader: ({ context }) =>
-    context.queryClient.ensureQueryData(rolesQueryOptions()),
+    context.queryClient.query({ ...rolesQueryOptions(), staleTime: "static" }),
   component: RolesPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

@@ -144,19 +144,20 @@ maximumFractionDigits: 2 }).format(value)`) directly at call sites — not
 ## Loaders don't catch — errors bubble to a shared `errorComponent`
 
 - A route `loader` prefetches into the query cache
-  (`loader: ({context, deps}) => context.queryClient.ensureQueryData(usersQueryOptions(deps))`,
-  see "Reads flow through React Query" below) and does **not** wrap it in try/catch. If the
-  underlying server function throws, `ensureQueryData` rejects, the loader rejects, and
-  TanStack Router bubbles the error to the nearest ancestor route that defines an
+  (`loader: ({context, deps}) => context.queryClient.query({...usersQueryOptions(deps),
+staleTime: "static"})`, see "Reads flow through React Query" below) and does **not** wrap it
+  in try/catch. If the underlying server function throws, `query()` rejects, the loader
+  rejects, and TanStack Router bubbles the error to the nearest ancestor route that defines an
   `errorComponent` — same as a React error boundary.
 - There is one shared `errorComponent` for the whole authenticated app, defined on
   `src/routes/(authed)/route.tsx`. It replaces the entire authed shell (including the
   sidebar) with a Vietnamese error screen and a "Thử lại" button that calls
   `router.invalidate()`. Don't add a per-route `errorComponent` unless a specific route
   genuinely needs different error UI than the shared fallback.
-- `src/features/auth/guard.ts`'s `requireSession` is the one exception: it wraps
-  `getCurrentSession()` in try/catch itself, because an invalid session is a
-  _navigation_ decision (`redirect({to: "/login"})`), not an error to display.
+- `src/features/auth/api/guard.ts`'s `requireSession` is the one exception: it wraps the
+  cached session read (`queryClient.query({...currentSessionQueryOptions, staleTime:
+"static"})`) in try/catch itself, because an invalid session is a _navigation_ decision
+  (`redirect({to: "/login"})`), not an error to display.
 
 ## Mutations use `useMutation`
 
@@ -174,6 +175,10 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
   `@tanstack/react-router-ssr-query`'s `setupRouterSsrQueryIntegration`. Don't create a
   second `QueryClient` instance anywhere else. Its `defaultOptions.queries` set
   `staleTime: 60_000` and `retry: 1`; reference-option factories override `staleTime` longer.
+  Route loaders additionally pass `staleTime: "static"` at the call site (see "Loaders
+  prefetch, don't return" below) — that's a read-through switch, not a third freshness tier;
+  the factory's own `staleTime` is still what the mounted observer (`useSuspenseQuery`/
+  `useQuery`) uses to decide when to refetch in the background.
 - After an entity write, invalidate the feature's cache with
   `queryClient.invalidateQueries({ queryKey: [<feature>] })` (bound via `useQueryClient`) —
   **not** `router.invalidate()`, which re-runs every loader on the page. Login/logout keep
@@ -213,8 +218,20 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
   `["operations", "options", q, type]`) since it has no list/detail/stats of its own to key
   alongside.
 - **Loaders prefetch, don't return:** a route `loader` calls
-  `context.queryClient.ensureQueryData(<thing>QueryOptions(...))` (several via `Promise.all`)
-  to warm the cache for SSR; it no longer returns data or uses `useLoaderData`.
+  `context.queryClient.query({ ...<thing>QueryOptions(...), staleTime: "static" })` (several
+  via `Promise.all`) to warm the cache for SSR; it no longer returns data or uses
+  `useLoaderData`. `staleTime: "static"` is mandatory, not decoration: it makes the call a pure
+  read-through — return whatever's in the cache, even stale or invalidated, and fetch only on a
+  true cache miss — so navigation is never blocked on a background revalidation (the mounted
+  `useSuspenseQuery` does that using the factory's own `staleTime`). Drop it and every loader
+  becomes a blocking refetch once its data passes 60s — the exact regression that used to push
+  `beforeLoad` past `defaultPendingMs` and remount the whole sidebar shell (see
+  `(authed)/route.tsx`). Secondary/non-blocking data uses the fire-and-forget form instead —
+  `void context.queryClient.query(<thing>QueryOptions(...)).catch(noop)` (`noop` from
+  `@tanstack/react-query`) — which **deliberately omits** `staleTime: "static"` so it keeps
+  revalidating a stale widget in the background; the two forms are not interchangeable. Do not
+  reach for `ensureQueryData`/`fetchQuery`/`prefetchQuery` (or their infinite-query variants) —
+  `@tanstack/query-core` deprecated all of them in favor of `query()` and removes them in v6.
 - **Components read via `useSuspenseQuery(<thing>QueryOptions(...))`** for loader-prefetched
   data — it resolves synchronously (data always defined, like `useLoaderData` did), so no
   Suspense boundary is needed. `useSearch`/`useParams` supply the same args the loader keyed
@@ -232,4 +249,7 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
 - **Client-interactive reads that a loader can't prefetch** — the combobox search
   (debounced `q`, `keepPreviousData`, `select` to map to `{value,label}`, see
   `use-get-client-options.ts`) and the lazy `MaterialDetails` sheet/logs (`enabled: open`) —
-  use plain `useQuery`, spreading the factory and adding the observer-only options.
+  use plain `useQuery`, spreading the factory and adding the observer-only options. `select` in
+  particular must stay at the `useQuery` call site and never move into a shared `queryOptions`
+  factory: `queryClient.query()` (unlike the old `ensureQueryData`) applies `select`, so a
+  factory-level `select` would silently change what every route loader resolves to.

@@ -15,15 +15,20 @@ import {
 export const Route = createFileRoute("/(authed)/manage_/users_/$userId/update")(
   {
     loader: async ({ context, params }) => {
-      const user = await context.queryClient.ensureQueryData(
-        userQueryOptions(params.userId)
-      )
+      const user = await context.queryClient.query({
+        ...userQueryOptions(params.userId),
+        staleTime: "static",
+      })
 
       await Promise.all([
-        context.queryClient.ensureQueryData(departmentQueryOptions()),
-        context.queryClient.ensureQueryData(
-          positionsQueryOptions(user.department.id)
-        ),
+        context.queryClient.query({
+          ...departmentQueryOptions(),
+          staleTime: "static",
+        }),
+        context.queryClient.query({
+          ...positionsQueryOptions(user.department.id),
+          staleTime: "static",
+        }),
       ])
     },
     component: UpdateUserPage,

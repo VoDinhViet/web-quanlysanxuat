@@ -11,11 +11,12 @@ export const Route = createFileRoute("/(authed)/manage_/purchase-quotations/")({
   // re-trigger this loader and blank the outlet. The list itself is read client-side in
   // PurchaseQuotationsPage via useQuery instead.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      purchaseQuotationsQueryOptions(
+    context.queryClient.query({
+      ...purchaseQuotationsQueryOptions(
         purchaseQuotationsSearchSchema.parse(location.search)
-      )
-    ),
+      ),
+      staleTime: "static",
+    }),
   component: PurchaseQuotationsPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not

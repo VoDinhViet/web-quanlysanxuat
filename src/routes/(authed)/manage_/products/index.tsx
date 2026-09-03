@@ -16,10 +16,14 @@ export const Route = createFileRoute("/(authed)/manage_/products/")({
   // is a type-safe way to recover the real shape, not an `as` cast.
   loader: ({ context, location }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        itemsQueryOptions(productsSearchSchema.parse(location.search))
-      ),
-      context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
+      context.queryClient.query({
+        ...itemsQueryOptions(productsSearchSchema.parse(location.search)),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...clientOptionsQueryOptions(""),
+        staleTime: "static",
+      }),
     ]),
   component: ProductsPage,
   // The parent route.tsx already renders the real PageTitleBar and never

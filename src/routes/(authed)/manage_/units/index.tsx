@@ -12,9 +12,10 @@ export const Route = createFileRoute("/(authed)/manage_/units/")({
   // UnitsPage via useQuery instead — see `(authed)/manage_/clients/index.tsx`, the pattern
   // this mirrors.
   loader: ({ context, location }) => {
-    return context.queryClient.ensureQueryData(
-      unitsQueryOptions(unitsSearchSchema.parse(location.search))
-    )
+    return context.queryClient.query({
+      ...unitsQueryOptions(unitsSearchSchema.parse(location.search)),
+      staleTime: "static",
+    })
   },
   component: UnitsPage,
   // The parent route.tsx already renders the real PageTitleBar and never

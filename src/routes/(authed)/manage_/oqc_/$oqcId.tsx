@@ -10,11 +10,15 @@ import { itemQueryOptions } from "@/features/products/api"
 // iqc_/$iqcId.tsx/supplier-returns_/$supplierReturnId.tsx.
 export const Route = createFileRoute("/(authed)/manage_/oqc_/$oqcId")({
   loader: async ({ context, params }) => {
-    const oqc = await context.queryClient.ensureQueryData(
-      oqcQueryOptions(params.oqcId)
-    )
+    const oqc = await context.queryClient.query({
+      ...oqcQueryOptions(params.oqcId),
+      staleTime: "static",
+    })
 
-    await context.queryClient.ensureQueryData(itemQueryOptions(oqc.item.id))
+    await context.queryClient.query({
+      ...itemQueryOptions(oqc.item.id),
+      staleTime: "static",
+    })
   },
   component: OqcDetailPage,
   pendingComponent: LayoutPagePending,

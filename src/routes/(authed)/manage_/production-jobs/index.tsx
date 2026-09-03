@@ -14,12 +14,16 @@ export const Route = createFileRoute("/(authed)/manage_/production-jobs/")({
   // ProductionJobsPage via useQuery instead.
   loader: ({ context, location }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        productionJobsQueryOptions(
+      context.queryClient.query({
+        ...productionJobsQueryOptions(
           productionJobsSearchSchema.parse(location.search)
-        )
-      ),
-      context.queryClient.ensureQueryData(clientOptionsQueryOptions("")),
+        ),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...clientOptionsQueryOptions(""),
+        staleTime: "static",
+      }),
     ]),
   component: ProductionJobsPage,
   // The parent route.tsx already renders the real PageTitleBar and never

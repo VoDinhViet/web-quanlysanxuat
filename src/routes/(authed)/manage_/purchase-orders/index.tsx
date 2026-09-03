@@ -13,12 +13,16 @@ export const Route = createFileRoute("/(authed)/manage_/purchase-orders/")({
   // PurchaseOrdersPage via useQuery instead.
   loader: ({ context, location }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        purchaseOrdersQueryOptions(
+      context.queryClient.query({
+        ...purchaseOrdersQueryOptions(
           purchaseOrdersSearchSchema.parse(location.search)
-        )
-      ),
-      context.queryClient.ensureQueryData(supplierOptionsQueryOptions()),
+        ),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: PurchaseOrdersPage,
   // The parent route.tsx already renders the real PageTitleBar and never

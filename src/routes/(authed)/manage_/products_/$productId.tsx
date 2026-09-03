@@ -10,8 +10,14 @@ export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
   validateSearch: productDetailSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(itemQueryOptions(params.productId)),
-      context.queryClient.ensureQueryData(unitOptionsQueryOptions("PRODUCT")),
+      context.queryClient.query({
+        ...itemQueryOptions(params.productId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...unitOptionsQueryOptions("PRODUCT"),
+        staleTime: "static",
+      }),
     ]),
   component: ProductDetailPage,
   pendingComponent: LayoutPagePending,

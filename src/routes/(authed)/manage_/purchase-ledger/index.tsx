@@ -11,11 +11,12 @@ export const Route = createFileRoute("/(authed)/manage_/purchase-ledger/")({
   // would re-trigger this loader and blank the outlet. The list itself is read
   // client-side in PurchaseLedgerPage via useQuery instead.
   loader: ({ context, location }) =>
-    context.queryClient.ensureQueryData(
-      purchaseLedgerQueryOptions(
+    context.queryClient.query({
+      ...purchaseLedgerQueryOptions(
         purchaseLedgerSearchSchema.parse(location.search)
-      )
-    ),
+      ),
+      staleTime: "static",
+    }),
   component: PurchaseLedgerPage,
   // The parent route.tsx already renders the real PageTitleBar and never
   // pends, so this only needs to blank the content area — not
