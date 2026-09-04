@@ -75,13 +75,15 @@ export type ProductionJobDetail = {
  *  the as-used routing snapshot copied from `routing_steps` onto a single BOM node at LSX approval
  *  time (`production_job_operations`). `code`/`name`/`type`/`sortOrder`/`note`/`operationId` stay
  *  frozen; `completedQuantity`/`rejectedQuantity`/`completedDate` are the only fields editable
- *  afterwards, via `PATCH /production-jobs/:jobId/operations/:operationId` — only runs once the Job
- *  is `IN_PROGRESS` (E087 otherwise, see ProductionJobDetail). `completedDate` is
- *  server-set (not part of the update payload), auto-filled once `completedQuantity` (pass count
- *  only, NG doesn't count) reaches the parent node's planned quantity, auto-cleared if edited back
- *  down. `plannedQuantity` is the parent BOM node's planned quantity (cumulative BOM ratio × Job
- *  quantity), frozen at LSX approval — same value on every operation of the same node; it's also the
- *  cap `completedQuantity + rejectedQuantity` is checked against server-side (E252). */
+ *  afterwards, via `POST /production-execution/operations/:jobOperationId/reports` — accumulates
+ *  (doesn't overwrite), only runs once the Job is `IN_PROGRESS` (E087 otherwise, see
+ *  ProductionJobDetail). `completedDate` is caller-supplied (the date the report names), set once
+ *  `completedQuantity` (pass count only, NG doesn't count) reaches the parent node's planned
+ *  quantity — never auto-cleared afterwards on the in-house path (only an OS-IN cancel can pull an
+ *  OUTSOURCE row's `completedQuantity` back down). `plannedQuantity` is the parent BOM node's
+ *  planned quantity (cumulative BOM ratio × Job quantity), frozen at LSX approval — same value on
+ *  every operation of the same node; it's also the cap `completedQuantity` alone is checked
+ *  against server-side (E256) — `rejectedQuantity` is uncapped. */
 export type ProductionJobOperation = {
   id: string
   operationId: string | null
@@ -115,6 +117,15 @@ export type ProductionJobBomItem = {
   name: string
   itemType: ProductionJobBomItemType
   operations: ProductionJobOperation[]
+}
+
+/** Một dòng "Part × công đoạn" cho dialog nhập báo cáo — dùng bởi cả bảng "DANH SÁCH PART"
+ *  (màn "Thực hiện sản xuất") lẫn bảng "Công đoạn sản xuất" (chi tiết Job). Không mirror DTO
+ *  nào: cả 2 màn tự ghép từ `GET /production-jobs/:jobId/operations` (BE nhóm sẵn theo BOM
+ *  item). */
+export type JobOperationReportRow = {
+  bomItem: ProductionJobBomItem
+  operation: ProductionJobOperation
 }
 
 /** Mirrors the backend's ProductionJobItemResDto, nested in ProductionJobIssue below — a snapshot

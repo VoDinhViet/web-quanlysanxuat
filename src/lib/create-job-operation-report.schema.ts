@@ -9,12 +9,14 @@ import { emptyToUndefined } from "@/lib/zod-transforms"
 // mục (`operations.id`, field `ProductionJobOperation.operationId` — khác nhau, đặt tên
 // `operationId` ở đây từng dễ gây nhầm 2 id này với nhau).
 //
+// Ở src/lib/ (không phải schemas/ của một feature) vì form dùng schema này
+// (JobOperationReportForm.tsx) sống ở src/components/shared/ — shared chrome không được import
+// schemas/ của bất kỳ feature nào (eslint.config.js's qlsx/shared-reads-features-through-the-barrel).
+//
 // `completedQuantityDelta` là SL cộng thêm lần này (không phải giá trị tuyệt đối) — BE tự cộng
 // dồn, khoá row. Ràng buộc `delta + completedQuantity hiện có + rejectedQuantity <= plannedQuantity`
 // phụ thuộc dữ liệu runtime của operation đang chọn nên không nằm trong schema tĩnh này — nơi dùng
-// (JobOperationReportForm.tsx) tự `.refine()` thêm, cùng idiom
-// ProductionJobOperationCompletedQuantityCell.tsx's `CompletedQuantityInput`; BE (`E252`) vẫn là
-// chốt chặn thật.
+// (JobOperationReportForm.tsx) tự `.refine()` thêm; BE (`E256`) vẫn là chốt chặn thật.
 export const createJobOperationReportSchema = z.object({
   jobOperationId: z.uuid(),
   completedQuantityDelta: z

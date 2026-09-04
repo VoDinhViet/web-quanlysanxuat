@@ -3,40 +3,34 @@ import type { appTableFeatures } from "@/lib/table-features"
 
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
-import { JobOperationReportDialog } from "@/features/production-execution/components/composites/JobOperationReportDialog"
-import { OperationType } from "@/lib/types/operation.type"
+import {
+  JobOperationReportDialog,
+  resolveJobOperationReportDisabledReason,
+} from "@/components/shared/composites/JobOperationReportDialog"
 import type {
-  ProductionJobBomItem,
-  ProductionJobOperation,
+  JobOperationReportRow,
+  ProductionJobStatus,
 } from "@/lib/types/production-job.type"
-
-// Một dòng của bảng "DANH SÁCH PART" — Part (BOM item) ghép với đúng công đoạn đang chọn của nó
-// (GET .../operations?operationId=... đã lọc sẵn phía BE, ProductionExecutionJobPage.tsx chỉ
-// flatten kết quả).
-export type ProductionExecutionPartRow = {
-  bomItem: ProductionJobBomItem
-  operation: ProductionJobOperation
-}
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 const columnHelper = createColumnHelper<
   typeof appTableFeatures,
-  ProductionExecutionPartRow
+  JobOperationReportRow
 >()
 
 type BuildColumnsArgs = {
-  // null = có thể báo cáo; ngược lại là lý do bị khoá — dialog tự hiện lý do này thay vì để bấm
-  // xong mới báo lỗi từ BE (xem JobOperationReportForm.tsx). Giống nhau cho mọi dòng của cùng 1 Job
-  // nên truyền 1 lần vào đây, không tính lại mỗi dòng.
-  disabledReason: string | null
+  // Trạng thái Job — dialog tự gộp với loại công đoạn (OUTSOURCE) để tính lý do khoá, xem
+  // resolveJobOperationReportDisabledReason (JobOperationReportDialog.tsx). Giống nhau cho mọi
+  // dòng của cùng 1 Job nên truyền 1 lần vào đây, không tính lại mỗi dòng.
+  jobStatus: ProductionJobStatus
 }
 
-// Xây động (không phải mảng module-scope) vì "Thao tác" cần đóng gói `disabledReason` — gọi qua
+// Xây động (không phải mảng module-scope) vì "Thao tác" cần đóng gói `jobStatus` — gọi qua
 // `useMemo` ở ProductionExecutionPartsTable.tsx, đúng ngoại lệ forms-and-ui.md cho phép ("module
 // scope hoặc memoized với useMemo").
 export function buildProductionExecutionPartColumns({
-  disabledReason,
+  jobStatus,
 }: BuildColumnsArgs) {
   return columnHelper.columns([
     columnHelper.accessor((row) => row.bomItem.code, {
@@ -91,20 +85,15 @@ export function buildProductionExecutionPartColumns({
         cellClassName: "text-center",
       },
       cell: ({ row }) => {
-        // Công đoạn OUTSOURCE tự cập nhật SL hoàn thành từ OS-IN, không nhập tay —
-        // docs/decisions/outsourced-operation-progress-writeback.md phía be-quanlysanxuat, khớp
-        // E260. `disabledReason` (job-level) ưu tiên trước — job chưa start thì mọi dòng đều khoá
-        // như nhau, không cần phân biệt loại công đoạn.
-        const reason =
-          disabledReason ??
-          (row.original.operation.type === OperationType.OUTSOURCE
-            ? "Công đoạn gia công ngoài tự cập nhật khi nhận hàng (OS-IN), không nhập tay."
-            : null)
+        const reason = resolveJobOperationReportDisabledReason(
+          jobStatus,
+          row.original.operation.type
+        )
 
         return (
           <TooltipTrigger>
             <JobOperationReportDialog
-              partRow={row.original}
+              row={row.original}
               disabledReason={reason}
               trigger={
                 <Button type="button" size="sm">

@@ -47,17 +47,27 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 
 ### `src/components/shared/composites/`
 
-| Component      | Prop chính                                                                                                                                                                                                       | Call site                                                                                |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `TimelineCard` | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?`                                                                                                                      | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
-| `Pagination`   | `page`, `pageSize`, `total`, `onPageChange`, `onPageSizeChange?` (bỏ qua → ẩn selector cỡ trang), `disabled?`, `className?`, `container?` — thuần presentational, không tự patch route; luôn hiện dù chỉ 1 trang | mọi bảng/danh sách có phân trang                                                         |
-| `StatusLegend` | `icon`, `title`, `items: {key, badge: ReactNode, description}[]`                                                                                                                                                 | `InventoryRequisitionsLegend.tsx`                                                        |
-| `StatusNotice` | `title`, `reason`, `actorName?`, `timestamp?` (format `dd/MM/yyyy HH:mm` nội bộ), `extra?: ReactNode`                                                                                                            | `PurchaseOrderCancellationNotice.tsx` (+ `PurchaseRequestRejectionNotice.tsx`)           |
+| Component                  | Prop chính                                                                                                                                                                                                                                                                               | Call site                                                                                |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `TimelineCard`             | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?`                                                                                                                                                                                              | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
+| `Pagination`               | `page`, `pageSize`, `total`, `onPageChange`, `onPageSizeChange?` (bỏ qua → ẩn selector cỡ trang), `disabled?`, `className?`, `container?` — thuần presentational, không tự patch route; luôn hiện dù chỉ 1 trang                                                                         | mọi bảng/danh sách có phân trang                                                         |
+| `StatusLegend`             | `icon`, `title`, `items: {key, badge: ReactNode, description}[]`                                                                                                                                                                                                                         | `InventoryRequisitionsLegend.tsx`                                                        |
+| `StatusNotice`             | `title`, `reason`, `actorName?`, `timestamp?` (format `dd/MM/yyyy HH:mm` nội bộ), `extra?: ReactNode`                                                                                                                                                                                    | `PurchaseOrderCancellationNotice.tsx` (+ `PurchaseRequestRejectionNotice.tsx`)           |
+| `JobOperationReportDialog` | `row: JobOperationReportRow` (`{bomItem, operation}`, `production-job.type.ts`), `disabledReason: string \| null` (null = nhập được; ngược lại dialog hiện lý do thay cho form), `trigger: ReactNode`; kèm `resolveJobOperationReportDisabledReason(jobStatus, operationType)` cùng file | `ProductionExecutionPartsTableColumns.tsx` + `ProductionJobOperationsTable.tsx`          |
 
 `Pagination` thuần presentational nên mọi list page cần patch route `page`/`limit` search param
 tự bind qua hook `useRoutePagination` (`src/hooks/use-route-pagination.ts`) — trả về
 `onPageChange`/`onPageSizeChange` sẵn để truyền thẳng vào props cùng tên. Site có state cục bộ
 (picker trong wizard, sidebar log card) bind thẳng `onPageChange={setPage}` thay vì qua hook này.
+
+`JobOperationReportDialog` (+ `JobOperationReportForm`/`JobOperationReportEvidenceField`, nội bộ
+của nó) **không phải** một lần mở rộng kit như Phase 4: đây là đúng **một** instance duy nhất,
+ghi đúng **một** entity (`production_job_operations`) qua đúng **một** mutation, được render bởi
+2 màn thật — không thêm prop biến thể nào so với bản gốc ở `production-execution`. Data layer
+(schema/server function/mutation hook) ở lại `production-jobs` (chủ sở hữu entity) và shared UI
+gọi ngược qua `@/features/production-jobs/api`, đúng
+`qlsx/shared-reads-features-through-the-barrel` (`eslint.config.js`). Ship cùng commit với
+migration của cả 2 call site.
 
 ### `src/components/shared/primitives/`
 

@@ -17,10 +17,14 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
-import { ProductionJobOperationCompletedQuantityCell } from "@/features/production-jobs/components/primitives/ProductionJobOperationCompletedQuantityCell"
+import {
+  JobOperationReportDialog,
+  resolveJobOperationReportDisabledReason,
+} from "@/components/shared/composites/JobOperationReportDialog"
 import type {
   ProductionJobBomItem,
   ProductionJobOperation,
+  ProductionJobStatus,
 } from "@/lib/types/production-job.type"
 import { OperationType } from "@/lib/types/operation.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
@@ -103,8 +107,7 @@ function OperationStatusBadge({
 
 type ProductionJobOperationsTableProps = {
   groups: ProductionJobBomItem[]
-  productionJobId: string
-  canEdit: boolean
+  jobStatus: ProductionJobStatus
   outsourceableByOperationId: Map<string, OutsourceableOperation>
 }
 
@@ -131,6 +134,27 @@ function OperationTypeBadge({ type }: { type: OperationType }) {
       />
       {isInhouse ? "Trong xưởng" : "Gia công ngoài"}
     </Badge>
+  )
+}
+
+// SL hoàn thành/không đạt chỉ đọc — nhập qua nút "Nhập báo cáo" ở cột THAO TÁC (cộng dồn, kèm
+// ngày/ghi chú/ảnh và một dòng nhật ký), không còn form sửa tại chỗ ghi đè 2 số như trước.
+function OperationCompletedQuantityCell({
+  operation,
+}: {
+  operation: ProductionJobOperation
+}) {
+  return (
+    <div className="flex items-center justify-center gap-3 text-center tabular-nums">
+      <span className="text-foreground">
+        Đạt: {quantityFormatter.format(operation.completedQuantity)}
+      </span>
+      {operation.rejectedQuantity > 0 && (
+        <span className="text-destructive">
+          NG: {quantityFormatter.format(operation.rejectedQuantity)}
+        </span>
+      )}
+    </div>
   )
 }
 
@@ -261,11 +285,11 @@ function BomItemHeaderRow({ bomItem }: { bomItem: ProductionJobBomItem }) {
 }
 
 type OperationRowProps = {
+  bomItem: ProductionJobBomItem
   operation: ProductionJobOperation
   groupIndex: number
   operationIndex: number
-  productionJobId: string
-  canEdit: boolean
+  jobStatus: ProductionJobStatus
   outsourceableByOperationId: Map<string, OutsourceableOperation>
 }
 
@@ -274,13 +298,18 @@ type OperationRowProps = {
 // it. `groupIndex`/`operationIndex` are 0-based positions the caller's `.map()` already tracks —
 // formatted here (not pre-joined by the caller) so numbering stays colocated with its own cell.
 function OperationRow({
+  bomItem,
   operation,
   groupIndex,
   operationIndex,
-  productionJobId,
-  canEdit,
+  jobStatus,
   outsourceableByOperationId,
 }: OperationRowProps) {
+  const reportDisabledReason = resolveJobOperationReportDisabledReason(
+    jobStatus,
+    operation.type
+  )
+
   return (
     <TableRow id={operation.id} className="h-16 bg-card hover:bg-muted/20">
       <TableCell className="py-3">
@@ -312,11 +341,7 @@ function OperationRow({
         {quantityFormatter.format(operation.plannedQuantity)}
       </TableCell>
       <TableCell>
-        <ProductionJobOperationCompletedQuantityCell
-          productionJobId={productionJobId}
-          operation={operation}
-          canEdit={canEdit && operation.type !== OperationType.OUTSOURCE}
-        />
+        <OperationCompletedQuantityCell operation={operation} />
       </TableCell>
       <TableCell className="text-center text-muted-foreground">
         <OperationSentQuantityCell
@@ -333,10 +358,27 @@ function OperationRow({
           : DateTime.fromISO(operation.completedDate).toFormat("dd/MM/yyyy")}
       </TableCell>
       <TableCell className="text-center">
-        <OperationSendActionCell
-          operation={operation}
-          outsourceableByOperationId={outsourceableByOperationId}
-        />
+        <div className="flex items-center justify-center gap-2">
+          <TooltipTrigger>
+            <JobOperationReportDialog
+              row={{ bomItem, operation }}
+              disabledReason={reportDisabledReason}
+              trigger={
+                <Button type="button" size="sm">
+                  Nhập báo cáo
+                </Button>
+              }
+            />
+            <Tooltip>
+              {reportDisabledReason ??
+                "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho công đoạn này."}
+            </Tooltip>
+          </TooltipTrigger>
+          <OperationSendActionCell
+            operation={operation}
+            outsourceableByOperationId={outsourceableByOperationId}
+          />
+        </div>
       </TableCell>
     </TableRow>
   )
@@ -346,22 +388,23 @@ function OperationRow({
 // BOM item, mỗi phần tử mảng là một BOM item kèm operations[] của riêng nó (không cần tự dựng
 // nhóm ở FE nữa). Mỗi BOM item hiện một khối header (BomItemHeaderRow) rồi tới các dòng công đoạn
 // của riêng nó (OperationRow), theo thứ tự backend trả (đã sort sortOrder/createdAt). "SL KẾ
-// HOẠCH" đọc thẳng `plannedQuantity` — cùng một BOM item thì mọi công đoạn của nó có cùng số; SL
-// hoàn thành nhập được tới đúng mức đó (`max`), backend vẫn là chốt chặn thật (E088) lúc lưu. 8
+// HOẠCH" đọc thẳng `plannedQuantity` — cùng một BOM item thì mọi công đoạn của nó có cùng số. 8
 // cột tách bạch: CÔNG ĐOẠN (STT + tên/mã/ghi chú), LOẠI (Trong xưởng/Gia công ngoài — 1 BOM item
-// có thể có cả 2), SL KẾ HOẠCH, SL HOÀN THÀNH, SL ĐÃ GỬI (chỉ dòng Gia công ngoài — ghép từ
-// `outsourceableByOperationId`, xem OperationSentQuantityCell), TRẠNG THÁI (Chưa bắt đầu/Đang thực
-// hiện/Hoàn thành — suy từ completedQuantity/completedDate, không phải field riêng trên DTO),
-// NGÀY HOÀN THÀNH, THAO TÁC (dòng Gia công ngoài có thêm nút Gửi gia công ngoài — khoá khi đã gửi
-// đủ định mức, xem OperationSendActionCell). "Yêu cầu OQC" không còn ở đây nữa — đã gộp thành 1
-// nút duy nhất ở header chi tiết Job (ProductionJobDetailHeader.tsx), disabled ngoài Job
-// WAITING_QC (mọi công đoạn đã hoàn thành). Khung viền `rounded-md border` quanh bảng +
-// border-r/border-b có sẵn từ Table primitive, khớp khuôn các bảng khác trong repo
-// (`ProductionOrderItemsCard.tsx`, `InventoryIssuesTable.tsx`).
+// có thể có cả 2), SL KẾ HOẠCH, SL HOÀN THÀNH (chỉ đọc — "Đạt"/"NG"), SL ĐÃ GỬI (chỉ dòng Gia
+// công ngoài — ghép từ `outsourceableByOperationId`, xem OperationSentQuantityCell), TRẠNG THÁI
+// (Chưa bắt đầu/Đang thực hiện/Hoàn thành — suy từ completedQuantity/completedDate, không phải
+// field riêng trên DTO), NGÀY HOÀN THÀNH (ngày người báo cáo tự chọn, không phải ngày lưu),
+// THAO TÁC ("Nhập báo cáo" ở mọi dòng — cộng dồn SL, kèm ngày/ghi chú/ảnh và một dòng nhật ký,
+// xem JobOperationReportDialog.tsx — cùng dialog với màn "Thực hiện sản xuất"; dòng Gia công
+// ngoài có thêm nút Gửi gia công ngoài, khoá khi đã gửi đủ định mức, xem
+// OperationSendActionCell). "Yêu cầu OQC" không còn ở đây nữa — đã gộp thành 1 nút duy nhất ở
+// header chi tiết Job (ProductionJobDetailHeader.tsx), disabled ngoài Job WAITING_QC (mọi công
+// đoạn đã hoàn thành). Khung viền `rounded-md border` quanh bảng + border-r/border-b có sẵn từ
+// Table primitive, khớp khuôn các bảng khác trong repo (`ProductionOrderItemsCard.tsx`,
+// `InventoryIssuesTable.tsx`).
 export function ProductionJobOperationsTable({
   groups,
-  productionJobId,
-  canEdit,
+  jobStatus,
   outsourceableByOperationId,
 }: ProductionJobOperationsTableProps) {
   return (
@@ -414,7 +457,7 @@ export function ProductionJobOperationsTable({
             </TableHead>
             <TableHead
               id="actions"
-              className="min-w-48 text-center font-bold text-foreground"
+              className="min-w-64 text-center font-bold text-foreground"
             >
               THAO TÁC
             </TableHead>
@@ -433,11 +476,11 @@ export function ProductionJobOperationsTable({
                 {bomItem.operations.map((operation, operationIndex) => (
                   <OperationRow
                     key={operation.id}
+                    bomItem={bomItem}
                     operation={operation}
                     groupIndex={groupIndex}
                     operationIndex={operationIndex}
-                    productionJobId={productionJobId}
-                    canEdit={canEdit}
+                    jobStatus={jobStatus}
                     outsourceableByOperationId={outsourceableByOperationId}
                   />
                 ))}

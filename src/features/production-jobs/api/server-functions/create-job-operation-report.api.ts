@@ -46,11 +46,14 @@ const createJobOperationReportParamsSchema = z
     imageFileIds: resolveApiFileIds(images),
   }))
 
-// Nhập báo cáo hoàn thành công đoạn — POST /production-execution/operations/:jobOperationId/reports,
-// khác PATCH .../operations/:operationId của tab "Công đoạn sản xuất"
-// (update-production-job-operation.api.ts, ghi đè): route này cộng dồn phía server + ghi nhật ký
-// từng lần báo cáo (append-only), trả `204`. Tên hàm khớp
-// ProductionExecutionService.createJobOperationReport bên BE.
+// Nhập báo cáo hoàn thành công đoạn — POST /production-execution/operations/:jobOperationId/reports
+// — đường ghi DUY NHẤT vào `production_job_operations` từ FE (đường ghi đè cũ `PATCH
+// /production-jobs/:jobId/operations/:operationId` đã xoá). Route này cộng dồn phía server + ghi
+// nhật ký từng lần báo cáo (append-only), trả `204`. Tên hàm khớp
+// ProductionExecutionService.createJobOperationReport bên BE. Nằm ở production-jobs (chủ sở hữu
+// entity `production_job_operations`) dù lịch sử được viết cho production-execution — dialog gọi
+// nó (`src/components/shared/composites/JobOperationReportDialog.tsx`) giờ dùng chung bởi cả 2
+// màn.
 export const createJobOperationReport = createServerFn({ method: "POST" })
   .validator(createJobOperationReportParamsSchema)
   .handler(async ({ data }): Promise<void> => {

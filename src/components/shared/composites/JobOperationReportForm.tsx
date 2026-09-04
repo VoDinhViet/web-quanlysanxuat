@@ -9,33 +9,34 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { JobOperationReportEvidenceField } from "@/features/production-execution/components/composites/JobOperationReportEvidenceField"
-import { useCreateJobOperationReport } from "@/features/production-execution/hooks/use-create-job-operation-report"
-import { createJobOperationReportSchema } from "@/features/production-execution/schemas/create-job-operation-report.schema"
+import { JobOperationReportEvidenceField } from "@/components/shared/composites/JobOperationReportEvidenceField"
+import { useCreateJobOperationReport } from "@/features/production-jobs/api"
+import { createJobOperationReportSchema } from "@/lib/create-job-operation-report.schema"
 import { useAppForm } from "@/hooks/use-app-form"
-import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
+import type { JobOperationReportRow } from "@/lib/types/production-job.type"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 type JobOperationReportFormProps = {
-  partRow: ProductionExecutionPartRow
-  // null = có thể báo cáo; ngược lại là lý do bị khoá (C2 trong kế hoạch: Job chưa `start` hoặc
-  // chưa qua "Duyệt công đoạn"), hiện thay cho khối input thay vì để người dùng bấm rồi mới báo
-  // lỗi từ BE.
+  row: JobOperationReportRow
+  // null = có thể báo cáo; ngược lại là lý do bị khoá, hiện thay cho khối input thay vì để người
+  // dùng bấm rồi mới báo lỗi từ BE.
   disabledReason: string | null
   onClose: () => void
 }
 
-// Nội dung dialog "Nhập báo cáo hoàn thành" — mở từ nút cùng tên trên mỗi dòng Part
-// (ProductionExecutionPartsTableColumns.tsx, qua JobOperationReportDialog.tsx bọc ngoài). Tên
-// component khớp be-quanlysanxuat's `createJobOperationReport` (ProductionExecutionService).
+// Nội dung dialog "Nhập báo cáo hoàn thành" — dùng chung bởi 2 màn (qua
+// JobOperationReportDialog.tsx bọc ngoài): bảng "DANH SÁCH PART" của "Thực hiện sản xuất"
+// (ProductionExecutionPartsTableColumns.tsx) và bảng "Công đoạn sản xuất" của Job detail
+// (ProductionJobOperationsTable.tsx). Tên component khớp be-quanlysanxuat's
+// `createJobOperationReport` (ProductionExecutionService).
 export function JobOperationReportForm({
-  partRow,
+  row,
   disabledReason,
   onClose,
 }: JobOperationReportFormProps) {
-  const { bomItem, operation } = partRow
+  const { bomItem, operation } = row
   const { mutate, isPending } = useCreateJobOperationReport()
 
   // Phần còn được phép nhập thêm (hoàn thành + không đạt cộng lại) — vượt số này là vượt E252

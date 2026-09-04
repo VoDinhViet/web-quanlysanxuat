@@ -25,10 +25,10 @@ type JobOperationReportEvidenceFieldProps = {
   disabled?: boolean
 }
 
-// "Hình ảnh (nếu có)" của form báo cáo — component riêng của feature production-execution, không
-// dùng chung với oqc/orders (mỗi feature một cách upload/hiển thị riêng, xem OqcEvidenceCard.tsx's
-// doc comment). Chỉ nhận ảnh (khác OqcEvidenceCard nhận cả PDF/DOCX/XLSX) — mockup ghi rõ
-// "Hình ảnh", không phải "Tài liệu".
+// "Hình ảnh (nếu có)" của form báo cáo "Nhập báo cáo" (JobOperationReportForm.tsx) — không dùng
+// chung với oqc/orders (mỗi feature một cách upload/hiển thị riêng, xem OqcEvidenceCard.tsx's doc
+// comment). Chỉ nhận ảnh (khác OqcEvidenceCard nhận cả PDF/DOCX/XLSX) — mockup ghi rõ "Hình ảnh",
+// không phải "Tài liệu".
 export function JobOperationReportEvidenceField({
   value,
   onChange,

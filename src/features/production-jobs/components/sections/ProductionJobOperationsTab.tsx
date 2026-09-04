@@ -26,10 +26,10 @@ type ProductionJobOperationsTabProps = {
 
 // Reads GET /production-jobs/:jobId/operations directly (client-driven, tab-gated) — the backend
 // already groups by BOM item, one array element per BOM item with its own `operations[]`, so
-// no client-side grouping is needed (see ProductionJobBomItem's doc comment). Sửa chỉ mở khi Job
-// đang IN_PROGRESS (khớp ràng buộc backend E087 — completedQuantity/rejectedQuantity/completedDate
-// đóng băng ngoài điều kiện đó). Backend's separate "Duyệt công đoạn" gate was removed
-// 2026-09-03 — entering IN_PROGRESS (via "Xác nhận") is the only condition now.
+// no client-side grouping is needed (see ProductionJobBomItem's doc comment). Tab chỉ đọc — nhập
+// SL hoàn thành/không đạt đi qua dialog "Nhập báo cáo" dùng chung
+// (JobOperationReportDialog.tsx, cũng dùng bởi màn "Thực hiện sản xuất"), tự khoá + hiện lý do
+// khi Job chưa `IN_PROGRESS` thay vì tab tự ẩn control.
 export function ProductionJobOperationsTab({
   productionJobId,
   status,
@@ -37,19 +37,19 @@ export function ProductionJobOperationsTab({
   const operationsQuery = useQuery(
     productionJobOperationsQueryOptions(productionJobId)
   )
-  const canEdit = status === ProductionJobStatus.IN_PROGRESS
+  const isInProgress = status === ProductionJobStatus.IN_PROGRESS
   const groups = operationsQuery.data ?? []
 
   // SL đã gửi/còn được phép gửi gia công ngoài không có trên GET .../operations (Production không
   // ghi/biết gì về OS-OUT, docs/domains/production.md) — ghép từ route popup OS-OUT đã có sẵn 2
-  // số này. `enabled: canEdit` vì BE route đó chỉ trả công đoạn của Job `IN_PROGRESS`, khớp đúng
-  // điều kiện `canEdit` — Job đã COMPLETED/CANCELLED sẽ không thấy số đã gửi (giới hạn đã biết).
+  // số này. `enabled: isInProgress` vì BE route đó chỉ trả công đoạn của Job `IN_PROGRESS` — Job
+  // đã COMPLETED/CANCELLED sẽ không thấy số đã gửi (giới hạn đã biết).
   const outsourceableQuery = useQuery({
     ...outsourceableOperationsQueryOptions({
       productionJobId,
       limit: outsourceableOperationsLimit,
     }),
-    enabled: canEdit,
+    enabled: isInProgress,
   })
   const outsourceableByOperationId = useMemo(
     () =>
@@ -83,8 +83,7 @@ export function ProductionJobOperationsTab({
       ) : (
         <ProductionJobOperationsTable
           groups={groups}
-          productionJobId={productionJobId}
-          canEdit={canEdit}
+          jobStatus={status}
           outsourceableByOperationId={outsourceableByOperationId}
         />
       )}

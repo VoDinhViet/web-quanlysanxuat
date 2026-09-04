@@ -13,11 +13,14 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildProductionExecutionPartColumns } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
-import type { ProductionExecutionPartRow } from "@/features/production-execution/components/composites/ProductionExecutionPartsTableColumns"
+import type {
+  JobOperationReportRow,
+  ProductionJobStatus,
+} from "@/lib/types/production-job.type"
 
 type ProductionExecutionPartsTableProps = {
-  rows: ProductionExecutionPartRow[]
-  disabledReason: string | null
+  rows: JobOperationReportRow[]
+  jobStatus: ProductionJobStatus
 }
 
 // Bảng "DANH SÁCH PART" — mỗi dòng có nút "Nhập báo cáo" mở dialog riêng (xem
@@ -25,11 +28,11 @@ type ProductionExecutionPartsTableProps = {
 // cuộn xuống xem form riêng bên dưới bảng).
 export function ProductionExecutionPartsTable({
   rows,
-  disabledReason,
+  jobStatus,
 }: ProductionExecutionPartsTableProps) {
   const columns = useMemo(
-    () => buildProductionExecutionPartColumns({ disabledReason }),
-    [disabledReason]
+    () => buildProductionExecutionPartColumns({ jobStatus }),
+    [jobStatus]
   )
 
   const table = useTable({
