@@ -1,12 +1,11 @@
 import * as React from "react"
+import { cn } from "cn"
 import {
   Focusable,
   OverlayArrow,
   Tooltip as TooltipPrimitive,
   TooltipTrigger as TooltipTriggerPrimitive,
 } from "react-aria-components"
-
-import { cn } from "@/lib/utils"
 
 function TooltipTrigger({
   delay = 0,
@@ -32,9 +31,7 @@ function TooltipTrigger({
 function Tooltip({
   className,
   placement = "top",
-  // Repo tooltip has always sat flush against its trigger (matches the previous
-  // Radix `sideOffset={0}`) — aria-vega's own default is `4`.
-  offset = 0,
+  offset = 4,
   crossOffset = 0,
   children,
   ...props
