@@ -27,3 +27,6 @@ ds-bundle/
 
 # superpowers subagent-driven-development scratch workspace
 .superpowers/
+
+# chrome-devtools-mcp / playwright-mcp test-run artifacts
+.playwright-mcp/
