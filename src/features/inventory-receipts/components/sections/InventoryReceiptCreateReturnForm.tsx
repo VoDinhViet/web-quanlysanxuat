@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { useField } from "@tanstack/react-form"
+import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -104,8 +104,9 @@ export function InventoryReceiptCreateReturnForm() {
 
   const form = useAppForm({
     defaultValues: createInventoryReceiptReturnFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createInventoryReceiptReturnSchema,
+      onDynamic: createInventoryReceiptReturnSchema,
     },
     onSubmit: ({ value }) => submit(value),
   })

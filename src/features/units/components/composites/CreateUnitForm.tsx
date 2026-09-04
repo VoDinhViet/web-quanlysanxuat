@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Save } from "lucide-react"
@@ -39,8 +40,9 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
 
   const form = useAppForm({
     defaultValues: createUnitFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createUnitSchema,
+      onDynamic: createUnitSchema,
     },
     onSubmit: ({ value }) => create(value),
   })

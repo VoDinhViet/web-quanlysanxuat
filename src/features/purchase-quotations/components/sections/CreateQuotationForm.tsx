@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
@@ -63,8 +64,9 @@ export function CreateQuotationForm() {
 
   const form = useAppForm({
     defaultValues: createQuotationFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createQuotationFormSchema,
+      onDynamic: createQuotationFormSchema,
     },
     onSubmit: ({ value }) => create(value),
     onSubmitInvalid: () =>

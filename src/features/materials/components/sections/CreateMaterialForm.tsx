@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
@@ -44,8 +45,9 @@ export function CreateMaterialForm() {
 
   const form = useAppForm({
     defaultValues: createMaterialFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createMaterialSchema,
+      onDynamic: createMaterialSchema,
     },
     onSubmit: ({ value }) => create(value),
   })

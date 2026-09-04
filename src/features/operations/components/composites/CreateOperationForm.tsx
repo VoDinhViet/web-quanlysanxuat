@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Save } from "lucide-react"
@@ -46,8 +47,9 @@ export function CreateOperationForm({
 
   const form = useAppForm({
     defaultValues: createOperationFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createOperationSchema,
+      onDynamic: createOperationSchema,
     },
     onSubmit: ({ value }) => create(value),
   })

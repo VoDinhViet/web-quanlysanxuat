@@ -1,4 +1,5 @@
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import {
   useMutation,
@@ -65,7 +66,8 @@ export function ProductDetailPage() {
 
   const form = useAppForm({
     defaultValues: getProductDefaultValues(product),
-    validators: { onSubmit: updateProductSchema },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: updateProductSchema },
     onSubmit: ({ value }) => update(value),
   })
 

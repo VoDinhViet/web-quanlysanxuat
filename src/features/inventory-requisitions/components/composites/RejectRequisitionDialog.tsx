@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -70,8 +71,9 @@ function RejectRequisitionForm({
 
   const form = useAppForm({
     defaultValues: { reason: "" },
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: rejectInventoryRequisitionSchema.pick({ reason: true }),
+      onDynamic: rejectInventoryRequisitionSchema.pick({ reason: true }),
     },
     onSubmit: ({ value }) => mutation.mutate(value.reason),
   })

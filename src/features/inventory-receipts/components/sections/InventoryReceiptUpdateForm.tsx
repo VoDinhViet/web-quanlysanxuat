@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
@@ -70,8 +71,9 @@ export function InventoryReceiptUpdateForm({
 
   const form = useAppForm({
     defaultValues: getInventoryReceiptDefaultValues(inventoryReceipt),
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: updateInventoryReceiptSchema,
+      onDynamic: updateInventoryReceiptSchema,
     },
     onSubmit: ({ value }) => update(value),
   })

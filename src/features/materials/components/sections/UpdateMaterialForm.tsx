@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Save } from "lucide-react"
@@ -61,8 +62,9 @@ export function UpdateMaterialForm({ material }: UpdateMaterialFormProps) {
 
   const form = useAppForm({
     defaultValues: getMaterialDefaultValues(material),
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: updateMaterialSchema,
+      onDynamic: updateMaterialSchema,
     },
     onSubmit: ({ value }) => update(value),
   })

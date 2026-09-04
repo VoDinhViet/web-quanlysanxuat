@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
@@ -38,8 +39,9 @@ export function CreateRoleForm() {
 
   const form = useAppForm({
     defaultValues: createRoleFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createRoleSchema,
+      onDynamic: createRoleSchema,
     },
     onSubmit: ({ value }) => create(value),
   })

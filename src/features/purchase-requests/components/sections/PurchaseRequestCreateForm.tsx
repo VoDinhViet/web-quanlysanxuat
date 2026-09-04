@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useField } from "@tanstack/react-form"
+import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -71,8 +71,9 @@ export function PurchaseRequestCreateForm() {
 
   const form = useAppForm({
     defaultValues: createPurchaseRequestFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createPurchaseRequestSchema,
+      onDynamic: createPurchaseRequestSchema,
     },
     onSubmit: ({ value }) => create(value),
   })

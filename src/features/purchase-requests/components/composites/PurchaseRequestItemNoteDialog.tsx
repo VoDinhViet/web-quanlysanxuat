@@ -1,4 +1,5 @@
 import { useParams } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -86,7 +87,8 @@ function PurchaseRequestItemNoteDialogForm({
 
   const form = useAppForm({
     defaultValues: { note: note ?? "" },
-    validators: { onSubmit: updatePurchaseRequestItemNoteSchema },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: updatePurchaseRequestItemNoteSchema },
     onSubmit: ({ value }) => save(value.note.length > 0 ? value.note : null),
   })
 

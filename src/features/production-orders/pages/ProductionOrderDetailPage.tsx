@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useParams } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import {
   keepPreviousData,
@@ -79,7 +80,8 @@ export function ProductionOrderDetailPage() {
 
   const form = useAppForm({
     defaultValues: getProductionOrderDefaultValues(production),
-    validators: { onSubmit: updateProductionOrderSchema },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: updateProductionOrderSchema },
     // Chỉ gửi dòng đã đổi — PATCH của backend là partial, dòng không gửi giữ nguyên giá trị đã
     // lưu.
     onSubmit: ({ value }) =>

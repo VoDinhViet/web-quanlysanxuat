@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { Check } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -66,8 +67,9 @@ function ClientContactDialogForm({
 
   const form = useAppForm({
     defaultValues: initialValue ?? emptyContact,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: clientContactFormSchema,
+      onDynamic: clientContactFormSchema,
     },
     onSubmit: ({ value }) => onSubmit(value),
   })

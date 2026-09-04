@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AltArrowLeft, AltArrowRight, CheckCircle } from "@solar-icons/react"
@@ -53,8 +54,9 @@ export function CreateOutsourcingReceiptForm() {
 
   const form = useAppForm({
     defaultValues: createOutsourcingReceiptFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createOutsourcingReceiptSchema,
+      onDynamic: createOutsourcingReceiptSchema,
     },
     onSubmit: ({ value }) => create({ data: value }),
   })

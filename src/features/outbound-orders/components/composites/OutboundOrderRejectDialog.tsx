@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CloseCircle } from "@solar-icons/react"
@@ -66,8 +67,9 @@ function OutboundOrderRejectForm({
 
   const form = useAppForm({
     defaultValues: { reason: "" },
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: rejectOutboundOrderSchema.pick({ reason: true }),
+      onDynamic: rejectOutboundOrderSchema.pick({ reason: true }),
     },
     onSubmit: ({ value }) => mutation.mutate(value.reason),
   })

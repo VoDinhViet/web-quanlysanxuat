@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import {
   keepPreviousData,
@@ -59,8 +60,9 @@ export function ProductionJobNotesSection({
 
   const form = useAppForm({
     defaultValues: { content: "" },
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createProductionJobNoteSchema.pick({ content: true }),
+      onDynamic: createProductionJobNoteSchema.pick({ content: true }),
     },
     onSubmit: ({ value }) => createNote(value.content),
   })

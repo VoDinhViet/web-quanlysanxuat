@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Save } from "lucide-react"
@@ -48,8 +49,9 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
 
   const form = useAppForm({
     defaultValues: getRoleDefaultValues(role),
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: updateRoleSchema,
+      onDynamic: updateRoleSchema,
     },
     onSubmit: ({ value }) => update(value),
   })

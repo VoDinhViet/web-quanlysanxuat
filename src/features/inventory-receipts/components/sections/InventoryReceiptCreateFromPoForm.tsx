@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useField } from "@tanstack/react-form"
+import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -142,8 +142,9 @@ export function InventoryReceiptCreateFromPoForm() {
 
   const form = useAppForm({
     defaultValues: createInventoryReceiptFromPoFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createInventoryReceiptFromPoFormSchema,
+      onDynamic: createInventoryReceiptFromPoFormSchema,
     },
     onSubmit: ({ value }) => submit(value),
   })

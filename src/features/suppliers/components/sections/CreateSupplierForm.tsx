@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
@@ -47,8 +48,9 @@ export function CreateSupplierForm() {
 
   const form = useAppForm({
     defaultValues: createSupplierFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createSupplierSchema,
+      onDynamic: createSupplierSchema,
     },
     onSubmit: ({ value }) => create(value),
   })

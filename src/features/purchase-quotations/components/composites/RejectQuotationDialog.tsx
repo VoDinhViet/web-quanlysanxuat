@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -73,8 +74,9 @@ function RejectQuotationForm({
 
   const form = useAppForm({
     defaultValues: { reason: "" },
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: rejectPurchaseQuotationSchema.pick({ reason: true }),
+      onDynamic: rejectPurchaseQuotationSchema.pick({ reason: true }),
     },
     onSubmit: ({ value }) => mutation.mutate(value.reason),
   })

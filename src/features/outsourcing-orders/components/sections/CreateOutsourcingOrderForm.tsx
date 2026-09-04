@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AltArrowLeft, AltArrowRight, CheckCircle } from "@solar-icons/react"
@@ -72,8 +73,9 @@ export function CreateOutsourcingOrderForm({
 
   const form = useAppForm({
     defaultValues: createOutsourcingOrderFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createOutsourcingOrderSchema,
+      onDynamic: createOutsourcingOrderSchema,
     },
     onSubmit: ({ value }) => create(value),
   })

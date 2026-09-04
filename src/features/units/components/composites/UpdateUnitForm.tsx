@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Save } from "lucide-react"
@@ -51,8 +52,9 @@ export function UpdateUnitForm({
 
   const form = useAppForm({
     defaultValues: getUnitDefaultValues(unit),
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: updateUnitSchema,
+      onDynamic: updateUnitSchema,
     },
     onSubmit: ({ value }) => update(value),
   })

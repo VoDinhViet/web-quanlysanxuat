@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { CheckCircle } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
@@ -85,7 +86,8 @@ function CreateBomItemForm({
 }: CreateBomItemFormProps) {
   const form = useAppForm({
     defaultValues: createBomItemDefaultValues,
-    validators: { onSubmit: createBomItemSchema },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: createBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
 
@@ -205,7 +207,8 @@ function UpdateBomItemForm({
 }: UpdateBomItemFormProps) {
   const form = useAppForm({
     defaultValues: getBomItemDefaultValues(node),
-    validators: { onSubmit: updateBomItemSchema },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: updateBomItemSchema },
     onSubmit: ({ value }) => onSubmit(value),
   })
 

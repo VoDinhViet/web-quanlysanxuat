@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { revalidateLogic } from "@tanstack/react-form"
 import { Printer } from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
@@ -42,7 +43,8 @@ export function SupplierReturnDetailActions({
 
   const form = useAppForm({
     defaultValues: { note: "", files: [] as FileFieldValue[] },
-    validators: { onSubmit: postSupplierReturnSchema },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: postSupplierReturnSchema },
     onSubmit: ({ value }) => postMutation.mutate(value),
   })
 

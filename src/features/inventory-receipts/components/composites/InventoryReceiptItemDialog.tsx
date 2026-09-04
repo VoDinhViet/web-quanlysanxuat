@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { revalidateLogic } from "@tanstack/react-form"
 import { Check } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -89,8 +90,9 @@ function InventoryReceiptItemDialogForm({
 
   const form = useAppForm({
     defaultValues: initialValue ?? inventoryReceiptItemDefaultValue,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: inventoryReceiptItemFormSchema,
+      onDynamic: inventoryReceiptItemFormSchema,
     },
     onSubmit: ({ value }) => onSubmit(value),
   })

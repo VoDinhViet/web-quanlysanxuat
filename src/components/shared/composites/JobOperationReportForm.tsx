@@ -1,3 +1,4 @@
+import { revalidateLogic } from "@tanstack/react-form"
 import { TriangleAlert } from "lucide-react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -59,8 +60,9 @@ export function JobOperationReportForm({
       note: "",
       images: [] as FileFieldValue[],
     },
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createJobOperationReportSchema.refine(
+      onDynamic: createJobOperationReportSchema.refine(
         (value) =>
           value.completedQuantityDelta + value.rejectedQuantityDelta <=
           remainingAllowance,
