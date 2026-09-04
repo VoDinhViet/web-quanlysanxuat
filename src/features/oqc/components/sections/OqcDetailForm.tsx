@@ -1,4 +1,4 @@
-import { useField } from "@tanstack/react-form"
+import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ClipboardList, Documents } from "@solar-icons/react"
@@ -55,13 +55,14 @@ function useOqcDetailForm(oqc: OqcDetail) {
 
   const form = useAppForm({
     defaultValues: getOqcDefaultValues(oqc),
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: confirmOqcSchema,
+      onDynamic: confirmOqcSchema,
     },
     onSubmit: ({ value }: { value: ConfirmOqcFormValue }) =>
       mutation.mutate({
         ...value,
-        // `validators.onSubmit` (confirmOqcSchema) has already guaranteed non-blank
+        // `validators.onDynamic` (confirmOqcSchema) has already guaranteed non-blank
         // inspectionLevel/result by the time this runs — TS just can't narrow them from the
         // form's own (deliberately looser, blank-until-picked) value type.
         inspectionLevel: value.inspectionLevel as IqcInspectionLevel,

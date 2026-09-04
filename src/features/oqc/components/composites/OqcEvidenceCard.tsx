@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils"
 // ghi đè hết.
 export const OqcEvidenceCard = withForm({
   defaultValues: confirmOqcFormDefaultValues,
-  validators: { onSubmit: confirmOqcSchema },
+  validators: { onDynamic: confirmOqcSchema },
   props: {
     name: "qcEvidence" as "qcEvidence" | "dispositionEvidence",
     title: "",

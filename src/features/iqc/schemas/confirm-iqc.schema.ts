@@ -22,7 +22,7 @@ function scale(value: number): number {
 
 // Wire contract for POST /api/iqc/:iqcId/confirm — now the single "Lưu" button of the whole
 // detail page (shared by every section card's form.AppField, all under one <form> in
-// IqcDetailForm.tsx), not a one-shot AQL-only confirm. Also the client-side onSubmit validator.
+// IqcDetailForm.tsx), not a one-shot AQL-only confirm. Also the client-side onDynamic validator.
 // `totalQuantity` is FE-only (seeded from the IQC's own `quantity`, never sent — dropped by
 // confirm-iqc.api.ts's payload transform) — carried here purely so the SORT split's cross-field
 // check below has something to compare against, since this schema is a module-level constant and
@@ -142,7 +142,7 @@ export const confirmIqcSchema = z
 
 // The form's own value type, hand-written rather than derived via `z.input` — `inspectionLevel`,
 // `result` and `disposition` all start blank (no sensible default to preselect), which
-// `z.enum(...)`'s input type can't represent. `onSubmit` narrows the blank cases out before
+// `z.enum(...)`'s input type can't represent. `onDynamic` narrows the blank cases out before
 // calling the mutation (see use-iqc-detail-form.ts).
 export type ConfirmIqcFormValue = {
   iqcId: string

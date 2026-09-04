@@ -45,7 +45,7 @@ const resultOptions: RadioCardOption<IqcResult>[] = [
 // (live) = FAIL — cùng mirror IqcResultCard.tsx/IqcDispositionCard.tsx.
 export const OqcResultCard = withForm({
   defaultValues: confirmOqcFormDefaultValues,
-  validators: { onSubmit: confirmOqcSchema },
+  validators: { onDynamic: confirmOqcSchema },
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const { oqcId } = useParams({ from: "/(authed)/manage_/oqc_/$oqcId" })

@@ -24,7 +24,7 @@ const aqlLevelOptions = aqlLevels.map((level) => ({
 // hiển thị read-only ở OqcLotSummaryCard, không có ở đây.
 export const OqcAqlInputCard = withForm({
   defaultValues: confirmOqcFormDefaultValues,
-  validators: { onSubmit: confirmOqcSchema },
+  validators: { onDynamic: confirmOqcSchema },
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const { oqcId } = useParams({ from: "/(authed)/manage_/oqc_/$oqcId" })

@@ -57,7 +57,7 @@ const dispositionOptions: RadioCardOption<OqcDisposition>[] = [
 // IqcSortSplitFields tương đương) + ghi chú quyết định.
 export const OqcDispositionCard = withForm({
   defaultValues: confirmOqcFormDefaultValues,
-  validators: { onSubmit: confirmOqcSchema },
+  validators: { onDynamic: confirmOqcSchema },
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     return (

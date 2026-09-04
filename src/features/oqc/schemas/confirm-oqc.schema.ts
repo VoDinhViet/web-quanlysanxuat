@@ -14,7 +14,7 @@ const aqlLevelValues: readonly number[] = aqlLevels
 // and no `inspectionDate` (not part of ConfirmOqcReqDto — OQC's inspection date is set once at
 // create and shown read-only). `disposition`/`dispositionNote` only render (OqcDispositionCard)
 // when `result` is live FAIL — optional here for the same reason IQC's are: not choosing a
-// disposition is a valid save (→ PENDING). Also the client-side onSubmit validator.
+// disposition is a valid save (→ PENDING). Also the client-side onDynamic validator.
 export const confirmOqcSchema = z.object({
   oqcId: z.uuid(),
   inspectionLevel: z.enum(IqcInspectionLevel),
@@ -57,7 +57,7 @@ export type ConfirmOqcSchema = z.input<typeof confirmOqcSchema>
 
 // The form's own value type, hand-written rather than derived via `z.input` — `inspectionLevel`,
 // `result` and `disposition` all start blank (no sensible default to preselect), which
-// `z.enum(...)`'s input type can't represent. `onSubmit` narrows the blank cases out before
+// `z.enum(...)`'s input type can't represent. `onDynamic` narrows the blank cases out before
 // calling the mutation (see OqcDetailForm.tsx's useOqcDetailForm).
 export type ConfirmOqcFormValue = {
   oqcId: string
