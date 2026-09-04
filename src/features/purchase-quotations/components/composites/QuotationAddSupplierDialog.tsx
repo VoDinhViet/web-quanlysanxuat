@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { CheckCircle } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
@@ -45,13 +44,8 @@ export function QuotationAddSupplierDialog({
   initialItemIds,
   onSubmit,
 }: QuotationAddSupplierDialogProps) {
-  // The NCC combobox must portal its popup inside this dialog's own DOM subtree (see
-  // ComboboxField's `container` doc), same pattern as InventoryReceiptItemDialog.tsx.
-  const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
-
   return (
     <Dialog
-      ref={setContentNode}
       isOpen={open}
       onOpenChange={onOpenChange}
       className="shadow-lg ring-0 sm:max-w-3xl"
@@ -60,7 +54,6 @@ export function QuotationAddSupplierDialog({
           supplier/checked state seeds fresh from `initialItemIds` — this is what fixes the old
           inline combobox never resetting after a pick. */}
       <QuotationAddSupplierDialogForm
-        container={contentNode}
         items={items}
         initialItemIds={initialItemIds}
         onSubmit={onSubmit}
@@ -71,7 +64,6 @@ export function QuotationAddSupplierDialog({
 }
 
 type QuotationAddSupplierDialogFormProps = {
-  container: HTMLDivElement | null
   items: PickedQuotationItemValue[]
   initialItemIds: string[]
   onSubmit: (selection: QuotationSupplierSelection) => void
@@ -79,7 +71,6 @@ type QuotationAddSupplierDialogFormProps = {
 }
 
 function QuotationAddSupplierDialogForm({
-  container,
   items,
   initialItemIds,
   onSubmit,
@@ -141,7 +132,6 @@ function QuotationAddSupplierDialogForm({
         onSearchChange={onSearchChange}
         isPending={isFetching}
         emptyMessage="Không tìm thấy NCC"
-        container={container}
       />
 
       <QuotationAddSupplierItems

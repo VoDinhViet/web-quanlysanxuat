@@ -34,11 +34,6 @@ type PaginationProps = {
   onPageSizeChange?: (pageSize: PageSize) => void
   disabled?: boolean
   className?: string
-  // DOM node to portal the page-size Select's popup into — forwarded as
-  // `UNSTABLE_portalContainer`, same defensive purpose as ComboboxField's own `container` prop.
-  // Pass the enclosing Dialog's content node when this pagination is rendered inside one —
-  // default undefined, everything else portals to `<body>` as normal.
-  container?: HTMLElement | null
 }
 
 // The one pagination control every table/list/feed in the app renders — page-number buttons +
@@ -53,7 +48,6 @@ export function Pagination({
   onPageSizeChange,
   disabled,
   className,
-  container,
 }: PaginationProps) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1
@@ -114,7 +108,7 @@ export function Pagination({
             <SelectTrigger className="h-9 w-28 bg-background text-xs font-medium text-foreground">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent UNSTABLE_portalContainer={container ?? undefined}>
+            <SelectContent>
               {pageSizeOptions.map((option) => (
                 <SelectItem key={option} id={String(option)}>
                   {option} / trang
