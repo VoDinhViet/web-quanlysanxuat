@@ -53,14 +53,3 @@ export const orderItemFormSchema = z
   .transform(({ itemLabel, itemUnit, ...item }) => item)
 
 export type OrderItemFormValue = z.input<typeof orderItemFormSchema>
-
-export const orderItemDefaultValue: OrderItemFormValue = {
-  itemId: "",
-  itemLabel: "",
-  itemUnit: "",
-  quantity: 1,
-  unitPrice: 0,
-  discountPercent: 0,
-  note: "",
-  status: OrderItemStatus.NORMAL,
-}

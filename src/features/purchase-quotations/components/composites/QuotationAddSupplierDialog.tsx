@@ -46,7 +46,7 @@ export function QuotationAddSupplierDialog({
   onSubmit,
 }: QuotationAddSupplierDialogProps) {
   // The NCC combobox must portal its popup inside this dialog's own DOM subtree (see
-  // ComboboxField's `container` doc), same pattern as OrderItemDialog.tsx.
+  // ComboboxField's `container` doc), same pattern as InventoryReceiptItemDialog.tsx.
   const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
 
   return (

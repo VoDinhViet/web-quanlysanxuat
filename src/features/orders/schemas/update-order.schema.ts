@@ -86,27 +86,3 @@ export const updateOrderSchema = z.object({
 })
 
 export type UpdateOrderSchema = z.input<typeof updateOrderSchema>
-
-// Only used for withForm's type inference in the update flow's own sections — the real
-// values always come from UpdateOrderForm's own `defaultValues`, so "" placeholders here are
-// harmless.
-export const updateOrderFormDefaultValues: UpdateOrderSchema = {
-  orderId: "",
-  clientId: "",
-  assignedUserId: "",
-  orderDate: "",
-  dueDate: "",
-  consigneeAddress: "",
-  paymentTerm: "",
-  currency: Currency.VND,
-  exchangeRate: 1,
-  discountType: OrderDiscountType.PERCENT,
-  discountValue: 0,
-  vatPercent: 0,
-  shippingFee: 0,
-  status: OrderStatus.DRAFT,
-  note: "",
-  internalNote: "",
-  items: [],
-  files: [],
-}

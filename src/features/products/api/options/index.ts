@@ -8,4 +8,3 @@ export { itemBomQueryOptions } from "@/features/products/api/options/item-bom.op
 export { itemIssuesQueryOptions } from "@/features/products/api/options/item-issues.options"
 export { itemOperationsQueryOptions } from "@/features/products/api/options/item-operations.options"
 export { itemOptionsQueryOptions } from "@/features/products/api/options/item-options.options"
-export { orderItemOptionsQueryOptions } from "@/features/products/api/options/order-item-options.options"

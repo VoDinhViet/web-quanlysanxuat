@@ -1,7 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { PageBody } from "@/components/shared/layouts/PageBody"
+import { PageShell } from "@/components/shared/layouts/PageShell"
 import { UpdateOrderForm } from "@/features/orders/components/sections/UpdateOrderForm"
 import {
   orderItemsQueryOptions,
@@ -16,21 +17,18 @@ export function UpdateOrderPage() {
   const { data: items } = useSuspenseQuery(orderItemsQueryOptions(orderId))
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <PageTitleBar
-        title="Cập nhật đơn hàng"
-        breadcrumbs={[
-          { label: "Bảng điều khiển", href: "/manage" },
-          { label: "Bán hàng" },
-          { label: "Đơn hàng (SO)", href: "/manage/orders" },
-          { label: order.code },
-          { label: "Cập nhật" },
-        ]}
-      />
-
-      <div className="order-drafting w-full p-4 sm:p-5 lg:p-6">
+    <PageShell
+      title="Cập nhật đơn hàng"
+      breadcrumbs={[
+        { label: "Bán hàng" },
+        { label: "Đơn hàng (SO)", href: "/manage/orders" },
+        { label: order.code },
+        { label: "Cập nhật" },
+      ]}
+    >
+      <PageBody className="order-drafting">
         <UpdateOrderForm order={order} items={items} />
-      </div>
-    </main>
+      </PageBody>
+    </PageShell>
   )
 }

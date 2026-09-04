@@ -5,18 +5,28 @@
   `z.infer<typeof schema>`, gate error styling on `field.state.meta.isTouched` (see
   `src/components/shared/composites/AppFormFields.tsx`). Deliberate react-hook-form + `Field`
   (`src/components/ui/field.tsx`) trials, not yet the pattern for a new form:
-  `src/features/auth/components/sections/LoginForm.tsx` (3 flat fields, the original trial) and
-  the entire `users` feature — `CreateUserForm.tsx` and `UpdateUserForm.tsx` (17 fields, a nested
+  `src/features/auth/components/sections/LoginForm.tsx` (3 flat fields, the original trial), the
+  entire `users` feature — `CreateUserForm.tsx` and `UpdateUserForm.tsx` (17 fields, a nested
   optional object, dependent selects, file upload; `CreateUserForm.tsx` also has a localStorage
-  draft — a harder form chosen specifically to stress-test RHF beyond LoginForm's small surface).
-  Every field binds with a plain inline `<Controller name="..." control={form.control}
-render={({field, fieldState}) => ...}>` — no shared RHF field kit; each
+  draft — a harder form chosen specifically to stress-test RHF beyond LoginForm's small surface)
+  — and the entire `orders` feature — `CreateOrderForm.tsx`/`UpdateOrderForm.tsx` (a 4-step
+  wizard each, `useFieldArray` for the `items` line table — the first use of it in the repo —
+  fully inline row editing with no per-row dialog, a file field whose `onChange` accepts an
+  updater function, and, Create only, a localStorage draft; Update's tab strip is fully unlocked
+  from mount instead of gated step-by-step, since an existing record is already valid where a
+  blank Create form isn't). Every field binds with a plain inline `<Controller name="..."
+control={form.control} render={({field, fieldState}) => ...}>` — no shared RHF field kit; each
   `Field`/`FieldLabel`/`FieldError` block is written out at the call site, same idiom as
-  `LoginForm.tsx`. `Create*Section.tsx` and `Update*Section.tsx` stay separate component trees
-  per flow — same "create and update evolve independently" reasoning as their schemas (see
-  "Server functions" in `architecture.md`) — even though most of their markup is copied 1:1
-  between the two; this is still not evidence either form library won: the rest of the repo
-  (~50 forms) stays on TanStack Form until a conclusion is reached.
+  `LoginForm.tsx`. `Create*Section.tsx`/`Create*Step.tsx` and `Update*Section.tsx`/
+  `Update*Step.tsx` stay separate component trees per flow — same "create and update evolve
+  independently" reasoning as their schemas (see "Server functions" in `architecture.md`) — even
+  though most of their markup is copied 1:1 between the two; this is still not evidence either
+  form library won: the rest of the repo (~50 forms) stays on TanStack Form until a conclusion is
+  reached. **A wizard that validates per-step with `form.trigger()` (not `handleSubmit()`) must
+  set `useForm({mode: "onChange"})`**: RHF's default `"onSubmit"` mode only re-validates a field
+  on change after `formState.isSubmitted` is `true`, a flag only an actual `handleSubmit()` call
+  sets — without `onChange`, a field fixed on an earlier step keeps showing its old error until
+  the user hits "Tiếp theo" again and re-triggers validation for that step.
 - Form schemas mirror the backend DTO's shape, including nested optional objects
   (e.g. `credential: createCredentialSchema.optional()` in
   `create-user.schema.ts`) — a toggle-gated section stores the nested object or
@@ -58,10 +68,12 @@ render={({field, fieldState}) => ...}>` — no shared RHF field kit; each
   (e.g. `"/manage/users"`) — the two intentionally differ. Pass the literal strings
   directly at each call site (no intermediate constants) — see
   `src/features/users/pages/UsersPage.tsx`.
-- List pages reuse the shared `TablePagination`
-  (`src/components/shared/data/TablePagination.tsx`) — it patches the current route's
-  `page`/`limit` search params itself via `navigate({ to: "." })`; callers only pass
-  `pagination` and layout `className`.
+- List pages reuse the shared `Pagination`
+  (`src/components/shared/composites/Pagination.tsx`) — a pure presentational component taking
+  flat `page`/`pageSize`/`total`/`onPageChange`/`onPageSizeChange?` props, no route logic of its
+  own. Route-backed list pages bind those callbacks via `useRoutePagination`
+  (`src/hooks/use-route-pagination.ts`), which patches the current route's `page`/`limit` search
+  params via `navigate({ to: "." })`.
 
 ## Styling & accessibility
 

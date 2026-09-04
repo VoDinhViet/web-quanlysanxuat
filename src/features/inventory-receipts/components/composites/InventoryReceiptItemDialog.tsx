@@ -33,8 +33,9 @@ type InventoryReceiptItemDialogProps = {
 // create/InventoryReceiptCreateGenericItemsSection.tsx và
 // update/InventoryReceiptUpdateGenericItemsSection.tsx, nên đặt ở `components/` root thay vì
 // dưới `create/` (xem project-and-commands.md, "anything shared across screens ... stays at
-// the components/ root"). Không có currency/discountPercent/status như OrderItemDialog.tsx:
-// phiếu nhập kho không có khái niệm này. `purchaseOrderItemId` không xuất hiện ở đây — dialog
+// the components/ root"). Không có currency/discountPercent/status như dòng đơn hàng
+// (Create/UpdateOrderQuantitiesStep.tsx): phiếu nhập kho không có khái niệm này.
+// `purchaseOrderItemId` không xuất hiện ở đây — dialog
 // này chỉ dùng khi phiếu chưa chọn PO nguồn.
 export function InventoryReceiptItemDialog({
   open,

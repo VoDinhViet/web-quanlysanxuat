@@ -22,8 +22,8 @@ import { vndFormatter } from "@/lib/currency"
 
 // Bản update của InventoryReceiptCreateGenericItemsSection.tsx — nội dung giống hệt, chỉ khác
 // `defaultValues` để khớp kiểu form update (`withForm` bind theo shape riêng của từng form,
-// không dùng chung được giữa create/update — cùng cách orders tách CreateOrderItemsSection.tsx/
-// UpdateOrderItemsSection.tsx). InventoryReceiptItemDialog tái dùng nguyên vẹn vì nó tự quản lý
+// không dùng chung được giữa create/update — cùng cách orders tách CreateOrderQuantitiesStep.tsx/
+// UpdateOrderQuantitiesStep.tsx). InventoryReceiptItemDialog tái dùng nguyên vẹn vì nó tự quản lý
 // form riêng, không bind theo shape của form cha.
 export const InventoryReceiptUpdateGenericItemsSection = withForm({
   defaultValues: updateInventoryReceiptFormDefaultValues,

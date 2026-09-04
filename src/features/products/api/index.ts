@@ -2,6 +2,5 @@
 // import from `products` (see .claude/rules/architecture.md's cross-feature
 // import rule) — never reach into `api/server-functions/` or
 // `api/options/` directly.
-export { orderItemOptionsQueryOptions } from "@/features/products/api/options"
 export { itemQueryOptions } from "@/features/products/api/options"
 export { itemOptionsQueryOptions } from "@/features/products/api/options"

@@ -9,7 +9,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource/cal-sans";
-/* Create-order page only ("bản vẽ kỹ thuật" theme, see .order-drafting below) */
+/* Create/update-order pages only ("bản vẽ kỹ thuật" theme, see .order-drafting below) */
 @import "@fontsource-variable/space-grotesk";
 @import "@fontsource/ibm-plex-sans/400.css";
 @import "@fontsource/ibm-plex-sans/500.css";
@@ -187,10 +187,11 @@
   }
 }
 
-/* Create-order page only — a "technical drawing" typographic identity for
-   /manage/orders/create (see CreateOrderPage.tsx), scoped entirely behind
-   this one class so every other route is untouched. Colors stay the app's
-   normal theme — only type + the title-block decoration are distinct here. */
+/* Create/update-order pages only — a "technical drawing" typographic identity
+   for /manage/orders/create and /manage/orders/$orderId/update (see
+   CreateOrderPage.tsx/UpdateOrderPage.tsx), scoped entirely behind this one
+   class so every other route is untouched. Colors stay the app's normal
+   theme — only type + the title-block decoration are distinct here. */
 .order-drafting {
   --font-heading: "Space Grotesk Variable", var(--font-sans);
   --font-sans: "IBM Plex Sans", sans-serif;

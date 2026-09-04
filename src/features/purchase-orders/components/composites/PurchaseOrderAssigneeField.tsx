@@ -5,7 +5,7 @@ import { toast } from "sonner"
 
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
-import { useGetUserOptions } from "@/features/purchase-orders/hooks/use-get-user-options"
+import { useGetUserOptions } from "@/features/users/api"
 import type { PurchaseOrderUserRef } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderAssigneeFieldProps = {

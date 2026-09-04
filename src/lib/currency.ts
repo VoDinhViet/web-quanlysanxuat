@@ -1,8 +1,8 @@
 // Shared vi-VN money formatters — every place that displays an amount in an order's own
 // currency, or a VND amount/conversion, reuses these two instances instead of each
 // redeclaring its own `new Intl.NumberFormat(...)` (previously duplicated across
-// Create/UpdateOrderTotalsSummary.tsx, Create/UpdateOrderItemsSection.tsx,
-// OrderItemDialog.tsx, logic/order-stat-tiles.ts).
+// Create/UpdateOrderTotalsSummary.tsx, Create/UpdateOrderQuantitiesStep.tsx,
+// logic/order-stat-tiles.ts).
 
 // An amount in whatever currency the order itself uses (VND, USD, ...) — up to 2 decimals,
 // matching the backend's own `round(..., 2)` at every money step (see
