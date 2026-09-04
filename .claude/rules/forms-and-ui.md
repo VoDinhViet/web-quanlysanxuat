@@ -27,6 +27,15 @@ control={form.control} render={({field, fieldState}) => ...}>` — no shared RHF
   on change after `formState.isSubmitted` is `true`, a flag only an actual `handleSubmit()` call
   sets — without `onChange`, a field fixed on an earlier step keeps showing its old error until
   the user hits "Tiếp theo" again and re-triggers validation for that step.
+- `CreateClientForm.tsx`/`UpdateClientForm.tsx` are the first TanStack Form forms using
+  `validationLogic: revalidateLogic()` with the schema on `validators.onDynamic` (instead of
+  `validators.onSubmit`): plain `onSubmit` validation clears a field's error on its very next
+  keystroke even when the value is still invalid (TanStack Form wipes the `onSubmit` error map
+  entry on any change), so a submit-invalid form re-opens its submit button without actually
+  being valid. `revalidateLogic()` validates only on submit until the first submit attempt,
+  then re-validates on every change — closer to RHF's default and to what users expect. Every
+  other TanStack Form form still uses `validators.onSubmit` until this pattern proves out
+  further.
 - Form schemas mirror the backend DTO's shape, including nested optional objects
   (e.g. `credential: createCredentialSchema.optional()` in
   `create-user.schema.ts`) — a toggle-gated section stores the nested object or

@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Save } from "lucide-react"
@@ -58,8 +59,9 @@ export function UpdateClientForm({ client }: UpdateClientFormProps) {
 
   const form = useAppForm({
     defaultValues: getClientDefaultValues(client),
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: updateClientSchema,
+      onDynamic: updateClientSchema,
     },
     onSubmit: ({ value }) => update(value),
   })

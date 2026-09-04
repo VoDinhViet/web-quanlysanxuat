@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ArrowRight, FileText, Loader2, RotateCcw } from "lucide-react"
@@ -40,8 +41,9 @@ export function CreateClientForm() {
 
   const form = useAppForm({
     defaultValues: createClientFormDefaultValues,
+    validationLogic: revalidateLogic(),
     validators: {
-      onSubmit: createClientSchema,
+      onDynamic: createClientSchema,
     },
     onSubmit: ({ value }) => create(value),
   })
