@@ -4,7 +4,6 @@ import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -58,22 +57,22 @@ export function OrderItemDialog({
   const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        ref={setContentNode}
-        className="shadow-lg ring-0 sm:max-w-lg"
-      >
-        {/* Radix unmounts content while closed, so this form re-mounts on each
-            open and its state seeds fresh from `initialValue`. */}
-        <OrderItemDialogForm
-          container={contentNode}
-          initialValue={initialValue}
-          onSubmit={onSubmit}
-          onCancel={() => onOpenChange(false)}
-          currency={currency}
-          exchangeRate={exchangeRate}
-        />
-      </DialogContent>
+    <Dialog
+      ref={setContentNode}
+      isOpen={open}
+      onOpenChange={onOpenChange}
+      className="shadow-lg ring-0 sm:max-w-lg"
+    >
+      {/* The dialog unmounts content while closed, so this form re-mounts on each
+          open and its state seeds fresh from `initialValue`. */}
+      <OrderItemDialogForm
+        container={contentNode}
+        initialValue={initialValue}
+        onSubmit={onSubmit}
+        onCancel={() => onOpenChange(false)}
+        currency={currency}
+        exchangeRate={exchangeRate}
+      />
     </Dialog>
   )
 }

@@ -8,7 +8,6 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -42,15 +41,15 @@ export function ApproveOrderDialog({
   })
 
   return (
-    <AlertDialog
-      open={open}
+    <AlertDialogTrigger
+      isOpen={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
+      {trigger}
+      <AlertDialog>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CheckCircle />
@@ -66,20 +65,17 @@ export function ApproveOrderDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={mutation.isPending}>
+          <AlertDialogCancel isDisabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            disabled={mutation.isPending}
-            onClick={(event) => {
-              event.preventDefault()
-              mutation.mutate()
-            }}
+            isDisabled={mutation.isPending}
+            onPress={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xử lý..." : "Duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </AlertDialog>
+    </AlertDialogTrigger>
   )
 }

@@ -1,9 +1,9 @@
-import { Link } from "@tanstack/react-router"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { Eye } from "lucide-react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { cn } from "@/lib/utils"
@@ -73,18 +73,19 @@ export function InventoryProductActionsCell({
 }) {
   return (
     <div className="flex items-center justify-center">
-      <IconButton
-        label="Xem chi tiết"
-        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-        asChild
-      >
-        <Link
+      <TooltipTrigger>
+        <LinkButton
           to="/manage/inventory-products/$itemId"
           params={{ itemId: product.id }}
+          variant="outline"
+          size="icon-sm"
+          aria-label="Xem chi tiết"
+          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
         >
           <Eye className="size-3.5" />
-        </Link>
-      </IconButton>
+        </LinkButton>
+        <Tooltip>Xem chi tiết</Tooltip>
+      </TooltipTrigger>
     </div>
   )
 }

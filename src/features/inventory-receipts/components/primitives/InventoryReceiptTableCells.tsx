@@ -4,22 +4,21 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Eye, MoreVertical, Pencil, Printer, Trash2 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { deleteInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/delete-inventory-receipt.api"
@@ -104,67 +103,86 @@ export function InventoryReceiptActionsCell({
     <>
       <div className="flex items-center justify-center gap-1">
         {/* Eye icon: Quick view link */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8 text-muted-foreground hover:text-primary"
-          title="Xem chi tiết phiếu nhập kho"
-          asChild
-        >
-          <Link
+        <TooltipTrigger>
+          <LinkButton
             to="/manage/inventory-receipts/$inventoryReceiptId"
             params={{ inventoryReceiptId: receipt.id }}
+            variant="ghost"
+            size="icon"
+            className="size-8 text-muted-foreground hover:text-primary"
+            aria-label="Xem chi tiết phiếu nhập kho"
           >
             <Eye className="size-4" />
-          </Link>
-        </Button>
+          </LinkButton>
+          <Tooltip>Xem chi tiết phiếu nhập kho</Tooltip>
+        </TooltipTrigger>
 
         {/* Dropdown Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8 text-muted-foreground"
-              aria-label="Thao tác khác"
+        <DropdownMenuTrigger>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 text-muted-foreground"
+            aria-label="Thao tác khác"
+          >
+            <MoreVertical className="size-4" />
+          </Button>
+          <DropdownMenu placement="bottom end">
+            <DropdownMenuItem
+              href="#"
+              render={(props) =>
+                "href" in props ? (
+                  <Link
+                    {...props}
+                    to="/manage/inventory-receipts/$inventoryReceiptId"
+                    params={{ inventoryReceiptId: receipt.id }}
+                  />
+                ) : (
+                  <div {...props} />
+                )
+              }
             >
-              <MoreVertical className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link
-                to="/manage/inventory-receipts/$inventoryReceiptId"
-                params={{ inventoryReceiptId: receipt.id }}
-              >
-                <Eye className="mr-2 size-4" />
-                Xem chi tiết
-              </Link>
+              <Eye className="mr-2 size-4" />
+              Xem chi tiết
             </DropdownMenuItem>
 
-            <DropdownMenuItem disabled title="Tính năng sắp có">
-              <Printer className="mr-2 size-4" />
-              In phiếu nhập kho
-            </DropdownMenuItem>
+            <TooltipTrigger>
+              <DropdownMenuItem
+                aria-disabled="true"
+                shouldCloseOnSelect={false}
+              >
+                <Printer className="mr-2 size-4" />
+                In phiếu nhập kho
+              </DropdownMenuItem>
+              <Tooltip placement="left">Tính năng sắp có</Tooltip>
+            </TooltipTrigger>
 
             {isDraft && (
               <>
                 <DropdownMenuSeparator />
                 <RoutePermissionGate route="/manage/inventory-receipts/$inventoryReceiptId/update">
-                  <DropdownMenuItem asChild>
-                    <Link
-                      to="/manage/inventory-receipts/$inventoryReceiptId/update"
-                      params={{ inventoryReceiptId: receipt.id }}
-                    >
-                      <Pencil className="mr-2 size-4 text-amber-600" />
-                      Chỉnh sửa phiếu
-                    </Link>
+                  <DropdownMenuItem
+                    href="#"
+                    render={(props) =>
+                      "href" in props ? (
+                        <Link
+                          {...props}
+                          to="/manage/inventory-receipts/$inventoryReceiptId/update"
+                          params={{ inventoryReceiptId: receipt.id }}
+                        />
+                      ) : (
+                        <div {...props} />
+                      )
+                    }
+                  >
+                    <Pencil className="mr-2 size-4 text-amber-600" />
+                    Chỉnh sửa phiếu
                   </DropdownMenuItem>
                 </RoutePermissionGate>
                 <PermissionGate permission="inventory:delete">
                   <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => setDeleteOpen(true)}
+                    variant="destructive"
+                    onAction={() => setDeleteOpen(true)}
                   >
                     <Trash2 className="mr-2 size-4" />
                     Xóa phiếu
@@ -172,51 +190,49 @@ export function InventoryReceiptActionsCell({
                 </PermissionGate>
               </>
             )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </DropdownMenu>
+        </DropdownMenuTrigger>
       </div>
 
       {/* Delete Confirm Dialog */}
       <Dialog
-        open={deleteOpen}
+        isOpen={deleteOpen}
         onOpenChange={(next) => {
           setDeleteOpen(next)
           if (next) deleteMutation.reset()
         }}
       >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Xóa phiếu nhập kho</DialogTitle>
-            <DialogDescription>
-              Bạn chắc chắn muốn xóa phiếu nhập kho{" "}
-              <span className="font-mono font-semibold text-foreground">
-                {receipt.code}
-              </span>
-              ? Hành động này không thể hoàn tác.
-            </DialogDescription>
-          </DialogHeader>
-          {deleteMutation.error && (
-            <p className="text-sm text-destructive">
-              {deleteMutation.error.message}
-            </p>
-          )}
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteOpen(false)}
-              disabled={deleteMutation.isPending}
-            >
-              Hủy
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => deleteMutation.mutate()}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? "Đang xóa…" : "Xóa phiếu"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
+        <DialogHeader>
+          <DialogTitle>Xóa phiếu nhập kho</DialogTitle>
+          <DialogDescription>
+            Bạn chắc chắn muốn xóa phiếu nhập kho{" "}
+            <span className="font-mono font-semibold text-foreground">
+              {receipt.code}
+            </span>
+            ? Hành động này không thể hoàn tác.
+          </DialogDescription>
+        </DialogHeader>
+        {deleteMutation.error && (
+          <p className="text-sm text-destructive">
+            {deleteMutation.error.message}
+          </p>
+        )}
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onPress={() => setDeleteOpen(false)}
+            isDisabled={deleteMutation.isPending}
+          >
+            Hủy
+          </Button>
+          <Button
+            variant="destructive"
+            onPress={() => deleteMutation.mutate()}
+            isDisabled={deleteMutation.isPending}
+          >
+            {deleteMutation.isPending ? "Đang xóa…" : "Xóa phiếu"}
+          </Button>
+        </DialogFooter>
       </Dialog>
     </>
   )

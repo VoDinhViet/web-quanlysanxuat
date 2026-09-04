@@ -2,7 +2,8 @@ import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { buttonVariants } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import type { DeliveryTone } from "@/lib/types/order.type"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
@@ -64,20 +65,29 @@ export function DueDateCell({
 export function ProductionOrderActionsCell({ row }: { row: ProductionOrder }) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <IconButton label="Xem đơn hàng" asChild>
-        <Link to="/manage/orders/$orderId" params={{ orderId: row.orderId }}>
+      <TooltipTrigger>
+        <Link
+          to="/manage/orders/$orderId"
+          params={{ orderId: row.orderId }}
+          aria-label="Xem đơn hàng"
+          className={buttonVariants({ variant: "outline", size: "icon-sm" })}
+        >
           <Eye className="size-3.5" />
         </Link>
-      </IconButton>
+        <Tooltip>Xem đơn hàng</Tooltip>
+      </TooltipTrigger>
 
-      <IconButton label="Sửa LSX" asChild>
+      <TooltipTrigger>
         <Link
           to="/manage/production-orders/$productionOrderId"
           params={{ productionOrderId: row.id }}
+          aria-label="Sửa LSX"
+          className={buttonVariants({ variant: "outline", size: "icon-sm" })}
         >
           <Pencil className="size-3.5" />
         </Link>
-      </IconButton>
+        <Tooltip>Sửa LSX</Tooltip>
+      </TooltipTrigger>
     </div>
   )
 }

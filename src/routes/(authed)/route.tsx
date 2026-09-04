@@ -5,7 +5,6 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { TooltipProvider } from "@/components/ui/tooltip"
 import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { AppSidebar } from "@/components/shared/layouts/AppSidebar"
 import {
@@ -87,23 +86,21 @@ type AuthedShellProps = {
 // pendingComponent above) remount visually seamless instead of skipping it.
 function AuthedShell({ children }: AuthedShellProps) {
   return (
-    <TooltipProvider>
-      <SidebarProvider
-        defaultOpen={getSidebarDefaultOpen()}
-        style={
-          {
-            "--sidebar-width": "16.25rem",
-          } as CSSProperties
-        }
-      >
-        <AppSidebar />
-        <SidebarInset className="min-w-0">
-          <div className="flex min-h-svh flex-col text-foreground">
-            {children}
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
-    </TooltipProvider>
+    <SidebarProvider
+      defaultOpen={getSidebarDefaultOpen()}
+      style={
+        {
+          "--sidebar-width": "16.25rem",
+        } as CSSProperties
+      }
+    >
+      <AppSidebar />
+      <SidebarInset className="min-w-0">
+        <div className="flex min-h-svh flex-col text-foreground">
+          {children}
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
 

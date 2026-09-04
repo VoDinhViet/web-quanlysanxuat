@@ -1,14 +1,9 @@
-import { Link } from "@tanstack/react-router"
 import { FileDownload, PenNewSquare, Printer } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Button, LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { OrderApprovalActions } from "@/features/orders/components/layouts/OrderApprovalActions"
 import {
@@ -34,15 +29,13 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
       <DisabledAction icon={FileDownload} label="Xuất Excel" />
       {isEditable ? (
         <RoutePermissionGate route="/manage/orders/$orderId/update">
-          <Button type="button" asChild>
-            <Link
-              to="/manage/orders/$orderId/update"
-              params={{ orderId: order.id }}
-            >
-              <PenNewSquare className="size-4" />
-              Chỉnh sửa
-            </Link>
-          </Button>
+          <LinkButton
+            to="/manage/orders/$orderId/update"
+            params={{ orderId: order.id }}
+          >
+            <PenNewSquare className="size-4" />
+            Chỉnh sửa
+          </LinkButton>
         </RoutePermissionGate>
       ) : (
         <DisabledAction
@@ -67,21 +60,19 @@ function DisabledAction({
   hint = "Tính năng sắp có",
 }: DisabledActionProps) {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span>
-          <Button
-            type="button"
-            variant="outline"
-            disabled
-            className="pointer-events-none text-muted-foreground"
-          >
-            <IconComponent className="size-4" />
-            {label}
-          </Button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>{hint}</TooltipContent>
-    </Tooltip>
+    <TooltipTrigger>
+      <span>
+        <Button
+          type="button"
+          variant="outline"
+          isDisabled
+          className="pointer-events-none text-muted-foreground"
+        >
+          <IconComponent className="size-4" />
+          {label}
+        </Button>
+      </span>
+      <Tooltip>{hint}</Tooltip>
+    </TooltipTrigger>
   )
 }

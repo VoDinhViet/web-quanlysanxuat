@@ -7,7 +7,11 @@ import { paymentRequestQueryOptions } from "@/features/payment-requests/api/opti
 import { PaymentRequestDetailHeader } from "@/features/payment-requests/components/layouts/PaymentRequestDetailHeader"
 import { PaymentRequestItemsSection } from "@/features/payment-requests/components/sections/PaymentRequestItemsSection"
 import { PaymentRequestInfoCard } from "@/features/payment-requests/components/composites/PaymentRequestInfoCard"
+import { PaymentRequestLogsCard } from "@/features/payment-requests/components/composites/PaymentRequestLogsCard"
+import { PaymentRequestPrintSheet } from "@/features/payment-requests/components/composites/PaymentRequestPrintSheet"
 import { PaymentRequestStatusHistoryCard } from "@/features/payment-requests/components/composites/PaymentRequestStatusHistoryCard"
+import { PaymentRequestStatusNotice } from "@/features/payment-requests/components/composites/PaymentRequestStatusNotice"
+import { PaymentRequestSupplierCard } from "@/features/payment-requests/components/composites/PaymentRequestSupplierCard"
 
 export function PaymentRequestDetailPage() {
   const { paymentRequestId } = useParams({
@@ -34,20 +38,31 @@ export function PaymentRequestDetailPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+        <PaymentRequestStatusNotice paymentRequest={paymentRequest} />
+
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           {/* Main content */}
-          <Surface>
-            <PaymentRequestDetailHeader paymentRequest={paymentRequest} />
-            <PaymentRequestItemsSection paymentRequest={paymentRequest} />
-          </Surface>
+          <div className="flex flex-col gap-4">
+            <Surface>
+              <PaymentRequestDetailHeader paymentRequest={paymentRequest} />
+              <PaymentRequestItemsSection paymentRequest={paymentRequest} />
+            </Surface>
+            <PaymentRequestLogsCard paymentRequestId={paymentRequest.id} />
+          </div>
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
+            <PaymentRequestSupplierCard paymentRequest={paymentRequest} />
             <PaymentRequestInfoCard paymentRequest={paymentRequest} />
             <PaymentRequestStatusHistoryCard paymentRequest={paymentRequest} />
           </div>
         </div>
       </div>
+
+      <PaymentRequestPrintSheet
+        paymentRequest={paymentRequest}
+        className="print-sheet"
+      />
     </main>
   )
 }

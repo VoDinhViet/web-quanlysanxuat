@@ -1,4 +1,4 @@
-import { PackageSearch } from "lucide-react"
+import { PackageSearch, TriangleAlert } from "lucide-react"
 
 import {
   Table,
@@ -11,6 +11,7 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
+import { cn } from "@/lib/utils"
 import type {
   PaymentRequestDetail,
   PaymentRequestItem,
@@ -66,7 +67,16 @@ const itemColumns = col.columns([
       headerClassName: "min-w-28 text-right",
       cellClassName: "text-right tabular-nums",
     },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
+    cell: ({ getValue, row }) => (
+      <span
+        className={cn(
+          getValue() < row.original.orderedQty &&
+            "font-semibold text-destructive"
+        )}
+      >
+        {numberFmt.format(getValue())}
+      </span>
+    ),
   }),
 
   col.accessor("unitPrice", {
@@ -107,6 +117,9 @@ export function PaymentRequestItemsSection({
     (sum, item) => sum + item.lineTotal,
     0
   )
+  const shortageCount = paymentRequest.items.filter(
+    (item) => item.receivedQty < item.orderedQty
+  ).length
 
   return (
     <div className="border-b border-border not-first:border-t">
@@ -122,40 +135,52 @@ export function PaymentRequestItemsSection({
           description="Yêu cầu thanh toán này chưa có dòng vật tư nào."
         />
       ) : (
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="h-12 hover:bg-muted/45">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={header.column.columnDef.meta?.headerClassName}
-                  >
-                    {!header.isPlaceholder &&
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+        <Table aria-label="Danh sách vật tư / hàng hóa">
+          <TableHeader
+            columns={table.getFlatHeaders()}
+            className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
+          >
+            {(header) => (
+              <TableHead
+                id={header.id}
+                isRowHeader={header.index === 0}
+                className={header.column.columnDef.meta?.headerClassName}
+              >
+                {!header.isPlaceholder &&
+                  flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+              </TableHead>
+            )}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
-                {row.getVisibleCells().map((cell) => (
+          <TableBody items={table.getRowModel().rows}>
+            {(row) => (
+              <TableRow
+                id={row.id}
+                className="h-14 bg-card hover:bg-muted/25"
+                columns={row.getVisibleCells()}
+              >
+                {(cell) => (
                   <TableCell
-                    key={cell.id}
                     className={cell.column.columnDef.meta?.cellClassName}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
-                ))}
+                )}
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
+      )}
+
+      {/* Cảnh báo nhận thiếu SL */}
+      {shortageCount > 0 && (
+        <div className="flex items-center gap-2 border-t border-border bg-warning/10 px-4 py-2.5 text-xs font-medium text-warning sm:px-5">
+          <TriangleAlert className="size-3.5 shrink-0" />
+          Đã nhận thiếu {shortageCount}/{paymentRequest.items.length} dòng so
+          với đơn đặt.
+        </div>
       )}
 
       {/* Footer total row */}

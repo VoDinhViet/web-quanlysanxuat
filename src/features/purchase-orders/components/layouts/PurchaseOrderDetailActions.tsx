@@ -34,7 +34,7 @@ export function PurchaseOrderDetailActions({
             <PurchaseOrderConfirmDialog
               purchaseOrder={purchaseOrder}
               trigger={
-                <Button type="button" disabled={!isConfirmable}>
+                <Button type="button" isDisabled={!isConfirmable}>
                   <CheckCircle className="size-4" />
                   Xác nhận đặt hàng
                 </Button>

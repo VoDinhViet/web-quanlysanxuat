@@ -75,8 +75,8 @@ export function CreateProductForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() =>
+            isDisabled={isPending}
+            onPress={() =>
               void navigate({
                 to: "/manage/products",
                 search: { page: 1, limit: 10 },
@@ -89,8 +89,8 @@ export function CreateProductForm() {
             <Button
               type="button"
               variant="ghost"
-              disabled={isPending}
-              onClick={() => {
+              isDisabled={isPending}
+              onPress={() => {
                 form.reset()
                 restoreFormDraft(form, createProductFormDefaultValues)
                 clearDraft()
@@ -102,8 +102,8 @@ export function CreateProductForm() {
             <Button
               type="button"
               variant="outline"
-              disabled={isPending}
-              onClick={() => {
+              isDisabled={isPending}
+              onPress={() => {
                 saveDraft(form.state.values)
                 toast.success("Đã lưu nháp")
               }}
@@ -117,7 +117,7 @@ export function CreateProductForm() {
               {([canSubmit, isSubmitting]) => (
                 <Button
                   type="submit"
-                  disabled={!canSubmit || isSubmitting || isPending}
+                  isDisabled={!canSubmit || isSubmitting || isPending}
                 >
                   {isSubmitting || isPending ? (
                     <>

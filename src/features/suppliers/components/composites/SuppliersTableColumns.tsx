@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
@@ -7,7 +6,8 @@ import { Edit3, Eye, Trash2 } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button, LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteSupplierDialog } from "@/features/suppliers/components/composites/DeleteSupplierDialog"
@@ -154,43 +154,51 @@ export const supplierColumns = supplierColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <RoutePermissionGate route="/manage/suppliers/$supplierId">
-            <IconButton
-              label="Xem chi tiết"
-              asChild
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <Link
+            <TooltipTrigger>
+              <LinkButton
                 to="/manage/suppliers/$supplierId"
                 params={{ supplierId: supplier.id }}
+                variant="outline"
+                size="icon-sm"
+                aria-label="Xem chi tiết"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
               >
                 <Eye className="size-3.5" />
-              </Link>
-            </IconButton>
+              </LinkButton>
+              <Tooltip>Xem chi tiết</Tooltip>
+            </TooltipTrigger>
           </RoutePermissionGate>
           <RoutePermissionGate route="/manage/suppliers/$supplierId/update">
-            <IconButton
-              label="Chỉnh sửa"
-              asChild
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <Link
+            <TooltipTrigger>
+              <LinkButton
                 to="/manage/suppliers/$supplierId/update"
                 params={{ supplierId: supplier.id }}
+                variant="outline"
+                size="icon-sm"
+                aria-label="Chỉnh sửa"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
               >
                 <Edit3 className="size-3.5" />
-              </Link>
-            </IconButton>
+              </LinkButton>
+              <Tooltip>Chỉnh sửa</Tooltip>
+            </TooltipTrigger>
           </RoutePermissionGate>
           <PermissionGate permission="suppliers:delete">
             <DeleteSupplierDialog
               supplier={supplier}
               trigger={
-                <IconButton
-                  label="Xóa"
-                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                >
-                  <Trash2 className="size-3.5" />
-                </IconButton>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Xóa"
+                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                  <Tooltip>Xóa</Tooltip>
+                </TooltipTrigger>
               }
             />
           </PermissionGate>

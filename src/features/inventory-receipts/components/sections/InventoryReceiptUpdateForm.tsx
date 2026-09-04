@@ -1,11 +1,11 @@
 import { DateTime } from "luxon"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { InventoryReceiptUpdateHeaderSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptUpdateHeaderSection"
 import { InventoryReceiptUpdateItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptUpdateItemsSection"
@@ -89,20 +89,16 @@ export function InventoryReceiptUpdateForm({
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <div className="border-b border-border px-4 py-3 sm:px-5">
-          <Button
+          <LinkButton
+            to="/manage/inventory-receipts/$inventoryReceiptId"
+            params={{ inventoryReceiptId: inventoryReceipt.id }}
             variant="ghost"
             className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
             aria-label="Quay lại chi tiết phiếu nhập kho"
-            asChild
           >
-            <Link
-              to="/manage/inventory-receipts/$inventoryReceiptId"
-              params={{ inventoryReceiptId: inventoryReceipt.id }}
-            >
-              <ArrowLeft className="size-4" />
-              Quay lại
-            </Link>
-          </Button>
+            <ArrowLeft className="size-4" />
+            Quay lại
+          </LinkButton>
         </div>
 
         <InventoryReceiptUpdateHeaderSection
@@ -155,8 +151,8 @@ export function InventoryReceiptUpdateForm({
         <Button
           type="button"
           variant="outline"
-          disabled={isPending}
-          onClick={() =>
+          isDisabled={isPending}
+          onPress={() =>
             void navigate({
               to: "/manage/inventory-receipts/$inventoryReceiptId",
               params: { inventoryReceiptId: inventoryReceipt.id },
@@ -171,7 +167,7 @@ export function InventoryReceiptUpdateForm({
           {([canSubmit, isSubmitting]) => (
             <Button
               type="submit"
-              disabled={!canSubmit || isSubmitting || isPending}
+              isDisabled={!canSubmit || isSubmitting || isPending}
             >
               {isSubmitting || isPending ? (
                 <>

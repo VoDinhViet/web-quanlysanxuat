@@ -8,15 +8,15 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
-import { IconButton } from "@/components/shared/primitives/IconButton"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { cancelInventoryIssue } from "@/features/inventory-issues/api/server-functions/cancel-inventory-issue.api"
 import { postInventoryIssue } from "@/features/inventory-issues/api/server-functions/post-inventory-issue.api"
@@ -113,31 +113,43 @@ export function InventoryIssueActionsCell({
 
         {isDraft && (
           <PermissionGate permission="inventory:update">
-            <IconButton
-              label="Xuất kho"
-              className="text-muted-foreground hover:border-success/30 hover:text-success"
-              onClick={() => setConfirmAction("post")}
-            >
-              <CircleCheck className="size-3.5" />
-            </IconButton>
+            <TooltipTrigger>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Xuất kho"
+                className="text-muted-foreground hover:border-success/30 hover:text-success"
+                onPress={() => setConfirmAction("post")}
+              >
+                <CircleCheck className="size-3.5" />
+              </Button>
+              <Tooltip>Xuất kho</Tooltip>
+            </TooltipTrigger>
           </PermissionGate>
         )}
 
         {!isCancelled && (
           <PermissionGate permission="inventory:update">
-            <IconButton
-              label="Hủy phiếu"
-              className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-              onClick={() => setConfirmAction("cancel")}
-            >
-              <CircleX className="size-3.5" />
-            </IconButton>
+            <TooltipTrigger>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Hủy phiếu"
+                className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                onPress={() => setConfirmAction("cancel")}
+              >
+                <CircleX className="size-3.5" />
+              </Button>
+              <Tooltip>Hủy phiếu</Tooltip>
+            </TooltipTrigger>
           </PermissionGate>
         )}
       </div>
 
       <AlertDialog
-        open={confirmAction !== null}
+        isOpen={confirmAction !== null}
         onOpenChange={(next) => {
           if (!next) {
             setConfirmAction(null)
@@ -146,47 +158,42 @@ export function InventoryIssueActionsCell({
           }
         }}
       >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogMedia>
-              {confirmAction === "post" ? <CircleCheck /> : <CircleX />}
-            </AlertDialogMedia>
-            <AlertDialogTitle>
-              {confirmAction === "post"
-                ? "Xuất kho phiếu này?"
-                : "Hủy phiếu xuất kho này?"}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {confirmAction === "post"
-                ? `Phiếu "${issue.code}" sẽ được xuất kho — tồn kho sẽ bị trừ và phiếu không thể chỉnh sửa sau đó.`
-                : `Phiếu "${issue.code}" sẽ bị hủy. Hành động này không thể hoàn tác.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
+        <AlertDialogHeader>
+          <AlertDialogMedia>
+            {confirmAction === "post" ? <CircleCheck /> : <CircleX />}
+          </AlertDialogMedia>
+          <AlertDialogTitle>
+            {confirmAction === "post"
+              ? "Xuất kho phiếu này?"
+              : "Hủy phiếu xuất kho này?"}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {confirmAction === "post"
+              ? `Phiếu "${issue.code}" sẽ được xuất kho — tồn kho sẽ bị trừ và phiếu không thể chỉnh sửa sau đó.`
+              : `Phiếu "${issue.code}" sẽ bị hủy. Hành động này không thể hoàn tác.`}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
-          {mutation.error ? (
-            <p className="text-sm text-destructive">{mutation.error.message}</p>
-          ) : null}
+        {mutation.error ? (
+          <p className="text-sm text-destructive">{mutation.error.message}</p>
+        ) : null}
 
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={mutation.isPending}>
-              Hủy
-            </AlertDialogCancel>
-            <AlertDialogAction
-              variant={confirmAction === "post" ? "default" : "destructive"}
-              disabled={mutation.isPending}
-              onClick={(event) => {
-                event.preventDefault()
-                mutation.mutate()
-              }}
-            >
-              {mutation.isPending
-                ? "Đang xử lý..."
-                : confirmAction === "post"
-                  ? "Xuất kho"
-                  : "Xác nhận"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
+        <AlertDialogFooter>
+          <AlertDialogCancel isDisabled={mutation.isPending}>
+            Hủy
+          </AlertDialogCancel>
+          <AlertDialogAction
+            variant={confirmAction === "post" ? "default" : "destructive"}
+            isDisabled={mutation.isPending}
+            onPress={() => mutation.mutate()}
+          >
+            {mutation.isPending
+              ? "Đang xử lý..."
+              : confirmAction === "post"
+                ? "Xuất kho"
+                : "Xác nhận"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
       </AlertDialog>
     </>
   )

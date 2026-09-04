@@ -9,7 +9,6 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -52,9 +51,9 @@ export function DeleteOutboundOrderDialog({
   })
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
+    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
+      {trigger}
+      <AlertDialog>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <TrashBinTrash />
@@ -66,21 +65,18 @@ export function DeleteOutboundOrderDialog({
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={mutation.isPending}>
+          <AlertDialogCancel isDisabled={mutation.isPending}>
             Đóng
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            disabled={mutation.isPending}
-            onClick={(event) => {
-              event.preventDefault()
-              mutation.mutate()
-            }}
+            isDisabled={mutation.isPending}
+            onPress={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xoá…" : "Xoá phiếu"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </AlertDialog>
+    </AlertDialogTrigger>
   )
 }

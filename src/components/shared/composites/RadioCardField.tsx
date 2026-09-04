@@ -1,4 +1,4 @@
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
+import { Radio } from "react-aria-components"
 import { Check } from "lucide-react"
 
 import { RadioGroup } from "@/components/ui/radio-group"
@@ -49,8 +49,8 @@ export function RadioCardField<TValue extends string>({
   return (
     <RadioGroup
       value={field.state.value}
-      onValueChange={(value) => field.handleChange(value)}
-      disabled={disabled}
+      onChange={(value) => field.handleChange(value)}
+      isDisabled={disabled}
       className={cn(
         "grid gap-3",
         columns === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"
@@ -61,11 +61,11 @@ export function RadioCardField<TValue extends string>({
         const isChecked = field.state.value === option.value
 
         return (
-          <RadioGroupPrimitive.Item
+          <Radio
             key={option.value}
             value={option.value}
             className={cn(
-              "relative cursor-pointer rounded-xl border-2 border-border bg-card p-4 text-start transition-colors hover:border-foreground/25 disabled:cursor-not-allowed disabled:opacity-50",
+              "relative cursor-pointer rounded-xl border-2 border-border bg-card p-4 text-start transition-colors hover:border-foreground/25 data-disabled:cursor-not-allowed data-disabled:opacity-50",
               isChecked && option.activeClassName
             )}
           >
@@ -98,7 +98,7 @@ export function RadioCardField<TValue extends string>({
                 <Check className="size-3" strokeWidth={3} />
               </span>
             ) : null}
-          </RadioGroupPrimitive.Item>
+          </Radio>
         )
       })}
     </RadioGroup>

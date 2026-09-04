@@ -1,15 +1,11 @@
 import { useState } from "react"
-import { vi } from "date-fns/locale"
+import { parseDate } from "@internationalized/date"
 import { DateTime } from "luxon"
 import { CalendarIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 // Bare Popover+Calendar+Button date widget — no Field/label/error wrapper, that stays at each
@@ -17,10 +13,9 @@ import { cn } from "@/lib/utils"
 // bound to react-hook-form's <Controller> fields (the `users` feature's Create/Update sections,
 // which pass onBlur/disabled — validation state stays on the surrounding `Field`/`FieldError`,
 // same as the RadioGroup fields next to it). All parse/format is luxon —
-// `DateTime.fromISO(value).toJSDate()` / `.toFormat(...)`, safe under this repo's fixed
-// `Settings.defaultZone` (src/lib/luxon-config.ts). `date-fns/locale`'s `vi` is only for the
-// Calendar's own month/day captions — react-day-picker's `locale` prop is typed against
-// date-fns's `Locale`, so it can't take a luxon value.
+// `DateTime.fromISO(value).toFormat(...)`, safe under this repo's fixed `Settings.defaultZone`
+// (src/lib/luxon-config.ts). The Calendar's own month/day captions render in the browser's
+// default locale — no app-wide I18nProvider is wired (removed, see button.tsx phase notes).
 type DatePickerProps = {
   value: string
   onChange: (value: string) => void
@@ -35,47 +30,40 @@ export function DatePicker({
   disabled,
 }: DatePickerProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const selectedDate =
-    value.length > 0 ? DateTime.fromISO(value).toJSDate() : undefined
+  const selectedDate = value.length > 0 ? parseDate(value) : null
 
   return (
-    <Popover
-      open={isOpen}
+    <PopoverTrigger
+      isOpen={isOpen}
       onOpenChange={(open) => {
         setIsOpen(open)
         if (!open) onBlur?.()
       }}
     >
-      <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          disabled={disabled}
-          className={cn(
-            "h-9 w-full justify-between bg-background text-xs font-normal",
-            !selectedDate && "text-muted-foreground"
-          )}
-        >
-          {selectedDate
-            ? DateTime.fromJSDate(selectedDate).toFormat("dd/MM/yyyy")
-            : "dd/mm/yyyy"}
-          <CalendarIcon className="size-4" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <Button
+        type="button"
+        variant="outline"
+        isDisabled={disabled}
+        className={cn(
+          "h-9 w-full justify-between bg-background text-xs font-normal",
+          !selectedDate && "text-muted-foreground"
+        )}
+      >
+        {selectedDate
+          ? DateTime.fromISO(value).toFormat("dd/MM/yyyy")
+          : "dd/mm/yyyy"}
+        <CalendarIcon className="size-4" />
+      </Button>
+      <Popover className="w-auto p-0" placement="bottom start">
         <Calendar
-          mode="single"
           captionLayout="dropdown"
-          locale={vi}
-          selected={selectedDate}
-          onSelect={(date) => {
-            onChange(
-              date ? DateTime.fromJSDate(date).toFormat("yyyy-MM-dd") : ""
-            )
+          value={selectedDate}
+          onChange={(date) => {
+            onChange(date.toString())
             setIsOpen(false)
           }}
         />
-      </PopoverContent>
-    </Popover>
+      </Popover>
+    </PopoverTrigger>
   )
 }

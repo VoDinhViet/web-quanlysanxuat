@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import { z } from "zod"
 
+import { cancelPaymentRequestSchema } from "@/features/payment-requests/schemas/cancel-payment-request.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 
@@ -24,15 +24,14 @@ function resolveCancelPaymentRequestErrorMessage(error: unknown): string {
   }
 }
 
-// PENDING → CANCELLED — see PaymentRequestDetailActions.tsx.
+// PENDING → CANCELLED, reason required — see PaymentRequestCancelDialog.tsx.
 export const cancelPaymentRequest = createServerFn({ method: "POST" })
-  .validator(z.object({ paymentRequestId: z.uuid() }))
+  .validator(cancelPaymentRequestSchema)
   .handler(async ({ data }): Promise<void> => {
     try {
-      await http.post(
-        `/api/payment-requests/${data.paymentRequestId}/cancel`,
-        {}
-      )
+      await http.post(`/api/payment-requests/${data.paymentRequestId}/cancel`, {
+        reason: data.reason,
+      })
     } catch (error) {
       logHttpError(error, "cancelPaymentRequest")
 

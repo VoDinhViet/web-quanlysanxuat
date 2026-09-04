@@ -137,15 +137,15 @@ export function InventoryIssuesTableFilter() {
               Loại phiếu
             </Label>
             <Select
-              value={search.issueType ?? "all"}
-              onValueChange={handleIssueTypeChange}
+              selectedKey={search.issueType ?? "all"}
+              onSelectionChange={(key) => handleIssueTypeChange(String(key))}
             >
               <SelectTrigger id="xk-issue-type" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {issueTypeOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -162,15 +162,15 @@ export function InventoryIssuesTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="xk-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

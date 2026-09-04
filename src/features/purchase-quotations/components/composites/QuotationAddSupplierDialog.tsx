@@ -4,7 +4,6 @@ import { CheckCircle } from "@solar-icons/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -51,22 +50,22 @@ export function QuotationAddSupplierDialog({
   const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        ref={setContentNode}
-        className="shadow-lg ring-0 sm:max-w-3xl"
-      >
-        {/* Radix unmounts content while closed, so this form re-mounts on each open and its
-            supplier/checked state seeds fresh from `initialItemIds` — this is what fixes the old
-            inline combobox never resetting after a pick. */}
-        <QuotationAddSupplierDialogForm
-          container={contentNode}
-          items={items}
-          initialItemIds={initialItemIds}
-          onSubmit={onSubmit}
-          onCancel={() => onOpenChange(false)}
-        />
-      </DialogContent>
+    <Dialog
+      ref={setContentNode}
+      isOpen={open}
+      onOpenChange={onOpenChange}
+      className="shadow-lg ring-0 sm:max-w-3xl"
+    >
+      {/* The dialog unmounts content while closed, so this form re-mounts on each open and its
+          supplier/checked state seeds fresh from `initialItemIds` — this is what fixes the old
+          inline combobox never resetting after a pick. */}
+      <QuotationAddSupplierDialogForm
+        container={contentNode}
+        items={items}
+        initialItemIds={initialItemIds}
+        onSubmit={onSubmit}
+        onCancel={() => onOpenChange(false)}
+      />
     </Dialog>
   )
 }
@@ -162,10 +161,13 @@ function QuotationAddSupplierDialogForm({
       )}
 
       <DialogFooter className="gap-2">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" onPress={onCancel}>
           Hủy
         </Button>
-        <Button type="submit" disabled={!supplierId || targetIds.length === 0}>
+        <Button
+          type="submit"
+          isDisabled={!supplierId || targetIds.length === 0}
+        >
           <CheckCircle className="size-4" />
           {targetIds.length > 0
             ? `Thêm vào ${targetIds.length} vật tư`

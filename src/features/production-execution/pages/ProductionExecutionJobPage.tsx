@@ -1,10 +1,10 @@
 import { useMemo } from "react"
-import { Link, useParams, useSearch } from "@tanstack/react-router"
+import { useParams, useSearch } from "@tanstack/react-router"
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { AltArrowLeft } from "@solar-icons/react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
@@ -89,20 +89,16 @@ export function ProductionExecutionJobPage() {
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface contentClassName="gap-3 p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-3">
-            <Button
+            <LinkButton
+              to="/manage/production-execution"
+              search={{ page: 1, limit: 10, operationId }}
               variant="ghost"
               className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
               aria-label="Quay lại danh sách công việc"
-              asChild
             >
-              <Link
-                to="/manage/production-execution"
-                search={{ page: 1, limit: 10, operationId }}
-              >
-                <AltArrowLeft className="size-4" />
-                <span className="hidden sm:inline">Quay lại</span>
-              </Link>
-            </Button>
+              <AltArrowLeft className="size-4" />
+              <span className="hidden sm:inline">Quay lại</span>
+            </LinkButton>
             <span className="font-mono text-lg font-bold text-foreground">
               {job.code}
             </span>
@@ -149,14 +145,14 @@ export function ProductionExecutionJobPage() {
           {!operationId ? (
             <div className="flex flex-col items-center gap-3 p-10 text-center text-sm text-muted-foreground">
               <p>Thiếu thông tin công đoạn.</p>
-              <Button variant="outline" size="sm" asChild>
-                <Link
-                  to="/manage/production-execution"
-                  search={{ page: 1, limit: 10 }}
-                >
-                  Quay lại danh sách Thực hiện sản xuất
-                </Link>
-              </Button>
+              <LinkButton
+                to="/manage/production-execution"
+                search={{ page: 1, limit: 10 }}
+                variant="outline"
+                size="sm"
+              >
+                Quay lại danh sách Thực hiện sản xuất
+              </LinkButton>
             </div>
           ) : operationsQuery.isPending ? (
             <TableQueryLoading rows={4} />

@@ -1,5 +1,6 @@
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import type { Key } from "react-aria-components"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
@@ -26,10 +27,11 @@ export function ProductionJobDetailPage() {
     productionJobQueryOptions(productionJobId)
   )
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
-  // unrecognised value simply doesn't navigate.
-  const handleTabChange = (value: string) => {
-    const nextTab = productionJobDetailTabs.find((item) => item === value)
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back to
+  // the search param's literal union without a cast, and an unrecognised value simply
+  // doesn't navigate.
+  const handleTabChange = (key: Key) => {
+    const nextTab = productionJobDetailTabs.find((item) => item === String(key))
 
     if (nextTab) {
       void navigate({ search: { tab: nextTab } })
@@ -49,18 +51,22 @@ export function ProductionJobDetailPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface>
-          <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
+          <Tabs
+            selectedKey={tab}
+            onSelectionChange={handleTabChange}
+            className="gap-0"
+          >
             <ProductionJobDetailHeader productionJob={productionJob} />
 
-            <TabsContent value="info" className="m-0 outline-none">
+            <TabsContent id="info" className="m-0 outline-none">
               <ProductionJobInfoTab productionJob={productionJob} />
             </TabsContent>
 
-            <TabsContent value="bom" className="m-0 outline-none">
+            <TabsContent id="bom" className="m-0 outline-none">
               <ProductionJobBomTab productionJobId={productionJobId} />
             </TabsContent>
 
-            <TabsContent value="operations" className="m-0 outline-none">
+            <TabsContent id="operations" className="m-0 outline-none">
               <ProductionJobOperationsTab
                 productionJobId={productionJobId}
                 status={productionJob.status}

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { RefreshCw, RotateCcw, RotateCw, ZoomIn, ZoomOut } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogTitle } from "@/components/ui/dialog"
 
 const MIN_SCALE = 0.5
 const MAX_SCALE = 3
@@ -13,9 +13,9 @@ type LightboxViewerProps = {
   alt: string
 }
 
-// Zoom/rotation state lives here, not in ImageLightbox itself — Radix's DialogContent unmounts
-// its children whenever the dialog closes (no forceMount), so this component remounts fresh on
-// every open and the state resets for free. No effect needed.
+// Zoom/rotation state lives here, not in ImageLightbox itself — the dialog unmounts its
+// children whenever it closes, so this component remounts fresh on every open and the state
+// resets for free. No effect needed.
 function LightboxViewer({ src, alt }: LightboxViewerProps) {
   const [scale, setScale] = useState(1)
   const [rotation, setRotation] = useState(0)
@@ -37,8 +37,8 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Thu nhỏ"
-          disabled={scale <= MIN_SCALE}
-          onClick={() =>
+          isDisabled={scale <= MIN_SCALE}
+          onPress={() =>
             setScale((value) => Math.max(MIN_SCALE, value - SCALE_STEP))
           }
         >
@@ -49,8 +49,8 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Phóng to"
-          disabled={scale >= MAX_SCALE}
-          onClick={() =>
+          isDisabled={scale >= MAX_SCALE}
+          onPress={() =>
             setScale((value) => Math.min(MAX_SCALE, value + SCALE_STEP))
           }
         >
@@ -61,7 +61,7 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Xoay trái"
-          onClick={() => setRotation((value) => value - 90)}
+          onPress={() => setRotation((value) => value - 90)}
         >
           <RotateCcw className="size-4" />
         </Button>
@@ -70,7 +70,7 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Xoay phải"
-          onClick={() => setRotation((value) => value + 90)}
+          onPress={() => setRotation((value) => value + 90)}
         >
           <RotateCw className="size-4" />
         </Button>
@@ -79,7 +79,7 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Đặt lại"
-          onClick={() => {
+          onPress={() => {
             setScale(1)
             setRotation(0)
           }}
@@ -107,14 +107,14 @@ export function ImageLightbox({
   onOpenChange,
 }: ImageLightboxProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        showCloseButton
-        className="flex h-[85vh] w-[95vw] max-w-4xl flex-col gap-0 overflow-hidden bg-background p-0 sm:max-w-4xl"
-      >
-        <DialogTitle className="sr-only">{alt}</DialogTitle>
-        <LightboxViewer src={src} alt={alt} />
-      </DialogContent>
+    <Dialog
+      isOpen={open}
+      onOpenChange={onOpenChange}
+      showCloseButton
+      className="flex h-[85vh] w-[95vw] max-w-4xl flex-col gap-0 overflow-hidden bg-background p-0 sm:max-w-4xl"
+    >
+      <DialogTitle className="sr-only">{alt}</DialogTitle>
+      <LightboxViewer src={src} alt={alt} />
     </Dialog>
   )
 }

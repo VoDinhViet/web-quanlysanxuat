@@ -55,43 +55,42 @@ export function ProductionOrderLogsCard({
           isFetching && "pointer-events-none opacity-50"
         )}
       >
-        <Table>
-          <TableHeader>
-            <TableRow className="h-12 hover:bg-muted/45">
-              <TableHead>Thời gian</TableHead>
-              <TableHead>Người thực hiện</TableHead>
-              <TableHead>Hành động</TableHead>
-              <TableHead>Nội dung</TableHead>
-            </TableRow>
+        <Table aria-label="Lịch sử thay đổi">
+          <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+            <TableHead id="createdAt" isRowHeader>
+              Thời gian
+            </TableHead>
+            <TableHead id="performer">Người thực hiện</TableHead>
+            <TableHead id="action">Hành động</TableHead>
+            <TableHead id="content">Nội dung</TableHead>
           </TableHeader>
-          <TableBody>
-            {isPending ? (
-              <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={4} className="h-40 text-center">
+          <TableBody
+            renderEmptyState={() =>
+              isPending ? (
+                <div className="flex h-40 items-center justify-center">
                   <Spinner className="mx-auto size-6 text-muted-foreground" />
+                </div>
+              ) : (
+                <TableEmpty colSpan={4} title="Chưa có dữ liệu lịch sử." />
+              )
+            }
+          >
+            {logs.map((log) => (
+              <TableRow
+                key={log.id}
+                id={log.id}
+                className="h-14 bg-card hover:bg-muted/25"
+              >
+                <TableCell className="whitespace-nowrap tabular-nums">
+                  {DateTime.fromISO(log.createdAt).toFormat("dd/MM/yyyy HH:mm")}
                 </TableCell>
+                <TableCell>{log.performerBy?.fullName ?? "--"}</TableCell>
+                <TableCell>
+                  {productionOrderLogActionLabels[log.action]}
+                </TableCell>
+                <TableCell>{log.content}</TableCell>
               </TableRow>
-            ) : logs.length === 0 ? (
-              <TableEmpty colSpan={4} title="Chưa có dữ liệu lịch sử." />
-            ) : (
-              logs.map((log) => (
-                <TableRow
-                  key={log.id}
-                  className="h-14 bg-card hover:bg-muted/25"
-                >
-                  <TableCell className="whitespace-nowrap tabular-nums">
-                    {DateTime.fromISO(log.createdAt).toFormat(
-                      "dd/MM/yyyy HH:mm"
-                    )}
-                  </TableCell>
-                  <TableCell>{log.performerBy?.fullName ?? "--"}</TableCell>
-                  <TableCell>
-                    {productionOrderLogActionLabels[log.action]}
-                  </TableCell>
-                  <TableCell>{log.content}</TableCell>
-                </TableRow>
-              ))
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
@@ -108,8 +107,8 @@ export function ProductionOrderLogsCard({
               variant="outline"
               size="icon-sm"
               aria-label="Trang trước"
-              disabled={pagination.previousPage === null}
-              onClick={() => onPageChange(page - 1)}
+              isDisabled={pagination.previousPage === null}
+              onPress={() => onPageChange(page - 1)}
             >
               <ChevronLeft className="size-4" />
             </Button>
@@ -118,8 +117,8 @@ export function ProductionOrderLogsCard({
               variant="outline"
               size="icon-sm"
               aria-label="Trang sau"
-              disabled={pagination.nextPage === null}
-              onClick={() => onPageChange(page + 1)}
+              isDisabled={pagination.nextPage === null}
+              onPress={() => onPageChange(page + 1)}
             >
               <ChevronRight className="size-4" />
             </Button>

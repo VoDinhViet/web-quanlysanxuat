@@ -8,7 +8,6 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -66,7 +65,7 @@ export function OutsourcingReceiptDetailActions({
             type="button"
             variant="outline"
             className="border-destructive/40 text-destructive"
-            onClick={() => setConfirmAction("cancel")}
+            onPress={() => setConfirmAction("cancel")}
           >
             <CircleX className="size-4" />
             Hủy phiếu
@@ -80,45 +79,43 @@ export function OutsourcingReceiptDetailActions({
       </PendingAction>
 
       {confirmAction && (
-        <Dialog open onOpenChange={closeConfirm}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Hủy phiếu nhận gia công ngoài</DialogTitle>
-              <DialogDescription>
-                Bạn chắc chắn muốn hủy phiếu{" "}
-                <span className="font-mono font-semibold text-foreground">
-                  {receipt.code}
-                </span>
-                ? Gia công ngoài không quản tồn theo kho nên thao tác này không
-                ảnh hưởng số liệu tồn kho.{" "}
-                {receipt.requiresIqc &&
-                  "Nếu phiếu đã sinh IQC liên kết, thao tác này sẽ thất bại."}
-              </DialogDescription>
-            </DialogHeader>
+        <Dialog isOpen onOpenChange={closeConfirm}>
+          <DialogHeader>
+            <DialogTitle>Hủy phiếu nhận gia công ngoài</DialogTitle>
+            <DialogDescription>
+              Bạn chắc chắn muốn hủy phiếu{" "}
+              <span className="font-mono font-semibold text-foreground">
+                {receipt.code}
+              </span>
+              ? Gia công ngoài không quản tồn theo kho nên thao tác này không
+              ảnh hưởng số liệu tồn kho.{" "}
+              {receipt.requiresIqc &&
+                "Nếu phiếu đã sinh IQC liên kết, thao tác này sẽ thất bại."}
+            </DialogDescription>
+          </DialogHeader>
 
-            {cancelMutation.error && (
-              <p className="text-sm text-destructive">
-                {cancelMutation.error.message}
-              </p>
-            )}
+          {cancelMutation.error && (
+            <p className="text-sm text-destructive">
+              {cancelMutation.error.message}
+            </p>
+          )}
 
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => closeConfirm(false)}
-                disabled={cancelMutation.isPending}
-              >
-                Đóng
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => cancelMutation.mutate()}
-                disabled={cancelMutation.isPending}
-              >
-                {cancelMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onPress={() => closeConfirm(false)}
+              isDisabled={cancelMutation.isPending}
+            >
+              Đóng
+            </Button>
+            <Button
+              variant="destructive"
+              onPress={() => cancelMutation.mutate()}
+              isDisabled={cancelMutation.isPending}
+            >
+              {cancelMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
+            </Button>
+          </DialogFooter>
         </Dialog>
       )}
     </div>

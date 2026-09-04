@@ -1,11 +1,11 @@
-import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { CircleCheck, CirclePause, Edit3 } from "lucide-react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button, LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { MaterialStatusBadge } from "@/features/materials/components/primitives/MaterialBadges"
@@ -110,37 +110,46 @@ export const materialColumns = materialColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <RoutePermissionGate route="/manage/materials/$materialId/update">
-            <IconButton
-              label="Chỉnh sửa"
-              asChild
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <Link
+            <TooltipTrigger>
+              <LinkButton
                 to="/manage/materials/$materialId/update"
                 params={{ materialId: material.id }}
+                variant="outline"
+                size="icon-sm"
+                aria-label="Chỉnh sửa"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
               >
                 <Edit3 className="size-3.5" />
-              </Link>
-            </IconButton>
+              </LinkButton>
+              <Tooltip>Chỉnh sửa</Tooltip>
+            </TooltipTrigger>
           </RoutePermissionGate>
           <PermissionGate permission="items:update">
             <ToggleMaterialStatusDialog
               material={material}
               trigger={
-                <IconButton
-                  label={isActive ? "Ngừng sử dụng" : "Kích hoạt lại"}
-                  className={
-                    isActive
-                      ? "text-muted-foreground hover:border-warning/40 hover:text-warning"
-                      : "text-muted-foreground hover:border-success/40 hover:text-success"
-                  }
-                >
-                  {isActive ? (
-                    <CirclePause className="size-3.5" />
-                  ) : (
-                    <CircleCheck className="size-3.5" />
-                  )}
-                </IconButton>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label={isActive ? "Ngừng sử dụng" : "Kích hoạt lại"}
+                    className={
+                      isActive
+                        ? "text-muted-foreground hover:border-warning/40 hover:text-warning"
+                        : "text-muted-foreground hover:border-success/40 hover:text-success"
+                    }
+                  >
+                    {isActive ? (
+                      <CirclePause className="size-3.5" />
+                    ) : (
+                      <CircleCheck className="size-3.5" />
+                    )}
+                  </Button>
+                  <Tooltip>
+                    {isActive ? "Ngừng sử dụng" : "Kích hoạt lại"}
+                  </Tooltip>
+                </TooltipTrigger>
               }
             />
           </PermissionGate>

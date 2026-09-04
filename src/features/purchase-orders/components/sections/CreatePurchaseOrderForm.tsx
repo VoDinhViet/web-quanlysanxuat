@@ -79,8 +79,8 @@ export function CreatePurchaseOrderForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() =>
+            isDisabled={isPending}
+            onPress={() =>
               void navigate({
                 to: "/manage/purchase-orders",
                 search: { page: 1, limit: 10 },
@@ -95,7 +95,7 @@ export function CreatePurchaseOrderForm() {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
+                isDisabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

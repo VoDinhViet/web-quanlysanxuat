@@ -76,18 +76,26 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
         </div>
 
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow className="h-12 hover:bg-muted/45">
-                <TableHead className="w-14 text-center">STT</TableHead>
-                <TableHead className="min-w-32">Mã vật tư</TableHead>
-                <TableHead className="min-w-44">Tên vật tư</TableHead>
-                <TableHead className="w-20">ĐVT</TableHead>
-                <TableHead className="w-28 text-right">SL đặt</TableHead>
-              </TableRow>
+          <Table aria-label="Danh sách vật tư đơn mua hàng">
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableHead id="index" className="w-14 text-center">
+                STT
+              </TableHead>
+              <TableHead id="code" isRowHeader className="min-w-32">
+                Mã vật tư
+              </TableHead>
+              <TableHead id="name" className="min-w-44">
+                Tên vật tư
+              </TableHead>
+              <TableHead id="unit" className="w-20">
+                ĐVT
+              </TableHead>
+              <TableHead id="quantity" className="w-28 text-right">
+                SL đặt
+              </TableHead>
             </TableHeader>
-            <TableBody>
-              {lines.length === 0 ? (
+            <TableBody
+              renderEmptyState={() => (
                 <TableEmpty
                   colSpan={5}
                   title={
@@ -96,27 +104,27 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
                       : "Đơn mua hàng không có dòng nào"
                   }
                 />
-              ) : (
-                lines.map((line, index) => (
-                  <TableRow key={line.id} className="h-12 bg-card">
-                    <TableCell className="text-center text-muted-foreground">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className="font-mono font-semibold text-foreground">
-                      {line.purchaseRequestItem.item.code}
-                    </TableCell>
-                    <TableCell className="font-medium text-foreground">
-                      {line.purchaseRequestItem.item.name}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {line.purchaseRequestItem.item.unit.name}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {quantityFormatter.format(line.quantity)}
-                    </TableCell>
-                  </TableRow>
-                ))
               )}
+            >
+              {lines.map((line, index) => (
+                <TableRow key={line.id} id={line.id} className="h-12 bg-card">
+                  <TableCell className="text-center text-muted-foreground">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell className="font-mono font-semibold text-foreground">
+                    {line.purchaseRequestItem.item.code}
+                  </TableCell>
+                  <TableCell className="font-medium text-foreground">
+                    {line.purchaseRequestItem.item.name}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {line.purchaseRequestItem.item.unit.name}
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    {quantityFormatter.format(line.quantity)}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>

@@ -1,7 +1,7 @@
-import { Link } from "@tanstack/react-router"
 import { EllipsisVertical, Eye, Printer } from "lucide-react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
@@ -17,18 +17,19 @@ export function OutsourcingOrderActionsCell({
 }: OutsourcingOrderActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <IconButton
-        label="Xem chi tiết"
-        asChild
-        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-      >
-        <Link
+      <TooltipTrigger>
+        <LinkButton
           to="/manage/outsourcing-orders/$outsourcingOrderId"
           params={{ outsourcingOrderId: outsourcingOrder.id }}
+          variant="outline"
+          size="icon-sm"
+          aria-label="Xem chi tiết"
+          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
         >
           <Eye className="size-3.5" />
-        </Link>
-      </IconButton>
+        </LinkButton>
+        <Tooltip>Xem chi tiết</Tooltip>
+      </TooltipTrigger>
       <DisabledAction label="In phiếu xuất" hint="chưa có tính năng in phiếu">
         <Printer className="size-3.5" />
       </DisabledAction>

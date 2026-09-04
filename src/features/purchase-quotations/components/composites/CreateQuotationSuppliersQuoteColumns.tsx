@@ -3,8 +3,9 @@ import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { DatePicker } from "@/components/shared/composites/DatePicker"
-import { IconButton } from "@/components/shared/primitives/IconButton"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type {
@@ -129,21 +130,27 @@ export function buildQuotationSuppliersQuoteColumns({
       id: "actions",
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
-        <IconButton
-          label="Xóa NCC"
-          className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-          disabled={disabled}
-          onClick={() =>
-            itemsField.replaceValue(itemIndex, {
-              ...item,
-              suppliers: item.suppliers.filter(
-                (_, index) => index !== row.index
-              ),
-            })
-          }
-        >
-          <TrashBinTrash className="size-3.5" />
-        </IconButton>
+        <TooltipTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Xóa NCC"
+            className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
+            isDisabled={disabled}
+            onPress={() =>
+              itemsField.replaceValue(itemIndex, {
+                ...item,
+                suppliers: item.suppliers.filter(
+                  (_, index) => index !== row.index
+                ),
+              })
+            }
+          >
+            <TrashBinTrash className="size-3.5" />
+          </Button>
+          <Tooltip>Xóa NCC</Tooltip>
+        </TooltipTrigger>
       ),
     }),
   ])

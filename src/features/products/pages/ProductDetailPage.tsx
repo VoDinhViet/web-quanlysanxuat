@@ -6,6 +6,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
@@ -68,10 +69,10 @@ export function ProductDetailPage() {
     onSubmit: ({ value }) => update(value),
   })
 
-  // Radix widens onValueChange to `string`; safeParse narrows it back without
-  // a cast, and an unrecognised value simply doesn't navigate.
-  const handleTabChange = (value: string) => {
-    const nextTab = productDetailTabSchema.safeParse(value)
+  // RAC's onSelectionChange returns a `Key` (string | number); safeParse narrows it back
+  // without a cast, and an unrecognised value simply doesn't navigate.
+  const handleTabChange = (key: Key) => {
+    const nextTab = productDetailTabSchema.safeParse(String(key))
 
     if (nextTab.success) {
       void navigate({ search: { tab: nextTab.data } })
@@ -93,7 +94,11 @@ export function ProductDetailPage() {
         {/* One continuous panel like the list page: header, tab strip, content
             and sidebar are separated by rules rather than by gaps. */}
         <section className="overflow-hidden rounded-lg bg-card shadow-card">
-          <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
+          <Tabs
+            selectedKey={tab}
+            onSelectionChange={handleTabChange}
+            className="gap-0"
+          >
             <ProductDetailHeader
               product={product}
               activeTab={tab}
@@ -117,12 +122,15 @@ export function ProductDetailPage() {
               )}
             >
               <div className="min-w-0">
-                {/* forceMount: Radix unmounts inactive panels by default, which
-                  would discard unsaved form state on every tab switch. */}
+                {/* shouldForceMount: RAC unmounts inactive panels by default, which
+                  would discard unsaved form state on every tab switch. Force-mounted
+                  but inactive still gets `inert` (native, non-visual) — `data-inert`
+                  is the CSS hook that actually hides it, RAC's equivalent of Radix's
+                  `data-[state=inactive]:hidden`. */}
                 <TabsContent
-                  value="info"
-                  forceMount
-                  className="m-0 outline-none data-[state=inactive]:hidden"
+                  id="info"
+                  shouldForceMount
+                  className="m-0 outline-none data-[inert=true]:hidden"
                 >
                   <ProductInfoTab
                     form={form}
@@ -131,11 +139,11 @@ export function ProductDetailPage() {
                   />
                 </TabsContent>
 
-                <TabsContent value="boms" className="m-0 outline-none">
+                <TabsContent id="boms" className="m-0 outline-none">
                   <ProductBomTab product={product} />
                 </TabsContent>
 
-                <TabsContent value="materials" className="m-0 outline-none">
+                <TabsContent id="materials" className="m-0 outline-none">
                   <ProductIssuesTab product={product} />
                 </TabsContent>
               </div>

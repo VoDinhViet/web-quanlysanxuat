@@ -40,7 +40,7 @@ type InventoryReceiptCreateReturnStepsTabsProps = {
   canGoToConfirm: boolean
 }
 
-// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
+// Chỉ vẽ dải trigger — Tabs root (selectedKey/onSelectionChange) + TabsContent panel sống ở
 // InventoryReceiptCreateReturnForm.tsx. Bước ① luôn mở được để quay lại đổi khách hàng.
 export function InventoryReceiptCreateReturnStepsTabs({
   canGoToItems,
@@ -64,13 +64,13 @@ export function InventoryReceiptCreateReturnStepsTabs({
           return (
             <TabsTrigger
               key={item.value}
-              value={item.value}
-              disabled={isDisabled}
+              id={item.value}
+              isDisabled={isDisabled}
               className={cn(
                 "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
-                "data-active:bg-primary/5 data-active:text-primary",
-                "group-data-[variant=line]/tabs-list:data-active:bg-primary/5",
-                "data-active:hover:bg-primary/5",
+                "data-selected:bg-primary/5 data-selected:text-primary",
+                "group-data-[variant=line]/tabs-list:data-selected:bg-primary/5",
+                "data-selected:hover:bg-primary/5",
                 "after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5",
                 isDisabled && "cursor-not-allowed opacity-60"
               )}

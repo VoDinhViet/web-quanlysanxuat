@@ -1,3 +1,5 @@
+import type { PaymentTerm } from "@/lib/types/payment-term.type"
+
 export const PaymentRequestStatus = {
   PENDING: "PENDING",
   PAID: "PAID",
@@ -25,11 +27,16 @@ export type PaymentRequestSupplierRef = {
   email: string | null
 }
 
-/** Mirrors the backend's `PaymentRequestPurchaseOrderRefResDto`. */
+/** Mirrors the backend's `PaymentRequestPurchaseOrderRefResDto` — `paymentTerm`/`expectedDate`/
+ *  `assignedUser` let the detail header explain *why* `dueDate` falls where it does, and who's
+ *  handling the PO, without a second query to `purchase-orders`. */
 export type PaymentRequestPoRef = {
   id: string
   code: string
   orderDate: string
+  paymentTerm: PaymentTerm | null
+  expectedDate: string | null
+  assignedUser: PaymentRequestUserRef | null
 }
 
 /** Mirrors the backend's `UserRefResDto`, nested on `createdBy`/`paidBy`/`cancelledBy` — same
@@ -87,4 +94,34 @@ export type PaymentRequestDetail = {
   paidAt: string | null
   cancelledBy: PaymentRequestUserRef | null
   cancelledAt: string | null
+  cancellationReason: string | null
+}
+
+/** Mirrors the backend's `payment_request_logs.action` column. `CREATED` is the one automatic
+ *  milestone (no actor) — a payment request only ever auto-generates, never created by hand. */
+export enum PaymentRequestLogAction {
+  CREATED = "CREATED",
+  PAID = "PAID",
+  CANCELLED = "CANCELLED",
+}
+
+export const paymentRequestLogActionLabels: Record<
+  PaymentRequestLogAction,
+  string
+> = {
+  [PaymentRequestLogAction.CREATED]: "Tạo YCTT",
+  [PaymentRequestLogAction.PAID]: "Đánh dấu đã TT",
+  [PaymentRequestLogAction.CANCELLED]: "Hủy YCTT",
+}
+
+/** Mirrors the backend's `PaymentRequestLogResDto` — one row of
+ *  `GET /payment-requests/:id/logs`. `content` is already a ready-to-display Vietnamese sentence
+ *  generated server-side at write time — not raw data to build a sentence from client-side.
+ *  `performerBy` NULL means the automatic `CREATED` milestone, not a deleted user. */
+export type PaymentRequestLog = {
+  id: string
+  action: PaymentRequestLogAction
+  content: string
+  performerBy: PaymentRequestUserRef | null
+  createdAt: string
 }

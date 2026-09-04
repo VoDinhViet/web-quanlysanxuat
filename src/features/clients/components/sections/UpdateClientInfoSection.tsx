@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
 import { clientGroupOptionsQueryOptions } from "@/features/clients/api/options"
 import { updateClientFormDefaultValues } from "@/features/clients/schemas/update-client.schema"
@@ -34,17 +32,16 @@ export const UpdateClientInfoSection = withForm({
 
         <div className="px-4 pb-5 sm:px-5">
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 xl:grid-cols-3">
-            <Field>
-              <FieldLabel className="text-xs font-medium text-foreground">
-                Mã khách hàng <span className="text-destructive">*</span>
-              </FieldLabel>
-              <Input
-                readOnly
-                disabled
-                placeholder="Tự động"
-                className="h-9 bg-background text-xs"
-              />
-            </Field>
+            <form.AppField name="code">
+              {(field) => (
+                <field.TextField
+                  label="Mã khách hàng"
+                  required
+                  placeholder="Nhập mã khách hàng"
+                  disabled={disabled}
+                />
+              )}
+            </form.AppField>
 
             <form.AppField name="name">
               {(field) => (

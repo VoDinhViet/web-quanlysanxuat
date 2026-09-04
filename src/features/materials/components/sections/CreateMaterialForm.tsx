@@ -86,8 +86,8 @@ export function CreateMaterialForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() =>
+            isDisabled={isPending}
+            onPress={() =>
               void navigate({
                 to: "/manage/materials",
                 search: { page: 1, limit: 10 },
@@ -100,8 +100,8 @@ export function CreateMaterialForm() {
             <Button
               type="button"
               variant="ghost"
-              disabled={isPending}
-              onClick={() => {
+              isDisabled={isPending}
+              onPress={() => {
                 form.reset()
                 restoreFormDraft(form, createMaterialFormDefaultValues)
                 clearDraft()
@@ -113,8 +113,8 @@ export function CreateMaterialForm() {
             <Button
               type="button"
               variant="outline"
-              disabled={isPending}
-              onClick={() => {
+              isDisabled={isPending}
+              onPress={() => {
                 saveDraft(form.state.values)
                 toast.success("Đã lưu nháp")
               }}
@@ -128,7 +128,7 @@ export function CreateMaterialForm() {
               {([canSubmit, isSubmitting]) => (
                 <Button
                   type="submit"
-                  disabled={!canSubmit || isSubmitting || isPending}
+                  isDisabled={!canSubmit || isSubmitting || isPending}
                 >
                   {isSubmitting || isPending ? (
                     <>

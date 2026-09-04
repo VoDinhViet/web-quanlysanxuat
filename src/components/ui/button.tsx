@@ -1,9 +1,11 @@
-import * as React from "react"
+import type * as React from "react"
+import { createLink } from "@tanstack/react-router"
 import { cva } from "class-variance-authority"
-import type { VariantProps } from "class-variance-authority"
-import { Slot } from "radix-ui"
+import { Button as ButtonPrimitive } from "react-aria-components"
 
 import { cn } from "@/lib/utils"
+import type { VariantProps } from "class-variance-authority"
+import type { ButtonProps as ButtonPrimitiveProps } from "react-aria-components"
 
 const buttonVariants = cva(
   "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-[background-color,border-color,color,box-shadow,opacity] duration-200 ease-out outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/35 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -47,16 +49,12 @@ function Button({
   className,
   variant = "default",
   size = "default",
-  asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
-  const Comp = asChild ? Slot.Root : "button"
-
+}: Omit<ButtonPrimitiveProps, "className"> &
+  React.RefAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants> & { className?: string }) {
   return (
-    <Comp
+    <ButtonPrimitive
       data-slot="button"
       data-variant={variant}
       data-size={size}
@@ -66,4 +64,8 @@ function Button({
   )
 }
 
-export { Button, buttonVariants }
+// Router-compatible Button link, following TanStack Router's own recommended pattern
+// (https://tanstack.com/router/latest/docs/how-to/integrate-shadcn-ui#create-router-compatible-button-links).
+const LinkButton = createLink(Button)
+
+export { Button, LinkButton, buttonVariants }

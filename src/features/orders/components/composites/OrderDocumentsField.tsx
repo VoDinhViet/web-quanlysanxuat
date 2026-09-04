@@ -241,9 +241,9 @@ export function OrderDocumentsField({
                   type="button"
                   variant="outline"
                   size="icon-xs"
-                  disabled={disabled}
+                  isDisabled={disabled}
                   aria-label={`Xóa ${file.originalName}`}
-                  onClick={() => removeFile(file.id)}
+                  onPress={() => removeFile(file.id)}
                   className="absolute top-1.5 right-1.5 rounded-full border-border/60 bg-background/90 shadow-sm hover:border-destructive/40 hover:text-destructive"
                 >
                   <X className="size-3.5" />

@@ -11,6 +11,7 @@ import {
 } from "@solar-icons/react"
 import { FileText, Pencil, Plus, Trash2 } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -22,13 +23,12 @@ import {
 } from "@/components/ui/table"
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import {
   BomNodeTypeBadge,
@@ -182,17 +182,25 @@ function OperationsToggleButton({
   isExpanded: boolean
   onToggle: () => void
 }) {
+  const label = isExpanded ? "Ẩn công đoạn" : "Hiện công đoạn"
+
   return (
-    <IconButton
-      label={isExpanded ? "Ẩn công đoạn" : "Hiện công đoạn"}
-      onClick={onToggle}
-      className={cn(
-        "border border-border/60 hover:bg-muted",
-        isExpanded && "bg-primary/10 text-primary hover:bg-primary/15"
-      )}
-    >
-      <Route className="size-3.5" />
-    </IconButton>
+    <TooltipTrigger>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        aria-label={label}
+        onPress={onToggle}
+        className={cn(
+          "border border-border/60 hover:bg-muted",
+          isExpanded && "bg-primary/10 text-primary hover:bg-primary/15"
+        )}
+      >
+        <Route className="size-3.5" />
+      </Button>
+      <Tooltip>{label}</Tooltip>
+    </TooltipTrigger>
   )
 }
 
@@ -218,57 +226,76 @@ function BomRowActions({
   return (
     <>
       {node.itemType === "WIP" ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <IconButton
-              label="Thêm thành phần"
-              className="border border-border/60 hover:bg-muted"
-            >
-              <ArrowRightDown className="size-3.5" />
-            </IconButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-44">
+        <DropdownMenuTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Thêm thành phần"
+            className="border border-border/60 hover:bg-muted"
+          >
+            <ArrowRightDown className="size-3.5" />
+          </Button>
+          <DropdownMenu placement="bottom end" className="min-w-44">
             <DropdownMenuLabel>Thêm cấp con</DropdownMenuLabel>
-            <DropdownMenuItem onSelect={() => onAddChild("WIP")}>
+            <DropdownMenuItem onAction={() => onAddChild("WIP")}>
               <LayersMinimalistic />
               {bomItemTypeLabels.WIP}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onAddChild("RM")}>
+            <DropdownMenuItem onAction={() => onAddChild("RM")}>
               <Bolt />
               {bomItemTypeLabels.RM}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={onAddSibling}>
+            <DropdownMenuItem onAction={onAddSibling}>
               <Layers />
               Cùng cấp
             </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </DropdownMenu>
+        </DropdownMenuTrigger>
       ) : (
-        <IconButton
-          label="Thêm cùng cấp"
-          onClick={onAddSibling}
-          className="border border-border/60 hover:bg-muted"
-        >
-          <Layers className="size-3.5" />
-        </IconButton>
+        <TooltipTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Thêm cùng cấp"
+            onPress={onAddSibling}
+            className="border border-border/60 hover:bg-muted"
+          >
+            <Layers className="size-3.5" />
+          </Button>
+          <Tooltip>Thêm cùng cấp</Tooltip>
+        </TooltipTrigger>
       )}
 
-      <IconButton
-        label="Sửa thành phần"
-        onClick={() => onUpdate(node)}
-        className="border border-border/60 hover:bg-muted"
-      >
-        <Pencil className="size-3.5" />
-      </IconButton>
+      <TooltipTrigger>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          aria-label="Sửa thành phần"
+          onPress={() => onUpdate(node)}
+          className="border border-border/60 hover:bg-muted"
+        >
+          <Pencil className="size-3.5" />
+        </Button>
+        <Tooltip>Sửa thành phần</Tooltip>
+      </TooltipTrigger>
 
-      <IconButton
-        label="Xoá thành phần"
-        className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
-        onClick={() => onDelete(node)}
-      >
-        <Trash2 className="size-3.5" />
-      </IconButton>
+      <TooltipTrigger>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          aria-label="Xoá thành phần"
+          className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          onPress={() => onDelete(node)}
+        >
+          <Trash2 className="size-3.5" />
+        </Button>
+        <Tooltip>Xoá thành phần</Tooltip>
+      </TooltipTrigger>
     </>
   )
 }
@@ -287,38 +314,45 @@ function RootAddButton({
 }) {
   if (productType === ItemType.FG) {
     return (
-      <IconButton
-        label="Thêm thành phần"
-        onClick={() => onCreate("WIP")}
-        className="border border-border/60 hover:bg-muted"
-      >
-        <Plus className="size-3.5" />
-      </IconButton>
+      <TooltipTrigger>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          aria-label="Thêm thành phần"
+          onPress={() => onCreate("WIP")}
+          className="border border-border/60 hover:bg-muted"
+        >
+          <Plus className="size-3.5" />
+        </Button>
+        <Tooltip>Thêm thành phần</Tooltip>
+      </TooltipTrigger>
     )
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <IconButton
-          label="Thêm thành phần"
-          className="border border-border/60 hover:bg-muted"
-        >
-          <Plus className="size-3.5" />
-        </IconButton>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-44">
+    <DropdownMenuTrigger>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        aria-label="Thêm thành phần"
+        className="border border-border/60 hover:bg-muted"
+      >
+        <Plus className="size-3.5" />
+      </Button>
+      <DropdownMenu placement="bottom end" className="min-w-44">
         <DropdownMenuLabel>Thêm thành phần</DropdownMenuLabel>
-        <DropdownMenuItem onSelect={() => onCreate("WIP")}>
+        <DropdownMenuItem onAction={() => onCreate("WIP")}>
           <LayersMinimalistic />
           {bomItemTypeLabels.WIP}
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => onCreate("RM")}>
+        <DropdownMenuItem onAction={() => onCreate("RM")}>
           <Bolt />
           {bomItemTypeLabels.RM}
         </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </DropdownMenu>
+    </DropdownMenuTrigger>
   )
 }
 
@@ -365,23 +399,39 @@ export function ProductBomTable({
       <BomTableGuidance />
 
       <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow className="h-12 hover:bg-muted/45">
-              <TableHead className="w-14">STT</TableHead>
-              <TableHead className="w-48">MÃ BẢN VẼ</TableHead>
-              <TableHead className="min-w-44">TÊN BẢN VẼ</TableHead>
-              <TableHead className="w-28">LOẠI</TableHead>
-              <TableHead className="w-20">CẤP</TableHead>
-              <TableHead className="w-24 text-center">SỐ LƯỢNG</TableHead>
-              <TableHead className="w-20">ĐVT</TableHead>
-              <TableHead className="min-w-64">CÔNG ĐOẠN</TableHead>
-              <TableHead className="w-44 text-right">THAO TÁC</TableHead>
-            </TableRow>
+        <Table aria-label="Cây kết cấu sản phẩm">
+          <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+            <TableHead id="index" className="w-14">
+              STT
+            </TableHead>
+            <TableHead id="code" isRowHeader className="w-48">
+              MÃ BẢN VẼ
+            </TableHead>
+            <TableHead id="name" className="min-w-44">
+              TÊN BẢN VẼ
+            </TableHead>
+            <TableHead id="type" className="w-28">
+              LOẠI
+            </TableHead>
+            <TableHead id="level" className="w-20">
+              CẤP
+            </TableHead>
+            <TableHead id="quantity" className="w-24 text-center">
+              SỐ LƯỢNG
+            </TableHead>
+            <TableHead id="unit" className="w-20">
+              ĐVT
+            </TableHead>
+            <TableHead id="operations" className="min-w-64">
+              CÔNG ĐOẠN
+            </TableHead>
+            <TableHead id="actions" className="w-44 text-right">
+              THAO TÁC
+            </TableHead>
           </TableHeader>
           <TableBody>
             {/* Item root row — "Cấp 0" */}
-            <TableRow className="h-14 bg-muted/10">
+            <TableRow id="root" className="h-14 bg-muted/10">
               <TableCell className="font-mono font-bold text-foreground">
                 0
               </TableCell>
@@ -405,11 +455,13 @@ export function ProductBomTable({
                   </span>
                 </div>
               </TableCell>
-              <TableCell
-                className="max-w-48 truncate font-bold text-foreground"
-                title={product.name}
-              >
-                {product.name}
+              <TableCell className="max-w-48">
+                <span
+                  className="block truncate font-bold text-foreground"
+                  title={product.name}
+                >
+                  {product.name}
+                </span>
               </TableCell>
               <TableCell>
                 <ProductTypeBadge type={product.type} />
@@ -421,14 +473,16 @@ export function ProductBomTable({
                 1
               </TableCell>
               <TableCell className="text-muted-foreground">—</TableCell>
-              <TableCell
-                className="max-w-64 truncate"
-                title={formatOperationSequence(rootOperations.operations)}
-              >
-                <OperationSummaryText
-                  operations={rootOperations.operations}
-                  isPending={rootOperations.isPending}
-                />
+              <TableCell className="max-w-64">
+                <span
+                  className="block truncate"
+                  title={formatOperationSequence(rootOperations.operations)}
+                >
+                  <OperationSummaryText
+                    operations={rootOperations.operations}
+                    isPending={rootOperations.isPending}
+                  />
+                </span>
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-1">
@@ -451,7 +505,10 @@ export function ProductBomTable({
             </TableRow>
 
             {isRootOperationsExpanded ? (
-              <TableRow className="bg-muted/10 hover:bg-muted/10">
+              <TableRow
+                id="root-operations"
+                className="bg-muted/10 hover:bg-muted/10"
+              >
                 <TableCell colSpan={columnCount} className="p-0">
                   <ProductOperationsPanel
                     target={{ productId: product.id }}
@@ -466,7 +523,7 @@ export function ProductBomTable({
             {rows.map(({ node, path }) => {
               return (
                 <Fragment key={node.id}>
-                  <TableRow className="h-14">
+                  <TableRow id={node.id} className="h-14">
                     <TableCell className="font-mono font-bold text-muted-foreground">
                       {path}
                     </TableCell>
@@ -505,11 +562,13 @@ export function ProductBomTable({
                         ) : null}
                       </div>
                     </TableCell>
-                    <TableCell
-                      className="max-w-48 truncate font-semibold text-foreground"
-                      title={node.name}
-                    >
-                      {node.name}
+                    <TableCell className="max-w-48">
+                      <span
+                        className="block truncate font-semibold text-foreground"
+                        title={node.name}
+                      >
+                        {node.name}
+                      </span>
                     </TableCell>
                     <TableCell>
                       <BomNodeTypeBadge type={node.itemType} />
@@ -520,28 +579,27 @@ export function ProductBomTable({
                     <TableCell className="text-center font-semibold text-foreground tabular-nums">
                       {quantityFormatter.format(node.quantity)}
                     </TableCell>
-                    <TableCell
-                      className="font-medium text-muted-foreground"
-                      title={node.unit.code}
-                    >
-                      {node.unit.name}
+                    <TableCell className="font-medium text-muted-foreground">
+                      <span title={node.unit.code}>{node.unit.name}</span>
                     </TableCell>
-                    <TableCell
-                      className="max-w-64 truncate"
-                      title={
-                        node.itemType === "WIP"
-                          ? formatOperationSequence(node.operations)
-                          : undefined
-                      }
-                    >
-                      {node.itemType === "WIP" ? (
-                        <OperationSummaryText
-                          operations={node.operations}
-                          isPending={false}
-                        />
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
+                    <TableCell className="max-w-64">
+                      <span
+                        className="block truncate"
+                        title={
+                          node.itemType === "WIP"
+                            ? formatOperationSequence(node.operations)
+                            : undefined
+                        }
+                      >
+                        {node.itemType === "WIP" ? (
+                          <OperationSummaryText
+                            operations={node.operations}
+                            isPending={false}
+                          />
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </span>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
@@ -572,7 +630,10 @@ export function ProductBomTable({
 
                   {node.itemType === "WIP" &&
                   expandedOperationIds.has(node.id) ? (
-                    <TableRow className="bg-muted/10 hover:bg-muted/10">
+                    <TableRow
+                      id={`${node.id}-operations`}
+                      className="bg-muted/10 hover:bg-muted/10"
+                    >
                       <TableCell colSpan={columnCount} className="p-0">
                         <ProductOperationsPanel
                           target={{

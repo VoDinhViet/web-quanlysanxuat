@@ -152,16 +152,16 @@ export function InventoryMaterialsTableFilter() {
               Nhà cung cấp
             </Label>
             <Select
-              value={search.supplierId ?? "all"}
-              onValueChange={handleSupplierChange}
+              selectedKey={search.supplierId ?? "all"}
+              onSelectionChange={(key) => handleSupplierChange(String(key))}
             >
               <SelectTrigger id="inventory-supplier" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
                 {supplierOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
+                  <SelectItem key={option.id} id={option.id}>
                     {option.name}
                   </SelectItem>
                 ))}
@@ -183,15 +183,15 @@ export function InventoryMaterialsTableFilter() {
               }
             />
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="inventory-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

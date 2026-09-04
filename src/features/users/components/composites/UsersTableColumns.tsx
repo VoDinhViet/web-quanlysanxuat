@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Edit3, MoreHorizontal, ShieldCheck } from "lucide-react"
@@ -6,7 +5,8 @@ import { Gallery } from "@solar-icons/react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button, LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
@@ -118,33 +118,46 @@ export const userColumns = userColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <RoutePermissionGate route="/manage/users/$userId/update">
-            <IconButton
-              label="Chỉnh sửa"
-              asChild
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <Link
+            <TooltipTrigger>
+              <LinkButton
                 to="/manage/users/$userId/update"
                 params={{ userId: user.id }}
+                variant="outline"
+                size="icon-sm"
+                aria-label="Chỉnh sửa"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
               >
                 <Edit3 className="size-3.5" />
-              </Link>
-            </IconButton>
+              </LinkButton>
+              <Tooltip>Chỉnh sửa</Tooltip>
+            </TooltipTrigger>
           </RoutePermissionGate>
           <PermissionGate permission="roles:update">
-            <IconButton
-              label="Phân quyền"
+            <TooltipTrigger>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Phân quyền"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              >
+                <ShieldCheck className="size-3.5" />
+              </Button>
+              <Tooltip>Phân quyền</Tooltip>
+            </TooltipTrigger>
+          </PermissionGate>
+          <TooltipTrigger>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label="Thao tác khác"
               className="text-muted-foreground hover:border-primary/30 hover:text-primary"
             >
-              <ShieldCheck className="size-3.5" />
-            </IconButton>
-          </PermissionGate>
-          <IconButton
-            label="Thao tác khác"
-            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-          >
-            <MoreHorizontal className="size-3.5" />
-          </IconButton>
+              <MoreHorizontal className="size-3.5" />
+            </Button>
+            <Tooltip>Thao tác khác</Tooltip>
+          </TooltipTrigger>
         </div>
       )
     },

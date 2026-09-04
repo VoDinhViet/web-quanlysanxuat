@@ -11,6 +11,7 @@ import {
 } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -72,11 +73,11 @@ export function CreateQuotationForm() {
 
   const [step, setStep] = useState<CreateQuotationWizardStep>("items")
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
-  // unrecognised value simply doesn't switch steps.
-  function handleStepChange(value: string) {
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
+  // without a cast, and an unrecognised value simply doesn't switch steps.
+  function handleStepChange(key: Key) {
     const nextStep = createQuotationStepItems.find(
-      (item) => item.value === value
+      (item) => item.value === String(key)
     )
 
     if (nextStep) {
@@ -115,20 +116,24 @@ export function CreateQuotationForm() {
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
+        <Tabs
+          selectedKey={step}
+          onSelectionChange={handleStepChange}
+          className="gap-0"
+        >
           <form.Subscribe selector={(state) => state.values.items.length}>
             {(itemCount) => (
               <CreateQuotationStepsTabs canGoToSuppliers={itemCount > 0} />
             )}
           </form.Subscribe>
 
-          <TabsContent value="items" className="m-0 outline-none">
+          <TabsContent id="items" className="m-0 outline-none">
             <CreateQuotationItemsPickerSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="suppliers" className="m-0 outline-none">
+          <TabsContent id="suppliers" className="m-0 outline-none">
             <CreateQuotationSuppliersSection form={form} disabled={isPending} />
           </TabsContent>
         </Tabs>
@@ -139,8 +144,8 @@ export function CreateQuotationForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() => setStep(prevStep)}
+              isDisabled={isPending}
+              onPress={() => setStep(prevStep)}
             >
               <AltArrowLeft className="size-4" />
               {prevLabel}
@@ -150,7 +155,7 @@ export function CreateQuotationForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              onClick={() =>
+              onPress={() =>
                 void navigate({
                   to: "/manage/purchase-quotations",
                   search: { page: 1, limit: 10 },
@@ -166,8 +171,8 @@ export function CreateQuotationForm() {
               {(itemCount) => (
                 <Button
                   type="button"
-                  disabled={itemCount === 0}
-                  onClick={() => setStep(nextStep)}
+                  isDisabled={itemCount === 0}
+                  onPress={() => setStep(nextStep)}
                 >
                   {nextLabel}
                   <AltArrowRight className="size-4" />
@@ -179,8 +184,8 @@ export function CreateQuotationForm() {
               <Button
                 type="button"
                 variant="ghost"
-                disabled={isPending}
-                onClick={() => {
+                isDisabled={isPending}
+                onPress={() => {
                   form.reset()
                   restoreFormDraft(form, createQuotationFormDefaultValues)
                   clearDraft()
@@ -193,8 +198,8 @@ export function CreateQuotationForm() {
               <Button
                 type="button"
                 variant="outline"
-                disabled={isPending}
-                onClick={() => {
+                isDisabled={isPending}
+                onPress={() => {
                   saveDraft(form.state.values)
                   toast.success("Đã lưu nháp")
                 }}
@@ -208,7 +213,7 @@ export function CreateQuotationForm() {
                 {([canSubmit, isSubmitting]) => (
                   <Button
                     type="submit"
-                    disabled={!canSubmit || isSubmitting || isPending}
+                    isDisabled={!canSubmit || isSubmitting || isPending}
                   >
                     {isSubmitting || isPending ? (
                       <>

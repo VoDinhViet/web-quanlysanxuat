@@ -147,15 +147,15 @@ export function OqcTableFilter() {
           Kết quả
         </Label>
         <Select
-          value={search.result ?? "all"}
-          onValueChange={handleResultChange}
+          selectedKey={search.result ?? "all"}
+          onSelectionChange={(key) => handleResultChange(String(key))}
         >
           <SelectTrigger id="oqc-result" className="w-full text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {resultOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value} id={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -171,15 +171,15 @@ export function OqcTableFilter() {
           Trạng thái
         </Label>
         <Select
-          value={search.status ?? "all"}
-          onValueChange={handleStatusChange}
+          selectedKey={search.status ?? "all"}
+          onSelectionChange={(key) => handleStatusChange(String(key))}
         >
           <SelectTrigger id="oqc-status" className="w-full text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value} id={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -195,15 +195,15 @@ export function OqcTableFilter() {
           Phương án xử lý
         </Label>
         <Select
-          value={search.disposition ?? "all"}
-          onValueChange={handleDispositionChange}
+          selectedKey={search.disposition ?? "all"}
+          onSelectionChange={(key) => handleDispositionChange(String(key))}
         >
           <SelectTrigger id="oqc-disposition" className="w-full text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {dispositionOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value} id={option.value}>
                 {option.label}
               </SelectItem>
             ))}

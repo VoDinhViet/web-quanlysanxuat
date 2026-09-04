@@ -11,13 +11,13 @@ export function CreateProductPage() {
       {/* Same tab strip as the detail screen, with steps 2-3 locked: the user
           sees the whole route up front, and the two pages read as one flow
           instead of the save jumping to a screen that looks unrelated. */}
-      <Tabs value="info" className="gap-0">
+      <Tabs selectedKey="info" className="gap-0">
         <ProductDetailTabs
           lockedTabs={["boms", "materials"]}
           lockedHint={lockedTabsHint}
         />
 
-        <TabsContent value="info" className="m-0 mt-5 outline-none">
+        <TabsContent id="info" className="m-0 mt-5 outline-none">
           <p className="mb-4 text-xs font-medium text-muted-foreground">
             Bước 1/3 — sau khi lưu, bạn sẽ khai báo cấu trúc sản phẩm và thành
             phần vật tư.

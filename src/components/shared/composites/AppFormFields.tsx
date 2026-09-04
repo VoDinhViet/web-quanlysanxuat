@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
+import { Radio } from "react-aria-components"
 import { NumericFormat } from "react-number-format"
 import type { ComponentProps, ReactNode } from "react"
 
@@ -11,7 +12,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -235,8 +236,8 @@ export function PasswordField({
           variant="ghost"
           size="icon-sm"
           className="absolute top-1/2 right-1 -translate-y-1/2"
-          onClick={() => setShowPassword(!showPassword)}
-          disabled={disabled}
+          onPress={() => setShowPassword(!showPassword)}
+          isDisabled={disabled}
           aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
         >
           {showPassword ? (
@@ -289,9 +290,10 @@ export function SelectField({
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Select
-        value={field.state.value ?? ""}
-        onValueChange={field.handleChange}
-        disabled={disabled}
+        selectedKey={field.state.value ?? null}
+        onSelectionChange={(key) => field.handleChange(String(key))}
+        isDisabled={disabled}
+        placeholder={isPending ? "Đang tải..." : placeholder}
       >
         <SelectTrigger
           id={field.name}
@@ -299,13 +301,13 @@ export function SelectField({
           aria-invalid={isInvalid}
           className="h-9 w-full bg-background text-xs"
         >
-          <SelectValue placeholder={isPending ? "Đang tải..." : placeholder} />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
             <SelectItem
               key={option.value}
-              value={option.value}
+              id={option.value}
               className="text-xs"
             >
               {option.label}
@@ -373,22 +375,18 @@ export function RadioPillField<TValue extends string>({
       </span>
       <RadioGroup
         value={field.state.value}
-        onValueChange={(value) => field.handleChange(value as TValue)}
-        disabled={disabled}
+        onChange={(value) => field.handleChange(value as TValue)}
+        isDisabled={disabled}
         className="flex flex-row flex-wrap gap-2"
       >
         {options.map((option) => (
-          <FieldLabel
+          <Radio
             key={option.value}
-            htmlFor={`${field.name}-${option.value}`}
-            className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground has-data-checked:border-primary has-data-checked:bg-primary/5 has-data-checked:text-primary"
+            value={option.value}
+            className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
           >
-            <RadioGroupItem
-              value={option.value}
-              id={`${field.name}-${option.value}`}
-            />
             {option.label}
-          </FieldLabel>
+          </Radio>
         ))}
       </RadioGroup>
     </div>
@@ -415,14 +413,14 @@ export function SwitchField({
   return (
     <div className={cn("space-y-1.5", className)}>
       <span className="block text-xs font-medium text-foreground">{label}</span>
-      <label className="flex h-9 cursor-pointer items-center gap-2 text-xs font-medium text-foreground">
-        <Switch
-          checked={field.state.value}
-          onCheckedChange={field.handleChange}
-          disabled={disabled}
-        />
+      <Switch
+        className="flex h-9 cursor-pointer items-center gap-2 text-xs font-medium text-foreground"
+        isSelected={field.state.value}
+        onChange={field.handleChange}
+        isDisabled={disabled}
+      >
         {field.state.value ? onLabel : offLabel}
-      </label>
+      </Switch>
     </div>
   )
 }

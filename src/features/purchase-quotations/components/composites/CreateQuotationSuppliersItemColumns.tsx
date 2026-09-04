@@ -4,12 +4,7 @@ import type { AnyFieldApi } from "@tanstack/react-form"
 import { AddCircle, TrashBinTrash } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/composites/QuotationAllocationsDialog"
@@ -95,16 +90,19 @@ export function buildQuotationSuppliersItemColumns({
                 itemsField.replaceValue(row.index, { ...item, allocations })
               }
               trigger={
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={disabled}
-                  title={`${item.allocations.length} dòng ĐXMH`}
-                  className="w-full max-w-36 justify-end text-xs font-normal tabular-nums"
-                >
-                  {total}
-                </Button>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    isDisabled={disabled}
+                    aria-label={`${item.allocations.length} dòng ĐXMH`}
+                    className="w-full max-w-36 justify-end text-xs font-normal tabular-nums"
+                  >
+                    {total}
+                  </Button>
+                  <Tooltip>{`${item.allocations.length} dòng ĐXMH`}</Tooltip>
+                </TooltipTrigger>
               }
             />
           )
@@ -175,35 +173,37 @@ export function buildQuotationSuppliersItemColumns({
         const item = row.original
         return (
           <div className="flex items-center justify-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>
-                  <IconButton
-                    label="Thêm NCC"
-                    disabled={disabled}
-                    onClick={() => onOpenAddSupplier(item.itemId)}
-                  >
-                    <AddCircle className="size-3.5" />
-                  </IconButton>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>Thêm NCC</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>
-                  <IconButton
-                    label="Bỏ chọn vật tư"
-                    className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-                    disabled={disabled}
-                    onClick={() => itemsField.removeValue(row.index)}
-                  >
-                    <TrashBinTrash className="size-3.5" />
-                  </IconButton>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>Bỏ chọn vật tư</TooltipContent>
-            </Tooltip>
+            <TooltipTrigger>
+              <span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Thêm NCC"
+                  isDisabled={disabled}
+                  onPress={() => onOpenAddSupplier(item.itemId)}
+                >
+                  <AddCircle className="size-3.5" />
+                </Button>
+              </span>
+              <Tooltip>Thêm NCC</Tooltip>
+            </TooltipTrigger>
+            <TooltipTrigger>
+              <span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Bỏ chọn vật tư"
+                  className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
+                  isDisabled={disabled}
+                  onPress={() => itemsField.removeValue(row.index)}
+                >
+                  <TrashBinTrash className="size-3.5" />
+                </Button>
+              </span>
+              <Tooltip>Bỏ chọn vật tư</Tooltip>
+            </TooltipTrigger>
           </div>
         )
       },

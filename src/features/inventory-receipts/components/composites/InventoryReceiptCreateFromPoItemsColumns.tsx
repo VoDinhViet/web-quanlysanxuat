@@ -3,7 +3,8 @@ import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { InventoryReceiptFromPoItemValue } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
@@ -116,14 +117,20 @@ export function buildInventoryReceiptFromPoItemColumns({
         cellClassName: "text-center",
       },
       cell: ({ row }) => (
-        <IconButton
-          label={`Bỏ dòng ${row.index + 1}`}
-          className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-          disabled={disabled}
-          onClick={() => itemsField.removeValue(row.index)}
-        >
-          <TrashBinTrash className="size-3.5" />
-        </IconButton>
+        <TooltipTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label={`Bỏ dòng ${row.index + 1}`}
+            className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+            isDisabled={disabled}
+            onPress={() => itemsField.removeValue(row.index)}
+          >
+            <TrashBinTrash className="size-3.5" />
+          </Button>
+          <Tooltip>{`Bỏ dòng ${row.index + 1}`}</Tooltip>
+        </TooltipTrigger>
       ),
     }),
   ])

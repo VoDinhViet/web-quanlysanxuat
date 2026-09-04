@@ -10,7 +10,6 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -52,16 +51,16 @@ export function CopyProductDialog({
   })
 
   return (
-    <AlertDialog
-      open={open}
+    <AlertDialogTrigger
+      isOpen={open}
       onOpenChange={(next) => {
         setOpen(next)
         // A previous failure shouldn't greet the user on reopen.
         if (next) mutation.reset()
       }}
     >
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
+      {trigger}
+      <AlertDialog>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Copy />
@@ -77,20 +76,19 @@ export function CopyProductDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={mutation.isPending}>
+          <AlertDialogCancel isDisabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            disabled={mutation.isPending}
-            onClick={(event) => {
-              event.preventDefault()
+            isDisabled={mutation.isPending}
+            onPress={() => {
               mutation.mutate()
             }}
           >
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </AlertDialog>
+    </AlertDialogTrigger>
   )
 }

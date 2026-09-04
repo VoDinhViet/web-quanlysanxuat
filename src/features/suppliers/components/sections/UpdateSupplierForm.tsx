@@ -114,8 +114,8 @@ export function UpdateSupplierForm({ supplier }: UpdateSupplierFormProps) {
           <Button
             type="button"
             variant="outline"
-            disabled={isPending}
-            onClick={() =>
+            isDisabled={isPending}
+            onPress={() =>
               void navigate({
                 to: "/manage/suppliers",
                 search: { page: 1, limit: 10 },
@@ -130,7 +130,7 @@ export function UpdateSupplierForm({ supplier }: UpdateSupplierFormProps) {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
+                isDisabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

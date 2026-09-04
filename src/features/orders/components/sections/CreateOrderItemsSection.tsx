@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
 import { OrderItemDialog } from "@/features/orders/components/composites/OrderItemDialog"
@@ -71,8 +71,8 @@ export const CreateOrderItemsSection = withForm({
                   type="button"
                   variant="outline"
                   className="border-primary/40 text-xs text-primary hover:bg-primary/5 hover:text-primary"
-                  disabled={disabled}
-                  onClick={openAdd}
+                  isDisabled={disabled}
+                  onPress={openAdd}
                 >
                   <Plus className="size-4" />
                   Thêm sản phẩm
@@ -80,108 +80,143 @@ export const CreateOrderItemsSection = withForm({
               </div>
 
               <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="h-12 hover:bg-muted/45">
-                      <TableHead className="w-12">#</TableHead>
-                      <TableHead>Sản phẩm</TableHead>
-                      <TableHead>ĐVT</TableHead>
-                      <TableHead className="text-right">Số lượng</TableHead>
-                      <TableHead className="text-right">Đơn giá</TableHead>
-                      <TableHead className="text-right">CK (%)</TableHead>
-                      <TableHead className="text-right">Thành tiền</TableHead>
-                      <TableHead>Trạng thái</TableHead>
-                      <TableHead className="w-32 text-right">
-                        Thao tác
-                      </TableHead>
-                    </TableRow>
+                <Table aria-label="Danh sách sản phẩm">
+                  <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+                    <TableHead id="index" className="w-12">
+                      #
+                    </TableHead>
+                    <TableHead id="item" isRowHeader>
+                      Sản phẩm
+                    </TableHead>
+                    <TableHead id="unit">ĐVT</TableHead>
+                    <TableHead id="quantity" className="text-right">
+                      Số lượng
+                    </TableHead>
+                    <TableHead id="unitPrice" className="text-right">
+                      Đơn giá
+                    </TableHead>
+                    <TableHead id="discountPercent" className="text-right">
+                      CK (%)
+                    </TableHead>
+                    <TableHead id="total" className="text-right">
+                      Thành tiền
+                    </TableHead>
+                    <TableHead id="status">Trạng thái</TableHead>
+                    <TableHead id="actions" className="w-32 text-right">
+                      Thao tác
+                    </TableHead>
                   </TableHeader>
-                  <TableBody>
-                    {items.length === 0 ? (
+                  <TableBody
+                    renderEmptyState={() => (
                       <TableEmpty
                         colSpan={9}
                         title="Chưa có sản phẩm nào"
                         description="Bấm “Thêm sản phẩm” để thêm."
                       />
-                    ) : (
-                      items.map((item, index) => (
-                        <TableRow
-                          key={index}
-                          className="h-14 bg-card hover:bg-muted/25"
-                        >
-                          <TableCell className="text-muted-foreground">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell>{item.itemLabel || "—"}</TableCell>
-                          <TableCell>{item.itemUnit || "—"}</TableCell>
-                          <TableCell className="text-right tabular-nums">
-                            {item.quantity}
-                          </TableCell>
-                          <TableCell className="text-right tabular-nums">
-                            {currencyFormatter.format(item.unitPrice ?? 0)}
-                          </TableCell>
-                          <TableCell className="text-right tabular-nums">
-                            {item.discountPercent}
-                          </TableCell>
-                          <TableCell className="text-right font-medium tabular-nums">
-                            {currencyFormatter.format(estimateLineTotal(item))}
-                          </TableCell>
-                          <TableCell>
-                            {item.status === OrderItemStatus.CANCELLED ? (
-                              <span className="text-destructive">
-                                {orderItemStatusLabels[item.status]}
-                              </span>
-                            ) : (
-                              <span className="text-success">
-                                {orderItemStatusLabels[item.status]}
-                              </span>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-1">
-                              <IconButton
-                                label={`Di chuyển lên dòng ${index + 1}`}
+                    )}
+                  >
+                    {items.map((item, index) => (
+                      <TableRow
+                        key={index}
+                        id={index}
+                        className="h-14 bg-card hover:bg-muted/25"
+                      >
+                        <TableCell className="text-muted-foreground">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>{item.itemLabel || "—"}</TableCell>
+                        <TableCell>{item.itemUnit || "—"}</TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {item.quantity}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {currencyFormatter.format(item.unitPrice ?? 0)}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {item.discountPercent}
+                        </TableCell>
+                        <TableCell className="text-right font-medium tabular-nums">
+                          {currencyFormatter.format(estimateLineTotal(item))}
+                        </TableCell>
+                        <TableCell>
+                          {item.status === OrderItemStatus.CANCELLED ? (
+                            <span className="text-destructive">
+                              {orderItemStatusLabels[item.status]}
+                            </span>
+                          ) : (
+                            <span className="text-success">
+                              {orderItemStatusLabels[item.status]}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <TooltipTrigger>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon-sm"
+                                aria-label={`Di chuyển lên dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                                disabled={disabled || index === 0}
-                                onClick={() =>
+                                isDisabled={disabled || index === 0}
+                                onPress={() =>
                                   itemsField.moveValue(index, index - 1)
                                 }
                               >
                                 <ArrowUp className="size-3.5" />
-                              </IconButton>
-                              <IconButton
-                                label={`Di chuyển xuống dòng ${index + 1}`}
+                              </Button>
+                              <Tooltip>{`Di chuyển lên dòng ${index + 1}`}</Tooltip>
+                            </TooltipTrigger>
+                            <TooltipTrigger>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon-sm"
+                                aria-label={`Di chuyển xuống dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                                disabled={
+                                isDisabled={
                                   disabled || index === items.length - 1
                                 }
-                                onClick={() =>
+                                onPress={() =>
                                   itemsField.moveValue(index, index + 1)
                                 }
                               >
                                 <ArrowDown className="size-3.5" />
-                              </IconButton>
-                              <IconButton
-                                label={`Sửa dòng ${index + 1}`}
+                              </Button>
+                              <Tooltip>{`Di chuyển xuống dòng ${index + 1}`}</Tooltip>
+                            </TooltipTrigger>
+                            <TooltipTrigger>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon-sm"
+                                aria-label={`Sửa dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                                disabled={disabled}
-                                onClick={() => openEdit(index)}
+                                isDisabled={disabled}
+                                onPress={() => openEdit(index)}
                               >
                                 <Pencil className="size-3.5" />
-                              </IconButton>
-                              <IconButton
-                                label={`Xóa dòng ${index + 1}`}
+                              </Button>
+                              <Tooltip>{`Sửa dòng ${index + 1}`}</Tooltip>
+                            </TooltipTrigger>
+                            <TooltipTrigger>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon-sm"
+                                aria-label={`Xóa dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                                disabled={disabled}
-                                onClick={() => itemsField.removeValue(index)}
+                                isDisabled={disabled}
+                                onPress={() => itemsField.removeValue(index)}
                               >
                                 <Trash2 className="size-3.5" />
-                              </IconButton>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
+                              </Button>
+                              <Tooltip>{`Xóa dòng ${index + 1}`}</Tooltip>
+                            </TooltipTrigger>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </div>

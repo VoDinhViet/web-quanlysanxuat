@@ -12,6 +12,7 @@ import {
 import { Loader2 } from "lucide-react"
 import { DateTime } from "luxon"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -169,11 +170,11 @@ export function InventoryReceiptCreateFromPoForm() {
     saveDraft(form.state.values)
   }
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
-  // unrecognised value simply doesn't switch steps. Delegates to the typed `handleStepChange`
-  // above so the draft-on-step-change behavior stays in one place.
-  function handleStepValueChange(value: string) {
-    const nextStep = stepItems.find((item) => item.value === value)
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
+  // without a cast, and an unrecognised value simply doesn't switch steps. Delegates to the
+  // typed `handleStepChange` above so the draft-on-step-change behavior stays in one place.
+  function handleStepValueChange(key: Key) {
+    const nextStep = stepItems.find((item) => item.value === String(key))
 
     if (nextStep) {
       handleStepChange(nextStep.value)
@@ -198,8 +199,8 @@ export function InventoryReceiptCreateFromPoForm() {
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <Tabs
-          value={step}
-          onValueChange={handleStepValueChange}
+          selectedKey={step}
+          onSelectionChange={handleStepValueChange}
           className="gap-0"
         >
           <form.Subscribe
@@ -217,25 +218,25 @@ export function InventoryReceiptCreateFromPoForm() {
             )}
           </form.Subscribe>
 
-          <TabsContent value="po" className="m-0 outline-none">
+          <TabsContent id="po" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoPickerSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="preview" className="m-0 outline-none">
+          <TabsContent id="preview" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoPreviewSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="items" className="m-0 outline-none">
+          <TabsContent id="items" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoItemsSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="confirm" className="m-0 outline-none">
+          <TabsContent id="confirm" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoConfirmSection
               form={form}
               disabled={isPending}
@@ -249,8 +250,8 @@ export function InventoryReceiptCreateFromPoForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() => handleStepChange(prevStep)}
+              isDisabled={isPending}
+              onPress={() => handleStepChange(prevStep)}
             >
               <AltArrowLeft className="size-4" />
               {prevLabel}
@@ -260,8 +261,8 @@ export function InventoryReceiptCreateFromPoForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() =>
+              isDisabled={isPending}
+              onPress={() =>
                 void navigate({
                   to: "/manage/inventory-receipts",
                   search: { page: 1, limit: 10 },
@@ -290,8 +291,8 @@ export function InventoryReceiptCreateFromPoForm() {
                 return (
                   <Button
                     type="button"
-                    disabled={!canAdvance}
-                    onClick={() => handleStepChange(nextStep)}
+                    isDisabled={!canAdvance}
+                    onPress={() => handleStepChange(nextStep)}
                   >
                     {nextLabel}
                     <AltArrowRight className="size-4" />
@@ -304,8 +305,8 @@ export function InventoryReceiptCreateFromPoForm() {
               <Button
                 type="button"
                 variant="outline"
-                disabled={isPending}
-                onClick={() => {
+                isDisabled={isPending}
+                onPress={() => {
                   shouldConfirmRef.current = false
                   if (form.state.isSubmitting) return
                   form.handleSubmit()
@@ -324,8 +325,8 @@ export function InventoryReceiptCreateFromPoForm() {
                 {({ canSubmit, isSubmitting, requiresIqc }) => (
                   <Button
                     type="button"
-                    disabled={!canSubmit || isSubmitting || isPending}
-                    onClick={() => {
+                    isDisabled={!canSubmit || isSubmitting || isPending}
+                    onPress={() => {
                       shouldConfirmRef.current = true
                       if (form.state.isSubmitting) return
                       form.handleSubmit()

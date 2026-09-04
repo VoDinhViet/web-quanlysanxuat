@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -109,8 +109,8 @@ export function PurchaseOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.progress ?? "all"}
-              onValueChange={handleProgressChange}
+              selectedKey={search.progress ?? "all"}
+              onSelectionChange={(key) => handleProgressChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-orders-status"
@@ -120,7 +120,7 @@ export function PurchaseOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -136,8 +136,8 @@ export function PurchaseOrdersTableFilter() {
               NCC
             </Label>
             <Select
-              value={search.supplierId ?? "all"}
-              onValueChange={handleSupplierChange}
+              selectedKey={search.supplierId ?? "all"}
+              onSelectionChange={(key) => handleSupplierChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-orders-supplier"
@@ -147,7 +147,7 @@ export function PurchaseOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {supplierFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -204,18 +204,16 @@ export function PurchaseOrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới
           </Button>
 
-          <Button asChild className="text-xs">
-            <Link to="/manage/purchase-orders/create">
-              <Plus className="size-4" />
-              Tạo PO thủ công
-            </Link>
-          </Button>
+          <LinkButton to="/manage/purchase-orders/create" className="text-xs">
+            <Plus className="size-4" />
+            Tạo PO thủ công
+          </LinkButton>
         </div>
       </div>
     </div>

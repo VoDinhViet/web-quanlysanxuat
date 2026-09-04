@@ -34,7 +34,7 @@ type CreateQuotationStepsTabsProps = {
   canGoToSuppliers: boolean
 }
 
-// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
+// Chỉ vẽ dải trigger — Tabs root (selectedKey/onSelectionChange) + TabsContent panel sống ở
 // CreateQuotationForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers — the panels
 // live in the page"). Mirrors ProductDetailTabs.tsx's "line" tab bar (the only other step/tab
 // indicator in the repo) — same TabsList/TabsTrigger override chain, adapted to a 2-step
@@ -57,16 +57,16 @@ export function CreateQuotationStepsTabs({
           return (
             <TabsTrigger
               key={item.value}
-              value={item.value}
-              disabled={isDisabled}
+              id={item.value}
+              isDisabled={isDisabled}
               className={cn(
                 "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
                 // Same override chain ProductDetailTabs.tsx documents: both the plain
-                // `data-active:bg-*` and the line-variant-scoped one have to be repeated
+                // `data-selected:bg-*` and the line-variant-scoped one have to be repeated
                 // verbatim or tailwind-merge can't tell they're meant to replace the primitive's.
-                "data-active:bg-primary/5 data-active:text-primary",
-                "group-data-[variant=line]/tabs-list:data-active:bg-primary/5",
-                "data-active:hover:bg-primary/5",
+                "data-selected:bg-primary/5 data-selected:text-primary",
+                "group-data-[variant=line]/tabs-list:data-selected:bg-primary/5",
+                "data-selected:hover:bg-primary/5",
                 "after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5",
                 isDisabled && "cursor-not-allowed opacity-60"
               )}

@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AltArrowLeft, AltArrowRight, CheckCircle } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -58,10 +59,10 @@ export function CreateOutsourcingReceiptForm() {
     onSubmit: ({ value }) => create({ data: value }),
   })
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
-  // unrecognised value simply doesn't switch tabs.
-  function handleTabChange(value: string) {
-    const nextTab = wizardTabs.find((item) => item.value === value)
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
+  // without a cast, and an unrecognised value simply doesn't switch tabs.
+  function handleTabChange(key: Key) {
+    const nextTab = wizardTabs.find((item) => item.value === String(key))
 
     if (nextTab) {
       setTab(nextTab.value)
@@ -87,7 +88,11 @@ export function CreateOutsourcingReceiptForm() {
       noValidate
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
+        <Tabs
+          selectedKey={tab}
+          onSelectionChange={handleTabChange}
+          className="gap-0"
+        >
           <form.Subscribe
             selector={(state) => ({
               hasItems: state.values.items.length > 0,
@@ -104,19 +109,19 @@ export function CreateOutsourcingReceiptForm() {
             )}
           </form.Subscribe>
 
-          <TabsContent value="picker" className="m-0 outline-none">
+          <TabsContent id="picker" className="m-0 outline-none">
             <CreateOutsourcingReceiptPickerSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="items" className="m-0 outline-none">
+          <TabsContent id="items" className="m-0 outline-none">
             <CreateOutsourcingReceiptItemsSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="confirm" className="m-0 outline-none">
+          <TabsContent id="confirm" className="m-0 outline-none">
             <CreateOutsourcingReceiptConfirmSection form={form} />
           </TabsContent>
         </Tabs>
@@ -127,8 +132,8 @@ export function CreateOutsourcingReceiptForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() => setTab(prevTab.value)}
+              isDisabled={isPending}
+              onPress={() => setTab(prevTab.value)}
             >
               <AltArrowLeft className="size-4" />
               Quay lại
@@ -138,8 +143,8 @@ export function CreateOutsourcingReceiptForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() =>
+              isDisabled={isPending}
+              onPress={() =>
                 void navigate({
                   to: "/manage/outsourcing-receipts",
                   search: { page: 1, limit: 10 },
@@ -166,8 +171,8 @@ export function CreateOutsourcingReceiptForm() {
                 return (
                   <Button
                     type="button"
-                    disabled={!canAdvance}
-                    onClick={() => setTab(nextTab.value)}
+                    isDisabled={!canAdvance}
+                    onPress={() => setTab(nextTab.value)}
                   >
                     Tiếp theo: {nextTab.label}
                     <AltArrowRight className="size-4" />
@@ -185,8 +190,8 @@ export function CreateOutsourcingReceiptForm() {
               {({ canSubmit, isSubmitting }) => (
                 <Button
                   type="button"
-                  disabled={!canSubmit || isSubmitting || isPending}
-                  onClick={() => {
+                  isDisabled={!canSubmit || isSubmitting || isPending}
+                  onPress={() => {
                     if (form.state.isSubmitting) return
                     form.handleSubmit()
                   }}

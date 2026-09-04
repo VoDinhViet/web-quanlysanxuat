@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AltArrowLeft, AltArrowRight, CheckCircle } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -89,11 +90,11 @@ export function CreateOutsourcingOrderForm({
     saveDraft(form.state.values)
   }
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
-  // unrecognised value simply doesn't switch tabs. Delegates to the typed `handleTabChange`
-  // above so the draft-on-tab-change behavior stays in one place.
-  function handleTabValueChange(value: string) {
-    const nextTab = wizardTabs.find((item) => item.value === value)
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
+  // without a cast, and an unrecognised value simply doesn't switch tabs. Delegates to the
+  // typed `handleTabChange` above so the draft-on-tab-change behavior stays in one place.
+  function handleTabValueChange(key: Key) {
+    const nextTab = wizardTabs.find((item) => item.value === String(key))
 
     if (nextTab) {
       handleTabChange(nextTab.value)
@@ -120,8 +121,8 @@ export function CreateOutsourcingOrderForm({
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <Tabs
-          value={tab}
-          onValueChange={handleTabValueChange}
+          selectedKey={tab}
+          onSelectionChange={handleTabValueChange}
           className="gap-0"
         >
           <form.Subscribe
@@ -140,7 +141,7 @@ export function CreateOutsourcingOrderForm({
             )}
           </form.Subscribe>
 
-          <TabsContent value="picker" className="m-0 outline-none">
+          <TabsContent id="picker" className="m-0 outline-none">
             <CreateOutsourcingOrderPickerSection
               form={form}
               disabled={isPending}
@@ -148,7 +149,7 @@ export function CreateOutsourcingOrderForm({
               initialOperationId={initialOperationId}
             />
           </TabsContent>
-          <TabsContent value="items" className="m-0 outline-none">
+          <TabsContent id="items" className="m-0 outline-none">
             <CreateOutsourcingOrderInfoSection
               form={form}
               disabled={isPending}
@@ -160,7 +161,7 @@ export function CreateOutsourcingOrderForm({
               />
             </div>
           </TabsContent>
-          <TabsContent value="confirm" className="m-0 outline-none">
+          <TabsContent id="confirm" className="m-0 outline-none">
             <CreateOutsourcingOrderConfirmSection form={form} />
           </TabsContent>
         </Tabs>
@@ -171,8 +172,8 @@ export function CreateOutsourcingOrderForm({
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() => handleTabChange(prevTab.value)}
+              isDisabled={isPending}
+              onPress={() => handleTabChange(prevTab.value)}
             >
               <AltArrowLeft className="size-4" />
               Quay lại
@@ -182,8 +183,8 @@ export function CreateOutsourcingOrderForm({
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() =>
+              isDisabled={isPending}
+              onPress={() =>
                 void navigate({
                   to: "/manage/outsourcing-orders",
                   search: { page: 1, limit: 10 },
@@ -210,8 +211,8 @@ export function CreateOutsourcingOrderForm({
                 return (
                   <Button
                     type="button"
-                    disabled={!canAdvance}
-                    onClick={() => handleTabChange(nextTab.value)}
+                    isDisabled={!canAdvance}
+                    onPress={() => handleTabChange(nextTab.value)}
                   >
                     Tiếp theo: {nextTab.label}
                     <AltArrowRight className="size-4" />
@@ -229,8 +230,8 @@ export function CreateOutsourcingOrderForm({
               {({ canSubmit, isSubmitting }) => (
                 <Button
                   type="button"
-                  disabled={!canSubmit || isSubmitting || isPending}
-                  onClick={() => {
+                  isDisabled={!canSubmit || isSubmitting || isPending}
+                  onPress={() => {
                     if (form.state.isSubmitting) return
                     form.handleSubmit()
                   }}

@@ -35,17 +35,15 @@ export function UnitScopesField({ form, disabled }: UnitScopesFieldProps) {
       </FieldLabel>
       <div className="flex flex-wrap gap-x-6 gap-y-2 rounded-md border border-border p-4">
         {SCOPES.map((scope) => (
-          <label
+          <Checkbox
             key={scope}
             className="flex items-center gap-2 text-xs text-foreground"
+            isSelected={selectedSet.has(scope)}
+            isDisabled={disabled}
+            onChange={(checked) => toggle(scope, checked)}
           >
-            <Checkbox
-              checked={selectedSet.has(scope)}
-              disabled={disabled}
-              onCheckedChange={(checked) => toggle(scope, checked === true)}
-            />
             {unitScopeLabels[scope]}
-          </label>
+          </Checkbox>
         ))}
       </div>
       <FieldError errors={field.state.meta.errors} />

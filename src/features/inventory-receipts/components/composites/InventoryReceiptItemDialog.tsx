@@ -4,7 +4,6 @@ import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -45,25 +44,25 @@ export function InventoryReceiptItemDialog({
   itemType,
 }: InventoryReceiptItemDialogProps) {
   // Combobox vật tư phải portal popup vào bên trong DOM subtree của dialog này — cùng lý do
-  // ComboboxField.tsx đã ghi (Radix FocusScope nuốt click bên ngoài dialog).
+  // ComboboxField.tsx đã ghi (FocusScope của dialog nuốt click bên ngoài dialog).
   const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        ref={setContentNode}
-        className="shadow-lg ring-0 sm:max-w-lg"
-      >
-        {/* Radix unmounts content while closed, so this form re-mounts on each
-            open and its state seeds fresh from `initialValue`. */}
-        <InventoryReceiptItemDialogForm
-          container={contentNode}
-          initialValue={initialValue}
-          onSubmit={onSubmit}
-          onCancel={() => onOpenChange(false)}
-          itemType={itemType}
-        />
-      </DialogContent>
+    <Dialog
+      ref={setContentNode}
+      isOpen={open}
+      onOpenChange={onOpenChange}
+      className="shadow-lg ring-0 sm:max-w-lg"
+    >
+      {/* The dialog unmounts content while closed, so this form re-mounts on each
+          open and its state seeds fresh from `initialValue`. */}
+      <InventoryReceiptItemDialogForm
+        container={contentNode}
+        initialValue={initialValue}
+        onSubmit={onSubmit}
+        onCancel={() => onOpenChange(false)}
+        itemType={itemType}
+      />
     </Dialog>
   )
 }

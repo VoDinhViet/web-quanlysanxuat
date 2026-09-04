@@ -288,3 +288,28 @@
     bottom left;
   mask-composite: add;
 }
+
+/* In chứng từ — mỗi trang chi tiết render sẵn một PaymentRequestPrintSheet ẩn (`.print-sheet`,
+   `hidden print:block`); khi in, ẩn toàn bộ phần còn lại của trang (sidebar, header, nội dung
+   xem trên web) và chỉ hiện đúng chứng từ đó. Một rule toàn cục ở đây thay vì rải `print:hidden`
+   lên từng shared component (sidebar, PageTitleBar, mọi card khác). */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-sheet,
+  .print-sheet * {
+    visibility: visible;
+  }
+
+  .print-sheet {
+    position: absolute;
+    inset: 0;
+  }
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+}

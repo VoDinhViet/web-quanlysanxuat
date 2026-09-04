@@ -1,8 +1,8 @@
-import { Link, useParams } from "@tanstack/react-router"
+import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Edit3 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -47,15 +47,13 @@ export function SupplierDetailPage() {
 
           <RoutePermissionGate route="/manage/suppliers/$supplierId/update">
             <div className="flex justify-end border-t border-border px-4 py-4 sm:px-5">
-              <Button asChild>
-                <Link
-                  to="/manage/suppliers/$supplierId/update"
-                  params={{ supplierId: supplier.id }}
-                >
-                  <Edit3 />
-                  Chỉnh sửa
-                </Link>
-              </Button>
+              <LinkButton
+                to="/manage/suppliers/$supplierId/update"
+                params={{ supplierId: supplier.id }}
+              >
+                <Edit3 />
+                Chỉnh sửa
+              </LinkButton>
             </div>
           </RoutePermissionGate>
         </div>

@@ -2,11 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { JobOperationReportDialog } from "@/features/production-execution/components/composites/JobOperationReportDialog"
 import { OperationType } from "@/lib/types/operation.type"
 import type {
@@ -106,23 +102,21 @@ export function buildProductionExecutionPartColumns({
             : null)
 
         return (
-          <Tooltip>
+          <TooltipTrigger>
             <JobOperationReportDialog
               partRow={row.original}
               disabledReason={reason}
               trigger={
-                <TooltipTrigger asChild>
-                  <Button type="button" size="sm">
-                    Nhập báo cáo
-                  </Button>
-                </TooltipTrigger>
+                <Button type="button" size="sm">
+                  Nhập báo cáo
+                </Button>
               }
             />
-            <TooltipContent>
+            <Tooltip>
               {reason ??
                 "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho Part này."}
-            </TooltipContent>
-          </Tooltip>
+            </Tooltip>
+          </TooltipTrigger>
         )
       },
     }),

@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -143,15 +143,15 @@ export function OrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="orders-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -170,7 +170,7 @@ export function OrdersTableFilter() {
             >
               NV kinh doanh
             </Label>
-            <Select value="all" disabled>
+            <Select selectedKey="all" isDisabled>
               <SelectTrigger
                 id="orders-assigned-user"
                 className="w-full text-xs"
@@ -178,7 +178,7 @@ export function OrdersTableFilter() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -193,18 +193,16 @@ export function OrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới
           </Button>
           <RoutePermissionGate route="/manage/orders/create">
-            <Button asChild className="text-xs">
-              <Link to="/manage/orders/create">
-                <Plus className="size-4" />
-                Tạo đơn hàng
-              </Link>
-            </Button>
+            <LinkButton to="/manage/orders/create" className="text-xs">
+              <Plus className="size-4" />
+              Tạo đơn hàng
+            </LinkButton>
           </RoutePermissionGate>
         </div>
       </div>

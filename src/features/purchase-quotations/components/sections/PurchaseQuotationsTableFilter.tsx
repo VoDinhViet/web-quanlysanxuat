@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -96,8 +96,8 @@ export function PurchaseQuotationsTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-quotations-status"
@@ -107,7 +107,7 @@ export function PurchaseQuotationsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -164,18 +164,19 @@ export function PurchaseQuotationsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới
           </Button>
 
-          <Button asChild className="text-xs">
-            <Link to="/manage/purchase-quotations/create">
-              <Plus className="size-4" />
-              Tạo RFQ
-            </Link>
-          </Button>
+          <LinkButton
+            to="/manage/purchase-quotations/create"
+            className="text-xs"
+          >
+            <Plus className="size-4" />
+            Tạo RFQ
+          </LinkButton>
         </div>
       </div>
     </div>

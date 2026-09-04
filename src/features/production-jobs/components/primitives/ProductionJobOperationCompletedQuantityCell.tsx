@@ -3,11 +3,7 @@ import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { FieldError } from "@/components/ui/field"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -149,20 +145,18 @@ function CompletedQuantityInput({
         <form.Subscribe selector={(state) => state.isDirty}>
           {(isDirty) =>
             isDirty && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="submit"
-                    size="icon-sm"
-                    disabled={isPending}
-                    aria-label="Lưu SL hoàn thành/SL không đạt"
-                    className="mt-3.5 shrink-0 animate-in duration-150 fade-in-0 zoom-in-90"
-                  >
-                    <Diskette className="size-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Lưu SL hoàn thành/SL không đạt</TooltipContent>
-              </Tooltip>
+              <TooltipTrigger>
+                <Button
+                  type="submit"
+                  size="icon-sm"
+                  isDisabled={isPending}
+                  aria-label="Lưu SL hoàn thành/SL không đạt"
+                  className="mt-3.5 shrink-0 animate-in duration-150 fade-in-0 zoom-in-90"
+                >
+                  <Diskette className="size-3.5" />
+                </Button>
+                <Tooltip>Lưu SL hoàn thành/SL không đạt</Tooltip>
+              </TooltipTrigger>
             )
           }
         </form.Subscribe>

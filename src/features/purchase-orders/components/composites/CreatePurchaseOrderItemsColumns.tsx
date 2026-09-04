@@ -3,7 +3,8 @@ import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { PickedPurchaseOrderItemValue } from "@/features/purchase-orders/schemas/create-purchase-order.schema"
@@ -128,14 +129,20 @@ export function buildPurchaseOrderItemsColumns({
         cellClassName: "text-center",
       },
       cell: ({ row }) => (
-        <IconButton
-          label={`Bỏ chọn dòng ${row.index + 1}`}
-          className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-          disabled={disabled}
-          onClick={() => itemsField.removeValue(row.index)}
-        >
-          <TrashBinTrash className="size-3.5" />
-        </IconButton>
+        <TooltipTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label={`Bỏ chọn dòng ${row.index + 1}`}
+            className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
+            isDisabled={disabled}
+            onPress={() => itemsField.removeValue(row.index)}
+          >
+            <TrashBinTrash className="size-3.5" />
+          </Button>
+          <Tooltip>{`Bỏ chọn dòng ${row.index + 1}`}</Tooltip>
+        </TooltipTrigger>
       ),
     }),
   ])

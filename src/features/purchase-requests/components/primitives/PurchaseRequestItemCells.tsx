@@ -8,11 +8,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { updatePurchaseRequestItem } from "@/features/purchase-requests/api/server-functions/update-purchase-request-item.api"
 import { DeletePurchaseRequestItemDialog } from "@/features/purchase-requests/components/composites/DeletePurchaseRequestItemDialog"
 import { PurchaseRequestItemNoteDialog } from "@/features/purchase-requests/components/composites/PurchaseRequestItemNoteDialog"
@@ -171,7 +167,7 @@ export function PurchaseRequestItemActionsCell({
       size="sm"
       className="gap-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
       aria-label={`Xóa ${itemName} khỏi đề xuất`}
-      disabled={isLastItem}
+      isDisabled={isLastItem}
     >
       <Trash2 className="size-3.5" />
       Xóa
@@ -180,14 +176,12 @@ export function PurchaseRequestItemActionsCell({
 
   if (isLastItem) {
     return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          {/* Disabled button swallows pointer events — the wrapper is what the tooltip
-              actually attaches to (see DisabledAction.tsx for the same trick). */}
-          <span tabIndex={0}>{removeButton}</span>
-        </TooltipTrigger>
-        <TooltipContent>Đề xuất phải còn ít nhất 1 dòng vật tư</TooltipContent>
-      </Tooltip>
+      <TooltipTrigger>
+        {/* Disabled button swallows pointer events — the wrapper is what the tooltip
+            actually attaches to (see DisabledAction.tsx for the same trick). */}
+        <span tabIndex={0}>{removeButton}</span>
+        <Tooltip>Đề xuất phải còn ít nhất 1 dòng vật tư</Tooltip>
+      </TooltipTrigger>
     )
   }
 

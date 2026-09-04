@@ -9,7 +9,6 @@ import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -36,10 +35,10 @@ export function PurchaseRequestItemNoteDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="shadow-lg ring-0 sm:max-w-md">
-        {/* Radix unmounts content while closed, so this form re-mounts on each
+    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
+      {trigger}
+      <Dialog className="shadow-lg ring-0 sm:max-w-md">
+        {/* The dialog unmounts content while closed, so this form re-mounts on each
             open and its state seeds fresh from `note`. */}
         <PurchaseRequestItemNoteDialogForm
           purchaseRequestItemId={purchaseRequestItemId}
@@ -47,8 +46,8 @@ export function PurchaseRequestItemNoteDialog({
           note={note}
           onClose={() => setOpen(false)}
         />
-      </DialogContent>
-    </Dialog>
+      </Dialog>
+    </DialogTrigger>
   )
 }
 
@@ -124,8 +123,8 @@ function PurchaseRequestItemNoteDialogForm({
         <Button
           type="button"
           variant="outline"
-          disabled={isPending}
-          onClick={onClose}
+          isDisabled={isPending}
+          onPress={onClose}
         >
           Hủy
         </Button>
@@ -135,7 +134,7 @@ function PurchaseRequestItemNoteDialogForm({
           {([canSubmit, isSubmitting]) => (
             <Button
               type="submit"
-              disabled={!canSubmit || isSubmitting || isPending}
+              isDisabled={!canSubmit || isSubmitting || isPending}
             >
               {isSubmitting || isPending ? (
                 <Loader2 className="size-4 animate-spin" />

@@ -71,35 +71,35 @@ export function PurchaseQuotationDetailQuotesSection({
             description="RFQ này chưa có vật tư nào để so sánh báo giá."
           />
         ) : (
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-11 hover:bg-muted/45"
+          <Table aria-label="Bảng so sánh báo giá">
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((row) => (
                 <Fragment key={row.original.id}>
-                  <TableRow className="h-14 bg-card hover:bg-muted/25">
-                    {row.getVisibleCells().map((cell) => (
+                  <TableRow
+                    id={`${row.original.id}-data`}
+                    className="h-14 bg-card hover:bg-muted/25"
+                    columns={row.getVisibleCells()}
+                  >
+                    {(cell) => (
                       <TableCell
-                        key={cell.id}
                         className={cell.column.columnDef.meta?.cellClassName}
                       >
                         {flexRender(
@@ -107,7 +107,7 @@ export function PurchaseQuotationDetailQuotesSection({
                           cell.getContext()
                         )}
                       </TableCell>
-                    ))}
+                    )}
                   </TableRow>
 
                   {/* Same inset-shadow left accent as CreateQuotationSuppliersSection.tsx — see
@@ -115,7 +115,10 @@ export function PurchaseQuotationDetailQuotesSection({
                       the <td> rather than the <tr>. Two nested tables now stack here — one vật tư
                       can merge several dòng ĐXMH (allocations), each still quoted as a single NCC
                       block. */}
-                  <TableRow className="bg-card hover:bg-card">
+                  <TableRow
+                    id={`${row.original.id}-detail`}
+                    className="bg-card hover:bg-card"
+                  >
                     <TableCell
                       colSpan={row.getVisibleCells().length}
                       className="space-y-2 p-0 pb-3 shadow-[inset_3px_0_0_0_var(--color-primary)]"

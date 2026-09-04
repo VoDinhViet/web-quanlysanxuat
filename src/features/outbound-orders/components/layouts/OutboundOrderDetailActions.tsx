@@ -5,10 +5,9 @@ import {
   Printer,
   SendSquare,
 } from "@solar-icons/react"
-import { Link } from "@tanstack/react-router"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/composites/OutboundOrderApproveDialog"
 import { OutboundOrderCancelDialog } from "@/features/outbound-orders/components/composites/OutboundOrderCancelDialog"
@@ -47,16 +46,15 @@ export function OutboundOrderDetailActions({
 
       {canUpdateOutboundOrder(status) && (
         <PermissionGate permission="outbound:update">
-          <Button variant="outline" asChild>
-            <Link
-              to="/manage/outbound-orders/$outboundOrderId"
-              params={{ outboundOrderId: order.id }}
-              search={{ mode: "edit" }}
-            >
-              <PenNewSquare className="size-4" />
-              Sửa
-            </Link>
-          </Button>
+          <LinkButton
+            to="/manage/outbound-orders/$outboundOrderId"
+            params={{ outboundOrderId: order.id }}
+            search={{ mode: "edit" }}
+            variant="outline"
+          >
+            <PenNewSquare className="size-4" />
+            Sửa
+          </LinkButton>
         </PermissionGate>
       )}
 

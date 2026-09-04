@@ -40,13 +40,16 @@ export function FilterSelect({
       >
         {label}
       </Label>
-      <Select value={value} onValueChange={onValueChange}>
+      <Select
+        selectedKey={value}
+        onSelectionChange={(key) => onValueChange(String(key))}
+      >
         <SelectTrigger id={id} className="w-full text-xs">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem key={option.value} id={option.value}>
               {option.label}
             </SelectItem>
           ))}

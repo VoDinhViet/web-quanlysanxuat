@@ -56,8 +56,8 @@ export function OqcAqlTallyStrip({
           variant="outline"
           size="sm"
           className="h-7 text-[11px]"
-          disabled={disabled}
-          onClick={() => form.setFieldValue("sampleSize", plan.sampleSize)}
+          isDisabled={disabled}
+          onPress={() => form.setFieldValue("sampleSize", plan.sampleSize)}
         >
           Dùng gợi ý
         </Button>

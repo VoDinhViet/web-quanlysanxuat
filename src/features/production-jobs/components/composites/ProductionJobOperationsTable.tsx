@@ -1,11 +1,11 @@
 import { Fragment } from "react"
-import { Link, useParams } from "@tanstack/react-router"
+import { useParams } from "@tanstack/react-router"
 import { SendSquare } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { Package } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -16,11 +16,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { ProductionJobOperationCompletedQuantityCell } from "@/features/production-jobs/components/primitives/ProductionJobOperationCompletedQuantityCell"
 import type {
   ProductionJobBomItem,
@@ -187,48 +183,40 @@ function OperationSendActionCell({
   const isFullySent =
     outsourceable !== undefined && outsourceable.remainingQuantity <= 0
 
-  const button = (
-    <Button
-      type="button"
-      asChild={!isFullySent}
-      disabled={isFullySent}
-      // Đồng bộ màu amber với badge LOẠI "Gia công ngoài" ở trên — nhận ra ngay nút này thuộc
-      // về đúng loại công đoạn nào, thay vì màu mặc định như mọi nút khác.
-      className={cn(
-        !isFullySent &&
-          "border-amber-200 bg-amber-50 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20"
-      )}
-    >
-      {isFullySent ? (
-        <>
-          <SendSquare className="size-3.5" />
-          Gửi gia công ngoài
-        </>
-      ) : (
-        <Link
-          to="/manage/outsourcing-orders/create"
-          search={
-            operation.operationId
-              ? { productionJobId, operationId: operation.operationId }
-              : { productionJobId }
-          }
-        >
-          <SendSquare className="size-3.5" />
-          Gửi gia công ngoài
-        </Link>
-      )}
+  // Đồng bộ màu amber với badge LOẠI "Gia công ngoài" ở trên — nhận ra ngay nút này thuộc về
+  // đúng loại công đoạn nào, thay vì màu mặc định như mọi nút khác.
+  const amberClassName = cn(
+    !isFullySent &&
+      "border-amber-200 bg-amber-50 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20"
+  )
+
+  const button = isFullySent ? (
+    <Button type="button" isDisabled className={amberClassName}>
+      <SendSquare className="size-3.5" />
+      Gửi gia công ngoài
     </Button>
+  ) : (
+    <LinkButton
+      to="/manage/outsourcing-orders/create"
+      search={
+        operation.operationId
+          ? { productionJobId, operationId: operation.operationId }
+          : { productionJobId }
+      }
+      className={amberClassName}
+    >
+      <SendSquare className="size-3.5" />
+      Gửi gia công ngoài
+    </LinkButton>
   )
 
   return (
     <RoutePermissionGate route="/manage/outsourcing-orders/create">
       {isFullySent ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="inline-block">{button}</span>
-          </TooltipTrigger>
-          <TooltipContent>Đã gửi đủ định mức</TooltipContent>
-        </Tooltip>
+        <TooltipTrigger>
+          <span className="inline-block">{button}</span>
+          <Tooltip>Đã gửi đủ định mức</Tooltip>
+        </TooltipTrigger>
       ) : (
         button
       )}
@@ -243,7 +231,10 @@ function OperationSendActionCell({
 // không tách component riêng cho một nhãn điều kiện đơn giản như vậy.
 function BomItemHeaderRow({ bomItem }: { bomItem: ProductionJobBomItem }) {
   return (
-    <TableRow className="h-14 bg-muted/10 hover:bg-muted/15">
+    <TableRow
+      id={`${bomItem.id}-header`}
+      className="h-14 bg-muted/10 hover:bg-muted/15"
+    >
       <TableCell colSpan={columnCount} className="py-3">
         <div className="flex items-center gap-2.5">
           <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground">
@@ -291,7 +282,7 @@ function OperationRow({
   outsourceableByOperationId,
 }: OperationRowProps) {
   return (
-    <TableRow className="h-16 bg-card hover:bg-muted/20">
+    <TableRow id={operation.id} className="h-16 bg-card hover:bg-muted/20">
       <TableCell className="py-3">
         <div className="flex items-start gap-2.5">
           <span className="mt-0.5 shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
@@ -376,59 +367,82 @@ export function ProductionJobOperationsTable({
   return (
     <div className="p-4 sm:p-5">
       <div className="overflow-x-auto rounded-md border border-border/50">
-        <Table>
-          <TableHeader>
-            <TableRow className="h-11 bg-muted/30 font-semibold text-muted-foreground hover:bg-muted/30">
-              <TableHead className="min-w-56 font-bold text-foreground">
-                CÔNG ĐOẠN
-              </TableHead>
-              <TableHead className="w-32 text-center font-bold text-foreground">
-                LOẠI
-              </TableHead>
-              <TableHead className="w-24 text-center font-bold text-foreground">
-                SL KẾ HOẠCH
-              </TableHead>
-              <TableHead className="w-40 text-center font-bold text-foreground">
-                SL HOÀN THÀNH
-              </TableHead>
-              <TableHead className="w-28 text-center font-bold text-foreground">
-                SL ĐÃ GỬI
-              </TableHead>
-              <TableHead className="w-36 text-center font-bold text-foreground">
-                TRẠNG THÁI
-              </TableHead>
-              <TableHead className="w-32 text-center font-bold text-foreground">
-                NGÀY HOÀN THÀNH
-              </TableHead>
-              <TableHead className="min-w-48 text-center font-bold text-foreground">
-                THAO TÁC
-              </TableHead>
-            </TableRow>
+        <Table aria-label="Danh sách công đoạn">
+          <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+            <TableHead
+              id="operation"
+              isRowHeader
+              className="min-w-56 font-bold text-foreground"
+            >
+              CÔNG ĐOẠN
+            </TableHead>
+            <TableHead
+              id="type"
+              className="w-32 text-center font-bold text-foreground"
+            >
+              LOẠI
+            </TableHead>
+            <TableHead
+              id="plannedQuantity"
+              className="w-24 text-center font-bold text-foreground"
+            >
+              SL KẾ HOẠCH
+            </TableHead>
+            <TableHead
+              id="completedQuantity"
+              className="w-40 text-center font-bold text-foreground"
+            >
+              SL HOÀN THÀNH
+            </TableHead>
+            <TableHead
+              id="sentQuantity"
+              className="w-28 text-center font-bold text-foreground"
+            >
+              SL ĐÃ GỬI
+            </TableHead>
+            <TableHead
+              id="status"
+              className="w-36 text-center font-bold text-foreground"
+            >
+              TRẠNG THÁI
+            </TableHead>
+            <TableHead
+              id="completedDate"
+              className="w-32 text-center font-bold text-foreground"
+            >
+              NGÀY HOÀN THÀNH
+            </TableHead>
+            <TableHead
+              id="actions"
+              className="min-w-48 text-center font-bold text-foreground"
+            >
+              THAO TÁC
+            </TableHead>
           </TableHeader>
-          <TableBody>
-            {groups.length === 0 ? (
+          <TableBody
+            renderEmptyState={() => (
               <TableEmpty
                 colSpan={columnCount}
                 title="Chưa có công đoạn nào."
               />
-            ) : (
-              groups.map((bomItem, groupIndex) => (
-                <Fragment key={bomItem.id}>
-                  <BomItemHeaderRow bomItem={bomItem} />
-                  {bomItem.operations.map((operation, operationIndex) => (
-                    <OperationRow
-                      key={operation.id}
-                      operation={operation}
-                      groupIndex={groupIndex}
-                      operationIndex={operationIndex}
-                      productionJobId={productionJobId}
-                      canEdit={canEdit}
-                      outsourceableByOperationId={outsourceableByOperationId}
-                    />
-                  ))}
-                </Fragment>
-              ))
             )}
+          >
+            {groups.map((bomItem, groupIndex) => (
+              <Fragment key={bomItem.id}>
+                <BomItemHeaderRow bomItem={bomItem} />
+                {bomItem.operations.map((operation, operationIndex) => (
+                  <OperationRow
+                    key={operation.id}
+                    operation={operation}
+                    groupIndex={groupIndex}
+                    operationIndex={operationIndex}
+                    productionJobId={productionJobId}
+                    canEdit={canEdit}
+                    outsourceableByOperationId={outsourceableByOperationId}
+                  />
+                ))}
+              </Fragment>
+            ))}
           </TableBody>
         </Table>
       </div>

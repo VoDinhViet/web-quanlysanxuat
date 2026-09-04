@@ -1,7 +1,6 @@
-import { Link } from "@tanstack/react-router"
 import { Eye } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 
 type PurchaseQuotationActionsCellProps = {
   purchaseQuotationId: string
@@ -13,21 +12,16 @@ export function PurchaseQuotationActionsCell({
 }: PurchaseQuotationActionsCellProps) {
   return (
     <div className="flex items-center justify-center">
-      <Button
-        type="button"
+      <LinkButton
+        to="/manage/purchase-quotations/$purchaseQuotationId"
+        params={{ purchaseQuotationId }}
         variant="outline"
         size="icon-sm"
-        className="bg-background text-muted-foreground"
         aria-label="Xem chi tiết"
-        asChild
+        className="bg-background text-muted-foreground"
       >
-        <Link
-          to="/manage/purchase-quotations/$purchaseQuotationId"
-          params={{ purchaseQuotationId }}
-        >
-          <Eye className="size-3.5" />
-        </Link>
-      </Button>
+        <Eye className="size-3.5" />
+      </LinkButton>
     </div>
   )
 }

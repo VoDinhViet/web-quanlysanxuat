@@ -1,6 +1,4 @@
-import { Link } from "@tanstack/react-router"
-
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { cn } from "@/lib/utils"
 import type { ManageRoutePath } from "@/lib/route-permissions"
@@ -22,13 +20,13 @@ export function ManageCardLink({
   return (
     <RoutePermissionGate route={to}>
       <div className={cn("flex justify-end", className)}>
-        <Button
+        <LinkButton
+          to={to}
           variant="link"
           className="h-auto p-0 text-[11px] font-medium"
-          asChild
         >
-          <Link to={to}>{label}</Link>
-        </Button>
+          {label}
+        </LinkButton>
       </div>
     </RoutePermissionGate>
   )

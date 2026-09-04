@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -143,12 +143,13 @@ export function OutsourcingReceiptsTableFilter() {
   return (
     <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
       <RoutePermissionGate route="/manage/outsourcing-receipts/create">
-        <Button asChild className="gap-1.5">
-          <Link to="/manage/outsourcing-receipts/create">
-            <Plus className="size-4" />
-            Lập phiếu OS-IN
-          </Link>
-        </Button>
+        <LinkButton
+          to="/manage/outsourcing-receipts/create"
+          className="gap-1.5"
+        >
+          <Plus className="size-4" />
+          Lập phiếu OS-IN
+        </LinkButton>
       </RoutePermissionGate>
 
       <div className="w-56 space-y-1.5">
@@ -187,16 +188,17 @@ export function OutsourcingReceiptsTableFilter() {
           Nhà cung cấp
         </Label>
         <Select
-          value={search.supplierId ?? "all"}
-          onValueChange={handleSupplierChange}
+          selectedKey={search.supplierId ?? "all"}
+          onSelectionChange={(key) => handleSupplierChange(String(key))}
+          placeholder="Chọn nhà cung cấp"
         >
           <SelectTrigger id="os-in-supplier" className="w-full text-xs">
-            <SelectValue placeholder="Chọn nhà cung cấp" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tất cả NCC</SelectItem>
+            <SelectItem id="all">Tất cả NCC</SelectItem>
             {supplierOptions.map((option) => (
-              <SelectItem key={option.id} value={option.id}>
+              <SelectItem key={option.id} id={option.id}>
                 {option.name}
               </SelectItem>
             ))}
@@ -212,15 +214,16 @@ export function OutsourcingReceiptsTableFilter() {
           Trạng thái
         </Label>
         <Select
-          value={search.status ?? "all"}
-          onValueChange={handleStatusChange}
+          selectedKey={search.status ?? "all"}
+          onSelectionChange={(key) => handleStatusChange(String(key))}
+          placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-in-status" className="w-full text-xs">
-            <SelectValue placeholder="Chọn trạng thái" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
+              <SelectItem key={opt.value} id={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -236,19 +239,20 @@ export function OutsourcingReceiptsTableFilter() {
           Yêu cầu QC
         </Label>
         <Select
-          value={
+          selectedKey={
             search.requiresIqc === undefined
               ? "all"
               : String(search.requiresIqc)
           }
-          onValueChange={handleRequiresIqcChange}
+          onSelectionChange={(key) => handleRequiresIqcChange(String(key))}
+          placeholder="Chọn yêu cầu QC"
         >
           <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">
-            <SelectValue placeholder="Chọn yêu cầu QC" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {requiresIqcOptions.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
+              <SelectItem key={opt.value} id={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -275,7 +279,7 @@ export function OutsourcingReceiptsTableFilter() {
         type="button"
         variant="outline"
         className="gap-1.5 text-xs"
-        onClick={resetFilters}
+        onPress={resetFilters}
       >
         <RotateCw className="size-3.5" />
         Xóa bộ lọc

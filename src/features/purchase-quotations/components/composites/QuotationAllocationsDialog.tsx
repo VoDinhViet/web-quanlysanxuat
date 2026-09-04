@@ -6,7 +6,6 @@ import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -35,7 +34,7 @@ type QuotationAllocationsDialogProps = {
 
 // Replaces the old AdjustmentReasonDialog.tsx (one reason field at vật tư level) now that SL/lý
 // do điều chỉnh live per dòng ĐXMH (allocation), not per vật tư — a vật tư merging several dòng
-// ĐXMH needs one row per allocation here. Same "Radix unmounts while closed" seed-fresh idiom as
+// ĐXMH needs one row per allocation here. Same "Dialog unmounts while closed" seed-fresh idiom as
 // that file. A plain <table>, not useReactTable: the row set is fixed for the dialog's lifetime
 // (no add/remove here — that only happens back in the picker), so column-def machinery buys
 // nothing over mapping directly.
@@ -48,9 +47,9 @@ export function QuotationAllocationsDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="shadow-lg ring-0 sm:max-w-2xl">
+    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
+      {trigger}
+      <Dialog className="shadow-lg ring-0 sm:max-w-2xl">
         <QuotationAllocationsDialogForm
           itemName={itemName}
           allocations={allocations}
@@ -60,8 +59,8 @@ export function QuotationAllocationsDialog({
           }}
           onCancel={() => setOpen(false)}
         />
-      </DialogContent>
-    </Dialog>
+      </Dialog>
+    </DialogTrigger>
   )
 }
 
@@ -116,62 +115,67 @@ function QuotationAllocationsDialogForm({
       </DialogHeader>
 
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow className="h-10 hover:bg-muted/45">
-              <TableHead className="w-28">Mã PR</TableHead>
-              <TableHead className="w-28 text-right">SL đề xuất</TableHead>
-              <TableHead className="w-32 text-right">SL báo giá</TableHead>
-              <TableHead>Lý do điều chỉnh SL</TableHead>
-            </TableRow>
+        <Table aria-label="Danh sách phân bổ số lượng">
+          <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
+            <TableHead id="prCode" isRowHeader className="w-28">
+              Mã PR
+            </TableHead>
+            <TableHead id="requestedQuantity" className="w-28 text-right">
+              SL đề xuất
+            </TableHead>
+            <TableHead id="quantity" className="w-32 text-right">
+              SL báo giá
+            </TableHead>
+            <TableHead id="reason">Lý do điều chỉnh SL</TableHead>
           </TableHeader>
-          <TableBody>
-            {localAllocations.length === 0 ? (
+          <TableBody
+            renderEmptyState={() => (
               <TableEmpty colSpan={4} title="Chưa có dòng phân bổ nào" />
-            ) : (
-              localAllocations.map((allocation, index) => (
-                <TableRow
-                  key={allocation.purchaseRequestItemId}
-                  className="h-12"
-                >
-                  <TableCell>
-                    <span className="font-mono text-xs font-semibold text-primary">
-                      {allocation.prCode}
-                    </span>
-                    <p className="text-[11px] text-muted-foreground">
-                      Cần{" "}
-                      {DateTime.fromISO(allocation.neededDate).toFormat(
-                        "dd/MM/yyyy"
-                      )}
-                    </p>
-                  </TableCell>
-                  <TableCell className="text-right text-xs tabular-nums">
-                    {allocation.requestedQuantity}
-                  </TableCell>
-                  <TableCell>
-                    <NumericCellInput
-                      value={allocation.quantity}
-                      min={1}
-                      onValueChange={(value) =>
-                        updateAllocation(index, { quantity: value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TableTextCellInput
-                      id={`allocation-reason-${allocation.purchaseRequestItemId}`}
-                      value={allocation.quantityAdjustmentReason}
-                      placeholder="Nếu SL báo giá khác SL đề xuất"
-                      onValueChange={(value) =>
-                        updateAllocation(index, {
-                          quantityAdjustmentReason: value,
-                        })
-                      }
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
             )}
+          >
+            {localAllocations.map((allocation, index) => (
+              <TableRow
+                key={allocation.purchaseRequestItemId}
+                id={allocation.purchaseRequestItemId}
+                className="h-12"
+              >
+                <TableCell>
+                  <span className="font-mono text-xs font-semibold text-primary">
+                    {allocation.prCode}
+                  </span>
+                  <p className="text-[11px] text-muted-foreground">
+                    Cần{" "}
+                    {DateTime.fromISO(allocation.neededDate).toFormat(
+                      "dd/MM/yyyy"
+                    )}
+                  </p>
+                </TableCell>
+                <TableCell className="text-right text-xs tabular-nums">
+                  {allocation.requestedQuantity}
+                </TableCell>
+                <TableCell>
+                  <NumericCellInput
+                    value={allocation.quantity}
+                    min={1}
+                    onValueChange={(value) =>
+                      updateAllocation(index, { quantity: value })
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <TableTextCellInput
+                    id={`allocation-reason-${allocation.purchaseRequestItemId}`}
+                    value={allocation.quantityAdjustmentReason}
+                    placeholder="Nếu SL báo giá khác SL đề xuất"
+                    onValueChange={(value) =>
+                      updateAllocation(index, {
+                        quantityAdjustmentReason: value,
+                      })
+                    }
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

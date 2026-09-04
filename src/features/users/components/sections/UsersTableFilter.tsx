@@ -1,13 +1,14 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -91,7 +92,6 @@ export function UsersTableFilter() {
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
           </div>
-
           <div className="space-y-1.5">
             <Label
               htmlFor="users-status-select"
@@ -100,8 +100,8 @@ export function UsersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger
                 id="users-status-select"
@@ -110,11 +110,13 @@ export function UsersTableFilter() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  {statusFilterOptions.map((option) => (
+                    <SelectItem key={option.value} id={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
           </div>
@@ -129,18 +131,16 @@ export function UsersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới
           </Button>
           <RoutePermissionGate route="/manage/users/create">
-            <Button asChild className="text-xs">
-              <Link to="/manage/users/create">
-                <Plus className="size-4" />
-                Thêm nhân sự
-              </Link>
-            </Button>
+            <LinkButton to="/manage/users/create" className="text-xs">
+              <Plus className="size-4" />
+              Thêm nhân sự
+            </LinkButton>
           </RoutePermissionGate>
         </div>
       </div>

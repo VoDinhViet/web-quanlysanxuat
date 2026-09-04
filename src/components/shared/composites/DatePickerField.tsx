@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { parseDate } from "@internationalized/date"
 import { DateTime } from "luxon"
 import { CalendarIcon } from "lucide-react"
 import type { ComponentProps } from "react"
@@ -6,11 +7,7 @@ import type { ComponentProps } from "react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 type DatePickerFieldProps = {
@@ -37,16 +34,15 @@ export function DatePickerField({
   disabled,
 }: DatePickerFieldProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const selectedDate =
-    value.length > 0 ? DateTime.fromISO(value).toJSDate() : undefined
+  const selectedDate = value.length > 0 ? parseDate(value) : null
 
   return (
     <Field data-invalid={isInvalid}>
       <FieldLabel htmlFor={id} className="text-xs font-medium text-foreground">
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
-      <Popover
-        open={isOpen}
+      <PopoverTrigger
+        isOpen={isOpen}
         onOpenChange={(open) => {
           setIsOpen(open)
           if (!open) {
@@ -54,39 +50,34 @@ export function DatePickerField({
           }
         }}
       >
-        <PopoverTrigger asChild>
-          <Button
-            id={id}
-            type="button"
-            variant="outline"
-            disabled={disabled}
-            aria-invalid={isInvalid}
-            className={cn(
-              "h-9 w-full justify-between bg-background text-xs font-normal",
-              !selectedDate && "text-muted-foreground"
-            )}
-          >
-            {selectedDate
-              ? DateTime.fromJSDate(selectedDate).toFormat("dd/MM/yyyy")
-              : "dd/mm/yyyy"}
-            <CalendarIcon className="size-4" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <Button
+          id={id}
+          type="button"
+          variant="outline"
+          isDisabled={disabled}
+          aria-invalid={isInvalid}
+          className={cn(
+            "h-9 w-full justify-between bg-background text-xs font-normal",
+            !selectedDate && "text-muted-foreground"
+          )}
+        >
+          {selectedDate
+            ? DateTime.fromISO(value).toFormat("dd/MM/yyyy")
+            : "dd/mm/yyyy"}
+          <CalendarIcon className="size-4" />
+        </Button>
+        <Popover className="w-auto p-0" placement="bottom start">
           <Calendar
-            mode="single"
             captionLayout="dropdown"
-            selected={selectedDate}
-            onSelect={(date) => {
-              onChange(
-                date ? DateTime.fromJSDate(date).toFormat("yyyy-MM-dd") : ""
-              )
+            value={selectedDate}
+            onChange={(date) => {
+              onChange(date.toString())
               setIsOpen(false)
               onBlur()
             }}
           />
-        </PopoverContent>
-      </Popover>
+        </Popover>
+      </PopoverTrigger>
       <FieldError errors={errors} />
     </Field>
   )

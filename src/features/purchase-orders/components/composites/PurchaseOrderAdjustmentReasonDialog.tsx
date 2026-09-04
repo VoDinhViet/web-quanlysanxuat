@@ -8,7 +8,6 @@ import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -61,17 +60,17 @@ export function PurchaseOrderAdjustmentReasonDialog({
   })
 
   return (
-    <Dialog
-      open={open}
+    <DialogTrigger
+      isOpen={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="shadow-lg ring-0 sm:max-w-md">
-        {/* Radix unmounts content while closed, so this form re-mounts on each open and its
-            state seeds fresh from `reason`. */}
+      {trigger}
+      <Dialog className="shadow-lg ring-0 sm:max-w-md">
+        {/* The dialog unmounts content while closed, so this form re-mounts on each open and
+            its state seeds fresh from `reason`. */}
         <PurchaseOrderAdjustmentReasonForm
           itemName={itemName}
           reason={reason}
@@ -80,8 +79,8 @@ export function PurchaseOrderAdjustmentReasonDialog({
           onSave={(value) => mutation.mutate(value)}
           onCancel={() => setOpen(false)}
         />
-      </DialogContent>
-    </Dialog>
+      </Dialog>
+    </DialogTrigger>
   )
 }
 
@@ -146,12 +145,12 @@ function PurchaseOrderAdjustmentReasonForm({
         <Button
           type="button"
           variant="outline"
-          onClick={onCancel}
-          disabled={isPending}
+          onPress={onCancel}
+          isDisabled={isPending}
         >
           Hủy
         </Button>
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" isDisabled={isPending}>
           <Diskette className="size-4" />
           {isPending ? "Đang lưu..." : "Lưu"}
         </Button>

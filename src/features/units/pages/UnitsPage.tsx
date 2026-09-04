@@ -97,16 +97,16 @@ export function UnitsPage() {
                 Phạm vi
               </Label>
               <Select
-                value={scopeFilterValue(search.scope)}
-                onValueChange={handleScopeChange}
+                selectedKey={scopeFilterValue(search.scope)}
+                onSelectionChange={(key) => handleScopeChange(String(key))}
               >
                 <SelectTrigger id="units-scope" className="w-full text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ALL">Tất cả</SelectItem>
-                  <SelectItem value="MATERIAL">Vật tư</SelectItem>
-                  <SelectItem value="PRODUCT">Sản phẩm</SelectItem>
+                  <SelectItem id="ALL">Tất cả</SelectItem>
+                  <SelectItem id="MATERIAL">Vật tư</SelectItem>
+                  <SelectItem id="PRODUCT">Sản phẩm</SelectItem>
                 </SelectContent>
               </Select>
             </div>

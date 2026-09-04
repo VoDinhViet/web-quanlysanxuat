@@ -48,54 +48,52 @@ export const CreateInventoryRequisitionItemsSection = withForm({
     return (
       <div className="border-t border-border px-4 py-5 sm:px-5">
         <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-12 hover:bg-muted/45"
+          <Table aria-label="Danh sách vật tư lãnh">
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
-            <TableBody>
-              {items.length === 0 ? (
+            <TableBody
+              items={table.getRowModel().rows}
+              renderEmptyState={() => (
                 <TableEmpty
                   colSpan={columns.length}
                   title="Chưa chọn vật tư nào"
                   description="Quay lại bước ② để chọn vật tư."
                 />
-              ) : (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.original.itemId}
-                    className="h-16 bg-card hover:bg-muted/25"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cell.column.columnDef.meta?.cellClassName}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+              )}
+            >
+              {(row) => (
+                <TableRow
+                  id={row.original.itemId}
+                  className="h-16 bg-card hover:bg-muted/25"
+                  columns={row.getVisibleCells()}
+                >
+                  {(cell) => (
+                    <TableCell
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  )}
+                </TableRow>
               )}
             </TableBody>
           </Table>

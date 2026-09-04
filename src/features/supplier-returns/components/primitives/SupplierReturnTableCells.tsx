@@ -1,8 +1,8 @@
-import { Link } from "@tanstack/react-router"
 import { Edit3, Eye } from "lucide-react"
 
+import { LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
-import { IconButton } from "@/components/shared/primitives/IconButton"
 import { MissingFieldValue } from "@/components/shared/primitives/MissingFieldValue"
 import type { SupplierReturn } from "@/lib/types/supplier-return.type"
 
@@ -36,18 +36,19 @@ export function SupplierReturnActionsCell({
 }: SupplierReturnActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <IconButton
-        label="Xem chi tiết"
-        asChild
-        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-      >
-        <Link
+      <TooltipTrigger>
+        <LinkButton
           to="/manage/supplier-returns/$supplierReturnId"
           params={{ supplierReturnId: supplierReturn.id }}
+          variant="outline"
+          size="icon-sm"
+          aria-label="Xem chi tiết"
+          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
         >
           <Eye className="size-3.5" />
-        </Link>
-      </IconButton>
+        </LinkButton>
+        <Tooltip>Xem chi tiết</Tooltip>
+      </TooltipTrigger>
       <DisabledAction label="Chỉnh sửa" hint="tính năng sắp có">
         <Edit3 className="size-3.5" />
       </DisabledAction>

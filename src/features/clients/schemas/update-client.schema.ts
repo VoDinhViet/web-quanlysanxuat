@@ -20,6 +20,11 @@ import { ClientStatus } from "@/lib/types/client.type"
 export const updateClientSchema = z
   .object({
     clientId: z.uuid(),
+    code: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng nhập mã khách hàng")
+      .max(50, "Mã khách hàng tối đa 50 ký tự"),
     name: z
       .string()
       .trim()
@@ -60,6 +65,7 @@ export type UpdateClientSchema = z.input<typeof updateClientSchema>
 // always come from UpdateClientForm's own `defaultValues`, so placeholders here are harmless.
 export const updateClientFormDefaultValues: UpdateClientSchema = {
   clientId: "",
+  code: "",
   name: "",
   clientGroupId: "",
   taxCode: "",

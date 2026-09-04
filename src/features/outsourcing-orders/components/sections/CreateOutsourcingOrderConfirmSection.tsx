@@ -182,49 +182,51 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
           </div>
 
           <div className="overflow-x-auto">
-            <Table className="min-w-[860px] table-fixed">
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="h-12">
-                    {headerGroup.headers.map((header) => (
-                      <TableHead
-                        key={header.id}
-                        className={
-                          header.column.columnDef.meta?.headerClassName
-                        }
-                      >
-                        {!header.isPlaceholder &&
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
+            <Table
+              aria-label="Danh sách chi tiết gửi gia công"
+              className="min-w-[860px] table-fixed"
+            >
+              <TableHeader
+                columns={table.getFlatHeaders()}
+                className="[&>tr]:h-12"
+              >
+                {(header) => (
+                  <TableHead
+                    id={header.id}
+                    isRowHeader={header.index === 0}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                )}
               </TableHeader>
-              <TableBody>
-                {items.length === 0 ? (
+              <TableBody
+                items={table.getRowModel().rows}
+                renderEmptyState={() => (
                   <TableEmpty colSpan={9} title="Chưa có dòng nào" />
-                ) : (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.original.productionJobOperationId}
-                      className="h-14"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          key={cell.id}
-                          className={cell.column.columnDef.meta?.cellClassName}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
+                )}
+              >
+                {(row) => (
+                  <TableRow
+                    id={row.original.productionJobOperationId}
+                    className="h-14"
+                    columns={row.getVisibleCells()}
+                  >
+                    {(cell) => (
+                      <TableCell
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    )}
+                  </TableRow>
                 )}
               </TableBody>
               <TableFooter>

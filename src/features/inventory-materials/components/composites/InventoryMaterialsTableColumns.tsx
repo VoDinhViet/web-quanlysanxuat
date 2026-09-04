@@ -2,7 +2,8 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Eye, HelpCircle } from "lucide-react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { InventoryMaterialStatusBadge } from "@/features/inventory-materials/components/primitives/InventoryMaterialStatusBadge"
 import {
   MaterialImageCell,
@@ -174,12 +175,18 @@ export const inventoryMaterialColumns = inventoryColumnHelper.columns([
     },
     cell: () => (
       <div className="flex items-center justify-center">
-        <IconButton
-          label="Xem chi tiết"
-          className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-        >
-          <Eye className="size-3.5" />
-        </IconButton>
+        <TooltipTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Xem chi tiết"
+            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+          >
+            <Eye className="size-3.5" />
+          </Button>
+          <Tooltip>Xem chi tiết</Tooltip>
+        </TooltipTrigger>
       </div>
     ),
   }),

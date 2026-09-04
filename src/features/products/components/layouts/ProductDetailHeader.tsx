@@ -10,7 +10,7 @@ import {
   TrashBinTrash,
 } from "@solar-icons/react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
@@ -40,18 +40,16 @@ export function ProductDetailHeader({
     <>
       <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
         <div className="flex min-w-0 items-center gap-3">
-          <Button
-            type="button"
+          <LinkButton
+            to="/manage/products"
+            search={{ page: 1, limit: 10 }}
             variant="ghost"
             className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
             aria-label="Quay lại danh sách sản phẩm"
-            asChild
           >
-            <Link to="/manage/products" search={{ page: 1, limit: 10 }}>
-              <AltArrowLeft className="size-4" />
-              <span className="hidden sm:inline">Quay lại</span>
-            </Link>
-          </Button>
+            <AltArrowLeft className="size-4" />
+            <span className="hidden sm:inline">Quay lại</span>
+          </LinkButton>
 
           <ProductHeaderThumbnail image={product.image} name={product.name} />
 
@@ -101,7 +99,7 @@ export function ProductDetailHeader({
               or silently submit a different tab's data. */}
           {activeTab === "info" ? (
             <PermissionGate permission="items:update">
-              <Button type="button" disabled={isSaving} onClick={onSave}>
+              <Button type="button" isDisabled={isSaving} onPress={onSave}>
                 {isSaving ? (
                   <>
                     <Loader2 className="animate-spin" />

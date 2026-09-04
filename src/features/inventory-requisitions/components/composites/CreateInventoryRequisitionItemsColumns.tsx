@@ -3,7 +3,8 @@ import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
 import { Trash2 } from "lucide-react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import {
@@ -175,14 +176,20 @@ export function buildCreateInventoryRequisitionItemColumns({
         cellClassName: "text-center",
       },
       cell: ({ row }) => (
-        <IconButton
-          label={`Bỏ dòng ${row.index + 1}`}
-          className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-          disabled={disabled}
-          onClick={() => itemsField.removeValue(row.index)}
-        >
-          <Trash2 className="size-3.5" />
-        </IconButton>
+        <TooltipTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label={`Bỏ dòng ${row.index + 1}`}
+            className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+            isDisabled={disabled}
+            onPress={() => itemsField.removeValue(row.index)}
+          >
+            <Trash2 className="size-3.5" />
+          </Button>
+          <Tooltip>{`Bỏ dòng ${row.index + 1}`}</Tooltip>
+        </TooltipTrigger>
       ),
     }),
   ])

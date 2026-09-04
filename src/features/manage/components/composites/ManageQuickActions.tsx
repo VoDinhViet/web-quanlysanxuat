@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router"
 import {
   Bag4,
   BillList,
@@ -13,12 +12,8 @@ import {
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Button, LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { cn } from "@/lib/utils"
 import type { ManageRoutePath } from "@/lib/route-permissions"
@@ -117,41 +112,34 @@ export function ManageQuickActions() {
       {quickActions.map((action) =>
         action.to ? (
           <RoutePermissionGate key={action.label} route={action.to}>
-            <Button
-              asChild
-              type="button"
+            <LinkButton
+              to={action.to}
               variant="outline"
               className={cn(tileClassName, action.tileClassName)}
             >
-              <Link to={action.to}>
-                <action.icon className={cn("size-6", action.accentClassName)} />
-                <span className={action.accentClassName}>{action.label}</span>
-              </Link>
-            </Button>
+              <action.icon className={cn("size-6", action.accentClassName)} />
+              <span className={action.accentClassName}>{action.label}</span>
+            </LinkButton>
           </RoutePermissionGate>
         ) : (
-          <Tooltip key={action.label}>
-            <TooltipTrigger asChild>
-              <span tabIndex={0}>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled
-                  className={cn(
-                    tileClassName,
-                    "pointer-events-none w-full",
-                    action.tileClassName
-                  )}
-                >
-                  <action.icon
-                    className={cn("size-6", action.accentClassName)}
-                  />
-                  <span className={action.accentClassName}>{action.label}</span>
-                </Button>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>{action.hint}</TooltipContent>
-          </Tooltip>
+          <TooltipTrigger key={action.label}>
+            <span tabIndex={0}>
+              <Button
+                type="button"
+                variant="outline"
+                isDisabled
+                className={cn(
+                  tileClassName,
+                  "pointer-events-none w-full",
+                  action.tileClassName
+                )}
+              >
+                <action.icon className={cn("size-6", action.accentClassName)} />
+                <span className={action.accentClassName}>{action.label}</span>
+              </Button>
+            </span>
+            <Tooltip>{action.hint}</Tooltip>
+          </TooltipTrigger>
         )
       )}
     </div>

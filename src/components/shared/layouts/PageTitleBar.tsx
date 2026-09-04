@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import {
   Bell,
@@ -19,23 +18,17 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/shared/layouts/ThemeToggle"
 import { currentUserQueryOptions, useLogout } from "@/features/auth/api"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -58,43 +51,25 @@ type PageBreadcrumbsProps = {
 }
 
 function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
-  const lastIndex = breadcrumbs.length - 1
-
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {breadcrumbs.flatMap((breadcrumb, index) => {
-          const isLast = index === lastIndex
+        {breadcrumbs.map((breadcrumb, index) => {
+          const isLast = index === breadcrumbs.length - 1
 
-          let content
-          if (isLast) {
-            content = <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
-          } else if (breadcrumb.href) {
-            content = (
-              <BreadcrumbLink asChild>
-                <Link to={breadcrumb.href}>{breadcrumb.label}</Link>
-              </BreadcrumbLink>
-            )
-          } else {
-            content = breadcrumb.label
-          }
-
-          const item = (
-            <BreadcrumbItem key={`item-${breadcrumb.label}-${index}`}>
-              {content}
+          return (
+            <BreadcrumbItem key={`${breadcrumb.label}-${index}`}>
+              {isLast ? (
+                <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+              ) : breadcrumb.href ? (
+                <BreadcrumbLink to={breadcrumb.href}>
+                  {breadcrumb.label}
+                </BreadcrumbLink>
+              ) : (
+                breadcrumb.label
+              )}
             </BreadcrumbItem>
           )
-
-          if (isLast) {
-            return [item]
-          }
-
-          return [
-            item,
-            <BreadcrumbSeparator
-              key={`separator-${breadcrumb.label}-${index}`}
-            />,
-          ]
         })}
       </BreadcrumbList>
     </Breadcrumb>
@@ -125,41 +100,39 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
   const profile = profileQuery.data
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          className="h-auto gap-3 px-1.5 py-1"
-          aria-label="Tài khoản người dùng"
-        >
-          <Avatar className="size-10">
-            {profile?.avatar && (
-              <AvatarImage
-                src={resolveFileUrl(profile.avatar.url)}
-                alt={profile.fullName ?? "--"}
-              />
-            )}
-            <AvatarFallback className="bg-muted">
-              <Gallery className="size-5 text-muted-foreground" />
-            </AvatarFallback>
-          </Avatar>
+    <DropdownMenuTrigger>
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-auto gap-3 px-1.5 py-1"
+        aria-label="Tài khoản người dùng"
+      >
+        <Avatar className="size-10">
+          {profile?.avatar && (
+            <AvatarImage
+              src={resolveFileUrl(profile.avatar.url)}
+              alt={profile.fullName ?? "--"}
+            />
+          )}
+          <AvatarFallback className="bg-muted">
+            <Gallery className="size-5 text-muted-foreground" />
+          </AvatarFallback>
+        </Avatar>
 
-          <span className="hidden min-w-0 text-left lg:block">
-            <span className="block truncate text-sm leading-tight font-bold">
-              {profile?.fullName ?? "--"}
-            </span>
-            {profile?.role?.name && (
-              <span className="block truncate text-xs leading-tight text-muted-foreground">
-                {profile.role.name}
-              </span>
-            )}
+        <span className="hidden min-w-0 text-left lg:block">
+          <span className="block truncate text-sm leading-tight font-bold">
+            {profile?.fullName ?? "--"}
           </span>
+          {profile?.role?.name && (
+            <span className="block truncate text-xs leading-tight text-muted-foreground">
+              {profile.role.name}
+            </span>
+          )}
+        </span>
 
-          <ChevronDown className="size-4 text-muted-foreground" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64">
+        <ChevronDown className="size-4 text-muted-foreground" />
+      </Button>
+      <DropdownMenu placement="bottom end" className="w-64">
         <div className="flex items-start gap-3 px-2 py-1.5">
           <Avatar className="size-10">
             {profile?.avatar && (
@@ -200,33 +173,29 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
           { label: "Cài đặt tài khoản", icon: Settings },
           { label: "Trợ giúp", icon: CircleHelp },
         ].map(({ label, icon: Icon }) => (
-          <Tooltip key={label}>
-            <TooltipTrigger asChild>
-              <DropdownMenuItem
-                aria-disabled="true"
-                className="text-muted-foreground"
-                onSelect={(event) => event.preventDefault()}
-              >
-                <Icon />
-                {label}
-              </DropdownMenuItem>
-            </TooltipTrigger>
-            <TooltipContent side="left">
-              {label} — tính năng sắp có
-            </TooltipContent>
-          </Tooltip>
+          <TooltipTrigger key={label}>
+            <DropdownMenuItem
+              aria-disabled="true"
+              className="text-muted-foreground"
+              shouldCloseOnSelect={false}
+            >
+              <Icon />
+              {label}
+            </DropdownMenuItem>
+            <Tooltip placement="left">{label} — tính năng sắp có</Tooltip>
+          </TooltipTrigger>
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
-          disabled={isLoggingOut}
-          onSelect={onLogout}
+          isDisabled={isLoggingOut}
+          onAction={onLogout}
         >
           <LogOut />
           Đăng xuất
         </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </DropdownMenu>
+    </DropdownMenuTrigger>
   )
 }
 
@@ -241,7 +210,7 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
           type="button"
           variant="ghost"
           size="icon"
-          onClick={toggleSidebar}
+          onPress={toggleSidebar}
           aria-label="Mở hoặc thu gọn thanh điều hướng"
         >
           <Menu />
@@ -257,39 +226,35 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
       </div>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span tabIndex={0}>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled
-                aria-label="Thông báo"
-              >
-                <Bell />
-              </Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>Thông báo — tính năng sắp có</TooltipContent>
-        </Tooltip>
+        <TooltipTrigger>
+          <span tabIndex={0}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              isDisabled
+              aria-label="Thông báo"
+            >
+              <Bell />
+            </Button>
+          </span>
+          <Tooltip>Thông báo — tính năng sắp có</Tooltip>
+        </TooltipTrigger>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span tabIndex={0} className="hidden sm:inline-flex">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled
-                aria-label="Trợ giúp"
-              >
-                <CircleHelp />
-              </Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>Trợ giúp — tính năng sắp có</TooltipContent>
-        </Tooltip>
+        <TooltipTrigger>
+          <span tabIndex={0} className="hidden sm:inline-flex">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              isDisabled
+              aria-label="Trợ giúp"
+            >
+              <CircleHelp />
+            </Button>
+          </span>
+          <Tooltip>Trợ giúp — tính năng sắp có</Tooltip>
+        </TooltipTrigger>
 
         <ThemeToggle />
 

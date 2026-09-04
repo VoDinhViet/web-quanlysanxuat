@@ -1,8 +1,7 @@
-import { Link } from "@tanstack/react-router"
 import { InfoCircle } from "@solar-icons/react"
 
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import { iqcStatusStyles } from "@/features/iqc/components/primitives/IqcBadges"
 import {
@@ -57,18 +56,14 @@ export function IqcStatusLegend({
               <p>{iqcStatusDescriptions[status]}</p>
               {status === IqcStatus.IN_PROGRESS &&
                 (supplierReturn ? (
-                  <Button
+                  <LinkButton
+                    to="/manage/supplier-returns/$supplierReturnId"
+                    params={{ supplierReturnId: supplierReturn.id }}
                     variant="link"
                     className="h-auto p-0 text-[11px]"
-                    asChild
                   >
-                    <Link
-                      to="/manage/supplier-returns/$supplierReturnId"
-                      params={{ supplierReturnId: supplierReturn.id }}
-                    >
-                      Xem phiếu trả NCC ({supplierReturn.code}) →
-                    </Link>
-                  </Button>
+                    Xem phiếu trả NCC ({supplierReturn.code}) →
+                  </LinkButton>
                 ) : (
                   <PendingAction
                     label="Xuất trả NCC"

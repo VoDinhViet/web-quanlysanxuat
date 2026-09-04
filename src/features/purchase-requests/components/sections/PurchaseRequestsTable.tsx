@@ -1,9 +1,8 @@
-import { Link } from "@tanstack/react-router"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { ClipboardList, Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -53,48 +52,47 @@ export function PurchaseRequestsTable({
           description="Đề xuất mua hàng sẽ hiển thị tại đây khi được tạo."
           action={
             <RoutePermissionGate route="/manage/purchase-requests/create">
-              <Button asChild size="sm" className="text-xs">
-                <Link to="/manage/purchase-requests/create">
-                  <Plus className="size-4" />
-                  Tạo đề xuất mua hàng (Manual)
-                </Link>
-              </Button>
+              <LinkButton
+                to="/manage/purchase-requests/create"
+                size="sm"
+                className="text-xs"
+              >
+                <Plus className="size-4" />
+                Tạo đề xuất mua hàng (Manual)
+              </LinkButton>
             </RoutePermissionGate>
           }
         />
       ) : (
         <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-12 hover:bg-muted/45"
+          <Table aria-label="Danh sách đề xuất mua hàng">
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
+            <TableBody items={table.getRowModel().rows}>
+              {(row) => (
                 <TableRow
-                  key={row.id}
+                  id={row.id}
                   className="h-14 bg-card hover:bg-muted/25"
+                  columns={row.getVisibleCells()}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {(cell) => (
                     <TableCell
-                      key={cell.id}
                       className={cell.column.columnDef.meta?.cellClassName}
                     >
                       {flexRender(
@@ -102,9 +100,9 @@ export function PurchaseRequestsTable({
                         cell.getContext()
                       )}
                     </TableCell>
-                  ))}
+                  )}
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>

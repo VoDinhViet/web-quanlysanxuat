@@ -10,7 +10,6 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -49,9 +48,9 @@ export function DeleteProductDialog({
   })
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
+    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
+      {trigger}
+      <AlertDialog>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Trash2 />
@@ -63,21 +62,20 @@ export function DeleteProductDialog({
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={mutation.isPending}>
+          <AlertDialogCancel isDisabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            disabled={mutation.isPending}
-            onClick={(event) => {
-              event.preventDefault()
+            isDisabled={mutation.isPending}
+            onPress={() => {
               mutation.mutate()
             }}
           >
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </AlertDialog>
+    </AlertDialogTrigger>
   )
 }

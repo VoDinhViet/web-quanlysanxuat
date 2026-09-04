@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AltArrowLeft, AltArrowRight, CheckCircle } from "@solar-icons/react"
 import { Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -113,8 +114,8 @@ export function InventoryReceiptCreateReturnForm() {
 
   const requiresIqc = useField({ form, name: "requiresIqc" }).state.value
 
-  function handleStepValueChange(value: string) {
-    const nextStep = stepItems.find((item) => item.value === value)
+  function handleStepValueChange(key: Key) {
+    const nextStep = stepItems.find((item) => item.value === String(key))
 
     if (nextStep) {
       setStep(nextStep.value)
@@ -139,8 +140,8 @@ export function InventoryReceiptCreateReturnForm() {
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <Tabs
-          value={step}
-          onValueChange={handleStepValueChange}
+          selectedKey={step}
+          onSelectionChange={handleStepValueChange}
           className="gap-0"
         >
           <form.Subscribe
@@ -159,19 +160,19 @@ export function InventoryReceiptCreateReturnForm() {
             )}
           </form.Subscribe>
 
-          <TabsContent value="info" className="m-0 outline-none">
+          <TabsContent id="info" className="m-0 outline-none">
             <InventoryReceiptCreateReturnHeaderSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="items" className="m-0 outline-none">
+          <TabsContent id="items" className="m-0 outline-none">
             <InventoryReceiptCreateGenericItemsSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="confirm" className="m-0 outline-none">
+          <TabsContent id="confirm" className="m-0 outline-none">
             <InventoryReceiptCreateReturnConfirmSection
               form={form}
               disabled={isPending}
@@ -185,8 +186,8 @@ export function InventoryReceiptCreateReturnForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() => setStep(prevStep)}
+              isDisabled={isPending}
+              onPress={() => setStep(prevStep)}
             >
               <AltArrowLeft className="size-4" />
               {prevLabel}
@@ -196,8 +197,8 @@ export function InventoryReceiptCreateReturnForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              disabled={isPending}
-              onClick={() =>
+              isDisabled={isPending}
+              onPress={() =>
                 void navigate({
                   to: "/manage/inventory-receipts",
                   search: { page: 1, limit: 10 },
@@ -223,8 +224,8 @@ export function InventoryReceiptCreateReturnForm() {
                 return (
                   <Button
                     type="button"
-                    disabled={!canAdvance}
-                    onClick={() => setStep(nextStep)}
+                    isDisabled={!canAdvance}
+                    onPress={() => setStep(nextStep)}
                   >
                     {nextLabel}
                     <AltArrowRight className="size-4" />
@@ -237,8 +238,8 @@ export function InventoryReceiptCreateReturnForm() {
               <Button
                 type="button"
                 variant="outline"
-                disabled={isPending}
-                onClick={() => {
+                isDisabled={isPending}
+                onPress={() => {
                   actionRef.current = "draft"
                   if (form.state.isSubmitting) return
                   form.handleSubmit()
@@ -254,8 +255,8 @@ export function InventoryReceiptCreateReturnForm() {
                 {([canSubmit, isSubmitting]) => (
                   <Button
                     type="button"
-                    disabled={!canSubmit || isSubmitting || isPending}
-                    onClick={() => {
+                    isDisabled={!canSubmit || isSubmitting || isPending}
+                    onPress={() => {
                       actionRef.current = requiresIqc ? "confirm" : "post"
                       if (form.state.isSubmitting) return
                       form.handleSubmit()

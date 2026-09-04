@@ -15,6 +15,11 @@ import { ClientStatus } from "@/lib/types/client.type"
 // definitions with update-client.schema.ts: the two flows evolve independently.
 export const createClientSchema = z
   .object({
+    code: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng nhập mã khách hàng")
+      .max(50, "Mã khách hàng tối đa 50 ký tự"),
     name: z
       .string()
       .trim()
@@ -51,6 +56,7 @@ export const createClientSchema = z
 export type CreateClientSchema = z.input<typeof createClientSchema>
 
 export const createClientFormDefaultValues: CreateClientSchema = {
+  code: "",
   name: "",
   clientGroupId: "",
   taxCode: "",

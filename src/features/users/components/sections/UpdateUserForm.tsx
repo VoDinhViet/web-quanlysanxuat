@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { DateTime } from "luxon"
-import { Link, useNavigate, useParams } from "@tanstack/react-router"
+import { useNavigate, useParams } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import {
   useMutation,
@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { UpdateUserJobInfoSection } from "@/features/users/components/sections/UpdateUserJobInfoSection"
 import { UpdateUserInfoSection } from "@/features/users/components/sections/UpdateUserInfoSection"
 import { UpdateUserCredentialSection } from "@/features/users/components/sections/UpdateUserCredentialSection"
@@ -106,17 +106,16 @@ export function UpdateUserForm() {
     >
       <section className="overflow-hidden rounded-lg bg-card shadow-card">
         <div className="border-b border-border px-4 py-3 sm:px-5">
-          <Button
+          <LinkButton
+            to="/manage/users"
+            search={{ page: 1, limit: 10 }}
             variant="ghost"
             className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
             aria-label="Quay lại danh sách nhân sự"
-            asChild
           >
-            <Link to="/manage/users" search={{ page: 1, limit: 10 }}>
-              <ArrowLeft className="size-4" />
-              Quay lại
-            </Link>
-          </Button>
+            <ArrowLeft className="size-4" />
+            Quay lại
+          </LinkButton>
         </div>
 
         <UpdateUserInfoSection form={form} disabled={isPending} />
@@ -133,8 +132,8 @@ export function UpdateUserForm() {
           <Button
             type="button"
             variant="outline"
-            disabled={isPending}
-            onClick={() =>
+            isDisabled={isPending}
+            onPress={() =>
               void navigate({
                 to: "/manage/users",
                 search: { page: 1, limit: 10 },
@@ -145,7 +144,7 @@ export function UpdateUserForm() {
           </Button>
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting || isPending}
+            isDisabled={form.formState.isSubmitting || isPending}
           >
             {form.formState.isSubmitting || isPending ? (
               <>

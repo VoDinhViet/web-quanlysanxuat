@@ -5,7 +5,6 @@ import { CheckCircle, CloseCircle } from "@solar-icons/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -13,32 +12,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { cancelPaymentRequest } from "@/features/payment-requests/api/server-functions/cancel-payment-request.api"
 import { markPaymentRequestPaid } from "@/features/payment-requests/api/server-functions/mark-payment-request-paid.api"
+import { PaymentRequestCancelDialog } from "@/features/payment-requests/components/composites/PaymentRequestCancelDialog"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestDetailActionsProps = {
   paymentRequest: PaymentRequestDetail
 }
 
-// Only shows actions for PENDING requests.
-// Dùng Dialog confirm trước khi thực hiện — cùng pattern PurchaseOrderConfirmDialog.tsx.
+// Only shows actions for PENDING requests. "Đã thanh toán" is a confirm-only dialog (no reason
+// needed); "Hủy yêu cầu" is its own dialog with a required reason field — see
+// PaymentRequestCancelDialog.tsx.
 export function PaymentRequestDetailActions({
   paymentRequest,
 }: PaymentRequestDetailActionsProps) {
   const queryClient = useQueryClient()
   const markPaymentRequestPaidFn = useServerFn(markPaymentRequestPaid)
-  const cancelPaymentRequestFn = useServerFn(cancelPaymentRequest)
 
-  const mutation = useMutation({
-    mutationFn: (status: "PAID" | "CANCELLED") =>
-      status === "PAID"
-        ? markPaymentRequestPaidFn({
-            data: { paymentRequestId: paymentRequest.id },
-          })
-        : cancelPaymentRequestFn({
-            data: { paymentRequestId: paymentRequest.id },
-          }),
+  const markPaidMutation = useMutation({
+    mutationFn: () =>
+      markPaymentRequestPaidFn({
+        data: { paymentRequestId: paymentRequest.id },
+      }),
     // No body on success (204) — invalidate list + paymentRequest so both refetch the new status.
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
@@ -51,14 +46,14 @@ export function PaymentRequestDetailActions({
       <div className="flex items-center gap-2">
         <PermissionGate permission="purchasing:approve">
           {/* Mark as PAID */}
-          <Dialog onOpenChange={(next) => next && mutation.reset()}>
-            <DialogTrigger asChild>
-              <Button type="button" disabled={mutation.isPending}>
-                <CheckCircle className="size-4" />
-                Đã thanh toán
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
+          <DialogTrigger
+            onOpenChange={(next) => next && markPaidMutation.reset()}
+          >
+            <Button type="button" isDisabled={markPaidMutation.isPending}>
+              <CheckCircle className="size-4" />
+              Đã thanh toán
+            </Button>
+            <Dialog>
               <DialogHeader>
                 <DialogTitle>Xác nhận thanh toán</DialogTitle>
                 <DialogDescription>
@@ -69,68 +64,40 @@ export function PaymentRequestDetailActions({
                   đã được chi? Hành động này không thể hoàn tác.
                 </DialogDescription>
               </DialogHeader>
-              {mutation.error ? (
+              {markPaidMutation.error ? (
                 <p className="text-sm text-destructive">
-                  {mutation.error.message}
+                  {markPaidMutation.error.message}
                 </p>
               ) : null}
               <DialogFooter>
                 <Button
                   type="button"
-                  disabled={mutation.isPending}
-                  onClick={() => mutation.mutate("PAID")}
+                  isDisabled={markPaidMutation.isPending}
+                  onPress={() => markPaidMutation.mutate()}
                 >
-                  {mutation.isPending
+                  {markPaidMutation.isPending
                     ? "Đang xử lý…"
                     : "Xác nhận đã thanh toán"}
                 </Button>
               </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            </Dialog>
+          </DialogTrigger>
         </PermissionGate>
 
         <PermissionGate permission="purchasing:approve">
-          {/* Cancel */}
-          <Dialog onOpenChange={(next) => next && mutation.reset()}>
-            <DialogTrigger asChild>
+          <PaymentRequestCancelDialog
+            paymentRequest={paymentRequest}
+            trigger={
               <Button
                 type="button"
                 variant="outline"
                 className="border-destructive/40 text-destructive"
-                disabled={mutation.isPending}
               >
                 <CloseCircle className="size-4" />
                 Hủy yêu cầu
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Hủy yêu cầu thanh toán</DialogTitle>
-                <DialogDescription>
-                  Bạn chắc chắn muốn hủy yêu cầu thanh toán{" "}
-                  <span className="font-mono font-semibold">
-                    {paymentRequest.code}
-                  </span>
-                  ? Hành động này không thể hoàn tác.
-                </DialogDescription>
-              </DialogHeader>
-              {mutation.error ? (
-                <p className="text-sm text-destructive">
-                  {mutation.error.message}
-                </p>
-              ) : null}
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  disabled={mutation.isPending}
-                  onClick={() => mutation.mutate("CANCELLED")}
-                >
-                  {mutation.isPending ? "Đang xử lý…" : "Hủy yêu cầu"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            }
+          />
         </PermissionGate>
       </div>
     </div>

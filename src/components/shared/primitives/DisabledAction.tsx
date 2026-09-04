@@ -1,11 +1,7 @@
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 
 type DisabledActionProps = {
   label: string
@@ -24,22 +20,20 @@ export function DisabledAction({
   children,
 }: DisabledActionProps) {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span tabIndex={0}>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            className="pointer-events-none bg-background text-muted-foreground"
-            aria-label={label}
-            disabled
-          >
-            {children}
-          </Button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>{`${label} — ${hint}`}</TooltipContent>
-    </Tooltip>
+    <TooltipTrigger>
+      <span tabIndex={0}>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          className="pointer-events-none bg-background text-muted-foreground"
+          aria-label={label}
+          isDisabled
+        >
+          {children}
+        </Button>
+      </span>
+      <Tooltip>{`${label} — ${hint}`}</Tooltip>
+    </TooltipTrigger>
   )
 }

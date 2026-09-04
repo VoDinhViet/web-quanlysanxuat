@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -108,21 +108,21 @@ export function ClientsTableFilter() {
               Nhóm khách hàng
             </Label>
             <Select
-              value={search.clientGroupId ?? "all"}
-              onValueChange={handleGroupChange}
+              selectedKey={search.clientGroupId ?? "all"}
+              onSelectionChange={(key) => handleGroupChange(String(key))}
             >
               <SelectTrigger className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
                 {clientGroupOptionsQuery.isPending ? (
-                  <SelectItem value="loading" disabled>
+                  <SelectItem id="loading" isDisabled>
                     Đang tải...
                   </SelectItem>
                 ) : (
                   clientGroupOptionsQuery.data?.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
+                    <SelectItem key={option.id} id={option.id}>
                       {option.name}
                     </SelectItem>
                   ))
@@ -139,16 +139,16 @@ export function ClientsTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="clients-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -165,12 +165,12 @@ export function ClientsTableFilter() {
             >
               Khu vực
             </Label>
-            <Select value="all" disabled>
+            <Select selectedKey="all" isDisabled>
               <SelectTrigger id="clients-region" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -185,18 +185,16 @@ export function ClientsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới
           </Button>
           <RoutePermissionGate route="/manage/clients/create">
-            <Button asChild className="text-xs">
-              <Link to="/manage/clients/create">
-                <Plus className="size-4" />
-                Tạo khách hàng
-              </Link>
-            </Button>
+            <LinkButton to="/manage/clients/create" className="text-xs">
+              <Plus className="size-4" />
+              Tạo khách hàng
+            </LinkButton>
           </RoutePermissionGate>
         </div>
       </div>

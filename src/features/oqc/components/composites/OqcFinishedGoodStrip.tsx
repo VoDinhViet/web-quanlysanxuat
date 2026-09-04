@@ -1,9 +1,8 @@
-import { Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Eye, Gallery } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { itemQueryOptions } from "@/features/products/api"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { OqcDetail } from "@/lib/types/oqc.type"
@@ -45,22 +44,17 @@ export function OqcFinishedGoodStrip({ oqc }: OqcFinishedGoodStripProps) {
         />
       </dl>
 
-      <Button
-        type="button"
+      <LinkButton
+        to="/manage/products/$productId"
+        params={{ productId: oqc.item.id }}
+        search={{ tab: "info" }}
         variant="ghost"
         size="icon"
         aria-label="Xem thành phẩm"
         className="self-start text-muted-foreground sm:self-center"
-        asChild
       >
-        <Link
-          to="/manage/products/$productId"
-          params={{ productId: oqc.item.id }}
-          search={{ tab: "info" }}
-        >
-          <Eye className="size-4" />
-        </Link>
-      </Button>
+        <Eye className="size-4" />
+      </LinkButton>
     </div>
   )
 }

@@ -138,8 +138,9 @@ export function ProductionOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
+              placeholder="Chọn trạng thái"
             >
               <SelectTrigger
                 id="production-orders-status"
@@ -149,7 +150,7 @@ export function ProductionOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

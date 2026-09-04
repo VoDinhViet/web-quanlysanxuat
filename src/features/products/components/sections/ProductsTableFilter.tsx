@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -135,15 +135,15 @@ export function ProductsTableFilter() {
               Loại sản phẩm
             </Label>
             <Select
-              value={search.type ?? "all"}
-              onValueChange={handleTypeChange}
+              selectedKey={search.type ?? "all"}
+              onSelectionChange={(key) => handleTypeChange(String(key))}
             >
               <SelectTrigger id="products-type" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {typeFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -159,15 +159,15 @@ export function ProductsTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="products-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -185,18 +185,16 @@ export function ProductsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới
           </Button>
           <RoutePermissionGate route="/manage/products/create">
-            <Button asChild className="text-xs">
-              <Link to="/manage/products/create">
-                <Plus className="size-4" />
-                Thêm sản phẩm
-              </Link>
-            </Button>
+            <LinkButton to="/manage/products/create" className="text-xs">
+              <Plus className="size-4" />
+              Thêm sản phẩm
+            </LinkButton>
           </RoutePermissionGate>
         </div>
       </div>

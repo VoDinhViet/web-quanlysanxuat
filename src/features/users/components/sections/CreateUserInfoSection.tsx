@@ -1,9 +1,10 @@
 import { Controller } from "react-hook-form"
+import { Radio } from "react-aria-components"
 import type { UseFormReturn } from "react-hook-form"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { ImageUploader } from "@/features/users/components/composites/ImageUploader"
@@ -75,22 +76,18 @@ export function CreateUserInfoSection({
                   </span>
                   <RadioGroup
                     value={field.value}
-                    onValueChange={field.onChange}
-                    disabled={disabled}
+                    onChange={field.onChange}
+                    isDisabled={disabled}
                     className="flex flex-row flex-wrap gap-2"
                   >
                     {genderOptions.map((option) => (
-                      <FieldLabel
+                      <Radio
                         key={option.value}
-                        htmlFor={`gender-${option.value}`}
-                        className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground has-data-checked:border-primary has-data-checked:bg-primary/5 has-data-checked:text-primary"
+                        value={option.value}
+                        className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
                       >
-                        <RadioGroupItem
-                          value={option.value}
-                          id={`gender-${option.value}`}
-                        />
                         {option.label}
-                      </FieldLabel>
+                      </Radio>
                     ))}
                   </RadioGroup>
                 </div>

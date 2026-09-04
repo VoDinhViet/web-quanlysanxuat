@@ -6,7 +6,6 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -29,8 +28,9 @@ export function IqcDetailActions({
   isLocked,
   isPending,
 }: IqcDetailActionsProps) {
+  const { inventoryReceipt, purchaseOrder, supplierReturn } = iqc
   const hasOtherLinks =
-    !!iqc.inventoryReceipt || !!iqc.purchaseOrder || !!iqc.supplierReturn
+    !!inventoryReceipt || !!purchaseOrder || !!supplierReturn
 
   return (
     <div className="flex flex-col items-end gap-2">
@@ -41,50 +41,72 @@ export function IqcDetailActions({
         </PendingAction>
 
         {hasOtherLinks && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                aria-label="Khác"
-              >
-                <MenuDots className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {iqc.inventoryReceipt && (
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/manage/inventory-receipts/$inventoryReceiptId"
-                    params={{ inventoryReceiptId: iqc.inventoryReceipt.id }}
-                  >
-                    Xem phiếu nhập kho
-                  </Link>
+          <DropdownMenuTrigger>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label="Khác"
+            >
+              <MenuDots className="size-4" />
+            </Button>
+            <DropdownMenu placement="bottom end">
+              {inventoryReceipt && (
+                <DropdownMenuItem
+                  href="#"
+                  render={(props) =>
+                    "href" in props ? (
+                      <Link
+                        {...props}
+                        to="/manage/inventory-receipts/$inventoryReceiptId"
+                        params={{ inventoryReceiptId: inventoryReceipt.id }}
+                      />
+                    ) : (
+                      <div {...props} />
+                    )
+                  }
+                >
+                  Xem phiếu nhập kho
                 </DropdownMenuItem>
               )}
-              {iqc.purchaseOrder && (
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/manage/purchase-orders/$purchaseOrderId"
-                    params={{ purchaseOrderId: iqc.purchaseOrder.id }}
-                  >
-                    Xem đơn mua hàng (PO)
-                  </Link>
+              {purchaseOrder && (
+                <DropdownMenuItem
+                  href="#"
+                  render={(props) =>
+                    "href" in props ? (
+                      <Link
+                        {...props}
+                        to="/manage/purchase-orders/$purchaseOrderId"
+                        params={{ purchaseOrderId: purchaseOrder.id }}
+                      />
+                    ) : (
+                      <div {...props} />
+                    )
+                  }
+                >
+                  Xem đơn mua hàng (PO)
                 </DropdownMenuItem>
               )}
-              {iqc.supplierReturn && (
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/manage/supplier-returns/$supplierReturnId"
-                    params={{ supplierReturnId: iqc.supplierReturn.id }}
-                  >
-                    Xem phiếu trả NCC
-                  </Link>
+              {supplierReturn && (
+                <DropdownMenuItem
+                  href="#"
+                  render={(props) =>
+                    "href" in props ? (
+                      <Link
+                        {...props}
+                        to="/manage/supplier-returns/$supplierReturnId"
+                        params={{ supplierReturnId: supplierReturn.id }}
+                      />
+                    ) : (
+                      <div {...props} />
+                    )
+                  }
+                >
+                  Xem phiếu trả NCC
                 </DropdownMenuItem>
               )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </DropdownMenu>
+          </DropdownMenuTrigger>
         )}
 
         {!isLocked && (
@@ -95,7 +117,7 @@ export function IqcDetailActions({
               {([canSubmit, isSubmitting]) => (
                 <Button
                   type="submit"
-                  disabled={!canSubmit || isSubmitting || isPending}
+                  isDisabled={!canSubmit || isSubmitting || isPending}
                 >
                   <Diskette className="size-4" />
                   {isSubmitting || isPending ? "Đang lưu..." : "Lưu"}

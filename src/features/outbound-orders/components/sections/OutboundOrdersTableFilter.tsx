@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { FileSpreadsheet, Plus, Printer, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -180,15 +180,15 @@ export function OutboundOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="do-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -204,8 +204,10 @@ export function OutboundOrdersTableFilter() {
               Hình thức giao
             </Label>
             <Select
-              value={search.fulfillmentType ?? "all"}
-              onValueChange={handleFulfillmentTypeChange}
+              selectedKey={search.fulfillmentType ?? "all"}
+              onSelectionChange={(key) =>
+                handleFulfillmentTypeChange(String(key))
+              }
             >
               <SelectTrigger
                 id="do-fulfillment-type"
@@ -215,7 +217,7 @@ export function OutboundOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {fulfillmentTypeFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -257,19 +259,17 @@ export function OutboundOrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Xóa bộ lọc
           </Button>
 
           <RoutePermissionGate route="/manage/outbound-orders/create">
-            <Button asChild className="text-xs">
-              <Link to="/manage/outbound-orders/create">
-                <Plus className="size-4" />
-                Tạo DO mới
-              </Link>
-            </Button>
+            <LinkButton to="/manage/outbound-orders/create" className="text-xs">
+              <Plus className="size-4" />
+              Tạo DO mới
+            </LinkButton>
           </RoutePermissionGate>
         </div>
       </div>

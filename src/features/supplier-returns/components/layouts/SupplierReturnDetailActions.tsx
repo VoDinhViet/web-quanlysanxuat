@@ -6,7 +6,6 @@ import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -72,7 +71,7 @@ export function SupplierReturnDetailActions({
 
       {isDraft && (
         <PermissionGate permission="inventory:update">
-          <Button type="button" onClick={() => setConfirmOpen(true)}>
+          <Button type="button" onPress={() => setConfirmOpen(true)}>
             Xác nhận xuất
           </Button>
         </PermissionGate>
@@ -83,73 +82,71 @@ export function SupplierReturnDetailActions({
         In phiếu
       </PendingAction>
 
-      <Dialog open={confirmOpen} onOpenChange={closeConfirm}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Xác nhận xuất trả NCC</DialogTitle>
-            <DialogDescription>
-              Xác nhận phiếu{" "}
-              <span className="font-mono font-semibold text-foreground">
-                {supplierReturn.code}
-              </span>{" "}
-              sẽ trừ tồn kho (nếu phiếu nhập kho liên quan đã nhập kho) và tự
-              động hoàn tất phiếu IQC liên kết. Sau khi xác nhận, phiếu không
-              thể sửa được nữa.
-            </DialogDescription>
-          </DialogHeader>
+      <Dialog isOpen={confirmOpen} onOpenChange={closeConfirm}>
+        <DialogHeader>
+          <DialogTitle>Xác nhận xuất trả NCC</DialogTitle>
+          <DialogDescription>
+            Xác nhận phiếu{" "}
+            <span className="font-mono font-semibold text-foreground">
+              {supplierReturn.code}
+            </span>{" "}
+            sẽ trừ tồn kho (nếu phiếu nhập kho liên quan đã nhập kho) và tự động
+            hoàn tất phiếu IQC liên kết. Sau khi xác nhận, phiếu không thể sửa
+            được nữa.
+          </DialogDescription>
+        </DialogHeader>
 
-          <form
-            onSubmit={(event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              if (form.state.isSubmitting) return
-              void form.handleSubmit()
-            }}
-            noValidate
-            className="space-y-4"
-          >
-            <form.AppField name="note">
-              {(field) => (
-                <field.TextareaField
-                  label="Ghi chú xuất trả (nếu có)"
-                  placeholder="Nhập ghi chú (nếu có)"
-                  maxLength={500}
-                  disabled={postMutation.isPending}
-                />
-              )}
-            </form.AppField>
-
-            <form.AppField name="files">
-              {(field) => (
-                <SupplierReturnEvidenceField
-                  value={field.state.value}
-                  onChange={field.handleChange}
-                  disabled={postMutation.isPending}
-                />
-              )}
-            </form.AppField>
-
-            {postMutation.error && (
-              <p className="text-sm text-destructive">
-                {postMutation.error.message}
-              </p>
-            )}
-
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => closeConfirm(false)}
+        <form
+          onSubmit={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            if (form.state.isSubmitting) return
+            void form.handleSubmit()
+          }}
+          noValidate
+          className="space-y-4"
+        >
+          <form.AppField name="note">
+            {(field) => (
+              <field.TextareaField
+                label="Ghi chú xuất trả (nếu có)"
+                placeholder="Nhập ghi chú (nếu có)"
+                maxLength={500}
                 disabled={postMutation.isPending}
-              >
-                Đóng
-              </Button>
-              <Button type="submit" disabled={postMutation.isPending}>
-                {postMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="files">
+            {(field) => (
+              <SupplierReturnEvidenceField
+                value={field.state.value}
+                onChange={field.handleChange}
+                disabled={postMutation.isPending}
+              />
+            )}
+          </form.AppField>
+
+          {postMutation.error && (
+            <p className="text-sm text-destructive">
+              {postMutation.error.message}
+            </p>
+          )}
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onPress={() => closeConfirm(false)}
+              isDisabled={postMutation.isPending}
+            >
+              Đóng
+            </Button>
+            <Button type="submit" isDisabled={postMutation.isPending}>
+              {postMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
+            </Button>
+          </DialogFooter>
+        </form>
       </Dialog>
     </div>
   )

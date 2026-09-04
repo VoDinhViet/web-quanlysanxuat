@@ -203,82 +203,79 @@ export const CreateOutboundOrderPickerSection = withForm({
         </div>
 
         <div className="mt-4 overflow-x-auto rounded-md border border-dashed border-border/50 bg-card">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-12 hover:bg-muted/45"
+          <Table aria-label="Danh sách dòng PO/Job cần giao">
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
             <TableBody
+              items={table.getRowModel().rows}
               className={cn(
                 query.isFetching && "pointer-events-none opacity-50"
               )}
-            >
-              {rows.length === 0 ? (
+              renderEmptyState={() => (
                 <TableEmpty
                   colSpan={columns.length}
                   title={
                     query.isPending ? "Đang tải..." : "Không tìm thấy dòng nào"
                   }
                 />
-              ) : (
-                table.getRowModel().rows.map((row) => {
-                  const isPicked = pickedIds.has(row.original.orderItemId)
-                  const isOtherClient =
-                    lockedClientId !== undefined &&
-                    row.original.client.id !== lockedClientId
-
-                  return (
-                    <TableRow
-                      key={row.id}
-                      className={cn(
-                        "h-14 bg-card",
-                        isOtherClient
-                          ? "opacity-60"
-                          : "cursor-pointer hover:bg-muted/25",
-                        isPicked && "bg-primary/5"
-                      )}
-                      onClick={() =>
-                        !disabled && !isOtherClient && toggleRow(row.original)
-                      }
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          key={cell.id}
-                          className={cell.column.columnDef.meta?.cellClassName}
-                          onClick={(event) =>
-                            (cell.column.id === "select" ||
-                              cell.column.id === "orderCode" ||
-                              cell.column.id === "job") &&
-                            event.stopPropagation()
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  )
-                })
               )}
+            >
+              {(row) => {
+                const isPicked = pickedIds.has(row.original.orderItemId)
+                const isOtherClient =
+                  lockedClientId !== undefined &&
+                  row.original.client.id !== lockedClientId
+
+                return (
+                  <TableRow
+                    id={row.id}
+                    className={cn(
+                      "h-14 bg-card",
+                      isOtherClient
+                        ? "opacity-60"
+                        : "cursor-pointer hover:bg-muted/25",
+                      isPicked && "bg-primary/5"
+                    )}
+                    onAction={() =>
+                      !disabled && !isOtherClient && toggleRow(row.original)
+                    }
+                    columns={row.getVisibleCells()}
+                  >
+                    {(cell) => (
+                      <TableCell
+                        className={cell.column.columnDef.meta?.cellClassName}
+                        onClick={(event) =>
+                          (cell.column.id === "select" ||
+                            cell.column.id === "orderCode" ||
+                            cell.column.id === "job") &&
+                          event.stopPropagation()
+                        }
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )
+              }}
             </TableBody>
           </Table>
         </div>
@@ -291,19 +288,19 @@ export const CreateOutboundOrderPickerSection = withForm({
             </span>
             <div className="flex items-center gap-2">
               <Select
-                value={String(limit)}
-                onValueChange={(value) => {
-                  setLimit(Number(value) as (typeof limitOptions)[number])
+                selectedKey={String(limit)}
+                onSelectionChange={(key) => {
+                  setLimit(Number(key) as (typeof limitOptions)[number])
                   setPage(1)
                 }}
-                disabled={disabled}
+                isDisabled={disabled}
               >
                 <SelectTrigger className="h-8 w-24 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {limitOptions.map((option) => (
-                    <SelectItem key={option} value={String(option)}>
+                    <SelectItem key={option} id={String(option)}>
                       {option} / trang
                     </SelectItem>
                   ))}
@@ -313,8 +310,8 @@ export const CreateOutboundOrderPickerSection = withForm({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={disabled || pagination.currentPage <= 1}
-                onClick={() => setPage((p) => p - 1)}
+                isDisabled={disabled || pagination.currentPage <= 1}
+                onPress={() => setPage((p) => p - 1)}
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -322,10 +319,10 @@ export const CreateOutboundOrderPickerSection = withForm({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={
+                isDisabled={
                   disabled || pagination.currentPage >= pagination.totalPages
                 }
-                onClick={() => setPage((p) => p + 1)}
+                onPress={() => setPage((p) => p + 1)}
               >
                 <ChevronRight className="size-4" />
               </Button>
@@ -339,8 +336,8 @@ export const CreateOutboundOrderPickerSection = withForm({
               type="button"
               variant="ghost"
               className="text-xs text-muted-foreground hover:text-destructive"
-              disabled={disabled}
-              onClick={() => {
+              isDisabled={disabled}
+              onPress={() => {
                 itemsField.setValue([])
                 clientIdField.handleChange("")
               }}

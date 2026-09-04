@@ -1,11 +1,7 @@
 import type { ComponentProps, ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 
 type PendingActionProps = {
   label: string
@@ -26,21 +22,19 @@ export function PendingAction({
   variant = "outline",
 }: PendingActionProps) {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span tabIndex={0}>
-          <Button
-            type="button"
-            variant={variant}
-            className="pointer-events-none text-xs"
-            aria-label={label}
-            disabled
-          >
-            {children}
-          </Button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>{hint}</TooltipContent>
-    </Tooltip>
+    <TooltipTrigger>
+      <span tabIndex={0}>
+        <Button
+          type="button"
+          variant={variant}
+          className="pointer-events-none text-xs"
+          aria-label={label}
+          isDisabled
+        >
+          {children}
+        </Button>
+      </span>
+      <Tooltip>{hint}</Tooltip>
+    </TooltipTrigger>
   )
 }

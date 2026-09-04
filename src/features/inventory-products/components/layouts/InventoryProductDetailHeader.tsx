@@ -1,8 +1,7 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
 import { AltArrowLeft, Box } from "@solar-icons/react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Item } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"
@@ -20,18 +19,16 @@ export function InventoryProductDetailHeader({
 }: InventoryProductDetailHeaderProps) {
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <Button
-        type="button"
+      <LinkButton
+        to="/manage/inventory-products"
+        search={{ page: 1, limit: 20 }}
         variant="ghost"
         className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
         aria-label="Quay lại danh sách tồn kho thành phẩm"
-        asChild
       >
-        <Link to="/manage/inventory-products" search={{ page: 1, limit: 20 }}>
-          <AltArrowLeft className="size-4" />
-          <span className="hidden sm:inline">Quay lại</span>
-        </Link>
-      </Button>
+        <AltArrowLeft className="size-4" />
+        <span className="hidden sm:inline">Quay lại</span>
+      </LinkButton>
 
       <ItemHeaderThumbnail image={item.image} name={item.name} />
 

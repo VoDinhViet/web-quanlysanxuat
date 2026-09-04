@@ -7,7 +7,6 @@ import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -33,14 +32,14 @@ export function RejectRequisitionDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        {/* Radix unmounts content while closed, so the form (and its mutation state)
+    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
+      {trigger}
+      <Dialog className="sm:max-w-md">
+        {/* The dialog unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <RejectRequisitionForm detail={detail} onClose={() => setOpen(false)} />
-      </DialogContent>
-    </Dialog>
+      </Dialog>
+    </DialogTrigger>
   )
 }
 
@@ -117,15 +116,15 @@ function RejectRequisitionForm({
         <Button
           type="button"
           variant="outline"
-          onClick={onClose}
-          disabled={mutation.isPending}
+          onPress={onClose}
+          isDisabled={mutation.isPending}
         >
           Hủy
         </Button>
         <Button
           type="submit"
           variant="destructive"
-          disabled={mutation.isPending}
+          isDisabled={mutation.isPending}
         >
           {mutation.isPending ? "Đang xử lý..." : "Từ chối"}
         </Button>

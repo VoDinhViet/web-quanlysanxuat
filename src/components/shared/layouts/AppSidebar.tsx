@@ -1,5 +1,5 @@
 import { Image } from "@unpic/react"
-import { Link, useLocation } from "@tanstack/react-router"
+import { useLocation } from "@tanstack/react-router"
 import {
   BookText,
   Boxes,
@@ -40,8 +40,8 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuLinkButton,
   SidebarRail,
 } from "@/components/ui/sidebar"
 import type { ManageRoutePath } from "@/lib/route-permissions"
@@ -255,26 +255,24 @@ export function AppSidebar() {
       <SidebarHeader className="items-center px-3 pt-7 pb-5 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
+            <SidebarMenuLinkButton
+              to="/manage"
               size="lg"
-              asChild
               tooltip="Cơ khí Tiến Huy"
-              className="h-auto w-full justify-center p-0 hover:bg-transparent"
+              className="h-auto w-full min-w-0 justify-center p-0 hover:bg-transparent"
             >
-              <Link to="/manage" className="flex w-full min-w-0 justify-center">
-                <SidebarBrand />
-                <span className="hidden size-10 items-center justify-center group-data-[collapsible=icon]:flex">
-                  <Image
-                    src="/tien-huy-logo-mark-transparent.png"
-                    alt="Cơ khí Tiến Huy"
-                    width={28}
-                    height={28}
-                    className="block shrink-0 object-contain"
-                    loading="eager"
-                  />
-                </span>
-              </Link>
-            </SidebarMenuButton>
+              <SidebarBrand />
+              <span className="hidden size-10 items-center justify-center group-data-[collapsible=icon]:flex">
+                <Image
+                  src="/tien-huy-logo-mark-transparent.png"
+                  alt="Cơ khí Tiến Huy"
+                  width={28}
+                  height={28}
+                  className="block shrink-0 object-contain"
+                  loading="eager"
+                />
+              </span>
+            </SidebarMenuLinkButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -350,17 +348,15 @@ function MenuButton({ item, pathname }: { item: MenuItem; pathname: string }) {
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton
+      <SidebarMenuLinkButton
+        to={item.href}
         tooltip={item.label}
-        asChild
         isActive={isActive}
         className={menuButtonClass}
       >
-        <Link to={item.href}>
-          <Icon />
-          <span>{item.label}</span>
-        </Link>
-      </SidebarMenuButton>
+        <Icon />
+        <span>{item.label}</span>
+      </SidebarMenuLinkButton>
     </SidebarMenuItem>
   )
 }

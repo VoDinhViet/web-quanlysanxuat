@@ -8,13 +8,13 @@ import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   Table,
   TableBody,
@@ -121,17 +121,21 @@ export function OutboundOrderAddItemsDialog({
       },
       cell: ({ row }) => {
         const isPicked = alreadyPickedOrderItemIds.has(row.original.orderItemId)
+        const label = isPicked ? "Đã có trong phiếu" : "Thêm dòng này"
         return (
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            disabled={isPicked}
-            title={isPicked ? "Đã có trong phiếu" : "Thêm dòng này"}
-            onClick={() => onAdd(row.original)}
-          >
-            <Plus className="size-3.5" />
-          </Button>
+          <TooltipTrigger>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              isDisabled={isPicked}
+              aria-label={label}
+              onPress={() => onAdd(row.original)}
+            >
+              <Plus className="size-3.5" />
+            </Button>
+            <Tooltip>{label}</Tooltip>
+          </TooltipTrigger>
         )
       },
     }),
@@ -144,9 +148,9 @@ export function OutboundOrderAddItemsDialog({
   })
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
+      {trigger}
+      <Dialog className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Thêm từ PO/Job</DialogTitle>
           <DialogDescription>
@@ -155,56 +159,56 @@ export function OutboundOrderAddItemsDialog({
         </DialogHeader>
 
         <div className="overflow-x-auto rounded-md border border-border/50">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-11 hover:bg-muted/45"
+          <Table aria-label="Danh sách dòng PO/Job">
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
             <TableBody
+              items={table.getRowModel().rows}
               className={cn(
                 query.isFetching && "pointer-events-none opacity-50"
               )}
-            >
-              {rows.length === 0 ? (
+              renderEmptyState={() => (
                 <TableEmpty
                   colSpan={columns.length}
                   title={
                     query.isPending ? "Đang tải..." : "Không tìm thấy dòng nào"
                   }
                 />
-              ) : (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.original.orderItemId} className="h-12">
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cell.column.columnDef.meta?.cellClassName}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+              )}
+            >
+              {(row) => (
+                <TableRow
+                  id={row.original.orderItemId}
+                  className="h-12"
+                  columns={row.getVisibleCells()}
+                >
+                  {(cell) => (
+                    <TableCell
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  )}
+                </TableRow>
               )}
             </TableBody>
           </Table>
@@ -221,8 +225,8 @@ export function OutboundOrderAddItemsDialog({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={pagination.currentPage <= 1}
-                onClick={() => setPage((p) => p - 1)}
+                isDisabled={pagination.currentPage <= 1}
+                onPress={() => setPage((p) => p - 1)}
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -230,8 +234,8 @@ export function OutboundOrderAddItemsDialog({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={pagination.currentPage >= pagination.totalPages}
-                onClick={() => setPage((p) => p + 1)}
+                isDisabled={pagination.currentPage >= pagination.totalPages}
+                onPress={() => setPage((p) => p + 1)}
               >
                 <ChevronRight className="size-4" />
               </Button>
@@ -240,11 +244,11 @@ export function OutboundOrderAddItemsDialog({
         )}
 
         <DialogFooter>
-          <Button type="button" onClick={() => setOpen(false)}>
+          <Button type="button" onPress={() => setOpen(false)}>
             Xong
           </Button>
         </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </Dialog>
+    </DialogTrigger>
   )
 }

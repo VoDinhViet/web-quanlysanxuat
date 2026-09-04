@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from "react"
 import { Controller, useWatch } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
+import { Radio } from "react-aria-components"
 import type { UseFormReturn } from "react-hook-form"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -91,9 +92,14 @@ export function CreateUserJobInfoSection({
                   Phòng ban <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
-                  value={departmentsQuery.isPending ? "" : field.value}
-                  onValueChange={field.onChange}
-                  disabled={disabled || departmentsQuery.isPending}
+                  selectedKey={departmentsQuery.isPending ? "" : field.value}
+                  onSelectionChange={(key) => field.onChange(String(key))}
+                  isDisabled={disabled || departmentsQuery.isPending}
+                  placeholder={
+                    departmentsQuery.isPending
+                      ? "Đang tải..."
+                      : "Chọn phòng ban"
+                  }
                 >
                   <SelectTrigger
                     id={field.name}
@@ -101,13 +107,7 @@ export function CreateUserJobInfoSection({
                     aria-invalid={!!fieldState.error}
                     className="h-9 w-full bg-background text-xs"
                   >
-                    <SelectValue
-                      placeholder={
-                        departmentsQuery.isPending
-                          ? "Đang tải..."
-                          : "Chọn phòng ban"
-                      }
-                    />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {departments.length === 0 ? (
@@ -118,7 +118,7 @@ export function CreateUserJobInfoSection({
                       buildSelectOptions(departments).map((option) => (
                         <SelectItem
                           key={option.value}
-                          value={option.value}
+                          id={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -149,10 +149,20 @@ export function CreateUserJobInfoSection({
                   // effect below only clears it once the new list has loaded) — masking it to
                   // "" here forces the placeholder to render "Đang tải..." instead of Radix
                   // showing a blank trigger for a value that matches no item yet.
-                  value={positionsQuery.isPending ? "" : field.value}
-                  onValueChange={field.onChange}
-                  disabled={
+                  selectedKey={positionsQuery.isPending ? "" : field.value}
+                  onSelectionChange={(key) => field.onChange(String(key))}
+                  isDisabled={
                     disabled || !departmentId || positionsQuery.isPending
+                  }
+                  placeholder={
+                    // `useQuery({enabled: false})` reports `isPending: true` even when idle
+                    // (no department chosen yet) — gate on `departmentId` too so "Chọn
+                    // phòng ban trước" doesn't get overridden by "Đang tải...".
+                    !departmentId
+                      ? "Chọn phòng ban trước"
+                      : positionsQuery.isPending
+                        ? "Đang tải..."
+                        : "Chọn chức vụ"
                   }
                 >
                   <SelectTrigger
@@ -161,18 +171,7 @@ export function CreateUserJobInfoSection({
                     aria-invalid={!!fieldState.error}
                     className="h-9 w-full bg-background text-xs"
                   >
-                    <SelectValue
-                      placeholder={
-                        // `useQuery({enabled: false})` reports `isPending: true` even when idle
-                        // (no department chosen yet) — gate on `departmentId` too so "Chọn
-                        // phòng ban trước" doesn't get overridden by "Đang tải...".
-                        !departmentId
-                          ? "Chọn phòng ban trước"
-                          : positionsQuery.isPending
-                            ? "Đang tải..."
-                            : "Chọn chức vụ"
-                      }
-                    />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {positionOptions.length === 0 ? (
@@ -183,7 +182,7 @@ export function CreateUserJobInfoSection({
                       positionOptions.map((option) => (
                         <SelectItem
                           key={option.value}
-                          value={option.value}
+                          id={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -248,22 +247,18 @@ export function CreateUserJobInfoSection({
                 </span>
                 <RadioGroup
                   value={field.value}
-                  onValueChange={field.onChange}
-                  disabled={disabled}
+                  onChange={field.onChange}
+                  isDisabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
                   {employeeStatusOptions.map((option) => (
-                    <FieldLabel
+                    <Radio
                       key={option.value}
-                      htmlFor={`status-${option.value}`}
-                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground has-data-checked:border-primary has-data-checked:bg-primary/5 has-data-checked:text-primary"
+                      value={option.value}
+                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
                     >
-                      <RadioGroupItem
-                        value={option.value}
-                        id={`status-${option.value}`}
-                      />
                       {option.label}
-                    </FieldLabel>
+                    </Radio>
                   ))}
                 </RadioGroup>
               </div>

@@ -1,10 +1,9 @@
-import { Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { ExternalLink } from "lucide-react"
 import { Gallery } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { itemQueryOptions } from "@/features/products/api"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { IqcDetail } from "@/lib/types/iqc.type"
@@ -53,21 +52,16 @@ export function IqcMaterialStrip({ iqc }: IqcMaterialStripProps) {
         />
       </dl>
 
-      <Button
-        type="button"
+      <LinkButton
+        to="/manage/materials/$materialId/update"
+        params={{ materialId: iqc.item.id }}
         variant="ghost"
         size="icon"
         aria-label="Xem vật tư"
         className="self-start text-muted-foreground sm:self-center"
-        asChild
       >
-        <Link
-          to="/manage/materials/$materialId/update"
-          params={{ materialId: iqc.item.id }}
-        >
-          <ExternalLink className="size-4" />
-        </Link>
-      </Button>
+        <ExternalLink className="size-4" />
+      </LinkButton>
     </div>
   )
 }

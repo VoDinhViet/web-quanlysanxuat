@@ -19,6 +19,7 @@ import type { Client } from "@/lib/types/client.type"
 function getClientDefaultValues(client: Client): UpdateClientSchema {
   return {
     clientId: client.id,
+    code: client.code,
     name: client.name,
     clientGroupId: client.group.id,
     taxCode: client.taxCode ?? "",
@@ -83,8 +84,8 @@ export function UpdateClientForm({ client }: UpdateClientFormProps) {
           <Button
             type="button"
             variant="outline"
-            disabled={isPending}
-            onClick={() =>
+            isDisabled={isPending}
+            onPress={() =>
               void navigate({
                 to: "/manage/clients",
                 search: { page: 1, limit: 10 },
@@ -99,7 +100,7 @@ export function UpdateClientForm({ client }: UpdateClientFormProps) {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
+                isDisabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

@@ -1,7 +1,7 @@
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { FileOutput, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { FilterSelect } from "@/components/shared/primitives/FilterSelect"
@@ -59,12 +59,13 @@ export function InventoryRequisitionsTableFilter() {
       createLabel="Tạo phiếu lãnh"
       createAction={
         <RoutePermissionGate route="/manage/inventory-requisitions/create">
-          <Button className="text-xs" asChild>
-            <Link to="/manage/inventory-requisitions/create">
-              <FileOutput className="size-3.5" />
-              Tạo phiếu lãnh
-            </Link>
-          </Button>
+          <LinkButton
+            to="/manage/inventory-requisitions/create"
+            className="text-xs"
+          >
+            <FileOutput className="size-3.5" />
+            Tạo phiếu lãnh
+          </LinkButton>
         </RoutePermissionGate>
       }
       fields={

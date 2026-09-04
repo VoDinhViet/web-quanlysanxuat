@@ -77,9 +77,9 @@ export function PurchaseOrderPaymentTermField({
         Điều khoản TT <span className="text-destructive">*</span>
       </label>
       <Select
-        value={value}
-        onValueChange={(nextValue: string) => {
-          const nextPaymentTerm = nextValue as PaymentTermType
+        selectedKey={value}
+        onSelectionChange={(key) => {
+          const nextPaymentTerm = String(key) as PaymentTermType
           setValue(nextPaymentTerm)
           save(nextPaymentTerm)
         }}
@@ -92,7 +92,7 @@ export function PurchaseOrderPaymentTermField({
         </SelectTrigger>
         <SelectContent>
           {Object.values(PaymentTerm).map((term) => (
-            <SelectItem key={term} value={term}>
+            <SelectItem key={term} id={term}>
               {paymentTermLabels[term]}
             </SelectItem>
           ))}

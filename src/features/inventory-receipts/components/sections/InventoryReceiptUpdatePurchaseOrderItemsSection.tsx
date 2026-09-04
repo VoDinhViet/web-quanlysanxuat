@@ -89,18 +89,24 @@ export const InventoryReceiptUpdatePurchaseOrderItemsSection = withForm({
               </div>
 
               <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="h-12 hover:bg-muted/45">
-                      <TableHead className="w-10" />
-                      <TableHead>Vật tư</TableHead>
-                      <TableHead className="text-right">SL đặt</TableHead>
-                      <TableHead className="text-right">SL thực nhận</TableHead>
-                      <TableHead className="text-right">Đơn giá</TableHead>
-                    </TableRow>
+                <Table aria-label="Danh sách vật tư đơn mua hàng">
+                  <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+                    <TableHead id="select" className="w-10" />
+                    <TableHead id="item" isRowHeader>
+                      Vật tư
+                    </TableHead>
+                    <TableHead id="orderedQuantity" className="text-right">
+                      SL đặt
+                    </TableHead>
+                    <TableHead id="receivedQuantity" className="text-right">
+                      SL thực nhận
+                    </TableHead>
+                    <TableHead id="unitPrice" className="text-right">
+                      Đơn giá
+                    </TableHead>
                   </TableHeader>
-                  <TableBody>
-                    {!purchaseOrder || purchaseOrder.items.length === 0 ? (
+                  <TableBody
+                    renderEmptyState={() => (
                       <TableEmpty
                         colSpan={5}
                         title={
@@ -109,55 +115,56 @@ export const InventoryReceiptUpdatePurchaseOrderItemsSection = withForm({
                             : "Đơn mua hàng không có dòng nào"
                         }
                       />
-                    ) : (
-                      purchaseOrder.items.map((line) => {
-                        const index = findIndex(line.id)
-                        const isSelected = index >= 0
-                        const row = isSelected ? items[index] : null
-                        const { item } = line.purchaseRequestItem
-
-                        return (
-                          <TableRow
-                            key={line.id}
-                            className="h-14 bg-card hover:bg-muted/25"
-                          >
-                            <TableCell>
-                              <Checkbox
-                                checked={isSelected}
-                                disabled={disabled}
-                                onCheckedChange={() => toggle(line)}
-                                aria-label={`Chọn dòng ${item.code}`}
-                              />
-                            </TableCell>
-                            <TableCell>
-                              {item.code} — {item.name}
-                            </TableCell>
-                            <TableCell className="text-right tabular-nums">
-                              {line.quantity} {item.unit.name}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <NumericFormat
-                                customInput={Input}
-                                className="ml-auto h-8 w-28 text-right text-xs"
-                                value={row?.quantity ?? ""}
-                                disabled={!isSelected || disabled}
-                                thousandSeparator="."
-                                decimalSeparator=","
-                                allowNegative={false}
-                                onValueChange={(values) =>
-                                  updateQuantity(line.id, values.floatValue)
-                                }
-                              />
-                            </TableCell>
-                            <TableCell className="text-right tabular-nums">
-                              {line.unitPrice !== null
-                                ? vndFormatter.format(line.unitPrice)
-                                : "—"}
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })
                     )}
+                  >
+                    {(purchaseOrder?.items ?? []).map((line) => {
+                      const index = findIndex(line.id)
+                      const isSelected = index >= 0
+                      const row = isSelected ? items[index] : null
+                      const { item } = line.purchaseRequestItem
+
+                      return (
+                        <TableRow
+                          key={line.id}
+                          id={line.id}
+                          className="h-14 bg-card hover:bg-muted/25"
+                        >
+                          <TableCell>
+                            <Checkbox
+                              isSelected={isSelected}
+                              isDisabled={disabled}
+                              onChange={() => toggle(line)}
+                              aria-label={`Chọn dòng ${item.code}`}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {item.code} — {item.name}
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            {line.quantity} {item.unit.name}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <NumericFormat
+                              customInput={Input}
+                              className="ml-auto h-8 w-28 text-right text-xs"
+                              value={row?.quantity ?? ""}
+                              disabled={!isSelected || disabled}
+                              thousandSeparator="."
+                              decimalSeparator=","
+                              allowNegative={false}
+                              onValueChange={(values) =>
+                                updateQuantity(line.id, values.floatValue)
+                              }
+                            />
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            {line.unitPrice !== null
+                              ? vndFormatter.format(line.unitPrice)
+                              : "—"}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </div>

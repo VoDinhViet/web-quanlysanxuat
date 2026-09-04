@@ -1,9 +1,9 @@
-import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
 
+import { LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
-import { IconButton } from "@/components/shared/primitives/IconButton"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import {
   canUpdateOrder,
@@ -58,21 +58,32 @@ export function OrderActionsCell({ order }: { order: Order }) {
 
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <IconButton label="Xem chi tiết" asChild>
-        <Link to="/manage/orders/$orderId" params={{ orderId: order.id }}>
+      <TooltipTrigger>
+        <LinkButton
+          to="/manage/orders/$orderId"
+          params={{ orderId: order.id }}
+          variant="outline"
+          size="icon-sm"
+          aria-label="Xem chi tiết"
+        >
           <Eye className="size-3.5" />
-        </Link>
-      </IconButton>
+        </LinkButton>
+        <Tooltip>Xem chi tiết</Tooltip>
+      </TooltipTrigger>
       {isEditable ? (
         <RoutePermissionGate route="/manage/orders/$orderId/update">
-          <IconButton label="Chỉnh sửa" asChild>
-            <Link
+          <TooltipTrigger>
+            <LinkButton
               to="/manage/orders/$orderId/update"
               params={{ orderId: order.id }}
+              variant="outline"
+              size="icon-sm"
+              aria-label="Chỉnh sửa"
             >
               <Pencil className="size-3.5" />
-            </Link>
-          </IconButton>
+            </LinkButton>
+            <Tooltip>Chỉnh sửa</Tooltip>
+          </TooltipTrigger>
         </RoutePermissionGate>
       ) : (
         <DisabledAction

@@ -41,9 +41,9 @@ export function buildCreateOutboundOrderPickerColumns({
       id: "select",
       header: () => (
         <Checkbox
-          checked={allChecked}
-          disabled={disabled}
-          onCheckedChange={(checked) => onToggleAll(checked === true)}
+          isSelected={allChecked}
+          isDisabled={disabled}
+          onChange={onToggleAll}
           aria-label="Chọn tất cả"
         />
       ),
@@ -55,9 +55,9 @@ export function buildCreateOutboundOrderPickerColumns({
 
         return (
           <Checkbox
-            checked={pickedIds.has(row.original.orderItemId)}
-            disabled={disabled || isOtherClient}
-            onCheckedChange={() => onToggleRow(row.original)}
+            isSelected={pickedIds.has(row.original.orderItemId)}
+            isDisabled={disabled || isOtherClient}
+            onChange={() => onToggleRow(row.original)}
             aria-label={`Chọn ${row.original.item.name}`}
           />
         )

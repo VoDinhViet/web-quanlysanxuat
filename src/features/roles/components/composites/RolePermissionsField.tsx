@@ -40,19 +40,15 @@ export function RolePermissionsField({
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               {group.codes.map((code) => (
-                <label
+                <Checkbox
                   key={code}
                   className="flex items-center gap-2 text-xs text-foreground"
+                  isSelected={selectedSet.has(code)}
+                  isDisabled={disabled}
+                  onChange={(checked) => toggle(code, checked)}
                 >
-                  <Checkbox
-                    checked={selectedSet.has(code)}
-                    disabled={disabled}
-                    onCheckedChange={(checked) =>
-                      toggle(code, checked === true)
-                    }
-                  />
                   {permissionLabels[code]}
-                </label>
+                </Checkbox>
               ))}
             </div>
           </div>

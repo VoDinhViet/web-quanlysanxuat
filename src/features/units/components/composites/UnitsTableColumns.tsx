@@ -2,7 +2,8 @@ import { Edit3, Trash2 } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteUnitDialog } from "@/features/units/components/composites/DeleteUnitDialog"
 import { UnitScopeBadge } from "@/features/units/components/primitives/UnitBadges"
@@ -66,12 +67,18 @@ export const unitColumns = unitColumnHelper.columns([
             <UpdateUnitDialog
               unit={unit}
               trigger={
-                <IconButton
-                  label="Chỉnh sửa"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                >
-                  <Edit3 className="size-3.5" />
-                </IconButton>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Chỉnh sửa"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  >
+                    <Edit3 className="size-3.5" />
+                  </Button>
+                  <Tooltip>Chỉnh sửa</Tooltip>
+                </TooltipTrigger>
               }
             />
           </PermissionGate>
@@ -79,12 +86,18 @@ export const unitColumns = unitColumnHelper.columns([
             <DeleteUnitDialog
               unit={unit}
               trigger={
-                <IconButton
-                  label="Xóa"
-                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                >
-                  <Trash2 className="size-3.5" />
-                </IconButton>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Xóa"
+                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                  <Tooltip>Xóa</Tooltip>
+                </TooltipTrigger>
               }
             />
           </PermissionGate>

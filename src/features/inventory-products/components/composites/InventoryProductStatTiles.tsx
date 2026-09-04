@@ -4,7 +4,8 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { cn } from "@/lib/utils"
 
@@ -102,16 +103,22 @@ export function InventoryProductStatTiles({
             "HH:mm · dd/MM/yyyy"
           )}
         </span>
-        <IconButton
-          label="Làm mới"
-          onClick={() => void query.refetch()}
-          disabled={query.isFetching}
-          className="size-6 border-none text-muted-foreground hover:text-foreground"
-        >
-          <Refresh
-            className={cn("size-3.5", query.isFetching && "animate-spin")}
-          />
-        </IconButton>
+        <TooltipTrigger>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Làm mới"
+            onPress={() => void query.refetch()}
+            isDisabled={query.isFetching}
+            className="size-6 border-none text-muted-foreground hover:text-foreground"
+          >
+            <Refresh
+              className={cn("size-3.5", query.isFetching && "animate-spin")}
+            />
+          </Button>
+          <Tooltip>Làm mới</Tooltip>
+        </TooltipTrigger>
       </div>
     </div>
   )

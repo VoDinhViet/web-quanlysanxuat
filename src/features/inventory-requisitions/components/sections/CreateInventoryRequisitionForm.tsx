@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ArrowLeft, ArrowRight, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -112,10 +113,11 @@ export function CreateInventoryRequisitionForm() {
 
   const canAdvance = step === "source" ? canGoToItems : canGoToInfo
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast.
-  function handleStepChange(value: string) {
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
+  // without a cast.
+  function handleStepChange(key: Key) {
     const nextStep = createInventoryRequisitionStepItems.find(
-      (item) => item.value === value
+      (item) => item.value === String(key)
     )
     if (nextStep) setStep(nextStep.value)
   }
@@ -139,25 +141,29 @@ export function CreateInventoryRequisitionForm() {
       noValidate
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
-      <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
+      <Tabs
+        selectedKey={step}
+        onSelectionChange={handleStepChange}
+        className="gap-0"
+      >
         <CreateInventoryRequisitionStepsTabs
           canGoToItems={canGoToItems}
           canGoToInfo={canGoToInfo}
         />
 
-        <TabsContent value="source" className="m-0 outline-none">
+        <TabsContent id="source" className="m-0 outline-none">
           <CreateInventoryRequisitionSourceSection
             form={form}
             disabled={isPending}
           />
         </TabsContent>
-        <TabsContent value="items" className="m-0 outline-none">
+        <TabsContent id="items" className="m-0 outline-none">
           <CreateInventoryRequisitionPickerSection
             form={form}
             disabled={isPending}
           />
         </TabsContent>
-        <TabsContent value="info" className="m-0 outline-none">
+        <TabsContent id="info" className="m-0 outline-none">
           <CreateInventoryRequisitionInfoSection
             form={form}
             disabled={isPending}
@@ -175,8 +181,8 @@ export function CreateInventoryRequisitionForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() => setStep(prevStep)}
+            isDisabled={isPending}
+            onPress={() => setStep(prevStep)}
           >
             <ArrowLeft className="size-4" />
             {prevLabel}
@@ -186,8 +192,8 @@ export function CreateInventoryRequisitionForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() =>
+            isDisabled={isPending}
+            onPress={() =>
               void navigate({
                 to: "/manage/inventory-requisitions",
                 search: { page: 1, limit: 10 },
@@ -201,8 +207,8 @@ export function CreateInventoryRequisitionForm() {
         {nextStep ? (
           <Button
             type="button"
-            disabled={!canAdvance}
-            onClick={() => setStep(nextStep)}
+            isDisabled={!canAdvance}
+            onPress={() => setStep(nextStep)}
           >
             {nextLabel}
             <ArrowRight className="size-4" />
@@ -214,7 +220,7 @@ export function CreateInventoryRequisitionForm() {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
+                isDisabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

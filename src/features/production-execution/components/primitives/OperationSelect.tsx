@@ -42,21 +42,22 @@ export function OperationSelect({
 
   return (
     <Select
-      value={selectedOperationId ?? ""}
-      onValueChange={handleChange}
-      disabled={isPending || isError || summary.length === 0}
+      selectedKey={selectedOperationId ?? ""}
+      onSelectionChange={(key) => handleChange(String(key))}
+      isDisabled={isPending || isError || summary.length === 0}
+      placeholder={placeholder}
     >
       <SelectTrigger
         id="production-execution-operation"
         className="w-full text-xs"
       >
-        <SelectValue placeholder={placeholder} />
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
         {summary.map((operation) => (
           <SelectItem
             key={operation.operationId}
-            value={operation.operationId}
+            id={operation.operationId}
             className="text-xs"
           >
             {operation.name} · {operation.jobCount} công việc

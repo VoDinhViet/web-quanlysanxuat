@@ -4,12 +4,14 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { Edit3, Eye, MoreHorizontal, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteClientDialog } from "@/features/clients/components/composites/DeleteClientDialog"
 import { clientStatusLabels, ClientStatus } from "@/lib/types/client.type"
 import type { Client } from "@/lib/types/client.type"
+import { cn } from "@/lib/utils"
 
 const statusStyles: Record<ClientStatus, string> = {
   [ClientStatus.ACTIVE]: "bg-success/15 text-success",
@@ -95,45 +97,65 @@ export const clientColumns = clientColumnHelper.columns([
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <IconButton
-            label="Xem chi tiết"
-            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-          >
-            <Eye className="size-3.5" />
-          </IconButton>
-          <RoutePermissionGate route="/manage/clients/$clientId/update">
-            <IconButton
-              label="Chỉnh sửa"
-              asChild
+          <TooltipTrigger>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label="Xem chi tiết"
               className="text-muted-foreground hover:border-primary/30 hover:text-primary"
             >
+              <Eye className="size-3.5" />
+            </Button>
+            <Tooltip>Xem chi tiết</Tooltip>
+          </TooltipTrigger>
+          <RoutePermissionGate route="/manage/clients/$clientId/update">
+            <TooltipTrigger>
               <Link
                 to="/manage/clients/$clientId/update"
                 params={{ clientId: client.id }}
+                aria-label="Chỉnh sửa"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "icon-sm" }),
+                  "text-muted-foreground hover:border-primary/30 hover:text-primary"
+                )}
               >
                 <Edit3 className="size-3.5" />
               </Link>
-            </IconButton>
+              <Tooltip>Chỉnh sửa</Tooltip>
+            </TooltipTrigger>
           </RoutePermissionGate>
           <PermissionGate permission="clients:delete">
             <DeleteClientDialog
               client={client}
               trigger={
-                <IconButton
-                  label="Xóa"
-                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                >
-                  <Trash2 className="size-3.5" />
-                </IconButton>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Xóa"
+                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                  <Tooltip>Xóa</Tooltip>
+                </TooltipTrigger>
               }
             />
           </PermissionGate>
-          <IconButton
-            label="Thao tác khác"
-            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-          >
-            <MoreHorizontal className="size-3.5" />
-          </IconButton>
+          <TooltipTrigger>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label="Thao tác khác"
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+            >
+              <MoreHorizontal className="size-3.5" />
+            </Button>
+            <Tooltip>Thao tác khác</Tooltip>
+          </TooltipTrigger>
         </div>
       )
     },

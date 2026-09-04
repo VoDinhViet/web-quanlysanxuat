@@ -40,18 +40,15 @@ type ComboboxFieldProps = Pick<
   onBlur?: () => void
   isInvalid?: boolean
   errors?: ComponentProps<typeof FieldError>["errors"]
-  // DOM node to portal the popup into, forwarded to base-ui's Combobox.Portal.
-  // Pass the enclosing Radix Dialog's content node when this field is
-  // rendered inside one: base-ui's popup portals to `<body>` by default,
-  // outside the dialog's DOM subtree, so Radix's FocusScope/DismissableLayer
-  // treat an option click as "outside" the dialog and swallow it before
-  // base-ui's own click handler commits the selection (confirmed: base-ui's
-  // `modal` prop on Combobox.Root does NOT fix this — it only changes the
-  // popup's own internal focus trap, not its position in the DOM relative to
-  // Radix's boundary checks). Rendering the popup as a DOM descendant of the
-  // dialog via `container` puts it inside both libraries' "is this outside"
-  // checks, resolving the conflict at the source. Default undefined — table
-  // filters and non-dialog forms portal to `<body>` as normal.
+  // DOM node to portal the popup into — forwarded to RAC's Popover as
+  // `UNSTABLE_portalContainer`. Pass the enclosing Dialog's content node when this field
+  // is rendered inside one. Kept from the pre-RAC (base-ui) version defensively: Dialog
+  // and Combobox are both RAC now, sharing one overlay/focus-coordination system, so the
+  // original cross-library "portal outside the dialog's focus trap swallows the click"
+  // bug this worked around may no longer apply — but the 3 existing dialog call sites
+  // already wire a content-node ref for it, so keep honoring `container` rather than
+  // assume it's safe to drop. Default undefined — table filters and non-dialog forms
+  // portal to `<body>` as normal.
   container?: HTMLElement | null
 }
 
@@ -127,18 +124,14 @@ export function ComboboxField({
       ) : null}
       <Combobox
         items={items}
-        value={selectedOption}
-        onValueChange={(next: ComboboxOption | null) => {
+        selectedKey={selectedOption?.value ?? null}
+        onSelectionChange={(key) => {
+          const next = items.find((option) => option.value === key) ?? null
           setSelectedOption(next)
           onValueChange(next?.value)
         }}
-        itemToStringLabel={(option: ComboboxOption) => option.label}
-        isItemEqualToValue={(
-          a: ComboboxOption | null,
-          b: ComboboxOption | null
-        ) => a?.value === b?.value}
-        filter={null}
-        onInputValueChange={(next: string) => onSearchChange(next)}
+        onInputChange={(next) => onSearchChange(next)}
+        allowsEmptyCollection
       >
         <ComboboxInput
           id={id}
@@ -149,13 +142,16 @@ export function ComboboxField({
           showClear={Boolean(selectedOption) && !disabled}
           className={cn("w-full", className)}
         />
-        <ComboboxContent container={container}>
-          <ComboboxEmpty>
-            {isPending ? "Đang tìm..." : emptyMessage}
-          </ComboboxEmpty>
-          <ComboboxList>
+        <ComboboxContent UNSTABLE_portalContainer={container ?? undefined}>
+          <ComboboxList
+            renderEmptyState={() => (
+              <ComboboxEmpty>
+                {isPending ? "Đang tìm..." : emptyMessage}
+              </ComboboxEmpty>
+            )}
+          >
             {items.map((option) => (
-              <ComboboxItem key={option.value} value={option}>
+              <ComboboxItem key={option.value} id={option.value}>
                 {option.label}
               </ComboboxItem>
             ))}

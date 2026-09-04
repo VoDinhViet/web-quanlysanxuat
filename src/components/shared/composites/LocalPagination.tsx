@@ -46,16 +46,16 @@ export function LocalPagination({
       </span>
       <div className="flex items-center gap-2">
         <Select
-          value={String(limit)}
-          onValueChange={(value) => onLimitChange(Number(value))}
-          disabled={disabled}
+          selectedKey={String(limit)}
+          onSelectionChange={(key) => onLimitChange(Number(key))}
+          isDisabled={disabled}
         >
           <SelectTrigger className="h-8 w-24 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {limitOptions.map((option) => (
-              <SelectItem key={option} value={String(option)}>
+              <SelectItem key={option} id={String(option)}>
                 {option} / trang
               </SelectItem>
             ))}
@@ -65,8 +65,8 @@ export function LocalPagination({
           type="button"
           variant="outline"
           size="icon-sm"
-          disabled={disabled || currentPage <= 1}
-          onClick={() => onPageChange(currentPage - 1)}
+          isDisabled={disabled || currentPage <= 1}
+          onPress={() => onPageChange(currentPage - 1)}
         >
           <ChevronLeft className="size-4" />
         </Button>
@@ -74,8 +74,8 @@ export function LocalPagination({
           type="button"
           variant="outline"
           size="icon-sm"
-          disabled={disabled || currentPage >= totalPages}
-          onClick={() => onPageChange(currentPage + 1)}
+          isDisabled={disabled || currentPage >= totalPages}
+          onPress={() => onPageChange(currentPage + 1)}
         >
           <ChevronRight className="size-4" />
         </Button>

@@ -137,34 +137,37 @@ export function BomItemPickerField({
         </div>
 
         <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-12 hover:bg-muted/45"
+          <Table
+            aria-label={
+              itemType === "WIP"
+                ? "Danh sách bán thành phẩm"
+                : "Danh sách vật tư"
+            }
+          >
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
             <TableBody
+              items={table.getRowModel().rows}
               className={cn(
                 query.isFetching && "pointer-events-none opacity-50"
               )}
-            >
-              {rows.length === 0 ? (
+              renderEmptyState={() => (
                 <TableEmpty
                   icon={BoxMinimalistic}
                   colSpan={columns.length}
@@ -177,30 +180,29 @@ export function BomItemPickerField({
                       : "Thử một từ khoá khác hoặc kiểm tra lại chính tả."
                   }
                 />
-              ) : (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className={cn(
-                      "h-14 cursor-pointer border-l-2 border-l-transparent bg-card hover:bg-muted/25",
-                      row.original.id === value &&
-                        "border-l-primary bg-primary/5"
-                    )}
-                    onClick={() => handleSelectRow(row.original)}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cell.column.columnDef.meta?.cellClassName}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+              )}
+            >
+              {(row) => (
+                <TableRow
+                  id={row.id}
+                  className={cn(
+                    "h-14 cursor-pointer border-l-2 border-l-transparent bg-card hover:bg-muted/25",
+                    row.original.id === value && "border-l-primary bg-primary/5"
+                  )}
+                  onAction={() => handleSelectRow(row.original)}
+                  columns={row.getVisibleCells()}
+                >
+                  {(cell) => (
+                    <TableCell
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  )}
+                </TableRow>
               )}
             </TableBody>
           </Table>
@@ -224,9 +226,9 @@ export function BomItemPickerField({
             </span>
             <div className="flex items-center gap-2">
               <Select
-                value={String(limit)}
-                onValueChange={(next) => {
-                  setLimit(Number(next) as (typeof limitOptions)[number])
+                selectedKey={String(limit)}
+                onSelectionChange={(key) => {
+                  setLimit(Number(key) as (typeof limitOptions)[number])
                   setPage(1)
                 }}
               >
@@ -235,7 +237,7 @@ export function BomItemPickerField({
                 </SelectTrigger>
                 <SelectContent>
                   {limitOptions.map((option) => (
-                    <SelectItem key={option} value={String(option)}>
+                    <SelectItem key={option} id={String(option)}>
                       {option} / trang
                     </SelectItem>
                   ))}
@@ -245,8 +247,8 @@ export function BomItemPickerField({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={pagination.currentPage <= 1}
-                onClick={() => setPage((current) => current - 1)}
+                isDisabled={pagination.currentPage <= 1}
+                onPress={() => setPage((current) => current - 1)}
               >
                 <AltArrowLeft className="size-4" />
               </Button>
@@ -254,8 +256,8 @@ export function BomItemPickerField({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={pagination.currentPage >= pagination.totalPages}
-                onClick={() => setPage((current) => current + 1)}
+                isDisabled={pagination.currentPage >= pagination.totalPages}
+                onPress={() => setPage((current) => current + 1)}
               >
                 <AltArrowRight className="size-4" />
               </Button>

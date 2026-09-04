@@ -12,6 +12,7 @@ import {
   Save,
 } from "lucide-react"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -80,11 +81,11 @@ export function PurchaseRequestCreateForm() {
   const canGoToQuantities =
     useField({ form, name: "items" }).state.value.length > 0
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
-  // unrecognised value simply doesn't switch steps.
-  function handleStepChange(value: string) {
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
+  // without a cast, and an unrecognised value simply doesn't switch steps.
+  function handleStepChange(key: Key) {
     const nextStep = purchaseRequestCreateStepItems.find(
-      (item) => item.value === value
+      (item) => item.value === String(key)
     )
 
     if (nextStep) {
@@ -124,18 +125,22 @@ export function PurchaseRequestCreateForm() {
     >
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="overflow-hidden rounded-lg bg-card shadow-card">
-          <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
+          <Tabs
+            selectedKey={step}
+            onSelectionChange={handleStepChange}
+            className="gap-0"
+          >
             <PurchaseRequestCreateStepsTabs
               canGoToQuantities={canGoToQuantities}
             />
 
-            <TabsContent value="materials" className="m-0 outline-none">
+            <TabsContent id="materials" className="m-0 outline-none">
               <PurchaseRequestCreateMaterialPickerSection
                 form={form}
                 disabled={isPending}
               />
             </TabsContent>
-            <TabsContent value="quantities" className="m-0 outline-none">
+            <TabsContent id="quantities" className="m-0 outline-none">
               <PurchaseRequestCreateHeaderSection
                 form={form}
                 disabled={isPending}
@@ -155,8 +160,8 @@ export function PurchaseRequestCreateForm() {
                 type="button"
                 variant="ghost"
                 className="text-muted-foreground hover:text-foreground"
-                disabled={isPending}
-                onClick={() => setStep(prevStep)}
+                isDisabled={isPending}
+                onPress={() => setStep(prevStep)}
               >
                 <ArrowLeft className="size-4" />
                 {prevLabel}
@@ -166,7 +171,7 @@ export function PurchaseRequestCreateForm() {
                 type="button"
                 variant="ghost"
                 className="text-muted-foreground hover:text-foreground"
-                onClick={() =>
+                onPress={() =>
                   void navigate({
                     to: "/manage/purchase-requests",
                     search: { page: 1, limit: 10 },
@@ -180,8 +185,8 @@ export function PurchaseRequestCreateForm() {
             {nextStep ? (
               <Button
                 type="button"
-                disabled={!canGoToQuantities}
-                onClick={() => setStep(nextStep)}
+                isDisabled={!canGoToQuantities}
+                onPress={() => setStep(nextStep)}
               >
                 {nextLabel}
                 <ArrowRight className="size-4" />
@@ -191,8 +196,8 @@ export function PurchaseRequestCreateForm() {
                 <Button
                   type="button"
                   variant="ghost"
-                  disabled={isPending}
-                  onClick={() => {
+                  isDisabled={isPending}
+                  onPress={() => {
                     form.reset()
                     restoreFormDraft(
                       form,
@@ -208,8 +213,8 @@ export function PurchaseRequestCreateForm() {
                 <Button
                   type="button"
                   variant="outline"
-                  disabled={isPending}
-                  onClick={() => {
+                  isDisabled={isPending}
+                  onPress={() => {
                     saveDraft(form.state.values)
                     toast.success("Đã lưu nháp")
                   }}
@@ -223,7 +228,7 @@ export function PurchaseRequestCreateForm() {
                   {([canSubmit, isSubmitting]) => (
                     <Button
                       type="submit"
-                      disabled={!canSubmit || isSubmitting || isPending}
+                      isDisabled={!canSubmit || isSubmitting || isPending}
                     >
                       {isSubmitting || isPending ? (
                         <>

@@ -68,8 +68,8 @@ export function ProductionJobNotes({
               variant="outline"
               size="icon-sm"
               aria-label="Trang trước"
-              disabled={pagination.previousPage === null}
-              onClick={() => onPageChange(pagination.currentPage - 1)}
+              isDisabled={pagination.previousPage === null}
+              onPress={() => onPageChange(pagination.currentPage - 1)}
             >
               <ChevronLeft className="size-4" />
             </Button>
@@ -78,8 +78,8 @@ export function ProductionJobNotes({
               variant="outline"
               size="icon-sm"
               aria-label="Trang sau"
-              disabled={pagination.nextPage === null}
-              onClick={() => onPageChange(pagination.currentPage + 1)}
+              isDisabled={pagination.nextPage === null}
+              onPress={() => onPageChange(pagination.currentPage + 1)}
             >
               <ChevronRight className="size-4" />
             </Button>

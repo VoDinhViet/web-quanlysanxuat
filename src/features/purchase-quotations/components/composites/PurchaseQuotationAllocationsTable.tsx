@@ -31,40 +31,46 @@ export function PurchaseQuotationAllocationsTable({
   })
 
   return (
-    <Table>
-      <TableHeader className="bg-transparent">
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow
-            key={headerGroup.id}
-            className="h-8 bg-transparent hover:bg-transparent"
+    <Table aria-label="Danh sách dòng ĐXMH">
+      <TableHeader
+        columns={table.getFlatHeaders()}
+        className="bg-transparent [&>tr]:h-8 [&>tr]:bg-transparent [&>tr]:hover:bg-transparent"
+      >
+        {(header) => (
+          <TableHead
+            id={header.id}
+            isRowHeader={header.index === 0}
+            className={cn(
+              "border-b border-primary/15",
+              header.column.columnDef.meta?.headerClassName
+            )}
           >
-            {headerGroup.headers.map((header) => (
-              <TableHead
-                key={header.id}
-                className={cn(
-                  "border-b border-primary/15",
-                  header.column.columnDef.meta?.headerClassName
-                )}
-              >
-                {!header.isPlaceholder &&
-                  flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-              </TableHead>
-            ))}
-          </TableRow>
-        ))}
+            {!header.isPlaceholder &&
+              flexRender(header.column.columnDef.header, header.getContext())}
+          </TableHead>
+        )}
       </TableHeader>
-      <TableBody>
-        {table.getRowModel().rows.map((row) => (
+      <TableBody
+        items={table.getRowModel().rows}
+        renderEmptyState={() => (
+          // Nested sub-row hint, indented under the outer item row — same "too small-scale for
+          // TableEmpty" treatment as QuotationCompareQuoteTable.tsx / PurchaseQuotationSupplierCompareTable.tsx,
+          // this table's twin stacked right below it.
+          <div className="flex h-11 items-center pl-10">
+            <span className="text-xs text-muted-foreground">
+              Chưa có dòng ĐXMH nào cho vật tư này
+            </span>
+          </div>
+        )}
+      >
+        {(row) => (
           <TableRow
-            key={row.id}
+            id={row.id}
             className="h-11 bg-transparent hover:bg-transparent"
+            columns={row.getVisibleCells()}
           >
-            {row.getVisibleCells().map((cell) => (
+            {(cell) => (
               <TableCell
-                key={cell.id}
                 className={cn(
                   "border-b border-primary/15",
                   cell.column.columnDef.meta?.cellClassName
@@ -72,23 +78,7 @@ export function PurchaseQuotationAllocationsTable({
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </TableCell>
-            ))}
-          </TableRow>
-        ))}
-
-        {/* Nested sub-row hint, indented under the outer item row — same "too small-scale for
-        TableEmpty" treatment as QuotationCompareQuoteTable.tsx / PurchaseQuotationSupplierCompareTable.tsx,
-        this table's twin stacked right below it. */}
-        {item.allocations.length === 0 && (
-          <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
-            <TableCell
-              colSpan={purchaseQuotationAllocationsColumns.length}
-              className="pl-10"
-            >
-              <span className="text-xs text-muted-foreground">
-                Chưa có dòng ĐXMH nào cho vật tư này
-              </span>
-            </TableCell>
+            )}
           </TableRow>
         )}
       </TableBody>

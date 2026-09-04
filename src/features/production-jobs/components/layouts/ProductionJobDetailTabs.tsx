@@ -33,8 +33,8 @@ export function ProductionJobDetailTabs() {
         {productionJobDetailTabItems.map((item) => (
           <TabsTrigger
             key={item.value}
-            value={item.value}
-            className="h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5 hover:bg-muted/40 hover:text-foreground data-active:bg-primary/5 data-active:text-primary group-data-[variant=line]/tabs-list:data-active:bg-primary/5 data-active:hover:bg-primary/5"
+            id={item.value}
+            className="h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5 hover:bg-muted/40 hover:text-foreground data-selected:bg-primary/5 data-selected:text-primary group-data-[variant=line]/tabs-list:data-selected:bg-primary/5 data-selected:hover:bg-primary/5"
           >
             <item.icon className="size-3.5" />
             {item.label}

@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -108,81 +107,101 @@ export function ManageOpenNcrTable() {
         <ManageCardTitle>NCR chưa xử lý</ManageCardTitle>
       </div>
       <div className={cn(query.isFetching && "opacity-60 transition-opacity")}>
-        <Table className="[&_td]:border-r-0 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:first:pl-4 [&_th]:last:pr-4">
-          <TableHeader className="bg-transparent">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
-                  >
-                    {!header.isPlaceholder &&
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+        <Table
+          aria-label="NCR chưa xử lý"
+          className="[&_td]:border-r-0 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:first:pl-4 [&_th]:last:pr-4"
+        >
+          <TableHeader
+            columns={table.getFlatHeaders()}
+            className="bg-transparent [&>tr]:hover:bg-transparent"
+          >
+            {(header) => (
+              <TableHead
+                id={header.id}
+                isRowHeader={header.index === 0}
+                className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
+              >
+                {!header.isPlaceholder &&
+                  flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+              </TableHead>
+            )}
           </TableHeader>
-          <TableBody>
-            {query.isError ? (
+          <TableBody
+            items={rows}
+            renderEmptyState={() => (
               <TableEmpty
                 colSpan={columns.length}
-                title="Không tải được dữ liệu"
+                title={
+                  query.isError ? "Không tải được dữ liệu" : "Chưa có dữ liệu"
+                }
               />
-            ) : rows.length === 0 ? (
-              <TableEmpty colSpan={columns.length} title="Chưa có dữ liệu" />
-            ) : (
-              rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+            )}
+          >
+            {(row) => (
+              <TableRow id={row.id} columns={row.getVisibleCells()}>
+                {(cell) => (
+                  <TableCell
+                    className={cell.column.columnDef.meta?.cellClassName}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                )}
+              </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
       <div className="flex justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              type="button"
-              variant="link"
-              className="h-auto p-0 text-[11px] font-medium"
-            >
-              Xem tất cả →
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+        <DropdownMenuTrigger>
+          <Button
+            type="button"
+            variant="link"
+            className="h-auto p-0 text-[11px] font-medium"
+          >
+            Xem tất cả →
+          </Button>
+          <DropdownMenu placement="bottom end">
             <RoutePermissionGate route="/manage/iqc">
-              <DropdownMenuItem asChild>
-                <Link to="/manage/iqc" search={{ page: 1, limit: 10 }}>
-                  Xem IQC
-                </Link>
+              <DropdownMenuItem
+                href="#"
+                render={(props) =>
+                  "href" in props ? (
+                    <Link
+                      {...props}
+                      to="/manage/iqc"
+                      search={{ page: 1, limit: 10 }}
+                    />
+                  ) : (
+                    <div {...props} />
+                  )
+                }
+              >
+                Xem IQC
               </DropdownMenuItem>
             </RoutePermissionGate>
             <RoutePermissionGate route="/manage/oqc">
-              <DropdownMenuItem asChild>
-                <Link to="/manage/oqc" search={{ page: 1, limit: 10 }}>
-                  Xem OQC
-                </Link>
+              <DropdownMenuItem
+                href="#"
+                render={(props) =>
+                  "href" in props ? (
+                    <Link
+                      {...props}
+                      to="/manage/oqc"
+                      search={{ page: 1, limit: 10 }}
+                    />
+                  ) : (
+                    <div {...props} />
+                  )
+                }
+              >
+                Xem OQC
               </DropdownMenuItem>
             </RoutePermissionGate>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </DropdownMenu>
+        </DropdownMenuTrigger>
       </div>
     </div>
   )

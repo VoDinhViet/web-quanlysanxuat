@@ -56,31 +56,37 @@ export function OutsourcingReceiptItemsCard({
             description="Phiếu nhận gia công này chưa có dòng chi tiết nào."
           />
         ) : (
-          <Table className="min-w-[1080px] table-fixed">
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="h-12">
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+          <Table
+            aria-label="Danh sách dòng đã nhận"
+            className="min-w-[1080px] table-fixed"
+          >
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-12"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
+                >
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.original.id} className="h-14">
-                  {row.getVisibleCells().map((cell) => (
+            <TableBody items={table.getRowModel().rows}>
+              {(row) => (
+                <TableRow
+                  id={row.original.id}
+                  className="h-14"
+                  columns={row.getVisibleCells()}
+                >
+                  {(cell) => (
                     <TableCell
-                      key={cell.id}
                       className={cell.column.columnDef.meta?.cellClassName}
                     >
                       {flexRender(
@@ -88,9 +94,9 @@ export function OutsourcingReceiptItemsCard({
                         cell.getContext()
                       )}
                     </TableCell>
-                  ))}
+                  )}
                 </TableRow>
-              ))}
+              )}
             </TableBody>
             <TableFooter>
               <TableRow className="h-12">

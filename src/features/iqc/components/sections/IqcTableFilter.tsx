@@ -6,11 +6,7 @@ import { Download, ListFilter, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
@@ -128,19 +124,17 @@ export function IqcTableFilter() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button type="button" variant="outline" className="text-xs">
-              <ListFilter className="size-3.5" />
-              Bộ lọc
-              {activeFilterCount > 0 && (
-                <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
-                  {activeFilterCount}
-                </span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
+        <PopoverTrigger>
+          <Button type="button" variant="outline" className="text-xs">
+            <ListFilter className="size-3.5" />
+            Bộ lọc
+            {activeFilterCount > 0 && (
+              <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                {activeFilterCount}
+              </span>
+            )}
+          </Button>
+          <Popover placement="bottom end" className="w-80 gap-3 sm:w-96">
             <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
 
             <div className="grid grid-cols-2 gap-3">
@@ -153,15 +147,15 @@ export function IqcTableFilter() {
                   Kết quả QC
                 </Label>
                 <Select
-                  value={search.result ?? "all"}
-                  onValueChange={handleResultChange}
+                  selectedKey={search.result ?? "all"}
+                  onSelectionChange={(key) => handleResultChange(String(key))}
                 >
                   <SelectTrigger id="iqc-result" className="w-full text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {resultOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem key={option.value} id={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
@@ -178,15 +172,15 @@ export function IqcTableFilter() {
                   Trạng thái
                 </Label>
                 <Select
-                  value={search.status ?? "all"}
-                  onValueChange={handleStatusChange}
+                  selectedKey={search.status ?? "all"}
+                  onSelectionChange={(key) => handleStatusChange(String(key))}
                 >
                   <SelectTrigger id="iqc-status" className="w-full text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {statusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem key={option.value} id={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
@@ -203,16 +197,16 @@ export function IqcTableFilter() {
                   Nhà cung cấp
                 </Label>
                 <Select
-                  value={search.supplierId ?? "all"}
-                  onValueChange={handleSupplierChange}
+                  selectedKey={search.supplierId ?? "all"}
+                  onSelectionChange={(key) => handleSupplierChange(String(key))}
                 >
                   <SelectTrigger id="iqc-supplier" className="w-full text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tất cả</SelectItem>
+                    <SelectItem id="all">Tất cả</SelectItem>
                     {supplierOptions.map((option) => (
-                      <SelectItem key={option.id} value={option.id}>
+                      <SelectItem key={option.id} id={option.id}>
                         {option.name}
                       </SelectItem>
                     ))}
@@ -220,8 +214,8 @@ export function IqcTableFilter() {
                 </Select>
               </div>
             </div>
-          </PopoverContent>
-        </Popover>
+          </Popover>
+        </PopoverTrigger>
 
         <Button
           type="button"

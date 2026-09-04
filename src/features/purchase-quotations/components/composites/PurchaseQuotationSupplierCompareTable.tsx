@@ -46,45 +46,40 @@ export function PurchaseQuotationSupplierCompareTable({
   })
 
   const tableElement = (
-    <Table>
+    <Table aria-label="So sánh báo giá NCC">
       {item.suppliers.length > 0 && (
-        <TableHeader className="bg-transparent">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="h-8 bg-transparent hover:bg-transparent"
+        <TableHeader
+          columns={table.getFlatHeaders()}
+          className="bg-transparent [&>tr]:h-8 [&>tr]:bg-transparent [&>tr]:hover:bg-transparent"
+        >
+          {(header) => (
+            <TableHead
+              id={header.id}
+              isRowHeader={header.index === 0}
+              className={cn(
+                "border-b border-primary/15",
+                header.column.columnDef.meta?.headerClassName
+              )}
             >
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  className={cn(
-                    "border-b border-primary/15",
-                    header.column.columnDef.meta?.headerClassName
-                  )}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
+              {!header.isPlaceholder &&
+                flexRender(header.column.columnDef.header, header.getContext())}
+            </TableHead>
+          )}
         </TableHeader>
       )}
       <TableBody>
         {table.getRowModel().rows.map((row) => (
           <TableRow
             key={row.id}
+            id={row.id}
             className={cn(
               "h-12 bg-transparent hover:bg-transparent",
               row.original.id === selectedSupplierId && "bg-primary/5"
             )}
+            columns={row.getVisibleCells()}
           >
-            {row.getVisibleCells().map((cell) => (
+            {(cell) => (
               <TableCell
-                key={cell.id}
                 className={cn(
                   "border-b border-primary/15",
                   cell.column.columnDef.meta?.cellClassName
@@ -92,14 +87,18 @@ export function PurchaseQuotationSupplierCompareTable({
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </TableCell>
-            ))}
+            )}
           </TableRow>
         ))}
 
         {/* Nested sub-row hint, indented under the outer item row — too small-scale for
         TableEmpty's icon-badge treatment, intentionally not using it here. */}
         {item.suppliers.length === 0 && (
-          <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
+          <TableRow
+            id="empty"
+            key="empty"
+            className="h-11 border-none bg-transparent hover:bg-transparent"
+          >
             <TableCell colSpan={columns.length} className="pl-10">
               <span className="text-xs text-muted-foreground">
                 Chưa có NCC nào cho vật tư này
@@ -122,7 +121,7 @@ export function PurchaseQuotationSupplierCompareTable({
     // renders exactly like "nothing selected" would.
     <RadioGroup
       value={selectedSupplierId ?? ""}
-      onValueChange={onSelectSupplier}
+      onChange={onSelectSupplier}
       className="contents"
     >
       {tableElement}

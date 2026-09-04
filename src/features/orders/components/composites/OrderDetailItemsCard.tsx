@@ -58,36 +58,34 @@ export function OrderDetailItemsCard({
       ) : (
         <div className="space-y-3">
           <div className="overflow-x-auto rounded-md border border-border/50">
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow
-                    key={headerGroup.id}
-                    className="h-11 hover:bg-muted/45"
+            <Table aria-label="Danh sách sản phẩm">
+              <TableHeader
+                columns={table.getFlatHeaders()}
+                className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45"
+              >
+                {(header) => (
+                  <TableHead
+                    id={header.id}
+                    isRowHeader={header.index === 0}
+                    className={header.column.columnDef.meta?.headerClassName}
                   >
-                    {headerGroup.headers.map((header) => (
-                      <TableHead
-                        key={header.id}
-                        className={
-                          header.column.columnDef.meta?.headerClassName
-                        }
-                      >
-                        {!header.isPlaceholder &&
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                )}
               </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="bg-card hover:bg-muted/25">
-                    {row.getVisibleCells().map((cell) => (
+              <TableBody items={table.getRowModel().rows}>
+                {(row) => (
+                  <TableRow
+                    id={row.id}
+                    className="bg-card hover:bg-muted/25"
+                    columns={row.getVisibleCells()}
+                  >
+                    {(cell) => (
                       <TableCell
-                        key={cell.id}
                         className={cell.column.columnDef.meta?.cellClassName}
                       >
                         {flexRender(
@@ -95,9 +93,9 @@ export function OrderDetailItemsCard({
                           cell.getContext()
                         )}
                       </TableCell>
-                    ))}
+                    )}
                   </TableRow>
-                ))}
+                )}
               </TableBody>
               <TableFooter>
                 <TableRow className="h-11">

@@ -53,42 +53,37 @@ export function QuotationCompareQuoteTable({
   })
 
   return (
-    <Table>
+    <Table aria-label="Danh sách báo giá NCC">
       {item.suppliers.length > 0 && (
-        <TableHeader className="bg-transparent">
-          {quoteTable.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="h-8 bg-transparent hover:bg-transparent"
+        <TableHeader
+          columns={quoteTable.getFlatHeaders()}
+          className="bg-transparent [&>tr]:h-8 [&>tr]:bg-transparent [&>tr]:hover:bg-transparent"
+        >
+          {(header) => (
+            <TableHead
+              id={header.id}
+              isRowHeader={header.index === 0}
+              className={cn(
+                "border-b border-primary/15",
+                header.column.columnDef.meta?.headerClassName
+              )}
             >
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  className={cn(
-                    "border-b border-primary/15",
-                    header.column.columnDef.meta?.headerClassName
-                  )}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
+              {!header.isPlaceholder &&
+                flexRender(header.column.columnDef.header, header.getContext())}
+            </TableHead>
+          )}
         </TableHeader>
       )}
       <TableBody>
         {quoteTable.getRowModel().rows.map((quoteRow) => (
           <TableRow
             key={quoteRow.id}
+            id={quoteRow.id}
             className="h-12 bg-transparent hover:bg-transparent"
+            columns={quoteRow.getVisibleCells()}
           >
-            {quoteRow.getVisibleCells().map((cell) => (
+            {(cell) => (
               <TableCell
-                key={cell.id}
                 className={cn(
                   "border-b border-primary/15",
                   cell.column.columnDef.meta?.cellClassName
@@ -96,14 +91,18 @@ export function QuotationCompareQuoteTable({
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </TableCell>
-            ))}
+            )}
           </TableRow>
         ))}
 
         {/* Nested sub-row hint, indented under the outer item row — too small-scale for
         TableEmpty's icon-badge treatment, intentionally not using it here. */}
         {item.suppliers.length === 0 && (
-          <TableRow className="h-11 border-none bg-transparent hover:bg-transparent">
+          <TableRow
+            id="empty"
+            key="empty"
+            className="h-11 border-none bg-transparent hover:bg-transparent"
+          >
             <TableCell colSpan={quoteColumns.length} className="pl-10">
               <span className="text-xs text-muted-foreground">
                 Chưa có NCC nào cho vật tư này

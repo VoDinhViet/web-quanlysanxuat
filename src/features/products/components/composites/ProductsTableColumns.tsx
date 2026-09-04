@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
@@ -6,7 +5,8 @@ import { Gallery } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { Copy, Eye, Trash2 } from "lucide-react"
 
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Button, LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { CopyProductDialog } from "@/features/products/components/composites/CopyProductDialog"
 import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
@@ -124,29 +124,36 @@ export const productColumns = productColumnHelper.columns([
         <div className="flex items-center justify-center gap-1.5">
           {/* One destination, one button: the detail screen is where a product
               is both read and edited, and it guards writes on its own. */}
-          <IconButton
-            label="Xem chi tiết"
-            asChild
-            className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-          >
-            <Link
+          <TooltipTrigger>
+            <LinkButton
               to="/manage/products/$productId"
               params={{ productId: product.id }}
               search={{ tab: "info" }}
+              variant="outline"
+              size="icon-sm"
+              aria-label="Xem chi tiết"
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
             >
               <Eye className="size-3.5" />
-            </Link>
-          </IconButton>
+            </LinkButton>
+            <Tooltip>Xem chi tiết</Tooltip>
+          </TooltipTrigger>
           <PermissionGate permission="items:copy">
             <CopyProductDialog
               product={product}
               trigger={
-                <IconButton
-                  label="Nhân bản"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                >
-                  <Copy className="size-3.5" />
-                </IconButton>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Nhân bản"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  >
+                    <Copy className="size-3.5" />
+                  </Button>
+                  <Tooltip>Nhân bản</Tooltip>
+                </TooltipTrigger>
               }
             />
           </PermissionGate>
@@ -154,12 +161,18 @@ export const productColumns = productColumnHelper.columns([
             <DeleteProductDialog
               product={product}
               trigger={
-                <IconButton
-                  label="Xóa"
-                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                >
-                  <Trash2 className="size-3.5" />
-                </IconButton>
+                <TooltipTrigger>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Xóa"
+                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                  <Tooltip>Xóa</Tooltip>
+                </TooltipTrigger>
               }
             />
           </PermissionGate>

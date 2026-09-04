@@ -1,9 +1,8 @@
-import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
 import { OutboundOrderDetailActions } from "@/features/outbound-orders/components/layouts/OutboundOrderDetailActions"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
@@ -29,17 +28,16 @@ export function OutboundOrderDetailHeader({
       <div className="flex min-w-0 flex-col gap-4">
         {/* Back + Code + Badge */}
         <div className="flex flex-wrap items-center gap-3">
-          <Button
+          <LinkButton
+            to="/manage/outbound-orders"
+            search={{ page: 1, limit: 20 }}
             variant="ghost"
             className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
             aria-label="Quay lại danh sách đơn giao hàng"
-            asChild
           >
-            <Link to="/manage/outbound-orders" search={{ page: 1, limit: 20 }}>
-              <AltArrowLeft className="size-4" />
-              <span className="hidden sm:inline">Quay lại</span>
-            </Link>
-          </Button>
+            <AltArrowLeft className="size-4" />
+            <span className="hidden sm:inline">Quay lại</span>
+          </LinkButton>
 
           <span className="font-mono text-lg font-bold text-foreground">
             {order.code}

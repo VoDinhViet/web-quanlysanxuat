@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -130,16 +130,16 @@ export function SuppliersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              value={search.status ?? "all"}
-              onValueChange={handleStatusChange}
+              selectedKey={search.status ?? "all"}
+              onSelectionChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="suppliers-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} id={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -155,16 +155,16 @@ export function SuppliersTableFilter() {
               Nhóm NCC
             </Label>
             <Select
-              value={search.supplierGroupId ?? "all"}
-              onValueChange={handleGroupChange}
+              selectedKey={search.supplierGroupId ?? "all"}
+              onSelectionChange={(key) => handleGroupChange(String(key))}
             >
               <SelectTrigger id="suppliers-group" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
                 {supplierGroupOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
+                  <SelectItem key={option.id} id={option.id}>
                     {option.name}
                   </SelectItem>
                 ))}
@@ -180,16 +180,16 @@ export function SuppliersTableFilter() {
               Quốc gia
             </Label>
             <Select
-              value={search.countryId ?? "all"}
-              onValueChange={handleCountryChange}
+              selectedKey={search.countryId ?? "all"}
+              onSelectionChange={(key) => handleCountryChange(String(key))}
             >
               <SelectTrigger id="suppliers-country" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem id="all">Tất cả</SelectItem>
                 {countryOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
+                  <SelectItem key={option.id} id={option.id}>
                     {option.name}
                   </SelectItem>
                 ))}
@@ -203,18 +203,16 @@ export function SuppliersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onClick={resetFilters}
+            onPress={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới
           </Button>
           <RoutePermissionGate route="/manage/suppliers/create">
-            <Button asChild className="text-xs">
-              <Link to="/manage/suppliers/create">
-                <Plus className="size-4" />
-                Thêm nhà cung cấp
-              </Link>
-            </Button>
+            <LinkButton to="/manage/suppliers/create" className="text-xs">
+              <Plus className="size-4" />
+              Thêm nhà cung cấp
+            </LinkButton>
           </RoutePermissionGate>
         </div>
       </div>

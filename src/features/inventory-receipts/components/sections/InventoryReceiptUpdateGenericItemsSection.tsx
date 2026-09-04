@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryReceiptItemDialog } from "@/features/inventory-receipts/components/composites/InventoryReceiptItemDialog"
@@ -76,8 +76,8 @@ export const InventoryReceiptUpdateGenericItemsSection = withForm({
                   type="button"
                   variant="outline"
                   className="border-primary/40 text-xs text-primary hover:bg-primary/5 hover:text-primary"
-                  disabled={disabled}
-                  onClick={openAdd}
+                  isDisabled={disabled}
+                  onPress={openAdd}
                 >
                   <Plus className="size-4" />
                   Thêm {itemNoun}
@@ -85,80 +85,99 @@ export const InventoryReceiptUpdateGenericItemsSection = withForm({
               </div>
 
               <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="h-12 hover:bg-muted/45">
-                      <TableHead className="w-12">#</TableHead>
-                      <TableHead>
-                        {itemType === "FG" ? "Thành phẩm" : "Vật tư"}
-                      </TableHead>
-                      <TableHead className="text-right">Số lượng</TableHead>
-                      <TableHead className="text-right">Đơn giá</TableHead>
-                      <TableHead className="text-right">Thành tiền</TableHead>
-                      <TableHead>Ghi chú</TableHead>
-                      <TableHead className="w-24 text-right">
-                        Thao tác
-                      </TableHead>
-                    </TableRow>
+                <Table aria-label={`Danh sách ${itemNoun}`}>
+                  <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+                    <TableHead id="index" className="w-12">
+                      #
+                    </TableHead>
+                    <TableHead id="item" isRowHeader>
+                      {itemType === "FG" ? "Thành phẩm" : "Vật tư"}
+                    </TableHead>
+                    <TableHead id="quantity" className="text-right">
+                      Số lượng
+                    </TableHead>
+                    <TableHead id="unitPrice" className="text-right">
+                      Đơn giá
+                    </TableHead>
+                    <TableHead id="total" className="text-right">
+                      Thành tiền
+                    </TableHead>
+                    <TableHead id="note">Ghi chú</TableHead>
+                    <TableHead id="actions" className="w-24 text-right">
+                      Thao tác
+                    </TableHead>
                   </TableHeader>
-                  <TableBody>
-                    {items.length === 0 ? (
+                  <TableBody
+                    renderEmptyState={() => (
                       <TableEmpty
                         colSpan={7}
                         title={`Chưa có ${itemNoun} nào`}
                         description={`Bấm “Thêm ${itemNoun}” để thêm.`}
                       />
-                    ) : (
-                      items.map((item, index) => (
-                        <TableRow
-                          key={index}
-                          className="h-14 bg-card hover:bg-muted/25"
-                        >
-                          <TableCell className="text-muted-foreground">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell>{item.itemLabel || "—"}</TableCell>
-                          <TableCell className="text-right tabular-nums">
-                            {item.quantity}
-                          </TableCell>
-                          <TableCell className="text-right tabular-nums">
-                            {item.unitPrice !== undefined
-                              ? vndFormatter.format(item.unitPrice)
-                              : "—"}
-                          </TableCell>
-                          <TableCell className="text-right font-medium tabular-nums">
-                            {item.unitPrice !== undefined
-                              ? vndFormatter.format(
-                                  (item.quantity ?? 0) * item.unitPrice
-                                )
-                              : "—"}
-                          </TableCell>
-                          <TableCell className="max-w-40 truncate text-muted-foreground">
-                            {item.note || "—"}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-1">
-                              <IconButton
-                                label={`Sửa dòng ${index + 1}`}
+                    )}
+                  >
+                    {items.map((item, index) => (
+                      <TableRow
+                        key={index}
+                        id={index}
+                        className="h-14 bg-card hover:bg-muted/25"
+                      >
+                        <TableCell className="text-muted-foreground">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>{item.itemLabel || "—"}</TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {item.quantity}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {item.unitPrice !== undefined
+                            ? vndFormatter.format(item.unitPrice)
+                            : "—"}
+                        </TableCell>
+                        <TableCell className="text-right font-medium tabular-nums">
+                          {item.unitPrice !== undefined
+                            ? vndFormatter.format(
+                                (item.quantity ?? 0) * item.unitPrice
+                              )
+                            : "—"}
+                        </TableCell>
+                        <TableCell className="max-w-40 truncate text-muted-foreground">
+                          {item.note || "—"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <TooltipTrigger>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon-sm"
+                                aria-label={`Sửa dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                                disabled={disabled}
-                                onClick={() => openEdit(index)}
+                                isDisabled={disabled}
+                                onPress={() => openEdit(index)}
                               >
                                 <Pencil className="size-3.5" />
-                              </IconButton>
-                              <IconButton
-                                label={`Xóa dòng ${index + 1}`}
+                              </Button>
+                              <Tooltip>{`Sửa dòng ${index + 1}`}</Tooltip>
+                            </TooltipTrigger>
+                            <TooltipTrigger>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon-sm"
+                                aria-label={`Xóa dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                                disabled={disabled}
-                                onClick={() => itemsField.removeValue(index)}
+                                isDisabled={disabled}
+                                onPress={() => itemsField.removeValue(index)}
                               >
                                 <Trash2 className="size-3.5" />
-                              </IconButton>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
+                              </Button>
+                              <Tooltip>{`Xóa dòng ${index + 1}`}</Tooltip>
+                            </TooltipTrigger>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </div>

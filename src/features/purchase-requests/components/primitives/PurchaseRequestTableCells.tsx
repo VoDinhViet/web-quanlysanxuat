@@ -1,7 +1,6 @@
-import { Link } from "@tanstack/react-router"
 import { Eye, Pencil } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type { PurchaseRequestProductionOrderRef } from "@/lib/types/purchase-request.type"
@@ -47,21 +46,16 @@ export function PurchaseRequestActionsCell({
 }: PurchaseRequestActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <Button
-        type="button"
+      <LinkButton
+        to="/manage/purchase-requests/$purchaseRequestId"
+        params={{ purchaseRequestId }}
         variant="outline"
         size="icon-sm"
         className="bg-background text-muted-foreground"
         aria-label="Xem chi tiết"
-        asChild
       >
-        <Link
-          to="/manage/purchase-requests/$purchaseRequestId"
-          params={{ purchaseRequestId }}
-        >
-          <Eye className="size-3.5" />
-        </Link>
-      </Button>
+        <Eye className="size-3.5" />
+      </LinkButton>
       <DisabledAction label="Chỉnh sửa">
         <Pencil className="size-3.5" />
       </DisabledAction>

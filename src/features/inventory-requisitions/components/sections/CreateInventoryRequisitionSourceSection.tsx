@@ -9,13 +9,14 @@ import {
   Search,
 } from "lucide-react"
 import { DateTime } from "luxon"
+import { Radio } from "react-aria-components"
 import { useDebounceValue } from "usehooks-ts"
 import type { ComponentType } from "react"
 import type { LucideProps } from "lucide-react"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import {
   Table,
   TableBody,
@@ -46,8 +47,10 @@ type SourceOption = {
 
 // 2 lựa chọn nguồn lãnh, mỗi lựa chọn dẫn tới cách khoanh vùng vật tư khác nhau ở bước ② — đáng
 // một thẻ chọn lớn có mô tả thay vì pill nhỏ như RadioPillField (dùng cho toggle 2 giá trị đơn
-// giản, không có hệ quả gì cần giải thích, ví dụ requiresIqc). Vẫn dựng trên đúng
-// RadioGroup/RadioGroupItem của RadioPillField — chỉ khác lớp trình bày, không phải primitive mới.
+// giản, không có hệ quả gì cần giải thích, ví dụ requiresIqc). Vẫn dựng trên đúng RadioGroup của
+// RadioPillField, nhưng dùng thẳng `Radio` (react-aria-components) thay vì `RadioGroupItem` — cả
+// thẻ là 1 Radio, chấm tròn cuối thẻ chỉ là span trang trí đọc `isChecked` từ field.state.value
+// (không thể lồng RadioGroupItem — cũng tự render `<label>` riêng — vào trong 1 Radio khác).
 const sourceOptions: SourceOption[] = [
   {
     value: InventoryRequisitionType.PRODUCTION,
@@ -112,48 +115,58 @@ export const CreateInventoryRequisitionSourceSection = withForm({
           <form.Field name="type">
             {(field) => (
               <RadioGroup
-                // Radix widens onValueChange to `string`; the cast narrows back to the field's
+                // Radix widens onChange to `string`; the cast narrows back to the field's
                 // real literal union, same idiom RadioPillField uses.
                 value={field.state.value}
-                onValueChange={(value) =>
+                onChange={(value) =>
                   field.handleChange(value as SourceOptionValue)
                 }
-                disabled={disabled}
+                isDisabled={disabled}
                 className="grid grid-cols-1 gap-3 sm:col-span-2 sm:grid-cols-2"
               >
-                {sourceOptions.map((option) => (
-                  <FieldLabel
-                    key={option.value}
-                    htmlFor={`${field.name}-${option.value}`}
-                    className={cn(
-                      "group flex cursor-pointer items-start gap-3 rounded-lg border border-input p-4 transition-colors",
-                      "has-data-checked:border-primary has-data-checked:bg-primary/5",
-                      "hover:border-primary/40 hover:bg-muted/30"
-                    )}
-                  >
-                    <span
+                {sourceOptions.map((option) => {
+                  const isChecked = field.state.value === option.value
+
+                  return (
+                    <Radio
+                      key={option.value}
+                      value={option.value}
                       className={cn(
-                        "flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors",
-                        "group-has-data-checked:bg-primary group-has-data-checked:text-primary-foreground"
+                        "flex cursor-pointer items-start gap-3 rounded-lg border border-input p-4 transition-colors",
+                        "hover:border-primary/40 hover:bg-muted/30",
+                        "data-disabled:cursor-not-allowed data-disabled:opacity-50",
+                        isChecked && "border-primary bg-primary/5"
                       )}
                     >
-                      <option.icon className="size-5" />
-                    </span>
-                    <span className="flex-1 space-y-0.5">
-                      <span className="block text-sm font-semibold text-foreground">
-                        {option.title}
+                      <span
+                        className={cn(
+                          "flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors",
+                          isChecked && "bg-primary text-primary-foreground"
+                        )}
+                      >
+                        <option.icon className="size-5" />
                       </span>
-                      <span className="block text-xs text-muted-foreground">
-                        {option.description}
+                      <span className="flex-1 space-y-0.5">
+                        <span className="block text-sm font-semibold text-foreground">
+                          {option.title}
+                        </span>
+                        <span className="block text-xs text-muted-foreground">
+                          {option.description}
+                        </span>
                       </span>
-                    </span>
-                    <RadioGroupItem
-                      value={option.value}
-                      id={`${field.name}-${option.value}`}
-                      className="mt-0.5"
-                    />
-                  </FieldLabel>
-                ))}
+                      <span
+                        className={cn(
+                          "relative mt-0.5 flex aspect-square size-4 shrink-0 items-center justify-center rounded-full border border-input",
+                          isChecked && "border-primary bg-primary"
+                        )}
+                      >
+                        {isChecked && (
+                          <span className="size-2 rounded-full bg-primary-foreground" />
+                        )}
+                      </span>
+                    </Radio>
+                  )
+                })}
               </RadioGroup>
             )}
           </form.Field>
@@ -185,23 +198,24 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                     </div>
 
                     <div className="max-h-64 overflow-x-auto overflow-y-auto rounded-md border border-dashed border-border/50 bg-card">
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="h-10 hover:bg-muted/45">
-                            <TableHead>Mã Job</TableHead>
-                            <TableHead>Mã LSX</TableHead>
-                            <TableHead>Khách hàng</TableHead>
-                            <TableHead className="text-center">SL</TableHead>
-                            <TableHead className="text-center">
-                              Hạn giao
-                            </TableHead>
-                            <TableHead className="w-9" />
-                          </TableRow>
+                      <Table aria-label="Danh sách Job">
+                        <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
+                          <TableHead id="code" isRowHeader>
+                            Mã Job
+                          </TableHead>
+                          <TableHead id="orderCode">Mã LSX</TableHead>
+                          <TableHead id="client">Khách hàng</TableHead>
+                          <TableHead id="quantity" className="text-center">
+                            SL
+                          </TableHead>
+                          <TableHead id="dueDate" className="text-center">
+                            Hạn giao
+                          </TableHead>
+                          <TableHead id="selected" className="w-9" />
                         </TableHeader>
                         <TableBody
                           className={cn(jobsQuery.isFetching && "opacity-50")}
-                        >
-                          {jobs.length === 0 ? (
+                          renderEmptyState={() => (
                             <TableEmpty
                               colSpan={6}
                               title={
@@ -210,39 +224,40 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                                   : "Không tìm thấy Job"
                               }
                             />
-                          ) : (
-                            jobs.map((job: ProductionJob) => (
-                              <TableRow
-                                key={job.id}
-                                className={cn(
-                                  "h-12 cursor-pointer bg-card hover:bg-muted/25",
-                                  field.state.value === job.id && "bg-primary/5"
-                                )}
-                                onClick={() =>
-                                  !disabled && field.handleChange(job.id)
-                                }
-                              >
-                                <TableCell className="font-mono font-semibold text-primary">
-                                  {job.code}
-                                </TableCell>
-                                <TableCell className="font-mono text-muted-foreground">
-                                  {job.orderCode}
-                                </TableCell>
-                                <TableCell>{job.client?.name ?? "—"}</TableCell>
-                                <TableCell className="text-center">
-                                  {quantityFormatter.format(job.quantity)}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                  {formatDueDate(job.dueDate)}
-                                </TableCell>
-                                <TableCell>
-                                  {field.state.value === job.id && (
-                                    <CheckCircle2 className="size-4 text-primary" />
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            ))
                           )}
+                        >
+                          {jobs.map((job: ProductionJob) => (
+                            <TableRow
+                              key={job.id}
+                              id={job.id}
+                              className={cn(
+                                "h-12 cursor-pointer bg-card hover:bg-muted/25",
+                                field.state.value === job.id && "bg-primary/5"
+                              )}
+                              onAction={() =>
+                                !disabled && field.handleChange(job.id)
+                              }
+                            >
+                              <TableCell className="font-mono font-semibold text-primary">
+                                {job.code}
+                              </TableCell>
+                              <TableCell className="font-mono text-muted-foreground">
+                                {job.orderCode}
+                              </TableCell>
+                              <TableCell>{job.client?.name ?? "—"}</TableCell>
+                              <TableCell className="text-center">
+                                {quantityFormatter.format(job.quantity)}
+                              </TableCell>
+                              <TableCell className="text-center">
+                                {formatDueDate(job.dueDate)}
+                              </TableCell>
+                              <TableCell>
+                                {field.state.value === job.id && (
+                                  <CheckCircle2 className="size-4 text-primary" />
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableBody>
                       </Table>
                     </div>

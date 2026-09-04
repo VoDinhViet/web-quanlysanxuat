@@ -215,34 +215,31 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
         </div>
 
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="h-12 hover:bg-muted/45"
+          <Table aria-label="Danh mục vật tư">
+            <TableHeader
+              columns={table.getFlatHeaders()}
+              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
+            >
+              {(header) => (
+                <TableHead
+                  id={header.id}
+                  isRowHeader={header.index === 0}
+                  className={header.column.columnDef.meta?.headerClassName}
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {!header.isPlaceholder &&
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              )}
             </TableHeader>
             <TableBody
+              items={table.getRowModel().rows}
               className={cn(
                 materialsQuery.isFetching && "pointer-events-none opacity-50"
               )}
-            >
-              {rows.length === 0 ? (
+              renderEmptyState={() => (
                 <TableEmpty
                   colSpan={columns.length}
                   title={
@@ -251,32 +248,32 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
                       : "Không tìm thấy vật tư nào"
                   }
                 />
-              ) : (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className={cn(
-                      "h-14 cursor-pointer bg-card hover:bg-muted/25",
-                      pickedIds.has(row.original.id) && "bg-primary/5"
-                    )}
-                    onClick={() => !disabled && toggleRow(row.original)}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cell.column.columnDef.meta?.cellClassName}
-                        onClick={(event) =>
-                          cell.column.id === "select" && event.stopPropagation()
-                        }
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+              )}
+            >
+              {(row) => (
+                <TableRow
+                  id={row.id}
+                  className={cn(
+                    "h-14 cursor-pointer bg-card hover:bg-muted/25",
+                    pickedIds.has(row.original.id) && "bg-primary/5"
+                  )}
+                  onAction={() => !disabled && toggleRow(row.original)}
+                  columns={row.getVisibleCells()}
+                >
+                  {(cell) => (
+                    <TableCell
+                      className={cell.column.columnDef.meta?.cellClassName}
+                      onClick={(event) =>
+                        cell.column.id === "select" && event.stopPropagation()
+                      }
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  )}
+                </TableRow>
               )}
             </TableBody>
           </Table>
@@ -290,19 +287,19 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
             </span>
             <div className="flex items-center gap-2">
               <Select
-                value={String(limit)}
-                onValueChange={(value) => {
-                  setLimit(Number(value) as (typeof limitOptions)[number])
+                selectedKey={String(limit)}
+                onSelectionChange={(key) => {
+                  setLimit(Number(key) as (typeof limitOptions)[number])
                   setPage(1)
                 }}
-                disabled={disabled}
+                isDisabled={disabled}
               >
                 <SelectTrigger className="h-8 w-24 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {limitOptions.map((option) => (
-                    <SelectItem key={option} value={String(option)}>
+                    <SelectItem key={option} id={String(option)}>
                       {option} / trang
                     </SelectItem>
                   ))}
@@ -312,8 +309,8 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={disabled || pagination.currentPage <= 1}
-                onClick={() => setPage((p) => p - 1)}
+                isDisabled={disabled || pagination.currentPage <= 1}
+                onPress={() => setPage((p) => p - 1)}
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -321,10 +318,10 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
                 type="button"
                 variant="outline"
                 size="icon-sm"
-                disabled={
+                isDisabled={
                   disabled || pagination.currentPage >= pagination.totalPages
                 }
-                onClick={() => setPage((p) => p + 1)}
+                onPress={() => setPage((p) => p + 1)}
               >
                 <ChevronRight className="size-4" />
               </Button>

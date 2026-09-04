@@ -1,7 +1,7 @@
-import { Link } from "@tanstack/react-router"
 import { Eye, Pencil, Printer, Trash2 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteOutboundOrderDialog } from "@/features/outbound-orders/components/composites/DeleteOutboundOrderDialog"
@@ -17,39 +17,37 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
 
   return (
     <div className="flex items-center justify-center gap-1">
-      <Button
-        variant="outline"
-        size="icon"
-        className="size-7 border-primary/20 text-primary hover:bg-primary/10"
-        title="Xem chi tiết DO"
-        asChild
-      >
-        <Link
+      <TooltipTrigger>
+        <LinkButton
           to="/manage/outbound-orders/$outboundOrderId"
           params={{ outboundOrderId: order.id }}
           search={{ mode: "view" }}
+          variant="outline"
+          size="icon"
+          aria-label="Xem chi tiết DO"
+          className="size-7 border-primary/20 text-primary hover:bg-primary/10"
         >
           <Eye className="size-3.5" />
-        </Link>
-      </Button>
+        </LinkButton>
+        <Tooltip>Xem chi tiết DO</Tooltip>
+      </TooltipTrigger>
 
       {isDraft ? (
         <PermissionGate permission="outbound:update">
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-7"
-            title="Chỉnh sửa DO"
-            asChild
-          >
-            <Link
+          <TooltipTrigger>
+            <LinkButton
               to="/manage/outbound-orders/$outboundOrderId"
               params={{ outboundOrderId: order.id }}
               search={{ mode: "edit" }}
+              variant="outline"
+              size="icon"
+              aria-label="Chỉnh sửa DO"
+              className="size-7"
             >
               <Pencil className="size-3.5" />
-            </Link>
-          </Button>
+            </LinkButton>
+            <Tooltip>Chỉnh sửa DO</Tooltip>
+          </TooltipTrigger>
         </PermissionGate>
       ) : (
         <DisabledAction
@@ -69,14 +67,17 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
           <DeleteOutboundOrderDialog
             order={order}
             trigger={
-              <Button
-                variant="outline"
-                size="icon"
-                className="size-7 border-destructive/20 text-destructive hover:bg-destructive/10"
-                title="Xóa DO"
-              >
-                <Trash2 className="size-3.5" />
-              </Button>
+              <TooltipTrigger>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Xóa DO"
+                  className="size-7 border-destructive/20 text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+                <Tooltip>Xóa DO</Tooltip>
+              </TooltipTrigger>
             }
           />
         </PermissionGate>

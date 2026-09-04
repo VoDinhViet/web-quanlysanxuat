@@ -61,7 +61,7 @@ export function PurchaseQuotationApprovalBar({
           purchaseQuotation={purchaseQuotation}
           selectedSuppliers={selectedSuppliers}
           trigger={
-            <Button type="button" disabled={!isComplete}>
+            <Button type="button" isDisabled={!isComplete}>
               Duyệt & tạo đơn mua
             </Button>
           }

@@ -8,7 +8,6 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -46,15 +45,15 @@ export function OutboundOrderCancelDialog({
   })
 
   return (
-    <AlertDialog
-      open={open}
+    <AlertDialogTrigger
+      isOpen={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
+      {trigger}
+      <AlertDialog>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CloseCircle />
@@ -70,21 +69,18 @@ export function OutboundOrderCancelDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={mutation.isPending}>
+          <AlertDialogCancel isDisabled={mutation.isPending}>
             Đóng
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            disabled={mutation.isPending}
-            onClick={(event) => {
-              event.preventDefault()
-              mutation.mutate()
-            }}
+            isDisabled={mutation.isPending}
+            onPress={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xử lý..." : "Hủy đơn DO"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </AlertDialog>
+    </AlertDialogTrigger>
   )
 }

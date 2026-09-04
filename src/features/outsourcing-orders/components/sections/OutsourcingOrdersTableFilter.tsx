@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { Link, useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Plus, RotateCw, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -70,12 +70,10 @@ export function OutsourcingOrdersTableFilter() {
   return (
     <div className="flex flex-wrap items-end gap-3 bg-card px-4 py-4 lg:px-5">
       <RoutePermissionGate route="/manage/outsourcing-orders/create">
-        <Button asChild className="gap-1.5">
-          <Link to="/manage/outsourcing-orders/create">
-            <Plus className="size-4" />
-            Tạo phiếu gia công ngoài (OS-OUT)
-          </Link>
-        </Button>
+        <LinkButton to="/manage/outsourcing-orders/create" className="gap-1.5">
+          <Plus className="size-4" />
+          Tạo phiếu gia công ngoài (OS-OUT)
+        </LinkButton>
       </RoutePermissionGate>
 
       <div className="w-72 space-y-1.5">
@@ -114,15 +112,16 @@ export function OutsourcingOrdersTableFilter() {
           Trạng thái
         </Label>
         <Select
-          value={search.status ?? "all"}
-          onValueChange={handleStatusChange}
+          selectedKey={search.status ?? "all"}
+          onSelectionChange={(key) => handleStatusChange(String(key))}
+          placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-out-status" className="w-full text-xs">
-            <SelectValue placeholder="Chọn trạng thái" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
+              <SelectItem key={opt.value} id={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -134,7 +133,7 @@ export function OutsourcingOrdersTableFilter() {
         type="button"
         variant="outline"
         className="gap-1.5 text-xs"
-        onClick={resetFilters}
+        onPress={resetFilters}
       >
         <RotateCw className="size-3.5" />
         Xóa bộ lọc

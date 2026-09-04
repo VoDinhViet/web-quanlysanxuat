@@ -1,8 +1,7 @@
-import { Link } from "@tanstack/react-router"
 import { Edit3, Eye } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 
 // "PO / Lý do" — theo docs/domains/quality.md: có PO thì hiện mã PO, không thì hiện lý do tự do
 // (reason, free text). Cả hai cùng null là biên hiếm (seed luôn set reason khi không có PO).
@@ -40,18 +39,16 @@ type IqcActionsCellProps = {
 export function IqcActionsCell({ iqcId }: IqcActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <Button
-        type="button"
+      <LinkButton
+        to="/manage/iqc/$iqcId"
+        params={{ iqcId }}
         variant="outline"
         size="icon-sm"
-        className="bg-background text-muted-foreground"
         aria-label="Xem chi tiết"
-        asChild
+        className="bg-background text-muted-foreground"
       >
-        <Link to="/manage/iqc/$iqcId" params={{ iqcId }}>
-          <Eye className="size-3.5" />
-        </Link>
-      </Button>
+        <Eye className="size-3.5" />
+      </LinkButton>
       <DisabledAction label="Chỉnh sửa" hint="tính năng sắp có">
         <Edit3 className="size-3.5" />
       </DisabledAction>

@@ -63,15 +63,15 @@ export function CreateUserCredentialSection({
           name="credential"
           render={({ field }) => (
             <Switch
-              checked={field.value != null}
-              onCheckedChange={(checked) =>
+              isSelected={field.value != null}
+              onChange={(checked) =>
                 field.onChange(
                   checked
                     ? { username: "", email: "", password: "", roleId: "" }
                     : undefined
                 )
               }
-              disabled={disabled}
+              isDisabled={disabled}
               className="mt-1 shrink-0"
               aria-label="Cấp tài khoản ERP cho nhân viên này"
             />
@@ -159,8 +159,8 @@ export function CreateUserCredentialSection({
                   variant="ghost"
                   size="icon-sm"
                   className="absolute top-1/2 right-1 -translate-y-1/2"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={fieldsDisabled}
+                  onPress={() => setShowPassword(!showPassword)}
+                  isDisabled={fieldsDisabled}
                   aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 >
                   {showPassword ? (
@@ -187,9 +187,14 @@ export function CreateUserCredentialSection({
                 Vai trò
               </FieldLabel>
               <Select
-                value={field.value ?? ""}
-                onValueChange={field.onChange}
-                disabled={fieldsDisabled}
+                selectedKey={field.value ?? ""}
+                onSelectionChange={(key) => field.onChange(String(key))}
+                isDisabled={fieldsDisabled}
+                placeholder={
+                  rolesQuery.isPending
+                    ? "Đang tải..."
+                    : "Chọn vai trò (tuỳ chọn)"
+                }
               >
                 <SelectTrigger
                   id={field.name}
@@ -197,19 +202,13 @@ export function CreateUserCredentialSection({
                   aria-invalid={!!fieldState.error}
                   className="h-9 w-full bg-background text-xs"
                 >
-                  <SelectValue
-                    placeholder={
-                      rolesQuery.isPending
-                        ? "Đang tải..."
-                        : "Chọn vai trò (tuỳ chọn)"
-                    }
-                  />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {roleOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      value={option.value}
+                      id={option.value}
                       className="text-xs"
                     >
                       {option.label}

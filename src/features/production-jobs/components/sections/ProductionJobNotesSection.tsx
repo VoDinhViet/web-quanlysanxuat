@@ -101,7 +101,7 @@ export function ProductionJobNotesSection({
             type="submit"
             size="sm"
             className="self-end"
-            disabled={isPending}
+            isDisabled={isPending}
           >
             {isPending ? "Đang gửi..." : "Gửi ghi chú"}
           </Button>

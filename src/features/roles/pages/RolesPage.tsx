@@ -1,8 +1,7 @@
-import { Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { Plus } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
@@ -18,12 +17,10 @@ export function RolesPage() {
       <Surface contentClassName="min-h-[calc(100svh-13rem)]">
         <div className="flex items-center justify-end px-4 py-4 sm:px-5">
           <RoutePermissionGate route="/manage/roles/create">
-            <Button asChild size="sm" className="text-xs">
-              <Link to="/manage/roles/create">
-                <Plus className="size-4" />
-                Tạo vai trò
-              </Link>
-            </Button>
+            <LinkButton to="/manage/roles/create" size="sm" className="text-xs">
+              <Plus className="size-4" />
+              Tạo vai trò
+            </LinkButton>
           </RoutePermissionGate>
         </div>
 

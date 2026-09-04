@@ -117,8 +117,8 @@ export function CreateRoleForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() => void navigate({ to: "/manage/roles" })}
+            isDisabled={isPending}
+            onPress={() => void navigate({ to: "/manage/roles" })}
           >
             Hủy
           </Button>
@@ -126,8 +126,8 @@ export function CreateRoleForm() {
             <Button
               type="button"
               variant="ghost"
-              disabled={isPending}
-              onClick={() => {
+              isDisabled={isPending}
+              onPress={() => {
                 form.reset()
                 restoreFormDraft(form, createRoleFormDefaultValues)
                 clearDraft()
@@ -139,8 +139,8 @@ export function CreateRoleForm() {
             <Button
               type="button"
               variant="outline"
-              disabled={isPending}
-              onClick={() => {
+              isDisabled={isPending}
+              onPress={() => {
                 saveDraft(form.state.values)
                 toast.success("Đã lưu nháp")
               }}
@@ -154,7 +154,7 @@ export function CreateRoleForm() {
               {([canSubmit, isSubmitting]) => (
                 <Button
                   type="submit"
-                  disabled={!canSubmit || isSubmitting || isPending}
+                  isDisabled={!canSubmit || isSubmitting || isPending}
                 >
                   {isSubmitting || isPending ? (
                     <>

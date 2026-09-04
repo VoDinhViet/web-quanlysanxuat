@@ -4,7 +4,6 @@ import { MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -24,28 +23,34 @@ export function PaymentRequestActionsCell({
 }) {
   return (
     <div className="flex justify-center">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8"
-            aria-label="Thao tác"
+      <DropdownMenuTrigger>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          aria-label="Thao tác"
+        >
+          <MoreHorizontal className="size-4" />
+        </Button>
+        <DropdownMenu placement="bottom end">
+          <DropdownMenuItem
+            href="#"
+            render={(props) =>
+              "href" in props ? (
+                <Link
+                  {...props}
+                  to="/manage/payment-requests/$paymentRequestId"
+                  params={{ paymentRequestId }}
+                />
+              ) : (
+                <div {...props} />
+              )
+            }
           >
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <Link
-              to="/manage/payment-requests/$paymentRequestId"
-              params={{ paymentRequestId }}
-            >
-              Xem chi tiết
-            </Link>
+            Xem chi tiết
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </DropdownMenu>
+      </DropdownMenuTrigger>
     </div>
   )
 }

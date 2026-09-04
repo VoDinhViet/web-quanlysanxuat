@@ -1,11 +1,12 @@
-import { FieldLabel } from "@/components/ui/field"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Radio } from "react-aria-components"
+
+import { RadioGroup } from "@/components/ui/radio-group"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
 import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
 import { inventoryReceiptAssetTypeLabels } from "@/lib/types/inventory-receipt.type"
-import { buildOptionsFromLabels, cn } from "@/lib/utils"
+import { buildOptionsFromLabels } from "@/lib/utils"
 
 const assetTypeOptions = buildOptionsFromLabels(inventoryReceiptAssetTypeLabels)
 
@@ -95,28 +96,21 @@ export const InventoryReceiptCreateReturnHeaderSection = withForm({
                 </span>
                 <RadioGroup
                   value={field.state.value ? "yes" : "no"}
-                  onValueChange={(value) => field.handleChange(value === "yes")}
-                  disabled={disabled}
+                  onChange={(value) => field.handleChange(value === "yes")}
+                  isDisabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
                   {[
                     { value: "yes", label: "Yêu cầu QC" },
                     { value: "no", label: "Không yêu cầu QC" },
                   ].map((option) => (
-                    <FieldLabel
+                    <Radio
                       key={option.value}
-                      htmlFor={`requiresIqc-${option.value}`}
-                      className={cn(
-                        "cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground",
-                        "has-data-checked:border-primary has-data-checked:bg-primary/5 has-data-checked:text-primary"
-                      )}
+                      value={option.value}
+                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
                     >
-                      <RadioGroupItem
-                        value={option.value}
-                        id={`requiresIqc-${option.value}`}
-                      />
                       {option.label}
-                    </FieldLabel>
+                    </Radio>
                   ))}
                 </RadioGroup>
               </div>

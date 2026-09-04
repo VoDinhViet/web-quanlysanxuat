@@ -145,9 +145,9 @@ export function QcEvidenceThumbnail({
         type="button"
         variant="outline"
         size="icon-xs"
-        disabled={disabled}
+        isDisabled={disabled}
         aria-label={`Xóa ${file.originalName}`}
-        onClick={() => onRemove(file.id)}
+        onPress={() => onRemove(file.id)}
         className="absolute top-1 right-1 rounded-full border-border/60 bg-background/90 shadow-sm hover:border-destructive/40 hover:text-destructive"
       >
         <X className="size-3" />

@@ -1,10 +1,10 @@
 import { Image } from "@unpic/react"
-import { Link } from "@tanstack/react-router"
 import { Gallery } from "@solar-icons/react"
 import { Eye, Pencil } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
-import { IconButton } from "@/components/shared/primitives/IconButton"
+import { LinkButton } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -40,19 +40,20 @@ export function ProductionJobActionsCell({
 }: ProductionJobActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <IconButton
-        label="Xem chi tiết"
-        className="bg-background text-muted-foreground"
-        asChild
-      >
-        <Link
+      <TooltipTrigger>
+        <LinkButton
           to="/manage/production-jobs/$productionJobId"
           params={{ productionJobId }}
           search={{ tab: "info" }}
+          variant="outline"
+          size="icon-sm"
+          aria-label="Xem chi tiết"
+          className="bg-background text-muted-foreground"
         >
           <Eye className="size-3.5" />
-        </Link>
-      </IconButton>
+        </LinkButton>
+        <Tooltip>Xem chi tiết</Tooltip>
+      </TooltipTrigger>
       <DisabledAction label="Chỉnh sửa" hint="chưa được xây dựng">
         <Pencil className="size-3.5" />
       </DisabledAction>

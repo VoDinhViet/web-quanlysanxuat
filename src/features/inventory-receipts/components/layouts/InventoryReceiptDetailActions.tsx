@@ -6,7 +6,6 @@ import { CheckCircle, CloseCircle, Printer } from "@solar-icons/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -103,7 +102,7 @@ export function InventoryReceiptDetailActions({
 
         {isDraft && (
           <PermissionGate permission="inventory:update">
-            <Button type="button" onClick={() => setConfirmAction("confirm")}>
+            <Button type="button" onPress={() => setConfirmAction("confirm")}>
               <CheckCircle className="size-4" />
               Xác nhận
             </Button>
@@ -112,7 +111,7 @@ export function InventoryReceiptDetailActions({
 
         {canPost && (
           <PermissionGate permission="inventory:update">
-            <Button type="button" onClick={() => setConfirmAction("post")}>
+            <Button type="button" onPress={() => setConfirmAction("post")}>
               <CheckCircle className="size-4" />
               Xác nhận nhập kho
             </Button>
@@ -125,7 +124,7 @@ export function InventoryReceiptDetailActions({
               type="button"
               variant="outline"
               className="border-destructive/40 text-destructive"
-              onClick={() => setConfirmAction("cancel")}
+              onPress={() => setConfirmAction("cancel")}
             >
               <CloseCircle className="size-4" />
               Hủy phiếu
@@ -141,89 +140,87 @@ export function InventoryReceiptDetailActions({
       )}
 
       {confirmAction && (
-        <Dialog open onOpenChange={closeConfirm}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {confirmAction === "confirm"
-                  ? "Xác nhận phiếu nhập kho"
-                  : confirmAction === "post"
-                    ? "Xác nhận nhập kho"
-                    : "Hủy phiếu nhập kho"}
-              </DialogTitle>
-              <DialogDescription>
-                {confirmAction === "confirm" ? (
-                  <>
-                    Xác nhận phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
-                      {inventoryReceipt.code}
-                    </span>{" "}
-                    — nếu phiếu yêu cầu QC sẽ chuyển sang chờ kiểm tra chất
-                    lượng (IQC), ngược lại chuyển thẳng sang chờ nhập kho. Chưa
-                    cộng tồn kho ở bước này.
-                  </>
-                ) : confirmAction === "post" ? (
-                  <>
-                    Xác nhận phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
-                      {inventoryReceipt.code}
-                    </span>{" "}
-                    sẽ cộng tồn kho theo các dòng vật tư đã khai báo. Sau khi
-                    xác nhận, phiếu không thể sửa được nữa.
-                  </>
-                ) : isPosted ? (
-                  <>
-                    Phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
-                      {inventoryReceipt.code}
-                    </span>{" "}
-                    đã được nhập kho — hủy sẽ đảo ngược bút toán và trừ lại tồn
-                    kho đã cộng. Nếu vật tư đã được tiêu đi, thao tác này sẽ
-                    thất bại để tránh tồn âm.
-                  </>
-                ) : (
-                  <>
-                    Bạn chắc chắn muốn hủy phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
-                      {inventoryReceipt.code}
-                    </span>
-                    ? Phiếu chưa cộng tồn kho nên không ảnh hưởng số liệu.
-                  </>
-                )}
-              </DialogDescription>
-            </DialogHeader>
+        <Dialog isOpen onOpenChange={closeConfirm}>
+          <DialogHeader>
+            <DialogTitle>
+              {confirmAction === "confirm"
+                ? "Xác nhận phiếu nhập kho"
+                : confirmAction === "post"
+                  ? "Xác nhận nhập kho"
+                  : "Hủy phiếu nhập kho"}
+            </DialogTitle>
+            <DialogDescription>
+              {confirmAction === "confirm" ? (
+                <>
+                  Xác nhận phiếu{" "}
+                  <span className="font-mono font-semibold text-foreground">
+                    {inventoryReceipt.code}
+                  </span>{" "}
+                  — nếu phiếu yêu cầu QC sẽ chuyển sang chờ kiểm tra chất lượng
+                  (IQC), ngược lại chuyển thẳng sang chờ nhập kho. Chưa cộng tồn
+                  kho ở bước này.
+                </>
+              ) : confirmAction === "post" ? (
+                <>
+                  Xác nhận phiếu{" "}
+                  <span className="font-mono font-semibold text-foreground">
+                    {inventoryReceipt.code}
+                  </span>{" "}
+                  sẽ cộng tồn kho theo các dòng vật tư đã khai báo. Sau khi xác
+                  nhận, phiếu không thể sửa được nữa.
+                </>
+              ) : isPosted ? (
+                <>
+                  Phiếu{" "}
+                  <span className="font-mono font-semibold text-foreground">
+                    {inventoryReceipt.code}
+                  </span>{" "}
+                  đã được nhập kho — hủy sẽ đảo ngược bút toán và trừ lại tồn
+                  kho đã cộng. Nếu vật tư đã được tiêu đi, thao tác này sẽ thất
+                  bại để tránh tồn âm.
+                </>
+              ) : (
+                <>
+                  Bạn chắc chắn muốn hủy phiếu{" "}
+                  <span className="font-mono font-semibold text-foreground">
+                    {inventoryReceipt.code}
+                  </span>
+                  ? Phiếu chưa cộng tồn kho nên không ảnh hưởng số liệu.
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
 
-            {activeMutation.error && (
-              <p className="text-sm text-destructive">
-                {activeMutation.error.message}
-              </p>
-            )}
+          {activeMutation.error && (
+            <p className="text-sm text-destructive">
+              {activeMutation.error.message}
+            </p>
+          )}
 
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => closeConfirm(false)}
-                disabled={activeMutation.isPending}
-              >
-                Đóng
-              </Button>
-              <Button
-                variant={confirmAction === "cancel" ? "destructive" : "default"}
-                onClick={() => {
-                  if (confirmAction === "confirm") {
-                    confirmMutation.mutate()
-                  } else if (confirmAction === "post") {
-                    postMutation.mutate()
-                  } else {
-                    cancelMutation.mutate()
-                  }
-                }}
-                disabled={activeMutation.isPending}
-              >
-                {activeMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onPress={() => closeConfirm(false)}
+              isDisabled={activeMutation.isPending}
+            >
+              Đóng
+            </Button>
+            <Button
+              variant={confirmAction === "cancel" ? "destructive" : "default"}
+              onPress={() => {
+                if (confirmAction === "confirm") {
+                  confirmMutation.mutate()
+                } else if (confirmAction === "post") {
+                  postMutation.mutate()
+                } else {
+                  cancelMutation.mutate()
+                }
+              }}
+              isDisabled={activeMutation.isPending}
+            >
+              {activeMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
+            </Button>
+          </DialogFooter>
         </Dialog>
       )}
     </div>

@@ -84,7 +84,7 @@ export function TablePagination({
                 "text-xs font-medium",
                 pageNumber !== currentPage && "bg-background text-foreground"
               )}
-              onClick={() => handlePageChange(pageNumber)}
+              onPress={() => handlePageChange(pageNumber)}
             >
               {pageNumber}
             </Button>
@@ -99,18 +99,18 @@ export function TablePagination({
         </div>
 
         <Select
-          value={String(limit)}
-          onValueChange={(value) =>
-            handleLimitChange(Number(value) as PageLimit)
+          selectedKey={String(limit)}
+          onSelectionChange={(key) =>
+            handleLimitChange(Number(key) as PageLimit)
           }
         >
           <SelectTrigger className="h-9 w-28 bg-background text-xs font-medium text-foreground">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="10">10 / trang</SelectItem>
-            <SelectItem value="20">20 / trang</SelectItem>
-            <SelectItem value="50">50 / trang</SelectItem>
+            <SelectItem id="10">10 / trang</SelectItem>
+            <SelectItem id="20">20 / trang</SelectItem>
+            <SelectItem id="50">50 / trang</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -136,8 +136,8 @@ function PaginationButton({
       size="icon-sm"
       className="bg-background text-foreground"
       aria-label={ariaLabel}
-      disabled={disabled}
-      onClick={onClick}
+      isDisabled={disabled}
+      onPress={onClick}
     >
       {children}
     </Button>

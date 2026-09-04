@@ -5,11 +5,7 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import type { ProductDetailTab } from "@/features/products/schemas/product-detail-search.schema"
 import { cn } from "@/lib/utils"
 
@@ -58,27 +54,27 @@ export function ProductDetailTabs({
 
           const trigger = (
             <TabsTrigger
-              value={item.value}
-              disabled={isLocked}
+              id={item.value}
+              isDisabled={isLocked}
               className={cn(
                 "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
                 // Every override below has to repeat the primitive's own
                 // variant chain verbatim — tailwind-merge only dedupes classes
-                // whose chains match exactly. The primitive sets the active
-                // background twice: a plain `data-active:bg-background` and a
+                // whose chains match exactly. The primitive sets the selected
+                // background twice: a plain `data-selected:bg-background` and a
                 // line-variant-scoped `group-data-[variant=line]/tabs-list:
-                // data-active:bg-transparent` that wins for this list
+                // data-selected:bg-transparent` that wins for this list
                 // (variant="line"). Both chains have to be matched here, or
                 // the second one silently keeps the background transparent
                 // regardless of what the first override says.
-                "data-active:bg-primary/5 data-active:text-primary",
-                "group-data-[variant=line]/tabs-list:data-active:bg-primary/5",
-                // Hovering an active tab: without this, `hover:bg-muted/40`
-                // above and the active tint are equal-specificity single-variant
+                "data-selected:bg-primary/5 data-selected:text-primary",
+                "group-data-[variant=line]/tabs-list:data-selected:bg-primary/5",
+                // Hovering the selected tab: without this, `hover:bg-muted/40`
+                // above and the selected tint are equal-specificity single-variant
                 // rules, so which one paints is generation-order luck. This
                 // compound variant is strictly more specific than either,
-                // so the active tint reliably wins over the neutral hover.
-                "data-active:hover:bg-primary/5",
+                // so the selected tint reliably wins over the neutral hover.
+                "data-selected:hover:bg-primary/5",
                 // Indicator: the primitive parks it at `bottom-[-5px]`, sized
                 // for the list's default `p-[3px]`. This list is `p-0`, so drop
                 // it to -1px — the 2px bar then covers the wrapper's 1px bottom
@@ -101,14 +97,12 @@ export function ProductDetailTabs({
           }
 
           return (
-            <Tooltip key={item.value}>
+            <TooltipTrigger key={item.value}>
               {/* A disabled trigger swallows pointer events, so the tooltip
                   hangs off a wrapper rather than the trigger itself. */}
-              <TooltipTrigger asChild>
-                <span className="flex">{trigger}</span>
-              </TooltipTrigger>
-              <TooltipContent>{lockedHint}</TooltipContent>
-            </Tooltip>
+              <span className="flex">{trigger}</span>
+              <Tooltip>{lockedHint}</Tooltip>
+            </TooltipTrigger>
           )
         })}
       </TabsList>

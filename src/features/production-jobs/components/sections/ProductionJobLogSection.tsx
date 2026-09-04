@@ -59,68 +59,58 @@ export function ProductionJobLogSection({
           logsQuery.isFetching && "pointer-events-none opacity-50"
         )}
       >
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="h-12 hover:bg-muted/45">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={header.column.columnDef.meta?.headerClassName}
-                  >
-                    {!header.isPlaceholder &&
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+        <Table aria-label="Lịch sử thay đổi">
+          <TableHeader
+            columns={table.getFlatHeaders()}
+            className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
+          >
+            {(header) => (
+              <TableHead
+                id={header.id}
+                isRowHeader={header.index === 0}
+                className={header.column.columnDef.meta?.headerClassName}
+              >
+                {!header.isPlaceholder &&
+                  flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+              </TableHead>
+            )}
           </TableHeader>
-          <TableBody>
-            {logsQuery.isPending ? (
-              <TableRow className="hover:bg-transparent">
-                <TableCell
-                  colSpan={logColumnCount}
-                  className="h-40 text-center"
-                >
+          <TableBody
+            items={table.getRowModel().rows}
+            renderEmptyState={() =>
+              logsQuery.isPending ? (
+                <div className="flex h-40 items-center justify-center">
                   <Spinner className="mx-auto size-6 text-muted-foreground" />
-                </TableCell>
-              </TableRow>
-            ) : logsQuery.isError ? (
-              <TableRow className="hover:bg-transparent">
-                <TableCell
-                  colSpan={logColumnCount}
-                  className="h-40 text-center text-xs text-muted-foreground"
-                >
+                </div>
+              ) : logsQuery.isError ? (
+                <div className="flex h-40 items-center justify-center text-center text-xs text-muted-foreground">
                   {logsQuery.error.message}
-                </TableCell>
+                </div>
+              ) : (
+                <TableEmpty
+                  colSpan={logColumnCount}
+                  title="Chưa có dữ liệu lịch sử."
+                />
+              )
+            }
+          >
+            {(row) => (
+              <TableRow
+                id={row.id}
+                className="h-14 bg-card hover:bg-muted/25"
+                columns={row.getVisibleCells()}
+              >
+                {(cell) => (
+                  <TableCell
+                    className={cell.column.columnDef.meta?.cellClassName}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                )}
               </TableRow>
-            ) : logs.length === 0 ? (
-              <TableEmpty
-                colSpan={logColumnCount}
-                title="Chưa có dữ liệu lịch sử."
-              />
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="h-14 bg-card hover:bg-muted/25"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
             )}
           </TableBody>
         </Table>
