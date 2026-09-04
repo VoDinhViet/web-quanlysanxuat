@@ -9,7 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { ProductionOrdersEmptyState } from "@/features/production-orders/components/layouts/ProductionOrdersEmptyState"
 import { productionOrderColumns } from "@/features/production-orders/components/composites/ProductionOrdersTableColumns"
 import { cn } from "@/lib/utils"
@@ -17,11 +18,11 @@ import type {
   ProductionOrder,
   ProductionOrderStatus,
 } from "@/lib/types/production-order.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 type ProductionOrdersTableProps = {
   rows: ProductionOrder[]
-  pagination: Pagination
+  pagination: PaginationMeta
   isPending: boolean
   // Empty-state copy depends on the active status filter — passed through rather than read via
   // useSearch, so this component doesn't get tied to one specific route.
@@ -41,6 +42,8 @@ export function ProductionOrdersTable({
     columns: productionOrderColumns,
     features: appTableFeatures,
   })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
 
   return (
     <div
@@ -96,7 +99,14 @@ export function ProductionOrdersTable({
         </div>
       )}
 
-      <TablePagination pagination={pagination} className="pt-4" />
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
     </div>
   )
 }

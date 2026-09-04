@@ -116,12 +116,6 @@ export function ProductsTableFilter() {
                   setQ(event.target.value)
                   handleSearch(event.target.value)
                 }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
-                }}
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
@@ -135,8 +129,8 @@ export function ProductsTableFilter() {
               Loại sản phẩm
             </Label>
             <Select
-              selectedKey={search.type ?? "all"}
-              onSelectionChange={(key) => handleTypeChange(String(key))}
+              value={search.type ?? "all"}
+              onChange={(key) => handleTypeChange(String(key))}
             >
               <SelectTrigger id="products-type" className="w-full text-xs">
                 <SelectValue />
@@ -159,8 +153,8 @@ export function ProductsTableFilter() {
               Trạng thái
             </Label>
             <Select
-              selectedKey={search.status ?? "all"}
-              onSelectionChange={(key) => handleStatusChange(String(key))}
+              value={search.status ?? "all"}
+              onChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="products-status" className="w-full text-xs">
                 <SelectValue />

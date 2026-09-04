@@ -111,12 +111,6 @@ export function SuppliersTableFilter() {
                   setQ(event.target.value)
                   handleSearch(event.target.value)
                 }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
-                }}
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
@@ -130,8 +124,8 @@ export function SuppliersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              selectedKey={search.status ?? "all"}
-              onSelectionChange={(key) => handleStatusChange(String(key))}
+              value={search.status ?? "all"}
+              onChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="suppliers-status" className="w-full text-xs">
                 <SelectValue />
@@ -155,8 +149,8 @@ export function SuppliersTableFilter() {
               Nhóm NCC
             </Label>
             <Select
-              selectedKey={search.supplierGroupId ?? "all"}
-              onSelectionChange={(key) => handleGroupChange(String(key))}
+              value={search.supplierGroupId ?? "all"}
+              onChange={(key) => handleGroupChange(String(key))}
             >
               <SelectTrigger id="suppliers-group" className="w-full text-xs">
                 <SelectValue />
@@ -180,8 +174,8 @@ export function SuppliersTableFilter() {
               Quốc gia
             </Label>
             <Select
-              selectedKey={search.countryId ?? "all"}
-              onSelectionChange={(key) => handleCountryChange(String(key))}
+              value={search.countryId ?? "all"}
+              onChange={(key) => handleCountryChange(String(key))}
             >
               <SelectTrigger id="suppliers-country" className="w-full text-xs">
                 <SelectValue />

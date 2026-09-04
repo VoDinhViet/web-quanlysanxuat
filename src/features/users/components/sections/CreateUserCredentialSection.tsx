@@ -187,8 +187,8 @@ export function CreateUserCredentialSection({
                 Vai trò
               </FieldLabel>
               <Select
-                selectedKey={field.value ?? ""}
-                onSelectionChange={(key) => field.onChange(String(key))}
+                value={field.value ?? ""}
+                onChange={(key) => field.onChange(String(key))}
                 isDisabled={fieldsDisabled}
                 placeholder={
                   rolesQuery.isPending

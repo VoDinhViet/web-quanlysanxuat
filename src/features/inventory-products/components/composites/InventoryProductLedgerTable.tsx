@@ -11,15 +11,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { inventoryProductLedgerColumns } from "@/features/inventory-products/components/composites/InventoryProductLedgerColumns"
 import { cn } from "@/lib/utils"
 import type { ProductLedgerEntry } from "@/lib/types/product-ledger.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 type InventoryProductLedgerTableProps = {
   rows: ProductLedgerEntry[]
-  pagination: Pagination
+  pagination: PaginationMeta
   isPending: boolean
 }
 
@@ -36,6 +37,8 @@ export function InventoryProductLedgerTable({
     columns: inventoryProductLedgerColumns,
     features: appTableFeatures,
   })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
 
   return (
     <div
@@ -95,7 +98,14 @@ export function InventoryProductLedgerTable({
         </div>
       )}
 
-      <TablePagination pagination={pagination} className="pt-4" />
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
     </div>
   )
 }

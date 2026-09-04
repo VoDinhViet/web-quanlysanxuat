@@ -86,10 +86,6 @@ export function OqcTableFilter() {
     })
   }
 
-  const handleExecuteSearch = () => {
-    handleQChange.flush()
-  }
-
   const resetFilters = () => {
     handleQChange.cancel()
     setQ("")
@@ -128,12 +124,6 @@ export function OqcTableFilter() {
               setQ(event.target.value)
               handleQChange(event.target.value)
             }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault()
-                handleExecuteSearch()
-              }
-            }}
           />
           <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
         </div>
@@ -147,8 +137,8 @@ export function OqcTableFilter() {
           Kết quả
         </Label>
         <Select
-          selectedKey={search.result ?? "all"}
-          onSelectionChange={(key) => handleResultChange(String(key))}
+          value={search.result ?? "all"}
+          onChange={(key) => handleResultChange(String(key))}
         >
           <SelectTrigger id="oqc-result" className="w-full text-xs">
             <SelectValue />
@@ -171,8 +161,8 @@ export function OqcTableFilter() {
           Trạng thái
         </Label>
         <Select
-          selectedKey={search.status ?? "all"}
-          onSelectionChange={(key) => handleStatusChange(String(key))}
+          value={search.status ?? "all"}
+          onChange={(key) => handleStatusChange(String(key))}
         >
           <SelectTrigger id="oqc-status" className="w-full text-xs">
             <SelectValue />
@@ -195,8 +185,8 @@ export function OqcTableFilter() {
           Phương án xử lý
         </Label>
         <Select
-          selectedKey={search.disposition ?? "all"}
-          onSelectionChange={(key) => handleDispositionChange(String(key))}
+          value={search.disposition ?? "all"}
+          onChange={(key) => handleDispositionChange(String(key))}
         >
           <SelectTrigger id="oqc-disposition" className="w-full text-xs">
             <SelectValue />

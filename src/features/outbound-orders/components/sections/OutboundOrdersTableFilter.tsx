@@ -63,10 +63,6 @@ export function OutboundOrdersTableFilter() {
     })
   }, 300)
 
-  const handleExecuteSearch = () => {
-    handleSearchDebounced.flush()
-  }
-
   const handleClientChange = (value: string | undefined) => {
     void navigate({
       search: (prev) => ({ ...prev, clientId: value, page: 1 }),
@@ -140,12 +136,6 @@ export function OutboundOrdersTableFilter() {
                   setQ(e.target.value)
                   handleSearchDebounced()
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault()
-                    handleExecuteSearch()
-                  }
-                }}
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
@@ -180,8 +170,8 @@ export function OutboundOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              selectedKey={search.status ?? "all"}
-              onSelectionChange={(key) => handleStatusChange(String(key))}
+              value={search.status ?? "all"}
+              onChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="do-status" className="w-full text-xs">
                 <SelectValue />
@@ -204,10 +194,8 @@ export function OutboundOrdersTableFilter() {
               Hình thức giao
             </Label>
             <Select
-              selectedKey={search.fulfillmentType ?? "all"}
-              onSelectionChange={(key) =>
-                handleFulfillmentTypeChange(String(key))
-              }
+              value={search.fulfillmentType ?? "all"}
+              onChange={(key) => handleFulfillmentTypeChange(String(key))}
             >
               <SelectTrigger
                 id="do-fulfillment-type"

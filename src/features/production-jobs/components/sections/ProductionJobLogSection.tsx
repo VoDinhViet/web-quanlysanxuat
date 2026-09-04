@@ -11,15 +11,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { LocalPagination } from "@/components/shared/composites/LocalPagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { productionJobLogColumns } from "@/features/production-jobs/components/composites/ProductionJobLogColumns"
 import { productionJobLogsQueryOptions } from "@/features/production-jobs/api/options"
 import { appTableFeatures } from "@/lib/table-features"
 import { cn } from "@/lib/utils"
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 const logColumnCount = productionJobLogColumns.length
-const limitOptions = [10, 20, 50] as const
 
 type ProductionJobLogSectionProps = {
   productionJobId: string
@@ -27,18 +27,18 @@ type ProductionJobLogSectionProps = {
 
 // Sub-section of "Thông tin chung" — InfoSection ở ProductionJobInfoTab.tsx đã sở hữu heading
 // "Lịch sử thay đổi" + icon nên component này chỉ render bảng, không khung/heading riêng (khác
-// ProductionOrderLogsCard.tsx). `page`/`limit` là state cục bộ chứ không phải search param của
-// route: `page`/`limit` trên route này đã thuộc tab "Vật tư" — nên dùng `LocalPagination` (không
-// phải `TablePagination`, component đó tự patch route search param), cùng khuôn
+// ProductionOrderLogsCard.tsx). `page`/`pageSize` là state cục bộ chứ không phải search param của
+// route: `page`/`limit` trên route này đã thuộc tab "Vật tư" — nên tự giữ state rồi truyền
+// onPageChange/onPageSizeChange cho Pagination thay vì patch route search param, cùng khuôn
 // CreateInventoryRequisitionPickerSection.tsx. useTable/flexRender với productionJobLogColumns
 // (module scope, ProductionJobLogColumns.tsx) — cùng khuôn IqcTable.tsx/IqcTableColumns.tsx.
 export function ProductionJobLogSection({
   productionJobId,
 }: ProductionJobLogSectionProps) {
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+  const [pageSize, setPageSize] = useState<PageSize>(10)
   const logsQuery = useQuery({
-    ...productionJobLogsQueryOptions(productionJobId, page, limit),
+    ...productionJobLogsQueryOptions(productionJobId, page, pageSize),
     placeholderData: keepPreviousData,
   })
 
@@ -117,12 +117,13 @@ export function ProductionJobLogSection({
       </div>
 
       {pagination && (
-        <LocalPagination
-          pagination={pagination}
-          limitOptions={limitOptions}
+        <Pagination
+          page={pagination.currentPage}
+          pageSize={pagination.limit}
+          total={pagination.totalRecords}
           onPageChange={setPage}
-          onLimitChange={(nextLimit) => {
-            setLimit(nextLimit as (typeof limitOptions)[number])
+          onPageSizeChange={(nextPageSize) => {
+            setPageSize(nextPageSize)
             setPage(1)
           }}
           disabled={logsQuery.isFetching}

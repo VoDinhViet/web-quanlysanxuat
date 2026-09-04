@@ -113,12 +113,6 @@ export function IqcTableFilter() {
             setCode(event.target.value)
             handleCodeChange(event.target.value)
           }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault()
-              handleCodeChange.flush()
-            }
-          }}
         />
         <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
       </div>
@@ -147,8 +141,8 @@ export function IqcTableFilter() {
                   Kết quả QC
                 </Label>
                 <Select
-                  selectedKey={search.result ?? "all"}
-                  onSelectionChange={(key) => handleResultChange(String(key))}
+                  value={search.result ?? "all"}
+                  onChange={(key) => handleResultChange(String(key))}
                 >
                   <SelectTrigger id="iqc-result" className="w-full text-xs">
                     <SelectValue />
@@ -172,8 +166,8 @@ export function IqcTableFilter() {
                   Trạng thái
                 </Label>
                 <Select
-                  selectedKey={search.status ?? "all"}
-                  onSelectionChange={(key) => handleStatusChange(String(key))}
+                  value={search.status ?? "all"}
+                  onChange={(key) => handleStatusChange(String(key))}
                 >
                   <SelectTrigger id="iqc-status" className="w-full text-xs">
                     <SelectValue />
@@ -197,8 +191,8 @@ export function IqcTableFilter() {
                   Nhà cung cấp
                 </Label>
                 <Select
-                  selectedKey={search.supplierId ?? "all"}
-                  onSelectionChange={(key) => handleSupplierChange(String(key))}
+                  value={search.supplierId ?? "all"}
+                  onChange={(key) => handleSupplierChange(String(key))}
                 >
                   <SelectTrigger id="iqc-supplier" className="w-full text-xs">
                     <SelectValue />

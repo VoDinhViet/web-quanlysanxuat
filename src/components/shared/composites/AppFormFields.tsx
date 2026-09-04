@@ -290,8 +290,8 @@ export function SelectField({
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Select
-        selectedKey={field.state.value ?? null}
-        onSelectionChange={(key) => field.handleChange(String(key))}
+        value={field.state.value ?? null}
+        onChange={(key) => field.handleChange(String(key))}
         isDisabled={disabled}
         placeholder={isPending ? "Đang tải..." : placeholder}
       >

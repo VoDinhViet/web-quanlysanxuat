@@ -52,10 +52,6 @@ export function OutsourcingOrdersTableFilter() {
     })
   }
 
-  const handleExecuteSearch = () => {
-    handleSearchDebounced.flush()
-  }
-
   const resetFilters = () => {
     handleSearchDebounced.cancel()
     setQ("")
@@ -93,12 +89,6 @@ export function OutsourcingOrdersTableFilter() {
               setQ(e.target.value)
               handleSearchDebounced()
             }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault()
-                handleExecuteSearch()
-              }
-            }}
           />
           <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
         </div>
@@ -112,8 +102,8 @@ export function OutsourcingOrdersTableFilter() {
           Trạng thái
         </Label>
         <Select
-          selectedKey={search.status ?? "all"}
-          onSelectionChange={(key) => handleStatusChange(String(key))}
+          value={search.status ?? "all"}
+          onChange={(key) => handleStatusChange(String(key))}
           placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-out-status" className="w-full text-xs">

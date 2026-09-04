@@ -10,16 +10,17 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { productionJobBomColumns } from "@/features/production-jobs/components/composites/ProductionJobBomTableColumns"
 import type { ProductionJobIssue } from "@/lib/types/production-job.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 const columnCount = 6
 
 type ProductionJobBomTableProps = {
   rows: ProductionJobIssue[]
-  pagination: Pagination
+  pagination: PaginationMeta
 }
 
 export function ProductionJobBomTable({
@@ -31,6 +32,8 @@ export function ProductionJobBomTable({
     columns: productionJobBomColumns,
     features: appTableFeatures,
   })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
 
   return (
     <div className="px-4 pb-4 lg:px-5">
@@ -74,7 +77,14 @@ export function ProductionJobBomTable({
         </TableBody>
       </Table>
 
-      <TablePagination pagination={pagination} className="pt-4" />
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
     </div>
   )
 }

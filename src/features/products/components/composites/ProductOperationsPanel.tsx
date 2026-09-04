@@ -248,8 +248,8 @@ export function ProductOperationsPanel({
               </TableCell>
               <TableCell>
                 <Select
-                  selectedKey={selectedType}
-                  onSelectionChange={(key) =>
+                  value={selectedType}
+                  onChange={(key) =>
                     setSelectedType(String(key) as OperationType)
                   }
                 >

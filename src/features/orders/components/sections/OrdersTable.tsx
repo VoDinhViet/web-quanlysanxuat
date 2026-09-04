@@ -11,15 +11,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { orderColumns } from "@/features/orders/components/composites/OrdersTableColumns"
 import { cn } from "@/lib/utils"
 import type { Order } from "@/lib/types/order.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 type OrdersTableProps = {
   rows: Order[]
-  pagination: Pagination
+  pagination: PaginationMeta
   isPending: boolean
 }
 
@@ -31,6 +32,8 @@ export function OrdersTable({ rows, pagination, isPending }: OrdersTableProps) {
     columns: orderColumns,
     features: appTableFeatures,
   })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
 
   return (
     <div
@@ -90,7 +93,14 @@ export function OrdersTable({ rows, pagination, isPending }: OrdersTableProps) {
         </div>
       )}
 
-      <TablePagination pagination={pagination} className="pt-4" />
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
     </div>
   )
 }

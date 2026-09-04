@@ -6,6 +6,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { SolarProvider } from "@solar-icons/react"
+import { I18nProvider } from "react-aria-components"
 import type { QueryClient } from "@tanstack/react-query"
 
 import { ThemeProvider } from "@/components/shared/layouts/ThemeProvider"
@@ -50,7 +51,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body suppressHydrationWarning>
         <ThemeProvider>
-          <SolarProvider value={{ weight: "Bold" }}>{children}</SolarProvider>
+          {/* Đặt tên locale "vi-VN" cho mọi component React Aria (Calendar, DatePicker's chọn
+              ngày, Select, ...) — mất khi migrate từ Radix sang RAC (xem comment ở
+              DatePicker.tsx), gắn lại 1 lần ở gốc app thay vì từng chỗ dùng Calendar riêng lẻ. */}
+          <I18nProvider locale="vi-VN">
+            <SolarProvider value={{ weight: "Bold" }}>{children}</SolarProvider>
+          </I18nProvider>
           <Toaster richColors />
         </ThemeProvider>
         <TanStackDevtools

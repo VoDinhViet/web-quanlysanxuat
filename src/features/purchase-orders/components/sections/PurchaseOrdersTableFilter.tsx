@@ -38,8 +38,7 @@ export function PurchaseOrdersTableFilter() {
   ]
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
-  // PurchaseLedgerTableFilter.tsx. Enter calls `.flush()` to apply immediately without waiting
-  // out the debounce.
+  // PurchaseLedgerTableFilter.tsx.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
     void navigate({
@@ -109,8 +108,8 @@ export function PurchaseOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              selectedKey={search.progress ?? "all"}
-              onSelectionChange={(key) => handleProgressChange(String(key))}
+              value={search.progress ?? "all"}
+              onChange={(key) => handleProgressChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-orders-status"
@@ -136,8 +135,8 @@ export function PurchaseOrdersTableFilter() {
               NCC
             </Label>
             <Select
-              selectedKey={search.supplierId ?? "all"}
-              onSelectionChange={(key) => handleSupplierChange(String(key))}
+              value={search.supplierId ?? "all"}
+              onChange={(key) => handleSupplierChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-orders-supplier"
@@ -186,12 +185,6 @@ export function PurchaseOrdersTableFilter() {
                 onChange={(event) => {
                   setQ(event.target.value)
                   handleSearch(event.target.value)
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
                 }}
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />

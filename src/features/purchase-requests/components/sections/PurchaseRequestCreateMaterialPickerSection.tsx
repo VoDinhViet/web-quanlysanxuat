@@ -3,18 +3,11 @@ import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import { useDebounceValue } from "usehooks-ts"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import {
   Table,
   TableBody,
@@ -35,8 +28,7 @@ import { ItemStatus } from "@/lib/types/item.type"
 import { cn } from "@/lib/utils"
 import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/schemas/purchase-request-item-form.schema"
 import type { Material } from "@/lib/types/material.type"
-
-const limitOptions = [10, 20, 50] as const
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 // Only ACTIVE materials are pickable — an inactive vật tư can't be proposed for purchase. Not
 // user-facing: unlike MaterialsTableFilter's status dropdown, this picker fixes the filter
@@ -60,7 +52,7 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+    const [pageSize, setPageSize] = useState<PageSize>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
     const [clientId, setClientId] = useState<string | undefined>()
@@ -77,7 +69,7 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
     const materialsQuery = useQuery({
       ...materialsQueryOptions({
         page,
-        limit,
+        limit: pageSize,
         q: debouncedQ.trim() || undefined,
         clientId,
         status: ItemStatus.ACTIVE,
@@ -280,53 +272,18 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
         </div>
 
         {pagination && (
-          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Select
-                selectedKey={String(limit)}
-                onSelectionChange={(key) => {
-                  setLimit(Number(key) as (typeof limitOptions)[number])
-                  setPage(1)
-                }}
-                isDisabled={disabled}
-              >
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {limitOptions.map((option) => (
-                    <SelectItem key={option} id={String(option)}>
-                      {option} / trang
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={disabled || pagination.currentPage <= 1}
-                onPress={() => setPage((p) => p - 1)}
-              >
-                <ChevronLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={
-                  disabled || pagination.currentPage >= pagination.totalPages
-                }
-                onPress={() => setPage((p) => p + 1)}
-              >
-                <ChevronRight className="size-4" />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
+              setPage(1)
+            }}
+            disabled={disabled}
+            className="mt-3"
+          />
         )}
       </div>
     )

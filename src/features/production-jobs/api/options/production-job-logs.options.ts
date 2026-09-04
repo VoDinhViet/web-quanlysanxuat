@@ -6,7 +6,7 @@ import { getProductionJobLogs } from "@/features/production-jobs/api/server-func
 // a route search param because `page`/`limit` on this route are already owned by the "materials"
 // tab (see production-job-detail-search.schema.ts), same idiom as productionOrderLogsQueryOptions/
 // productionJobNotesQueryOptions. `limit` caller-supplied (not a fixed constant) so
-// ProductionJobLogSection.tsx can drive it via LocalPagination, same idiom as
+// ProductionJobLogSection.tsx can drive it via Pagination, same idiom as
 // requisitionLinesQueryOptions/CreateInventoryRequisitionPickerSection.tsx.
 export const productionJobLogsQueryOptions = (
   productionJobId: string,

@@ -124,8 +124,8 @@ export function ComboboxField({
       ) : null}
       <Combobox
         items={items}
-        selectedKey={selectedOption?.value ?? null}
-        onSelectionChange={(key) => {
+        value={selectedOption?.value ?? null}
+        onChange={(key) => {
           const next = items.find((option) => option.value === key) ?? null
           setSelectedOption(next)
           onValueChange(next?.value)

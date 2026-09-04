@@ -4,18 +4,11 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { useDebounceValue } from "usehooks-ts"
-import { AltArrowLeft, AltArrowRight, Magnifer } from "@solar-icons/react"
+import { Magnifer } from "@solar-icons/react"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import {
   Table,
   TableBody,
@@ -31,20 +24,20 @@ import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/invent
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api"
 import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
-const limitOptions = [10, 20, 50] as const
 const columns = buildInventoryReceiptFromPoPickerColumns()
 
 // Bước ① của wizard — chọn đúng 1 PO đã ORDERED và còn hàng chưa nhận đủ
 // (`hasRemainingReceipt: true`, xem purchase-orders-search.schema.ts). Rập khuôn
-// CreateQuotationItemsPickerSection.tsx (page/limit/q + debounce, bảng useReactTable riêng), chỉ
+// CreateQuotationItemsPickerSection.tsx (page/pageSize/q + debounce, bảng useReactTable riêng), chỉ
 // khác select là radio (1 PO) thay vì checkbox (nhiều dòng).
 export const InventoryReceiptCreateFromPoPickerSection = withForm({
   defaultValues: createInventoryReceiptFromPoFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+    const [pageSize, setPageSize] = useState<PageSize>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
 
@@ -53,7 +46,7 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
     const poQuery = useQuery({
       ...purchaseOrdersQueryOptions({
         page,
-        limit,
+        limit: pageSize,
         q: debouncedQ.trim() || undefined,
         hasRemainingReceipt: true,
       }),
@@ -173,53 +166,18 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
         </RadioGroup>
 
         {pagination && (
-          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Select
-                selectedKey={String(limit)}
-                onSelectionChange={(key) => {
-                  setLimit(Number(key) as (typeof limitOptions)[number])
-                  setPage(1)
-                }}
-                isDisabled={disabled}
-              >
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {limitOptions.map((option) => (
-                    <SelectItem key={option} id={String(option)}>
-                      {option} / trang
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={disabled || pagination.currentPage <= 1}
-                onPress={() => setPage((p) => p - 1)}
-              >
-                <AltArrowLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={
-                  disabled || pagination.currentPage >= pagination.totalPages
-                }
-                onPress={() => setPage((p) => p + 1)}
-              >
-                <AltArrowRight className="size-4" />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
+              setPage(1)
+            }}
+            disabled={disabled}
+            className="mt-3"
+          />
         )}
       </div>
     )

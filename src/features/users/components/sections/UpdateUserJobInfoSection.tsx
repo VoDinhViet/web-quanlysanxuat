@@ -97,8 +97,8 @@ export function UpdateUserJobInfoSection({
                   Phòng ban <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
-                  selectedKey={field.value}
-                  onSelectionChange={(key) => field.onChange(String(key))}
+                  value={field.value}
+                  onChange={(key) => field.onChange(String(key))}
                   isDisabled={disabled || departmentsQuery.isPending}
                   placeholder={
                     departmentsQuery.isFetching
@@ -154,8 +154,8 @@ export function UpdateUserJobInfoSection({
                   // effect below only clears it once the new list has loaded) — masking it to
                   // "" here forces the placeholder to render "Đang tải..." instead of Radix
                   // showing a blank trigger for a value that matches no item yet.
-                  selectedKey={positionsQuery.isPending ? "" : field.value}
-                  onSelectionChange={(key) => field.onChange(String(key))}
+                  value={positionsQuery.isPending ? "" : field.value}
+                  onChange={(key) => field.onChange(String(key))}
                   isDisabled={
                     disabled || !departmentId || positionsQuery.isPending
                   }

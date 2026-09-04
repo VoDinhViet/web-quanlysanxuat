@@ -13,15 +13,16 @@ import {
 } from "@/components/ui/table"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { purchaseRequestColumns } from "@/features/purchase-requests/components/composites/PurchaseRequestsTableColumns"
 import { cn } from "@/lib/utils"
 import type { PurchaseRequest } from "@/lib/types/purchase-request.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 type PurchaseRequestsTableProps = {
   rows: PurchaseRequest[]
-  pagination: Pagination
+  pagination: PaginationMeta
   isPending: boolean
 }
 
@@ -37,6 +38,8 @@ export function PurchaseRequestsTable({
     columns: purchaseRequestColumns,
     features: appTableFeatures,
   })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
 
   return (
     <div
@@ -108,7 +111,14 @@ export function PurchaseRequestsTable({
         </div>
       )}
 
-      <TablePagination pagination={pagination} className="pt-4" />
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
     </div>
   )
 }

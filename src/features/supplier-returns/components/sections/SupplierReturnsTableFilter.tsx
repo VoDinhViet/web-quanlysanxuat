@@ -138,12 +138,6 @@ export function SupplierReturnsTableFilter() {
             setMaterialKeyword(event.target.value)
             handleMaterialKeywordChange(event.target.value)
           }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault()
-              handleMaterialKeywordChange.flush()
-            }
-          }}
         />
         <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
       </div>
@@ -172,8 +166,8 @@ export function SupplierReturnsTableFilter() {
                   Nhà cung cấp
                 </Label>
                 <Select
-                  selectedKey={search.supplierId ?? "all"}
-                  onSelectionChange={(key) => handleSupplierChange(String(key))}
+                  value={search.supplierId ?? "all"}
+                  onChange={(key) => handleSupplierChange(String(key))}
                 >
                   <SelectTrigger
                     id="supplier-returns-supplier"
@@ -201,8 +195,8 @@ export function SupplierReturnsTableFilter() {
                   Trạng thái
                 </Label>
                 <Select
-                  selectedKey={search.status ?? "all"}
-                  onSelectionChange={(key) => handleStatusChange(String(key))}
+                  value={search.status ?? "all"}
+                  onChange={(key) => handleStatusChange(String(key))}
                 >
                   <SelectTrigger
                     id="supplier-returns-status"
@@ -237,12 +231,6 @@ export function SupplierReturnsTableFilter() {
                     setPoCode(event.target.value)
                     handlePoCodeChange(event.target.value)
                   }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handlePoCodeChange.flush()
-                    }
-                  }}
                 />
               </div>
 
@@ -262,12 +250,6 @@ export function SupplierReturnsTableFilter() {
                   onChange={(event) => {
                     setIqcCode(event.target.value)
                     handleIqcCodeChange(event.target.value)
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handleIqcCodeChange.flush()
-                    }
                   }}
                 />
               </div>

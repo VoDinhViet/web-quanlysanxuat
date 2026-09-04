@@ -32,13 +32,7 @@ function Select<
   T extends object,
   TMode extends "single" | "multiple" = "single",
 >({ className, ...props }: SelectProps<T, TMode>) {
-  return (
-    <SelectPrimitive
-      data-slot="select"
-      className={cn("w-fit", className)}
-      {...props}
-    />
-  )
+  return <SelectPrimitive data-slot="select" className={className} {...props} />
 }
 
 function SelectGroup<T extends object>({

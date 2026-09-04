@@ -41,33 +41,29 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 
 ### `src/components/shared/sections/`
 
-| Component            | Prop chính                                                                                                                                                 | Call site                              |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `TableQueryBoundary` | `query: UseQueryResult<TData, Error>`, `loadingRows: number`, `children: (data: TData) => ReactNode` (render-prop — `data` chỉ narrow bên trong component) | `InventoryRequisitionsPage.tsx`        |
-| `TableFilterBar`     | `createLabel?`, `createAction?` (cả 2 vắng = bỏ hẳn khối "tạo mới"), `fields: ReactNode` (caller tự dựng grid), `onReset`                                  | `InventoryRequisitionsTableFilter.tsx` |
+| Component            | Prop chính                                                                                                                                                 | Call site                       |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| `TableQueryBoundary` | `query: UseQueryResult<TData, Error>`, `loadingRows: number`, `children: (data: TData) => ReactNode` (render-prop — `data` chỉ narrow bên trong component) | `InventoryRequisitionsPage.tsx` |
 
 ### `src/components/shared/composites/`
 
-| Component         | Prop chính                                                                                                                                                                | Call site                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `TimelineCard`    | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?`                                                                               | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
-| `LocalPagination` | `pagination: Pagination`, `limitOptions: readonly number[]`, `onPageChange`, `onLimitChange`, `disabled?` — em của `TablePagination` cho phân trang không có URL để patch | `CreateInventoryRequisitionPickerSection.tsx`                                            |
-| `TablePagination` | `pagination: Pagination`, `className?` — tự patch `page`/`limit` search param qua `navigate({to: "."})`                                                                   | mọi list page (Phase 0)                                                                  |
-| `StatusLegend`    | `icon`, `title`, `items: {key, badge: ReactNode, description}[]`                                                                                                          | `InventoryRequisitionsLegend.tsx`                                                        |
-| `StatusNotice`    | `title`, `reason`, `actorName?`, `timestamp?` (format `dd/MM/yyyy HH:mm` nội bộ), `extra?: ReactNode`                                                                     | `PurchaseOrderCancellationNotice.tsx` (+ `PurchaseRequestRejectionNotice.tsx`)           |
+| Component      | Prop chính                                                                                                                                                                                                       | Call site                                                                                |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `TimelineCard` | `icon`, `title`, `steps: TimelineStep[]`, `variant?: "circle"\|"dot"`, `noteToneClassName?`                                                                                                                      | `OrderDetailTimelineCard.tsx` (+ purchase-orders, purchase-quotations, payment-requests) |
+| `Pagination`   | `page`, `pageSize`, `total`, `onPageChange`, `onPageSizeChange?` (bỏ qua → ẩn selector cỡ trang), `disabled?`, `className?`, `container?` — thuần presentational, không tự patch route; luôn hiện dù chỉ 1 trang | mọi bảng/danh sách có phân trang                                                         |
+| `StatusLegend` | `icon`, `title`, `items: {key, badge: ReactNode, description}[]`                                                                                                                                                 | `InventoryRequisitionsLegend.tsx`                                                        |
+| `StatusNotice` | `title`, `reason`, `actorName?`, `timestamp?` (format `dd/MM/yyyy HH:mm` nội bộ), `extra?: ReactNode`                                                                                                            | `PurchaseOrderCancellationNotice.tsx` (+ `PurchaseRequestRejectionNotice.tsx`)           |
+
+`Pagination` thuần presentational nên mọi list page cần patch route `page`/`limit` search param
+tự bind qua hook `useRoutePagination` (`src/hooks/use-route-pagination.ts`) — trả về
+`onPageChange`/`onPageSizeChange` sẵn để truyền thẳng vào props cùng tên. Site có state cục bộ
+(picker trong wizard, sidebar log card) bind thẳng `onPageChange={setPage}` thay vì qua hook này.
 
 ### `src/components/shared/primitives/`
 
-| Component          | Prop chính                                                                                                | Call site                              |
-| ------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `RowActions`       | `children`, `className?` — chỉ bọc `flex items-center justify-center gap-1.5`, action con vẫn ở call site | `InventoryRequisitionsTableCells.tsx`  |
-| `FilterSelect`     | `id`, `label`, `value`, `options: {value,label}[]`, `onValueChange`                                       | `InventoryRequisitionsTableFilter.tsx` |
-
-### `src/hooks/`
-
-| Hook                                                    | Trả về                                                                                                                           | Call site                              |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `useFilterSearchTerm({initialValue, onSearch, delay?})` | `{value, onChange, onEnterKeyDown, reset}` — debounce + Enter-to-flush; `onSearch` (viết search param của route) vẫn ở call site | `InventoryRequisitionsTableFilter.tsx` |
+| Component    | Prop chính                                                                                                | Call site                             |
+| ------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `RowActions` | `children`, `className?` — chỉ bọc `flex items-center justify-center gap-1.5`, action con vẫn ở call site | `InventoryRequisitionsTableCells.tsx` |
 
 ## Cố ý KHÔNG abstract (và lý do)
 
@@ -108,6 +104,15 @@ sự nằm. Khi một feature khác cần một trong các component này, impor
 - **`DataTable`** (shell `useReactTable`/`flexRender` dùng chung, ghép ở Phase 0) — chỉ có đúng 1
   caller (`InventoryRequisitionsTable.tsx`) nên bị bỏ theo yêu cầu để mỗi bảng tự dựng shell
   `Table`/`TableHeader`/`TableBody`/`flexRender` độc lập, không qua component chung nữa.
+- **`TableFilterBar`/`FilterSelect`** (shell bọc filter fields + nút "Xóa bộ lọc"; label + Select
+  filter riêng lẻ) — cũng chỉ có đúng 1 caller (`InventoryRequisitionsTableFilter.tsx`), cùng lý
+  do với `DataTable`: bị bỏ theo yêu cầu để filter bar này tự dựng shell +
+  `Select`/`SelectTrigger`/`SelectItem` ngay tại call site, giống hệt cách mọi filter bar khác
+  trong repo đã luôn làm (không file nào khác từng dùng qua 2 component này).
+- **`useFilterSearchTerm`** (debounce-as-you-type + Enter-to-flush cho ô tìm kiếm) — cùng lý do:
+  chỉ có đúng 1 caller (`InventoryRequisitionsTableFilter.tsx`), bị bỏ theo yêu cầu để filter bar
+  này tự dựng `useState` + `useDebounceCallback` ngay tại call site, giống hệt pattern
+  `handleSearchDebounced`/`handleExecuteSearch` mà mọi filter bar khác trong repo đã luôn dùng.
 - **Nội dung `TableEmpty`** (icon/title/description) — luôn là prop của call site; mỗi bảng tự
   quyết định _khi nào_ hiện nó ngay trong JSX của mình.
 - **`reject-*.schema.ts`** — là `.validator()` của server function tương ứng (trust boundary),
@@ -145,6 +150,6 @@ ReactNode`) đã ship cho `inventory-requisitions`; 2 fork khác hẳn cấu tr�
    dòng phụ không chung shape — đừng ép vào 1 component nhiều prop biến thể. Cân nhắc: gộp phần
    gần giống nhau trước (bỏ phần lệch), hoặc hỏi lại trước khi build (xem case `StatCardSection`
    ở trên).
-5. `as` cast phát sinh từ việc tách component (ví dụ `LocalPagination`'s `onLimitChange` trả về
-   `number` trần) là hợp lệ nếu nó đã tồn tại ở bản gốc trước khi tách — không phải cast mới do
-   thiết kế cẩu thả.
+5. `as` cast phát sinh từ việc tách component (ví dụ `Pagination`'s `onPageSizeChange` cast
+   `Number(key) as PageSize` từ `Select`'s key trần) là hợp lệ nếu nó đã tồn tại ở bản gốc trước
+   khi tách — không phải cast mới do thiết kế cẩu thả.

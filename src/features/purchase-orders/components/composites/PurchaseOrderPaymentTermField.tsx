@@ -77,8 +77,8 @@ export function PurchaseOrderPaymentTermField({
         Điều khoản TT <span className="text-destructive">*</span>
       </label>
       <Select
-        selectedKey={value}
-        onSelectionChange={(key) => {
+        value={value}
+        onChange={(key) => {
           const nextPaymentTerm = String(key) as PaymentTermType
           setValue(nextPaymentTerm)
           save(nextPaymentTerm)

@@ -11,15 +11,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { outboundOrdersColumns } from "@/features/outbound-orders/components/composites/OutboundOrdersTableColumns"
 import { cn } from "@/lib/utils"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 type OutboundOrdersTableProps = {
   rows: OutboundOrder[]
-  pagination: Pagination
+  pagination: PaginationMeta
   isPending: boolean
 }
 
@@ -35,6 +36,8 @@ export function OutboundOrdersTable({
     columns: outboundOrdersColumns,
     features: appTableFeatures,
   })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
 
   return (
     <div
@@ -94,7 +97,14 @@ export function OutboundOrdersTable({
         </div>
       )}
 
-      <TablePagination pagination={pagination} className="pt-4" />
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
     </div>
   )
 }

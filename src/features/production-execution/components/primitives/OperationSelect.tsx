@@ -42,8 +42,8 @@ export function OperationSelect({
 
   return (
     <Select
-      selectedKey={selectedOperationId ?? ""}
-      onSelectionChange={(key) => handleChange(String(key))}
+      value={selectedOperationId ?? ""}
+      onChange={(key) => handleChange(String(key))}
       isDisabled={isPending || isError || summary.length === 0}
       placeholder={placeholder}
     >

@@ -2,12 +2,7 @@ import { useState } from "react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import {
-  AltArrowLeft,
-  AltArrowRight,
-  BoxMinimalistic,
-  Magnifier,
-} from "@solar-icons/react"
+import { BoxMinimalistic, Magnifier } from "@solar-icons/react"
 import { CircleCheck } from "lucide-react"
 import { useDebounceValue } from "usehooks-ts"
 import type { ComponentProps } from "react"
@@ -16,14 +11,6 @@ import { Badge } from "@/components/ui/badge"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import {
   Table,
   TableBody,
   TableCell,
@@ -31,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildBomItemPickerColumns } from "@/features/products/components/composites/BomItemPickerColumns"
 import { materialsQueryOptions } from "@/features/materials/api"
@@ -39,8 +27,7 @@ import type { BomItemPickerRow } from "@/features/products/components/composites
 import type { BomItemType } from "@/lib/types/bom-item.type"
 import { ItemType } from "@/lib/types/item.type"
 import { cn } from "@/lib/utils"
-
-const limitOptions = [10, 20, 50] as const
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 type BomItemPickerFieldProps = {
   itemType: BomItemType
@@ -66,7 +53,7 @@ export function BomItemPickerField({
   errors,
 }: BomItemPickerFieldProps) {
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+  const [pageSize, setPageSize] = useState<PageSize>(10)
   const [q, setQ] = useState("")
   const [debouncedQ] = useDebounceValue(q, 300)
   // Cached separately from `value` (which only ever holds the id) so the
@@ -81,7 +68,7 @@ export function BomItemPickerField({
   const itemsQuery = useQuery({
     ...itemsQueryOptions({
       page,
-      limit,
+      limit: pageSize,
       q: debouncedQ.trim() || undefined,
       type: ItemType.WIP,
     }),
@@ -91,7 +78,7 @@ export function BomItemPickerField({
   const materialsQuery = useQuery({
     ...materialsQueryOptions({
       page,
-      limit,
+      limit: pageSize,
       q: debouncedQ.trim() || undefined,
     }),
     enabled: itemType === "RM",
@@ -218,52 +205,18 @@ export function BomItemPickerField({
           </Badge>
         ) : null}
 
-        {pagination ? (
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Select
-                selectedKey={String(limit)}
-                onSelectionChange={(key) => {
-                  setLimit(Number(key) as (typeof limitOptions)[number])
-                  setPage(1)
-                }}
-              >
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {limitOptions.map((option) => (
-                    <SelectItem key={option} id={String(option)}>
-                      {option} / trang
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={pagination.currentPage <= 1}
-                onPress={() => setPage((current) => current - 1)}
-              >
-                <AltArrowLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={pagination.currentPage >= pagination.totalPages}
-                onPress={() => setPage((current) => current + 1)}
-              >
-                <AltArrowRight className="size-4" />
-              </Button>
-            </div>
-          </div>
-        ) : null}
+        {pagination && (
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
+              setPage(1)
+            }}
+          />
+        )}
       </div>
 
       {errors ? <FieldError errors={errors} /> : null}

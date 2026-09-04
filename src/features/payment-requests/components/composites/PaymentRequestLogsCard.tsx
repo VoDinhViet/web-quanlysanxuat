@@ -12,17 +12,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { LocalPagination } from "@/components/shared/composites/LocalPagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { paymentRequestLogsQueryOptions } from "@/features/payment-requests/api/options/payment-request-logs.options"
 import { paymentRequestLogActionLabels } from "@/lib/types/payment-request.type"
 import { cn } from "@/lib/utils"
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 type PaymentRequestLogsCardProps = {
   paymentRequestId: string
 }
 
-const limitOptions = [10, 20, 50] as const
 const logColumnCount = 4
 
 // Sidebar card — "Lịch sử thay đổi". Tự sở hữu query + phân trang cục bộ (useState, không qua
@@ -34,9 +34,9 @@ export function PaymentRequestLogsCard({
   paymentRequestId,
 }: PaymentRequestLogsCardProps) {
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+  const [pageSize, setPageSize] = useState<PageSize>(10)
   const logsQuery = useQuery({
-    ...paymentRequestLogsQueryOptions(paymentRequestId, page, limit),
+    ...paymentRequestLogsQueryOptions(paymentRequestId, page, pageSize),
     placeholderData: keepPreviousData,
   })
 
@@ -103,19 +103,20 @@ export function PaymentRequestLogsCard({
         </Table>
       </div>
 
-      {pagination && pagination.totalPages > 1 ? (
-        <LocalPagination
-          pagination={pagination}
-          limitOptions={limitOptions}
+      {pagination && (
+        <Pagination
+          page={pagination.currentPage}
+          pageSize={pagination.limit}
+          total={pagination.totalRecords}
           onPageChange={setPage}
-          onLimitChange={(nextLimit) => {
-            setLimit(nextLimit as (typeof limitOptions)[number])
+          onPageSizeChange={(nextPageSize) => {
+            setPageSize(nextPageSize)
             setPage(1)
           }}
           disabled={logsQuery.isFetching}
           className="border-t border-border px-4 py-3 sm:px-5"
         />
-      ) : null}
+      )}
     </section>
   )
 }

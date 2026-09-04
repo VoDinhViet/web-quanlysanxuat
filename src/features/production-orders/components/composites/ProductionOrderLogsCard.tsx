@@ -1,8 +1,6 @@
 import { DateTime } from "luxon"
 import { History } from "@solar-icons/react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
@@ -12,16 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { productionOrderLogActionLabels } from "@/lib/types/production-order.type"
 import type { ProductionOrderLog } from "@/lib/types/production-order.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 import { cn } from "@/lib/utils"
 
 type ProductionOrderLogsCardProps = {
   logs: ProductionOrderLog[]
-  pagination: Pagination | undefined
-  page: number
+  pagination: PaginationMeta | undefined
   onPageChange: (page: number) => void
   isPending: boolean
   isFetching: boolean
@@ -32,12 +30,11 @@ type ProductionOrderLogsCardProps = {
 // cùng transaction với hành động đó. `content` đã là câu tiếng Việt sẵn sàng hiển thị do backend
 // dựng lúc ghi — không tự suy diễn/dựng câu ở đây. Phân trang cục bộ (state của trang, không phải
 // search param của route) vì đây là phần phụ trên trang chi tiết vốn không có state phân trang
-// riêng — không dùng chung <TablePagination/>, component đó gắn chặt vào search param của route
-// hiện tại.
+// riêng — không dùng chung route search param, `Pagination` chỉ nhận page/pageSize/total qua prop
+// thuần, không tự patch route.
 export function ProductionOrderLogsCard({
   logs,
   pagination,
-  page,
   onPageChange,
   isPending,
   isFetching,
@@ -95,36 +92,15 @@ export function ProductionOrderLogsCard({
         </Table>
       </div>
 
-      {pagination && pagination.totalPages > 1 ? (
-        <div className="flex items-center justify-between gap-3 border-t border-border/60 px-4 py-3 text-xs font-medium text-muted-foreground sm:px-5">
-          <p>
-            Trang {pagination.currentPage} / {pagination.totalPages} — tổng số{" "}
-            {pagination.totalRecords} bản ghi
-          </p>
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Trang trước"
-              isDisabled={pagination.previousPage === null}
-              onPress={() => onPageChange(page - 1)}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Trang sau"
-              isDisabled={pagination.nextPage === null}
-              onPress={() => onPageChange(page + 1)}
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      {pagination && (
+        <Pagination
+          page={pagination.currentPage}
+          pageSize={pagination.limit}
+          total={pagination.totalRecords}
+          onPageChange={onPageChange}
+          className="border-t border-border/60 px-4 py-3 sm:px-5"
+        />
+      )}
     </section>
   )
 }

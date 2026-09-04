@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { LocalPagination } from "@/components/shared/composites/LocalPagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildCreateInventoryRequisitionPickerColumns } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
 import { requisitionLinesQueryOptions } from "@/features/inventory-requisitions/api/options"
@@ -26,8 +26,7 @@ import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type
 import { cn } from "@/lib/utils"
 import type { InventoryRequisitionItemFormValue } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import type { InventoryRequisitionLine } from "@/lib/types/inventory-requisition.type"
-
-const limitOptions = [10, 20, 50] as const
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 // Gợi ý SL = suggestedQuantity của backend; 0 (BOM đã lãnh đủ, hoặc line không có Job) để trống,
 // bắt người dùng tự nhập thay vì submit sẵn một dòng SL=0.
@@ -82,7 +81,7 @@ export const CreateInventoryRequisitionPickerSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+    const [pageSize, setPageSize] = useState<PageSize>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
 
@@ -98,7 +97,7 @@ export const CreateInventoryRequisitionPickerSection = withForm({
       ...requisitionLinesQueryOptions({
         productionJobId: isJobFlow ? productionJobId || undefined : undefined,
         page,
-        limit,
+        limit: pageSize,
         q: debouncedQ.trim() || undefined,
       }),
       placeholderData: keepPreviousData,
@@ -271,12 +270,13 @@ export const CreateInventoryRequisitionPickerSection = withForm({
         </div>
 
         {pagination && (
-          <LocalPagination
-            pagination={pagination}
-            limitOptions={limitOptions}
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
             onPageChange={setPage}
-            onLimitChange={(nextLimit) => {
-              setLimit(nextLimit as (typeof limitOptions)[number])
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
               setPage(1)
             }}
             disabled={disabled}

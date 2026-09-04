@@ -130,7 +130,6 @@ export function ProductionOrderDetailPage() {
         <ProductionOrderLogsCard
           logs={logsQuery.data?.data ?? []}
           pagination={logsQuery.data?.pagination}
-          page={logsPage}
           onPageChange={setLogsPage}
           isPending={logsQuery.isPending}
           isFetching={logsQuery.isFetching}

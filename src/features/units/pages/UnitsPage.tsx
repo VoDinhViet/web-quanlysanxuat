@@ -78,12 +78,6 @@ export function UnitsPage() {
                     setQ(event.target.value)
                     handleSearch(event.target.value)
                   }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handleSearch.flush()
-                    }
-                  }}
                 />
                 <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
               </div>
@@ -97,8 +91,8 @@ export function UnitsPage() {
                 Phạm vi
               </Label>
               <Select
-                selectedKey={scopeFilterValue(search.scope)}
-                onSelectionChange={(key) => handleScopeChange(String(key))}
+                value={scopeFilterValue(search.scope)}
+                onChange={(key) => handleScopeChange(String(key))}
               >
                 <SelectTrigger id="units-scope" className="w-full text-xs">
                   <SelectValue />

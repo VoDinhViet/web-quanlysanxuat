@@ -40,8 +40,7 @@ export function PurchaseRequestsTableFilter() {
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // ProductionJobsTableFilter.tsx. An empty term becomes `undefined` so the search
-  // schema's `.optional()` drops `q` from the URL entirely. Enter calls `.flush()` to apply
-  // immediately without waiting out the debounce.
+  // schema's `.optional()` drops `q` from the URL entirely.
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
     void navigate({
@@ -111,8 +110,8 @@ export function PurchaseRequestsTableFilter() {
               Trạng thái
             </Label>
             <Select
-              selectedKey={search.status ?? "all"}
-              onSelectionChange={(key) => handleStatusChange(String(key))}
+              value={search.status ?? "all"}
+              onChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-requests-status"
@@ -153,8 +152,8 @@ export function PurchaseRequestsTableFilter() {
               Bộ phận
             </Label>
             <Select
-              selectedKey={search.departmentId ?? "all"}
-              onSelectionChange={(key) => handleDepartmentChange(String(key))}
+              value={search.departmentId ?? "all"}
+              onChange={(key) => handleDepartmentChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-requests-department"
@@ -188,12 +187,6 @@ export function PurchaseRequestsTableFilter() {
                 onChange={(event) => {
                   setQ(event.target.value)
                   handleSearch(event.target.value)
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
                 }}
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />

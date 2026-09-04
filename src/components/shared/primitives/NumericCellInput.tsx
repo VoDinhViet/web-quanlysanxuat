@@ -2,6 +2,7 @@ import { useState } from "react"
 import { NumericFormat } from "react-number-format"
 
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 type NumericCellInputProps = {
   value: number | undefined
@@ -11,6 +12,9 @@ type NumericCellInputProps = {
   // Floor enforced on blur (e.g. a requested quantity can't commit as 0) — clamped there rather
   // than blocked while typing, so clearing the field to retype doesn't get fought mid-edit.
   min?: number
+  // Override the default h-8/text-xs sizing for a caller whose row has more room (e.g. a
+  // 2-input picker step) — omit to keep every other caller's compact grid-cell sizing unchanged.
+  className?: string
 }
 
 // Bare version of AppFormFields.tsx's NumberField — same NumericFormat recipe, no Field/Label
@@ -30,6 +34,7 @@ export function NumericCellInput({
   disabled,
   placeholder,
   min,
+  className,
 }: NumericCellInputProps) {
   const [localValue, setLocalValue] = useState(value)
   // Re-sync local state from an external value change (draft restore, reset) without an effect —
@@ -52,7 +57,7 @@ export function NumericCellInput({
   return (
     <NumericFormat
       customInput={Input}
-      className="h-8 w-full bg-background text-xs"
+      className={cn("h-8 w-full bg-background text-xs", className)}
       value={localValue ?? ""}
       thousandSeparator="."
       decimalSeparator=","

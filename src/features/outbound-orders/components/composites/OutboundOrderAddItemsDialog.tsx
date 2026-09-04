@@ -2,7 +2,7 @@ import { useState } from "react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
+import { Plus } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options"
 import { cn } from "@/lib/utils"
@@ -215,32 +216,12 @@ export function OutboundOrderAddItemsDialog({
         </div>
 
         {pagination && (
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={pagination.currentPage <= 1}
-                onPress={() => setPage((p) => p - 1)}
-              >
-                <ChevronLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={pagination.currentPage >= pagination.totalPages}
-                onPress={() => setPage((p) => p + 1)}
-              >
-                <ChevronRight className="size-4" />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+          />
         )}
 
         <DialogFooter>

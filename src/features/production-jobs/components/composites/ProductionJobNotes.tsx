@@ -1,14 +1,13 @@
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DateTime } from "luxon"
 
-import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import type { ProductionJobNote } from "@/lib/types/production-job.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 type ProductionJobNotesProps = {
   notes: ProductionJobNote[] | undefined
-  pagination: Pagination | undefined
+  pagination: PaginationMeta | undefined
   isPending: boolean
   isError: boolean
   errorMessage: string | undefined
@@ -57,35 +56,14 @@ export function ProductionJobNotes({
         </ul>
       )}
 
-      {pagination && pagination.totalPages > 1 ? (
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[11px] text-muted-foreground">
-            Trang {pagination.currentPage}/{pagination.totalPages}
-          </p>
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Trang trước"
-              isDisabled={pagination.previousPage === null}
-              onPress={() => onPageChange(pagination.currentPage - 1)}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Trang sau"
-              isDisabled={pagination.nextPage === null}
-              onPress={() => onPageChange(pagination.currentPage + 1)}
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      {pagination && (
+        <Pagination
+          page={pagination.currentPage}
+          pageSize={pagination.limit}
+          total={pagination.totalRecords}
+          onPageChange={onPageChange}
+        />
+      )}
     </>
   )
 }

@@ -3,10 +3,9 @@ import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import { useDebounceValue } from "usehooks-ts"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -15,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import {
   Table,
   TableBody,
@@ -34,8 +34,7 @@ import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
 import type { CreateOutsourcingOrderItemValue } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
-
-const limitOptions = [10, 20, 50] as const
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 // Item form value mirrors OutsourceableOperation field-for-field (xem create-outsourcing-order.schema.ts)
 // cộng 4 field nhập mới, nên chọn 1 dòng chỉ cần spread — không liệt kê lại từng ref lồng thủ công.
@@ -69,7 +68,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
     initialOperationId,
   }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+    const [pageSize, setPageSize] = useState<PageSize>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
     const [productionJobId, setProductionJobId] = useState(
@@ -88,7 +87,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
     const query = useQuery({
       ...outsourceableOperationsQueryOptions({
         page,
-        limit,
+        limit: pageSize,
         q: debouncedQ.trim() || undefined,
         productionJobId,
         operationId,
@@ -220,8 +219,8 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               Job
             </Label>
             <Select
-              selectedKey={productionJobId ?? "all"}
-              onSelectionChange={(key) => {
+              value={productionJobId ?? "all"}
+              onChange={(key) => {
                 const value = String(key)
                 setProductionJobId(value === "all" ? undefined : value)
                 setPage(1)
@@ -251,8 +250,8 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               Công đoạn
             </Label>
             <Select
-              selectedKey={operationId ?? "all"}
-              onSelectionChange={(key) => {
+              value={operationId ?? "all"}
+              onChange={(key) => {
                 const value = String(key)
                 setOperationId(value === "all" ? undefined : value)
                 setPage(1)
@@ -356,53 +355,18 @@ export const CreateOutsourcingOrderPickerSection = withForm({
         </div>
 
         {pagination && (
-          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Select
-                selectedKey={String(limit)}
-                onSelectionChange={(key) => {
-                  setLimit(Number(key) as (typeof limitOptions)[number])
-                  setPage(1)
-                }}
-                isDisabled={disabled}
-              >
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {limitOptions.map((option) => (
-                    <SelectItem key={option} id={String(option)}>
-                      {option} / trang
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={disabled || pagination.currentPage <= 1}
-                onPress={() => setPage((p) => p - 1)}
-              >
-                <ChevronLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={
-                  disabled || pagination.currentPage >= pagination.totalPages
-                }
-                onPress={() => setPage((p) => p + 1)}
-              >
-                <ChevronRight className="size-4" />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
+              setPage(1)
+            }}
+            disabled={disabled}
+            className="mt-3"
+          />
         )}
       </div>
     )

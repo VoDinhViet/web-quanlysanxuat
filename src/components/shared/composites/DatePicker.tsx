@@ -14,8 +14,8 @@ import { cn } from "@/lib/utils"
 // which pass onBlur/disabled — validation state stays on the surrounding `Field`/`FieldError`,
 // same as the RadioGroup fields next to it). All parse/format is luxon —
 // `DateTime.fromISO(value).toFormat(...)`, safe under this repo's fixed `Settings.defaultZone`
-// (src/lib/luxon-config.ts). The Calendar's own month/day captions render in the browser's
-// default locale — no app-wide I18nProvider is wired (removed, see button.tsx phase notes).
+// (src/lib/luxon-config.ts). The Calendar's own month/day captions render in Vietnamese via the
+// app-wide `<I18nProvider locale="vi-VN">` wired in src/routes/__root.tsx.
 type DatePickerProps = {
   value: string
   onChange: (value: string) => void

@@ -4,17 +4,10 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { useDebounceValue } from "usehooks-ts"
-import { AltArrowLeft, AltArrowRight, Magnifer } from "@solar-icons/react"
+import { Magnifer } from "@solar-icons/react"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import {
   Table,
   TableBody,
@@ -33,8 +26,7 @@ import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
 import { cn } from "@/lib/utils"
 import type { PickedPurchaseOrderItemValue } from "@/features/purchase-orders/schemas/create-purchase-order.schema"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
-
-const limitOptions = [10, 20, 50] as const
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 // Each ledger row picked becomes its own PO item row directly — unlike RFQ's picker, a PO item
 // maps 1:1 to a dòng ĐXMH (no allocation merge, CreatePurchaseOrderItemReqDto.purchaseRequestItemId
@@ -60,7 +52,7 @@ export const CreatePurchaseOrderItemsPickerSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+    const [pageSize, setPageSize] = useState<PageSize>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
 
@@ -76,7 +68,7 @@ export const CreatePurchaseOrderItemsPickerSection = withForm({
     const ledgerQuery = useQuery({
       ...purchaseLedgerQueryOptions({
         page,
-        limit,
+        limit: pageSize,
         status: PurchaseLedgerStatus.WAITING_TO_PURCHASE,
         q: debouncedQ.trim() || undefined,
       }),
@@ -226,53 +218,18 @@ export const CreatePurchaseOrderItemsPickerSection = withForm({
         </div>
 
         {pagination && (
-          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Select
-                selectedKey={String(limit)}
-                onSelectionChange={(key) => {
-                  setLimit(Number(key) as (typeof limitOptions)[number])
-                  setPage(1)
-                }}
-                isDisabled={disabled}
-              >
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {limitOptions.map((option) => (
-                    <SelectItem key={option} id={String(option)}>
-                      {option} / trang
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={disabled || pagination.currentPage <= 1}
-                onPress={() => setPage((p) => p - 1)}
-              >
-                <AltArrowLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={
-                  disabled || pagination.currentPage >= pagination.totalPages
-                }
-                onPress={() => setPage((p) => p + 1)}
-              >
-                <AltArrowRight className="size-4" />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
+              setPage(1)
+            }}
+            disabled={disabled}
+            className="mt-3"
+          />
         )}
       </div>
     )

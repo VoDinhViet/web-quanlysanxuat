@@ -13,15 +13,16 @@ import {
 } from "@/components/ui/table"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { TablePagination } from "@/components/shared/composites/TablePagination"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { userColumns } from "@/features/users/components/composites/UsersTableColumns"
 import { cn } from "@/lib/utils"
 import type { UserListItem } from "@/lib/types/user.type"
-import type { Pagination } from "@/lib/types/pagination.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
 type UsersTableProps = {
   rows: UserListItem[]
-  pagination: Pagination
+  pagination: PaginationMeta
   isPending: boolean
 }
 
@@ -33,6 +34,8 @@ export function UsersTable({ rows, pagination, isPending }: UsersTableProps) {
     columns: userColumns,
     features: appTableFeatures,
   })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
 
   return (
     <div
@@ -105,7 +108,14 @@ export function UsersTable({ rows, pagination, isPending }: UsersTableProps) {
         </div>
       )}
 
-      <TablePagination pagination={pagination} className="pt-4" />
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
     </div>
   )
 }

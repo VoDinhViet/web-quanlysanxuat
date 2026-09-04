@@ -117,10 +117,6 @@ export function OutsourcingReceiptsTableFilter() {
     })
   }
 
-  const handleExecuteSearch = () => {
-    handleSearchDebounced.flush()
-  }
-
   const resetFilters = () => {
     handleSearchDebounced.cancel()
     setQ("")
@@ -169,12 +165,6 @@ export function OutsourcingReceiptsTableFilter() {
               setQ(e.target.value)
               handleSearchDebounced()
             }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault()
-                handleExecuteSearch()
-              }
-            }}
           />
           <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
         </div>
@@ -188,8 +178,8 @@ export function OutsourcingReceiptsTableFilter() {
           Nhà cung cấp
         </Label>
         <Select
-          selectedKey={search.supplierId ?? "all"}
-          onSelectionChange={(key) => handleSupplierChange(String(key))}
+          value={search.supplierId ?? "all"}
+          onChange={(key) => handleSupplierChange(String(key))}
           placeholder="Chọn nhà cung cấp"
         >
           <SelectTrigger id="os-in-supplier" className="w-full text-xs">
@@ -214,8 +204,8 @@ export function OutsourcingReceiptsTableFilter() {
           Trạng thái
         </Label>
         <Select
-          selectedKey={search.status ?? "all"}
-          onSelectionChange={(key) => handleStatusChange(String(key))}
+          value={search.status ?? "all"}
+          onChange={(key) => handleStatusChange(String(key))}
           placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-in-status" className="w-full text-xs">
@@ -239,12 +229,12 @@ export function OutsourcingReceiptsTableFilter() {
           Yêu cầu QC
         </Label>
         <Select
-          selectedKey={
+          value={
             search.requiresIqc === undefined
               ? "all"
               : String(search.requiresIqc)
           }
-          onSelectionChange={(key) => handleRequiresIqcChange(String(key))}
+          onChange={(key) => handleRequiresIqcChange(String(key))}
           placeholder="Chọn yêu cầu QC"
         >
           <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">

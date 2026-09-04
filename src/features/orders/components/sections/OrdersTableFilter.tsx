@@ -103,17 +103,11 @@ export function OrdersTableFilter() {
               <Input
                 id="orders-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo Mã SO..."
+                placeholder="Tìm theo Mã SO, tên/mã KH, tên/mã sản phẩm..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)
                   handleSearch(event.target.value)
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
                 }}
               />
               <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -143,8 +137,8 @@ export function OrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
-              selectedKey={search.status ?? "all"}
-              onSelectionChange={(key) => handleStatusChange(String(key))}
+              value={search.status ?? "all"}
+              onChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="orders-status" className="w-full text-xs">
                 <SelectValue />
@@ -170,7 +164,7 @@ export function OrdersTableFilter() {
             >
               NV kinh doanh
             </Label>
-            <Select selectedKey="all" isDisabled>
+            <Select value="all" isDisabled>
               <SelectTrigger
                 id="orders-assigned-user"
                 className="w-full text-xs"

@@ -3,17 +3,10 @@ import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import {
   Table,
   TableBody,
@@ -31,8 +24,7 @@ import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
 import type { CreateOutboundOrderItemValue } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
-
-const limitOptions = [10, 20, 50] as const
+import type { PageSize } from "@/components/shared/composites/Pagination"
 
 // SL giao mặc định bằng toàn bộ SL đặt (BE chưa trả SL đã giao/còn lại ở endpoint picker — đây là
 // gợi ý tốt nhất có sẵn, người dùng tự sửa nếu cần). Cùng idiom
@@ -62,7 +54,7 @@ export const CreateOutboundOrderPickerSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState<(typeof limitOptions)[number]>(10)
+    const [pageSize, setPageSize] = useState<PageSize>(10)
 
     const lookupUnfulfilledOrderItem = useUnfulfilledOrderItemLookup()
     const clientIdField = useField({ form, name: "clientId" })
@@ -76,7 +68,7 @@ export const CreateOutboundOrderPickerSection = withForm({
         : undefined
 
     const query = useQuery({
-      ...unfulfilledOrderItemsQueryOptions({ page, limit }),
+      ...unfulfilledOrderItemsQueryOptions({ page, limit: pageSize }),
       placeholderData: keepPreviousData,
     })
 
@@ -281,53 +273,18 @@ export const CreateOutboundOrderPickerSection = withForm({
         </div>
 
         {pagination && (
-          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Trang {pagination.currentPage}/{pagination.totalPages} —{" "}
-              {pagination.totalRecords} kết quả
-            </span>
-            <div className="flex items-center gap-2">
-              <Select
-                selectedKey={String(limit)}
-                onSelectionChange={(key) => {
-                  setLimit(Number(key) as (typeof limitOptions)[number])
-                  setPage(1)
-                }}
-                isDisabled={disabled}
-              >
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {limitOptions.map((option) => (
-                    <SelectItem key={option} id={String(option)}>
-                      {option} / trang
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={disabled || pagination.currentPage <= 1}
-                onPress={() => setPage((p) => p - 1)}
-              >
-                <ChevronLeft className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                isDisabled={
-                  disabled || pagination.currentPage >= pagination.totalPages
-                }
-                onPress={() => setPage((p) => p + 1)}
-              >
-                <ChevronRight className="size-4" />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
+              setPage(1)
+            }}
+            disabled={disabled}
+            className="mt-3"
+          />
         )}
 
         {items.length > 0 && (

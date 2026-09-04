@@ -109,12 +109,6 @@ export function InventoryMaterialsTableFilter() {
                   setQ(event.target.value)
                   handleSearch(event.target.value)
                 }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    handleSearch.flush()
-                  }
-                }}
               />
               {q ? (
                 <Button
@@ -152,8 +146,8 @@ export function InventoryMaterialsTableFilter() {
               Nhà cung cấp
             </Label>
             <Select
-              selectedKey={search.supplierId ?? "all"}
-              onSelectionChange={(key) => handleSupplierChange(String(key))}
+              value={search.supplierId ?? "all"}
+              onChange={(key) => handleSupplierChange(String(key))}
             >
               <SelectTrigger id="inventory-supplier" className="w-full text-xs">
                 <SelectValue />
@@ -183,8 +177,8 @@ export function InventoryMaterialsTableFilter() {
               }
             />
             <Select
-              selectedKey={search.status ?? "all"}
-              onSelectionChange={(key) => handleStatusChange(String(key))}
+              value={search.status ?? "all"}
+              onChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="inventory-status" className="w-full text-xs">
                 <SelectValue />

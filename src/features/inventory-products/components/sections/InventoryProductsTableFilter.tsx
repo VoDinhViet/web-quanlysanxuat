@@ -66,12 +66,6 @@ export function InventoryProductsTableFilter() {
                 setQ(e.target.value)
                 handleSearch(e.target.value)
               }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault()
-                  handleSearch.flush()
-                }
-              }}
             />
             <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
           </div>
