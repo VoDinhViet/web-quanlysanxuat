@@ -1,12 +1,15 @@
 import { DateTime } from "luxon"
-import { Eye, Pencil } from "lucide-react"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 
-import { LinkButton } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { DeleteOrderDialog } from "@/features/orders/components/composites/DeleteOrderDialog"
 import {
   canUpdateOrder,
+  OrderStatus,
   resolveDeliveryTone,
   resolveOrderUpdateDisabledHint,
 } from "@/lib/types/order.type"
@@ -53,8 +56,11 @@ export function DueDateCell({ order }: { order: Order }) {
 // with a status-specific hint. Otherwise it links to the update screen, gated on `orders:update`
 // same as the create button on the toolbar. The <span tabIndex={0}> wrapper on the disabled action
 // is required — a disabled button swallows pointer events and the tooltip would never fire.
+// "Xoá" only works while DRAFT (backend gate E264) — every other status keeps DisabledAction, same
+// idiom as OutboundOrderActionsCell.
 export function OrderActionsCell({ order }: { order: Order }) {
   const isEditable = canUpdateOrder(order.status)
+  const isDraft = order.status === OrderStatus.DRAFT
 
   return (
     <div className="flex items-center justify-center gap-1.5">
@@ -91,6 +97,33 @@ export function OrderActionsCell({ order }: { order: Order }) {
           hint={resolveOrderUpdateDisabledHint(order.status)}
         >
           <Pencil className="size-3.5" />
+        </DisabledAction>
+      )}
+      {isDraft ? (
+        <PermissionGate permission="orders:delete">
+          <DeleteOrderDialog
+            order={order}
+            trigger={
+              <TooltipTrigger>
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Xoá đơn hàng"
+                  className="border-destructive/20 text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+                <Tooltip>Xoá đơn hàng</Tooltip>
+              </TooltipTrigger>
+            }
+          />
+        </PermissionGate>
+      ) : (
+        <DisabledAction
+          label="Xoá đơn hàng"
+          hint="chỉ xoá được khi đơn ở trạng thái Nháp"
+        >
+          <Trash2 className="size-3.5" />
         </DisabledAction>
       )}
     </div>

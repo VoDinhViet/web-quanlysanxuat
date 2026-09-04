@@ -41,6 +41,7 @@ export const PERMISSION_CODES = [
   "orders:create",
   "orders:update",
   "orders:approve",
+  "orders:delete",
 
   "inventory:read",
   "inventory:create",
@@ -142,6 +143,7 @@ export const permissionLabels: Record<PermissionCode, string> = {
   "orders:create": "Tạo đơn hàng",
   "orders:update": "Sửa đơn hàng",
   "orders:approve": "Duyệt đơn hàng",
+  "orders:delete": "Xoá đơn hàng",
 
   "inventory:read": "Xem kho",
   "inventory:create": "Tạo phiếu kho",
@@ -254,7 +256,13 @@ export const permissionGroups: PermissionGroup[] = [
   },
   {
     label: "Đơn hàng (SO)",
-    codes: ["orders:read", "orders:create", "orders:update", "orders:approve"],
+    codes: [
+      "orders:read",
+      "orders:create",
+      "orders:update",
+      "orders:approve",
+      "orders:delete",
+    ],
   },
   {
     label: "Kho (nhập/xuất/tồn)",
