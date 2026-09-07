@@ -111,14 +111,14 @@ export function InventoryRequisitionsTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="lv-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

@@ -54,8 +54,8 @@ export function ProductDetailTabs({
 
           const trigger = (
             <TabsTrigger
-              id={item.value}
-              isDisabled={isLocked}
+              value={item.value}
+              disabled={isLocked}
               className={cn(
                 "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
                 // Every override below has to repeat the primitive's own

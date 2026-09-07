@@ -95,7 +95,7 @@ export function UsersTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger
                 id="users-status-select"
@@ -106,7 +106,7 @@ export function UsersTableFilter() {
               <SelectContent>
                 <SelectGroup>
                   {statusFilterOptions.map((option) => (
-                    <SelectItem key={option.value} id={option.value}>
+                    <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
                   ))}
@@ -125,7 +125,7 @@ export function UsersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

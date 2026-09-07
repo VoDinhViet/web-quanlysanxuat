@@ -103,7 +103,7 @@ export function OutsourcingOrdersTableFilter() {
         </Label>
         <Select
           value={search.status ?? "all"}
-          onChange={(key) => handleStatusChange(String(key))}
+          onValueChange={(key) => handleStatusChange(String(key))}
           placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-out-status" className="w-full text-xs">
@@ -111,7 +111,7 @@ export function OutsourcingOrdersTableFilter() {
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (
-              <SelectItem key={opt.value} id={opt.value}>
+              <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -123,7 +123,7 @@ export function OutsourcingOrdersTableFilter() {
         type="button"
         variant="outline"
         className="gap-1.5 text-xs"
-        onPress={resetFilters}
+        onClick={resetFilters}
       >
         <RotateCw className="size-3.5" />
         Xóa bộ lọc

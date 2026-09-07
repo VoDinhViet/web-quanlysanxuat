@@ -43,8 +43,8 @@ export function OperationSelect({
   return (
     <Select
       value={selectedOperationId ?? ""}
-      onChange={(key) => handleChange(String(key))}
-      isDisabled={isPending || isError || summary.length === 0}
+      onValueChange={(key) => handleChange(String(key))}
+      disabled={isPending || isError || summary.length === 0}
       placeholder={placeholder}
     >
       <SelectTrigger
@@ -57,7 +57,7 @@ export function OperationSelect({
         {summary.map((operation) => (
           <SelectItem
             key={operation.operationId}
-            id={operation.operationId}
+            value={operation.operationId}
             className="text-xs"
           >
             {operation.name} · {operation.jobCount} công việc

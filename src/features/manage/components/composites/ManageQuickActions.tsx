@@ -127,7 +127,7 @@ export function ManageQuickActions() {
               <Button
                 type="button"
                 variant="outline"
-                isDisabled
+                disabled
                 className={cn(
                   tileClassName,
                   "pointer-events-none w-full",

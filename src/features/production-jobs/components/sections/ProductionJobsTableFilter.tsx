@@ -169,7 +169,7 @@ export function ProductionJobsTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger
                 id="production-jobs-status"
@@ -179,7 +179,7 @@ export function ProductionJobsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

@@ -65,7 +65,7 @@ export function OutsourcingReceiptDetailActions({
             type="button"
             variant="outline"
             className="border-destructive/40 text-destructive"
-            onPress={() => setConfirmAction("cancel")}
+            onClick={() => setConfirmAction("cancel")}
           >
             <CircleX className="size-4" />
             Hủy phiếu
@@ -103,15 +103,15 @@ export function OutsourcingReceiptDetailActions({
           <DialogFooter>
             <Button
               variant="outline"
-              onPress={() => closeConfirm(false)}
-              isDisabled={cancelMutation.isPending}
+              onClick={() => closeConfirm(false)}
+              disabled={cancelMutation.isPending}
             >
               Đóng
             </Button>
             <Button
               variant="destructive"
-              onPress={() => cancelMutation.mutate()}
-              isDisabled={cancelMutation.isPending}
+              onClick={() => cancelMutation.mutate()}
+              disabled={cancelMutation.isPending}
             >
               {cancelMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
             </Button>

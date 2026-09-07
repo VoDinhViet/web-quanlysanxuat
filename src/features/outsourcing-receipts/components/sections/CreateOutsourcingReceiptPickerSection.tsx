@@ -255,12 +255,12 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
             </Label>
             <Select
               value={operationId ?? "all"}
-              onChange={(key) => {
+              onValueChange={(key) => {
                 const value = String(key)
                 setOperationId(value === "all" ? undefined : value)
                 setPage(1)
               }}
-              isDisabled={disabled}
+              disabled={disabled}
               placeholder="Tất cả công đoạn"
             >
               <SelectTrigger
@@ -270,9 +270,9 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả công đoạn</SelectItem>
+                <SelectItem value="all">Tất cả công đoạn</SelectItem>
                 {operationOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -379,8 +379,8 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
               type="button"
               variant="ghost"
               className="text-xs text-muted-foreground hover:text-destructive"
-              isDisabled={disabled}
-              onPress={() => {
+              disabled={disabled}
+              onClick={() => {
                 itemsField.setValue([])
                 supplierIdField.handleChange("")
               }}

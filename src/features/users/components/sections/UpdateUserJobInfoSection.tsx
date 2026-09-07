@@ -98,8 +98,8 @@ export function UpdateUserJobInfoSection({
                 </FieldLabel>
                 <Select
                   value={field.value}
-                  onChange={(key) => field.onChange(String(key))}
-                  isDisabled={disabled || departmentsQuery.isPending}
+                  onValueChange={(key) => field.onChange(String(key))}
+                  disabled={disabled || departmentsQuery.isPending}
                   placeholder={
                     departmentsQuery.isFetching
                       ? "Đang tải..."
@@ -123,7 +123,7 @@ export function UpdateUserJobInfoSection({
                       buildSelectOptions(departments).map((option) => (
                         <SelectItem
                           key={option.value}
-                          id={option.value}
+                          value={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -155,8 +155,8 @@ export function UpdateUserJobInfoSection({
                   // "" here forces the placeholder to render "Đang tải..." instead of Radix
                   // showing a blank trigger for a value that matches no item yet.
                   value={positionsQuery.isPending ? "" : field.value}
-                  onChange={(key) => field.onChange(String(key))}
-                  isDisabled={
+                  onValueChange={(key) => field.onChange(String(key))}
+                  disabled={
                     disabled || !departmentId || positionsQuery.isPending
                   }
                   placeholder={
@@ -187,7 +187,7 @@ export function UpdateUserJobInfoSection({
                       positionOptions.map((option) => (
                         <SelectItem
                           key={option.value}
-                          id={option.value}
+                          value={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -253,7 +253,7 @@ export function UpdateUserJobInfoSection({
                 <RadioGroup
                   value={field.value}
                   onChange={field.onChange}
-                  isDisabled={disabled}
+                  disabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
                   {employeeStatusOptions.map((option) => (

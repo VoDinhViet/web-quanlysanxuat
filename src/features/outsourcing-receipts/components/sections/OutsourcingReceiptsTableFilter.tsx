@@ -179,16 +179,16 @@ export function OutsourcingReceiptsTableFilter() {
         </Label>
         <Select
           value={search.supplierId ?? "all"}
-          onChange={(key) => handleSupplierChange(String(key))}
+          onValueChange={(key) => handleSupplierChange(String(key))}
           placeholder="Chọn nhà cung cấp"
         >
           <SelectTrigger id="os-in-supplier" className="w-full text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem id="all">Tất cả NCC</SelectItem>
+            <SelectItem value="all">Tất cả NCC</SelectItem>
             {supplierOptions.map((option) => (
-              <SelectItem key={option.id} id={option.id}>
+              <SelectItem key={option.id} value={option.id}>
                 {option.name}
               </SelectItem>
             ))}
@@ -205,7 +205,7 @@ export function OutsourcingReceiptsTableFilter() {
         </Label>
         <Select
           value={search.status ?? "all"}
-          onChange={(key) => handleStatusChange(String(key))}
+          onValueChange={(key) => handleStatusChange(String(key))}
           placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-in-status" className="w-full text-xs">
@@ -213,7 +213,7 @@ export function OutsourcingReceiptsTableFilter() {
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (
-              <SelectItem key={opt.value} id={opt.value}>
+              <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -234,7 +234,7 @@ export function OutsourcingReceiptsTableFilter() {
               ? "all"
               : String(search.requiresIqc)
           }
-          onChange={(key) => handleRequiresIqcChange(String(key))}
+          onValueChange={(key) => handleRequiresIqcChange(String(key))}
           placeholder="Chọn yêu cầu QC"
         >
           <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">
@@ -242,7 +242,7 @@ export function OutsourcingReceiptsTableFilter() {
           </SelectTrigger>
           <SelectContent>
             {requiresIqcOptions.map((opt) => (
-              <SelectItem key={opt.value} id={opt.value}>
+              <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -269,7 +269,7 @@ export function OutsourcingReceiptsTableFilter() {
         type="button"
         variant="outline"
         className="gap-1.5 text-xs"
-        onPress={resetFilters}
+        onClick={resetFilters}
       >
         <RotateCw className="size-3.5" />
         Xóa bộ lọc

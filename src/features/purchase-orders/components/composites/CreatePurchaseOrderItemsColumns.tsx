@@ -136,8 +136,8 @@ export function buildPurchaseOrderItemsColumns({
             size="icon-sm"
             aria-label={`Bỏ chọn dòng ${row.index + 1}`}
             className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-            isDisabled={disabled}
-            onPress={() => itemsField.removeValue(row.index)}
+            disabled={disabled}
+            onClick={() => itemsField.removeValue(row.index)}
           >
             <TrashBinTrash className="size-3.5" />
           </Button>

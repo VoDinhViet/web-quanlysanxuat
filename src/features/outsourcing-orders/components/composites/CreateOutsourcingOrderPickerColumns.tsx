@@ -35,7 +35,7 @@ export function buildCreateOutsourcingOrderPickerColumns({
       header: () => (
         <Checkbox
           isSelected={allChecked}
-          isDisabled={disabled}
+          disabled={disabled}
           onChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
         />
@@ -46,7 +46,7 @@ export function buildCreateOutsourcingOrderPickerColumns({
           isSelected={pickedOperationIds.has(
             row.original.productionJobOperationId
           )}
-          isDisabled={disabled || row.original.remainingQuantity <= 0}
+          disabled={disabled || row.original.remainingQuantity <= 0}
           onChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.bomItem.name}`}
         />

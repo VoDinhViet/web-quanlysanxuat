@@ -120,15 +120,15 @@ function PaymentRequestCancelForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onClose}
-          isDisabled={mutation.isPending}
+          onClick={onClose}
+          disabled={mutation.isPending}
         >
           Hủy
         </Button>
         <Button
           type="submit"
           variant="destructive"
-          isDisabled={mutation.isPending}
+          disabled={mutation.isPending}
         >
           {mutation.isPending ? "Đang xử lý..." : "Hủy yêu cầu"}
         </Button>

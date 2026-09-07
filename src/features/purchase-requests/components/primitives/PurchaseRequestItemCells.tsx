@@ -167,7 +167,7 @@ export function PurchaseRequestItemActionsCell({
       size="sm"
       className="gap-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
       aria-label={`Xóa ${itemName} khỏi đề xuất`}
-      isDisabled={isLastItem}
+      disabled={isLastItem}
     >
       <Trash2 className="size-3.5" />
       Xóa

@@ -33,7 +33,7 @@ export function buildQuotationItemsPickerColumns({
       cell: ({ row }) => (
         <Checkbox
           isSelected={pickedIds.has(row.original.id)}
-          isDisabled={disabled}
+          disabled={disabled}
           onChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.item.name}`}
         />

@@ -121,7 +121,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                 onChange={(value) =>
                   field.handleChange(value as SourceOptionValue)
                 }
-                isDisabled={disabled}
+                disabled={disabled}
                 className="grid grid-cols-1 gap-3 sm:col-span-2 sm:grid-cols-2"
               >
                 {sourceOptions.map((option) => {

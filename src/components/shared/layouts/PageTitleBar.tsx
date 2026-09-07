@@ -188,7 +188,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
-          isDisabled={isLoggingOut}
+          disabled={isLoggingOut}
           onAction={onLogout}
         >
           <LogOut />
@@ -210,7 +210,7 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
           type="button"
           variant="ghost"
           size="icon"
-          onPress={toggleSidebar}
+          onClick={toggleSidebar}
           aria-label="Mở hoặc thu gọn thanh điều hướng"
         >
           <Menu />
@@ -232,7 +232,7 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
               type="button"
               variant="ghost"
               size="icon"
-              isDisabled
+              disabled
               aria-label="Thông báo"
             >
               <Bell />
@@ -247,7 +247,7 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
               type="button"
               variant="ghost"
               size="icon"
-              isDisabled
+              disabled
               aria-label="Trợ giúp"
             >
               <CircleHelp />

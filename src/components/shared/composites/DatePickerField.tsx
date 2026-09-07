@@ -54,7 +54,7 @@ export function DatePickerField({
           id={id}
           type="button"
           variant="outline"
-          isDisabled={disabled}
+          disabled={disabled}
           aria-invalid={isInvalid}
           className={cn(
             "h-9 w-full justify-between bg-background text-xs font-normal",

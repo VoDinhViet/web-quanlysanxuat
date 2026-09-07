@@ -91,8 +91,8 @@ export function CreateOutsourcingReceiptForm() {
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <Tabs
-          selectedKey={tab}
-          onSelectionChange={handleTabChange}
+          value={tab}
+          onValueChange={handleTabChange}
           className="gap-0"
         >
           <form.Subscribe
@@ -111,19 +111,19 @@ export function CreateOutsourcingReceiptForm() {
             )}
           </form.Subscribe>
 
-          <TabsContent id="picker" className="m-0 outline-none">
+          <TabsContent value="picker" className="m-0 outline-none">
             <CreateOutsourcingReceiptPickerSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent id="items" className="m-0 outline-none">
+          <TabsContent value="items" className="m-0 outline-none">
             <CreateOutsourcingReceiptItemsSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent id="confirm" className="m-0 outline-none">
+          <TabsContent value="confirm" className="m-0 outline-none">
             <CreateOutsourcingReceiptConfirmSection form={form} />
           </TabsContent>
         </Tabs>
@@ -134,8 +134,8 @@ export function CreateOutsourcingReceiptForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              isDisabled={isPending}
-              onPress={() => setTab(prevTab.value)}
+              disabled={isPending}
+              onClick={() => setTab(prevTab.value)}
             >
               <AltArrowLeft className="size-4" />
               Quay lại
@@ -145,8 +145,8 @@ export function CreateOutsourcingReceiptForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              isDisabled={isPending}
-              onPress={() =>
+              disabled={isPending}
+              onClick={() =>
                 void navigate({
                   to: "/manage/outsourcing-receipts",
                   search: { page: 1, limit: 10 },
@@ -173,8 +173,8 @@ export function CreateOutsourcingReceiptForm() {
                 return (
                   <Button
                     type="button"
-                    isDisabled={!canAdvance}
-                    onPress={() => setTab(nextTab.value)}
+                    disabled={!canAdvance}
+                    onClick={() => setTab(nextTab.value)}
                   >
                     Tiếp theo: {nextTab.label}
                     <AltArrowRight className="size-4" />
@@ -192,8 +192,8 @@ export function CreateOutsourcingReceiptForm() {
               {({ canSubmit, isSubmitting }) => (
                 <Button
                   type="button"
-                  isDisabled={!canSubmit || isSubmitting || isPending}
-                  onPress={() => {
+                  disabled={!canSubmit || isSubmitting || isPending}
+                  onClick={() => {
                     if (form.state.isSubmitting) return
                     form.handleSubmit()
                   }}

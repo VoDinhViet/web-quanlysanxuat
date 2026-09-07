@@ -47,20 +47,20 @@ export function CreateOutsourcingReceiptTabs({
         className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
       >
         {wizardTabs.map((item) => {
-          const isDisabled = disabledByTab[item.value]
+          const disabled = disabledByTab[item.value]
 
           return (
             <TabsTrigger
               key={item.value}
-              id={item.value}
-              isDisabled={isDisabled}
+              value={item.value}
+              disabled={disabled}
               className={cn(
                 "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
                 "data-selected:bg-primary/5 data-selected:text-primary",
                 "group-data-[variant=line]/tabs-list:data-selected:bg-primary/5",
                 "data-selected:hover:bg-primary/5",
                 "after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5",
-                isDisabled && "cursor-not-allowed opacity-60"
+                disabled && "cursor-not-allowed opacity-60"
               )}
             >
               <item.icon className="size-3.5" />

@@ -178,22 +178,22 @@ export function CreateOrderForm() {
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
       <Tabs
-        selectedKey={step}
-        onSelectionChange={handleStepChange}
+        value={step}
+        onValueChange={handleStepChange}
         className="gap-0"
       >
         <CreateOrderStepsTabs reachedStep={furthestStep} />
 
-        <TabsContent id="info" className="m-0 outline-none">
+        <TabsContent value="info" className="m-0 outline-none">
           <CreateOrderInfoSection form={form} disabled={isPending} />
         </TabsContent>
-        <TabsContent id="selectItems" className="m-0 outline-none">
+        <TabsContent value="selectItems" className="m-0 outline-none">
           <CreateOrderSelectItemsStep form={form} />
         </TabsContent>
-        <TabsContent id="itemQuantities" className="m-0 outline-none">
+        <TabsContent value="itemQuantities" className="m-0 outline-none">
           <CreateOrderQuantitiesStep form={form} disabled={isPending} />
         </TabsContent>
-        <TabsContent id="confirm" className="m-0 outline-none">
+        <TabsContent value="confirm" className="m-0 outline-none">
           <CreateOrderConfirmSection form={form} disabled={isPending} />
         </TabsContent>
       </Tabs>
@@ -204,8 +204,8 @@ export function CreateOrderForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() => setStep(prevStep)}
+            disabled={isPending}
+            onClick={() => setStep(prevStep)}
           >
             <ArrowLeft className="size-4" />
             {prevLabel}
@@ -215,8 +215,8 @@ export function CreateOrderForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/orders",
                 search: { page: 1, limit: 10 },
@@ -237,8 +237,8 @@ export function CreateOrderForm() {
           <Button
             key="next"
             type="button"
-            isDisabled={isPending}
-            onPress={() => void goNext()}
+            disabled={isPending}
+            onClick={() => void goNext()}
           >
             {nextLabel}
             <ArrowRight className="size-4" />
@@ -251,8 +251,8 @@ export function CreateOrderForm() {
             <Button
               type="button"
               variant="ghost"
-              isDisabled={isPending}
-              onPress={() => {
+              disabled={isPending}
+              onClick={() => {
                 form.reset(createOrderFormDefaultValues)
                 clearDraft()
                 setStep("info")
@@ -265,8 +265,8 @@ export function CreateOrderForm() {
             <Button
               type="button"
               variant="outline"
-              isDisabled={isPending}
-              onPress={() => {
+              disabled={isPending}
+              onClick={() => {
                 saveDraft(form.getValues())
                 toast.success("Đã lưu nháp")
               }}
@@ -276,7 +276,7 @@ export function CreateOrderForm() {
             </Button>
             <Button
               type="submit"
-              isDisabled={form.formState.isSubmitting || isPending}
+              disabled={form.formState.isSubmitting || isPending}
             >
               {form.formState.isSubmitting || isPending ? (
                 <>

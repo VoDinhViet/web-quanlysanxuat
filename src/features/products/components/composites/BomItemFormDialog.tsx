@@ -169,12 +169,12 @@ function CreateBomItemForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onCancel}
-          isDisabled={isSaving}
+          onClick={onCancel}
+          disabled={isSaving}
         >
           Hủy
         </Button>
-        <Button type="submit" isDisabled={isSaving}>
+        <Button type="submit" disabled={isSaving}>
           <CheckCircle className="size-4" />
           Thêm vào BOM
         </Button>
@@ -271,12 +271,12 @@ function UpdateBomItemForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onCancel}
-          isDisabled={isSaving}
+          onClick={onCancel}
+          disabled={isSaving}
         >
           Hủy
         </Button>
-        <Button type="submit" isDisabled={isSaving}>
+        <Button type="submit" disabled={isSaving}>
           <CheckCircle className="size-4" />
           Lưu thay đổi
         </Button>

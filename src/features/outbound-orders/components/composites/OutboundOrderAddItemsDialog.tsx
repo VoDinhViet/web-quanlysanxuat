@@ -129,9 +129,9 @@ export function OutboundOrderAddItemsDialog({
               type="button"
               variant="outline"
               size="icon-sm"
-              isDisabled={isPicked}
+              disabled={isPicked}
               aria-label={label}
-              onPress={() => onAdd(row.original)}
+              onClick={() => onAdd(row.original)}
             >
               <Plus className="size-3.5" />
             </Button>
@@ -225,7 +225,7 @@ export function OutboundOrderAddItemsDialog({
         )}
 
         <DialogFooter>
-          <Button type="button" onPress={() => setOpen(false)}>
+          <Button type="button" onClick={() => setOpen(false)}>
             Xong
           </Button>
         </DialogFooter>

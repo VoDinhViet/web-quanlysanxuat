@@ -74,12 +74,12 @@ export function StartProductionJobDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            isDisabled={mutation.isPending}
-            onPress={() => {
+            disabled={mutation.isPending}
+            onClick={() => {
               mutation.mutate()
             }}
           >

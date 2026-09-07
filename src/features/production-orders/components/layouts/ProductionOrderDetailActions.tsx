@@ -36,8 +36,8 @@ export function ProductionOrderDetailActions({
           <Button
             type="button"
             variant="outline"
-            isDisabled={isSaving || !hasUnsavedChanges}
-            onPress={onSave}
+            disabled={isSaving || !hasUnsavedChanges}
+            onClick={onSave}
           >
             {isSaving ? (
               <Loader2 className="size-4 animate-spin" />
@@ -56,7 +56,7 @@ export function ProductionOrderDetailActions({
               <span tabIndex={0}>
                 <Button
                   type="button"
-                  isDisabled
+                  disabled
                   className="pointer-events-none"
                 >
                   <CircleCheck className="size-4" />

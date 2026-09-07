@@ -69,13 +69,13 @@ export function CancelRequisitionDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Đóng
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            isDisabled={mutation.isPending}
-            onPress={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xử lý..." : "Hủy phiếu"}
           </AlertDialogAction>

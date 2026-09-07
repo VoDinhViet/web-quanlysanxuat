@@ -97,7 +97,7 @@ export const InventoryReceiptCreateReturnHeaderSection = withForm({
                 <RadioGroup
                   value={field.state.value ? "yes" : "no"}
                   onChange={(value) => field.handleChange(value === "yes")}
-                  isDisabled={disabled}
+                  disabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
                   {[

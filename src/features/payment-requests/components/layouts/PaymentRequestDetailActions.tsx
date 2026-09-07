@@ -49,7 +49,7 @@ export function PaymentRequestDetailActions({
           <DialogTrigger
             onOpenChange={(next) => next && markPaidMutation.reset()}
           >
-            <Button type="button" isDisabled={markPaidMutation.isPending}>
+            <Button type="button" disabled={markPaidMutation.isPending}>
               <CheckCircle className="size-4" />
               Đã thanh toán
             </Button>
@@ -72,8 +72,8 @@ export function PaymentRequestDetailActions({
               <DialogFooter>
                 <Button
                   type="button"
-                  isDisabled={markPaidMutation.isPending}
-                  onPress={() => markPaidMutation.mutate()}
+                  disabled={markPaidMutation.isPending}
+                  onClick={() => markPaidMutation.mutate()}
                 >
                   {markPaidMutation.isPending
                     ? "Đang xử lý…"

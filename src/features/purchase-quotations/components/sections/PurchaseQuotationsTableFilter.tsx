@@ -96,7 +96,7 @@ export function PurchaseQuotationsTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-quotations-status"
@@ -106,7 +106,7 @@ export function PurchaseQuotationsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -157,7 +157,7 @@ export function PurchaseQuotationsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

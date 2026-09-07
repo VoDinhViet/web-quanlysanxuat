@@ -132,14 +132,14 @@ export function PaymentRequestsTableFilter() {
             </Label>
             <Select
               value={search.supplierId ?? "all"}
-              onChange={(key) => handleSupplierChange(String(key))}
+              onValueChange={(key) => handleSupplierChange(String(key))}
             >
               <SelectTrigger id="pr-supplier" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {supplierFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -177,14 +177,14 @@ export function PaymentRequestsTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="pr-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

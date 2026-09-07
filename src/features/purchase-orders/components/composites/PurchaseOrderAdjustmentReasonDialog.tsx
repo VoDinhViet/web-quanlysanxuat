@@ -145,12 +145,12 @@ function PurchaseOrderAdjustmentReasonForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onCancel}
-          isDisabled={isPending}
+          onClick={onCancel}
+          disabled={isPending}
         >
           Hủy
         </Button>
-        <Button type="submit" isDisabled={isPending}>
+        <Button type="submit" disabled={isPending}>
           <Diskette className="size-4" />
           {isPending ? "Đang lưu..." : "Lưu"}
         </Button>

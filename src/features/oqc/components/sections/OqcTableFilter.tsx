@@ -138,14 +138,14 @@ export function OqcTableFilter() {
         </Label>
         <Select
           value={search.result ?? "all"}
-          onChange={(key) => handleResultChange(String(key))}
+          onValueChange={(key) => handleResultChange(String(key))}
         >
           <SelectTrigger id="oqc-result" className="w-full text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {resultOptions.map((option) => (
-              <SelectItem key={option.value} id={option.value}>
+              <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -162,14 +162,14 @@ export function OqcTableFilter() {
         </Label>
         <Select
           value={search.status ?? "all"}
-          onChange={(key) => handleStatusChange(String(key))}
+          onValueChange={(key) => handleStatusChange(String(key))}
         >
           <SelectTrigger id="oqc-status" className="w-full text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((option) => (
-              <SelectItem key={option.value} id={option.value}>
+              <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -186,14 +186,14 @@ export function OqcTableFilter() {
         </Label>
         <Select
           value={search.disposition ?? "all"}
-          onChange={(key) => handleDispositionChange(String(key))}
+          onValueChange={(key) => handleDispositionChange(String(key))}
         >
           <SelectTrigger id="oqc-disposition" className="w-full text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {dispositionOptions.map((option) => (
-              <SelectItem key={option.value} id={option.value}>
+              <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
             ))}

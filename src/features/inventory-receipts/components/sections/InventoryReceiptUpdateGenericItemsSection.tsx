@@ -76,8 +76,8 @@ export const InventoryReceiptUpdateGenericItemsSection = withForm({
                   type="button"
                   variant="outline"
                   className="border-primary/40 text-xs text-primary hover:bg-primary/5 hover:text-primary"
-                  isDisabled={disabled}
-                  onPress={openAdd}
+                  disabled={disabled}
+                  onClick={openAdd}
                 >
                   <Plus className="size-4" />
                   Thêm {itemNoun}
@@ -153,8 +153,8 @@ export const InventoryReceiptUpdateGenericItemsSection = withForm({
                                 size="icon-sm"
                                 aria-label={`Sửa dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                                isDisabled={disabled}
-                                onPress={() => openEdit(index)}
+                                disabled={disabled}
+                                onClick={() => openEdit(index)}
                               >
                                 <Pencil className="size-3.5" />
                               </Button>
@@ -167,8 +167,8 @@ export const InventoryReceiptUpdateGenericItemsSection = withForm({
                                 size="icon-sm"
                                 aria-label={`Xóa dòng ${index + 1}`}
                                 className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                                isDisabled={disabled}
-                                onPress={() => itemsField.removeValue(index)}
+                                disabled={disabled}
+                                onClick={() => itemsField.removeValue(index)}
                               >
                                 <Trash2 className="size-3.5" />
                               </Button>

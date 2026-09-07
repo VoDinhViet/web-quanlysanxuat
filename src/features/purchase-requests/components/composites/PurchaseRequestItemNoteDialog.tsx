@@ -125,8 +125,8 @@ function PurchaseRequestItemNoteDialogForm({
         <Button
           type="button"
           variant="outline"
-          isDisabled={isPending}
-          onPress={onClose}
+          disabled={isPending}
+          onClick={onClose}
         >
           Hủy
         </Button>
@@ -136,7 +136,7 @@ function PurchaseRequestItemNoteDialogForm({
           {([canSubmit, isSubmitting]) => (
             <Button
               type="submit"
-              isDisabled={!canSubmit || isSubmitting || isPending}
+              disabled={!canSubmit || isSubmitting || isPending}
             >
               {isSubmitting || isPending ? (
                 <Loader2 className="size-4 animate-spin" />

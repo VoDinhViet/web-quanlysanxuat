@@ -167,7 +167,7 @@ export function SupplierReturnsTableFilter() {
                 </Label>
                 <Select
                   value={search.supplierId ?? "all"}
-                  onChange={(key) => handleSupplierChange(String(key))}
+                  onValueChange={(key) => handleSupplierChange(String(key))}
                 >
                   <SelectTrigger
                     id="supplier-returns-supplier"
@@ -176,9 +176,9 @@ export function SupplierReturnsTableFilter() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem id="all">Tất cả</SelectItem>
+                    <SelectItem value="all">Tất cả</SelectItem>
                     {supplierOptions.map((option) => (
-                      <SelectItem key={option.id} id={option.id}>
+                      <SelectItem key={option.id} value={option.id}>
                         {option.name}
                       </SelectItem>
                     ))}
@@ -196,7 +196,7 @@ export function SupplierReturnsTableFilter() {
                 </Label>
                 <Select
                   value={search.status ?? "all"}
-                  onChange={(key) => handleStatusChange(String(key))}
+                  onValueChange={(key) => handleStatusChange(String(key))}
                 >
                   <SelectTrigger
                     id="supplier-returns-status"
@@ -206,7 +206,7 @@ export function SupplierReturnsTableFilter() {
                   </SelectTrigger>
                   <SelectContent>
                     {statusOptions.map((option) => (
-                      <SelectItem key={option.value} id={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}

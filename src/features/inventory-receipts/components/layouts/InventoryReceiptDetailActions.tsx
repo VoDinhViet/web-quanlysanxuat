@@ -102,7 +102,7 @@ export function InventoryReceiptDetailActions({
 
         {isDraft && (
           <PermissionGate permission="inventory:update">
-            <Button type="button" onPress={() => setConfirmAction("confirm")}>
+            <Button type="button" onClick={() => setConfirmAction("confirm")}>
               <CheckCircle className="size-4" />
               Xác nhận
             </Button>
@@ -111,7 +111,7 @@ export function InventoryReceiptDetailActions({
 
         {canPost && (
           <PermissionGate permission="inventory:update">
-            <Button type="button" onPress={() => setConfirmAction("post")}>
+            <Button type="button" onClick={() => setConfirmAction("post")}>
               <CheckCircle className="size-4" />
               Xác nhận nhập kho
             </Button>
@@ -124,7 +124,7 @@ export function InventoryReceiptDetailActions({
               type="button"
               variant="outline"
               className="border-destructive/40 text-destructive"
-              onPress={() => setConfirmAction("cancel")}
+              onClick={() => setConfirmAction("cancel")}
             >
               <CloseCircle className="size-4" />
               Hủy phiếu
@@ -200,14 +200,14 @@ export function InventoryReceiptDetailActions({
           <DialogFooter>
             <Button
               variant="outline"
-              onPress={() => closeConfirm(false)}
-              isDisabled={activeMutation.isPending}
+              onClick={() => closeConfirm(false)}
+              disabled={activeMutation.isPending}
             >
               Đóng
             </Button>
             <Button
               variant={confirmAction === "cancel" ? "destructive" : "default"}
-              onPress={() => {
+              onClick={() => {
                 if (confirmAction === "confirm") {
                   confirmMutation.mutate()
                 } else if (confirmAction === "post") {
@@ -216,7 +216,7 @@ export function InventoryReceiptDetailActions({
                   cancelMutation.mutate()
                 }
               }}
-              isDisabled={activeMutation.isPending}
+              disabled={activeMutation.isPending}
             >
               {activeMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
             </Button>

@@ -66,7 +66,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
       header: () => (
         <Checkbox
           isSelected={allChecked}
-          isDisabled={disabled}
+          disabled={disabled}
           onChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
         />
@@ -75,7 +75,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
       cell: ({ row }) => (
         <Checkbox
           isSelected={pickedIds.has(row.original.item.id)}
-          isDisabled={disabled}
+          disabled={disabled}
           onChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.item.name}`}
         />

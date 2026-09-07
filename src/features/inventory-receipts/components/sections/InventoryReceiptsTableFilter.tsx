@@ -135,14 +135,14 @@ export function InventoryReceiptsTableFilter() {
             </Label>
             <Select
               value={search.receiptType ?? "all"}
-              onChange={(key) => handleReceiptTypeChange(String(key))}
+              onValueChange={(key) => handleReceiptTypeChange(String(key))}
             >
               <SelectTrigger id="nk-receipt-type" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {receiptTypeOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -160,14 +160,14 @@ export function InventoryReceiptsTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="nk-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -202,7 +202,7 @@ export function InventoryReceiptsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Xóa bộ lọc

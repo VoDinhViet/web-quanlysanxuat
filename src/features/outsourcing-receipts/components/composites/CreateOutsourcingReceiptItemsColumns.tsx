@@ -192,8 +192,8 @@ export function buildCreateOutsourcingReceiptItemColumns({
             size="icon-sm"
             aria-label={`Bỏ dòng ${row.index + 1}`}
             className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-            isDisabled={disabled}
-            onPress={() => itemsField.removeValue(row.index)}
+            disabled={disabled}
+            onClick={() => itemsField.removeValue(row.index)}
           >
             <Trash2 className="size-3.5" />
           </Button>

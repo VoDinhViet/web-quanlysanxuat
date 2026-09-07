@@ -76,7 +76,7 @@ export function UpdateUserCredentialSection({
               <Switch
                 isSelected={field.value ?? false}
                 onChange={field.onChange}
-                isDisabled={disabled}
+                disabled={disabled}
                 className="mt-1 shrink-0"
                 aria-label="Cho phép đăng nhập"
               />
@@ -102,7 +102,7 @@ export function UpdateUserCredentialSection({
                       : undefined
                   )
                 }
-                isDisabled={disabled}
+                disabled={disabled}
                 className="mt-1 shrink-0"
                 aria-label="Cấp tài khoản ERP cho nhân viên này"
               />
@@ -195,8 +195,8 @@ export function UpdateUserCredentialSection({
                   variant="ghost"
                   size="icon-sm"
                   className="absolute top-1/2 right-1 -translate-y-1/2"
-                  onPress={() => setShowPassword(!showPassword)}
-                  isDisabled={credentialFieldsDisabled}
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={credentialFieldsDisabled}
                   aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 >
                   {showPassword ? (
@@ -224,8 +224,8 @@ export function UpdateUserCredentialSection({
               </FieldLabel>
               <Select
                 value={field.value ?? ""}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={credentialFieldsDisabled}
+                onValueChange={(key) => field.onChange(String(key))}
+                disabled={credentialFieldsDisabled}
                 placeholder={
                   rolesQuery.isPending
                     ? "Đang tải..."
@@ -244,7 +244,7 @@ export function UpdateUserCredentialSection({
                   {roleOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}

@@ -71,7 +71,7 @@ export function CreateUserCredentialSection({
                     : undefined
                 )
               }
-              isDisabled={disabled}
+              disabled={disabled}
               className="mt-1 shrink-0"
               aria-label="Cấp tài khoản ERP cho nhân viên này"
             />
@@ -159,8 +159,8 @@ export function CreateUserCredentialSection({
                   variant="ghost"
                   size="icon-sm"
                   className="absolute top-1/2 right-1 -translate-y-1/2"
-                  onPress={() => setShowPassword(!showPassword)}
-                  isDisabled={fieldsDisabled}
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={fieldsDisabled}
                   aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 >
                   {showPassword ? (
@@ -188,8 +188,8 @@ export function CreateUserCredentialSection({
               </FieldLabel>
               <Select
                 value={field.value ?? ""}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={fieldsDisabled}
+                onValueChange={(key) => field.onChange(String(key))}
+                disabled={fieldsDisabled}
                 placeholder={
                   rolesQuery.isPending
                     ? "Đang tải..."
@@ -208,7 +208,7 @@ export function CreateUserCredentialSection({
                   {roleOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}

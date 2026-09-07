@@ -141,7 +141,7 @@ export const OutboundOrderEditItemsSection = withForm({
                 type="button"
                 variant="outline"
                 size="sm"
-                isDisabled={disabled}
+                disabled={disabled}
               >
                 <Plus className="size-3.5" />
                 Thêm từ PO/Job

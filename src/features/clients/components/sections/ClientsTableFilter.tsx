@@ -103,20 +103,20 @@ export function ClientsTableFilter() {
             </Label>
             <Select
               value={search.clientGroupId ?? "all"}
-              onChange={(key) => handleGroupChange(String(key))}
+              onValueChange={(key) => handleGroupChange(String(key))}
             >
               <SelectTrigger className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {clientGroupOptionsQuery.isPending ? (
-                  <SelectItem id="loading" isDisabled>
+                  <SelectItem value="loading" disabled>
                     Đang tải...
                   </SelectItem>
                 ) : (
                   clientGroupOptionsQuery.data?.map((option) => (
-                    <SelectItem key={option.id} id={option.id}>
+                    <SelectItem key={option.id} value={option.id}>
                       {option.name}
                     </SelectItem>
                   ))
@@ -134,15 +134,15 @@ export function ClientsTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="clients-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -159,12 +159,12 @@ export function ClientsTableFilter() {
             >
               Khu vực
             </Label>
-            <Select value="all" isDisabled>
+            <Select value="all" disabled>
               <SelectTrigger id="clients-region" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -179,7 +179,7 @@ export function ClientsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

@@ -171,14 +171,14 @@ export function OutboundOrdersTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="do-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -195,7 +195,7 @@ export function OutboundOrdersTableFilter() {
             </Label>
             <Select
               value={search.fulfillmentType ?? "all"}
-              onChange={(key) => handleFulfillmentTypeChange(String(key))}
+              onValueChange={(key) => handleFulfillmentTypeChange(String(key))}
             >
               <SelectTrigger
                 id="do-fulfillment-type"
@@ -205,7 +205,7 @@ export function OutboundOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {fulfillmentTypeFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -247,7 +247,7 @@ export function OutboundOrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Xóa bộ lọc

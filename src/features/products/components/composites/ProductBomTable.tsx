@@ -191,7 +191,7 @@ function OperationsToggleButton({
         variant="outline"
         size="icon-sm"
         aria-label={label}
-        onPress={onToggle}
+        onClick={onToggle}
         className={cn(
           "border border-border/60 hover:bg-muted",
           isExpanded && "bg-primary/10 text-primary hover:bg-primary/15"
@@ -260,7 +260,7 @@ function BomRowActions({
             variant="outline"
             size="icon-sm"
             aria-label="Thêm cùng cấp"
-            onPress={onAddSibling}
+            onClick={onAddSibling}
             className="border border-border/60 hover:bg-muted"
           >
             <Layers className="size-3.5" />
@@ -275,7 +275,7 @@ function BomRowActions({
           variant="outline"
           size="icon-sm"
           aria-label="Sửa thành phần"
-          onPress={() => onUpdate(node)}
+          onClick={() => onUpdate(node)}
           className="border border-border/60 hover:bg-muted"
         >
           <Pencil className="size-3.5" />
@@ -290,7 +290,7 @@ function BomRowActions({
           size="icon-sm"
           aria-label="Xoá thành phần"
           className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
-          onPress={() => onDelete(node)}
+          onClick={() => onDelete(node)}
         >
           <Trash2 className="size-3.5" />
         </Button>
@@ -320,7 +320,7 @@ function RootAddButton({
           variant="outline"
           size="icon-sm"
           aria-label="Thêm thành phần"
-          onPress={() => onCreate("WIP")}
+          onClick={() => onCreate("WIP")}
           className="border border-border/60 hover:bg-muted"
         >
           <Plus className="size-3.5" />

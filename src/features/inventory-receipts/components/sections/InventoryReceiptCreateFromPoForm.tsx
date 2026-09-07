@@ -200,8 +200,8 @@ export function InventoryReceiptCreateFromPoForm() {
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <Tabs
-          selectedKey={step}
-          onSelectionChange={handleStepValueChange}
+          value={step}
+          onValueChange={handleStepValueChange}
           className="gap-0"
         >
           <form.Subscribe
@@ -219,25 +219,25 @@ export function InventoryReceiptCreateFromPoForm() {
             )}
           </form.Subscribe>
 
-          <TabsContent id="po" className="m-0 outline-none">
+          <TabsContent value="po" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoPickerSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent id="preview" className="m-0 outline-none">
+          <TabsContent value="preview" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoPreviewSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent id="items" className="m-0 outline-none">
+          <TabsContent value="items" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoItemsSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent id="confirm" className="m-0 outline-none">
+          <TabsContent value="confirm" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoConfirmSection
               form={form}
               disabled={isPending}
@@ -251,8 +251,8 @@ export function InventoryReceiptCreateFromPoForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              isDisabled={isPending}
-              onPress={() => handleStepChange(prevStep)}
+              disabled={isPending}
+              onClick={() => handleStepChange(prevStep)}
             >
               <AltArrowLeft className="size-4" />
               {prevLabel}
@@ -262,8 +262,8 @@ export function InventoryReceiptCreateFromPoForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              isDisabled={isPending}
-              onPress={() =>
+              disabled={isPending}
+              onClick={() =>
                 void navigate({
                   to: "/manage/inventory-receipts",
                   search: { page: 1, limit: 10 },
@@ -292,8 +292,8 @@ export function InventoryReceiptCreateFromPoForm() {
                 return (
                   <Button
                     type="button"
-                    isDisabled={!canAdvance}
-                    onPress={() => handleStepChange(nextStep)}
+                    disabled={!canAdvance}
+                    onClick={() => handleStepChange(nextStep)}
                   >
                     {nextLabel}
                     <AltArrowRight className="size-4" />
@@ -306,8 +306,8 @@ export function InventoryReceiptCreateFromPoForm() {
               <Button
                 type="button"
                 variant="outline"
-                isDisabled={isPending}
-                onPress={() => {
+                disabled={isPending}
+                onClick={() => {
                   shouldConfirmRef.current = false
                   if (form.state.isSubmitting) return
                   form.handleSubmit()
@@ -326,8 +326,8 @@ export function InventoryReceiptCreateFromPoForm() {
                 {({ canSubmit, isSubmitting, requiresIqc }) => (
                   <Button
                     type="button"
-                    isDisabled={!canSubmit || isSubmitting || isPending}
-                    onPress={() => {
+                    disabled={!canSubmit || isSubmitting || isPending}
+                    onClick={() => {
                       shouldConfirmRef.current = true
                       if (form.state.isSubmitting) return
                       form.handleSubmit()

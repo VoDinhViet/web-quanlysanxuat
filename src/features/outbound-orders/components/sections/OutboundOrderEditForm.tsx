@@ -111,8 +111,8 @@ export function OutboundOrderEditForm({
         <Button
           type="button"
           variant="outline"
-          isDisabled={isPending}
-          onPress={() => void navigate({ search: { mode: "view" } })}
+          disabled={isPending}
+          onClick={() => void navigate({ search: { mode: "view" } })}
         >
           Hủy
         </Button>
@@ -122,7 +122,7 @@ export function OutboundOrderEditForm({
           {([canSubmit, isSubmitting]) => (
             <Button
               type="submit"
-              isDisabled={!canSubmit || isSubmitting || isPending}
+              disabled={!canSubmit || isSubmitting || isPending}
             >
               {isSubmitting || isPending ? (
                 <>

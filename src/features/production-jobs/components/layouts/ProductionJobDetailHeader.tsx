@@ -163,7 +163,7 @@ function RequestOqcButton({ job }: { job: ProductionJobDetail }) {
     <Button
       type="button"
       className="gap-1.5"
-      isDisabled={disabledReason !== null}
+      disabled={disabledReason !== null}
     >
       <ClipboardCheck className="size-4" />
       {job.oqcRequested ? "Đã tạo OQC" : "Yêu cầu OQC"}

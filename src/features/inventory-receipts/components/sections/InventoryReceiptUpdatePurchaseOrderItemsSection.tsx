@@ -132,7 +132,7 @@ export const InventoryReceiptUpdatePurchaseOrderItemsSection = withForm({
                           <TableCell>
                             <Checkbox
                               isSelected={isSelected}
-                              isDisabled={disabled}
+                              disabled={disabled}
                               onChange={() => toggle(line)}
                               aria-label={`Chọn dòng ${item.code}`}
                             />

@@ -29,7 +29,7 @@ export function PendingAction({
           variant={variant}
           className="pointer-events-none text-xs"
           aria-label={label}
-          isDisabled
+          disabled
         >
           {children}
         </Button>

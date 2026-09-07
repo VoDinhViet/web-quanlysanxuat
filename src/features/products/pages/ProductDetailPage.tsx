@@ -97,8 +97,8 @@ export function ProductDetailPage() {
             and sidebar are separated by rules rather than by gaps. */}
         <section className="overflow-hidden rounded-lg bg-card shadow-card">
           <Tabs
-            selectedKey={tab}
-            onSelectionChange={handleTabChange}
+            value={tab}
+            onValueChange={handleTabChange}
             className="gap-0"
           >
             <ProductDetailHeader
@@ -130,7 +130,7 @@ export function ProductDetailPage() {
                   is the CSS hook that actually hides it, RAC's equivalent of Radix's
                   `data-[state=inactive]:hidden`. */}
                 <TabsContent
-                  id="info"
+                  value="info"
                   shouldForceMount
                   className="m-0 outline-none data-[inert=true]:hidden"
                 >
@@ -141,11 +141,11 @@ export function ProductDetailPage() {
                   />
                 </TabsContent>
 
-                <TabsContent id="boms" className="m-0 outline-none">
+                <TabsContent value="boms" className="m-0 outline-none">
                   <ProductBomTab product={product} />
                 </TabsContent>
 
-                <TabsContent id="materials" className="m-0 outline-none">
+                <TabsContent value="materials" className="m-0 outline-none">
                   <ProductIssuesTab product={product} />
                 </TabsContent>
               </div>

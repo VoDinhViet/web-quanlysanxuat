@@ -73,7 +73,7 @@ export function SupplierReturnDetailActions({
 
       {isDraft && (
         <PermissionGate permission="inventory:update">
-          <Button type="button" onPress={() => setConfirmOpen(true)}>
+          <Button type="button" onClick={() => setConfirmOpen(true)}>
             Xác nhận xuất
           </Button>
         </PermissionGate>
@@ -139,12 +139,12 @@ export function SupplierReturnDetailActions({
             <Button
               type="button"
               variant="outline"
-              onPress={() => closeConfirm(false)}
-              isDisabled={postMutation.isPending}
+              onClick={() => closeConfirm(false)}
+              disabled={postMutation.isPending}
             >
               Đóng
             </Button>
-            <Button type="submit" isDisabled={postMutation.isPending}>
+            <Button type="submit" disabled={postMutation.isPending}>
               {postMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
             </Button>
           </DialogFooter>

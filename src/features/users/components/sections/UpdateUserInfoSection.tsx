@@ -77,7 +77,7 @@ export function UpdateUserInfoSection({
                   <RadioGroup
                     value={field.value}
                     onChange={field.onChange}
-                    isDisabled={disabled}
+                    disabled={disabled}
                     className="flex flex-row flex-wrap gap-2"
                   >
                     {genderOptions.map((option) => (

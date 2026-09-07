@@ -93,8 +93,8 @@ export function CreateUserJobInfoSection({
                 </FieldLabel>
                 <Select
                   value={departmentsQuery.isPending ? "" : field.value}
-                  onChange={(key) => field.onChange(String(key))}
-                  isDisabled={disabled || departmentsQuery.isPending}
+                  onValueChange={(key) => field.onChange(String(key))}
+                  disabled={disabled || departmentsQuery.isPending}
                   placeholder={
                     departmentsQuery.isPending
                       ? "Đang tải..."
@@ -118,7 +118,7 @@ export function CreateUserJobInfoSection({
                       buildSelectOptions(departments).map((option) => (
                         <SelectItem
                           key={option.value}
-                          id={option.value}
+                          value={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -150,8 +150,8 @@ export function CreateUserJobInfoSection({
                   // "" here forces the placeholder to render "Đang tải..." instead of Radix
                   // showing a blank trigger for a value that matches no item yet.
                   value={positionsQuery.isPending ? "" : field.value}
-                  onChange={(key) => field.onChange(String(key))}
-                  isDisabled={
+                  onValueChange={(key) => field.onChange(String(key))}
+                  disabled={
                     disabled || !departmentId || positionsQuery.isPending
                   }
                   placeholder={
@@ -182,7 +182,7 @@ export function CreateUserJobInfoSection({
                       positionOptions.map((option) => (
                         <SelectItem
                           key={option.value}
-                          id={option.value}
+                          value={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -248,7 +248,7 @@ export function CreateUserJobInfoSection({
                 <RadioGroup
                   value={field.value}
                   onChange={field.onChange}
-                  isDisabled={disabled}
+                  disabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
                   {employeeStatusOptions.map((option) => (

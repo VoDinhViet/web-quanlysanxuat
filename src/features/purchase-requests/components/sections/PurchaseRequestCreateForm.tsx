@@ -127,21 +127,21 @@ export function PurchaseRequestCreateForm() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="overflow-hidden rounded-lg bg-card shadow-card">
           <Tabs
-            selectedKey={step}
-            onSelectionChange={handleStepChange}
+            value={step}
+            onValueChange={handleStepChange}
             className="gap-0"
           >
             <PurchaseRequestCreateStepsTabs
               canGoToQuantities={canGoToQuantities}
             />
 
-            <TabsContent id="materials" className="m-0 outline-none">
+            <TabsContent value="materials" className="m-0 outline-none">
               <PurchaseRequestCreateMaterialPickerSection
                 form={form}
                 disabled={isPending}
               />
             </TabsContent>
-            <TabsContent id="quantities" className="m-0 outline-none">
+            <TabsContent value="quantities" className="m-0 outline-none">
               <PurchaseRequestCreateHeaderSection
                 form={form}
                 disabled={isPending}
@@ -161,8 +161,8 @@ export function PurchaseRequestCreateForm() {
                 type="button"
                 variant="ghost"
                 className="text-muted-foreground hover:text-foreground"
-                isDisabled={isPending}
-                onPress={() => setStep(prevStep)}
+                disabled={isPending}
+                onClick={() => setStep(prevStep)}
               >
                 <ArrowLeft className="size-4" />
                 {prevLabel}
@@ -172,7 +172,7 @@ export function PurchaseRequestCreateForm() {
                 type="button"
                 variant="ghost"
                 className="text-muted-foreground hover:text-foreground"
-                onPress={() =>
+                onClick={() =>
                   void navigate({
                     to: "/manage/purchase-requests",
                     search: { page: 1, limit: 10 },
@@ -186,8 +186,8 @@ export function PurchaseRequestCreateForm() {
             {nextStep ? (
               <Button
                 type="button"
-                isDisabled={!canGoToQuantities}
-                onPress={() => setStep(nextStep)}
+                disabled={!canGoToQuantities}
+                onClick={() => setStep(nextStep)}
               >
                 {nextLabel}
                 <ArrowRight className="size-4" />
@@ -197,8 +197,8 @@ export function PurchaseRequestCreateForm() {
                 <Button
                   type="button"
                   variant="ghost"
-                  isDisabled={isPending}
-                  onPress={() => {
+                  disabled={isPending}
+                  onClick={() => {
                     form.reset()
                     restoreFormDraft(
                       form,
@@ -214,8 +214,8 @@ export function PurchaseRequestCreateForm() {
                 <Button
                   type="button"
                   variant="outline"
-                  isDisabled={isPending}
-                  onPress={() => {
+                  disabled={isPending}
+                  onClick={() => {
                     saveDraft(form.state.values)
                     toast.success("Đã lưu nháp")
                   }}
@@ -229,7 +229,7 @@ export function PurchaseRequestCreateForm() {
                   {([canSubmit, isSubmitting]) => (
                     <Button
                       type="submit"
-                      isDisabled={!canSubmit || isSubmitting || isPending}
+                      disabled={!canSubmit || isSubmitting || isPending}
                     >
                       {isSubmitting || isPending ? (
                         <>

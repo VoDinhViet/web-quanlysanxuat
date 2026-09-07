@@ -84,8 +84,8 @@ export function Pagination({
                 "text-xs font-medium",
                 pageNumber !== page && "bg-background text-foreground"
               )}
-              isDisabled={disabled}
-              onPress={() => onPageChange(pageNumber)}
+              disabled={disabled}
+              onClick={() => onPageChange(pageNumber)}
             >
               {pageNumber}
             </Button>
@@ -102,15 +102,15 @@ export function Pagination({
         {onPageSizeChange && (
           <Select
             value={String(pageSize)}
-            onChange={(key) => onPageSizeChange(Number(key) as PageSize)}
-            isDisabled={disabled}
+            onValueChange={(key) => onPageSizeChange(Number(key) as PageSize)}
+            disabled={disabled}
           >
             <SelectTrigger className="h-9 w-28 bg-background text-xs font-medium text-foreground">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {pageSizeOptions.map((option) => (
-                <SelectItem key={option} id={String(option)}>
+                <SelectItem key={option} value={String(option)}>
                   {option} / trang
                 </SelectItem>
               ))}
@@ -140,8 +140,8 @@ function PaginationButton({
       size="icon-sm"
       className="bg-background text-foreground"
       aria-label={ariaLabel}
-      isDisabled={disabled}
-      onPress={onClick}
+      disabled={disabled}
+      onClick={onClick}
     >
       {children}
     </Button>

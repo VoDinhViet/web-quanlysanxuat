@@ -293,8 +293,8 @@ export const CreateOutboundOrderPickerSection = withForm({
               type="button"
               variant="ghost"
               className="text-xs text-muted-foreground hover:text-destructive"
-              isDisabled={disabled}
-              onPress={() => {
+              disabled={disabled}
+              onClick={() => {
                 itemsField.setValue([])
                 clientIdField.handleChange("")
               }}

@@ -59,7 +59,7 @@ export function OqcDetailActions({
               {([canSubmit, isSubmitting]) => (
                 <Button
                   type="submit"
-                  isDisabled={!canSubmit || isSubmitting || isPending}
+                  disabled={!canSubmit || isSubmitting || isPending}
                 >
                   <Diskette className="size-4" />
                   {isSubmitting || isPending ? "Đang lưu..." : "Lưu"}

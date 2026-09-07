@@ -78,7 +78,7 @@ export function PurchaseOrderPaymentTermField({
       </label>
       <Select
         value={value}
-        onChange={(key) => {
+        onValueChange={(key) => {
           const nextPaymentTerm = String(key) as PaymentTermType
           setValue(nextPaymentTerm)
           save(nextPaymentTerm)
@@ -92,7 +92,7 @@ export function PurchaseOrderPaymentTermField({
         </SelectTrigger>
         <SelectContent>
           {Object.values(PaymentTerm).map((term) => (
-            <SelectItem key={term} id={term}>
+            <SelectItem key={term} value={term}>
               {paymentTermLabels[term]}
             </SelectItem>
           ))}

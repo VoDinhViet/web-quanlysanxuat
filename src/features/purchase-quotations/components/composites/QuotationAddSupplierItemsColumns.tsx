@@ -49,7 +49,7 @@ export function buildQuotationAddSupplierItemsColumns({
         return (
           <Checkbox
             isSelected={isAssigned || checkedIds.has(row.original.itemId)}
-            isDisabled={isAssigned}
+            disabled={isAssigned}
             onChange={() => onToggleItem(row.original.itemId)}
             aria-label={`Chọn ${row.original.itemName}`}
           />

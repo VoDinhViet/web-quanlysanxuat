@@ -236,8 +236,8 @@ export function PasswordField({
           variant="ghost"
           size="icon-sm"
           className="absolute top-1/2 right-1 -translate-y-1/2"
-          onPress={() => setShowPassword(!showPassword)}
-          isDisabled={disabled}
+          onClick={() => setShowPassword(!showPassword)}
+          disabled={disabled}
           aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
         >
           {showPassword ? (
@@ -291,8 +291,8 @@ export function SelectField({
       </FieldLabel>
       <Select
         value={field.state.value ?? null}
-        onChange={(key) => field.handleChange(String(key))}
-        isDisabled={disabled}
+        onValueChange={(key) => field.handleChange(String(key))}
+        disabled={disabled}
         placeholder={isPending ? "Đang tải..." : placeholder}
       >
         <SelectTrigger
@@ -307,7 +307,7 @@ export function SelectField({
           {options.map((option) => (
             <SelectItem
               key={option.value}
-              id={option.value}
+              value={option.value}
               className="text-xs"
             >
               {option.label}
@@ -376,7 +376,7 @@ export function RadioPillField<TValue extends string>({
       <RadioGroup
         value={field.state.value}
         onChange={(value) => field.handleChange(value as TValue)}
-        isDisabled={disabled}
+        disabled={disabled}
         className="flex flex-row flex-wrap gap-2"
       >
         {options.map((option) => (
@@ -417,7 +417,7 @@ export function SwitchField({
         className="flex h-9 cursor-pointer items-center gap-2 text-xs font-medium text-foreground"
         isSelected={field.state.value}
         onChange={field.handleChange}
-        isDisabled={disabled}
+        disabled={disabled}
       >
         {field.state.value ? onLabel : offLabel}
       </Switch>

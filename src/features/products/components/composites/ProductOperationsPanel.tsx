@@ -188,8 +188,8 @@ export function ProductOperationsPanel({
                         variant="outline"
                         size="icon-sm"
                         aria-label="Di chuyển lên"
-                        isDisabled={idx === 0}
-                        onPress={() => move(idx, "up")}
+                        disabled={idx === 0}
+                        onClick={() => move(idx, "up")}
                         className="border border-border/60 hover:bg-muted"
                       >
                         <AltArrowUp className="size-3.5" />
@@ -202,8 +202,8 @@ export function ProductOperationsPanel({
                         variant="outline"
                         size="icon-sm"
                         aria-label="Di chuyển xuống"
-                        isDisabled={idx === operations.length - 1}
-                        onPress={() => move(idx, "down")}
+                        disabled={idx === operations.length - 1}
+                        onClick={() => move(idx, "down")}
                         className="border border-border/60 hover:bg-muted"
                       >
                         <AltArrowDown className="size-3.5" />
@@ -216,7 +216,7 @@ export function ProductOperationsPanel({
                         variant="outline"
                         size="icon-sm"
                         aria-label="Xoá công đoạn"
-                        onPress={() => remove(step.id)}
+                        onClick={() => remove(step.id)}
                         className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
                         <TrashBinTrash className="size-3.5" />
@@ -249,7 +249,7 @@ export function ProductOperationsPanel({
               <TableCell>
                 <Select
                   value={selectedType}
-                  onChange={(key) =>
+                  onValueChange={(key) =>
                     setSelectedType(String(key) as OperationType)
                   }
                 >
@@ -257,10 +257,10 @@ export function ProductOperationsPanel({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem id={OperationType.INHOUSE}>
+                    <SelectItem value={OperationType.INHOUSE}>
                       {operationTypeLabels[OperationType.INHOUSE]}
                     </SelectItem>
-                    <SelectItem id={OperationType.OUTSOURCE}>
+                    <SelectItem value={OperationType.OUTSOURCE}>
                       {operationTypeLabels[OperationType.OUTSOURCE]}
                     </SelectItem>
                   </SelectContent>
@@ -280,8 +280,8 @@ export function ProductOperationsPanel({
                   size="sm"
                   variant="outline"
                   className="gap-1 text-xs"
-                  isDisabled={!selectedOperationId}
-                  onPress={handleAdd}
+                  disabled={!selectedOperationId}
+                  onClick={handleAdd}
                 >
                   <AddSquare className="size-3.5" />
                   Thêm

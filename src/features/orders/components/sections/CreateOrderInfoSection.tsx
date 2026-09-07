@@ -279,8 +279,8 @@ export function CreateOrderInfoSection({
               </FieldLabel>
               <Select
                 value={field.value}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={disabled}
+                onValueChange={(key) => field.onChange(String(key))}
+                disabled={disabled}
                 placeholder="Chọn điều khoản"
               >
                 <SelectTrigger
@@ -295,7 +295,7 @@ export function CreateOrderInfoSection({
                   {paymentTermOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}
@@ -321,8 +321,8 @@ export function CreateOrderInfoSection({
               </FieldLabel>
               <Select
                 value={field.value}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={disabled}
+                onValueChange={(key) => field.onChange(String(key))}
+                disabled={disabled}
               >
                 <SelectTrigger
                   id={field.name}
@@ -336,7 +336,7 @@ export function CreateOrderInfoSection({
                   {currencyOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}

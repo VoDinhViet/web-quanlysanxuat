@@ -65,7 +65,7 @@ function DisabledAction({
         <Button
           type="button"
           variant="outline"
-          isDisabled
+          disabled
           className="pointer-events-none text-muted-foreground"
         >
           <IconComponent className="size-4" />

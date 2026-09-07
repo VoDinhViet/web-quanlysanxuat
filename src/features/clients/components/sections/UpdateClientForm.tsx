@@ -86,8 +86,8 @@ export function UpdateClientForm({ client }: UpdateClientFormProps) {
           <Button
             type="button"
             variant="outline"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/clients",
                 search: { page: 1, limit: 10 },
@@ -102,7 +102,7 @@ export function UpdateClientForm({ client }: UpdateClientFormProps) {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                isDisabled={!canSubmit || isSubmitting || isPending}
+                disabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

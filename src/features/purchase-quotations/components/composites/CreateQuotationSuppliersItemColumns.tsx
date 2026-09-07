@@ -95,7 +95,7 @@ export function buildQuotationSuppliersItemColumns({
                     type="button"
                     variant="outline"
                     size="sm"
-                    isDisabled={disabled}
+                    disabled={disabled}
                     aria-label={`${item.allocations.length} dòng ĐXMH`}
                     className="w-full max-w-36 justify-end text-xs font-normal tabular-nums"
                   >
@@ -180,8 +180,8 @@ export function buildQuotationSuppliersItemColumns({
                   variant="outline"
                   size="icon-sm"
                   aria-label="Thêm NCC"
-                  isDisabled={disabled}
-                  onPress={() => onOpenAddSupplier(item.itemId)}
+                  disabled={disabled}
+                  onClick={() => onOpenAddSupplier(item.itemId)}
                 >
                   <AddCircle className="size-3.5" />
                 </Button>
@@ -196,8 +196,8 @@ export function buildQuotationSuppliersItemColumns({
                   size="icon-sm"
                   aria-label="Bỏ chọn vật tư"
                   className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-                  isDisabled={disabled}
-                  onPress={() => itemsField.removeValue(row.index)}
+                  disabled={disabled}
+                  onClick={() => itemsField.removeValue(row.index)}
                 >
                   <TrashBinTrash className="size-3.5" />
                 </Button>

@@ -120,8 +120,8 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
           <Button
             type="button"
             variant="outline"
-            isDisabled={isPending}
-            onPress={() => void navigate({ to: "/manage/roles" })}
+            disabled={isPending}
+            onClick={() => void navigate({ to: "/manage/roles" })}
           >
             Hủy
           </Button>
@@ -131,7 +131,7 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                isDisabled={!canSubmit || isSubmitting || isPending}
+                disabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

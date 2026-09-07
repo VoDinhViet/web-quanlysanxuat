@@ -28,7 +28,7 @@ export function DisabledAction({
           size="icon-sm"
           className="pointer-events-none bg-background text-muted-foreground"
           aria-label={label}
-          isDisabled
+          disabled
         >
           {children}
         </Button>

@@ -109,8 +109,8 @@ export function InventoryProductStatTiles({
             variant="outline"
             size="icon-sm"
             aria-label="Làm mới"
-            onPress={() => void query.refetch()}
-            isDisabled={query.isFetching}
+            onClick={() => void query.refetch()}
+            disabled={query.isFetching}
             className="size-6 border-none text-muted-foreground hover:text-foreground"
           >
             <Refresh

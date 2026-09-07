@@ -43,7 +43,7 @@ export function DatePicker({
       <Button
         type="button"
         variant="outline"
-        isDisabled={disabled}
+        disabled={disabled}
         className={cn(
           "h-9 w-full justify-between bg-background text-xs font-normal",
           !selectedDate && "text-muted-foreground"

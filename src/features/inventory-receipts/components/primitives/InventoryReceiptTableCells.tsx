@@ -220,15 +220,15 @@ export function InventoryReceiptActionsCell({
         <DialogFooter>
           <Button
             variant="outline"
-            onPress={() => setDeleteOpen(false)}
-            isDisabled={deleteMutation.isPending}
+            onClick={() => setDeleteOpen(false)}
+            disabled={deleteMutation.isPending}
           >
             Hủy
           </Button>
           <Button
             variant="destructive"
-            onPress={() => deleteMutation.mutate()}
-            isDisabled={deleteMutation.isPending}
+            onClick={() => deleteMutation.mutate()}
+            disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? "Đang xóa…" : "Xóa phiếu"}
           </Button>

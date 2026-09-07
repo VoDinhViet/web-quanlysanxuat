@@ -91,8 +91,8 @@ export function CreateUserForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/users",
                 search: { page: 1, limit: 10 },
@@ -105,8 +105,8 @@ export function CreateUserForm() {
             <Button
               type="button"
               variant="ghost"
-              isDisabled={isPending}
-              onPress={() => {
+              disabled={isPending}
+              onClick={() => {
                 form.reset(createUserFormDefaultValues)
                 clearDraft()
               }}
@@ -117,8 +117,8 @@ export function CreateUserForm() {
             <Button
               type="button"
               variant="outline"
-              isDisabled={isPending}
-              onPress={() => {
+              disabled={isPending}
+              onClick={() => {
                 const { credential: _credential, ...draftValues } =
                   form.getValues()
                 saveDraft(draftValues)
@@ -130,7 +130,7 @@ export function CreateUserForm() {
             </Button>
             <Button
               type="submit"
-              isDisabled={form.formState.isSubmitting || isPending}
+              disabled={form.formState.isSubmitting || isPending}
             >
               {form.formState.isSubmitting || isPending ? (
                 <>

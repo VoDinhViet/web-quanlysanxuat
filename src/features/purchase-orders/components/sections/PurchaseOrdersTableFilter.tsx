@@ -109,7 +109,7 @@ export function PurchaseOrdersTableFilter() {
             </Label>
             <Select
               value={search.progress ?? "all"}
-              onChange={(key) => handleProgressChange(String(key))}
+              onValueChange={(key) => handleProgressChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-orders-status"
@@ -119,7 +119,7 @@ export function PurchaseOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -136,7 +136,7 @@ export function PurchaseOrdersTableFilter() {
             </Label>
             <Select
               value={search.supplierId ?? "all"}
-              onChange={(key) => handleSupplierChange(String(key))}
+              onValueChange={(key) => handleSupplierChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-orders-supplier"
@@ -146,7 +146,7 @@ export function PurchaseOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {supplierFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -197,7 +197,7 @@ export function PurchaseOrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

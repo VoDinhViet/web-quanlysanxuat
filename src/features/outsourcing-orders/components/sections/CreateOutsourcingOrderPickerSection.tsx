@@ -220,21 +220,21 @@ export const CreateOutsourcingOrderPickerSection = withForm({
             </Label>
             <Select
               value={productionJobId ?? "all"}
-              onChange={(key) => {
+              onValueChange={(key) => {
                 const value = String(key)
                 setProductionJobId(value === "all" ? undefined : value)
                 setPage(1)
               }}
-              isDisabled={disabled}
+              disabled={disabled}
               placeholder="Tất cả Job"
             >
               <SelectTrigger id="os-out-picker-job" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả Job</SelectItem>
+                <SelectItem value="all">Tất cả Job</SelectItem>
                 {jobOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -251,12 +251,12 @@ export const CreateOutsourcingOrderPickerSection = withForm({
             </Label>
             <Select
               value={operationId ?? "all"}
-              onChange={(key) => {
+              onValueChange={(key) => {
                 const value = String(key)
                 setOperationId(value === "all" ? undefined : value)
                 setPage(1)
               }}
-              isDisabled={disabled}
+              disabled={disabled}
               placeholder="Tất cả công đoạn"
             >
               <SelectTrigger
@@ -266,9 +266,9 @@ export const CreateOutsourcingOrderPickerSection = withForm({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả công đoạn</SelectItem>
+                <SelectItem value="all">Tất cả công đoạn</SelectItem>
                 {operationOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

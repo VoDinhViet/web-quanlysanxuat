@@ -50,7 +50,7 @@ export function RadioCardField<TValue extends string>({
     <RadioGroup
       value={field.state.value}
       onChange={(value) => field.handleChange(value)}
-      isDisabled={disabled}
+      disabled={disabled}
       className={cn(
         "grid gap-3",
         columns === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"

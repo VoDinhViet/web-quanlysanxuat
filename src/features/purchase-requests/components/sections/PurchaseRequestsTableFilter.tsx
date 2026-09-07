@@ -111,7 +111,7 @@ export function PurchaseRequestsTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-requests-status"
@@ -121,7 +121,7 @@ export function PurchaseRequestsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -153,7 +153,7 @@ export function PurchaseRequestsTableFilter() {
             </Label>
             <Select
               value={search.departmentId ?? "all"}
-              onChange={(key) => handleDepartmentChange(String(key))}
+              onValueChange={(key) => handleDepartmentChange(String(key))}
             >
               <SelectTrigger
                 id="purchase-requests-department"
@@ -163,7 +163,7 @@ export function PurchaseRequestsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {departmentOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -199,7 +199,7 @@ export function PurchaseRequestsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

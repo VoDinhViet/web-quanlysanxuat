@@ -180,9 +180,9 @@ export function SupplierDocumentsField({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  isDisabled={disabled}
+                  disabled={disabled}
                   aria-label={`Xóa ${file.originalName}`}
-                  onPress={() => removeFile(file.id)}
+                  onClick={() => removeFile(file.id)}
                 >
                   <X className="size-3.5" />
                 </Button>

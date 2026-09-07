@@ -32,8 +32,8 @@ type RowAction = {
   icon: ComponentType<{ className?: string }>
   label: string
   tone: "default" | "destructive"
-  isDisabled: boolean
-  onPress: () => void
+  disabled: boolean
+  onClick: () => void
 }
 
 // Bước ③ của wizard: đúng những sản phẩm đã tick ở bước ② (CreateOrderSelectItemsStep.tsx),
@@ -131,22 +131,22 @@ export function CreateOrderQuantitiesStep({
                   icon: ArrowUp,
                   label: `Di chuyển lên dòng ${index + 1}`,
                   tone: "default",
-                  isDisabled: disabled || index === 0,
-                  onPress: () => move(index, index - 1),
+                  disabled: disabled || index === 0,
+                  onClick: () => move(index, index - 1),
                 },
                 {
                   icon: ArrowDown,
                   label: `Di chuyển xuống dòng ${index + 1}`,
                   tone: "default",
-                  isDisabled: disabled || index === fields.length - 1,
-                  onPress: () => move(index, index + 1),
+                  disabled: disabled || index === fields.length - 1,
+                  onClick: () => move(index, index + 1),
                 },
                 {
                   icon: Trash2,
                   label: `Xóa dòng ${index + 1}`,
                   tone: "destructive",
-                  isDisabled: disabled,
-                  onPress: () => remove(index),
+                  disabled: disabled,
+                  onClick: () => remove(index),
                 },
               ]
 
@@ -218,8 +218,8 @@ export function CreateOrderQuantitiesStep({
                                 ? "hover:border-destructive/30 hover:text-destructive"
                                 : "hover:border-primary/30 hover:text-primary"
                             )}
-                            isDisabled={action.isDisabled}
-                            onPress={action.onPress}
+                            disabled={action.disabled}
+                            onClick={action.onClick}
                           >
                             <action.icon className="size-3.5" />
                           </Button>

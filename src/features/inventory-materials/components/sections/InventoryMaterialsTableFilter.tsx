@@ -147,15 +147,15 @@ export function InventoryMaterialsTableFilter() {
             </Label>
             <Select
               value={search.supplierId ?? "all"}
-              onChange={(key) => handleSupplierChange(String(key))}
+              onValueChange={(key) => handleSupplierChange(String(key))}
             >
               <SelectTrigger id="inventory-supplier" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {supplierOptions.map((option) => (
-                  <SelectItem key={option.id} id={option.id}>
+                  <SelectItem key={option.id} value={option.id}>
                     {option.name}
                   </SelectItem>
                 ))}
@@ -178,14 +178,14 @@ export function InventoryMaterialsTableFilter() {
             />
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="inventory-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

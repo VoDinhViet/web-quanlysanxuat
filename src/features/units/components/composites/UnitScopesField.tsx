@@ -39,7 +39,7 @@ export function UnitScopesField({ form, disabled }: UnitScopesFieldProps) {
             key={scope}
             className="flex items-center gap-2 text-xs text-foreground"
             isSelected={selectedSet.has(scope)}
-            isDisabled={disabled}
+            disabled={disabled}
             onChange={(checked) => toggle(scope, checked)}
           >
             {unitScopeLabels[scope]}

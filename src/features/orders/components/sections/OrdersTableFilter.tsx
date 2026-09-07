@@ -138,14 +138,14 @@ export function OrdersTableFilter() {
             </Label>
             <Select
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(key) => handleStatusChange(String(key))}
             >
               <SelectTrigger id="orders-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -164,7 +164,7 @@ export function OrdersTableFilter() {
             >
               NV kinh doanh
             </Label>
-            <Select value="all" isDisabled>
+            <Select value="all" disabled>
               <SelectTrigger
                 id="orders-assigned-user"
                 className="w-full text-xs"
@@ -172,7 +172,7 @@ export function OrdersTableFilter() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -187,7 +187,7 @@ export function OrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

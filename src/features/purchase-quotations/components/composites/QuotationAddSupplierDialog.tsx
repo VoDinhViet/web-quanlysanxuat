@@ -151,12 +151,12 @@ function QuotationAddSupplierDialogForm({
       )}
 
       <DialogFooter className="gap-2">
-        <Button type="button" variant="outline" onPress={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel}>
           Hủy
         </Button>
         <Button
           type="submit"
-          isDisabled={!supplierId || targetIds.length === 0}
+          disabled={!supplierId || targetIds.length === 0}
         >
           <CheckCircle className="size-4" />
           {targetIds.length > 0

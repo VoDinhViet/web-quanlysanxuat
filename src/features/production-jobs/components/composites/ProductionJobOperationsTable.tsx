@@ -215,7 +215,7 @@ function OperationSendActionCell({
   )
 
   const button = isFullySent ? (
-    <Button type="button" isDisabled className={amberClassName}>
+    <Button type="button" disabled className={amberClassName}>
       <SendSquare className="size-3.5" />
       Gửi gia công ngoài
     </Button>

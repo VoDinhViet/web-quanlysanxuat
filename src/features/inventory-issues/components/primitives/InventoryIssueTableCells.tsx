@@ -120,7 +120,7 @@ export function InventoryIssueActionsCell({
                 size="icon-sm"
                 aria-label="Xuất kho"
                 className="text-muted-foreground hover:border-success/30 hover:text-success"
-                onPress={() => setConfirmAction("post")}
+                onClick={() => setConfirmAction("post")}
               >
                 <CircleCheck className="size-3.5" />
               </Button>
@@ -138,7 +138,7 @@ export function InventoryIssueActionsCell({
                 size="icon-sm"
                 aria-label="Hủy phiếu"
                 className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                onPress={() => setConfirmAction("cancel")}
+                onClick={() => setConfirmAction("cancel")}
               >
                 <CircleX className="size-3.5" />
               </Button>
@@ -179,13 +179,13 @@ export function InventoryIssueActionsCell({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
             variant={confirmAction === "post" ? "default" : "destructive"}
-            isDisabled={mutation.isPending}
-            onPress={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
           >
             {mutation.isPending
               ? "Đang xử lý..."

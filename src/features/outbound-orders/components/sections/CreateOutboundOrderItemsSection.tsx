@@ -77,8 +77,8 @@ export const CreateOutboundOrderItemsSection = withForm({
               type="button"
               variant="ghost"
               className="text-xs text-destructive hover:bg-destructive/10"
-              isDisabled={disabled}
-              onPress={() => itemsField.setValue([])}
+              disabled={disabled}
+              onClick={() => itemsField.setValue([])}
             >
               <Trash2 className="size-3.5" />
               Xóa tất cả dòng

@@ -37,7 +37,7 @@ export function buildPurchaseRequestMaterialPickerColumns({
       header: () => (
         <Checkbox
           isSelected={allChecked}
-          isDisabled={disabled}
+          disabled={disabled}
           onChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
         />
@@ -46,7 +46,7 @@ export function buildPurchaseRequestMaterialPickerColumns({
       cell: ({ row }) => (
         <Checkbox
           isSelected={pickedIds.has(row.original.id)}
-          isDisabled={disabled}
+          disabled={disabled}
           onChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.name}`}
         />

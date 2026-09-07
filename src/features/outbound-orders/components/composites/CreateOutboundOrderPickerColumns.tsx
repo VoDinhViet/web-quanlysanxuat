@@ -42,7 +42,7 @@ export function buildCreateOutboundOrderPickerColumns({
       header: () => (
         <Checkbox
           isSelected={allChecked}
-          isDisabled={disabled}
+          disabled={disabled}
           onChange={onToggleAll}
           aria-label="Chọn tất cả"
         />
@@ -56,7 +56,7 @@ export function buildCreateOutboundOrderPickerColumns({
         return (
           <Checkbox
             isSelected={pickedIds.has(row.original.orderItemId)}
-            isDisabled={disabled || isOtherClient}
+            disabled={disabled || isOtherClient}
             onChange={() => onToggleRow(row.original)}
             aria-label={`Chọn ${row.original.item.name}`}
           />

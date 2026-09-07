@@ -137,8 +137,8 @@ export function buildQuotationSuppliersQuoteColumns({
             size="icon-sm"
             aria-label="Xóa NCC"
             className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-            isDisabled={disabled}
-            onPress={() =>
+            disabled={disabled}
+            onClick={() =>
               itemsField.replaceValue(itemIndex, {
                 ...item,
                 suppliers: item.suppliers.filter(
