@@ -103,15 +103,15 @@ export function OutsourcingReceiptsTableFilter() {
     })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
         page: 1,
       }),
     })
@@ -180,10 +180,9 @@ export function OutsourcingReceiptsTableFilter() {
         <Select
           value={search.supplierId ?? "all"}
           onValueChange={(key) => handleSupplierChange(String(key))}
-          placeholder="Chọn nhà cung cấp"
         >
           <SelectTrigger id="os-in-supplier" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn nhà cung cấp" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tất cả NCC</SelectItem>
@@ -206,10 +205,9 @@ export function OutsourcingReceiptsTableFilter() {
         <Select
           value={search.status ?? "all"}
           onValueChange={(key) => handleStatusChange(String(key))}
-          placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-in-status" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn trạng thái" />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (
@@ -235,10 +233,9 @@ export function OutsourcingReceiptsTableFilter() {
               : String(search.requiresIqc)
           }
           onValueChange={(key) => handleRequiresIqcChange(String(key))}
-          placeholder="Chọn yêu cầu QC"
         >
           <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn yêu cầu QC" />
           </SelectTrigger>
           <SelectContent>
             {requiresIqcOptions.map((opt) => (

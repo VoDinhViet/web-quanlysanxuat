@@ -5,7 +5,11 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { ProductDetailTab } from "@/features/products/schemas/product-detail-search.schema"
 import { cn } from "@/lib/utils"
 
@@ -96,13 +100,15 @@ export function ProductDetailTabs({
             return <Fragment key={item.value}>{trigger}</Fragment>
           }
 
+          // A disabled trigger swallows pointer events, so the tooltip
+          // hangs off a wrapper rather than the trigger itself.
           return (
-            <TooltipTrigger key={item.value}>
-              {/* A disabled trigger swallows pointer events, so the tooltip
-                  hangs off a wrapper rather than the trigger itself. */}
-              <span className="flex">{trigger}</span>
-              <Tooltip>{lockedHint}</Tooltip>
-            </TooltipTrigger>
+            <Tooltip key={item.value}>
+              <TooltipTrigger
+                render={<span className="flex">{trigger}</span>}
+              />
+              <TooltipContent>{lockedHint}</TooltipContent>
+            </Tooltip>
           )
         })}
       </TabsList>

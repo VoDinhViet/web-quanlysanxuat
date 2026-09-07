@@ -6,7 +6,11 @@ import { Gallery } from "@solar-icons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { employeeStatusLabels } from "@/lib/types/user.type"
@@ -118,46 +122,58 @@ export const userColumns = userColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <RoutePermissionGate route="/manage/users/$userId/update">
-            <TooltipTrigger>
-              <LinkButton
-                to="/manage/users/$userId/update"
-                params={{ userId: user.id }}
-                variant="outline"
-                size="icon-sm"
-                aria-label="Chỉnh sửa"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-              >
-                <Edit3 className="size-3.5" />
-              </LinkButton>
-              <Tooltip>Chỉnh sửa</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <LinkButton
+                    to="/manage/users/$userId/update"
+                    params={{ userId: user.id }}
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Chỉnh sửa"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  >
+                    <Edit3 className="size-3.5" />
+                  </LinkButton>
+                }
+              />
+              <TooltipContent>Chỉnh sửa</TooltipContent>
+            </Tooltip>
           </RoutePermissionGate>
           <PermissionGate permission="roles:update">
-            <TooltipTrigger>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                aria-label="Phân quyền"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-              >
-                <ShieldCheck className="size-3.5" />
-              </Button>
-              <Tooltip>Phân quyền</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Phân quyền"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  >
+                    <ShieldCheck className="size-3.5" />
+                  </Button>
+                }
+              />
+              <TooltipContent>Phân quyền</TooltipContent>
+            </Tooltip>
           </PermissionGate>
-          <TooltipTrigger>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Thao tác khác"
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <MoreHorizontal className="size-3.5" />
-            </Button>
-            <Tooltip>Thao tác khác</Tooltip>
-          </TooltipTrigger>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Thao tác khác"
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                >
+                  <MoreHorizontal className="size-3.5" />
+                </Button>
+              }
+            />
+            <TooltipContent>Thao tác khác</TooltipContent>
+          </Tooltip>
         </div>
       )
     },

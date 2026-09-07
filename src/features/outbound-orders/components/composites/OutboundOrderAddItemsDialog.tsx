@@ -15,7 +15,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   Table,
   TableBody,
@@ -27,7 +31,6 @@ import {
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options"
-import { cn } from "@/lib/utils"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -125,19 +128,23 @@ export function OutboundOrderAddItemsDialog({
         const isPicked = alreadyPickedOrderItemIds.has(row.original.orderItemId)
         const label = isPicked ? "Đã có trong phiếu" : "Thêm dòng này"
         return (
-          <TooltipTrigger>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              disabled={isPicked}
-              aria-label={label}
-              onClick={() => onAdd(row.original)}
-            >
-              <Plus className="size-3.5" />
-            </Button>
-            <Tooltip>{label}</Tooltip>
-          </TooltipTrigger>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  disabled={isPicked}
+                  aria-label={label}
+                  onClick={() => onAdd(row.original)}
+                >
+                  <Plus className="size-3.5" />
+                </Button>
+              }
+            />
+            <TooltipContent>{label}</TooltipContent>
+          </Tooltip>
         )
       },
     }),
@@ -169,13 +176,11 @@ export function OutboundOrderAddItemsDialog({
                     key={header.id}
                     className={header.column.columnDef.meta?.headerClassName}
                   >
-
                     {!header.isPlaceholder &&
                       flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-
                   </TableHead>
                 ))}
               </TableRow>
@@ -187,28 +192,30 @@ export function OutboundOrderAddItemsDialog({
                     <TableEmpty
                       colSpan={columns.length}
                       title={
-                        query.isPending ? "Đang tải..." : "Không tìm thấy dòng nào"
+                        query.isPending
+                          ? "Đang tải..."
+                          : "Không tìm thấy dòng nào"
                       }
                     />
                   </TableCell>
                 </TableRow>
-              ) : (table.getRowModel().rows.map((row) => (
-                <TableRow key={row.original.orderItemId} className="h-12">
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-
-                    </TableCell>
-                  ))}
-                </TableRow>
-              )))}
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.original.orderItemId} className="h-12">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

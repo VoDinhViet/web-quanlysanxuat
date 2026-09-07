@@ -6,7 +6,11 @@ import type { AnyFieldApi } from "@tanstack/react-form"
 import { Button } from "@/components/ui/button"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/schemas/purchase-request-item-form.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -129,20 +133,24 @@ export function buildPurchaseRequestQuantityColumns({
         cellClassName: "text-center",
       },
       cell: ({ row }) => (
-        <TooltipTrigger>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label={`Bỏ chọn dòng ${row.index + 1}`}
-            className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-            disabled={disabled}
-            onClick={() => itemsField.removeValue(row.index)}
-          >
-            <Trash2 className="size-3.5" />
-          </Button>
-          <Tooltip>{`Bỏ chọn dòng ${row.index + 1}`}</Tooltip>
-        </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label={`Bỏ chọn dòng ${row.index + 1}`}
+                className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                disabled={disabled}
+                onClick={() => itemsField.removeValue(row.index)}
+              >
+                <Trash2 className="size-3.5" />
+              </Button>
+            }
+          />
+          <TooltipContent>{`Bỏ chọn dòng ${row.index + 1}`}</TooltipContent>
+        </Tooltip>
       ),
     }),
   ])

@@ -42,10 +42,8 @@ export function PurchaseQuotationAllocationsTable({
                 header.column.columnDef.meta?.headerClassName
               )}
             >
-
               {!header.isPlaceholder &&
                 flexRender(header.column.columnDef.header, header.getContext())}
-
             </TableHead>
           ))}
         </TableRow>
@@ -53,10 +51,11 @@ export function PurchaseQuotationAllocationsTable({
       <TableBody>
         {table.getRowModel().rows.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={columns.length}>
-// Nested sub-row hint, indented under the outer item row — same "too small-scale for
-              // TableEmpty" treatment as QuotationCompareQuoteTable.tsx / PurchaseQuotationSupplierCompareTable.tsx,
-              // this table's twin stacked right below it.
+            <TableCell colSpan={purchaseQuotationAllocationsColumns.length}>
+              {/* Nested sub-row hint, indented under the outer item row — same "too small-scale
+                  for TableEmpty" treatment as QuotationCompareQuoteTable.tsx /
+                  PurchaseQuotationSupplierCompareTable.tsx, this table's twin stacked right
+                  below it. */}
               <div className="flex h-11 items-center pl-10">
                 <span className="text-xs text-muted-foreground">
                   Chưa có dòng ĐXMH nào cho vật tư này
@@ -64,23 +63,26 @@ export function PurchaseQuotationAllocationsTable({
               </div>
             </TableCell>
           </TableRow>
-        ) : (table.getRowModel().rows.map((row) => (
-          <TableRow key={row.id} className="h-11 bg-transparent hover:bg-transparent">
-            {row.getVisibleCells().map((cell) => (
-              <TableCell
-                key={cell.id}
-                className={cn(
-                  "border-b border-primary/15",
-                  cell.column.columnDef.meta?.cellClassName
-                )}
-              >
-
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-
-              </TableCell>
-            ))}
-          </TableRow>
-        )))}
+        ) : (
+          table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              className="h-11 bg-transparent hover:bg-transparent"
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell
+                  key={cell.id}
+                  className={cn(
+                    "border-b border-primary/15",
+                    cell.column.columnDef.meta?.cellClassName
+                  )}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        )}
       </TableBody>
     </Table>
   )

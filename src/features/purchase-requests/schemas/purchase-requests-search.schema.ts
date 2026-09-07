@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
-import { isoDateFilter } from "@/lib/zod-transforms"
 
 export const purchaseRequestsSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
@@ -9,8 +8,8 @@ export const purchaseRequestsSearchSchema = z.object({
   q: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(PurchaseRequestStatus).optional().catch(undefined),
   departmentId: z.string().trim().min(1).optional().catch(undefined),
-  createdStartDate: isoDateFilter,
-  createdEndDate: isoDateFilter,
+  createdStartDate: z.iso.date().optional().catch(undefined),
+  createdEndDate: z.iso.date().optional().catch(undefined),
 })
 
 export type PurchaseRequestsSearchSchema = z.infer<

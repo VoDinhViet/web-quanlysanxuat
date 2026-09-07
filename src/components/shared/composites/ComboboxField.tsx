@@ -113,14 +113,15 @@ export function ComboboxField({
       ) : null}
       <Combobox
         items={items}
-        value={selectedOption?.value ?? null}
-        onChange={(key) => {
-          const next = items.find((option) => option.value === key) ?? null
+        value={selectedOption}
+        onValueChange={(next) => {
           setSelectedOption(next)
           onValueChange(next?.value)
         }}
-        onInputChange={(next) => onSearchChange(next)}
-        allowsEmptyCollection
+        onInputValueChange={(next) => onSearchChange(next)}
+        isItemEqualToValue={(itemValue, current) =>
+          itemValue.value === current.value
+        }
       >
         <ComboboxInput
           id={id}
@@ -132,15 +133,12 @@ export function ComboboxField({
           className={cn("w-full", className)}
         />
         <ComboboxContent>
-          <ComboboxList
-            renderEmptyState={() => (
-              <ComboboxEmpty>
-                {isPending ? "Đang tìm..." : emptyMessage}
-              </ComboboxEmpty>
-            )}
-          >
+          <ComboboxEmpty>
+            {isPending ? "Đang tìm..." : emptyMessage}
+          </ComboboxEmpty>
+          <ComboboxList>
             {items.map((option) => (
-              <ComboboxItem key={option.value} id={option.value}>
+              <ComboboxItem key={option.value} value={option}>
                 {option.label}
               </ComboboxItem>
             ))}

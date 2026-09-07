@@ -281,7 +281,6 @@ export function CreateOrderInfoSection({
                 value={field.value}
                 onValueChange={(key) => field.onChange(String(key))}
                 disabled={disabled}
-                placeholder="Chọn điều khoản"
               >
                 <SelectTrigger
                   id={field.name}
@@ -289,7 +288,7 @@ export function CreateOrderInfoSection({
                   aria-invalid={!!fieldState.error}
                   className="h-9 w-full bg-background text-xs"
                 >
-                  <SelectValue />
+                  <SelectValue placeholder="Chọn điều khoản" />
                 </SelectTrigger>
                 <SelectContent>
                   {paymentTermOptions.map((option) => (

@@ -144,48 +144,51 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
               className="min-w-[860px] table-fixed"
             >
               <TableHeader className="[&>tr]:h-12">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-
-                    {!header.isPlaceholder &&
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
-              <TableBody>
-{table.getRowModel().rows.length === 0 ? (
-<TableRow>
-<TableCell colSpan={columns.length}>
-<TableEmpty colSpan={9} title="Chưa có dòng nào" />
-</TableCell>
-</TableRow>
-) : (table.getRowModel().rows.map((row) => (
-<TableRow key={row.original.outsourcingOrderItemId} className="h-14">
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
+                <TableRow>
+                  {table.getFlatHeaders().map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className={header.column.columnDef.meta?.headerClassName}
+                    >
+                      {!header.isPlaceholder &&
+                        flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      
-</TableCell>
-))}
-</TableRow>
-)))}
-</TableBody>
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={createOutsourcingReceiptConfirmColumns.length}
+                    >
+                      <TableEmpty colSpan={9} title="Chưa có dòng nào" />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.original.outsourcingOrderItemId}
+                      className="h-14"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
               <TableFooter>
                 <TableRow className="h-12">
                   <TableCell colSpan={5} className="font-semibold">

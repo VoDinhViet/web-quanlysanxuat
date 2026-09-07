@@ -72,34 +72,29 @@ export function PurchaseQuotationDetailQuotesSection({
           />
         ) : (
           <Table aria-label="Bảng so sánh báo giá">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
+            <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((row) => (
                 <Fragment key={row.original.id}>
-                  <TableRow
-                    id={`${row.original.id}-data`}
-                    className="h-14 bg-card hover:bg-muted/25"
-                    columns={row.getVisibleCells()}
-                  >
-                    {(cell) => (
+                  <TableRow className="h-14 bg-card hover:bg-muted/25">
+                    {row.getVisibleCells().map((cell) => (
                       <TableCell
+                        key={cell.id}
                         className={cell.column.columnDef.meta?.cellClassName}
                       >
                         {flexRender(
@@ -107,7 +102,7 @@ export function PurchaseQuotationDetailQuotesSection({
                           cell.getContext()
                         )}
                       </TableCell>
-                    )}
+                    ))}
                   </TableRow>
 
                   {/* Same inset-shadow left accent as CreateQuotationSuppliersSection.tsx — see

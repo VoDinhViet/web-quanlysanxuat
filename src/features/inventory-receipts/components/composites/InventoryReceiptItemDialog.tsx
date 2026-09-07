@@ -4,6 +4,7 @@ import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -45,19 +46,17 @@ export function InventoryReceiptItemDialog({
   itemType,
 }: InventoryReceiptItemDialogProps) {
   return (
-    <Dialog
-      isOpen={open}
-      onOpenChange={onOpenChange}
-      className="shadow-lg ring-0 sm:max-w-lg"
-    >
-      {/* The dialog unmounts content while closed, so this form re-mounts on each
-          open and its state seeds fresh from `initialValue`. */}
-      <InventoryReceiptItemDialogForm
-        initialValue={initialValue}
-        onSubmit={onSubmit}
-        onCancel={() => onOpenChange(false)}
-        itemType={itemType}
-      />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="shadow-lg ring-0 sm:max-w-lg">
+        {/* The dialog unmounts content while closed, so this form re-mounts on each
+            open and its state seeds fresh from `initialValue`. */}
+        <InventoryReceiptItemDialogForm
+          initialValue={initialValue}
+          onSubmit={onSubmit}
+          onCancel={() => onOpenChange(false)}
+          itemType={itemType}
+        />
+      </DialogContent>
     </Dialog>
   )
 }

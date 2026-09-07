@@ -96,11 +96,7 @@ export function ProductDetailPage() {
         {/* One continuous panel like the list page: header, tab strip, content
             and sidebar are separated by rules rather than by gaps. */}
         <section className="overflow-hidden rounded-lg bg-card shadow-card">
-          <Tabs
-            value={tab}
-            onValueChange={handleTabChange}
-            className="gap-0"
-          >
+          <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
             <ProductDetailHeader
               product={product}
               activeTab={tab}
@@ -124,15 +120,14 @@ export function ProductDetailPage() {
               )}
             >
               <div className="min-w-0">
-                {/* shouldForceMount: RAC unmounts inactive panels by default, which
-                  would discard unsaved form state on every tab switch. Force-mounted
-                  but inactive still gets `inert` (native, non-visual) — `data-inert`
-                  is the CSS hook that actually hides it, RAC's equivalent of Radix's
-                  `data-[state=inactive]:hidden`. */}
+                {/* keepMounted: Base UI unmounts inactive panels by default, which
+                  would discard unsaved form state on every tab switch. Kept mounted
+                  but inactive still gets `data-hidden` as the CSS hook that actually
+                  hides it. */}
                 <TabsContent
                   value="info"
-                  shouldForceMount
-                  className="m-0 outline-none data-[inert=true]:hidden"
+                  keepMounted
+                  className="m-0 outline-none data-hidden:hidden"
                 >
                   <ProductInfoTab
                     form={form}

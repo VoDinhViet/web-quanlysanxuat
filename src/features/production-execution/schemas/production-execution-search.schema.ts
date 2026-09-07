@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
-import { isoDateFilter } from "@/lib/zod-transforms"
 
 // Same filter set as production-jobs-search.schema.ts, plus `operationId` — the tile currently
 // selected in "CHỌN CÔNG ĐOẠN". Left `.optional()` (not defaulted) on purpose: the page selects
@@ -14,8 +13,8 @@ export const productionExecutionSearchSchema = z.object({
   q: z.string().trim().min(1).optional().catch(undefined),
   status: z.enum(ProductionJobStatus).optional().catch(undefined),
   clientId: z.string().trim().min(1).optional().catch(undefined),
-  dueDateFrom: isoDateFilter,
-  dueDateTo: isoDateFilter,
+  dueDateFrom: z.iso.date().optional().catch(undefined),
+  dueDateTo: z.iso.date().optional().catch(undefined),
   operationId: z.string().trim().min(1).optional().catch(undefined),
 })
 

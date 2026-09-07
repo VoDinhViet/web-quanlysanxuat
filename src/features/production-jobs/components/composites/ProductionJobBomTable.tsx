@@ -39,42 +39,43 @@ export function ProductionJobBomTable({
     <div className="px-4 pb-4 lg:px-5">
       <Table aria-label="Danh sách vật tư đã lãnh">
         <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-
-              {!header.isPlaceholder &&
-                flexRender(header.column.columnDef.header, header.getContext())}
-            
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
+          <TableRow>
+            {table.getFlatHeaders().map((header) => (
+              <TableHead
+                key={header.id}
+                className={header.column.columnDef.meta?.headerClassName}
+              >
+                {!header.isPlaceholder &&
+                  flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
         <TableBody>
-{table.getRowModel().rows.length === 0 ? (
-<TableRow>
-<TableCell colSpan={columns.length}>
-<TableEmpty colSpan={columnCount} title="Không có dữ liệu" />
-</TableCell>
-</TableRow>
-) : (table.getRowModel().rows.map((row) => (
-<TableRow key={row.id} className="bg-card hover:bg-muted/20">
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                
-</TableCell>
-))}
-</TableRow>
-)))}
-</TableBody>
+          {table.getRowModel().rows.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={productionJobBomColumns.length}>
+                <TableEmpty colSpan={columnCount} title="Không có dữ liệu" />
+              </TableCell>
+            </TableRow>
+          ) : (
+            table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id} className="bg-card hover:bg-muted/20">
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cell.column.columnDef.meta?.cellClassName}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
       </Table>
 
       <Pagination

@@ -67,13 +67,11 @@ export function ProductionJobLogSection({
                   key={header.id}
                   className={header.column.columnDef.meta?.headerClassName}
                 >
-
                   {!header.isPlaceholder &&
                     flexRender(
                       header.column.columnDef.header,
                       header.getContext()
                     )}
-
                 </TableHead>
               ))}
             </TableRow>
@@ -81,37 +79,43 @@ export function ProductionJobLogSection({
           <TableBody>
             {table.getRowModel().rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length}>
+                <TableCell colSpan={logColumnCount}>
                   {logsQuery.isPending ? (
-                  <div className="flex h-40 items-center justify-center">
-                    <Spinner className="mx-auto size-6 text-muted-foreground" />
-                  </div>
+                    <div className="flex h-40 items-center justify-center">
+                      <Spinner className="mx-auto size-6 text-muted-foreground" />
+                    </div>
                   ) : logsQuery.isError ? (
-                  <div className="flex h-40 items-center justify-center text-center text-xs text-muted-foreground">
-                    {logsQuery.error.message}
-                  </div>
+                    <div className="flex h-40 items-center justify-center text-center text-xs text-muted-foreground">
+                      {logsQuery.error.message}
+                    </div>
                   ) : (
-                  <TableEmpty
-                    colSpan={logColumnCount}
-                    title="Chưa có dữ liệu lịch sử."
-                  />
+                    <TableEmpty
+                      colSpan={logColumnCount}
+                      title="Chưa có dữ liệu lịch sử."
+                    />
                   )}
                 </TableCell>
               </TableRow>
-            ) : (table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={cell.column.columnDef.meta?.cellClassName}
-                  >
-
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-
-                  </TableCell>
-                ))}
-              </TableRow>
-            )))}
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="h-14 bg-card hover:bg-muted/25"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

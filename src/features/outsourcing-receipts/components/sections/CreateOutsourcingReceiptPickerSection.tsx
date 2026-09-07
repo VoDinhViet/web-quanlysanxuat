@@ -261,13 +261,12 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
                 setPage(1)
               }}
               disabled={disabled}
-              placeholder="Tất cả công đoạn"
             >
               <SelectTrigger
                 id="os-in-picker-operation"
                 className="w-full text-xs"
               >
-                <SelectValue />
+                <SelectValue placeholder="Tất cả công đoạn" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả công đoạn</SelectItem>

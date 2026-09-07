@@ -132,62 +132,67 @@ export function BomItemPickerField({
             }
           >
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
-            <TableBody>
-{table.getRowModel().rows.length === 0 ? (
-<TableRow>
-<TableCell colSpan={columns.length}>
-<TableEmpty
-                  icon={BoxMinimalistic}
-                  colSpan={columns.length}
-                  title={
-                    query.isPending ? "Đang tải..." : "Không tìm thấy kết quả"
-                  }
-                  description={
-                    query.isPending
-                      ? undefined
-                      : "Thử một từ khoá khác hoặc kiểm tra lại chính tả."
-                  }
-                />
-</TableCell>
-</TableRow>
-) : (table.getRowModel().rows.map((row) => (
-<TableRow key={row.id} className={cn(
-                    "h-14 cursor-pointer border-l-2 border-l-transparent bg-card hover:bg-muted/25",
-                    row.original.id === value && "border-l-primary bg-primary/5"
-                  )}>
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    
-</TableCell>
-))}
-</TableRow>
-)))}
-</TableBody>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      icon={BoxMinimalistic}
+                      colSpan={columns.length}
+                      title={
+                        query.isPending
+                          ? "Đang tải..."
+                          : "Không tìm thấy kết quả"
+                      }
+                      description={
+                        query.isPending
+                          ? undefined
+                          : "Thử một từ khoá khác hoặc kiểm tra lại chính tả."
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className={cn(
+                      "h-14 cursor-pointer border-l-2 border-l-transparent bg-card hover:bg-muted/25",
+                      row.original.id === value &&
+                        "border-l-primary bg-primary/5"
+                    )}
+                    onClick={() => handleSelectRow(row.original)}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
           </Table>
         </div>
 

@@ -4,7 +4,11 @@ import { Eye, Pencil } from "lucide-react"
 
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -40,20 +44,24 @@ export function ProductionJobActionsCell({
 }: ProductionJobActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <TooltipTrigger>
-        <LinkButton
-          to="/manage/production-jobs/$productionJobId"
-          params={{ productionJobId }}
-          search={{ tab: "info" }}
-          variant="outline"
-          size="icon-sm"
-          aria-label="Xem chi tiết"
-          className="bg-background text-muted-foreground"
-        >
-          <Eye className="size-3.5" />
-        </LinkButton>
-        <Tooltip>Xem chi tiết</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <LinkButton
+              to="/manage/production-jobs/$productionJobId"
+              params={{ productionJobId }}
+              search={{ tab: "info" }}
+              variant="outline"
+              size="icon-sm"
+              aria-label="Xem chi tiết"
+              className="bg-background text-muted-foreground"
+            >
+              <Eye className="size-3.5" />
+            </LinkButton>
+          }
+        />
+        <TooltipContent>Xem chi tiết</TooltipContent>
+      </Tooltip>
       <DisabledAction label="Chỉnh sửa" hint="chưa được xây dựng">
         <Pencil className="size-3.5" />
       </DisabledAction>

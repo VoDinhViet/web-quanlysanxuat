@@ -59,15 +59,15 @@ export function ProductionJobsTableFilter() {
     })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    dueDateFrom: string | undefined,
+    dueDateTo: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        dueDateFrom: range.from,
-        dueDateTo: range.to,
+        dueDateFrom,
+        dueDateTo,
         page: 1,
       }),
     })

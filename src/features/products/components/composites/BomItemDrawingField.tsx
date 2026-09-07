@@ -5,7 +5,11 @@ import { ErrorCode, useDropzone } from "react-dropzone"
 import { FileText, Loader2, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { resolveFileUrl } from "@/lib/file-url"
 import {
   ACCEPTED_DRAWING_TYPES,
@@ -95,21 +99,25 @@ export function BomItemDrawingField({
             <span className="truncate">{value.originalName}</span>
           </a>
           {!disabled ? (
-            <TooltipTrigger>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Xóa bản vẽ"
-                onClick={() => {
-                  setClientError(null)
-                  onChange(null)
-                }}
-              >
-                <X className="size-3.5" />
-              </Button>
-              <Tooltip>Xóa bản vẽ</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="Xóa bản vẽ"
+                    onClick={() => {
+                      setClientError(null)
+                      onChange(null)
+                    }}
+                  >
+                    <X className="size-3.5" />
+                  </Button>
+                }
+              />
+              <TooltipContent>Xóa bản vẽ</TooltipContent>
+            </Tooltip>
           ) : null}
         </div>
       ) : (

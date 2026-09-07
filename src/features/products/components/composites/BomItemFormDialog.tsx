@@ -4,6 +4,7 @@ import { CheckCircle } from "@solar-icons/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -42,31 +43,31 @@ export function BomItemFormDialog({
   isSaving,
 }: BomItemFormDialogProps) {
   return (
-    <Dialog
-      isOpen={dialog.mode !== "closed"}
-      onOpenChange={onOpenChange}
-      className={cn(
-        "shadow-lg ring-0",
-        dialog.mode === "create"
-          ? "max-h-[90vh] overflow-y-auto sm:max-w-4xl"
-          : "sm:max-w-lg"
-      )}
-    >
-      {dialog.mode === "create" ? (
-        <CreateBomItemForm
-          itemType={dialog.itemType}
-          onSubmit={(value) => onCreate(value, dialog.parentId)}
-          onCancel={() => onOpenChange(false)}
-          isSaving={isSaving}
-        />
-      ) : dialog.mode === "update" ? (
-        <UpdateBomItemForm
-          node={dialog.node}
-          onSubmit={(value) => onUpdate(value, dialog.node.id)}
-          onCancel={() => onOpenChange(false)}
-          isSaving={isSaving}
-        />
-      ) : null}
+    <Dialog open={dialog.mode !== "closed"} onOpenChange={onOpenChange}>
+      <DialogContent
+        className={cn(
+          "shadow-lg ring-0",
+          dialog.mode === "create"
+            ? "max-h-[90vh] overflow-y-auto sm:max-w-4xl"
+            : "sm:max-w-lg"
+        )}
+      >
+        {dialog.mode === "create" ? (
+          <CreateBomItemForm
+            itemType={dialog.itemType}
+            onSubmit={(value) => onCreate(value, dialog.parentId)}
+            onCancel={() => onOpenChange(false)}
+            isSaving={isSaving}
+          />
+        ) : dialog.mode === "update" ? (
+          <UpdateBomItemForm
+            node={dialog.node}
+            onSubmit={(value) => onUpdate(value, dialog.node.id)}
+            onCancel={() => onOpenChange(false)}
+            isSaving={isSaving}
+          />
+        ) : null}
+      </DialogContent>
     </Dialog>
   )
 }

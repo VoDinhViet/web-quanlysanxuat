@@ -5,7 +5,11 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { cn } from "@/lib/utils"
 
@@ -103,22 +107,26 @@ export function InventoryProductStatTiles({
             "HH:mm · dd/MM/yyyy"
           )}
         </span>
-        <TooltipTrigger>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="Làm mới"
-            onClick={() => void query.refetch()}
-            disabled={query.isFetching}
-            className="size-6 border-none text-muted-foreground hover:text-foreground"
-          >
-            <Refresh
-              className={cn("size-3.5", query.isFetching && "animate-spin")}
-            />
-          </Button>
-          <Tooltip>Làm mới</Tooltip>
-        </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Làm mới"
+                onClick={() => void query.refetch()}
+                disabled={query.isFetching}
+                className="size-6 border-none text-muted-foreground hover:text-foreground"
+              >
+                <Refresh
+                  className={cn("size-3.5", query.isFetching && "animate-spin")}
+                />
+              </Button>
+            }
+          />
+          <TooltipContent>Làm mới</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   )

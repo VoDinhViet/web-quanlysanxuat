@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { DatePickerField } from "@/components/shared/composites/DatePickerField"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { useFieldContext } from "@/hooks/use-app-form-context"
 import { cn } from "@/lib/utils"
 
@@ -293,7 +293,6 @@ export function SelectField({
         value={field.state.value ?? null}
         onValueChange={(key) => field.handleChange(String(key))}
         disabled={disabled}
-        placeholder={isPending ? "Đang tải..." : placeholder}
       >
         <SelectTrigger
           id={field.name}
@@ -301,7 +300,7 @@ export function SelectField({
           aria-invalid={isInvalid}
           className="h-9 w-full bg-background text-xs"
         >
-          <SelectValue />
+          <SelectValue placeholder={isPending ? "Đang tải..." : placeholder} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
@@ -328,21 +327,22 @@ type DateFieldProps = {
 
 export function DateField({ label, required, disabled }: DateFieldProps) {
   const field = useFieldContext<string>()
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
 
   return (
-    <DatePickerField
-      id={field.name}
-      label={label}
-      required={required}
-      value={field.state.value}
-      onChange={field.handleChange}
-      onBlur={field.handleBlur}
-      isInvalid={
-        field.state.meta.isTouched && field.state.meta.errors.length > 0
-      }
-      errors={field.state.meta.errors}
-      disabled={disabled}
-    />
+    <Field data-invalid={isInvalid}>
+      <FieldLabel className="text-xs font-medium text-foreground">
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <DatePicker
+        value={field.state.value}
+        onChange={field.handleChange}
+        onBlur={field.handleBlur}
+        disabled={disabled}
+      />
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
   )
 }
 

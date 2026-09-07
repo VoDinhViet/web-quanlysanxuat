@@ -100,11 +100,6 @@ export function UpdateUserJobInfoSection({
                   value={field.value}
                   onValueChange={(key) => field.onChange(String(key))}
                   disabled={disabled || departmentsQuery.isPending}
-                  placeholder={
-                    departmentsQuery.isFetching
-                      ? "Đang tải..."
-                      : "Chọn phòng ban"
-                  }
                 >
                   <SelectTrigger
                     id={field.name}
@@ -112,7 +107,13 @@ export function UpdateUserJobInfoSection({
                     aria-invalid={!!fieldState.error}
                     className="h-9 w-full bg-background text-xs"
                   >
-                    <SelectValue />
+                    <SelectValue
+                      placeholder={
+                        departmentsQuery.isFetching
+                          ? "Đang tải..."
+                          : "Chọn phòng ban"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {departments.length === 0 ? (
@@ -159,16 +160,6 @@ export function UpdateUserJobInfoSection({
                   disabled={
                     disabled || !departmentId || positionsQuery.isPending
                   }
-                  placeholder={
-                    // `useQuery({enabled: false})` reports `isPending: true` even when idle
-                    // (no department chosen yet) — gate on `departmentId` too so "Chọn
-                    // phòng ban trước" doesn't get overridden by "Đang tải...".
-                    !departmentId
-                      ? "Chọn phòng ban trước"
-                      : positionsQuery.isPending
-                        ? "Đang tải..."
-                        : "Chọn chức vụ"
-                  }
                 >
                   <SelectTrigger
                     id={field.name}
@@ -176,7 +167,18 @@ export function UpdateUserJobInfoSection({
                     aria-invalid={!!fieldState.error}
                     className="h-9 w-full bg-background text-xs"
                   >
-                    <SelectValue />
+                    <SelectValue
+                      placeholder={
+                        // `useQuery({enabled: false})` reports `isPending: true` even when idle
+                        // (no department chosen yet) — gate on `departmentId` too so "Chọn
+                        // phòng ban trước" doesn't get overridden by "Đang tải...".
+                        !departmentId
+                          ? "Chọn phòng ban trước"
+                          : positionsQuery.isPending
+                            ? "Đang tải..."
+                            : "Chọn chức vụ"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {positionOptions.length === 0 ? (

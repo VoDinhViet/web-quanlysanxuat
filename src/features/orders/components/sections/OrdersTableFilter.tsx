@@ -47,15 +47,15 @@ export function OrdersTableFilter() {
     })
   }, 300)
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    orderDateFrom: string | undefined,
+    orderDateTo: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        orderDateFrom: range.from,
-        orderDateTo: range.to,
+        orderDateFrom,
+        orderDateTo,
         page: 1,
       }),
     })

@@ -6,8 +6,8 @@ export const inventoryProductDetailSearchSchema = z.object({
     .union([z.literal(10), z.literal(20), z.literal(50)])
     .optional()
     .catch(undefined),
-  startDate: z.string().trim().min(1).optional().catch(undefined),
-  endDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.iso.date().optional().catch(undefined),
+  endDate: z.iso.date().optional().catch(undefined),
 })
 
 export type InventoryProductDetailSearchSchema = z.infer<

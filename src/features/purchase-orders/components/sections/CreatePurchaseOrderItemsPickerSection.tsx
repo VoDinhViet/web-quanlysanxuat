@@ -23,7 +23,6 @@ import { buildPurchaseOrderItemsPickerColumns } from "@/features/purchase-orders
 import { createPurchaseOrderFormDefaultValues } from "@/features/purchase-orders/schemas/create-purchase-order.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
-import { cn } from "@/lib/utils"
 import type { PickedPurchaseOrderItemValue } from "@/features/purchase-orders/schemas/create-purchase-order.schema"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 import type { PageSize } from "@/components/shared/composites/Pagination"
@@ -158,55 +157,56 @@ export const CreatePurchaseOrderItemsPickerSection = withForm({
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách dòng đề xuất mua hàng">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
-            <TableBody>
-{table.getRowModel().rows.length === 0 ? (
-<TableRow>
-<TableCell colSpan={columns.length}>
-<TableEmpty
-                  colSpan={columns.length}
-                  title={
-                    ledgerQuery.isPending
-                      ? "Đang tải..."
-                      : "Không có vật tư nào cần mua"
-                  }
-                />
-</TableCell>
-</TableRow>
-) : (table.getRowModel().rows.map((row) => (
-<TableRow key={row.id} className="h-14 cursor-pointer bg-card hover:bg-muted/25">
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    
-</TableCell>
-))}
-</TableRow>
-)))}
-</TableBody>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title={
+                        ledgerQuery.isPending
+                          ? "Đang tải..."
+                          : "Không có vật tư nào cần mua"
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="h-14 cursor-pointer bg-card hover:bg-muted/25"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
           </Table>
         </div>
 

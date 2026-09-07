@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
-import { isoDateFilter } from "@/lib/zod-transforms"
 
 // `itemId` isn't a filter on this screen's own filter bar — it's used programmatically by the
 // finished-goods inventory detail screen's "LSX gần nhất" card
@@ -16,8 +15,8 @@ export const productionJobsSearchSchema = z.object({
   status: z.enum(ProductionJobStatus).optional().catch(undefined),
   clientId: z.string().trim().min(1).optional().catch(undefined),
   itemId: z.uuid().optional().catch(undefined),
-  dueDateFrom: isoDateFilter,
-  dueDateTo: isoDateFilter,
+  dueDateFrom: z.iso.date().optional().catch(undefined),
+  dueDateTo: z.iso.date().optional().catch(undefined),
 })
 
 export type ProductionJobsSearchSchema = z.infer<

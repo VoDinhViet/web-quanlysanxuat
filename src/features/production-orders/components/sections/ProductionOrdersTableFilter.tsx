@@ -44,15 +44,15 @@ export function ProductionOrdersTableFilter() {
     })
   }, 300)
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    dueDateFrom: string | undefined,
+    dueDateTo: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        dueDateFrom: range.from,
-        dueDateTo: range.to,
+        dueDateFrom,
+        dueDateTo,
         page: 1,
       }),
     })
@@ -134,13 +134,12 @@ export function ProductionOrdersTableFilter() {
             <Select
               value={search.status ?? "all"}
               onValueChange={(key) => handleStatusChange(String(key))}
-              placeholder="Chọn trạng thái"
             >
               <SelectTrigger
                 id="production-orders-status"
                 className="w-full text-xs"
               >
-                <SelectValue />
+                <SelectValue placeholder="Chọn trạng thái" />
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (

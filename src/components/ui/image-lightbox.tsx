@@ -1,8 +1,15 @@
-import { useState } from "react"
-import { RefreshCw, RotateCcw, RotateCw, ZoomIn, ZoomOut } from "lucide-react"
+import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
+import {
+  RefreshCw,
+  RotateCcw,
+  RotateCw,
+  X,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogTitle } from "@/components/ui/dialog"
 
 const MIN_SCALE = 0.5
 const MAX_SCALE = 3
@@ -37,8 +44,8 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Thu nhỏ"
-          isDisabled={scale <= MIN_SCALE}
-          onPress={() =>
+          disabled={scale <= MIN_SCALE}
+          onClick={() =>
             setScale((value) => Math.max(MIN_SCALE, value - SCALE_STEP))
           }
         >
@@ -49,8 +56,8 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Phóng to"
-          isDisabled={scale >= MAX_SCALE}
-          onPress={() =>
+          disabled={scale >= MAX_SCALE}
+          onClick={() =>
             setScale((value) => Math.min(MAX_SCALE, value + SCALE_STEP))
           }
         >
@@ -61,7 +68,7 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Xoay trái"
-          onPress={() => setRotation((value) => value - 90)}
+          onClick={() => setRotation((value) => value - 90)}
         >
           <RotateCcw className="size-4" />
         </Button>
@@ -70,7 +77,7 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Xoay phải"
-          onPress={() => setRotation((value) => value + 90)}
+          onClick={() => setRotation((value) => value + 90)}
         >
           <RotateCw className="size-4" />
         </Button>
@@ -79,7 +86,7 @@ function LightboxViewer({ src, alt }: LightboxViewerProps) {
           variant="ghost"
           size="icon-sm"
           aria-label="Đặt lại"
-          onPress={() => {
+          onClick={() => {
             setScale(1)
             setRotation(0)
           }}
@@ -99,22 +106,69 @@ type ImageLightboxProps = {
 }
 
 // Full-screen click-to-zoom preview for a single image — pure display, no upload/business logic,
-// so it lives here (like Dialog/Button) rather than duplicated per feature.
+// so it lives here (like Dialog/Button) rather than duplicated per feature. Deliberately not
+// built on ui/dialog: a lightbox wants a near-opaque dark backdrop (not the standard dialog's
+// light bg-black/10 overlay meant for form dialogs) and no card chrome around the viewer, so it
+// portals and manages its own open/close instead of overriding Dialog's overlay styling. Escape
+// and backdrop-click close, and body scroll is locked while open — the baseline a11y a real
+// Dialog would otherwise give for free.
 export function ImageLightbox({
   src,
   alt,
   open,
   onOpenChange,
 }: ImageLightboxProps) {
-  return (
-    <Dialog
-      isOpen={open}
-      onOpenChange={onOpenChange}
-      showCloseButton
-      className="flex h-[85vh] w-[95vw] max-w-4xl flex-col gap-0 overflow-hidden bg-background p-0 sm:max-w-4xl"
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onOpenChange(false)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [open, onOpenChange])
+
+  if (!open) {
+    return null
+  }
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={alt}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) {
+          onOpenChange(false)
+        }
+      }}
     >
-      <DialogTitle className="sr-only">{alt}</DialogTitle>
-      <LightboxViewer src={src} alt={alt} />
-    </Dialog>
+      <div className="flex h-[85vh] w-[95vw] max-w-4xl flex-col gap-0 overflow-hidden rounded-lg bg-background">
+        <LightboxViewer src={src} alt={alt} />
+      </div>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Đóng"
+        className="absolute top-4 right-4 text-white hover:bg-white/10 hover:text-white"
+        onClick={() => onOpenChange(false)}
+      >
+        <X className="size-4" />
+      </Button>
+    </div>,
+    document.body
   )
 }

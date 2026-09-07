@@ -2,7 +2,11 @@ import { DateTime } from "luxon"
 import { Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
@@ -64,32 +68,40 @@ export function OrderActionsCell({ order }: { order: Order }) {
 
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <TooltipTrigger>
-        <LinkButton
-          to="/manage/orders/$orderId"
-          params={{ orderId: order.id }}
-          variant="outline"
-          size="icon-sm"
-          aria-label="Xem chi tiết"
-        >
-          <Eye className="size-3.5" />
-        </LinkButton>
-        <Tooltip>Xem chi tiết</Tooltip>
-      </TooltipTrigger>
-      {isEditable ? (
-        <RoutePermissionGate route="/manage/orders/$orderId/update">
-          <TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
             <LinkButton
-              to="/manage/orders/$orderId/update"
+              to="/manage/orders/$orderId"
               params={{ orderId: order.id }}
               variant="outline"
               size="icon-sm"
-              aria-label="Chỉnh sửa"
+              aria-label="Xem chi tiết"
             >
-              <Pencil className="size-3.5" />
+              <Eye className="size-3.5" />
             </LinkButton>
-            <Tooltip>Chỉnh sửa</Tooltip>
-          </TooltipTrigger>
+          }
+        />
+        <TooltipContent>Xem chi tiết</TooltipContent>
+      </Tooltip>
+      {isEditable ? (
+        <RoutePermissionGate route="/manage/orders/$orderId/update">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <LinkButton
+                  to="/manage/orders/$orderId/update"
+                  params={{ orderId: order.id }}
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Chỉnh sửa"
+                >
+                  <Pencil className="size-3.5" />
+                </LinkButton>
+              }
+            />
+            <TooltipContent>Chỉnh sửa</TooltipContent>
+          </Tooltip>
         </RoutePermissionGate>
       ) : (
         <DisabledAction
@@ -104,17 +116,21 @@ export function OrderActionsCell({ order }: { order: Order }) {
           <DeleteOrderDialog
             order={order}
             trigger={
-              <TooltipTrigger>
-                <Button
-                  variant="outline"
-                  size="icon-sm"
-                  aria-label="Xoá đơn hàng"
-                  className="border-destructive/20 text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="size-3.5" />
-                </Button>
-                <Tooltip>Xoá đơn hàng</Tooltip>
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      size="icon-sm"
+                      aria-label="Xoá đơn hàng"
+                      className="border-destructive/20 text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  }
+                />
+                <TooltipContent>Xoá đơn hàng</TooltipContent>
+              </Tooltip>
             }
           />
         </PermissionGate>

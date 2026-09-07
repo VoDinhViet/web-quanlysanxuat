@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "cn"
+import { vi } from "date-fns/locale"
 import {
   DayPicker,
   getDefaultClassNames,
@@ -10,7 +11,11 @@ import {
 } from "react-day-picker"
 
 import { Button, buttonVariants } from "@/components/ui/button"
-import { IconChevronLeft, IconChevronRight, IconChevronDown } from "@tabler/icons-react"
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronDown,
+} from "@tabler/icons-react"
 
 function Calendar({
   className,
@@ -18,7 +23,7 @@ function Calendar({
   showOutsideDays = true,
   captionLayout = "label",
   buttonVariant = "ghost",
-  locale,
+  locale = vi,
   formatters,
   components,
   ...props
@@ -153,7 +158,10 @@ function Calendar({
 
           if (orientation === "right") {
             return (
-              <IconChevronRight className={cn("size-4", className)} {...props} />
+              <IconChevronRight
+                className={cn("size-4", className)}
+                {...props}
+              />
             )
           }
 

@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import { OrderStatus } from "@/lib/types/order.type"
-import { isoDateFilter } from "@/lib/zod-transforms"
 
 // The backend's GetOrdersReqDto has no `paymentTerm` or `overdue` filter and no `salesRepId`
 // (it's `assignedUserId`) — a URL carrying the old `status=OVERDUE`/`paymentTerm` params from
@@ -21,8 +20,8 @@ export const ordersSearchSchema = z.object({
   // on GetOrdersReqDto; proceeding on the assumption it lands alongside this frontend change,
   // per the plan.
   itemId: z.uuid().optional().catch(undefined),
-  orderDateFrom: isoDateFilter,
-  orderDateTo: isoDateFilter,
+  orderDateFrom: z.iso.date().optional().catch(undefined),
+  orderDateTo: z.iso.date().optional().catch(undefined),
   order: z.enum(["ASC", "DESC"]).optional().catch(undefined),
 })
 

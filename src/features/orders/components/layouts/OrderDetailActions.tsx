@@ -3,7 +3,11 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { OrderApprovalActions } from "@/features/orders/components/layouts/OrderApprovalActions"
 import {
@@ -60,19 +64,23 @@ function DisabledAction({
   hint = "Tính năng sắp có",
 }: DisabledActionProps) {
   return (
-    <TooltipTrigger>
-      <span>
-        <Button
-          type="button"
-          variant="outline"
-          disabled
-          className="pointer-events-none text-muted-foreground"
-        >
-          <IconComponent className="size-4" />
-          {label}
-        </Button>
-      </span>
-      <Tooltip>{hint}</Tooltip>
-    </TooltipTrigger>
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <span>
+            <Button
+              type="button"
+              variant="outline"
+              disabled
+              className="pointer-events-none text-muted-foreground"
+            >
+              <IconComponent className="size-4" />
+              {label}
+            </Button>
+          </span>
+        }
+      />
+      <TooltipContent>{hint}</TooltipContent>
+    </Tooltip>
   )
 }

@@ -5,7 +5,11 @@ import { Trash2 } from "lucide-react"
 import type { AnyFieldApi } from "@tanstack/react-form"
 
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { CreateOutboundOrderItemValue } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
@@ -185,20 +189,24 @@ export function buildCreateOutboundOrderItemColumns({
         cellClassName: "text-center",
       },
       cell: ({ row }) => (
-        <TooltipTrigger>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label={`Bỏ dòng ${row.index + 1}`}
-            className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-            disabled={disabled}
-            onClick={() => itemsField.removeValue(row.index)}
-          >
-            <Trash2 className="size-3.5" />
-          </Button>
-          <Tooltip>{`Bỏ dòng ${row.index + 1}`}</Tooltip>
-        </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label={`Bỏ dòng ${row.index + 1}`}
+                className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                disabled={disabled}
+                onClick={() => itemsField.removeValue(row.index)}
+              >
+                <Trash2 className="size-3.5" />
+              </Button>
+            }
+          />
+          <TooltipContent>{`Bỏ dòng ${row.index + 1}`}</TooltipContent>
+        </Tooltip>
       ),
     }),
   ])

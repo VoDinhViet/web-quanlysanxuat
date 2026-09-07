@@ -3,7 +3,11 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { Info } from "lucide-react"
 
 import { Checkbox } from "@/components/ui/checkbox"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { InventoryRequisitionLine } from "@/lib/types/inventory-requisition.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -28,10 +32,14 @@ export function ColumnHeaderWithHint({
   return (
     <span className="inline-flex items-center gap-1">
       {label}
-      <TooltipTrigger>
-        <Info className="size-3 shrink-0 cursor-help text-muted-foreground/70" />
-        <Tooltip>{hint}</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Info className="size-3 shrink-0 cursor-help text-muted-foreground/70" />
+          }
+        />
+        <TooltipContent>{hint}</TooltipContent>
+      </Tooltip>
     </span>
   )
 }

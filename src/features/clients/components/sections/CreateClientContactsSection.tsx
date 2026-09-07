@@ -11,7 +11,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { withForm } from "@/hooks/use-app-form"
 import { ClientContactDialog } from "@/features/clients/components/composites/ClientContactDialog"
 import { createClientFormDefaultValues } from "@/features/clients/schemas/create-client.schema"
@@ -76,89 +80,93 @@ export const CreateClientContactsSection = withForm({
               <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
                 <Table aria-label="Danh sách người liên hệ">
                   <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-<TableRow>
-
-                    <TableHead id="index" className="w-12">
-                      #
-                    </TableHead>
-                    <TableHead id="name">
-                      Họ và tên
-                    </TableHead>
-                    <TableHead id="position">Chức vụ</TableHead>
-                    <TableHead id="phoneNumber">Điện thoại</TableHead>
-                    <TableHead id="email">Email</TableHead>
-                    <TableHead id="note">Ghi chú</TableHead>
-                    <TableHead id="actions" className="w-24 text-right">
-                      Thao tác
-                    </TableHead>
-                  
-</TableRow>
-</TableHeader>
-                  <TableBody
-                  >
-{contacts.length === 0 ? (
-<TableRow>
-<TableCell colSpan={7}>
-<TableEmpty
-                        colSpan={7}
-                        title="Chưa có người liên hệ"
-                        description="Bấm “Thêm người liên hệ” để thêm."
-                      />
-</TableCell>
-</TableRow>
-) : (
-contacts.map((contact, index) => (
-                      <TableRow
-                        key={index}
-                        id={index}
-                        className="h-14 bg-card hover:bg-muted/25"
-                      >
-                        <TableCell className="text-muted-foreground">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell>{contact.name}</TableCell>
-                        <TableCell>{contact.position || "—"}</TableCell>
-                        <TableCell>{contact.phoneNumber || "—"}</TableCell>
-                        <TableCell>{contact.email || "—"}</TableCell>
-                        <TableCell className="max-w-48 truncate">
-                          {contact.note || "—"}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-1.5">
-                            <TooltipTrigger>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon-sm"
-                                aria-label={`Sửa người liên hệ ${index + 1}`}
-                                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                                disabled={disabled}
-                                onClick={() => openEdit(index)}
-                              >
-                                <Pencil className="size-3.5" />
-                              </Button>
-                              <Tooltip>{`Sửa người liên hệ ${index + 1}`}</Tooltip>
-                            </TooltipTrigger>
-                            <TooltipTrigger>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon-sm"
-                                aria-label={`Xóa người liên hệ ${index + 1}`}
-                                className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                                disabled={disabled}
-                                onClick={() => contactsField.removeValue(index)}
-                              >
-                                <Trash2 className="size-3.5" />
-                              </Button>
-                              <Tooltip>{`Xóa người liên hệ ${index + 1}`}</Tooltip>
-                            </TooltipTrigger>
-                          </div>
+                    <TableRow>
+                      <TableHead id="index" className="w-12">
+                        #
+                      </TableHead>
+                      <TableHead id="name">Họ và tên</TableHead>
+                      <TableHead id="position">Chức vụ</TableHead>
+                      <TableHead id="phoneNumber">Điện thoại</TableHead>
+                      <TableHead id="email">Email</TableHead>
+                      <TableHead id="note">Ghi chú</TableHead>
+                      <TableHead id="actions" className="w-24 text-right">
+                        Thao tác
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {contacts.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7}>
+                          <TableEmpty
+                            colSpan={7}
+                            title="Chưa có người liên hệ"
+                            description="Bấm “Thêm người liên hệ” để thêm."
+                          />
                         </TableCell>
                       </TableRow>
-                    ))
-)}
-</TableBody>
+                    ) : (
+                      contacts.map((contact, index) => (
+                        <TableRow
+                          key={index}
+                          className="h-14 bg-card hover:bg-muted/25"
+                        >
+                          <TableCell className="text-muted-foreground">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell>{contact.name}</TableCell>
+                          <TableCell>{contact.position || "—"}</TableCell>
+                          <TableCell>{contact.phoneNumber || "—"}</TableCell>
+                          <TableCell>{contact.email || "—"}</TableCell>
+                          <TableCell className="max-w-48 truncate">
+                            {contact.note || "—"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-1.5">
+                              <Tooltip>
+                                <TooltipTrigger
+                                  render={
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="icon-sm"
+                                      aria-label={`Sửa người liên hệ ${index + 1}`}
+                                      className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                                      disabled={disabled}
+                                      onClick={() => openEdit(index)}
+                                    >
+                                      <Pencil className="size-3.5" />
+                                    </Button>
+                                  }
+                                />
+                                <TooltipContent>{`Sửa người liên hệ ${index + 1}`}</TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger
+                                  render={
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="icon-sm"
+                                      aria-label={`Xóa người liên hệ ${index + 1}`}
+                                      className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                                      disabled={disabled}
+                                      onClick={() =>
+                                        contactsField.removeValue(index)
+                                      }
+                                    >
+                                      <Trash2 className="size-3.5" />
+                                    </Button>
+                                  }
+                                />
+                                <TooltipContent>{`Xóa người liên hệ ${index + 1}`}</TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
                 </Table>
               </div>
 

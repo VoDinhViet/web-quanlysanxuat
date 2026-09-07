@@ -2,7 +2,11 @@ import { useSearch } from "@tanstack/react-router"
 import { Eye } from "lucide-react"
 
 import { LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type ProductionExecutionJobActionsCellProps = {
   productionJobId: string
@@ -21,19 +25,23 @@ export function ProductionExecutionJobActionsCell({
   })
 
   return (
-    <TooltipTrigger>
-      <LinkButton
-        to="/manage/production-execution/$productionJobId"
-        params={{ productionJobId }}
-        search={{ operationId }}
-        variant="outline"
-        size="icon-sm"
-        aria-label="Xem chi tiết"
-        className="bg-background text-muted-foreground"
-      >
-        <Eye className="size-3.5" />
-      </LinkButton>
-      <Tooltip>Xem chi tiết</Tooltip>
-    </TooltipTrigger>
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <LinkButton
+            to="/manage/production-execution/$productionJobId"
+            params={{ productionJobId }}
+            search={{ operationId }}
+            variant="outline"
+            size="icon-sm"
+            aria-label="Xem chi tiết"
+            className="bg-background text-muted-foreground"
+          >
+            <Eye className="size-3.5" />
+          </LinkButton>
+        }
+      />
+      <TooltipContent>Xem chi tiết</TooltipContent>
+    </Tooltip>
   )
 }

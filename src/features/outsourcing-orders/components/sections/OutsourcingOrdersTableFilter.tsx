@@ -104,10 +104,9 @@ export function OutsourcingOrdersTableFilter() {
         <Select
           value={search.status ?? "all"}
           onValueChange={(key) => handleStatusChange(String(key))}
-          placeholder="Chọn trạng thái"
         >
           <SelectTrigger id="os-out-status" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn trạng thái" />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (

@@ -14,8 +14,8 @@ export const paymentRequestsSearchSchema = z.object({
   // Status filter
   status: z.enum(["PENDING", "PAID", "CANCELLED"]).optional().catch(undefined),
   // Date range (ISO yyyy-MM-dd) — matches the "Từ ngày / Đến ngày" DateRangePicker pair
-  startDate: z.string().trim().min(1).optional().catch(undefined),
-  endDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.iso.date().optional().catch(undefined),
+  endDate: z.iso.date().optional().catch(undefined),
 })
 
 export type PaymentRequestsSearchSchema = z.infer<

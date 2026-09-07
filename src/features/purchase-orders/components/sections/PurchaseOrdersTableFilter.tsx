@@ -62,15 +62,15 @@ export function PurchaseOrdersTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
   }
 
-  const handleOrderDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleOrderDateRangeChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
         page: 1,
       }),
     })

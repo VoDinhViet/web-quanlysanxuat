@@ -3,6 +3,7 @@ import { CheckCircle } from "@solar-icons/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -45,20 +46,18 @@ export function QuotationAddSupplierDialog({
   onSubmit,
 }: QuotationAddSupplierDialogProps) {
   return (
-    <Dialog
-      isOpen={open}
-      onOpenChange={onOpenChange}
-      className="shadow-lg ring-0 sm:max-w-3xl"
-    >
-      {/* The dialog unmounts content while closed, so this form re-mounts on each open and its
-          supplier/checked state seeds fresh from `initialItemIds` — this is what fixes the old
-          inline combobox never resetting after a pick. */}
-      <QuotationAddSupplierDialogForm
-        items={items}
-        initialItemIds={initialItemIds}
-        onSubmit={onSubmit}
-        onCancel={() => onOpenChange(false)}
-      />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="shadow-lg ring-0 sm:max-w-3xl">
+        {/* The dialog unmounts content while closed, so this form re-mounts on each open and its
+            supplier/checked state seeds fresh from `initialItemIds` — this is what fixes the old
+            inline combobox never resetting after a pick. */}
+        <QuotationAddSupplierDialogForm
+          items={items}
+          initialItemIds={initialItemIds}
+          onSubmit={onSubmit}
+          onCancel={() => onOpenChange(false)}
+        />
+      </DialogContent>
     </Dialog>
   )
 }
@@ -154,10 +153,7 @@ function QuotationAddSupplierDialogForm({
         <Button type="button" variant="outline" onClick={onCancel}>
           Hủy
         </Button>
-        <Button
-          type="submit"
-          disabled={!supplierId || targetIds.length === 0}
-        >
+        <Button type="submit" disabled={!supplierId || targetIds.length === 0}>
           <CheckCircle className="size-4" />
           {targetIds.length > 0
             ? `Thêm vào ${targetIds.length} vật tư`

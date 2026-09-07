@@ -45,13 +45,12 @@ export function OperationSelect({
       value={selectedOperationId ?? ""}
       onValueChange={(key) => handleChange(String(key))}
       disabled={isPending || isError || summary.length === 0}
-      placeholder={placeholder}
     >
       <SelectTrigger
         id="production-execution-operation"
         className="w-full text-xs"
       >
-        <SelectValue />
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         {summary.map((operation) => (

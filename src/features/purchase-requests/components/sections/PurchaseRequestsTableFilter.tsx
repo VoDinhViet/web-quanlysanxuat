@@ -59,15 +59,15 @@ export function PurchaseRequestsTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    createdStartDate: string | undefined,
+    createdEndDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        createdStartDate: range.from,
-        createdEndDate: range.to,
+        createdStartDate,
+        createdEndDate,
         page: 1,
       }),
     })

@@ -5,7 +5,11 @@ import { Edit3, Eye, MoreHorizontal, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteClientDialog } from "@/features/clients/components/composites/DeleteClientDialog"
@@ -97,65 +101,81 @@ export const clientColumns = clientColumnHelper.columns([
 
       return (
         <div className="flex items-center justify-center gap-1.5">
-          <TooltipTrigger>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Xem chi tiết"
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <Eye className="size-3.5" />
-            </Button>
-            <Tooltip>Xem chi tiết</Tooltip>
-          </TooltipTrigger>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Xem chi tiết"
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                >
+                  <Eye className="size-3.5" />
+                </Button>
+              }
+            />
+            <TooltipContent>Xem chi tiết</TooltipContent>
+          </Tooltip>
           <RoutePermissionGate route="/manage/clients/$clientId/update">
-            <TooltipTrigger>
-              <Link
-                to="/manage/clients/$clientId/update"
-                params={{ clientId: client.id }}
-                aria-label="Chỉnh sửa"
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "icon-sm" }),
-                  "text-muted-foreground hover:border-primary/30 hover:text-primary"
-                )}
-              >
-                <Edit3 className="size-3.5" />
-              </Link>
-              <Tooltip>Chỉnh sửa</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Link
+                    to="/manage/clients/$clientId/update"
+                    params={{ clientId: client.id }}
+                    aria-label="Chỉnh sửa"
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "icon-sm" }),
+                      "text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    )}
+                  >
+                    <Edit3 className="size-3.5" />
+                  </Link>
+                }
+              />
+              <TooltipContent>Chỉnh sửa</TooltipContent>
+            </Tooltip>
           </RoutePermissionGate>
           <PermissionGate permission="clients:delete">
             <DeleteClientDialog
               client={client}
               trigger={
-                <TooltipTrigger>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Xóa"
-                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </Button>
-                  <Tooltip>Xóa</Tooltip>
-                </TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Xóa"
+                        className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent>Xóa</TooltipContent>
+                </Tooltip>
               }
             />
           </PermissionGate>
-          <TooltipTrigger>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Thao tác khác"
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <MoreHorizontal className="size-3.5" />
-            </Button>
-            <Tooltip>Thao tác khác</Tooltip>
-          </TooltipTrigger>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Thao tác khác"
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                >
+                  <MoreHorizontal className="size-3.5" />
+                </Button>
+              }
+            />
+            <TooltipContent>Thao tác khác</TooltipContent>
+          </Tooltip>
         </div>
       )
     },

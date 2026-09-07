@@ -23,12 +23,17 @@ import {
 } from "@/components/ui/table"
 import {
   DropdownMenu,
+  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import {
   BomNodeTypeBadge,
@@ -185,22 +190,26 @@ function OperationsToggleButton({
   const label = isExpanded ? "Ẩn công đoạn" : "Hiện công đoạn"
 
   return (
-    <TooltipTrigger>
-      <Button
-        type="button"
-        variant="outline"
-        size="icon-sm"
-        aria-label={label}
-        onClick={onToggle}
-        className={cn(
-          "border border-border/60 hover:bg-muted",
-          isExpanded && "bg-primary/10 text-primary hover:bg-primary/15"
-        )}
-      >
-        <Route className="size-3.5" />
-      </Button>
-      <Tooltip>{label}</Tooltip>
-    </TooltipTrigger>
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label={label}
+            onClick={onToggle}
+            className={cn(
+              "border border-border/60 hover:bg-muted",
+              isExpanded && "bg-primary/10 text-primary hover:bg-primary/15"
+            )}
+          >
+            <Route className="size-3.5" />
+          </Button>
+        }
+      />
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -227,17 +236,20 @@ function BomRowActions({
     <>
       {node.itemType === "WIP" ? (
         <DropdownMenu>
-<DropdownMenuTrigger render={<Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="Thêm thành phần"
-            className="border border-border/60 hover:bg-muted"
-          >
-            <ArrowRightDown className="size-3.5" />
-          </Button>} />
-<DropdownMenuContent align="end">
-
+          <DropdownMenuTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Thêm thành phần"
+                className="border border-border/60 hover:bg-muted"
+              >
+                <ArrowRightDown className="size-3.5" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Thêm cấp con</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => onAddChild("WIP")}>
               <LayersMinimalistic />
@@ -252,52 +264,63 @@ function BomRowActions({
               <Layers />
               Cùng cấp
             </DropdownMenuItem>
-          
-</DropdownMenuContent>
-</DropdownMenu>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
-        <TooltipTrigger>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="Thêm cùng cấp"
-            onClick={onAddSibling}
-            className="border border-border/60 hover:bg-muted"
-          >
-            <Layers className="size-3.5" />
-          </Button>
-          <Tooltip>Thêm cùng cấp</Tooltip>
-        </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Thêm cùng cấp"
+                onClick={onAddSibling}
+                className="border border-border/60 hover:bg-muted"
+              >
+                <Layers className="size-3.5" />
+              </Button>
+            }
+          />
+          <TooltipContent>Thêm cùng cấp</TooltipContent>
+        </Tooltip>
       )}
 
-      <TooltipTrigger>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon-sm"
-          aria-label="Sửa thành phần"
-          onClick={() => onUpdate(node)}
-          className="border border-border/60 hover:bg-muted"
-        >
-          <Pencil className="size-3.5" />
-        </Button>
-        <Tooltip>Sửa thành phần</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label="Sửa thành phần"
+              onClick={() => onUpdate(node)}
+              className="border border-border/60 hover:bg-muted"
+            >
+              <Pencil className="size-3.5" />
+            </Button>
+          }
+        />
+        <TooltipContent>Sửa thành phần</TooltipContent>
+      </Tooltip>
 
-      <TooltipTrigger>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon-sm"
-          aria-label="Xoá thành phần"
-          className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
-          onClick={() => onDelete(node)}
-        >
-          <Trash2 className="size-3.5" />
-        </Button>
-        <Tooltip>Xoá thành phần</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label="Xoá thành phần"
+              className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              onClick={() => onDelete(node)}
+            >
+              <Trash2 className="size-3.5" />
+            </Button>
+          }
+        />
+        <TooltipContent>Xoá thành phần</TooltipContent>
+      </Tooltip>
     </>
   )
 }
@@ -316,34 +339,42 @@ function RootAddButton({
 }) {
   if (productType === ItemType.FG) {
     return (
-      <TooltipTrigger>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon-sm"
-          aria-label="Thêm thành phần"
-          onClick={() => onCreate("WIP")}
-          className="border border-border/60 hover:bg-muted"
-        >
-          <Plus className="size-3.5" />
-        </Button>
-        <Tooltip>Thêm thành phần</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label="Thêm thành phần"
+              onClick={() => onCreate("WIP")}
+              className="border border-border/60 hover:bg-muted"
+            >
+              <Plus className="size-3.5" />
+            </Button>
+          }
+        />
+        <TooltipContent>Thêm thành phần</TooltipContent>
+      </Tooltip>
     )
   }
 
   return (
-    <DropdownMenuTrigger>
-      <Button
-        type="button"
-        variant="outline"
-        size="icon-sm"
-        aria-label="Thêm thành phần"
-        className="border border-border/60 hover:bg-muted"
-      >
-        <Plus className="size-3.5" />
-      </Button>
-      <DropdownMenu placement="bottom end" className="min-w-44">
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Thêm thành phần"
+            className="border border-border/60 hover:bg-muted"
+          >
+            <Plus className="size-3.5" />
+          </Button>
+        }
+      />
+      <DropdownMenuContent align="end" className="min-w-44">
         <DropdownMenuLabel>Thêm thành phần</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => onCreate("WIP")}>
           <LayersMinimalistic />
@@ -353,8 +384,8 @@ function RootAddButton({
           <Bolt />
           {bomItemTypeLabels.RM}
         </DropdownMenuItem>
-      </DropdownMenu>
-    </DropdownMenuTrigger>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -403,33 +434,17 @@ export function ProductBomTable({
       <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
         <Table aria-label="Cây kết cấu sản phẩm">
           <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-            <TableHead id="index" className="w-14">
-              STT
-            </TableHead>
-            <TableHead id="code" isRowHeader className="w-48">
-              MÃ BẢN VẼ
-            </TableHead>
-            <TableHead id="name" className="min-w-44">
-              TÊN BẢN VẼ
-            </TableHead>
-            <TableHead id="type" className="w-28">
-              LOẠI
-            </TableHead>
-            <TableHead id="level" className="w-20">
-              CẤP
-            </TableHead>
-            <TableHead id="quantity" className="w-24 text-center">
-              SỐ LƯỢNG
-            </TableHead>
-            <TableHead id="unit" className="w-20">
-              ĐVT
-            </TableHead>
-            <TableHead id="operations" className="min-w-64">
-              CÔNG ĐOẠN
-            </TableHead>
-            <TableHead id="actions" className="w-44 text-right">
-              THAO TÁC
-            </TableHead>
+            <TableRow>
+              <TableHead className="w-14">STT</TableHead>
+              <TableHead className="w-48">MÃ BẢN VẼ</TableHead>
+              <TableHead className="min-w-44">TÊN BẢN VẼ</TableHead>
+              <TableHead className="w-28">LOẠI</TableHead>
+              <TableHead className="w-20">CẤP</TableHead>
+              <TableHead className="w-24 text-center">SỐ LƯỢNG</TableHead>
+              <TableHead className="w-20">ĐVT</TableHead>
+              <TableHead className="min-w-64">CÔNG ĐOẠN</TableHead>
+              <TableHead className="w-44 text-right">THAO TÁC</TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
             {/* Item root row — "Cấp 0" */}

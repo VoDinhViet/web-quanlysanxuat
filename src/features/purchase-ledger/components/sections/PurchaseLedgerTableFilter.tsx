@@ -48,29 +48,29 @@ export function PurchaseLedgerTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
-  const handleCreatedDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleCreatedDateRangeChange = (
+    createdStartDate: string | undefined,
+    createdEndDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        createdStartDate: range.from,
-        createdEndDate: range.to,
+        createdStartDate,
+        createdEndDate,
         page: 1,
       }),
     })
   }
 
-  const handleNeededDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleNeededDateRangeChange = (
+    neededStartDate: string | undefined,
+    neededEndDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        neededStartDate: range.from,
-        neededEndDate: range.to,
+        neededStartDate,
+        neededEndDate,
         page: 1,
       }),
     })

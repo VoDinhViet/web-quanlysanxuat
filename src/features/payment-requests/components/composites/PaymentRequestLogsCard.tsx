@@ -58,57 +58,55 @@ export function PaymentRequestLogsCard({
       >
         <Table aria-label="Lịch sử thay đổi">
           <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-<TableRow>
-
-            <TableHead id="createdAt">
-              Thời gian
-            </TableHead>
-            <TableHead id="performer">Người thực hiện</TableHead>
-            <TableHead id="action">Hành động</TableHead>
-            <TableHead id="content">Nội dung</TableHead>
-          
-</TableRow>
-</TableHeader>
-          <TableBody
-          >
-{logs.length === 0 ? (
-<TableRow>
-<TableCell colSpan={logColumnCount}>
-logsQuery.isPending ? (
-                <div className="flex h-40 items-center justify-center">
-                  <Spinner className="mx-auto size-6 text-muted-foreground" />
-                </div>
-              ) : logsQuery.isError ? (
-                <div className="flex h-40 items-center justify-center text-center text-xs text-muted-foreground">
-                  {logsQuery.error.message}
-                </div>
-              ) : (
-                <TableEmpty
-                  colSpan={logColumnCount}
-                  title="Chưa có dữ liệu lịch sử."
-                />
-              )
-</TableCell>
-</TableRow>
-) : (
-logs.map((log) => (
-              <TableRow
-                key={log.id}
-                id={log.id}
-                className="h-14 bg-card hover:bg-muted/25"
-              >
-                <TableCell className="whitespace-nowrap tabular-nums">
-                  {DateTime.fromISO(log.createdAt).toFormat("dd/MM/yyyy HH:mm")}
+            <TableRow>
+              <TableHead>Thời gian</TableHead>
+              <TableHead>Người thực hiện</TableHead>
+              <TableHead>Hành động</TableHead>
+              <TableHead>Nội dung</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {logs.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={logColumnCount}>
+                  {logsQuery.isPending ? (
+                    <div className="flex h-40 items-center justify-center">
+                      <Spinner className="mx-auto size-6 text-muted-foreground" />
+                    </div>
+                  ) : logsQuery.isError ? (
+                    <div className="flex h-40 items-center justify-center text-center text-xs text-muted-foreground">
+                      {logsQuery.error.message}
+                    </div>
+                  ) : (
+                    <TableEmpty
+                      colSpan={logColumnCount}
+                      title="Chưa có dữ liệu lịch sử."
+                    />
+                  )}
                 </TableCell>
-                <TableCell>{log.performerBy?.fullName ?? "Hệ thống"}</TableCell>
-                <TableCell>
-                  {paymentRequestLogActionLabels[log.action]}
-                </TableCell>
-                <TableCell>{log.content}</TableCell>
               </TableRow>
-            ))
-)}
-</TableBody>
+            ) : (
+              logs.map((log) => (
+                <TableRow
+                  key={log.id}
+                  className="h-14 bg-card hover:bg-muted/25"
+                >
+                  <TableCell className="whitespace-nowrap tabular-nums">
+                    {DateTime.fromISO(log.createdAt).toFormat(
+                      "dd/MM/yyyy HH:mm"
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {log.performerBy?.fullName ?? "Hệ thống"}
+                  </TableCell>
+                  <TableCell>
+                    {paymentRequestLogActionLabels[log.action]}
+                  </TableCell>
+                  <TableCell>{log.content}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
         </Table>
       </div>
 

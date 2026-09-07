@@ -7,12 +7,17 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { cancelOutsourcingOrder } from "@/features/outsourcing-orders/api/server-functions/cancel-outsourcing-order.api"
 import { OutsourcingOrderStatus } from "@/lib/types/outsourcing-order.type"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
@@ -71,58 +76,64 @@ export function OutsourcingOrderDetailActions({
         </PermissionGate>
       )}
 
-      <TooltipTrigger>
-        <span tabIndex={0}>
-          <Button
-            type="button"
-            variant="outline"
-            className="pointer-events-none"
-            disabled
-          >
-            <Printer className="size-4" />
-            In phiếu
-          </Button>
-        </span>
-        <Tooltip>In phiếu — chưa có tính năng in phiếu</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <span tabIndex={0}>
+              <Button
+                type="button"
+                variant="outline"
+                className="pointer-events-none"
+                disabled
+              >
+                <Printer className="size-4" />
+                In phiếu
+              </Button>
+            </span>
+          }
+        />
+        <TooltipContent>In phiếu — chưa có tính năng in phiếu</TooltipContent>
+      </Tooltip>
 
       {confirmAction && (
-        <Dialog isOpen onOpenChange={closeConfirm}>
-          <DialogHeader>
-            <DialogTitle>Hủy phiếu gia công ngoài</DialogTitle>
-            <DialogDescription>
-              Phiếu{" "}
-              <span className="font-mono font-semibold text-foreground">
-                {order.code}
-              </span>{" "}
-              đã trừ tồn kho xuất — hủy sẽ đảo ngược bút toán và cộng lại tồn
-              kho đã trừ. Nếu phiếu đã có OS-IN (nhận hàng) liên kết chưa hủy,
-              thao tác sẽ thất bại.
-            </DialogDescription>
-          </DialogHeader>
+        <Dialog open onOpenChange={closeConfirm}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Hủy phiếu gia công ngoài</DialogTitle>
+              <DialogDescription>
+                Phiếu{" "}
+                <span className="font-mono font-semibold text-foreground">
+                  {order.code}
+                </span>{" "}
+                đã trừ tồn kho xuất — hủy sẽ đảo ngược bút toán và cộng lại tồn
+                kho đã trừ. Nếu phiếu đã có OS-IN (nhận hàng) liên kết chưa hủy,
+                thao tác sẽ thất bại.
+              </DialogDescription>
+            </DialogHeader>
 
-          {cancelMutation.error && (
-            <p className="text-sm text-destructive">
-              {cancelMutation.error.message}
-            </p>
-          )}
+            {cancelMutation.error && (
+              <p className="text-sm text-destructive">
+                {cancelMutation.error.message}
+              </p>
+            )}
 
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => closeConfirm(false)}
-              disabled={cancelMutation.isPending}
-            >
-              Đóng
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => cancelMutation.mutate()}
-              disabled={cancelMutation.isPending}
-            >
-              {cancelMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
-            </Button>
-          </DialogFooter>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => closeConfirm(false)}
+                disabled={cancelMutation.isPending}
+              >
+                Đóng
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => cancelMutation.mutate()}
+                disabled={cancelMutation.isPending}
+              >
+                {cancelMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
         </Dialog>
       )}
     </div>

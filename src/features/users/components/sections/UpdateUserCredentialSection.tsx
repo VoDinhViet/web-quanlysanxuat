@@ -226,11 +226,6 @@ export function UpdateUserCredentialSection({
                 value={field.value ?? ""}
                 onValueChange={(key) => field.onChange(String(key))}
                 disabled={credentialFieldsDisabled}
-                placeholder={
-                  rolesQuery.isPending
-                    ? "Đang tải..."
-                    : "Chọn vai trò (tuỳ chọn)"
-                }
               >
                 <SelectTrigger
                   id={field.name}
@@ -238,7 +233,13 @@ export function UpdateUserCredentialSection({
                   aria-invalid={!!fieldState.error}
                   className="h-9 w-full bg-background text-xs"
                 >
-                  <SelectValue />
+                  <SelectValue
+                    placeholder={
+                      rolesQuery.isPending
+                        ? "Đang tải..."
+                        : "Chọn vai trò (tuỳ chọn)"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {roleOptions.map((option) => (

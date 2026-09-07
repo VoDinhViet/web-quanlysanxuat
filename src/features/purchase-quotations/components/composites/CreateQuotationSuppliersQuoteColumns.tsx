@@ -4,7 +4,11 @@ import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
@@ -130,27 +134,31 @@ export function buildQuotationSuppliersQuoteColumns({
       id: "actions",
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
-        <TooltipTrigger>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="Xóa NCC"
-            className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
-            disabled={disabled}
-            onClick={() =>
-              itemsField.replaceValue(itemIndex, {
-                ...item,
-                suppliers: item.suppliers.filter(
-                  (_, index) => index !== row.index
-                ),
-              })
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Xóa NCC"
+                className="text-destructive hover:border-destructive/30 hover:bg-destructive/10"
+                disabled={disabled}
+                onClick={() =>
+                  itemsField.replaceValue(itemIndex, {
+                    ...item,
+                    suppliers: item.suppliers.filter(
+                      (_, index) => index !== row.index
+                    ),
+                  })
+                }
+              >
+                <TrashBinTrash className="size-3.5" />
+              </Button>
             }
-          >
-            <TrashBinTrash className="size-3.5" />
-          </Button>
-          <Tooltip>Xóa NCC</Tooltip>
-        </TooltipTrigger>
+          />
+          <TooltipContent>Xóa NCC</TooltipContent>
+        </Tooltip>
       ),
     }),
   ])
