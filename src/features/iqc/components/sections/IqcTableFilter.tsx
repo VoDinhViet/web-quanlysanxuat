@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, ListFilter, Plus, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,7 +22,9 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import { exportIqc } from "@/features/iqc/api/server-functions/export-iqc.api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import type { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 import { iqcResultLabels, iqcStatusLabels } from "@/lib/types/iqc.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -44,6 +48,16 @@ export function IqcTableFilter() {
   const { data: supplierOptions } = useSuspenseQuery(
     supplierOptionsQueryOptions()
   )
+
+  const exportIqcFn = useServerFn(exportIqc)
+  const exportMutation = useMutation({
+    mutationFn: () => exportIqcFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // Fields tucked behind the "Bộ lọc" popover — count so the trigger can hint they're active
   // even while the popover is closed.
@@ -244,10 +258,16 @@ export function IqcTableFilter() {
           Xóa bộ lọc
         </Button>
 
-        <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+        <Button
+          type="button"
+          variant="outline"
+          className="text-xs"
+          disabled={exportMutation.isPending}
+          onClick={() => exportMutation.mutate()}
+        >
           <Download className="size-4" />
-          Xuất Excel
-        </PendingAction>
+          {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+        </Button>
 
         <PendingAction
           label="Thêm IQC"

@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { RotateCw, Search } from "lucide-react"
+import { Download, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,6 +17,8 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
+import { exportOqc } from "@/features/oqc/api/server-functions/export-oqc.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import type { IqcResult } from "@/lib/types/iqc.type"
 import { iqcResultLabels } from "@/lib/types/iqc.type"
 import type { OqcDisposition, OqcStatus } from "@/lib/types/oqc.type"
@@ -44,6 +49,16 @@ export function OqcTableFilter() {
   const navigate = useNavigate({ from: "/manage/oqc/" })
 
   const [q, setQ] = useState(search.q ?? "")
+
+  const exportOqcFn = useServerFn(exportOqc)
+  const exportMutation = useMutation({
+    mutationFn: () => exportOqcFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   const handleQChange = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
@@ -229,6 +244,17 @@ export function OqcTableFilter() {
       >
         <RotateCw className="size-3.5" />
         Xóa bộ lọc
+      </Button>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="gap-1.5 text-xs"
+        disabled={exportMutation.isPending}
+        onClick={() => exportMutation.mutate()}
+      >
+        <Download className="size-3.5" />
+        {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
       </Button>
     </div>
   )
