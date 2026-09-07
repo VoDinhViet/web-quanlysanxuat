@@ -121,7 +121,7 @@ export function PurchaseQuotationSupplierCompareTable({
     // renders exactly like "nothing selected" would.
     <RadioGroup
       value={selectedSupplierId ?? ""}
-      onChange={onSelectSupplier}
+      onValueChange={onSelectSupplier}
       className="contents"
     >
       {tableElement}

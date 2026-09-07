@@ -63,8 +63,8 @@ export function CreateUserCredentialSection({
           name="credential"
           render={({ field }) => (
             <Switch
-              isSelected={field.value != null}
-              onChange={(checked) =>
+              checked={field.value != null}
+              onCheckedChange={(checked) =>
                 field.onChange(
                   checked
                     ? { username: "", email: "", password: "", roleId: "" }

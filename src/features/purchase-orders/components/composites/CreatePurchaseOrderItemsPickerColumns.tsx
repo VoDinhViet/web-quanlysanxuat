@@ -29,9 +29,9 @@ export function buildPurchaseOrderItemsPickerColumns({
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <Checkbox
-          isSelected={pickedIds.has(row.original.id)}
+          checked={pickedIds.has(row.original.id)}
           disabled={disabled}
-          onChange={() => onToggleRow(row.original)}
+          onCheckedChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.item.name}`}
         />
       ),

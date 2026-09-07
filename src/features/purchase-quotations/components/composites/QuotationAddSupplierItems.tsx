@@ -69,68 +69,67 @@ export function QuotationAddSupplierItems({
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">
         <div className="max-h-80 overflow-y-auto">
           <Table aria-label="Danh sách vật tư">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="sticky top-0 z-10 bg-muted/45 [&>tr]:h-10 [&>tr]:hover:bg-transparent"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
-            </TableHeader>
-            <TableBody
-              items={table.getRowModel().rows}
-              renderEmptyState={() => (
-                <TableEmpty
-                  colSpan={columns.length}
-                  title="Chưa có vật tư nào"
-                />
-              )}
-            >
-              {(row) => {
-                const isAssigned = assignedIds.has(row.original.itemId)
-                const isChecked = checkedIds.has(row.original.itemId)
-
-                return (
-                  <TableRow
-                    id={row.id}
-                    className={cn(
-                      "h-12 hover:bg-transparent",
-                      isAssigned
-                        ? "cursor-not-allowed text-muted-foreground"
-                        : "cursor-pointer",
-                      isChecked && !isAssigned && "bg-primary/5"
-                    )}
-                    onClick={() =>
-                      !isAssigned && onToggleItem(row.original.itemId)
-                    }
-                    columns={row.getVisibleCells()}
+            <TableHeader className="sticky top-0 z-10 bg-muted/45 [&>tr]:h-10 [&>tr]:hover:bg-transparent">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
                   >
-                    {(cell) => (
-                      <TableCell
-                        className={cell.column.columnDef.meta?.cellClassName}
-                        onClick={(event) =>
-                          cell.column.id === "select" && event.stopPropagation()
-                        }
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    )}
-                  </TableRow>
-                )
-              }}
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty colSpan={columns.length} title="Chưa có vật tư nào" />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => {
+                  const isAssigned = assignedIds.has(row.original.itemId)
+                  const isChecked = checkedIds.has(row.original.itemId)
+
+                  return (
+                    <TableRow
+                      key={row.id}
+                      className={cn(
+                        "h-12 hover:bg-transparent",
+                        isAssigned
+                          ? "cursor-not-allowed text-muted-foreground"
+                          : "cursor-pointer",
+                        isChecked && !isAssigned && "bg-primary/5"
+                      )}
+                      onClick={() =>
+                        !isAssigned && onToggleItem(row.original.itemId)
+                      }
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                          onClick={(event) =>
+                            cell.column.id === "select" &&
+                            event.stopPropagation()
+                          }
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                })
+              )}
             </TableBody>
           </Table>
         </div>

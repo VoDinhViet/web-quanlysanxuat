@@ -38,9 +38,9 @@ export function UnitScopesField({ form, disabled }: UnitScopesFieldProps) {
           <Checkbox
             key={scope}
             className="flex items-center gap-2 text-xs text-foreground"
-            isSelected={selectedSet.has(scope)}
+            checked={selectedSet.has(scope)}
             disabled={disabled}
-            onChange={(checked) => toggle(scope, checked)}
+            onCheckedChange={(checked) => toggle(scope, checked)}
           >
             {unitScopeLabels[scope]}
           </Checkbox>

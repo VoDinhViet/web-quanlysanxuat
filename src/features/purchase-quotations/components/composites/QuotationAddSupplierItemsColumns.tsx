@@ -38,8 +38,8 @@ export function buildQuotationAddSupplierItemsColumns({
       id: "select",
       header: () => (
         <Checkbox
-          isSelected={allChecked}
-          onChange={onToggleAll}
+          checked={allChecked}
+          onCheckedChange={onToggleAll}
           aria-label="Chọn tất cả"
         />
       ),
@@ -48,9 +48,9 @@ export function buildQuotationAddSupplierItemsColumns({
         const isAssigned = assignedIds.has(row.original.itemId)
         return (
           <Checkbox
-            isSelected={isAssigned || checkedIds.has(row.original.itemId)}
+            checked={isAssigned || checkedIds.has(row.original.itemId)}
             disabled={isAssigned}
-            onChange={() => onToggleItem(row.original.itemId)}
+            onCheckedChange={() => onToggleItem(row.original.itemId)}
             aria-label={`Chọn ${row.original.itemName}`}
           />
         )

@@ -98,7 +98,7 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
 
         <RadioGroup
           value={purchaseOrderIdField.state.value}
-          onChange={(value) => purchaseOrderIdField.handleChange(value)}
+          onValueChange={(value) => purchaseOrderIdField.handleChange(value)}
           className="mt-4 block gap-0 overflow-hidden rounded-md border border-dashed border-border/50 bg-card"
         >
           <Table aria-label="Danh sách PO cần nhập">

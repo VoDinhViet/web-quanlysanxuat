@@ -74,8 +74,8 @@ export function UpdateUserCredentialSection({
             name="credential.credentialEnabled"
             render={({ field }) => (
               <Switch
-                isSelected={field.value ?? false}
-                onChange={field.onChange}
+                checked={field.value ?? false}
+                onCheckedChange={field.onChange}
                 disabled={disabled}
                 className="mt-1 shrink-0"
                 aria-label="Cho phép đăng nhập"
@@ -88,8 +88,8 @@ export function UpdateUserCredentialSection({
             name="credential"
             render={({ field }) => (
               <Switch
-                isSelected={field.value != null}
-                onChange={(checked) =>
+                checked={field.value != null}
+                onCheckedChange={(checked) =>
                   field.onChange(
                     checked
                       ? {

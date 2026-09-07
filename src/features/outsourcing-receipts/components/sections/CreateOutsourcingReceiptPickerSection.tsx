@@ -283,77 +283,81 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
 
         <div className="mt-4 overflow-x-auto rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách dòng cần nhận">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
             </TableHeader>
             <TableBody
-              items={table.getRowModel().rows}
               className={cn(
                 query.isFetching && "pointer-events-none opacity-50"
               )}
-              renderEmptyState={() => (
-                <TableEmpty
-                  colSpan={columns.length}
-                  title={
-                    query.isPending ? "Đang tải..." : "Không tìm thấy dòng nào"
-                  }
-                />
-              )}
             >
-              {(row) => {
-                const isPicked = pickedIds.has(row.original.id)
-                const isOtherSupplier =
-                  lockedSupplierId !== undefined &&
-                  row.original.supplier.id !== lockedSupplierId
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title={
+                        query.isPending
+                          ? "Đang tải..."
+                          : "Không tìm thấy dòng nào"
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => {
+                  const isPicked = pickedIds.has(row.original.id)
+                  const isOtherSupplier =
+                    lockedSupplierId !== undefined &&
+                    row.original.supplier.id !== lockedSupplierId
 
-                return (
-                  <TableRow
-                    id={row.id}
-                    className={cn(
-                      "h-14 bg-card",
-                      isOtherSupplier
-                        ? "opacity-60"
-                        : "cursor-pointer hover:bg-muted/25",
-                      isPicked && "bg-primary/5"
-                    )}
-                    onClick={() =>
-                      !disabled && !isOtherSupplier && toggleRow(row.original)
-                    }
-                    columns={row.getVisibleCells()}
-                  >
-                    {(cell) => (
-                      <TableCell
-                        className={cell.column.columnDef.meta?.cellClassName}
-                        onClick={(event) =>
-                          (cell.column.id === "select" ||
-                            cell.column.id === "outsourcingOrderCode") &&
-                          event.stopPropagation()
-                        }
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    )}
-                  </TableRow>
-                )
-              }}
+                  return (
+                    <TableRow
+                      key={row.id}
+                      className={cn(
+                        "h-14 bg-card",
+                        isOtherSupplier
+                          ? "opacity-60"
+                          : "cursor-pointer hover:bg-muted/25",
+                        isPicked && "bg-primary/5"
+                      )}
+                      onClick={() =>
+                        !disabled && !isOtherSupplier && toggleRow(row.original)
+                      }
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                          onClick={(event) =>
+                            (cell.column.id === "select" ||
+                              cell.column.id === "outsourcingOrderCode") &&
+                            event.stopPropagation()
+                          }
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                })
+              )}
             </TableBody>
           </Table>
         </div>

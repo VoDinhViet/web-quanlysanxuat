@@ -1,4 +1,4 @@
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 
 import { RadioGroup } from "@/components/ui/radio-group"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
@@ -96,7 +96,7 @@ export const InventoryReceiptCreateReturnHeaderSection = withForm({
                 </span>
                 <RadioGroup
                   value={field.state.value ? "yes" : "no"}
-                  onChange={(value) => field.handleChange(value === "yes")}
+                  onValueChange={(value) => field.handleChange(value === "yes")}
                   disabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
@@ -104,13 +104,13 @@ export const InventoryReceiptCreateReturnHeaderSection = withForm({
                     { value: "yes", label: "Yêu cầu QC" },
                     { value: "no", label: "Không yêu cầu QC" },
                   ].map((option) => (
-                    <Radio
+                    <Radio.Root
                       key={option.value}
                       value={option.value}
-                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
+                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-checked:border-primary data-checked:bg-primary/5 data-checked:text-primary"
                     >
                       {option.label}
-                    </Radio>
+                    </Radio.Root>
                   ))}
                 </RadioGroup>
               </div>

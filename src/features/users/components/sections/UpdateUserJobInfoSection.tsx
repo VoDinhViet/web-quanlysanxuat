@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react"
 import { Controller, useWatch } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 import type { UseFormReturn } from "react-hook-form"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
@@ -252,18 +252,18 @@ export function UpdateUserJobInfoSection({
                 </span>
                 <RadioGroup
                   value={field.value}
-                  onChange={field.onChange}
+                  onValueChange={field.onChange}
                   disabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
                   {employeeStatusOptions.map((option) => (
-                    <Radio
+                    <Radio.Root
                       key={option.value}
                       value={option.value}
-                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
+                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-checked:border-primary data-checked:bg-primary/5 data-checked:text-primary"
                     >
                       {option.label}
-                    </Radio>
+                    </Radio.Root>
                   ))}
                 </RadioGroup>
               </div>

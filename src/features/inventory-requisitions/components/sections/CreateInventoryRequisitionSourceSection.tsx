@@ -9,7 +9,7 @@ import {
   Search,
 } from "lucide-react"
 import { DateTime } from "luxon"
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 import { useDebounceValue } from "usehooks-ts"
 import type { ComponentType } from "react"
 import type { LucideProps } from "lucide-react"
@@ -118,7 +118,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                 // Radix widens onChange to `string`; the cast narrows back to the field's
                 // real literal union, same idiom RadioPillField uses.
                 value={field.state.value}
-                onChange={(value) =>
+                onValueChange={(value) =>
                   field.handleChange(value as SourceOptionValue)
                 }
                 disabled={disabled}
@@ -128,7 +128,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                   const isChecked = field.state.value === option.value
 
                   return (
-                    <Radio
+                    <Radio.Root
                       key={option.value}
                       value={option.value}
                       className={cn(
@@ -164,7 +164,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                           <span className="size-2 rounded-full bg-primary-foreground" />
                         )}
                       </span>
-                    </Radio>
+                    </Radio.Root>
                   )
                 })}
               </RadioGroup>

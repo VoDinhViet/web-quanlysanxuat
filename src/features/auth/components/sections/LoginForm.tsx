@@ -150,8 +150,8 @@ export function LoginForm() {
               <Field orientation="horizontal">
                 <Checkbox
                   name={field.name}
-                  isSelected={field.value}
-                  onChange={field.onChange}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
                   onBlur={field.onBlur}
                   disabled={isPending}
                 />

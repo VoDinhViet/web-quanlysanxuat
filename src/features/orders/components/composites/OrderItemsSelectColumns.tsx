@@ -72,8 +72,8 @@ export function buildOrderItemsSelectColumns({
       header: () => (
         <Checkbox
           slot={null}
-          isSelected={allChecked}
-          onChange={onToggleAll}
+          checked={allChecked}
+          onCheckedChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
         />
       ),
@@ -81,8 +81,8 @@ export function buildOrderItemsSelectColumns({
       cell: ({ row }) => (
         <Checkbox
           slot={null}
-          isSelected={row.original.isSelected}
-          onChange={() => onToggleRow(row.original)}
+          checked={row.original.isSelected}
+          onCheckedChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.name}`}
         />
       ),

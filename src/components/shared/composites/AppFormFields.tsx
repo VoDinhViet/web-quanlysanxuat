@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 import { NumericFormat } from "react-number-format"
 import type { ComponentProps, ReactNode } from "react"
 
@@ -375,18 +375,18 @@ export function RadioPillField<TValue extends string>({
       </span>
       <RadioGroup
         value={field.state.value}
-        onChange={(value) => field.handleChange(value as TValue)}
+        onValueChange={(value) => field.handleChange(value as TValue)}
         disabled={disabled}
         className="flex flex-row flex-wrap gap-2"
       >
         {options.map((option) => (
-          <Radio
+          <Radio.Root
             key={option.value}
             value={option.value}
-            className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
+            className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-checked:border-primary data-checked:bg-primary/5 data-checked:text-primary"
           >
             {option.label}
-          </Radio>
+          </Radio.Root>
         ))}
       </RadioGroup>
     </div>
@@ -415,8 +415,8 @@ export function SwitchField({
       <span className="block text-xs font-medium text-foreground">{label}</span>
       <Switch
         className="flex h-9 cursor-pointer items-center gap-2 text-xs font-medium text-foreground"
-        isSelected={field.state.value}
-        onChange={field.handleChange}
+        checked={field.state.value}
+        onCheckedChange={field.handleChange}
         disabled={disabled}
       >
         {field.state.value ? onLabel : offLabel}
