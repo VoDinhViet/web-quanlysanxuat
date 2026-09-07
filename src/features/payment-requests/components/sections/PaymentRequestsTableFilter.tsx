@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,8 +17,9 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
+import { exportPaymentRequests } from "@/features/payment-requests/api/server-functions/export-payment-requests.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import type { PaymentRequestStatus } from "@/lib/types/payment-request.type"
 import { paymentRequestStatusLabels } from "@/lib/types/payment-request.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -31,6 +34,16 @@ export function PaymentRequestsTableFilter() {
   const navigate = useNavigate({ from: "/manage/payment-requests/" })
   const [q, setQ] = useState(search.q ?? "")
   const [poCode, setPoCode] = useState(search.poCode ?? "")
+
+  const exportPaymentRequestsFn = useServerFn(exportPaymentRequests)
+  const exportMutation = useMutation({
+    mutationFn: () => exportPaymentRequestsFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: suppliers } = useSuspenseQuery(supplierOptionsQueryOptions())
@@ -223,10 +236,16 @@ export function PaymentRequestsTableFilter() {
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
             <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
 
           <Button
             type="button"

@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { FileSpreadsheet, Plus, Printer, RotateCw, Search } from "lucide-react"
+import { Download, Plus, Printer, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,6 +21,8 @@ import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
+import { exportOutboundOrders } from "@/features/outbound-orders/api/server-functions/export-outbound-orders.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import {
   fulfillmentTypeLabels,
   outboundOrderStatusLabels,
@@ -43,6 +48,16 @@ export function OutboundOrdersTableFilter() {
   const navigate = useNavigate({ from: "/manage/outbound-orders/" })
 
   const [q, setQ] = useState(search.q ?? "")
+
+  const exportOutboundOrdersFn = useServerFn(exportOutboundOrders)
+  const exportMutation = useMutation({
+    mutationFn: () => exportOutboundOrdersFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // Unlike production-jobs.tsx, this route's loader doesn't prefetch client options — so a
   // `clientId` already in the URL gets its label from `client.clients` once this hook's own
@@ -236,10 +251,16 @@ export function OutboundOrdersTableFilter() {
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
-            <FileSpreadsheet className="size-4 text-emerald-600" />
-            Xuất Excel
-          </PendingAction>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
+            <Download className="size-4" />
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
 
           <PendingAction
             label="In danh sách"

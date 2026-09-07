@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +17,8 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import { exportPurchaseLedger } from "@/features/purchase-ledger/api/server-functions/export-purchase-ledger.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { purchaseLedgerStatusLabels } from "@/lib/types/purchase-ledger.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
@@ -28,6 +32,16 @@ export function PurchaseLedgerTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/purchase-ledger/" })
   const navigate = useNavigate({ from: "/manage/purchase-ledger/" })
   const [q, setQ] = useState(search.q ?? "")
+
+  const exportPurchaseLedgerFn = useServerFn(exportPurchaseLedger)
+  const exportMutation = useMutation({
+    mutationFn: () => exportPurchaseLedgerFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // PurchaseRequestsTableFilter.tsx.
@@ -195,10 +209,16 @@ export function PurchaseLedgerTableFilter() {
             Làm mới
           </Button>
 
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
             <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
         </div>
       </div>
     </div>

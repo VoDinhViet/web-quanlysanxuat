@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +18,8 @@ import {
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import { exportProductionOrders } from "@/features/production-orders/api/server-functions/export-production-orders.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { productionOrderStatusLabels } from "@/lib/types/production-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { ProductionOrderStatus } from "@/lib/types/production-order.type"
@@ -28,6 +33,16 @@ export function ProductionOrdersTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/production-orders/" })
   const navigate = useNavigate({ from: "/manage/production-orders/" })
   const [q, setQ] = useState(search.q ?? "")
+
+  const exportProductionOrdersFn = useServerFn(exportProductionOrders)
+  const exportMutation = useMutation({
+    mutationFn: () => exportProductionOrdersFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // OrdersTableFilter.tsx. An empty term becomes `undefined` so the search
@@ -156,10 +171,16 @@ export function ProductionOrdersTableFilter() {
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
             <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
           <Button
             type="button"
             variant="outline"
