@@ -3,11 +3,12 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CloseCircle } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -21,7 +22,7 @@ import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestCancelDialogProps = {
   paymentRequest: PaymentRequestDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING → CANCELLED (terminal), reason required — mirrors PurchaseOrderCancelDialog.tsx. A
@@ -33,17 +34,17 @@ export function PaymentRequestCancelDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={setOpen}>
+<DialogTrigger render={trigger} />
+<DialogContent className="sm:max-w-md">
         {/* The dialog unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <PaymentRequestCancelForm
           paymentRequest={paymentRequest}
           onClose={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+</Dialog>
   )
 }
 

@@ -6,7 +6,11 @@ import { ListFilter, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
@@ -143,17 +147,21 @@ export function SupplierReturnsTableFilter() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <PopoverTrigger>
-          <Button type="button" variant="outline" className="text-xs">
-            <ListFilter className="size-3.5" />
-            Bộ lọc
-            {activeFilterCount > 0 && (
-              <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
-                {activeFilterCount}
-              </span>
-            )}
-          </Button>
-          <Popover placement="bottom end" className="w-80 gap-3 sm:w-96">
+        <Popover>
+          <PopoverTrigger
+            render={
+              <Button type="button" variant="outline" className="text-xs">
+                <ListFilter className="size-3.5" />
+                Bộ lọc
+                {activeFilterCount > 0 && (
+                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            }
+          />
+          <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
             <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
 
             <div className="grid grid-cols-2 gap-3">
@@ -254,8 +262,8 @@ export function SupplierReturnsTableFilter() {
                 />
               </div>
             </div>
-          </Popover>
-        </PopoverTrigger>
+          </PopoverContent>
+        </Popover>
 
         <Button
           type="button"

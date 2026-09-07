@@ -3,11 +3,12 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { Plus } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -35,7 +36,7 @@ const col = createColumnHelper<typeof appTableFeatures, UnfulfilledOrderItem>()
 type OutboundOrderAddItemsDialogProps = {
   clientId: string
   outboundOrderId: string
-  trigger: ReactNode
+  trigger: ReactElement
   alreadyPickedOrderItemIds: Set<string>
   onAdd: (row: UnfulfilledOrderItem) => void
 }
@@ -149,9 +150,9 @@ export function OutboundOrderAddItemsDialog({
   })
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-2xl">
+    <Dialog open={open} onOpenChange={setOpen}>
+<DialogTrigger render={trigger} />
+<DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Thêm từ PO/Job</DialogTitle>
           <DialogDescription>
@@ -229,7 +230,7 @@ export function OutboundOrderAddItemsDialog({
             Xong
           </Button>
         </DialogFooter>
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+</Dialog>
   )
 }

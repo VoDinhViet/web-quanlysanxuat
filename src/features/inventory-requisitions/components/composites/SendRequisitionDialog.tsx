@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Send } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisiti
 
 type SendRequisitionDialogProps = {
   detail: InventoryRequisitionDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // DRAFT/REJECTED → PENDING_APPROVAL — cùng khuôn SendQuotationDialog.tsx.
@@ -44,15 +45,15 @@ export function SendRequisitionDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Send />
@@ -78,7 +79,7 @@ export function SendRequisitionDialog({
             {mutation.isPending ? "Đang xử lý..." : "Gửi duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

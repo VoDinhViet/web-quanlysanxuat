@@ -2,10 +2,11 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CircleCheck } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -24,7 +25,7 @@ import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type StartProductionJobDialogProps = {
   job: ProductionJobDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING → IN_PROGRESS, one-way — no revert route exists (production-job.type.ts). Invalidates
@@ -48,15 +49,15 @@ export function StartProductionJobDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CircleCheck />
@@ -86,7 +87,7 @@ export function StartProductionJobDialog({
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

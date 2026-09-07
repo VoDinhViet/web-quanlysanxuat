@@ -3,10 +3,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { TrashBinTrash } from "@solar-icons/react"
 import { toast } from "sonner"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -21,7 +22,7 @@ import type { Order } from "@/lib/types/order.type"
 
 type DeleteOrderDialogProps = {
   order: Pick<Order, "id" | "code">
-  trigger: ReactNode
+  trigger: ReactElement
   onDeleted?: () => void
 }
 
@@ -50,9 +51,9 @@ export function DeleteOrderDialog({
   })
 
   return (
-    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <TrashBinTrash />
@@ -75,7 +76,7 @@ export function DeleteOrderDialog({
             {mutation.isPending ? "Đang xoá…" : "Xoá đơn"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

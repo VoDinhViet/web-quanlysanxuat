@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { SendSquare } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
 type OutboundOrderSendDialogProps = {
   order: OutboundOrderDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // DRAFT/REJECTED → PENDING_APPROVAL. Không tự pre-check gate OQC phía client — cùng nguyên tắc
@@ -43,15 +44,15 @@ export function OutboundOrderSendDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <SendSquare />
@@ -77,7 +78,7 @@ export function OutboundOrderSendDialog({
             {mutation.isPending ? "Đang xử lý..." : "Gửi duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

@@ -4,10 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -23,7 +24,7 @@ type DeletePurchaseRequestItemDialogProps = {
   purchaseRequestItemId: string
   itemName: string
   itemCode: string
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // `purchaseRequestId` is a route param, read directly via `useParams` rather than threaded down
@@ -55,9 +56,9 @@ export function DeletePurchaseRequestItemDialog({
   })
 
   return (
-    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Trash2 />
@@ -80,7 +81,7 @@ export function DeletePurchaseRequestItemDialog({
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

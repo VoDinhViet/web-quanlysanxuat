@@ -3,10 +3,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { TrashBinTrash } from "@solar-icons/react"
 import { toast } from "sonner"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -21,7 +22,7 @@ import type { Oqc } from "@/lib/types/oqc.type"
 
 type DeleteOqcDialogProps = {
   oqc: Pick<Oqc, "id" | "code">
-  trigger: ReactNode
+  trigger: ReactElement
   // Detail page navigates back to the list after deleting its own record; the list row (already
   // on the list) has nothing extra to do beyond invalidating + closing.
   onDeleted?: () => void
@@ -54,9 +55,9 @@ export function DeleteOqcDialog({
   })
 
   return (
-    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <TrashBinTrash />
@@ -79,7 +80,7 @@ export function DeleteOqcDialog({
             {mutation.isPending ? "Đang xoá…" : "Xoá phiếu"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

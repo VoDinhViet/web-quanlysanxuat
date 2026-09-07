@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { Diskette } from "@solar-icons/react"
 import { DateTime } from "luxon"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -28,7 +29,7 @@ import type { QuotationItemAllocationValue } from "@/features/purchase-quotation
 type QuotationAllocationsDialogProps = {
   itemName: string
   allocations: QuotationItemAllocationValue[]
-  trigger: ReactNode
+  trigger: ReactElement
   onSave: (allocations: QuotationItemAllocationValue[]) => void
 }
 
@@ -47,9 +48,9 @@ export function QuotationAllocationsDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="shadow-lg ring-0 sm:max-w-2xl">
+    <Dialog open={open} onOpenChange={setOpen}>
+<DialogTrigger render={trigger} />
+<DialogContent className="shadow-lg ring-0 sm:max-w-2xl">
         <QuotationAllocationsDialogForm
           itemName={itemName}
           allocations={allocations}
@@ -59,8 +60,8 @@ export function QuotationAllocationsDialog({
           }}
           onCancel={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+</Dialog>
   )
 }
 

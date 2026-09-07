@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CheckCircle } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
 type OutboundOrderApproveDialogProps = {
   order: OutboundOrderDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_APPROVAL → PENDING_DELIVERY — director-level, cần outbound:approve. Chưa trừ tồn kho,
@@ -43,15 +44,15 @@ export function OutboundOrderApproveDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CheckCircle />
@@ -77,7 +78,7 @@ export function OutboundOrderApproveDialog({
             {mutation.isPending ? "Đang xử lý..." : "Duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

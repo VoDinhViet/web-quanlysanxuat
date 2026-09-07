@@ -4,10 +4,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Copy } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -22,7 +23,7 @@ import type { Item } from "@/lib/types/item.type"
 
 type CopyProductDialogProps = {
   product: Item
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // Duplicates the product on the backend (POST /:id/copy → a fresh SPxxxx) and
@@ -51,16 +52,16 @@ export function CopyProductDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         // A previous failure shouldn't greet the user on reopen.
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Copy />
@@ -88,7 +89,7 @@ export function CopyProductDialog({
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

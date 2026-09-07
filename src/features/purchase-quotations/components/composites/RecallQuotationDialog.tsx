@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Restart } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.typ
 
 type RecallQuotationDialogProps = {
   purchaseQuotation: PurchaseQuotationDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // APPROVED → DRAFT. Backend keeps approvedBy/approvedAt as history, clears every winning NCC
@@ -51,15 +52,15 @@ export function RecallQuotationDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Restart />
@@ -85,7 +86,7 @@ export function RecallQuotationDialog({
             {mutation.isPending ? "Đang xử lý..." : "Thu hồi"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

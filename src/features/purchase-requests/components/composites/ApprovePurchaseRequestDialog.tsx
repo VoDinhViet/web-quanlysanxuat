@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CircleCheck } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type ApprovePurchaseRequestDialogProps = {
   purchaseRequest: PurchaseRequestDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_APPROVAL → APPROVED (terminal) — director-level, needs purchase-requests:approve.
@@ -44,16 +45,16 @@ export function ApprovePurchaseRequestDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         // A previous failure shouldn't greet the user on reopen.
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CircleCheck />
@@ -79,7 +80,7 @@ export function ApprovePurchaseRequestDialog({
             {mutation.isPending ? "Đang xử lý..." : "Duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CheckCircle } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -27,7 +28,7 @@ type ApproveQuotationDialogProps = {
   // PurchaseQuotationDetailQuotesSection's inline radio selection, passed down here only to be
   // confirmed and sent as-is.
   selectedSuppliers: PurchaseQuotationSupplierSelection
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_APPROVAL → APPROVED (terminal short of a recall) — the final confirm step after
@@ -69,15 +70,15 @@ export function ApproveQuotationDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CheckCircle />
@@ -103,7 +104,7 @@ export function ApproveQuotationDialog({
             {mutation.isPending ? "Đang xử lý..." : "Duyệt & tạo đơn mua"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

@@ -3,11 +3,12 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CircleX } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -21,7 +22,7 @@ import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type RejectPurchaseRequestDialogProps = {
   purchaseRequest: PurchaseRequestDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_APPROVAL → REJECTED, reason required — director-level (purchase-requests:approve). A
@@ -34,17 +35,17 @@ export function RejectPurchaseRequestDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={setOpen}>
+<DialogTrigger render={trigger} />
+<DialogContent className="sm:max-w-md">
         {/* The dialog unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <RejectPurchaseRequestForm
           purchaseRequest={purchaseRequest}
           onClose={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+</Dialog>
   )
 }
 

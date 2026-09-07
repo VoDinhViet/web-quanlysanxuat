@@ -2,10 +2,11 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { SendSquare } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { OrderDetail } from "@/lib/types/order.type"
 
 type ReqOrderApprovalDialogProps = {
   order: OrderDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // DRAFT/REJECTED → PENDING_CONFIRMATION — hands the order to a director for approval.
@@ -41,15 +42,15 @@ export function ReqOrderApprovalDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <SendSquare />
@@ -76,7 +77,7 @@ export function ReqOrderApprovalDialog({
             {mutation.isPending ? "Đang xử lý..." : "Gửi duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }

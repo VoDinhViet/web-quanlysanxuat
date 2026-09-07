@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { PackageCheck } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisiti
 
 type IssueRequisitionDialogProps = {
   detail: InventoryRequisitionDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // APPROVED → ISSUED (điểm cuối) — tự sinh phiếu xuất kho POSTED + trừ tồn thật, không thể sửa
@@ -50,15 +51,15 @@ export function IssueRequisitionDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+<AlertDialogTrigger render={trigger} />
+<AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <PackageCheck />
@@ -84,7 +85,7 @@ export function IssueRequisitionDialog({
             {mutation.isPending ? "Đang xử lý..." : "Xuất kho"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+</AlertDialog>
   )
 }
