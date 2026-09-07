@@ -51,8 +51,8 @@ export function OutboundOrderApproveDialog({
         if (next) mutation.reset()
       }}
     >
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CheckCircle />
@@ -79,6 +79,6 @@ export function OutboundOrderApproveDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

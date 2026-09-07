@@ -56,8 +56,8 @@ export function StartProductionJobDialog({
         if (next) mutation.reset()
       }}
     >
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CircleCheck />
@@ -88,6 +88,6 @@ export function StartProductionJobDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

@@ -129,7 +129,7 @@ export function OrdersTableFilter() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="orders-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -137,8 +137,11 @@ export function OrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="orders-status" className="w-full text-xs">
                 <SelectValue />
@@ -157,14 +160,18 @@ export function OrdersTableFilter() {
                 assigned-user options yet (confirmed: GET /api/users has no options endpoint), so
                 the filter is disabled until that ships. Not faked. Same pattern as "Khu vực" in
                 ClientsTableFilter.tsx. */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="orders-assigned-user"
               className="text-[11px] font-medium text-muted-foreground"
             >
               NV kinh doanh
             </Label>
-            <Select value="all" disabled>
+            <Select
+              items={[{ value: "all", label: "Tất cả" }]}
+              value="all"
+              disabled
+            >
               <SelectTrigger
                 id="orders-assigned-user"
                 className="w-full text-xs"

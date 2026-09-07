@@ -44,8 +44,8 @@ export function DeleteRoleDialog({ role, trigger }: DeleteRoleDialogProps) {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Trash2 />
@@ -69,6 +69,6 @@ export function DeleteRoleDialog({ role, trigger }: DeleteRoleDialogProps) {
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

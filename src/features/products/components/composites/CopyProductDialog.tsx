@@ -60,8 +60,8 @@ export function CopyProductDialog({
         if (next) mutation.reset()
       }}
     >
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Copy />
@@ -90,6 +90,6 @@ export function CopyProductDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

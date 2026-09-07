@@ -261,10 +261,9 @@ export function ProductOperationsPanel({
               </TableCell>
               <TableCell>
                 <Select
+                  items={operationTypeLabels}
                   value={selectedType}
-                  onValueChange={(key) =>
-                    setSelectedType(String(key) as OperationType)
-                  }
+                  onValueChange={(key) => key !== null && setSelectedType(key)}
                 >
                   <SelectTrigger className="h-9 w-full text-xs">
                     <SelectValue />

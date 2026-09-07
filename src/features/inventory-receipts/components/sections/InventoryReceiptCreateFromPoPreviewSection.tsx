@@ -78,63 +78,60 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách vật tư đơn mua hàng">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-<TableRow>
-
-              <TableHead id="index" className="w-14 text-center">
-                STT
-              </TableHead>
-              <TableHead id="code" className="min-w-32">
-                Mã vật tư
-              </TableHead>
-              <TableHead id="name" className="min-w-44">
-                Tên vật tư
-              </TableHead>
-              <TableHead id="unit" className="w-20">
-                ĐVT
-              </TableHead>
-              <TableHead id="quantity" className="w-28 text-right">
-                SL đặt
-              </TableHead>
-            
-</TableRow>
-</TableHeader>
-            <TableBody
-            >
-{lines.length === 0 ? (
-<TableRow>
-<TableCell colSpan={5}>
-<TableEmpty
-                  colSpan={5}
-                  title={
-                    isFetching
-                      ? "Đang tải dòng đơn mua hàng..."
-                      : "Đơn mua hàng không có dòng nào"
-                  }
-                />
-</TableCell>
-</TableRow>
-) : (
-lines.map((line, index) => (
-                <TableRow key={line.id} id={line.id} className="h-12 bg-card">
-                  <TableCell className="text-center text-muted-foreground">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell className="font-mono font-semibold text-foreground">
-                    {line.purchaseRequestItem.item.code}
-                  </TableCell>
-                  <TableCell className="font-medium text-foreground">
-                    {line.purchaseRequestItem.item.name}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {line.purchaseRequestItem.item.unit.name}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {quantityFormatter.format(line.quantity)}
+              <TableRow>
+                <TableHead id="index" className="w-14 text-center">
+                  STT
+                </TableHead>
+                <TableHead id="code" className="min-w-32">
+                  Mã vật tư
+                </TableHead>
+                <TableHead id="name" className="min-w-44">
+                  Tên vật tư
+                </TableHead>
+                <TableHead id="unit" className="w-20">
+                  ĐVT
+                </TableHead>
+                <TableHead id="quantity" className="w-28 text-right">
+                  SL đặt
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {lines.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <TableEmpty
+                      colSpan={5}
+                      title={
+                        isFetching
+                          ? "Đang tải dòng đơn mua hàng..."
+                          : "Đơn mua hàng không có dòng nào"
+                      }
+                    />
                   </TableCell>
                 </TableRow>
-              ))
-)}
-</TableBody>
+              ) : (
+                lines.map((line, index) => (
+                  <TableRow key={line.id} id={line.id} className="h-12 bg-card">
+                    <TableCell className="text-center text-muted-foreground">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className="font-mono font-semibold text-foreground">
+                      {line.purchaseRequestItem.item.code}
+                    </TableCell>
+                    <TableCell className="font-medium text-foreground">
+                      {line.purchaseRequestItem.item.name}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {line.purchaseRequestItem.item.unit.name}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {quantityFormatter.format(line.quantity)}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
           </Table>
         </div>
       </div>

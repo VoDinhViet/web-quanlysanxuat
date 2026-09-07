@@ -51,11 +51,7 @@ export function ProductionJobDetailPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface>
-          <Tabs
-            value={tab}
-            onValueChange={handleTabChange}
-            className="gap-0"
-          >
+          <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
             <ProductionJobDetailHeader productionJob={productionJob} />
 
             <TabsContent value="info" className="m-0 outline-none">

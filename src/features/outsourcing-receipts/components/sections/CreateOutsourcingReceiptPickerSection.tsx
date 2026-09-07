@@ -246,7 +246,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-in-picker-operation"
               className="text-[11px] font-medium text-muted-foreground"
@@ -254,9 +254,13 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
               Công đoạn
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả công đoạn" },
+                ...operationOptions,
+              ]}
               value={operationId ?? "all"}
-              onValueChange={(key) => {
-                const value = String(key)
+              onValueChange={(value) => {
+                if (value === null) return
                 setOperationId(value === "all" ? undefined : value)
                 setPage(1)
               }}

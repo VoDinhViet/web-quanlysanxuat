@@ -49,8 +49,8 @@ export function ReqOrderApprovalDialog({
         if (next) mutation.reset()
       }}
     >
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <SendSquare />
@@ -78,6 +78,6 @@ export function ReqOrderApprovalDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

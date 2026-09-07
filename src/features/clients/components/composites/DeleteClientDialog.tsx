@@ -47,8 +47,8 @@ export function DeleteClientDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Trash2 />
@@ -72,6 +72,6 @@ export function DeleteClientDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

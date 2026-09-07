@@ -92,8 +92,9 @@ export function CreateUserJobInfoSection({
                   Phòng ban <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
+                  items={buildSelectOptions(departments)}
                   value={departmentsQuery.isPending ? "" : field.value}
-                  onValueChange={(key) => field.onChange(String(key))}
+                  onValueChange={field.onChange}
                   disabled={disabled || departmentsQuery.isPending}
                 >
                   <SelectTrigger
@@ -150,8 +151,9 @@ export function CreateUserJobInfoSection({
                   // effect below only clears it once the new list has loaded) — masking it to
                   // "" here forces the placeholder to render "Đang tải..." instead of Radix
                   // showing a blank trigger for a value that matches no item yet.
+                  items={positionOptions}
                   value={positionsQuery.isPending ? "" : field.value}
-                  onValueChange={(key) => field.onChange(String(key))}
+                  onValueChange={field.onChange}
                   disabled={
                     disabled || !departmentId || positionsQuery.isPending
                   }

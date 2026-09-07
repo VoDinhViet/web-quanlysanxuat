@@ -53,8 +53,8 @@ export function DeleteOutboundOrderDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <TrashBinTrash />
@@ -78,6 +78,6 @@ export function DeleteOutboundOrderDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

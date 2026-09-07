@@ -90,11 +90,7 @@ export function CreateOutsourcingReceiptForm() {
       noValidate
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <Tabs
-          value={tab}
-          onValueChange={handleTabChange}
-          className="gap-0"
-        >
+        <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
           <form.Subscribe
             selector={(state) => ({
               hasItems: state.values.items.length > 0,

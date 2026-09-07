@@ -53,8 +53,8 @@ export function ApprovePurchaseRequestDialog({
         if (next) mutation.reset()
       }}
     >
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CircleCheck />
@@ -81,6 +81,6 @@ export function ApprovePurchaseRequestDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

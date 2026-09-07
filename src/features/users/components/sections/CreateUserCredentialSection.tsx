@@ -187,8 +187,9 @@ export function CreateUserCredentialSection({
                 Vai trò
               </FieldLabel>
               <Select
+                items={roleOptions}
                 value={field.value ?? ""}
-                onValueChange={(key) => field.onChange(String(key))}
+                onValueChange={field.onChange}
                 disabled={fieldsDisabled}
               >
                 <SelectTrigger

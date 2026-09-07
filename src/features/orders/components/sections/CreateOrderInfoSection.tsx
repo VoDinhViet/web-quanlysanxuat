@@ -278,8 +278,9 @@ export function CreateOrderInfoSection({
                 Điều khoản thanh toán
               </FieldLabel>
               <Select
+                items={paymentTermOptions}
                 value={field.value}
-                onValueChange={(key) => field.onChange(String(key))}
+                onValueChange={field.onChange}
                 disabled={disabled}
               >
                 <SelectTrigger
@@ -319,8 +320,9 @@ export function CreateOrderInfoSection({
                 Tiền tệ <span className="text-destructive">*</span>
               </FieldLabel>
               <Select
+                items={currencyOptions}
                 value={field.value}
-                onValueChange={(key) => field.onChange(String(key))}
+                onValueChange={field.onChange}
                 disabled={disabled}
               >
                 <SelectTrigger

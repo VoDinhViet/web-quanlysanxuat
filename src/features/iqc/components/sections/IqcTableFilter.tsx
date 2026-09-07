@@ -141,7 +141,7 @@ export function IqcTableFilter() {
 
             <div className="grid grid-cols-2 gap-3">
               {/* Kết quả QC */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="iqc-result"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -149,8 +149,11 @@ export function IqcTableFilter() {
                   Kết quả QC
                 </Label>
                 <Select
+                  items={resultOptions}
                   value={search.result ?? "all"}
-                  onValueChange={(key) => handleResultChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleResultChange(value)
+                  }
                 >
                   <SelectTrigger id="iqc-result" className="w-full text-xs">
                     <SelectValue />
@@ -166,7 +169,7 @@ export function IqcTableFilter() {
               </div>
 
               {/* Trạng thái */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="iqc-status"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -174,8 +177,11 @@ export function IqcTableFilter() {
                   Trạng thái
                 </Label>
                 <Select
+                  items={statusOptions}
                   value={search.status ?? "all"}
-                  onValueChange={(key) => handleStatusChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleStatusChange(value)
+                  }
                 >
                   <SelectTrigger id="iqc-status" className="w-full text-xs">
                     <SelectValue />
@@ -191,7 +197,7 @@ export function IqcTableFilter() {
               </div>
 
               {/* Nhà cung cấp */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="iqc-supplier"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -199,8 +205,17 @@ export function IqcTableFilter() {
                   Nhà cung cấp
                 </Label>
                 <Select
+                  items={[
+                    { value: "all", label: "Tất cả" },
+                    ...supplierOptions.map((option) => ({
+                      value: option.id,
+                      label: option.name,
+                    })),
+                  ]}
                   value={search.supplierId ?? "all"}
-                  onValueChange={(key) => handleSupplierChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleSupplierChange(value)
+                  }
                 >
                   <SelectTrigger id="iqc-supplier" className="w-full text-xs">
                     <SelectValue />

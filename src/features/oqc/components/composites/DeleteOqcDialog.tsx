@@ -56,8 +56,8 @@ export function DeleteOqcDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <TrashBinTrash />
@@ -81,6 +81,6 @@ export function DeleteOqcDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

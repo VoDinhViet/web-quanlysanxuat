@@ -142,11 +142,7 @@ export function CreateInventoryRequisitionForm() {
       noValidate
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
-      <Tabs
-        value={step}
-        onValueChange={handleStepChange}
-        className="gap-0"
-      >
+      <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
         <CreateInventoryRequisitionStepsTabs
           canGoToItems={canGoToItems}
           canGoToInfo={canGoToInfo}

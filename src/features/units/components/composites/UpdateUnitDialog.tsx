@@ -15,8 +15,8 @@ export function UpdateUnitDialog({ unit, trigger }: UpdateUnitDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-<DialogTrigger render={trigger} />
-<DialogContent className="sm:max-w-lg">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-lg">
         {/* The dialog unmounts content while closed, so the form re-mounts and re-seeds
             from `unit` fresh on every open. */}
         <UpdateUnitForm
@@ -25,6 +25,6 @@ export function UpdateUnitDialog({ unit, trigger }: UpdateUnitDialogProps) {
           onCancel={() => setOpen(false)}
         />
       </DialogContent>
-</Dialog>
+    </Dialog>
   )
 }

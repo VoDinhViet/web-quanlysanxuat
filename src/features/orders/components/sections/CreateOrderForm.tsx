@@ -177,11 +177,7 @@ export function CreateOrderForm() {
       noValidate
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
-      <Tabs
-        value={step}
-        onValueChange={handleStepChange}
-        className="gap-0"
-      >
+      <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
         <CreateOrderStepsTabs reachedStep={furthestStep} />
 
         <TabsContent value="info" className="m-0 outline-none">

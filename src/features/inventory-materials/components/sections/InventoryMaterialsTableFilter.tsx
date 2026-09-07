@@ -138,7 +138,7 @@ export function InventoryMaterialsTableFilter() {
           </div>
 
           {/* Nhà cung cấp */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="inventory-supplier"
               className="text-[11px] font-medium text-muted-foreground"
@@ -146,8 +146,17 @@ export function InventoryMaterialsTableFilter() {
               Nhà cung cấp
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả" },
+                ...supplierOptions.map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                })),
+              ]}
               value={search.supplierId ?? "all"}
-              onValueChange={(key) => handleSupplierChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleSupplierChange(value)
+              }
             >
               <SelectTrigger id="inventory-supplier" className="w-full text-xs">
                 <SelectValue />
@@ -164,7 +173,7 @@ export function InventoryMaterialsTableFilter() {
           </div>
 
           {/* Trạng thái */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <FilterLabel
               htmlFor="inventory-status"
               label="Trạng thái"
@@ -177,8 +186,11 @@ export function InventoryMaterialsTableFilter() {
               }
             />
             <Select
+              items={statusOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="inventory-status" className="w-full text-xs">
                 <SelectValue />

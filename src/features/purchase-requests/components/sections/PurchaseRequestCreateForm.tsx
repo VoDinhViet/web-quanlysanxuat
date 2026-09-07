@@ -126,11 +126,7 @@ export function PurchaseRequestCreateForm() {
     >
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="overflow-hidden rounded-lg bg-card shadow-card">
-          <Tabs
-            value={step}
-            onValueChange={handleStepChange}
-            className="gap-0"
-          >
+          <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
             <PurchaseRequestCreateStepsTabs
               canGoToQuantities={canGoToQuantities}
             />

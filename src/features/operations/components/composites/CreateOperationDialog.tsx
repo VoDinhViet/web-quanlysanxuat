@@ -13,8 +13,8 @@ export function CreateOperationDialog({ trigger }: CreateOperationDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-<DialogTrigger render={trigger} />
-<DialogContent className="sm:max-w-lg">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-lg">
         {/* The dialog unmounts content while closed, so the form (and its draft-restore
             effect) re-mounts fresh on every open. */}
         <CreateOperationForm
@@ -22,6 +22,6 @@ export function CreateOperationDialog({ trigger }: CreateOperationDialogProps) {
           onCancel={() => setOpen(false)}
         />
       </DialogContent>
-</Dialog>
+    </Dialog>
   )
 }

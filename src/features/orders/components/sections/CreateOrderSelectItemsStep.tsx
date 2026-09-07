@@ -173,57 +173,63 @@ export function CreateOrderSelectItemsStep({
       <div className="mt-4 max-h-[420px] overflow-x-auto overflow-y-auto rounded-md border border-dashed border-border/50 bg-card">
         <Table aria-label="Danh mục sản phẩm">
           <TableHeader className="[&>tr]:h-12">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-
-                {!header.isPlaceholder &&
-                  flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-              
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
+            <TableRow>
+              {table.getFlatHeaders().map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={header.column.columnDef.meta?.headerClassName}
+                >
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
           <TableBody>
-{table.getRowModel().rows.length === 0 ? (
-<TableRow>
-<TableCell colSpan={columns.length}>
-<TableEmpty
-                icon={Gallery}
-                colSpan={columns.length}
-                title={
-                  query.isPending ? "Đang tải..." : "Không tìm thấy sản phẩm"
-                }
-                description={
-                  query.isPending ? undefined : "Thử một từ khoá khác."
-                }
-              />
-</TableCell>
-</TableRow>
-) : (table.getRowModel().rows.map((row) => (
-<TableRow key={row.original.id} className={cn(
-                  "h-14 cursor-pointer bg-card transition-colors hover:bg-muted/25",
-                  row.original.isSelected && "border-l-2 border-primary"
-                )}>
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  
-</TableCell>
-))}
-</TableRow>
-)))}
-</TableBody>
+            {table.getRowModel().rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <TableEmpty
+                    icon={Gallery}
+                    colSpan={columns.length}
+                    title={
+                      query.isPending
+                        ? "Đang tải..."
+                        : "Không tìm thấy sản phẩm"
+                    }
+                    description={
+                      query.isPending ? undefined : "Thử một từ khoá khác."
+                    }
+                  />
+                </TableCell>
+              </TableRow>
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.original.id}
+                  className={cn(
+                    "h-14 cursor-pointer bg-card transition-colors hover:bg-muted/25",
+                    row.original.isSelected && "border-l-2 border-primary"
+                  )}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
         </Table>
       </div>
 

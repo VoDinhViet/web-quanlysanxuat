@@ -126,7 +126,7 @@ export function InventoryReceiptsTableFilter() {
           </div>
 
           {/* Select Loại phiếu */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="nk-receipt-type"
               className="text-[11px] font-medium text-muted-foreground"
@@ -134,8 +134,11 @@ export function InventoryReceiptsTableFilter() {
               Loại phiếu
             </Label>
             <Select
+              items={receiptTypeOptions}
               value={search.receiptType ?? "all"}
-              onValueChange={(key) => handleReceiptTypeChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleReceiptTypeChange(value)
+              }
             >
               <SelectTrigger id="nk-receipt-type" className="w-full text-xs">
                 <SelectValue />
@@ -151,7 +154,7 @@ export function InventoryReceiptsTableFilter() {
           </div>
 
           {/* Select Trạng thái */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="nk-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -159,8 +162,11 @@ export function InventoryReceiptsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="nk-status" className="w-full text-xs">
                 <SelectValue />

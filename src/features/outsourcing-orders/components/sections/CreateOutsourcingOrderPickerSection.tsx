@@ -211,7 +211,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-out-picker-job"
               className="text-[11px] font-medium text-muted-foreground"
@@ -219,9 +219,10 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               Job
             </Label>
             <Select
+              items={[{ value: "all", label: "Tất cả Job" }, ...jobOptions]}
               value={productionJobId ?? "all"}
-              onValueChange={(key) => {
-                const value = String(key)
+              onValueChange={(value) => {
+                if (value === null) return
                 setProductionJobId(value === "all" ? undefined : value)
                 setPage(1)
               }}
@@ -241,7 +242,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-out-picker-operation"
               className="text-[11px] font-medium text-muted-foreground"
@@ -249,9 +250,13 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               Công đoạn
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả công đoạn" },
+                ...operationOptions,
+              ]}
               value={operationId ?? "all"}
-              onValueChange={(key) => {
-                const value = String(key)
+              onValueChange={(value) => {
+                if (value === null) return
                 setOperationId(value === "all" ? undefined : value)
                 setPage(1)
               }}

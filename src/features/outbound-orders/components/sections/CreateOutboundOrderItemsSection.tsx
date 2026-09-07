@@ -92,52 +92,53 @@ export const CreateOutboundOrderItemsSection = withForm({
             className="min-w-[900px]"
           >
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
-            <TableBody>
-{table.getRowModel().rows.length === 0 ? (
-<TableRow>
-<TableCell colSpan={columns.length}>
-<TableEmpty
-                  colSpan={columns.length}
-                  title="Chưa có dòng nào"
-                  description="Quay lại bước ① để chọn PO/Job cần giao."
-                />
-</TableCell>
-</TableRow>
-) : (table.getRowModel().rows.map((row) => (
-<TableRow key={row.original.orderItemId} className="h-16 bg-card hover:bg-muted/25">
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    
-</TableCell>
-))}
-</TableRow>
-)))}
-</TableBody>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title="Chưa có dòng nào"
+                      description="Quay lại bước ① để chọn PO/Job cần giao."
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.original.orderItemId}
+                    className="h-16 bg-card hover:bg-muted/25"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
           </Table>
         </div>
 

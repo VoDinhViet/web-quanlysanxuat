@@ -123,7 +123,7 @@ export function PaymentRequestsTableFilter() {
           </div>
 
           {/* Nhà cung cấp */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="pr-supplier"
               className="text-[11px] font-medium text-muted-foreground"
@@ -131,8 +131,11 @@ export function PaymentRequestsTableFilter() {
               Nhà cung cấp
             </Label>
             <Select
+              items={supplierFilterOptions}
               value={search.supplierId ?? "all"}
-              onValueChange={(key) => handleSupplierChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleSupplierChange(value)
+              }
             >
               <SelectTrigger id="pr-supplier" className="w-full text-xs">
                 <SelectValue />
@@ -168,7 +171,7 @@ export function PaymentRequestsTableFilter() {
           </div>
 
           {/* Trạng thái */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="pr-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -176,8 +179,11 @@ export function PaymentRequestsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="pr-status" className="w-full text-xs">
                 <SelectValue />

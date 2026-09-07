@@ -101,6 +101,10 @@ export function Pagination({
 
         {onPageSizeChange && (
           <Select
+            items={pageSizeOptions.map((option) => ({
+              value: String(option),
+              label: `${option} / trang`,
+            }))}
             value={String(pageSize)}
             onValueChange={(key) => onPageSizeChange(Number(key) as PageSize)}
             disabled={disabled}

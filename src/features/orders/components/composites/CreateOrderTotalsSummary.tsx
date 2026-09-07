@@ -64,8 +64,9 @@ export function CreateOrderTotalsSummary({
                 Loại chiết khấu
               </FieldLabel>
               <Select
+                items={discountTypeOptions}
                 value={field.value}
-                onValueChange={(key) => field.onChange(String(key))}
+                onValueChange={field.onChange}
                 disabled={disabled}
               >
                 <SelectTrigger

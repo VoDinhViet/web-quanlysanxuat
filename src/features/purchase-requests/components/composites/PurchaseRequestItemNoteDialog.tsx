@@ -38,8 +38,8 @@ export function PurchaseRequestItemNoteDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-<DialogTrigger render={trigger} />
-<DialogContent className="shadow-lg ring-0 sm:max-w-md">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="shadow-lg ring-0 sm:max-w-md">
         {/* The dialog unmounts content while closed, so this form re-mounts on each
             open and its state seeds fresh from `note`. */}
         <PurchaseRequestItemNoteDialogForm
@@ -49,7 +49,7 @@ export function PurchaseRequestItemNoteDialog({
           onClose={() => setOpen(false)}
         />
       </DialogContent>
-</Dialog>
+    </Dialog>
   )
 }
 

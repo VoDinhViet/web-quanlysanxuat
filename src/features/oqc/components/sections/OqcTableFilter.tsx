@@ -129,7 +129,7 @@ export function OqcTableFilter() {
         </div>
       </div>
 
-      <div className="w-36 space-y-1.5">
+      <div className="flex w-36 flex-col gap-1.5">
         <Label
           htmlFor="oqc-result"
           className="text-[11px] font-medium text-muted-foreground"
@@ -137,8 +137,9 @@ export function OqcTableFilter() {
           Kết quả
         </Label>
         <Select
+          items={resultOptions}
           value={search.result ?? "all"}
-          onValueChange={(key) => handleResultChange(String(key))}
+          onValueChange={(value) => value !== null && handleResultChange(value)}
         >
           <SelectTrigger id="oqc-result" className="w-full text-xs">
             <SelectValue />
@@ -153,7 +154,7 @@ export function OqcTableFilter() {
         </Select>
       </div>
 
-      <div className="w-40 space-y-1.5">
+      <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="oqc-status"
           className="text-[11px] font-medium text-muted-foreground"
@@ -161,8 +162,9 @@ export function OqcTableFilter() {
           Trạng thái
         </Label>
         <Select
+          items={statusOptions}
           value={search.status ?? "all"}
-          onValueChange={(key) => handleStatusChange(String(key))}
+          onValueChange={(value) => value !== null && handleStatusChange(value)}
         >
           <SelectTrigger id="oqc-status" className="w-full text-xs">
             <SelectValue />
@@ -177,7 +179,7 @@ export function OqcTableFilter() {
         </Select>
       </div>
 
-      <div className="w-44 space-y-1.5">
+      <div className="flex w-44 flex-col gap-1.5">
         <Label
           htmlFor="oqc-disposition"
           className="text-[11px] font-medium text-muted-foreground"
@@ -185,8 +187,11 @@ export function OqcTableFilter() {
           Phương án xử lý
         </Label>
         <Select
+          items={dispositionOptions}
           value={search.disposition ?? "all"}
-          onValueChange={(key) => handleDispositionChange(String(key))}
+          onValueChange={(value) =>
+            value !== null && handleDispositionChange(value)
+          }
         >
           <SelectTrigger id="oqc-disposition" className="w-full text-xs">
             <SelectValue />

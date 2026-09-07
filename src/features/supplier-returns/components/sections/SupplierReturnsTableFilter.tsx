@@ -166,7 +166,7 @@ export function SupplierReturnsTableFilter() {
 
             <div className="grid grid-cols-2 gap-3">
               {/* Nhà cung cấp */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="supplier-returns-supplier"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -174,8 +174,17 @@ export function SupplierReturnsTableFilter() {
                   Nhà cung cấp
                 </Label>
                 <Select
+                  items={[
+                    { value: "all", label: "Tất cả" },
+                    ...supplierOptions.map((option) => ({
+                      value: option.id,
+                      label: option.name,
+                    })),
+                  ]}
                   value={search.supplierId ?? "all"}
-                  onValueChange={(key) => handleSupplierChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleSupplierChange(value)
+                  }
                 >
                   <SelectTrigger
                     id="supplier-returns-supplier"
@@ -195,7 +204,7 @@ export function SupplierReturnsTableFilter() {
               </div>
 
               {/* Trạng thái */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="supplier-returns-status"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -203,8 +212,11 @@ export function SupplierReturnsTableFilter() {
                   Trạng thái
                 </Label>
                 <Select
+                  items={statusOptions}
                   value={search.status ?? "all"}
-                  onValueChange={(key) => handleStatusChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleStatusChange(value)
+                  }
                 >
                   <SelectTrigger
                     id="supplier-returns-status"

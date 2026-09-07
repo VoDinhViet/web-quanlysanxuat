@@ -97,13 +97,22 @@ export function ClientsTableFilter() {
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label className="text-[11px] font-medium text-muted-foreground">
               Nhóm khách hàng
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả" },
+                ...(clientGroupOptionsQuery.data ?? []).map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                })),
+              ]}
               value={search.clientGroupId ?? "all"}
-              onValueChange={(key) => handleGroupChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleGroupChange(value)
+              }
             >
               <SelectTrigger className="w-full text-xs">
                 <SelectValue />
@@ -125,7 +134,7 @@ export function ClientsTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="clients-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -133,8 +142,11 @@ export function ClientsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={[{ value: "all", label: "Tất cả" }, ...statusOptions]}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="clients-status" className="w-full text-xs">
                 <SelectValue />
@@ -152,14 +164,18 @@ export function ClientsTableFilter() {
 
           {/* Khu vực is a visual placeholder — the backend has no region field
                 on clients yet, so the filter is disabled until that exists. */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="clients-region"
               className="text-[11px] font-medium text-muted-foreground"
             >
               Khu vực
             </Label>
-            <Select value="all" disabled>
+            <Select
+              items={[{ value: "all", label: "Tất cả" }]}
+              value="all"
+              disabled
+            >
               <SelectTrigger id="clients-region" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>

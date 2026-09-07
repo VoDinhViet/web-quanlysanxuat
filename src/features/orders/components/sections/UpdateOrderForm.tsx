@@ -202,11 +202,7 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
       noValidate
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
-      <Tabs
-        value={step}
-        onValueChange={handleStepChange}
-        className="gap-0"
-      >
+      <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
         <UpdateOrderStepsTabs />
 
         <TabsContent value="info" className="m-0 outline-none">

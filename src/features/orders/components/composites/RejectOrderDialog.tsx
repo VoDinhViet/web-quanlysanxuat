@@ -32,13 +32,13 @@ export function RejectOrderDialog({ order, trigger }: RejectOrderDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-<DialogTrigger render={trigger} />
-<DialogContent className="sm:max-w-md">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-md">
         {/* The dialog unmounts content while closed, so the form (and its mutation
             state) re-mounts fresh each time the dialog opens. */}
         <RejectOrderForm order={order} onClose={() => setOpen(false)} />
       </DialogContent>
-</Dialog>
+    </Dialog>
   )
 }
 

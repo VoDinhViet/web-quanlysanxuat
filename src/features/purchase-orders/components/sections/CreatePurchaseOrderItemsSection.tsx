@@ -60,13 +60,11 @@ export const CreatePurchaseOrderItemsSection = withForm({
                     key={header.id}
                     className={header.column.columnDef.meta?.headerClassName}
                   >
-
                     {!header.isPlaceholder &&
                       flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-
                   </TableHead>
                 ))}
               </TableRow>
@@ -81,23 +79,26 @@ export const CreatePurchaseOrderItemsSection = withForm({
                     />
                   </TableCell>
                 </TableRow>
-              ) : (table.getRowModel().rows.map((row) => (
-                <TableRow key={row.original.purchaseRequestItemId} className="h-14 bg-card hover:bg-muted/25">
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-
-                    </TableCell>
-                  ))}
-                </TableRow>
-              )))}
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.original.purchaseRequestItemId}
+                    className="h-14 bg-card hover:bg-muted/25"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

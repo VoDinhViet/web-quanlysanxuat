@@ -118,11 +118,7 @@ export function CreateQuotationForm() {
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <Tabs
-          value={step}
-          onValueChange={handleStepChange}
-          className="gap-0"
-        >
+        <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
           <form.Subscribe selector={(state) => state.values.items.length}>
             {(itemCount) => (
               <CreateQuotationStepsTabs canGoToSuppliers={itemCount > 0} />

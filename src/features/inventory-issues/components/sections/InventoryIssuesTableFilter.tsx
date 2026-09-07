@@ -123,7 +123,7 @@ export function InventoryIssuesTableFilter() {
           </div>
 
           {/* Loại phiếu */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="xk-issue-type"
               className="text-[11px] font-medium text-muted-foreground"
@@ -131,8 +131,11 @@ export function InventoryIssuesTableFilter() {
               Loại phiếu
             </Label>
             <Select
+              items={issueTypeOptions}
               value={search.issueType ?? "all"}
-              onValueChange={(key) => handleIssueTypeChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleIssueTypeChange(value)
+              }
             >
               <SelectTrigger id="xk-issue-type" className="w-full text-xs">
                 <SelectValue />
@@ -148,7 +151,7 @@ export function InventoryIssuesTableFilter() {
           </div>
 
           {/* Trạng thái */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="xk-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -156,8 +159,11 @@ export function InventoryIssuesTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="xk-status" className="w-full text-xs">
                 <SelectValue />

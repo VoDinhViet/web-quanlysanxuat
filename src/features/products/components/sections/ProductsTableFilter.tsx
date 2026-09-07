@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,8 +16,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { exportItems } from "@/features/products/api/server-functions/export-items.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import {
   itemStatusLabels,
   itemTypeLabels,
@@ -50,6 +54,16 @@ export function ProductsTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/products/" })
   const navigate = useNavigate({ from: "/manage/products/" })
   const [q, setQ] = useState(search.q ?? "")
+
+  const exportItemsFn = useServerFn(exportItems)
+  const exportMutation = useMutation({
+    mutationFn: () => exportItemsFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // Filters as the user types, 300ms after the last keystroke — the same delay the
   // combobox option hooks use. An empty term becomes `undefined` so the search
@@ -121,7 +135,7 @@ export function ProductsTableFilter() {
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="products-type"
               className="text-[11px] font-medium text-muted-foreground"
@@ -129,8 +143,11 @@ export function ProductsTableFilter() {
               Loại sản phẩm
             </Label>
             <Select
+              items={typeFilterOptions}
               value={search.type ?? "all"}
-              onValueChange={(key) => handleTypeChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleTypeChange(value)
+              }
             >
               <SelectTrigger id="products-type" className="w-full text-xs">
                 <SelectValue />
@@ -145,7 +162,7 @@ export function ProductsTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="products-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -153,8 +170,11 @@ export function ProductsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="products-status" className="w-full text-xs">
                 <SelectValue />
@@ -171,10 +191,16 @@ export function ProductsTableFilter() {
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
             <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
           <Button
             type="button"
             variant="outline"

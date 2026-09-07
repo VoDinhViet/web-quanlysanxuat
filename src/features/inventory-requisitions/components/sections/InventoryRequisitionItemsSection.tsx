@@ -168,38 +168,41 @@ export function InventoryRequisitionItemsSection({
         <div className="overflow-x-auto">
           <Table aria-label="Danh sách vật tư lãnh">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-{!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
-<TableBody>
-{table.getRowModel().rows.map((row) => (
-<TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-{flexRender(
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="h-14 bg-card hover:bg-muted/25"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-</TableCell>
-))}
-</TableRow>
-))}
-</TableBody>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
           </Table>
         </div>
       )}

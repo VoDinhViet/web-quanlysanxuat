@@ -235,13 +235,12 @@ export function UpdateOrderQuantitiesStep({
                       status cũ, "undo" ngoài ý muốn 1 lượt huỷ dòng vừa chọn.
                     */}
                       <Select
+                        items={orderItemStatusOptions}
                         aria-label={`Trạng thái dòng ${index + 1}`}
                         value={field.status}
-                        onValueChange={(key) =>
-                          update(index, {
-                            ...field,
-                            status: String(key) as OrderItemStatus,
-                          })
+                        onValueChange={(value) =>
+                          value !== null &&
+                          update(index, { ...field, status: value })
                         }
                         disabled={disabled}
                       >

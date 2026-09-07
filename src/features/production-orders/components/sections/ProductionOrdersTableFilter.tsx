@@ -124,7 +124,7 @@ export function ProductionOrdersTableFilter() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="production-orders-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -132,8 +132,11 @@ export function ProductionOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger
                 id="production-orders-status"

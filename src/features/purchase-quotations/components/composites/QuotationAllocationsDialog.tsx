@@ -49,8 +49,8 @@ export function QuotationAllocationsDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-<DialogTrigger render={trigger} />
-<DialogContent className="shadow-lg ring-0 sm:max-w-2xl">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="shadow-lg ring-0 sm:max-w-2xl">
         <QuotationAllocationsDialogForm
           itemName={itemName}
           allocations={allocations}
@@ -61,7 +61,7 @@ export function QuotationAllocationsDialog({
           onCancel={() => setOpen(false)}
         />
       </DialogContent>
-</Dialog>
+    </Dialog>
   )
 }
 
@@ -118,75 +118,72 @@ function QuotationAllocationsDialogForm({
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">
         <Table aria-label="Danh sách phân bổ số lượng">
           <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
-<TableRow>
-
-            <TableHead id="prCode" className="w-28">
-              Mã PR
-            </TableHead>
-            <TableHead id="requestedQuantity" className="w-28 text-right">
-              SL đề xuất
-            </TableHead>
-            <TableHead id="quantity" className="w-32 text-right">
-              SL báo giá
-            </TableHead>
-            <TableHead id="reason">Lý do điều chỉnh SL</TableHead>
-          
-</TableRow>
-</TableHeader>
-          <TableBody
-          >
-{localAllocations.length === 0 ? (
-<TableRow>
-<TableCell colSpan={4}>
-<TableEmpty colSpan={4} title="Chưa có dòng phân bổ nào" />
-</TableCell>
-</TableRow>
-) : (
-localAllocations.map((allocation, index) => (
-              <TableRow
-                key={allocation.purchaseRequestItemId}
-                id={allocation.purchaseRequestItemId}
-                className="h-12"
-              >
-                <TableCell>
-                  <span className="font-mono text-xs font-semibold text-primary">
-                    {allocation.prCode}
-                  </span>
-                  <p className="text-[11px] text-muted-foreground">
-                    Cần{" "}
-                    {DateTime.fromISO(allocation.neededDate).toFormat(
-                      "dd/MM/yyyy"
-                    )}
-                  </p>
-                </TableCell>
-                <TableCell className="text-right text-xs tabular-nums">
-                  {allocation.requestedQuantity}
-                </TableCell>
-                <TableCell>
-                  <NumericCellInput
-                    value={allocation.quantity}
-                    min={1}
-                    onValueChange={(value) =>
-                      updateAllocation(index, { quantity: value })
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <TableTextCellInput
-                    id={`allocation-reason-${allocation.purchaseRequestItemId}`}
-                    value={allocation.quantityAdjustmentReason}
-                    placeholder="Nếu SL báo giá khác SL đề xuất"
-                    onValueChange={(value) =>
-                      updateAllocation(index, {
-                        quantityAdjustmentReason: value,
-                      })
-                    }
-                  />
+            <TableRow>
+              <TableHead id="prCode" className="w-28">
+                Mã PR
+              </TableHead>
+              <TableHead id="requestedQuantity" className="w-28 text-right">
+                SL đề xuất
+              </TableHead>
+              <TableHead id="quantity" className="w-32 text-right">
+                SL báo giá
+              </TableHead>
+              <TableHead id="reason">Lý do điều chỉnh SL</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {localAllocations.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <TableEmpty colSpan={4} title="Chưa có dòng phân bổ nào" />
                 </TableCell>
               </TableRow>
-            ))
-)}
-</TableBody>
+            ) : (
+              localAllocations.map((allocation, index) => (
+                <TableRow
+                  key={allocation.purchaseRequestItemId}
+                  id={allocation.purchaseRequestItemId}
+                  className="h-12"
+                >
+                  <TableCell>
+                    <span className="font-mono text-xs font-semibold text-primary">
+                      {allocation.prCode}
+                    </span>
+                    <p className="text-[11px] text-muted-foreground">
+                      Cần{" "}
+                      {DateTime.fromISO(allocation.neededDate).toFormat(
+                        "dd/MM/yyyy"
+                      )}
+                    </p>
+                  </TableCell>
+                  <TableCell className="text-right text-xs tabular-nums">
+                    {allocation.requestedQuantity}
+                  </TableCell>
+                  <TableCell>
+                    <NumericCellInput
+                      value={allocation.quantity}
+                      min={1}
+                      onValueChange={(value) =>
+                        updateAllocation(index, { quantity: value })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TableTextCellInput
+                      id={`allocation-reason-${allocation.purchaseRequestItemId}`}
+                      value={allocation.quantityAdjustmentReason}
+                      placeholder="Nếu SL báo giá khác SL đề xuất"
+                      onValueChange={(value) =>
+                        updateAllocation(index, {
+                          quantityAdjustmentReason: value,
+                        })
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
         </Table>
       </div>
 

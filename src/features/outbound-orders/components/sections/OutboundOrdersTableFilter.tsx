@@ -162,7 +162,7 @@ export function OutboundOrdersTableFilter() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="do-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -170,8 +170,11 @@ export function OutboundOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="do-status" className="w-full text-xs">
                 <SelectValue />
@@ -186,7 +189,7 @@ export function OutboundOrdersTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="do-fulfillment-type"
               className="text-[11px] font-medium text-muted-foreground"
@@ -194,8 +197,11 @@ export function OutboundOrdersTableFilter() {
               Hình thức giao
             </Label>
             <Select
+              items={fulfillmentTypeFilterOptions}
               value={search.fulfillmentType ?? "all"}
-              onValueChange={(key) => handleFulfillmentTypeChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleFulfillmentTypeChange(value)
+              }
             >
               <SelectTrigger
                 id="do-fulfillment-type"

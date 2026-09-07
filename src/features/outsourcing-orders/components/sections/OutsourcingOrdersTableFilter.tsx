@@ -94,7 +94,7 @@ export function OutsourcingOrdersTableFilter() {
         </div>
       </div>
 
-      <div className="w-44 space-y-1.5">
+      <div className="flex w-44 flex-col gap-1.5">
         <Label
           htmlFor="os-out-status"
           className="text-[11px] font-medium text-muted-foreground"
@@ -102,8 +102,9 @@ export function OutsourcingOrdersTableFilter() {
           Trạng thái
         </Label>
         <Select
+          items={statusOptions}
           value={search.status ?? "all"}
-          onValueChange={(key) => handleStatusChange(String(key))}
+          onValueChange={(value) => value !== null && handleStatusChange(value)}
         >
           <SelectTrigger id="os-out-status" className="w-full text-xs">
             <SelectValue placeholder="Chọn trạng thái" />

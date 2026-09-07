@@ -33,15 +33,15 @@ export function JobOperationReportDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-<DialogTrigger render={trigger} />
-<DialogContent className="sm:max-w-xl">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-xl">
         <JobOperationReportForm
           row={row}
           disabledReason={disabledReason}
           onClose={() => setOpen(false)}
         />
       </DialogContent>
-</Dialog>
+    </Dialog>
   )
 }
 

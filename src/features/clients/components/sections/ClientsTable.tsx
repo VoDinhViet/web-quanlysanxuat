@@ -87,7 +87,10 @@ export function ClientsTable({
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
+                <TableRow
+                  key={row.id}
+                  className="h-14 bg-card hover:bg-muted/25"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}

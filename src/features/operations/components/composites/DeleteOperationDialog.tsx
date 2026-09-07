@@ -48,8 +48,8 @@ export function DeleteOperationDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-<AlertDialogTrigger render={trigger} />
-<AlertDialogContent>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Trash2 />
@@ -73,6 +73,6 @@ export function DeleteOperationDialog({
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog>
   )
 }

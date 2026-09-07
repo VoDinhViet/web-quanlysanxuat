@@ -290,8 +290,9 @@ export function SelectField({
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Select
+        items={options}
         value={field.state.value ?? null}
-        onValueChange={(key) => field.handleChange(String(key))}
+        onValueChange={(value) => value !== null && field.handleChange(value)}
         disabled={disabled}
       >
         <SelectTrigger

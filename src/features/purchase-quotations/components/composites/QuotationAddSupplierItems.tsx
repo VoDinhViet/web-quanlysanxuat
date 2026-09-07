@@ -89,7 +89,10 @@ export function QuotationAddSupplierItems({
               {table.getRowModel().rows.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={columns.length}>
-                    <TableEmpty colSpan={columns.length} title="Chưa có vật tư nào" />
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title="Chưa có vật tư nào"
+                    />
                   </TableCell>
                 </TableRow>
               ) : (

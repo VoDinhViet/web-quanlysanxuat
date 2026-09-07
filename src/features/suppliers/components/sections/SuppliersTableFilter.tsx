@@ -116,7 +116,7 @@ export function SuppliersTableFilter() {
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="suppliers-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -124,8 +124,11 @@ export function SuppliersTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={[{ value: "all", label: "Tất cả" }, ...statusOptions]}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="suppliers-status" className="w-full text-xs">
                 <SelectValue />
@@ -141,7 +144,7 @@ export function SuppliersTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="suppliers-group"
               className="text-[11px] font-medium text-muted-foreground"
@@ -149,8 +152,17 @@ export function SuppliersTableFilter() {
               Nhóm NCC
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả" },
+                ...supplierGroupOptions.map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                })),
+              ]}
               value={search.supplierGroupId ?? "all"}
-              onValueChange={(key) => handleGroupChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleGroupChange(value)
+              }
             >
               <SelectTrigger id="suppliers-group" className="w-full text-xs">
                 <SelectValue />
@@ -166,7 +178,7 @@ export function SuppliersTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="suppliers-country"
               className="text-[11px] font-medium text-muted-foreground"
@@ -174,8 +186,17 @@ export function SuppliersTableFilter() {
               Quốc gia
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả" },
+                ...countryOptions.map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                })),
+              ]}
               value={search.countryId ?? "all"}
-              onValueChange={(key) => handleCountryChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleCountryChange(value)
+              }
             >
               <SelectTrigger id="suppliers-country" className="w-full text-xs">
                 <SelectValue />

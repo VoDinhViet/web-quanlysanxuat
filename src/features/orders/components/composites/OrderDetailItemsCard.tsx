@@ -60,38 +60,38 @@ export function OrderDetailItemsCard({
           <div className="overflow-x-auto rounded-md border border-border/50">
             <Table aria-label="Danh sách sản phẩm">
               <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
-<TableRow>
-{table.getFlatHeaders().map((header) => (
-<TableHead
-key={header.id}
-className={header.column.columnDef.meta?.headerClassName}
->
-{!header.isPlaceholder &&
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-</TableHead>
-))}
-</TableRow>
-</TableHeader>
-<TableBody>
-{table.getRowModel().rows.map((row) => (
-<TableRow key={row.id} className="bg-card hover:bg-muted/25">
-{row.getVisibleCells().map((cell) => (
-<TableCell
-key={cell.id}
-className={cell.column.columnDef.meta?.cellClassName}
->
-{flexRender(
+                <TableRow>
+                  {table.getFlatHeaders().map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className={header.column.columnDef.meta?.headerClassName}
+                    >
+                      {!header.isPlaceholder &&
+                        flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} className="bg-card hover:bg-muted/25">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
                         )}
-</TableCell>
-))}
-</TableRow>
-))}
-</TableBody>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
               <TableFooter>
                 <TableRow className="h-11">
                   <TableCell

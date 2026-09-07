@@ -87,7 +87,7 @@ export function PurchaseQuotationsTableFilter() {
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(9rem,1fr)_minmax(14rem,1.3fr)_minmax(14rem,1.4fr)]">
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="purchase-quotations-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -95,8 +95,11 @@ export function PurchaseQuotationsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onValueChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger
                 id="purchase-quotations-status"

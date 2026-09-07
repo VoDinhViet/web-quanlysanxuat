@@ -170,7 +170,7 @@ export function OutsourcingReceiptsTableFilter() {
         </div>
       </div>
 
-      <div className="w-40 space-y-1.5">
+      <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="os-in-supplier"
           className="text-[11px] font-medium text-muted-foreground"
@@ -178,8 +178,17 @@ export function OutsourcingReceiptsTableFilter() {
           Nhà cung cấp
         </Label>
         <Select
+          items={[
+            { value: "all", label: "Tất cả NCC" },
+            ...supplierOptions.map((option) => ({
+              value: option.id,
+              label: option.name,
+            })),
+          ]}
           value={search.supplierId ?? "all"}
-          onValueChange={(key) => handleSupplierChange(String(key))}
+          onValueChange={(value) =>
+            value !== null && handleSupplierChange(value)
+          }
         >
           <SelectTrigger id="os-in-supplier" className="w-full text-xs">
             <SelectValue placeholder="Chọn nhà cung cấp" />
@@ -195,7 +204,7 @@ export function OutsourcingReceiptsTableFilter() {
         </Select>
       </div>
 
-      <div className="w-36 space-y-1.5">
+      <div className="flex w-36 flex-col gap-1.5">
         <Label
           htmlFor="os-in-status"
           className="text-[11px] font-medium text-muted-foreground"
@@ -203,8 +212,9 @@ export function OutsourcingReceiptsTableFilter() {
           Trạng thái
         </Label>
         <Select
+          items={statusOptions}
           value={search.status ?? "all"}
-          onValueChange={(key) => handleStatusChange(String(key))}
+          onValueChange={(value) => value !== null && handleStatusChange(value)}
         >
           <SelectTrigger id="os-in-status" className="w-full text-xs">
             <SelectValue placeholder="Chọn trạng thái" />
@@ -219,7 +229,7 @@ export function OutsourcingReceiptsTableFilter() {
         </Select>
       </div>
 
-      <div className="w-40 space-y-1.5">
+      <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="os-in-requires-iqc"
           className="text-[11px] font-medium text-muted-foreground"
@@ -227,12 +237,15 @@ export function OutsourcingReceiptsTableFilter() {
           Yêu cầu QC
         </Label>
         <Select
+          items={requiresIqcOptions}
           value={
             search.requiresIqc === undefined
               ? "all"
               : String(search.requiresIqc)
           }
-          onValueChange={(key) => handleRequiresIqcChange(String(key))}
+          onValueChange={(value) =>
+            value !== null && handleRequiresIqcChange(value)
+          }
         >
           <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">
             <SelectValue placeholder="Chọn yêu cầu QC" />

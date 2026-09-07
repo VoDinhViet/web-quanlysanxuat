@@ -69,7 +69,7 @@ export function PurchaseOrderPaymentTermField({
   }
 
   return (
-    <div className="min-w-0 space-y-1">
+    <div className="flex min-w-0 flex-col gap-1">
       <label
         htmlFor="purchase-order-payment-term"
         className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
@@ -77,11 +77,12 @@ export function PurchaseOrderPaymentTermField({
         Điều khoản TT <span className="text-destructive">*</span>
       </label>
       <Select
+        items={paymentTermLabels}
         value={value}
-        onValueChange={(key) => {
-          const nextPaymentTerm = String(key) as PaymentTermType
-          setValue(nextPaymentTerm)
-          save(nextPaymentTerm)
+        onValueChange={(nextValue) => {
+          if (nextValue === null) return
+          setValue(nextValue)
+          save(nextValue)
         }}
       >
         <SelectTrigger

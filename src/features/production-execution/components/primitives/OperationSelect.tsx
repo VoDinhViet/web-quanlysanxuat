@@ -42,8 +42,12 @@ export function OperationSelect({
 
   return (
     <Select
+      items={summary.map((operation) => ({
+        value: operation.operationId,
+        label: `${operation.name} · ${operation.jobCount} công việc`,
+      }))}
       value={selectedOperationId ?? ""}
-      onValueChange={(key) => handleChange(String(key))}
+      onValueChange={(value) => value !== null && handleChange(value)}
       disabled={isPending || isError || summary.length === 0}
     >
       <SelectTrigger

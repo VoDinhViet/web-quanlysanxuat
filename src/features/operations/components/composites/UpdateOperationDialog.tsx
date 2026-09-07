@@ -18,8 +18,8 @@ export function UpdateOperationDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-<DialogTrigger render={trigger} />
-<DialogContent className="sm:max-w-lg">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-lg">
         {/* The dialog unmounts content while closed, so the form re-mounts and re-seeds
             from `operation` fresh on every open. */}
         <UpdateOperationForm
@@ -28,6 +28,6 @@ export function UpdateOperationDialog({
           onCancel={() => setOpen(false)}
         />
       </DialogContent>
-</Dialog>
+    </Dialog>
   )
 }
