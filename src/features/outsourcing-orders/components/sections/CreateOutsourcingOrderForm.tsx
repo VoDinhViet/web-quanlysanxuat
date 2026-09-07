@@ -123,8 +123,8 @@ export function CreateOutsourcingOrderForm({
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <Tabs
-          selectedKey={tab}
-          onSelectionChange={handleTabValueChange}
+          value={tab}
+          onValueChange={handleTabValueChange}
           className="gap-0"
         >
           <form.Subscribe
@@ -143,7 +143,7 @@ export function CreateOutsourcingOrderForm({
             )}
           </form.Subscribe>
 
-          <TabsContent id="picker" className="m-0 outline-none">
+          <TabsContent value="picker" className="m-0 outline-none">
             <CreateOutsourcingOrderPickerSection
               form={form}
               disabled={isPending}
@@ -151,7 +151,7 @@ export function CreateOutsourcingOrderForm({
               initialOperationId={initialOperationId}
             />
           </TabsContent>
-          <TabsContent id="items" className="m-0 outline-none">
+          <TabsContent value="items" className="m-0 outline-none">
             <CreateOutsourcingOrderInfoSection
               form={form}
               disabled={isPending}
@@ -163,7 +163,7 @@ export function CreateOutsourcingOrderForm({
               />
             </div>
           </TabsContent>
-          <TabsContent id="confirm" className="m-0 outline-none">
+          <TabsContent value="confirm" className="m-0 outline-none">
             <CreateOutsourcingOrderConfirmSection form={form} />
           </TabsContent>
         </Tabs>
@@ -174,8 +174,8 @@ export function CreateOutsourcingOrderForm({
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              isDisabled={isPending}
-              onPress={() => handleTabChange(prevTab.value)}
+              disabled={isPending}
+              onClick={() => handleTabChange(prevTab.value)}
             >
               <AltArrowLeft className="size-4" />
               Quay lại
@@ -185,8 +185,8 @@ export function CreateOutsourcingOrderForm({
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              isDisabled={isPending}
-              onPress={() =>
+              disabled={isPending}
+              onClick={() =>
                 void navigate({
                   to: "/manage/outsourcing-orders",
                   search: { page: 1, limit: 10 },
@@ -213,8 +213,8 @@ export function CreateOutsourcingOrderForm({
                 return (
                   <Button
                     type="button"
-                    isDisabled={!canAdvance}
-                    onPress={() => handleTabChange(nextTab.value)}
+                    disabled={!canAdvance}
+                    onClick={() => handleTabChange(nextTab.value)}
                   >
                     Tiếp theo: {nextTab.label}
                     <AltArrowRight className="size-4" />
@@ -232,8 +232,8 @@ export function CreateOutsourcingOrderForm({
               {({ canSubmit, isSubmitting }) => (
                 <Button
                   type="button"
-                  isDisabled={!canSubmit || isSubmitting || isPending}
-                  onPress={() => {
+                  disabled={!canSubmit || isSubmitting || isPending}
+                  onClick={() => {
                     if (form.state.isSubmitting) return
                     form.handleSubmit()
                   }}

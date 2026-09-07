@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CheckCircle } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
 type OutboundOrderDeliverDialogProps = {
   order: OutboundOrderDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_DELIVERY → DELIVERED. Ghi sổ thật (khác OutboundOrderApproveDialog.tsx): tự sinh + post 1
@@ -50,15 +51,15 @@ export function OutboundOrderDeliverDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CheckCircle />
@@ -74,17 +75,17 @@ export function OutboundOrderDeliverDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            isDisabled={mutation.isPending}
-            onPress={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

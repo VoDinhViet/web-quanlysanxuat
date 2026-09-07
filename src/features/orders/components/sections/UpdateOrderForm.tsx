@@ -202,14 +202,10 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
       noValidate
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
-      <Tabs
-        selectedKey={step}
-        onSelectionChange={handleStepChange}
-        className="gap-0"
-      >
+      <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
         <UpdateOrderStepsTabs />
 
-        <TabsContent id="info" className="m-0 outline-none">
+        <TabsContent value="info" className="m-0 outline-none">
           <UpdateOrderInfoSection
             form={form}
             disabled={isPending}
@@ -218,13 +214,13 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
             initialAssigneeOption={initialAssigneeOption}
           />
         </TabsContent>
-        <TabsContent id="selectItems" className="m-0 outline-none">
+        <TabsContent value="selectItems" className="m-0 outline-none">
           <UpdateOrderSelectItemsStep form={form} />
         </TabsContent>
-        <TabsContent id="itemQuantities" className="m-0 outline-none">
+        <TabsContent value="itemQuantities" className="m-0 outline-none">
           <UpdateOrderQuantitiesStep form={form} disabled={isPending} />
         </TabsContent>
-        <TabsContent id="confirm" className="m-0 outline-none">
+        <TabsContent value="confirm" className="m-0 outline-none">
           <UpdateOrderConfirmSection form={form} disabled={isPending} />
         </TabsContent>
       </Tabs>
@@ -235,8 +231,8 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() => setStep(prevStep)}
+            disabled={isPending}
+            onClick={() => setStep(prevStep)}
           >
             <ArrowLeft className="size-4" />
             {prevLabel}
@@ -246,8 +242,8 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/orders/$orderId",
                 params: { orderId: order.id },
@@ -267,8 +263,8 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
           <Button
             key="next"
             type="button"
-            isDisabled={isPending}
-            onPress={() => void goNext()}
+            disabled={isPending}
+            onClick={() => void goNext()}
           >
             {nextLabel}
             <ArrowRight className="size-4" />
@@ -277,7 +273,7 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
           <Button
             key="submit"
             type="submit"
-            isDisabled={form.formState.isSubmitting || isPending}
+            disabled={form.formState.isSubmitting || isPending}
           >
             {form.formState.isSubmitting || isPending ? (
               <>

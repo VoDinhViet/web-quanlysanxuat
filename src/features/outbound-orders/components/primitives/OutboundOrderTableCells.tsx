@@ -1,7 +1,11 @@
 import { Eye, Pencil, Printer, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteOutboundOrderDialog } from "@/features/outbound-orders/components/composites/DeleteOutboundOrderDialog"
@@ -17,37 +21,45 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
 
   return (
     <div className="flex items-center justify-center gap-1">
-      <TooltipTrigger>
-        <LinkButton
-          to="/manage/outbound-orders/$outboundOrderId"
-          params={{ outboundOrderId: order.id }}
-          search={{ mode: "view" }}
-          variant="outline"
-          size="icon"
-          aria-label="Xem chi tiết DO"
-          className="size-7 border-primary/20 text-primary hover:bg-primary/10"
-        >
-          <Eye className="size-3.5" />
-        </LinkButton>
-        <Tooltip>Xem chi tiết DO</Tooltip>
-      </TooltipTrigger>
-
-      {isDraft ? (
-        <PermissionGate permission="outbound:update">
-          <TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
             <LinkButton
               to="/manage/outbound-orders/$outboundOrderId"
               params={{ outboundOrderId: order.id }}
-              search={{ mode: "edit" }}
+              search={{ mode: "view" }}
               variant="outline"
               size="icon"
-              aria-label="Chỉnh sửa DO"
-              className="size-7"
+              aria-label="Xem chi tiết DO"
+              className="size-7 border-primary/20 text-primary hover:bg-primary/10"
             >
-              <Pencil className="size-3.5" />
+              <Eye className="size-3.5" />
             </LinkButton>
-            <Tooltip>Chỉnh sửa DO</Tooltip>
-          </TooltipTrigger>
+          }
+        />
+        <TooltipContent>Xem chi tiết DO</TooltipContent>
+      </Tooltip>
+
+      {isDraft ? (
+        <PermissionGate permission="outbound:update">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <LinkButton
+                  to="/manage/outbound-orders/$outboundOrderId"
+                  params={{ outboundOrderId: order.id }}
+                  search={{ mode: "edit" }}
+                  variant="outline"
+                  size="icon"
+                  aria-label="Chỉnh sửa DO"
+                  className="size-7"
+                >
+                  <Pencil className="size-3.5" />
+                </LinkButton>
+              }
+            />
+            <TooltipContent>Chỉnh sửa DO</TooltipContent>
+          </Tooltip>
         </PermissionGate>
       ) : (
         <DisabledAction
@@ -67,17 +79,21 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
           <DeleteOutboundOrderDialog
             order={order}
             trigger={
-              <TooltipTrigger>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  aria-label="Xóa DO"
-                  className="size-7 border-destructive/20 text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="size-3.5" />
-                </Button>
-                <Tooltip>Xóa DO</Tooltip>
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      aria-label="Xóa DO"
+                      className="size-7 border-destructive/20 text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  }
+                />
+                <TooltipContent>Xóa DO</TooltipContent>
+              </Tooltip>
             }
           />
         </PermissionGate>

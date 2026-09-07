@@ -9,7 +9,7 @@ import {
   Search,
 } from "lucide-react"
 import { DateTime } from "luxon"
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 import { useDebounceValue } from "usehooks-ts"
 import type { ComponentType } from "react"
 import type { LucideProps } from "lucide-react"
@@ -118,17 +118,17 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                 // Radix widens onChange to `string`; the cast narrows back to the field's
                 // real literal union, same idiom RadioPillField uses.
                 value={field.state.value}
-                onChange={(value) =>
+                onValueChange={(value) =>
                   field.handleChange(value as SourceOptionValue)
                 }
-                isDisabled={disabled}
+                disabled={disabled}
                 className="grid grid-cols-1 gap-3 sm:col-span-2 sm:grid-cols-2"
               >
                 {sourceOptions.map((option) => {
                   const isChecked = field.state.value === option.value
 
                   return (
-                    <Radio
+                    <Radio.Root
                       key={option.value}
                       value={option.value}
                       className={cn(
@@ -164,7 +164,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                           <span className="size-2 rounded-full bg-primary-foreground" />
                         )}
                       </span>
-                    </Radio>
+                    </Radio.Root>
                   )
                 })}
               </RadioGroup>
@@ -200,64 +200,69 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                     <div className="max-h-64 overflow-x-auto overflow-y-auto rounded-md border border-dashed border-border/50 bg-card">
                       <Table aria-label="Danh sách Job">
                         <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
-                          <TableHead id="code" isRowHeader>
-                            Mã Job
-                          </TableHead>
-                          <TableHead id="orderCode">Mã LSX</TableHead>
-                          <TableHead id="client">Khách hàng</TableHead>
-                          <TableHead id="quantity" className="text-center">
-                            SL
-                          </TableHead>
-                          <TableHead id="dueDate" className="text-center">
-                            Hạn giao
-                          </TableHead>
-                          <TableHead id="selected" className="w-9" />
+                          <TableRow>
+                            <TableHead id="code">Mã Job</TableHead>
+                            <TableHead id="orderCode">Mã LSX</TableHead>
+                            <TableHead id="client">Khách hàng</TableHead>
+                            <TableHead id="quantity" className="text-center">
+                              SL
+                            </TableHead>
+                            <TableHead id="dueDate" className="text-center">
+                              Hạn giao
+                            </TableHead>
+                            <TableHead id="selected" className="w-9" />
+                          </TableRow>
                         </TableHeader>
                         <TableBody
                           className={cn(jobsQuery.isFetching && "opacity-50")}
-                          renderEmptyState={() => (
-                            <TableEmpty
-                              colSpan={6}
-                              title={
-                                jobsQuery.isPending
-                                  ? "Đang tải..."
-                                  : "Không tìm thấy Job"
-                              }
-                            />
-                          )}
                         >
-                          {jobs.map((job: ProductionJob) => (
-                            <TableRow
-                              key={job.id}
-                              id={job.id}
-                              className={cn(
-                                "h-12 cursor-pointer bg-card hover:bg-muted/25",
-                                field.state.value === job.id && "bg-primary/5"
-                              )}
-                              onAction={() =>
-                                !disabled && field.handleChange(job.id)
-                              }
-                            >
-                              <TableCell className="font-mono font-semibold text-primary">
-                                {job.code}
-                              </TableCell>
-                              <TableCell className="font-mono text-muted-foreground">
-                                {job.orderCode}
-                              </TableCell>
-                              <TableCell>{job.client?.name ?? "—"}</TableCell>
-                              <TableCell className="text-center">
-                                {quantityFormatter.format(job.quantity)}
-                              </TableCell>
-                              <TableCell className="text-center">
-                                {formatDueDate(job.dueDate)}
-                              </TableCell>
-                              <TableCell>
-                                {field.state.value === job.id && (
-                                  <CheckCircle2 className="size-4 text-primary" />
-                                )}
+                          {jobs.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={6}>
+                                <TableEmpty
+                                  colSpan={6}
+                                  title={
+                                    jobsQuery.isPending
+                                      ? "Đang tải..."
+                                      : "Không tìm thấy Job"
+                                  }
+                                />
                               </TableCell>
                             </TableRow>
-                          ))}
+                          ) : (
+                            jobs.map((job: ProductionJob) => (
+                              <TableRow
+                                key={job.id}
+                                id={job.id}
+                                className={cn(
+                                  "h-12 cursor-pointer bg-card hover:bg-muted/25",
+                                  field.state.value === job.id && "bg-primary/5"
+                                )}
+                                onClick={() =>
+                                  !disabled && field.handleChange(job.id)
+                                }
+                              >
+                                <TableCell className="font-mono font-semibold text-primary">
+                                  {job.code}
+                                </TableCell>
+                                <TableCell className="font-mono text-muted-foreground">
+                                  {job.orderCode}
+                                </TableCell>
+                                <TableCell>{job.client?.name ?? "—"}</TableCell>
+                                <TableCell className="text-center">
+                                  {quantityFormatter.format(job.quantity)}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {formatDueDate(job.dueDate)}
+                                </TableCell>
+                                <TableCell>
+                                  {field.state.value === job.id && (
+                                    <CheckCircle2 className="size-4 text-primary" />
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
                         </TableBody>
                       </Table>
                     </div>

@@ -13,7 +13,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
@@ -32,8 +36,8 @@ type RowAction = {
   icon: ComponentType<{ className?: string }>
   label: string
   tone: "default" | "destructive"
-  isDisabled: boolean
-  onPress: () => void
+  disabled: boolean
+  onClick: () => void
 }
 
 // Bước ③ của wizard: đúng những sản phẩm đã tick ở bước ② (CreateOrderSelectItemsStep.tsx),
@@ -90,147 +94,155 @@ export function CreateOrderQuantitiesStep({
       <div className="mt-4 overflow-x-auto rounded-md border border-dashed border-border/50 bg-card">
         <Table aria-label="Số lượng & giá">
           <TableHeader className="[&>tr]:h-12">
-            <TableHead id="index" className="w-12">
-              #
-            </TableHead>
-            <TableHead id="item" isRowHeader>
-              Sản phẩm
-            </TableHead>
-            <TableHead id="unit">ĐVT</TableHead>
-            <TableHead id="quantity" className="w-32">
-              Số lượng
-            </TableHead>
-            <TableHead id="unitPrice" className="w-40">
-              {`Đơn giá (${currency})`}
-            </TableHead>
-            <TableHead id="discountPercent" className="w-24">
-              CK (%)
-            </TableHead>
-            <TableHead id="note" className="w-48">
-              Ghi chú
-            </TableHead>
-            <TableHead id="total" className="text-right">
-              Thành tiền
-            </TableHead>
-            <TableHead id="actions" className="w-24 text-right">
-              Thao tác
-            </TableHead>
+            <TableRow>
+              <TableHead id="index" className="w-12">
+                #
+              </TableHead>
+              <TableHead id="item">Sản phẩm</TableHead>
+              <TableHead id="unit">ĐVT</TableHead>
+              <TableHead id="quantity" className="w-32">
+                Số lượng
+              </TableHead>
+              <TableHead id="unitPrice" className="w-40">
+                {`Đơn giá (${currency})`}
+              </TableHead>
+              <TableHead id="discountPercent" className="w-24">
+                CK (%)
+              </TableHead>
+              <TableHead id="note" className="w-48">
+                Ghi chú
+              </TableHead>
+              <TableHead id="total" className="text-right">
+                Thành tiền
+              </TableHead>
+              <TableHead id="actions" className="w-24 text-right">
+                Thao tác
+              </TableHead>
+            </TableRow>
           </TableHeader>
-          <TableBody
-            renderEmptyState={() => (
-              <TableEmpty
-                colSpan={9}
-                title="Chưa chọn sản phẩm nào"
-                description={'Quay lại bước "Chọn sản phẩm" để thêm.'}
-              />
-            )}
-          >
-            {fields.map((field, index) => {
-              const rowActions: RowAction[] = [
-                {
-                  icon: ArrowUp,
-                  label: `Di chuyển lên dòng ${index + 1}`,
-                  tone: "default",
-                  isDisabled: disabled || index === 0,
-                  onPress: () => move(index, index - 1),
-                },
-                {
-                  icon: ArrowDown,
-                  label: `Di chuyển xuống dòng ${index + 1}`,
-                  tone: "default",
-                  isDisabled: disabled || index === fields.length - 1,
-                  onPress: () => move(index, index + 1),
-                },
-                {
-                  icon: Trash2,
-                  label: `Xóa dòng ${index + 1}`,
-                  tone: "destructive",
-                  isDisabled: disabled,
-                  onPress: () => remove(index),
-                },
-              ]
+          <TableBody>
+            {fields.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={9}>
+                  <TableEmpty
+                    colSpan={9}
+                    title="Chưa chọn sản phẩm nào"
+                    description={'Quay lại bước "Chọn sản phẩm" để thêm.'}
+                  />
+                </TableCell>
+              </TableRow>
+            ) : (
+              fields.map((field, index) => {
+                const rowActions: RowAction[] = [
+                  {
+                    icon: ArrowUp,
+                    label: `Di chuyển lên dòng ${index + 1}`,
+                    tone: "default",
+                    disabled: disabled || index === 0,
+                    onClick: () => move(index, index - 1),
+                  },
+                  {
+                    icon: ArrowDown,
+                    label: `Di chuyển xuống dòng ${index + 1}`,
+                    tone: "default",
+                    disabled: disabled || index === fields.length - 1,
+                    onClick: () => move(index, index + 1),
+                  },
+                  {
+                    icon: Trash2,
+                    label: `Xóa dòng ${index + 1}`,
+                    tone: "destructive",
+                    disabled: disabled,
+                    onClick: () => remove(index),
+                  },
+                ]
 
-              return (
-                <TableRow key={field.id} id={field.id} className="h-14">
-                  <TableCell className="text-muted-foreground">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell>{field.itemLabel || "—"}</TableCell>
-                  <TableCell>{field.itemUnit || "—"}</TableCell>
-                  <TableCell>
-                    <NumericCellInput
-                      value={field.quantity}
-                      min={1}
-                      placeholder="0"
-                      disabled={disabled}
-                      onValueChange={(value) =>
-                        update(index, { ...field, quantity: value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <NumericCellInput
-                      value={field.unitPrice}
-                      min={0}
-                      placeholder="0"
-                      disabled={disabled}
-                      onValueChange={(value) =>
-                        update(index, { ...field, unitPrice: value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <NumericCellInput
-                      value={field.discountPercent}
-                      min={0}
-                      placeholder="0"
-                      disabled={disabled}
-                      onValueChange={(value) =>
-                        update(index, { ...field, discountPercent: value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TableTextCellInput
-                      value={field.note}
-                      placeholder="Ghi chú (nếu có)"
-                      disabled={disabled}
-                      onValueChange={(value) =>
-                        update(index, { ...field, note: value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell className="text-right font-medium tabular-nums">
-                    {currencyFormatter.format(estimateLineTotal(field))}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      {rowActions.map((action) => (
-                        <TooltipTrigger key={action.label}>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon-sm"
-                            aria-label={action.label}
-                            className={cn(
-                              "text-muted-foreground",
-                              action.tone === "destructive"
-                                ? "hover:border-destructive/30 hover:text-destructive"
-                                : "hover:border-primary/30 hover:text-primary"
-                            )}
-                            isDisabled={action.isDisabled}
-                            onPress={action.onPress}
-                          >
-                            <action.icon className="size-3.5" />
-                          </Button>
-                          <Tooltip>{action.label}</Tooltip>
-                        </TooltipTrigger>
-                      ))}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )
-            })}
+                return (
+                  <TableRow key={field.id} id={field.id} className="h-14">
+                    <TableCell className="text-muted-foreground">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell>{field.itemLabel || "—"}</TableCell>
+                    <TableCell>{field.itemUnit || "—"}</TableCell>
+                    <TableCell>
+                      <NumericCellInput
+                        value={field.quantity}
+                        min={1}
+                        placeholder="0"
+                        disabled={disabled}
+                        onValueChange={(value) =>
+                          update(index, { ...field, quantity: value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <NumericCellInput
+                        value={field.unitPrice}
+                        min={0}
+                        placeholder="0"
+                        disabled={disabled}
+                        onValueChange={(value) =>
+                          update(index, { ...field, unitPrice: value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <NumericCellInput
+                        value={field.discountPercent}
+                        min={0}
+                        placeholder="0"
+                        disabled={disabled}
+                        onValueChange={(value) =>
+                          update(index, { ...field, discountPercent: value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TableTextCellInput
+                        value={field.note}
+                        placeholder="Ghi chú (nếu có)"
+                        disabled={disabled}
+                        onValueChange={(value) =>
+                          update(index, { ...field, note: value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell className="text-right font-medium tabular-nums">
+                      {currencyFormatter.format(estimateLineTotal(field))}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        {rowActions.map((action) => (
+                          <Tooltip key={action.label}>
+                            <TooltipTrigger
+                              render={
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="icon-sm"
+                                  aria-label={action.label}
+                                  className={cn(
+                                    "text-muted-foreground",
+                                    action.tone === "destructive"
+                                      ? "hover:border-destructive/30 hover:text-destructive"
+                                      : "hover:border-primary/30 hover:text-primary"
+                                  )}
+                                  disabled={action.disabled}
+                                  onClick={action.onClick}
+                                >
+                                  <action.icon className="size-3.5" />
+                                </Button>
+                              }
+                            />
+                            <TooltipContent>{action.label}</TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })
+            )}
           </TableBody>
         </Table>
       </div>

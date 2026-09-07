@@ -118,24 +118,20 @@ export function CreateQuotationForm() {
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <Tabs
-          selectedKey={step}
-          onSelectionChange={handleStepChange}
-          className="gap-0"
-        >
+        <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
           <form.Subscribe selector={(state) => state.values.items.length}>
             {(itemCount) => (
               <CreateQuotationStepsTabs canGoToSuppliers={itemCount > 0} />
             )}
           </form.Subscribe>
 
-          <TabsContent id="items" className="m-0 outline-none">
+          <TabsContent value="items" className="m-0 outline-none">
             <CreateQuotationItemsPickerSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent id="suppliers" className="m-0 outline-none">
+          <TabsContent value="suppliers" className="m-0 outline-none">
             <CreateQuotationSuppliersSection form={form} disabled={isPending} />
           </TabsContent>
         </Tabs>
@@ -146,8 +142,8 @@ export function CreateQuotationForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              isDisabled={isPending}
-              onPress={() => setStep(prevStep)}
+              disabled={isPending}
+              onClick={() => setStep(prevStep)}
             >
               <AltArrowLeft className="size-4" />
               {prevLabel}
@@ -157,7 +153,7 @@ export function CreateQuotationForm() {
               type="button"
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
-              onPress={() =>
+              onClick={() =>
                 void navigate({
                   to: "/manage/purchase-quotations",
                   search: { page: 1, limit: 10 },
@@ -173,8 +169,8 @@ export function CreateQuotationForm() {
               {(itemCount) => (
                 <Button
                   type="button"
-                  isDisabled={itemCount === 0}
-                  onPress={() => setStep(nextStep)}
+                  disabled={itemCount === 0}
+                  onClick={() => setStep(nextStep)}
                 >
                   {nextLabel}
                   <AltArrowRight className="size-4" />
@@ -186,8 +182,8 @@ export function CreateQuotationForm() {
               <Button
                 type="button"
                 variant="ghost"
-                isDisabled={isPending}
-                onPress={() => {
+                disabled={isPending}
+                onClick={() => {
                   form.reset()
                   restoreFormDraft(form, createQuotationFormDefaultValues)
                   clearDraft()
@@ -200,8 +196,8 @@ export function CreateQuotationForm() {
               <Button
                 type="button"
                 variant="outline"
-                isDisabled={isPending}
-                onPress={() => {
+                disabled={isPending}
+                onClick={() => {
                   saveDraft(form.state.values)
                   toast.success("Đã lưu nháp")
                 }}
@@ -215,7 +211,7 @@ export function CreateQuotationForm() {
                 {([canSubmit, isSubmitting]) => (
                   <Button
                     type="submit"
-                    isDisabled={!canSubmit || isSubmitting || isPending}
+                    disabled={!canSubmit || isSubmitting || isPending}
                   >
                     {isSubmitting || isPending ? (
                       <>

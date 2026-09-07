@@ -5,6 +5,7 @@ import { CheckCircle, CloseCircle } from "@solar-icons/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -46,14 +47,16 @@ export function PaymentRequestDetailActions({
       <div className="flex items-center gap-2">
         <PermissionGate permission="purchasing:approve">
           {/* Mark as PAID */}
-          <DialogTrigger
-            onOpenChange={(next) => next && markPaidMutation.reset()}
-          >
-            <Button type="button" isDisabled={markPaidMutation.isPending}>
-              <CheckCircle className="size-4" />
-              Đã thanh toán
-            </Button>
-            <Dialog>
+          <Dialog onOpenChange={(next) => next && markPaidMutation.reset()}>
+            <DialogTrigger
+              render={
+                <Button type="button" disabled={markPaidMutation.isPending}>
+                  <CheckCircle className="size-4" />
+                  Đã thanh toán
+                </Button>
+              }
+            />
+            <DialogContent>
               <DialogHeader>
                 <DialogTitle>Xác nhận thanh toán</DialogTitle>
                 <DialogDescription>
@@ -72,16 +75,16 @@ export function PaymentRequestDetailActions({
               <DialogFooter>
                 <Button
                   type="button"
-                  isDisabled={markPaidMutation.isPending}
-                  onPress={() => markPaidMutation.mutate()}
+                  disabled={markPaidMutation.isPending}
+                  onClick={() => markPaidMutation.mutate()}
                 >
                   {markPaidMutation.isPending
                     ? "Đang xử lý…"
                     : "Xác nhận đã thanh toán"}
                 </Button>
               </DialogFooter>
-            </Dialog>
-          </DialogTrigger>
+            </DialogContent>
+          </Dialog>
         </PermissionGate>
 
         <PermissionGate permission="purchasing:approve">

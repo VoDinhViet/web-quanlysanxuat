@@ -116,7 +116,7 @@ export function SuppliersTableFilter() {
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="suppliers-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -124,16 +124,19 @@ export function SuppliersTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={[{ value: "all", label: "Tất cả" }, ...statusOptions]}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="suppliers-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -141,7 +144,7 @@ export function SuppliersTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="suppliers-group"
               className="text-[11px] font-medium text-muted-foreground"
@@ -149,16 +152,25 @@ export function SuppliersTableFilter() {
               Nhóm NCC
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả" },
+                ...supplierGroupOptions.map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                })),
+              ]}
               value={search.supplierGroupId ?? "all"}
-              onChange={(key) => handleGroupChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleGroupChange(value)
+              }
             >
               <SelectTrigger id="suppliers-group" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {supplierGroupOptions.map((option) => (
-                  <SelectItem key={option.id} id={option.id}>
+                  <SelectItem key={option.id} value={option.id}>
                     {option.name}
                   </SelectItem>
                 ))}
@@ -166,7 +178,7 @@ export function SuppliersTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="suppliers-country"
               className="text-[11px] font-medium text-muted-foreground"
@@ -174,16 +186,25 @@ export function SuppliersTableFilter() {
               Quốc gia
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả" },
+                ...countryOptions.map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                })),
+              ]}
               value={search.countryId ?? "all"}
-              onChange={(key) => handleCountryChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleCountryChange(value)
+              }
             >
               <SelectTrigger id="suppliers-country" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {countryOptions.map((option) => (
-                  <SelectItem key={option.id} id={option.id}>
+                  <SelectItem key={option.id} value={option.id}>
                     {option.name}
                   </SelectItem>
                 ))}
@@ -197,7 +218,7 @@ export function SuppliersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

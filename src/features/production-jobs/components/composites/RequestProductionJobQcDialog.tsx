@@ -2,10 +2,11 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ClipboardCheck } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
 type RequestProductionJobQcDialogProps = {
   job: ProductionJobDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // Tạo 1 phiếu OQC gắn vào công đoạn Cấp 0 của Job — ghi vào bảng `oqc` nên invalidate cả 2 root,
@@ -46,15 +47,15 @@ export function RequestProductionJobQcDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <ClipboardCheck />
@@ -73,19 +74,19 @@ export function RequestProductionJobQcDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            isDisabled={mutation.isPending}
-            onPress={() => {
+            disabled={mutation.isPending}
+            onClick={() => {
               mutation.mutate()
             }}
           >
             {mutation.isPending ? "Đang xử lý..." : "Yêu cầu OQC"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

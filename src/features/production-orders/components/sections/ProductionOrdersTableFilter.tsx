@@ -44,15 +44,15 @@ export function ProductionOrdersTableFilter() {
     })
   }, 300)
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    dueDateFrom: string | undefined,
+    dueDateTo: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        dueDateFrom: range.from,
-        dueDateTo: range.to,
+        dueDateFrom,
+        dueDateTo,
         page: 1,
       }),
     })
@@ -124,7 +124,7 @@ export function ProductionOrdersTableFilter() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="production-orders-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -132,19 +132,21 @@ export function ProductionOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
-              placeholder="Chọn trạng thái"
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger
                 id="production-orders-status"
                 className="w-full text-xs"
               >
-                <SelectValue />
+                <SelectValue placeholder="Chọn trạng thái" />
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

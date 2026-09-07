@@ -1,4 +1,4 @@
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 import { Check } from "lucide-react"
 
 import { RadioGroup } from "@/components/ui/radio-group"
@@ -31,8 +31,8 @@ type RadioCardFieldProps<TValue extends string> = {
 // IQC's §3 KẾT QUẢ (2 cards, PASS/FAIL) and §5 QUYẾT ĐỊNH XỬ LÝ (3 cards, CONCESSION/SORT/
 // RETURN), now shared with OQC's own PASS/FAIL result cards (3rd use — promoted out of
 // src/features/iqc/ per the repo's cross-feature layer boundary). Each card is now the
-// `RadioGroupPrimitive.Item` itself (radix thô, không qua `RadioGroupItem` chấm tròn của
-// shadcn) — không còn nút radio tròn riêng, trạng thái chọn chỉ thể hiện qua viền/nền thẻ
+// `Radio.Root` primitive thô (Base UI), không qua `RadioGroupItem` chấm tròn của shadcn —
+// không còn nút radio tròn riêng, trạng thái chọn chỉ thể hiện qua viền/nền thẻ
 // (activeClassName) + badge check nổi ở góc trên-phải. Checked state vẫn tính ở JS từ
 // `field.state.value` (not CSS has-*/group-has-* chaining) — simpler to reason about, and the
 // same comparison drives both the card tint and the icon-chip tint. Takes `field: AnyFieldApi`
@@ -49,8 +49,8 @@ export function RadioCardField<TValue extends string>({
   return (
     <RadioGroup
       value={field.state.value}
-      onChange={(value) => field.handleChange(value)}
-      isDisabled={disabled}
+      onValueChange={(value) => field.handleChange(value)}
+      disabled={disabled}
       className={cn(
         "grid gap-3",
         columns === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"
@@ -61,7 +61,7 @@ export function RadioCardField<TValue extends string>({
         const isChecked = field.state.value === option.value
 
         return (
-          <Radio
+          <Radio.Root
             key={option.value}
             value={option.value}
             className={cn(
@@ -98,7 +98,7 @@ export function RadioCardField<TValue extends string>({
                 <Check className="size-3" strokeWidth={3} />
               </span>
             ) : null}
-          </Radio>
+          </Radio.Root>
         )
       })}
     </RadioGroup>

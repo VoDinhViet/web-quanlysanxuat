@@ -5,11 +5,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -24,7 +25,7 @@ type PurchaseRequestItemNoteDialogProps = {
   purchaseRequestItemId: string
   itemName: string
   note: string | null
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 export function PurchaseRequestItemNoteDialog({
@@ -36,9 +37,9 @@ export function PurchaseRequestItemNoteDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="shadow-lg ring-0 sm:max-w-md">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={trigger} />
+      <DialogContent className="shadow-lg ring-0 sm:max-w-md">
         {/* The dialog unmounts content while closed, so this form re-mounts on each
             open and its state seeds fresh from `note`. */}
         <PurchaseRequestItemNoteDialogForm
@@ -47,8 +48,8 @@ export function PurchaseRequestItemNoteDialog({
           note={note}
           onClose={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -125,8 +126,8 @@ function PurchaseRequestItemNoteDialogForm({
         <Button
           type="button"
           variant="outline"
-          isDisabled={isPending}
-          onPress={onClose}
+          disabled={isPending}
+          onClick={onClose}
         >
           Hủy
         </Button>
@@ -136,7 +137,7 @@ function PurchaseRequestItemNoteDialogForm({
           {([canSubmit, isSubmitting]) => (
             <Button
               type="submit"
-              isDisabled={!canSubmit || isSubmitting || isPending}
+              disabled={!canSubmit || isSubmitting || isPending}
             >
               {isSubmitting || isPending ? (
                 <Loader2 className="size-4 animate-spin" />

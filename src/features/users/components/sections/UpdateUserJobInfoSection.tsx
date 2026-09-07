@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react"
 import { Controller, useWatch } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 import type { UseFormReturn } from "react-hook-form"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
@@ -97,14 +97,10 @@ export function UpdateUserJobInfoSection({
                   Phòng ban <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
+                  items={buildSelectOptions(departments)}
                   value={field.value}
-                  onChange={(key) => field.onChange(String(key))}
-                  isDisabled={disabled || departmentsQuery.isPending}
-                  placeholder={
-                    departmentsQuery.isFetching
-                      ? "Đang tải..."
-                      : "Chọn phòng ban"
-                  }
+                  onValueChange={field.onChange}
+                  disabled={disabled || departmentsQuery.isPending}
                 >
                   <SelectTrigger
                     id={field.name}
@@ -112,7 +108,13 @@ export function UpdateUserJobInfoSection({
                     aria-invalid={!!fieldState.error}
                     className="h-9 w-full bg-background text-xs"
                   >
-                    <SelectValue />
+                    <SelectValue
+                      placeholder={
+                        departmentsQuery.isFetching
+                          ? "Đang tải..."
+                          : "Chọn phòng ban"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {departments.length === 0 ? (
@@ -123,7 +125,7 @@ export function UpdateUserJobInfoSection({
                       buildSelectOptions(departments).map((option) => (
                         <SelectItem
                           key={option.value}
-                          id={option.value}
+                          value={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -154,20 +156,11 @@ export function UpdateUserJobInfoSection({
                   // effect below only clears it once the new list has loaded) — masking it to
                   // "" here forces the placeholder to render "Đang tải..." instead of Radix
                   // showing a blank trigger for a value that matches no item yet.
+                  items={positionOptions}
                   value={positionsQuery.isPending ? "" : field.value}
-                  onChange={(key) => field.onChange(String(key))}
-                  isDisabled={
+                  onValueChange={field.onChange}
+                  disabled={
                     disabled || !departmentId || positionsQuery.isPending
-                  }
-                  placeholder={
-                    // `useQuery({enabled: false})` reports `isPending: true` even when idle
-                    // (no department chosen yet) — gate on `departmentId` too so "Chọn
-                    // phòng ban trước" doesn't get overridden by "Đang tải...".
-                    !departmentId
-                      ? "Chọn phòng ban trước"
-                      : positionsQuery.isPending
-                        ? "Đang tải..."
-                        : "Chọn chức vụ"
                   }
                 >
                   <SelectTrigger
@@ -176,7 +169,18 @@ export function UpdateUserJobInfoSection({
                     aria-invalid={!!fieldState.error}
                     className="h-9 w-full bg-background text-xs"
                   >
-                    <SelectValue />
+                    <SelectValue
+                      placeholder={
+                        // `useQuery({enabled: false})` reports `isPending: true` even when idle
+                        // (no department chosen yet) — gate on `departmentId` too so "Chọn
+                        // phòng ban trước" doesn't get overridden by "Đang tải...".
+                        !departmentId
+                          ? "Chọn phòng ban trước"
+                          : positionsQuery.isPending
+                            ? "Đang tải..."
+                            : "Chọn chức vụ"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {positionOptions.length === 0 ? (
@@ -187,7 +191,7 @@ export function UpdateUserJobInfoSection({
                       positionOptions.map((option) => (
                         <SelectItem
                           key={option.value}
-                          id={option.value}
+                          value={option.value}
                           className="text-xs"
                         >
                           {option.label}
@@ -252,18 +256,18 @@ export function UpdateUserJobInfoSection({
                 </span>
                 <RadioGroup
                   value={field.value}
-                  onChange={field.onChange}
-                  isDisabled={disabled}
+                  onValueChange={field.onChange}
+                  disabled={disabled}
                   className="flex flex-row flex-wrap gap-2"
                 >
                   {employeeStatusOptions.map((option) => (
-                    <Radio
+                    <Radio.Root
                       key={option.value}
                       value={option.value}
-                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
+                      className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-checked:border-primary data-checked:bg-primary/5 data-checked:text-primary"
                     >
                       {option.label}
-                    </Radio>
+                    </Radio.Root>
                   ))}
                 </RadioGroup>
               </div>

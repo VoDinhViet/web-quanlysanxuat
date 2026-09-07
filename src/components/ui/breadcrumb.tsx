@@ -1,19 +1,9 @@
+import * as React from "react"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
 import { createLink } from "@tanstack/react-router"
-import {
-  Breadcrumb as BreadcrumbPrimitive,
-  Breadcrumbs as BreadcrumbsPrimitive,
-  composeRenderProps,
-  Link as LinkPrimitive,
-} from "react-aria-components"
-
-import { cn } from "@/lib/utils"
+import { cn } from "cn"
 import { IconChevronRight, IconDots } from "@tabler/icons-react"
-import type * as React from "react"
-import type {
-  BreadcrumbProps,
-  BreadcrumbsProps,
-  LinkProps,
-} from "react-aria-components"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -26,12 +16,9 @@ function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   )
 }
 
-function BreadcrumbList<T extends object>({
-  className,
-  ...props
-}: BreadcrumbsProps<T>) {
+function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
   return (
-    <BreadcrumbsPrimitive
+    <ol
       data-slot="breadcrumb-list"
       className={cn(
         "flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground sm:gap-2.5",
@@ -42,49 +29,37 @@ function BreadcrumbList<T extends object>({
   )
 }
 
-function BreadcrumbItem({
-  className,
-  children,
-  separatorClassName,
-  ...props
-}: BreadcrumbProps & { separatorClassName?: string }) {
+function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
-    <BreadcrumbPrimitive
+    <li
       data-slot="breadcrumb-item"
       className={cn("inline-flex items-center gap-1.5", className)}
       {...props}
-    >
-      {composeRenderProps(children, (children, { isCurrent }) => (
-        <>
-          {children}
-          {!isCurrent && (
-            <span
-              data-slot="breadcrumb-separator"
-              role="presentation"
-              aria-hidden="true"
-              className={cn("[&>svg]:size-3.5", separatorClassName)}
-            >
-              <IconChevronRight />
-            </span>
-          )}
-        </>
-      ))}
-    </BreadcrumbPrimitive>
+    />
   )
 }
 
 // Router-compatible breadcrumb link, same TanStack Router pattern as LinkButton in
 // button.tsx (https://tanstack.com/router/latest/docs/how-to/integrate-shadcn-ui).
-const BreadcrumbLink = createLink(
-  ({ className, render, ...props }: LinkProps) => (
-    <LinkPrimitive
-      {...props}
-      render={render}
-      data-slot="breadcrumb-link"
-      className={cn("transition-colors hover:text-foreground", className)}
-    />
-  )
-)
+const BreadcrumbLink = createLink(function BreadcrumbLink({
+  className,
+  render,
+  ...props
+}: useRender.ComponentProps<"a">) {
+  return useRender({
+    defaultTagName: "a",
+    props: mergeProps<"a">(
+      {
+        className: cn("transition-colors hover:text-foreground", className),
+      },
+      props
+    ),
+    render,
+    state: {
+      slot: "breadcrumb-link",
+    },
+  })
+})
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (
@@ -96,6 +71,24 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
       className={cn("font-normal text-foreground", className)}
       {...props}
     />
+  )
+}
+
+function BreadcrumbSeparator({
+  children,
+  className,
+  ...props
+}: React.ComponentProps<"li">) {
+  return (
+    <li
+      data-slot="breadcrumb-separator"
+      role="presentation"
+      aria-hidden="true"
+      className={cn("[&>svg]:size-3.5", className)}
+      {...props}
+    >
+      {children ?? <IconChevronRight />}
+    </li>
   )
 }
 
@@ -126,5 +119,6 @@ export {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbPage,
+  BreadcrumbSeparator,
   BreadcrumbEllipsis,
 }

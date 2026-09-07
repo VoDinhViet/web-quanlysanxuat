@@ -1,75 +1,104 @@
 import { useState } from "react"
-import { parseDate } from "@internationalized/date"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { CalendarIcon } from "lucide-react"
-import type { ComponentProps } from "react"
-import type { CalendarDate } from "@internationalized/date"
-import type { RangeValue } from "react-aria-components"
+import type { DateRange } from "react-day-picker"
 
 import { Button } from "@/components/ui/button"
-import { RangeCalendar } from "@/components/ui/calendar"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 type DateRangePickerProps = {
-  id: ComponentProps<typeof Button>["id"]
-  from: string | undefined
-  to: string | undefined
-  onChange: (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => void
+  id?: string
+  from?: string
+  to?: string
+  onChange: (from: string | undefined, to: string | undefined) => void
 }
 
-// Single popover, one RangeCalendar — picks "from" and "to" in one view instead of two separate
-// pickers side by side. Not a form Field: plain controlled value/onChange bound straight to a
-// search param, ISO "yyyy-MM-dd" strings in and out (matching every other date field in the
-// app), not raw @internationalized/date values. RAC's RangeCalendar tracks the in-progress
-// selection with its own internal anchor state and only calls onChange once a full range is
-// picked — unlike the old react-day-picker widget, `onChange` here no longer fires after just
-// the first click.
+function parseRange(
+  from: string | undefined,
+  to: string | undefined
+): DateRange {
+  return {
+    from: from ? parseISO(from) : undefined,
+    to: to ? parseISO(to) : undefined,
+  }
+}
+
+// Single popover, one range Calendar — picks "from" and "to" in one view instead of two separate
+// pickers side by side. `from`/`to` are ISO "yyyy-MM-dd" strings (URL search param shape) — the
+// trigger label reads them directly, so it always shows the applied filter regardless of
+// whatever the calendar is mid-picking. `range` is just the calendar's own working state: it
+// starts fresh from `from`/`to` every time the popover opens and, via `resetOnSelect`, click 1
+// sets only `from` (popover stays open, nothing applied yet) while click 2 completes the range
+// (or restarts it, if a range was already complete) — `onChange` fires, and the popover closes.
 export function DateRangePicker({
   id,
   from,
   to,
   onChange,
 }: DateRangePickerProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const value: RangeValue<CalendarDate> | null =
-    from && to ? { start: parseDate(from), end: parseDate(to) } : null
+  const [open, setOpen] = useState(false)
+  const [range, setRange] = useState<DateRange>(() => parseRange(from, to))
+
+  const handleSelect = (next: DateRange | undefined) => {
+    const nextRange = next ?? { from: undefined, to: undefined }
+    setRange(nextRange)
+
+    if (nextRange.from && !nextRange.to) return // first click of a new range – keep picking
+
+    onChange(
+      nextRange.from ? format(nextRange.from, "yyyy-MM-dd") : undefined,
+      nextRange.to ? format(nextRange.to, "yyyy-MM-dd") : undefined
+    )
+    setOpen(false)
+  }
 
   return (
-    <PopoverTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
-      <Button
-        id={id}
-        type="button"
-        variant="outline"
-        className={cn(
-          "h-9 w-full justify-start gap-2 bg-background text-xs font-normal",
-          !value && "text-muted-foreground"
-        )}
-      >
-        <CalendarIcon className="size-4" />
-        {from && to ? (
-          <>
-            {DateTime.fromISO(from).toFormat("dd/MM/yyyy")} -{" "}
-            {DateTime.fromISO(to).toFormat("dd/MM/yyyy")}
-          </>
-        ) : (
-          "dd/mm/yyyy - dd/mm/yyyy"
-        )}
-      </Button>
-      <Popover className="w-auto p-0" placement="bottom start">
-        <RangeCalendar
+    <Popover
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen)
+        if (nextOpen) setRange(parseRange(from, to)) // start each open from the applied filter
+      }}
+    >
+      <PopoverTrigger
+        render={
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            className={cn(
+              "h-9 w-full justify-start gap-2 bg-background text-xs font-normal",
+              !from && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="size-4" />
+            {from && to ? (
+              <>
+                {format(parseISO(from), "dd/MM/yyyy")} -{" "}
+                {format(parseISO(to), "dd/MM/yyyy")}
+              </>
+            ) : (
+              "dd/mm/yyyy - dd/mm/yyyy"
+            )}
+          </Button>
+        }
+      />
+      <PopoverContent align="start" className="w-auto p-0">
+        <Calendar
+          mode="range"
           captionLayout="dropdown"
-          value={value}
-          onChange={(range) => {
-            onChange({ from: range.start.toString(), to: range.end.toString() })
-            setIsOpen(false)
-          }}
+          selected={range}
+          onSelect={handleSelect}
           numberOfMonths={2}
+          resetOnSelect
         />
-      </Popover>
-    </PopoverTrigger>
+      </PopoverContent>
+    </Popover>
   )
 }

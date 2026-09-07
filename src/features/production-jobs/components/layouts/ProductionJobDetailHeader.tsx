@@ -5,7 +5,11 @@ import { ClipboardCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/layouts/ProductionJobDetailTabs"
@@ -163,7 +167,7 @@ function RequestOqcButton({ job }: { job: ProductionJobDetail }) {
     <Button
       type="button"
       className="gap-1.5"
-      isDisabled={disabledReason !== null}
+      disabled={disabledReason !== null}
     >
       <ClipboardCheck className="size-4" />
       {job.oqcRequested ? "Đã tạo OQC" : "Yêu cầu OQC"}
@@ -175,10 +179,10 @@ function RequestOqcButton({ job }: { job: ProductionJobDetail }) {
   }
 
   return (
-    <TooltipTrigger>
-      <span className="inline-block">{button}</span>
-      <Tooltip>{disabledReason}</Tooltip>
-    </TooltipTrigger>
+    <Tooltip>
+      <TooltipTrigger render={<span className="inline-block">{button}</span>} />
+      <TooltipContent>{disabledReason}</TooltipContent>
+    </Tooltip>
   )
 }
 

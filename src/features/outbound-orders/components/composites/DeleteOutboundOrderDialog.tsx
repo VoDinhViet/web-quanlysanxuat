@@ -3,10 +3,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { TrashBinTrash } from "@solar-icons/react"
 import { toast } from "sonner"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -21,7 +22,7 @@ import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 
 type DeleteOutboundOrderDialogProps = {
   order: Pick<OutboundOrder, "id" | "code">
-  trigger: ReactNode
+  trigger: ReactElement
   onDeleted?: () => void
 }
 
@@ -51,9 +52,9 @@ export function DeleteOutboundOrderDialog({
   })
 
   return (
-    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <TrashBinTrash />
@@ -65,18 +66,18 @@ export function DeleteOutboundOrderDialog({
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Đóng
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            isDisabled={mutation.isPending}
-            onPress={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xoá…" : "Xoá phiếu"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

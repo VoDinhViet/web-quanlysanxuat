@@ -1,7 +1,7 @@
 import { useState } from "react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { JobOperationReportForm } from "@/components/shared/composites/JobOperationReportForm"
 import { OperationType } from "@/lib/types/operation.type"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
@@ -10,7 +10,7 @@ import type { JobOperationReportRow } from "@/lib/types/production-job.type"
 type JobOperationReportDialogProps = {
   row: JobOperationReportRow
   disabledReason: string | null
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // Bấm "Nhập báo cáo" ở một dòng → mở dialog nhập ngay cho đúng công đoạn của dòng đó. Dialog
@@ -32,16 +32,16 @@ export function JobOperationReportDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-xl">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-xl">
         <JobOperationReportForm
           row={row}
           disabledReason={disabledReason}
           onClose={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }
 

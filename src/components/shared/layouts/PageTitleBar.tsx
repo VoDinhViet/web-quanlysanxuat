@@ -22,13 +22,18 @@ import {
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
+  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/shared/layouts/ThemeToggle"
 import { currentUserQueryOptions, useLogout } from "@/features/auth/api"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -100,39 +105,43 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
   const profile = profileQuery.data
 
   return (
-    <DropdownMenuTrigger>
-      <Button
-        type="button"
-        variant="ghost"
-        className="h-auto gap-3 px-1.5 py-1"
-        aria-label="Tài khoản người dùng"
-      >
-        <Avatar className="size-10">
-          {profile?.avatar && (
-            <AvatarImage
-              src={resolveFileUrl(profile.avatar.url)}
-              alt={profile.fullName ?? "--"}
-            />
-          )}
-          <AvatarFallback className="bg-muted">
-            <Gallery className="size-5 text-muted-foreground" />
-          </AvatarFallback>
-        </Avatar>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-auto gap-3 px-1.5 py-1"
+            aria-label="Tài khoản người dùng"
+          >
+            <Avatar className="size-10">
+              {profile?.avatar && (
+                <AvatarImage
+                  src={resolveFileUrl(profile.avatar.url)}
+                  alt={profile.fullName ?? "--"}
+                />
+              )}
+              <AvatarFallback className="bg-muted">
+                <Gallery className="size-5 text-muted-foreground" />
+              </AvatarFallback>
+            </Avatar>
 
-        <span className="hidden min-w-0 text-left lg:block">
-          <span className="block truncate text-sm leading-tight font-bold">
-            {profile?.fullName ?? "--"}
-          </span>
-          {profile?.role?.name && (
-            <span className="block truncate text-xs leading-tight text-muted-foreground">
-              {profile.role.name}
+            <span className="hidden min-w-0 text-left lg:block">
+              <span className="block truncate text-sm leading-tight font-bold">
+                {profile?.fullName ?? "--"}
+              </span>
+              {profile?.role?.name && (
+                <span className="block truncate text-xs leading-tight text-muted-foreground">
+                  {profile.role.name}
+                </span>
+              )}
             </span>
-          )}
-        </span>
 
-        <ChevronDown className="size-4 text-muted-foreground" />
-      </Button>
-      <DropdownMenu placement="bottom end" className="w-64">
+            <ChevronDown className="size-4 text-muted-foreground" />
+          </Button>
+        }
+      />
+      <DropdownMenuContent align="end">
         <div className="flex items-start gap-3 px-2 py-1.5">
           <Avatar className="size-10">
             {profile?.avatar && (
@@ -173,29 +182,35 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
           { label: "Cài đặt tài khoản", icon: Settings },
           { label: "Trợ giúp", icon: CircleHelp },
         ].map(({ label, icon: Icon }) => (
-          <TooltipTrigger key={label}>
-            <DropdownMenuItem
-              aria-disabled="true"
-              className="text-muted-foreground"
-              shouldCloseOnSelect={false}
-            >
-              <Icon />
-              {label}
-            </DropdownMenuItem>
-            <Tooltip placement="left">{label} — tính năng sắp có</Tooltip>
-          </TooltipTrigger>
+          <Tooltip key={label}>
+            <TooltipTrigger
+              render={
+                <DropdownMenuItem
+                  aria-disabled="true"
+                  className="text-muted-foreground"
+                  closeOnClick={false}
+                >
+                  <Icon />
+                  {label}
+                </DropdownMenuItem>
+              }
+            />
+            <TooltipContent side="left">
+              {label} — tính năng sắp có
+            </TooltipContent>
+          </Tooltip>
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
-          isDisabled={isLoggingOut}
-          onAction={onLogout}
+          disabled={isLoggingOut}
+          onClick={onLogout}
         >
           <LogOut />
           Đăng xuất
         </DropdownMenuItem>
-      </DropdownMenu>
-    </DropdownMenuTrigger>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -210,7 +225,7 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
           type="button"
           variant="ghost"
           size="icon"
-          onPress={toggleSidebar}
+          onClick={toggleSidebar}
           aria-label="Mở hoặc thu gọn thanh điều hướng"
         >
           <Menu />
@@ -226,35 +241,43 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
       </div>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-        <TooltipTrigger>
-          <span tabIndex={0}>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              isDisabled
-              aria-label="Thông báo"
-            >
-              <Bell />
-            </Button>
-          </span>
-          <Tooltip>Thông báo — tính năng sắp có</Tooltip>
-        </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <span tabIndex={0}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled
+                  aria-label="Thông báo"
+                >
+                  <Bell />
+                </Button>
+              </span>
+            }
+          />
+          <TooltipContent>Thông báo — tính năng sắp có</TooltipContent>
+        </Tooltip>
 
-        <TooltipTrigger>
-          <span tabIndex={0} className="hidden sm:inline-flex">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              isDisabled
-              aria-label="Trợ giúp"
-            >
-              <CircleHelp />
-            </Button>
-          </span>
-          <Tooltip>Trợ giúp — tính năng sắp có</Tooltip>
-        </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <span tabIndex={0} className="hidden sm:inline-flex">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled
+                  aria-label="Trợ giúp"
+                >
+                  <CircleHelp />
+                </Button>
+              </span>
+            }
+          />
+          <TooltipContent>Trợ giúp — tính năng sắp có</TooltipContent>
+        </Tooltip>
 
         <ThemeToggle />
 

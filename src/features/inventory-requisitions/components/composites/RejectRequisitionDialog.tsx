@@ -3,11 +3,12 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CircleX } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -21,7 +22,7 @@ import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisiti
 
 type RejectRequisitionDialogProps = {
   detail: InventoryRequisitionDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_APPROVAL → REJECTED, lý do bắt buộc. A Dialog (not AlertDialog) because it needs an
@@ -33,14 +34,14 @@ export function RejectRequisitionDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-md">
         {/* The dialog unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <RejectRequisitionForm detail={detail} onClose={() => setOpen(false)} />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -118,15 +119,15 @@ function RejectRequisitionForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onClose}
-          isDisabled={mutation.isPending}
+          onClick={onClose}
+          disabled={mutation.isPending}
         >
           Hủy
         </Button>
         <Button
           type="submit"
           variant="destructive"
-          isDisabled={mutation.isPending}
+          disabled={mutation.isPending}
         >
           {mutation.isPending ? "Đang xử lý..." : "Từ chối"}
         </Button>

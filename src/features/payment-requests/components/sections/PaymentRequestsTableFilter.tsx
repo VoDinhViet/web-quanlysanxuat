@@ -67,15 +67,15 @@ export function PaymentRequestsTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
         page: 1,
       }),
     })
@@ -123,7 +123,7 @@ export function PaymentRequestsTableFilter() {
           </div>
 
           {/* Nhà cung cấp */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="pr-supplier"
               className="text-[11px] font-medium text-muted-foreground"
@@ -131,15 +131,18 @@ export function PaymentRequestsTableFilter() {
               Nhà cung cấp
             </Label>
             <Select
+              items={supplierFilterOptions}
               value={search.supplierId ?? "all"}
-              onChange={(key) => handleSupplierChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleSupplierChange(value)
+              }
             >
               <SelectTrigger id="pr-supplier" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {supplierFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -168,7 +171,7 @@ export function PaymentRequestsTableFilter() {
           </div>
 
           {/* Trạng thái */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="pr-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -176,15 +179,18 @@ export function PaymentRequestsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusOptions}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="pr-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

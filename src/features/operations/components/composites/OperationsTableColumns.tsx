@@ -5,7 +5,11 @@ import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteOperationDialog } from "@/features/operations/components/composites/DeleteOperationDialog"
 import { UpdateOperationDialog } from "@/features/operations/components/composites/UpdateOperationDialog"
@@ -89,18 +93,22 @@ export const operationColumns = operationColumnHelper.columns([
             <UpdateOperationDialog
               operation={operation}
               trigger={
-                <TooltipTrigger>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Chỉnh sửa"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                  >
-                    <Edit3 className="size-3.5" />
-                  </Button>
-                  <Tooltip>Chỉnh sửa</Tooltip>
-                </TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Chỉnh sửa"
+                        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                      >
+                        <Edit3 className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent>Chỉnh sửa</TooltipContent>
+                </Tooltip>
               }
             />
           </PermissionGate>
@@ -108,18 +116,22 @@ export const operationColumns = operationColumnHelper.columns([
             <DeleteOperationDialog
               operation={operation}
               trigger={
-                <TooltipTrigger>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Xóa"
-                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </Button>
-                  <Tooltip>Xóa</Tooltip>
-                </TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Xóa"
+                        className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent>Xóa</TooltipContent>
+                </Tooltip>
               }
             />
           </PermissionGate>

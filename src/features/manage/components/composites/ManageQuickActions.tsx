@@ -13,7 +13,11 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { cn } from "@/lib/utils"
 import type { ManageRoutePath } from "@/lib/route-permissions"
@@ -122,24 +126,32 @@ export function ManageQuickActions() {
             </LinkButton>
           </RoutePermissionGate>
         ) : (
-          <TooltipTrigger key={action.label}>
-            <span tabIndex={0}>
-              <Button
-                type="button"
-                variant="outline"
-                isDisabled
-                className={cn(
-                  tileClassName,
-                  "pointer-events-none w-full",
-                  action.tileClassName
-                )}
-              >
-                <action.icon className={cn("size-6", action.accentClassName)} />
-                <span className={action.accentClassName}>{action.label}</span>
-              </Button>
-            </span>
-            <Tooltip>{action.hint}</Tooltip>
-          </TooltipTrigger>
+          <Tooltip key={action.label}>
+            <TooltipTrigger
+              render={
+                <span tabIndex={0}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled
+                    className={cn(
+                      tileClassName,
+                      "pointer-events-none w-full",
+                      action.tileClassName
+                    )}
+                  >
+                    <action.icon
+                      className={cn("size-6", action.accentClassName)}
+                    />
+                    <span className={action.accentClassName}>
+                      {action.label}
+                    </span>
+                  </Button>
+                </span>
+              }
+            />
+            <TooltipContent>{action.hint}</TooltipContent>
+          </Tooltip>
         )
       )}
     </div>

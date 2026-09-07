@@ -1,10 +1,10 @@
-import { Link } from "@tanstack/react-router"
 import { MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuLinkItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -23,34 +23,28 @@ export function PaymentRequestActionsCell({
 }) {
   return (
     <div className="flex justify-center">
-      <DropdownMenuTrigger>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8"
-          aria-label="Thao tác"
-        >
-          <MoreHorizontal className="size-4" />
-        </Button>
-        <DropdownMenu placement="bottom end">
-          <DropdownMenuItem
-            href="#"
-            render={(props) =>
-              "href" in props ? (
-                <Link
-                  {...props}
-                  to="/manage/payment-requests/$paymentRequestId"
-                  params={{ paymentRequestId }}
-                />
-              ) : (
-                <div {...props} />
-              )
-            }
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              aria-label="Thao tác"
+            >
+              <MoreHorizontal className="size-4" />
+            </Button>
+          }
+        />
+        <DropdownMenuContent align="end">
+          <DropdownMenuLinkItem
+            to="/manage/payment-requests/$paymentRequestId"
+            params={{ paymentRequestId }}
           >
             Xem chi tiết
-          </DropdownMenuItem>
-        </DropdownMenu>
-      </DropdownMenuTrigger>
+          </DropdownMenuLinkItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }

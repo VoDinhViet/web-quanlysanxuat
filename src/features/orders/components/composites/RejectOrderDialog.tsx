@@ -3,11 +3,12 @@ import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CloseCircle } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -21,7 +22,7 @@ import type { OrderDetail } from "@/lib/types/order.type"
 
 type RejectOrderDialogProps = {
   order: OrderDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_CONFIRMATION → REJECTED, reason required — director-level (orders:approve). A Dialog
@@ -30,14 +31,14 @@ export function RejectOrderDialog({ order, trigger }: RejectOrderDialogProps) {
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-md">
         {/* The dialog unmounts content while closed, so the form (and its mutation
             state) re-mounts fresh each time the dialog opens. */}
         <RejectOrderForm order={order} onClose={() => setOpen(false)} />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -108,15 +109,15 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
         <Button
           type="button"
           variant="outline"
-          onPress={onClose}
-          isDisabled={mutation.isPending}
+          onClick={onClose}
+          disabled={mutation.isPending}
         >
           Hủy
         </Button>
         <Button
           type="submit"
           variant="destructive"
-          isDisabled={mutation.isPending}
+          disabled={mutation.isPending}
         >
           {mutation.isPending ? "Đang xử lý..." : "Từ chối"}
         </Button>

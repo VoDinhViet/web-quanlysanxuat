@@ -4,10 +4,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -22,7 +23,7 @@ import type { Item } from "@/lib/types/item.type"
 
 type DeleteProductDialogProps = {
   product: Item
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 export function DeleteProductDialog({
@@ -48,9 +49,9 @@ export function DeleteProductDialog({
   })
 
   return (
-    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Trash2 />
@@ -62,20 +63,20 @@ export function DeleteProductDialog({
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            isDisabled={mutation.isPending}
-            onPress={() => {
+            disabled={mutation.isPending}
+            onClick={() => {
               mutation.mutate()
             }}
           >
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

@@ -83,7 +83,7 @@ export function UnitsPage() {
               </div>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="units-scope"
                 className="text-[11px] font-medium text-muted-foreground"
@@ -91,16 +91,23 @@ export function UnitsPage() {
                 Phạm vi
               </Label>
               <Select
+                items={[
+                  { value: "ALL", label: "Tất cả" },
+                  { value: "MATERIAL", label: "Vật tư" },
+                  { value: "PRODUCT", label: "Sản phẩm" },
+                ]}
                 value={scopeFilterValue(search.scope)}
-                onChange={(key) => handleScopeChange(String(key))}
+                onValueChange={(value) =>
+                  value !== null && handleScopeChange(value)
+                }
               >
                 <SelectTrigger id="units-scope" className="w-full text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem id="ALL">Tất cả</SelectItem>
-                  <SelectItem id="MATERIAL">Vật tư</SelectItem>
-                  <SelectItem id="PRODUCT">Sản phẩm</SelectItem>
+                  <SelectItem value="ALL">Tất cả</SelectItem>
+                  <SelectItem value="MATERIAL">Vật tư</SelectItem>
+                  <SelectItem value="PRODUCT">Sản phẩm</SelectItem>
                 </SelectContent>
               </Select>
             </div>

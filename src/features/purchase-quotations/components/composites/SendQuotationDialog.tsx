@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { SendSquare } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.typ
 
 type SendQuotationDialogProps = {
   purchaseQuotation: PurchaseQuotationDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // DRAFT → PENDING_APPROVAL — the backend validates every vật tư has ≥1 NCC and every NCC has a
@@ -49,15 +50,15 @@ export function SendQuotationDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <SendSquare />
@@ -73,17 +74,17 @@ export function SendQuotationDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            isDisabled={mutation.isPending}
-            onPress={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xử lý..." : "Gửi duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

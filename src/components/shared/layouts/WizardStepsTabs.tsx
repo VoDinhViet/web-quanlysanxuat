@@ -34,8 +34,8 @@ export function WizardStepsTabs({ steps, className }: WizardStepsTabsProps) {
         {steps.map((step) => (
           <TabsTrigger
             key={step.value}
-            id={step.value}
-            isDisabled={step.disabled}
+            value={step.value}
+            disabled={step.disabled}
             className={cn(
               "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
               // Both the plain `data-selected:bg-*` and the line-variant-scoped one have to be

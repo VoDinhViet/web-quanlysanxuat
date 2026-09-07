@@ -1,9 +1,9 @@
-import { useState } from "react"
 import { CheckCircle } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -45,33 +45,24 @@ export function QuotationAddSupplierDialog({
   initialItemIds,
   onSubmit,
 }: QuotationAddSupplierDialogProps) {
-  // The NCC combobox must portal its popup inside this dialog's own DOM subtree (see
-  // ComboboxField's `container` doc), same pattern as InventoryReceiptItemDialog.tsx.
-  const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
-
   return (
-    <Dialog
-      ref={setContentNode}
-      isOpen={open}
-      onOpenChange={onOpenChange}
-      className="shadow-lg ring-0 sm:max-w-3xl"
-    >
-      {/* The dialog unmounts content while closed, so this form re-mounts on each open and its
-          supplier/checked state seeds fresh from `initialItemIds` — this is what fixes the old
-          inline combobox never resetting after a pick. */}
-      <QuotationAddSupplierDialogForm
-        container={contentNode}
-        items={items}
-        initialItemIds={initialItemIds}
-        onSubmit={onSubmit}
-        onCancel={() => onOpenChange(false)}
-      />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="shadow-lg ring-0 sm:max-w-3xl">
+        {/* The dialog unmounts content while closed, so this form re-mounts on each open and its
+            supplier/checked state seeds fresh from `initialItemIds` — this is what fixes the old
+            inline combobox never resetting after a pick. */}
+        <QuotationAddSupplierDialogForm
+          items={items}
+          initialItemIds={initialItemIds}
+          onSubmit={onSubmit}
+          onCancel={() => onOpenChange(false)}
+        />
+      </DialogContent>
     </Dialog>
   )
 }
 
 type QuotationAddSupplierDialogFormProps = {
-  container: HTMLDivElement | null
   items: PickedQuotationItemValue[]
   initialItemIds: string[]
   onSubmit: (selection: QuotationSupplierSelection) => void
@@ -79,7 +70,6 @@ type QuotationAddSupplierDialogFormProps = {
 }
 
 function QuotationAddSupplierDialogForm({
-  container,
   items,
   initialItemIds,
   onSubmit,
@@ -141,7 +131,6 @@ function QuotationAddSupplierDialogForm({
         onSearchChange={onSearchChange}
         isPending={isFetching}
         emptyMessage="Không tìm thấy NCC"
-        container={container}
       />
 
       <QuotationAddSupplierItems
@@ -161,13 +150,10 @@ function QuotationAddSupplierDialogForm({
       )}
 
       <DialogFooter className="gap-2">
-        <Button type="button" variant="outline" onPress={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel}>
           Hủy
         </Button>
-        <Button
-          type="submit"
-          isDisabled={!supplierId || targetIds.length === 0}
-        >
+        <Button type="submit" disabled={!supplierId || targetIds.length === 0}>
           <CheckCircle className="size-4" />
           {targetIds.length > 0
             ? `Thêm vào ${targetIds.length} vật tư`

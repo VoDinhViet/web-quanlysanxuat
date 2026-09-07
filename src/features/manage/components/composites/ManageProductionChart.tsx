@@ -108,15 +108,15 @@ export function ManageProductionChart() {
   const search = useSearch({ from: "/(authed)/manage" })
   const navigate = useNavigate({ from: "/manage" })
 
-  const handleDateChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
       }),
     })
   }

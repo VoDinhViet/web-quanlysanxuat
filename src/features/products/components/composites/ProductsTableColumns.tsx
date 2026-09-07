@@ -6,7 +6,11 @@ import { DateTime } from "luxon"
 import { Copy, Eye, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { CopyProductDialog } from "@/features/products/components/composites/CopyProductDialog"
 import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
@@ -124,36 +128,44 @@ export const productColumns = productColumnHelper.columns([
         <div className="flex items-center justify-center gap-1.5">
           {/* One destination, one button: the detail screen is where a product
               is both read and edited, and it guards writes on its own. */}
-          <TooltipTrigger>
-            <LinkButton
-              to="/manage/products/$productId"
-              params={{ productId: product.id }}
-              search={{ tab: "info" }}
-              variant="outline"
-              size="icon-sm"
-              aria-label="Xem chi tiết"
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-            >
-              <Eye className="size-3.5" />
-            </LinkButton>
-            <Tooltip>Xem chi tiết</Tooltip>
-          </TooltipTrigger>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <LinkButton
+                  to="/manage/products/$productId"
+                  params={{ productId: product.id }}
+                  search={{ tab: "info" }}
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Xem chi tiết"
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                >
+                  <Eye className="size-3.5" />
+                </LinkButton>
+              }
+            />
+            <TooltipContent>Xem chi tiết</TooltipContent>
+          </Tooltip>
           <PermissionGate permission="items:copy">
             <CopyProductDialog
               product={product}
               trigger={
-                <TooltipTrigger>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Nhân bản"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-                  >
-                    <Copy className="size-3.5" />
-                  </Button>
-                  <Tooltip>Nhân bản</Tooltip>
-                </TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Nhân bản"
+                        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                      >
+                        <Copy className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent>Nhân bản</TooltipContent>
+                </Tooltip>
               }
             />
           </PermissionGate>
@@ -161,18 +173,22 @@ export const productColumns = productColumnHelper.columns([
             <DeleteProductDialog
               product={product}
               trigger={
-                <TooltipTrigger>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Xóa"
-                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </Button>
-                  <Tooltip>Xóa</Tooltip>
-                </TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Xóa"
+                        className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent>Xóa</TooltipContent>
+                </Tooltip>
               }
             />
           </PermissionGate>

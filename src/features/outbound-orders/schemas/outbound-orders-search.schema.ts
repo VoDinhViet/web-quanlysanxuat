@@ -21,8 +21,8 @@ export const outboundOrdersSearchSchema = z.object({
   itemId: z.uuid().optional().catch(undefined),
   status: z.enum(OutboundOrderStatus).optional().catch(undefined),
   fulfillmentType: z.enum(FulfillmentType).optional().catch(undefined),
-  startDate: z.string().trim().min(1).optional().catch(undefined),
-  endDate: z.string().trim().min(1).optional().catch(undefined),
+  startDate: z.iso.date().optional().catch(undefined),
+  endDate: z.iso.date().optional().catch(undefined),
 })
 
 export type OutboundOrdersSearchSchema = z.infer<

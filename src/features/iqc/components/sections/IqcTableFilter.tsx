@@ -1,12 +1,18 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, ListFilter, Plus, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
@@ -16,7 +22,9 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import { exportIqc } from "@/features/iqc/api/server-functions/export-iqc.api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import type { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 import { iqcResultLabels, iqcStatusLabels } from "@/lib/types/iqc.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -40,6 +48,16 @@ export function IqcTableFilter() {
   const { data: supplierOptions } = useSuspenseQuery(
     supplierOptionsQueryOptions()
   )
+
+  const exportIqcFn = useServerFn(exportIqc)
+  const exportMutation = useMutation({
+    mutationFn: () => exportIqcFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // Fields tucked behind the "Bộ lọc" popover — count so the trigger can hint they're active
   // even while the popover is closed.
@@ -118,22 +136,26 @@ export function IqcTableFilter() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <PopoverTrigger>
-          <Button type="button" variant="outline" className="text-xs">
-            <ListFilter className="size-3.5" />
-            Bộ lọc
-            {activeFilterCount > 0 && (
-              <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
-                {activeFilterCount}
-              </span>
-            )}
-          </Button>
-          <Popover placement="bottom end" className="w-80 gap-3 sm:w-96">
+        <Popover>
+          <PopoverTrigger
+            render={
+              <Button type="button" variant="outline" className="text-xs">
+                <ListFilter className="size-3.5" />
+                Bộ lọc
+                {activeFilterCount > 0 && (
+                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            }
+          />
+          <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
             <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
 
             <div className="grid grid-cols-2 gap-3">
               {/* Kết quả QC */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="iqc-result"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -141,15 +163,18 @@ export function IqcTableFilter() {
                   Kết quả QC
                 </Label>
                 <Select
+                  items={resultOptions}
                   value={search.result ?? "all"}
-                  onChange={(key) => handleResultChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleResultChange(value)
+                  }
                 >
                   <SelectTrigger id="iqc-result" className="w-full text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {resultOptions.map((option) => (
-                      <SelectItem key={option.value} id={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
@@ -158,7 +183,7 @@ export function IqcTableFilter() {
               </div>
 
               {/* Trạng thái */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="iqc-status"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -166,15 +191,18 @@ export function IqcTableFilter() {
                   Trạng thái
                 </Label>
                 <Select
+                  items={statusOptions}
                   value={search.status ?? "all"}
-                  onChange={(key) => handleStatusChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleStatusChange(value)
+                  }
                 >
                   <SelectTrigger id="iqc-status" className="w-full text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {statusOptions.map((option) => (
-                      <SelectItem key={option.value} id={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
@@ -183,7 +211,7 @@ export function IqcTableFilter() {
               </div>
 
               {/* Nhà cung cấp */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="iqc-supplier"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -191,16 +219,25 @@ export function IqcTableFilter() {
                   Nhà cung cấp
                 </Label>
                 <Select
+                  items={[
+                    { value: "all", label: "Tất cả" },
+                    ...supplierOptions.map((option) => ({
+                      value: option.id,
+                      label: option.name,
+                    })),
+                  ]}
                   value={search.supplierId ?? "all"}
-                  onChange={(key) => handleSupplierChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleSupplierChange(value)
+                  }
                 >
                   <SelectTrigger id="iqc-supplier" className="w-full text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem id="all">Tất cả</SelectItem>
+                    <SelectItem value="all">Tất cả</SelectItem>
                     {supplierOptions.map((option) => (
-                      <SelectItem key={option.id} id={option.id}>
+                      <SelectItem key={option.id} value={option.id}>
                         {option.name}
                       </SelectItem>
                     ))}
@@ -208,8 +245,8 @@ export function IqcTableFilter() {
                 </Select>
               </div>
             </div>
-          </Popover>
-        </PopoverTrigger>
+          </PopoverContent>
+        </Popover>
 
         <Button
           type="button"
@@ -221,10 +258,16 @@ export function IqcTableFilter() {
           Xóa bộ lọc
         </Button>
 
-        <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
+        <Button
+          type="button"
+          variant="outline"
+          className="text-xs"
+          disabled={exportMutation.isPending}
+          onClick={() => exportMutation.mutate()}
+        >
           <Download className="size-4" />
-          Xuất Excel
-        </PendingAction>
+          {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+        </Button>
 
         <PendingAction
           label="Thêm IQC"

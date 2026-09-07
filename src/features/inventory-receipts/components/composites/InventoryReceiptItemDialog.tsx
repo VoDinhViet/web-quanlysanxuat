@@ -1,10 +1,10 @@
-import { useState } from "react"
 import { revalidateLogic } from "@tanstack/react-form"
 import { Check } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -45,32 +45,23 @@ export function InventoryReceiptItemDialog({
   onSubmit,
   itemType,
 }: InventoryReceiptItemDialogProps) {
-  // Combobox vật tư phải portal popup vào bên trong DOM subtree của dialog này — cùng lý do
-  // ComboboxField.tsx đã ghi (FocusScope của dialog nuốt click bên ngoài dialog).
-  const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null)
-
   return (
-    <Dialog
-      ref={setContentNode}
-      isOpen={open}
-      onOpenChange={onOpenChange}
-      className="shadow-lg ring-0 sm:max-w-lg"
-    >
-      {/* The dialog unmounts content while closed, so this form re-mounts on each
-          open and its state seeds fresh from `initialValue`. */}
-      <InventoryReceiptItemDialogForm
-        container={contentNode}
-        initialValue={initialValue}
-        onSubmit={onSubmit}
-        onCancel={() => onOpenChange(false)}
-        itemType={itemType}
-      />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="shadow-lg ring-0 sm:max-w-lg">
+        {/* The dialog unmounts content while closed, so this form re-mounts on each
+            open and its state seeds fresh from `initialValue`. */}
+        <InventoryReceiptItemDialogForm
+          initialValue={initialValue}
+          onSubmit={onSubmit}
+          onCancel={() => onOpenChange(false)}
+          itemType={itemType}
+        />
+      </DialogContent>
     </Dialog>
   )
 }
 
 type InventoryReceiptItemDialogFormProps = {
-  container: HTMLDivElement | null
   initialValue: InventoryReceiptItemFormValue | null
   onSubmit: (value: InventoryReceiptItemFormValue) => void
   onCancel: () => void
@@ -78,7 +69,6 @@ type InventoryReceiptItemDialogFormProps = {
 }
 
 function InventoryReceiptItemDialogForm({
-  container,
   initialValue,
   onSubmit,
   onCancel,
@@ -155,7 +145,6 @@ function InventoryReceiptItemDialogForm({
                     : undefined
                 }
                 emptyMessage={`Không tìm thấy ${itemNoun}`}
-                container={container}
               />
             )}
           </form.Field>

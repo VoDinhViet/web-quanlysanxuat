@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Plus, RotateCw, Search } from "lucide-react"
+import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,6 +19,8 @@ import { Label } from "@/components/ui/label"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
+import { exportMaterials } from "@/features/materials/api/server-functions/export-materials.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import type { ItemStatus } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
@@ -27,6 +32,16 @@ export function MaterialsTableFilter() {
   const navigate = useNavigate({ from: "/manage/materials/" })
 
   const [q, setQ] = useState(search.q ?? "")
+
+  const exportMaterialsFn = useServerFn(exportMaterials)
+  const exportMutation = useMutation({
+    mutationFn: () => exportMaterialsFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
 
   // The route loader prefetches this hook's own q="" query, so `client.clients`
   // already has data on first render — no separate suspense query needed just
@@ -128,7 +143,7 @@ export function MaterialsTableFilter() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="materials-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -136,16 +151,19 @@ export function MaterialsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={[{ value: "all", label: "Tất cả" }, ...statusOptions]}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="materials-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -159,7 +177,17 @@ export function MaterialsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
+            <Download className="size-4" />
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

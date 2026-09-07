@@ -199,12 +199,12 @@ export function JobOperationReportForm({
               <Button
                 type="button"
                 variant="outline"
-                isDisabled={isPending}
-                onPress={onClose}
+                disabled={isPending}
+                onClick={onClose}
               >
                 Hủy
               </Button>
-              <Button type="submit" isDisabled={isPending}>
+              <Button type="submit" disabled={isPending}>
                 {isPending ? "Đang lưu..." : "Lưu báo cáo"}
               </Button>
             </DialogFooter>

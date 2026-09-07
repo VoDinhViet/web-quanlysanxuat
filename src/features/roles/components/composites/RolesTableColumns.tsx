@@ -4,7 +4,11 @@ import { Edit3, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { LinkButton, Button } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteRoleDialog } from "@/features/roles/components/composites/DeleteRoleDialog"
@@ -64,36 +68,44 @@ export const roleColumns = roleColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <RoutePermissionGate route="/manage/roles/$roleId/update">
-            <TooltipTrigger>
-              <LinkButton
-                to="/manage/roles/$roleId/update"
-                params={{ roleId: role.id }}
-                variant="outline"
-                size="icon-sm"
-                aria-label="Chỉnh sửa"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-              >
-                <Edit3 className="size-3.5" />
-              </LinkButton>
-              <Tooltip>Chỉnh sửa</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <LinkButton
+                    to="/manage/roles/$roleId/update"
+                    params={{ roleId: role.id }}
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Chỉnh sửa"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  >
+                    <Edit3 className="size-3.5" />
+                  </LinkButton>
+                }
+              />
+              <TooltipContent>Chỉnh sửa</TooltipContent>
+            </Tooltip>
           </RoutePermissionGate>
           <PermissionGate permission="roles:delete">
             <DeleteRoleDialog
               role={role}
               trigger={
-                <TooltipTrigger>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Xóa"
-                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </Button>
-                  <Tooltip>Xóa</Tooltip>
-                </TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Xóa"
+                        className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent>Xóa</TooltipContent>
+                </Tooltip>
               }
             />
           </PermissionGate>

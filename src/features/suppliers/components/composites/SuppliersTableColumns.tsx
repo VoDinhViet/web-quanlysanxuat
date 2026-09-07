@@ -7,7 +7,11 @@ import { Edit3, Eye, Trash2 } from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { Button, LinkButton } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteSupplierDialog } from "@/features/suppliers/components/composites/DeleteSupplierDialog"
@@ -154,51 +158,63 @@ export const supplierColumns = supplierColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <RoutePermissionGate route="/manage/suppliers/$supplierId">
-            <TooltipTrigger>
-              <LinkButton
-                to="/manage/suppliers/$supplierId"
-                params={{ supplierId: supplier.id }}
-                variant="outline"
-                size="icon-sm"
-                aria-label="Xem chi tiết"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-              >
-                <Eye className="size-3.5" />
-              </LinkButton>
-              <Tooltip>Xem chi tiết</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <LinkButton
+                    to="/manage/suppliers/$supplierId"
+                    params={{ supplierId: supplier.id }}
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Xem chi tiết"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  >
+                    <Eye className="size-3.5" />
+                  </LinkButton>
+                }
+              />
+              <TooltipContent>Xem chi tiết</TooltipContent>
+            </Tooltip>
           </RoutePermissionGate>
           <RoutePermissionGate route="/manage/suppliers/$supplierId/update">
-            <TooltipTrigger>
-              <LinkButton
-                to="/manage/suppliers/$supplierId/update"
-                params={{ supplierId: supplier.id }}
-                variant="outline"
-                size="icon-sm"
-                aria-label="Chỉnh sửa"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-              >
-                <Edit3 className="size-3.5" />
-              </LinkButton>
-              <Tooltip>Chỉnh sửa</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <LinkButton
+                    to="/manage/suppliers/$supplierId/update"
+                    params={{ supplierId: supplier.id }}
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Chỉnh sửa"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  >
+                    <Edit3 className="size-3.5" />
+                  </LinkButton>
+                }
+              />
+              <TooltipContent>Chỉnh sửa</TooltipContent>
+            </Tooltip>
           </RoutePermissionGate>
           <PermissionGate permission="suppliers:delete">
             <DeleteSupplierDialog
               supplier={supplier}
               trigger={
-                <TooltipTrigger>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Xóa"
-                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </Button>
-                  <Tooltip>Xóa</Tooltip>
-                </TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Xóa"
+                        className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent>Xóa</TooltipContent>
+                </Tooltip>
               }
             />
           </PermissionGate>

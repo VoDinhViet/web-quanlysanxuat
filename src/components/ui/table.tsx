@@ -1,32 +1,15 @@
-import {
-  Cell as CellPrimitive,
-  Column as ColumnPrimitive,
-  Row as RowPrimitive,
-  TableBody as TableBodyPrimitive,
-  TableFooter as TableFooterPrimitive,
-  TableHeader as TableHeaderPrimitive,
-  Table as TablePrimitive,
-} from "react-aria-components"
+"use client"
 
-import { cn } from "@/lib/utils"
-import type * as React from "react"
-import type {
-  CellProps,
-  ColumnProps,
-  RowProps,
-  TableBodyProps,
-  TableFooterProps,
-  TableHeaderProps,
-  TableProps,
-} from "react-aria-components"
+import * as React from "react"
+import { cn } from "cn"
 
-function Table({ className, ...props }: TableProps) {
+function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
       data-slot="table-container"
       className="relative w-full overflow-x-auto"
     >
-      <TablePrimitive
+      <table
         data-slot="table"
         className={cn(
           "w-full caption-bottom text-xs [&_td]:border-r [&_td]:border-border/40 [&_td:last-child]:border-r-0 [&_th]:border-r [&_th]:border-border/40 [&_th:last-child]:border-r-0",
@@ -38,12 +21,9 @@ function Table({ className, ...props }: TableProps) {
   )
 }
 
-function TableHeader<T extends object>({
-  className,
-  ...props
-}: TableHeaderProps<T>) {
+function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
-    <TableHeaderPrimitive
+    <thead
       data-slot="table-header"
       className={cn("bg-muted/45 [&_tr]:border-b", className)}
       {...props}
@@ -51,12 +31,9 @@ function TableHeader<T extends object>({
   )
 }
 
-function TableBody<T extends object>({
-  className,
-  ...props
-}: TableBodyProps<T>) {
+function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   return (
-    <TableBodyPrimitive
+    <tbody
       data-slot="table-body"
       className={cn("[&_tr:last-child]:border-0", className)}
       {...props}
@@ -64,12 +41,9 @@ function TableBody<T extends object>({
   )
 }
 
-function TableFooter<T extends object>({
-  className,
-  ...props
-}: TableFooterProps<T>) {
+function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   return (
-    <TableFooterPrimitive
+    <tfoot
       data-slot="table-footer"
       className={cn(
         "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
@@ -80,9 +54,9 @@ function TableFooter<T extends object>({
   )
 }
 
-function TableRow<T extends object>({ className, ...props }: RowProps<T>) {
+function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
-    <RowPrimitive
+    <tr
       data-slot="table-row"
       className={cn(
         "border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted",
@@ -93,9 +67,9 @@ function TableRow<T extends object>({ className, ...props }: RowProps<T>) {
   )
 }
 
-function TableHead({ className, ...props }: ColumnProps) {
+function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
-    <ColumnPrimitive
+    <th
       data-slot="table-head"
       className={cn(
         "h-10 px-4 text-left align-middle text-[11px] font-semibold tracking-wide whitespace-nowrap text-muted-foreground uppercase [&:has([data-slot=checkbox])]:pr-0 [&:has([role=checkbox])]:pr-0",
@@ -106,9 +80,9 @@ function TableHead({ className, ...props }: ColumnProps) {
   )
 }
 
-function TableCell({ className, ...props }: CellProps) {
+function TableCell({ className, ...props }: React.ComponentProps<"td">) {
   return (
-    <CellPrimitive
+    <td
       data-slot="table-cell"
       className={cn(
         "px-4 py-0 align-middle text-xs font-medium whitespace-nowrap text-foreground [&:has([data-slot=checkbox])]:pr-0 [&:has([role=checkbox])]:pr-0",

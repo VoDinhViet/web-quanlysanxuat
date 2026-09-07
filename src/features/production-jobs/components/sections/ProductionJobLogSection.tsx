@@ -60,57 +60,61 @@ export function ProductionJobLogSection({
         )}
       >
         <Table aria-label="Lịch sử thay đổi">
-          <TableHeader
-            columns={table.getFlatHeaders()}
-            className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
-          >
-            {(header) => (
-              <TableHead
-                id={header.id}
-                isRowHeader={header.index === 0}
-                className={header.column.columnDef.meta?.headerClassName}
-              >
-                {!header.isPlaceholder &&
-                  flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-              </TableHead>
-            )}
+          <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+            <TableRow>
+              {table.getFlatHeaders().map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={header.column.columnDef.meta?.headerClassName}
+                >
+                  {!header.isPlaceholder &&
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              ))}
+            </TableRow>
           </TableHeader>
-          <TableBody
-            items={table.getRowModel().rows}
-            renderEmptyState={() =>
-              logsQuery.isPending ? (
-                <div className="flex h-40 items-center justify-center">
-                  <Spinner className="mx-auto size-6 text-muted-foreground" />
-                </div>
-              ) : logsQuery.isError ? (
-                <div className="flex h-40 items-center justify-center text-center text-xs text-muted-foreground">
-                  {logsQuery.error.message}
-                </div>
-              ) : (
-                <TableEmpty
-                  colSpan={logColumnCount}
-                  title="Chưa có dữ liệu lịch sử."
-                />
-              )
-            }
-          >
-            {(row) => (
-              <TableRow
-                id={row.id}
-                className="h-14 bg-card hover:bg-muted/25"
-                columns={row.getVisibleCells()}
-              >
-                {(cell) => (
-                  <TableCell
-                    className={cell.column.columnDef.meta?.cellClassName}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                )}
+          <TableBody>
+            {table.getRowModel().rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={logColumnCount}>
+                  {logsQuery.isPending ? (
+                    <div className="flex h-40 items-center justify-center">
+                      <Spinner className="mx-auto size-6 text-muted-foreground" />
+                    </div>
+                  ) : logsQuery.isError ? (
+                    <div className="flex h-40 items-center justify-center text-center text-xs text-muted-foreground">
+                      {logsQuery.error.message}
+                    </div>
+                  ) : (
+                    <TableEmpty
+                      colSpan={logColumnCount}
+                      title="Chưa có dữ liệu lịch sử."
+                    />
+                  )}
+                </TableCell>
               </TableRow>
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="h-14 bg-card hover:bg-muted/25"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>

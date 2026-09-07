@@ -278,10 +278,10 @@ export function CreateOrderInfoSection({
                 Điều khoản thanh toán
               </FieldLabel>
               <Select
+                items={paymentTermOptions}
                 value={field.value}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={disabled}
-                placeholder="Chọn điều khoản"
+                onValueChange={field.onChange}
+                disabled={disabled}
               >
                 <SelectTrigger
                   id={field.name}
@@ -289,13 +289,13 @@ export function CreateOrderInfoSection({
                   aria-invalid={!!fieldState.error}
                   className="h-9 w-full bg-background text-xs"
                 >
-                  <SelectValue />
+                  <SelectValue placeholder="Chọn điều khoản" />
                 </SelectTrigger>
                 <SelectContent>
                   {paymentTermOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}
@@ -320,9 +320,10 @@ export function CreateOrderInfoSection({
                 Tiền tệ <span className="text-destructive">*</span>
               </FieldLabel>
               <Select
+                items={currencyOptions}
                 value={field.value}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={disabled}
+                onValueChange={field.onChange}
+                disabled={disabled}
               >
                 <SelectTrigger
                   id={field.name}
@@ -336,7 +337,7 @@ export function CreateOrderInfoSection({
                   {currencyOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}

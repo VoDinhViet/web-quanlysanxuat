@@ -16,7 +16,11 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   JobOperationReportDialog,
   resolveJobOperationReportDisabledReason,
@@ -215,7 +219,7 @@ function OperationSendActionCell({
   )
 
   const button = isFullySent ? (
-    <Button type="button" isDisabled className={amberClassName}>
+    <Button type="button" disabled className={amberClassName}>
       <SendSquare className="size-3.5" />
       Gửi gia công ngoài
     </Button>
@@ -237,10 +241,12 @@ function OperationSendActionCell({
   return (
     <RoutePermissionGate route="/manage/outsourcing-orders/create">
       {isFullySent ? (
-        <TooltipTrigger>
-          <span className="inline-block">{button}</span>
-          <Tooltip>Đã gửi đủ định mức</Tooltip>
-        </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            render={<span className="inline-block">{button}</span>}
+          />
+          <TooltipContent>Đã gửi đủ định mức</TooltipContent>
+        </Tooltip>
       ) : (
         button
       )}
@@ -359,21 +365,25 @@ function OperationRow({
       </TableCell>
       <TableCell className="text-center">
         <div className="flex items-center justify-center gap-2">
-          <TooltipTrigger>
-            <JobOperationReportDialog
-              row={{ bomItem, operation }}
-              disabledReason={reportDisabledReason}
-              trigger={
-                <Button type="button" size="sm">
-                  Nhập báo cáo
-                </Button>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <JobOperationReportDialog
+                  row={{ bomItem, operation }}
+                  disabledReason={reportDisabledReason}
+                  trigger={
+                    <Button type="button" size="sm">
+                      Nhập báo cáo
+                    </Button>
+                  }
+                />
               }
             />
-            <Tooltip>
+            <TooltipContent>
               {reportDisabledReason ??
                 "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho công đoạn này."}
-            </Tooltip>
-          </TooltipTrigger>
+            </TooltipContent>
+          </Tooltip>
           <OperationSendActionCell
             operation={operation}
             outsourceableByOperationId={outsourceableByOperationId}
@@ -412,80 +422,85 @@ export function ProductionJobOperationsTable({
       <div className="overflow-x-auto rounded-md border border-border/50">
         <Table aria-label="Danh sách công đoạn">
           <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
-            <TableHead
-              id="operation"
-              isRowHeader
-              className="min-w-56 font-bold text-foreground"
-            >
-              CÔNG ĐOẠN
-            </TableHead>
-            <TableHead
-              id="type"
-              className="w-32 text-center font-bold text-foreground"
-            >
-              LOẠI
-            </TableHead>
-            <TableHead
-              id="plannedQuantity"
-              className="w-24 text-center font-bold text-foreground"
-            >
-              SL KẾ HOẠCH
-            </TableHead>
-            <TableHead
-              id="completedQuantity"
-              className="w-40 text-center font-bold text-foreground"
-            >
-              SL HOÀN THÀNH
-            </TableHead>
-            <TableHead
-              id="sentQuantity"
-              className="w-28 text-center font-bold text-foreground"
-            >
-              SL ĐÃ GỬI
-            </TableHead>
-            <TableHead
-              id="status"
-              className="w-36 text-center font-bold text-foreground"
-            >
-              TRẠNG THÁI
-            </TableHead>
-            <TableHead
-              id="completedDate"
-              className="w-32 text-center font-bold text-foreground"
-            >
-              NGÀY HOÀN THÀNH
-            </TableHead>
-            <TableHead
-              id="actions"
-              className="min-w-64 text-center font-bold text-foreground"
-            >
-              THAO TÁC
-            </TableHead>
+            <TableRow>
+              <TableHead
+                id="operation"
+                className="min-w-56 font-bold text-foreground"
+              >
+                CÔNG ĐOẠN
+              </TableHead>
+              <TableHead
+                id="type"
+                className="w-32 text-center font-bold text-foreground"
+              >
+                LOẠI
+              </TableHead>
+              <TableHead
+                id="plannedQuantity"
+                className="w-24 text-center font-bold text-foreground"
+              >
+                SL KẾ HOẠCH
+              </TableHead>
+              <TableHead
+                id="completedQuantity"
+                className="w-40 text-center font-bold text-foreground"
+              >
+                SL HOÀN THÀNH
+              </TableHead>
+              <TableHead
+                id="sentQuantity"
+                className="w-28 text-center font-bold text-foreground"
+              >
+                SL ĐÃ GỬI
+              </TableHead>
+              <TableHead
+                id="status"
+                className="w-36 text-center font-bold text-foreground"
+              >
+                TRẠNG THÁI
+              </TableHead>
+              <TableHead
+                id="completedDate"
+                className="w-32 text-center font-bold text-foreground"
+              >
+                NGÀY HOÀN THÀNH
+              </TableHead>
+              <TableHead
+                id="actions"
+                className="min-w-64 text-center font-bold text-foreground"
+              >
+                THAO TÁC
+              </TableHead>
+            </TableRow>
           </TableHeader>
-          <TableBody
-            renderEmptyState={() => (
-              <TableEmpty
-                colSpan={columnCount}
-                title="Chưa có công đoạn nào."
-              />
-            )}
-          >
-            {groups.map((bomItem, groupIndex) => (
-              <Fragment key={bomItem.id}>
-                <BomItemHeaderRow bomItem={bomItem} />
-                {bomItem.operations.map((operation, operationIndex) => (
-                  <OperationRow
-                    key={operation.id}
-                    bomItem={bomItem}
-                    operation={operation}
-                    groupIndex={groupIndex}
-                    operationIndex={operationIndex}
-                    jobStatus={jobStatus}
-                    outsourceableByOperationId={outsourceableByOperationId}
+          <TableBody>
+            {groups.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columnCount}>
+                  <TableEmpty
+                    colSpan={columnCount}
+                    title="Chưa có công đoạn nào."
                   />
-                ))}
-              </Fragment>
-            ))}
+                </TableCell>
+              </TableRow>
+            ) : (
+              groups.map((bomItem, groupIndex) => (
+                <Fragment key={bomItem.id}>
+                  <BomItemHeaderRow bomItem={bomItem} />
+                  {bomItem.operations.map((operation, operationIndex) => (
+                    <OperationRow
+                      key={operation.id}
+                      bomItem={bomItem}
+                      operation={operation}
+                      groupIndex={groupIndex}
+                      operationIndex={operationIndex}
+                      jobStatus={jobStatus}
+                      outsourceableByOperationId={outsourceableByOperationId}
+                    />
+                  ))}
+                </Fragment>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

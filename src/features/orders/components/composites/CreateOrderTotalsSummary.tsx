@@ -64,9 +64,10 @@ export function CreateOrderTotalsSummary({
                 Loại chiết khấu
               </FieldLabel>
               <Select
+                items={discountTypeOptions}
                 value={field.value}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={disabled}
+                onValueChange={field.onChange}
+                disabled={disabled}
               >
                 <SelectTrigger
                   id={field.name}
@@ -80,7 +81,7 @@ export function CreateOrderTotalsSummary({
                   {discountTypeOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}

@@ -99,7 +99,7 @@ export function ProductDetailHeader({
               or silently submit a different tab's data. */}
           {activeTab === "info" ? (
             <PermissionGate permission="items:update">
-              <Button type="button" isDisabled={isSaving} onPress={onSave}>
+              <Button type="button" disabled={isSaving} onClick={onSave}>
                 {isSaving ? (
                   <>
                     <Loader2 className="animate-spin" />

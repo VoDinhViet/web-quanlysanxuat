@@ -142,29 +142,25 @@ export function CreateInventoryRequisitionForm() {
       noValidate
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
-      <Tabs
-        selectedKey={step}
-        onSelectionChange={handleStepChange}
-        className="gap-0"
-      >
+      <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
         <CreateInventoryRequisitionStepsTabs
           canGoToItems={canGoToItems}
           canGoToInfo={canGoToInfo}
         />
 
-        <TabsContent id="source" className="m-0 outline-none">
+        <TabsContent value="source" className="m-0 outline-none">
           <CreateInventoryRequisitionSourceSection
             form={form}
             disabled={isPending}
           />
         </TabsContent>
-        <TabsContent id="items" className="m-0 outline-none">
+        <TabsContent value="items" className="m-0 outline-none">
           <CreateInventoryRequisitionPickerSection
             form={form}
             disabled={isPending}
           />
         </TabsContent>
-        <TabsContent id="info" className="m-0 outline-none">
+        <TabsContent value="info" className="m-0 outline-none">
           <CreateInventoryRequisitionInfoSection
             form={form}
             disabled={isPending}
@@ -182,8 +178,8 @@ export function CreateInventoryRequisitionForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() => setStep(prevStep)}
+            disabled={isPending}
+            onClick={() => setStep(prevStep)}
           >
             <ArrowLeft className="size-4" />
             {prevLabel}
@@ -193,8 +189,8 @@ export function CreateInventoryRequisitionForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/inventory-requisitions",
                 search: { page: 1, limit: 10 },
@@ -208,8 +204,8 @@ export function CreateInventoryRequisitionForm() {
         {nextStep ? (
           <Button
             type="button"
-            isDisabled={!canAdvance}
-            onPress={() => setStep(nextStep)}
+            disabled={!canAdvance}
+            onClick={() => setStep(nextStep)}
           >
             {nextLabel}
             <ArrowRight className="size-4" />
@@ -221,7 +217,7 @@ export function CreateInventoryRequisitionForm() {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                isDisabled={!canSubmit || isSubmitting || isPending}
+                disabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

@@ -1,21 +1,23 @@
 import { useState } from "react"
-import { parseDate } from "@internationalized/date"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 // Bare Popover+Calendar+Button date widget — no Field/label/error wrapper, that stays at each
 // call site. Used both as a plain controlled input (table filters/cells, no validation) and
 // bound to react-hook-form's <Controller> fields (the `users` feature's Create/Update sections,
 // which pass onBlur/disabled — validation state stays on the surrounding `Field`/`FieldError`,
-// same as the RadioGroup fields next to it). All parse/format is luxon —
-// `DateTime.fromISO(value).toFormat(...)`, safe under this repo's fixed `Settings.defaultZone`
-// (src/lib/luxon-config.ts). The Calendar's own month/day captions render in Vietnamese via the
-// app-wide `<I18nProvider locale="vi-VN">` wired in src/routes/__root.tsx.
+// same as the RadioGroup fields next to it). Parse/format is date-fns (Calendar wraps
+// react-day-picker, which works in plain `Date`, not luxon `DateTime`) — value stays an ISO
+// `yyyy-MM-dd` string at the public boundary so call sites don't move.
 type DatePickerProps = {
   value: string
   onChange: (value: string) => void
@@ -29,41 +31,45 @@ export function DatePicker({
   onBlur,
   disabled,
 }: DatePickerProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const selectedDate = value.length > 0 ? parseDate(value) : null
+  const [open, setOpen] = useState(false)
+  const selectedDate = value.length > 0 ? parseISO(value) : undefined
 
   return (
-    <PopoverTrigger
-      isOpen={isOpen}
-      onOpenChange={(open) => {
-        setIsOpen(open)
-        if (!open) onBlur?.()
+    <Popover
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen)
+        if (!nextOpen) onBlur?.()
       }}
     >
-      <Button
-        type="button"
-        variant="outline"
-        isDisabled={disabled}
-        className={cn(
-          "h-9 w-full justify-between bg-background text-xs font-normal",
-          !selectedDate && "text-muted-foreground"
-        )}
-      >
-        {selectedDate
-          ? DateTime.fromISO(value).toFormat("dd/MM/yyyy")
-          : "dd/mm/yyyy"}
-        <CalendarIcon className="size-4" />
-      </Button>
-      <Popover className="w-auto p-0" placement="bottom start">
+      <PopoverTrigger
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            disabled={disabled}
+            className={cn(
+              "h-9 w-full justify-between bg-background text-xs font-normal",
+              !selectedDate && "text-muted-foreground"
+            )}
+          >
+            {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "dd/mm/yyyy"}
+            <CalendarIcon className="size-4" />
+          </Button>
+        }
+      />
+      <PopoverContent align="start" className="w-auto p-0">
         <Calendar
+          mode="single"
           captionLayout="dropdown"
-          value={selectedDate}
-          onChange={(date) => {
-            onChange(date.toString())
-            setIsOpen(false)
+          selected={selectedDate}
+          onSelect={(date) => {
+            if (!date) return
+            onChange(format(date, "yyyy-MM-dd"))
+            setOpen(false)
           }}
         />
-      </Popover>
-    </PopoverTrigger>
+      </PopoverContent>
+    </Popover>
   )
 }

@@ -67,8 +67,8 @@ export const CreateOutsourcingReceiptItemsSection = withForm({
               type="button"
               variant="ghost"
               className="text-xs text-destructive hover:bg-destructive/10"
-              isDisabled={disabled}
-              onPress={() => itemsField.setValue([])}
+              disabled={disabled}
+              onClick={() => itemsField.setValue([])}
             >
               <Trash2 className="size-3.5" />
               Xóa tất cả dòng
@@ -78,51 +78,52 @@ export const CreateOutsourcingReceiptItemsSection = withForm({
 
         <div className="mt-4 overflow-x-auto rounded-md border border-border/50 bg-card">
           <Table aria-label="Danh sách dòng đã nhận" className="min-w-[980px]">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
-            </TableHeader>
-            <TableBody
-              items={table.getRowModel().rows}
-              renderEmptyState={() => (
-                <TableEmpty
-                  colSpan={columns.length}
-                  title="Chưa có dòng nào"
-                  description="Quay lại bước ① để chọn hàng cần nhận."
-                />
-              )}
-            >
-              {(row) => (
-                <TableRow
-                  id={row.original.outsourcingOrderItemId}
-                  className="h-16 bg-card hover:bg-muted/25"
-                  columns={row.getVisibleCells()}
-                >
-                  {(cell) => (
-                    <TableCell
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    </TableCell>
-                  )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title="Chưa có dòng nào"
+                      description="Quay lại bước ① để chọn hàng cần nhận."
+                    />
+                  </TableCell>
                 </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.original.outsourcingOrderItemId}
+                    className="h-16 bg-card hover:bg-muted/25"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>

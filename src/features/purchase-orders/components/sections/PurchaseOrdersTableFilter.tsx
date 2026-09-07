@@ -62,15 +62,15 @@ export function PurchaseOrdersTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
   }
 
-  const handleOrderDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleOrderDateRangeChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
         page: 1,
       }),
     })
@@ -100,7 +100,7 @@ export function PurchaseOrdersTableFilter() {
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(9rem,1fr)_minmax(11rem,1fr)_minmax(14rem,1.3fr)_minmax(14rem,1.4fr)]">
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="purchase-orders-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -108,8 +108,11 @@ export function PurchaseOrdersTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.progress ?? "all"}
-              onChange={(key) => handleProgressChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleProgressChange(value)
+              }
             >
               <SelectTrigger
                 id="purchase-orders-status"
@@ -119,7 +122,7 @@ export function PurchaseOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -127,7 +130,7 @@ export function PurchaseOrdersTableFilter() {
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="purchase-orders-supplier"
               className="text-[11px] font-medium text-muted-foreground"
@@ -135,8 +138,11 @@ export function PurchaseOrdersTableFilter() {
               NCC
             </Label>
             <Select
+              items={supplierFilterOptions}
               value={search.supplierId ?? "all"}
-              onChange={(key) => handleSupplierChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleSupplierChange(value)
+              }
             >
               <SelectTrigger
                 id="purchase-orders-supplier"
@@ -146,7 +152,7 @@ export function PurchaseOrdersTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {supplierFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -197,7 +203,7 @@ export function PurchaseOrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Làm mới

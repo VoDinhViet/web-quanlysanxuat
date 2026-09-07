@@ -102,7 +102,7 @@ export function InventoryRequisitionsTableFilter() {
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="lv-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -110,15 +110,18 @@ export function InventoryRequisitionsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusOptions}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="lv-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

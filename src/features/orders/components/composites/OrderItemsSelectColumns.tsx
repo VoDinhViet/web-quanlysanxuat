@@ -5,7 +5,11 @@ import { Gallery } from "@solar-icons/react"
 import { Info } from "lucide-react"
 
 import { Checkbox } from "@/components/ui/checkbox"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 
@@ -24,10 +28,14 @@ function ColumnHeaderWithHint({
   return (
     <span className="inline-flex items-center gap-1">
       {label}
-      <TooltipTrigger>
-        <Info className="size-3 shrink-0 cursor-help text-muted-foreground/70" />
-        <Tooltip>{hint}</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Info className="size-3 shrink-0 cursor-help text-muted-foreground/70" />
+          }
+        />
+        <TooltipContent>{hint}</TooltipContent>
+      </Tooltip>
     </span>
   )
 }
@@ -55,12 +63,9 @@ type BuildOrderItemsSelectColumnsArgs = {
 // Bảng danh mục sản phẩm dùng chung cho bước "Chọn sản phẩm" của cả 2 wizard Tạo/Sửa đơn hàng —
 // tick chọn ĐÃ LÀ thêm thẳng vào `items` field-array của form (không còn khái niệm "đã có sẵn,
 // khoá lại" như bản popup cũ: bỏ tick 1 dòng đang có trong đơn cũng chính là xoá dòng đó, không
-// cần cơ chế chống trùng riêng nữa vì trạng thái tick phản ánh đúng 1-1 với field-array).
-//
-// `slot={null}` trên Checkbox: RAC's Table header row luôn bơm CheckboxContext dạng
-// `{slots: {selection: checkboxProps}}` — KHÔNG có slot mặc định `""` như hàng thường, nên 1
-// Checkbox không khai slot rõ sẽ crash "A slot prop is required" ngay ở header. Ta tự quản lý
-// tick chọn qua isSelected/onToggleRow/onToggleAll (không dùng selectionMode của RAC Table).
+// cần cơ chế chống trùng riêng nữa vì trạng thái tick phản ánh đúng 1-1 với field-array). Tick
+// chọn tự quản lý qua isSelected/onToggleRow/onToggleAll, không qua cơ chế selection nào của
+// bảng.
 export function buildOrderItemsSelectColumns({
   allChecked,
   onToggleRow,
@@ -71,18 +76,16 @@ export function buildOrderItemsSelectColumns({
       id: "select",
       header: () => (
         <Checkbox
-          slot={null}
-          isSelected={allChecked}
-          onChange={onToggleAll}
+          checked={allChecked}
+          onCheckedChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
         />
       ),
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <Checkbox
-          slot={null}
-          isSelected={row.original.isSelected}
-          onChange={() => onToggleRow(row.original)}
+          checked={row.original.isSelected}
+          onCheckedChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.name}`}
         />
       ),

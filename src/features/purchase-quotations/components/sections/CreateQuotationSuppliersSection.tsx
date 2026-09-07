@@ -66,52 +66,50 @@ export const CreateQuotationSuppliersSection = withForm({
 
         <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
           <Table aria-label="Danh sách vật tư & NCC">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
-            </TableHeader>
-            <TableBody
-              renderEmptyState={() => (
-                <TableEmpty
-                  colSpan={columns.length}
-                  title="Chưa chọn vật tư nào"
-                />
-              )}
-            >
-              {table.getRowModel().rows.map((row) => (
-                <Fragment key={row.original.itemId}>
-                  <TableRow
-                    id={`${row.original.itemId}-data`}
-                    className="h-14 bg-card hover:bg-muted/25"
-                    columns={row.getVisibleCells()}
+            <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
                   >
-                    {(cell) => (
-                      <TableCell
-                        className={cell.column.columnDef.meta?.cellClassName}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    )}
-                  </TableRow>
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title="Chưa chọn vật tư nào"
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <Fragment key={row.original.itemId}>
+                    <TableRow className="h-14 bg-card hover:bg-muted/25">
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
 
-                  {/* Left accent reads as "detail of the row above" — reads unmistakably at a
+                    {/* Left accent reads as "detail of the row above" — reads unmistakably at a
                         glance which vật tư a NCC block belongs to, even with several items stacked.
                         An inset ring rather than `border-l`: Tailwind's `ring-*` has no single-side
                         variant (it's always a uniform box-shadow), so this is that same inset
@@ -121,24 +119,25 @@ export const CreateQuotationSuppliersSection = withForm({
                         the <td>, not the <tr> — a border-collapse:separate table (the default,
                         unset elsewhere in this app) only paints borders/shadows declared on
                         table/td/th; one set on <tr> is silently dropped. */}
-                  <TableRow
-                    id={`${row.original.itemId}-detail`}
-                    className="bg-card hover:bg-card"
-                  >
-                    <TableCell
-                      colSpan={row.getVisibleCells().length}
-                      className="p-0 shadow-[inset_3px_0_0_0_var(--color-primary)]"
+                    <TableRow
+                      id={`${row.original.itemId}-detail`}
+                      className="bg-card hover:bg-card"
                     >
-                      <QuotationCompareQuoteTable
-                        item={row.original}
-                        itemIndex={row.index}
-                        itemsField={itemsField}
-                        disabled={disabled}
-                      />
-                    </TableCell>
-                  </TableRow>
-                </Fragment>
-              ))}
+                      <TableCell
+                        colSpan={row.getVisibleCells().length}
+                        className="p-0 shadow-[inset_3px_0_0_0_var(--color-primary)]"
+                      >
+                        <QuotationCompareQuoteTable
+                          item={row.original}
+                          itemIndex={row.index}
+                          itemsField={itemsField}
+                          disabled={disabled}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </Fragment>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

@@ -103,15 +103,15 @@ export function OutsourcingReceiptsTableFilter() {
     })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
         page: 1,
       }),
     })
@@ -170,7 +170,7 @@ export function OutsourcingReceiptsTableFilter() {
         </div>
       </div>
 
-      <div className="w-40 space-y-1.5">
+      <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="os-in-supplier"
           className="text-[11px] font-medium text-muted-foreground"
@@ -178,17 +178,25 @@ export function OutsourcingReceiptsTableFilter() {
           Nhà cung cấp
         </Label>
         <Select
+          items={[
+            { value: "all", label: "Tất cả NCC" },
+            ...supplierOptions.map((option) => ({
+              value: option.id,
+              label: option.name,
+            })),
+          ]}
           value={search.supplierId ?? "all"}
-          onChange={(key) => handleSupplierChange(String(key))}
-          placeholder="Chọn nhà cung cấp"
+          onValueChange={(value) =>
+            value !== null && handleSupplierChange(value)
+          }
         >
           <SelectTrigger id="os-in-supplier" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn nhà cung cấp" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem id="all">Tất cả NCC</SelectItem>
+            <SelectItem value="all">Tất cả NCC</SelectItem>
             {supplierOptions.map((option) => (
-              <SelectItem key={option.id} id={option.id}>
+              <SelectItem key={option.id} value={option.id}>
                 {option.name}
               </SelectItem>
             ))}
@@ -196,7 +204,7 @@ export function OutsourcingReceiptsTableFilter() {
         </Select>
       </div>
 
-      <div className="w-36 space-y-1.5">
+      <div className="flex w-36 flex-col gap-1.5">
         <Label
           htmlFor="os-in-status"
           className="text-[11px] font-medium text-muted-foreground"
@@ -204,16 +212,16 @@ export function OutsourcingReceiptsTableFilter() {
           Trạng thái
         </Label>
         <Select
+          items={statusOptions}
           value={search.status ?? "all"}
-          onChange={(key) => handleStatusChange(String(key))}
-          placeholder="Chọn trạng thái"
+          onValueChange={(value) => value !== null && handleStatusChange(value)}
         >
           <SelectTrigger id="os-in-status" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn trạng thái" />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (
-              <SelectItem key={opt.value} id={opt.value}>
+              <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -221,7 +229,7 @@ export function OutsourcingReceiptsTableFilter() {
         </Select>
       </div>
 
-      <div className="w-40 space-y-1.5">
+      <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="os-in-requires-iqc"
           className="text-[11px] font-medium text-muted-foreground"
@@ -229,20 +237,22 @@ export function OutsourcingReceiptsTableFilter() {
           Yêu cầu QC
         </Label>
         <Select
+          items={requiresIqcOptions}
           value={
             search.requiresIqc === undefined
               ? "all"
               : String(search.requiresIqc)
           }
-          onChange={(key) => handleRequiresIqcChange(String(key))}
-          placeholder="Chọn yêu cầu QC"
+          onValueChange={(value) =>
+            value !== null && handleRequiresIqcChange(value)
+          }
         >
           <SelectTrigger id="os-in-requires-iqc" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn yêu cầu QC" />
           </SelectTrigger>
           <SelectContent>
             {requiresIqcOptions.map((opt) => (
-              <SelectItem key={opt.value} id={opt.value}>
+              <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -269,7 +279,7 @@ export function OutsourcingReceiptsTableFilter() {
         type="button"
         variant="outline"
         className="gap-1.5 text-xs"
-        onPress={resetFilters}
+        onClick={resetFilters}
       >
         <RotateCw className="size-3.5" />
         Xóa bộ lọc

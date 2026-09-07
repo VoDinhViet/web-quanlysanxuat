@@ -3,11 +3,12 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Diskette } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -22,7 +23,7 @@ type PurchaseOrderAdjustmentReasonDialogProps = {
   purchaseOrderItemId: string
   itemName: string
   reason: string
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // Local copy of purchase-quotations' AdjustmentReasonDialog.tsx — can't import it directly
@@ -60,15 +61,15 @@ export function PurchaseOrderAdjustmentReasonDialog({
   })
 
   return (
-    <DialogTrigger
-      isOpen={open}
+    <Dialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <Dialog className="shadow-lg ring-0 sm:max-w-md">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="shadow-lg ring-0 sm:max-w-md">
         {/* The dialog unmounts content while closed, so this form re-mounts on each open and
             its state seeds fresh from `reason`. */}
         <PurchaseOrderAdjustmentReasonForm
@@ -79,8 +80,8 @@ export function PurchaseOrderAdjustmentReasonDialog({
           onSave={(value) => mutation.mutate(value)}
           onCancel={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -145,12 +146,12 @@ function PurchaseOrderAdjustmentReasonForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onCancel}
-          isDisabled={isPending}
+          onClick={onCancel}
+          disabled={isPending}
         >
           Hủy
         </Button>
-        <Button type="submit" isDisabled={isPending}>
+        <Button type="submit" disabled={isPending}>
           <Diskette className="size-4" />
           {isPending ? "Đang lưu..." : "Lưu"}
         </Button>

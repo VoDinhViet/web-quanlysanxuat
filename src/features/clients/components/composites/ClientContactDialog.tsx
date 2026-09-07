@@ -4,6 +4,7 @@ import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -36,18 +37,16 @@ export function ClientContactDialog({
   onSubmit,
 }: ClientContactDialogProps) {
   return (
-    <Dialog
-      isOpen={open}
-      onOpenChange={onOpenChange}
-      className="shadow-lg ring-0 sm:max-w-lg"
-    >
-      {/* The dialog unmounts content while closed, so this form re-mounts on each
-          open and its state seeds fresh from `initialValue`. */}
-      <ClientContactDialogForm
-        initialValue={initialValue}
-        onSubmit={onSubmit}
-        onCancel={() => onOpenChange(false)}
-      />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="shadow-lg ring-0 sm:max-w-lg">
+        {/* The dialog unmounts content while closed, so this form re-mounts on each
+            open and its state seeds fresh from `initialValue`. */}
+        <ClientContactDialogForm
+          initialValue={initialValue}
+          onSubmit={onSubmit}
+          onCancel={() => onOpenChange(false)}
+        />
+      </DialogContent>
     </Dialog>
   )
 }

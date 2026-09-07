@@ -3,11 +3,12 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CloseCircle } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -21,7 +22,7 @@ import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderCancelDialogProps = {
   purchaseOrder: PurchaseOrderDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // DRAFT/ORDERED → CANCELLED (terminal), reason required — mirrors RejectQuotationDialog.tsx. A
@@ -33,17 +34,17 @@ export function PurchaseOrderCancelDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-md">
         {/* The dialog unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <PurchaseOrderCancelForm
           purchaseOrder={purchaseOrder}
           onClose={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -119,15 +120,15 @@ function PurchaseOrderCancelForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onClose}
-          isDisabled={mutation.isPending}
+          onClick={onClose}
+          disabled={mutation.isPending}
         >
           Hủy
         </Button>
         <Button
           type="submit"
           variant="destructive"
-          isDisabled={mutation.isPending}
+          disabled={mutation.isPending}
         >
           {mutation.isPending ? "Đang xử lý..." : "Huỷ đơn"}
         </Button>

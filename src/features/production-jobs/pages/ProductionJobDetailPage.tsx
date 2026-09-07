@@ -51,22 +51,18 @@ export function ProductionJobDetailPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface>
-          <Tabs
-            selectedKey={tab}
-            onSelectionChange={handleTabChange}
-            className="gap-0"
-          >
+          <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
             <ProductionJobDetailHeader productionJob={productionJob} />
 
-            <TabsContent id="info" className="m-0 outline-none">
+            <TabsContent value="info" className="m-0 outline-none">
               <ProductionJobInfoTab productionJob={productionJob} />
             </TabsContent>
 
-            <TabsContent id="bom" className="m-0 outline-none">
+            <TabsContent value="bom" className="m-0 outline-none">
               <ProductionJobBomTab productionJobId={productionJobId} />
             </TabsContent>
 
-            <TabsContent id="operations" className="m-0 outline-none">
+            <TabsContent value="operations" className="m-0 outline-none">
               <ProductionJobOperationsTab
                 productionJobId={productionJobId}
                 status={productionJob.status}

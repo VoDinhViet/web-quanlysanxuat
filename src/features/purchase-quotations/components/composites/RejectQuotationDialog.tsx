@@ -3,11 +3,12 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { CloseCircle } from "@solar-icons/react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -21,7 +22,7 @@ import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.typ
 
 type RejectQuotationDialogProps = {
   purchaseQuotation: PurchaseQuotationDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING_APPROVAL → CANCELLED (terminal), reason required — mirrors
@@ -33,17 +34,17 @@ export function RejectQuotationDialog({
   const [open, setOpen] = useState(false)
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-md">
         {/* The dialog unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <RejectQuotationForm
           purchaseQuotation={purchaseQuotation}
           onClose={() => setOpen(false)}
         />
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -122,15 +123,15 @@ function RejectQuotationForm({
         <Button
           type="button"
           variant="outline"
-          onPress={onClose}
-          isDisabled={mutation.isPending}
+          onClick={onClose}
+          disabled={mutation.isPending}
         >
           Hủy
         </Button>
         <Button
           type="submit"
           variant="destructive"
-          isDisabled={mutation.isPending}
+          disabled={mutation.isPending}
         >
           {mutation.isPending ? "Đang xử lý..." : "Từ chối"}
         </Button>

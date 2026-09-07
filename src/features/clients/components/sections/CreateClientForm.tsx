@@ -80,8 +80,8 @@ export function CreateClientForm() {
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/clients",
                 search: { page: 1, limit: 10 },
@@ -94,8 +94,8 @@ export function CreateClientForm() {
             <Button
               type="button"
               variant="ghost"
-              isDisabled={isPending}
-              onPress={() => {
+              disabled={isPending}
+              onClick={() => {
                 form.reset()
                 restoreFormDraft(form, createClientFormDefaultValues)
                 clearDraft()
@@ -107,8 +107,8 @@ export function CreateClientForm() {
             <Button
               type="button"
               variant="outline"
-              isDisabled={isPending}
-              onPress={() => {
+              disabled={isPending}
+              onClick={() => {
                 saveDraft(form.state.values)
                 toast.success("Đã lưu nháp")
               }}
@@ -122,7 +122,7 @@ export function CreateClientForm() {
               {([canSubmit, isSubmitting]) => (
                 <Button
                   type="submit"
-                  isDisabled={!canSubmit || isSubmitting || isPending}
+                  disabled={!canSubmit || isSubmitting || isPending}
                 >
                   {isSubmitting || isPending ? (
                     <>

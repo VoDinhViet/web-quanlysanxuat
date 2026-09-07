@@ -3,10 +3,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -21,7 +22,7 @@ import type { Unit } from "@/lib/types/unit.type"
 
 type DeleteUnitDialogProps = {
   unit: Unit
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 export function DeleteUnitDialog({ unit, trigger }: DeleteUnitDialogProps) {
@@ -42,9 +43,9 @@ export function DeleteUnitDialog({ unit, trigger }: DeleteUnitDialogProps) {
   })
 
   return (
-    <AlertDialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Trash2 />
@@ -56,18 +57,18 @@ export function DeleteUnitDialog({ unit, trigger }: DeleteUnitDialogProps) {
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            isDisabled={mutation.isPending}
-            onPress={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

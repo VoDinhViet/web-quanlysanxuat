@@ -34,11 +34,6 @@ type PaginationProps = {
   onPageSizeChange?: (pageSize: PageSize) => void
   disabled?: boolean
   className?: string
-  // DOM node to portal the page-size Select's popup into — forwarded as
-  // `UNSTABLE_portalContainer`, same defensive purpose as ComboboxField's own `container` prop.
-  // Pass the enclosing Dialog's content node when this pagination is rendered inside one —
-  // default undefined, everything else portals to `<body>` as normal.
-  container?: HTMLElement | null
 }
 
 // The one pagination control every table/list/feed in the app renders — page-number buttons +
@@ -53,7 +48,6 @@ export function Pagination({
   onPageSizeChange,
   disabled,
   className,
-  container,
 }: PaginationProps) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1
@@ -90,8 +84,8 @@ export function Pagination({
                 "text-xs font-medium",
                 pageNumber !== page && "bg-background text-foreground"
               )}
-              isDisabled={disabled}
-              onPress={() => onPageChange(pageNumber)}
+              disabled={disabled}
+              onClick={() => onPageChange(pageNumber)}
             >
               {pageNumber}
             </Button>
@@ -107,16 +101,20 @@ export function Pagination({
 
         {onPageSizeChange && (
           <Select
+            items={pageSizeOptions.map((option) => ({
+              value: String(option),
+              label: `${option} / trang`,
+            }))}
             value={String(pageSize)}
-            onChange={(key) => onPageSizeChange(Number(key) as PageSize)}
-            isDisabled={disabled}
+            onValueChange={(key) => onPageSizeChange(Number(key) as PageSize)}
+            disabled={disabled}
           >
             <SelectTrigger className="h-9 w-28 bg-background text-xs font-medium text-foreground">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent UNSTABLE_portalContainer={container ?? undefined}>
+            <SelectContent>
               {pageSizeOptions.map((option) => (
-                <SelectItem key={option} id={String(option)}>
+                <SelectItem key={option} value={String(option)}>
                   {option} / trang
                 </SelectItem>
               ))}
@@ -146,8 +144,8 @@ function PaginationButton({
       size="icon-sm"
       className="bg-background text-foreground"
       aria-label={ariaLabel}
-      isDisabled={disabled}
-      onPress={onClick}
+      disabled={disabled}
+      onClick={onClick}
     >
       {children}
     </Button>

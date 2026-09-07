@@ -63,15 +63,15 @@ export function CreateUserCredentialSection({
           name="credential"
           render={({ field }) => (
             <Switch
-              isSelected={field.value != null}
-              onChange={(checked) =>
+              checked={field.value != null}
+              onCheckedChange={(checked) =>
                 field.onChange(
                   checked
                     ? { username: "", email: "", password: "", roleId: "" }
                     : undefined
                 )
               }
-              isDisabled={disabled}
+              disabled={disabled}
               className="mt-1 shrink-0"
               aria-label="Cấp tài khoản ERP cho nhân viên này"
             />
@@ -159,8 +159,8 @@ export function CreateUserCredentialSection({
                   variant="ghost"
                   size="icon-sm"
                   className="absolute top-1/2 right-1 -translate-y-1/2"
-                  onPress={() => setShowPassword(!showPassword)}
-                  isDisabled={fieldsDisabled}
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={fieldsDisabled}
                   aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 >
                   {showPassword ? (
@@ -187,14 +187,10 @@ export function CreateUserCredentialSection({
                 Vai trò
               </FieldLabel>
               <Select
+                items={roleOptions}
                 value={field.value ?? ""}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={fieldsDisabled}
-                placeholder={
-                  rolesQuery.isPending
-                    ? "Đang tải..."
-                    : "Chọn vai trò (tuỳ chọn)"
-                }
+                onValueChange={field.onChange}
+                disabled={fieldsDisabled}
               >
                 <SelectTrigger
                   id={field.name}
@@ -202,13 +198,19 @@ export function CreateUserCredentialSection({
                   aria-invalid={!!fieldState.error}
                   className="h-9 w-full bg-background text-xs"
                 >
-                  <SelectValue />
+                  <SelectValue
+                    placeholder={
+                      rolesQuery.isPending
+                        ? "Đang tải..."
+                        : "Chọn vai trò (tuỳ chọn)"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {roleOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}

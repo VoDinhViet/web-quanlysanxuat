@@ -59,15 +59,15 @@ export function ProductionJobsTableFilter() {
     })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    dueDateFrom: string | undefined,
+    dueDateTo: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        dueDateFrom: range.from,
-        dueDateTo: range.to,
+        dueDateFrom,
+        dueDateTo,
         page: 1,
       }),
     })
@@ -160,7 +160,7 @@ export function ProductionJobsTableFilter() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="production-jobs-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -168,8 +168,11 @@ export function ProductionJobsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger
                 id="production-jobs-status"
@@ -179,7 +182,7 @@ export function ProductionJobsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

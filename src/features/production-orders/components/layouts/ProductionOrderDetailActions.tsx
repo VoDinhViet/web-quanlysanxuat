@@ -1,7 +1,11 @@
 import { CircleCheck, Loader2, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ApproveProductionOrderDialog } from "@/features/production-orders/components/composites/ApproveProductionOrderDialog"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
@@ -36,8 +40,8 @@ export function ProductionOrderDetailActions({
           <Button
             type="button"
             variant="outline"
-            isDisabled={isSaving || !hasUnsavedChanges}
-            onPress={onSave}
+            disabled={isSaving || !hasUnsavedChanges}
+            onClick={onSave}
           >
             {isSaving ? (
               <Loader2 className="size-4 animate-spin" />
@@ -52,19 +56,25 @@ export function ProductionOrderDetailActions({
       {isPending ? (
         <PermissionGate permission="production:approve">
           {hasUnsavedChanges || isSaving ? (
-            <TooltipTrigger>
-              <span tabIndex={0}>
-                <Button
-                  type="button"
-                  isDisabled
-                  className="pointer-events-none"
-                >
-                  <CircleCheck className="size-4" />
-                  Duyệt LSX
-                </Button>
-              </span>
-              <Tooltip>Vui lòng lưu thay đổi trước khi duyệt LSX</Tooltip>
-            </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <span tabIndex={0}>
+                    <Button
+                      type="button"
+                      disabled
+                      className="pointer-events-none"
+                    >
+                      <CircleCheck className="size-4" />
+                      Duyệt LSX
+                    </Button>
+                  </span>
+                }
+              />
+              <TooltipContent>
+                Vui lòng lưu thay đổi trước khi duyệt LSX
+              </TooltipContent>
+            </Tooltip>
           ) : (
             <ApproveProductionOrderDialog
               production={production}

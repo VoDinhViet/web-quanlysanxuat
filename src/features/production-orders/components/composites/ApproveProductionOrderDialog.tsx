@@ -2,10 +2,11 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CircleCheck } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -21,7 +22,7 @@ import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 type ApproveProductionOrderDialogProps = {
   production: ProductionOrderDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // PENDING → APPROVED, one-way — no un-approve route exists. Approving also pushes the underlying
@@ -47,15 +48,15 @@ export function ApproveProductionOrderDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <CircleCheck />
@@ -74,19 +75,19 @@ export function ApproveProductionOrderDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            isDisabled={mutation.isPending}
-            onPress={() => {
+            disabled={mutation.isPending}
+            onClick={() => {
               mutation.mutate()
             }}
           >
             {mutation.isPending ? "Đang xử lý..." : "Duyệt LSX"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

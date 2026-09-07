@@ -6,7 +6,11 @@ import { ListFilter, Plus, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
@@ -143,22 +147,26 @@ export function SupplierReturnsTableFilter() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <PopoverTrigger>
-          <Button type="button" variant="outline" className="text-xs">
-            <ListFilter className="size-3.5" />
-            Bộ lọc
-            {activeFilterCount > 0 && (
-              <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
-                {activeFilterCount}
-              </span>
-            )}
-          </Button>
-          <Popover placement="bottom end" className="w-80 gap-3 sm:w-96">
+        <Popover>
+          <PopoverTrigger
+            render={
+              <Button type="button" variant="outline" className="text-xs">
+                <ListFilter className="size-3.5" />
+                Bộ lọc
+                {activeFilterCount > 0 && (
+                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            }
+          />
+          <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
             <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
 
             <div className="grid grid-cols-2 gap-3">
               {/* Nhà cung cấp */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="supplier-returns-supplier"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -166,8 +174,17 @@ export function SupplierReturnsTableFilter() {
                   Nhà cung cấp
                 </Label>
                 <Select
+                  items={[
+                    { value: "all", label: "Tất cả" },
+                    ...supplierOptions.map((option) => ({
+                      value: option.id,
+                      label: option.name,
+                    })),
+                  ]}
                   value={search.supplierId ?? "all"}
-                  onChange={(key) => handleSupplierChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleSupplierChange(value)
+                  }
                 >
                   <SelectTrigger
                     id="supplier-returns-supplier"
@@ -176,9 +193,9 @@ export function SupplierReturnsTableFilter() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem id="all">Tất cả</SelectItem>
+                    <SelectItem value="all">Tất cả</SelectItem>
                     {supplierOptions.map((option) => (
-                      <SelectItem key={option.id} id={option.id}>
+                      <SelectItem key={option.id} value={option.id}>
                         {option.name}
                       </SelectItem>
                     ))}
@@ -187,7 +204,7 @@ export function SupplierReturnsTableFilter() {
               </div>
 
               {/* Trạng thái */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="supplier-returns-status"
                   className="text-[11px] font-medium text-muted-foreground"
@@ -195,8 +212,11 @@ export function SupplierReturnsTableFilter() {
                   Trạng thái
                 </Label>
                 <Select
+                  items={statusOptions}
                   value={search.status ?? "all"}
-                  onChange={(key) => handleStatusChange(String(key))}
+                  onValueChange={(value) =>
+                    value !== null && handleStatusChange(value)
+                  }
                 >
                   <SelectTrigger
                     id="supplier-returns-status"
@@ -206,7 +226,7 @@ export function SupplierReturnsTableFilter() {
                   </SelectTrigger>
                   <SelectContent>
                     {statusOptions.map((option) => (
-                      <SelectItem key={option.value} id={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
@@ -254,8 +274,8 @@ export function SupplierReturnsTableFilter() {
                 />
               </div>
             </div>
-          </Popover>
-        </PopoverTrigger>
+          </PopoverContent>
+        </Popover>
 
         <Button
           type="button"

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
-import { Radio } from "react-aria-components"
+import { Radio } from "@base-ui/react/radio"
 import { NumericFormat } from "react-number-format"
 import type { ComponentProps, ReactNode } from "react"
 
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { DatePickerField } from "@/components/shared/composites/DatePickerField"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { useFieldContext } from "@/hooks/use-app-form-context"
 import { cn } from "@/lib/utils"
 
@@ -236,8 +236,8 @@ export function PasswordField({
           variant="ghost"
           size="icon-sm"
           className="absolute top-1/2 right-1 -translate-y-1/2"
-          onPress={() => setShowPassword(!showPassword)}
-          isDisabled={disabled}
+          onClick={() => setShowPassword(!showPassword)}
+          disabled={disabled}
           aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
         >
           {showPassword ? (
@@ -290,10 +290,10 @@ export function SelectField({
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <Select
+        items={options}
         value={field.state.value ?? null}
-        onChange={(key) => field.handleChange(String(key))}
-        isDisabled={disabled}
-        placeholder={isPending ? "Đang tải..." : placeholder}
+        onValueChange={(value) => value !== null && field.handleChange(value)}
+        disabled={disabled}
       >
         <SelectTrigger
           id={field.name}
@@ -301,13 +301,13 @@ export function SelectField({
           aria-invalid={isInvalid}
           className="h-9 w-full bg-background text-xs"
         >
-          <SelectValue />
+          <SelectValue placeholder={isPending ? "Đang tải..." : placeholder} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
             <SelectItem
               key={option.value}
-              id={option.value}
+              value={option.value}
               className="text-xs"
             >
               {option.label}
@@ -328,21 +328,22 @@ type DateFieldProps = {
 
 export function DateField({ label, required, disabled }: DateFieldProps) {
   const field = useFieldContext<string>()
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
 
   return (
-    <DatePickerField
-      id={field.name}
-      label={label}
-      required={required}
-      value={field.state.value}
-      onChange={field.handleChange}
-      onBlur={field.handleBlur}
-      isInvalid={
-        field.state.meta.isTouched && field.state.meta.errors.length > 0
-      }
-      errors={field.state.meta.errors}
-      disabled={disabled}
-    />
+    <Field data-invalid={isInvalid}>
+      <FieldLabel className="text-xs font-medium text-foreground">
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <DatePicker
+        value={field.state.value}
+        onChange={field.handleChange}
+        onBlur={field.handleBlur}
+        disabled={disabled}
+      />
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
   )
 }
 
@@ -375,18 +376,18 @@ export function RadioPillField<TValue extends string>({
       </span>
       <RadioGroup
         value={field.state.value}
-        onChange={(value) => field.handleChange(value as TValue)}
-        isDisabled={disabled}
+        onValueChange={(value) => field.handleChange(value as TValue)}
+        disabled={disabled}
         className="flex flex-row flex-wrap gap-2"
       >
         {options.map((option) => (
-          <Radio
+          <Radio.Root
             key={option.value}
             value={option.value}
-            className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-selected:border-primary data-selected:bg-primary/5 data-selected:text-primary"
+            className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-checked:border-primary data-checked:bg-primary/5 data-checked:text-primary"
           >
             {option.label}
-          </Radio>
+          </Radio.Root>
         ))}
       </RadioGroup>
     </div>
@@ -415,9 +416,9 @@ export function SwitchField({
       <span className="block text-xs font-medium text-foreground">{label}</span>
       <Switch
         className="flex h-9 cursor-pointer items-center gap-2 text-xs font-medium text-foreground"
-        isSelected={field.state.value}
-        onChange={field.handleChange}
-        isDisabled={disabled}
+        checked={field.state.value}
+        onCheckedChange={field.handleChange}
+        disabled={disabled}
       >
         {field.state.value ? onLabel : offLabel}
       </Switch>

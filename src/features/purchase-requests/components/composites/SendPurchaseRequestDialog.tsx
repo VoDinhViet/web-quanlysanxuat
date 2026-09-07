@@ -2,10 +2,11 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Send } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import {
   AlertDialog,
+  AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogDescription,
@@ -20,7 +21,7 @@ import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type SendPurchaseRequestDialogProps = {
   purchaseRequest: PurchaseRequestDetail
-  trigger: ReactNode
+  trigger: ReactElement
 }
 
 // DRAFT → PENDING_APPROVAL — needs purchase-requests:update (same permission as any edit; the
@@ -45,16 +46,16 @@ export function SendPurchaseRequestDialog({
   })
 
   return (
-    <AlertDialogTrigger
-      isOpen={open}
+    <AlertDialog
+      open={open}
       onOpenChange={(next) => {
         setOpen(next)
         // A previous failure shouldn't greet the user on reopen.
         if (next) mutation.reset()
       }}
     >
-      {trigger}
-      <AlertDialog>
+      <AlertDialogTrigger render={trigger} />
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <Send />
@@ -70,17 +71,17 @@ export function SendPurchaseRequestDialog({
         ) : null}
 
         <AlertDialogFooter>
-          <AlertDialogCancel isDisabled={mutation.isPending}>
+          <AlertDialogCancel disabled={mutation.isPending}>
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            isDisabled={mutation.isPending}
-            onPress={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
           >
             {mutation.isPending ? "Đang xử lý..." : "Gửi duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
-      </AlertDialog>
-    </AlertDialogTrigger>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

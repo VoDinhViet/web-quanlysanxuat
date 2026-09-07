@@ -153,8 +153,8 @@ export function InventoryReceiptUpdateForm({
         <Button
           type="button"
           variant="outline"
-          isDisabled={isPending}
-          onPress={() =>
+          disabled={isPending}
+          onClick={() =>
             void navigate({
               to: "/manage/inventory-receipts/$inventoryReceiptId",
               params: { inventoryReceiptId: inventoryReceipt.id },
@@ -169,7 +169,7 @@ export function InventoryReceiptUpdateForm({
           {([canSubmit, isSubmitting]) => (
             <Button
               type="submit"
-              isDisabled={!canSubmit || isSubmitting || isPending}
+              disabled={!canSubmit || isSubmitting || isPending}
             >
               {isSubmitting || isPending ? (
                 <>

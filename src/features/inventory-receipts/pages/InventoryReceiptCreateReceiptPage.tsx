@@ -43,18 +43,14 @@ export function InventoryReceiptCreateReceiptPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <Tabs
-          selectedKey={lane}
-          onSelectionChange={handleLaneChange}
-          className="gap-4"
-        >
+        <Tabs value={lane} onValueChange={handleLaneChange} className="gap-4">
           <InventoryReceiptCreateReceiptTabs />
 
-          <TabsContent id="po" className="m-0 outline-none">
+          <TabsContent value="po" className="m-0 outline-none">
             <InventoryReceiptCreateFromPoForm />
           </TabsContent>
 
-          <TabsContent id="return" className="m-0 outline-none">
+          <TabsContent value="return" className="m-0 outline-none">
             <InventoryReceiptCreateReturnForm />
           </TabsContent>
         </Tabs>

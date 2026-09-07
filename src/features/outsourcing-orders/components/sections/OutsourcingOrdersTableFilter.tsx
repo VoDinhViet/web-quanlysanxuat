@@ -94,7 +94,7 @@ export function OutsourcingOrdersTableFilter() {
         </div>
       </div>
 
-      <div className="w-44 space-y-1.5">
+      <div className="flex w-44 flex-col gap-1.5">
         <Label
           htmlFor="os-out-status"
           className="text-[11px] font-medium text-muted-foreground"
@@ -102,16 +102,16 @@ export function OutsourcingOrdersTableFilter() {
           Trạng thái
         </Label>
         <Select
+          items={statusOptions}
           value={search.status ?? "all"}
-          onChange={(key) => handleStatusChange(String(key))}
-          placeholder="Chọn trạng thái"
+          onValueChange={(value) => value !== null && handleStatusChange(value)}
         >
           <SelectTrigger id="os-out-status" className="w-full text-xs">
-            <SelectValue />
+            <SelectValue placeholder="Chọn trạng thái" />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((opt) => (
-              <SelectItem key={opt.value} id={opt.value}>
+              <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -123,7 +123,7 @@ export function OutsourcingOrdersTableFilter() {
         type="button"
         variant="outline"
         className="gap-1.5 text-xs"
-        onPress={resetFilters}
+        onClick={resetFilters}
       >
         <RotateCw className="size-3.5" />
         Xóa bộ lọc

@@ -3,18 +3,23 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { Plus } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   Table,
   TableBody,
@@ -26,7 +31,6 @@ import {
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options"
-import { cn } from "@/lib/utils"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -35,7 +39,7 @@ const col = createColumnHelper<typeof appTableFeatures, UnfulfilledOrderItem>()
 type OutboundOrderAddItemsDialogProps = {
   clientId: string
   outboundOrderId: string
-  trigger: ReactNode
+  trigger: ReactElement
   alreadyPickedOrderItemIds: Set<string>
   onAdd: (row: UnfulfilledOrderItem) => void
 }
@@ -124,19 +128,23 @@ export function OutboundOrderAddItemsDialog({
         const isPicked = alreadyPickedOrderItemIds.has(row.original.orderItemId)
         const label = isPicked ? "Đã có trong phiếu" : "Thêm dòng này"
         return (
-          <TooltipTrigger>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              isDisabled={isPicked}
-              aria-label={label}
-              onPress={() => onAdd(row.original)}
-            >
-              <Plus className="size-3.5" />
-            </Button>
-            <Tooltip>{label}</Tooltip>
-          </TooltipTrigger>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  disabled={isPicked}
+                  aria-label={label}
+                  onClick={() => onAdd(row.original)}
+                >
+                  <Plus className="size-3.5" />
+                </Button>
+              }
+            />
+            <TooltipContent>{label}</TooltipContent>
+          </Tooltip>
         )
       },
     }),
@@ -149,9 +157,9 @@ export function OutboundOrderAddItemsDialog({
   })
 
   return (
-    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      {trigger}
-      <Dialog className="sm:max-w-2xl">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={trigger} />
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Thêm từ PO/Job</DialogTitle>
           <DialogDescription>
@@ -161,55 +169,52 @@ export function OutboundOrderAddItemsDialog({
 
         <div className="overflow-x-auto rounded-md border border-border/50">
           <Table aria-label="Danh sách dòng PO/Job">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
-            </TableHeader>
-            <TableBody
-              items={table.getRowModel().rows}
-              className={cn(
-                query.isFetching && "pointer-events-none opacity-50"
-              )}
-              renderEmptyState={() => (
-                <TableEmpty
-                  colSpan={columns.length}
-                  title={
-                    query.isPending ? "Đang tải..." : "Không tìm thấy dòng nào"
-                  }
-                />
-              )}
-            >
-              {(row) => (
-                <TableRow
-                  id={row.original.orderItemId}
-                  className="h-12"
-                  columns={row.getVisibleCells()}
-                >
-                  {(cell) => (
-                    <TableCell
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+            <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    </TableCell>
-                  )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title={
+                        query.isPending
+                          ? "Đang tải..."
+                          : "Không tìm thấy dòng nào"
+                      }
+                    />
+                  </TableCell>
                 </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.original.orderItemId} className="h-12">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>
@@ -225,11 +230,11 @@ export function OutboundOrderAddItemsDialog({
         )}
 
         <DialogFooter>
-          <Button type="button" onPress={() => setOpen(false)}>
+          <Button type="button" onClick={() => setOpen(false)}>
             Xong
           </Button>
         </DialogFooter>
-      </Dialog>
-    </DialogTrigger>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -72,15 +72,15 @@ export function ProductionExecutionJobsTableFilter() {
     })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    dueDateFrom: string | undefined,
+    dueDateTo: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        dueDateFrom: range.from,
-        dueDateTo: range.to,
+        dueDateFrom,
+        dueDateTo,
         page: 1,
       }),
     })
@@ -113,7 +113,7 @@ export function ProductionExecutionJobsTableFilter() {
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(11rem,1fr)_minmax(14rem,1.3fr)_minmax(11rem,1.1fr)_minmax(14rem,1.3fr)_minmax(9rem,0.9fr)]">
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="production-execution-operation"
               className="text-[11px] font-medium text-muted-foreground"
@@ -186,7 +186,7 @@ export function ProductionExecutionJobsTableFilter() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="production-execution-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -194,8 +194,11 @@ export function ProductionExecutionJobsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusFilterOptions}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger
                 id="production-execution-status"
@@ -205,7 +208,7 @@ export function ProductionExecutionJobsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}

@@ -23,7 +23,6 @@ import { buildQuotationItemsPickerColumns } from "@/features/purchase-quotations
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
-import { cn } from "@/lib/utils"
 import type {
   PickedQuotationItemValue,
   QuotationItemAllocationValue,
@@ -202,61 +201,55 @@ export const CreateQuotationItemsPickerSection = withForm({
 
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách vật tư cần báo giá">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
-            </TableHeader>
-            <TableBody
-              items={table.getRowModel().rows}
-              className={cn(
-                ledgerQuery.isFetching && "pointer-events-none opacity-50"
-              )}
-              renderEmptyState={() => (
-                <TableEmpty
-                  colSpan={columns.length}
-                  title={
-                    ledgerQuery.isPending
-                      ? "Đang tải..."
-                      : "Không có vật tư nào cần mua"
-                  }
-                />
-              )}
-            >
-              {(row) => (
-                <TableRow
-                  id={row.id}
-                  className="h-14 cursor-pointer bg-card hover:bg-muted/25"
-                  onAction={() => !disabled && toggleRow(row.original)}
-                  columns={row.getVisibleCells()}
-                >
-                  {(cell) => (
-                    <TableCell
-                      className={cell.column.columnDef.meta?.cellClassName}
-                      onClick={(event) =>
-                        cell.column.id === "select" && event.stopPropagation()
-                      }
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    </TableCell>
-                  )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title={
+                        ledgerQuery.isPending
+                          ? "Đang tải..."
+                          : "Không có vật tư nào cần mua"
+                      }
+                    />
+                  </TableCell>
                 </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="h-14 cursor-pointer bg-card hover:bg-muted/25"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>

@@ -137,8 +137,8 @@ export function UpdateOperationForm({
         <Button
           type="button"
           variant="outline"
-          isDisabled={isPending}
-          onPress={onCancel}
+          disabled={isPending}
+          onClick={onCancel}
         >
           Hủy
         </Button>
@@ -148,7 +148,7 @@ export function UpdateOperationForm({
           {([canSubmit, isSubmitting]) => (
             <Button
               type="submit"
-              isDisabled={!canSubmit || isSubmitting || isPending}
+              disabled={!canSubmit || isSubmitting || isPending}
             >
               {isSubmitting || isPending ? (
                 <>

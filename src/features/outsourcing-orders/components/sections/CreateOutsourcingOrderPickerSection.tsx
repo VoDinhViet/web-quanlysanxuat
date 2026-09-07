@@ -211,7 +211,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-out-picker-job"
               className="text-[11px] font-medium text-muted-foreground"
@@ -219,22 +219,22 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               Job
             </Label>
             <Select
+              items={[{ value: "all", label: "Tất cả Job" }, ...jobOptions]}
               value={productionJobId ?? "all"}
-              onChange={(key) => {
-                const value = String(key)
+              onValueChange={(value) => {
+                if (value === null) return
                 setProductionJobId(value === "all" ? undefined : value)
                 setPage(1)
               }}
-              isDisabled={disabled}
-              placeholder="Tất cả Job"
+              disabled={disabled}
             >
               <SelectTrigger id="os-out-picker-job" className="w-full text-xs">
-                <SelectValue />
+                <SelectValue placeholder="Tất cả Job" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả Job</SelectItem>
+                <SelectItem value="all">Tất cả Job</SelectItem>
                 {jobOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -242,7 +242,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-out-picker-operation"
               className="text-[11px] font-medium text-muted-foreground"
@@ -250,25 +250,28 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               Công đoạn
             </Label>
             <Select
+              items={[
+                { value: "all", label: "Tất cả công đoạn" },
+                ...operationOptions,
+              ]}
               value={operationId ?? "all"}
-              onChange={(key) => {
-                const value = String(key)
+              onValueChange={(value) => {
+                if (value === null) return
                 setOperationId(value === "all" ? undefined : value)
                 setPage(1)
               }}
-              isDisabled={disabled}
-              placeholder="Tất cả công đoạn"
+              disabled={disabled}
             >
               <SelectTrigger
                 id="os-out-picker-operation"
                 className="w-full text-xs"
               >
-                <SelectValue />
+                <SelectValue placeholder="Tất cả công đoạn" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem id="all">Tất cả công đoạn</SelectItem>
+                <SelectItem value="all">Tất cả công đoạn</SelectItem>
                 {operationOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -279,77 +282,80 @@ export const CreateOutsourcingOrderPickerSection = withForm({
 
         <div className="mt-4 overflow-x-auto rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách chi tiết cần gia công">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              )}
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
             </TableHeader>
             <TableBody
-              items={table.getRowModel().rows}
               className={cn(
                 query.isFetching && "pointer-events-none opacity-50"
               )}
-              renderEmptyState={() => (
-                <TableEmpty
-                  colSpan={columns.length}
-                  title={
-                    query.isPending
-                      ? "Đang tải..."
-                      : "Không tìm thấy chi tiết nào"
-                  }
-                />
-              )}
             >
-              {(row) => {
-                const isPicked = pickedOperationIds.has(
-                  row.original.productionJobOperationId
-                )
-                const isLocked = row.original.remainingQuantity <= 0
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title={
+                        query.isPending
+                          ? "Đang tải..."
+                          : "Không tìm thấy chi tiết nào"
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => {
+                  const isPicked = pickedOperationIds.has(
+                    row.original.productionJobOperationId
+                  )
+                  const isLocked = row.original.remainingQuantity <= 0
 
-                return (
-                  <TableRow
-                    id={row.id}
-                    className={cn(
-                      "h-14 bg-card",
-                      isLocked
-                        ? "opacity-60"
-                        : "cursor-pointer hover:bg-muted/25",
-                      isPicked && "bg-primary/5"
-                    )}
-                    onAction={() =>
-                      !disabled && !isLocked && toggleRow(row.original)
-                    }
-                    columns={row.getVisibleCells()}
-                  >
-                    {(cell) => (
-                      <TableCell
-                        className={cell.column.columnDef.meta?.cellClassName}
-                        onClick={(event) =>
-                          cell.column.id === "select" && event.stopPropagation()
-                        }
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    )}
-                  </TableRow>
-                )
-              }}
+                  return (
+                    <TableRow
+                      key={row.id}
+                      className={cn(
+                        "h-14 bg-card",
+                        isLocked
+                          ? "opacity-60"
+                          : "cursor-pointer hover:bg-muted/25",
+                        isPicked && "bg-primary/5"
+                      )}
+                      onClick={() =>
+                        !disabled && !isLocked && toggleRow(row.original)
+                      }
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                          onClick={(event) =>
+                            cell.column.id === "select" &&
+                            event.stopPropagation()
+                          }
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                })
+              )}
             </TableBody>
           </Table>
         </div>

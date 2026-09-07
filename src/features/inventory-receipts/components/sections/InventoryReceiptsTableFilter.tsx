@@ -65,15 +65,15 @@ export function InventoryReceiptsTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
-  const handleDateRangeChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleDateRangeChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
         page: 1,
       }),
     })
@@ -126,7 +126,7 @@ export function InventoryReceiptsTableFilter() {
           </div>
 
           {/* Select Loại phiếu */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="nk-receipt-type"
               className="text-[11px] font-medium text-muted-foreground"
@@ -134,15 +134,18 @@ export function InventoryReceiptsTableFilter() {
               Loại phiếu
             </Label>
             <Select
+              items={receiptTypeOptions}
               value={search.receiptType ?? "all"}
-              onChange={(key) => handleReceiptTypeChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleReceiptTypeChange(value)
+              }
             >
               <SelectTrigger id="nk-receipt-type" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {receiptTypeOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -151,7 +154,7 @@ export function InventoryReceiptsTableFilter() {
           </div>
 
           {/* Select Trạng thái */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="nk-status"
               className="text-[11px] font-medium text-muted-foreground"
@@ -159,15 +162,18 @@ export function InventoryReceiptsTableFilter() {
               Trạng thái
             </Label>
             <Select
+              items={statusOptions}
               value={search.status ?? "all"}
-              onChange={(key) => handleStatusChange(String(key))}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
             >
               <SelectTrigger id="nk-status" className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} id={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -202,7 +208,7 @@ export function InventoryReceiptsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            onPress={resetFilters}
+            onClick={resetFilters}
           >
             <RotateCw className="size-4" />
             Xóa bộ lọc

@@ -31,7 +31,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
@@ -127,107 +131,116 @@ export function ProductOperationsPanel({
     <div className="overflow-x-auto rounded-md border border-border/60 bg-card shadow-2xs">
       <Table aria-label="Danh sách công đoạn">
         <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
-          <TableHead id="index" className="w-14 font-bold text-foreground">
-            STT
-          </TableHead>
-          <TableHead
-            id="operation"
-            isRowHeader
-            className="font-bold text-foreground"
-          >
-            CÔNG ĐOẠN
-          </TableHead>
-          <TableHead id="type" className="w-36 font-bold text-foreground">
-            LOẠI
-          </TableHead>
-          <TableHead id="note" className="font-bold text-foreground">
-            GHI CHÚ
-          </TableHead>
-          <PermissionGate permission="items:bom-manage">
-            <TableHead
-              id="actions"
-              className="w-28 text-right font-bold text-foreground"
-            >
-              THAO TÁC
+          <TableRow>
+            <TableHead className="w-14 font-bold text-foreground">
+              STT
             </TableHead>
-          </PermissionGate>
+            <TableHead className="font-bold text-foreground">
+              CÔNG ĐOẠN
+            </TableHead>
+            <TableHead className="w-36 font-bold text-foreground">
+              LOẠI
+            </TableHead>
+            <TableHead className="font-bold text-foreground">GHI CHÚ</TableHead>
+            <PermissionGate permission="items:bom-manage">
+              <TableHead className="w-28 text-right font-bold text-foreground">
+                THAO TÁC
+              </TableHead>
+            </PermissionGate>
+          </TableRow>
         </TableHeader>
-        <TableBody
-          renderEmptyState={() => (
-            <TableEmpty
-              icon={ClipboardList}
-              colSpan={columnCount}
-              title="Chưa có công đoạn nào"
-            />
-          )}
-        >
-          {operations.map((step, idx) => (
-            <TableRow
-              key={step.id}
-              id={step.id}
-              className="h-14 bg-card hover:bg-muted/20"
-            >
-              <TableCell className="font-mono font-bold text-muted-foreground">
-                {idx + 1}
+        <TableBody>
+          {operations.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columnCount}>
+                <TableEmpty
+                  icon={ClipboardList}
+                  colSpan={columnCount}
+                  title="Chưa có công đoạn nào"
+                />
               </TableCell>
-              <TableCell className="font-semibold text-foreground">
-                {step.operation.name}
-              </TableCell>
-              <TableCell>
-                <OperationTypeBadge type={step.operation.type} />
-              </TableCell>
-              <TableCell className="font-medium text-muted-foreground">
-                {step.note ?? "—"}
-              </TableCell>
-              <PermissionGate permission="items:bom-manage">
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-1">
-                    <TooltipTrigger>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        aria-label="Di chuyển lên"
-                        isDisabled={idx === 0}
-                        onPress={() => move(idx, "up")}
-                        className="border border-border/60 hover:bg-muted"
-                      >
-                        <AltArrowUp className="size-3.5" />
-                      </Button>
-                      <Tooltip>Di chuyển lên</Tooltip>
-                    </TooltipTrigger>
-                    <TooltipTrigger>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        aria-label="Di chuyển xuống"
-                        isDisabled={idx === operations.length - 1}
-                        onPress={() => move(idx, "down")}
-                        className="border border-border/60 hover:bg-muted"
-                      >
-                        <AltArrowDown className="size-3.5" />
-                      </Button>
-                      <Tooltip>Di chuyển xuống</Tooltip>
-                    </TooltipTrigger>
-                    <TooltipTrigger>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        aria-label="Xoá công đoạn"
-                        onPress={() => remove(step.id)}
-                        className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                      >
-                        <TrashBinTrash className="size-3.5" />
-                      </Button>
-                      <Tooltip>Xoá công đoạn</Tooltip>
-                    </TooltipTrigger>
-                  </div>
-                </TableCell>
-              </PermissionGate>
             </TableRow>
-          ))}
+          ) : (
+            operations.map((step, idx) => (
+              <TableRow
+                key={step.id}
+                id={step.id}
+                className="h-14 bg-card hover:bg-muted/20"
+              >
+                <TableCell className="font-mono font-bold text-muted-foreground">
+                  {idx + 1}
+                </TableCell>
+                <TableCell className="font-semibold text-foreground">
+                  {step.operation.name}
+                </TableCell>
+                <TableCell>
+                  <OperationTypeBadge type={step.operation.type} />
+                </TableCell>
+                <TableCell className="font-medium text-muted-foreground">
+                  {step.note ?? "—"}
+                </TableCell>
+                <PermissionGate permission="items:bom-manage">
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon-sm"
+                              aria-label="Di chuyển lên"
+                              disabled={idx === 0}
+                              onClick={() => move(idx, "up")}
+                              className="border border-border/60 hover:bg-muted"
+                            >
+                              <AltArrowUp className="size-3.5" />
+                            </Button>
+                          }
+                        />
+                        <TooltipContent>Di chuyển lên</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon-sm"
+                              aria-label="Di chuyển xuống"
+                              disabled={idx === operations.length - 1}
+                              onClick={() => move(idx, "down")}
+                              className="border border-border/60 hover:bg-muted"
+                            >
+                              <AltArrowDown className="size-3.5" />
+                            </Button>
+                          }
+                        />
+                        <TooltipContent>Di chuyển xuống</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon-sm"
+                              aria-label="Xoá công đoạn"
+                              onClick={() => remove(step.id)}
+                              className="border border-border/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            >
+                              <TrashBinTrash className="size-3.5" />
+                            </Button>
+                          }
+                        />
+                        <TooltipContent>Xoá công đoạn</TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </TableCell>
+                </PermissionGate>
+              </TableRow>
+            ))
+          )}
 
           <PermissionGate permission="items:bom-manage">
             <TableRow
@@ -248,19 +261,18 @@ export function ProductOperationsPanel({
               </TableCell>
               <TableCell>
                 <Select
+                  items={operationTypeLabels}
                   value={selectedType}
-                  onChange={(key) =>
-                    setSelectedType(String(key) as OperationType)
-                  }
+                  onValueChange={(key) => key !== null && setSelectedType(key)}
                 >
                   <SelectTrigger className="h-9 w-full text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem id={OperationType.INHOUSE}>
+                    <SelectItem value={OperationType.INHOUSE}>
                       {operationTypeLabels[OperationType.INHOUSE]}
                     </SelectItem>
-                    <SelectItem id={OperationType.OUTSOURCE}>
+                    <SelectItem value={OperationType.OUTSOURCE}>
                       {operationTypeLabels[OperationType.OUTSOURCE]}
                     </SelectItem>
                   </SelectContent>
@@ -280,8 +292,8 @@ export function ProductOperationsPanel({
                   size="sm"
                   variant="outline"
                   className="gap-1 text-xs"
-                  isDisabled={!selectedOperationId}
-                  onPress={handleAdd}
+                  disabled={!selectedOperationId}
+                  onClick={handleAdd}
                 >
                   <AddSquare className="size-3.5" />
                   Thêm

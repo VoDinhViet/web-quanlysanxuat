@@ -3,7 +3,11 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { Info } from "lucide-react"
 
 import { Checkbox } from "@/components/ui/checkbox"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { InventoryRequisitionLine } from "@/lib/types/inventory-requisition.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -28,10 +32,14 @@ export function ColumnHeaderWithHint({
   return (
     <span className="inline-flex items-center gap-1">
       {label}
-      <TooltipTrigger>
-        <Info className="size-3 shrink-0 cursor-help text-muted-foreground/70" />
-        <Tooltip>{hint}</Tooltip>
-      </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Info className="size-3 shrink-0 cursor-help text-muted-foreground/70" />
+          }
+        />
+        <TooltipContent>{hint}</TooltipContent>
+      </Tooltip>
     </span>
   )
 }
@@ -65,18 +73,18 @@ export function buildCreateInventoryRequisitionPickerColumns({
       id: "select",
       header: () => (
         <Checkbox
-          isSelected={allChecked}
-          isDisabled={disabled}
-          onChange={onToggleAll}
+          checked={allChecked}
+          disabled={disabled}
+          onCheckedChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
         />
       ),
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <Checkbox
-          isSelected={pickedIds.has(row.original.item.id)}
-          isDisabled={disabled}
-          onChange={() => onToggleRow(row.original)}
+          checked={pickedIds.has(row.original.item.id)}
+          disabled={disabled}
+          onCheckedChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.item.name}`}
         />
       ),

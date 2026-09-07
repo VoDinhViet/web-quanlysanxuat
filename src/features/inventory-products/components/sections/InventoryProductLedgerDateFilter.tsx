@@ -14,15 +14,15 @@ export function InventoryProductLedgerDateFilter() {
     from: "/manage/inventory-products/$itemId",
   })
 
-  const handleChange = (range: {
-    from: string | undefined
-    to: string | undefined
-  }) => {
+  const handleChange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        startDate: range.from,
-        endDate: range.to,
+        startDate,
+        endDate,
         page: 1,
       }),
     })

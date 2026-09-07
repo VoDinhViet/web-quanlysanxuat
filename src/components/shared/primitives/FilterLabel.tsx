@@ -2,7 +2,11 @@ import { Info } from "lucide-react"
 import type { ComponentProps, ReactNode } from "react"
 
 import { Label } from "@/components/ui/label"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type FilterLabelProps = {
   label: string
@@ -23,20 +27,24 @@ export function FilterLabel({ label, htmlFor, tooltip }: FilterLabelProps) {
         {label}
       </Label>
       {tooltip && (
-        <TooltipTrigger>
-          <button
-            type="button"
-            className="text-muted-foreground/50 hover:text-muted-foreground"
-          >
-            <Info className="size-3" />
-          </button>
-          <Tooltip
-            placement="top"
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <button
+                type="button"
+                className="text-muted-foreground/50 hover:text-muted-foreground"
+              >
+                <Info className="size-3" />
+              </button>
+            }
+          />
+          <TooltipContent
+            side="top"
             className="flex-col items-start gap-0.5 text-left"
           >
             {tooltip}
-          </Tooltip>
-        </TooltipTrigger>
+          </TooltipContent>
+        </Tooltip>
       )}
     </div>
   )

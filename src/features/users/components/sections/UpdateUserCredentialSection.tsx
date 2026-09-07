@@ -74,9 +74,9 @@ export function UpdateUserCredentialSection({
             name="credential.credentialEnabled"
             render={({ field }) => (
               <Switch
-                isSelected={field.value ?? false}
-                onChange={field.onChange}
-                isDisabled={disabled}
+                checked={field.value ?? false}
+                onCheckedChange={field.onChange}
+                disabled={disabled}
                 className="mt-1 shrink-0"
                 aria-label="Cho phép đăng nhập"
               />
@@ -88,8 +88,8 @@ export function UpdateUserCredentialSection({
             name="credential"
             render={({ field }) => (
               <Switch
-                isSelected={field.value != null}
-                onChange={(checked) =>
+                checked={field.value != null}
+                onCheckedChange={(checked) =>
                   field.onChange(
                     checked
                       ? {
@@ -102,7 +102,7 @@ export function UpdateUserCredentialSection({
                       : undefined
                   )
                 }
-                isDisabled={disabled}
+                disabled={disabled}
                 className="mt-1 shrink-0"
                 aria-label="Cấp tài khoản ERP cho nhân viên này"
               />
@@ -195,8 +195,8 @@ export function UpdateUserCredentialSection({
                   variant="ghost"
                   size="icon-sm"
                   className="absolute top-1/2 right-1 -translate-y-1/2"
-                  onPress={() => setShowPassword(!showPassword)}
-                  isDisabled={credentialFieldsDisabled}
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={credentialFieldsDisabled}
                   aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 >
                   {showPassword ? (
@@ -223,14 +223,10 @@ export function UpdateUserCredentialSection({
                 Vai trò
               </FieldLabel>
               <Select
+                items={roleOptions}
                 value={field.value ?? ""}
-                onChange={(key) => field.onChange(String(key))}
-                isDisabled={credentialFieldsDisabled}
-                placeholder={
-                  rolesQuery.isPending
-                    ? "Đang tải..."
-                    : "Chọn vai trò (tuỳ chọn)"
-                }
+                onValueChange={field.onChange}
+                disabled={credentialFieldsDisabled}
               >
                 <SelectTrigger
                   id={field.name}
@@ -238,13 +234,19 @@ export function UpdateUserCredentialSection({
                   aria-invalid={!!fieldState.error}
                   className="h-9 w-full bg-background text-xs"
                 >
-                  <SelectValue />
+                  <SelectValue
+                    placeholder={
+                      rolesQuery.isPending
+                        ? "Đang tải..."
+                        : "Chọn vai trò (tuỳ chọn)"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {roleOptions.map((option) => (
                     <SelectItem
                       key={option.value}
-                      id={option.value}
+                      value={option.value}
                       className="text-xs"
                     >
                       {option.label}

@@ -34,20 +34,20 @@ export function buildCreateOutsourcingOrderPickerColumns({
       id: "select",
       header: () => (
         <Checkbox
-          isSelected={allChecked}
-          isDisabled={disabled}
-          onChange={onToggleAll}
+          checked={allChecked}
+          disabled={disabled}
+          onCheckedChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
         />
       ),
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <Checkbox
-          isSelected={pickedOperationIds.has(
+          checked={pickedOperationIds.has(
             row.original.productionJobOperationId
           )}
-          isDisabled={disabled || row.original.remainingQuantity <= 0}
-          onChange={() => onToggleRow(row.original)}
+          disabled={disabled || row.original.remainingQuantity <= 0}
+          onCheckedChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.bomItem.name}`}
         />
       ),

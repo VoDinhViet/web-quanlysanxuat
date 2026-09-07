@@ -97,8 +97,8 @@ export function UpdateMaterialForm({ material }: UpdateMaterialFormProps) {
           <Button
             type="button"
             variant="outline"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/materials",
                 search: { page: 1, limit: 10 },
@@ -113,7 +113,7 @@ export function UpdateMaterialForm({ material }: UpdateMaterialFormProps) {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                isDisabled={!canSubmit || isSubmitting || isPending}
+                disabled={!canSubmit || isSubmitting || isPending}
               >
                 {isSubmitting || isPending ? (
                   <>

@@ -132,7 +132,7 @@ export function LoginForm() {
                     variant="ghost"
                     size="icon-sm"
                     className="absolute top-1/2 right-2 -translate-y-1/2"
-                    onPress={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                   >
                     {showPassword ? <EyeOff /> : <Eye />}
@@ -150,10 +150,10 @@ export function LoginForm() {
               <Field orientation="horizontal">
                 <Checkbox
                   name={field.name}
-                  isSelected={field.value}
-                  onChange={field.onChange}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
                   onBlur={field.onBlur}
-                  isDisabled={isPending}
+                  disabled={isPending}
                 />
                 <FieldLabel
                   htmlFor={field.name}
@@ -169,7 +169,7 @@ export function LoginForm() {
             type="submit"
             size="lg"
             className="h-13 w-full text-base font-semibold tracking-[0.04em]"
-            isDisabled={form.formState.isSubmitting || isPending}
+            disabled={form.formState.isSubmitting || isPending}
           >
             {form.formState.isSubmitting || isPending ? (
               <>

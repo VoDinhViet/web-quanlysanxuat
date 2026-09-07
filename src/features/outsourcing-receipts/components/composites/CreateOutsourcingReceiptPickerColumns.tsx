@@ -40,9 +40,9 @@ export function buildCreateOutsourcingReceiptPickerColumns({
       id: "select",
       header: () => (
         <Checkbox
-          isSelected={allChecked}
-          isDisabled={disabled}
-          onChange={onToggleAll}
+          checked={allChecked}
+          disabled={disabled}
+          onCheckedChange={onToggleAll}
           aria-label="Chọn tất cả"
         />
       ),
@@ -54,9 +54,9 @@ export function buildCreateOutsourcingReceiptPickerColumns({
 
         return (
           <Checkbox
-            isSelected={pickedIds.has(row.original.id)}
-            isDisabled={disabled || isOtherSupplier}
-            onChange={() => onToggleRow(row.original)}
+            checked={pickedIds.has(row.original.id)}
+            disabled={disabled || isOtherSupplier}
+            onCheckedChange={() => onToggleRow(row.original)}
             aria-label={`Chọn ${row.original.item.name}`}
           />
         )

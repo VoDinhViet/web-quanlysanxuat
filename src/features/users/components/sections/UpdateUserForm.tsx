@@ -132,8 +132,8 @@ export function UpdateUserForm() {
           <Button
             type="button"
             variant="outline"
-            isDisabled={isPending}
-            onPress={() =>
+            disabled={isPending}
+            onClick={() =>
               void navigate({
                 to: "/manage/users",
                 search: { page: 1, limit: 10 },
@@ -144,7 +144,7 @@ export function UpdateUserForm() {
           </Button>
           <Button
             type="submit"
-            isDisabled={form.formState.isSubmitting || isPending}
+            disabled={form.formState.isSubmitting || isPending}
           >
             {form.formState.isSubmitting || isPending ? (
               <>

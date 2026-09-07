@@ -40,16 +40,6 @@ type ComboboxFieldProps = Pick<
   onBlur?: () => void
   isInvalid?: boolean
   errors?: ComponentProps<typeof FieldError>["errors"]
-  // DOM node to portal the popup into — forwarded to RAC's Popover as
-  // `UNSTABLE_portalContainer`. Pass the enclosing Dialog's content node when this field
-  // is rendered inside one. Kept from the pre-RAC (base-ui) version defensively: Dialog
-  // and Combobox are both RAC now, sharing one overlay/focus-coordination system, so the
-  // original cross-library "portal outside the dialog's focus trap swallows the click"
-  // bug this worked around may no longer apply — but the 3 existing dialog call sites
-  // already wire a content-node ref for it, so keep honoring `container` rather than
-  // assume it's safe to drop. Default undefined — table filters and non-dialog forms
-  // portal to `<body>` as normal.
-  container?: HTMLElement | null
 }
 
 export function ComboboxField({
@@ -69,7 +59,6 @@ export function ComboboxField({
   placeholder,
   disabled,
   className,
-  container,
 }: ComboboxFieldProps) {
   // Local label cache for the current selection — seeded from `initialOption`
   // and updated on pick, so the selected option renders even when it's outside
@@ -124,14 +113,15 @@ export function ComboboxField({
       ) : null}
       <Combobox
         items={items}
-        value={selectedOption?.value ?? null}
-        onChange={(key) => {
-          const next = items.find((option) => option.value === key) ?? null
+        value={selectedOption}
+        onValueChange={(next) => {
           setSelectedOption(next)
           onValueChange(next?.value)
         }}
-        onInputChange={(next) => onSearchChange(next)}
-        allowsEmptyCollection
+        onInputValueChange={(next) => onSearchChange(next)}
+        isItemEqualToValue={(itemValue, current) =>
+          itemValue.value === current.value
+        }
       >
         <ComboboxInput
           id={id}
@@ -142,16 +132,13 @@ export function ComboboxField({
           showClear={Boolean(selectedOption) && !disabled}
           className={cn("w-full", className)}
         />
-        <ComboboxContent UNSTABLE_portalContainer={container ?? undefined}>
-          <ComboboxList
-            renderEmptyState={() => (
-              <ComboboxEmpty>
-                {isPending ? "Đang tìm..." : emptyMessage}
-              </ComboboxEmpty>
-            )}
-          >
+        <ComboboxContent>
+          <ComboboxEmpty>
+            {isPending ? "Đang tìm..." : emptyMessage}
+          </ComboboxEmpty>
+          <ComboboxList>
             {items.map((option) => (
-              <ComboboxItem key={option.value} id={option.value}>
+              <ComboboxItem key={option.value} value={option}>
                 {option.label}
               </ComboboxItem>
             ))}

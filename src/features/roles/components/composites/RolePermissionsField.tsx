@@ -43,9 +43,9 @@ export function RolePermissionsField({
                 <Checkbox
                   key={code}
                   className="flex items-center gap-2 text-xs text-foreground"
-                  isSelected={selectedSet.has(code)}
-                  isDisabled={disabled}
-                  onChange={(checked) => toggle(code, checked)}
+                  checked={selectedSet.has(code)}
+                  disabled={disabled}
+                  onCheckedChange={(checked) => toggle(code, checked)}
                 >
                   {permissionLabels[code]}
                 </Checkbox>

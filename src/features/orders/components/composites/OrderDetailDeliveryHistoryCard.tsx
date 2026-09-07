@@ -41,17 +41,13 @@ export function OrderDetailDeliveryHistoryCard({
         <div className="overflow-x-auto rounded-md border border-border/50">
           <Table aria-label="Lịch sử giao hàng">
             <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
-              <TableHead id="code" isRowHeader>
-                Mã DO
-              </TableHead>
-              <TableHead id="deliveredAt">Ngày giao</TableHead>
-              <TableHead id="quantity" className="text-right">
-                Số lượng
-              </TableHead>
-              <TableHead id="value" className="text-right">
-                Giá trị
-              </TableHead>
-              <TableHead id="vehicle">Phương tiện</TableHead>
+              <TableRow>
+                <TableHead>Mã DO</TableHead>
+                <TableHead>Ngày giao</TableHead>
+                <TableHead className="text-right">Số lượng</TableHead>
+                <TableHead className="text-right">Giá trị</TableHead>
+                <TableHead>Phương tiện</TableHead>
+              </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((row) => (
