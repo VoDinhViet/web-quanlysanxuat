@@ -87,10 +87,12 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
               <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
                 <Table aria-label={`Danh sách ${itemNoun}`}>
                   <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+<TableRow>
+
                     <TableHead id="index" className="w-12">
                       #
                     </TableHead>
-                    <TableHead id="item" isRowHeader>
+                    <TableHead id="item">
                       {itemType === "FG" ? "Thành phẩm" : "Vật tư"}
                     </TableHead>
                     <TableHead id="quantity" className="text-right">
@@ -106,17 +108,23 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
                     <TableHead id="actions" className="w-24 text-right">
                       Thao tác
                     </TableHead>
-                  </TableHeader>
+                  
+</TableRow>
+</TableHeader>
                   <TableBody
-                    renderEmptyState={() => (
-                      <TableEmpty
+                  >
+{items.length === 0 ? (
+<TableRow>
+<TableCell colSpan={7}>
+<TableEmpty
                         colSpan={7}
                         title={`Chưa có ${itemNoun} nào`}
                         description={`Bấm “Thêm ${itemNoun}” để thêm.`}
                       />
-                    )}
-                  >
-                    {items.map((item, index) => (
+</TableCell>
+</TableRow>
+) : (
+items.map((item, index) => (
                       <TableRow
                         key={index}
                         id={index}
@@ -177,8 +185,9 @@ export const InventoryReceiptCreateGenericItemsSection = withForm({
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
+                    ))
+)}
+</TableBody>
                 </Table>
               </div>
 

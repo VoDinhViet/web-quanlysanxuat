@@ -78,10 +78,12 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách vật tư đơn mua hàng">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+<TableRow>
+
               <TableHead id="index" className="w-14 text-center">
                 STT
               </TableHead>
-              <TableHead id="code" isRowHeader className="min-w-32">
+              <TableHead id="code" className="min-w-32">
                 Mã vật tư
               </TableHead>
               <TableHead id="name" className="min-w-44">
@@ -93,10 +95,15 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
               <TableHead id="quantity" className="w-28 text-right">
                 SL đặt
               </TableHead>
-            </TableHeader>
+            
+</TableRow>
+</TableHeader>
             <TableBody
-              renderEmptyState={() => (
-                <TableEmpty
+            >
+{lines.length === 0 ? (
+<TableRow>
+<TableCell colSpan={5}>
+<TableEmpty
                   colSpan={5}
                   title={
                     isFetching
@@ -104,9 +111,10 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
                       : "Đơn mua hàng không có dòng nào"
                   }
                 />
-              )}
-            >
-              {lines.map((line, index) => (
+</TableCell>
+</TableRow>
+) : (
+lines.map((line, index) => (
                 <TableRow key={line.id} id={line.id} className="h-12 bg-card">
                   <TableCell className="text-center text-muted-foreground">
                     {index + 1}
@@ -124,8 +132,9 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
                     {quantityFormatter.format(line.quantity)}
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
+              ))
+)}
+</TableBody>
           </Table>
         </div>
       </div>

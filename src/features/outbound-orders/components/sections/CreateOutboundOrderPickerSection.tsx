@@ -244,7 +244,7 @@ export const CreateOutboundOrderPickerSection = withForm({
                         : "cursor-pointer hover:bg-muted/25",
                       isPicked && "bg-primary/5"
                     )}
-                    onAction={() =>
+                    onClick={() =>
                       !disabled && !isOtherClient && toggleRow(row.original)
                     }
                     columns={row.getVisibleCells()}

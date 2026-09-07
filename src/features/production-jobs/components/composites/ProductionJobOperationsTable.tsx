@@ -412,9 +412,11 @@ export function ProductionJobOperationsTable({
       <div className="overflow-x-auto rounded-md border border-border/50">
         <Table aria-label="Danh sách công đoạn">
           <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+<TableRow>
+
             <TableHead
               id="operation"
-              isRowHeader
+
               className="min-w-56 font-bold text-foreground"
             >
               CÔNG ĐOẠN
@@ -461,16 +463,22 @@ export function ProductionJobOperationsTable({
             >
               THAO TÁC
             </TableHead>
-          </TableHeader>
+          
+</TableRow>
+</TableHeader>
           <TableBody
-            renderEmptyState={() => (
-              <TableEmpty
+          >
+{groups.length === 0 ? (
+<TableRow>
+<TableCell colSpan={columnCount}>
+<TableEmpty
                 colSpan={columnCount}
                 title="Chưa có công đoạn nào."
               />
-            )}
-          >
-            {groups.map((bomItem, groupIndex) => (
+</TableCell>
+</TableRow>
+) : (
+groups.map((bomItem, groupIndex) => (
               <Fragment key={bomItem.id}>
                 <BomItemHeaderRow bomItem={bomItem} />
                 {bomItem.operations.map((operation, operationIndex) => (
@@ -485,8 +493,9 @@ export function ProductionJobOperationsTable({
                   />
                 ))}
               </Fragment>
-            ))}
-          </TableBody>
+            ))
+)}
+</TableBody>
         </Table>
       </div>
     </div>

@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
-import { Link } from "@tanstack/react-router"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuLinkItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -111,97 +111,79 @@ export function ManageOpenNcrTable() {
           aria-label="NCR chưa xử lý"
           className="[&_td]:border-r-0 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:first:pl-4 [&_th]:last:pr-4"
         >
-          <TableHeader
-            columns={table.getFlatHeaders()}
-            className="bg-transparent [&>tr]:hover:bg-transparent"
-          >
-            {(header) => (
-              <TableHead
-                id={header.id}
-                isRowHeader={header.index === 0}
-                className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
-              >
+          <TableHeader className="bg-transparent [&>tr]:hover:bg-transparent">
+<TableRow>
+{table.getFlatHeaders().map((header) => (
+<TableHead
+key={header.id}
+className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
+>
+
                 {!header.isPlaceholder &&
                   flexRender(
                     header.column.columnDef.header,
                     header.getContext()
                   )}
-              </TableHead>
-            )}
-          </TableHeader>
-          <TableBody
-            items={rows}
-            renderEmptyState={() => (
-              <TableEmpty
+              
+</TableHead>
+))}
+</TableRow>
+</TableHeader>
+          <TableBody>
+{rows.length === 0 ? (
+<TableRow>
+<TableCell colSpan={columns.length}>
+<TableEmpty
                 colSpan={columns.length}
                 title={
                   query.isError ? "Không tải được dữ liệu" : "Chưa có dữ liệu"
                 }
               />
-            )}
-          >
-            {(row) => (
-              <TableRow id={row.id} columns={row.getVisibleCells()}>
-                {(cell) => (
-                  <TableCell
-                    className={cell.column.columnDef.meta?.cellClassName}
-                  >
+</TableCell>
+</TableRow>
+) : (rows.map((row) => (
+<TableRow key={row.id} >
+{row.getVisibleCells().map((cell) => (
+<TableCell
+key={cell.id}
+className={cell.column.columnDef.meta?.cellClassName}
+>
+
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
+                  
+</TableCell>
+))}
+</TableRow>
+)))}
+</TableBody>
         </Table>
       </div>
       <div className="flex justify-end">
-        <DropdownMenuTrigger>
-          <Button
-            type="button"
-            variant="link"
-            className="h-auto p-0 text-[11px] font-medium"
-          >
-            Xem tất cả →
-          </Button>
-          <DropdownMenu placement="bottom end">
-            <RoutePermissionGate route="/manage/iqc">
-              <DropdownMenuItem
-                href="#"
-                render={(props) =>
-                  "href" in props ? (
-                    <Link
-                      {...props}
-                      to="/manage/iqc"
-                      search={{ page: 1, limit: 10 }}
-                    />
-                  ) : (
-                    <div {...props} />
-                  )
-                }
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto p-0 text-[11px] font-medium"
               >
+                Xem tất cả →
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end">
+            <RoutePermissionGate route="/manage/iqc">
+              <DropdownMenuLinkItem to="/manage/iqc" search={{ page: 1, limit: 10 }}>
                 Xem IQC
-              </DropdownMenuItem>
+              </DropdownMenuLinkItem>
             </RoutePermissionGate>
             <RoutePermissionGate route="/manage/oqc">
-              <DropdownMenuItem
-                href="#"
-                render={(props) =>
-                  "href" in props ? (
-                    <Link
-                      {...props}
-                      to="/manage/oqc"
-                      search={{ page: 1, limit: 10 }}
-                    />
-                  ) : (
-                    <div {...props} />
-                  )
-                }
-              >
+              <DropdownMenuLinkItem to="/manage/oqc" search={{ page: 1, limit: 10 }}>
                 Xem OQC
-              </DropdownMenuItem>
+              </DropdownMenuLinkItem>
             </RoutePermissionGate>
-          </DropdownMenu>
-        </DropdownMenuTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

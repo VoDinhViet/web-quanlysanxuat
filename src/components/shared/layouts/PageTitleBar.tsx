@@ -100,8 +100,8 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
   const profile = profileQuery.data
 
   return (
-    <DropdownMenuTrigger>
-      <Button
+    <DropdownMenu>
+<DropdownMenuTrigger render={<Button
         type="button"
         variant="ghost"
         className="h-auto gap-3 px-1.5 py-1"
@@ -131,8 +131,9 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
         </span>
 
         <ChevronDown className="size-4 text-muted-foreground" />
-      </Button>
-      <DropdownMenu placement="bottom end" className="w-64">
+      </Button>} />
+<DropdownMenuContent align="end">
+
         <div className="flex items-start gap-3 px-2 py-1.5">
           <Avatar className="size-10">
             {profile?.avatar && (
@@ -177,7 +178,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
             <DropdownMenuItem
               aria-disabled="true"
               className="text-muted-foreground"
-              shouldCloseOnSelect={false}
+              closeOnClick={false}
             >
               <Icon />
               {label}
@@ -189,13 +190,14 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
         <DropdownMenuItem
           variant="destructive"
           disabled={isLoggingOut}
-          onAction={onLogout}
+          onClick={onLogout}
         >
           <LogOut />
           Đăng xuất
         </DropdownMenuItem>
-      </DropdownMenu>
-    </DropdownMenuTrigger>
+      
+</DropdownMenuContent>
+</DropdownMenu>
   )
 }
 

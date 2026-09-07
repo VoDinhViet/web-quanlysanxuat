@@ -172,26 +172,29 @@ export function CreateOrderSelectItemsStep({
 
       <div className="mt-4 max-h-[420px] overflow-x-auto overflow-y-auto rounded-md border border-dashed border-border/50 bg-card">
         <Table aria-label="Danh mục sản phẩm">
-          <TableHeader columns={table.getFlatHeaders()} className="[&>tr]:h-12">
-            {(header) => (
-              <TableHead
-                id={header.id}
-                isRowHeader={header.index === 0}
-                className={header.column.columnDef.meta?.headerClassName}
-              >
+          <TableHeader className="[&>tr]:h-12">
+<TableRow>
+{table.getFlatHeaders().map((header) => (
+<TableHead
+key={header.id}
+className={header.column.columnDef.meta?.headerClassName}
+>
+
                 {!header.isPlaceholder &&
                   flexRender(
                     header.column.columnDef.header,
                     header.getContext()
                   )}
-              </TableHead>
-            )}
-          </TableHeader>
-          <TableBody
-            items={table.getRowModel().rows}
-            className={cn(query.isFetching && "pointer-events-none opacity-50")}
-            renderEmptyState={() => (
-              <TableEmpty
+              
+</TableHead>
+))}
+</TableRow>
+</TableHeader>
+          <TableBody>
+{table.getRowModel().rows.length === 0 ? (
+<TableRow>
+<TableCell colSpan={columns.length}>
+<TableEmpty
                 icon={Gallery}
                 colSpan={columns.length}
                 title={
@@ -201,31 +204,26 @@ export function CreateOrderSelectItemsStep({
                   query.isPending ? undefined : "Thử một từ khoá khác."
                 }
               />
-            )}
-          >
-            {(row) => (
-              <TableRow
-                id={row.original.id}
-                className={cn(
+</TableCell>
+</TableRow>
+) : (table.getRowModel().rows.map((row) => (
+<TableRow key={row.original.id} className={cn(
                   "h-14 cursor-pointer bg-card transition-colors hover:bg-muted/25",
                   row.original.isSelected && "border-l-2 border-primary"
-                )}
-                onAction={() => toggleItem(row.original)}
-                columns={row.getVisibleCells()}
-              >
-                {(cell) => (
-                  <TableCell
-                    className={cell.column.columnDef.meta?.cellClassName}
-                    onClick={(event) =>
-                      cell.column.id === "select" && event.stopPropagation()
-                    }
-                  >
+                )}>
+{row.getVisibleCells().map((cell) => (
+<TableCell
+key={cell.id}
+className={cell.column.columnDef.meta?.cellClassName}
+>
+
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
+                  
+</TableCell>
+))}
+</TableRow>
+)))}
+</TableBody>
         </Table>
       </div>
 

@@ -102,31 +102,29 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
           className="mt-4 block gap-0 overflow-hidden rounded-md border border-dashed border-border/50 bg-card"
         >
           <Table aria-label="Danh sách PO cần nhập">
-            <TableHeader
-              columns={reactTable.getFlatHeaders()}
-              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+<TableRow>
+{reactTable.getFlatHeaders().map((header) => (
+<TableHead
+key={header.id}
+className={header.column.columnDef.meta?.headerClassName}
+>
+
                   {!header.isPlaceholder &&
                     flexRender(
                       header.column.columnDef.header,
                       header.getContext()
                     )}
-                </TableHead>
-              )}
-            </TableHeader>
-            <TableBody
-              items={reactTable.getRowModel().rows}
-              className={cn(
-                poQuery.isFetching && "pointer-events-none opacity-50"
-              )}
-              renderEmptyState={() => (
-                <TableEmpty
+                
+</TableHead>
+))}
+</TableRow>
+</TableHeader>
+            <TableBody>
+{reactTable.getRowModel().rows.length === 0 ? (
+<TableRow>
+<TableCell colSpan={columns.length}>
+<TableEmpty
                   colSpan={columns.length}
                   title={
                     poQuery.isPending
@@ -134,34 +132,26 @@ export const InventoryReceiptCreateFromPoPickerSection = withForm({
                       : "Không có PO nào cần nhập kho"
                   }
                 />
-              )}
-            >
-              {(row) => (
-                <TableRow
-                  id={row.id}
-                  className="h-14 cursor-pointer bg-card hover:bg-muted/25"
-                  onAction={() =>
-                    !disabled &&
-                    purchaseOrderIdField.handleChange(row.original.id)
-                  }
-                  columns={row.getVisibleCells()}
-                >
-                  {(cell) => (
-                    <TableCell
-                      className={cell.column.columnDef.meta?.cellClassName}
-                      onClick={(event) =>
-                        cell.column.id === "select" && event.stopPropagation()
-                      }
-                    >
+</TableCell>
+</TableRow>
+) : (reactTable.getRowModel().rows.map((row) => (
+<TableRow key={row.id} className="h-14 cursor-pointer bg-card hover:bg-muted/25">
+{row.getVisibleCells().map((cell) => (
+<TableCell
+key={cell.id}
+className={cell.column.columnDef.meta?.cellClassName}
+>
+
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-                    </TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
+                    
+</TableCell>
+))}
+</TableRow>
+)))}
+</TableBody>
           </Table>
         </RadioGroup>
 

@@ -200,7 +200,9 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                     <div className="max-h-64 overflow-x-auto overflow-y-auto rounded-md border border-dashed border-border/50 bg-card">
                       <Table aria-label="Danh sách Job">
                         <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
-                          <TableHead id="code" isRowHeader>
+<TableRow>
+
+                          <TableHead id="code">
                             Mã Job
                           </TableHead>
                           <TableHead id="orderCode">Mã LSX</TableHead>
@@ -212,11 +214,16 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                             Hạn giao
                           </TableHead>
                           <TableHead id="selected" className="w-9" />
-                        </TableHeader>
+                        
+</TableRow>
+</TableHeader>
                         <TableBody
                           className={cn(jobsQuery.isFetching && "opacity-50")}
-                          renderEmptyState={() => (
-                            <TableEmpty
+                        >
+{jobs.length === 0 ? (
+<TableRow>
+<TableCell colSpan={6}>
+<TableEmpty
                               colSpan={6}
                               title={
                                 jobsQuery.isPending
@@ -224,9 +231,10 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                                   : "Không tìm thấy Job"
                               }
                             />
-                          )}
-                        >
-                          {jobs.map((job: ProductionJob) => (
+</TableCell>
+</TableRow>
+) : (
+jobs.map((job: ProductionJob) => (
                             <TableRow
                               key={job.id}
                               id={job.id}
@@ -234,7 +242,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                                 "h-12 cursor-pointer bg-card hover:bg-muted/25",
                                 field.state.value === job.id && "bg-primary/5"
                               )}
-                              onAction={() =>
+                              onClick={() =>
                                 !disabled && field.handleChange(job.id)
                               }
                             >
@@ -257,8 +265,9 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                                 )}
                               </TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
+                          ))
+)}
+</TableBody>
                       </Table>
                     </div>
 

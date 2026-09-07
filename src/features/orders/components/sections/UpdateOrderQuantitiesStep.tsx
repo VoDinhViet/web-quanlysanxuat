@@ -104,10 +104,12 @@ export function UpdateOrderQuantitiesStep({
       <div className="mt-4 overflow-x-auto rounded-md border border-dashed border-border/50 bg-card">
         <Table aria-label="Số lượng & giá">
           <TableHeader className="[&>tr]:h-12">
+<TableRow>
+
             <TableHead id="index" className="w-12">
               #
             </TableHead>
-            <TableHead id="item" isRowHeader>
+            <TableHead id="item">
               Sản phẩm
             </TableHead>
             <TableHead id="unit">ĐVT</TableHead>
@@ -132,17 +134,23 @@ export function UpdateOrderQuantitiesStep({
             <TableHead id="actions" className="w-24 text-right">
               Thao tác
             </TableHead>
-          </TableHeader>
+          
+</TableRow>
+</TableHeader>
           <TableBody
-            renderEmptyState={() => (
-              <TableEmpty
+          >
+{fields.length === 0 ? (
+<TableRow>
+<TableCell colSpan={10}>
+<TableEmpty
                 colSpan={10}
                 title="Chưa chọn sản phẩm nào"
                 description={'Quay lại bước "Chọn sản phẩm" để thêm.'}
               />
-            )}
-          >
-            {fields.map((field, index) => {
+</TableCell>
+</TableRow>
+) : (
+fields.map((field, index) => {
               const isCancelled = field.status === OrderItemStatus.CANCELLED
               const rowActions: RowAction[] = [
                 {
@@ -295,8 +303,9 @@ export function UpdateOrderQuantitiesStep({
                   </TableCell>
                 </TableRow>
               )
-            })}
-          </TableBody>
+            })
+)}
+</TableBody>
         </Table>
       </div>
     </div>

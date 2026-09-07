@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router"
 import { Diskette, MenuDots, Printer } from "@solar-icons/react"
 
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
@@ -6,7 +5,8 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuLinkItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
@@ -41,72 +41,46 @@ export function IqcDetailActions({
         </PendingAction>
 
         {hasOtherLinks && (
-          <DropdownMenuTrigger>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Khác"
-            >
-              <MenuDots className="size-4" />
-            </Button>
-            <DropdownMenu placement="bottom end">
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  aria-label="Khác"
+                >
+                  <MenuDots className="size-4" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end">
               {inventoryReceipt && (
-                <DropdownMenuItem
-                  href="#"
-                  render={(props) =>
-                    "href" in props ? (
-                      <Link
-                        {...props}
-                        to="/manage/inventory-receipts/$inventoryReceiptId"
-                        params={{ inventoryReceiptId: inventoryReceipt.id }}
-                      />
-                    ) : (
-                      <div {...props} />
-                    )
-                  }
+                <DropdownMenuLinkItem
+                  to="/manage/inventory-receipts/$inventoryReceiptId"
+                  params={{ inventoryReceiptId: inventoryReceipt.id }}
                 >
                   Xem phiếu nhập kho
-                </DropdownMenuItem>
+                </DropdownMenuLinkItem>
               )}
               {purchaseOrder && (
-                <DropdownMenuItem
-                  href="#"
-                  render={(props) =>
-                    "href" in props ? (
-                      <Link
-                        {...props}
-                        to="/manage/purchase-orders/$purchaseOrderId"
-                        params={{ purchaseOrderId: purchaseOrder.id }}
-                      />
-                    ) : (
-                      <div {...props} />
-                    )
-                  }
+                <DropdownMenuLinkItem
+                  to="/manage/purchase-orders/$purchaseOrderId"
+                  params={{ purchaseOrderId: purchaseOrder.id }}
                 >
                   Xem đơn mua hàng (PO)
-                </DropdownMenuItem>
+                </DropdownMenuLinkItem>
               )}
               {supplierReturn && (
-                <DropdownMenuItem
-                  href="#"
-                  render={(props) =>
-                    "href" in props ? (
-                      <Link
-                        {...props}
-                        to="/manage/supplier-returns/$supplierReturnId"
-                        params={{ supplierReturnId: supplierReturn.id }}
-                      />
-                    ) : (
-                      <div {...props} />
-                    )
-                  }
+                <DropdownMenuLinkItem
+                  to="/manage/supplier-returns/$supplierReturnId"
+                  params={{ supplierReturnId: supplierReturn.id }}
                 >
                   Xem phiếu trả NCC
-                </DropdownMenuItem>
+                </DropdownMenuLinkItem>
               )}
-            </DropdownMenu>
-          </DropdownMenuTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
 
         {!isLocked && (

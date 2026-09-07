@@ -118,7 +118,9 @@ function QuotationAllocationsDialogForm({
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">
         <Table aria-label="Danh sách phân bổ số lượng">
           <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
-            <TableHead id="prCode" isRowHeader className="w-28">
+<TableRow>
+
+            <TableHead id="prCode" className="w-28">
               Mã PR
             </TableHead>
             <TableHead id="requestedQuantity" className="w-28 text-right">
@@ -128,13 +130,19 @@ function QuotationAllocationsDialogForm({
               SL báo giá
             </TableHead>
             <TableHead id="reason">Lý do điều chỉnh SL</TableHead>
-          </TableHeader>
+          
+</TableRow>
+</TableHeader>
           <TableBody
-            renderEmptyState={() => (
-              <TableEmpty colSpan={4} title="Chưa có dòng phân bổ nào" />
-            )}
           >
-            {localAllocations.map((allocation, index) => (
+{localAllocations.length === 0 ? (
+<TableRow>
+<TableCell colSpan={4}>
+<TableEmpty colSpan={4} title="Chưa có dòng phân bổ nào" />
+</TableCell>
+</TableRow>
+) : (
+localAllocations.map((allocation, index) => (
               <TableRow
                 key={allocation.purchaseRequestItemId}
                 id={allocation.purchaseRequestItemId}
@@ -176,8 +184,9 @@ function QuotationAllocationsDialogForm({
                   />
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
+            ))
+)}
+</TableBody>
         </Table>
       </div>
 

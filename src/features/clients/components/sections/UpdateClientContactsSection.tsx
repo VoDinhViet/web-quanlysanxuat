@@ -76,10 +76,12 @@ export const UpdateClientContactsSection = withForm({
               <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
                 <Table aria-label="Danh sách người liên hệ">
                   <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+<TableRow>
+
                     <TableHead id="index" className="w-12">
                       #
                     </TableHead>
-                    <TableHead id="name" isRowHeader>
+                    <TableHead id="name">
                       Họ và tên
                     </TableHead>
                     <TableHead id="position">Chức vụ</TableHead>
@@ -89,17 +91,23 @@ export const UpdateClientContactsSection = withForm({
                     <TableHead id="actions" className="w-24 text-right">
                       Thao tác
                     </TableHead>
-                  </TableHeader>
+                  
+</TableRow>
+</TableHeader>
                   <TableBody
-                    renderEmptyState={() => (
-                      <TableEmpty
+                  >
+{contacts.length === 0 ? (
+<TableRow>
+<TableCell colSpan={7}>
+<TableEmpty
                         colSpan={7}
                         title="Chưa có người liên hệ"
                         description="Bấm “Thêm người liên hệ” để thêm."
                       />
-                    )}
-                  >
-                    {contacts.map((contact, index) => (
+</TableCell>
+</TableRow>
+) : (
+contacts.map((contact, index) => (
                       <TableRow
                         key={index}
                         id={index}
@@ -148,8 +156,9 @@ export const UpdateClientContactsSection = withForm({
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
+                    ))
+)}
+</TableBody>
                 </Table>
               </div>
 

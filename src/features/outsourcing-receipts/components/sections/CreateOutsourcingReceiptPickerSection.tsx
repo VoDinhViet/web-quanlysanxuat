@@ -331,7 +331,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
                         : "cursor-pointer hover:bg-muted/25",
                       isPicked && "bg-primary/5"
                     )}
-                    onAction={() =>
+                    onClick={() =>
                       !disabled && !isOtherSupplier && toggleRow(row.original)
                     }
                     columns={row.getVisibleCells()}

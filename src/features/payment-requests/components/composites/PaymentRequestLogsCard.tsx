@@ -58,16 +58,23 @@ export function PaymentRequestLogsCard({
       >
         <Table aria-label="Lịch sử thay đổi">
           <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
-            <TableHead id="createdAt" isRowHeader>
+<TableRow>
+
+            <TableHead id="createdAt">
               Thời gian
             </TableHead>
             <TableHead id="performer">Người thực hiện</TableHead>
             <TableHead id="action">Hành động</TableHead>
             <TableHead id="content">Nội dung</TableHead>
-          </TableHeader>
+          
+</TableRow>
+</TableHeader>
           <TableBody
-            renderEmptyState={() =>
-              logsQuery.isPending ? (
+          >
+{logs.length === 0 ? (
+<TableRow>
+<TableCell colSpan={logColumnCount}>
+logsQuery.isPending ? (
                 <div className="flex h-40 items-center justify-center">
                   <Spinner className="mx-auto size-6 text-muted-foreground" />
                 </div>
@@ -81,9 +88,10 @@ export function PaymentRequestLogsCard({
                   title="Chưa có dữ liệu lịch sử."
                 />
               )
-            }
-          >
-            {logs.map((log) => (
+</TableCell>
+</TableRow>
+) : (
+logs.map((log) => (
               <TableRow
                 key={log.id}
                 id={log.id}
@@ -98,8 +106,9 @@ export function PaymentRequestLogsCard({
                 </TableCell>
                 <TableCell>{log.content}</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
+            ))
+)}
+</TableBody>
         </Table>
       </div>
 

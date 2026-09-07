@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
+import { createLink } from "@tanstack/react-router"
 import { cn } from "cn"
 import { IconChevronRight, IconCheck } from "@tabler/icons-react"
 
@@ -92,6 +93,10 @@ function DropdownMenuItem({
     />
   )
 }
+
+// Router-compatible dropdown menu item link, same TanStack Router pattern as LinkButton in
+// button.tsx (https://tanstack.com/router/latest/docs/how-to/integrate-shadcn-ui).
+const DropdownMenuLinkItem = createLink(DropdownMenuItem)
 
 function DropdownMenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
   return <MenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />
@@ -254,6 +259,7 @@ export {
   DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuItem,
+  DropdownMenuLinkItem,
   DropdownMenuCheckboxItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,

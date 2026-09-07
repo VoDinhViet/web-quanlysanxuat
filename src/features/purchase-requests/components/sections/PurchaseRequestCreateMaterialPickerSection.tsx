@@ -208,31 +208,29 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
 
         <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh mục vật tư">
-            <TableHeader
-              columns={table.getFlatHeaders()}
-              className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45"
-            >
-              {(header) => (
-                <TableHead
-                  id={header.id}
-                  isRowHeader={header.index === 0}
-                  className={header.column.columnDef.meta?.headerClassName}
-                >
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+<TableRow>
+{table.getFlatHeaders().map((header) => (
+<TableHead
+key={header.id}
+className={header.column.columnDef.meta?.headerClassName}
+>
+
                   {!header.isPlaceholder &&
                     flexRender(
                       header.column.columnDef.header,
                       header.getContext()
                     )}
-                </TableHead>
-              )}
-            </TableHeader>
-            <TableBody
-              items={table.getRowModel().rows}
-              className={cn(
-                materialsQuery.isFetching && "pointer-events-none opacity-50"
-              )}
-              renderEmptyState={() => (
-                <TableEmpty
+                
+</TableHead>
+))}
+</TableRow>
+</TableHeader>
+            <TableBody>
+{table.getRowModel().rows.length === 0 ? (
+<TableRow>
+<TableCell colSpan={columns.length}>
+<TableEmpty
                   colSpan={columns.length}
                   title={
                     materialsQuery.isPending
@@ -240,34 +238,29 @@ export const PurchaseRequestCreateMaterialPickerSection = withForm({
                       : "Không tìm thấy vật tư nào"
                   }
                 />
-              )}
-            >
-              {(row) => (
-                <TableRow
-                  id={row.id}
-                  className={cn(
+</TableCell>
+</TableRow>
+) : (table.getRowModel().rows.map((row) => (
+<TableRow key={row.id} className={cn(
                     "h-14 cursor-pointer bg-card hover:bg-muted/25",
                     pickedIds.has(row.original.id) && "bg-primary/5"
-                  )}
-                  onAction={() => !disabled && toggleRow(row.original)}
-                  columns={row.getVisibleCells()}
-                >
-                  {(cell) => (
-                    <TableCell
-                      className={cell.column.columnDef.meta?.cellClassName}
-                      onClick={(event) =>
-                        cell.column.id === "select" && event.stopPropagation()
-                      }
-                    >
+                  )}>
+{row.getVisibleCells().map((cell) => (
+<TableCell
+key={cell.id}
+className={cell.column.columnDef.meta?.cellClassName}
+>
+
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-                    </TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
+                    
+</TableCell>
+))}
+</TableRow>
+)))}
+</TableBody>
           </Table>
         </div>
 

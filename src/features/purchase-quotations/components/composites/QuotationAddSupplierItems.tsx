@@ -110,7 +110,7 @@ export function QuotationAddSupplierItems({
                         : "cursor-pointer",
                       isChecked && !isAssigned && "bg-primary/5"
                     )}
-                    onAction={() =>
+                    onClick={() =>
                       !isAssigned && onToggleItem(row.original.itemId)
                     }
                     columns={row.getVisibleCells()}

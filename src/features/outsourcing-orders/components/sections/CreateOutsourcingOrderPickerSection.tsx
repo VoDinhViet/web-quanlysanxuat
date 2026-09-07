@@ -329,7 +329,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
                         : "cursor-pointer hover:bg-muted/25",
                       isPicked && "bg-primary/5"
                     )}
-                    onAction={() =>
+                    onClick={() =>
                       !disabled && !isLocked && toggleRow(row.original)
                     }
                     columns={row.getVisibleCells()}

@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Eye, MoreVertical, Pencil, Printer, Trash2 } from "lucide-react"
@@ -7,7 +6,9 @@ import { Eye, MoreVertical, Pencil, Printer, Trash2 } from "lucide-react"
 import { Button, LinkButton } from "@/components/ui/button"
 import {
   DropdownMenu,
+  DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLinkItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -118,39 +119,30 @@ export function InventoryReceiptActionsCell({
         </TooltipTrigger>
 
         {/* Dropdown Menu */}
-        <DropdownMenuTrigger>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 text-muted-foreground"
-            aria-label="Thao tác khác"
-          >
-            <MoreVertical className="size-4" />
-          </Button>
-          <DropdownMenu placement="bottom end">
-            <DropdownMenuItem
-              href="#"
-              render={(props) =>
-                "href" in props ? (
-                  <Link
-                    {...props}
-                    to="/manage/inventory-receipts/$inventoryReceiptId"
-                    params={{ inventoryReceiptId: receipt.id }}
-                  />
-                ) : (
-                  <div {...props} />
-                )
-              }
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 text-muted-foreground"
+                aria-label="Thao tác khác"
+              >
+                <MoreVertical className="size-4" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end">
+            <DropdownMenuLinkItem
+              to="/manage/inventory-receipts/$inventoryReceiptId"
+              params={{ inventoryReceiptId: receipt.id }}
             >
               <Eye className="mr-2 size-4" />
               Xem chi tiết
-            </DropdownMenuItem>
+            </DropdownMenuLinkItem>
 
             <TooltipTrigger>
-              <DropdownMenuItem
-                aria-disabled="true"
-                shouldCloseOnSelect={false}
-              >
+              <DropdownMenuItem aria-disabled="true" closeOnClick={false}>
                 <Printer className="mr-2 size-4" />
                 In phiếu nhập kho
               </DropdownMenuItem>
@@ -161,28 +153,18 @@ export function InventoryReceiptActionsCell({
               <>
                 <DropdownMenuSeparator />
                 <RoutePermissionGate route="/manage/inventory-receipts/$inventoryReceiptId/update">
-                  <DropdownMenuItem
-                    href="#"
-                    render={(props) =>
-                      "href" in props ? (
-                        <Link
-                          {...props}
-                          to="/manage/inventory-receipts/$inventoryReceiptId/update"
-                          params={{ inventoryReceiptId: receipt.id }}
-                        />
-                      ) : (
-                        <div {...props} />
-                      )
-                    }
+                  <DropdownMenuLinkItem
+                    to="/manage/inventory-receipts/$inventoryReceiptId/update"
+                    params={{ inventoryReceiptId: receipt.id }}
                   >
                     <Pencil className="mr-2 size-4 text-amber-600" />
                     Chỉnh sửa phiếu
-                  </DropdownMenuItem>
+                  </DropdownMenuLinkItem>
                 </RoutePermissionGate>
                 <PermissionGate permission="inventory:delete">
                   <DropdownMenuItem
                     variant="destructive"
-                    onAction={() => setDeleteOpen(true)}
+                    onClick={() => setDeleteOpen(true)}
                   >
                     <Trash2 className="mr-2 size-4" />
                     Xóa phiếu
@@ -190,8 +172,8 @@ export function InventoryReceiptActionsCell({
                 </PermissionGate>
               </>
             )}
-          </DropdownMenu>
-        </DropdownMenuTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Delete Confirm Dialog */}

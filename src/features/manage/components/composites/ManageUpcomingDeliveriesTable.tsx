@@ -74,25 +74,26 @@ export function ManageUpcomingDeliveriesTable() {
         aria-label="DO sắp giao"
         className="[&_td]:border-r-0 [&_td]:px-1 [&_td]:py-2 [&_td]:first:pl-4 [&_td]:last:pr-4 [&_th]:border-r-0 [&_th]:px-1 [&_th]:first:pl-4 [&_th]:last:pr-4"
       >
-        <TableHeader
-          columns={table.getFlatHeaders()}
-          className="bg-transparent [&>tr]:hover:bg-transparent"
-        >
-          {(header) => (
-            <TableHead
-              id={header.id}
-              isRowHeader={header.index === 0}
-              className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
-            >
+        <TableHeader className="bg-transparent [&>tr]:hover:bg-transparent">
+<TableRow>
+{table.getFlatHeaders().map((header) => (
+<TableHead
+key={header.id}
+className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
+>
+
               {!header.isPlaceholder &&
                 flexRender(header.column.columnDef.header, header.getContext())}
-            </TableHead>
-          )}
-        </TableHeader>
-        <TableBody
-          items={rows}
-          renderEmptyState={() => (
-            <TableEmpty
+            
+</TableHead>
+))}
+</TableRow>
+</TableHeader>
+        <TableBody>
+{rows.length === 0 ? (
+<TableRow>
+<TableCell colSpan={columns.length}>
+<TableEmpty
               colSpan={columns.length}
               title={
                 upcomingDeliveries.isError
@@ -100,20 +101,23 @@ export function ManageUpcomingDeliveriesTable() {
                   : "Chưa có dữ liệu"
               }
             />
-          )}
-        >
-          {(row) => (
-            <TableRow id={row.id} columns={row.getVisibleCells()}>
-              {(cell) => (
-                <TableCell
-                  className={cell.column.columnDef.meta?.cellClassName}
-                >
+</TableCell>
+</TableRow>
+) : (rows.map((row) => (
+<TableRow key={row.id} >
+{row.getVisibleCells().map((cell) => (
+<TableCell
+key={cell.id}
+className={cell.column.columnDef.meta?.cellClassName}
+>
+
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
+                
+</TableCell>
+))}
+</TableRow>
+)))}
+</TableBody>
       </Table>
       <ManageCardLink label="Xem tất cả →" to="/manage/outbound-orders" />
     </div>

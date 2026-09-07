@@ -226,8 +226,8 @@ function BomRowActions({
   return (
     <>
       {node.itemType === "WIP" ? (
-        <DropdownMenuTrigger>
-          <Button
+        <DropdownMenu>
+<DropdownMenuTrigger render={<Button
             type="button"
             variant="outline"
             size="icon-sm"
@@ -235,24 +235,26 @@ function BomRowActions({
             className="border border-border/60 hover:bg-muted"
           >
             <ArrowRightDown className="size-3.5" />
-          </Button>
-          <DropdownMenu placement="bottom end" className="min-w-44">
+          </Button>} />
+<DropdownMenuContent align="end">
+
             <DropdownMenuLabel>Thêm cấp con</DropdownMenuLabel>
-            <DropdownMenuItem onAction={() => onAddChild("WIP")}>
+            <DropdownMenuItem onClick={() => onAddChild("WIP")}>
               <LayersMinimalistic />
               {bomItemTypeLabels.WIP}
             </DropdownMenuItem>
-            <DropdownMenuItem onAction={() => onAddChild("RM")}>
+            <DropdownMenuItem onClick={() => onAddChild("RM")}>
               <Bolt />
               {bomItemTypeLabels.RM}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onAction={onAddSibling}>
+            <DropdownMenuItem onClick={onAddSibling}>
               <Layers />
               Cùng cấp
             </DropdownMenuItem>
-          </DropdownMenu>
-        </DropdownMenuTrigger>
+          
+</DropdownMenuContent>
+</DropdownMenu>
       ) : (
         <TooltipTrigger>
           <Button
@@ -343,11 +345,11 @@ function RootAddButton({
       </Button>
       <DropdownMenu placement="bottom end" className="min-w-44">
         <DropdownMenuLabel>Thêm thành phần</DropdownMenuLabel>
-        <DropdownMenuItem onAction={() => onCreate("WIP")}>
+        <DropdownMenuItem onClick={() => onCreate("WIP")}>
           <LayersMinimalistic />
           {bomItemTypeLabels.WIP}
         </DropdownMenuItem>
-        <DropdownMenuItem onAction={() => onCreate("RM")}>
+        <DropdownMenuItem onClick={() => onCreate("RM")}>
           <Bolt />
           {bomItemTypeLabels.RM}
         </DropdownMenuItem>
