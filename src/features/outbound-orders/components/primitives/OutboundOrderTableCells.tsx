@@ -20,7 +20,7 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
   const isDraft = order.status === OutboundOrderStatus.DRAFT
 
   return (
-    <div className="flex items-center justify-center gap-1">
+    <div className="flex items-center justify-center gap-1.5">
       <Tooltip>
         <TooltipTrigger
           render={
@@ -29,9 +29,9 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
               params={{ outboundOrderId: order.id }}
               search={{ mode: "view" }}
               variant="outline"
-              size="icon"
+              size="icon-sm"
               aria-label="Xem chi tiết DO"
-              className="size-7 border-primary/20 text-primary hover:bg-primary/10"
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
             >
               <Eye className="size-3.5" />
             </LinkButton>
@@ -50,9 +50,9 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
                   params={{ outboundOrderId: order.id }}
                   search={{ mode: "edit" }}
                   variant="outline"
-                  size="icon"
+                  size="icon-sm"
                   aria-label="Chỉnh sửa DO"
-                  className="size-7"
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
                 >
                   <Pencil className="size-3.5" />
                 </LinkButton>
@@ -83,10 +83,11 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
                 <TooltipTrigger
                   render={
                     <Button
+                      type="button"
                       variant="outline"
-                      size="icon"
+                      size="icon-sm"
                       aria-label="Xóa DO"
-                      className="size-7 border-destructive/20 text-destructive hover:bg-destructive/10"
+                      className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
                     >
                       <Trash2 className="size-3.5" />
                     </Button>

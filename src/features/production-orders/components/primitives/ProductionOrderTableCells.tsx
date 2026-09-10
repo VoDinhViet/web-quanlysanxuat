@@ -1,13 +1,13 @@
-import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { Eye, Pencil } from "lucide-react"
 
-import { buttonVariants } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import type { DeliveryTone } from "@/lib/types/order.type"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
@@ -69,43 +69,45 @@ export function DueDateCell({
 export function ProductionOrderActionsCell({ row }: { row: ProductionOrder }) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Link
-              to="/manage/orders/$orderId"
-              params={{ orderId: row.orderId }}
-              aria-label="Xem đơn hàng"
-              className={buttonVariants({
-                variant: "outline",
-                size: "icon-sm",
-              })}
-            >
-              <Eye className="size-3.5" />
-            </Link>
-          }
-        />
-        <TooltipContent>Xem đơn hàng</TooltipContent>
-      </Tooltip>
+      <RoutePermissionGate route="/manage/orders/$orderId">
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <LinkButton
+                to="/manage/orders/$orderId"
+                params={{ orderId: row.orderId }}
+                variant="outline"
+                size="icon-sm"
+                aria-label="Xem đơn hàng"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              >
+                <Eye className="size-3.5" />
+              </LinkButton>
+            }
+          />
+          <TooltipContent>Xem đơn hàng</TooltipContent>
+        </Tooltip>
+      </RoutePermissionGate>
 
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Link
-              to="/manage/production-orders/$productionOrderId"
-              params={{ productionOrderId: row.id }}
-              aria-label="Sửa LSX"
-              className={buttonVariants({
-                variant: "outline",
-                size: "icon-sm",
-              })}
-            >
-              <Pencil className="size-3.5" />
-            </Link>
-          }
-        />
-        <TooltipContent>Sửa LSX</TooltipContent>
-      </Tooltip>
+      <RoutePermissionGate route="/manage/production-orders/$productionOrderId">
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <LinkButton
+                to="/manage/production-orders/$productionOrderId"
+                params={{ productionOrderId: row.id }}
+                variant="outline"
+                size="icon-sm"
+                aria-label="Sửa LSX"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              >
+                <Pencil className="size-3.5" />
+              </LinkButton>
+            }
+          />
+          <TooltipContent>Sửa LSX</TooltipContent>
+        </Tooltip>
+      </RoutePermissionGate>
     </div>
   )
 }

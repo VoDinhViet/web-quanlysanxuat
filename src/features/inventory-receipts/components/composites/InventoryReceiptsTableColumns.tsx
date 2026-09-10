@@ -102,7 +102,7 @@ export const inventoryReceiptsColumns = col.columns([
     id: "actions",
     header: "Thao tác",
     meta: {
-      headerClassName: "min-w-24 text-center",
+      headerClassName: "min-w-36 text-center",
       cellClassName: "font-normal",
     },
     cell: ({ row }) => <InventoryReceiptActionsCell receipt={row.original} />,

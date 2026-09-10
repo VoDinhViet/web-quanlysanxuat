@@ -1,12 +1,12 @@
-import { MoreHorizontal } from "lucide-react"
+import { Eye } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLinkItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 
 const amountFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -15,36 +15,33 @@ export function PaymentRequestAmountCell({ value }: { value: number }) {
   return <span className="tabular-nums">{amountFormatter.format(value)}</span>
 }
 
-// Three-dot action menu linking to the detail page.
+// Icon action button with tooltip linking to the detail page (mirroring users table pattern).
 export function PaymentRequestActionsCell({
   paymentRequestId,
 }: {
   paymentRequestId: string
 }) {
   return (
-    <div className="flex justify-center">
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              aria-label="Thao tác"
-            >
-              <MoreHorizontal className="size-4" />
-            </Button>
-          }
-        />
-        <DropdownMenuContent align="end">
-          <DropdownMenuLinkItem
-            to="/manage/payment-requests/$paymentRequestId"
-            params={{ paymentRequestId }}
-          >
-            Xem chi tiết
-          </DropdownMenuLinkItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="flex items-center justify-center">
+      <RoutePermissionGate route="/manage/payment-requests/$paymentRequestId">
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <LinkButton
+                to="/manage/payment-requests/$paymentRequestId"
+                params={{ paymentRequestId }}
+                variant="outline"
+                size="icon-sm"
+                aria-label="Xem chi tiết"
+                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              >
+                <Eye className="size-3.5" />
+              </LinkButton>
+            }
+          />
+          <TooltipContent>Xem chi tiết</TooltipContent>
+        </Tooltip>
+      </RoutePermissionGate>
     </div>
   )
 }

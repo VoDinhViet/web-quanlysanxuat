@@ -1,17 +1,10 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Eye, MoreVertical, Pencil, Printer, Trash2 } from "lucide-react"
+import { Eye, Pencil, Printer, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLinkItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import {
   Dialog,
   DialogContent,
@@ -107,86 +100,88 @@ export function InventoryReceiptActionsCell({
 
   return (
     <>
-      <div className="flex items-center justify-center gap-1">
-        {/* Eye icon: Quick view link */}
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <LinkButton
-                to="/manage/inventory-receipts/$inventoryReceiptId"
-                params={{ inventoryReceiptId: receipt.id }}
-                variant="ghost"
-                size="icon"
-                className="size-8 text-muted-foreground hover:text-primary"
-                aria-label="Xem chi tiết phiếu nhập kho"
-              >
-                <Eye className="size-4" />
-              </LinkButton>
-            }
-          />
-          <TooltipContent>Xem chi tiết phiếu nhập kho</TooltipContent>
-        </Tooltip>
+      <div className="flex items-center justify-center gap-1.5">
+        <RoutePermissionGate route="/manage/inventory-receipts/$inventoryReceiptId">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <LinkButton
+                  to="/manage/inventory-receipts/$inventoryReceiptId"
+                  params={{ inventoryReceiptId: receipt.id }}
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Xem chi tiết phiếu nhập kho"
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                >
+                  <Eye className="size-3.5" />
+                </LinkButton>
+              }
+            />
+            <TooltipContent>Xem chi tiết</TooltipContent>
+          </Tooltip>
+        </RoutePermissionGate>
 
-        {/* Dropdown Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8 text-muted-foreground"
-                aria-label="Thao tác khác"
-              >
-                <MoreVertical className="size-4" />
-              </Button>
-            }
-          />
-          <DropdownMenuContent align="end">
-            <DropdownMenuLinkItem
-              to="/manage/inventory-receipts/$inventoryReceiptId"
-              params={{ inventoryReceiptId: receipt.id }}
-            >
-              <Eye className="mr-2 size-4" />
-              Xem chi tiết
-            </DropdownMenuLinkItem>
-
+        {isDraft ? (
+          <RoutePermissionGate route="/manage/inventory-receipts/$inventoryReceiptId/update">
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <DropdownMenuItem aria-disabled="true" closeOnClick={false}>
-                    <Printer className="mr-2 size-4" />
-                    In phiếu nhập kho
-                  </DropdownMenuItem>
-                }
-              />
-              <TooltipContent side="left">Tính năng sắp có</TooltipContent>
-            </Tooltip>
-
-            {isDraft && (
-              <>
-                <DropdownMenuSeparator />
-                <RoutePermissionGate route="/manage/inventory-receipts/$inventoryReceiptId/update">
-                  <DropdownMenuLinkItem
+                  <LinkButton
                     to="/manage/inventory-receipts/$inventoryReceiptId/update"
                     params={{ inventoryReceiptId: receipt.id }}
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Chỉnh sửa phiếu"
+                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
                   >
-                    <Pencil className="mr-2 size-4 text-amber-600" />
-                    Chỉnh sửa phiếu
-                  </DropdownMenuLinkItem>
-                </RoutePermissionGate>
-                <PermissionGate permission="inventory:delete">
-                  <DropdownMenuItem
-                    variant="destructive"
+                    <Pencil className="size-3.5" />
+                  </LinkButton>
+                }
+              />
+              <TooltipContent>Chỉnh sửa</TooltipContent>
+            </Tooltip>
+          </RoutePermissionGate>
+        ) : (
+          <DisabledAction
+            label="Chỉnh sửa"
+            hint="chỉ sửa được khi phiếu ở trạng thái Nháp"
+          >
+            <Pencil className="size-3.5" />
+          </DisabledAction>
+        )}
+
+        <DisabledAction label="In phiếu" hint="chưa có tính năng in phiếu">
+          <Printer className="size-3.5" />
+        </DisabledAction>
+
+        {isDraft ? (
+          <PermissionGate permission="inventory:delete">
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label="Xóa phiếu"
+                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
                     onClick={() => setDeleteOpen(true)}
                   >
-                    <Trash2 className="mr-2 size-4" />
-                    Xóa phiếu
-                  </DropdownMenuItem>
-                </PermissionGate>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                }
+              />
+              <TooltipContent>Xóa phiếu</TooltipContent>
+            </Tooltip>
+          </PermissionGate>
+        ) : (
+          <DisabledAction
+            label="Xóa phiếu"
+            hint="chỉ xóa được khi phiếu ở trạng thái Nháp"
+          >
+            <Trash2 className="size-3.5" />
+          </DisabledAction>
+        )}
       </div>
 
       {/* Delete Confirm Dialog */}
