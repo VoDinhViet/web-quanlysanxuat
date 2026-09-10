@@ -1,264 +1,138 @@
-import { useState } from "react"
-import { Controller, useWatch } from "react-hook-form"
+import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
-import { Eye, EyeOff } from "lucide-react"
-import type { UseFormReturn } from "react-hook-form"
 
-import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { withForm } from "@/hooks/use-app-form"
 import { rolesQueryOptions } from "@/features/roles/api"
+import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
 import { buildSelectOptions } from "@/lib/utils"
-import type { UpdateUserSchema } from "@/features/users/schemas/update-user.schema"
 
-type UpdateUserCredentialSectionProps = {
-  form: UseFormReturn<UpdateUserSchema>
-  disabled: boolean
-  // True when editing an employee who already has an ERP account: the
-  // toggle is hidden (an existing account can't be un-granted here), the
-  // fields are always shown, and the password becomes optional.
-  hasExistingCredential: boolean
-}
+export const UpdateUserCredentialSection = withForm({
+  defaultValues: updateUserFormDefaultValues,
+  props: {
+    disabled: false,
+    // True when editing an employee who already has an ERP account: the
+    // toggle is hidden (an existing account can't be un-granted here), the
+    // fields are always shown, and the password becomes optional.
+    hasExistingCredential: false,
+  },
+  render: function Render({ form, disabled, hasExistingCredential }) {
+    // `GET /roles` đòi `roles:read`, còn trang này chỉ đòi `users:update` — không thể prefetch
+    // ở loader (thiếu quyền sẽ làm sập cả trang qua errorComponent chung). `useQuery` để thiếu
+    // quyền chỉ làm rỗng combobox Vai trò, vốn đã optional.
+    const rolesQuery = useQuery(rolesQueryOptions())
+    const roles = rolesQuery.data ?? []
+    const roleOptions = buildSelectOptions(roles)
 
-// Each field is a plain <Controller> render-prop, same idiom as CreateUserCredentialSection.tsx
-// — no shared RHF field kit (see forms-and-ui.md).
-export function UpdateUserCredentialSection({
-  form,
-  disabled,
-  hasExistingCredential,
-}: UpdateUserCredentialSectionProps) {
-  const [showPassword, setShowPassword] = useState(false)
+    // Fields stay on screen when the toggle is off so the section keeps its shape — they're
+    // just inert. `credential` is undefined then, so an untoggled account still submits as "no
+    // account".
+    const credential = useField({ form, name: "credential" }).state.value
+    const hasCredential = hasExistingCredential || credential != null
+    const credentialFieldsDisabled = disabled || !hasCredential
 
-  // `GET /roles` đòi `roles:read`, còn trang này chỉ đòi `users:update` — không thể prefetch
-  // ở loader (thiếu quyền sẽ làm sập cả trang qua errorComponent chung). `useQuery` để thiếu
-  // quyền chỉ làm rỗng combobox Vai trò, vốn đã optional.
-  const rolesQuery = useQuery(rolesQueryOptions())
-  const roles = rolesQuery.data ?? []
-  const roleOptions = buildSelectOptions(roles)
+    return (
+      <div>
+        <div className="flex items-start justify-between gap-3 px-4 py-4 sm:px-5">
+          <div>
+            <h2 className="font-heading text-base font-semibold text-foreground">
+              Tài khoản ERP
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {hasExistingCredential
+                ? "Nhân viên này đã có quyền đăng nhập hệ thống"
+                : "Tùy chọn — cho phép nhân viên đăng nhập hệ thống"}
+            </p>
+          </div>
 
-  // Fields stay on screen when the toggle is off so the section keeps its shape — they're
-  // just inert. `credential` is undefined then (see UpdateUserForm's mount effect), so an
-  // untoggled account still submits as "no account".
-  const credential = useWatch({
-    control: form.control,
-    name: "credential",
-  })
-  const hasCredential = hasExistingCredential || credential != null
-  const credentialFieldsDisabled = disabled || !hasCredential
-
-  return (
-    <div>
-      <div className="flex items-start justify-between gap-3 px-4 py-4 sm:px-5">
-        <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
-            Tài khoản ERP
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {hasExistingCredential
-              ? "Nhân viên này đã có quyền đăng nhập hệ thống"
-              : "Tùy chọn — cho phép nhân viên đăng nhập hệ thống"}
-          </p>
+          {hasExistingCredential ? (
+            <form.Field name="credential.credentialEnabled">
+              {(field) => (
+                <Switch
+                  checked={field.state.value ?? false}
+                  onCheckedChange={field.handleChange}
+                  disabled={disabled}
+                  className="mt-1 shrink-0"
+                  aria-label="Cho phép đăng nhập"
+                />
+              )}
+            </form.Field>
+          ) : (
+            <form.Field name="credential">
+              {(field) => (
+                <Switch
+                  checked={field.state.value != null}
+                  onCheckedChange={(checked) =>
+                    field.handleChange(
+                      checked
+                        ? {
+                            username: "",
+                            email: "",
+                            password: "",
+                            roleId: "",
+                            credentialEnabled: true,
+                          }
+                        : undefined
+                    )
+                  }
+                  disabled={disabled}
+                  className="mt-1 shrink-0"
+                  aria-label="Cấp tài khoản ERP cho nhân viên này"
+                />
+              )}
+            </form.Field>
+          )}
         </div>
 
-        {hasExistingCredential ? (
-          <Controller
-            control={form.control}
-            name="credential.credentialEnabled"
-            render={({ field }) => (
-              <Switch
-                checked={field.value ?? false}
-                onCheckedChange={field.onChange}
-                disabled={disabled}
-                className="mt-1 shrink-0"
-                aria-label="Cho phép đăng nhập"
-              />
-            )}
-          />
-        ) : (
-          <Controller
-            control={form.control}
-            name="credential"
-            render={({ field }) => (
-              <Switch
-                checked={field.value != null}
-                onCheckedChange={(checked) =>
-                  field.onChange(
-                    checked
-                      ? {
-                          username: "",
-                          email: "",
-                          password: "",
-                          roleId: "",
-                          credentialEnabled: true,
-                        }
-                      : undefined
-                  )
-                }
-                disabled={disabled}
-                className="mt-1 shrink-0"
-                aria-label="Cấp tài khoản ERP cho nhân viên này"
-              />
-            )}
-          />
-        )}
-      </div>
-
-      <div className="space-y-5 px-4 pb-5 sm:px-5">
-        <Controller
-          control={form.control}
-          name="credential.username"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Tên đăng nhập
-              </FieldLabel>
-              <Input
-                {...field}
-                value={field.value ?? ""}
-                id={field.name}
+        <div className="space-y-5 px-4 pb-5 sm:px-5">
+          <form.AppField name="credential.username">
+            {(field) => (
+              <field.TextField
+                label="Tên đăng nhập"
                 placeholder="Nhập tên đăng nhập"
-                className="h-9 bg-background text-xs"
-                aria-invalid={!!fieldState.error}
                 disabled={credentialFieldsDisabled}
               />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
+            )}
+          </form.AppField>
 
-        <Controller
-          control={form.control}
-          name="credential.email"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Email đăng nhập
-              </FieldLabel>
-              <Input
-                {...field}
-                value={field.value ?? ""}
-                id={field.name}
+          <form.AppField name="credential.email">
+            {(field) => (
+              <field.TextField
+                label="Email đăng nhập"
                 type="email"
                 placeholder="Nhập email đăng nhập"
-                className="h-9 bg-background text-xs"
-                aria-invalid={!!fieldState.error}
                 disabled={credentialFieldsDisabled}
               />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
+            )}
+          </form.AppField>
 
-        <Controller
-          control={form.control}
-          name="credential.password"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                {hasExistingCredential ? "Mật khẩu mới" : "Mật khẩu"}
-              </FieldLabel>
-              <div className="relative">
-                <Input
-                  {...field}
-                  value={field.value ?? ""}
-                  id={field.name}
-                  type={showPassword ? "text" : "password"}
-                  placeholder={
-                    hasExistingCredential
-                      ? "Để trống nếu không đổi mật khẩu"
-                      : "Nhập mật khẩu"
-                  }
-                  autoComplete="new-password"
-                  className="h-9 bg-background pr-9 text-xs"
-                  aria-invalid={!!fieldState.error}
-                  disabled={credentialFieldsDisabled}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  className="absolute top-1/2 right-1 -translate-y-1/2"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={credentialFieldsDisabled}
-                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </Button>
-              </div>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="credential.roleId"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Vai trò
-              </FieldLabel>
-              <Select
-                items={roleOptions}
-                value={field.value ?? ""}
-                onValueChange={field.onChange}
+          <form.AppField name="credential.password">
+            {(field) => (
+              <field.PasswordField
+                label={hasExistingCredential ? "Mật khẩu mới" : "Mật khẩu"}
+                placeholder={
+                  hasExistingCredential
+                    ? "Để trống nếu không đổi mật khẩu"
+                    : "Nhập mật khẩu"
+                }
                 disabled={credentialFieldsDisabled}
-              >
-                <SelectTrigger
-                  id={field.name}
-                  onBlur={field.onBlur}
-                  aria-invalid={!!fieldState.error}
-                  className="h-9 w-full bg-background text-xs"
-                >
-                  <SelectValue
-                    placeholder={
-                      rolesQuery.isPending
-                        ? "Đang tải..."
-                        : "Chọn vai trò (tuỳ chọn)"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {roleOptions.map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value}
-                      className="text-xs"
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="credential.roleId">
+            {(field) => (
+              <field.SelectField
+                label="Vai trò"
+                placeholder="Chọn vai trò (tuỳ chọn)"
+                options={roleOptions}
+                isPending={rolesQuery.isPending}
+                disabled={credentialFieldsDisabled}
+              />
+            )}
+          </form.AppField>
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  },
+})

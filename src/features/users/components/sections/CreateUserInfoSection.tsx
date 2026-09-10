@@ -1,203 +1,105 @@
-import { Controller } from "react-hook-form"
-import { Radio } from "@base-ui/react/radio"
-import type { UseFormReturn } from "react-hook-form"
-
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { RadioGroup } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
-import { DatePicker } from "@/components/shared/composites/DatePicker"
+import { withForm } from "@/hooks/use-app-form"
 import { ImageUploader } from "@/features/users/components/composites/ImageUploader"
+import { createUserFormDefaultValues } from "@/features/users/schemas/create-user.schema"
 import { genderLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
-import type { CreateUserSchema } from "@/features/users/schemas/create-user.schema"
 
 const genderOptions = buildOptionsFromLabels(genderLabels)
 
-type CreateUserInfoSectionProps = {
-  form: UseFormReturn<CreateUserSchema>
-  disabled: boolean
-}
+export const CreateUserInfoSection = withForm({
+  defaultValues: createUserFormDefaultValues,
+  props: {
+    disabled: false,
+  },
+  render: function Render({ form, disabled }) {
+    return (
+      <div>
+        <div className="px-4 py-4 sm:px-5">
+          <h2 className="font-heading text-base font-semibold text-foreground">
+            Thông tin cá nhân
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Thông tin định danh cơ bản của nhân sự
+          </p>
+        </div>
 
-// Each field is a plain <Controller> render-prop, same idiom as LoginForm.tsx — no shared RHF
-// field kit, kept deliberately simple for a form still under trial (see forms-and-ui.md).
-export function CreateUserInfoSection({
-  form,
-  disabled,
-}: CreateUserInfoSectionProps) {
-  return (
-    <div>
-      <div className="px-4 py-4 sm:px-5">
-        <h2 className="font-heading text-base font-semibold text-foreground">
-          Thông tin cá nhân
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Thông tin định danh cơ bản của nhân sự
-        </p>
-      </div>
-
-      <div className="px-4 pb-5 sm:px-5">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto]">
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            <Controller
-              control={form.control}
-              name="fullName"
-              render={({ field, fieldState }) => (
-                <Field
-                  className="sm:col-span-2"
-                  data-invalid={!!fieldState.error}
-                >
-                  <FieldLabel
-                    htmlFor={field.name}
-                    className="text-xs font-medium text-foreground"
-                  >
-                    Họ và tên <span className="text-destructive">*</span>
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
+        <div className="px-4 pb-5 sm:px-5">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto]">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+              <form.AppField name="fullName">
+                {(field) => (
+                  <field.TextField
+                    label="Họ và tên"
+                    required
                     placeholder="Nhập họ và tên"
-                    className="h-9 bg-background text-xs"
-                    aria-invalid={!!fieldState.error}
                     disabled={disabled}
+                    className="sm:col-span-2"
                   />
-                  <FieldError errors={[fieldState.error]} />
-                </Field>
-              )}
-            />
+                )}
+              </form.AppField>
 
-            <Controller
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <div className="space-y-1.5 sm:col-span-2">
-                  <span className="block text-xs font-medium text-foreground">
-                    Giới tính
-                  </span>
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
+              <form.AppField name="gender">
+                {(field) => (
+                  <field.RadioPillField
+                    label="Giới tính"
+                    options={genderOptions}
                     disabled={disabled}
-                    className="flex flex-row flex-wrap gap-2"
-                  >
-                    {genderOptions.map((option) => (
-                      <Radio.Root
-                        key={option.value}
-                        value={option.value}
-                        className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-checked:border-primary data-checked:bg-primary/5 data-checked:text-primary"
-                      >
-                        {option.label}
-                      </Radio.Root>
-                    ))}
-                  </RadioGroup>
-                </div>
-              )}
-            />
-
-            <Controller
-              control={form.control}
-              name="dateOfBirth"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel className="text-xs font-medium text-foreground">
-                    Ngày sinh
-                  </FieldLabel>
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    disabled={disabled}
+                    className="sm:col-span-2"
                   />
-                  <FieldError errors={[fieldState.error]} />
-                </Field>
-              )}
-            />
+                )}
+              </form.AppField>
 
-            <Controller
-              control={form.control}
-              name="idNumber"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel
-                    htmlFor={field.name}
-                    className="text-xs font-medium text-foreground"
-                  >
-                    Số CCCD/CMND
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
+              <form.AppField name="dateOfBirth">
+                {(field) => (
+                  <field.DateField label="Ngày sinh" disabled={disabled} />
+                )}
+              </form.AppField>
+
+              <form.AppField name="idNumber">
+                {(field) => (
+                  <field.TextField
+                    label="Số CCCD/CMND"
                     placeholder="Nhập số CCCD/CMND"
-                    className="h-9 bg-background text-xs"
-                    aria-invalid={!!fieldState.error}
                     disabled={disabled}
                   />
-                  <FieldError errors={[fieldState.error]} />
-                </Field>
-              )}
-            />
+                )}
+              </form.AppField>
 
-            <Controller
-              control={form.control}
-              name="phoneNumber"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel
-                    htmlFor={field.name}
-                    className="text-xs font-medium text-foreground"
-                  >
-                    Số điện thoại
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
+              <form.AppField name="phoneNumber">
+                {(field) => (
+                  <field.TextField
+                    label="Số điện thoại"
                     type="tel"
                     placeholder="Nhập số điện thoại"
-                    className="h-9 bg-background text-xs"
-                    aria-invalid={!!fieldState.error}
                     disabled={disabled}
                   />
-                  <FieldError errors={[fieldState.error]} />
-                </Field>
-              )}
-            />
+                )}
+              </form.AppField>
 
-            <Controller
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <Field className="sm:col-span-2">
-                  <FieldLabel
-                    htmlFor={field.name}
-                    className="text-xs font-medium text-foreground"
-                  >
-                    Địa chỉ thường trú
-                  </FieldLabel>
-                  <Textarea
-                    {...field}
-                    id={field.name}
+              <form.AppField name="address">
+                {(field) => (
+                  <field.TextareaField
+                    label="Địa chỉ thường trú"
                     placeholder="Nhập địa chỉ thường trú"
-                    className="min-h-20 resize-none bg-background text-xs"
                     disabled={disabled}
+                    className="sm:col-span-2"
                   />
-                </Field>
-              )}
-            />
-          </div>
+                )}
+              </form.AppField>
+            </div>
 
-          <Controller
-            control={form.control}
-            name="avatar"
-            render={({ field }) => (
-              <ImageUploader
-                value={field.value}
-                onChange={field.onChange}
-                disabled={disabled}
-              />
-            )}
-          />
+            <form.Field name="avatar">
+              {(field) => (
+                <ImageUploader
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  disabled={disabled}
+                />
+              )}
+            </form.Field>
+          </div>
         </div>
       </div>
-    </div>
-  )
-}
+    )
+  },
+})

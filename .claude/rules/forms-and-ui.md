@@ -4,46 +4,51 @@
   `preventDefault`/`stopPropagation` in the submit handler, derive form types with
   `z.infer<typeof schema>`, gate error styling on `field.state.meta.isTouched` (see
   `src/components/shared/composites/AppFormFields.tsx`). Deliberate react-hook-form + `Field`
-  (`src/components/ui/field.tsx`) trials, not yet the pattern for a new form:
-  `src/features/auth/components/sections/LoginForm.tsx` (3 flat fields, the original trial), the
-  entire `users` feature — `CreateUserForm.tsx` and `UpdateUserForm.tsx` (17 fields, a nested
-  optional object, dependent selects, file upload; `CreateUserForm.tsx` also has a localStorage
-  draft — a harder form chosen specifically to stress-test RHF beyond LoginForm's small surface)
-  — and the entire `orders` feature — `CreateOrderForm.tsx`/`UpdateOrderForm.tsx` (a 4-step
-  wizard each, `useFieldArray` for the `items` line table — the first use of it in the repo —
-  fully inline row editing with no per-row dialog, a file field whose `onChange` accepts an
-  updater function, and, Create only, a localStorage draft; Update's tab strip is fully unlocked
-  from mount instead of gated step-by-step, since an existing record is already valid where a
-  blank Create form isn't). Every field binds with a plain inline `<Controller name="..."
-control={form.control} render={({field, fieldState}) => ...}>` — no shared RHF field kit; each
-  `Field`/`FieldLabel`/`FieldError` block is written out at the call site, same idiom as
-  `LoginForm.tsx`. `Create*Section.tsx`/`Create*Step.tsx` and `Update*Section.tsx`/
-  `Update*Step.tsx` stay separate component trees per flow — same "create and update evolve
-  independently" reasoning as their schemas (see "Server functions" in `architecture.md`) — even
-  though most of their markup is copied 1:1 between the two; this is still not evidence either
-  form library won: the rest of the repo (~50 forms) stays on TanStack Form until a conclusion is
-  reached. **A wizard that validates per-step with `form.trigger()` (not `handleSubmit()`) must
-  set `useForm({mode: "onChange"})`**: RHF's default `"onSubmit"` mode only re-validates a field
-  on change after `formState.isSubmitted` is `true`, a flag only an actual `handleSubmit()` call
+  (`src/components/ui/field.tsx`) trial, not yet the pattern for a new form: the entire `orders`
+  feature — `CreateOrderForm.tsx`/`UpdateOrderForm.tsx` (a 4-step wizard each, `useFieldArray` for
+  the `items` line table — the first use of it in the repo — fully inline row editing with no
+  per-row dialog, a file field whose `onChange` accepts an updater function, and, Create only, a
+  localStorage draft; Update's tab strip is fully unlocked from mount instead of gated
+  step-by-step, since an existing record is already valid where a blank Create form isn't). Every
+  field binds with a plain inline `<Controller name="..." control={form.control}
+render={({field, fieldState}) => ...}>` — no shared RHF field kit; each
+  `Field`/`FieldLabel`/`FieldError` block is written out at the call site. `Create*Section.tsx`/
+  `Create*Step.tsx` and `Update*Section.tsx`/`Update*Step.tsx` stay separate component trees per
+  flow — same "create and update evolve independently" reasoning as their schemas (see "Server
+  functions" in `architecture.md`) — even though most of their markup is copied 1:1 between the
+  two; this is still not evidence either form library won: the rest of the repo (~47 forms) stays
+  on TanStack Form until a conclusion is reached. `users` (`CreateUserForm.tsx`/
+  `UpdateUserForm.tsx`, 17 fields, a nested optional object, dependent selects, file upload) has
+  already migrated — see `CreateUserCredentialSection.tsx` for the nested-optional-object idiom
+  (`form.AppField name="credential.username"` — TanStack Form infers the leaf as
+  `string | undefined` through an optional parent without any workaround) and
+  `CreateUserJobInfoSection.tsx` for a dependent-select pair kept hand-rolled (not the shared
+  `SelectField`) to preserve its value-masking-while-loading behavior. **A wizard that validates
+  per-step with `form.trigger()` (not `handleSubmit()`) must set
+  `useForm({mode: "onChange"})`**: RHF's default `"onSubmit"` mode only re-validates a field on
+  change after `formState.isSubmitted` is `true`, a flag only an actual `handleSubmit()` call
   sets — without `onChange`, a field fixed on an earlier step keeps showing its old error until
   the user hits "Tiếp theo" again and re-triggers validation for that step.
-- `CreateClientForm.tsx`/`UpdateClientForm.tsx` are the first TanStack Form forms using
-  `validationLogic: revalidateLogic()` with the schema on `validators.onDynamic` (instead of
-  `validators.onSubmit`): plain `onSubmit` validation clears a field's error on its very next
-  keystroke even when the value is still invalid (TanStack Form wipes the `onSubmit` error map
-  entry on any change), so a submit-invalid form re-opens its submit button without actually
-  being valid. `revalidateLogic()` validates only on submit until the first submit attempt,
-  then re-validates on every change — closer to RHF's default and to what users expect. Every
-  other TanStack Form form still uses `validators.onSubmit` until this pattern proves out
-  further.
+- Every TanStack Form form uses `validationLogic: revalidateLogic()` with the schema on
+  `validators.onDynamic` (not `validators.onSubmit`): plain `onSubmit` validation clears a field's
+  error on its very next keystroke even when the value is still invalid (TanStack Form wipes the
+  `onSubmit` error map entry on any change), so a submit-invalid form re-opens its submit button
+  without actually being valid. `revalidateLogic()` validates only on submit until the first
+  submit attempt, then re-validates on every change — closer to RHF's default and to what users
+  expect. `CreateClientForm.tsx`/`UpdateClientForm.tsx` were the first to use this; every other
+  TanStack Form form (including `LoginForm.tsx`) now follows it too — `validators.onSubmit` is not
+  used anywhere in the repo.
 - Form schemas mirror the backend DTO's shape, including nested optional objects
   (e.g. `credential: createCredentialSchema.optional()` in
   `create-user.schema.ts`) — a toggle-gated section stores the nested object or
   `undefined`, not parallel flat fields.
 - Multi-section forms use `useAppForm`/`withForm` (`src/hooks/use-app-form.ts`) with
-  the shared field components in `src/components/shared/inputs/AppFormFields.tsx`. In
+  the shared field components in `src/components/shared/composites/AppFormFields.tsx`. In
   `withForm` `props` defaults, type empty arrays with `[] as X[]` — a bare `[]`
-  infers `never[]` and breaks the caller (a justified cast).
+  infers `never[]` and breaks the caller (a justified cast). A form with styling the kit can't
+  express — `LoginForm.tsx`'s taller `h-12` inputs and uppercase tracked labels — binds a raw
+  `<form.Field name="...">{(field) => ...}</form.Field>` with `ui/field` primitives instead of
+  the kit's field components; don't "fix" it to use the kit.
 - To read another field's live value from within the same form — a sibling section
   needs `currency` to label its own input, a dialog needs the order's `currency` to
   pass down — call `useField({ form, name })` (from `@tanstack/react-form`) right

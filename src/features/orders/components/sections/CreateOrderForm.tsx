@@ -76,8 +76,9 @@ const stepFields: Record<
 }
 
 // Vỏ wizard "Tạo đơn hàng" — 4 bước (CreateOrderStepsTabs.tsx), react-hook-form thay TanStack
-// Form (RHF trial thứ 3, xem forms-and-ui.md). Không dùng useFormContext/FormProvider — `form`
-// truyền tay xuống từng bước như 1 prop, giống 9 form RHF hiện có trong repo.
+// Form (một RHF trial, xem forms-and-ui.md). Không dùng useFormContext/FormProvider — `form`
+// truyền tay xuống từng bước như 1 prop, giống 11 file RHF còn lại trong `orders` — feature RHF
+// duy nhất còn lại sau khi `users` đã chuyển sang TanStack Form.
 export function CreateOrderForm() {
   const navigate = useNavigate({ from: "/manage/orders/create" })
   const queryClient = useQueryClient()

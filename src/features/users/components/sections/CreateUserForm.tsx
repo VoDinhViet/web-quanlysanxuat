@@ -1,15 +1,15 @@
 import { useEffect, useRef } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
-import { useFormDraft } from "@/hooks/use-form-draft"
+import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { CreateUserCredentialSection } from "@/features/users/components/sections/CreateUserCredentialSection"
 import { CreateUserJobInfoSection } from "@/features/users/components/sections/CreateUserJobInfoSection"
 import { CreateUserInfoSection } from "@/features/users/components/sections/CreateUserInfoSection"
@@ -20,9 +20,6 @@ import {
 import { createUser } from "@/features/users/api/server-functions/create-user.api"
 import type { CreateUserSchema } from "@/features/users/schemas/create-user.schema"
 
-// Trial #2 of react-hook-form (see LoginForm.tsx for trial #1) — deliberately not the pattern
-// for a new form yet, see .claude/rules/forms-and-ui.md. `{ raw: true }` keeps handleSubmit's
-// value un-transformed (z.input), matching what createUser's own `.validator()` re-parses.
 export function CreateUserForm() {
   const navigate = useNavigate({ from: "/manage/users/create/" })
   const queryClient = useQueryClient()
@@ -44,9 +41,13 @@ export function CreateUserForm() {
     onError: (error) => toast.error(error.message),
   })
 
-  const form = useForm<CreateUserSchema>({
-    resolver: zodResolver(createUserSchema, undefined, { raw: true }),
+  const form = useAppForm({
     defaultValues: createUserFormDefaultValues,
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: createUserSchema,
+    },
+    onSubmit: ({ value }) => create(value),
   })
 
   // Auto-restore a saved draft into the form once, after localStorage hydrates.
@@ -54,28 +55,21 @@ export function CreateUserForm() {
   useEffect(() => {
     if (!draftRestoredRef.current && draft) {
       draftRestoredRef.current = true
-      form.reset({ ...createUserFormDefaultValues, ...draft })
+      restoreFormDraft(form, { ...createUserFormDefaultValues, ...draft })
     }
   }, [draft, form])
-
-  // react-hook-form "materializes" an unset nested object as soon as a child controller
-  // mounts (it back-fills intermediate path segments — see updateValidAndValue in
-  // node_modules/react-hook-form), so the 4 credential.* controllers below turn `credential`
-  // from `undefined` into `{username: undefined, ...}` on mount even while the toggle is off.
-  // `createCredentialSchema.optional()` only tolerates `undefined` at the top level, so that
-  // object would fail validation on submit. Clear it back once, after children have mounted.
-  useEffect(() => {
-    form.setValue("credential", undefined)
-    // `form` (the object useForm returns) keeps a stable identity across renders, so this
-    // still only runs once, right after the child controllers mount.
-  }, [form])
 
   const formRef = useAutoFocusFirstField<HTMLFormElement>()
 
   return (
     <form
       ref={formRef}
-      onSubmit={form.handleSubmit((values) => create(values))}
+      onSubmit={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        if (form.state.isSubmitting) return
+        form.handleSubmit()
+      }}
       noValidate
       className="space-y-6"
     >
@@ -107,7 +101,8 @@ export function CreateUserForm() {
               variant="ghost"
               disabled={isPending}
               onClick={() => {
-                form.reset(createUserFormDefaultValues)
+                form.reset()
+                restoreFormDraft(form, createUserFormDefaultValues)
                 clearDraft()
               }}
             >
@@ -120,7 +115,7 @@ export function CreateUserForm() {
               disabled={isPending}
               onClick={() => {
                 const { credential: _credential, ...draftValues } =
-                  form.getValues()
+                  form.state.values
                 saveDraft(draftValues)
                 toast.success("Đã lưu nháp")
               }}
@@ -128,22 +123,28 @@ export function CreateUserForm() {
               <FileText className="size-4" />
               Lưu nháp
             </Button>
-            <Button
-              type="submit"
-              disabled={form.formState.isSubmitting || isPending}
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
-              {form.formState.isSubmitting || isPending ? (
-                <>
-                  <Loader2 className="animate-spin" />
-                  Đang lưu
-                </>
-              ) : (
-                <>
-                  <Save />
-                  Lưu nhân viên
-                </>
+              {([canSubmit, isSubmitting]) => (
+                <Button
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting || isPending}
+                >
+                  {isSubmitting || isPending ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      Đang lưu
+                    </>
+                  ) : (
+                    <>
+                      <Save />
+                      Lưu nhân viên
+                    </>
+                  )}
+                </Button>
               )}
-            </Button>
+            </form.Subscribe>
           </div>
         </div>
       </section>

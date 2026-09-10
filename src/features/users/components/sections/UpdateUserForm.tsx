@@ -1,18 +1,17 @@
-import { useEffect } from "react"
 import { DateTime } from "luxon"
 import { useNavigate, useParams } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button, LinkButton } from "@/components/ui/button"
+import { useAppForm } from "@/hooks/use-app-form"
 import { UpdateUserJobInfoSection } from "@/features/users/components/sections/UpdateUserJobInfoSection"
 import { UpdateUserInfoSection } from "@/features/users/components/sections/UpdateUserInfoSection"
 import { UpdateUserCredentialSection } from "@/features/users/components/sections/UpdateUserCredentialSection"
@@ -56,11 +55,9 @@ function getUserDefaultValues(user: User): UpdateUserSchema {
   }
 }
 
-// Trial #2 of react-hook-form (see CreateUserForm.tsx and LoginForm.tsx) — same idiom, `{ raw:
-// true }` keeps handleSubmit's value un-transformed (z.input), matching what updateUser's own
-// `.validator()` re-parses. Only ever rendered on the update route, so reading `userId` off the
-// route params here (rather than the caller passing `user` down as a prop) is safe — unlike
-// CreateUserForm, this component isn't reused on a route without that param.
+// Only ever rendered on the update route, so reading `userId` off the route params here
+// (rather than the caller passing `user` down as a prop) is safe — unlike CreateUserForm, this
+// component isn't reused on a route without that param.
 export function UpdateUserForm() {
   const { userId } = useParams({
     from: "/(authed)/manage_/users_/$userId/update",
@@ -84,23 +81,23 @@ export function UpdateUserForm() {
     onError: (error) => toast.error(error.message),
   })
 
-  const form = useForm<UpdateUserSchema>({
-    resolver: zodResolver(updateUserSchema, undefined, { raw: true }),
+  const form = useAppForm({
     defaultValues: getUserDefaultValues(user),
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: updateUserSchema,
+    },
+    onSubmit: ({ value }) => update(value),
   })
-
-  // react-hook-form "materializes" an unset nested object as soon as a child controller mounts
-  // (see the same comment in CreateUserForm.tsx) — but only employees without an existing
-  // account are exposed to it: theirs starts `undefined` and gets back-filled by the 5
-  // credential.* controllers on mount, while an employee who already has an account has
-  // `credential` fully populated in `defaultValues`, so nothing here should touch it.
-  useEffect(() => {
-    if (!hasExistingCredential) form.setValue("credential", undefined)
-  }, [form, hasExistingCredential])
 
   return (
     <form
-      onSubmit={form.handleSubmit((values) => update(values))}
+      onSubmit={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        if (form.state.isSubmitting) return
+        form.handleSubmit()
+      }}
       noValidate
       className="space-y-6"
     >
@@ -142,22 +139,28 @@ export function UpdateUserForm() {
           >
             Hủy
           </Button>
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting || isPending}
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
           >
-            {form.formState.isSubmitting || isPending ? (
-              <>
-                <Loader2 className="animate-spin" />
-                Đang lưu
-              </>
-            ) : (
-              <>
-                <Save />
-                Lưu thay đổi
-              </>
+            {([canSubmit, isSubmitting]) => (
+              <Button
+                type="submit"
+                disabled={!canSubmit || isSubmitting || isPending}
+              >
+                {isSubmitting || isPending ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    Đang lưu
+                  </>
+                ) : (
+                  <>
+                    <Save />
+                    Lưu thay đổi
+                  </>
+                )}
+              </Button>
             )}
-          </Button>
+          </form.Subscribe>
         </div>
       </section>
     </form>

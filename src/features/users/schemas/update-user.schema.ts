@@ -95,3 +95,23 @@ export const updateUserSchema = z
   .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 export type UpdateUserSchema = z.input<typeof updateUserSchema>
+
+// Only used for withForm's type inference in the update flow's own sections — the real values
+// always come from UpdateUserForm's own `defaultValues` (getUserDefaultValues), so placeholders
+// here are harmless.
+export const updateUserFormDefaultValues: UpdateUserSchema = {
+  userId: "",
+  fullName: "",
+  gender: "MALE",
+  dateOfBirth: "",
+  idNumber: "",
+  phoneNumber: "",
+  address: "",
+  avatar: null,
+  departmentId: "",
+  positionId: "",
+  hireDate: "",
+  note: "",
+  status: "WORKING",
+  credential: undefined,
+}
