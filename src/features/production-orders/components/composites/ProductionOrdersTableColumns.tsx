@@ -16,6 +16,18 @@ const productionOrderColumnHelper = createColumnHelper<
 
 // No "Ngày tạo"/"Người tạo" columns — ProductionOrderResDto doesn't expose createdAt/creator.
 export const productionOrderColumns = productionOrderColumnHelper.columns([
+  productionOrderColumnHelper.accessor("code", {
+    header: "Mã LSX",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ getValue }) => {
+      const code = getValue()
+      return code ? (
+        <span className="font-mono font-semibold text-primary">{code}</span>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      )
+    },
+  }),
   productionOrderColumnHelper.accessor("orderCode", {
     header: "Số đơn hàng (SO)",
     meta: { headerClassName: "min-w-32" },

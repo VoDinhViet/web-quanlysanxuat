@@ -113,7 +113,7 @@ export function ProductionOrdersTableFilter() {
               <Input
                 id="production-orders-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo mã đơn hàng (SO)..."
+                placeholder="Tìm theo mã LSX, số đơn hàng (SO)..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)
