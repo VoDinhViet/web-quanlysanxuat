@@ -14,9 +14,10 @@ import { emptyToUndefined } from "@/lib/zod-transforms"
 // schemas/ của bất kỳ feature nào (eslint.config.js's qlsx/shared-reads-features-through-the-barrel).
 //
 // `completedQuantityDelta` là SL cộng thêm lần này (không phải giá trị tuyệt đối) — BE tự cộng
-// dồn, khoá row. Ràng buộc `delta + completedQuantity hiện có + rejectedQuantity <= plannedQuantity`
-// phụ thuộc dữ liệu runtime của operation đang chọn nên không nằm trong schema tĩnh này — nơi dùng
-// (JobOperationReportForm.tsx) tự `.refine()` thêm; BE (`E256`) vẫn là chốt chặn thật.
+// dồn, khoá row. Ràng buộc `delta + completedQuantity hiện có <= plannedQuantity` (chỉ trần SL đạt,
+// SL không đạt không bị giới hạn, BUG-035/E256) phụ thuộc dữ liệu runtime của operation đang chọn nên
+// không nằm trong schema tĩnh này — nơi dùng (JobOperationReportForm.tsx) tự `.refine()` thêm; BE
+// (`E256`) vẫn là chốt chặn thật.
 export const createJobOperationReportSchema = z.object({
   jobOperationId: z.uuid(),
   completedQuantityDelta: z

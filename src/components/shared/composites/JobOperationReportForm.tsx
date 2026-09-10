@@ -39,12 +39,12 @@ export function JobOperationReportForm({
   const { bomItem, operation } = row
   const { mutate, isPending } = useCreateJobOperationReport()
 
-  // Phần còn được phép nhập thêm (hoàn thành + không đạt cộng lại) — vượt số này là vượt E252
-  // (chặn ở client trước khi gọi API, xem C3 trong kế hoạch).
-  const remainingAllowance =
-    operation.plannedQuantity -
-    operation.completedQuantity -
-    operation.rejectedQuantity
+  // SL hoàn thành còn lại tối đa được phép báo cáo để đạt đủ chỉ tiêu kế hoạch.
+  // SL không đạt (NG) không bị giới hạn bởi kế hoạch (E256), cho phép nhập bù tới khi đạt đủ.
+  const remainingPlanned = Math.max(
+    0,
+    operation.plannedQuantity - operation.completedQuantity
+  )
 
   const form = useAppForm({
     defaultValues: {
@@ -57,15 +57,25 @@ export function JobOperationReportForm({
     },
     validationLogic: revalidateLogic(),
     validators: {
-      onDynamic: createJobOperationReportSchema.refine(
-        (value) =>
-          value.completedQuantityDelta + value.rejectedQuantityDelta <=
-          remainingAllowance,
-        {
-          error: `Tổng SL hoàn thành + SL không đạt lần này không được vượt quá ${remainingAllowance} pcs còn lại.`,
-          path: ["completedQuantityDelta"],
-        }
-      ),
+      onDynamic: createJobOperationReportSchema
+        .refine(
+          (value) => value.completedQuantityDelta <= remainingPlanned,
+          {
+            error:
+              remainingPlanned === 0
+                ? `Công đoạn đã đạt đủ kế hoạch (${operation.plannedQuantity.toLocaleString("vi-VN")} pcs), không thể nhập thêm SL hoàn thành.`
+                : `SL hoàn thành lần này không được vượt quá ${remainingPlanned.toLocaleString("vi-VN")} pcs còn lại (kế hoạch: ${operation.plannedQuantity.toLocaleString("vi-VN")} pcs).`,
+            path: ["completedQuantityDelta"],
+          }
+        )
+        .refine(
+          (value) =>
+            value.completedQuantityDelta > 0 || value.rejectedQuantityDelta > 0,
+          {
+            error: "Vui lòng nhập SL đạt hoặc SL không đạt lớn hơn 0.",
+            path: ["completedQuantityDelta"],
+          }
+        ),
     },
     onSubmit: ({ value }) => {
       mutate(
@@ -122,7 +132,11 @@ export function JobOperationReportForm({
                 {(field) => (
                   <field.NumberField
                     label="✓ SL đạt"
-                    required
+                    description={
+                      remainingPlanned > 0
+                        ? `Còn lại: ${remainingPlanned.toLocaleString("vi-VN")} / ${operation.plannedQuantity.toLocaleString("vi-VN")} pcs`
+                        : `Đã đủ kế hoạch: ${operation.plannedQuantity.toLocaleString("vi-VN")} pcs`
+                    }
                     placeholder="0"
                     disabled={isPending}
                   />
@@ -133,6 +147,7 @@ export function JobOperationReportForm({
                 {(field) => (
                   <field.NumberField
                     label="✗ SL không đạt"
+                    description="Không giới hạn SL"
                     placeholder="0"
                     disabled={isPending}
                   />

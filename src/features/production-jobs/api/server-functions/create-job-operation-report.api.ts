@@ -21,10 +21,15 @@ function resolveCreateJobOperationReportErrorMessage(error: unknown): string {
       return "Chỉ có thể báo cáo khi Job đang sản xuất."
     case "production_job_operation.error.not_found":
       return "Không tìm thấy công đoạn."
+    case "production_job_operation.error.completed_quantity_exceeds_planned":
     case "production_job_operation.error.completed_plus_rejected_exceeds_planned":
-      return "Tổng SL hoàn thành + SL không đạt không được vượt SL kế hoạch."
+      return "SL hoàn thành không được vượt quá SL kế hoạch."
     default:
-      return GENERIC_ERROR_MESSAGE
+      return (
+        (error.response?.data.message !== "Error" &&
+          error.response?.data.message) ||
+        GENERIC_ERROR_MESSAGE
+      )
   }
 }
 

@@ -11,6 +11,7 @@ import {
   JobOperationReportDialog,
   resolveJobOperationReportDisabledReason,
 } from "@/components/shared/composites/JobOperationReportDialog"
+import { OperationType } from "@/lib/types/operation.type"
 import type {
   JobOperationReportRow,
   ProductionJobStatus,
@@ -89,6 +90,10 @@ export function buildProductionExecutionPartColumns({
         cellClassName: "text-center",
       },
       cell: ({ row }) => {
+        if (row.original.operation.type === OperationType.OUTSOURCE) {
+          return null
+        }
+
         const reason = resolveJobOperationReportDisabledReason(
           jobStatus,
           row.original.operation.type

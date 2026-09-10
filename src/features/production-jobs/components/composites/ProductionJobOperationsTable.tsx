@@ -365,24 +365,26 @@ function OperationRow({
       </TableCell>
       <TableCell className="text-center">
         <div className="flex items-center justify-center gap-2">
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <JobOperationReportDialog
-                  row={{ bomItem, operation }}
-                  disabledReason={reportDisabledReason}
-                  trigger={
-                    <Button type="button" aria-label="Nhập báo cáo">
-                      <ClipboardCheck className="size-4" />
-                    </Button>
-                  }
-                />
-              }
-            />
-            <TooltipContent>
-              {reportDisabledReason ?? "Nhập báo cáo hoàn thành"}
-            </TooltipContent>
-          </Tooltip>
+          {operation.type !== OperationType.OUTSOURCE ? (
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <JobOperationReportDialog
+                    row={{ bomItem, operation }}
+                    disabledReason={reportDisabledReason}
+                    trigger={
+                      <Button type="button" aria-label="Nhập báo cáo">
+                        <ClipboardCheck className="size-4" />
+                      </Button>
+                    }
+                  />
+                }
+              />
+              <TooltipContent>
+                {reportDisabledReason ?? "Nhập báo cáo hoàn thành"}
+              </TooltipContent>
+            </Tooltip>
+          ) : null}
           <OperationSendActionCell
             operation={operation}
             outsourceableByOperationId={outsourceableByOperationId}
