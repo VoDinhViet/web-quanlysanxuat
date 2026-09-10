@@ -1,3 +1,4 @@
+import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
@@ -9,13 +10,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type {
   PickedQuotationItemValue,
   QuotationItemSupplierValue,
 } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
+
+const priceFormatter = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
+})
 
 const quotationQuoteColumnHelper = createColumnHelper<
   typeof appTableFeatures,
@@ -62,39 +67,48 @@ export function buildQuotationSuppliersQuoteColumns({
     quotationQuoteColumnHelper.display({
       id: "lastPrice",
       header: "Giá gần nhất",
-      meta: { headerClassName: "w-40 text-[10px]" },
-      cell: ({ row }) => (
-        <NumericCellInput
-          value={row.original.lastPrice}
-          placeholder="Tham khảo"
-          disabled={disabled}
-          onValueChange={(value) =>
-            updateQuote(row.index, { lastPrice: value })
-          }
-        />
-      ),
+      meta: {
+        headerClassName: "w-36 text-[10px]",
+        cellClassName: "tabular-nums text-xs",
+      },
+      cell: ({ row }) => {
+        const lastPrice = row.original.lastPrice
+        return typeof lastPrice === "number" ? (
+          <span className="font-medium text-foreground">
+            {priceFormatter.format(lastPrice)}
+          </span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )
+      },
     }),
     quotationQuoteColumnHelper.display({
       id: "lastPurchaseDate",
       header: "Ngày mua gần nhất",
-      meta: { headerClassName: "w-32 text-[10px]" },
-      cell: ({ row }) => (
-        <DatePicker
-          value={row.original.lastPurchaseDate}
-          onChange={(value) =>
-            updateQuote(row.index, { lastPurchaseDate: value })
-          }
-        />
-      ),
+      meta: {
+        headerClassName: "w-32 text-[10px]",
+        cellClassName: "tabular-nums text-xs",
+      },
+      cell: ({ row }) => {
+        const date = row.original.lastPurchaseDate
+        if (!date) return <span className="text-muted-foreground">—</span>
+        const parsed = DateTime.fromISO(date)
+        return (
+          <span className="font-medium text-foreground">
+            {parsed.isValid ? parsed.toFormat("dd/MM/yyyy") : date}
+          </span>
+        )
+      },
     }),
     quotationQuoteColumnHelper.display({
       id: "unitPrice",
-      header: "Giá báo (VNĐ)",
+      header: "Giá báo (VNĐ) *",
       meta: { headerClassName: "w-44 text-[10px]" },
       cell: ({ row }) => (
         <NumericCellInput
           value={row.original.unitPrice}
-          placeholder="Giá báo"
+          placeholder="Nhập giá báo *"
+          min={0}
           disabled={disabled}
           onValueChange={(value) =>
             updateQuote(row.index, { unitPrice: value })

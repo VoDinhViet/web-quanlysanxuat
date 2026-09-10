@@ -8,24 +8,20 @@ import { z } from "zod"
 
 // unitPrice/leadTimeDays are optional even when a supplier is added to an item — an RFQ can be
 // created before that supplier has actually quoted (DRAFT), same as leaving a cell blank.
-const optionalNonNegativeNumber = z
-  .number("Giá trị không được âm")
-  .min(0, "Giá trị không được âm")
-  .optional()
-
 // One (vật tư, NCC) pairing — supplierLabel is UI-only, carried alongside supplierId the same
 // way OrderItemFormValue carries itemLabel, so a row re-renders without a second suppliers fetch.
-// lastPrice/lastPurchaseDate are reference-only: no purchase-history API exists to fetch them
-// from (confirmed — be-quanlysanxuat has no such endpoint), so the buyer types them in from
-// memory/records if known. Neither is part of CreateQuotationItemSupplierReqDto, so
-// create-purchase-quotation.api.ts's transform never reads them — purely local, never sent.
+// lastPrice/lastPurchaseDate are reference-only: automatically populated from purchase history.
 const quotationItemSupplierFields = {
   supplierId: z.string().trim().min(1, "Vui lòng chọn NCC"),
   supplierLabel: z.string(),
-  lastPrice: optionalNonNegativeNumber,
+  lastPrice: z.number().min(0, "Giá gần nhất không được âm").optional(),
   lastPurchaseDate: z.string(),
-  unitPrice: optionalNonNegativeNumber,
-  leadTimeDays: optionalNonNegativeNumber,
+  unitPrice: z
+    .number("Vui lòng nhập giá báo")
+    .min(0, "Giá báo không được âm")
+    .optional()
+    .pipe(z.number("Vui lòng nhập giá báo")),
+  leadTimeDays: z.number().min(0, "Leadtime không được âm").optional(),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
@@ -101,6 +97,8 @@ export const createQuotationFormSchema = z
     path: ["items"],
   })
 
+import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
+
 export type CreateQuotationFormSchema = z.input<
   typeof createQuotationFormSchema
 >
@@ -108,3 +106,34 @@ export type CreateQuotationFormSchema = z.input<
 export const createQuotationFormDefaultValues: CreateQuotationFormSchema = {
   items: [],
 }
+
+export function mapQuotationDetailToFormValues(
+  quotation: PurchaseQuotationDetail
+): CreateQuotationFormSchema {
+  return {
+    items: quotation.items.map((item) => ({
+      itemId: item.item.id,
+      itemCode: item.item.code,
+      itemName: item.item.name,
+      unit: item.item.unit.name,
+      allocations: item.allocations.map((allocation) => ({
+        purchaseRequestItemId: allocation.purchaseRequestItem.id,
+        prCode: allocation.purchaseRequestItem.purchaseRequest.code,
+        requestedQuantity: allocation.purchaseRequestItem.quantity,
+        neededDate: "",
+        quantity: allocation.quantity,
+        quantityAdjustmentReason: allocation.quantityAdjustmentReason ?? "",
+      })),
+      suppliers: item.suppliers.map((supplier) => ({
+        supplierId: supplier.supplier.id,
+        supplierLabel: `${supplier.supplier.name} (${supplier.supplier.code})`,
+        lastPrice: supplier.lastPurchase?.unitPrice,
+        lastPurchaseDate: supplier.lastPurchase?.orderDate ?? "",
+        unitPrice: supplier.unitPrice ?? undefined,
+        leadTimeDays: supplier.leadTimeDays ?? undefined,
+        note: supplier.note ?? "",
+      })),
+    })),
+  }
+}
+

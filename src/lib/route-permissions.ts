@@ -120,6 +120,8 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/purchase-quotations": "purchasing:read",
   "/manage/purchase-quotations/create": "purchasing:create",
   "/manage/purchase-quotations/$purchaseQuotationId": "purchasing:read",
+  "/manage/purchase-quotations/$purchaseQuotationId/update":
+    "purchasing:update",
 
   "/manage/purchase-requests": "purchase-requests:read",
   "/manage/purchase-requests/create": "purchase-requests:create",

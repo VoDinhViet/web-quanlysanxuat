@@ -98,11 +98,9 @@ export const purchaseQuotationsColumns = purchaseQuotationColumnHelper.columns([
     id: "actions",
     header: "Thao tác",
     meta: {
-      headerClassName: "min-w-20 text-center",
+      headerClassName: "min-w-24 text-center",
       cellClassName: "font-normal",
     },
-    cell: ({ row }) => (
-      <PurchaseQuotationActionsCell purchaseQuotationId={row.original.id} />
-    ),
+    cell: ({ row }) => <PurchaseQuotationActionsCell row={row.original} />,
   }),
 ])
