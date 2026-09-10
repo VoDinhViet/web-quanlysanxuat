@@ -17,7 +17,6 @@ import { useAppForm } from "@/hooks/use-app-form"
 import type { JobOperationReportRow } from "@/lib/types/production-job.type"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 
-const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 type JobOperationReportFormProps = {
   row: JobOperationReportRow
@@ -42,17 +41,13 @@ export function JobOperationReportForm({
 
   // Phần còn được phép nhập thêm (hoàn thành + không đạt cộng lại) — vượt số này là vượt E252
   // (chặn ở client trước khi gọi API, xem C3 trong kế hoạch).
-  const remainingAllowance = Math.max(
+  const remainingAllowance =
     operation.plannedQuantity -
-      operation.completedQuantity -
-      operation.rejectedQuantity,
-    0
-  )
+    operation.completedQuantity -
+    operation.rejectedQuantity
 
   const form = useAppForm({
     defaultValues: {
-      // `operation.id` — id của `production_job_operations` (khác `operation.operationId`, tham
-      // chiếu công đoạn danh mục). Tên field `jobOperationId` khớp BE's route param.
       jobOperationId: operation.id,
       completedQuantityDelta: 0,
       rejectedQuantityDelta: 0,
@@ -73,44 +68,25 @@ export function JobOperationReportForm({
       ),
     },
     onSubmit: ({ value }) => {
-      mutate(value, { onSuccess: onClose })
+      mutate(
+        { ...value, note: value.note.trim() || undefined },
+        { onSuccess: onClose }
+      )
     },
   })
 
   return (
     <>
-      <DialogHeader className="gap-1">
-        <DialogTitle className="flex flex-wrap items-baseline gap-1.5 text-base">
-          Nhập báo cáo hoàn thành
-          <span className="font-mono text-sm font-normal text-muted-foreground">
-            {bomItem.code}
-          </span>
+      <DialogHeader className="gap-0.5">
+        <DialogTitle className="text-base">
+          {bomItem.name}
         </DialogTitle>
         <DialogDescription className="text-xs">
-          {bomItem.name} · Công đoạn {operation.name}
+          <span className="font-mono">{bomItem.code}</span>
+          <span className="mx-1.5">·</span>
+          Công đoạn: <span className="font-medium text-foreground">{operation.name}</span>
         </DialogDescription>
       </DialogHeader>
-
-      <dl className="grid grid-cols-3 divide-x divide-border/60 rounded-lg border border-border/60 bg-muted/20 text-center">
-        <div className="flex flex-col gap-0.5 px-2 py-2.5">
-          <dt className="text-[10px] text-muted-foreground">Định mức</dt>
-          <dd className="text-sm font-semibold text-foreground tabular-nums">
-            {quantityFormatter.format(operation.plannedQuantity)}
-          </dd>
-        </div>
-        <div className="flex flex-col gap-0.5 px-2 py-2.5">
-          <dt className="text-[10px] text-muted-foreground">Hoàn thành</dt>
-          <dd className="text-sm font-semibold text-primary tabular-nums">
-            {quantityFormatter.format(operation.completedQuantity)}
-          </dd>
-        </div>
-        <div className="flex flex-col gap-0.5 px-2 py-2.5">
-          <dt className="text-[10px] text-muted-foreground">Còn lại</dt>
-          <dd className="text-sm font-semibold text-foreground tabular-nums">
-            {quantityFormatter.format(remainingAllowance)}
-          </dd>
-        </div>
-      </dl>
 
       <PermissionGate
         permission="production:update"
@@ -141,11 +117,11 @@ export function JobOperationReportForm({
             noValidate
             className="space-y-4"
           >
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3">
               <form.AppField name="completedQuantityDelta">
                 {(field) => (
                   <field.NumberField
-                    label="SL hoàn thành lần này"
+                    label="✓ SL đạt"
                     required
                     placeholder="0"
                     disabled={isPending}
@@ -156,7 +132,7 @@ export function JobOperationReportForm({
               <form.AppField name="rejectedQuantityDelta">
                 {(field) => (
                   <field.NumberField
-                    label="SL không đạt lần này"
+                    label="✗ SL không đạt"
                     placeholder="0"
                     disabled={isPending}
                   />

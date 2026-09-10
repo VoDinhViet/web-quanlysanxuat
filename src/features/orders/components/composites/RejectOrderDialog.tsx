@@ -2,7 +2,7 @@ import { useState } from "react"
 import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CloseCircle } from "@solar-icons/react"
+import { Loader2 } from "lucide-react"
 import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -25,8 +25,7 @@ type RejectOrderDialogProps = {
   trigger: ReactElement
 }
 
-// PENDING_CONFIRMATION → REJECTED, reason required — director-level (orders:approve). A Dialog
-// (not AlertDialog) because it needs an input field, not just a confirm/cancel choice.
+// PENDING_CONFIRMATION → REJECTED, reason required — director-level (orders:approve).
 export function RejectOrderDialog({ order, trigger }: RejectOrderDialogProps) {
   const [open, setOpen] = useState(false)
 
@@ -34,8 +33,6 @@ export function RejectOrderDialog({ order, trigger }: RejectOrderDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={trigger} />
       <DialogContent className="sm:max-w-md">
-        {/* The dialog unmounts content while closed, so the form (and its mutation
-            state) re-mounts fresh each time the dialog opens. */}
         <RejectOrderForm order={order} onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
@@ -78,16 +75,14 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
         form.handleSubmit()
       }}
       noValidate
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-4"
     >
-      <DialogHeader className="gap-1">
-        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
-          <CloseCircle className="size-4 text-destructive" />
+      <DialogHeader className="gap-1.5 text-left">
+        <DialogTitle className="text-base font-semibold text-foreground">
           Từ chối đơn hàng {order.code}
         </DialogTitle>
-        <DialogDescription className="text-xs leading-normal">
-          Đơn hàng sẽ chuyển sang trạng thái "Từ chối". Nhân viên kinh doanh có
-          thể gửi duyệt lại ngay, hoặc sửa lại (đơn sẽ tự về "Nháp").
+        <DialogDescription className="text-xs text-muted-foreground">
+          Đơn hàng sẽ chuyển sang trạng thái "Từ chối". Vui lòng nhập lý do để nhân viên kinh doanh nắm thông tin.
         </DialogDescription>
       </DialogHeader>
 
@@ -96,16 +91,17 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
           <field.TextareaField
             label="Lý do từ chối"
             required
-            placeholder="Nhập lý do từ chối đơn hàng"
+            maxLength={1000}
+            placeholder="Nhập lý do từ chối đơn hàng..."
           />
         )}
       </form.AppField>
 
       {mutation.error ? (
-        <p className="text-sm text-destructive">{mutation.error.message}</p>
+        <p className="text-xs text-destructive">{mutation.error.message}</p>
       ) : null}
 
-      <DialogFooter className="gap-2">
+      <DialogFooter className="gap-2 sm:gap-2">
         <Button
           type="button"
           variant="outline"
@@ -119,7 +115,14 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
           variant="destructive"
           disabled={mutation.isPending}
         >
-          {mutation.isPending ? "Đang xử lý..." : "Từ chối"}
+          {mutation.isPending ? (
+            <>
+              <Loader2 className="size-4 animate-spin mr-1" />
+              Đang xử lý...
+            </>
+          ) : (
+            "Từ chối"
+          )}
         </Button>
       </DialogFooter>
     </form>

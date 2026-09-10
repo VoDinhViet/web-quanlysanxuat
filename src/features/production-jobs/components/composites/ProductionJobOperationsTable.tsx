@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import { useParams } from "@tanstack/react-router"
-import { SendSquare } from "@solar-icons/react"
+import { ClipboardCheck, SendSquare } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { Package } from "lucide-react"
 
@@ -372,16 +372,15 @@ function OperationRow({
                   row={{ bomItem, operation }}
                   disabledReason={reportDisabledReason}
                   trigger={
-                    <Button type="button" size="sm">
-                      Nhập báo cáo
+                    <Button type="button" aria-label="Nhập báo cáo">
+                      <ClipboardCheck className="size-4" />
                     </Button>
                   }
                 />
               }
             />
             <TooltipContent>
-              {reportDisabledReason ??
-                "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho công đoạn này."}
+              {reportDisabledReason ?? "Nhập báo cáo hoàn thành"}
             </TooltipContent>
           </Tooltip>
           <OperationSendActionCell
@@ -467,7 +466,7 @@ export function ProductionJobOperationsTable({
               </TableHead>
               <TableHead
                 id="actions"
-                className="min-w-64 text-center font-bold text-foreground"
+                className="w-28 text-center font-bold text-foreground"
               >
                 THAO TÁC
               </TableHead>
