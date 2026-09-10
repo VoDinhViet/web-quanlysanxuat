@@ -12,6 +12,8 @@ type NumericCellInputProps = {
   // Floor enforced on blur (e.g. a requested quantity can't commit as 0) — clamped there rather
   // than blocked while typing, so clearing the field to retype doesn't get fought mid-edit.
   min?: number
+  // Ceiling enforced while typing and on blur
+  max?: number
   // Override the default h-8/text-xs sizing for a caller whose row has more room (e.g. a
   // 2-input picker step) — omit to keep every other caller's compact grid-cell sizing unchanged.
   className?: string
@@ -34,6 +36,7 @@ export function NumericCellInput({
   disabled,
   placeholder,
   min,
+  max,
   className,
 }: NumericCellInputProps) {
   const [localValue, setLocalValue] = useState(value)
@@ -46,10 +49,13 @@ export function NumericCellInput({
   }
 
   const commit = () => {
-    const committed =
-      min !== undefined && localValue !== undefined && localValue < min
-        ? min
-        : localValue
+    let committed = localValue
+    if (min !== undefined && committed !== undefined && committed < min) {
+      committed = min
+    }
+    if (max !== undefined && committed !== undefined && committed > max) {
+      committed = max
+    }
     if (committed !== localValue) setLocalValue(committed)
     onValueChange(committed)
   }
@@ -62,6 +68,12 @@ export function NumericCellInput({
       thousandSeparator="."
       decimalSeparator=","
       allowNegative={false}
+      isAllowed={(values) => {
+        const { floatValue } = values
+        if (floatValue === undefined) return true
+        if (max !== undefined && floatValue > max) return false
+        return true
+      }}
       placeholder={placeholder}
       onValueChange={(values) => setLocalValue(values.floatValue)}
       onBlur={commit}

@@ -3,6 +3,9 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
+import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
+import { cn } from "@/lib/utils"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
 const quotationItemsPickerColumnHelper = createColumnHelper<
@@ -30,14 +33,23 @@ export function buildQuotationItemsPickerColumns({
     quotationItemsPickerColumnHelper.display({
       id: "select",
       meta: { headerClassName: "w-10" },
-      cell: ({ row }) => (
-        <Checkbox
-          checked={pickedIds.has(row.original.id)}
-          disabled={disabled}
-          onCheckedChange={() => onToggleRow(row.original)}
-          aria-label={`Chọn ${row.original.item.name}`}
-        />
-      ),
+      cell: ({ row }) => {
+        const remaining = Math.max(
+          0,
+          row.original.quantity - (row.original.quotedQuantity ?? 0)
+        )
+        const isCompleted =
+          row.original.status === PurchaseLedgerStatus.COMPLETED ||
+          remaining <= 0
+        return (
+          <Checkbox
+            checked={pickedIds.has(row.original.id)}
+            disabled={disabled || isCompleted}
+            onCheckedChange={() => onToggleRow(row.original)}
+            aria-label={`Chọn ${row.original.item.name}`}
+          />
+        )
+      },
     }),
     quotationItemsPickerColumnHelper.accessor(
       (row) => row.purchaseRequest.code,
@@ -71,13 +83,75 @@ export function buildQuotationItemsPickerColumns({
       cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
     }),
     quotationItemsPickerColumnHelper.accessor("quantity", {
-      header: "SL cần mua",
+      header: "SL đề xuất",
       meta: {
         headerClassName: "text-right",
         cellClassName: "text-right",
       },
       cell: ({ getValue }) => (
-        <span className="text-xs tabular-nums">{getValue()}</span>
+        <span className="text-xs tabular-nums text-muted-foreground">
+          {getValue()}
+        </span>
+      ),
+    }),
+    quotationItemsPickerColumnHelper.accessor("quotedQuantity", {
+      header: "SL đã báo",
+      meta: {
+        headerClassName: "text-right",
+        cellClassName: "text-right",
+      },
+      cell: ({ getValue }) => {
+        const val = getValue() ?? 0
+        return (
+          <span
+            className={cn(
+              "text-xs tabular-nums",
+              val > 0
+                ? "font-medium text-amber-600 dark:text-amber-400"
+                : "text-muted-foreground"
+            )}
+          >
+            {val}
+          </span>
+        )
+      },
+    }),
+    quotationItemsPickerColumnHelper.display({
+      id: "remainingQuantity",
+      header: "SL cần mua",
+      meta: {
+        headerClassName: "text-right",
+        cellClassName: "text-right",
+      },
+      cell: ({ row }) => {
+        const remaining = Math.max(
+          0,
+          row.original.quantity - (row.original.quotedQuantity ?? 0)
+        )
+        return (
+          <span
+            className={cn(
+              "text-xs tabular-nums font-semibold",
+              remaining > 0
+                ? "text-primary"
+                : "text-muted-foreground/60 font-normal"
+            )}
+          >
+            {remaining}
+          </span>
+        )
+      },
+    }),
+    quotationItemsPickerColumnHelper.accessor("status", {
+      header: "Trạng thái",
+      meta: {
+        headerClassName: "text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ getValue }) => (
+        <div className="flex justify-center">
+          <PurchaseLedgerStatusBadge status={getValue()} />
+        </div>
       ),
     }),
     quotationItemsPickerColumnHelper.accessor("neededDate", {

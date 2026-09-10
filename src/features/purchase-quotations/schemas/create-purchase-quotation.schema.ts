@@ -50,9 +50,18 @@ const quotationItemAllocationFields = {
     .max(500, "Lý do tối đa 500 ký tự"),
 }
 
-export const quotationItemAllocationSchema = z.object(
-  quotationItemAllocationFields
-)
+export const quotationItemAllocationSchema = z
+  .object(quotationItemAllocationFields)
+  .refine(
+    (data) =>
+      data.quantity === undefined ||
+      data.requestedQuantity === undefined ||
+      data.quantity <= data.requestedQuantity,
+    {
+      message: "Số lượng báo giá không được lớn hơn số lượng cần mua",
+      path: ["quantity"],
+    }
+  )
 export type QuotationItemAllocationValue = z.input<
   typeof quotationItemAllocationSchema
 >

@@ -17,6 +17,7 @@ export const purchaseLedgerSearchSchema = z.object({
   createdEndDate: z.iso.date().optional().catch(undefined),
   neededStartDate: z.iso.date().optional().catch(undefined),
   neededEndDate: z.iso.date().optional().catch(undefined),
+  hasRemainingQuotation: z.boolean().optional().catch(undefined),
 })
 
 export type PurchaseLedgerSearchSchema = z.infer<

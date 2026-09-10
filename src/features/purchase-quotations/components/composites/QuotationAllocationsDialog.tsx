@@ -163,6 +163,7 @@ function QuotationAllocationsDialogForm({
                     <NumericCellInput
                       value={allocation.quantity}
                       min={1}
+                      max={allocation.requestedQuantity}
                       onValueChange={(value) =>
                         updateAllocation(index, { quantity: value })
                       }

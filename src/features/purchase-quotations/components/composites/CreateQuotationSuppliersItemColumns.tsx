@@ -58,7 +58,7 @@ export function buildQuotationSuppliersItemColumns({
     }),
     quotationItemColumnHelper.display({
       id: "requestedQuantity",
-      header: "SL yêu cầu",
+      header: "SL cần mua",
       meta: {
         headerClassName: "w-24 text-right",
         cellClassName: "text-right tabular-nums",
@@ -121,6 +121,7 @@ export function buildQuotationSuppliersItemColumns({
           <NumericCellInput
             value={allocation.quantity}
             min={1}
+            max={allocation.requestedQuantity}
             disabled={disabled}
             onValueChange={(value) =>
               itemsField.replaceValue(row.index, {

@@ -22,6 +22,7 @@ import { purchaseLedgerQueryOptions } from "@/features/purchase-ledger/api"
 import { buildQuotationItemsPickerColumns } from "@/features/purchase-quotations/components/composites/CreateQuotationItemsPickerColumns"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { cn } from "@/lib/utils"
 import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
 import type {
   PickedQuotationItemValue,
@@ -30,13 +31,26 @@ import type {
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 import type { PageSize } from "@/components/shared/composites/Pagination"
 
+type QuotationPickerStatusFilter = PurchaseLedgerStatus | "ALL"
+
+const statusFilterOptions: {
+  value: QuotationPickerStatusFilter
+  label: string
+}[] = [
+  { value: "ALL", label: "Tất cả" },
+  { value: PurchaseLedgerStatus.WAITING_TO_PURCHASE, label: "Chờ mua" },
+  { value: PurchaseLedgerStatus.QUOTING, label: "Đang báo giá" },
+]
+
 function buildAllocation(row: PurchaseLedgerRow): QuotationItemAllocationValue {
+  const remaining = Math.max(0, row.quantity - (row.quotedQuantity ?? 0))
+
   return {
     purchaseRequestItemId: row.id,
     prCode: row.purchaseRequest.code,
-    requestedQuantity: row.quantity,
+    requestedQuantity: remaining,
     neededDate: row.neededDate,
-    quantity: row.quantity,
+    quantity: remaining,
     quantityAdjustmentReason: "",
   }
 }
@@ -63,6 +77,8 @@ export const CreateQuotationItemsPickerSection = withForm({
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState<PageSize>(10)
     const [q, setQ] = useState("")
+    const [statusFilter, setStatusFilter] =
+      useState<QuotationPickerStatusFilter>("ALL")
     const [debouncedQ] = useDebounceValue(q, 300)
 
     // `useField`, not `form.Field`'s render-prop — useReactTable/useMemo below are real hooks
@@ -72,15 +88,13 @@ export const CreateQuotationItemsPickerSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
-    // Only WAITING_TO_PURCHASE rows have zero quotations so far — QUOTING/ORDERED/COMPLETED
-    // rows already have a quotation, PO, or receipt in progress and don't belong in this picker.
-    // The backend only accepts one status value per request (no OR), so this is a hard filter,
-    // not a user-facing choice.
+    // Shows WAITING_TO_PURCHASE and QUOTING rows that still have remaining quantity to buy.
     const ledgerQuery = useQuery({
       ...purchaseLedgerQueryOptions({
         page,
         limit: pageSize,
-        status: PurchaseLedgerStatus.WAITING_TO_PURCHASE,
+        status: statusFilter === "ALL" ? undefined : statusFilter,
+        hasRemainingQuotation: true,
         q: debouncedQ.trim() || undefined,
       }),
       placeholderData: keepPreviousData,
@@ -113,6 +127,17 @@ export const CreateQuotationItemsPickerSection = withForm({
           return
         }
 
+        const remaining = Math.max(
+          0,
+          row.quantity - (row.quotedQuantity ?? 0)
+        )
+        if (
+          row.status === PurchaseLedgerStatus.COMPLETED ||
+          remaining <= 0
+        ) {
+          return
+        }
+
         const existingItemIndex = items.findIndex(
           (item) => item.itemId === row.item.id
         )
@@ -129,7 +154,16 @@ export const CreateQuotationItemsPickerSection = withForm({
       [items, itemsField]
     )
 
-    const rows = ledgerQuery.data?.data ?? []
+    const rawRows = ledgerQuery.data?.data ?? []
+    const rows = useMemo(
+      () =>
+        rawRows.filter(
+          (row) =>
+            row.status !== PurchaseLedgerStatus.COMPLETED &&
+            row.quantity - (row.quotedQuantity ?? 0) > 0
+        ),
+      [rawRows]
+    )
     const pagination = ledgerQuery.data?.pagination
 
     const pickedIds = useMemo(
@@ -176,26 +210,55 @@ export const CreateQuotationItemsPickerSection = withForm({
           </span>
         </div>
 
-        <div className="mt-4 max-w-sm space-y-1.5">
-          <Label
-            htmlFor="quotation-picker-search"
-            className="text-[11px] font-medium text-muted-foreground"
-          >
-            Tìm kiếm
-          </Label>
-          <div className="relative">
-            <Input
-              id="quotation-picker-search"
-              className="pr-9 text-xs placeholder:text-muted-foreground/75"
-              placeholder="Tìm theo mã PR, mã/tên vật tư..."
-              value={q}
-              disabled={disabled}
-              onChange={(event) => {
-                setQ(event.target.value)
-                setPage(1)
-              }}
-            />
-            <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+          <div className="max-w-sm flex-1 space-y-1.5">
+            <Label
+              htmlFor="quotation-picker-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
+            <div className="relative">
+              <Input
+                id="quotation-picker-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo mã PR, mã/tên vật tư..."
+                value={q}
+                disabled={disabled}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  setPage(1)
+                }}
+              />
+              <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-[11px] font-medium text-muted-foreground">
+              Trạng thái
+            </Label>
+            <div className="inline-flex rounded-lg border border-border/60 bg-muted/50 p-0.5">
+              {statusFilterOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => {
+                    setStatusFilter(opt.value)
+                    setPage(1)
+                  }}
+                  className={cn(
+                    "rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+                    statusFilter === opt.value
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

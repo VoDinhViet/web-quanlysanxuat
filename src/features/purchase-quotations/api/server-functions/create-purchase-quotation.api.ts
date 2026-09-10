@@ -55,6 +55,8 @@ function resolveCreatePurchaseQuotationErrorMessage(error: unknown): string {
       return "Có dòng đề xuất không đúng mã vật tư của dòng báo giá."
     case "purchase_quotation_item.error.no_allocations":
       return "Có vật tư chưa gắn dòng đề xuất nào."
+    case "purchase_quotation_item.error.quantity_exceeded":
+      return "Số lượng báo giá vượt quá số lượng cần mua còn lại."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo báo giá."
     default:
