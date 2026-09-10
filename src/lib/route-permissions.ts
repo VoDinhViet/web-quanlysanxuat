@@ -1,5 +1,6 @@
 import type { MakeRouteMatchUnion } from "@tanstack/react-router"
 
+import { hasPermission } from "@/lib/permissions"
 import type { PermissionCode } from "@/lib/types/permission.type"
 import type { FileRouteTypes } from "@/routeTree.gen"
 
@@ -192,4 +193,20 @@ const devOnlyRoutes: ReadonlySet<string> = new Set<ManageRoutePath>([
  */
 export function isRouteAvailable(path: MatchedRoutePath): boolean {
   return import.meta.env.DEV || !devOnlyRoutes.has(path)
+}
+
+/**
+ * Cho biết người dùng với danh sách quyền `permissions` có được phép truy cập `path` hay không.
+ * Kết hợp cả kiểm tra tính khả dụng theo môi trường (`isRouteAvailable`) và quyền truy cập (`requiredPermissionForPath`).
+ */
+export function canAccessRoute(
+  path: ManageRoutePath,
+  permissions: string[]
+): boolean {
+  if (!isRouteAvailable(path)) {
+    return false
+  }
+
+  const required = requiredPermissionForPath(path)
+  return required === null || hasPermission(permissions, required)
 }

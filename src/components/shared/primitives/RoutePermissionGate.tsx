@@ -3,11 +3,7 @@ import type { ReactNode } from "react"
 import { useQuery } from "@tanstack/react-query"
 
 import { currentPermissionsQueryOptions } from "@/features/auth/api"
-import { hasPermission } from "@/lib/permissions"
-import {
-  isRouteAvailable,
-  requiredPermissionForPath,
-} from "@/lib/route-permissions"
+import { canAccessRoute } from "@/lib/route-permissions"
 import type { ManageRoutePath } from "@/lib/route-permissions"
 
 type RoutePermissionGateProps = {
@@ -30,10 +26,8 @@ export function RoutePermissionGate({
   fallback = null,
 }: RoutePermissionGateProps) {
   const { data: permissions } = useQuery(currentPermissionsQueryOptions)
-  const required = requiredPermissionForPath(route)
 
-  return isRouteAvailable(route) &&
-    (required === null || hasPermission(permissions ?? [], required)) ? (
+  return canAccessRoute(route, permissions ?? []) ? (
     <>{children}</>
   ) : (
     <>{fallback}</>

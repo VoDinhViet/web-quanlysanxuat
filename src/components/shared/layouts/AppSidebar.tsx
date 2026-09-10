@@ -1,3 +1,5 @@
+import { useMemo } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Image } from "@unpic/react"
 import { useLocation } from "@tanstack/react-router"
 import {
@@ -44,6 +46,8 @@ import {
   SidebarMenuLinkButton,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { currentPermissionsQueryOptions } from "@/features/auth/api/options"
+import { canAccessRoute } from "@/lib/route-permissions"
 import type { ManageRoutePath } from "@/lib/route-permissions"
 
 type MenuItem = {
@@ -249,6 +253,18 @@ const menuButtonClass =
 
 export function AppSidebar() {
   const location = useLocation()
+  const { data: permissions = [] } = useQuery(currentPermissionsQueryOptions)
+
+  const visibleMenuGroups = useMemo(() => {
+    return menuGroups
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) =>
+          canAccessRoute(item.href, permissions)
+        ),
+      }))
+      .filter((group) => group.items.length > 0)
+  }, [permissions])
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
@@ -278,7 +294,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="gap-3 px-2.5 py-4">
-        {menuGroups.map((group) => (
+        {visibleMenuGroups.map((group) => (
           <MenuGroup
             key={group.label}
             group={group}
