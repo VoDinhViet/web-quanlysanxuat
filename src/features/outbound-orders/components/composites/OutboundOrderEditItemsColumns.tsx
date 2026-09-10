@@ -63,63 +63,62 @@ export function buildOutboundOrderEditItemColumns({
       ),
     }),
     editItemColumnHelper.display({
-      id: "orderCode",
-      header: "PO",
+      id: "poJob",
+      header: "PO / Job",
       meta: { headerClassName: "min-w-24" },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
-        return display ? (
-          <Link
-            to="/manage/orders/$orderId"
-            params={{ orderId: display.order.id }}
-            className="font-mono text-xs text-primary hover:underline"
-          >
-            {display.order.code}
-          </Link>
-        ) : (
-          "—"
-        )
-      },
-    }),
-    editItemColumnHelper.display({
-      id: "jobCode",
-      header: "Job",
-      meta: {
-        headerClassName: "min-w-24",
-        cellClassName: "font-mono text-xs text-muted-foreground",
-      },
-      cell: ({ row }) =>
-        displayByOrderItemId.get(row.original.orderItemId)?.job?.code ?? "—",
-    }),
-    editItemColumnHelper.display({
-      id: "item",
-      header: "Chi tiết",
-      meta: { headerClassName: "min-w-40" },
-      cell: ({ row }) => {
-        const display = displayByOrderItemId.get(row.original.orderItemId)
+        if (!display) return "—"
         return (
-          <div>
-            <p className="text-xs font-semibold text-foreground">
-              {display?.item.name ?? "—"}
-            </p>
-            <p className="font-mono text-[11px] text-muted-foreground">
-              {display?.item.code}
-            </p>
+          <div className="flex flex-col gap-0.5">
+            <Link
+              to="/manage/orders/$orderId"
+              params={{ orderId: display.order.id }}
+              className="font-mono text-xs font-semibold text-primary hover:underline"
+            >
+              {display.order.code}
+            </Link>
+            {display.job ? (
+              <Link
+                to="/manage/production-jobs/$productionJobId"
+                params={{ productionJobId: display.job.id }}
+                search={{ tab: "info" }}
+                className="font-mono text-[11px] text-muted-foreground hover:text-primary hover:underline"
+              >
+                {display.job.code}
+              </Link>
+            ) : (
+              <span className="text-[11px] text-muted-foreground">—</span>
+            )}
           </div>
         )
       },
     }),
     editItemColumnHelper.display({
-      id: "unitName",
-      header: "ĐVT",
-      meta: { headerClassName: "w-14", cellClassName: "text-muted-foreground" },
-      cell: ({ row }) =>
-        displayByOrderItemId.get(row.original.orderItemId)?.unit.name ?? "—",
+      id: "product",
+      header: "Sản phẩm",
+      meta: { headerClassName: "min-w-44" },
+      cell: ({ row }) => {
+        const display = displayByOrderItemId.get(row.original.orderItemId)
+        if (!display) return "—"
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium text-foreground text-xs leading-tight">
+              {display.item.name}
+            </span>
+            <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+              <span>{display.item.code}</span>
+              <span>·</span>
+              <span>ĐVT: {display.unit.name}</span>
+            </div>
+          </div>
+        )
+      },
     }),
     editItemColumnHelper.display({
       id: "orderedQuantity",
       header: "SL PO",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right" },
+      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums" },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return display ? quantityFormatter.format(display.orderedQuantity) : "—"
@@ -128,7 +127,7 @@ export function buildOutboundOrderEditItemColumns({
     editItemColumnHelper.display({
       id: "issuedQuantity",
       header: "Đã giao",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right" },
+      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums" },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return display ? quantityFormatter.format(display.issuedQuantity) : "—"
@@ -137,19 +136,20 @@ export function buildOutboundOrderEditItemColumns({
     editItemColumnHelper.display({
       id: "onHandQuantity",
       header: "Tồn TP",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right" },
+      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums" },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
-        return display ? quantityFormatter.format(display.onHandQuantity) : "—"
-      },
-    }),
-    editItemColumnHelper.display({
-      id: "heldQuantity",
-      header: "Đã giữ",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right" },
-      cell: ({ row }) => {
-        const display = displayByOrderItemId.get(row.original.orderItemId)
-        return display ? quantityFormatter.format(display.heldQuantity) : "—"
+        if (!display) return "—"
+        return (
+          <div className="flex flex-col items-end gap-0.5">
+            <span>{quantityFormatter.format(display.onHandQuantity)}</span>
+            {display.heldQuantity > 0 ? (
+              <span className="text-[10px] text-muted-foreground">
+                (Giữ: {quantityFormatter.format(display.heldQuantity)})
+              </span>
+            ) : null}
+          </div>
+        )
       },
     }),
     editItemColumnHelper.display({

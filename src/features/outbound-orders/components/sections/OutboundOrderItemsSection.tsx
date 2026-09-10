@@ -23,76 +23,67 @@ const itemColumns = col.columns([
     id: "stt",
     header: "STT",
     meta: {
-      headerClassName: "w-12 text-center",
+      headerClassName: "w-10 text-center",
       cellClassName: "text-center text-muted-foreground",
     },
     cell: ({ row }) => row.index + 1,
   }),
 
   col.display({
-    id: "order",
-    header: "Mã PO",
-    meta: { headerClassName: "min-w-24" },
-    cell: ({ row }) => (
-      <Link
-        to="/manage/orders/$orderId"
-        params={{ orderId: row.original.order.id }}
-        className="font-mono text-xs text-primary hover:underline"
-      >
-        {row.original.order.code}
-      </Link>
-    ),
-  }),
-
-  col.display({
-    id: "productionJob",
-    header: "Job",
+    id: "poJob",
+    header: "PO / Job",
     meta: { headerClassName: "min-w-24" },
     cell: ({ row }) => {
       const job = row.original.productionJob
-      if (!job) return "--"
       return (
-        <Link
-          to="/manage/production-jobs/$productionJobId"
-          params={{ productionJobId: job.id }}
-          search={{ tab: "info" }}
-          className="font-mono text-xs text-primary hover:underline"
-        >
-          {job.code}
-        </Link>
+        <div className="flex flex-col gap-0.5">
+          <Link
+            to="/manage/orders/$orderId"
+            params={{ orderId: row.original.order.id }}
+            className="font-mono text-xs font-semibold text-primary hover:underline"
+          >
+            {row.original.order.code}
+          </Link>
+          {job ? (
+            <Link
+              to="/manage/production-jobs/$productionJobId"
+              params={{ productionJobId: job.id }}
+              search={{ tab: "info" }}
+              className="font-mono text-[11px] text-muted-foreground hover:text-primary hover:underline"
+            >
+              {job.code}
+            </Link>
+          ) : (
+            <span className="text-[11px] text-muted-foreground">—</span>
+          )}
+        </div>
       )
     },
   }),
 
-  col.accessor((row) => row.item.code, {
-    id: "itemCode",
-    header: "Mã sản phẩm",
-    meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold">{getValue()}</span>
+  col.display({
+    id: "product",
+    header: "Sản phẩm",
+    meta: { headerClassName: "min-w-44" },
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-0.5">
+        <span className="font-medium text-foreground text-xs leading-tight">
+          {row.original.item.name}
+        </span>
+        <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+          <span>{row.original.item.code}</span>
+          <span>·</span>
+          <span>ĐVT: {row.original.unit.name}</span>
+        </div>
+      </div>
     ),
-  }),
-
-  col.accessor((row) => row.item.name, {
-    id: "itemName",
-    header: "Tên sản phẩm",
-    meta: { headerClassName: "min-w-48" },
-  }),
-
-  col.accessor((row) => row.unit.name, {
-    id: "unit",
-    header: "ĐVT",
-    meta: {
-      headerClassName: "min-w-16 text-center",
-      cellClassName: "text-center",
-    },
   }),
 
   col.accessor("orderedQuantity", {
     header: "SL PO",
     meta: {
-      headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right",
+      headerClassName: "w-20 text-right",
+      cellClassName: "text-right tabular-nums",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
@@ -100,35 +91,40 @@ const itemColumns = col.columns([
   col.accessor("issuedQuantity", {
     header: "Đã giao",
     meta: {
-      headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right",
+      headerClassName: "w-20 text-right",
+      cellClassName: "text-right tabular-nums",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
 
-  col.accessor("onHandQuantity", {
+  col.display({
+    id: "onHandQuantity",
     header: "Tồn TP",
     meta: {
-      headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right",
+      headerClassName: "w-20 text-right",
+      cellClassName: "text-right tabular-nums",
     },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
-  }),
-
-  col.accessor("heldQuantity", {
-    header: "Đã giữ",
-    meta: {
-      headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right",
+    cell: ({ row }) => {
+      const onHand = row.original.onHandQuantity
+      const held = row.original.heldQuantity
+      return (
+        <div className="flex flex-col items-end gap-0.5">
+          <span>{numberFmt.format(onHand)}</span>
+          {held > 0 ? (
+            <span className="text-[10px] text-muted-foreground">
+              (Giữ: {numberFmt.format(held)})
+            </span>
+          ) : null}
+        </div>
+      )
     },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
 
   col.accessor("availableQuantity", {
     header: "Có thể giao",
     meta: {
-      headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums font-semibold text-emerald-600",
+      headerClassName: "w-24 text-right",
+      cellClassName: "text-right tabular-nums font-semibold text-emerald-600 dark:text-emerald-400",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
@@ -136,16 +132,20 @@ const itemColumns = col.columns([
   col.accessor("quantity", {
     header: "SL giao",
     meta: {
-      headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums font-semibold",
+      headerClassName: "w-24 text-right",
+      cellClassName: "text-right tabular-nums",
     },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
+    cell: ({ getValue }) => (
+      <span className="inline-block rounded-md bg-primary/10 px-2 py-0.5 font-bold text-primary dark:bg-primary/20">
+        {numberFmt.format(getValue())}
+      </span>
+    ),
   }),
 
   col.accessor("note", {
     header: "Ghi chú",
-    meta: { headerClassName: "min-w-36" },
-    cell: ({ getValue }) => getValue() ?? "—",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ getValue }) => getValue() || "—",
   }),
 ])
 
@@ -213,10 +213,10 @@ export function OutboundOrderItemsSection({
           </TableBody>
           <TableFooter>
             <TableRow className="h-12">
-              <TableCell colSpan={6} className="font-semibold">
-                Tổng
+              <TableCell colSpan={7} className="font-semibold text-right">
+                Tổng SL giao
               </TableCell>
-              <TableCell className="text-right font-semibold tabular-nums">
+              <TableCell className="text-right font-bold tabular-nums text-primary">
                 {numberFmt.format(totalQuantity)}
               </TableCell>
               <TableCell />
