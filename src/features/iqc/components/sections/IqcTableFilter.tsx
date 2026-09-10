@@ -1,18 +1,11 @@
-import { useState } from "react"
+import { useMemo } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
-import { useDebounceCallback } from "usehooks-ts"
-import { Download, ListFilter, Plus, RotateCw, Search } from "lucide-react"
+import { Download, Plus, RotateCw } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
@@ -27,18 +20,7 @@ import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import type { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 import { iqcResultLabels, iqcStatusLabels } from "@/lib/types/iqc.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
 import type { SelectOption } from "@/lib/utils"
-
-const resultOptions: SelectOption[] = [
-  { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(iqcResultLabels),
-]
-
-const statusOptions: SelectOption[] = [
-  { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(iqcStatusLabels),
-]
 
 export function IqcTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/iqc/" })
@@ -47,6 +29,39 @@ export function IqcTableFilter() {
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: supplierOptions } = useSuspenseQuery(
     supplierOptionsQueryOptions()
+  )
+
+  const iqcResultFilterOptions = useMemo<SelectOption[]>(
+    () => [
+      { value: "all", label: "Tất cả" },
+      ...Object.entries(iqcResultLabels).map(([value, label]) => ({
+        value,
+        label,
+      })),
+    ],
+    []
+  )
+
+  const iqcStatusFilterOptions = useMemo<SelectOption[]>(
+    () => [
+      { value: "all", label: "Tất cả" },
+      ...Object.entries(iqcStatusLabels).map(([value, label]) => ({
+        value,
+        label,
+      })),
+    ],
+    []
+  )
+
+  const supplierFilterOptions = useMemo<SelectOption[]>(
+    () => [
+      { value: "all", label: "Tất cả" },
+      ...supplierOptions.map((option) => ({
+        value: option.id,
+        label: option.name,
+      })),
+    ],
+    [supplierOptions]
   )
 
   const exportIqcFn = useServerFn(exportIqc)
@@ -59,51 +74,37 @@ export function IqcTableFilter() {
     onError: (error) => toast.error(error.message),
   })
 
-  // Fields tucked behind the "Bộ lọc" popover — count so the trigger can hint they're active
-  // even while the popover is closed.
-  const activeFilterCount = [
-    search.result,
-    search.status,
-    search.supplierId,
-  ].filter(Boolean).length
-
-  const [code, setCode] = useState(search.q ?? "")
-
-  // Filters as the user types, 300ms after the last keystroke — same idiom as
-  // SupplierReturnsTableFilter.tsx. `replace: true` keeps rapid keystrokes from flooding history;
-  // discrete Select changes below push instead so Back undoes them one at a time.
-  const handleCodeChange = useDebounceCallback((term: string) => {
-    const trimmed = term.trim()
+  const handleResultChange = (value: string | null) => {
     void navigate({
       search: (prev) => ({
         ...prev,
-        q: trimmed.length > 0 ? trimmed : undefined,
+        result: !value || value === "all" ? undefined : (value as IqcResult),
         page: 1,
       }),
-      replace: true,
     })
-  }, 300)
-
-  const handleResultChange = (value: string) => {
-    const result = value === "all" ? undefined : (value as IqcResult)
-    void navigate({ search: (prev) => ({ ...prev, result, page: 1 }) })
   }
 
-  const handleStatusChange = (value: string) => {
-    const status = value === "all" ? undefined : (value as IqcStatus)
-    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  const handleStatusChange = (value: string | null) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        status: !value || value === "all" ? undefined : (value as IqcStatus),
+        page: 1,
+      }),
+    })
   }
 
-  const handleSupplierChange = (value: string) => {
-    const supplierId = value === "all" ? undefined : value
-    void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
+  const handleSupplierChange = (value: string | null) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        supplierId: !value || value === "all" ? undefined : value,
+        page: 1,
+      }),
+    })
   }
 
   const resetFilters = () => {
-    // Cancel every debounce first — a call still in flight would re-apply the term the user just
-    // cleared, ~300ms after the box goes blank.
-    handleCodeChange.cancel()
-    setCode("")
     void navigate({
       search: (prev) => {
         const {
@@ -119,164 +120,119 @@ export function IqcTableFilter() {
   }
 
   return (
-    <div className="flex flex-col gap-3 bg-card px-4 py-3.5 lg:flex-row lg:items-center lg:px-5">
-      {/* Tìm theo mã IQC — ô search chính, luôn hiện; các field còn lại nằm trong popover "Bộ lọc" */}
-      <div className="relative flex-1 lg:max-w-sm">
-        <Input
-          id="iqc-code"
-          className="pr-9 text-xs placeholder:text-muted-foreground/75"
-          placeholder="Nhập mã IQC..."
-          value={code}
-          onChange={(event) => {
-            setCode(event.target.value)
-            handleCodeChange(event.target.value)
-          }}
-        />
-        <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-      </div>
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-3 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(11rem,1fr)_minmax(11rem,1fr)]">
+          {/* Nhà cung cấp */}
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="iqc-supplier"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Nhà cung cấp
+            </Label>
+            <Select
+              items={supplierFilterOptions}
+              value={search.supplierId ?? "all"}
+              onValueChange={handleSupplierChange}
+            >
+              <SelectTrigger id="iqc-supplier" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {supplierFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Popover>
-          <PopoverTrigger
-            render={
-              <Button type="button" variant="outline" className="text-xs">
-                <ListFilter className="size-3.5" />
-                Bộ lọc
-                {activeFilterCount > 0 && (
-                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </Button>
-            }
-          />
-          <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
-            <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
+          {/* Kết quả QC */}
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="iqc-result"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Kết quả QC
+            </Label>
+            <Select
+              items={iqcResultFilterOptions}
+              value={search.result ?? "all"}
+              onValueChange={handleResultChange}
+            >
+              <SelectTrigger id="iqc-result" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {iqcResultFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {/* Kết quả QC */}
-              <div className="flex flex-col gap-1.5">
-                <Label
-                  htmlFor="iqc-result"
-                  className="text-[11px] font-medium text-muted-foreground"
-                >
-                  Kết quả QC
-                </Label>
-                <Select
-                  items={resultOptions}
-                  value={search.result ?? "all"}
-                  onValueChange={(value) =>
-                    value !== null && handleResultChange(value)
-                  }
-                >
-                  <SelectTrigger id="iqc-result" className="w-full text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {resultOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+          {/* Trạng thái */}
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="iqc-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
+            <Select
+              items={iqcStatusFilterOptions}
+              value={search.status ?? "all"}
+              onValueChange={handleStatusChange}
+            >
+              <SelectTrigger id="iqc-status" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {iqcStatusFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-              {/* Trạng thái */}
-              <div className="flex flex-col gap-1.5">
-                <Label
-                  htmlFor="iqc-status"
-                  className="text-[11px] font-medium text-muted-foreground"
-                >
-                  Trạng thái
-                </Label>
-                <Select
-                  items={statusOptions}
-                  value={search.status ?? "all"}
-                  onValueChange={(value) =>
-                    value !== null && handleStatusChange(value)
-                  }
-                >
-                  <SelectTrigger id="iqc-status" className="w-full text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
+            <Download className="size-4" />
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
 
-              {/* Nhà cung cấp */}
-              <div className="flex flex-col gap-1.5">
-                <Label
-                  htmlFor="iqc-supplier"
-                  className="text-[11px] font-medium text-muted-foreground"
-                >
-                  Nhà cung cấp
-                </Label>
-                <Select
-                  items={[
-                    { value: "all", label: "Tất cả" },
-                    ...supplierOptions.map((option) => ({
-                      value: option.id,
-                      label: option.name,
-                    })),
-                  ]}
-                  value={search.supplierId ?? "all"}
-                  onValueChange={(value) =>
-                    value !== null && handleSupplierChange(value)
-                  }
-                >
-                  <SelectTrigger id="iqc-supplier" className="w-full text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tất cả</SelectItem>
-                    {supplierOptions.map((option) => (
-                      <SelectItem key={option.id} value={option.id}>
-                        {option.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-3.5" />
+            Xóa bộ lọc
+          </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="text-xs"
-          onClick={resetFilters}
-        >
-          <RotateCw className="size-3.5" />
-          Xóa bộ lọc
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="text-xs"
-          disabled={exportMutation.isPending}
-          onClick={() => exportMutation.mutate()}
-        >
-          <Download className="size-4" />
-          {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
-        </Button>
-
-        <PendingAction
-          label="Thêm IQC"
-          hint="Tính năng tạo phiếu IQC sắp có"
-          variant="default"
-        >
-          <Plus className="size-4" />
-          Thêm IQC
-        </PendingAction>
+          <PendingAction
+            label="Thêm IQC"
+            hint="Tính năng tạo phiếu IQC sắp có"
+            variant="default"
+          >
+            <Plus className="size-4" />
+            Thêm IQC
+          </PendingAction>
+        </div>
       </div>
     </div>
   )
