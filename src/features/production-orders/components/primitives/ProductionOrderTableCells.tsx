@@ -1,5 +1,5 @@
 import { DateTime } from "luxon"
-import { Eye, Pencil } from "lucide-react"
+import { Pencil } from "lucide-react"
 
 import { LinkButton } from "@/components/ui/button"
 import {
@@ -63,32 +63,10 @@ export function DueDateCell({
   )
 }
 
-// "Xem" links to the order itself (thông tin đơn hàng gốc), keyed by `row.orderId`; "Sửa LSX"
-// links to the LSX detail screen, keyed by `row.id` (the production order's own id) — the two ids
-// are different resources, both carried on the same list row.
+// Nút "Sửa LSX" chuyển đến màn hình chi tiết / chỉnh sửa LSX.
 export function ProductionOrderActionsCell({ row }: { row: ProductionOrder }) {
   return (
     <div className="flex items-center justify-center gap-1.5">
-      <RoutePermissionGate route="/manage/orders/$orderId">
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <LinkButton
-                to="/manage/orders/$orderId"
-                params={{ orderId: row.orderId }}
-                variant="outline"
-                size="icon-sm"
-                aria-label="Xem đơn hàng"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
-              >
-                <Eye className="size-3.5" />
-              </LinkButton>
-            }
-          />
-          <TooltipContent>Xem đơn hàng</TooltipContent>
-        </Tooltip>
-      </RoutePermissionGate>
-
       <RoutePermissionGate route="/manage/production-orders/$productionOrderId">
         <Tooltip>
           <TooltipTrigger
