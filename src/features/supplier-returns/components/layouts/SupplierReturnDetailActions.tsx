@@ -29,9 +29,7 @@ type SupplierReturnDetailActionsProps = {
 // SupplierReturnDetailHeader's action slot rather than a separate sticky footer. "Xác nhận
 // xuất" is real (POST /supplier-returns/:id/post — see docs/workflows/supplier-return.md), dialog
 // now carries an optional ghi chú/đính kèm form (same idiom as JobOperationReportForm.tsx, just
-// without the SL fields); "Hủy phiếu"/"Lưu" stay disabled, the module still has no cancel/edit
-// route (B2's deliberate scope cut — undoing a POSTED return needs an "un-complete IQC" path the
-// backend doesn't have yet).
+// without the SL fields). Phiếu trả NCC không có chức năng hủy/chỉnh sửa để bảo toàn tính toàn vẹn tồn kho và IQC.
 export function SupplierReturnDetailActions({
   supplierReturn,
 }: SupplierReturnDetailActionsProps) {
@@ -61,17 +59,6 @@ export function SupplierReturnDetailActions({
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
-      <PendingAction
-        label="Hủy phiếu"
-        hint="chưa có API hủy phiếu"
-        variant="destructive"
-      >
-        Hủy phiếu
-      </PendingAction>
-      <PendingAction label="Lưu" hint="chưa có API lưu chỉnh sửa">
-        Lưu
-      </PendingAction>
-
       {isDraft && (
         <PermissionGate permission="inventory:update">
           <Button type="button" onClick={() => setConfirmOpen(true)}>

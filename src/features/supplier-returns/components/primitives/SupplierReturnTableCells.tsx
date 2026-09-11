@@ -1,4 +1,4 @@
-import { Edit3, Eye } from "lucide-react"
+import { Eye } from "lucide-react"
 
 import { LinkButton } from "@/components/ui/button"
 import {
@@ -6,7 +6,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { MissingFieldValue } from "@/components/shared/primitives/MissingFieldValue"
 import type { SupplierReturn } from "@/lib/types/supplier-return.type"
 
@@ -28,9 +27,7 @@ export function SupplierReturnCodeCell({ code }: SupplierReturnCodeCellProps) {
   )
 }
 
-// "Xem chi tiết" now goes to a real route (GET /api/supplier-returns/:id) — no longer a
-// client-side sheet built from list data. "Chỉnh sửa" stays disabled: the module still has no
-// create/update/print route.
+// "Xem chi tiết" dẫn tới route thực tế (GET /api/supplier-returns/:id).
 type SupplierReturnActionsCellProps = {
   supplierReturn: SupplierReturn
 }
@@ -57,9 +54,6 @@ export function SupplierReturnActionsCell({
         />
         <TooltipContent>Xem chi tiết</TooltipContent>
       </Tooltip>
-      <DisabledAction label="Chỉnh sửa" hint="tính năng sắp có">
-        <Edit3 className="size-3.5" />
-      </DisabledAction>
     </div>
   )
 }

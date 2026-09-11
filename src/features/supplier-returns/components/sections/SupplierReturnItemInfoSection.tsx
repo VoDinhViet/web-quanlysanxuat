@@ -3,10 +3,13 @@ import { Package } from "lucide-react"
 import { Gallery } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
+import { useHasPermission } from "@/hooks/use-permissions"
 import { itemQueryOptions } from "@/features/products/api"
+import { SupplierReturnReasonField } from "@/features/supplier-returns/components/composites/SupplierReturnReasonField"
 import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/layouts/SupplierReturnDetailSectionCard"
 import { SupplierReturnCodeCell } from "@/features/supplier-returns/components/primitives/SupplierReturnTableCells"
 import { resolveFileUrl } from "@/lib/file-url"
+import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -26,6 +29,9 @@ type SupplierReturnItemInfoSectionProps = {
 export function SupplierReturnItemInfoSection({
   supplierReturn,
 }: SupplierReturnItemInfoSectionProps) {
+  const canUpdate = useHasPermission("inventory:update")
+  const isDraft = supplierReturn.status === InventoryDocumentStatus.DRAFT
+
   const { data: item } = useSuspenseQuery(
     itemQueryOptions(supplierReturn.item.id)
   )
@@ -92,14 +98,11 @@ export function SupplierReturnItemInfoSection({
           </dl>
         </div>
 
-        <div className="space-y-2">
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Lý do trả
-          </p>
-          <p className="text-sm text-foreground">
-            {supplierReturn.returnReason ?? "—"}
-          </p>
-        </div>
+        <SupplierReturnReasonField
+          supplierReturnId={supplierReturn.id}
+          returnReason={supplierReturn.returnReason}
+          editable={canUpdate && isDraft}
+        />
       </div>
     </SupplierReturnDetailSectionCard>
   )

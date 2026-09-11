@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { ListFilter, Plus, RotateCw, Search } from "lucide-react"
+import { ListFilter, RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import { inventoryDocumentStatusLabels } from "@/lib/types/supplier-return.type"
@@ -286,15 +285,6 @@ export function SupplierReturnsTableFilter() {
           <RotateCw className="size-3.5" />
           Xóa bộ lọc
         </Button>
-
-        <PendingAction
-          label="Thêm phiếu trả"
-          hint="Tính năng tạo phiếu trả NCC sắp có"
-          variant="default"
-        >
-          <Plus className="size-4" />
-          Thêm phiếu trả
-        </PendingAction>
       </div>
     </div>
   )
