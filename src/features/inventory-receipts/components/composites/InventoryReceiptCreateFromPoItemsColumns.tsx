@@ -27,7 +27,7 @@ type BuildInventoryReceiptFromPoItemColumnsArgs = {
 
 // Own useReactTable columns cho bước ③ — mỗi ô ghi trực tiếp vào `itemsField` qua
 // `row.index`/`row.original`, cùng idiom PurchaseRequestCreateQuantityColumns.tsx. SL nhận vượt
-// SL đặt vẫn gõ được (không khoá phím) nhưng bị chặn ở submit qua schema's `.refine` — dòng cảnh
+// SL còn lại vẫn gõ được (không khoá phím) nhưng bị chặn ở submit qua schema's `.refine` — dòng cảnh
 // báo dưới ô chỉ là gợi ý tức thời, không phải nguồn validate duy nhất.
 export function buildInventoryReceiptFromPoItemColumns({
   itemsField,
@@ -61,13 +61,29 @@ export function buildInventoryReceiptFromPoItemColumns({
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
+    inventoryReceiptFromPoItemColumnHelper.accessor(
+      (row) => row.remainingQuantity ?? row.requestedQuantity,
+      {
+        id: "remainingQuantity",
+        header: "Còn lại",
+        meta: {
+          headerClassName: "w-24 text-right",
+          cellClassName: "text-right tabular-nums font-medium text-foreground",
+        },
+        cell: ({ getValue }) => quantityFormatter.format(getValue()),
+      }
+    ),
     inventoryReceiptFromPoItemColumnHelper.display({
       id: "quantity",
       header: "SL nhận lần này",
       meta: { headerClassName: "w-36 text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const exceedsOrdered = (item.quantity ?? 0) > item.requestedQuantity
+        const maxAllowed =
+          item.remainingQuantity !== undefined && item.remainingQuantity > 0
+            ? item.remainingQuantity
+            : item.requestedQuantity
+        const exceedsRemaining = (item.quantity ?? 0) > maxAllowed
 
         return (
           <div>
@@ -79,9 +95,9 @@ export function buildInventoryReceiptFromPoItemColumns({
                 itemsField.replaceValue(row.index, { ...item, quantity: value })
               }
             />
-            {exceedsOrdered && (
+            {exceedsRemaining && (
               <p className="mt-1 text-right text-[10px] text-destructive">
-                Vượt SL đặt ({quantityFormatter.format(item.requestedQuantity)})
+                Vượt SL còn lại ({quantityFormatter.format(maxAllowed)})
               </p>
             )}
           </div>

@@ -15,6 +15,7 @@ import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/invent
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { withForm } from "@/hooks/use-app-form"
 import type { InventoryReceiptFromPoItemValue } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
+import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -39,17 +40,23 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
       if (!purchaseOrder || seededForRef.current === purchaseOrder.id) return
       seededForRef.current = purchaseOrder.id
 
-      const items: InventoryReceiptFromPoItemValue[] = purchaseOrder.items.map(
-        (line) => ({
-          purchaseOrderItemId: line.id,
-          itemId: line.purchaseRequestItem.item.id,
-          itemLabel: `${line.purchaseRequestItem.item.code} — ${line.purchaseRequestItem.item.name}`,
-          itemUnit: line.purchaseRequestItem.item.unit.name,
-          requestedQuantity: line.quantity,
-          quantity: line.quantity,
-          note: "",
+      const items: InventoryReceiptFromPoItemValue[] = purchaseOrder.items
+        .map((line) => {
+          const received = line.receivedQuantity
+          const remaining = Math.max(line.quantity - received, 0)
+          return {
+            purchaseOrderItemId: line.id,
+            itemId: line.purchaseRequestItem.item.id,
+            itemLabel: `${line.purchaseRequestItem.item.code} — ${line.purchaseRequestItem.item.name}`,
+            itemUnit: line.purchaseRequestItem.item.unit.name,
+            requestedQuantity: line.quantity,
+            remainingQuantity: remaining,
+            quantity: remaining,
+            note: "",
+          }
         })
-      )
+        .filter((item) => item.remainingQuantity > 0)
+
       itemsField.handleChange(items)
     }, [purchaseOrder, itemsField])
 
@@ -94,14 +101,20 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
                 <TableHead id="quantity" className="w-28 text-right">
                   SL đặt
                 </TableHead>
+                <TableHead id="received" className="w-28 text-right">
+                  SL đã nhận
+                </TableHead>
+                <TableHead id="remaining" className="w-28 text-right">
+                  Còn lại
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {lines.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5}>
+                  <TableCell colSpan={7}>
                     <TableEmpty
-                      colSpan={5}
+                      colSpan={7}
                       title={
                         isFetching
                           ? "Đang tải dòng đơn mua hàng..."
@@ -111,25 +124,42 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
                   </TableCell>
                 </TableRow>
               ) : (
-                lines.map((line, index) => (
-                  <TableRow key={line.id} id={line.id} className="h-12 bg-card">
-                    <TableCell className="text-center text-muted-foreground">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className="font-mono font-semibold text-foreground">
-                      {line.purchaseRequestItem.item.code}
-                    </TableCell>
-                    <TableCell className="font-medium text-foreground">
-                      {line.purchaseRequestItem.item.name}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {line.purchaseRequestItem.item.unit.name}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {quantityFormatter.format(line.quantity)}
-                    </TableCell>
-                  </TableRow>
-                ))
+                lines.map((line, index) => {
+                  const received = line.receivedQuantity
+                  const remaining = Math.max(line.quantity - received, 0)
+                  return (
+                    <TableRow key={line.id} id={line.id} className="h-12 bg-card">
+                      <TableCell className="text-center text-muted-foreground">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="font-mono font-semibold text-foreground">
+                        {line.purchaseRequestItem.item.code}
+                      </TableCell>
+                      <TableCell className="font-medium text-foreground">
+                        {line.purchaseRequestItem.item.name}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {line.purchaseRequestItem.item.unit.name}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {quantityFormatter.format(line.quantity)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums text-muted-foreground">
+                        {quantityFormatter.format(received)}
+                      </TableCell>
+                      <TableCell
+                        className={cn(
+                          "text-right tabular-nums font-semibold",
+                          remaining === 0
+                            ? "text-muted-foreground font-normal"
+                            : "text-foreground"
+                        )}
+                      >
+                        {remaining === 0 ? "Đã nhận đủ" : quantityFormatter.format(remaining)}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
               )}
             </TableBody>
           </Table>

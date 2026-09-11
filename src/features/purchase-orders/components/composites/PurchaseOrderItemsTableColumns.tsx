@@ -103,6 +103,60 @@ export function buildPurchaseOrderItemColumns(editable: boolean) {
         />
       ),
     }),
+    purchaseOrderItemColumnHelper.accessor("receivedQuantity", {
+      id: "receivedQuantity",
+      header: "SL đã nhận",
+      meta: {
+        headerClassName: "w-28 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ getValue, row }) => {
+        const received = getValue()
+        const ordered = row.original.quantity
+        const isCompleted = received >= ordered && ordered > 0
+        return (
+          <span
+            className={cn(
+              "font-medium",
+              isCompleted
+                ? "text-success font-semibold"
+                : received > 0
+                  ? "text-amber-600 dark:text-amber-400 font-semibold"
+                  : "text-muted-foreground"
+            )}
+          >
+            {quantityFormatter.format(received)}
+          </span>
+        )
+      },
+    }),
+    purchaseOrderItemColumnHelper.display({
+      id: "remainingQuantity",
+      header: "Còn lại",
+      meta: {
+        headerClassName: "w-28 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ row }) => {
+        const received = row.original.receivedQuantity
+        const ordered = row.original.quantity
+        const remaining = Math.max(ordered - received, 0)
+        return (
+          <span
+            className={cn(
+              "font-medium",
+              remaining === 0
+                ? "text-muted-foreground"
+                : received > 0
+                  ? "text-amber-600 dark:text-amber-400 font-semibold"
+                  : "text-foreground"
+            )}
+          >
+            {remaining === 0 ? "—" : quantityFormatter.format(remaining)}
+          </span>
+        )
+      },
+    }),
     purchaseOrderItemColumnHelper.display({
       id: "quantityAdjustmentReason",
       header: "Lý do điều chỉnh SL",

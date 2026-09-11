@@ -173,6 +173,8 @@ export type InventoryReceiptItemDetail = InventoryReceiptItem & {
   bomDemand: number
   available: number
   fromStock: number
+  returnedQuantity?: number
+  actualQuantity?: number
 }
 
 /** Mirrors the backend's `PageInventoryReceiptResDto` (`GET /inventory-receipts`) — the list row

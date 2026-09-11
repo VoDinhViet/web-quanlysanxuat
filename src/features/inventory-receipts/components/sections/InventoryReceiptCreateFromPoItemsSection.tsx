@@ -150,7 +150,7 @@ export const InventoryReceiptCreateFromPoItemsSection = withForm({
 
         <div className="mt-4 grid grid-cols-1 gap-3 text-xs text-muted-foreground sm:grid-cols-2">
           <ul className="list-inside list-disc space-y-1">
-            <li>“Số lượng nhận lần này” không được lớn hơn “Số lượng đặt”.</li>
+            <li>“Số lượng nhận lần này” không được lớn hơn “Số lượng còn lại”.</li>
             <li>Có thể bỏ bớt (xóa) vật tư khỏi danh sách nhận lần này.</li>
           </ul>
           <ul className="list-inside list-disc space-y-1">

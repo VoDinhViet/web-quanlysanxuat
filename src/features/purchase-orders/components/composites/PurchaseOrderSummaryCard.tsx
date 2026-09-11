@@ -19,6 +19,11 @@ export function PurchaseOrderSummaryCard({
     (sum, item) => sum + item.quantity,
     0
   )
+  const totalReceived = purchaseOrder.items.reduce(
+    (sum, item) => sum + item.receivedQuantity,
+    0
+  )
+  const totalRemaining = Math.max(totalQuantity - totalReceived, 0)
   const totalAmount = purchaseOrder.items.reduce(
     (sum, item) => sum + item.quantity * (item.unitPrice ?? 0),
     0
@@ -44,7 +49,26 @@ export function PurchaseOrderSummaryCard({
           </p>
         </div>
 
-        <div className="space-y-1">
+        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/50">
+          <div className="space-y-0.5">
+            <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+              Đã nhận
+            </p>
+            <p className="text-sm font-semibold text-success tabular-nums">
+              {quantityFormatter.format(totalReceived)}
+            </p>
+          </div>
+          <div className="space-y-0.5">
+            <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+              Còn lại
+            </p>
+            <p className="text-sm font-semibold text-foreground tabular-nums">
+              {quantityFormatter.format(totalRemaining)}
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-1 pt-2 border-t border-border/50">
           <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
             Tổng giá trị (VNĐ)
           </p>

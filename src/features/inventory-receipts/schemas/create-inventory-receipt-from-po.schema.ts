@@ -3,7 +3,7 @@ import { z } from "zod"
 import { InventoryReceiptAssetType } from "@/lib/types/inventory-receipt.type"
 
 // Bước ③ của wizard "Nhập kho từ PO" — một dòng cho mỗi dòng PO đã chọn ở bước ②. itemLabel/
-// itemUnit/requestedQuantity là UI-only (hiển thị lại không cần fetch lần 2, cùng idiom
+// itemUnit/requestedQuantity/remainingQuantity là UI-only (hiển thị lại không cần fetch lần 2, cùng idiom
 // inventory-receipt-item-form.schema.ts). Cố ý không có `unitPrice` — ảnh mẫu không cho sửa đơn
 // giá ở luồng này; submit lấy thẳng unitPrice từ dòng PO gốc (xem
 // InventoryReceiptCreateFromPoForm.tsx's buildCreateInventoryReceiptPayload).
@@ -13,6 +13,7 @@ const inventoryReceiptFromPoItemFields = {
   itemLabel: z.string(),
   itemUnit: z.string(),
   requestedQuantity: z.number(),
+  remainingQuantity: z.number().optional(),
   quantity: z
     .number("Số lượng nhận phải lớn hơn 0")
     .positive("Số lượng nhận phải lớn hơn 0")
@@ -21,15 +22,24 @@ const inventoryReceiptFromPoItemFields = {
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
-// SL nhận lần này không được vượt SL đặt — cùng ràng buộc backend tự kiểm lại ở confirm
+// SL nhận lần này không được vượt SL còn lại — cùng ràng buộc backend tự kiểm lại ở confirm
 // (`ensureReceiptQuantitiesWithinOrdered`), chặn ngay ở form thay vì để round-trip lên server
 // rồi báo lỗi.
 export const inventoryReceiptFromPoItemSchema = z
   .object(inventoryReceiptFromPoItemFields)
-  .refine((item) => item.quantity <= item.requestedQuantity, {
-    message: "SL nhận lần này không được lớn hơn SL đặt",
-    path: ["quantity"],
-  })
+  .refine(
+    (item) => {
+      const limit =
+        item.remainingQuantity !== undefined && item.remainingQuantity > 0
+          ? item.remainingQuantity
+          : item.requestedQuantity
+      return item.quantity <= limit
+    },
+    {
+      message: "SL nhận lần này không được lớn hơn SL còn lại cần nhận",
+      path: ["quantity"],
+    }
+  )
 export type InventoryReceiptFromPoItemValue = z.input<
   typeof inventoryReceiptFromPoItemSchema
 >
