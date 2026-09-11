@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { useParams, useSearch } from "@tanstack/react-router"
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { AltArrowLeft } from "@solar-icons/react"
-import { History, Layers } from "lucide-react"
+import { History, Route } from "lucide-react"
 import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
@@ -13,32 +13,24 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { OperationProgressBar } from "@/features/production-execution/components/primitives/OperationProgressBar"
-import { ProductionExecutionPartsTable } from "@/features/production-execution/components/sections/ProductionExecutionPartsTable"
+import { ProductionExecutionOperationsTable } from "@/features/production-execution/components/sections/ProductionExecutionOperationsTable"
+import { ProductionExecutionOperationsLegend } from "@/features/production-execution/components/sections/ProductionExecutionOperationsLegend"
 import { ProductionExecutionReportHistoryTable } from "@/features/production-execution/components/sections/ProductionExecutionReportHistoryTable"
 import { jobOperationReportsQueryOptions } from "@/features/production-execution/api"
 import {
   productionJobOperationsQueryOptions,
   productionJobQueryOptions,
 } from "@/features/production-jobs/api"
+import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api"
 import { OperationType } from "@/lib/types/operation.type"
-import { productionJobStatusLabels } from "@/lib/types/production-job.type"
-import type {
-  JobOperationReportRow,
-  ProductionJobBomItem,
+import {
+  ProductionJobStatus,
+  productionJobStatusLabels,
 } from "@/lib/types/production-job.type"
+import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-
-// BE đã lọc sẵn theo operationId (GET .../operations?operationId=...) — chỉ còn việc flatten mỗi
-// BOM item's operations[] (nhóm theo Part phía BE) thành từng dòng "DANH SÁCH PART" riêng.
-function buildProductionExecutionPartRows(
-  bomItems: ProductionJobBomItem[]
-): JobOperationReportRow[] {
-  return bomItems.flatMap((bomItem) =>
-    bomItem.operations.map((operation) => ({ bomItem, operation }))
-  )
-}
 
 export function ProductionExecutionJobPage() {
   const { productionJobId } = useParams({
@@ -48,66 +40,103 @@ export function ProductionExecutionJobPage() {
     from: "/(authed)/manage_/production-execution_/$productionJobId",
   })
 
-  const [activeTab, setActiveTab] = useState<string>("parts")
+  const [activeTab, setActiveTab] = useState<string>("operations")
   const [selectedBomItemId, setSelectedBomItemId] = useState<string | null>(null)
 
   const { data: job } = useSuspenseQuery(
     productionJobQueryOptions(productionJobId)
   )
 
-  const operationsQuery = useQuery({
-    ...productionJobOperationsQueryOptions(productionJobId, operationId),
-    enabled: !!operationId,
+  // Tải toàn bộ công đoạn của Job để hiển thị đầy đủ theo từng Part/BOM Item
+  const operationsQuery = useQuery(
+    productionJobOperationsQueryOptions(productionJobId)
+  )
+
+  const groups = operationsQuery.data ?? []
+
+  // Thông tin số lượng đã gửi cho công đoạn gia công ngoài
+  const outsourceableQuery = useQuery({
+    ...outsourceableOperationsQueryOptions({
+      productionJobId,
+      limit: 200,
+    }),
+    enabled: job.status === ProductionJobStatus.IN_PROGRESS,
   })
 
+  const outsourceableByOperationId = useMemo(
+    () =>
+      new Map<string, OutsourceableOperation>(
+        (outsourceableQuery.data?.data ?? []).map((row) => [
+          row.productionJobOperationId,
+          row,
+        ])
+      ),
+    [outsourceableQuery.data]
+  )
+
+  // Lịch sử các lần báo cáo hoàn thành
   const reportsQuery = useQuery({
     ...jobOperationReportsQueryOptions(productionJobId, operationId),
     enabled: !!productionJobId,
   })
 
-  const partRows = useMemo(
-    () =>
-      operationsQuery.data
-        ? buildProductionExecutionPartRows(operationsQuery.data)
-        : [],
-    [operationsQuery.data]
-  )
+  // Công đoạn đang chọn từ danh sách ban đầu (nếu có operationId trên URL)
+  const selectedOperation = useMemo(() => {
+    if (!operationId || groups.length === 0) return null
+    for (const group of groups) {
+      const found = group.operations.find(
+        (op) => op.operationId === operationId
+      )
+      if (found) return found
+    }
+    return null
+  }, [groups, operationId])
 
-  const firstOperation = partRows.at(0)?.operation
-  const operationName = firstOperation?.name
+  const totalOperationsCount = useMemo(
+    () => groups.reduce((acc, g) => acc + g.operations.length, 0),
+    [groups]
+  )
 
   const partOptions = useMemo(() => {
     const seen = new Set<string>()
     const options: { id: string; code: string; name: string }[] = []
-    for (const row of partRows) {
-      if (!seen.has(row.bomItem.id)) {
-        seen.add(row.bomItem.id)
+    for (const group of groups) {
+      if (!seen.has(group.id)) {
+        seen.add(group.id)
         options.push({
-          id: row.bomItem.id,
-          code: row.bomItem.code,
-          name: row.bomItem.name,
+          id: group.id,
+          code: group.code,
+          name: group.name,
         })
       }
     }
     return options
-  }, [partRows])
+  }, [groups])
 
+  // Thống kê KPI: ưu tiên công đoạn đang chọn, hoặc tổng cả Job nếu không có
   const stats = useMemo(() => {
     let planned = 0
     let completed = 0
     let rejected = 0
-    for (const row of partRows) {
-      planned += row.operation.plannedQuantity
-      completed += row.operation.completedQuantity
-      rejected += row.operation.rejectedQuantity
+
+    for (const group of groups) {
+      for (const op of group.operations) {
+        if (!operationId || op.operationId === operationId) {
+          planned += op.plannedQuantity
+          completed += op.completedQuantity
+          rejected += op.rejectedQuantity
+        }
+      }
     }
+
     const remaining = Math.max(0, planned - completed)
     const percent =
       planned > 0
         ? Math.min(100, Math.round((completed / planned) * 100))
         : 0
+
     return { planned, completed, rejected, remaining, percent }
-  }, [partRows])
+  }, [groups, operationId])
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -141,12 +170,12 @@ export function ProductionExecutionJobPage() {
               <Badge variant="outline" className="font-medium">
                 {productionJobStatusLabels[job.status]}
               </Badge>
-              {firstOperation && (
+              {selectedOperation && (
                 <Badge
                   variant="outline"
                   className={cn(
                     "font-medium",
-                    firstOperation.type === OperationType.INHOUSE
+                    selectedOperation.type === OperationType.INHOUSE
                       ? "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-400"
                       : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-400"
                   )}
@@ -154,12 +183,12 @@ export function ProductionExecutionJobPage() {
                   <span
                     className={cn(
                       "mr-1.5 inline-block size-1.5 rounded-full",
-                      firstOperation.type === OperationType.INHOUSE
+                      selectedOperation.type === OperationType.INHOUSE
                         ? "bg-blue-500"
                         : "bg-amber-500"
                     )}
                   />
-                  {firstOperation.type === OperationType.INHOUSE
+                  {selectedOperation.type === OperationType.INHOUSE
                     ? "Trong xưởng"
                     : "Gia công ngoài"}
                 </Badge>
@@ -210,17 +239,17 @@ export function ProductionExecutionJobPage() {
                 Công đoạn thực hiện:
               </dt>
               <dd className="truncate font-semibold text-foreground">
-                {operationName ? (
+                {selectedOperation ? (
                   <>
-                    {firstOperation?.code && (
+                    {selectedOperation.code && (
                       <span className="mr-1 font-mono text-muted-foreground">
-                        [{firstOperation.code}]
+                        [{selectedOperation.code}]
                       </span>
                     )}
-                    <span>{operationName}</span>
+                    <span>{selectedOperation.name}</span>
                   </>
                 ) : (
-                  "—"
+                  "Tất cả công đoạn"
                 )}
               </dd>
             </div>
@@ -242,7 +271,7 @@ export function ProductionExecutionJobPage() {
         </Surface>
 
         {/* KPI / Operation Summary Cards */}
-        {partRows.length > 0 && (
+        {groups.length > 0 && (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <div className="rounded-lg border border-border/60 bg-card p-3.5 shadow-xs">
               <span className="text-[11px] font-medium text-muted-foreground">
@@ -301,7 +330,7 @@ export function ProductionExecutionJobPage() {
 
             <div className="col-span-2 rounded-lg border border-border/60 bg-card p-3.5 shadow-xs sm:col-span-2 lg:col-span-1">
               <span className="text-[11px] font-medium text-muted-foreground">
-                Tiến độ công đoạn
+                Tiến độ {selectedOperation ? "công đoạn" : "toàn Job"}
               </span>
               <div className="mt-2">
                 <OperationProgressBar
@@ -315,33 +344,36 @@ export function ProductionExecutionJobPage() {
           </div>
         )}
 
-        {/* Tabs: Part List & Report History */}
-        <Surface contentClassName="gap-4 p-4 sm:p-5">
+        {/* Tabs: Operations & Report History */}
+        <Surface>
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
-            className="gap-4"
+            className="gap-0"
           >
-            <div className="border-b border-border/60 pb-1">
-              <TabsList variant="line" className="gap-2">
+            <div className="border-b border-border print:hidden">
+              <TabsList
+                variant="line"
+                className="w-full justify-start gap-1 rounded-none p-0 group-data-horizontal/tabs:h-auto"
+              >
                 <TabsTrigger
-                  value="parts"
-                  className="gap-2 px-3 py-1.5 text-xs font-semibold data-selected:bg-muted/40"
+                  value="operations"
+                  className="h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5 hover:bg-muted/40 hover:text-foreground data-selected:bg-primary/5 data-selected:text-primary group-data-[variant=line]/tabs-list:data-selected:bg-primary/5 data-selected:hover:bg-primary/5"
                 >
-                  <Layers className="size-3.5" />
-                  Danh sách Part
+                  <Route className="size-4" />
+                  Công đoạn sản xuất
                   <Badge
                     variant="secondary"
                     className="ml-1 h-5 px-1.5 text-[10px]"
                   >
-                    {partRows.length}
+                    {totalOperationsCount}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger
                   value="reports"
-                  className="gap-2 px-3 py-1.5 text-xs font-semibold data-selected:bg-muted/40"
+                  className="h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5 hover:bg-muted/40 hover:text-foreground data-selected:bg-primary/5 data-selected:text-primary group-data-[variant=line]/tabs-list:data-selected:bg-primary/5 data-selected:hover:bg-primary/5"
                 >
-                  <History className="size-3.5" />
+                  <History className="size-4" />
                   Lịch sử báo cáo
                   <Badge
                     variant="secondary"
@@ -353,35 +385,28 @@ export function ProductionExecutionJobPage() {
               </TabsList>
             </div>
 
-            <TabsContent value="parts" className="m-0 outline-none">
-              {!operationId ? (
-                <div className="flex flex-col items-center gap-3 p-10 text-center text-sm text-muted-foreground">
-                  <p>Thiếu thông tin công đoạn.</p>
-                  <LinkButton
-                    to="/manage/production-execution"
-                    search={{ page: 1, limit: 10 }}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Quay lại danh sách Thực hiện sản xuất
-                  </LinkButton>
-                </div>
-              ) : operationsQuery.isPending ? (
-                <TableQueryLoading rows={4} />
+            <TabsContent value="operations" className="m-0 space-y-4 p-4 sm:p-5 outline-none">
+              {operationsQuery.isPending ? (
+                <TableQueryLoading rows={5} />
               ) : operationsQuery.isError ? (
                 <TableQueryError
                   error={operationsQuery.error.message}
                   onRetry={() => void operationsQuery.refetch()}
                 />
               ) : (
-                <ProductionExecutionPartsTable
-                  rows={partRows}
-                  jobStatus={job.status}
-                />
+                <>
+                  <ProductionExecutionOperationsTable
+                    productionJobId={productionJobId}
+                    groups={groups}
+                    jobStatus={job.status}
+                    outsourceableByOperationId={outsourceableByOperationId}
+                  />
+                  <ProductionExecutionOperationsLegend />
+                </>
               )}
             </TabsContent>
 
-            <TabsContent value="reports" className="m-0 outline-none">
+            <TabsContent value="reports" className="m-0 p-4 sm:p-5 outline-none">
               <ProductionExecutionReportHistoryTable
                 reports={reportsQuery.data ?? []}
                 isPending={reportsQuery.isPending}

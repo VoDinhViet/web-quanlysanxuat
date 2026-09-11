@@ -1,5 +1,4 @@
 import { Fragment, useMemo } from "react"
-import { useParams } from "@tanstack/react-router"
 import { ClipboardCheck, SendSquare } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { Package } from "lucide-react"
@@ -26,13 +25,13 @@ import {
   JobOperationReportDialog,
   resolveJobOperationReportDisabledReason,
 } from "@/components/shared/composites/JobOperationReportDialog"
+import { OperationType } from "@/lib/types/operation.type"
+import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 import type {
   ProductionJobBomItem,
   ProductionJobOperation,
   ProductionJobStatus,
 } from "@/lib/types/production-job.type"
-import { OperationType } from "@/lib/types/operation.type"
-import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 import { cn } from "@/lib/utils"
 
 const columnCount = 8
@@ -49,9 +48,6 @@ type OperationProgressStatusStyle = {
   dot: string
 }
 
-// Exported alongside the label/description maps below so ProductionJobOperationsLegend.tsx can
-// reuse the exact same colors/threshold wording instead of re-deriving them — the legend must
-// never drift from what the badge actually renders.
 export const operationProgressStatusStyles: Record<
   OperationProgressStatus,
   OperationProgressStatusStyle
@@ -73,8 +69,6 @@ export const operationProgressStatusStyles: Record<
   },
 }
 
-// The numeric threshold each status above actually maps to — spelled out for the legend, not
-// shown on the badge itself (the badge only has room for `label`).
 export const operationProgressStatusDescriptions: Record<
   OperationProgressStatus,
   string
@@ -84,8 +78,6 @@ export const operationProgressStatusDescriptions: Record<
   COMPLETED: "SL hoàn thành đạt đủ SL kế hoạch — Ngày hoàn thành tự điền",
 }
 
-// `completedDate` được server set đúng lúc `completedQuantity` đạt `plannedQuantity` (chốt E088)
-// nên dùng thẳng nó cho trạng thái "Hoàn thành" thay vì so sánh lại 2 số.
 function resolveOperationProgressStatus(
   operation: ProductionJobOperation
 ): OperationProgressStatus {
@@ -108,12 +100,6 @@ function OperationStatusBadge({
       {label}
     </Badge>
   )
-}
-
-type ProductionJobOperationsTableProps = {
-  groups: ProductionJobBomItem[]
-  jobStatus: ProductionJobStatus
-  outsourceableByOperationId: Map<string, OutsourceableOperation>
 }
 
 function OperationTypeBadge({ type }: { type: OperationType }) {
@@ -142,8 +128,6 @@ function OperationTypeBadge({ type }: { type: OperationType }) {
   )
 }
 
-// SL hoàn thành/không đạt chỉ đọc — nhập qua nút "Nhập báo cáo" ở cột THAO TÁC (cộng dồn, kèm
-// ngày/ghi chú/ảnh và một dòng nhật ký), không còn form sửa tại chỗ ghi đè 2 số như trước.
 function OperationCompletedQuantityCell({
   operation,
 }: {
@@ -163,10 +147,6 @@ function OperationCompletedQuantityCell({
   )
 }
 
-// SL đã gửi/còn được phép gửi gia công ngoài — không có trên chính DTO này (Production không
-// ghi/biết gì về OS-OUT), Tab ghép sẵn từ route popup OS-OUT rồi truyền xuống dạng Map theo
-// `productionJobOperationId`. Trống nếu chưa từng gửi (chưa có dòng OS-OUT nào) — coi như còn
-// nguyên định mức.
 function OperationSentQuantityCell({
   operation,
   outsourceableByOperationId,
@@ -187,33 +167,21 @@ function OperationSentQuantityCell({
   )
 }
 
-// Điều hướng thật sang wizard tạo OS-OUT có sẵn (/manage/outsourcing-orders/create), lọc sẵn
-// đúng Job (và Công đoạn nếu còn liên kết catalog — operationId có thể null nếu snapshot mất
-// liên kết) ở bước chọn — Production không tự tạo phiếu OS-OUT (docs/domains/production.md).
-// Chỉ hiện với công đoạn Gia công ngoài; ẩn hẳn nếu người dùng không có quyền outsourcing:create.
-// Khoá nút (kèm tooltip) khi đã gửi đủ định mức (`remainingQuantity <= 0`, đọc từ cùng Map dùng
-// cho cột SL ĐÃ GỬI) — chưa từng gửi (không có trong Map) coi như còn nguyên định mức, vẫn bấm
-// được. `productionJobId` đọc thẳng qua useParams (route param sẵn có của trang) thay vì nhận qua
-// prop — cùng idiom PurchaseRequestItemCells.tsx đọc purchaseRequestId.
 function OperationSendActionCell({
+  productionJobId,
   operation,
   outsourceableByOperationId,
 }: {
+  productionJobId: string
   operation: ProductionJobOperation
   outsourceableByOperationId: Map<string, OutsourceableOperation>
 }) {
-  const { productionJobId } = useParams({
-    from: "/(authed)/manage_/production-jobs_/$productionJobId",
-  })
-
   if (operation.type !== OperationType.OUTSOURCE) return null
 
   const outsourceable = outsourceableByOperationId.get(operation.id)
   const isFullySent =
     outsourceable !== undefined && outsourceable.remainingQuantity <= 0
 
-  // Đồng bộ màu amber với badge LOẠI "Gia công ngoài" ở trên — nhận ra ngay nút này thuộc về
-  // đúng loại công đoạn nào, thay vì màu mặc định như mọi nút khác.
   const amberClassName = cn(
     !isFullySent &&
       "border-amber-200 bg-amber-50 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20"
@@ -255,11 +223,6 @@ function OperationSendActionCell({
   )
 }
 
-// One BOM item's group header — a generic icon (this endpoint carries no image field, unlike the
-// product-structure BOM) + code/name, ahead of its operation rows below. `itemType === "FG"` is
-// the node Cấp 0 backend snapshots from the FG's own routing
-// (`copyFinalAssemblyRouting`, luôn đứng cuối bảng) — gắn thẳng badge "Lắp ráp thành phẩm" tại đây,
-// không tách component riêng cho một nhãn điều kiện đơn giản như vậy.
 function BomItemHeaderRow({ bomItem }: { bomItem: ProductionJobBomItem }) {
   return (
     <TableRow
@@ -292,6 +255,7 @@ function BomItemHeaderRow({ bomItem }: { bomItem: ProductionJobBomItem }) {
 }
 
 type OperationRowProps = {
+  productionJobId: string
   bomItem: ProductionJobBomItem
   operation: ProductionJobOperation
   groupIndex: number
@@ -301,11 +265,8 @@ type OperationRowProps = {
   outsourceableByOperationId: Map<string, OutsourceableOperation>
 }
 
-// One operation row — split out of ProductionJobOperationsTable's render (code-quality.md: split
-// over ~150 lines), mirror BomItemHeaderRow being its own component for the group header above
-// it. `groupIndex`/`operationIndex` are 0-based positions the caller's `.map()` already tracks —
-// formatted here (not pre-joined by the caller) so numbering stays colocated with its own cell.
 function OperationRow({
+  productionJobId,
   bomItem,
   operation,
   groupIndex,
@@ -321,7 +282,10 @@ function OperationRow({
   )
 
   return (
-    <TableRow id={operation.id} className="h-16 bg-card hover:bg-muted/20">
+    <TableRow
+      id={operation.id}
+      className="h-16 bg-card transition-colors hover:bg-muted/20"
+    >
       <TableCell className="py-3">
         <div className="flex items-start gap-2.5">
           <span className="mt-0.5 shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
@@ -380,6 +344,7 @@ function OperationRow({
                       trigger={
                         <Button type="button" aria-label="Nhập báo cáo">
                           <ClipboardCheck className="size-4" />
+                          <span className="hidden xl:inline">Nhập báo cáo</span>
                         </Button>
                       }
                     />
@@ -392,6 +357,7 @@ function OperationRow({
             </PermissionGate>
           ) : null}
           <OperationSendActionCell
+            productionJobId={productionJobId}
             operation={operation}
             outsourceableByOperationId={outsourceableByOperationId}
           />
@@ -401,29 +367,19 @@ function OperationRow({
   )
 }
 
-// Công đoạn as-used của Job (GET /production-jobs/:jobId/operations) — backend đã nhóm sẵn theo
-// BOM item, mỗi phần tử mảng là một BOM item kèm operations[] của riêng nó (không cần tự dựng
-// nhóm ở FE nữa). Mỗi BOM item hiện một khối header (BomItemHeaderRow) rồi tới các dòng công đoạn
-// của riêng nó (OperationRow), theo thứ tự backend trả (đã sort sortOrder/createdAt). "SL KẾ
-// HOẠCH" đọc thẳng `plannedQuantity` — cùng một BOM item thì mọi công đoạn của nó có cùng số. 8
-// cột tách bạch: CÔNG ĐOẠN (STT + tên/mã/ghi chú), LOẠI (Trong xưởng/Gia công ngoài — 1 BOM item
-// có thể có cả 2), SL KẾ HOẠCH, SL HOÀN THÀNH (chỉ đọc — "Đạt"/"NG"), SL ĐÃ GỬI (chỉ dòng Gia
-// công ngoài — ghép từ `outsourceableByOperationId`, xem OperationSentQuantityCell), TRẠNG THÁI
-// (Chưa bắt đầu/Đang thực hiện/Hoàn thành — suy từ completedQuantity/completedDate, không phải
-// field riêng trên DTO), NGÀY HOÀN THÀNH (ngày người báo cáo tự chọn, không phải ngày lưu),
-// THAO TÁC ("Nhập báo cáo" ở mọi dòng — cộng dồn SL, kèm ngày/ghi chú/ảnh và một dòng nhật ký,
-// xem JobOperationReportDialog.tsx — cùng dialog với màn "Thực hiện sản xuất"; dòng Gia công
-// ngoài có thêm nút Gửi gia công ngoài, khoá khi đã gửi đủ định mức, xem
-// OperationSendActionCell). "Yêu cầu OQC" không còn ở đây nữa — đã gộp thành 1 nút duy nhất ở
-// header chi tiết Job (ProductionJobDetailHeader.tsx), disabled ngoài Job WAITING_QC (mọi công
-// đoạn đã hoàn thành). Khung viền `rounded-md border` quanh bảng + border-r/border-b có sẵn từ
-// Table primitive, khớp khuôn các bảng khác trong repo (`ProductionOrderItemsCard.tsx`,
-// `InventoryIssuesTable.tsx`).
-export function ProductionJobOperationsTable({
+type ProductionExecutionOperationsTableProps = {
+  productionJobId: string
+  groups: ProductionJobBomItem[]
+  jobStatus: ProductionJobStatus
+  outsourceableByOperationId: Map<string, OutsourceableOperation>
+}
+
+export function ProductionExecutionOperationsTable({
+  productionJobId,
   groups,
   jobStatus,
   outsourceableByOperationId,
-}: ProductionJobOperationsTableProps) {
+}: ProductionExecutionOperationsTableProps) {
   // Bước Lắp ráp (node itemType = 'FG') chỉ mở khi mọi chi tiết khác (non-FG) đã hoàn thành (E210).
   const hasPendingNonFgOperations = useMemo(
     () =>
@@ -436,95 +392,94 @@ export function ProductionJobOperationsTable({
   )
 
   return (
-    <div className="p-4 sm:p-5">
-      <div className="overflow-x-auto rounded-md border border-border/50">
-        <Table aria-label="Danh sách công đoạn">
-          <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+    <div className="overflow-x-auto rounded-md border border-border/50">
+      <Table aria-label="Danh sách công đoạn thực hiện sản xuất">
+        <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+          <TableRow>
+            <TableHead
+              id="operation"
+              className="min-w-56 font-bold text-foreground"
+            >
+              CÔNG ĐOẠN
+            </TableHead>
+            <TableHead
+              id="type"
+              className="w-32 text-center font-bold text-foreground"
+            >
+              LOẠI
+            </TableHead>
+            <TableHead
+              id="plannedQuantity"
+              className="w-24 text-center font-bold text-foreground"
+            >
+              SL KẾ HOẠCH
+            </TableHead>
+            <TableHead
+              id="completedQuantity"
+              className="w-40 text-center font-bold text-foreground"
+            >
+              SL HOÀN THÀNH
+            </TableHead>
+            <TableHead
+              id="sentQuantity"
+              className="w-28 text-center font-bold text-foreground"
+            >
+              SL ĐÃ GỬI
+            </TableHead>
+            <TableHead
+              id="status"
+              className="w-36 text-center font-bold text-foreground"
+            >
+              TRẠNG THÁI
+            </TableHead>
+            <TableHead
+              id="completedDate"
+              className="w-32 text-center font-bold text-foreground"
+            >
+              NGÀY HOÀN THÀNH
+            </TableHead>
+            <TableHead
+              id="actions"
+              className="w-36 text-center font-bold text-foreground"
+            >
+              THAO TÁC
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {groups.length === 0 ? (
             <TableRow>
-              <TableHead
-                id="operation"
-                className="min-w-56 font-bold text-foreground"
-              >
-                CÔNG ĐOẠN
-              </TableHead>
-              <TableHead
-                id="type"
-                className="w-32 text-center font-bold text-foreground"
-              >
-                LOẠI
-              </TableHead>
-              <TableHead
-                id="plannedQuantity"
-                className="w-24 text-center font-bold text-foreground"
-              >
-                SL KẾ HOẠCH
-              </TableHead>
-              <TableHead
-                id="completedQuantity"
-                className="w-40 text-center font-bold text-foreground"
-              >
-                SL HOÀN THÀNH
-              </TableHead>
-              <TableHead
-                id="sentQuantity"
-                className="w-28 text-center font-bold text-foreground"
-              >
-                SL ĐÃ GỬI
-              </TableHead>
-              <TableHead
-                id="status"
-                className="w-36 text-center font-bold text-foreground"
-              >
-                TRẠNG THÁI
-              </TableHead>
-              <TableHead
-                id="completedDate"
-                className="w-32 text-center font-bold text-foreground"
-              >
-                NGÀY HOÀN THÀNH
-              </TableHead>
-              <TableHead
-                id="actions"
-                className="w-28 text-center font-bold text-foreground"
-              >
-                THAO TÁC
-              </TableHead>
+              <TableCell colSpan={columnCount}>
+                <TableEmpty
+                  colSpan={columnCount}
+                  title="Chưa có công đoạn nào."
+                />
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {groups.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={columnCount}>
-                  <TableEmpty
-                    colSpan={columnCount}
-                    title="Chưa có công đoạn nào."
+          ) : (
+            groups.map((bomItem, groupIndex) => (
+              <Fragment key={bomItem.id}>
+                <BomItemHeaderRow bomItem={bomItem} />
+                {bomItem.operations.map((operation, operationIndex) => (
+                  <OperationRow
+                    key={operation.id}
+                    productionJobId={productionJobId}
+                    bomItem={bomItem}
+                    operation={operation}
+                    groupIndex={groupIndex}
+                    operationIndex={operationIndex}
+                    jobStatus={jobStatus}
+                    isAssemblyBlocked={
+                      bomItem.itemType === "FG" && hasPendingNonFgOperations
+                    }
+                    outsourceableByOperationId={outsourceableByOperationId}
                   />
-                </TableCell>
-              </TableRow>
-            ) : (
-              groups.map((bomItem, groupIndex) => (
-                <Fragment key={bomItem.id}>
-                  <BomItemHeaderRow bomItem={bomItem} />
-                  {bomItem.operations.map((operation, operationIndex) => (
-                    <OperationRow
-                      key={operation.id}
-                      bomItem={bomItem}
-                      operation={operation}
-                      groupIndex={groupIndex}
-                      operationIndex={operationIndex}
-                      jobStatus={jobStatus}
-                      isAssemblyBlocked={
-                        bomItem.itemType === "FG" && hasPendingNonFgOperations
-                      }
-                      outsourceableByOperationId={outsourceableByOperationId}
-                    />
-                  ))}
-                </Fragment>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                ))}
+              </Fragment>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 }

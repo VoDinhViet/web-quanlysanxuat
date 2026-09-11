@@ -21,6 +21,10 @@ function resolveCreateJobOperationReportErrorMessage(error: unknown): string {
       return "Chỉ có thể báo cáo khi Job đang sản xuất."
     case "production_job_operation.error.not_found":
       return "Không tìm thấy công đoạn."
+    case "production_job_operation.error.outsource_not_editable":
+      return "Công đoạn gia công ngoài tự cập nhật khi nhận hàng (OS-IN), không nhập tay."
+    case "production_job_operation.error.assembly_not_ready":
+      return "Chưa thể báo cáo công đoạn Lắp ráp vì vẫn còn chi tiết khác trong Job chưa hoàn thành."
     case "production_job_operation.error.completed_quantity_exceeds_planned":
     case "production_job_operation.error.completed_plus_rejected_exceeds_planned":
       return "SL hoàn thành không được vượt quá SL kế hoạch."

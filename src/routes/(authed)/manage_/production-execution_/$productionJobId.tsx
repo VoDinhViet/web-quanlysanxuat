@@ -16,24 +16,16 @@ export const Route = createFileRoute(
   // keystroke), this route's entire dataset depends on `operationId` — it SHOULD re-run the
   // loader when it changes.
   loaderDeps: ({ search }) => ({ operationId: search.operationId }),
-  loader: ({ context, params, deps }) =>
+  loader: ({ context, params }) =>
     Promise.all([
       context.queryClient.query({
         ...productionJobQueryOptions(params.productionJobId),
         staleTime: "static",
       }),
-      // `operationId` filters server-side now (GET .../operations?operationId=...) — only
-      // prefetch when the URL actually carries one, same idiom as
-      // manage_/production-execution/index.tsx's conditional prefetch.
-      deps.operationId
-        ? context.queryClient.query({
-            ...productionJobOperationsQueryOptions(
-              params.productionJobId,
-              deps.operationId
-            ),
-            staleTime: "static",
-          })
-        : Promise.resolve(),
+      context.queryClient.query({
+        ...productionJobOperationsQueryOptions(params.productionJobId),
+        staleTime: "static",
+      }),
     ]),
   component: ProductionExecutionJobPage,
   pendingComponent: LayoutPagePending,

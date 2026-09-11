@@ -46,11 +46,12 @@ export function JobOperationReportDialog({
 }
 
 // Gộp 2 tầng lý do khoá đang tách rời trước migration này: job-level (Job chưa `start`/đã xong)
-// và row-level (công đoạn OUTSOURCE tự cập nhật qua OS-IN, không nhập tay) — ưu tiên job-level
-// trước, đúng thứ tự cũ ở ProductionExecutionPartsTableColumns.tsx.
+// và row-level (công đoạn OUTSOURCE tự cập nhật qua OS-IN, không nhập tay; công đoạn Lắp ráp FG
+// chưa thể báo khi còn Part khác chưa xong) — ưu tiên job-level trước.
 export function resolveJobOperationReportDisabledReason(
   jobStatus: ProductionJobStatus,
-  operationType: OperationType
+  operationType: OperationType,
+  isAssemblyBlocked?: boolean
 ): string | null {
   if (jobStatus === ProductionJobStatus.PENDING) {
     return 'Job chưa bắt đầu sản xuất — bấm "Xác nhận" ở trang Quản lý sản xuất trước.'
@@ -60,6 +61,9 @@ export function resolveJobOperationReportDisabledReason(
   }
   if (operationType === OperationType.OUTSOURCE) {
     return "Công đoạn gia công ngoài tự cập nhật khi nhận hàng (OS-IN), không nhập tay."
+  }
+  if (isAssemblyBlocked) {
+    return "Chưa thể báo cáo Lắp ráp vì vẫn còn chi tiết khác trong Job chưa hoàn thành."
   }
   return null
 }
