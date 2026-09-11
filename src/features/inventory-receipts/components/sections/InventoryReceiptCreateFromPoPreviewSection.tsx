@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react"
 import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 
@@ -14,51 +13,23 @@ import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { withForm } from "@/hooks/use-app-form"
-import type { InventoryReceiptFromPoItemValue } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-// Bước ② — xem trước đọc-only các dòng của PO đã chọn ở bước ①, đồng thời seed `items` (dùng ở
-// bước ③) từ đúng các dòng này. Seed một lần mỗi khi đổi PO (không seed lại mỗi render — sẽ ghi
-// đè SL nhận người dùng vừa sửa ở bước ③) qua `seededForRef` so với `purchaseOrder.id` đã fetch.
+// Bước ② — xem trước đọc-only các dòng của PO đã chọn ở bước ① (việc seed `items` cho bước ③
+// được thực hiện ở cấp form cha trong InventoryReceiptCreateFromPoForm.tsx).
 export const InventoryReceiptCreateFromPoPreviewSection = withForm({
   defaultValues: createInventoryReceiptFromPoFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form }) {
     const purchaseOrderId = useField({ form, name: "purchaseOrderId" }).state
       .value
-    const itemsField = useField({ form, name: "items" })
 
     const { data: purchaseOrder, isFetching } = useQuery({
       ...purchaseOrderQueryOptions(purchaseOrderId),
       enabled: Boolean(purchaseOrderId),
     })
-
-    const seededForRef = useRef<string | null>(null)
-    useEffect(() => {
-      if (!purchaseOrder || seededForRef.current === purchaseOrder.id) return
-      seededForRef.current = purchaseOrder.id
-
-      const items: InventoryReceiptFromPoItemValue[] = purchaseOrder.items
-        .map((line) => {
-          const received = line.receivedQuantity
-          const remaining = Math.max(line.quantity - received, 0)
-          return {
-            purchaseOrderItemId: line.id,
-            itemId: line.purchaseRequestItem.item.id,
-            itemLabel: `${line.purchaseRequestItem.item.code} — ${line.purchaseRequestItem.item.name}`,
-            itemUnit: line.purchaseRequestItem.item.unit.name,
-            requestedQuantity: line.quantity,
-            remainingQuantity: remaining,
-            quantity: remaining,
-            note: "",
-          }
-        })
-        .filter((item) => item.remainingQuantity > 0)
-
-      itemsField.handleChange(items)
-    }, [purchaseOrder, itemsField])
 
     const lines = purchaseOrder?.items ?? []
 

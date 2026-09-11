@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import { useField } from "@tanstack/react-form"
+import { useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 
@@ -14,6 +15,7 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildInventoryReceiptFromPoItemColumns } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateFromPoItemsColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
+import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { withForm } from "@/hooks/use-app-form"
 import { inventoryReceiptAssetTypeLabels } from "@/lib/types/inventory-receipt.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
@@ -27,6 +29,13 @@ export const InventoryReceiptCreateFromPoItemsSection = withForm({
   defaultValues: createInventoryReceiptFromPoFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
+    const purchaseOrderId = useField({ form, name: "purchaseOrderId" }).state
+      .value
+    const { isFetching: isPoFetching } = useQuery({
+      ...purchaseOrderQueryOptions(purchaseOrderId),
+      enabled: Boolean(purchaseOrderId),
+    })
+
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
@@ -109,8 +118,18 @@ export const InventoryReceiptCreateFromPoItemsSection = withForm({
                   <TableCell colSpan={columns.length}>
                     <TableEmpty
                       colSpan={columns.length}
-                      title="Chưa có dòng nào"
-                      description="Quay lại bước ① để chọn PO."
+                      title={
+                        isPoFetching
+                          ? "Đang tải danh sách vật tư..."
+                          : "Chưa có dòng nào"
+                      }
+                      description={
+                        isPoFetching
+                          ? "Vui lòng chờ trong giây lát"
+                          : purchaseOrderId
+                            ? "Đơn mua hàng này không còn vật tư nào cần nhập (đã nhận đủ)."
+                            : "Quay lại bước ① để chọn PO."
+                      }
                     />
                   </TableCell>
                 </TableRow>

@@ -38,7 +38,10 @@ import { InventoryReceiptType } from "@/lib/types/inventory-receipt.type"
 import { getStepNav } from "@/lib/wizard-steps"
 import type { InventoryReceiptFromPoWizardStep } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateFromPoStepsTabs"
 import type { CreateInventoryReceiptSchema } from "@/features/inventory-receipts/schemas/create-inventory-receipt.schema"
-import type { CreateInventoryReceiptFromPoFormSchema } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
+import type {
+  CreateInventoryReceiptFromPoFormSchema,
+  InventoryReceiptFromPoItemValue,
+} from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 // Ghép giá trị wizard-local (UI-only field) + PO đã fetch thành đúng payload
@@ -161,10 +164,49 @@ export function InventoryReceiptCreateFromPoForm() {
   const purchaseOrderId = useField({ form, name: "purchaseOrderId" }).state
     .value
 
-  const { data: purchaseOrder } = useQuery({
+  const { data: purchaseOrder, isFetching: isPoFetching } = useQuery({
     ...purchaseOrderQueryOptions(purchaseOrderId),
     enabled: Boolean(purchaseOrderId),
   })
+
+  // Tự động seed items ở cấp form ngay khi PO được fetch, không phụ thuộc vào việc tab nào đang mount.
+  // Tránh race condition khi người dùng chuyển bước nhanh dẫn đến items bị rỗng ("không có vật tư").
+  const seededForPoRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!purchaseOrder) return
+    if (seededForPoRef.current === purchaseOrder.id) return
+
+    // Nếu vừa khôi phục draft thành công cho chính PO này và đã có items, không ghi đè giá trị draft
+    if (
+      draftRestoredRef.current &&
+      form.state.values.purchaseOrderId === purchaseOrder.id &&
+      form.state.values.items.length > 0
+    ) {
+      seededForPoRef.current = purchaseOrder.id
+      return
+    }
+
+    seededForPoRef.current = purchaseOrder.id
+
+    const items: InventoryReceiptFromPoItemValue[] = purchaseOrder.items
+      .map((line) => {
+        const received = line.receivedQuantity
+        const remaining = Math.max(line.quantity - received, 0)
+        return {
+          purchaseOrderItemId: line.id,
+          itemId: line.purchaseRequestItem.item.id,
+          itemLabel: `${line.purchaseRequestItem.item.code} — ${line.purchaseRequestItem.item.name}`,
+          itemUnit: line.purchaseRequestItem.item.unit.name,
+          requestedQuantity: line.quantity,
+          remainingQuantity: remaining,
+          quantity: remaining,
+          note: "",
+        }
+      })
+      .filter((item) => item.remainingQuantity > 0)
+
+    form.setFieldValue("items", items)
+  }, [purchaseOrder, form])
 
   function handleStepChange(nextStep: InventoryReceiptFromPoWizardStep) {
     setStep(nextStep)
@@ -213,31 +255,31 @@ export function InventoryReceiptCreateFromPoForm() {
             {({ hasPurchaseOrder, hasItems }) => (
               <InventoryReceiptCreateFromPoStepsTabs
                 canGoToPreview={hasPurchaseOrder}
-                canGoToItems={hasPurchaseOrder}
+                canGoToItems={hasPurchaseOrder && hasItems}
                 canGoToConfirm={hasItems}
               />
             )}
           </form.Subscribe>
 
-          <TabsContent value="po" className="m-0 outline-none">
+          <TabsContent value="po" keepMounted className="m-0 outline-none">
             <InventoryReceiptCreateFromPoPickerSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="preview" className="m-0 outline-none">
+          <TabsContent value="preview" keepMounted className="m-0 outline-none">
             <InventoryReceiptCreateFromPoPreviewSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="items" className="m-0 outline-none">
+          <TabsContent value="items" keepMounted className="m-0 outline-none">
             <InventoryReceiptCreateFromPoItemsSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
-          <TabsContent value="confirm" className="m-0 outline-none">
+          <TabsContent value="confirm" keepMounted className="m-0 outline-none">
             <InventoryReceiptCreateFromPoConfirmSection
               form={form}
               disabled={isPending}
@@ -286,7 +328,7 @@ export function InventoryReceiptCreateFromPoForm() {
                   step === "po"
                     ? hasPurchaseOrder
                     : step === "preview"
-                      ? hasPurchaseOrder
+                      ? hasPurchaseOrder && hasItems && !isPoFetching
                       : hasItems
 
                 return (
@@ -295,8 +337,17 @@ export function InventoryReceiptCreateFromPoForm() {
                     disabled={!canAdvance}
                     onClick={() => handleStepChange(nextStep)}
                   >
-                    {nextLabel}
-                    <AltArrowRight className="size-4" />
+                    {isPoFetching && step === "preview" ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" />
+                        Đang tải vật tư…
+                      </>
+                    ) : (
+                      <>
+                        {nextLabel}
+                        <AltArrowRight className="size-4" />
+                      </>
+                    )}
                   </Button>
                 )
               }}
