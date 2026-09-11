@@ -24,23 +24,6 @@ export const outsourcingReceiptsColumns =
       ),
     }),
 
-    // Vật tư/Mã OS-OUT/SL nhận: danh sách (PageOutsourcingReceiptResDto) không còn trả items[] nên
-    // không có gì để hiển thị — chỉ trang chi tiết (GET :id/items) còn có, xem
-    // OutsourcingReceiptItemsCard.tsx.
-    outsourcingReceiptColumnHelper.display({
-      id: "item",
-      header: "Vật tư",
-      meta: { headerClassName: "min-w-32" },
-      cell: () => "--",
-    }),
-
-    outsourcingReceiptColumnHelper.display({
-      id: "outsourcingOrder",
-      header: "Mã OS-OUT",
-      meta: { headerClassName: "min-w-28" },
-      cell: () => "--",
-    }),
-
     outsourcingReceiptColumnHelper.accessor((row) => row.supplier.name, {
       id: "supplier",
       header: "Nhà cung cấp",
@@ -50,14 +33,12 @@ export const outsourcingReceiptsColumns =
       ),
     }),
 
-    outsourcingReceiptColumnHelper.display({
-      id: "quantity",
+    outsourcingReceiptColumnHelper.accessor("totalQuantity", {
       header: "SL nhận",
       meta: {
         headerClassName: "min-w-20 text-right",
-        cellClassName: "text-right",
+        cellClassName: "text-right tabular-nums",
       },
-      cell: () => "--",
     }),
 
     outsourcingReceiptColumnHelper.accessor("requiresIqc", {

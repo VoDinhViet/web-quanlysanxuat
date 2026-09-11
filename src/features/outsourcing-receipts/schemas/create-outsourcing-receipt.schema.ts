@@ -3,8 +3,9 @@ import { z } from "zod"
 // Bước ① (picker) của wizard "Nhập hàng gia công về" — một dòng cho mỗi dòng OS-OUT còn số lượng
 // chưa nhận đã chọn. Tên field khớp 1:1 PendingOrderItem (outsourcing-receipt.type.ts) —
 // outsourcingOrderId/outsourcingOrderCode/sendDate/supplierId/supplierName/productionJobCode/
-// itemCode/itemName/unitName/operationCode/operationName/sentQuantity là UI-only, hiển thị lại
-// không cần fetch lần 2, cùng idiom create-outsourcing-order.schema.ts's item fields.
+// itemCode/itemName/unitName/operationCode/operationName/sentQuantity/receivedQuantity/
+// remainingQuantity là UI-only, hiển thị lại không cần fetch lần 2, cùng idiom
+// create-outsourcing-order.schema.ts's item fields.
 // `supplierId` không chọn tay ở form — NCC không còn là bước bắt buộc trước khi chọn hàng, mà tự
 // suy ra theo dòng đầu tiên được chọn ở PickerSection (xem `toggleRow`/`toggleAll`).
 const createOutsourcingReceiptItemFields = {
@@ -21,6 +22,8 @@ const createOutsourcingReceiptItemFields = {
   operationCode: z.string(),
   operationName: z.string(),
   sentQuantity: z.number(),
+  receivedQuantity: z.number(),
+  remainingQuantity: z.number(),
   quantity: z
     .number("SL nhận phải lớn hơn 0")
     .positive("SL nhận phải lớn hơn 0")
@@ -37,13 +40,12 @@ const createOutsourcingReceiptItemFields = {
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 
-// SL nhận lần này không được vượt SL đã gửi — chặn sơ bộ ở form; giới hạn thật (không vượt SL
-// còn lại sau các lần nhận trước, BE chưa trả trên endpoint picker) do backend tự kiểm lại khi
-// tạo phiếu (E172).
+// SL nhận lần này không được vượt SL còn lại (SL đã gửi trừ SL đã nhận ở các OS-IN POSTED
+// trước) — chặn sơ bộ ở form, backend vẫn tự kiểm lại khi tạo phiếu (E172).
 export const createOutsourcingReceiptItemSchema = z
   .object(createOutsourcingReceiptItemFields)
-  .refine((item) => item.quantity <= item.sentQuantity, {
-    message: "SL nhận lần này không được vượt SL đã gửi",
+  .refine((item) => item.quantity <= item.remainingQuantity, {
+    message: "SL nhận lần này không được vượt SL còn lại",
     path: ["quantity"],
   })
 

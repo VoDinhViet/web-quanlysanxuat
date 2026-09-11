@@ -37,13 +37,16 @@ import type { CreateOutsourcingReceiptItemValue } from "@/features/outsourcing-r
 import type { PendingOrderItem } from "@/lib/types/outsourcing-receipt.type"
 import type { PageSize } from "@/components/shared/composites/Pagination"
 
-// SL nhận mặc định bằng toàn bộ SL đã gửi (BE chưa trả SL đã nhận/còn lại ở endpoint picker —
-// đây là gợi ý tốt nhất có sẵn, người dùng tự sửa nếu cần); trọng lượng/diện tích mặc định lấy
-// theo dữ liệu OS-OUT của dòng đó — ghi chú để trống, BE không có field gợi ý ghi chú per-dòng.
-// Cùng idiom buildPickedOutsourcingOrderItem trong CreateOutsourcingOrderPickerSection.tsx.
+// SL nhận mặc định bằng SL còn lại (SL đã gửi trừ SL đã nhận qua các OS-IN POSTED trước), không
+// phải toàn bộ SL đã gửi — dòng nhận một phần rồi thì phần còn lại mới là gợi ý đúng, người dùng
+// tự sửa nếu cần; trọng lượng/diện tích mặc định lấy theo dữ liệu OS-OUT của dòng đó — ghi chú để
+// trống, BE không có field gợi ý ghi chú per-dòng. Cùng idiom buildPickedOutsourcingOrderItem
+// trong CreateOutsourcingOrderPickerSection.tsx.
 function buildPickedOutsourcingReceiptItem(
   row: PendingOrderItem
 ): CreateOutsourcingReceiptItemValue {
+  const remainingQuantity = row.quantity - row.receivedQuantity
+
   return {
     outsourcingOrderItemId: row.id,
     outsourcingOrderId: row.outsourcingOrder.id,
@@ -58,7 +61,9 @@ function buildPickedOutsourcingReceiptItem(
     operationCode: row.operationCode,
     operationName: row.operationName,
     sentQuantity: row.quantity,
-    quantity: row.quantity,
+    receivedQuantity: row.receivedQuantity,
+    remainingQuantity,
+    quantity: remainingQuantity,
     weight: row.weight ?? undefined,
     area: row.area ?? undefined,
     note: "",
@@ -106,6 +111,12 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
       () => new Set(items.map((item) => item.outsourcingOrderItemId)),
       [items]
     )
+    // Dòng đã nhận đủ (SL đã gửi − SL đã nhận <= 0) không tính vào "chọn tất cả trang này" —
+    // checkbox của chính dòng đó cũng bị khoá ở cột select (PickerColumns.tsx).
+    const pickableRows = useMemo(
+      () => rows.filter((row) => row.quantity - row.receivedQuantity > 0),
+      [rows]
+    )
 
     const toggleRow = useCallback(
       (row: PendingOrderItem) => {
@@ -117,6 +128,11 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           if (items.length === 1) {
             supplierIdField.handleChange("")
           }
+          return
+        }
+
+        if (row.quantity - row.receivedQuantity <= 0) {
+          toast.error("Dòng này đã nhận đủ số lượng đã gửi.")
           return
         }
 
@@ -137,10 +153,10 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
 
     const toggleAll = useCallback(
       (checked: boolean) => {
-        const pageIds = new Set(rows.map((row) => row.id))
+        const pageIds = new Set(pickableRows.map((row) => row.id))
 
         if (checked) {
-          const toAdd = rows.filter((row) => !pickedIds.has(row.id))
+          const toAdd = pickableRows.filter((row) => !pickedIds.has(row.id))
           const distinctSupplierIds = new Set(
             toAdd.map((row) => row.supplier.id)
           )
@@ -173,11 +189,19 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           }
         }
       },
-      [rows, pickedIds, items, itemsField, supplierIdField, lockedSupplierId]
+      [
+        pickableRows,
+        pickedIds,
+        items,
+        itemsField,
+        supplierIdField,
+        lockedSupplierId,
+      ]
     )
 
     const allChecked =
-      rows.length > 0 && rows.every((row) => pickedIds.has(row.id))
+      pickableRows.length > 0 &&
+      pickableRows.every((row) => pickedIds.has(row.id))
 
     const columns = useMemo(
       () =>
@@ -326,19 +350,22 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
                   const isOtherSupplier =
                     lockedSupplierId !== undefined &&
                     row.original.supplier.id !== lockedSupplierId
+                  const isExhausted =
+                    row.original.quantity - row.original.receivedQuantity <= 0
+                  const isLocked = isOtherSupplier || isExhausted
 
                   return (
                     <TableRow
                       key={row.id}
                       className={cn(
                         "h-14 bg-card",
-                        isOtherSupplier
+                        isLocked
                           ? "opacity-60"
                           : "cursor-pointer hover:bg-muted/25",
                         isPicked && "bg-primary/5"
                       )}
                       onClick={() =>
-                        !disabled && !isOtherSupplier && toggleRow(row.original)
+                        !disabled && !isLocked && toggleRow(row.original)
                       }
                     >
                       {row.getVisibleCells().map((cell) => (

@@ -24,10 +24,17 @@ export function usePostSupplierReturn({
       postSupplierReturnFn({ data: { supplierReturnId, ...value } }),
     onSuccess: async () => {
       // IQC liên kết đổi trạng thái (WAITING_RETURN → COMPLETED) trong cùng thao tác — invalidate
-      // cả 2 cache.
+      // cả 2 cache. Phiếu trả sinh từ OS-IN còn kéo lùi status OS-OUT nguồn (COMPLETED/WAITING_QC
+      // → PARTIAL/SENT), tiến độ công đoạn OUTSOURCE liên quan (BE `postSupplierReturn` →
+      // `recomputeAffectedOutsourcing`), và SL còn được nhận hiện ở popup tạo OS-IN mới
+      // (`receivedQuantityByOrderItemIdSubquery` cũng trừ SL trả) — invalidate cả 3 cache đó dù
+      // phiếu trả không phải lúc nào cũng sinh từ OS-IN, rẻ hơn kiểm điều kiện ở FE.
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["supplier-returns"] }),
         queryClient.invalidateQueries({ queryKey: ["iqc"] }),
+        queryClient.invalidateQueries({ queryKey: ["outsourcing-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["outsourcing-receipts"] }),
+        queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
       ])
       onSuccess()
     },

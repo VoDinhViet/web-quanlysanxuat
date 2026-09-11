@@ -27,7 +27,7 @@ type BuildCreateOutsourcingReceiptItemColumnsArgs = {
 }
 
 // Own useReactTable columns cho bước ② — mỗi ô ghi trực tiếp vào `itemsField` qua row.index, cùng
-// idiom CreateOutsourcingOrderItemsColumns.tsx. SL nhận vượt "SL đã gửi" vẫn gõ được (không khoá
+// idiom CreateOutsourcingOrderItemsColumns.tsx. SL nhận vượt "SL còn lại" vẫn gõ được (không khoá
 // phím) nhưng bị chặn ở submit qua schema's `.refine` — dòng cảnh báo dưới ô chỉ là gợi ý tức thời.
 export function buildCreateOutsourcingReceiptItemColumns({
   itemsField,
@@ -89,6 +89,22 @@ export function buildCreateOutsourcingReceiptItemColumns({
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
+    createOutsourcingReceiptItemColumnHelper.accessor("receivedQuantity", {
+      header: "SL đã nhận",
+      meta: {
+        headerClassName: "w-24 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    createOutsourcingReceiptItemColumnHelper.accessor("remainingQuantity", {
+      header: "Còn lại",
+      meta: {
+        headerClassName: "w-24 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
     createOutsourcingReceiptItemColumnHelper.display({
       id: "quantity",
       header: () => (
@@ -99,7 +115,7 @@ export function buildCreateOutsourcingReceiptItemColumns({
       meta: { headerClassName: "w-32 text-right" },
       cell: ({ row }) => {
         const item = row.original
-        const exceedsSent = (item.quantity ?? 0) > item.sentQuantity
+        const exceedsRemaining = (item.quantity ?? 0) > item.remainingQuantity
 
         return (
           <div>
@@ -111,9 +127,9 @@ export function buildCreateOutsourcingReceiptItemColumns({
                 itemsField.replaceValue(row.index, { ...item, quantity: value })
               }
             />
-            {exceedsSent && (
+            {exceedsRemaining && (
               <p className="mt-1 text-right text-[10px] text-destructive">
-                Vượt SL đã gửi ({quantityFormatter.format(item.sentQuantity)})
+                Vượt SL còn lại ({quantityFormatter.format(item.remainingQuantity)})
               </p>
             )}
           </div>

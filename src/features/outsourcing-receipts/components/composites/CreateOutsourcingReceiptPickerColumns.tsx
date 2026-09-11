@@ -26,7 +26,8 @@ type BuildCreateOutsourcingReceiptPickerColumnsArgs = {
 // checkbox nhiều dòng, không phải radio 1 dòng như InventoryReceiptCreateFromPoPickerColumns.tsx,
 // vì một phiếu OS-IN ở màn hình này có thể gộp nhiều dòng OS-OUT khác nhau, miễn cùng NCC). NCC
 // không chọn tay trước — `lockedSupplierId` là NCC của dòng đầu tiên đã chọn (undefined nếu chưa
-// chọn dòng nào); dòng khác NCC bị khoá không cho tích, tránh vi phạm ràng buộc BE (E187).
+// chọn dòng nào); dòng khác NCC bị khoá không cho tích, tránh vi phạm ràng buộc BE (E187). Dòng đã
+// nhận đủ (`quantity - receivedQuantity <= 0`) cũng không chọn được, bất kể prop `disabled`.
 export function buildCreateOutsourcingReceiptPickerColumns({
   pickedIds,
   disabled,
@@ -51,11 +52,13 @@ export function buildCreateOutsourcingReceiptPickerColumns({
         const isOtherSupplier =
           lockedSupplierId !== undefined &&
           row.original.supplier.id !== lockedSupplierId
+        const isExhausted =
+          row.original.quantity - row.original.receivedQuantity <= 0
 
         return (
           <Checkbox
             checked={pickedIds.has(row.original.id)}
-            disabled={disabled || isOtherSupplier}
+            disabled={disabled || isOtherSupplier || isExhausted}
             onCheckedChange={() => onToggleRow(row.original)}
             aria-label={`Chọn ${row.original.item.name}`}
           />
@@ -131,12 +134,36 @@ export function buildCreateOutsourcingReceiptPickerColumns({
     }),
     pendingOrderItemColumnHelper.accessor("quantity", {
       header: "SL đã gửi",
-      meta: { headerClassName: "w-24 text-right", cellClassName: "text-right" },
-      cell: ({ getValue }) => (
-        <span className="font-semibold text-foreground tabular-nums">
-          {quantityFormatter.format(getValue())}
-        </span>
-      ),
+      meta: {
+        headerClassName: "w-24 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    pendingOrderItemColumnHelper.accessor("receivedQuantity", {
+      header: "SL đã nhận",
+      meta: {
+        headerClassName: "w-24 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    pendingOrderItemColumnHelper.display({
+      id: "remaining",
+      header: "Còn lại",
+      meta: { headerClassName: "w-28 text-right", cellClassName: "text-right" },
+      cell: ({ row }) => {
+        const remaining = row.original.quantity - row.original.receivedQuantity
+        return remaining > 0 ? (
+          <span className="font-semibold text-foreground tabular-nums">
+            {quantityFormatter.format(remaining)}
+          </span>
+        ) : (
+          <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+            Đã nhận đủ
+          </span>
+        )
+      },
     }),
   ])
 }

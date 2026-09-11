@@ -54,9 +54,11 @@ export type OutsourcingReceiptItem = {
 
 // Mirrors PageOutsourcingReceiptResDto (GET /outsourcing-receipts, danh sách) 1:1 — riêng biệt với
 // OutsourcingReceiptDetail bên dưới (không compose type này lên cái kia, cùng nguyên tắc
-// OutsourcingOrder/OutsourcingOrderDetail trong outsourcing-order.type.ts): header giờ không còn
-// `items[]`/`totalQuantity`/`progress`/`warehouse` — dòng chi tiết phải gọi riêng
-// GET /:id/items (OutsourcingReceiptItem, xem outsourcing-receipt-items.options.ts).
+// OutsourcingOrder/OutsourcingOrderDetail trong outsourcing-order.type.ts): header không có
+// `items[]`/`progress`/`warehouse` — dòng chi tiết phải gọi riêng GET /:id/items
+// (OutsourcingReceiptItem, xem outsourcing-receipt-items.options.ts). `totalQuantity` là ngoại lệ
+// — tổng hợp được về 1 số (khác `items[]`/mã OS-OUT nguồn, vốn nhiều-dòng-trên-1-phiếu không tóm
+// gọn được), nên BE join sẵn cho danh sách, cùng cách PageOutsourcingOrderResDto có sẵn.
 export type OutsourcingReceipt = {
   id: string
   code: string
@@ -66,6 +68,7 @@ export type OutsourcingReceipt = {
   status: InventoryDocumentStatus // DB status — gate nút Xác nhận đã nhận/Hủy ở trang chi tiết
   note: string | null
   creatorBy: UserRef | null
+  totalQuantity: number // Σ SL nhận mọi dòng của phiếu
   createdAt: string
   updatedAt: string
 }
@@ -91,9 +94,10 @@ export type OutsourcingReceiptDetail = {
 // One row per dòng OS-OUT, eligible cho bước ① wizard "Nhập hàng gia công về" — mirrors GET
 // /outsourcing-receipts/pending-order-items (PendingOrderItemResDto) 1:1, không flatten/map thừa:
 // server function (get-pending-order-items.api.ts) trả thẳng response, không transform. `id` là
-// id gửi lại khi tạo dòng OS-IN (OutsourcingReceiptItemReqDto.outsourcingOrderItemId). BE chưa trả
-// SL đã nhận/còn lại ở endpoint này (chỉ trả `quantity` — SL đã gửi của dòng OS-OUT gốc) — giới
-// hạn thật (không vượt SL còn lại sau các lần nhận trước) được BE kiểm khi tạo phiếu (E172).
+// id gửi lại khi tạo dòng OS-IN (OutsourcingReceiptItemReqDto.outsourcingOrderItemId). BE trả
+// `receivedQuantity` (Σ OS-IN POSTED trỏ tới dòng này) — SL còn được nhận = `quantity -
+// receivedQuantity`, FE tự tính, không có field riêng. Trần thật vẫn do BE kiểm lại khi tạo phiếu
+// (E172).
 export type PendingOrderItem = {
   id: string
   outsourcingOrder: { id: string; code: string; sendDate: string }
@@ -104,6 +108,7 @@ export type PendingOrderItem = {
   operationCode: string
   operationName: string
   quantity: number // SL đã gửi của dòng OS-OUT gốc
+  receivedQuantity: number // Σ SL đã nhận qua các OS-IN POSTED trỏ tới dòng này
   weight: number | null // trọng lượng gợi ý, lấy theo dòng OS-OUT gốc
   area: number | null // diện tích gợi ý, lấy theo dòng OS-OUT gốc
 }
