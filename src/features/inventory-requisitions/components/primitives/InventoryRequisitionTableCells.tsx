@@ -1,13 +1,15 @@
-import { CircleX, Eye, Pencil, Printer, Trash2 } from "lucide-react"
+import { Eye, Printer, Trash2 } from "lucide-react"
 
-import { LinkButton } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RowActions } from "@/components/shared/primitives/RowActions"
+import { DeleteRequisitionDialog } from "@/features/inventory-requisitions/components/composites/DeleteRequisitionDialog"
 import { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
 import type {
   InventoryRequisition,
@@ -44,17 +46,12 @@ type InventoryRequisitionActionsCellProps = {
   requisition: InventoryRequisition
 }
 
-// Nút Xem chi tiết chuyển đến trang chi tiết phiếu. Các thao tác khác hiện/ẩn theo trạng thái
-// đúng guard backend: Sửa/Xoá chỉ ở Nháp/Từ chối, Huỷ ở mọi trạng thái trừ Đã xuất/Đã hủy, In phiếu luôn hiện.
+// Nút Xem chi tiết chuyển đến trang chi tiết phiếu.
+// Xoá phiếu chỉ khả dụng khi phiếu ở trạng thái Nháp (DRAFT).
 export function InventoryRequisitionActionsCell({
   requisition,
 }: InventoryRequisitionActionsCellProps) {
-  const canEditOrDelete =
-    requisition.status === InventoryRequisitionStatus.DRAFT ||
-    requisition.status === InventoryRequisitionStatus.REJECTED
-  const canCancel =
-    requisition.status !== InventoryRequisitionStatus.ISSUED &&
-    requisition.status !== InventoryRequisitionStatus.CANCELLED
+  const isDraft = requisition.status === InventoryRequisitionStatus.DRAFT
 
   return (
     <RowActions>
@@ -80,23 +77,39 @@ export function InventoryRequisitionActionsCell({
         <Printer className="size-3.5" />
       </DisabledAction>
 
-      {canEditOrDelete && (
-        <DisabledAction label="Sửa phiếu" hint="chưa được xây dựng">
-          <Pencil className="size-3.5" />
-        </DisabledAction>
-      )}
-
-      {canEditOrDelete && (
-        <DisabledAction label="Xoá phiếu" hint="chưa được xây dựng">
+      {isDraft ? (
+        <PermissionGate permission="inventory-requisitions:delete">
+          <Tooltip>
+            <DeleteRequisitionDialog
+              requisition={requisition}
+              trigger={
+                <TooltipTrigger
+                  render={
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      aria-label="Xoá phiếu"
+                      className="bg-background text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  }
+                />
+              }
+            />
+            <TooltipContent>Xoá phiếu</TooltipContent>
+          </Tooltip>
+        </PermissionGate>
+      ) : (
+        <DisabledAction
+          label="Xoá phiếu"
+          hint="chỉ xoá được khi phiếu ở trạng thái Nháp"
+        >
           <Trash2 className="size-3.5" />
-        </DisabledAction>
-      )}
-
-      {canCancel && (
-        <DisabledAction label="Huỷ phiếu" hint="chưa được xây dựng">
-          <CircleX className="size-3.5" />
         </DisabledAction>
       )}
     </RowActions>
   )
 }
+

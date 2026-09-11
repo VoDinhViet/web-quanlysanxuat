@@ -10,9 +10,11 @@ export function getRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        // Data stays fresh for 1 min so navigating back to a list doesn't
-        // refetch; entity writes force a refetch via `invalidateQueries`.
-        staleTime: 60_000,
+        // Data is considered stale immediately so navigating between pages
+        // triggers an automatic background refetch to guarantee fresh ERP state
+        // while serving cached data instantly.
+        staleTime: 0,
+        refetchOnMount: true,
         // Server functions already throw clean Vietnamese messages — one retry
         // is enough, don't hammer a failing backend.
         retry: 1,
@@ -29,6 +31,7 @@ export function getRouter() {
 
     scrollRestoration: true,
     defaultPreload: "intent",
+    defaultStaleTime: 0,
     // React Query owns freshness — without this the router keeps preloaded
     // loader results fresh for 30s and skips the loader on a repeat hover.
     defaultPreloadStaleTime: 0,

@@ -174,7 +174,7 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
 - `QueryClient` is created once, in `src/router.tsx`, and wired to the router via
   `@tanstack/react-router-ssr-query`'s `setupRouterSsrQueryIntegration`. Don't create a
   second `QueryClient` instance anywhere else. Its `defaultOptions.queries` set
-  `staleTime: 60_000` and `retry: 1`; reference-option factories override `staleTime` longer.
+  `staleTime: 0`, `refetchOnMount: true` and `retry: 1`; reference-option factories override `staleTime` longer.
   Route loaders additionally pass `staleTime: "static"` at the call site (see "Loaders
   prefetch, don't return" below) — that's a read-through switch, not a third freshness tier;
   the factory's own `staleTime` is still what the mounted observer (`useSuspenseQuery`/
