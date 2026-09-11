@@ -24,6 +24,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -250,15 +251,17 @@ function BomRowActions({
             }
           />
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Thêm cấp con</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onAddChild("WIP")}>
-              <LayersMinimalistic />
-              {bomItemTypeLabels.WIP}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAddChild("RM")}>
-              <Bolt />
-              {bomItemTypeLabels.RM}
-            </DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Thêm cấp con</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => onAddChild("WIP")}>
+                <LayersMinimalistic />
+                {bomItemTypeLabels.WIP}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAddChild("RM")}>
+                <Bolt />
+                {bomItemTypeLabels.RM}
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={onAddSibling}>
               <Layers />
@@ -374,16 +377,18 @@ function RootAddButton({
           </Button>
         }
       />
-      <DropdownMenuContent align="end" className="min-w-44">
-        <DropdownMenuLabel>Thêm thành phần</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => onCreate("WIP")}>
-          <LayersMinimalistic />
-          {bomItemTypeLabels.WIP}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onCreate("RM")}>
-          <Bolt />
-          {bomItemTypeLabels.RM}
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" className="min-w-48">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Thêm thành phần</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => onCreate("WIP")}>
+            <LayersMinimalistic />
+            {bomItemTypeLabels.WIP}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onCreate("RM")}>
+            <Bolt />
+            {bomItemTypeLabels.RM}
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
