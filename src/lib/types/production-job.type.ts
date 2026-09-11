@@ -265,3 +265,26 @@ export type ProductionJobByOperation = {
   operationCompletedDate: string | null
   operationStatus: ProductionOperationProgressStatus
 }
+
+/** Mirrors `GET /production-execution/jobs/:productionJobId/reports` — một dòng nhật ký báo cáo sản lượng
+ *  hoàn thành/không đạt của công đoạn kèm người báo và ảnh minh chứng. */
+export type ProductionExecutionReport = {
+  id: string
+  productionJobOperationId: string
+  operationCode: string
+  operationName: string
+  bomItemId: string
+  bomItemCode: string
+  bomItemName: string
+  completedQuantityDelta: number
+  rejectedQuantityDelta: number
+  completedDate: string
+  note: string | null
+  createdAt: string
+  creator: {
+    id: string
+    code: string
+    fullName: string
+  } | null
+  files: FileResource[]
+}

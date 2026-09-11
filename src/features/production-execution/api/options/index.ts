@@ -3,3 +3,4 @@
 // `invalidateQueries({ queryKey: ["production-execution"] })` refreshes the whole feature.
 export { productionOperationSummaryQueryOptions } from "@/features/production-execution/api/options/production-operation-summary.options"
 export { productionJobsByOperationQueryOptions } from "@/features/production-execution/api/options/production-jobs-by-operation.options"
+export { jobOperationReportsQueryOptions } from "@/features/production-execution/api/options/job-operation-reports.options"

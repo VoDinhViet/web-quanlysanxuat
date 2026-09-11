@@ -11,6 +11,8 @@ import {
   JobOperationReportDialog,
   resolveJobOperationReportDisabledReason,
 } from "@/components/shared/composites/JobOperationReportDialog"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { OperationProgressBar } from "@/features/production-execution/components/primitives/OperationProgressBar"
 import { OperationType } from "@/lib/types/operation.type"
 import type {
   JobOperationReportRow,
@@ -40,9 +42,13 @@ export function buildProductionExecutionPartColumns({
   return columnHelper.columns([
     columnHelper.accessor((row) => row.bomItem.code, {
       id: "code",
-      header: "Part",
-      meta: { headerClassName: "min-w-24" },
-      cell: ({ getValue }) => <span className="font-mono">{getValue()}</span>,
+      header: "Mã Part",
+      meta: { headerClassName: "min-w-28" },
+      cell: ({ getValue }) => (
+        <span className="font-mono font-medium text-foreground">
+          {getValue()}
+        </span>
+      ),
     }),
     columnHelper.accessor((row) => row.bomItem.name, {
       id: "name",
@@ -51,42 +57,90 @@ export function buildProductionExecutionPartColumns({
     }),
     columnHelper.accessor((row) => row.operation.plannedQuantity, {
       id: "plannedQuantity",
-      header: "Định mức (pcs)",
+      header: "Kế hoạch (pcs)",
       meta: {
-        headerClassName: "min-w-24 text-center",
-        cellClassName: "text-center tabular-nums",
+        headerClassName: "min-w-28 text-center",
+        cellClassName: "text-center tabular-nums font-medium",
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
     columnHelper.accessor((row) => row.operation.completedQuantity, {
       id: "completedQuantity",
-      header: "Hoàn thành (pcs)",
+      header: "Đã đạt (pcs)",
       meta: {
-        headerClassName: "min-w-24 text-center",
-        cellClassName: "text-center tabular-nums",
+        headerClassName: "min-w-28 text-center",
+        cellClassName: "text-center tabular-nums font-semibold text-success",
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
+    columnHelper.accessor((row) => row.operation.rejectedQuantity, {
+      id: "rejectedQuantity",
+      header: "Không đạt (pcs)",
+      meta: {
+        headerClassName: "min-w-28 text-center",
+        cellClassName: "text-center tabular-nums",
+      },
+      cell: ({ getValue }) => {
+        const val = getValue()
+        return (
+          <span
+            className={
+              val > 0
+                ? "font-semibold text-destructive"
+                : "text-muted-foreground"
+            }
+          >
+            {quantityFormatter.format(val)}
+          </span>
+        )
+      },
+    }),
     columnHelper.accessor(
       (row) =>
-        row.operation.plannedQuantity -
-        row.operation.completedQuantity -
-        row.operation.rejectedQuantity,
+        Math.max(
+          0,
+          row.operation.plannedQuantity - row.operation.completedQuantity
+        ),
       {
         id: "remainingQuantity",
         header: "Còn lại (pcs)",
         meta: {
-          headerClassName: "min-w-24 text-center",
-          cellClassName: "text-center tabular-nums",
+          headerClassName: "min-w-28 text-center",
+          cellClassName: "text-center tabular-nums font-medium",
         },
         cell: ({ getValue }) => quantityFormatter.format(getValue()),
+      }
+    ),
+    columnHelper.accessor(
+      (row) => ({
+        planned: row.operation.plannedQuantity,
+        completed: row.operation.completedQuantity,
+      }),
+      {
+        id: "progress",
+        header: "Tiến độ",
+        meta: {
+          headerClassName: "min-w-36 text-center",
+          cellClassName: "text-center",
+        },
+        cell: ({ getValue }) => {
+          const { planned, completed } = getValue()
+          return (
+            <OperationProgressBar
+              plannedQuantity={planned}
+              completedQuantity={completed}
+              showCount={false}
+              size="sm"
+            />
+          )
+        },
       }
     ),
     columnHelper.display({
       id: "actions",
       header: "Thao tác",
       meta: {
-        headerClassName: "w-40 text-center",
+        headerClassName: "w-36 text-center",
         cellClassName: "text-center",
       },
       cell: ({ row }) => {
@@ -100,25 +154,27 @@ export function buildProductionExecutionPartColumns({
         )
 
         return (
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <JobOperationReportDialog
-                  row={row.original}
-                  disabledReason={reason}
-                  trigger={
-                    <Button type="button" size="sm">
-                      Nhập báo cáo
-                    </Button>
-                  }
-                />
-              }
-            />
-            <TooltipContent>
-              {reason ??
-                "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho Part này."}
-            </TooltipContent>
-          </Tooltip>
+          <PermissionGate permission="production:update">
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <JobOperationReportDialog
+                    row={row.original}
+                    disabledReason={reason}
+                    trigger={
+                      <Button type="button" size="sm">
+                        Nhập báo cáo
+                      </Button>
+                    }
+                  />
+                }
+              />
+              <TooltipContent>
+                {reason ??
+                  "Nhập SL hoàn thành, ngày, ghi chú và ảnh cho Part này."}
+              </TooltipContent>
+            </Tooltip>
+          </PermissionGate>
         )
       },
     }),

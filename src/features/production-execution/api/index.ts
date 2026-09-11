@@ -4,3 +4,4 @@
 // `api/options/` directly.
 export { productionOperationSummaryQueryOptions } from "@/features/production-execution/api/options"
 export { productionJobsByOperationQueryOptions } from "@/features/production-execution/api/options"
+export { jobOperationReportsQueryOptions } from "@/features/production-execution/api/options"

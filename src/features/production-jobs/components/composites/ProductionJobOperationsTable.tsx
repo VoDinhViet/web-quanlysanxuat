@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import {
   Tooltip,
@@ -366,24 +367,26 @@ function OperationRow({
       <TableCell className="text-center">
         <div className="flex items-center justify-center gap-2">
           {operation.type !== OperationType.OUTSOURCE ? (
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <JobOperationReportDialog
-                    row={{ bomItem, operation }}
-                    disabledReason={reportDisabledReason}
-                    trigger={
-                      <Button type="button" aria-label="Nhập báo cáo">
-                        <ClipboardCheck className="size-4" />
-                      </Button>
-                    }
-                  />
-                }
-              />
-              <TooltipContent>
-                {reportDisabledReason ?? "Nhập báo cáo hoàn thành"}
-              </TooltipContent>
-            </Tooltip>
+            <PermissionGate permission="production:update">
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <JobOperationReportDialog
+                      row={{ bomItem, operation }}
+                      disabledReason={reportDisabledReason}
+                      trigger={
+                        <Button type="button" aria-label="Nhập báo cáo">
+                          <ClipboardCheck className="size-4" />
+                        </Button>
+                      }
+                    />
+                  }
+                />
+                <TooltipContent>
+                  {reportDisabledReason ?? "Nhập báo cáo hoàn thành"}
+                </TooltipContent>
+              </Tooltip>
+            </PermissionGate>
           ) : null}
           <OperationSendActionCell
             operation={operation}
