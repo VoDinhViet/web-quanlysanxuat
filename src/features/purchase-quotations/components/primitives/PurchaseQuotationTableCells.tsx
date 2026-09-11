@@ -1,12 +1,14 @@
-import { Eye, Pencil } from "lucide-react"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 
-import { LinkButton } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { DeleteQuotationDialog } from "@/features/purchase-quotations/components/composites/DeleteQuotationDialog"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationRow } from "@/lib/types/purchase-quotation.type"
 
@@ -57,6 +59,32 @@ export function PurchaseQuotationActionsCell({
             <TooltipContent>Sửa báo giá</TooltipContent>
           </Tooltip>
         </RoutePermissionGate>
+      )}
+
+      {row.status === PurchaseQuotationStatus.DRAFT && (
+        <PermissionGate permission="purchasing:delete">
+          <Tooltip>
+            <DeleteQuotationDialog
+              purchaseQuotation={row}
+              trigger={
+                <TooltipTrigger
+                  render={
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      aria-label="Xoá báo giá"
+                      className="bg-background text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  }
+                />
+              }
+            />
+            <TooltipContent>Xoá báo giá</TooltipContent>
+          </Tooltip>
+        </PermissionGate>
       )}
     </div>
   )

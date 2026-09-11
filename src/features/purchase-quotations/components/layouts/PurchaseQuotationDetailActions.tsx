@@ -1,8 +1,10 @@
+import { useNavigate } from "@tanstack/react-router"
 import { SendSquare } from "@solar-icons/react"
-import { Pencil } from "lucide-react"
+import { Pencil, Trash2 } from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
+import { DeleteQuotationDialog } from "@/features/purchase-quotations/components/composites/DeleteQuotationDialog"
 import { RecallQuotationDialog } from "@/features/purchase-quotations/components/composites/RecallQuotationDialog"
 import { SendQuotationDialog } from "@/features/purchase-quotations/components/composites/SendQuotationDialog"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
@@ -18,9 +20,33 @@ type PurchaseQuotationDetailActionsProps = {
 export function PurchaseQuotationDetailActions({
   purchaseQuotation,
 }: PurchaseQuotationDetailActionsProps) {
+  const navigate = useNavigate()
+
   if (purchaseQuotation.status === PurchaseQuotationStatus.DRAFT) {
     return (
       <div className="flex flex-wrap items-center gap-2">
+        <PermissionGate permission="purchasing:delete">
+          <DeleteQuotationDialog
+            purchaseQuotation={purchaseQuotation}
+            onDeleted={() => {
+              void navigate({
+                to: "/manage/purchase-quotations",
+                search: { page: 1, limit: 10 },
+              })
+            }}
+            trigger={
+              <Button
+                type="button"
+                variant="outline"
+                className="border-destructive/40 text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="size-4" />
+                Xoá báo giá
+              </Button>
+            }
+          />
+        </PermissionGate>
+
         <PermissionGate permission="purchasing:update">
           <LinkButton
             to="/manage/purchase-quotations/$purchaseQuotationId/update"
