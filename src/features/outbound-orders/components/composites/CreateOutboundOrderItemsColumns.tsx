@@ -110,7 +110,7 @@ export function buildCreateOutboundOrderItemColumns({
       id: "orderedQuantity",
       header: "SL đặt",
       meta: {
-        headerClassName: "w-24 text-right",
+        headerClassName: "w-20 text-right",
         cellClassName: "text-right tabular-nums text-muted-foreground",
       },
       cell: ({ row }) => {
@@ -120,6 +120,60 @@ export function buildCreateOutboundOrderItemColumns({
         return orderedQuantity === undefined
           ? "—"
           : quantityFormatter.format(orderedQuantity)
+      },
+    }),
+    createOutboundOrderItemColumnHelper.display({
+      id: "issuedQuantity",
+      header: "Đã giao",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ row }) => {
+        const issuedQuantity = lookupUnfulfilledOrderItem(
+          row.original.orderItemId
+        )?.issuedQuantity
+        return issuedQuantity === undefined
+          ? "—"
+          : quantityFormatter.format(issuedQuantity)
+      },
+    }),
+    createOutboundOrderItemColumnHelper.display({
+      id: "remainingQuantity",
+      header: "Còn lại",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ row }) => {
+        const source = lookupUnfulfilledOrderItem(row.original.orderItemId)
+        if (!source) return "—"
+        const remaining = Math.max(
+          0,
+          source.orderedQuantity - source.issuedQuantity
+        )
+        return (
+          <span className="font-semibold text-foreground">
+            {quantityFormatter.format(remaining)}
+          </span>
+        )
+      },
+    }),
+    createOutboundOrderItemColumnHelper.display({
+      id: "availableQuantity",
+      header: "Tồn khả dụng",
+      meta: {
+        headerClassName: "w-24 text-right",
+        cellClassName:
+          "text-right tabular-nums font-medium text-emerald-600 dark:text-emerald-400",
+      },
+      cell: ({ row }) => {
+        const availableQuantity = lookupUnfulfilledOrderItem(
+          row.original.orderItemId
+        )?.availableQuantity
+        return availableQuantity === undefined
+          ? "—"
+          : quantityFormatter.format(availableQuantity)
       },
     }),
     createOutboundOrderItemColumnHelper.display({
@@ -133,8 +187,13 @@ export function buildCreateOutboundOrderItemColumns({
       cell: ({ row }) => {
         const item = row.original
         const source = lookupUnfulfilledOrderItem(item.orderItemId)
-        const exceedsOrdered =
-          source !== undefined && (item.quantity ?? 0) > source.orderedQuantity
+        const remaining = source
+          ? Math.max(0, source.orderedQuantity - source.issuedQuantity)
+          : undefined
+        const exceedsRemaining =
+          remaining !== undefined && (item.quantity ?? 0) > remaining
+        const exceedsAvailable =
+          source !== undefined && (item.quantity ?? 0) > source.availableQuantity
 
         return (
           <div>
@@ -146,11 +205,15 @@ export function buildCreateOutboundOrderItemColumns({
                 itemsField.replaceValue(row.index, { ...item, quantity: value })
               }
             />
-            {exceedsOrdered && (
+            {exceedsRemaining ? (
               <p className="mt-1 text-right text-[10px] text-destructive">
-                Vượt SL đặt ({quantityFormatter.format(source.orderedQuantity)})
+                Vượt SL còn lại ({quantityFormatter.format(remaining)})
               </p>
-            )}
+            ) : exceedsAvailable ? (
+              <p className="mt-1 text-right text-[10px] text-amber-600 dark:text-amber-400">
+                Vượt tồn khả dụng ({quantityFormatter.format(source.availableQuantity)})
+              </p>
+            ) : null}
           </div>
         )
       },

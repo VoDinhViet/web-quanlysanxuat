@@ -104,12 +104,46 @@ export function buildCreateOutboundOrderConfirmColumns(
           : quantityFormatter.format(orderedQuantity)
       },
     }),
+    confirmColumnHelper.display({
+      id: "issuedQuantity",
+      header: "Đã giao",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ row }) => {
+        const issuedQuantity = lookupUnfulfilledOrderItem(
+          row.original.orderItemId
+        )?.issuedQuantity
+        return issuedQuantity === undefined
+          ? "—"
+          : quantityFormatter.format(issuedQuantity)
+      },
+    }),
+    confirmColumnHelper.display({
+      id: "remainingQuantity",
+      header: "Còn lại",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ row }) => {
+        const source = lookupUnfulfilledOrderItem(row.original.orderItemId)
+        if (!source) return "—"
+        const remaining = Math.max(
+          0,
+          source.orderedQuantity - source.issuedQuantity
+        )
+        return quantityFormatter.format(remaining)
+      },
+    }),
     confirmColumnHelper.accessor("quantity", {
       header: "SL giao",
       meta: {
         headerClassName: "w-20 text-right",
-        cellClassName: "text-right tabular-nums",
+        cellClassName: "text-right tabular-nums font-semibold text-foreground",
       },
+      cell: ({ getValue }) => quantityFormatter.format(getValue() ?? 0),
     }),
     confirmColumnHelper.accessor("note", {
       header: "Ghi chú",

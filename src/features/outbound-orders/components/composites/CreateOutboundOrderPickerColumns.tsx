@@ -49,6 +49,11 @@ export function buildCreateOutboundOrderPickerColumns({
       ),
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => {
+        const remainingQuantity = Math.max(
+          0,
+          row.original.orderedQuantity - row.original.issuedQuantity
+        )
+        const isFullyDelivered = remainingQuantity <= 0
         const isOtherClient =
           lockedClientId !== undefined &&
           row.original.client.id !== lockedClientId
@@ -56,7 +61,7 @@ export function buildCreateOutboundOrderPickerColumns({
         return (
           <Checkbox
             checked={pickedIds.has(row.original.orderItemId)}
-            disabled={disabled || isOtherClient}
+            disabled={disabled || isOtherClient || isFullyDelivered}
             onCheckedChange={() => onToggleRow(row.original)}
             aria-label={`Chọn ${row.original.item.name}`}
           />
@@ -128,13 +133,58 @@ export function buildCreateOutboundOrderPickerColumns({
       },
     }),
     unfulfilledOrderItemColumnHelper.accessor("orderedQuantity", {
+      id: "orderedQuantity",
       header: "SL đặt",
-      meta: { headerClassName: "w-24 text-right", cellClassName: "text-right" },
-      cell: ({ getValue }) => (
-        <span className="font-semibold text-foreground tabular-nums">
-          {quantityFormatter.format(getValue())}
-        </span>
-      ),
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    unfulfilledOrderItemColumnHelper.accessor("issuedQuantity", {
+      id: "issuedQuantity",
+      header: "Đã giao",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    unfulfilledOrderItemColumnHelper.display({
+      id: "remainingQuantity",
+      header: "Còn lại",
+      meta: {
+        headerClassName: "w-24 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ row }) => {
+        const remaining = Math.max(
+          0,
+          row.original.orderedQuantity - row.original.issuedQuantity
+        )
+        if (remaining <= 0) {
+          return (
+            <span className="text-xs font-medium text-muted-foreground">
+              Đã đủ
+            </span>
+          )
+        }
+        return (
+          <span className="font-semibold text-foreground">
+            {quantityFormatter.format(remaining)}
+          </span>
+        )
+      },
+    }),
+    unfulfilledOrderItemColumnHelper.accessor("availableQuantity", {
+      id: "availableQuantity",
+      header: "Tồn khả dụng",
+      meta: {
+        headerClassName: "w-24 text-right",
+        cellClassName:
+          "text-right tabular-nums font-medium text-emerald-600 dark:text-emerald-400",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
   ])
 }

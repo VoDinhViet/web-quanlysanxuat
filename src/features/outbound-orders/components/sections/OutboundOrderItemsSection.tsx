@@ -92,9 +92,25 @@ const itemColumns = col.columns([
     header: "Đã giao",
     meta: {
       headerClassName: "w-20 text-right",
-      cellClassName: "text-right tabular-nums",
+      cellClassName: "text-right tabular-nums text-muted-foreground",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
+  }),
+
+  col.display({
+    id: "remainingQuantity",
+    header: "Còn lại",
+    meta: {
+      headerClassName: "w-20 text-right",
+      cellClassName: "text-right tabular-nums font-semibold",
+    },
+    cell: ({ row }) => {
+      const remaining = Math.max(
+        0,
+        row.original.orderedQuantity - row.original.issuedQuantity
+      )
+      return numberFmt.format(remaining)
+    },
   }),
 
   col.display({

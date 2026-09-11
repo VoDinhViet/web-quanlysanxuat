@@ -69,7 +69,7 @@ export const CreateOutboundOrderItemsSection = withForm({
               ② SL giao & thông tin phiếu
             </h2>
             <p className="text-sm text-muted-foreground">
-              SL giao mặc định bằng SL đặt, có thể chỉnh sửa.
+              SL giao mặc định bằng SL còn lại của PO, có thể điều chỉnh để giao làm nhiều đợt.
             </p>
           </div>
           {items.length > 0 && (

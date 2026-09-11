@@ -108,6 +108,48 @@ export function OutboundOrderAddItemsDialog({
         </div>
       ),
     }),
+    col.accessor("orderedQuantity", {
+      header: "SL đặt",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    col.accessor("issuedQuantity", {
+      header: "Đã giao",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    col.display({
+      id: "remainingQuantity",
+      header: "Còn lại",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ row }) => {
+        const remaining = Math.max(
+          0,
+          row.original.orderedQuantity - row.original.issuedQuantity
+        )
+        if (remaining <= 0) {
+          return (
+            <span className="text-xs font-medium text-muted-foreground">
+              Đã đủ
+            </span>
+          )
+        }
+        return (
+          <span className="font-semibold text-foreground">
+            {quantityFormatter.format(remaining)}
+          </span>
+        )
+      },
+    }),
     col.accessor("availableQuantity", {
       header: "Có thể giao",
       meta: { headerClassName: "w-24 text-right", cellClassName: "text-right" },
@@ -125,8 +167,17 @@ export function OutboundOrderAddItemsDialog({
         cellClassName: "text-center",
       },
       cell: ({ row }) => {
+        const remaining = Math.max(
+          0,
+          row.original.orderedQuantity - row.original.issuedQuantity
+        )
+        const isFullyDelivered = remaining <= 0
         const isPicked = alreadyPickedOrderItemIds.has(row.original.orderItemId)
-        const label = isPicked ? "Đã có trong phiếu" : "Thêm dòng này"
+        const label = isFullyDelivered
+          ? "Đã giao đủ định mức PO"
+          : isPicked
+            ? "Đã có trong phiếu"
+            : "Thêm dòng này"
         return (
           <Tooltip>
             <TooltipTrigger
@@ -135,7 +186,7 @@ export function OutboundOrderAddItemsDialog({
                   type="button"
                   variant="outline"
                   size="icon-sm"
-                  disabled={isPicked}
+                  disabled={isPicked || isFullyDelivered}
                   aria-label={label}
                   onClick={() => onAdd(row.original)}
                 >

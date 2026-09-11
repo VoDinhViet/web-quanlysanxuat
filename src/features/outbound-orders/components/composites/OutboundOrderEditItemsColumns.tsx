@@ -127,16 +127,33 @@ export function buildOutboundOrderEditItemColumns({
     editItemColumnHelper.display({
       id: "issuedQuantity",
       header: "Đã giao",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums" },
+      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums text-muted-foreground" },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return display ? quantityFormatter.format(display.issuedQuantity) : "—"
       },
     }),
     editItemColumnHelper.display({
+      id: "remainingQuantity",
+      header: "Còn lại",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums font-semibold",
+      },
+      cell: ({ row }) => {
+        const display = displayByOrderItemId.get(row.original.orderItemId)
+        if (!display) return "—"
+        const remaining = Math.max(
+          0,
+          display.orderedQuantity - display.issuedQuantity
+        )
+        return quantityFormatter.format(remaining)
+      },
+    }),
+    editItemColumnHelper.display({
       id: "onHandQuantity",
       header: "Tồn TP",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums" },
+      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums text-muted-foreground" },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         if (!display) return "—"
@@ -159,7 +176,7 @@ export function buildOutboundOrderEditItemColumns({
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return (
-          <span className="font-semibold text-emerald-600 tabular-nums">
+          <span className="font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
             {display
               ? quantityFormatter.format(display.availableQuantity)
               : "—"}
@@ -177,15 +194,29 @@ export function buildOutboundOrderEditItemColumns({
       meta: { headerClassName: "w-28 text-right" },
       cell: ({ row }) => {
         const item = row.original
+        const display = displayByOrderItemId.get(item.orderItemId)
+        const remaining = display
+          ? Math.max(0, display.orderedQuantity - display.issuedQuantity)
+          : undefined
+        const exceedsRemaining =
+          remaining !== undefined && (item.quantity ?? 0) > remaining
+
         return (
-          <NumericCellInput
-            value={item.quantity}
-            min={1}
-            disabled={disabled}
-            onValueChange={(value) =>
-              itemsField.replaceValue(row.index, { ...item, quantity: value })
-            }
-          />
+          <div>
+            <NumericCellInput
+              value={item.quantity}
+              min={1}
+              disabled={disabled}
+              onValueChange={(value) =>
+                itemsField.replaceValue(row.index, { ...item, quantity: value })
+              }
+            />
+            {exceedsRemaining && (
+              <p className="mt-1 text-right text-[10px] text-destructive">
+                Vượt SL còn lại ({quantityFormatter.format(remaining)})
+              </p>
+            )}
+          </div>
         )
       },
     }),

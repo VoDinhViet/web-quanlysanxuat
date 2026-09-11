@@ -34,11 +34,15 @@ import type { PageSize } from "@/components/shared/composites/Pagination"
 function buildPickedOutboundOrderItem(
   row: UnfulfilledOrderItem
 ): CreateOutboundOrderItemValue {
+  const remainingQuantity = Math.max(
+    0,
+    row.orderedQuantity - row.issuedQuantity
+  )
   return {
     orderItemId: row.orderItemId,
     itemId: row.item.id,
     productionJobId: row.job?.id ?? null,
-    quantity: row.orderedQuantity,
+    quantity: remainingQuantity > 0 ? remainingQuantity : row.orderedQuantity,
     note: "",
   }
 }
@@ -107,12 +111,19 @@ export const CreateOutboundOrderPickerSection = withForm({
       [items, itemsField, clientIdField, lockedClientId]
     )
 
+    const selectableRows = useMemo(
+      () => rows.filter((row) => row.orderedQuantity - row.issuedQuantity > 0),
+      [rows]
+    )
+
     const toggleAll = useCallback(
       (checked: boolean) => {
         const pageIds = new Set(rows.map((row) => row.orderItemId))
 
         if (checked) {
-          const toAdd = rows.filter((row) => !pickedIds.has(row.orderItemId))
+          const toAdd = selectableRows.filter(
+            (row) => !pickedIds.has(row.orderItemId)
+          )
           const distinctClientIds = new Set(toAdd.map((row) => row.client.id))
           const hasMismatch =
             distinctClientIds.size > 1 ||
@@ -143,11 +154,20 @@ export const CreateOutboundOrderPickerSection = withForm({
           }
         }
       },
-      [rows, pickedIds, items, itemsField, clientIdField, lockedClientId]
+      [
+        rows,
+        selectableRows,
+        pickedIds,
+        items,
+        itemsField,
+        clientIdField,
+        lockedClientId,
+      ]
     )
 
     const allChecked =
-      rows.length > 0 && rows.every((row) => pickedIds.has(row.orderItemId))
+      selectableRows.length > 0 &&
+      selectableRows.every((row) => pickedIds.has(row.orderItemId))
 
     const columns = useMemo(
       () =>

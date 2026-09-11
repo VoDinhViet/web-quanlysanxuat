@@ -92,11 +92,12 @@ export const OutboundOrderEditItemsSection = withForm({
     )
 
     function handleAdd(row: UnfulfilledOrderItem) {
+      const remaining = Math.max(0, row.orderedQuantity - row.issuedQuantity)
       itemsField.pushValue({
         orderItemId: row.orderItemId,
         itemId: row.item.id,
         productionJobId: row.job?.id ?? null,
-        quantity: row.orderedQuantity,
+        quantity: remaining > 0 ? remaining : row.orderedQuantity,
         note: "",
       })
       setDisplayByOrderItemId((prev) =>
