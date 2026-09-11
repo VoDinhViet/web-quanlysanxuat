@@ -216,7 +216,12 @@ export type OrderItem = {
   // Server-computed from inventory_transactions.orderItemId — the line's real issued/delivered
   // quantity so far.
   issuedQty: number
-  // Server-computed: quantity - issuedQty. Can go negative if the line was over-issued.
+  // production_order_items.quantity — the LSX-decided quantity (initial snapshot, or edited while
+  // PENDING), null until the order is approved/has an LSX. See docs/decisions/
+  // order-target-quantity-follows-lsx.md (be-quanlysanxuat) — this, not `quantity`, is now the
+  // fulfillment target once it's non-null.
+  productionQuantity: number | null
+  // Server-computed: (productionQuantity ?? quantity) - issuedQty. Can go negative if over-issued.
   remainingQty: number
   unitPrice: number
   discountPercent: number

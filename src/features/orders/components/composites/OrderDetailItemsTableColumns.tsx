@@ -72,13 +72,32 @@ export const orderDetailItemColumns = col.columns([
     header: "ĐVT",
   }),
 
-  col.accessor("quantity", {
+  // Hiện thêm SL đã chốt ở LSX khi khác SL đặt gốc — remainingQty/tự đóng đơn tính theo số LSX, nên
+  // cần lộ ra lý do lệch thay vì chỉ hiện SL đặt gốc như trước
+  // (docs/decisions/order-target-quantity-follows-lsx.md, be-quanlysanxuat).
+  col.display({
+    id: "quantity",
     header: "Số lượng",
     meta: {
       headerClassName: "text-right",
       cellClassName: "text-right tabular-nums",
     },
-    cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    cell: ({ row }) => {
+      const { quantity, productionQuantity } = row.original
+      const adjusted =
+        productionQuantity !== null && productionQuantity !== quantity
+
+      return (
+        <div>
+          {quantityFormatter.format(quantity)}
+          {adjusted && (
+            <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
+              LSX: {quantityFormatter.format(productionQuantity)}
+            </p>
+          )}
+        </div>
+      )
+    },
   }),
 
   col.accessor("unitPrice", {
@@ -98,13 +117,41 @@ export const orderDetailItemColumns = col.columns([
     },
   }),
 
-  col.accessor("lineTotal", {
+  // Chỉ thêm hiển thị — không đổi lineTotal gốc (vẫn là số tiền đã chốt trên đơn với SL đặt gốc).
+  // Ghi chú dưới là thành tiền ước theo SL LSX, tính lại ở FE bằng đúng công thức server dùng
+  // (quantity * unitPrice * (1 - discountPercent/100)) — cùng cách xử lý cột Số lượng ở trên.
+  col.display({
+    id: "lineTotal",
     header: "Thành tiền",
     meta: {
       headerClassName: "text-right",
       cellClassName: "text-right font-medium tabular-nums",
     },
-    cell: ({ getValue }) => currencyFormatter.format(getValue()),
+    cell: ({ row }) => {
+      const {
+        lineTotal,
+        quantity,
+        productionQuantity,
+        unitPrice,
+        discountPercent,
+      } = row.original
+      const adjusted =
+        productionQuantity !== null && productionQuantity !== quantity
+      const productionLineTotal = adjusted
+        ? productionQuantity * unitPrice * (1 - discountPercent / 100)
+        : null
+
+      return (
+        <div>
+          {currencyFormatter.format(lineTotal)}
+          {productionLineTotal !== null && (
+            <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
+              LSX: {currencyFormatter.format(productionLineTotal)}
+            </p>
+          )}
+        </div>
+      )
+    },
   }),
 
   col.accessor("issuedQty", {
