@@ -12,7 +12,6 @@ import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
-import { OperationProgressBar } from "@/features/production-execution/components/primitives/OperationProgressBar"
 import { ProductionExecutionOperationsTable } from "@/features/production-execution/components/sections/ProductionExecutionOperationsTable"
 import { ProductionExecutionOperationsLegend } from "@/features/production-execution/components/sections/ProductionExecutionOperationsLegend"
 import { ProductionExecutionReportHistoryTable } from "@/features/production-execution/components/sections/ProductionExecutionReportHistoryTable"
@@ -41,7 +40,6 @@ export function ProductionExecutionJobPage() {
   })
 
   const [activeTab, setActiveTab] = useState<string>("operations")
-  const [selectedBomItemId, setSelectedBomItemId] = useState<string | null>(null)
 
   const { data: job } = useSuspenseQuery(
     productionJobQueryOptions(productionJobId)
@@ -96,47 +94,6 @@ export function ProductionExecutionJobPage() {
     () => groups.reduce((acc, g) => acc + g.operations.length, 0),
     [groups]
   )
-
-  const partOptions = useMemo(() => {
-    const seen = new Set<string>()
-    const options: { id: string; code: string; name: string }[] = []
-    for (const group of groups) {
-      if (!seen.has(group.id)) {
-        seen.add(group.id)
-        options.push({
-          id: group.id,
-          code: group.code,
-          name: group.name,
-        })
-      }
-    }
-    return options
-  }, [groups])
-
-  // Thống kê KPI: ưu tiên công đoạn đang chọn, hoặc tổng cả Job nếu không có
-  const stats = useMemo(() => {
-    let planned = 0
-    let completed = 0
-    let rejected = 0
-
-    for (const group of groups) {
-      for (const op of group.operations) {
-        if (!operationId || op.operationId === operationId) {
-          planned += op.plannedQuantity
-          completed += op.completedQuantity
-          rejected += op.rejectedQuantity
-        }
-      }
-    }
-
-    const remaining = Math.max(0, planned - completed)
-    const percent =
-      planned > 0
-        ? Math.min(100, Math.round((completed / planned) * 100))
-        : 0
-
-    return { planned, completed, rejected, remaining, percent }
-  }, [groups, operationId])
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -269,80 +226,6 @@ export function ProductionExecutionJobPage() {
             </div>
           </dl>
         </Surface>
-
-        {/* KPI / Operation Summary Cards */}
-        {groups.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            <div className="rounded-lg border border-border/60 bg-card p-3.5 shadow-xs">
-              <span className="text-[11px] font-medium text-muted-foreground">
-                Tổng Kế hoạch
-              </span>
-              <div className="mt-1 flex items-baseline gap-1">
-                <span className="text-xl font-bold tabular-nums text-foreground">
-                  {quantityFormatter.format(stats.planned)}
-                </span>
-                <span className="text-xs text-muted-foreground">pcs</span>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border/60 bg-card p-3.5 shadow-xs">
-              <span className="text-[11px] font-medium text-muted-foreground">
-                Đã hoàn thành
-              </span>
-              <div className="mt-1 flex items-baseline gap-1">
-                <span className="text-xl font-bold tabular-nums text-success">
-                  {quantityFormatter.format(stats.completed)}
-                </span>
-                <span className="text-xs text-muted-foreground">pcs</span>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border/60 bg-card p-3.5 shadow-xs">
-              <span className="text-[11px] font-medium text-muted-foreground">
-                Không đạt (NG)
-              </span>
-              <div className="mt-1 flex items-baseline gap-1">
-                <span
-                  className={cn(
-                    "text-xl font-bold tabular-nums",
-                    stats.rejected > 0
-                      ? "text-destructive"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {quantityFormatter.format(stats.rejected)}
-                </span>
-                <span className="text-xs text-muted-foreground">pcs</span>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border/60 bg-card p-3.5 shadow-xs">
-              <span className="text-[11px] font-medium text-muted-foreground">
-                Còn lại
-              </span>
-              <div className="mt-1 flex items-baseline gap-1">
-                <span className="text-xl font-bold tabular-nums text-foreground">
-                  {quantityFormatter.format(stats.remaining)}
-                </span>
-                <span className="text-xs text-muted-foreground">pcs</span>
-              </div>
-            </div>
-
-            <div className="col-span-2 rounded-lg border border-border/60 bg-card p-3.5 shadow-xs sm:col-span-2 lg:col-span-1">
-              <span className="text-[11px] font-medium text-muted-foreground">
-                Tiến độ {selectedOperation ? "công đoạn" : "toàn Job"}
-              </span>
-              <div className="mt-2">
-                <OperationProgressBar
-                  plannedQuantity={stats.planned}
-                  completedQuantity={stats.completed}
-                  showCount={false}
-                  size="lg"
-                />
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Tabs: Operations & Report History */}
         <Surface>
