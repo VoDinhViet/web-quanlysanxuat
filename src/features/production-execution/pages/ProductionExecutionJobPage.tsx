@@ -40,6 +40,7 @@ export function ProductionExecutionJobPage() {
   })
 
   const [activeTab, setActiveTab] = useState<string>("operations")
+  const [selectedBomItemId, setSelectedBomItemId] = useState<string | null>(null)
 
   const { data: job } = useSuspenseQuery(
     productionJobQueryOptions(productionJobId)
@@ -94,6 +95,22 @@ export function ProductionExecutionJobPage() {
     () => groups.reduce((acc, g) => acc + g.operations.length, 0),
     [groups]
   )
+
+  const partOptions = useMemo(() => {
+    const seen = new Set<string>()
+    const options: { id: string; code: string; name: string }[] = []
+    for (const group of groups) {
+      if (!seen.has(group.id)) {
+        seen.add(group.id)
+        options.push({
+          id: group.id,
+          code: group.code,
+          name: group.name,
+        })
+      }
+    }
+    return options
+  }, [groups])
 
   return (
     <main className="min-h-svh bg-background text-foreground">
