@@ -46,7 +46,7 @@ import {
   SidebarMenuLinkButton,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { currentPermissionsQueryOptions } from "@/features/auth/api/options"
+import { currentPermissionsQueryOptions } from "@/features/auth/api"
 import { canAccessRoute } from "@/lib/route-permissions"
 import type { ManageRoutePath } from "@/lib/route-permissions"
 
@@ -154,7 +154,7 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/production-execution",
       },
       {
-        label: "Lãnh vật tư",
+        label: "Phiếu lãnh vật tư",
         icon: ClipboardMinus,
         href: "/manage/inventory-requisitions",
       },

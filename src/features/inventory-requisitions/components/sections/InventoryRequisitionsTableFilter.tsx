@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { FileOutput, RotateCw, Search } from "lucide-react"
+import { Factory, PackageSearch, RotateCw, Search } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +14,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { inventoryRequisitionStatusLabels } from "@/lib/types/inventory-requisition.type"
+import {
+  InventoryRequisitionType,
+  inventoryRequisitionStatusLabels,
+} from "@/lib/types/inventory-requisition.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
 
@@ -69,10 +72,20 @@ export function InventoryRequisitionsTableFilter() {
           <RoutePermissionGate route="/manage/inventory-requisitions/create">
             <LinkButton
               to="/manage/inventory-requisitions/create"
-              className="text-xs"
+              search={{ type: InventoryRequisitionType.PRODUCTION }}
+              className="gap-1.5 text-xs"
             >
-              <FileOutput className="size-3.5" />
-              Tạo phiếu lãnh
+              <Factory className="size-3.5" />
+              + Lãnh từ LSX
+            </LinkButton>
+            <LinkButton
+              to="/manage/inventory-requisitions/create"
+              search={{ type: InventoryRequisitionType.OTHER }}
+              variant="outline"
+              className="gap-1.5 text-xs"
+            >
+              <PackageSearch className="size-3.5" />
+              + Lãnh khác
             </LinkButton>
           </RoutePermissionGate>
         </div>
@@ -85,13 +98,13 @@ export function InventoryRequisitionsTableFilter() {
               htmlFor="lv-code"
               className="text-[11px] font-medium text-muted-foreground"
             >
-              Mã phiếu lãnh
+              Tìm kiếm
             </Label>
             <div className="relative">
               <Input
                 id="lv-code"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Nhập mã phiếu lãnh..."
+                placeholder="Tìm theo mã phiếu, PO, Job, lý do..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)

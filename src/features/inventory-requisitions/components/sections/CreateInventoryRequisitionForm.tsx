@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { revalidateLogic, useField } from "@tanstack/react-form"
-import { useNavigate } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ArrowLeft, ArrowRight, Loader2, Save } from "lucide-react"
@@ -38,8 +38,17 @@ export function CreateInventoryRequisitionForm() {
   const navigate = useNavigate({
     from: "/manage/inventory-requisitions/create",
   })
+  const search = useSearch({
+    from: "/(authed)/manage_/inventory-requisitions_/create",
+  })
   const queryClient = useQueryClient()
   const createInventoryRequisitionFn = useServerFn(createInventoryRequisition)
+
+  const initialType =
+    search.type ?? createInventoryRequisitionFormDefaultValues.type
+  const initialJobId =
+    search.productionJobId ??
+    createInventoryRequisitionFormDefaultValues.productionJobId
 
   const { mutate: create, isPending } = useMutation({
     mutationFn: (value: CreateInventoryRequisitionSchema) =>
@@ -58,7 +67,11 @@ export function CreateInventoryRequisitionForm() {
   })
 
   const form = useAppForm({
-    defaultValues: createInventoryRequisitionFormDefaultValues,
+    defaultValues: {
+      ...createInventoryRequisitionFormDefaultValues,
+      type: initialType,
+      productionJobId: initialJobId,
+    },
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: createInventoryRequisitionSchema,
@@ -66,8 +79,9 @@ export function CreateInventoryRequisitionForm() {
     onSubmit: ({ value }) => create(value),
   })
 
-  const [step, setStep] =
-    useState<CreateInventoryRequisitionWizardStep>("source")
+  const [step, setStep] = useState<CreateInventoryRequisitionWizardStep>(
+    initialJobId ? "items" : "source"
+  )
 
   const type = useField({ form, name: "type" }).state.value
   const isJobFlow = type === InventoryRequisitionType.PRODUCTION

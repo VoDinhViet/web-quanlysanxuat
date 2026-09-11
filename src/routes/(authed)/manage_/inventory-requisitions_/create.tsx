@@ -1,11 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { z } from "zod"
 
 import { InventoryRequisitionCreatePage } from "@/features/inventory-requisitions/pages/InventoryRequisitionCreatePage"
+import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 
-// No loader: nguồn lãnh (LSX/thủ công) chọn bằng radio ở bước ① của form (không tách route) —
-// Job vẫn là combobox async, không có gì cần prefetch.
+const inventoryRequisitionCreateSearchSchema = z.object({
+  type: z.enum(InventoryRequisitionType).optional().catch(undefined),
+  productionJobId: z.string().optional().catch(undefined),
+})
+
 export const Route = createFileRoute(
   "/(authed)/manage_/inventory-requisitions_/create"
 )({
+  validateSearch: inventoryRequisitionCreateSearchSchema,
   component: InventoryRequisitionCreatePage,
 })

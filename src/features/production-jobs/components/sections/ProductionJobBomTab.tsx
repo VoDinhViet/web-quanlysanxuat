@@ -2,14 +2,17 @@ import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Plus, Search } from "lucide-react"
+import { ClipboardMinus, Plus, Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
+import { LinkButton } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { ProductionJobBomTable } from "@/features/production-jobs/components/composites/ProductionJobBomTable"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
+import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 
 type ProductionJobBomTabProps = {
   productionJobId: string
@@ -53,6 +56,7 @@ export function ProductionJobBomTab({
   return (
     <div className="flex min-w-0 flex-col">
       <ProductionJobBomFilter
+        productionJobId={productionJobId}
         q={search.q}
         onSearchChange={handleSearchChange}
       />
@@ -75,6 +79,7 @@ export function ProductionJobBomTab({
 }
 
 type ProductionJobBomFilterProps = {
+  productionJobId: string
   q: string | undefined
   onSearchChange: (q: string | undefined) => void
 }
@@ -84,6 +89,7 @@ type ProductionJobBomFilterProps = {
 // chưa có route thêm/sửa/xoá độc lập nào (xem docs/domains/production.md, Invariants). Giữ chỗ
 // nút cho tới khi backend mở route, cùng idiom "chưa được xây dựng" các nơi khác trong app.
 function ProductionJobBomFilter({
+  productionJobId,
   q,
   onSearchChange,
 }: ProductionJobBomFilterProps) {
@@ -114,9 +120,25 @@ function ProductionJobBomFilter({
         </div>
       </label>
 
-      <DisabledAction label="Thêm vật tư" hint="chưa được xây dựng">
-        <Plus className="size-3.5" />
-      </DisabledAction>
+      <div className="flex items-center gap-2">
+        <RoutePermissionGate route="/manage/inventory-requisitions/create">
+          <LinkButton
+            to="/manage/inventory-requisitions/create"
+            search={{
+              type: InventoryRequisitionType.PRODUCTION,
+              productionJobId,
+            }}
+            className="gap-1.5 text-xs"
+          >
+            <ClipboardMinus className="size-3.5" />
+            Lãnh vật tư cho Job
+          </LinkButton>
+        </RoutePermissionGate>
+
+        <DisabledAction label="Thêm vật tư" hint="chưa được xây dựng">
+          <Plus className="size-3.5" />
+        </DisabledAction>
+      </div>
     </div>
   )
 }

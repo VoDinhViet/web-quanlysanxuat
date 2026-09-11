@@ -26,12 +26,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { Badge } from "@/components/ui/badge"
 import { productionJobOptionsQueryOptions } from "@/features/production-jobs/api"
 import { createInventoryRequisitionFormDefaultValues } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import { cn } from "@/lib/utils"
-import { ProductionJobStatus } from "@/lib/types/production-job.type"
+import {
+  ProductionJobStatus,
+  productionJobStatusLabels,
+} from "@/lib/types/production-job.type"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 
 type SourceOptionValue =
@@ -78,6 +82,31 @@ function formatDueDate(dueDate: string | null): string {
 // route nữa). Combobox Job chỉ hiện khi chọn "Lãnh từ LSX". Hiệu ứng phụ khi đổi nguồn/Job (reset
 // `items`, tự điền `productionOrderId`) sống ở component cha (idiom appliedJobIdRef của
 // CreateInventoryRequisitionForm.tsx) — section này chỉ vẽ field.
+function JobStatusBadge({ status }: { status: ProductionJobStatus }) {
+  const isPending = status === ProductionJobStatus.PENDING
+  const isInProgress = status === ProductionJobStatus.IN_PROGRESS
+  return (
+    <Badge
+      variant="outline"
+      className={cn(
+        "gap-1 text-xs",
+        isPending && "bg-muted text-muted-foreground",
+        isInProgress &&
+          "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
+      )}
+    >
+      <span
+        className={cn(
+          "size-1.5 rounded-full",
+          isPending && "bg-muted-foreground/50",
+          isInProgress && "bg-blue-500 dark:bg-blue-400"
+        )}
+      />
+      {productionJobStatusLabels[status]}
+    </Badge>
+  )
+}
+
 export const CreateInventoryRequisitionSourceSection = withForm({
   defaultValues: createInventoryRequisitionFormDefaultValues,
   props: { disabled: false },
@@ -92,13 +121,14 @@ export const CreateInventoryRequisitionSourceSection = withForm({
     const [jobQ, setJobQ] = useState("")
     const [debouncedJobQ] = useDebounceValue(jobQ, 300)
     const jobsQuery = useQuery({
-      ...productionJobOptionsQueryOptions(
-        debouncedJobQ,
-        ProductionJobStatus.IN_PROGRESS
-      ),
+      ...productionJobOptionsQueryOptions(debouncedJobQ),
       placeholderData: keepPreviousData,
     })
-    const jobs = jobsQuery.data ?? []
+    const jobs = (jobsQuery.data ?? []).filter(
+      (job) =>
+        job.status === ProductionJobStatus.PENDING ||
+        job.status === ProductionJobStatus.IN_PROGRESS
+    )
 
     return (
       <div className="px-4 py-5 sm:px-5">
@@ -207,6 +237,9 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                             <TableHead id="quantity" className="text-center">
                               SL
                             </TableHead>
+                            <TableHead id="status" className="text-center">
+                              Trạng thái
+                            </TableHead>
                             <TableHead id="dueDate" className="text-center">
                               Hạn giao
                             </TableHead>
@@ -218,9 +251,9 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                         >
                           {jobs.length === 0 ? (
                             <TableRow>
-                              <TableCell colSpan={6}>
+                              <TableCell colSpan={7}>
                                 <TableEmpty
-                                  colSpan={6}
+                                  colSpan={7}
                                   title={
                                     jobsQuery.isPending
                                       ? "Đang tải..."
@@ -251,6 +284,9 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                                 <TableCell>{job.client?.name ?? "—"}</TableCell>
                                 <TableCell className="text-center">
                                   {quantityFormatter.format(job.quantity)}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  <JobStatusBadge status={job.status} />
                                 </TableCell>
                                 <TableCell className="text-center">
                                   {formatDueDate(job.dueDate)}

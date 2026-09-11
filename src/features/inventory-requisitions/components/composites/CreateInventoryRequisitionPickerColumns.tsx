@@ -142,7 +142,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
     inventoryRequisitionPickerColumnHelper.accessor("onHand", {
       header: () => (
         <ColumnHeaderWithHint
-          label="Tồn"
+          label="Tồn thực tế"
           hint="Tồn kho thực tế tại Kho nguyên vật liệu."
         />
       ),

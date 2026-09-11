@@ -37,7 +37,7 @@ const itemColumns = col.columns([
   }),
 
   col.accessor("item.code", {
-    header: "Mã vật tư",
+    header: "Mã VT",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
       <span className="font-mono text-xs font-semibold">{getValue()}</span>
@@ -45,7 +45,7 @@ const itemColumns = col.columns([
   }),
 
   col.accessor("item.name", {
-    header: "Tên vật tư",
+    header: "Tên VT",
     meta: { headerClassName: "min-w-48" },
   }),
 
@@ -55,15 +55,6 @@ const itemColumns = col.columns([
       headerClassName: "w-16",
       cellClassName: "text-muted-foreground",
     },
-  }),
-
-  col.accessor("quantity", {
-    header: "SL lãnh",
-    meta: {
-      headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right tabular-nums font-semibold",
-    },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
 
   col.accessor("bomQuantity", {
@@ -91,9 +82,9 @@ const itemColumns = col.columns([
   }),
 
   col.accessor("onHand", {
-    header: "Tồn",
+    header: "Tồn thực tế",
     meta: {
-      headerClassName: "min-w-20 text-right",
+      headerClassName: "min-w-24 text-right",
       cellClassName: "text-right tabular-nums",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
@@ -112,7 +103,7 @@ const itemColumns = col.columns([
     header: "Có thể lãnh",
     meta: {
       headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums",
+      cellClassName: "text-right tabular-nums font-semibold text-foreground",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
@@ -122,6 +113,22 @@ const itemColumns = col.columns([
     meta: {
       headerClassName: "min-w-24 text-right",
       cellClassName: "text-right tabular-nums text-muted-foreground",
+    },
+    cell: ({ getValue }) => {
+      const value = getValue()
+      return (
+        <span className={value < 0 ? "font-medium text-destructive" : ""}>
+          {numberFmt.format(value)}
+        </span>
+      )
+    },
+  }),
+
+  col.accessor("quantity", {
+    header: "SL lãnh",
+    meta: {
+      headerClassName: "min-w-20 text-right",
+      cellClassName: "text-right tabular-nums font-semibold text-primary",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
