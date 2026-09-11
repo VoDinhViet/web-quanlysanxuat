@@ -1,31 +1,13 @@
-import { useState } from "react"
-import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
-import { CircleCheck, CircleX, Printer } from "lucide-react"
+import { Eye, Printer } from "lucide-react"
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+import { LinkButton } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
-import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { cancelInventoryIssue } from "@/features/inventory-issues/api/server-functions/cancel-inventory-issue.api"
-import { postInventoryIssue } from "@/features/inventory-issues/api/server-functions/post-inventory-issue.api"
-import { InventoryIssueStatus } from "@/lib/types/inventory-issue.type"
+import { RowActions } from "@/components/shared/primitives/RowActions"
 import type {
   InventoryIssue,
   InventoryIssueDepartmentRef,
@@ -69,147 +51,38 @@ export function InventoryIssueSourceCell({
   return <span className="text-xs text-muted-foreground">—</span>
 }
 
-type ConfirmAction = "post" | "cancel" | null
-
 type InventoryIssueActionsCellProps = {
   issue: InventoryIssue
 }
 
-// Ba nút thao tác trực tiếp (không gộp dropdown) — không có thao tác nào là "chính" ở đây,
-// cùng idiom với ClientsTableColumns thay vì InventoryReceiptActionsCell (Eye + Dropdown).
-// Xuất kho/Hủy phiếu dùng chung một AlertDialog, đổi nội dung theo confirmAction đang chọn —
-// cùng idiom với InventoryReceiptDetailActions' ConfirmAction state.
+// Nút Xem chi tiết chuyển đến trang chi tiết phiếu — Xuất kho/Hủy phiếu chuyển hẳn sang đó
+// (InventoryIssueDetailActions), cùng idiom InventoryRequisitionActionsCell.
 export function InventoryIssueActionsCell({
   issue,
 }: InventoryIssueActionsCellProps) {
-  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null)
-  const queryClient = useQueryClient()
-  const postInventoryIssueFn = useServerFn(postInventoryIssue)
-  const cancelInventoryIssueFn = useServerFn(cancelInventoryIssue)
-
-  const postMutation = useMutation({
-    mutationFn: () => postInventoryIssueFn({ data: { issueId: issue.id } }),
-    onSuccess: async () => {
-      setConfirmAction(null)
-      await queryClient.invalidateQueries({ queryKey: ["inventory-issues"] })
-    },
-    onError: (error) => toast.error(error.message),
-  })
-
-  const cancelMutation = useMutation({
-    mutationFn: () => cancelInventoryIssueFn({ data: { issueId: issue.id } }),
-    onSuccess: async () => {
-      setConfirmAction(null)
-      await queryClient.invalidateQueries({ queryKey: ["inventory-issues"] })
-    },
-    onError: (error) => toast.error(error.message),
-  })
-
-  const isDraft = issue.status === InventoryIssueStatus.DRAFT
-  const isCancelled = issue.status === InventoryIssueStatus.CANCELLED
-  const mutation = confirmAction === "post" ? postMutation : cancelMutation
-
   return (
-    <>
-      <div className="flex items-center justify-center gap-1.5">
-        <DisabledAction label="In phiếu">
-          <Printer className="size-3.5" />
-        </DisabledAction>
-
-        {isDraft && (
-          <PermissionGate permission="inventory:update">
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Xuất kho"
-                    className="text-muted-foreground hover:border-success/30 hover:text-success"
-                    onClick={() => setConfirmAction("post")}
-                  >
-                    <CircleCheck className="size-3.5" />
-                  </Button>
-                }
-              />
-              <TooltipContent>Xuất kho</TooltipContent>
-            </Tooltip>
-          </PermissionGate>
-        )}
-
-        {!isCancelled && (
-          <PermissionGate permission="inventory:update">
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label="Hủy phiếu"
-                    className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-                    onClick={() => setConfirmAction("cancel")}
-                  >
-                    <CircleX className="size-3.5" />
-                  </Button>
-                }
-              />
-              <TooltipContent>Hủy phiếu</TooltipContent>
-            </Tooltip>
-          </PermissionGate>
-        )}
-      </div>
-
-      <AlertDialog
-        open={confirmAction !== null}
-        onOpenChange={(next) => {
-          if (!next) {
-            setConfirmAction(null)
-            postMutation.reset()
-            cancelMutation.reset()
-          }
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogMedia>
-              {confirmAction === "post" ? <CircleCheck /> : <CircleX />}
-            </AlertDialogMedia>
-            <AlertDialogTitle>
-              {confirmAction === "post"
-                ? "Xuất kho phiếu này?"
-                : "Hủy phiếu xuất kho này?"}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {confirmAction === "post"
-                ? `Phiếu "${issue.code}" sẽ được xuất kho — tồn kho sẽ bị trừ và phiếu không thể chỉnh sửa sau đó.`
-                : `Phiếu "${issue.code}" sẽ bị hủy. Hành động này không thể hoàn tác.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          {mutation.error ? (
-            <p className="text-sm text-destructive">{mutation.error.message}</p>
-          ) : null}
-
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={mutation.isPending}>
-              Hủy
-            </AlertDialogCancel>
-            <AlertDialogAction
-              variant={confirmAction === "post" ? "default" : "destructive"}
-              disabled={mutation.isPending}
-              onClick={() => mutation.mutate()}
+    <RowActions>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <LinkButton
+              to="/manage/inventory-issues/$issueId"
+              params={{ issueId: issue.id }}
+              variant="outline"
+              size="icon-sm"
+              aria-label="Xem chi tiết"
+              className="bg-background text-muted-foreground"
             >
-              {mutation.isPending
-                ? "Đang xử lý..."
-                : confirmAction === "post"
-                  ? "Xuất kho"
-                  : "Xác nhận"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+              <Eye className="size-3.5" />
+            </LinkButton>
+          }
+        />
+        <TooltipContent>Xem chi tiết</TooltipContent>
+      </Tooltip>
+
+      <DisabledAction label="In phiếu">
+        <Printer className="size-3.5" />
+      </DisabledAction>
+    </RowActions>
   )
 }

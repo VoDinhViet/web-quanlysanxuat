@@ -15,6 +15,7 @@ const getRequisitionLinesSchema = z.object({
   page: z.number(),
   limit: z.number(),
   q: optional(z.string().trim()),
+  hasRemainingBom: z.boolean().optional(),
 })
 
 function resolveGetRequisitionLinesErrorMessage(error: unknown): string {

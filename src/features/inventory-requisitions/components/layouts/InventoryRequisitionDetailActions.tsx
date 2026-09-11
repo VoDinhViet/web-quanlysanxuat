@@ -1,11 +1,15 @@
-import { CircleCheck, CircleX, PackageCheck, Printer, Send } from "lucide-react"
+import {
+  CircleCheck,
+  CircleX,
+  PackageSearch,
+  Printer,
+  Send,
+} from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { ApproveRequisitionDialog } from "@/features/inventory-requisitions/components/composites/ApproveRequisitionDialog"
-import { CancelRequisitionDialog } from "@/features/inventory-requisitions/components/composites/CancelRequisitionDialog"
-import { IssueRequisitionDialog } from "@/features/inventory-requisitions/components/composites/IssueRequisitionDialog"
 import { RejectRequisitionDialog } from "@/features/inventory-requisitions/components/composites/RejectRequisitionDialog"
 import { SendRequisitionDialog } from "@/features/inventory-requisitions/components/composites/SendRequisitionDialog"
 import { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
@@ -15,28 +19,22 @@ type InventoryRequisitionDetailActionsProps = {
   detail: InventoryRequisitionDetail
 }
 
-// Nút thao tác theo trạng thái, đúng lifecycle backend: DRAFT/REJECTED → Gửi duyệt,
-// PENDING_APPROVAL → Từ chối/Duyệt, APPROVED → Xuất kho — mỗi nút bọc PermissionGate theo đúng
-// permission route đòi (update cho send/cancel, approve cho approve/reject, issue cho issue).
-// Huỷ phiếu hiện ở mọi trạng thái trừ ISSUED/CANCELLED (điểm cuối, không còn hành động nào).
-// Không giữ mutation state ở đây — mỗi dialog con tự quản lý mutation của mình, component này chỉ
-// quyết định nút nào hiện, cùng khuôn PurchaseRequestApprovalActions.tsx.
+// Thao tác chuẩn theo luồng phê duyệt (tương tự PurchaseRequestApprovalActions):
+// - DRAFT / REJECTED: Gửi duyệt
+// - PENDING_APPROVAL: Từ chối / Duyệt (người duyệt)
+// - APPROVED: Xem phiếu xuất kho (nếu đã có PXK tự sinh)
+// - In phiếu
 export function InventoryRequisitionDetailActions({
   detail,
 }: InventoryRequisitionDetailActionsProps) {
-  const isDraftOrRejected =
-    detail.status === InventoryRequisitionStatus.DRAFT ||
-    detail.status === InventoryRequisitionStatus.REJECTED
+  const isDraft = detail.status === InventoryRequisitionStatus.DRAFT
   const isPendingApproval =
     detail.status === InventoryRequisitionStatus.PENDING_APPROVAL
   const isApproved = detail.status === InventoryRequisitionStatus.APPROVED
-  const canCancel =
-    detail.status !== InventoryRequisitionStatus.ISSUED &&
-    detail.status !== InventoryRequisitionStatus.CANCELLED
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
-      {isDraftOrRejected && (
+      {isDraft && (
         <PermissionGate permission="inventory-requisitions:update">
           <SendRequisitionDialog
             detail={detail}
@@ -77,36 +75,16 @@ export function InventoryRequisitionDetailActions({
         </PermissionGate>
       )}
 
-      {isApproved && (
-        <PermissionGate permission="inventory-requisitions:issue">
-          <IssueRequisitionDialog
-            detail={detail}
-            trigger={
-              <Button type="button">
-                <PackageCheck className="size-4" />
-                Xuất kho
-              </Button>
-            }
-          />
-        </PermissionGate>
-      )}
-
-      {canCancel && (
-        <PermissionGate permission="inventory-requisitions:update">
-          <CancelRequisitionDialog
-            detail={detail}
-            trigger={
-              <Button
-                type="button"
-                variant="outline"
-                className="border-destructive/40 text-destructive"
-              >
-                <CircleX className="size-4" />
-                Huỷ phiếu
-              </Button>
-            }
-          />
-        </PermissionGate>
+      {isApproved && detail.inventoryIssue && (
+        <LinkButton
+          type="button"
+          variant="outline"
+          to="/manage/inventory-issues/$issueId"
+          params={{ issueId: detail.inventoryIssue.id }}
+        >
+          <PackageSearch className="size-4" />
+          Xem phiếu xuất kho
+        </LinkButton>
       )}
 
       <PendingAction label="In" hint="chưa hỗ trợ in phiếu">

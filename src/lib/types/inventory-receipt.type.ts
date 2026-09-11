@@ -79,16 +79,17 @@ export const inventoryReceiptItemTypeLabels: Record<
   FG: "Thành phẩm",
 }
 
-// Loại vật phẩm hợp lệ cho combobox chọn dòng — PURCHASE luôn là nguyên vật liệu mua về (RM);
-// RETURN/PRODUCTION luôn là thành phẩm (khách trả hàng đã mua / hàng ra từ Job sản xuất), không
-// receiptType nào trộn cả hai loại trên cùng 1 phiếu. Dùng bởi
+// Loại vật phẩm hợp lệ cho combobox chọn dòng — PURCHASE là nguyên vật liệu mua về (RM); RETURN là
+// vật tư DO khách hàng cung cấp cho gia công (RM, không phải khách trả lại hàng đã mua — xem
+// InventoryReceiptCreateReturnHeaderSection.tsx); chỉ PRODUCTION là thành phẩm (hàng ra từ Job sản
+// xuất). Không receiptType nào trộn cả hai loại trên cùng 1 phiếu. Dùng bởi
 // InventoryReceiptCreateGenericItemsSection.tsx/InventoryReceiptUpdateGenericItemsSection.tsx để
 // truyền đúng `type` xuống GET /items/options — không dùng `ItemType` (chỉ FG/WIP, item.type.ts)
 // vì RM không nằm trong union đó.
 export function resolveInventoryReceiptItemType(
   receiptType: InventoryReceiptType
 ): InventoryReceiptItemType {
-  return receiptType === InventoryReceiptType.PURCHASE ? "RM" : "FG"
+  return receiptType === InventoryReceiptType.PRODUCTION ? "FG" : "RM"
 }
 
 // Nhãn phân loại tài sản — chọn tay độc lập, không tách inventory_balances theo chủ sở hữu, xem

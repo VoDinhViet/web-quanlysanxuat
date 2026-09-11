@@ -11,30 +11,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildCreateInventoryRequisitionItemColumns } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionItemsColumns"
-import {
-  createInventoryRequisitionFormDefaultValues,
-  resolveDefaultRequisitionQuantity,
-} from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
+import { buildInventoryReceiptReturnItemColumns } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateReturnItemsColumns"
+import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
 import { withForm } from "@/hooks/use-app-form"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-// Bảng nhập SL lãnh + ghi chú cho các dòng đã chọn ở bước ②, cùng khuôn
-// InventoryReceiptCreateFromPoItemsSection.tsx. useField, không phải form.Field's render-prop —
-// useReactTable/useMemo bên dưới là hook thật.
-export const CreateInventoryRequisitionItemsSection = withForm({
-  defaultValues: createInventoryRequisitionFormDefaultValues,
+// Bước ③ — nhập SL nhận thực tế + đơn giá (tuỳ chọn) + ghi chú cho các dòng đã chọn ở bước ②
+// (InventoryReceiptCreateReturnPickerSection.tsx), cùng khuôn CreateInventoryRequisitionItemsSection.tsx.
+export const InventoryReceiptCreateReturnItemsSection = withForm({
+  defaultValues: createInventoryReceiptReturnFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
     const columns = useMemo(
-      () =>
-        buildCreateInventoryRequisitionItemColumns({ itemsField, disabled }),
+      () => buildInventoryReceiptReturnItemColumns({ itemsField, disabled }),
       [itemsField, disabled]
     )
 
@@ -49,19 +43,19 @@ export const CreateInventoryRequisitionItemsSection = withForm({
       0
     )
 
-    const handleFillAllIssuable = () => {
-      itemsField.setValue(
-        items.map((item) => ({
-          ...item,
-          quantity: resolveDefaultRequisitionQuantity(item.line) ?? item.quantity,
-        }))
-      )
-    }
-
     return (
-      <div className="border-t border-border px-4 py-5 sm:px-5">
+      <div className="px-4 py-5 sm:px-5">
+        <div>
+          <h2 className="font-heading text-base font-semibold text-foreground">
+            ③ Nhập số lượng
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Nhập số lượng nhận thực tế cho từng vật tư đã chọn.
+          </p>
+        </div>
+
         <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
-          <Table aria-label="Danh sách vật tư lãnh">
+          <Table aria-label="Danh sách vật tư nhận">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
               <TableRow>
                 {table.getFlatHeaders().map((header) => (
@@ -114,23 +108,9 @@ export const CreateInventoryRequisitionItemsSection = withForm({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-          <div className="flex items-center gap-3">
-            <span>Tổng số dòng: {items.length}</span>
-            {items.length > 0 && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-6 px-2 text-xs text-primary hover:text-primary/80"
-                disabled={disabled}
-                onClick={handleFillAllIssuable}
-              >
-                Điền tất cả theo SL có thể lãnh
-              </Button>
-            )}
-          </div>
+          <span>Tổng số dòng: {items.length}</span>
           <span>
-            Tổng SL lãnh:{" "}
+            Tổng số lượng:{" "}
             <span className="font-semibold text-foreground tabular-nums">
               {quantityFormatter.format(totalQuantity)}
             </span>

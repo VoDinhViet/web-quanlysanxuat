@@ -40,6 +40,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/clients/$clientId/update": "clients:update",
 
   "/manage/inventory-issues": "inventory:read",
+  "/manage/inventory-issues/$issueId": "inventory:read",
 
   "/manage/inventory-materials": "inventory:read",
   "/manage/inventory-products": "inventory:read",

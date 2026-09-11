@@ -5,15 +5,12 @@ import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { withForm } from "@/hooks/use-app-form"
 import { useGetClientOptions } from "@/features/clients/api"
 import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
-import { inventoryReceiptAssetTypeLabels } from "@/lib/types/inventory-receipt.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
-
-const assetTypeOptions = buildOptionsFromLabels(inventoryReceiptAssetTypeLabels)
 
 // Bước ① của wizard "Khách hàng" — tính năng nhận vật tư DO khách hàng cung cấp (không phải
 // khách hàng trả lại hàng đã mua). Chỉ 1 loại phiếu cố định RETURN, không có field "Loại phiếu",
 // khác InventoryReceiptCreateHeaderSection.tsx ở combobox "Khách hàng cung cấp" thay cho các
-// combobox NCC/PO/Job.
+// combobox NCC/PO/Job. Cùng lý do, `assetType` cũng khoá cứng CLIENT (không hiện field chọn) —
+// lane này chỉ có đúng 1 tình huống hợp lệ, để chọn tay dễ nhầm sang COMPANY.
 export const InventoryReceiptCreateReturnHeaderSection = withForm({
   defaultValues: createInventoryReceiptReturnFormDefaultValues,
   props: { disabled: false },
@@ -61,17 +58,6 @@ export const InventoryReceiptCreateReturnHeaderSection = withForm({
               />
             )}
           </form.Field>
-
-          <form.AppField name="assetType">
-            {(field) => (
-              <field.RadioPillField
-                label="Loại tài sản"
-                required
-                disabled={disabled}
-                options={assetTypeOptions}
-              />
-            )}
-          </form.AppField>
 
           <form.AppField name="note">
             {(field) => (

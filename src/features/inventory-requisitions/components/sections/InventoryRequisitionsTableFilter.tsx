@@ -63,34 +63,7 @@ export function InventoryRequisitionsTableFilter() {
   }
 
   return (
-    <div className="flex flex-col gap-5 bg-card px-4 py-4 lg:px-5">
-      <div className="border-b border-border/60 pb-4">
-        <p className="mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-          Tạo phiếu lãnh
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <RoutePermissionGate route="/manage/inventory-requisitions/create">
-            <LinkButton
-              to="/manage/inventory-requisitions/create"
-              search={{ type: InventoryRequisitionType.PRODUCTION }}
-              className="gap-1.5 text-xs"
-            >
-              <Factory className="size-3.5" />
-              + Lãnh từ LSX
-            </LinkButton>
-            <LinkButton
-              to="/manage/inventory-requisitions/create"
-              search={{ type: InventoryRequisitionType.OTHER }}
-              variant="outline"
-              className="gap-1.5 text-xs"
-            >
-              <PackageSearch className="size-3.5" />
-              + Lãnh khác
-            </LinkButton>
-          </RoutePermissionGate>
-        </div>
-      </div>
-
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
         <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)]">
           <div className="space-y-1.5">
@@ -151,8 +124,28 @@ export function InventoryRequisitionsTableFilter() {
             onClick={resetFilters}
           >
             <RotateCw className="size-4" />
-            Xóa bộ lọc
+            Làm mới
           </Button>
+
+          <RoutePermissionGate route="/manage/inventory-requisitions/create">
+            <LinkButton
+              to="/manage/inventory-requisitions/create"
+              search={{ type: InventoryRequisitionType.PRODUCTION }}
+              className="gap-1.5 text-xs"
+            >
+              <Factory className="size-3.5" />
+              + Lãnh từ LSX
+            </LinkButton>
+            <LinkButton
+              to="/manage/inventory-requisitions/create"
+              search={{ type: InventoryRequisitionType.OTHER }}
+              variant="outline"
+              className="gap-1.5 text-xs"
+            >
+              <PackageSearch className="size-3.5" />
+              + Lãnh khác
+            </LinkButton>
+          </RoutePermissionGate>
         </div>
       </div>
     </div>

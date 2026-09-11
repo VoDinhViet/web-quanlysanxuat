@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
@@ -23,13 +24,17 @@ export const inventoryIssuesColumns = col.columns([
     cell: ({ row }) => row.index + 1,
   }),
 
-  // No detail route exists yet — plain text, not a Link (unlike inventoryReceiptsColumns'
-  // `code` cell, which links to `/manage/inventory-receipts/$inventoryReceiptId`).
   col.accessor("code", {
     header: "Mã phiếu xuất",
     meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold">{getValue()}</span>
+    cell: ({ getValue, row }) => (
+      <Link
+        to="/manage/inventory-issues/$issueId"
+        params={{ issueId: row.original.id }}
+        className="font-mono text-xs font-semibold text-primary hover:underline"
+      >
+        {getValue()}
+      </Link>
     ),
   }),
 

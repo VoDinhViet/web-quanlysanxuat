@@ -1,8 +1,11 @@
 // Lifecycle (be-quanlysanxuat/docs/workflows/inventory-requisition.md):
-// DRAFT --send--> PENDING_APPROVAL --approve--> APPROVED --issue--> ISSUED (điểm cuối)
+// DRAFT --send--> PENDING_APPROVAL --approve--> APPROVED --(kho post PXK)--> ISSUED (điểm cuối)
 //                        |
 //                        +--reject--> REJECTED --send--> PENDING_APPROVAL
-// Mọi trạng thái trừ ISSUED/CANCELLED đều huỷ được (cancel).
+// approve tự sinh 1 phiếu xuất kho (Nháp, module inventory-issues) — không còn hành động "issue"
+// riêng ở đây; APPROVED chỉ còn đổi trạng thái theo đúng phiếu xuất kho đó: kho post → ISSUED,
+// kho cancel PXK → CANCELLED. Mọi trạng thái trừ ISSUED/CANCELLED đều huỷ được (cancel) — huỷ từ
+// APPROVED hủy kèm luôn phiếu xuất kho (Nháp) đi cùng.
 export const InventoryRequisitionStatus = {
   DRAFT: "DRAFT",
   PENDING_APPROVAL: "PENDING_APPROVAL",
@@ -34,7 +37,8 @@ export const inventoryRequisitionStatusDescriptions: Record<
   [InventoryRequisitionStatus.DRAFT]: "Phiếu đang soạn, chưa gửi duyệt.",
   [InventoryRequisitionStatus.PENDING_APPROVAL]:
     "Phiếu chờ người có thẩm quyền duyệt.",
-  [InventoryRequisitionStatus.APPROVED]: "Phiếu đã được duyệt, chờ kho xuất.",
+  [InventoryRequisitionStatus.APPROVED]:
+    "Phiếu đã được duyệt, đã tự sinh phiếu xuất kho — chờ kho xác nhận xuất.",
   [InventoryRequisitionStatus.ISSUED]: "Phiếu đã xuất kho, tồn kho đã trừ.",
   [InventoryRequisitionStatus.REJECTED]:
     "Phiếu bị từ chối, có thể sửa và gửi lại.",
@@ -148,11 +152,15 @@ export type InventoryRequisitionLine = {
   issuableQuantity: number
   availableQuantity: number
   suggestedQuantity: number | null
+  remainingBom: number | null
+  isFullyIssued: boolean
 }
 
-/** Mirrors the backend's `InventoryIssueRefResDto` — the phiếu xuất kho auto-generated when a
- *  requisition is issued. No detail route exists for `inventory-issues` yet, so this is only
- *  ever shown as plain text, never linked. */
+/** Mirrors the backend's `InventoryIssueRefResDto` — the phiếu xuất kho auto-generated the
+ *  moment a requisition is approved (`DRAFT`, kho `post` sau đó mới trừ tồn). Shown as plain
+ *  text on `InventoryRequisitionInfoCard`; `InventoryRequisitionDetailActions` also links out to
+ *  `/manage/inventory-issues` filtered by this `code` — no detail route for `inventory-issues`
+ *  on the frontend yet, so that's a list filter, not a direct link. */
 export type InventoryRequisitionIssueRef = {
   id: string
   code: string

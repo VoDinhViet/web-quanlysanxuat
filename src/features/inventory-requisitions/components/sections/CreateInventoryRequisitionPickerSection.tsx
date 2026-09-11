@@ -20,7 +20,10 @@ import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildCreateInventoryRequisitionPickerColumns } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
 import { requisitionLinesQueryOptions } from "@/features/inventory-requisitions/api/options"
-import { createInventoryRequisitionFormDefaultValues } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
+import {
+  createInventoryRequisitionFormDefaultValues,
+  resolveDefaultRequisitionQuantity,
+} from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import { cn } from "@/lib/utils"
@@ -28,14 +31,13 @@ import type { InventoryRequisitionItemFormValue } from "@/features/inventory-req
 import type { InventoryRequisitionLine } from "@/lib/types/inventory-requisition.type"
 import type { PageSize } from "@/components/shared/composites/Pagination"
 
-// Gợi ý SL = suggestedQuantity của backend; 0 (BOM đã lãnh đủ, hoặc line không có Job) để trống,
-// bắt người dùng tự nhập thay vì submit sẵn một dòng SL=0.
+// Tự động điền SL lãnh mặc định = SL có thể lãnh tối đa (tôn trọng BOM còn lại và tồn kho có thể lãnh)
 function buildPickedRequisitionItem(
   line: InventoryRequisitionLine
 ): InventoryRequisitionItemFormValue {
   return {
     itemId: line.item.id,
-    quantity: line.suggestedQuantity || undefined,
+    quantity: resolveDefaultRequisitionQuantity(line),
     note: "",
     line: {
       itemCode: line.item.code,
@@ -106,14 +108,23 @@ export const CreateInventoryRequisitionPickerSection = withForm({
 
     const toggleRow = useCallback(
       (line: InventoryRequisitionLine) => {
-        const index = items.findIndex((item) => item.itemId === line.item.id)
-        if (index >= 0) {
-          itemsField.removeValue(index)
+        if (line.isFullyIssued || line.issuableQuantity <= 0) {
+          return
+        }
+        const currentItems = itemsField.state.value
+        const exists = currentItems.some((item) => item.itemId === line.item.id)
+        if (exists) {
+          itemsField.setValue(
+            currentItems.filter((item) => item.itemId !== line.item.id)
+          )
         } else {
-          itemsField.pushValue(buildPickedRequisitionItem(line))
+          itemsField.setValue([
+            ...currentItems.filter((item) => item.itemId !== line.item.id),
+            buildPickedRequisitionItem(line),
+          ])
         }
       },
-      [items, itemsField]
+      [itemsField]
     )
 
     const rows = useMemo(() => linesQuery.data?.data ?? [], [linesQuery.data])
@@ -122,27 +133,33 @@ export const CreateInventoryRequisitionPickerSection = withForm({
       () => new Set(items.map((item) => item.itemId)),
       [items]
     )
+    const pickableRows = useMemo(
+      () =>
+        rows.filter((row) => !row.isFullyIssued && row.issuableQuantity > 0),
+      [rows]
+    )
     const allChecked =
-      rows.length > 0 && rows.every((row) => pickedIds.has(row.item.id))
+      pickableRows.length > 0 &&
+      pickableRows.every((row) => pickedIds.has(row.item.id))
 
-    // Một `setValue` duy nhất thay vì loop pushValue/removeValue theo từng dòng — cùng lý do
-    // PurchaseRequestCreateMaterialPickerColumns.tsx's toggleAll đã ghi chú (mỗi mutation mảng là
-    // một lượt validate riêng; loop removeValue còn lệch index giữa chừng).
+    // Một `setValue` duy nhất thay vì loop pushValue/removeValue theo từng dòng — lọc kỹ trùng ID
     const toggleAll = useCallback(
       (checked: boolean) => {
-        const pageIds = new Set(rows.map((row) => row.item.id))
-        itemsField.setValue(
-          checked
-            ? [
-                ...items,
-                ...rows
-                  .filter((row) => !pickedIds.has(row.item.id))
-                  .map(buildPickedRequisitionItem),
-              ]
-            : items.filter((item) => !pageIds.has(item.itemId))
-        )
+        const pageIds = new Set(pickableRows.map((row) => row.item.id))
+        const currentItems = itemsField.state.value
+        if (!checked) {
+          itemsField.setValue(
+            currentItems.filter((item) => !pageIds.has(item.itemId))
+          )
+          return
+        }
+        const currentItemIds = new Set(currentItems.map((item) => item.itemId))
+        const newItems = pickableRows
+          .filter((row) => !currentItemIds.has(row.item.id))
+          .map(buildPickedRequisitionItem)
+        itemsField.setValue([...currentItems, ...newItems])
       },
-      [rows, pickedIds, items, itemsField]
+      [pickableRows, itemsField]
     )
 
     const columns = useMemo(
@@ -151,10 +168,11 @@ export const CreateInventoryRequisitionPickerSection = withForm({
           pickedIds,
           disabled,
           allChecked,
+          hasPickableRows: pickableRows.length > 0,
           onToggleRow: toggleRow,
           onToggleAll: toggleAll,
         }),
-      [pickedIds, disabled, allChecked, toggleRow, toggleAll]
+      [pickedIds, disabled, allChecked, pickableRows.length, toggleRow, toggleAll]
     )
 
     const table = useTable({
@@ -176,9 +194,20 @@ export const CreateInventoryRequisitionPickerSection = withForm({
                 : "Mọi vật tư nguyên liệu (RM) tại Kho nguyên vật liệu."}
             </p>
           </div>
-          <span className="text-xs font-medium text-primary">
-            Đã chọn {items.length} vật tư
-          </span>
+          <div className="flex items-center gap-3 text-xs">
+            {isJobFlow && rows.length > 0 && (
+              <span className="text-muted-foreground">
+                Đã đủ BOM:{" "}
+                <span className="font-medium text-foreground">
+                  {rows.filter((r) => r.isFullyIssued).length}/{rows.length}
+                </span>{" "}
+                vật tư
+              </span>
+            )}
+            <span className="font-medium text-primary">
+              Đã chọn {items.length} vật tư
+            </span>
+          </div>
         </div>
 
         <div className="mt-4 max-w-sm space-y-1.5">
@@ -237,27 +266,42 @@ export const CreateInventoryRequisitionPickerSection = withForm({
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.original.item.id}
-                    className={cn(
-                      "h-14 cursor-pointer bg-card hover:bg-muted/25",
-                      pickedIds.has(row.original.item.id) && "bg-primary/5"
-                    )}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cell.column.columnDef.meta?.cellClassName}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+                table.getRowModel().rows.map((row) => {
+                  const isPicked = pickedIds.has(row.original.item.id)
+                  const isUnpickable =
+                    row.original.isFullyIssued ||
+                    row.original.issuableQuantity <= 0
+
+                  return (
+                    <TableRow
+                      key={row.original.item.id}
+                      className={cn(
+                        "h-14 bg-card",
+                        isUnpickable
+                          ? "cursor-not-allowed bg-muted/10 opacity-60"
+                          : "cursor-pointer hover:bg-muted/25",
+                        isPicked && "bg-primary/5"
+                      )}
+                      onClick={() => {
+                        if (!disabled && !isUnpickable) {
+                          toggleRow(row.original)
+                        }
+                      }}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.cellClassName}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                })
               )}
             </TableBody>
           </Table>

@@ -24,9 +24,10 @@ type ApproveRequisitionDialogProps = {
   trigger: ReactElement
 }
 
-// PENDING_APPROVAL → APPROVED — chốt giữ hàng (Đã giữ), chưa đụng tồn kho. Backend re-check
-// "Có thể lãnh"/SL BOM còn lại ngay tại bước này (E231/E232) vì tồn/BOM có thể đã đổi từ lúc
-// lập phiếu tới lúc duyệt — dialog không tự tính trước, chỉ hiện lỗi backend trả về.
+// PENDING_APPROVAL → APPROVED — chốt giữ hàng (Đã giữ), chưa đụng tồn kho, và tự sinh 1 phiếu
+// xuất kho (Nháp) để kho xác nhận/hủy sau đó (POST /inventory-issues/:id/post|cancel). Backend
+// re-check "Có thể lãnh"/SL BOM còn lại ngay tại bước này (E231/E232) vì tồn/BOM có thể đã đổi
+// từ lúc lập phiếu tới lúc duyệt — dialog không tự tính trước, chỉ hiện lỗi backend trả về.
 export function ApproveRequisitionDialog({
   detail,
   trigger,
@@ -62,7 +63,7 @@ export function ApproveRequisitionDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Duyệt phiếu lãnh vật tư này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Phiếu ${detail.code} sẽ chuyển sang "Đã duyệt" và giữ số lượng vật tư đã lãnh — chưa trừ tồn kho, chờ kho xuất.`}
+            {`Phiếu ${detail.code} sẽ chuyển sang "Đã duyệt" và giữ số lượng vật tư đã lãnh — chưa trừ tồn kho. Hệ thống sẽ tự sinh một phiếu xuất kho (Nháp) để kho xác nhận xuất.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

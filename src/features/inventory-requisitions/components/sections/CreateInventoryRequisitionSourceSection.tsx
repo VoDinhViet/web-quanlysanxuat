@@ -1,14 +1,9 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import {
-  CheckCircle2,
-  Factory,
-  Info,
-  PackageSearch,
-  Search,
-} from "lucide-react"
-import { DateTime } from "luxon"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
+import { Factory, Info, PackageSearch, Search } from "lucide-react"
 import { Radio } from "@base-ui/react/radio"
 import { useDebounceValue } from "usehooks-ts"
 import type { ComponentType } from "react"
@@ -26,17 +21,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { Badge } from "@/components/ui/badge"
+import { buildCreateInventoryRequisitionJobPickerColumns } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionJobPickerColumns"
 import { productionJobOptionsQueryOptions } from "@/features/production-jobs/api"
 import { createInventoryRequisitionFormDefaultValues } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import { cn } from "@/lib/utils"
-import {
-  ProductionJobStatus,
-  productionJobStatusLabels,
-} from "@/lib/types/production-job.type"
-import type { ProductionJob } from "@/lib/types/production-job.type"
+import { ProductionJobStatus } from "@/lib/types/production-job.type"
 
 type SourceOptionValue =
   | typeof InventoryRequisitionType.PRODUCTION
@@ -70,42 +61,10 @@ const sourceOptions: SourceOption[] = [
   },
 ]
 
-const quantityFormatter = new Intl.NumberFormat("vi-VN")
-
-function formatDueDate(dueDate: string | null): string {
-  return dueDate === null
-    ? "—"
-    : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
-}
-
-// Bước ① — chọn nguồn lãnh bằng thẻ radio lớn (LSX/thủ công dùng chung 1 route/form, không tách
-// route nữa). Combobox Job chỉ hiện khi chọn "Lãnh từ LSX". Hiệu ứng phụ khi đổi nguồn/Job (reset
-// `items`, tự điền `productionOrderId`) sống ở component cha (idiom appliedJobIdRef của
-// CreateInventoryRequisitionForm.tsx) — section này chỉ vẽ field.
-function JobStatusBadge({ status }: { status: ProductionJobStatus }) {
-  const isPending = status === ProductionJobStatus.PENDING
-  const isInProgress = status === ProductionJobStatus.IN_PROGRESS
-  return (
-    <Badge
-      variant="outline"
-      className={cn(
-        "gap-1 text-xs",
-        isPending && "bg-muted text-muted-foreground",
-        isInProgress &&
-          "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
-      )}
-    >
-      <span
-        className={cn(
-          "size-1.5 rounded-full",
-          isPending && "bg-muted-foreground/50",
-          isInProgress && "bg-blue-500 dark:bg-blue-400"
-        )}
-      />
-      {productionJobStatusLabels[status]}
-    </Badge>
-  )
-}
+const ACTIVE_JOB_STATUSES = [
+  ProductionJobStatus.PENDING,
+  ProductionJobStatus.IN_PROGRESS,
+]
 
 export const CreateInventoryRequisitionSourceSection = withForm({
   defaultValues: createInventoryRequisitionFormDefaultValues,
@@ -114,21 +73,29 @@ export const CreateInventoryRequisitionSourceSection = withForm({
     const type = useField({ form, name: "type" }).state.value
     const isJobFlow = type === InventoryRequisitionType.PRODUCTION
 
-    // Chọn Job bằng bảng thay vì combobox: cùng 1 endpoint dropdown vốn có
-    // (getProductionJobOptions — lọc IN_PROGRESS, cap 100, có `q` — một Job đã QC xong không còn gì
-    // để xuất vật tư sản xuất nữa), nhưng nó vẫn trả nguyên `ProductionJob` (không chỉ id/code) nên
-    // đủ cột để render một bảng chọn thật, dễ nhận diện Job hơn một dropdown chỉ có mã.
+    // Chọn Job bằng React Table đồng bộ với toàn hệ thống: backend lọc PENDING/IN_PROGRESS trực tiếp qua statuses.
     const [jobQ, setJobQ] = useState("")
     const [debouncedJobQ] = useDebounceValue(jobQ, 300)
     const jobsQuery = useQuery({
-      ...productionJobOptionsQueryOptions(debouncedJobQ),
+      ...productionJobOptionsQueryOptions(
+        debouncedJobQ,
+        undefined,
+        ACTIVE_JOB_STATUSES
+      ),
       placeholderData: keepPreviousData,
     })
-    const jobs = (jobsQuery.data ?? []).filter(
-      (job) =>
-        job.status === ProductionJobStatus.PENDING ||
-        job.status === ProductionJobStatus.IN_PROGRESS
+    const jobs = useMemo(() => jobsQuery.data ?? [], [jobsQuery.data])
+
+    const columns = useMemo(
+      () => buildCreateInventoryRequisitionJobPickerColumns({ disabled }),
+      [disabled]
     )
+
+    const table = useTable({
+      data: jobs,
+      columns,
+      features: appTableFeatures,
+    })
 
     return (
       <div className="px-4 py-5 sm:px-5">
@@ -186,7 +153,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                       </span>
                       <span
                         className={cn(
-                          "relative mt-0.5 flex aspect-square size-4 shrink-0 items-center justify-center rounded-full border border-input",
+                          "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border border-input transition-colors",
                           isChecked && "border-primary bg-primary"
                         )}
                       >
@@ -227,33 +194,40 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                       <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     </div>
 
-                    <div className="max-h-64 overflow-x-auto overflow-y-auto rounded-md border border-dashed border-border/50 bg-card">
+                    <RadioGroup
+                      value={field.state.value}
+                      onValueChange={(value) =>
+                        !disabled && field.handleChange(value)
+                      }
+                      className="mt-2 block max-h-72 gap-0 overflow-auto rounded-md border border-dashed border-border/50 bg-card"
+                    >
                       <Table aria-label="Danh sách Job">
-                        <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
+                        <TableHeader className="sticky top-0 z-10 bg-card [&>tr]:h-12 [&>tr]:hover:bg-muted/45">
                           <TableRow>
-                            <TableHead id="code">Mã Job</TableHead>
-                            <TableHead id="orderCode">Mã LSX</TableHead>
-                            <TableHead id="client">Khách hàng</TableHead>
-                            <TableHead id="quantity" className="text-center">
-                              SL
-                            </TableHead>
-                            <TableHead id="status" className="text-center">
-                              Trạng thái
-                            </TableHead>
-                            <TableHead id="dueDate" className="text-center">
-                              Hạn giao
-                            </TableHead>
-                            <TableHead id="selected" className="w-9" />
+                            {table.getFlatHeaders().map((header) => (
+                              <TableHead
+                                key={header.id}
+                                className={
+                                  header.column.columnDef.meta?.headerClassName
+                                }
+                              >
+                                {!header.isPlaceholder &&
+                                  flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                              </TableHead>
+                            ))}
                           </TableRow>
                         </TableHeader>
                         <TableBody
                           className={cn(jobsQuery.isFetching && "opacity-50")}
                         >
-                          {jobs.length === 0 ? (
+                          {table.getRowModel().rows.length === 0 ? (
                             <TableRow>
-                              <TableCell colSpan={7}>
+                              <TableCell colSpan={columns.length}>
                                 <TableEmpty
-                                  colSpan={7}
+                                  colSpan={columns.length}
                                   title={
                                     jobsQuery.isPending
                                       ? "Đang tải..."
@@ -263,45 +237,43 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                               </TableCell>
                             </TableRow>
                           ) : (
-                            jobs.map((job: ProductionJob) => (
-                              <TableRow
-                                key={job.id}
-                                id={job.id}
-                                className={cn(
-                                  "h-12 cursor-pointer bg-card hover:bg-muted/25",
-                                  field.state.value === job.id && "bg-primary/5"
-                                )}
-                                onClick={() =>
-                                  !disabled && field.handleChange(job.id)
-                                }
-                              >
-                                <TableCell className="font-mono font-semibold text-primary">
-                                  {job.code}
-                                </TableCell>
-                                <TableCell className="font-mono text-muted-foreground">
-                                  {job.orderCode}
-                                </TableCell>
-                                <TableCell>{job.client?.name ?? "—"}</TableCell>
-                                <TableCell className="text-center">
-                                  {quantityFormatter.format(job.quantity)}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                  <JobStatusBadge status={job.status} />
-                                </TableCell>
-                                <TableCell className="text-center">
-                                  {formatDueDate(job.dueDate)}
-                                </TableCell>
-                                <TableCell>
-                                  {field.state.value === job.id && (
-                                    <CheckCircle2 className="size-4 text-primary" />
+                            table.getRowModel().rows.map((row) => {
+                              const isSelected =
+                                field.state.value === row.original.id
+
+                              return (
+                                <TableRow
+                                  key={row.original.id}
+                                  className={cn(
+                                    "h-12 cursor-pointer bg-card hover:bg-muted/25",
+                                    isSelected && "bg-primary/5"
                                   )}
-                                </TableCell>
-                              </TableRow>
-                            ))
+                                  onClick={() =>
+                                    !disabled &&
+                                    field.handleChange(row.original.id)
+                                  }
+                                >
+                                  {row.getVisibleCells().map((cell) => (
+                                    <TableCell
+                                      key={cell.id}
+                                      className={
+                                        cell.column.columnDef.meta
+                                          ?.cellClassName
+                                      }
+                                    >
+                                      {flexRender(
+                                        cell.column.columnDef.cell,
+                                        cell.getContext()
+                                      )}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              )
+                            })
                           )}
                         </TableBody>
                       </Table>
-                    </div>
+                    </RadioGroup>
 
                     <FieldError errors={field.state.meta.errors} />
                   </Field>

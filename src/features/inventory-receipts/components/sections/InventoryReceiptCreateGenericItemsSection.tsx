@@ -25,10 +25,10 @@ import { resolveInventoryReceiptItemType } from "@/lib/types/inventory-receipt.t
 import { vndFormatter } from "@/lib/currency"
 
 // Chế độ chọn vật tư/thành phẩm chung — mặc định khi phiếu chưa gắn `purchaseOrderId`. Loại vật
-// phẩm (`itemType`) suy từ `receiptType` đang chọn qua `resolveInventoryReceiptItemType` — không
-// hardcode "RM": PURCHASE tìm vật tư, RETURN/PRODUCTION tìm thành phẩm. Không có cột ĐVT:
-// itemOptionsQueryOptions (qua useGetInventoryReceiptItemOptions) chỉ trả {id,code,name}, không
-// có unit.
+// phẩm (`itemType`) suy từ `receiptType` đang chọn qua `resolveInventoryReceiptItemType`:
+// PURCHASE/RETURN tìm vật tư (RETURN = khách hàng cung cấp vật tư gia công), PRODUCTION tìm
+// thành phẩm. Không có cột ĐVT: itemOptionsQueryOptions (qua useGetInventoryReceiptItemOptions)
+// chỉ trả {id,code,name}, không có unit.
 export const InventoryReceiptCreateGenericItemsSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },

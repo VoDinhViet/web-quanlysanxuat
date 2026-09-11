@@ -1,11 +1,12 @@
+import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionBadges"
-import { InventoryRequisitionSourceCell } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionTableCells"
 import { InventoryRequisitionDetailActions } from "@/features/inventory-requisitions/components/layouts/InventoryRequisitionDetailActions"
+import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisition.type"
 
 type InventoryRequisitionDetailHeaderProps = {
@@ -15,9 +16,11 @@ type InventoryRequisitionDetailHeaderProps = {
 export function InventoryRequisitionDetailHeader({
   detail,
 }: InventoryRequisitionDetailHeaderProps) {
+  const isProductionType = detail.type === InventoryRequisitionType.PRODUCTION
+
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5">
-      <div className="flex min-w-0 flex-col gap-4">
+      <div className="flex min-w-0 flex-1 flex-col gap-4">
         {/* Back + Code + Badge */}
         <div className="flex flex-wrap items-center gap-3">
           <LinkButton
@@ -39,34 +42,78 @@ export function InventoryRequisitionDetailHeader({
 
         {/* 3-column MetaFields Grid */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-3">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <MetaField
-              label="PO / Lý do"
-              value={
-                <InventoryRequisitionSourceCell
-                  productionOrder={detail.productionOrder}
-                  reason={detail.reason}
-                />
-              }
+              label="Loại lãnh"
+              value={isProductionType ? "Lãnh theo LSX" : "Lãnh khác"}
             />
-            <MetaField label="Bộ phận" value={detail.department?.name ?? "—"} />
+            {detail.productionOrder ? (
+              <>
+                <MetaField
+                  label="Đơn hàng (PO)"
+                  value={
+                    <Link
+                      to="/manage/orders/$orderId"
+                      params={{ orderId: detail.productionOrder.order.id }}
+                      className="font-mono font-semibold text-primary hover:underline"
+                    >
+                      {detail.productionOrder.order.code}
+                    </Link>
+                  }
+                />
+                {detail.productionOrder.code && (
+                  <MetaField
+                    label="Mã LSX"
+                    value={
+                      <Link
+                        to="/manage/production-orders/$productionOrderId"
+                        params={{
+                          productionOrderId: detail.productionOrder.id,
+                        }}
+                        className="font-mono font-semibold text-primary hover:underline"
+                      >
+                        {detail.productionOrder.code}
+                      </Link>
+                    }
+                  />
+                )}
+              </>
+            ) : null}
+            {detail.reason && (
+              <MetaField label="Lý do lãnh" value={detail.reason} />
+            )}
           </div>
 
-          <div className="flex flex-col gap-4">
-            <MetaField label="Job" value={detail.productionJob?.code ?? "—"} />
+          <div className="flex flex-col gap-3">
+            {detail.productionJob ? (
+              <MetaField
+                label="Job sản xuất"
+                value={
+                  <Link
+                    to="/manage/production-jobs/$productionJobId"
+                    params={{ productionJobId: detail.productionJob.id }}
+                    search={{ tab: "info" }}
+                    className="font-mono font-semibold text-primary hover:underline"
+                  >
+                    {detail.productionJob.code}
+                  </Link>
+                }
+              />
+            ) : null}
+            <MetaField label="Bộ phận" value={detail.department?.name ?? "—"} />
             <MetaField
               label="Ngày lãnh"
               value={DateTime.fromISO(detail.requisitionDate).toFormat(
                 "dd/MM/yyyy HH:mm"
               )}
             />
+          </div>
+
+          <div className="flex flex-col gap-3">
             <MetaField
               label="Người tạo"
               value={detail.creatorBy?.fullName ?? "—"}
             />
-          </div>
-
-          <div className="flex flex-col gap-4">
             <MetaField
               label="Ghi chú"
               value={detail.note ?? "Không có ghi chú"}

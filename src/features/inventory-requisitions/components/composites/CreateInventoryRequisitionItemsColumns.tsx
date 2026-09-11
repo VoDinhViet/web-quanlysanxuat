@@ -13,8 +13,10 @@ import { NumericCellInput } from "@/components/shared/primitives/NumericCellInpu
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import {
   ColumnHeaderWithHint,
-  formatNullableQuantity,
 } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
+import {
+  resolveDefaultRequisitionQuantity,
+} from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import type { InventoryRequisitionItemFormValue } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -77,15 +79,32 @@ export function buildCreateInventoryRequisitionItemColumns({
       header: () => (
         <ColumnHeaderWithHint
           label="Có thể lãnh"
-          hint="Tồn thực tế trừ Đã giữ — SL lãnh tối đa được phép nhập ở dòng này."
+          hint="Tồn thực tế trừ Đã giữ — SL lãnh tối đa được phép nhập ở dòng này. Bấm vào số để tự điền."
         />
       ),
       meta: {
         headerClassName: "w-24 text-right",
         cellClassName: "text-right tabular-nums text-muted-foreground",
       },
-      cell: ({ row }) =>
-        quantityFormatter.format(row.original.line.issuableQuantity),
+      cell: ({ row }) => {
+        const issuable = row.original.line.issuableQuantity
+        const defaultQty = resolveDefaultRequisitionQuantity(row.original.line)
+        return (
+          <button
+            type="button"
+            className="cursor-pointer hover:text-primary hover:underline"
+            title="Bấm để tự điền SL có thể lãnh vào ô SL lãnh"
+            disabled={disabled || !defaultQty}
+            onClick={() => {
+              if (disabled || !defaultQty) return
+              const item = row.original
+              itemsField.replaceValue(row.index, { ...item, quantity: defaultQty })
+            }}
+          >
+            {quantityFormatter.format(issuable)}
+          </button>
+        )
+      },
     }),
     createInventoryRequisitionItemColumnHelper.display({
       id: "bomRemaining",
@@ -102,7 +121,7 @@ export function buildCreateInventoryRequisitionItemColumns({
       cell: ({ row }) => {
         const { bomQuantity, issuedQuantity } = row.original.line
         if (bomQuantity === null) return "—"
-        return formatNullableQuantity(
+        return quantityFormatter.format(
           Math.max(0, bomQuantity - (issuedQuantity ?? 0))
         )
       },

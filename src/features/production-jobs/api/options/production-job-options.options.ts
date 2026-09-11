@@ -8,10 +8,12 @@ import type { ProductionJobStatus } from "@/lib/types/production-job.type"
 // part of the key — two pickers with different status filters must not share a cache entry.
 export const productionJobOptionsQueryOptions = (
   q: string,
-  status?: ProductionJobStatus
+  status?: ProductionJobStatus,
+  statuses?: ProductionJobStatus[]
 ) =>
   queryOptions({
-    queryKey: ["production-jobs", "options", q, status],
-    queryFn: () => getProductionJobOptions({ data: { q, status } }),
+    queryKey: ["production-jobs", "options", q, status, statuses],
+    queryFn: () => getProductionJobOptions({ data: { q, status, statuses } }),
     staleTime: 5 * 60_000,
   })
+

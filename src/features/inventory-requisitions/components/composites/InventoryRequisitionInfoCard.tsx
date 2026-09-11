@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { History } from "lucide-react"
 import { DateTime } from "luxon"
 import type { ReactNode } from "react"
@@ -65,7 +66,13 @@ export function InventoryRequisitionInfoCard({
           <InfoRow
             label="Phiếu xuất kho"
             value={
-              <span className="font-mono">{detail.inventoryIssue.code}</span>
+              <Link
+                to="/manage/inventory-issues/$issueId"
+                params={{ issueId: detail.inventoryIssue.id }}
+                className="font-mono font-semibold text-primary hover:underline"
+              >
+                {detail.inventoryIssue.code}
+              </Link>
             }
           />
         )}

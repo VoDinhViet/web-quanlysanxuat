@@ -141,7 +141,7 @@ export const InventoryReceiptUpdateHeaderSection = withForm({
               {(field) => (
                 <ComboboxField
                   id={field.name}
-                  label="Khách hàng gửi trả"
+                  label="Khách hàng cung cấp"
                   placeholder="Chọn khách hàng"
                   value={field.state.value || undefined}
                   onValueChange={(next) => field.handleChange(next ?? "")}

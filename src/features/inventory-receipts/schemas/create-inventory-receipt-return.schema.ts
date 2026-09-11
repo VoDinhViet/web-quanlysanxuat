@@ -10,7 +10,8 @@ import {
 
 // Validator cho làn "Khách hàng" (?lane=return trên route create-receipt,
 // InventoryReceiptCreateReturnForm.tsx) — dùng lại nguyên createInventoryReceiptSchema, chỉ
-// refine thêm bắt buộc `clientId` (khách hàng trả lại thành phẩm đã mua). `note` để tuỳ chọn — đã
+// refine thêm bắt buộc `clientId` (khách hàng cung cấp vật tư gia công, không phải khách trả lại
+// hàng đã mua — xem InventoryReceiptCreateReturnHeaderSection.tsx). `note` để tuỳ chọn — đã
 // có combobox khách hàng xác định nguồn rõ ràng, không cần ép nhập lý do như làn "Khác". `refine` (không
 // `.extend()`) giữ nguyên z.input y hệt CreateInventoryReceiptSchema — cần thiết để
 // InventoryReceiptCreateGenericItemsSection (withForm khoá cứng theo type đó) tái dùng được

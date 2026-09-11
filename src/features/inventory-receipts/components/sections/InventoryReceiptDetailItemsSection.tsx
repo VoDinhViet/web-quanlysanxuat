@@ -31,7 +31,7 @@ const col = createColumnHelper<
 >()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-// itemNoun: "vật tư" (PURCHASE) hay "thành phẩm" (PRODUCTION/RETURN) — theo
+// itemNoun: "vật tư" (PURCHASE/RETURN) hay "thành phẩm" (PRODUCTION) — theo
 // resolveInventoryReceiptItemType(receiptType), cùng khuôn InventoryReceiptCreateGenericItemsSection.tsx.
 function buildInventoryReceiptDetailItemColumns({
   itemNoun,
@@ -107,7 +107,8 @@ function buildInventoryReceiptDetailItemColumns({
               }
             />
             <TooltipContent>
-              Đã xuất trả lại NCC do kiểm tra IQC không đạt ({numberFmt.format(returned)} {row.original.unit.name})
+              Đã xuất trả lại NCC do kiểm tra IQC không đạt (
+              {numberFmt.format(returned)} {row.original.unit.name})
             </TooltipContent>
           </Tooltip>
         )

@@ -33,7 +33,7 @@ function PreviewField({ label, value }: PreviewFieldProps) {
   )
 }
 
-// Bước ③ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận. Có 1 field suy từ fetch
+// Bước ④ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận. Có 1 field suy từ fetch
 // riêng (`clientQueryOptions`, lấy tên khách hàng để hiển thị — form state chỉ giữ `clientId`),
 // cùng cách InventoryReceiptCreateFromPoConfirmSection.tsx fetch supplierQueryOptions.
 export const InventoryReceiptCreateReturnConfirmSection = withForm({
@@ -55,7 +55,7 @@ export const InventoryReceiptCreateReturnConfirmSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div>
           <h2 className="font-heading text-base font-semibold text-foreground">
-            ③ Lưu nháp hoặc xác nhận
+            ④ Lưu nháp hoặc xác nhận
           </h2>
           <p className="text-sm text-muted-foreground">
             Kiểm tra lại thông tin phiếu trước khi lưu.

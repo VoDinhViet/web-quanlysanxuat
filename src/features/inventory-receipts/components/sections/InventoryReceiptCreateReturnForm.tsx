@@ -10,9 +10,10 @@ import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { InventoryReceiptCreateGenericItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateGenericItemsSection"
 import { InventoryReceiptCreateReturnConfirmSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnConfirmSection"
 import { InventoryReceiptCreateReturnHeaderSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnHeaderSection"
+import { InventoryReceiptCreateReturnItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnItemsSection"
+import { InventoryReceiptCreateReturnPickerSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptCreateReturnPickerSection"
 import { InventoryReceiptCreateReturnHelpPanel } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateReturnHelpPanel"
 import {
   InventoryReceiptCreateReturnStepsTabs,
@@ -32,9 +33,10 @@ import type { CreateInventoryReceiptSchema } from "@/features/inventory-receipts
 
 type SubmitAction = "draft" | "confirm" | "post"
 
-// Vỏ wizard "Khách hàng" — 3 bước. Khác `InventoryReceiptCreateFromPoForm.tsx` ở header section
-// (combobox khách hàng thay "Nguồn nhập"/"PO / Lý do") và schema (bắt buộc clientId, note
-// tuỳ chọn — "clientId" đóng vai trò mở khoá bước ② thay "note" của làn "Khác").
+// Vỏ wizard "Khách hàng" — 4 bước: Thông tin chung → Chọn vật tư (checkbox picker, lọc theo
+// clientId đã chọn) → Nhập số lượng → Xác nhận. Khác `InventoryReceiptCreateFromPoForm.tsx` ở
+// header section (combobox khách hàng thay "Nguồn nhập"/"PO / Lý do") và schema (bắt buộc
+// clientId — mở khoá bước ② thay "note" của làn "Khác").
 //
 // 3 hành động cuối form đều đi qua createInventoryReceipt trước (backend luôn tạo DRAFT), rồi tuỳ
 // nút bấm gọi tiếp confirm/post — actionRef giữ hành động vừa bấm, cùng khuôn
@@ -155,7 +157,8 @@ export function InventoryReceiptCreateReturnForm() {
           >
             {({ hasInfo, hasItems }) => (
               <InventoryReceiptCreateReturnStepsTabs
-                canGoToItems={hasInfo}
+                canGoToPicker={hasInfo}
+                canGoToItems={hasInfo && hasItems}
                 canGoToConfirm={hasInfo && hasItems}
               />
             )}
@@ -167,8 +170,14 @@ export function InventoryReceiptCreateReturnForm() {
               disabled={isPending}
             />
           </TabsContent>
+          <TabsContent value="picker" className="m-0 outline-none">
+            <InventoryReceiptCreateReturnPickerSection
+              form={form}
+              disabled={isPending}
+            />
+          </TabsContent>
           <TabsContent value="items" className="m-0 outline-none">
-            <InventoryReceiptCreateGenericItemsSection
+            <InventoryReceiptCreateReturnItemsSection
               form={form}
               disabled={isPending}
             />

@@ -93,8 +93,7 @@ export type InventoryIssueItem = {
 }
 
 /** Mirrors the backend's `PageInventoryIssueResDto` (`GET /inventory-issues`) — the list
- *  row shape. No `InventoryIssueDetail` type yet — the detail route doesn't exist in the
- *  frontend this pass. */
+ *  row shape. */
 export type InventoryIssue = {
   id: string
   code: string
@@ -113,3 +112,9 @@ export type InventoryIssue = {
   createdAt: string
   updatedAt: string
 }
+
+/** Mirrors the backend's `InventoryIssueResDto` (`GET /inventory-issues/:id`) — field-for-field
+ *  identical to `InventoryIssue` (unlike receipts, an issue line carries no PO-derived extra
+ *  data, so list and detail never diverged enough to need separate shapes). Aliased anyway so
+ *  detail-page call sites read as detail types, not list types. */
+export type InventoryIssueDetail = InventoryIssue

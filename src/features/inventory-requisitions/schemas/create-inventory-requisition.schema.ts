@@ -104,3 +104,38 @@ export const createInventoryRequisitionFormDefaultValues: CreateInventoryRequisi
     note: "",
     items: [],
   }
+
+export type RequisitionLineLike = {
+  bomQuantity: number | null
+  issuedQuantity: number | null
+  issuableQuantity: number
+  suggestedQuantity?: number | null
+}
+
+/**
+ * Tính SL lãnh mặc định cho dòng vật tư khi chọn vào phiếu:
+ * - Nếu thuộc Job (có bomQuantity): không vượt quá SL BOM còn lại (BOM - đã lãnh) và không vượt tồn kho có thể lãnh.
+ * - Nếu lãnh thủ công / khác: bằng SL có thể lãnh trong kho (issuableQuantity).
+ */
+export function resolveDefaultRequisitionQuantity(
+  line: RequisitionLineLike
+): number | undefined {
+  const bomRemaining =
+    line.bomQuantity !== null
+      ? Math.max(0, line.bomQuantity - (line.issuedQuantity ?? 0))
+      : null
+
+  const maxIssuable =
+    bomRemaining !== null
+      ? Math.min(bomRemaining, line.issuableQuantity)
+      : line.issuableQuantity
+
+  const candidate =
+    line.suggestedQuantity !== undefined &&
+    line.suggestedQuantity !== null &&
+    line.suggestedQuantity > 0
+      ? line.suggestedQuantity
+      : maxIssuable
+
+  return candidate > 0 ? candidate : undefined
+}

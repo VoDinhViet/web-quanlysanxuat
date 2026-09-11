@@ -6,7 +6,11 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import type { WizardStepNavItem } from "@/lib/wizard-steps"
 
-export type InventoryReceiptReturnWizardStep = "info" | "items" | "confirm"
+export type InventoryReceiptReturnWizardStep =
+  | "info"
+  | "picker"
+  | "items"
+  | "confirm"
 
 type StepItem = WizardStepNavItem<InventoryReceiptReturnWizardStep> & {
   label: string
@@ -18,24 +22,32 @@ export const stepItems: StepItem[] = [
     value: "info",
     label: "1. Thông tin chung",
     icon: Documents,
-    nextLabel: "Tiếp theo: Vật tư",
+    nextLabel: "Tiếp theo: Chọn vật tư",
+  },
+  {
+    value: "picker",
+    label: "2. Chọn vật tư",
+    icon: Checklist,
+    prevLabel: "Quay lại thông tin chung",
+    nextLabel: "Tiếp theo: Nhập số lượng",
   },
   {
     value: "items",
-    label: "2. Vật tư",
+    label: "3. Nhập số lượng",
     icon: Checklist,
-    prevLabel: "Quay lại thông tin chung",
+    prevLabel: "Quay lại chọn vật tư",
     nextLabel: "Tiếp theo: Xác nhận",
   },
   {
     value: "confirm",
-    label: "3. Lưu nháp / Xác nhận",
+    label: "4. Lưu nháp / Xác nhận",
     icon: CheckCircle,
-    prevLabel: "Quay lại vật tư",
+    prevLabel: "Quay lại nhập số lượng",
   },
 ]
 
 type InventoryReceiptCreateReturnStepsTabsProps = {
+  canGoToPicker: boolean
   canGoToItems: boolean
   canGoToConfirm: boolean
 }
@@ -43,11 +55,13 @@ type InventoryReceiptCreateReturnStepsTabsProps = {
 // Chỉ vẽ dải trigger — Tabs root (selectedKey/onSelectionChange) + TabsContent panel sống ở
 // InventoryReceiptCreateReturnForm.tsx. Bước ① luôn mở được để quay lại đổi khách hàng.
 export function InventoryReceiptCreateReturnStepsTabs({
+  canGoToPicker,
   canGoToItems,
   canGoToConfirm,
 }: InventoryReceiptCreateReturnStepsTabsProps) {
   const disabledByStep: Record<InventoryReceiptReturnWizardStep, boolean> = {
     info: false,
+    picker: !canGoToPicker,
     items: !canGoToItems,
     confirm: !canGoToConfirm,
   }

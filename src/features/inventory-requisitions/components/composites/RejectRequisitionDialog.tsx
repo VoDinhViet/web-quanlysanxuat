@@ -96,8 +96,8 @@ function RejectRequisitionForm({
           Từ chối phiếu lãnh vật tư {detail.code}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Phiếu sẽ chuyển sang trạng thái "Từ chối" — có thể gửi duyệt lại sau
-          khi sửa.
+          Phiếu sẽ bị hủy và đóng lại. Người yêu cầu sẽ cần tạo phiếu mới nếu
+          muốn lãnh vật tư.
         </DialogDescription>
       </DialogHeader>
 

@@ -7,6 +7,7 @@ type RequisitionLinesParams = {
   page: number
   limit: number
   q?: string
+  hasRemainingBom?: boolean
 }
 
 // Popup chọn vật tư (bước ② của cả 2 luồng tạo phiếu) — nằm dưới root key

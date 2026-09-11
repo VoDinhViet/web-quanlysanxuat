@@ -14,15 +14,21 @@ const helpSteps: HelpStep[] = [
     ],
   },
   {
-    title: "2. Thêm vật tư",
+    title: "2. Chọn vật tư",
     tips: [
-      "Bấm “+ Thêm vật tư” để chọn vật tư khách hàng cung cấp.",
-      "Chỉ chọn vật tư đã có trong danh mục vật tư.",
-      "Nhập số lượng thực tế nhận được.",
+      "Tích chọn vật tư khách hàng cung cấp từ danh mục sẵn có.",
+      "Có thể tìm theo mã hoặc tên vật tư, chọn cả trang bằng ô tích ở đầu bảng.",
     ],
   },
   {
-    title: "3. Lưu nháp hoặc xác nhận",
+    title: "3. Nhập số lượng",
+    tips: [
+      "Nhập số lượng thực tế nhận được cho từng vật tư đã chọn.",
+      "Có thể bỏ bớt vật tư khỏi danh sách ở bước này.",
+    ],
+  },
+  {
+    title: "4. Lưu nháp hoặc xác nhận",
     tips: [
       "Lưu nháp: phiếu ở trạng thái Draft.",
       "Xác nhận (Chờ IQC): chuyển sang bước kiểm tra chất lượng.",

@@ -9,14 +9,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import type { InventoryRequisitionLine } from "@/lib/types/inventory-requisition.type"
+import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-
-// Dùng chung với CreateInventoryRequisitionItemsColumns.tsx (bước ③) — cùng hiện "—" cho
-// bomQuantity/issuedQuantity/suggestedQuantity khi null (không có Job).
-export function formatNullableQuantity(value: number | null): string {
-  return value === null ? "—" : quantityFormatter.format(value)
-}
 
 // "6 số"/SL gợi ý là công thức riêng của domain (docs/domains/inventory.md, mục "Phiếu lãnh vật
 // tư") — không tự giải thích được từ mỗi tên cột viết tắt, nên mỗi cột số ở đây (và ở
@@ -53,6 +48,7 @@ type BuildCreateInventoryRequisitionPickerColumnsArgs = {
   pickedIds: Set<string>
   disabled: boolean
   allChecked: boolean
+  hasPickableRows?: boolean
   onToggleRow: (row: InventoryRequisitionLine) => void
   onToggleAll: (checked: boolean) => void
 }
@@ -65,6 +61,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
   pickedIds,
   disabled,
   allChecked,
+  hasPickableRows = true,
   onToggleRow,
   onToggleAll,
 }: BuildCreateInventoryRequisitionPickerColumnsArgs) {
@@ -72,37 +69,68 @@ export function buildCreateInventoryRequisitionPickerColumns({
     inventoryRequisitionPickerColumnHelper.display({
       id: "select",
       header: () => (
-        <Checkbox
-          checked={allChecked}
-          disabled={disabled}
-          onCheckedChange={onToggleAll}
-          aria-label="Chọn tất cả trang này"
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={allChecked}
+            disabled={disabled || !hasPickableRows}
+            onCheckedChange={onToggleAll}
+            aria-label="Chọn tất cả trang này"
+          />
+        </div>
       ),
       meta: { headerClassName: "w-10" },
-      cell: ({ row }) => (
-        <Checkbox
-          checked={pickedIds.has(row.original.item.id)}
-          disabled={disabled}
-          onCheckedChange={() => onToggleRow(row.original)}
-          aria-label={`Chọn ${row.original.item.name}`}
-        />
-      ),
+      cell: ({ row }) => {
+        const isUnpickable =
+          row.original.isFullyIssued || row.original.issuableQuantity <= 0
+        return (
+          <div onClick={(e) => e.stopPropagation()}>
+            <Checkbox
+              checked={pickedIds.has(row.original.item.id)}
+              disabled={disabled || isUnpickable}
+              onCheckedChange={() => onToggleRow(row.original)}
+              aria-label={`Chọn ${row.original.item.name}`}
+            />
+          </div>
+        )
+      },
     }),
     inventoryRequisitionPickerColumnHelper.display({
       id: "material",
       header: "Vật tư",
       meta: { headerClassName: "min-w-56" },
-      cell: ({ row }) => (
-        <div>
-          <p className="text-xs font-semibold text-foreground">
-            {row.original.item.name}
-          </p>
-          <p className="font-mono text-[11px] text-muted-foreground">
-            {row.original.item.code}
-          </p>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const isFullyIssued = row.original.isFullyIssued
+        const isOutOfStock = row.original.issuableQuantity <= 0
+        const isUnpickable = isFullyIssued || isOutOfStock
+
+        return (
+          <div>
+            <div className="flex items-center gap-1.5">
+              <p
+                className={cn(
+                  "text-xs font-semibold",
+                  isUnpickable ? "text-muted-foreground" : "text-foreground"
+                )}
+              >
+                {row.original.item.name}
+              </p>
+              {isFullyIssued && (
+                <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                  Đã lãnh đủ
+                </span>
+              )}
+              {!isFullyIssued && isOutOfStock && (
+                <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-destructive">
+                  Hết tồn kho
+                </span>
+              )}
+            </div>
+            <p className="font-mono text-[11px] text-muted-foreground">
+              {row.original.item.code}
+            </p>
+          </div>
+        )
+      },
     }),
     inventoryRequisitionPickerColumnHelper.accessor(
       (row) => row.item.unit.name,
@@ -124,7 +152,10 @@ export function buildCreateInventoryRequisitionPickerColumns({
         headerClassName: "min-w-20 text-right",
         cellClassName: "text-right tabular-nums text-muted-foreground",
       },
-      cell: ({ getValue }) => formatNullableQuantity(getValue()),
+      cell: ({ getValue }) => {
+        const val = getValue()
+        return val === null ? "—" : quantityFormatter.format(val)
+      },
     }),
     inventoryRequisitionPickerColumnHelper.accessor("issuedQuantity", {
       header: () => (
@@ -137,7 +168,26 @@ export function buildCreateInventoryRequisitionPickerColumns({
         headerClassName: "min-w-20 text-right",
         cellClassName: "text-right tabular-nums text-muted-foreground",
       },
-      cell: ({ getValue }) => formatNullableQuantity(getValue()),
+      cell: ({ row, getValue }) => {
+        const val = getValue()
+        if (val === null || row.original.bomQuantity === null) {
+          return "—"
+        }
+        const remainingBom = row.original.remainingBom ?? 0
+
+        return (
+          <div>
+            <span className="text-xs">{quantityFormatter.format(val)}</span>
+            {remainingBom > 0 ? (
+              <p className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                Thiếu {quantityFormatter.format(remainingBom)}
+              </p>
+            ) : (
+              <p className="text-[10px] text-muted-foreground">Đủ định mức</p>
+            )}
+          </div>
+        )
+      },
     }),
     inventoryRequisitionPickerColumnHelper.accessor("onHand", {
       header: () => (
@@ -176,7 +226,31 @@ export function buildCreateInventoryRequisitionPickerColumns({
         headerClassName: "min-w-24 text-right",
         cellClassName: "text-right font-medium tabular-nums text-foreground",
       },
-      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+      cell: ({ row, getValue }) => {
+        const value = getValue()
+        const isOutOfStock = value <= 0
+        const isNeeded = !row.original.isFullyIssued
+
+        return (
+          <div>
+            <span
+              className={cn(
+                "text-xs font-medium tabular-nums",
+                isOutOfStock && isNeeded
+                  ? "font-semibold text-destructive"
+                  : isOutOfStock
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+              )}
+            >
+              {quantityFormatter.format(value)}
+            </span>
+            {isOutOfStock && isNeeded && (
+              <p className="text-[10px] text-destructive">Hết tồn kho</p>
+            )}
+          </div>
+        )
+      },
     }),
     inventoryRequisitionPickerColumnHelper.accessor("availableQuantity", {
       header: () => (
@@ -212,7 +286,10 @@ export function buildCreateInventoryRequisitionPickerColumns({
         headerClassName: "min-w-20 text-right",
         cellClassName: "text-right tabular-nums text-primary",
       },
-      cell: ({ getValue }) => formatNullableQuantity(getValue()),
+      cell: ({ getValue }) => {
+        const val = getValue()
+        return val === null ? "—" : quantityFormatter.format(val)
+      },
     }),
   ])
 }
