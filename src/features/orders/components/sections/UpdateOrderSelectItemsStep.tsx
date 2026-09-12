@@ -24,7 +24,6 @@ import type { SelectableProduct } from "@/features/orders/components/composites/
 import type { UpdateOrderSchema } from "@/features/orders/schemas/update-order.schema"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { OrderItemStatus } from "@/lib/types/order.type"
-import { cn } from "@/lib/utils"
 import type { PageSize } from "@/components/shared/composites/Pagination"
 
 type UpdateOrderSelectItemsStepProps = {
@@ -212,10 +211,7 @@ export function UpdateOrderSelectItemsStep({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.original.id}
-                  className={cn(
-                    "h-14 cursor-pointer bg-card transition-colors hover:bg-muted/25",
-                    row.original.isSelected && "border-l-2 border-primary"
-                  )}
+                  className="h-14 cursor-pointer bg-card transition-colors hover:bg-muted/25"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

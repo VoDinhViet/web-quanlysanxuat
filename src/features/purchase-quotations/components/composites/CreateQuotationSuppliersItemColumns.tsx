@@ -103,13 +103,18 @@ export function buildQuotationSuppliersItemColumns({
                         size="sm"
                         disabled={disabled}
                         aria-label={`${item.allocations.length} dòng ĐXMH`}
-                        className="w-full max-w-36 justify-end text-xs font-normal tabular-nums"
+                        className="h-8 w-full max-w-36 justify-between gap-1.5 px-2 text-xs font-normal tabular-nums transition-colors hover:border-primary hover:text-primary"
                       >
-                        {total}
+                        <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                          {item.allocations.length} dòng
+                        </span>
+                        <span className="font-semibold text-foreground">
+                          {total}
+                        </span>
                       </Button>
                     }
                   />
-                  <TooltipContent>{`${item.allocations.length} dòng ĐXMH`}</TooltipContent>
+                  <TooltipContent>{`Gộp từ ${item.allocations.length} dòng ĐXMH — Bấm để chỉnh SL`}</TooltipContent>
                 </Tooltip>
               }
             />
@@ -146,8 +151,8 @@ export function buildQuotationSuppliersItemColumns({
         // exactly one allocation to attribute the reason to.
         if (item.allocations.length > 1) {
           return (
-            <span className="text-xs text-muted-foreground">
-              Xem trong SL báo giá
+            <span className="text-xs text-muted-foreground italic">
+              Xem trong popup phân bổ SL
             </span>
           )
         }

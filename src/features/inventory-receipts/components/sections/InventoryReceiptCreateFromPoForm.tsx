@@ -176,13 +176,39 @@ export function InventoryReceiptCreateFromPoForm() {
     if (!purchaseOrder) return
     if (seededForPoRef.current === purchaseOrder.id) return
 
-    // Nếu vừa khôi phục draft thành công cho chính PO này và đã có items, không ghi đè giá trị draft
+    const remainingByLineId = new Map(
+      purchaseOrder.items.map((line) => [
+        line.id,
+        Math.max(line.quantity - line.receivedQuantity, 0),
+      ])
+    )
+
+    // Nếu vừa khôi phục draft thành công cho chính PO này và đã có items, giữ lại quantity/note
+    // người dùng đã nhập — nhưng vẫn phải đối chiếu lại remainingQuantity với PO mới nhất: nháp có
+    // thể đã lỗi thời nếu một phiếu nhập khác lỡ được xác nhận cho cùng PO sau khi nháp được lưu,
+    // nếu không bước 3 hiện "còn lại" sai (số cũ, lớn hơn thực tế).
     if (
       draftRestoredRef.current &&
       form.state.values.purchaseOrderId === purchaseOrder.id &&
       form.state.values.items.length > 0
     ) {
       seededForPoRef.current = purchaseOrder.id
+
+      const reconciledItems = form.state.values.items
+        .map((item) => {
+          const remaining = remainingByLineId.get(item.purchaseOrderItemId) ?? 0
+          return {
+            ...item,
+            remainingQuantity: remaining,
+            quantity:
+              item.quantity === undefined
+                ? remaining
+                : Math.min(item.quantity, remaining),
+          }
+        })
+        .filter((item) => item.remainingQuantity > 0)
+
+      form.setFieldValue("items", reconciledItems)
       return
     }
 
@@ -190,8 +216,7 @@ export function InventoryReceiptCreateFromPoForm() {
 
     const items: InventoryReceiptFromPoItemValue[] = purchaseOrder.items
       .map((line) => {
-        const received = line.receivedQuantity
-        const remaining = Math.max(line.quantity - received, 0)
+        const remaining = remainingByLineId.get(line.id) ?? 0
         return {
           purchaseOrderItemId: line.id,
           itemId: line.purchaseRequestItem.item.id,

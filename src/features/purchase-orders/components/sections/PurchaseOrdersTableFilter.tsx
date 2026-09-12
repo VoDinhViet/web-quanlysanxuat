@@ -2,9 +2,9 @@ import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Plus, RotateCw, Search } from "lucide-react"
+import { RotateCw, Search } from "lucide-react"
 
-import { Button, LinkButton } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -208,11 +208,6 @@ export function PurchaseOrdersTableFilter() {
             <RotateCw className="size-4" />
             Làm mới
           </Button>
-
-          <LinkButton to="/manage/purchase-orders/create" className="text-xs">
-            <Plus className="size-4" />
-            Tạo PO thủ công
-          </LinkButton>
         </div>
       </div>
     </div>

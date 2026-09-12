@@ -31,6 +31,8 @@ function resolveUpdateInventoryReceiptErrorMessage(error: unknown): string {
       return "Dòng đơn mua hàng không tồn tại."
     case "purchase_order.error.receipt_item_mismatch":
       return "Dòng đơn mua hàng không thuộc đơn mua đã chọn."
+    case "purchase_order_item.error.received_quantity_exceeded":
+      return "SL nhận vượt quá SL còn lại của dòng đơn mua hàng. Vui lòng tải lại trang và kiểm tra lại số lượng."
     case "auth.error.forbidden":
       return "Bạn không có quyền sửa phiếu nhập kho này."
     default:

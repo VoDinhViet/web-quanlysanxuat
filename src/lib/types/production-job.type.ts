@@ -156,6 +156,8 @@ export type ProductionJobIssue = {
   item: ProductionJobIssueItemRef
   unit: ProductionJobIssueUnitRef
   requiredQty: number
+  issuedQuantity: number
+  remainingQuantity: number
 }
 
 /** Mirrors the backend's UserRefResDto nested in ProductionJobNoteResDto. */

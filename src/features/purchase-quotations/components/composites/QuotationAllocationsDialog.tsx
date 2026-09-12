@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { Diskette } from "@solar-icons/react"
 import { DateTime } from "luxon"
+import { NumericFormat } from "react-number-format"
 import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -11,7 +13,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   Table,
@@ -22,8 +23,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { QuotationItemAllocationValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 type QuotationAllocationsDialogProps = {
@@ -49,17 +48,24 @@ export function QuotationAllocationsDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={trigger} />
+      <span
+        onClick={() => setOpen(true)}
+        className="inline-flex w-full cursor-pointer"
+      >
+        {trigger}
+      </span>
       <DialogContent className="shadow-lg ring-0 sm:max-w-2xl">
-        <QuotationAllocationsDialogForm
-          itemName={itemName}
-          allocations={allocations}
-          onSave={(next) => {
-            onSave(next)
-            setOpen(false)
-          }}
-          onCancel={() => setOpen(false)}
-        />
+        {open && (
+          <QuotationAllocationsDialogForm
+            itemName={itemName}
+            allocations={allocations}
+            onSave={(next) => {
+              onSave(next)
+              setOpen(false)
+            }}
+            onCancel={() => setOpen(false)}
+          />
+        )}
       </DialogContent>
     </Dialog>
   )
@@ -160,23 +166,35 @@ function QuotationAllocationsDialogForm({
                     {allocation.requestedQuantity}
                   </TableCell>
                   <TableCell>
-                    <NumericCellInput
-                      value={allocation.quantity}
-                      min={1}
-                      max={allocation.requestedQuantity}
-                      onValueChange={(value) =>
-                        updateAllocation(index, { quantity: value })
+                    <NumericFormat
+                      customInput={Input}
+                      className="h-8 w-full bg-background text-xs text-right tabular-nums"
+                      value={allocation.quantity ?? ""}
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      allowNegative={false}
+                      isAllowed={(values) => {
+                        const { floatValue } = values
+                        if (floatValue === undefined) return true
+                        if (floatValue < 1) return false
+                        if (floatValue > allocation.requestedQuantity) return false
+                        return true
+                      }}
+                      placeholder="Nhập SL"
+                      onValueChange={(values) =>
+                        updateAllocation(index, { quantity: values.floatValue })
                       }
                     />
                   </TableCell>
                   <TableCell>
-                    <TableTextCellInput
+                    <Input
                       id={`allocation-reason-${allocation.purchaseRequestItemId}`}
-                      value={allocation.quantityAdjustmentReason}
+                      className="h-8 bg-background text-xs"
                       placeholder="Nếu SL báo giá khác SL đề xuất"
-                      onValueChange={(value) =>
+                      value={allocation.quantityAdjustmentReason ?? ""}
+                      onChange={(event) =>
                         updateAllocation(index, {
-                          quantityAdjustmentReason: value,
+                          quantityAdjustmentReason: event.target.value,
                         })
                       }
                     />
@@ -189,7 +207,8 @@ function QuotationAllocationsDialogForm({
       </div>
 
       <p className="text-right text-xs font-medium text-foreground">
-        Tổng SL báo giá: {total}
+        Tổng SL báo giá:{" "}
+        <span className="font-semibold text-primary">{total}</span>
       </p>
 
       <DialogFooter className="gap-2">

@@ -1,11 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { AltArrowDown } from "@solar-icons/react"
 
-import { Button } from "@/components/ui/button"
-import { PurchaseOrderAdjustmentReasonDialog } from "@/features/purchase-orders/components/composites/PurchaseOrderAdjustmentReasonDialog"
-import { PurchaseOrderItemQuantityCell } from "@/features/purchase-orders/components/primitives/PurchaseOrderItemQuantityCell"
-import { PurchaseOrderItemUnitPriceCell } from "@/features/purchase-orders/components/primitives/PurchaseOrderItemUnitPriceCell"
 import { cn } from "@/lib/utils"
 import type { PurchaseOrderItemDetail } from "@/lib/types/purchase-order.type"
 
@@ -17,11 +12,7 @@ const purchaseOrderItemColumnHelper = createColumnHelper<
   PurchaseOrderItemDetail
 >()
 
-// A factory (paired with `useMemo` at the call site) rather than a module-scope constant — the
-// last 2 columns gate on `editable` (permission + PO status), same reason
-// buildPurchaseRequestItemColumns is a factory. Both editable cells own their own mutation
-// (read `purchaseOrderId` via `useParams`), so no per-row callbacks are threaded through here.
-export function buildPurchaseOrderItemColumns(editable: boolean) {
+export function buildPurchaseOrderItemColumns(_editable?: boolean) {
   return purchaseOrderItemColumnHelper.columns([
     purchaseOrderItemColumnHelper.display({
       id: "index",
@@ -90,18 +81,14 @@ export function buildPurchaseOrderItemColumns(editable: boolean) {
         cell: ({ getValue }) => quantityFormatter.format(getValue()),
       }
     ),
-    purchaseOrderItemColumnHelper.display({
+    purchaseOrderItemColumnHelper.accessor("quantity", {
       id: "quantity",
       header: "SL đặt",
-      meta: { headerClassName: "w-28 text-right" },
-      cell: ({ row }) => (
-        <PurchaseOrderItemQuantityCell
-          purchaseOrderItemId={row.original.id}
-          itemName={row.original.purchaseRequestItem.item.name}
-          quantity={row.original.quantity}
-          editable={editable}
-        />
-      ),
+      meta: {
+        headerClassName: "w-28 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
     purchaseOrderItemColumnHelper.accessor("receivedQuantity", {
       id: "receivedQuantity",
@@ -157,58 +144,27 @@ export function buildPurchaseOrderItemColumns(editable: boolean) {
         )
       },
     }),
-    purchaseOrderItemColumnHelper.display({
+    purchaseOrderItemColumnHelper.accessor("quantityAdjustmentReason", {
       id: "quantityAdjustmentReason",
       header: "Lý do điều chỉnh SL",
       meta: { headerClassName: "w-40" },
-      cell: ({ row }) => {
-        if (!editable) {
-          return (
-            <span className="truncate text-xs text-muted-foreground">
-              {row.original.quantityAdjustmentReason ?? "—"}
-            </span>
-          )
-        }
-
-        const item = row.original
-        const hasReason = (item.quantityAdjustmentReason ?? "").length > 0
-
-        return (
-          <PurchaseOrderAdjustmentReasonDialog
-            purchaseOrderItemId={item.id}
-            itemName={item.purchaseRequestItem.item.name}
-            reason={item.quantityAdjustmentReason ?? ""}
-            trigger={
-              <Button
-                type="button"
-                variant="outline"
-                className={cn(
-                  "h-8 w-full max-w-40 justify-between text-xs font-normal",
-                  !hasReason && "border-dashed text-muted-foreground"
-                )}
-              >
-                <span className="max-w-32 min-w-0 truncate">
-                  {hasReason ? item.quantityAdjustmentReason : "Thêm lý do"}
-                </span>
-                <AltArrowDown className="size-3.5 shrink-0 text-muted-foreground" />
-              </Button>
-            }
-          />
-        )
-      },
+      cell: ({ getValue }) => (
+        <span className="truncate text-xs text-muted-foreground">
+          {getValue() ?? "—"}
+        </span>
+      ),
     }),
-    purchaseOrderItemColumnHelper.display({
+    purchaseOrderItemColumnHelper.accessor("unitPrice", {
       id: "unitPrice",
       header: "Đơn giá PO",
-      meta: { headerClassName: "w-32 text-right" },
-      cell: ({ row }) => (
-        <PurchaseOrderItemUnitPriceCell
-          purchaseOrderItemId={row.original.id}
-          itemName={row.original.purchaseRequestItem.item.name}
-          unitPrice={row.original.unitPrice}
-          editable={editable}
-        />
-      ),
+      meta: {
+        headerClassName: "w-32 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ getValue }) => {
+        const unitPrice = getValue()
+        return unitPrice === null ? "—" : priceFormatter.format(unitPrice)
+      },
     }),
     purchaseOrderItemColumnHelper.display({
       id: "lineTotal",

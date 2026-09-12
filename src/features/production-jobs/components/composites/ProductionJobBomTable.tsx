@@ -16,7 +16,7 @@ import { productionJobBomColumns } from "@/features/production-jobs/components/c
 import type { ProductionJobIssue } from "@/lib/types/production-job.type"
 import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
-const columnCount = 6
+const columnCount = productionJobBomColumns.length
 
 type ProductionJobBomTableProps = {
   rows: ProductionJobIssue[]
