@@ -13,8 +13,8 @@ export enum OperationStatus {
 }
 
 export const operationTypeLabels: Record<OperationType, string> = {
-  [OperationType.INHOUSE]: "Inhouse",
-  [OperationType.OUTSOURCE]: "Outsource",
+  [OperationType.INHOUSE]: "Trong nhà",
+  [OperationType.OUTSOURCE]: "Gia công ngoài",
 }
 
 export const operationStatusLabels: Record<OperationStatus, string> = {
@@ -54,18 +54,18 @@ export type OperationDetail = {
 }
 
 /**
- * Mirrors backend's ProductOperationResDto / BomOperationResDto — one step of a product or BOM item
- * routing. Conceptually `type` is chosen per attachment, not a fixed `Operation` catalog attribute
- * (the same catalog operation can be Inhouse on one routing and Outsource on another) — but the
- * response nests it under `operation` rather than alongside it, unlike the create/update DTOs
- * (`CreateOperationInput` etc. in use-product-operations.ts), which do take `type` as a sibling of
- * `operationId`. Mirrored here as received (see ProductOperationsPanel's `step.operation.type`).
+ * Mirrors backend's RoutingOperationResDto / BomOperationResDto — one step of a product or BOM item
+ * routing. `type` is chosen per attachment (the same catalog operation can be Inhouse on one
+ * routing and Outsource on another) — it's a top-level sibling of `operation`, matching the
+ * create/update DTOs (`CreateOperationInput` etc. in use-product-operations.ts), which also take
+ * `type` as a sibling of `operationId`, not nested under it.
  */
 export type ProductOperation = {
   id: string
   sortOrder: number
   note: string | null
-  operation: Operation & { type: OperationType }
+  type: OperationType
+  operation: Operation
   createdAt: string
   updatedAt: string
 }
