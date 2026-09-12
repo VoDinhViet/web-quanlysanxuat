@@ -2,15 +2,12 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
-import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { ProductDocumentsField } from "@/features/products/components/composites/ProductDocumentsField"
 import { ProductImageField } from "@/features/products/components/composites/ProductImageField"
 import { createProductFormDefaultValues } from "@/features/products/schemas/create-product.schema"
-import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { itemStatusLabels, itemTypeLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
-import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 const typeOptions = buildOptionsFromLabels(itemTypeLabels)
@@ -19,10 +16,8 @@ export const CreateProductInfoSection = withForm({
   defaultValues: createProductFormDefaultValues,
   props: {
     disabled: false,
-    selectedClient: undefined as ComboboxOption | undefined,
   },
-  render: function Render({ form, disabled, selectedClient }) {
-    const client = useGetClientOptions()
+  render: function Render({ form, disabled }) {
     // The route loader already prefetches this — resolves synchronously off cache.
     const { data: unitOptions } = useSuspenseQuery(
       unitOptionsQueryOptions("PRODUCT")
@@ -92,30 +87,6 @@ export const CreateProductInfoSection = withForm({
                   />
                 )}
               </form.AppField>
-
-              <form.Field name="clientId">
-                {(field) => (
-                  <ComboboxField
-                    id={field.name}
-                    label="Khách hàng"
-                    placeholder="Chọn khách hàng"
-                    value={field.state.value || undefined}
-                    onValueChange={(next) => field.handleChange(next ?? "")}
-                    onBlur={field.handleBlur}
-                    isInvalid={
-                      field.state.meta.isTouched &&
-                      field.state.meta.errors.length > 0
-                    }
-                    errors={field.state.meta.errors}
-                    options={client.options}
-                    onSearchChange={client.onSearchChange}
-                    isPending={client.isFetching}
-                    initialOption={selectedClient}
-                    emptyMessage="Không tìm thấy khách hàng"
-                    disabled={disabled}
-                  />
-                )}
-              </form.Field>
 
               <form.AppField name="status">
                 {(field) => (

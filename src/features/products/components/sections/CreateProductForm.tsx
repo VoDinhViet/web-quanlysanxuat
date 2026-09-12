@@ -66,11 +66,7 @@ export function CreateProductForm() {
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
-        <CreateProductInfoSection
-          form={form}
-          disabled={isPending}
-          selectedClient={undefined}
-        />
+        <CreateProductInfoSection form={form} disabled={isPending} />
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button
