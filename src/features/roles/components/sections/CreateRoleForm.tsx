@@ -7,9 +7,10 @@ import { FileText, Loader2, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Field, FieldError } from "@/components/ui/field"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
-import { RolePermissionsField } from "@/features/roles/components/composites/RolePermissionsField"
+import { RolePermissions } from "@/features/roles/components/composites/RolePermissions"
 import { createRole } from "@/features/roles/api/server-functions/create-role.api"
 import {
   createRoleFormDefaultValues,
@@ -66,6 +67,7 @@ export function CreateRoleForm() {
       className="space-y-6"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
+        {/* Section 1: Thông tin chung */}
         <div className="px-4 py-4 sm:px-5">
           <h2 className="font-heading text-base font-semibold text-foreground">
             Thông tin chung
@@ -81,7 +83,7 @@ export function CreateRoleForm() {
               <field.TextField
                 label="Mã vai trò"
                 required
-                placeholder="Nhập mã vai trò, vd. QC2"
+                placeholder="Nhập mã vai trò, vd. QC_LEAD"
                 disabled={isPending}
               />
             )}
@@ -102,7 +104,7 @@ export function CreateRoleForm() {
             {(field) => (
               <field.TextareaField
                 label="Mô tả"
-                placeholder="Nhập mô tả (nếu có)"
+                placeholder="Nhập mô tả nhiệm vụ và phạm vi chức năng (nếu có)"
                 disabled={isPending}
                 className="sm:col-span-2"
               />
@@ -110,10 +112,24 @@ export function CreateRoleForm() {
           </form.AppField>
         </div>
 
-        <div className="px-4 pb-5 sm:px-5">
-          <RolePermissionsField form={form} disabled={isPending} />
-        </div>
+        {/* Section 2: Phân quyền theo bảng ma trận nghiệp vụ */}
+        <form.Field name="permissions">
+          {(field) => (
+            <Field
+              data-invalid={field.state.meta.errors.length > 0}
+              className="p-4 not-first:border-t not-first:border-border sm:p-5"
+            >
+              <RolePermissions
+                value={field.state.value}
+                onChange={(val) => field.handleChange(val)}
+                disabled={isPending}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        </form.Field>
 
+        {/* Form Footer */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button
             type="button"
@@ -124,6 +140,7 @@ export function CreateRoleForm() {
           >
             Hủy
           </Button>
+
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="button"
@@ -138,18 +155,20 @@ export function CreateRoleForm() {
               <RotateCcw className="size-4" />
               Đặt lại
             </Button>
+
             <Button
               type="button"
               variant="outline"
               disabled={isPending}
               onClick={() => {
                 saveDraft(form.state.values)
-                toast.success("Đã lưu nháp")
+                toast.success("Đã lưu nháp vai trò")
               }}
             >
               <FileText className="size-4" />
               Lưu nháp
             </Button>
+
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >

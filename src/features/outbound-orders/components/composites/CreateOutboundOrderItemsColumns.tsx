@@ -193,7 +193,8 @@ export function buildCreateOutboundOrderItemColumns({
         const exceedsRemaining =
           remaining !== undefined && (item.quantity ?? 0) > remaining
         const exceedsAvailable =
-          source !== undefined && (item.quantity ?? 0) > source.availableQuantity
+          source !== undefined &&
+          (item.quantity ?? 0) > source.availableQuantity
 
         return (
           <div>
@@ -211,7 +212,8 @@ export function buildCreateOutboundOrderItemColumns({
               </p>
             ) : exceedsAvailable ? (
               <p className="mt-1 text-right text-[10px] text-amber-600 dark:text-amber-400">
-                Vượt tồn khả dụng ({quantityFormatter.format(source.availableQuantity)})
+                Vượt tồn khả dụng (
+                {quantityFormatter.format(source.availableQuantity)})
               </p>
             ) : null}
           </div>

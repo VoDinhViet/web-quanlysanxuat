@@ -129,7 +129,8 @@ export function buildCreateOutsourcingReceiptItemColumns({
             />
             {exceedsRemaining && (
               <p className="mt-1 text-right text-[10px] text-destructive">
-                Vượt SL còn lại ({quantityFormatter.format(item.remainingQuantity)})
+                Vượt SL còn lại (
+                {quantityFormatter.format(item.remainingQuantity)})
               </p>
             )}
           </div>

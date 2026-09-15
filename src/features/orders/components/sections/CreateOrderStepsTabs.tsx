@@ -1,30 +1,20 @@
-import { Calculator, ClipboardList, ListChecks, Package } from "lucide-react"
+import { Calculator, ClipboardList, Package } from "lucide-react"
 import type { ComponentType } from "react"
 import type { LucideProps } from "lucide-react"
 
 import { WizardStepsTabs } from "@/components/shared/layouts/WizardStepsTabs"
 import type { WizardStepNavItem } from "@/lib/wizard-steps"
 
-export type CreateOrderWizardStep =
-  | "info"
-  | "selectItems"
-  | "itemQuantities"
-  | "confirm"
+export type CreateOrderWizardStep = "info" | "selectItems" | "confirm"
 
 type CreateOrderStepItem = WizardStepNavItem<CreateOrderWizardStep> & {
   label: string
   icon: ComponentType<LucideProps>
 }
 
-const createOrderStepOrder: CreateOrderWizardStep[] = [
-  "info",
-  "selectItems",
-  "itemQuantities",
-  "confirm",
-]
-
-// 4 bước cố định. Export để CreateOrderForm.tsx's handleStepChange tra cứu lại giá trị step từ
-// RAC, và để stepFields (cùng file) tra field nào thuộc bước nào khi validate/nhảy bước.
+// 3 bước cố định — bước "confirm" gộp cả số lượng/giá theo dòng và phần xác nhận/tổng tiền cũ
+// (2 bước riêng trước đây) vào cùng 1 màn, xem CreateOrderForm.tsx. Export để
+// CreateOrderForm.tsx's handleStepChange tra cứu lại giá trị step từ RAC.
 export const createOrderStepItems: CreateOrderStepItem[] = [
   {
     value: "info",
@@ -37,43 +27,36 @@ export const createOrderStepItems: CreateOrderStepItem[] = [
     label: "② Chọn sản phẩm",
     icon: Package,
     prevLabel: "Quay lại",
-    nextLabel: "Tiếp theo: Số lượng & giá",
-  },
-  {
-    value: "itemQuantities",
-    label: "③ Số lượng & giá",
-    icon: ListChecks,
-    prevLabel: "Quay lại",
-    nextLabel: "Tiếp theo: Xác nhận",
+    nextLabel: "Tiếp theo: Số lượng, giá & xác nhận",
   },
   {
     value: "confirm",
-    label: "④ Xác nhận & tổng tiền",
+    label: "③ Số lượng, giá & xác nhận",
     icon: Calculator,
     prevLabel: "Quay lại",
   },
 ]
 
 type CreateOrderStepsTabsProps = {
-  // Bước xa nhất đã validate qua được — mọi bước sau nó bị khoá trên tab strip, chặn bấm tab
-  // nhảy cóc qua bước chưa qua form.trigger(). Xem CreateOrderForm.tsx's `furthestStep`.
-  reachedStep: CreateOrderWizardStep
+  // Cùng điều kiện đóng nút "Tiếp theo" của bước ① — không có form.trigger() ở TanStack Form nên
+  // gate bằng 1 boolean đơn giản, đúng khuôn CreateInventoryRequisitionStepsTabs.tsx. "selectItems"
+  // và "confirm" dùng chung điều kiện này: không có yêu cầu riêng để rời "selectItems" (đơn hàng
+  // có thể chưa chọn sản phẩm), nên bước ③ không cần gate nào khác ngoài bước ① đã hợp lệ.
+  canGoToSelectItems: boolean
 }
 
 // Chỉ vẽ dải trigger — Tabs root (selectedKey/onSelectionChange) + TabsContent panel sống ở
 // CreateOrderForm.tsx, cùng cách CreateInventoryRequisitionStepsTabs.tsx tách.
 export function CreateOrderStepsTabs({
-  reachedStep,
+  canGoToSelectItems,
 }: CreateOrderStepsTabsProps) {
-  const reachedIndex = createOrderStepOrder.indexOf(reachedStep)
-
   return (
     <WizardStepsTabs
-      steps={createOrderStepItems.map((item, index) => ({
+      steps={createOrderStepItems.map((item) => ({
         value: item.value,
         label: item.label,
         icon: item.icon,
-        disabled: index > reachedIndex,
+        disabled: item.value !== "info" && !canGoToSelectItems,
       }))}
     />
   )

@@ -103,7 +103,7 @@ export function buildOutboundOrderEditItemColumns({
         if (!display) return "—"
         return (
           <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-foreground text-xs leading-tight">
+            <span className="text-xs leading-tight font-medium text-foreground">
               {display.item.name}
             </span>
             <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
@@ -118,7 +118,10 @@ export function buildOutboundOrderEditItemColumns({
     editItemColumnHelper.display({
       id: "orderedQuantity",
       header: "SL PO",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums" },
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return display ? quantityFormatter.format(display.orderedQuantity) : "—"
@@ -127,7 +130,10 @@ export function buildOutboundOrderEditItemColumns({
     editItemColumnHelper.display({
       id: "issuedQuantity",
       header: "Đã giao",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums text-muted-foreground" },
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return display ? quantityFormatter.format(display.issuedQuantity) : "—"
@@ -153,7 +159,10 @@ export function buildOutboundOrderEditItemColumns({
     editItemColumnHelper.display({
       id: "onHandQuantity",
       header: "Tồn TP",
-      meta: { headerClassName: "w-20 text-right", cellClassName: "text-right tabular-nums text-muted-foreground" },
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         if (!display) return "—"
@@ -176,7 +185,7 @@ export function buildOutboundOrderEditItemColumns({
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return (
-          <span className="font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
+          <span className="font-semibold text-emerald-600 tabular-nums dark:text-emerald-400">
             {display
               ? quantityFormatter.format(display.availableQuantity)
               : "—"}

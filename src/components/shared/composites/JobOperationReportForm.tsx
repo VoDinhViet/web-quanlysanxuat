@@ -17,7 +17,6 @@ import { useAppForm } from "@/hooks/use-app-form"
 import type { JobOperationReportRow } from "@/lib/types/production-job.type"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 
-
 type JobOperationReportFormProps = {
   row: JobOperationReportRow
   // null = có thể báo cáo; ngược lại là lý do bị khoá, hiện thay cho khối input thay vì để người
@@ -58,16 +57,13 @@ export function JobOperationReportForm({
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: createJobOperationReportSchema
-        .refine(
-          (value) => value.completedQuantityDelta <= remainingPlanned,
-          {
-            error:
-              remainingPlanned === 0
-                ? `Công đoạn đã đạt đủ kế hoạch (${operation.plannedQuantity.toLocaleString("vi-VN")} pcs), không thể nhập thêm SL hoàn thành.`
-                : `SL hoàn thành lần này không được vượt quá ${remainingPlanned.toLocaleString("vi-VN")} pcs còn lại (kế hoạch: ${operation.plannedQuantity.toLocaleString("vi-VN")} pcs).`,
-            path: ["completedQuantityDelta"],
-          }
-        )
+        .refine((value) => value.completedQuantityDelta <= remainingPlanned, {
+          error:
+            remainingPlanned === 0
+              ? `Công đoạn đã đạt đủ kế hoạch (${operation.plannedQuantity.toLocaleString("vi-VN")} pcs), không thể nhập thêm SL hoàn thành.`
+              : `SL hoàn thành lần này không được vượt quá ${remainingPlanned.toLocaleString("vi-VN")} pcs còn lại (kế hoạch: ${operation.plannedQuantity.toLocaleString("vi-VN")} pcs).`,
+          path: ["completedQuantityDelta"],
+        })
         .refine(
           (value) =>
             value.completedQuantityDelta > 0 || value.rejectedQuantityDelta > 0,
@@ -88,13 +84,12 @@ export function JobOperationReportForm({
   return (
     <>
       <DialogHeader className="gap-0.5">
-        <DialogTitle className="text-base">
-          {bomItem.name}
-        </DialogTitle>
+        <DialogTitle className="text-base">{bomItem.name}</DialogTitle>
         <DialogDescription className="text-xs">
           <span className="font-mono">{bomItem.code}</span>
           <span className="mx-1.5">·</span>
-          Công đoạn: <span className="font-medium text-foreground">{operation.name}</span>
+          Công đoạn:{" "}
+          <span className="font-medium text-foreground">{operation.name}</span>
         </DialogDescription>
       </DialogHeader>
 

@@ -56,7 +56,8 @@ export const CreateQuotationSuppliersSection = withForm({
               Khai báo NCC & báo giá
             </h2>
             <p className="text-sm text-muted-foreground">
-              Giá gần nhất và ngày mua gần nhất được hệ thống tự động hiển thị từ lịch sử mua hàng
+              Giá gần nhất và ngày mua gần nhất được hệ thống tự động hiển thị
+              từ lịch sử mua hàng
             </p>
           </div>
           <span className="text-xs font-medium text-muted-foreground">

@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react"
+import { revalidateLogic } from "@tanstack/react-form"
+import type { DeepKeys } from "@tanstack/react-form"
 import { DateTime } from "luxon"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { ArrowLeft, ArrowRight, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
+import { useAppForm } from "@/hooks/use-app-form"
 import { UpdateOrderConfirmSection } from "@/features/orders/components/sections/UpdateOrderConfirmSection"
 import { UpdateOrderInfoSection } from "@/features/orders/components/sections/UpdateOrderInfoSection"
 import { UpdateOrderQuantitiesStep } from "@/features/orders/components/sections/UpdateOrderQuantitiesStep"
@@ -21,45 +22,41 @@ import {
 import { updateOrder } from "@/features/orders/api/server-functions/update-order.api"
 import { updateOrderSchema } from "@/features/orders/schemas/update-order.schema"
 import { getStepNav } from "@/lib/wizard-steps"
-import type { Key } from "react-aria-components"
-import type { FieldPath, SubmitErrorHandler } from "react-hook-form"
 import type { UpdateOrderWizardStep } from "@/features/orders/components/sections/UpdateOrderStepsTabs"
 import type { UpdateOrderSchema } from "@/features/orders/schemas/update-order.schema"
 import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
-import { buildSelectOption } from "@/lib/utils"
 
-// Field nào thuộc bước nào — dùng để form.trigger() chỉ đúng field của bước đang đứng khi bấm
-// "Tiếp theo", và để onInvalid dưới tìm đúng bước cần nhảy về khi submit lỗi. `orderId` không
-// render ở bước nào (không cho sửa) nhưng vẫn liệt kê để mọi field của schema thuộc đúng 1 bước.
-const stepFields: Record<
-  UpdateOrderWizardStep,
-  FieldPath<UpdateOrderSchema>[]
-> = {
-  info: [
-    "orderId",
-    "clientId",
-    "assignedUserId",
-    "status",
-    "orderDate",
-    "dueDate",
-    "consigneeAddress",
-    "paymentTerm",
-    "currency",
-    "exchangeRate",
-    "note",
-    "internalNote",
-  ],
-  selectItems: [],
-  itemQuantities: ["items"],
-  confirm: [
-    "discountType",
-    "discountValue",
-    "vatPercent",
-    "shippingFee",
-    "files",
-  ],
-}
+// Field nào thuộc bước nào — chỉ còn dùng để tìm bước cần nhảy về khi submit lỗi (TanStack Form
+// không có form.trigger() để validate riêng 1 bước trước "Tiếp theo", xem CreateOrderForm.tsx).
+// `orderId` không render ở bước nào (không cho sửa) nhưng vẫn liệt kê để mọi field của schema
+// thuộc đúng 1 bước.
+const stepFields: Record<UpdateOrderWizardStep, DeepKeys<UpdateOrderSchema>[]> =
+  {
+    info: [
+      "orderId",
+      "clientId",
+      "assignedUserId",
+      "status",
+      "orderDate",
+      "dueDate",
+      "consigneeAddress",
+      "paymentTerm",
+      "currency",
+      "exchangeRate",
+      "note",
+      "internalNote",
+    ],
+    selectItems: [],
+    itemQuantities: ["items"],
+    confirm: [
+      "discountType",
+      "discountValue",
+      "vatPercent",
+      "shippingFee",
+      "files",
+    ],
+  }
 
 // OrderDetail → raw form values: nullable fields become "", ISO datetimes become the
 // yyyy-MM-dd strings the date pickers work with. {zone:"utc"} is the exact inverse of
@@ -114,9 +111,14 @@ type UpdateOrderFormProps = {
   items: OrderItem[]
 }
 
-// Vỏ wizard "Cập nhật đơn hàng" — 4 bước, đồng bộ với CreateOrderForm.tsx. Khác Tạo: không
-// furthestStep (mọi tab mở sẵn — đơn đã tồn tại và hợp lệ từ server), không draft, không
-// "Đặt lại"/"Lưu nháp", submit xong ở lại trang (không điều hướng đi).
+// Vỏ wizard "Cập nhật đơn hàng" — 4 bước, TanStack Form thay react-hook-form (đồng bộ với
+// CreateOrderForm.tsx, không còn feature RHF thử nghiệm nào trong repo, xem forms-and-ui.md).
+// Khác Tạo: không furthestStep/canGoToSelectItems (đơn đã tồn tại và hợp lệ từ server, mọi tab
+// mở sẵn — UpdateOrderStepsTabs.tsx), không draft, không "Đặt lại"/"Lưu nháp", submit xong ở lại
+// trang (không điều hướng đi). "Tiếp theo" không còn form.trigger() để validate trước khi qua
+// bước kế (không tồn tại ở TanStack Form) — chỉ đổi step ngay, vì tab strip đã mở sẵn nên người
+// dùng có thể nhảy thẳng qua đó bất cứ lúc nào; bù lại, submit lỗi vẫn nhảy về đúng bước chứa
+// field lỗi đầu tiên qua getFieldMeta (thay onInvalid của RHF).
 export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
   const navigate = useNavigate({ from: "/manage/orders/$orderId/update" })
   const queryClient = useQueryClient()
@@ -135,26 +137,29 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
     onError: (error) => toast.error(error.message),
   })
 
-  // defaultValues chỉ đọc 1 lần lúc mount. Không form.reset theo `order`/`items`: onSuccess
-  // invalidate ["orders"] khiến 2 giá trị này đổi tham chiếu ngay sau khi lưu — reset theo đó sẽ
-  // xoá mất chỉnh sửa dở dang của người dùng trong lúc refetch đang chạy.
-  const form = useForm<UpdateOrderSchema>({
-    resolver: zodResolver(updateOrderSchema, undefined, { raw: true }),
-    defaultValues: getOrderDefaultValues(order, items),
-    // Cùng lý do đã fix bên CreateOrderForm.tsx: wizard validate theo bước bằng form.trigger(),
-    // không gọi handleSubmit() cho tới bước cuối, nên mode mặc định "onSubmit" sẽ để lỗi đỏ dính
-    // lại sau khi sửa xong 1 field cho tới khi trigger() chạy lại. "onChange" xác nhận lại ngay.
-    mode: "onChange",
+  // defaultValues chỉ đọc 1 lần lúc mount (useMemo, không tính lại mỗi render) — cùng lý do
+  // RHF bản cũ không form.reset theo `order`/`items`: onSuccess invalidate ["orders"] khiến 2
+  // giá trị này đổi tham chiếu ngay sau khi lưu, reset theo đó sẽ xoá mất chỉnh sửa dở dang của
+  // người dùng trong lúc refetch đang chạy.
+  const defaultValues = useMemo(
+    () => getOrderDefaultValues(order, items),
+    [order, items]
+  )
+
+  const form = useAppForm({
+    defaultValues,
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: updateOrderSchema,
+    },
+    onSubmit: ({ value }) => update(value),
   })
 
   // ComboboxField so `initialOption` theo tham chiếu để quyết định seed lại cache nhãn — memo
   // hoá để tránh 1 object mới mỗi lần UpdateOrderForm render lại. `assignedUserId` không dùng
   // được buildSelectOption: OrderUserRef chỉ có `.fullName`, không có `.name` như
-  // buildSelectOption yêu cầu.
-  const initialClientOption = useMemo(
-    () => buildSelectOption(order.client),
-    [order.client]
-  )
+  // buildSelectOption yêu cầu. `clientId` không cần initialOption nữa — ClientPicker tự fetch
+  // nhãn theo `value` (clientQueryOptions), xem ClientPicker.tsx.
   const initialAssigneeOption = useMemo(
     () =>
       order.assignedUser
@@ -165,12 +170,9 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
 
   const [step, setStep] = useState<UpdateOrderWizardStep>("info")
 
-  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back without a
-  // cast. Không có furthestStep để khoá — mọi tab đã mở sẵn (xem UpdateOrderStepsTabs.tsx).
-  function handleStepChange(key: Key) {
-    const nextStep = updateOrderStepItems.find(
-      (item) => item.value === String(key)
-    )
+  // Không có furthestStep để khoá — mọi tab đã mở sẵn (xem UpdateOrderStepsTabs.tsx).
+  function handleStepChange(value: string | null) {
+    const nextStep = updateOrderStepItems.find((item) => item.value === value)
     if (nextStep) setStep(nextStep.value)
   }
 
@@ -179,26 +181,26 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
     step
   )
 
-  async function goNext() {
-    if (!nextStep) return
-    const valid = await form.trigger(stepFields[step])
-    if (!valid) return
-    setStep(nextStep)
-  }
-
-  // Submit lỗi (vd bấm tab nhảy tới bước cuối rồi submit thẳng) → nhảy về đúng bước chứa field
-  // lỗi đầu tiên, không thì lỗi hiện trên 1 panel đã unmount, người dùng không thấy gì.
-  const onInvalid: SubmitErrorHandler<UpdateOrderSchema> = (errors) => {
-    const badStep = updateOrderStepItems.find((item) =>
-      stepFields[item.value].some((name) => name in errors)
-    )
-    if (badStep) setStep(badStep.value)
-    else toast.error("Dữ liệu đơn hàng không hợp lệ")
-  }
-
   return (
     <form
-      onSubmit={form.handleSubmit((values) => update(values), onInvalid)}
+      onSubmit={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        if (form.state.isSubmitting) return
+        void form.handleSubmit().then(() => {
+          if (form.state.isValid) return
+
+          // Submit lỗi (vd đứng ở bước cuối rồi bấm Lưu thẳng) → nhảy về đúng bước chứa field
+          // lỗi đầu tiên, không thì lỗi hiện trên 1 panel đã unmount, người dùng không thấy gì.
+          const badStep = updateOrderStepItems.find((item) =>
+            stepFields[item.value].some(
+              (name) => (form.getFieldMeta(name)?.errors.length ?? 0) > 0
+            )
+          )
+          if (badStep) setStep(badStep.value)
+          else toast.error("Dữ liệu đơn hàng không hợp lệ")
+        })
+      }}
       noValidate
       className="overflow-hidden rounded-lg bg-card shadow-card"
     >
@@ -210,7 +212,6 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
             form={form}
             disabled={isPending}
             orderCode={order.code}
-            initialClientOption={initialClientOption}
             initialAssigneeOption={initialAssigneeOption}
           />
         </TabsContent>
@@ -255,38 +256,37 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
         )}
 
         {nextStep ? (
-          // key ép React unmount/remount thay vì tái dùng cùng node DOM khi đổi sang nhánh dưới —
-          // goNext() là async (await form.trigger()), nên nếu tái dùng node, type có thể đổi
-          // button→submit ngay giữa lúc 1 cú click thật đang diễn ra (mousedown đã bắn, mouseup
-          // chưa tới), khiến click đó vô tình submit luôn form. Đã tự tay bắt được lỗi này khi
-          // test bước③→④.
           <Button
-            key="next"
             type="button"
             disabled={isPending}
-            onClick={() => void goNext()}
+            onClick={() => setStep(nextStep)}
           >
             {nextLabel}
             <ArrowRight className="size-4" />
           </Button>
         ) : (
-          <Button
-            key="submit"
-            type="submit"
-            disabled={form.formState.isSubmitting || isPending}
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
           >
-            {form.formState.isSubmitting || isPending ? (
-              <>
-                <Loader2 className="animate-spin" />
-                Đang lưu
-              </>
-            ) : (
-              <>
-                <Save />
-                Lưu thay đổi
-              </>
+            {([canSubmit, isSubmitting]) => (
+              <Button
+                type="submit"
+                disabled={!canSubmit || isSubmitting || isPending}
+              >
+                {isSubmitting || isPending ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    Đang lưu
+                  </>
+                ) : (
+                  <>
+                    <Save />
+                    Lưu thay đổi
+                  </>
+                )}
+              </Button>
             )}
-          </Button>
+          </form.Subscribe>
         )}
       </div>
     </form>

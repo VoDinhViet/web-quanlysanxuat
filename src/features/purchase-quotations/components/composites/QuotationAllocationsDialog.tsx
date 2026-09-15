@@ -168,7 +168,7 @@ function QuotationAllocationsDialogForm({
                   <TableCell>
                     <NumericFormat
                       customInput={Input}
-                      className="h-8 w-full bg-background text-xs text-right tabular-nums"
+                      className="h-8 w-full bg-background text-right text-xs tabular-nums"
                       value={allocation.quantity ?? ""}
                       thousandSeparator="."
                       decimalSeparator=","
@@ -177,7 +177,8 @@ function QuotationAllocationsDialogForm({
                         const { floatValue } = values
                         if (floatValue === undefined) return true
                         if (floatValue < 1) return false
-                        if (floatValue > allocation.requestedQuantity) return false
+                        if (floatValue > allocation.requestedQuantity)
+                          return false
                         return true
                       }}
                       placeholder="Nhập SL"

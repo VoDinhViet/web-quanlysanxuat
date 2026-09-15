@@ -89,7 +89,7 @@ export function buildQuotationItemsPickerColumns({
         cellClassName: "text-right",
       },
       cell: ({ getValue }) => (
-        <span className="text-xs tabular-nums text-muted-foreground">
+        <span className="text-xs text-muted-foreground tabular-nums">
           {getValue()}
         </span>
       ),
@@ -131,10 +131,10 @@ export function buildQuotationItemsPickerColumns({
         return (
           <span
             className={cn(
-              "text-xs tabular-nums font-semibold",
+              "text-xs font-semibold tabular-nums",
               remaining > 0
                 ? "text-primary"
-                : "text-muted-foreground/60 font-normal"
+                : "font-normal text-muted-foreground/60"
             )}
           >
             {remaining}

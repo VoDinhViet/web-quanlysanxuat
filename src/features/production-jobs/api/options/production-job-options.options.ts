@@ -16,4 +16,3 @@ export const productionJobOptionsQueryOptions = (
     queryFn: () => getProductionJobOptions({ data: { q, status, statuses } }),
     staleTime: 5 * 60_000,
   })
-

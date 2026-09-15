@@ -53,7 +53,8 @@ export const CreateInventoryRequisitionItemsSection = withForm({
       itemsField.setValue(
         items.map((item) => ({
           ...item,
-          quantity: resolveDefaultRequisitionQuantity(item.line) ?? item.quantity,
+          quantity:
+            resolveDefaultRequisitionQuantity(item.line) ?? item.quantity,
         }))
       )
     }

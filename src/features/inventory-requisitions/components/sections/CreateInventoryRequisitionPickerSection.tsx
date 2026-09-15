@@ -172,7 +172,14 @@ export const CreateInventoryRequisitionPickerSection = withForm({
           onToggleRow: toggleRow,
           onToggleAll: toggleAll,
         }),
-      [pickedIds, disabled, allChecked, pickableRows.length, toggleRow, toggleAll]
+      [
+        pickedIds,
+        disabled,
+        allChecked,
+        pickableRows.length,
+        toggleRow,
+        toggleAll,
+      ]
     )
 
     const table = useTable({

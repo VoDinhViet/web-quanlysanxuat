@@ -85,7 +85,9 @@ export function ProductionExecutionReportHistoryTable({
           </span>
           <Select
             value={selectedBomItemId ?? "ALL"}
-            onValueChange={(val) => onSelectBomItemId(val === "ALL" ? null : val)}
+            onValueChange={(val) =>
+              onSelectBomItemId(val === "ALL" ? null : val)
+            }
           >
             <SelectTrigger className="h-8 w-56 text-xs">
               <SelectValue placeholder="Tất cả Part" />
@@ -106,7 +108,10 @@ export function ProductionExecutionReportHistoryTable({
 
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <span>Tổng số lượt báo cáo:</span>
-          <Badge variant="secondary" className="px-2 py-0.5 text-xs font-semibold">
+          <Badge
+            variant="secondary"
+            className="px-2 py-0.5 text-xs font-semibold"
+          >
             {filteredReports.length}
           </Badge>
         </div>
@@ -128,8 +133,12 @@ export function ProductionExecutionReportHistoryTable({
             <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
               <TableRow>
                 <TableHead className="min-w-36 text-xs">Thời gian</TableHead>
-                <TableHead className="min-w-36 text-xs">Người báo cáo</TableHead>
-                <TableHead className="min-w-44 text-xs">Part / Chi tiết</TableHead>
+                <TableHead className="min-w-36 text-xs">
+                  Người báo cáo
+                </TableHead>
+                <TableHead className="min-w-44 text-xs">
+                  Part / Chi tiết
+                </TableHead>
                 <TableHead className="min-w-28 text-center text-xs">
                   SL Đạt
                 </TableHead>
@@ -145,7 +154,9 @@ export function ProductionExecutionReportHistoryTable({
             <TableBody className="divide-y divide-border/40">
               {filteredReports.map((report) => {
                 const formattedCompletedDate = report.completedDate
-                  ? DateTime.fromISO(report.completedDate).toFormat("dd/MM/yyyy")
+                  ? DateTime.fromISO(report.completedDate).toFormat(
+                      "dd/MM/yyyy"
+                    )
                   : "—"
                 const formattedCreatedAt = report.createdAt
                   ? DateTime.fromISO(report.createdAt).toFormat(
@@ -156,11 +167,11 @@ export function ProductionExecutionReportHistoryTable({
                 return (
                   <TableRow
                     key={report.id}
-                    className="h-14 hover:bg-muted/25 transition-colors"
+                    className="h-14 transition-colors hover:bg-muted/25"
                   >
                     <TableCell className="py-2.5">
                       <div className="flex flex-col">
-                        <span className="font-medium text-foreground text-xs">
+                        <span className="text-xs font-medium text-foreground">
                           {formattedCompletedDate}
                         </span>
                         <span className="text-[11px] text-muted-foreground">
@@ -172,10 +183,10 @@ export function ProductionExecutionReportHistoryTable({
                     <TableCell className="py-2.5">
                       {report.creator ? (
                         <div className="flex items-center gap-2">
-                          <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-bold">
+                          <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
                             <User className="size-3.5" />
                           </div>
-                          <div className="flex flex-col min-w-0">
+                          <div className="flex min-w-0 flex-col">
                             <span className="truncate text-xs font-medium text-foreground">
                               {report.creator.fullName}
                             </span>
@@ -185,12 +196,14 @@ export function ProductionExecutionReportHistoryTable({
                           </div>
                         </div>
                       ) : (
-                        <span className="text-xs text-muted-foreground">Hệ thống</span>
+                        <span className="text-xs text-muted-foreground">
+                          Hệ thống
+                        </span>
                       )}
                     </TableCell>
 
                     <TableCell className="py-2.5">
-                      <div className="flex flex-col min-w-0">
+                      <div className="flex min-w-0 flex-col">
                         <span className="truncate text-xs font-medium text-foreground">
                           {report.bomItemName}
                         </span>
@@ -202,14 +215,22 @@ export function ProductionExecutionReportHistoryTable({
 
                     <TableCell className="py-2.5 text-center">
                       <span className="inline-flex items-center justify-center rounded-md bg-emerald-50 px-2 py-1 font-mono text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-                        +{quantityFormatter.format(report.completedQuantityDelta)} pcs
+                        +
+                        {quantityFormatter.format(
+                          report.completedQuantityDelta
+                        )}{" "}
+                        pcs
                       </span>
                     </TableCell>
 
                     <TableCell className="py-2.5 text-center">
                       {report.rejectedQuantityDelta > 0 ? (
                         <span className="inline-flex items-center justify-center rounded-md bg-rose-50 px-2 py-1 font-mono text-xs font-semibold text-rose-700 dark:bg-rose-500/10 dark:text-rose-400">
-                          +{quantityFormatter.format(report.rejectedQuantityDelta)} pcs
+                          +
+                          {quantityFormatter.format(
+                            report.rejectedQuantityDelta
+                          )}{" "}
+                          pcs
                         </span>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
@@ -228,7 +249,7 @@ export function ProductionExecutionReportHistoryTable({
 
                     <TableCell className="py-2.5 text-center">
                       {report.files.length > 0 ? (
-                        <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                        <div className="flex flex-wrap items-center justify-center gap-1.5">
                           {report.files.map((file, idx) => {
                             const fileUrl = resolveFileUrl(file.url)
                             return (

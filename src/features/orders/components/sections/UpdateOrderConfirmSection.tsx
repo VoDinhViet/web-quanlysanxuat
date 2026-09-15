@@ -1,16 +1,10 @@
-import { Controller, useWatch } from "react-hook-form"
 import { DateTime } from "luxon"
-import type { UseFormReturn } from "react-hook-form"
 
 import { UpdateOrderTotalsSummary } from "@/features/orders/components/composites/UpdateOrderTotalsSummary"
 import { OrderDocumentsField } from "@/features/orders/components/composites/OrderDocumentsField"
-import type { UpdateOrderSchema } from "@/features/orders/schemas/update-order.schema"
+import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
+import { withForm } from "@/hooks/use-app-form"
 import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
-
-type UpdateOrderConfirmSectionProps = {
-  form: UseFormReturn<UpdateOrderSchema>
-  disabled: boolean
-}
 
 type RecapFieldProps = {
   label: string
@@ -28,70 +22,74 @@ function RecapField({ label, value }: RecapFieldProps) {
 
 // Bước ④ của wizard: nhắc lại vài mốc chính đã chọn ở ①/②/③ (không lặp lại toàn bộ form —
 // người dùng chỉ 1 cú bấm tab để quay lại sửa), tài liệu đính kèm, rồi tới phần chiết khấu/VAT/
-// phí VC + tổng tiền (UpdateOrderTotalsSummary.tsx). Cùng khuôn CreateOrderConfirmSection.tsx.
-export function UpdateOrderConfirmSection({
-  form,
-  disabled,
-}: UpdateOrderConfirmSectionProps) {
-  const items = useWatch({ control: form.control, name: "items" })
-  const orderDate = useWatch({ control: form.control, name: "orderDate" })
-  const dueDate = useWatch({ control: form.control, name: "dueDate" })
-  const paymentTerm = useWatch({ control: form.control, name: "paymentTerm" })
+// phí VC + tổng tiền (UpdateOrderTotalsSummary.tsx). Cùng khuôn CreateOrderConfirmSection.tsx
+// (TanStack Form).
+export const UpdateOrderConfirmSection = withForm({
+  defaultValues: updateOrderFormDefaultValues,
+  props: { disabled: false },
+  render: function Render({ form, disabled }) {
+    return (
+      <div>
+        <div className="border-b border-border px-4 py-4 sm:px-5">
+          <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
+            Xác nhận & tổng tiền
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Kiểm tra lại thông tin trước khi lưu thay đổi
+          </p>
+        </div>
 
-  return (
-    <div>
-      <div className="border-b border-border px-4 py-4 sm:px-5">
-        <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
-          Xác nhận & tổng tiền
-        </h2>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Kiểm tra lại thông tin trước khi lưu thay đổi
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 px-4 py-5 sm:grid-cols-4 sm:px-5">
-        <RecapField
-          label="Ngày đặt hàng"
-          value={
-            orderDate ? DateTime.fromISO(orderDate).toFormat("dd/MM/yyyy") : "—"
-          }
-        />
-        <RecapField
-          label="Ngày giao hàng yêu cầu"
-          value={
-            dueDate ? DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy") : "—"
-          }
-        />
-        <RecapField
-          label="Điều khoản thanh toán"
-          value={paymentTerm ? paymentTermShortLabels[paymentTerm] : "—"}
-        />
-        <RecapField label="Sản phẩm" value={`${items.length} sản phẩm`} />
-      </div>
-
-      <div className="border-t border-border px-4 py-5 sm:px-5">
-        <Controller
-          control={form.control}
-          name="files"
-          render={({ field }) => (
-            <OrderDocumentsField
-              value={field.value}
-              onChange={(next) =>
-                field.onChange(
-                  typeof next === "function"
-                    ? next(form.getValues("files"))
-                    : next
-                )
-              }
-              disabled={disabled}
-            />
+        <form.Subscribe
+          selector={(state) => ({
+            items: state.values.items,
+            orderDate: state.values.orderDate,
+            dueDate: state.values.dueDate,
+            paymentTerm: state.values.paymentTerm,
+          })}
+        >
+          {({ items, orderDate, dueDate, paymentTerm }) => (
+            <div className="grid grid-cols-2 gap-4 px-4 py-5 sm:grid-cols-4 sm:px-5">
+              <RecapField
+                label="Ngày đặt hàng"
+                value={
+                  orderDate
+                    ? DateTime.fromISO(orderDate).toFormat("dd/MM/yyyy")
+                    : "—"
+                }
+              />
+              <RecapField
+                label="Ngày giao hàng yêu cầu"
+                value={
+                  dueDate
+                    ? DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
+                    : "—"
+                }
+              />
+              <RecapField
+                label="Điều khoản thanh toán"
+                value={paymentTerm ? paymentTermShortLabels[paymentTerm] : "—"}
+              />
+              <RecapField label="Sản phẩm" value={`${items.length} sản phẩm`} />
+            </div>
           )}
-        />
-      </div>
+        </form.Subscribe>
 
-      <div className="border-t border-border px-4 py-5 sm:px-5">
-        <UpdateOrderTotalsSummary form={form} disabled={disabled} />
+        <div className="border-t border-border px-4 py-5 sm:px-5">
+          <form.Field name="files">
+            {(field) => (
+              <OrderDocumentsField
+                value={field.state.value}
+                onChange={field.handleChange}
+                disabled={disabled}
+              />
+            )}
+          </form.Field>
+        </div>
+
+        <div className="border-t border-border px-4 py-5 sm:px-5">
+          <UpdateOrderTotalsSummary form={form} disabled={disabled} />
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  },
+})

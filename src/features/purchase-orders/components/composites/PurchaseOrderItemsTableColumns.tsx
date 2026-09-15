@@ -106,9 +106,9 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
             className={cn(
               "font-medium",
               isCompleted
-                ? "text-success font-semibold"
+                ? "font-semibold text-success"
                 : received > 0
-                  ? "text-amber-600 dark:text-amber-400 font-semibold"
+                  ? "font-semibold text-amber-600 dark:text-amber-400"
                   : "text-muted-foreground"
             )}
           >
@@ -135,7 +135,7 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
               remaining === 0
                 ? "text-muted-foreground"
                 : received > 0
-                  ? "text-amber-600 dark:text-amber-400 font-semibold"
+                  ? "font-semibold text-amber-600 dark:text-amber-400"
                   : "text-foreground"
             )}
           >

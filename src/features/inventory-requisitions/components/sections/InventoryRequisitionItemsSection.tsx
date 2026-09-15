@@ -31,7 +31,10 @@ const col = createColumnHelper<
 >()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-function buildItemColumns(detail: InventoryRequisitionDetail, editable: boolean) {
+function buildItemColumns(
+  detail: InventoryRequisitionDetail,
+  editable: boolean
+) {
   return col.columns([
     col.display({
       id: "stt",
@@ -196,7 +199,8 @@ export function InventoryRequisitionItemsSection({
         </h3>
         {editable && (
           <span className="text-[11px] text-muted-foreground">
-            * Bấm vào ô SL lãnh hoặc bấm số &quot;Có thể lãnh&quot; để điền nhanh
+            * Bấm vào ô SL lãnh hoặc bấm số &quot;Có thể lãnh&quot; để điền
+            nhanh
           </span>
         )}
       </div>
@@ -366,7 +370,7 @@ function InventoryRequisitionQuantityCell({
 
   if (!editable) {
     return (
-      <span className="tabular-nums font-semibold text-primary">
+      <span className="font-semibold text-primary tabular-nums">
         {numberFmt.format(item.quantity)}
       </span>
     )
@@ -396,7 +400,7 @@ function InventoryRequisitionQuantityCell({
     <div className="flex items-center justify-end gap-1.5">
       <NumericFormat
         customInput={Input}
-        className="h-8 w-24 text-right text-xs font-semibold tabular-nums text-primary"
+        className="h-8 w-24 text-right text-xs font-semibold text-primary tabular-nums"
         value={value}
         thousandSeparator="."
         decimalSeparator=","

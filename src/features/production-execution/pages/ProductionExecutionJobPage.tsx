@@ -40,7 +40,9 @@ export function ProductionExecutionJobPage() {
   })
 
   const [activeTab, setActiveTab] = useState<string>("operations")
-  const [selectedBomItemId, setSelectedBomItemId] = useState<string | null>(null)
+  const [selectedBomItemId, setSelectedBomItemId] = useState<string | null>(
+    null
+  )
 
   const { data: job } = useSuspenseQuery(
     productionJobQueryOptions(productionJobId)
@@ -182,14 +184,10 @@ export function ProductionExecutionJobPage() {
               <dd
                 className="truncate font-semibold text-foreground"
                 title={
-                  job.client
-                    ? `${job.client.name} (${job.client.code})`
-                    : "—"
+                  job.client ? `${job.client.name} (${job.client.code})` : "—"
                 }
               >
-                {job.client
-                  ? `${job.client.name} (${job.client.code})`
-                  : "—"}
+                {job.client ? `${job.client.name} (${job.client.code})` : "—"}
               </dd>
             </div>
             <div className="flex items-baseline gap-2">
@@ -204,7 +202,7 @@ export function ProductionExecutionJobPage() {
             </div>
             <div className="flex items-baseline gap-2">
               <dt className="shrink-0 text-muted-foreground">Số lượng Job:</dt>
-              <dd className="font-semibold tabular-nums text-foreground">
+              <dd className="font-semibold text-foreground tabular-nums">
                 {quantityFormatter.format(job.quantity)} pcs
               </dd>
             </div>
@@ -285,7 +283,10 @@ export function ProductionExecutionJobPage() {
               </TabsList>
             </div>
 
-            <TabsContent value="operations" className="m-0 space-y-4 p-4 sm:p-5 outline-none">
+            <TabsContent
+              value="operations"
+              className="m-0 space-y-4 p-4 outline-none sm:p-5"
+            >
               {operationsQuery.isPending ? (
                 <TableQueryLoading rows={5} />
               ) : operationsQuery.isError ? (
@@ -306,7 +307,10 @@ export function ProductionExecutionJobPage() {
               )}
             </TabsContent>
 
-            <TabsContent value="reports" className="m-0 p-4 sm:p-5 outline-none">
+            <TabsContent
+              value="reports"
+              className="m-0 p-4 outline-none sm:p-5"
+            >
               <ProductionExecutionReportHistoryTable
                 reports={reportsQuery.data ?? []}
                 isPending={reportsQuery.isPending}

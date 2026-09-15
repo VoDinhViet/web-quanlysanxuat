@@ -133,8 +133,7 @@ export function InventoryRequisitionsTableFilter() {
               search={{ type: InventoryRequisitionType.PRODUCTION }}
               className="gap-1.5 text-xs"
             >
-              <Factory className="size-3.5" />
-              + Lãnh từ LSX
+              <Factory className="size-3.5" />+ Lãnh từ LSX
             </LinkButton>
             <LinkButton
               to="/manage/inventory-requisitions/create"
@@ -142,8 +141,7 @@ export function InventoryRequisitionsTableFilter() {
               variant="outline"
               className="gap-1.5 text-xs"
             >
-              <PackageSearch className="size-3.5" />
-              + Lãnh khác
+              <PackageSearch className="size-3.5" />+ Lãnh khác
             </LinkButton>
           </RoutePermissionGate>
         </div>

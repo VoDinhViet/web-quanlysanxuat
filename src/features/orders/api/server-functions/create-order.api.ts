@@ -5,6 +5,7 @@ import { createOrderSchema } from "@/features/orders/schemas/create-order.schema
 import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import type { OrderDetail } from "@/lib/types/order.type"
 
 // Every field is already wire-ready by the time this runs — string->number
 // mapping happens field-by-field on createOrderSchema/orderItemFormFields, and
@@ -46,9 +47,11 @@ function resolveCreateOrderErrorMessage(error: unknown): string {
 
 export const createOrder = createServerFn({ method: "POST" })
   .validator(createOrderPayloadSchema)
-  .handler(async ({ data }): Promise<void> => {
+  .handler(async ({ data }): Promise<OrderDetail> => {
     try {
-      await http.post("/api/orders", data)
+      const response = await http.post<OrderDetail>("/api/orders", data)
+
+      return response.data
     } catch (error) {
       logHttpError(error, "createOrder")
 

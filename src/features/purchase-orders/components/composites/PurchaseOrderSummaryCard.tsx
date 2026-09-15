@@ -49,7 +49,7 @@ export function PurchaseOrderSummaryCard({
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/50">
+        <div className="grid grid-cols-2 gap-2 border-t border-border/50 pt-2">
           <div className="space-y-0.5">
             <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
               Đã nhận
@@ -68,7 +68,7 @@ export function PurchaseOrderSummaryCard({
           </div>
         </div>
 
-        <div className="space-y-1 pt-2 border-t border-border/50">
+        <div className="space-y-1 border-t border-border/50 pt-2">
           <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
             Tổng giá trị (VNĐ)
           </p>

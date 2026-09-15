@@ -82,7 +82,8 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
           Từ chối đơn hàng {order.code}
         </DialogTitle>
         <DialogDescription className="text-xs text-muted-foreground">
-          Đơn hàng sẽ chuyển sang trạng thái "Từ chối". Vui lòng nhập lý do để nhân viên kinh doanh nắm thông tin.
+          Đơn hàng sẽ chuyển sang trạng thái "Từ chối". Vui lòng nhập lý do để
+          nhân viên kinh doanh nắm thông tin.
         </DialogDescription>
       </DialogHeader>
 
@@ -117,7 +118,7 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
         >
           {mutation.isPending ? (
             <>
-              <Loader2 className="size-4 animate-spin mr-1" />
+              <Loader2 className="mr-1 size-4 animate-spin" />
               Đang xử lý...
             </>
           ) : (

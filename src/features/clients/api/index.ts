@@ -4,4 +4,5 @@
 // `api/options/` directly.
 export { clientOptionsQueryOptions } from "@/features/clients/api/options"
 export { clientQueryOptions } from "@/features/clients/api/options"
+export { clientsQueryOptions } from "@/features/clients/api/options"
 export { useGetClientOptions } from "@/features/clients/api/use-get-client-options"

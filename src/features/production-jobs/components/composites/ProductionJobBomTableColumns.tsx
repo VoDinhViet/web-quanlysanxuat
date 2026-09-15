@@ -122,7 +122,7 @@ export const productionJobBomColumns = col.columns([
         return (
           <Badge
             variant="outline"
-            className="gap-1.5 whitespace-nowrap border-transparent bg-success/10 text-success"
+            className="gap-1.5 border-transparent bg-success/10 whitespace-nowrap text-success"
           >
             <span className="size-1.5 rounded-full bg-success" />
             Đã lãnh đủ
@@ -134,7 +134,7 @@ export const productionJobBomColumns = col.columns([
         return (
           <Badge
             variant="outline"
-            className="gap-1.5 whitespace-nowrap border-transparent bg-warning/10 text-warning"
+            className="gap-1.5 border-transparent bg-warning/10 whitespace-nowrap text-warning"
           >
             <span className="size-1.5 rounded-full bg-warning" />
             Lãnh một phần
@@ -145,7 +145,7 @@ export const productionJobBomColumns = col.columns([
       return (
         <Badge
           variant="outline"
-          className="gap-1.5 whitespace-nowrap border-transparent bg-muted text-muted-foreground"
+          className="gap-1.5 border-transparent bg-muted whitespace-nowrap text-muted-foreground"
         >
           <span className="size-1.5 rounded-full bg-muted-foreground/50" />
           Chưa lãnh

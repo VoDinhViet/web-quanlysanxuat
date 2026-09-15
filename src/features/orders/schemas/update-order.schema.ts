@@ -86,3 +86,28 @@ export const updateOrderSchema = z.object({
 })
 
 export type UpdateOrderSchema = z.input<typeof updateOrderSchema>
+
+// Type template only — `withForm`'s child sections (UpdateOrderInfoSection.tsx etc.) need a
+// value of this shape to infer `AppFieldExtendedReactFormApi<UpdateOrderSchema>`; the mounted
+// form's real defaults come from UpdateOrderForm.tsx's own getOrderDefaultValues(order, items)
+// call, same relationship as createOrderFormDefaultValues in create-order.schema.ts.
+export const updateOrderFormDefaultValues: UpdateOrderSchema = {
+  orderId: "",
+  clientId: "",
+  assignedUserId: "",
+  orderDate: "",
+  dueDate: "",
+  consigneeAddress: "",
+  paymentTerm: PaymentTerm.IMMEDIATE,
+  currency: Currency.VND,
+  exchangeRate: 1,
+  discountType: OrderDiscountType.PERCENT,
+  discountValue: 0,
+  vatPercent: 0,
+  shippingFee: 0,
+  status: OrderStatus.DRAFT,
+  note: "",
+  internalNote: "",
+  items: [],
+  files: [],
+}

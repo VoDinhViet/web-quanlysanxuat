@@ -112,4 +112,3 @@ export function InventoryRequisitionActionsCell({
     </RowActions>
   )
 }
-

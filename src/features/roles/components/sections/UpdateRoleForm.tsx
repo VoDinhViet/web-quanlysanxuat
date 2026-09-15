@@ -6,8 +6,9 @@ import { Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Field, FieldError } from "@/components/ui/field"
 import { useAppForm } from "@/hooks/use-app-form"
-import { RolePermissionsField } from "@/features/roles/components/composites/RolePermissionsField"
+import { RolePermissions } from "@/features/roles/components/composites/RolePermissions"
 import { updateRole } from "@/features/roles/api/server-functions/update-role.api"
 import { updateRoleSchema } from "@/features/roles/schemas/update-role.schema"
 import type { UpdateRoleSchema } from "@/features/roles/schemas/update-role.schema"
@@ -20,10 +21,6 @@ function getRoleDefaultValues(role: Role): UpdateRoleSchema {
     code: role.code,
     name: role.name,
     description: role.description ?? "",
-    // `Role.permissions` is `string[]` off the wire (same reasoning as `hasPermission`'s
-    // `granted: string[]` — the type checker can't know it only holds real codes), but
-    // `RolesService.validatePermissionCodes` on the backend guarantees every value already is
-    // one before it's ever written.
     permissions: role.permissions as PermissionCode[],
   }
 }
@@ -112,9 +109,21 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
           </form.AppField>
         </div>
 
-        <div className="px-4 pb-5 sm:px-5">
-          <RolePermissionsField form={form} disabled={isPending} />
-        </div>
+        <form.Field name="permissions">
+          {(field) => (
+            <Field
+              data-invalid={field.state.meta.errors.length > 0}
+              className="not-first:border-t not-first:border-border"
+            >
+              <RolePermissions
+                value={field.state.value}
+                onChange={(val) => field.handleChange(val)}
+                disabled={isPending}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        </form.Field>
 
         <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-4 py-4 sm:px-5">
           <Button

@@ -99,7 +99,11 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
                   const received = line.receivedQuantity
                   const remaining = Math.max(line.quantity - received, 0)
                   return (
-                    <TableRow key={line.id} id={line.id} className="h-12 bg-card">
+                    <TableRow
+                      key={line.id}
+                      id={line.id}
+                      className="h-12 bg-card"
+                    >
                       <TableCell className="text-center text-muted-foreground">
                         {index + 1}
                       </TableCell>
@@ -115,18 +119,20 @@ export const InventoryReceiptCreateFromPoPreviewSection = withForm({
                       <TableCell className="text-right tabular-nums">
                         {quantityFormatter.format(line.quantity)}
                       </TableCell>
-                      <TableCell className="text-right tabular-nums text-muted-foreground">
+                      <TableCell className="text-right text-muted-foreground tabular-nums">
                         {quantityFormatter.format(received)}
                       </TableCell>
                       <TableCell
                         className={cn(
-                          "text-right tabular-nums font-semibold",
+                          "text-right font-semibold tabular-nums",
                           remaining === 0
-                            ? "text-muted-foreground font-normal"
+                            ? "font-normal text-muted-foreground"
                             : "text-foreground"
                         )}
                       >
-                        {remaining === 0 ? "Đã nhận đủ" : quantityFormatter.format(remaining)}
+                        {remaining === 0
+                          ? "Đã nhận đủ"
+                          : quantityFormatter.format(remaining)}
                       </TableCell>
                     </TableRow>
                   )

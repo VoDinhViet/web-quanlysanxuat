@@ -11,12 +11,8 @@ import {
 } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
-import {
-  ColumnHeaderWithHint,
-} from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
-import {
-  resolveDefaultRequisitionQuantity,
-} from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
+import { ColumnHeaderWithHint } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
+import { resolveDefaultRequisitionQuantity } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 import type { InventoryRequisitionItemFormValue } from "@/features/inventory-requisitions/schemas/create-inventory-requisition.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -98,7 +94,10 @@ export function buildCreateInventoryRequisitionItemColumns({
             onClick={() => {
               if (disabled || !defaultQty) return
               const item = row.original
-              itemsField.replaceValue(row.index, { ...item, quantity: defaultQty })
+              itemsField.replaceValue(row.index, {
+                ...item,
+                quantity: defaultQty,
+              })
             }}
           >
             {quantityFormatter.format(issuable)}

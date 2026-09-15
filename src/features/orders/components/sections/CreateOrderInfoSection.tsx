@@ -1,25 +1,15 @@
 import { useEffect, useRef } from "react"
-import { Controller, useWatch } from "react-hook-form"
+import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
-import { NumericFormat } from "react-number-format"
-import type { UseFormReturn } from "react-hook-form"
+import { toast } from "sonner"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
-import { DatePicker } from "@/components/shared/composites/DatePicker"
-import { useGetClientOptions } from "@/features/clients/api"
 import { exchangeRateQueryOptions } from "@/features/orders/api/options"
+import { ClientPicker } from "@/features/orders/components/composites/ClientPicker"
 import { resolveExchangeRatePlaceholder } from "@/features/orders/logic/resolve-exchange-rate-placeholder"
-import type { CreateOrderSchema } from "@/features/orders/schemas/create-order.schema"
+import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
+import { withForm } from "@/hooks/use-app-form"
 import { useGetUserOptions } from "@/features/users/api"
 import { currencyLabels, Currency } from "@/lib/types/order.type"
 import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
@@ -28,382 +18,246 @@ import { buildOptionsFromLabels } from "@/lib/utils"
 const currencyOptions = buildOptionsFromLabels(currencyLabels)
 const paymentTermOptions = buildOptionsFromLabels(paymentTermShortLabels)
 
-type ExchangeRateFieldProps = {
-  form: UseFormReturn<CreateOrderSchema>
-  disabled: boolean
-}
+// Bước ① của wizard. `clientId`/`assignedUserId` chưa có trong AppFormFields.tsx's kit →
+// `form.Field` render-prop trần bọc `ComboboxField`, đúng idiom UpdateProductInfoSection.tsx. Tỷ
+// giá auto-fill theo tiền tệ nằm trực tiếp trong Render (không tách hàm riêng): `form` ở đây có
+// kiểu `AppFieldExtendedReactFormApi<...>` do `withForm` gán — tách thành 1 function riêng sẽ
+// phải viết tay lại generic đó, không dùng `AnyFormApi` được (kiểu đó không mang theo
+// `.AppField`, xem UnitScopesField.tsx).
+export const CreateOrderInfoSection = withForm({
+  defaultValues: createOrderFormDefaultValues,
+  props: { disabled: false },
+  render: function Render({ form, disabled }) {
+    const user = useGetUserOptions()
 
-// Auto-fills a starting rate on a non-VND currency pick (GET open.er-api.com via
-// get-exchange-rate.api.ts), but the field stays editable — this only seeds it. Guards against
-// clobbering a value that isn't its own: `appliedRef` tracks the {currency, rate} this component
-// itself last wrote, and a fill only ever fires when the field's live value still equals that —
-// so a rate restored from a saved draft, or one the user is mid-typing when a fetch resolves, is
-// adopted as-is instead of overwritten (see eager-foraging-quilt plan). Plain function (not
-// `withForm`) under react-hook-form — `form`/`useWatch` work the same in any component that has
-// the shared `control`, no bound-type wrapper needed.
-function ExchangeRateField({ form, disabled }: ExchangeRateFieldProps) {
-  const currency = useWatch({
-    control: form.control,
-    name: "currency",
-    defaultValue: Currency.VND,
-  })
-  const { data: rate, isFetching } = useQuery({
-    ...exchangeRateQueryOptions(currency),
-    enabled: currency !== Currency.VND,
-  })
+    // Auto-fills a starting rate on a non-VND currency pick (GET open.er-api.com via
+    // get-exchange-rate.api.ts), but the field stays editable — this only seeds it. Guards
+    // against clobbering a value that isn't its own: `appliedRef` tracks the {currency, rate}
+    // this component itself last wrote, and a fill only ever fires when the field's live value
+    // still equals that — so a rate restored from a saved draft, or one the user is mid-typing
+    // when a fetch resolves, is adopted as-is instead of overwritten.
+    const currency = useField({ form, name: "currency" }).state.value
+    const consigneeAddressField = useField({ form, name: "consigneeAddress" })
+    const { data: rate, isFetching } = useQuery({
+      ...exchangeRateQueryOptions(currency),
+      enabled: currency !== Currency.VND,
+    })
 
-  const appliedRef = useRef({
-    currency,
-    rate: form.getValues("exchangeRate"),
-  })
+    const appliedRef = useRef({
+      currency,
+      rate: form.getFieldValue("exchangeRate"),
+    })
 
-  useEffect(() => {
-    if (currency === appliedRef.current.currency) return
+    useEffect(() => {
+      if (currency === appliedRef.current.currency) return
 
-    const current = form.getValues("exchangeRate")
+      const current = form.getFieldValue("exchangeRate")
 
-    // Field no longer holds what we last wrote — someone else (a restored
-    // draft, a manual edit) owns it now. Adopt it and stop auto-filling
-    // until the currency changes again.
-    if (current !== appliedRef.current.rate) {
-      appliedRef.current = { currency, rate: current }
-      return
-    }
+      // Field no longer holds what we last wrote — someone else (a restored
+      // draft, a manual edit) owns it now. Adopt it and stop auto-filling
+      // until the currency changes again.
+      if (current !== appliedRef.current.rate) {
+        appliedRef.current = { currency, rate: current }
+        return
+      }
 
-    if (currency === Currency.VND) {
-      form.setValue("exchangeRate", 1, { shouldDirty: true })
-      appliedRef.current = { currency, rate: 1 }
-      return
-    }
+      if (currency === Currency.VND) {
+        form.setFieldValue("exchangeRate", 1)
+        appliedRef.current = { currency, rate: 1 }
+        return
+      }
 
-    // Clear while the fetch is in flight: lets the placeholder show, and
-    // stops the previous currency's rate from sitting under the new
-    // currency's label if this fetch fails.
-    if (current !== undefined) {
-      form.setValue("exchangeRate", undefined, { shouldDirty: true })
-      appliedRef.current = { ...appliedRef.current, rate: undefined }
-    }
+      // Clear while the fetch is in flight: lets the placeholder show, and
+      // stops the previous currency's rate from sitting under the new
+      // currency's label if this fetch fails.
+      if (current !== undefined) {
+        form.setFieldValue("exchangeRate", undefined)
+        appliedRef.current = { ...appliedRef.current, rate: undefined }
+      }
 
-    if (rate) {
-      form.setValue("exchangeRate", rate, { shouldDirty: true })
-      appliedRef.current = { currency, rate }
-    }
-  }, [currency, rate, form])
+      if (rate) {
+        form.setFieldValue("exchangeRate", rate)
+        appliedRef.current = { currency, rate }
+      }
+    }, [currency, rate, form])
 
-  const placeholder = resolveExchangeRatePlaceholder(isFetching, rate)
+    const exchangeRatePlaceholder = resolveExchangeRatePlaceholder(
+      isFetching,
+      rate
+    )
 
-  return (
-    <Controller
-      control={form.control}
-      name="exchangeRate"
-      render={({ field, fieldState }) => (
-        <Field data-invalid={!!fieldState.error}>
-          <FieldLabel
-            htmlFor={field.name}
-            className="text-xs font-medium text-foreground"
-          >
-            {`Tỷ giá quy đổi (${currency === Currency.VND ? "so với VND" : "1 " + currency + " = ? VND"})`}
-          </FieldLabel>
-          <NumericFormat
-            customInput={Input}
-            id={field.name}
-            name={field.name}
-            placeholder={placeholder}
-            className="h-9 bg-background text-xs"
-            value={field.value ?? ""}
-            thousandSeparator="."
-            decimalSeparator=","
-            allowNegative={false}
-            onBlur={field.onBlur}
-            onValueChange={(values) => field.onChange(values.floatValue)}
-            aria-invalid={!!fieldState.error}
-            disabled={disabled}
-          />
-          <FieldError errors={[fieldState.error]} />
-        </Field>
-      )}
-    />
-  )
-}
+    return (
+      <div>
+        <div className="border-b border-border px-4 py-4 sm:px-5">
+          <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
+            Đơn hàng
+          </h2>
+          <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+            Mã đơn hàng: sẽ cấp sau khi lưu
+          </p>
+        </div>
 
-type CreateOrderInfoSectionProps = {
-  form: UseFormReturn<CreateOrderSchema>
-  disabled: boolean
-}
+        {/* Khách hàng & phụ trách tách riêng khỏi lưới 4 cột bên dưới — đây là 2 quyết định "ai"
+            quan trọng nhất của đơn, làm trước khi điền chi tiết ngày/thanh toán/tiền tệ. */}
+        <div className="px-4 py-4 sm:px-5">
+          <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
+            <form.Field name="clientId">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched &&
+                  field.state.meta.errors.length > 0
 
-// Bước ① của wizard. Mỗi field là 1 <Controller> viết tại chỗ — không có shared RHF field kit,
-// xem forms-and-ui.md. `assignedUserId` đổi từ Select (trước đây options={[]} hardcode rỗng,
-// không bao giờ có dữ liệu) sang Combobox tìm-server, giống `clientId` bên cạnh.
-export function CreateOrderInfoSection({
-  form,
-  disabled,
-}: CreateOrderInfoSectionProps) {
-  const client = useGetClientOptions()
-  const user = useGetUserOptions()
+                return (
+                  <Field data-invalid={isInvalid} className="space-y-1.5">
+                    <FieldLabel className="text-xs font-medium text-foreground">
+                      Khách hàng <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <ClientPicker
+                      value={field.state.value || undefined}
+                      onValueChange={(next) => field.handleChange(next ?? "")}
+                      onClientSelect={(client) => {
+                        if (
+                          client?.address &&
+                          !consigneeAddressField.state.value
+                        ) {
+                          consigneeAddressField.handleChange(client.address)
+                          toast.info(
+                            "Đã tự động điền địa chỉ của khách hàng vào Địa chỉ giao hàng"
+                          )
+                        }
+                      }}
+                      onApplyAddress={(address) => {
+                        consigneeAddressField.handleChange(address)
+                        toast.success(
+                          "Đã cập nhật Địa chỉ giao hàng theo khách hàng"
+                        )
+                      }}
+                      onBlur={field.handleBlur}
+                      isInvalid={isInvalid}
+                      disabled={disabled}
+                    />
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                )
+              }}
+            </form.Field>
 
-  return (
-    <div>
-      <div className="border-b border-border px-4 py-4 sm:px-5">
-        <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
-          Đơn hàng
-        </h2>
-        <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-          Mã đơn hàng: sẽ cấp sau khi lưu
-        </p>
-      </div>
+            <form.Field name="assignedUserId">
+              {(field) => (
+                <ComboboxField
+                  id={field.name}
+                  label="Nhân viên kinh doanh"
+                  placeholder="Chọn nhân viên kinh doanh"
+                  value={field.state.value || undefined}
+                  onValueChange={(next) => field.handleChange(next ?? "")}
+                  onBlur={field.handleBlur}
+                  isInvalid={
+                    field.state.meta.isTouched &&
+                    field.state.meta.errors.length > 0
+                  }
+                  errors={field.state.meta.errors}
+                  options={user.options}
+                  onSearchChange={user.onSearchChange}
+                  isPending={user.isFetching}
+                  emptyMessage="Không tìm thấy nhân viên"
+                  disabled={disabled}
+                />
+              )}
+            </form.Field>
+          </div>
+        </div>
 
-      {/* Khách hàng & phụ trách tách riêng khỏi lưới 4 cột bên dưới — đây là 2 quyết định "ai"
-          quan trọng nhất của đơn, làm trước khi điền chi tiết ngày/thanh toán/tiền tệ. */}
-      <div className="px-4 py-4 sm:px-5">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-          <Controller
-            control={form.control}
-            name="clientId"
-            render={({ field, fieldState }) => (
-              <ComboboxField
-                id={field.name}
-                label="Khách hàng"
+        <div className="grid grid-cols-1 gap-x-6 gap-y-5 px-4 py-5 sm:grid-cols-2 sm:px-5 lg:grid-cols-4">
+          <form.AppField name="orderDate">
+            {(field) => (
+              <field.DateField
+                label="Ngày đặt hàng"
                 required
-                placeholder="Chọn khách hàng"
-                value={field.value || undefined}
-                onValueChange={(next) => field.onChange(next ?? "")}
-                onBlur={field.onBlur}
-                isInvalid={!!fieldState.error}
-                errors={[fieldState.error]}
-                options={client.options}
-                onSearchChange={client.onSearchChange}
-                isPending={client.isFetching}
-                emptyMessage="Không tìm thấy khách hàng"
                 disabled={disabled}
               />
             )}
-          />
+          </form.AppField>
 
-          <Controller
-            control={form.control}
-            name="assignedUserId"
-            render={({ field, fieldState }) => (
-              <ComboboxField
-                id={field.name}
-                label="Nhân viên kinh doanh"
-                placeholder="Chọn nhân viên kinh doanh"
-                value={field.value || undefined}
-                onValueChange={(next) => field.onChange(next ?? "")}
-                onBlur={field.onBlur}
-                isInvalid={!!fieldState.error}
-                errors={[fieldState.error]}
-                options={user.options}
-                onSearchChange={user.onSearchChange}
-                isPending={user.isFetching}
-                emptyMessage="Không tìm thấy nhân viên"
+          <form.AppField name="dueDate">
+            {(field) => (
+              <field.DateField
+                label="Ngày giao hàng yêu cầu"
+                required
                 disabled={disabled}
               />
             )}
-          />
+          </form.AppField>
+
+          <form.AppField name="consigneeAddress">
+            {(field) => (
+              <field.TextareaField
+                label="Địa chỉ giao hàng"
+                placeholder="Nhập địa chỉ giao hàng"
+                disabled={disabled}
+                className="sm:col-span-2"
+                maxLength={500}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="paymentTerm">
+            {(field) => (
+              <field.SelectField
+                label="Điều khoản thanh toán"
+                placeholder="Chọn điều khoản"
+                options={paymentTermOptions}
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="currency">
+            {(field) => (
+              <field.SelectField
+                label="Tiền tệ"
+                required
+                options={currencyOptions}
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="exchangeRate">
+            {(field) => (
+              <field.NumberField
+                label={`Tỷ giá quy đổi (${currency === Currency.VND ? "so với VND" : "1 " + currency + " = ? VND"})`}
+                required
+                placeholder={exchangeRatePlaceholder}
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="note">
+            {(field) => (
+              <field.TextareaField
+                label="Ghi chú"
+                placeholder="Ghi chú hiển thị trên đơn hàng"
+                disabled={disabled}
+                className="sm:col-span-2 lg:col-span-4"
+                maxLength={1000}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="internalNote">
+            {(field) => (
+              <field.TextareaField
+                label="Ghi chú nội bộ"
+                placeholder="Ghi chú nội bộ (không hiển thị cho khách hàng)"
+                disabled={disabled}
+                className="sm:col-span-2 lg:col-span-4"
+                maxLength={1000}
+              />
+            )}
+          </form.AppField>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 gap-x-6 gap-y-5 px-4 py-5 sm:grid-cols-2 sm:px-5 lg:grid-cols-4">
-        <Controller
-          control={form.control}
-          name="orderDate"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel className="text-xs font-medium text-foreground">
-                Ngày đặt hàng <span className="text-destructive">*</span>
-              </FieldLabel>
-              <DatePicker
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                disabled={disabled}
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="dueDate"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel className="text-xs font-medium text-foreground">
-                Ngày giao hàng yêu cầu{" "}
-                <span className="text-destructive">*</span>
-              </FieldLabel>
-              <DatePicker
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                disabled={disabled}
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="consigneeAddress"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className="sm:col-span-2">
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Địa chỉ giao hàng
-              </FieldLabel>
-              <Textarea
-                {...field}
-                id={field.name}
-                placeholder="Nhập địa chỉ giao hàng"
-                aria-invalid={!!fieldState.error}
-                disabled={disabled}
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="paymentTerm"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Điều khoản thanh toán
-              </FieldLabel>
-              <Select
-                items={paymentTermOptions}
-                value={field.value}
-                onValueChange={field.onChange}
-                disabled={disabled}
-              >
-                <SelectTrigger
-                  id={field.name}
-                  onBlur={field.onBlur}
-                  aria-invalid={!!fieldState.error}
-                  className="h-9 w-full bg-background text-xs"
-                >
-                  <SelectValue placeholder="Chọn điều khoản" />
-                </SelectTrigger>
-                <SelectContent>
-                  {paymentTermOptions.map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value}
-                      className="text-xs"
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="currency"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Tiền tệ <span className="text-destructive">*</span>
-              </FieldLabel>
-              <Select
-                items={currencyOptions}
-                value={field.value}
-                onValueChange={field.onChange}
-                disabled={disabled}
-              >
-                <SelectTrigger
-                  id={field.name}
-                  onBlur={field.onBlur}
-                  aria-invalid={!!fieldState.error}
-                  className="h-9 w-full bg-background text-xs"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {currencyOptions.map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value}
-                      className="text-xs"
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        <ExchangeRateField form={form} disabled={disabled} />
-
-        <Controller
-          control={form.control}
-          name="note"
-          render={({ field, fieldState }) => (
-            <Field
-              data-invalid={!!fieldState.error}
-              className="sm:col-span-2 lg:col-span-4"
-            >
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Ghi chú
-              </FieldLabel>
-              <Textarea
-                {...field}
-                id={field.name}
-                placeholder="Ghi chú hiển thị trên đơn hàng"
-                aria-invalid={!!fieldState.error}
-                disabled={disabled}
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="internalNote"
-          render={({ field, fieldState }) => (
-            <Field
-              data-invalid={!!fieldState.error}
-              className="sm:col-span-2 lg:col-span-4"
-            >
-              <FieldLabel
-                htmlFor={field.name}
-                className="text-xs font-medium text-foreground"
-              >
-                Ghi chú nội bộ
-              </FieldLabel>
-              <Textarea
-                {...field}
-                id={field.name}
-                placeholder="Ghi chú nội bộ (không hiển thị cho khách hàng)"
-                aria-invalid={!!fieldState.error}
-                disabled={disabled}
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-      </div>
-    </div>
-  )
-}
+    )
+  },
+})

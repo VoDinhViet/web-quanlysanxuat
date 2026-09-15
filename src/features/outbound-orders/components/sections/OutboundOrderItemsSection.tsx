@@ -67,7 +67,7 @@ const itemColumns = col.columns([
     meta: { headerClassName: "min-w-44" },
     cell: ({ row }) => (
       <div className="flex flex-col gap-0.5">
-        <span className="font-medium text-foreground text-xs leading-tight">
+        <span className="text-xs leading-tight font-medium text-foreground">
           {row.original.item.name}
         </span>
         <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
@@ -140,7 +140,8 @@ const itemColumns = col.columns([
     header: "Có thể giao",
     meta: {
       headerClassName: "w-24 text-right",
-      cellClassName: "text-right tabular-nums font-semibold text-emerald-600 dark:text-emerald-400",
+      cellClassName:
+        "text-right tabular-nums font-semibold text-emerald-600 dark:text-emerald-400",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
@@ -229,10 +230,10 @@ export function OutboundOrderItemsSection({
           </TableBody>
           <TableFooter>
             <TableRow className="h-12">
-              <TableCell colSpan={7} className="font-semibold text-right">
+              <TableCell colSpan={7} className="text-right font-semibold">
                 Tổng SL giao
               </TableCell>
-              <TableCell className="text-right font-bold tabular-nums text-primary">
+              <TableCell className="text-right font-bold text-primary tabular-nums">
                 {numberFmt.format(totalQuantity)}
               </TableCell>
               <TableCell />

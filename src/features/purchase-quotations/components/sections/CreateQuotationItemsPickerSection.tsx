@@ -127,14 +127,8 @@ export const CreateQuotationItemsPickerSection = withForm({
           return
         }
 
-        const remaining = Math.max(
-          0,
-          row.quantity - (row.quotedQuantity ?? 0)
-        )
-        if (
-          row.status === PurchaseLedgerStatus.COMPLETED ||
-          remaining <= 0
-        ) {
+        const remaining = Math.max(0, row.quantity - (row.quotedQuantity ?? 0))
+        if (row.status === PurchaseLedgerStatus.COMPLETED || remaining <= 0) {
           return
         }
 
