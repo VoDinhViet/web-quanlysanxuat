@@ -8,7 +8,8 @@ import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { Position } from "@/lib/types/position.type"
 
 const getPositionsSchema = z.object({
-  departmentId: z.uuid(),
+  departmentId: z.uuid().optional(),
+  q: z.string().optional(),
 })
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
@@ -28,9 +29,12 @@ export const getPositions = createServerFn({ method: "GET" })
   .validator(getPositionsSchema)
   .handler(async ({ data }): Promise<Position[]> => {
     try {
+      // `departmentId` is optional at the wire level so the Chức vụ admin screen can list every
+      // position — but the job-info dependent select always passes one (BE
+      // `ensurePositionInDepartment` requires the pair to match).
       const response = await http.get<PaginatedResponse<Position>>(
         "/api/positions",
-        { params: { limit: 100, departmentId: data.departmentId } }
+        { params: { limit: 100, departmentId: data.departmentId, q: data.q } }
       )
 
       return response.data.data

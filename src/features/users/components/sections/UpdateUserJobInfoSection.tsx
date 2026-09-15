@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select"
 import { withForm } from "@/hooks/use-app-form"
 import { departmentQueryOptions } from "@/features/departments/api"
-import { positionsQueryOptions } from "@/features/users/api/options"
+import { positionOptionsQueryOptions } from "@/features/positions/api"
 import { updateUserFormDefaultValues } from "@/features/users/schemas/update-user.schema"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -35,10 +35,10 @@ export const UpdateUserJobInfoSection = withForm({
     const departmentId = useField({ form, name: "departmentId" }).state.value
     const positionId = useField({ form, name: "positionId" }).state.value
     // Chức vụ phụ thuộc phòng ban (BE `ensurePositionInDepartment` bắt buộc cặp khớp nhau). Route
-    // loader đã prefetch đúng cặp ban đầu (`positionsQueryOptions(user.department.id)`), nên lần
-    // render đầu resolve ngay từ cache — chỉ đổi phòng ban mới thực sự phải tải lại.
+    // loader đã prefetch đúng cặp ban đầu (`positionOptionsQueryOptions(user.department.id)`),
+    // nên lần render đầu resolve ngay từ cache — chỉ đổi phòng ban mới thực sự phải tải lại.
     const positionsQuery = useQuery({
-      ...positionsQueryOptions(departmentId),
+      ...positionOptionsQueryOptions(departmentId),
       enabled: !!departmentId,
     })
     const positions = useMemo(

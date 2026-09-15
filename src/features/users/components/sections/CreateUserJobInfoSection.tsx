@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select"
 import { withForm } from "@/hooks/use-app-form"
 import { departmentQueryOptions } from "@/features/departments/api"
-import { positionsQueryOptions } from "@/features/users/api/options"
+import { positionOptionsQueryOptions } from "@/features/positions/api"
 import { createUserFormDefaultValues } from "@/features/users/schemas/create-user.schema"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -37,7 +37,7 @@ export const CreateUserJobInfoSection = withForm({
     // Chức vụ phụ thuộc phòng ban (BE `ensurePositionInDepartment` bắt buộc cặp khớp nhau) nên
     // chỉ tải khi đã chọn phòng ban — không thể prefetch ở loader vì chưa biết phòng ban lúc mount.
     const positionsQuery = useQuery({
-      ...positionsQueryOptions(departmentId),
+      ...positionOptionsQueryOptions(departmentId),
       enabled: !!departmentId,
     })
     const positions = useMemo(

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 import { toast } from "sonner"
@@ -18,11 +18,12 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { departmentQueryOptions } from "@/features/departments/api"
 import { exportUsers } from "@/features/users/api/server-functions/export-users.api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { employeeStatusLabels } from "@/lib/types/user.type"
 import type { EmployeeStatus } from "@/lib/types/user.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { SelectOption } from "@/lib/utils"
 
 const statusFilterOptions: SelectOption[] = [
@@ -34,6 +35,12 @@ export function UsersTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/users/" })
   const navigate = useNavigate({ from: "/manage/users/" })
   const [q, setQ] = useState(search.q ?? "")
+
+  const departmentsQuery = useQuery(departmentQueryOptions())
+  const departmentFilterOptions: SelectOption[] = [
+    { value: "all", label: "Tất cả" },
+    ...buildSelectOptions(departmentsQuery.data ?? []),
+  ]
 
   const exportUsersFn = useServerFn(exportUsers)
   const exportMutation = useMutation({
@@ -64,12 +71,30 @@ export function UsersTableFilter() {
     })
   }
 
+  const handleDepartmentChange = (value: string) => {
+    const departmentId = value === "all" ? undefined : value
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        departmentId,
+        positionId: undefined,
+        page: 1,
+      }),
+    })
+  }
+
   const resetFilters = () => {
     handleSearch.cancel()
     setQ("")
     void navigate({
       search: (prev) => {
-        const { q: _q, status: _status, ...rest } = prev
+        const {
+          q: _q,
+          status: _status,
+          departmentId: _departmentId,
+          positionId: _positionId,
+          ...rest
+        } = prev
         return { ...rest, page: 1 }
       },
     })
@@ -78,7 +103,7 @@ export function UsersTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.8fr)_minmax(8rem,0.9fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(8rem,0.8fr)_minmax(10rem,1fr)]">
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="users-search-input"
@@ -123,6 +148,37 @@ export function UsersTableFilter() {
               <SelectContent>
                 <SelectGroup>
                   {statusFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="users-department-select"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Phòng ban
+            </Label>
+            <Select
+              items={departmentFilterOptions}
+              value={search.departmentId ?? "all"}
+              onValueChange={(value) =>
+                value !== null && handleDepartmentChange(value)
+              }
+            >
+              <SelectTrigger
+                id="users-department-select"
+                className="w-full text-xs"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {departmentFilterOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>

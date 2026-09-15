@@ -25,6 +25,8 @@ describe("canAccessRoute", () => {
     expect(canAccessRoute("/manage/orders", [SUPER_PERMISSION])).toBe(true)
     expect(canAccessRoute("/manage/users", [SUPER_PERMISSION])).toBe(true)
     expect(canAccessRoute("/manage/iqc", [SUPER_PERMISSION])).toBe(true)
-    expect(canAccessRoute("/manage/outbound-orders", [SUPER_PERMISSION])).toBe(true)
+    expect(canAccessRoute("/manage/outbound-orders", [SUPER_PERMISSION])).toBe(
+      true
+    )
   })
 })

@@ -39,6 +39,9 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/clients/create": "clients:create",
   "/manage/clients/$clientId/update": "clients:update",
 
+  "/manage/departments": "departments:read",
+  "/manage/departments/$departmentId": "departments:read",
+
   "/manage/inventory-issues": "inventory:read",
   "/manage/inventory-issues/$issueId": "inventory:read",
 
@@ -175,41 +178,12 @@ export function requiredPermissionForPath(
 }
 
 /**
- * Route chỉ tồn tại khi chạy `pnpm dev`. Build production có `import.meta.env.DEV = false`
- * ngay lúc compile, nên router guard đá về `/manage` còn sidebar bỏ luôn mục menu — cùng
- * hai chốt chặn mà phân quyền đang dùng. Màn Phân quyền sửa thẳng catalogue quyền của hệ
- * thống, chưa mở cho người dùng thật trong giai đoạn nghiệm thu.
- *
- * Khai `ReadonlySet<string>` (không phải `Set<ManageRoutePath>`) vì `match.fullPath` trải
- * rộng hơn `ManageRoutePath` — cùng lý do với `routePermissionsByPath` ở trên.
- */
-const devOnlyRoutes: ReadonlySet<string> = new Set<ManageRoutePath>([
-  "/manage/roles",
-  "/manage/roles/create",
-  "/manage/roles/$roleId/update",
-])
-
-/**
- * Route này có tồn tại trong bản build hiện tại không. Chỉ `false` với `devOnlyRoutes` ở
- * build production. Đọc kèm `requiredPermissionForPath` ở cả guard lẫn sidebar, nên một
- * route đã ẩn thì không nơi nào mở hay link tới được.
- */
-export function isRouteAvailable(path: MatchedRoutePath): boolean {
-  return import.meta.env.DEV || !devOnlyRoutes.has(path)
-}
-
-/**
  * Cho biết người dùng với danh sách quyền `permissions` có được phép truy cập `path` hay không.
- * Kết hợp cả kiểm tra tính khả dụng theo môi trường (`isRouteAvailable`) và quyền truy cập (`requiredPermissionForPath`).
  */
 export function canAccessRoute(
   path: ManageRoutePath,
   permissions: string[]
 ): boolean {
-  if (!isRouteAvailable(path)) {
-    return false
-  }
-
   const required = requiredPermissionForPath(path)
   return required === null || hasPermission(permissions, required)
 }

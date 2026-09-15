@@ -5,6 +5,7 @@ import { useLocation } from "@tanstack/react-router"
 import {
   BookText,
   Boxes,
+  Building,
   Building2,
   ClipboardCheck,
   ClipboardList,
@@ -244,6 +245,7 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/users",
       },
       { label: "Phân quyền", icon: ShieldCheck, href: "/manage/roles" },
+      { label: "Phòng ban", icon: Building, href: "/manage/departments" },
     ],
   },
 ]

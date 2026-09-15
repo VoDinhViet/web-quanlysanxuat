@@ -15,6 +15,16 @@ export const PERMISSION_CODES = [
   "roles:update",
   "roles:delete",
 
+  "departments:read",
+  "departments:create",
+  "departments:update",
+  "departments:delete",
+
+  "positions:read",
+  "positions:create",
+  "positions:update",
+  "positions:delete",
+
   "clients:read",
   "clients:create",
   "clients:update",
@@ -117,6 +127,16 @@ export const permissionLabels: Record<PermissionCode, string> = {
   "roles:update": "Sửa vai trò",
   "roles:delete": "Xoá vai trò",
 
+  "departments:read": "Xem phòng ban",
+  "departments:create": "Tạo phòng ban",
+  "departments:update": "Sửa phòng ban",
+  "departments:delete": "Xoá phòng ban",
+
+  "positions:read": "Xem chức vụ",
+  "positions:create": "Tạo chức vụ",
+  "positions:update": "Sửa chức vụ",
+  "positions:delete": "Xoá chức vụ",
+
   "clients:read": "Xem khách hàng",
   "clients:create": "Tạo khách hàng",
   "clients:update": "Sửa khách hàng",
@@ -202,7 +222,7 @@ export const permissionLabels: Record<PermissionCode, string> = {
   "reports:read": "Xem báo cáo tổng quan",
 }
 
-type PermissionGroup = {
+export type PermissionGroup = {
   label: string
   codes: PermissionCode[]
 }
@@ -215,6 +235,24 @@ export const permissionGroups: PermissionGroup[] = [
   {
     label: "Phân quyền",
     codes: ["roles:read", "roles:create", "roles:update", "roles:delete"],
+  },
+  {
+    label: "Phòng ban",
+    codes: [
+      "departments:read",
+      "departments:create",
+      "departments:update",
+      "departments:delete",
+    ],
+  },
+  {
+    label: "Chức vụ",
+    codes: [
+      "positions:read",
+      "positions:create",
+      "positions:update",
+      "positions:delete",
+    ],
   },
   {
     label: "Khách hàng",
