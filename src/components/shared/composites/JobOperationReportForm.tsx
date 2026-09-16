@@ -26,7 +26,7 @@ type JobOperationReportFormProps = {
 }
 
 // Nội dung dialog "Nhập báo cáo hoàn thành" — dùng chung bởi 2 màn (qua
-// JobOperationReportDialog.tsx bọc ngoài): bảng "DANH SÁCH PART" của "Thực hiện sản xuất"
+// JobOperationReportDialog.tsx bọc ngoài): bảng "DANH SÁCH COMPONENT" của "Thực hiện sản xuất"
 // (ProductionExecutionPartsTableColumns.tsx) và bảng "Công đoạn sản xuất" của Job detail
 // (ProductionJobOperationsTable.tsx). Tên component khớp be-quanlysanxuat's
 // `createJobOperationReport` (ProductionExecutionService).

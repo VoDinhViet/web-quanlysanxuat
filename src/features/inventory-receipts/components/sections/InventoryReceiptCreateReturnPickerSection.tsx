@@ -18,7 +18,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { materialsQueryOptions } from "@/features/materials/api"
+import { consumablesQueryOptions } from "@/features/consumables/api"
 import { buildInventoryReceiptReturnPickerColumns } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateReturnPickerColumns"
 import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
 import { withForm } from "@/hooks/use-app-form"
@@ -26,22 +26,22 @@ import { ItemStatus } from "@/lib/types/item.type"
 import { inventoryReceiptItemDefaultValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
 import { cn } from "@/lib/utils"
 import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
-import type { Material } from "@/lib/types/material.type"
+import type { Consumable } from "@/lib/types/consumable.type"
 import type { PageSize } from "@/components/shared/composites/Pagination"
 
 function buildPickedReturnItem(
-  material: Material
+  consumable: Consumable
 ): InventoryReceiptItemFormValue {
   return {
     ...inventoryReceiptItemDefaultValue,
-    itemId: material.id,
-    itemLabel: `${material.code} — ${material.name}`,
-    itemUnit: material.unit.name,
+    itemId: consumable.id,
+    itemLabel: `${consumable.code} — ${consumable.name}`,
+    itemUnit: consumable.unit.name,
   }
 }
 
 // Bước ② của wizard "Khách hàng" — checkbox picker rập khuôn
-// PurchaseRequestCreateMaterialPickerSection.tsx/CreateInventoryRequisitionPickerSection.tsx. Lọc
+// PurchaseRequestCreateConsumablePickerSection.tsx/CreateInventoryRequisitionPickerSection.tsx. Lọc
 // sẵn theo `clientId` đã chọn ở bước ① (vật tư master data đã gắn `client` — không cần combobox
 // khách hàng riêng như bản purchase-requests, vốn chưa biết trước khách hàng nào).
 export const InventoryReceiptCreateReturnPickerSection = withForm({
@@ -57,8 +57,8 @@ export const InventoryReceiptCreateReturnPickerSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
-    const materialsQuery = useQuery({
-      ...materialsQueryOptions({
+    const consumablesQuery = useQuery({
+      ...consumablesQueryOptions({
         page,
         limit: pageSize,
         q: debouncedQ.trim() || undefined,
@@ -70,22 +70,22 @@ export const InventoryReceiptCreateReturnPickerSection = withForm({
     })
 
     const toggleRow = useCallback(
-      (material: Material) => {
-        const index = items.findIndex((item) => item.itemId === material.id)
+      (consumable: Consumable) => {
+        const index = items.findIndex((item) => item.itemId === consumable.id)
         if (index >= 0) {
           itemsField.removeValue(index)
         } else {
-          itemsField.pushValue(buildPickedReturnItem(material))
+          itemsField.pushValue(buildPickedReturnItem(consumable))
         }
       },
       [items, itemsField]
     )
 
     const rows = useMemo(
-      () => materialsQuery.data?.data ?? [],
-      [materialsQuery.data]
+      () => consumablesQuery.data?.data ?? [],
+      [consumablesQuery.data]
     )
-    const pagination = materialsQuery.data?.pagination
+    const pagination = consumablesQuery.data?.pagination
     const pickedIds = useMemo(
       () => new Set(items.map((item) => item.itemId)),
       [items]
@@ -194,7 +194,7 @@ export const InventoryReceiptCreateReturnPickerSection = withForm({
                       title={
                         !clientId
                           ? "Chọn khách hàng ở bước ① trước"
-                          : materialsQuery.isPending
+                          : consumablesQuery.isPending
                             ? "Đang tải..."
                             : "Không tìm thấy vật tư nào"
                       }

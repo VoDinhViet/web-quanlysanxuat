@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildCreateOutsourcingReceiptItemColumns } from "@/features/outsourcing-receipts/components/composites/CreateOutsourcingReceiptItemsColumns"
-import { sumOutsourcingReceiptItemTotals } from "@/features/outsourcing-receipts/logic/outsourcing-receipt-item-totals"
+import { sumOutsourcingReceiptItemTotals } from "@/features/outsourcing-receipts/constants/outsourcing-receipt-item-totals"
 import { createOutsourcingReceiptFormDefaultValues } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import { withForm } from "@/hooks/use-app-form"
 

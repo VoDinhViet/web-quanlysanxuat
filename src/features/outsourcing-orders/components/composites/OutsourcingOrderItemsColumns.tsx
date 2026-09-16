@@ -39,10 +39,10 @@ export const outsourcingOrderItemsColumns = itemColumnHelper.columns([
     cell: ({ row }) => (
       <div>
         <p className="truncate font-medium text-foreground">
-          {row.original.item.name}
+          {row.original.itemName}
         </p>
         <p className="truncate font-mono text-[10px] text-muted-foreground">
-          {row.original.item.code}
+          {row.original.itemCode}
         </p>
       </div>
     ),
@@ -58,7 +58,7 @@ export const outsourcingOrderItemsColumns = itemColumnHelper.columns([
     id: "unit",
     header: "ĐVT",
     meta: { headerClassName: "w-14", cellClassName: "text-muted-foreground" },
-    cell: ({ row }) => row.original.unit.name,
+    cell: ({ row }) => row.original.unit?.name ?? "—",
   }),
   itemColumnHelper.accessor("quantity", {
     header: "SL gửi",

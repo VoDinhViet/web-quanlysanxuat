@@ -6,5 +6,4 @@ export { itemsQueryOptions } from "@/features/products/api/options/items.options
 export { itemQueryOptions } from "@/features/products/api/options/item.options"
 export { itemBomQueryOptions } from "@/features/products/api/options/item-bom.options"
 export { itemIssuesQueryOptions } from "@/features/products/api/options/item-issues.options"
-export { itemOperationsQueryOptions } from "@/features/products/api/options/item-operations.options"
 export { itemOptionsQueryOptions } from "@/features/products/api/options/item-options.options"

@@ -1,7 +1,7 @@
 import { History } from "lucide-react"
 
 import { TimelineCard } from "@/components/shared/composites/TimelineCard"
-import { buildPaymentRequestTimeline } from "@/features/payment-requests/logic/payment-request-timeline"
+import { buildPaymentRequestTimeline } from "@/features/payment-requests/constants/payment-request-timeline"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestStatusHistoryCardProps = {

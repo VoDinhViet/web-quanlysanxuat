@@ -11,7 +11,7 @@ type InventoryProductInfoCardProps = {
 // The facts grid (Mã/ĐVT/Khách hàng/Ghi chú), plain (no card fill) — sits beside
 // InventoryProductStatTiles.tsx's tinted stock-overview card, which stays tinted since it's the
 // one panel worth visually calling out. Deliberately no "Màu / Bề mặt" or "Tiêu chuẩn" rows —
-// confirmed RM-only fields (Material.colorSurface/technicalStandard) that don't exist on a
+// confirmed CONSUMABLE-only fields (Consumable.colorSurface/technicalStandard) that don't exist on a
 // finished-goods Item.
 export function InventoryProductInfoCard({
   item,

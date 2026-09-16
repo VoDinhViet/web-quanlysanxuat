@@ -1,5 +1,5 @@
 /**
- * Đơn vị tính — dùng chung cho mọi field "unit" (product / material / BOM đều
+ * Đơn vị tính — dùng chung cho mọi field "unit" (product / consumable / BOM đều
  * tham chiếu cùng {id, code, name} này, mirrors the backend's UnitRefResDto).
  * Đặt ở global types vì nhiều feature dùng lại.
  */
@@ -11,10 +11,10 @@ export type Unit = {
 
 /** Only the two scopes the Đơn vị tính admin screen offers — the backend's `UnitScope` also has
  *  `SEMI_FINISHED`, but no module reads it yet, so it isn't exposed here. */
-export type UnitScope = "MATERIAL" | "PRODUCT"
+export type UnitScope = "CONSUMABLE" | "PRODUCT"
 
 export const unitScopeLabels: Record<UnitScope, string> = {
-  MATERIAL: "Vật tư",
+  CONSUMABLE: "Vật tư",
   PRODUCT: "Sản phẩm",
 }
 

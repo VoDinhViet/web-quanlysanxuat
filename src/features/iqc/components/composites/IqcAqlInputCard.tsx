@@ -24,6 +24,10 @@ type IqcAqlInputCardProps = {
 // lỗi, và 3 field ngữ cảnh còn lại (tiêu chuẩn/người kiểm/dụng cụ đo) — ảnh mẫu bỏ sót nhóm này
 // nhưng đã có sẵn dữ liệu, giữ lại thay vì thụt lùi.
 export function IqcAqlInputCard({ form, iqc, disabled }: IqcAqlInputCardProps) {
+  // `iqc.item` null khi lô kiểm là node COMPONENT nhận về từ OS-IN (không có đvt) — bỏ hẳn phần
+  // ngoặc đơn thay vì in một ngoặc rỗng.
+  const unitSuffix = iqc.item ? ` (${iqc.item.unit.name})` : ""
+
   return (
     <IqcDetailSectionCard
       icon={ClipboardCheck}
@@ -78,7 +82,7 @@ export function IqcAqlInputCard({ form, iqc, disabled }: IqcAqlInputCardProps) {
             <form.AppField name="sampleSize">
               {(field) => (
                 <field.NumberField
-                  label={`Số lượng bốc mẫu (${iqc.item.unit.name})`}
+                  label={`Số lượng bốc mẫu${unitSuffix}`}
                   required
                   placeholder="VD: 32"
                   thousandSeparator={false}
@@ -90,7 +94,7 @@ export function IqcAqlInputCard({ form, iqc, disabled }: IqcAqlInputCardProps) {
             <form.AppField name="defectQty">
               {(field) => (
                 <field.NumberField
-                  label={`Số lượng NG (${iqc.item.unit.name})`}
+                  label={`Số lượng NG${unitSuffix}`}
                   required
                   placeholder="VD: 0"
                   thousandSeparator={false}

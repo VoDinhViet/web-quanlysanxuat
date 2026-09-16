@@ -5,7 +5,7 @@ import { z } from "zod"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import { ItemStatus, ItemType } from "@/lib/types/item.type"
+import { ItemStatus } from "@/lib/types/item.type"
 import type { Item } from "@/lib/types/item.type"
 import { optional } from "@/lib/zod-transforms"
 
@@ -26,26 +26,19 @@ const getItemsSchema = z.object({
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).optional(),
   q: optional(z.string().trim()),
-  type: z.enum(ItemType).optional(),
   clientId: z.string().trim().min(1).optional(),
   status: z.enum(ItemStatus).optional(),
   order: z.enum(["ASC", "DESC"]).optional(),
 })
 
-// The backend's `GET /api/items` `type` filter takes an array (comma-separated on the wire) so
-// it can express "FG or WIP" in one call — this feature's own filter stays a single optional
-// value (see products-search.schema.ts), defaulting to both FG and WIP so RM never leaks into
-// the products list.
+// Trang Sản phẩm chỉ còn liệt kê FG (`docs/decisions/wip-removal.md`) — luôn gửi cứng
+// `type=FG`, không còn field lọc "Loại sản phẩm" trên UI.
 export const getItems = createServerFn({ method: "GET" })
   .validator(getItemsSchema)
   .handler(async ({ data }): Promise<PaginatedResponse<Item>> => {
     try {
-      const { type, ...rest } = data
       const response = await http.get<PaginatedResponse<Item>>("/api/items", {
-        params: {
-          ...rest,
-          type: (type ? [type] : [ItemType.FG, ItemType.WIP]).join(","),
-        },
+        params: { ...data, type: "FG" },
       })
 
       return response.data

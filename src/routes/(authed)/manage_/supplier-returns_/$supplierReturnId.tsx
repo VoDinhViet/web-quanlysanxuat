@@ -25,10 +25,14 @@ export const Route = createFileRoute(
         ...supplierQueryOptions(detail.supplier.id),
         staleTime: "static",
       }),
-      context.queryClient.query({
-        ...itemQueryOptions(detail.item.id),
-        staleTime: "static",
-      }),
+      // `item` null khi trả node COMPONENT nhận về từ OS-IN (không phải một item) — không có gì để
+      // prefetch, SupplierReturnItemInfoSection tự fallback về itemCode/itemName snapshot.
+      detail.item
+        ? context.queryClient.query({
+            ...itemQueryOptions(detail.item.id),
+            staleTime: "static",
+          })
+        : Promise.resolve(),
     ])
   },
   component: SupplierReturnDetailPage,

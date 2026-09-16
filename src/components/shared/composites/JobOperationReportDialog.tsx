@@ -17,7 +17,7 @@ type JobOperationReportDialogProps = {
 // unmounts nội dung khi đóng, nên form (và state mutation của nó) luôn khởi tạo mới mỗi lần mở,
 // cùng idiom OutboundOrderRejectDialog.tsx.
 //
-// Dùng chung bởi 2 màn (production-execution's "DANH SÁCH PART" và production-jobs' "Công đoạn
+// Dùng chung bởi 2 màn (production-execution's "DANH SÁCH COMPONENT" và production-jobs' "Công đoạn
 // sản xuất") — cả hai render đúng 1 entity (`ProductionJobOperation`), 1 mutation, không có prop
 // biến thể nào giữa 2 nơi gọi (xem ghi chú trong .claude/rules/ui-kit.md). Data layer (schema/
 // server-function/mutation hook) ở lại `production-jobs` (chủ sở hữu entity); component này gọi

@@ -21,7 +21,7 @@ import {
   productionOrderLogsQueryOptions,
   productionOrderQueryOptions,
 } from "@/features/production-orders/api/options"
-import { getChangedProductionItems } from "@/features/production-orders/logic/production-order-decision"
+import { getChangedProductionItems } from "@/features/production-orders/constants/production-order-decision"
 import { updateProductionOrder } from "@/features/production-orders/api/server-functions/update-production-order.api"
 import { updateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
 import type { UpdateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"

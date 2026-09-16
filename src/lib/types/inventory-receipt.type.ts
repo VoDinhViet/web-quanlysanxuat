@@ -69,27 +69,27 @@ export const inventoryReceiptTypeLabels: Record<InventoryReceiptType, string> =
     [InventoryReceiptType.RETURN]: "Từ khách hàng",
   }
 
-export type InventoryReceiptItemType = "RM" | "FG"
+export type InventoryReceiptItemType = "CONSUMABLE" | "FG"
 
 export const inventoryReceiptItemTypeLabels: Record<
   InventoryReceiptItemType,
   string
 > = {
-  RM: "Vật tư",
+  CONSUMABLE: "Vật tư",
   FG: "Thành phẩm",
 }
 
-// Loại vật phẩm hợp lệ cho combobox chọn dòng — PURCHASE là nguyên vật liệu mua về (RM); RETURN là
-// vật tư DO khách hàng cung cấp cho gia công (RM, không phải khách trả lại hàng đã mua — xem
+// Loại vật phẩm hợp lệ cho combobox chọn dòng — PURCHASE là nguyên vật liệu mua về (CONSUMABLE); RETURN là
+// vật tư DO khách hàng cung cấp cho gia công (CONSUMABLE, không phải khách trả lại hàng đã mua — xem
 // InventoryReceiptCreateReturnHeaderSection.tsx); chỉ PRODUCTION là thành phẩm (hàng ra từ Job sản
 // xuất). Không receiptType nào trộn cả hai loại trên cùng 1 phiếu. Dùng bởi
 // InventoryReceiptCreateGenericItemsSection.tsx/InventoryReceiptUpdateGenericItemsSection.tsx để
-// truyền đúng `type` xuống GET /items/options — không dùng `ItemType` (chỉ FG/WIP, item.type.ts)
-// vì RM không nằm trong union đó.
+// truyền đúng `type` xuống GET /items/options — không dùng `ItemType` (chỉ FG, item.type.ts)
+// vì CONSUMABLE không nằm trong union đó.
 export function resolveInventoryReceiptItemType(
   receiptType: InventoryReceiptType
 ): InventoryReceiptItemType {
-  return receiptType === InventoryReceiptType.PRODUCTION ? "FG" : "RM"
+  return receiptType === InventoryReceiptType.PRODUCTION ? "FG" : "CONSUMABLE"
 }
 
 // Nhãn phân loại tài sản — chọn tay độc lập, không tách inventory_balances theo chủ sở hữu, xem

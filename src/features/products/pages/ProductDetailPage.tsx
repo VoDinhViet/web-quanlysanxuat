@@ -31,9 +31,9 @@ function getProductDefaultValues(product: Item): UpdateProductSchema {
   return {
     itemId: product.id,
     code: product.code,
+    revision: product.revision,
     name: product.name,
     unitId: product.unit.id,
-    type: product.type,
     clientId: product.client?.id ?? "",
     image: product.image,
     files: product.files.map((itemFile) => itemFile.file),
@@ -88,7 +88,7 @@ export function ProductDetailPage() {
         breadcrumbs={[
           { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản phẩm", href: "/manage/products" },
-          { label: product.code },
+          { label: `${product.code} · ${product.revision}` },
         ]}
       />
 
@@ -140,7 +140,7 @@ export function ProductDetailPage() {
                   <ProductBomTab product={product} />
                 </TabsContent>
 
-                <TabsContent value="materials" className="m-0 outline-none">
+                <TabsContent value="consumables" className="m-0 outline-none">
                   <ProductIssuesTab product={product} />
                 </TabsContent>
               </div>

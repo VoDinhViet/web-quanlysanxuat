@@ -45,7 +45,7 @@ export function resolveDropRejectionMessage(
 ): string | null {
   switch (rejections[0]?.errors[0]?.code) {
     case ErrorCode.FileInvalidType:
-      return "Chỉ chấp nhận ảnh hoặc PDF/DOCX/XLSX."
+      return "Định dạng file không được hỗ trợ."
     case ErrorCode.FileTooLarge:
       return "Kích thước file vượt quá giới hạn cho phép."
     default:

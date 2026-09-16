@@ -19,6 +19,11 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 export function SupplierReturnDetailHeader({
   supplierReturn,
 }: SupplierReturnDetailHeaderProps) {
+  // `item` null khi trả node COMPONENT nhận về từ OS-IN (không có đvt) — bỏ hẳn hậu tố đơn vị.
+  const unitSuffix = supplierReturn.item
+    ? ` ${supplierReturn.item.unit.name}`
+    : ""
+
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
       <div className="flex min-w-0 flex-col gap-4">
@@ -46,15 +51,15 @@ export function SupplierReturnDetailHeader({
             value={
               <span>
                 <span className="font-mono text-primary">
-                  {supplierReturn.item.code}
+                  {supplierReturn.itemCode}
                 </span>{" "}
-                · {supplierReturn.item.name}
+                · {supplierReturn.itemName}
               </span>
             }
           />
           <MetaField
             label="SL trả"
-            value={`${quantityFormatter.format(supplierReturn.quantity)} ${supplierReturn.item.unit.name}`}
+            value={`${quantityFormatter.format(supplierReturn.quantity)}${unitSuffix}`}
           />
           <MetaField
             label="Ngày tạo phiếu"

@@ -10,7 +10,7 @@ export type ProductionJobDetailTab = (typeof productionJobDetailTabs)[number]
 
 // The active tab is shareable state, so it lives in the URL rather than useState (see
 // .claude/rules/forms-and-ui.md). `.catch` keeps a hand-mangled `?tab=` from crashing the route
-// — an old `?tab=materials` link (pre-rename) also falls back to "info" this way.
+// — an old `?tab=consumables` link (pre-rename) also falls back to "info" this way.
 //
 // `page`/`limit`/`q` back the "bom" tab's list (GET .../bom) — the only tab with pagination, same
 // idiom as product-detail-search.schema.ts. They stay `.optional()` so the other two tabs' links

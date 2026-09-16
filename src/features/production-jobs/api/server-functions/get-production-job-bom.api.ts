@@ -30,7 +30,7 @@ const getProductionJobBomSchema = z.object({
   q: optional(z.string().trim()),
 })
 
-// Tab "BOM"'s source — GET /production-jobs/:jobId/bom returns the Job's material demand
+// Tab "BOM"'s source — GET /production-jobs/:jobId/bom returns the Job's consumable demand
 // (paginated), NOT the BOM tree despite the route's name. See ProductionJobIssue's doc comment.
 export const getProductionJobBom = createServerFn({ method: "GET" })
   .validator(getProductionJobBomSchema)

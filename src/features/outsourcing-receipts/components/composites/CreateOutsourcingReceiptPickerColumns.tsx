@@ -60,7 +60,7 @@ export function buildCreateOutsourcingReceiptPickerColumns({
             checked={pickedIds.has(row.original.id)}
             disabled={disabled || isOtherSupplier || isExhausted}
             onCheckedChange={() => onToggleRow(row.original)}
-            aria-label={`Chọn ${row.original.item.name}`}
+            aria-label={`Chọn ${row.original.itemName}`}
           />
         )
       },
@@ -112,10 +112,10 @@ export function buildCreateOutsourcingReceiptPickerColumns({
       cell: ({ row }) => (
         <div>
           <p className="text-xs font-semibold text-foreground">
-            {row.original.item.name}
+            {row.original.itemName}
           </p>
           <p className="font-mono text-[11px] text-muted-foreground">
-            {row.original.item.code}
+            {row.original.itemCode}
           </p>
         </div>
       ),
@@ -124,7 +124,7 @@ export function buildCreateOutsourcingReceiptPickerColumns({
       header: "Công đoạn",
       meta: { headerClassName: "min-w-32" },
     }),
-    pendingOrderItemColumnHelper.accessor((row) => row.unit.name, {
+    pendingOrderItemColumnHelper.accessor((row) => row.unit?.name ?? "—", {
       id: "unitName",
       header: "ĐVT",
       meta: {

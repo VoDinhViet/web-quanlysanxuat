@@ -36,7 +36,7 @@ export const CreateOrderSelectItemsStep = withForm({
   render: function Render({ form }) {
     // `useField`, không phải `form.Field`'s render-prop — useTable/useMemo dưới là hook thật,
     // chỉ gọi được ở top level component, không phải trong callback render-prop lồng nhau. Cùng
-    // idiom PurchaseRequestCreateMaterialPickerSection.tsx.
+    // idiom PurchaseRequestCreateConsumablePickerSection.tsx.
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
     const selectedItemIds = useMemo(

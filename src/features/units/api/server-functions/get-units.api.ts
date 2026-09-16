@@ -20,7 +20,7 @@ function resolveGetUnitsErrorMessage(error: unknown): string {
 }
 
 const getUnitsSchema = z.object({
-  scope: z.enum(["MATERIAL", "PRODUCT"]).optional(),
+  scope: z.enum(["CONSUMABLE", "PRODUCT"]).optional(),
   q: z.string().optional(),
 })
 
@@ -30,7 +30,7 @@ export const getUnits = createServerFn({ method: "GET" })
     try {
       // `scope` is optional at the wire level so the Đơn vị tính admin screen
       // can list every unit — but `unitOptionsQueryOptions` (the dropdown
-      // materials/products read) always passes one: omitting it there would
+      // consumables/products read) always passes one: omitting it there would
       // let a user pick a unit whose create/update then rejects with
       // unit.error.scope_mismatch, so filter at the source instead.
       //

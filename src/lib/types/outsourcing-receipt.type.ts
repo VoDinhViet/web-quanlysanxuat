@@ -32,8 +32,8 @@ export const outsourcingReceiptStatusDescriptions: Record<
 }
 
 // Mirrors OutsourcingReceiptItemResDto (1 dòng của phiếu — mỗi dòng ứng với 1 dòng OS-OUT nguồn).
-// `unit` là field riêng, không lồng trong `item` (BE tách ItemRefResDto/UnitResDto thay vì
-// ItemUnitRefResDto trước đây — cùng thay đổi ở OutsourcingOrderItem, xem outsourcing-order.type.ts).
+// `itemCode`/`itemName` là snapshot copy từ dòng OS-OUT, nguồn hiển thị chính; `item`/`unit` chỉ
+// có khi node là CONSUMABLE (cùng quy ước OutsourcingOrderItem, xem outsourcing-order.type.ts).
 export type OutsourcingReceiptItem = {
   id: string
   outsourcingOrder: {
@@ -42,8 +42,10 @@ export type OutsourcingReceiptItem = {
     status: InventoryDocumentStatus
     sendDate: string
   }
-  item: { id: string; code: string; name: string }
-  unit: Unit
+  itemCode: string
+  itemName: string
+  item: { id: string; code: string; name: string } | null
+  unit: Unit | null
   operationCode: string
   operationName: string
   quantity: number
@@ -103,8 +105,10 @@ export type PendingOrderItem = {
   outsourcingOrder: { id: string; code: string; sendDate: string }
   supplier: { id: string; name: string } // supplier.id dùng để tự xác định NCC của phiếu — xem PickerSection
   jobCode: string | null
-  item: { code: string; name: string }
-  unit: { name: string }
+  itemCode: string
+  itemName: string
+  item: { code: string; name: string } | null
+  unit: { name: string } | null
   operationCode: string
   operationName: string
   quantity: number // SL đã gửi của dòng OS-OUT gốc

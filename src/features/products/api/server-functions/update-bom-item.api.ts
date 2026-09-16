@@ -19,7 +19,9 @@ function resolveUpdateBomItemErrorMessage(error: unknown): string {
     case "bom_item.error.not_found":
       return "Không tìm thấy hạng mục."
     case "bom_item.error.quantity_not_integer":
-      return "Số lượng phải là số nguyên đối với bán thành phẩm (WIP)."
+      return "Số lượng phải là số nguyên đối với cấu trúc con."
+    case "bom_item.error.invalid_node_payload":
+      return "Không sửa được mã/tên trên vật tư — hai trường này chỉ áp dụng cho cấu trúc con."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -30,30 +32,28 @@ const updateBomItemInputSchema = updateBomItemSchema.extend({
   bomItemId: z.uuid(),
 })
 
-type UpdateBomItemInput = z.infer<typeof updateBomItemInputSchema>
+// `drawing` carries a display URL the backend has no field for — only the file id goes on the
+// wire. Empty note clears the field (null); PATCH treats a missing key as "leave unchanged".
+const updateBomItemPayloadSchema = updateBomItemInputSchema.transform(
+  ({ note, drawing, ...rest }) => {
+    const trimmedNote = note.trim()
 
-function toUpdateBomItemPayload(
-  data: Omit<UpdateBomItemInput, "itemId" | "bomItemId">
-) {
-  const note = data.note.trim()
-
-  return {
-    quantity: data.quantity,
-    sortOrder: data.sortOrder,
-    // Empty clears the note (null); a value updates it.
-    note: note === "" ? null : note,
-    drawingFileId: resolveApiFileId(data.drawing, "update"),
+    return {
+      ...rest,
+      note: trimmedNote === "" ? null : trimmedNote,
+      drawingFileId: resolveApiFileId(drawing, "update"),
+    }
   }
-}
+)
 
 export const updateBomItem = createServerFn({ method: "POST" })
-  .validator(updateBomItemInputSchema)
+  .validator(updateBomItemPayloadSchema)
   .handler(async ({ data }): Promise<BomItem> => {
     try {
-      const { itemId, bomItemId, ...rest } = data
+      const { itemId, bomItemId, ...payload } = data
       const response = await http.patch<BomItem>(
         `/api/items/${itemId}/bom/items/${bomItemId}`,
-        toUpdateBomItemPayload(rest)
+        payload
       )
 
       return response.data

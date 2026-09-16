@@ -5,12 +5,11 @@ import { http, logHttpError } from "@/lib/http"
 import type { ItemRef } from "@/lib/types/item.type"
 import { optional } from "@/lib/zod-transforms"
 
-// `type` also accepts "RM" here (unlike ItemType, which is FG/WIP-only) — this options
-// endpoint backs the "add BOM item" picker (use-get-bom-product-options.ts), which needs to
-// look up either a WIP sub-assembly or an RM material to add as a tree node.
+// `type` also accepts "CONSUMABLE" here (unlike ItemType, which is FG-only) — dùng bởi các picker
+// FG/CONSUMABLE khác nhau (đơn hàng, phiếu nhập kho), không phải BOM.
 const getItemOptionsSchema = z.object({
   q: optional(z.string().trim()),
-  type: z.enum(["FG", "WIP", "RM"]).optional(),
+  type: z.enum(["FG", "CONSUMABLE"]).optional(),
 })
 
 // Purpose-built dropdown endpoint (GET /api/items/options), distinct from

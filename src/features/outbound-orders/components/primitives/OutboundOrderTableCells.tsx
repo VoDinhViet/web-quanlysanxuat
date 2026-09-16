@@ -76,10 +76,10 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
 
       {isDraft ? (
         <PermissionGate permission="outbound:delete">
-          <DeleteOutboundOrderDialog
-            order={order}
-            trigger={
-              <Tooltip>
+          <Tooltip>
+            <DeleteOutboundOrderDialog
+              order={order}
+              trigger={
                 <TooltipTrigger
                   render={
                     <Button
@@ -93,10 +93,10 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
                     </Button>
                   }
                 />
-                <TooltipContent>Xóa DO</TooltipContent>
-              </Tooltip>
-            }
-          />
+              }
+            />
+            <TooltipContent>Xóa DO</TooltipContent>
+          </Tooltip>
         </PermissionGate>
       ) : (
         <DisabledAction

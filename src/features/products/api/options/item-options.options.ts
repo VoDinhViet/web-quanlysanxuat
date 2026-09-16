@@ -4,16 +4,14 @@ import { getItemOptions } from "@/features/products/api/server-functions/get-ite
 
 type ItemOptionsFilter = {
   q: string
-  type?: "FG" | "WIP" | "RM"
+  type?: "FG" | "CONSUMABLE"
 }
 
-// Purpose-built dropdown endpoint (GET /api/items/options) — this feature's
-// own "add BOM item" dialog picks `type: WIP` or `type: RM` depending on the
-// node type toggle (only WIP/RM may be added as a structure node, backend
-// rejects FG, E053); the backend always filters ACTIVE, so there's no
-// `status` param here. Returns only `{id, code, name}` (ProductRef), not the
-// full `Product` — see order-item-options.options.ts for the picker that
-// needs more.
+// Purpose-built dropdown endpoint (GET /api/items/options) — dùng bởi các picker "FG hay CONSUMABLE"
+// khác (đơn hàng, phiếu nhập kho...), không phải BOM (node COMPONENT giờ nhập tay code/name, node CONSUMABLE
+// dùng picker vật tư riêng, xem ConsumablesPickerTable). Backend luôn lọc ACTIVE, không có `status`
+// param. Trả `{id, code, name}` (ItemRef), không phải full `Item` — xem
+// order-item-options.options.ts cho picker cần nhiều hơn.
 export const itemOptionsQueryOptions = (filter: ItemOptionsFilter) =>
   queryOptions({
     queryKey: ["items", "options", filter],

@@ -44,7 +44,7 @@ function resolveUploadFileErrorMessage(
     return GENERIC_ERROR_MESSAGE
   }
 
-  const noun = type === "MATERIAL_DOCUMENT" ? "tài liệu" : "ảnh"
+  const noun = type === "CONSUMABLE_DOCUMENT" ? "tài liệu" : "ảnh"
 
   switch (error.response?.data.errorCode) {
     case "upload.error.invalid_file":

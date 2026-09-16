@@ -27,14 +27,14 @@ export function ProductIssuesTableFilter({
     <div className="bg-card px-4 py-4 lg:px-5">
       <div className="max-w-sm space-y-1.5">
         <Label
-          htmlFor="product-materials-search"
+          htmlFor="product-consumables-search"
           className="text-[11px] font-medium text-muted-foreground"
         >
           Tìm kiếm
         </Label>
         <div className="relative">
           <Input
-            id="product-materials-search"
+            id="product-consumables-search"
             className="pr-9 text-xs placeholder:text-muted-foreground/75"
             placeholder="Tìm kiếm theo mã, tên vật tư..."
             value={value}

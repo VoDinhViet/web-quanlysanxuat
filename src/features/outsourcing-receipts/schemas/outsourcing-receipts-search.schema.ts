@@ -8,8 +8,8 @@ import { InventoryDocumentStatus } from "@/lib/types/outsourcing-receipt.type"
 // picker this round doesn't build (list+detail+actions only, no OS-OUT detail route to link back
 // from anyway). `order` isn't here either: the DTO inherits it from PageOptionsDto but the service
 // hardcodes `orderBy: desc(outsourcingReceipts.createdAt)`, same as supplier-returns-search.schema.ts.
-// `q` (not `materialKeyword` — BE has no such param) matches `outsourcingReceipts.code` only, not
-// material name/code. `status` narrowed to POSTED/CANCELLED literals — BE's own
+// `q` (not `consumableKeyword` — BE has no such param) matches `outsourcingReceipts.code` only, not
+// consumable name/code. `status` narrowed to POSTED/CANCELLED literals — BE's own
 // `OutsourcingReceiptStatus` enum never produces DRAFT (docs/decisions/outsourcing-no-draft.md),
 // and its `@EnumFieldOptional` validator 400s on any other value.
 export const outsourcingReceiptsSearchSchema = z.object({

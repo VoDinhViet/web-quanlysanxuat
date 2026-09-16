@@ -56,9 +56,9 @@ export function IqcDetailHeader({
             label="Mã NK"
             value={iqc.inventoryReceipt?.code ?? "Không có"}
           />
-          <MetaField label="Mã vật tư" value={iqc.item.code} />
-          <MetaField label="Tên vật tư" value={iqc.item.name} />
-          <MetaField label="Đvt" value={iqc.item.unit.name} />
+          <MetaField label="Mã vật tư" value={iqc.itemCode} />
+          <MetaField label="Tên vật tư" value={iqc.itemName} />
+          <MetaField label="Đvt" value={iqc.item?.unit.name ?? "—"} />
           <MetaField
             label="Lot size"
             value={quantityFormatter.format(iqc.quantity)}

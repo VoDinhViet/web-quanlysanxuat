@@ -117,7 +117,11 @@ export type Iqc = {
   purchaseOrder: { id: string; code: string } | null
   supplier: SupplierRef | null
   client: ClientRef | null
-  item: { id: string; code: string; name: string; unit: Unit }
+  // Snapshot mã/tên — luôn có; `item` null khi lô kiểm là node COMPONENT nhận về từ OS-IN (không phải
+  // một item), khi đó chỉ còn `itemCode`/`itemName` để hiển thị.
+  itemCode: string
+  itemName: string
+  item: { id: string; code: string; name: string; unit: Unit } | null
   quantity: number
   inspectionDate: string
   result: IqcResult | null

@@ -117,7 +117,7 @@ export function CreateRoleForm() {
           {(field) => (
             <Field
               data-invalid={field.state.meta.errors.length > 0}
-              className="p-4 not-first:border-t not-first:border-border sm:p-5"
+              className="not-first:border-t not-first:border-border"
             >
               <RolePermissions
                 value={field.state.value}

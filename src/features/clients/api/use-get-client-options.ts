@@ -6,7 +6,7 @@ import { buildSelectOptions } from "@/lib/utils"
 
 // Server-searched options for the "Khách hàng" combobox: debounces the typed
 // term and reads from the query cache under `clients`' own key — shared
-// across products/materials/orders via this feature's `api` barrel; a client
+// across products/consumables/orders via this feature's `api` barrel; a client
 // write invalidates it along with the rest of `["clients"]`.
 // `getClientOptions` (GET /api/clients/options) already degrades to `[]` on
 // failure, so no `.catch()` is needed here. Returns the raw `clients` too

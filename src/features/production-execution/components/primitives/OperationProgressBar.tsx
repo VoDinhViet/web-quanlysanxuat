@@ -13,7 +13,7 @@ type OperationProgressBarProps = {
   className?: string
 }
 
-// Thanh tiến độ dùng chung cho bảng "DANH SÁCH CÔNG VIỆC" (list) và bảng "DANH SÁCH PART"
+// Thanh tiến độ dùng chung cho bảng "DANH SÁCH CÔNG VIỆC" (list) và bảng "DANH SÁCH COMPONENT"
 // (detail) — thay cho badge "Trạng thái" đơn thuần: cùng 1 lúc trả lời "đang ở đâu" (% + màu) và
 // "còn bao nhiêu" (x/y pcs), từ đúng plannedQuantity/completedQuantity đã có sẵn trên
 // ProductionJobByOperation/ProductionJobOperation — không suy diễn thêm dữ liệu nào. Màu suy

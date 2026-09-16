@@ -12,6 +12,7 @@ import { resolveApiFileId, resolveApiFileIds } from "@/lib/file-field.schema"
 const updateProductPayloadSchema = updateProductSchema.transform(
   ({ image, files, ...rest }) => ({
     ...rest,
+    type: "FG" as const,
     imageFileId: resolveApiFileId(image, "update"),
     fileIds: resolveApiFileIds(files),
   })
@@ -28,7 +29,7 @@ function resolveUpdateItemErrorMessage(error: unknown): string {
     case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
     case "item.error.code_exists":
-      return "Mã sản phẩm đã tồn tại."
+      return "Mã + phiên bản này đã tồn tại."
     case "file.error.not_found":
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "unit.error.not_found":

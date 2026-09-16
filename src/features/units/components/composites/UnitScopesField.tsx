@@ -6,7 +6,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { unitScopeLabels } from "@/lib/types/unit.type"
 import type { UnitScope } from "@/lib/types/unit.type"
 
-const SCOPES: UnitScope[] = ["MATERIAL", "PRODUCT"]
+const SCOPES: UnitScope[] = ["CONSUMABLE", "PRODUCT"]
 
 type UnitScopesFieldProps = {
   form: AnyFormApi

@@ -87,14 +87,14 @@ export function buildQuotationSuppliersItemColumns({
           )
 
           return (
-            <QuotationAllocationsDialog
-              itemName={item.itemName}
-              allocations={item.allocations}
-              onSave={(allocations) =>
-                itemsField.replaceValue(row.index, { ...item, allocations })
-              }
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <QuotationAllocationsDialog
+                itemName={item.itemName}
+                allocations={item.allocations}
+                onSave={(allocations) =>
+                  itemsField.replaceValue(row.index, { ...item, allocations })
+                }
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -114,10 +114,10 @@ export function buildQuotationSuppliersItemColumns({
                       </Button>
                     }
                   />
-                  <TooltipContent>{`Gộp từ ${item.allocations.length} dòng ĐXMH — Bấm để chỉnh SL`}</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>{`Gộp từ ${item.allocations.length} dòng ĐXMH — Bấm để chỉnh SL`}</TooltipContent>
+            </Tooltip>
           )
         }
 

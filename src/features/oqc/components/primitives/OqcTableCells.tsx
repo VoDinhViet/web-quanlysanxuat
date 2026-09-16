@@ -40,10 +40,10 @@ export function OqcActionsCell({ oqc }: OqcActionsCellProps) {
 
       {oqc.status === OqcStatus.DRAFT && (
         <PermissionGate permission="oqc:delete">
-          <DeleteOqcDialog
-            oqc={oqc}
-            trigger={
-              <Tooltip>
+          <Tooltip>
+            <DeleteOqcDialog
+              oqc={oqc}
+              trigger={
                 <TooltipTrigger
                   render={
                     <Button
@@ -57,10 +57,10 @@ export function OqcActionsCell({ oqc }: OqcActionsCellProps) {
                     </Button>
                   }
                 />
-                <TooltipContent>Xoá phiếu</TooltipContent>
-              </Tooltip>
-            }
-          />
+              }
+            />
+            <TooltipContent>Xoá phiếu</TooltipContent>
+          </Tooltip>
         </PermissionGate>
       )}
     </div>

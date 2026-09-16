@@ -2,7 +2,7 @@ import { z } from "zod"
 
 import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
 import { emptyToNull, emptyToUndefined } from "@/lib/zod-transforms"
-import { ItemStatus, ItemType } from "@/lib/types/item.type"
+import { ItemStatus } from "@/lib/types/item.type"
 
 // Wire contract for PATCH /api/items/:id — also the client-side onSubmit validator for
 // UpdateProductForm (via ProductInfoTab, both driven by ProductDetailPage's own form).
@@ -12,7 +12,8 @@ import { ItemStatus, ItemType } from "@/lib/types/item.type"
 // provided", so `clientId`/`note` here transform ""→null (an explicit clear) instead of
 // ""→undefined — see UpdateItemReqDto's `nullable: true` fields on the backend. `code` stays
 // ""→undefined on both flows: the backend treats a missing `code` as "keep the current one",
-// not "clear it". `type` is always FG/WIP here — this feature never turns an item into RM.
+// not "clear it". Không còn field `type` — trang này chỉ sửa FG, server-function
+// (update-item.api.ts) tự gửi cứng `type: "FG"`.
 export const updateProductSchema = z.object({
   itemId: z.uuid(),
   code: z
@@ -20,13 +21,17 @@ export const updateProductSchema = z.object({
     .trim()
     .max(50, "Mã sản phẩm tối đa 50 ký tự")
     .transform(emptyToUndefined),
+  revision: z
+    .string()
+    .trim()
+    .max(50, "Phiên bản tối đa 50 ký tự")
+    .transform(emptyToUndefined),
   name: z
     .string()
     .trim()
     .min(1, "Vui lòng nhập tên sản phẩm")
     .max(255, "Tên sản phẩm tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
-  type: z.enum(ItemType),
   clientId: z.string().trim().transform(emptyToNull),
   image: imageFieldSchema,
   files: z.array(fileFieldSchema),
@@ -45,9 +50,9 @@ export type UpdateProductSchema = z.input<typeof updateProductSchema>
 export const updateProductFormDefaultValues: UpdateProductSchema = {
   itemId: "",
   code: "",
+  revision: "",
   name: "",
   unitId: "",
-  type: ItemType.FG,
   clientId: "",
   image: null,
   files: [],

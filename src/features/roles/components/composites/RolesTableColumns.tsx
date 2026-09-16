@@ -87,10 +87,10 @@ export const roleColumns = roleColumnHelper.columns([
             </Tooltip>
           </RoutePermissionGate>
           <PermissionGate permission="roles:delete">
-            <DeleteRoleDialog
-              role={role}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <DeleteRoleDialog
+                role={role}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -104,10 +104,10 @@ export const roleColumns = roleColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Xóa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Xóa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
         </div>
       )

@@ -26,8 +26,11 @@ const createOutsourcingOrderPayloadSchema =
       note: emptyToUndefined(note),
       items: items.map((item) => ({
         productionJobOperationId: item.productionJobOperationId,
+        productionJobBomItemId: item.productionJobBomItemId,
         productionJobId: item.job.id,
         itemId: item.itemId,
+        itemCode: item.bomItem.code,
+        itemName: item.bomItem.name,
         operationId: item.operation.operationId,
         operationCode: item.operation.code,
         operationName: item.operation.name,

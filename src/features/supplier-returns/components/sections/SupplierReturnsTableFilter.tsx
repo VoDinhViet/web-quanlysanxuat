@@ -48,8 +48,8 @@ export function SupplierReturnsTableFilter() {
     search.iqcCode,
   ].filter(Boolean).length
 
-  const [materialKeyword, setMaterialKeyword] = useState(
-    search.materialKeyword ?? ""
+  const [consumableKeyword, setConsumableKeyword] = useState(
+    search.consumableKeyword ?? ""
   )
   const [poCode, setPoCode] = useState(search.poCode ?? "")
   const [iqcCode, setIqcCode] = useState(search.iqcCode ?? "")
@@ -57,12 +57,12 @@ export function SupplierReturnsTableFilter() {
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // IqcTableFilter.tsx. `replace: true` keeps rapid keystrokes from flooding history; discrete
   // Select changes below push instead so Back undoes them one at a time.
-  const handleMaterialKeywordChange = useDebounceCallback((term: string) => {
+  const handleConsumableKeywordChange = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
     void navigate({
       search: (prev) => ({
         ...prev,
-        materialKeyword: trimmed.length > 0 ? trimmed : undefined,
+        consumableKeyword: trimmed.length > 0 ? trimmed : undefined,
         page: 1,
       }),
       replace: true,
@@ -107,16 +107,16 @@ export function SupplierReturnsTableFilter() {
   const resetFilters = () => {
     // Cancel every debounce first — a call still in flight would re-apply the term the user just
     // cleared, ~300ms after the box goes blank.
-    handleMaterialKeywordChange.cancel()
+    handleConsumableKeywordChange.cancel()
     handlePoCodeChange.cancel()
     handleIqcCodeChange.cancel()
-    setMaterialKeyword("")
+    setConsumableKeyword("")
     setPoCode("")
     setIqcCode("")
     void navigate({
       search: (prev) => {
         const {
-          materialKeyword: _materialKeyword,
+          consumableKeyword: _consumableKeyword,
           poCode: _poCode,
           iqcCode: _iqcCode,
           supplierId: _supplierId,
@@ -133,13 +133,13 @@ export function SupplierReturnsTableFilter() {
       {/* Tìm kiếm vật tư — ô search chính, luôn hiện; các field còn lại nằm trong popover "Bộ lọc" */}
       <div className="relative flex-1 lg:max-w-sm">
         <Input
-          id="supplier-returns-material-keyword"
+          id="supplier-returns-consumable-keyword"
           className="pr-9 text-xs placeholder:text-muted-foreground/75"
           placeholder="Nhập mã vật tư, tên vật tư..."
-          value={materialKeyword}
+          value={consumableKeyword}
           onChange={(event) => {
-            setMaterialKeyword(event.target.value)
-            handleMaterialKeywordChange(event.target.value)
+            setConsumableKeyword(event.target.value)
+            handleConsumableKeywordChange(event.target.value)
           }}
         />
         <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />

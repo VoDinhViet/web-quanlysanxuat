@@ -73,14 +73,17 @@ export function buildCreateOutsourcingOrderItemColumns({
         meta: { headerClassName: "min-w-28" },
       }
     ),
-    createOutsourcingOrderItemColumnHelper.accessor((row) => row.unit.name, {
-      id: "unit",
-      header: "ĐVT",
-      meta: {
-        headerClassName: "w-14",
-        cellClassName: "text-muted-foreground",
-      },
-    }),
+    createOutsourcingOrderItemColumnHelper.accessor(
+      (row) => row.unit?.name ?? "—",
+      {
+        id: "unit",
+        header: "ĐVT",
+        meta: {
+          headerClassName: "w-14",
+          cellClassName: "text-muted-foreground",
+        },
+      }
+    ),
     createOutsourcingOrderItemColumnHelper.accessor("plannedQuantity", {
       header: "SL định mức",
       meta: {

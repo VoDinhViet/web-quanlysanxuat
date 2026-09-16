@@ -80,7 +80,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
     const { options: operationOptions } = useGetOperationOptions()
 
     // `useField`, not `form.Field`'s render-prop — useReactTable/useMemo below are real hooks,
-    // same reasoning as PurchaseRequestCreateMaterialPickerSection.tsx.
+    // same reasoning as PurchaseRequestCreateConsumablePickerSection.tsx.
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 

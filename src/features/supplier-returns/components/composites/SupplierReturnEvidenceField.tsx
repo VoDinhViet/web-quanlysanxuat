@@ -114,7 +114,8 @@ export function SupplierReturnEvidenceField({
               <span className="font-medium text-primary">chọn file</span>
             </p>
             <p className="text-[11px] text-muted-foreground">
-              Hỗ trợ: JPG, PNG, WEBP, GIF, PDF, DOCX, XLSX (tối đa 10MB)
+              Hỗ trợ: Ảnh, PDF, Word, Excel, PowerPoint, File nén... (tối đa
+              10MB)
             </p>
           </div>
 

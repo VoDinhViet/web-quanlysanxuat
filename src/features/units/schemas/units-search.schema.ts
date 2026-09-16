@@ -4,7 +4,7 @@ import { z } from "zod"
 // here).
 export const unitsSearchSchema = z.object({
   q: z.string().trim().min(1).optional().catch(undefined),
-  scope: z.enum(["MATERIAL", "PRODUCT"]).optional().catch(undefined),
+  scope: z.enum(["CONSUMABLE", "PRODUCT"]).optional().catch(undefined),
 })
 
 export type UnitsSearchSchema = z.infer<typeof unitsSearchSchema>

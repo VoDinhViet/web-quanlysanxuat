@@ -31,12 +31,15 @@ export const inventoryDocumentStatusLabels: Record<
 export type SupplierReturn = {
   id: string
   code: string
+  // Snapshot mã/tên — luôn có; `item` null khi trả node COMPONENT nhận về từ OS-IN (cùng quy ước Iqc).
+  itemCode: string
+  itemName: string
   item: {
     id: string
     code: string
     name: string
     unit: Unit
-  }
+  } | null
   quantity: number
   supplier: SupplierRef
   purchaseOrder: { id: string; code: string } | null

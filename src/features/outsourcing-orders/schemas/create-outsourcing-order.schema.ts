@@ -13,7 +13,10 @@ import { z } from "zod"
 // inventory-receipt-from-po item schema.
 const createOutsourcingOrderItemFields = {
   productionJobOperationId: z.string().trim().min(1),
-  itemId: z.string().trim().min(1),
+  productionJobBomItemId: z.string().trim().min(1),
+  // Vật tư tham khảo — chỉ khi node là CONSUMABLE; null với node COMPONENT. `bomItem.code`/`name` mới là
+  // nguồn hiển thị/payload chính thức (itemCode/itemName), xem create-outsourcing-order.api.ts.
+  itemId: z.string().trim().min(1).nullable(),
   job: z.object({
     id: z.string().trim().min(1),
     code: z.string(),
@@ -27,11 +30,13 @@ const createOutsourcingOrderItemFields = {
     code: z.string(),
     name: z.string(),
   }),
-  unit: z.object({
-    id: z.string(),
-    code: z.string(),
-    name: z.string(),
-  }),
+  unit: z
+    .object({
+      id: z.string(),
+      code: z.string(),
+      name: z.string(),
+    })
+    .nullable(),
   plannedQuantity: z.number(),
   sentQuantity: z.number(),
   remainingQuantity: z.number(),

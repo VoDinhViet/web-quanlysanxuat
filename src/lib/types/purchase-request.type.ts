@@ -72,9 +72,9 @@ export type PurchaseRequestProductionJobRef = {
 }
 
 /** Mirrors the backend's OrderItemRefResDto nested in a purchase request line —
- *  `purchase_request_items` always points at an RM in practice, but the column itself references
+ *  `purchase_request_items` always points at an CONSUMABLE in practice, but the column itself references
  *  the shared `items` table. The DTO also carries `image` — omitted here since this feature never
- *  renders an item's image (same narrowing idiom as `item.type.ts`'s RM-only field omission). */
+ *  renders an item's image (same narrowing idiom as `item.type.ts`'s CONSUMABLE-only field omission). */
 export type PurchaseRequestItemRef = {
   id: string
   code: string

@@ -100,10 +100,11 @@ export type ProductionJobOperation = {
 }
 
 /** `FG` = node Cấp 0 (lắp ráp/đóng gói thành phẩm, luôn đứng cuối bảng "Công đoạn sản xuất",
- *  `ProductionJobsService.copyFinalAssemblyRouting` backend) — `WIP`/`RM` = node cây BOM thường.
- *  Riêng khỏi `ItemType` (`item.type.ts`, thu hẹp còn FG/WIP vì `Item` không bao giờ là RM) vì đây
- *  là node cây BOM snapshot của Job, có thể là cả 3 giá trị. */
-export type ProductionJobBomItemType = "FG" | "WIP" | "RM"
+ *  `ProductionJobsService.copyFinalAssemblyRouting` backend) — `COMPONENT`/`CONSUMABLE` = node cây BOM thường
+ *  (`BomItemType`, bom-item.type.ts). Enum riêng của snapshot Job, có thể là cả 3 giá trị — cố ý
+ *  tách khỏi `BomItemType`/`ROOT` dù cả hai giờ đều có 3 giá trị (`docs/decisions/root-bom-item.md`
+ *  backend, mục "Đừng hoàn lại": Job snapshot giữ node `FG` riêng, không gộp vào `ROOT`). */
+export type ProductionJobBomItemType = "FG" | "COMPONENT" | "CONSUMABLE"
 
 /** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/operations`,
  *  a plain array, not paginated) — "Công đoạn sản xuất" tab: every BOM node (part) that has at
@@ -119,7 +120,7 @@ export type ProductionJobBomItem = {
   operations: ProductionJobOperation[]
 }
 
-/** Một dòng "Part × công đoạn" cho dialog nhập báo cáo — dùng bởi cả bảng "DANH SÁCH PART"
+/** Một dòng "Part × công đoạn" cho dialog nhập báo cáo — dùng bởi cả bảng "DANH SÁCH COMPONENT"
  *  (màn "Thực hiện sản xuất") lẫn bảng "Công đoạn sản xuất" (chi tiết Job). Không mirror DTO
  *  nào: cả 2 màn tự ghép từ `GET /production-jobs/:jobId/operations` (BE nhóm sẵn theo BOM
  *  item). */
@@ -144,11 +145,11 @@ export type ProductionJobIssueUnitRef = {
 }
 
 /** Mirrors the backend's ProductionJobIssueResDto (`GET /production-jobs/:jobId/bom`, paginated,
- *  `q` filters `item.code`/`item.name`) — "BOM vật tư" tab: the Job's material demand, read off
+ *  `q` filters `item.code`/`item.name`) — "BOM vật tư" tab: the Job's consumable demand, read off
  *  `production_job_issues` joined to the two shared dimension tables. Despite the route's name
  *  (`.../bom`), this is NOT the BOM tree — the tree has no read route at all (see
  *  ProductionJobOperation's doc comment and docs/domains/production.md, "Common mistakes" #15).
- *  `requiredQty` is BOM demand exploded through every ancestor WIP node × SL Job, computed once
+ *  `requiredQty` is BOM demand exploded through every ancestor COMPONENT node × SL Job, computed once
  *  at LSX approval (BUG-086 fix, 2026-08-26) — same concept as ItemIssue.requiredQty in
  *  item.type.ts, different seed (SL Job here vs. 1 unit of the root item there). No
  *  `id`/`itemId`/`unitQty`/`image` on this DTO. */

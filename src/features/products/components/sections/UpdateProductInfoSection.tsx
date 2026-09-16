@@ -3,17 +3,16 @@ import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
-import { ProductDocumentsField } from "@/features/products/components/composites/ProductDocumentsField"
+import { UploadProductDocuments } from "@/features/products/components/composites/UploadProductDocuments"
 import { ProductImageField } from "@/features/products/components/composites/ProductImageField"
 import { updateProductFormDefaultValues } from "@/features/products/schemas/update-product.schema"
 import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
-import { itemStatusLabels, itemTypeLabels } from "@/lib/types/item.type"
+import { itemStatusLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
-const typeOptions = buildOptionsFromLabels(itemTypeLabels)
 
 export const UpdateProductInfoSection = withForm({
   defaultValues: updateProductFormDefaultValues,
@@ -59,6 +58,16 @@ export const UpdateProductInfoSection = withForm({
                 )}
               </form.AppField>
 
+              <form.AppField name="revision">
+                {(field) => (
+                  <field.TextField
+                    label="Phiên bản"
+                    placeholder="Mặc định R01"
+                    disabled={disabled}
+                  />
+                )}
+              </form.AppField>
+
               <form.AppField name="name">
                 {(field) => (
                   <field.TextField
@@ -77,17 +86,6 @@ export const UpdateProductInfoSection = withForm({
                     required
                     placeholder="Chọn đơn vị tính"
                     options={unitSelectOptions}
-                    disabled={disabled}
-                  />
-                )}
-              </form.AppField>
-
-              <form.AppField name="type">
-                {(field) => (
-                  <field.RadioPillField
-                    label="Loại sản phẩm"
-                    required
-                    options={typeOptions}
                     disabled={disabled}
                   />
                 )}
@@ -138,22 +136,23 @@ export const UpdateProductInfoSection = withForm({
                   />
                 )}
               </form.AppField>
-
-              <form.Field name="files">
-                {(field) => (
-                  <ProductDocumentsField
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    disabled={disabled}
-                    className="sm:col-span-2 lg:col-span-3"
-                  />
-                )}
-              </form.Field>
             </div>
 
             <form.Field name="image">
               {(field) => (
                 <ProductImageField
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  disabled={disabled}
+                />
+              )}
+            </form.Field>
+          </div>
+
+          <div className="mt-6 border-t border-border pt-5">
+            <form.Field name="files">
+              {(field) => (
+                <UploadProductDocuments
                   value={field.state.value}
                   onChange={field.handleChange}
                   disabled={disabled}

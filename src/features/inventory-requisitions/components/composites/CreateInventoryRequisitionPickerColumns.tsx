@@ -53,7 +53,7 @@ type BuildCreateInventoryRequisitionPickerColumnsArgs = {
   onToggleAll: (checked: boolean) => void
 }
 
-// Own useReactTable columns, cùng khuôn PurchaseRequestCreateMaterialPickerColumns.tsx (picker
+// Own useReactTable columns, cùng khuôn PurchaseRequestCreateConsumablePickerColumns.tsx (picker
 // checkbox khác của repo) — "6 số" + SL gợi ý cho bảng chọn vật tư ở bước ②. bomQuantity/
 // issuedQuantity/suggestedQuantity hiện "—" khi null (luồng "Lãnh thủ công", không có Job).
 // availableQuantity có thể âm (backend ghi rõ "chỉ tham khảo") — tô đỏ khi < 0.
@@ -95,7 +95,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
       },
     }),
     inventoryRequisitionPickerColumnHelper.display({
-      id: "material",
+      id: "consumable",
       header: "Vật tư",
       meta: { headerClassName: "min-w-56" },
       cell: ({ row }) => {

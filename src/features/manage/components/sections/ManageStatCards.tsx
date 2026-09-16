@@ -5,7 +5,7 @@ import { reportStatsQueryOptions } from "@/features/reports/api"
 import {
   buildReportStatsTiles,
   getTrendIcon,
-} from "@/features/manage/logic/report-stats-tiles"
+} from "@/features/manage/constants/report-stats-tiles"
 import { cn } from "@/lib/utils"
 
 const gridClassName =

@@ -20,7 +20,7 @@ type BuildCreateOutsourcingOrderPickerColumnsArgs = {
 }
 
 // Own useReactTable columns, independent of the shared DataTable — same reasoning as
-// PurchaseRequestCreateMaterialPickerColumns.tsx (the repo's other checkbox-column picker). A row
+// PurchaseRequestCreateConsumablePickerColumns.tsx (the repo's other checkbox-column picker). A row
 // đã gửi đủ định mức (`remainingQuantity <= 0`) không chọn được, bất kể prop `disabled`.
 export function buildCreateOutsourcingOrderPickerColumns({
   pickedOperationIds,
@@ -80,14 +80,17 @@ export function buildCreateOutsourcingOrderPickerColumns({
       header: "Công đoạn",
       meta: { headerClassName: "min-w-32" },
     }),
-    outsourcingOrderPickerColumnHelper.accessor((row) => row.unit.name, {
-      id: "unit",
-      header: "ĐVT",
-      meta: {
-        headerClassName: "w-16",
-        cellClassName: "text-muted-foreground",
-      },
-    }),
+    outsourcingOrderPickerColumnHelper.accessor(
+      (row) => row.unit?.name ?? "—",
+      {
+        id: "unit",
+        header: "ĐVT",
+        meta: {
+          headerClassName: "w-16",
+          cellClassName: "text-muted-foreground",
+        },
+      }
+    ),
     outsourcingOrderPickerColumnHelper.accessor("plannedQuantity", {
       header: "SL định mức",
       meta: {

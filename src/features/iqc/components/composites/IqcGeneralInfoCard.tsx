@@ -12,7 +12,7 @@ import type { ComponentType, ReactNode } from "react"
 
 import { departmentQueryOptions } from "@/features/departments/api"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
-import { IqcMaterialStrip } from "@/features/iqc/components/composites/IqcMaterialStrip"
+import { IqcConsumableStrip } from "@/features/iqc/components/composites/IqcConsumableStrip"
 import { IqcPoOrReasonCell } from "@/features/iqc/components/primitives/IqcTableCells"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import type { IqcDetail } from "@/lib/types/iqc.type"
@@ -24,7 +24,7 @@ type IqcGeneralInfoCardProps = {
   disabled?: boolean
 }
 
-// THÔNG TIN CHUNG — dải vật tư (xem IqcMaterialStrip.tsx) + tham chiếu (NCC, PO/lý do, người
+// THÔNG TIN CHUNG — dải vật tư (xem IqcConsumableStrip.tsx) + tham chiếu (NCC, PO/lý do, người
 // tạo, ngày tạo, gộp từ IqcDetailReferenceCard cũ đã xoá) + Bộ phận QC (field
 // duy nhất user sửa được ở card này — reference list đọc trực tiếp ở leaf theo quy ước
 // "Reference-option lists" của architecture.md, route loader đã prefetch
@@ -45,7 +45,7 @@ export function IqcGeneralInfoCard({
     >
       <div className="space-y-5">
         <div className="border-b border-border pb-5">
-          <IqcMaterialStrip iqc={iqc} />
+          <IqcConsumableStrip iqc={iqc} />
         </div>
 
         <div className="space-y-3">

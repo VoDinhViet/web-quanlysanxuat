@@ -62,7 +62,7 @@ export const productColumns = productColumnHelper.columns([
               {product.name}
             </p>
             <p className="truncate font-mono text-[11px] text-muted-foreground">
-              {product.code}
+              {product.code} · {product.revision}
             </p>
           </div>
         </div>
@@ -147,10 +147,10 @@ export const productColumns = productColumnHelper.columns([
             <TooltipContent>Xem chi tiết</TooltipContent>
           </Tooltip>
           <PermissionGate permission="items:copy">
-            <CopyProductDialog
-              product={product}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <CopyProductDialog
+                product={product}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -164,16 +164,16 @@ export const productColumns = productColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Nhân bản</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Nhân bản</TooltipContent>
+            </Tooltip>
           </PermissionGate>
           <PermissionGate permission="items:delete">
-            <DeleteProductDialog
-              product={product}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <DeleteProductDialog
+                product={product}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -187,10 +187,10 @@ export const productColumns = productColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Xóa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Xóa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
         </div>
       )

@@ -90,10 +90,10 @@ export const operationColumns = operationColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <PermissionGate permission="operations:update">
-            <UpdateOperationDialog
-              operation={operation}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <UpdateOperationDialog
+                operation={operation}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -107,16 +107,16 @@ export const operationColumns = operationColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Chỉnh sửa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Chỉnh sửa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
           <PermissionGate permission="operations:delete">
-            <DeleteOperationDialog
-              operation={operation}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <DeleteOperationDialog
+                operation={operation}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -130,10 +130,10 @@ export const operationColumns = operationColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Xóa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Xóa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
         </div>
       )

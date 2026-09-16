@@ -8,7 +8,7 @@ import { clientOptionsQueryOptions } from "@/features/clients/api"
 
 export const Route = createFileRoute("/(authed)/manage_/production-jobs/")({
   validateSearch: productionJobsSearchSchema,
-  // No loaderDeps: see materials.tsx for why — a filter/pagination navigation must
+  // No loaderDeps: see consumables.tsx for why — a filter/pagination navigation must
   // not create a new route match, which would re-trigger this loader and blank
   // the outlet. The list itself is read client-side in
   // ProductionJobsPage via useQuery instead.

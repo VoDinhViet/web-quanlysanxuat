@@ -10,7 +10,7 @@ export const createUnitSchema = z.object({
     .min(1, "Vui lòng nhập tên đơn vị tính")
     .max(100, "Tên đơn vị tính tối đa 100 ký tự"),
   scopes: z
-    .array(z.enum(["MATERIAL", "PRODUCT"]))
+    .array(z.enum(["CONSUMABLE", "PRODUCT"]))
     .min(1, "Vui lòng chọn ít nhất một phạm vi sử dụng"),
 })
 

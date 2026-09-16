@@ -1,7 +1,7 @@
 import { Route } from "@solar-icons/react"
 
 import { TimelineCard } from "@/components/shared/composites/TimelineCard"
-import { buildPurchaseOrderTimeline } from "@/features/purchase-orders/logic/purchase-order-timeline"
+import { buildPurchaseOrderTimeline } from "@/features/purchase-orders/constants/purchase-order-timeline"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderDetailTimelineCardProps = {

@@ -138,10 +138,10 @@ export const clientColumns = clientColumnHelper.columns([
             </Tooltip>
           </RoutePermissionGate>
           <PermissionGate permission="clients:delete">
-            <DeleteClientDialog
-              client={client}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <DeleteClientDialog
+                client={client}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -155,10 +155,10 @@ export const clientColumns = clientColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Xóa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Xóa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
           <Tooltip>
             <TooltipTrigger

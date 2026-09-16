@@ -34,6 +34,10 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
   const queryClient = useQueryClient()
   const updateRoleFn = useServerFn(updateRole)
 
+  const readOnlyReason = role.isSystem
+    ? "Đây là vai trò mặc định của hệ thống. Bạn có thể xem quyền hạn nhưng không thể lưu thay đổi."
+    : undefined
+
   const { mutate: update, isPending } = useMutation({
     mutationFn: (value: UpdateRoleSchema) => updateRoleFn({ data: value }),
     onSuccess: async () => {
@@ -81,7 +85,7 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
                 label="Mã vai trò"
                 required
                 placeholder="Nhập mã vai trò"
-                disabled={isPending}
+                disabled={isPending || role.isSystem}
               />
             )}
           </form.AppField>
@@ -92,7 +96,7 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
                 label="Tên vai trò"
                 required
                 placeholder="Nhập tên vai trò"
-                disabled={isPending}
+                disabled={isPending || role.isSystem}
               />
             )}
           </form.AppField>
@@ -102,7 +106,7 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
               <field.TextareaField
                 label="Mô tả"
                 placeholder="Nhập mô tả (nếu có)"
-                disabled={isPending}
+                disabled={isPending || role.isSystem}
                 className="sm:col-span-2"
               />
             )}
@@ -119,6 +123,7 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
                 value={field.state.value}
                 onChange={(val) => field.handleChange(val)}
                 disabled={isPending}
+                readOnlyReason={readOnlyReason}
               />
               <FieldError errors={field.state.meta.errors} />
             </Field>
@@ -140,7 +145,9 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
-                disabled={!canSubmit || isSubmitting || isPending}
+                disabled={
+                  !canSubmit || isSubmitting || isPending || role.isSystem
+                }
               >
                 {isSubmitting || isPending ? (
                   <>

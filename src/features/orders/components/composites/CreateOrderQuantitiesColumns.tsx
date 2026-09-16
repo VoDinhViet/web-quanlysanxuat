@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
-import { estimateLineTotal } from "@/features/orders/logic/order-totals"
+import { estimateLineTotal } from "@/features/orders/constants/order-totals"
 import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
 import { currencyFormatter } from "@/lib/currency"
 import { cn } from "@/lib/utils"

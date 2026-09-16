@@ -15,7 +15,7 @@ type UnitScopeStyle = {
 // (PackageSearch), so a unit's scope reads through the same visual vocabulary used to
 // navigate to those sections — see AppSidebar.tsx.
 export const unitScopeStyles: Record<UnitScope, UnitScopeStyle> = {
-  MATERIAL: {
+  CONSUMABLE: {
     icon: Layers,
     badgeClassName: "bg-info/10 text-info",
   },

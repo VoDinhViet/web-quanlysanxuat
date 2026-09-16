@@ -65,14 +65,16 @@ export type OutsourcingOrder = {
   updatedAt: string
 }
 
-// Mirrors OutsourcingOrderItemResDto (1 dòng của phiếu — mỗi dòng 1 công đoạn/vật tư). `unit` là
-// field riêng, không lồng trong `item` (BE tách ItemRefResDto/UnitResDto thay vì
-// ItemUnitRefResDto trước đây). plannedQuantity/sentBeforeQuantity là snapshot lúc gửi, chỉ để
-// hiển thị/in — không dùng để validate lại.
+// Mirrors OutsourcingOrderItemResDto (1 dòng của phiếu — mỗi dòng 1 công đoạn/part).
+// `itemCode`/`itemName` là snapshot bắt buộc và là nguồn hiển thị chính; `item`/`unit` chỉ có khi
+// node gửi đi là CONSUMABLE (node COMPONENT không phải một item → null). plannedQuantity/sentBeforeQuantity là
+// snapshot lúc gửi, chỉ để hiển thị/in — không dùng để validate lại.
 export type OutsourcingOrderItem = {
   id: string
-  item: { id: string; code: string; name: string }
-  unit: Unit
+  itemCode: string
+  itemName: string
+  item: { id: string; code: string; name: string } | null
+  unit: Unit | null
   productionJob: { id: string; code: string } | null
   operationCode: string
   operationName: string
@@ -117,15 +119,16 @@ export type OutsourcingOrderDetail = {
 // across every domain.
 export type OutsourceableOperation = {
   productionJobOperationId: string // id gửi lại khi tạo phiếu
-  itemId: string
+  productionJobBomItemId: string // node BOM của Job — gửi lại khi tạo phiếu
+  itemId: string | null // vật tư tham khảo, chỉ khi node là CONSUMABLE; null với node COMPONENT
   job: { id: string; code: string }
-  bomItem: { code: string; name: string } // snapshot BOM của Job — không phải item gốc
+  bomItem: { code: string; name: string } // snapshot BOM của Job — gửi lại làm itemCode/itemName
   operation: {
     operationId: string | null // liên kết tham khảo tới công đoạn danh mục — null nếu mất liên kết
     code: string
     name: string
   }
-  unit: Unit
+  unit: Unit | null // chỉ khi node là CONSUMABLE
   plannedQuantity: number // SL định mức (theo Job) — đóng băng lúc duyệt LSX
   sentQuantity: number // SL đã gửi (OS-OUT trước, POSTED)
   remainingQuantity: number // Còn được phép gửi = plannedQuantity − sentQuantity (BE tính SQL)

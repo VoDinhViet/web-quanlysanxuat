@@ -21,15 +21,15 @@ export const itemIssueColumns = col.columns([
     },
   }),
   col.display({
-    id: "material",
+    id: "consumable",
     header: "Vật tư",
     meta: { headerClassName: "min-w-64" },
     cell: ({ row }) => {
-      const material = row.original
-      const imageUrl = material.image
-        ? typeof material.image === "string"
-          ? resolveFileUrl(material.image)
-          : resolveFileUrl(material.image.url)
+      const consumable = row.original
+      const imageUrl = consumable.image
+        ? typeof consumable.image === "string"
+          ? resolveFileUrl(consumable.image)
+          : resolveFileUrl(consumable.image.url)
         : null
 
       return (
@@ -38,7 +38,7 @@ export const itemIssueColumns = col.columns([
             {imageUrl ? (
               <Image
                 src={imageUrl}
-                alt={material.name}
+                alt={consumable.name}
                 layout="fullWidth"
                 objectFit="cover"
                 className="size-full"
@@ -49,10 +49,10 @@ export const itemIssueColumns = col.columns([
           </div>
           <div className="min-w-0">
             <p className="truncate text-xs font-semibold text-foreground">
-              {material.name}
+              {consumable.name}
             </p>
             <p className="truncate font-mono text-[11px] text-muted-foreground">
-              {material.code}
+              {consumable.code}
             </p>
           </div>
         </div>

@@ -3,11 +3,11 @@ import { DateTime } from "luxon"
 import {
   formatPaymentRequestDueDateNote,
   resolvePaymentRequestDueDateTone,
-} from "@/features/payment-requests/logic/payment-request-due-date"
+} from "@/features/payment-requests/constants/payment-request-due-date"
 import { vndFormatter } from "@/lib/currency"
 import { cn } from "@/lib/utils"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
-import type { PaymentRequestDueDateTone } from "@/features/payment-requests/logic/payment-request-due-date"
+import type { PaymentRequestDueDateTone } from "@/features/payment-requests/constants/payment-request-due-date"
 
 type PaymentRequestAmountStripProps = {
   paymentRequest: PaymentRequestDetail

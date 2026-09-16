@@ -25,8 +25,8 @@ type OutsourcingReceiptDetailActionsProps = {
 type ConfirmAction = "cancel" | null
 
 // BE bỏ hẳn trạng thái nháp (docs/decisions/outsourcing-no-draft.md phía be-quanlysanxuat) —
-// POST / giờ POSTED ngay (không đụng inventory_balances — gia công ngoài là WIP, không quản tồn
-// theo kho, xem docs/decisions/wip-not-stocked.md), sinh IQC cùng transaction nếu requiresIqc.
+// POST / giờ POSTED ngay (không đụng inventory_balances — gia công ngoài là node COMPONENT của Job,
+// không phải item, xem docs/decisions/wip-not-stocked.md), sinh IQC cùng transaction nếu requiresIqc.
 // Chỉ còn "Hủy phiếu" (chặn nếu đã sinh IQC liên kết — E173).
 export function OutsourcingReceiptDetailActions({
   receipt,

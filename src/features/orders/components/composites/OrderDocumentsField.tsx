@@ -59,7 +59,7 @@ function resolveDropRejectionMessage(
 ): string | null {
   switch (rejections[0]?.errors[0]?.code) {
     case ErrorCode.FileInvalidType:
-      return "Chỉ chấp nhận PDF, DOCX, XLSX."
+      return "Định dạng file không được hỗ trợ."
     case ErrorCode.FileTooLarge:
       return "Kích thước file vượt quá giới hạn cho phép."
     default:
@@ -186,7 +186,8 @@ export function OrderDocumentsField({
               <span className="font-medium text-primary">chọn file</span>
             </p>
             <p className="text-[11px] text-muted-foreground">
-              Hỗ trợ: PDF, DOCX, XLSX (tối đa 10MB)
+              Hỗ trợ: PDF, Word, Excel, PowerPoint, Bản vẽ, File nén... (tối đa
+              10MB)
             </p>
           </div>
 

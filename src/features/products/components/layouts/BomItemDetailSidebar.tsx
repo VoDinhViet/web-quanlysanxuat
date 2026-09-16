@@ -1,0 +1,300 @@
+import { Link } from "@tanstack/react-router"
+import {
+  Box,
+  ClipboardList,
+  Documents,
+  Gallery,
+  Hashtag,
+  InfoCircle,
+  Layers,
+  LayersMinimalistic,
+  MagniferZoomIn,
+  Notes,
+  Paperclip,
+  Ruler,
+  SortVertical,
+} from "@solar-icons/react"
+import prettyBytes from "pretty-bytes"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType, ReactNode } from "react"
+
+import { ExternalLink, FileText } from "lucide-react"
+
+import { useBrokenImage } from "@/features/products/hooks/use-broken-image"
+import { resolveFileUrl } from "@/lib/file-url"
+import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
+import type { FileResource } from "@/lib/types/file.type"
+import type { Item } from "@/lib/types/item.type"
+
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
+type BomItemDetailSidebarProps = {
+  product: Item
+  bomItem: BomItem
+  // Cha trực tiếp trong cây (null với ROOT) — tra sẵn ở page, nơi giữ cả cây.
+  parent: BomItem | null
+  consumablesCount: number
+  operationsCount: number
+}
+
+// Keeps the node's key facts, image and drawing in view while the user works
+// in the info form. The Vật tư/Công đoạn tabs (BomItemDetailPage) hide this
+// column entirely — their tables run wide enough to need the full row.
+export function BomItemDetailSidebar({
+  product,
+  bomItem,
+  parent,
+  consumablesCount,
+  operationsCount,
+}: BomItemDetailSidebarProps) {
+  return (
+    <>
+      {/* Code and name aren't repeated — the header already shows them large. */}
+      <SidebarSection title="Thông tin hạng mục" icon={InfoCircle}>
+        <dl className="divide-y divide-border">
+          <SummaryRow
+            icon={Layers}
+            label="Loại"
+            value={bomItemTypeLabels[bomItem.type]}
+          />
+          <SummaryRow icon={Hashtag} label="Cấp" value={bomItem.level} />
+          {bomItem.type !== "ROOT" && (
+            <>
+              <SummaryRow
+                icon={Box}
+                label="Số lượng"
+                value={quantityFormatter.format(bomItem.quantity)}
+              />
+              <SummaryRow
+                icon={SortVertical}
+                label="Thứ tự sắp xếp"
+                value={bomItem.sortOrder}
+              />
+            </>
+          )}
+          <SummaryRow
+            icon={Ruler}
+            label="Đơn vị tính"
+            value={bomItem.unit?.name ?? "—"}
+          />
+          <SummaryRow
+            icon={LayersMinimalistic}
+            label="Hạng mục cha"
+            value={<ParentLink product={product} parent={parent} />}
+          />
+          <SummaryRow icon={Box} label="Vật tư" value={consumablesCount} />
+          <SummaryRow
+            icon={ClipboardList}
+            label="Công đoạn"
+            value={operationsCount}
+          />
+        </dl>
+
+        {/* A note is free text that would wrap badly in the two-column rows, so
+            it gets its own full-width block. */}
+        <div className="border-t border-border px-4 py-3">
+          <p className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+            <Notes className="size-3.5 shrink-0" />
+            Ghi chú
+          </p>
+          <p className="mt-1.5 text-xs font-medium break-words text-foreground">
+            {bomItem.note || "Chưa có ghi chú"}
+          </p>
+        </div>
+      </SidebarSection>
+
+      <SidebarSection title="Hình ảnh" icon={Gallery} padded>
+        {/* `image` is coalesced from the linked item (CONSUMABLE/ROOT) — a COMPONENT node
+            has none of its own, so this usually shows the empty state there. */}
+        <BomItemImagePreview image={bomItem.image} name={bomItem.name} />
+      </SidebarSection>
+
+      <SidebarSection title="Bản vẽ" icon={Paperclip} padded>
+        <BomItemDrawingLink drawing={bomItem.drawing} />
+      </SidebarSection>
+    </>
+  )
+}
+
+type ParentLinkProps = {
+  product: Item
+  parent: BomItem | null
+}
+
+// ROOT has no parent; a node directly under ROOT links back to the product's
+// BOM tab rather than to ROOT's own page, since the tree is where ROOT lives.
+function ParentLink({ product, parent }: ParentLinkProps) {
+  if (parent === null) {
+    return "—"
+  }
+
+  if (parent.type === "ROOT") {
+    return (
+      <Link
+        to="/manage/products/$productId"
+        params={{ productId: product.id }}
+        search={{ tab: "boms" }}
+        className="font-mono text-primary hover:underline"
+      >
+        {product.code} · {product.revision}
+      </Link>
+    )
+  }
+
+  return (
+    <Link
+      to="/manage/products/$productId/bom/$bomItemId"
+      params={{ productId: product.id, bomItemId: parent.id }}
+      search={{ tab: "info" }}
+      className="font-mono text-primary hover:underline"
+    >
+      {parent.code}
+    </Link>
+  )
+}
+
+type SidebarSectionProps = {
+  title: string
+  icon: ComponentType<IconProps>
+  children: ReactNode
+  // The summary list draws its own row padding; other sections need the box.
+  padded?: boolean
+}
+
+function SidebarSection({
+  title,
+  icon: IconComponent,
+  children,
+  padded,
+}: SidebarSectionProps) {
+  return (
+    // One panel, blocks separated by a rule — `not-first` keeps the top edge
+    // clean so the divider only ever falls between two sections.
+    <div className="not-first:border-t not-first:border-border">
+      <h2 className="flex items-center gap-2 border-b border-border px-4 py-3.5 text-xs font-semibold tracking-wide text-foreground uppercase">
+        <IconComponent className="size-4 text-muted-foreground" />
+        {title}
+      </h2>
+      <div className={padded ? "p-4" : "py-1"}>{children}</div>
+    </div>
+  )
+}
+
+type SummaryRowProps = {
+  icon: ComponentType<IconProps>
+  label: string
+  value: ReactNode
+}
+
+function SummaryRow({ icon: IconComponent, label, value }: SummaryRowProps) {
+  return (
+    <div className="grid grid-cols-[minmax(0,8rem)_minmax(0,1fr)] items-center gap-3 px-4 py-2.5">
+      <dt className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+        <IconComponent className="size-3.5 shrink-0" />
+        {label}
+      </dt>
+      <dd className="text-xs font-medium break-words text-foreground">
+        {value}
+      </dd>
+    </div>
+  )
+}
+
+type BomItemDrawingLinkProps = {
+  drawing: FileResource | null
+}
+
+// Chỉ-đọc — thay/xoá bản vẽ ở tab "Thông tin hạng mục" (BomItemDrawingField).
+function BomItemDrawingLink({ drawing }: BomItemDrawingLinkProps) {
+  if (!drawing) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
+        <Documents className="size-7 text-muted-foreground/40" />
+        <p className="text-[11px] font-medium text-muted-foreground">
+          Chưa có bản vẽ
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <a
+      href={resolveFileUrl(drawing.url)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex min-w-0 items-center justify-between gap-2.5 rounded-lg border border-border/80 bg-background p-2 transition-all hover:border-primary/40 hover:bg-muted/30"
+    >
+      <div className="flex min-w-0 flex-1 items-center gap-2.5">
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border/60 bg-muted/60 text-muted-foreground">
+          <FileText className="size-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-medium text-foreground transition-colors group-hover:text-primary">
+            {drawing.originalName}
+          </p>
+          <p className="text-[10px] text-muted-foreground">
+            <span className="font-mono text-[9px] text-foreground/70 uppercase">
+              PDF
+            </span>
+            <span> · </span>
+            <span>{prettyBytes(drawing.size)}</span>
+          </p>
+        </div>
+      </div>
+      <ExternalLink className="size-3.5 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-foreground" />
+    </a>
+  )
+}
+
+type BomItemImagePreviewProps = {
+  image: FileResource | null
+  name: string
+}
+
+function BomItemImagePreview({ image, name }: BomItemImagePreviewProps) {
+  // "Xem ảnh gốc" cũng vô nghĩa nếu ảnh đã mất — isBroken gộp luôn vào điều kiện rơi về fallback
+  // bên dưới.
+  const [isBroken, markBroken] = useBrokenImage(image?.id)
+
+  if (!image || isBroken) {
+    return (
+      <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
+        <Gallery className="size-7 text-muted-foreground/40" />
+        <p className="text-[11px] font-medium text-muted-foreground">
+          Chưa có hình ảnh
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      {/* URL public vĩnh viễn — ảnh gốc mở thẳng ở tab mới, không cần auth header. */}
+      <a
+        href={resolveFileUrl(image.url)}
+        target="_blank"
+        rel="noreferrer"
+        className="group relative flex aspect-square items-center justify-center overflow-hidden rounded-md border border-border bg-muted/30 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <img
+          src={resolveFileUrl(image.url)}
+          alt={name}
+          className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
+          onError={markBroken}
+        />
+
+        <span className="absolute inset-0 flex items-center justify-center bg-foreground/45 opacity-0 transition-opacity group-hover:opacity-100">
+          <span className="flex items-center gap-1.5 rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-foreground shadow-sm">
+            <MagniferZoomIn className="size-3.5" />
+            Xem ảnh gốc
+          </span>
+        </span>
+      </a>
+
+      <p className="truncate text-[11px] text-muted-foreground">
+        {image.originalName}
+      </p>
+    </div>
+  )
+}

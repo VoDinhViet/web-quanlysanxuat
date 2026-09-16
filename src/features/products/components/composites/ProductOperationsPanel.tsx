@@ -92,15 +92,18 @@ export function OperationTypeBadge({ type }: { type: OperationType }) {
 // across renders.
 export function ProductOperationsPanel({
   target,
-  operations,
+  productOperations,
   isPending,
 }: {
   target: OperationsTarget
-  operations: ProductOperation[]
+  productOperations: ProductOperation[]
   isPending: boolean
 }) {
-  const canManage = useHasPermission("items:bom-manage")
-  const { create, move, remove } = useProductOperations(target, operations)
+  const canEditBom = useHasPermission("items:bom-manage")
+  const { create, move, remove } = useProductOperations(
+    target,
+    productOperations
+  )
   const operationPicker = useGetOperationOptions()
   const [selectedOperationId, setSelectedOperationId] = useState<
     string | undefined
@@ -125,32 +128,24 @@ export function ProductOperationsPanel({
     )
   }
 
-  const columnCount = canManage ? 5 : 4
+  const columnCount = canEditBom ? 5 : 4
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border/60 bg-card shadow-2xs">
+    <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
       <Table aria-label="Danh sách công đoạn">
-        <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+        <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
           <TableRow>
-            <TableHead className="w-14 font-bold text-foreground">
-              STT
-            </TableHead>
-            <TableHead className="font-bold text-foreground">
-              CÔNG ĐOẠN
-            </TableHead>
-            <TableHead className="w-36 font-bold text-foreground">
-              LOẠI
-            </TableHead>
-            <TableHead className="font-bold text-foreground">GHI CHÚ</TableHead>
+            <TableHead className="w-14">STT</TableHead>
+            <TableHead>CÔNG ĐOẠN</TableHead>
+            <TableHead className="w-36">LOẠI</TableHead>
+            <TableHead>GHI CHÚ</TableHead>
             <PermissionGate permission="items:bom-manage">
-              <TableHead className="w-28 text-right font-bold text-foreground">
-                THAO TÁC
-              </TableHead>
+              <TableHead className="w-28 text-right">THAO TÁC</TableHead>
             </PermissionGate>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {operations.length === 0 ? (
+          {productOperations.length === 0 ? (
             <TableRow>
               <TableCell colSpan={columnCount}>
                 <TableEmpty
@@ -161,12 +156,8 @@ export function ProductOperationsPanel({
               </TableCell>
             </TableRow>
           ) : (
-            operations.map((step, idx) => (
-              <TableRow
-                key={step.id}
-                id={step.id}
-                className="h-14 bg-card hover:bg-muted/20"
-              >
+            productOperations.map((step, idx) => (
+              <TableRow key={step.id} id={step.id} className="h-14">
                 <TableCell className="font-mono font-bold text-muted-foreground">
                   {idx + 1}
                 </TableCell>
@@ -208,7 +199,7 @@ export function ProductOperationsPanel({
                               variant="outline"
                               size="icon-sm"
                               aria-label="Di chuyển xuống"
-                              disabled={idx === operations.length - 1}
+                              disabled={idx === productOperations.length - 1}
                               onClick={() => move(idx, "down")}
                               className="border border-border/60 hover:bg-muted"
                             >

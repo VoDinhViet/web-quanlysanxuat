@@ -60,7 +60,7 @@ export function ProductDetailHeader({
 
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
               <span className="font-mono font-medium text-foreground">
-                {product.code}
+                {product.code} · {product.revision}
               </span>
               <Dot />
               <span>ĐVT: {product.unit.name}</span>
@@ -75,7 +75,7 @@ export function ProductDetailHeader({
                       search={{ tab: "info" }}
                       className="font-mono font-medium text-primary hover:underline"
                     >
-                      {product.clonedFrom.code}
+                      {product.clonedFrom.code} · {product.clonedFrom.revision}
                     </Link>
                   </span>
                 </>

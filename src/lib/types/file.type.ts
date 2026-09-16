@@ -4,10 +4,10 @@
 // backend enum value — an unknown one is rejected before Multer runs.
 export enum UploadType {
   USER_AVATAR = "USER_AVATAR",
-  MATERIAL_IMAGE = "MATERIAL_IMAGE",
-  MATERIAL_DOCUMENT = "MATERIAL_DOCUMENT",
+  CONSUMABLE_IMAGE = "CONSUMABLE_IMAGE",
+  CONSUMABLE_DOCUMENT = "CONSUMABLE_DOCUMENT",
   PRODUCT_IMAGE = "PRODUCT_IMAGE",
-  // Retired 2026-08-27 — thay bằng ITEM_DOCUMENT. Bị bỏ nhầm khi gộp products/materials thành
+  // Retired 2026-08-27 — thay bằng ITEM_DOCUMENT. Bị bỏ nhầm khi gộp products/consumables thành
   // items, tưởng bản vẽ theo node BOM thay thế được (không đúng — BUG-007). Kept because the
   // backend enum can't drop a value either; don't use for new files.
   PRODUCT_DOCUMENT = "PRODUCT_DOCUMENT",
@@ -24,7 +24,7 @@ export enum UploadType {
   PRODUCTION_OPERATION_EVIDENCE = "PRODUCTION_OPERATION_EVIDENCE",
   // File đính kèm khi kho xác nhận xuất trả NCC (POST /supplier-returns/:id/post).
   SUPPLIER_RETURN_EVIDENCE = "SUPPLIER_RETURN_EVIDENCE",
-  // Tài liệu đính kèm cấp item — mọi type (FG/WIP/RM), danh sách nhiều file, khác
+  // Tài liệu đính kèm cấp item — mọi type (FG/CONSUMABLE), danh sách nhiều file, khác
   // BOM_ITEM_DRAWING (tối đa 1 file, gắn theo từng node BOM). Thay PRODUCT_DOCUMENT đã nghỉ hưu.
   ITEM_DOCUMENT = "ITEM_DOCUMENT",
 }
@@ -38,7 +38,7 @@ export enum FileKind {
 
 /**
  * Mirrors the backend's FileResDto — returned by POST /api/files and embedded in
- * every entity response (`product.image`, `user.avatar`, `material.image`).
+ * every entity response (`product.image`, `user.avatar`, `consumable.image`).
  *
  * `url` is a public, permanent, host-relative static link — render it through
  * `resolveFileUrl` (src/lib/file-url.ts) to get an absolute one.
@@ -67,13 +67,62 @@ export const ACCEPTED_IMAGE_TYPES = {
   "image/gif": [],
 }
 
-// pdf/docx/xlsx only. Legacy binary .doc/.xls have no magic-byte signature, so
-// the backend cannot tell a genuine one from a spoof and rejects both; images
-// belong to FileKind.IMAGE, not DOCUMENT.
+// Tài liệu văn phòng, trình chiếu, bản vẽ kỹ thuật, biểu mẫu và file nén (khớp với backend FilesService.DOCUMENT_MIME_TYPES).
+// File thực thi, script và macro độc hại (.docm, .xlsm, .pptm) bị chặn.
 export const ACCEPTED_DOCUMENT_TYPES = {
-  "application/pdf": [],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
+  // PDF & Văn bản
+  "application/pdf": [".pdf"],
+  "application/rtf": [".rtf"],
+  "application/epub+zip": [".epub"],
+
+  // Microsoft Office OOXML (Word, Excel, PowerPoint & Templates)
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+    ".docx",
+  ],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.template": [
+    ".dotx",
+  ],
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+    ".xlsx",
+  ],
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.template": [
+    ".xltx",
+  ],
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": [
+    ".pptx",
+  ],
+  "application/vnd.openxmlformats-officedocument.presentationml.slideshow": [
+    ".ppsx",
+  ],
+  "application/vnd.openxmlformats-officedocument.presentationml.template": [
+    ".potx",
+  ],
+
+  // OpenDocument (LibreOffice / OpenOffice)
+  "application/vnd.oasis.opendocument.text": [".odt"],
+  "application/vnd.oasis.opendocument.text-template": [".ott"],
+  "application/vnd.oasis.opendocument.spreadsheet": [".ods"],
+  "application/vnd.oasis.opendocument.spreadsheet-template": [".ots"],
+  "application/vnd.oasis.opendocument.presentation": [".odp"],
+  "application/vnd.oasis.opendocument.presentation-template": [".otp"],
+  "application/vnd.oasis.opendocument.graphics": [".odg"],
+
+  // Bản vẽ kỹ thuật & Sơ đồ (AutoCAD, Visio)
+  "image/vnd.dwg": [".dwg"],
+  "application/vnd.visio": [".vsdx"],
+
+  // Apple iWork
+  "application/vnd.apple.pages": [".pages"],
+  "application/vnd.apple.numbers": [".numbers"],
+  "application/vnd.apple.keynote": [".key"],
+
+  // Tệp nén / Lưu trữ (Archives)
+  "application/zip": [".zip"],
+  "application/x-rar-compressed": [".rar"],
+  "application/x-7z-compressed": [".7z"],
+  "application/x-tar": [".tar"],
+  "application/gzip": [".gz"],
+  "application/x-bzip2": [".bz2"],
 }
 
 // BOM_ITEM_DRAWING shares the backend's DOCUMENT policy (pdf/docx/xlsx allowed server-side), but

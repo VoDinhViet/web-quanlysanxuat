@@ -22,19 +22,15 @@ type SupplierReturnItemInfoSectionProps = {
 // Vật tư trả (image + fields) + Tham chiếu (IQC/nhập kho/PO) + Lý do trả folded into one card —
 // same "several related blocks under one header, separated by dividers" idiom as
 // IqcGeneralInfoCard.tsx, replacing what used to be 3 separate, mostly-thin cards
-// (SupplierReturnReferenceCard + this section + SupplierReturnReasonSection). Everything except
-// the image comes off `supplierReturn`/`supplierReturn.item` — already in the phiếu trả response, no extra wait.
-// The image is `GET /api/items/:id`-only, so it (and only it) depends on itemQueryOptions,
-// prefetched by the route loader alongside supplierQueryOptions.
+// (SupplierReturnReferenceCard + this section + SupplierReturnReasonSection). `item` null khi
+// trả node COMPONENT nhận về từ OS-IN (không phải một item, docs/decisions/wip-removal.md) — dòng ảnh
+// dispatch sang `null` (không ảnh để fetch), field mã/tên/đvt fallback về
+// `itemCode`/`itemName`/không có đvt.
 export function SupplierReturnItemInfoSection({
   supplierReturn,
 }: SupplierReturnItemInfoSectionProps) {
   const canUpdate = useHasPermission("inventory:update")
   const isDraft = supplierReturn.status === InventoryDocumentStatus.DRAFT
-
-  const { data: item } = useSuspenseQuery(
-    itemQueryOptions(supplierReturn.item.id)
-  )
 
   return (
     <SupplierReturnDetailSectionCard
@@ -45,10 +41,14 @@ export function SupplierReturnItemInfoSection({
       <div className="space-y-5">
         <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:gap-5">
           <div className="w-28 shrink-0">
-            <ItemImagePreview
-              image={item.image}
-              name={supplierReturn.item.name}
-            />
+            {supplierReturn.item ? (
+              <SupplierReturnItemImage
+                itemId={supplierReturn.item.id}
+                name={supplierReturn.itemName}
+              />
+            ) : (
+              <ItemImagePreview image={null} name={supplierReturn.itemName} />
+            )}
           </div>
 
           <dl className="grid flex-1 grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
@@ -56,12 +56,15 @@ export function SupplierReturnItemInfoSection({
               label="Mã vật tư"
               value={
                 <span className="font-mono text-primary">
-                  {supplierReturn.item.code}
+                  {supplierReturn.itemCode}
                 </span>
               }
             />
-            <InfoField label="Tên vật tư" value={supplierReturn.item.name} />
-            <InfoField label="ĐVT" value={supplierReturn.item.unit.name} />
+            <InfoField label="Tên vật tư" value={supplierReturn.itemName} />
+            <InfoField
+              label="ĐVT"
+              value={supplierReturn.item?.unit.name ?? "—"}
+            />
             <InfoField
               label="SL trả"
               value={
@@ -106,6 +109,22 @@ export function SupplierReturnItemInfoSection({
       </div>
     </SupplierReturnDetailSectionCard>
   )
+}
+
+type SupplierReturnItemImageProps = {
+  itemId: string
+  name: string
+}
+
+// Tách khỏi component cha để `useSuspenseQuery` chỉ chạy khi thật sự có item — node COMPONENT không
+// có `items` row nào để fetch, nên nhánh đó render thẳng `ItemImagePreview` ở call site.
+function SupplierReturnItemImage({
+  itemId,
+  name,
+}: SupplierReturnItemImageProps) {
+  const { data: item } = useSuspenseQuery(itemQueryOptions(itemId))
+
+  return <ItemImagePreview image={item.image} name={name} />
 }
 
 type InfoFieldProps = {

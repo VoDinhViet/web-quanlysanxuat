@@ -21,7 +21,7 @@ import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
 import { getStepNav } from "@/lib/wizard-steps"
 import { PurchaseRequestCreateHeaderSection } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateHeaderSection"
-import { PurchaseRequestCreateMaterialPickerSection } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateMaterialPickerSection"
+import { PurchaseRequestCreateConsumablePickerSection } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateConsumablePickerSection"
 import { PurchaseRequestCreateQuantitySection } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateQuantitySection"
 import {
   PurchaseRequestCreateStepsTabs,
@@ -44,7 +44,7 @@ export function PurchaseRequestCreateForm() {
   // -v2: the item shape changed (itemLabel → itemCode/itemName/itemUnit/minStock, for the
   // picker-table redesign) — a v1 key would let restoreFormDraft() write a stale-shaped draft
   // into the form (it doesn't validate against the current schema on restore), showing "—" for
-  // every material's name. Renaming the key lets old drafts harmlessly expire, same idiom as
+  // every consumable's name. Renaming the key lets old drafts harmlessly expire, same idiom as
   // create-purchase-quotation-v2.
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreatePurchaseRequestSchema>(
@@ -78,7 +78,7 @@ export function PurchaseRequestCreateForm() {
     onSubmit: ({ value }) => create(value),
   })
 
-  const [step, setStep] = useState<PurchaseRequestCreateWizardStep>("materials")
+  const [step, setStep] = useState<PurchaseRequestCreateWizardStep>("consumables")
   const canGoToQuantities =
     useField({ form, name: "items" }).state.value.length > 0
 
@@ -131,8 +131,8 @@ export function PurchaseRequestCreateForm() {
               canGoToQuantities={canGoToQuantities}
             />
 
-            <TabsContent value="materials" className="m-0 outline-none">
-              <PurchaseRequestCreateMaterialPickerSection
+            <TabsContent value="consumables" className="m-0 outline-none">
+              <PurchaseRequestCreateConsumablePickerSection
                 form={form}
                 disabled={isPending}
               />
@@ -201,7 +201,7 @@ export function PurchaseRequestCreateForm() {
                       createPurchaseRequestFormDefaultValues
                     )
                     clearDraft()
-                    setStep("materials")
+                    setStep("consumables")
                   }}
                 >
                   <RotateCcw className="size-4" />

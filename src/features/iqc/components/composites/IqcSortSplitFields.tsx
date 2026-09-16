@@ -12,7 +12,9 @@ function scale(value: number): number {
 type IqcSortSplitFieldsProps = {
   form: IqcDetailFormApi
   quantity: number
-  unitName: string
+  // null khi lô kiểm là node COMPONENT nhận về từ OS-IN (không phải một item, không có ĐVT) —
+  // nhãn/banner bỏ hẳn phần đơn vị thay vì hiện ngoặc rỗng.
+  unitName: string | null
   disabled?: boolean
 }
 
@@ -27,13 +29,15 @@ export function IqcSortSplitFields({
   unitName,
   disabled,
 }: IqcSortSplitFieldsProps) {
+  const unitSuffix = unitName ? ` (${unitName})` : ""
+
   return (
     <div className="space-y-3 rounded-lg border border-violet-200 bg-violet-50/50 p-3.5 dark:border-violet-500/20 dark:bg-violet-500/5">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <form.AppField name="sortOkQty">
           {(field) => (
             <field.NumberField
-              label={`SL OK (${unitName})`}
+              label={`SL OK${unitSuffix}`}
               required
               placeholder="0"
               thousandSeparator={false}
@@ -45,7 +49,7 @@ export function IqcSortSplitFields({
         <form.AppField name="sortNgQty">
           {(field) => (
             <field.NumberField
-              label={`SL NG (${unitName})`}
+              label={`SL NG${unitSuffix}`}
               required
               placeholder="0"
               thousandSeparator={false}
@@ -77,7 +81,8 @@ export function IqcSortSplitFields({
             >
               {hasBoth ? (isMatch ? "✓ " : "✗ ") : null}
               SL OK + SL NG = {quantityFormatter.format(sum)} / Tổng SL ={" "}
-              {quantityFormatter.format(quantity)} {unitName}
+              {quantityFormatter.format(quantity)}
+              {unitName ? ` ${unitName}` : ""}
             </p>
           )
         }}

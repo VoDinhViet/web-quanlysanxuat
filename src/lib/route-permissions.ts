@@ -45,7 +45,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/inventory-issues": "inventory:read",
   "/manage/inventory-issues/$issueId": "inventory:read",
 
-  "/manage/inventory-materials": "inventory:read",
+  "/manage/inventory-consumables": "inventory:read",
   "/manage/inventory-products": "inventory:read",
   // Guarded on `inventory:read`, not a write permission: a read-only viewer should reach this
   // screen. It has no write actions of its own — editing stays on the Products feature.
@@ -65,9 +65,9 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/iqc": "iqc:read",
   "/manage/iqc/$iqcId": "iqc:read",
 
-  "/manage/materials": "items:read",
-  "/manage/materials/create": "items:create",
-  "/manage/materials/$materialId/update": "items:update",
+  "/manage/consumables": "items:read",
+  "/manage/consumables/create": "items:create",
+  "/manage/consumables/$consumableId/update": "items:update",
 
   "/manage/operations": "operations:read",
 
@@ -114,6 +114,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   // Guarded on `items:read`, not `items:update`: a read-only viewer should reach this
   // screen. The write actions gate themselves with PermissionGate.
   "/manage/products/$productId": "items:read",
+  "/manage/products/$productId/bom/$bomItemId": "items:read",
 
   "/manage/purchase-ledger": "purchasing:read",
 

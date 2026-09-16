@@ -196,10 +196,10 @@ export const supplierColumns = supplierColumnHelper.columns([
             </Tooltip>
           </RoutePermissionGate>
           <PermissionGate permission="suppliers:delete">
-            <DeleteSupplierDialog
-              supplier={supplier}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <DeleteSupplierDialog
+                supplier={supplier}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -213,10 +213,10 @@ export const supplierColumns = supplierColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Xóa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Xóa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
         </div>
       )

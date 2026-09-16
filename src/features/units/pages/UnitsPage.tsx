@@ -93,7 +93,7 @@ export function UnitsPage() {
               <Select
                 items={[
                   { value: "ALL", label: "Tất cả" },
-                  { value: "MATERIAL", label: "Vật tư" },
+                  { value: "CONSUMABLE", label: "Vật tư" },
                   { value: "PRODUCT", label: "Sản phẩm" },
                 ]}
                 value={scopeFilterValue(search.scope)}
@@ -106,7 +106,7 @@ export function UnitsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL">Tất cả</SelectItem>
-                  <SelectItem value="MATERIAL">Vật tư</SelectItem>
+                  <SelectItem value="CONSUMABLE">Vật tư</SelectItem>
                   <SelectItem value="PRODUCT">Sản phẩm</SelectItem>
                 </SelectContent>
               </Select>

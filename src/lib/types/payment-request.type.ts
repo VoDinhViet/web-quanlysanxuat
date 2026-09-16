@@ -60,12 +60,12 @@ export type PaymentRequest = {
   createdAt: string
 }
 
-/** One material line inside a payment request — read back from the source PO's items, not
+/** One consumable line inside a payment request — read back from the source PO's items, not
  *  stored on `payment_requests` itself. Mirrors `PaymentRequestItemResDto`. */
 export type PaymentRequestItem = {
   id: string
-  materialCode: string
-  materialName: string
+  consumableCode: string
+  consumableName: string
   unit: string
   orderedQty: number
   receivedQty: number

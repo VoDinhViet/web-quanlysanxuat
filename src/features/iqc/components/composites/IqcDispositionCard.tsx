@@ -106,7 +106,7 @@ export function IqcDispositionCard({
                 <IqcSortSplitFields
                   form={form}
                   quantity={iqc.quantity}
-                  unitName={iqc.item.unit.name}
+                  unitName={iqc.item?.unit.name ?? null}
                   disabled={disabled}
                 />
               )

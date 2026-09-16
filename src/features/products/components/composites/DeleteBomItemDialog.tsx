@@ -14,18 +14,18 @@ import {
 import type { BomItem } from "@/lib/types/bom-item.type"
 
 type DeleteBomItemDialogProps = {
-  node: BomItem | null
+  bomItem: BomItem | null
   onOpenChange: (open: boolean) => void
   onConfirm: () => void
 }
 
 export function DeleteBomItemDialog({
-  node,
+  bomItem,
   onOpenChange,
   onConfirm,
 }: DeleteBomItemDialogProps) {
   return (
-    <AlertDialog open={node !== null} onOpenChange={onOpenChange}>
+    <AlertDialog open={bomItem !== null} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
@@ -33,8 +33,8 @@ export function DeleteBomItemDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Xoá thành phần này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {node
-              ? `"${node.name}" (${node.code}) và toàn bộ thành phần con bên trong sẽ bị xoá khỏi cấu trúc sản phẩm.`
+            {bomItem
+              ? `"${bomItem.name}" (${bomItem.code}) và toàn bộ thành phần con bên trong sẽ bị xoá khỏi cấu trúc sản phẩm.`
               : ""}
           </AlertDialogDescription>
         </AlertDialogHeader>

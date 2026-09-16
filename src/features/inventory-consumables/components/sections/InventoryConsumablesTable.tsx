@@ -1,0 +1,122 @@
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
+import { Warehouse } from "lucide-react"
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
+import { inventoryConsumableColumns } from "@/features/inventory-consumables/components/composites/InventoryConsumablesTableColumns"
+import { cn } from "@/lib/utils"
+import type { ConsumableInventoryItem } from "@/lib/types/inventory-consumable.type"
+import { resolveInventoryStatus } from "@/lib/types/inventory-consumable.type"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
+
+type InventoryConsumablesTableProps = {
+  rows: ConsumableInventoryItem[]
+  pagination: PaginationMeta
+  isPending: boolean
+}
+
+// Flags shortage rows with a left accent so they stand out down the whole
+// list, not just within their own row's status badge.
+function inventoryRowClassName(
+  item: ConsumableInventoryItem
+): string | undefined {
+  return resolveInventoryStatus(item.available, item.minStock) === "SHORTAGE"
+    ? "border-l-2 border-l-destructive"
+    : undefined
+}
+
+// Bảng tồn kho vật tư — tự dựng useReactTable/flexRender thay vì qua một khung DataTable dùng
+// chung, để mỗi trang danh sách tự do tiến hoá riêng.
+export function InventoryConsumablesTable({
+  rows,
+  pagination,
+  isPending,
+}: InventoryConsumablesTableProps) {
+  const table = useTable({
+    data: rows,
+    columns: inventoryConsumableColumns,
+    features: appTableFeatures,
+  })
+
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
+
+  return (
+    <div
+      className={cn(
+        "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
+        isPending && "pointer-events-none opacity-50"
+      )}
+    >
+      {rows.length === 0 ? (
+        <TableEmpty
+          icon={Warehouse}
+          title="Không có vật tư nào"
+          description="Thử thay đổi bộ lọc hoặc kiểm tra lại thời gian xem tồn."
+        />
+      ) : (
+        <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
+          <Table aria-label="Danh sách tồn kho vật tư">
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className={cn(
+                    "h-14 bg-card hover:bg-muted/25",
+                    inventoryRowClassName(row.original)
+                  )}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="pt-4"
+      />
+    </div>
+  )
+}

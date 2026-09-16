@@ -6,7 +6,7 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import type { WizardStepNavItem } from "@/lib/wizard-steps"
 
-export type PurchaseRequestCreateWizardStep = "materials" | "quantities"
+export type PurchaseRequestCreateWizardStep = "consumables" | "quantities"
 
 type PurchaseRequestCreateStepItem =
   WizardStepNavItem<PurchaseRequestCreateWizardStep> & {
@@ -16,7 +16,7 @@ type PurchaseRequestCreateStepItem =
 
 export const purchaseRequestCreateStepItems: PurchaseRequestCreateStepItem[] = [
   {
-    value: "materials",
+    value: "consumables",
     label: "1. Chọn vật tư",
     icon: Package,
     nextLabel: "Tiếp tục: nhập số lượng",

@@ -25,9 +25,9 @@ type InventoryReceiptItemDialogProps = {
   // `null` = add mode; a row value = edit mode.
   initialValue: InventoryReceiptItemFormValue | null
   onSubmit: (value: InventoryReceiptItemFormValue) => void
-  // "RM" (vật tư) hay "FG" (thành phẩm) — theo `resolveInventoryReceiptItemType(receiptType)`
+  // "CONSUMABLE" (vật tư) hay "FG" (thành phẩm) — theo `resolveInventoryReceiptItemType(receiptType)`
   // ở nơi gọi, quyết định combobox tìm trong tập item nào.
-  itemType: "RM" | "FG"
+  itemType: "CONSUMABLE" | "FG"
 }
 
 // Chế độ chọn vật tư/thành phẩm chung (không theo PO) — dùng chung bởi
@@ -65,7 +65,7 @@ type InventoryReceiptItemDialogFormProps = {
   initialValue: InventoryReceiptItemFormValue | null
   onSubmit: (value: InventoryReceiptItemFormValue) => void
   onCancel: () => void
-  itemType: "RM" | "FG"
+  itemType: "CONSUMABLE" | "FG"
 }
 
 function InventoryReceiptItemDialogForm({
@@ -76,7 +76,7 @@ function InventoryReceiptItemDialogForm({
 }: InventoryReceiptItemDialogFormProps) {
   const isEditing = initialValue !== null
   const itemNoun = itemType === "FG" ? "thành phẩm" : "vật tư"
-  const material = useGetInventoryReceiptItemOptions(itemType)
+  const consumable = useGetInventoryReceiptItemOptions(itemType)
 
   const form = useAppForm({
     defaultValues: initialValue ?? inventoryReceiptItemDefaultValue,
@@ -112,14 +112,14 @@ function InventoryReceiptItemDialogForm({
           <form.Field name="itemId">
             {(field) => (
               <ComboboxField
-                id="inventory-receipt-item-material"
+                id="inventory-receipt-item-consumable"
                 label={itemType === "FG" ? "Thành phẩm" : "Vật tư"}
                 required
                 placeholder={`Tìm mã hoặc tên ${itemNoun}...`}
                 value={field.state.value || undefined}
                 onValueChange={(next) => {
                   field.handleChange(next ?? "")
-                  const selected = material.items.find(
+                  const selected = consumable.items.find(
                     (item) => item.id === next
                   )
                   form.setFieldValue(
@@ -133,9 +133,9 @@ function InventoryReceiptItemDialogForm({
                   field.state.meta.errors.length > 0
                 }
                 errors={field.state.meta.errors}
-                options={material.options}
-                onSearchChange={material.onSearchChange}
-                isPending={material.isFetching}
+                options={consumable.options}
+                onSearchChange={consumable.onSearchChange}
+                isPending={consumable.isFetching}
                 initialOption={
                   initialValue
                     ? {

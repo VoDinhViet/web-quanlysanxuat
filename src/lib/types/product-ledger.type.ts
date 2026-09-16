@@ -5,7 +5,7 @@ import type { UserRef } from "@/lib/types/user.type"
 
 // Local twins — id+code (plus the couple of extra fields the backend's XRefResDto actually
 // returns), not the full XRef types other features use. Kept local rather than importing across
-// features, same convention as InventoryMaterialTableCells.tsx's "Local twin" comment.
+// features, same convention as InventoryConsumableTableCells.tsx's "Local twin" comment.
 export type ProductLedgerReceiptRef = {
   id: string
   code: string

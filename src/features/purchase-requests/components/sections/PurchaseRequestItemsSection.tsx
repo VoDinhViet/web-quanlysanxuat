@@ -123,7 +123,7 @@ export function PurchaseRequestItemsSection({
               <span>
                 Xem chi tiết tại menu{" "}
                 <Link
-                  to="/manage/inventory-materials"
+                  to="/manage/inventory-consumables"
                   search={{ page: 1, limit: 10 }}
                   className="font-medium underline underline-offset-2"
                 >

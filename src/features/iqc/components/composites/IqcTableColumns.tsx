@@ -35,20 +35,16 @@ export const iqcColumns = iqcColumnHelper.columns([
     id: "item",
     header: "Vật tư",
     meta: { headerClassName: "min-w-48" },
-    cell: ({ row }) => {
-      const item = row.original.item
-
-      return (
-        <div className="max-w-56 min-w-0">
-          <p className="truncate text-xs font-semibold text-foreground">
-            {item.name}
-          </p>
-          <p className="truncate font-mono text-[11px] text-muted-foreground">
-            {item.code}
-          </p>
-        </div>
-      )
-    },
+    cell: ({ row }) => (
+      <div className="max-w-56 min-w-0">
+        <p className="truncate text-xs font-semibold text-foreground">
+          {row.original.itemName}
+        </p>
+        <p className="truncate font-mono text-[11px] text-muted-foreground">
+          {row.original.itemCode}
+        </p>
+      </div>
+    ),
   }),
 
   iqcColumnHelper.accessor(
@@ -73,9 +69,11 @@ export const iqcColumns = iqcColumnHelper.columns([
     cell: ({ row }) => (
       <span className="font-semibold text-foreground tabular-nums">
         {quantityFormatter.format(row.original.quantity)}{" "}
-        <span className="font-normal text-muted-foreground">
-          ({row.original.item.unit.name})
-        </span>
+        {row.original.item ? (
+          <span className="font-normal text-muted-foreground">
+            ({row.original.item.unit.name})
+          </span>
+        ) : null}
       </span>
     ),
   }),

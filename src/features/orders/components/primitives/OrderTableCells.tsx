@@ -113,10 +113,10 @@ export function OrderActionsCell({ order }: { order: Order }) {
       )}
       {isDraft ? (
         <PermissionGate permission="orders:delete">
-          <DeleteOrderDialog
-            order={order}
-            trigger={
-              <Tooltip>
+          <Tooltip>
+            <DeleteOrderDialog
+              order={order}
+              trigger={
                 <TooltipTrigger
                   render={
                     <Button
@@ -129,10 +129,10 @@ export function OrderActionsCell({ order }: { order: Order }) {
                     </Button>
                   }
                 />
-                <TooltipContent>Xoá đơn hàng</TooltipContent>
-              </Tooltip>
-            }
-          />
+              }
+            />
+            <TooltipContent>Xoá đơn hàng</TooltipContent>
+          </Tooltip>
         </PermissionGate>
       ) : (
         <DisabledAction

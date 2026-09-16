@@ -68,10 +68,10 @@ export const unitColumns = unitColumnHelper.columns([
       return (
         <div className="flex items-center justify-center gap-1.5">
           <PermissionGate permission="items:update">
-            <UpdateUnitDialog
-              unit={unit}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <UpdateUnitDialog
+                unit={unit}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -85,16 +85,16 @@ export const unitColumns = unitColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Chỉnh sửa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Chỉnh sửa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
           <PermissionGate permission="items:update">
-            <DeleteUnitDialog
-              unit={unit}
-              trigger={
-                <Tooltip>
+            <Tooltip>
+              <DeleteUnitDialog
+                unit={unit}
+                trigger={
                   <TooltipTrigger
                     render={
                       <Button
@@ -108,10 +108,10 @@ export const unitColumns = unitColumnHelper.columns([
                       </Button>
                     }
                   />
-                  <TooltipContent>Xóa</TooltipContent>
-                </Tooltip>
-              }
-            />
+                }
+              />
+              <TooltipContent>Xóa</TooltipContent>
+            </Tooltip>
           </PermissionGate>
         </div>
       )

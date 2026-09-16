@@ -50,7 +50,7 @@ export const createOutsourcingOrderConfirmColumns = confirmColumnHelper.columns(
         cellClassName: "truncate text-muted-foreground",
       },
     }),
-    confirmColumnHelper.accessor((row) => row.unit.name, {
+    confirmColumnHelper.accessor((row) => row.unit?.name ?? "—", {
       id: "unit",
       header: "ĐVT",
       meta: { headerClassName: "w-14", cellClassName: "text-muted-foreground" },

@@ -23,7 +23,7 @@ const productDetailTabItems: ProductDetailTabItem[] = [
   { value: "info", label: "Thông tin sản phẩm", icon: Box },
   { value: "boms", label: "Cấu trúc & Công đoạn", icon: Layers },
   {
-    value: "materials",
+    value: "consumables",
     label: "Thành phần vật tư",
     icon: ClipboardList,
   },

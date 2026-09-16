@@ -12,20 +12,18 @@ export const itemStatusLabels: Record<ItemStatus, string> = {
   [ItemStatus.INACTIVE]: "Ngừng sử dụng",
 }
 
-/** Mirrors the backend's ItemType, narrowed to the two values this feature ever
+/** Mirrors the backend's ItemType, narrowed to the one value this feature ever
  *  sends/filters on — FG (thành phẩm) is a sellable end product and the root of
- *  its own BOM; WIP (bán thành phẩm) is referenced as a child node in another
- *  item's BOM tree. The backend's third value, RM (vật tư), is a different
- *  domain concept (see BomItemType in bom-item.type.ts) and never appears
- *  on an `Item`. */
+ *  its own BOM. The backend's other value, CONSUMABLE (vật tư), is a different domain
+ *  concept (consumables feature) and never appears on an `Item`. Node cấu trúc
+ *  con không còn là item (xem `BomItemType` in bom-item.type.ts). Giữ dạng
+ *  enum 1 giá trị để không vỡ mọi import. */
 export enum ItemType {
   FG = "FG",
-  WIP = "WIP",
 }
 
 export const itemTypeLabels: Record<ItemType, string> = {
   [ItemType.FG]: "Thành phẩm",
-  [ItemType.WIP]: "Bán thành phẩm",
 }
 
 /** Mirrors the backend's ItemRefResDto — a lightweight {id, code, name} ref,
@@ -34,6 +32,7 @@ export const itemTypeLabels: Record<ItemType, string> = {
 export type ItemRef = {
   id: string
   code: string
+  revision: string
   name: string
 }
 
@@ -54,15 +53,16 @@ export type ItemFile = {
 
 /**
  * Mirrors the backend's ItemResDto/ItemDetailResDto (GET /api/items,
- * GET /api/items/:id) narrowed to the fields this feature (FG/WIP only) reads.
- * The backend also returns a set of RM-only fields (supplier, minStock,
- * materialGrade, technicalStandard, dimensions, specificWeight, colorSurface,
- * description, origin, leadTime) that are always null/default on a FG/WIP row
+ * GET /api/items/:id) narrowed to the fields this feature (FG only) reads.
+ * The backend also returns a set of CONSUMABLE-only fields (supplier, minStock,
+ * consumableGrade, technicalStandard, dimensions, specificWeight, colorSurface,
+ * description, origin, leadTime) that are always null/default on a FG row
  * — omitted here since this feature never reads or writes them.
  */
 export type Item = {
   id: string
   code: string
+  revision: string
   name: string
   type: ItemType
   image: FileResource | null
@@ -80,21 +80,21 @@ export type Item = {
 }
 
 // Mirrors the backend's ItemIssueResDto (GET /api/items/:itemId/issues,
-// paginated, `q` filters code/name) — "Thành phần vật tư" tab: every RM
-// this item's BOM tree consumes, one row per material (grouped by
-// `itemId`, not per `bom_items` node — the same material can appear under
+// paginated, `q` filters code/name) — "Thành phần vật tư" tab: every CONSUMABLE
+// this item's BOM tree consumes, one row per consumable (grouped by
+// `itemId`, not per `bom_items` node — the same consumable can appear under
 // several parent nodes in the tree, so this list has no
-// `id`/`sortOrder`/`note`, those are per-node, not per-material; see
+// `id`/`sortOrder`/`note`, those are per-node, not per-consumable; see
 // BomItem in bom-item.type.ts for the raw per-node tree instead).
 //
 // `requiredQty` is the exploded amount for 1 unit of the root item —
-// multiplied cumulatively through every ancestor WIP node's own quantity,
-// then summed across all occurrences of that material. Same field name as
-// the production-job material demand (`ProductionJobIssue.requiredQty`,
+// multiplied cumulatively through every ancestor COMPONENT node's own quantity,
+// then summed across all occurrences of that consumable. Same field name as
+// the production-job consumable demand (`ProductionJobIssue.requiredQty`,
 // see production-job.type.ts) — same concept, different seed (1 unit of
 // the root item here vs. the Job quantity there). Named `*Issue` to match
-// that Job-side concept, not the unrelated `Material` type (material.type.ts,
-// the RM master-data shape) or `inventory-issues` (real stock-issue
+// that Job-side concept, not the unrelated `Consumable` type (consumable.type.ts,
+// the CONSUMABLE master-data shape) or `inventory-issues` (real stock-issue
 // documents) — deliberate, not a typo.
 export type ItemIssue = {
   itemId: string
