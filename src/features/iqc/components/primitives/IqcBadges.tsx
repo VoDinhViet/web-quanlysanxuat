@@ -30,7 +30,7 @@ type IqcResultBadgeProps = {
   className?: string
 }
 
-// `result` is null for a NOT_INSPECTED row — chưa chạy AQL sampling nên chưa có PASS/FAIL.
+// `result` is null for a NOT_INSPECTED row — chưa kiểm nên chưa có PASS/FAIL.
 export function IqcResultBadge({ result, className }: IqcResultBadgeProps) {
   if (!result) {
     return <span className="text-xs text-muted-foreground">—</span>

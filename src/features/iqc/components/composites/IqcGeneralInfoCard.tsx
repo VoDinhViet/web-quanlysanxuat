@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
 import {
   Buildings2,
   Calendar,
@@ -10,13 +9,11 @@ import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
-import { departmentQueryOptions } from "@/features/departments/api"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import { IqcConsumableStrip } from "@/features/iqc/components/composites/IqcConsumableStrip"
 import { IqcPoOrReasonCell } from "@/features/iqc/components/primitives/IqcTableCells"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import type { IqcDetail } from "@/lib/types/iqc.type"
-import { buildSelectOptions } from "@/lib/utils"
 
 type IqcGeneralInfoCardProps = {
   form: IqcDetailFormApi
@@ -25,23 +22,19 @@ type IqcGeneralInfoCardProps = {
 }
 
 // THÔNG TIN CHUNG — dải vật tư (xem IqcConsumableStrip.tsx) + tham chiếu (NCC, PO/lý do, người
-// tạo, ngày tạo, gộp từ IqcDetailReferenceCard cũ đã xoá) + Bộ phận QC (field
-// duy nhất user sửa được ở card này — reference list đọc trực tiếp ở leaf theo quy ước
-// "Reference-option lists" của architecture.md, route loader đã prefetch
-// departmentQueryOptions). Tham chiếu render dạng ô label/icon/value xếp chồng, mỗi ô có
-// icon riêng cho dễ quét mắt, thay vì hàng dt/dd dẹt.
+// tạo, ngày tạo, gộp từ IqcDetailReferenceCard cũ đã xoá) + field user sửa được ở card này: Ngày
+// kiểm tra (gộp từ IqcAqlInputCard cũ đã xoá cùng đợt bỏ AQL). Tham chiếu render dạng ô
+// label/icon/value xếp chồng, mỗi ô có icon riêng cho dễ quét mắt, thay vì hàng dt/dd dẹt.
 export function IqcGeneralInfoCard({
   form,
   iqc,
   disabled,
 }: IqcGeneralInfoCardProps) {
-  const { data: departments } = useSuspenseQuery(departmentQueryOptions())
-
   return (
     <IqcDetailSectionCard
       icon={InfoCircle}
       title="Thông tin chung"
-      description="Vật tư, nguồn gốc và bộ phận phụ trách kiểm tra"
+      description="Vật tư, nguồn gốc và thời điểm kiểm tra"
     >
       <div className="space-y-5">
         <div className="border-b border-border pb-5">
@@ -83,19 +76,16 @@ export function IqcGeneralInfoCard({
           </dl>
         </div>
 
-        <div className="border-t border-border pt-5">
-          <div className="sm:max-w-xs">
-            <form.AppField name="qcDepartmentId">
-              {(field) => (
-                <field.SelectField
-                  label="Bộ phận QC"
-                  placeholder="Chọn bộ phận QC"
-                  options={buildSelectOptions(departments)}
-                  disabled={disabled}
-                />
-              )}
-            </form.AppField>
-          </div>
+        <div className="border-t border-border pt-5 sm:max-w-xs">
+          <form.AppField name="inspectionDate">
+            {(field) => (
+              <field.TextField
+                label="Ngày kiểm tra"
+                type="datetime-local"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
         </div>
       </div>
     </IqcDetailSectionCard>

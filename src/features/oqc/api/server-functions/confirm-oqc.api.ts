@@ -46,10 +46,6 @@ function resolveConfirmOqcErrorMessage(error: unknown): string {
       return "Không tìm thấy phiếu OQC."
     case "oqc_inspection.error.already_completed":
       return "Phiếu đã hoàn tất — không thể sửa kết quả nữa."
-    case "oqc_inspection.error.aql_plan_not_found":
-      return "Không tra được bảng AQL cho tổ hợp này — vui lòng tự chọn Kết quả (PASS/FAIL)."
-    case "oqc_inspection.error.result_override_reason_required":
-      return "Kết quả bạn chọn khác gợi ý tự động — vui lòng nhập ghi chú kết quả."
     case "oqc_inspection.error.disposition_not_allowed_for_pass":
       return "Kết quả PASS thì không được chọn phương án xử lý."
     case "file.error.not_found":

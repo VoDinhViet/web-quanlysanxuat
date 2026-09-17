@@ -1,7 +1,8 @@
+import { Radio } from "@base-ui/react/radio"
 import { Checklist, CheckCircle, CloseCircle } from "@solar-icons/react"
+import { Check } from "lucide-react"
 
-import { RadioCardField } from "@/components/shared/composites/RadioCardField"
-import type { RadioCardOption } from "@/components/shared/composites/RadioCardField"
+import { RadioGroup } from "@/components/ui/radio-group"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import {
@@ -10,8 +11,21 @@ import {
   IqcResult,
 } from "@/lib/types/iqc.type"
 import { cn } from "@/lib/utils"
+import type { IconProps } from "@solar-icons/react"
+import type { AnyFieldApi } from "@tanstack/react-form"
+import type { ComponentType } from "react"
 
-const resultOptions: RadioCardOption<IqcResult>[] = [
+type IqcResultRadioOption = {
+  value: IqcResult
+  label: string
+  description: string
+  icon: ComponentType<IconProps>
+  activeClassName: string
+  chipClassName: string
+  badgeClassName: string
+}
+
+const iqcResultRadioOptions: IqcResultRadioOption[] = [
   {
     value: IqcResult.PASS,
     label: iqcResultLabels[IqcResult.PASS],
@@ -37,26 +51,87 @@ type IqcResultCardProps = {
   disabled?: boolean
 }
 
-// KẾT QUẢ KIỂM TRA — QC tự chọn PASS/FAIL (không suy từ bảng AQL, xem docs/domains/quality.md)
-// + ghi chú kết quả. Chọn PASS ở đây quyết định luôn liệu QUYẾT ĐỊNH XỬ LÝ có hiện hay không
-// (IqcDetailForm đọc `result` live để ẩn/hiện — xem file đó). Đây là điểm quyết định chính của
-// cả trang nên có băng xác nhận sống (live) ngay dưới 2 thẻ, phản hồi ngay khi QC chọn.
+// Radio cards viết riêng cho thẻ này (không qua RadioCardField dùng chung với
+// OqcResultCard/IqcDispositionCard/OqcDispositionCard) — cùng thị giác (icon chip + label +
+// description + badge check góc trên-phải, Base UI Radio.Root thô), nhưng độc lập để đổi sau
+// không ảnh hưởng 3 nơi còn lại.
+function IqcResultRadioCards({
+  field,
+  disabled,
+}: {
+  field: AnyFieldApi
+  disabled?: boolean
+}) {
+  return (
+    <RadioGroup
+      value={field.state.value}
+      onValueChange={(value) => field.handleChange(value)}
+      disabled={disabled}
+      className="grid gap-3 sm:grid-cols-2"
+    >
+      {iqcResultRadioOptions.map((option) => {
+        const Icon = option.icon
+        const isChecked = field.state.value === option.value
+
+        return (
+          <Radio.Root
+            key={option.value}
+            value={option.value}
+            className={cn(
+              "relative cursor-pointer rounded-xl border-2 border-border bg-card p-4 text-start transition-colors hover:border-foreground/25 data-disabled:cursor-not-allowed data-disabled:opacity-50",
+              isChecked && option.activeClassName
+            )}
+          >
+            <div className="flex items-start gap-3 pr-5">
+              <div
+                className={cn(
+                  "flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors",
+                  isChecked && option.chipClassName
+                )}
+              >
+                <Icon className="size-4" />
+              </div>
+              <div className="space-y-0.5 pt-0.5">
+                <p className="text-sm font-semibold text-foreground">
+                  {option.label}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {option.description}
+                </p>
+              </div>
+            </div>
+
+            {isChecked ? (
+              <span
+                className={cn(
+                  "absolute top-3 right-3 flex size-5 items-center justify-center rounded-full",
+                  option.badgeClassName
+                )}
+              >
+                <Check className="size-3" strokeWidth={3} />
+              </span>
+            ) : null}
+          </Radio.Root>
+        )
+      })}
+    </RadioGroup>
+  )
+}
+
+// KẾT QUẢ KIỂM TRA — QC tự chọn PASS/FAIL hoàn toàn + ghi chú kết quả. Chọn PASS ở đây quyết định
+// luôn liệu QUYẾT ĐỊNH XỬ LÝ có hiện hay không (IqcDetailForm đọc `result` live để ẩn/hiện — xem
+// file đó). Đây là điểm quyết định chính của cả trang nên có băng xác nhận sống (live) ngay dưới
+// 2 thẻ, phản hồi ngay khi QC chọn.
 export function IqcResultCard({ form, disabled }: IqcResultCardProps) {
   return (
     <IqcDetailSectionCard
       icon={Checklist}
       title="Kết quả kiểm tra"
-      description="QC chọn kết quả dựa trên số liệu kiểm tra thực tế ở khối bên trên"
+      description="QC chọn kết quả dựa trên kiểm tra thực tế của lô hàng"
     >
       <div className="space-y-4">
         <form.Field name="result">
-          {(field) => (
-            <RadioCardField
-              field={field}
-              options={resultOptions}
-              disabled={disabled}
-            />
-          )}
+          {(field) => <IqcResultRadioCards field={field} disabled={disabled} />}
         </form.Field>
 
         <form.Subscribe selector={(state) => state.values.result}>

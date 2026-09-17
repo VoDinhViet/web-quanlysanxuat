@@ -3,7 +3,6 @@ import { DangerTriangle } from "@solar-icons/react"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 
 const rules = [
-  "Bảng AQL chỉ mang tính tham khảo — QC tự chọn PASS/FAIL, không bị chặn bởi cỡ mẫu/Ac/Re tra được.",
   "Kết quả PASS thì không được chọn phương án xử lý — chọn lại PASS sẽ xoá mọi lựa chọn xử lý đã nhập trước đó.",
   "Chọn Phân loại thì SL OK + SL NG phải bằng đúng Tổng SL của phiếu.",
   "Chọn Phân loại/Trả NCC và lưu sẽ tự sinh phiếu trả NCC (nháp) — sau đó không sửa lại được kết quả IQC nữa.",

@@ -10,11 +10,7 @@ import {
 } from "@/features/iqc/schemas/confirm-iqc.schema"
 import type { ConfirmIqcFormValue } from "@/features/iqc/schemas/confirm-iqc.schema"
 import { useAppForm } from "@/hooks/use-app-form"
-import type {
-  IqcInspectionLevel,
-  IqcResult,
-  IqcDetail,
-} from "@/lib/types/iqc.type"
+import type { IqcResult, IqcDetail } from "@/lib/types/iqc.type"
 import type { z } from "zod"
 
 // Owns the single form + mutation backing the whole detail page's one "Lưu" button —
@@ -44,10 +40,9 @@ export function useIqcDetailForm(iqc: IqcDetail) {
     onSubmit: ({ value }: { value: ConfirmIqcFormValue }) =>
       mutation.mutate({
         ...value,
-        // `validators.onDynamic` (confirmIqcSchema) has already guaranteed non-blank
-        // inspectionLevel/result by the time this runs — TS just can't narrow them from the
-        // form's own (deliberately looser, blank-until-picked) value type.
-        inspectionLevel: value.inspectionLevel as IqcInspectionLevel,
+        // `validators.onDynamic` (confirmIqcSchema) has already guaranteed a non-blank `result`
+        // by the time this runs — TS just can't narrow it from the form's own (deliberately
+        // looser, blank-until-picked) value type.
         result: value.result as IqcResult,
       }),
   })

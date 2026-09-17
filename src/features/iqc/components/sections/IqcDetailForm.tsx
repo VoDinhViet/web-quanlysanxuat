@@ -2,7 +2,6 @@ import { useField } from "@tanstack/react-form"
 import { ClipboardList, Documents } from "@solar-icons/react"
 
 import { Surface } from "@/components/shared/layouts/Surface"
-import { IqcAqlInputCard } from "@/features/iqc/components/composites/IqcAqlInputCard"
 import { IqcDetailHeader } from "@/features/iqc/components/layouts/IqcDetailHeader"
 import { IqcDispositionCard } from "@/features/iqc/components/composites/IqcDispositionCard"
 import { IqcEvidenceCard } from "@/features/iqc/components/composites/IqcEvidenceCard"
@@ -50,7 +49,6 @@ export function IqcDetailForm({ iqc }: IqcDetailFormProps) {
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex flex-col gap-4">
           <IqcGeneralInfoCard form={form} iqc={iqc} disabled={disabled} />
-          <IqcAqlInputCard form={form} iqc={iqc} disabled={disabled} />
           <IqcResultCard form={form} disabled={disabled} />
           <IqcEvidenceCard
             form={form}

@@ -7,7 +7,6 @@ import { toast } from "sonner"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { confirmOqc } from "@/features/oqc/api/server-functions/confirm-oqc.api"
 import { OqcActivityLogCard } from "@/features/oqc/components/composites/OqcActivityLogCard"
-import { OqcAqlInputCard } from "@/features/oqc/components/composites/OqcAqlInputCard"
 import { OqcDetailHeader } from "@/features/oqc/components/layouts/OqcDetailHeader"
 import { OqcDispositionCard } from "@/features/oqc/components/composites/OqcDispositionCard"
 import { OqcEvidenceCard } from "@/features/oqc/components/composites/OqcEvidenceCard"
@@ -25,7 +24,6 @@ import type {
 import { useAppForm } from "@/hooks/use-app-form"
 import { UploadType } from "@/lib/types/file.type"
 import { IqcResult } from "@/lib/types/iqc.type"
-import type { IqcInspectionLevel } from "@/lib/types/iqc.type"
 import { OqcStatus } from "@/lib/types/oqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
@@ -62,10 +60,9 @@ function useOqcDetailForm(oqc: OqcDetail) {
     onSubmit: ({ value }: { value: ConfirmOqcFormValue }) =>
       mutation.mutate({
         ...value,
-        // `validators.onDynamic` (confirmOqcSchema) has already guaranteed non-blank
-        // inspectionLevel/result by the time this runs — TS just can't narrow them from the
-        // form's own (deliberately looser, blank-until-picked) value type.
-        inspectionLevel: value.inspectionLevel as IqcInspectionLevel,
+        // `validators.onDynamic` (confirmOqcSchema) has already guaranteed a non-blank `result`
+        // by the time this runs — TS just can't narrow it from the form's own (deliberately
+        // looser, blank-until-picked) value type.
         result: value.result as IqcResult,
       }),
   })
@@ -81,7 +78,7 @@ export type OqcDetailFormApi = ReturnType<typeof useOqcDetailForm>["form"]
 // plain `type="submit"` button. Locked (`isLocked`) once `status` reaches COMPLETED — mirrors
 // IqcDetailForm.tsx, but the lock here is permanent (no un-complete route on the backend, unlike
 // IQC's WAITING_RETURN → COMPLETED path). Body is a 2-column grid: left column is the QC input
-// flow (lô → AQL → kết quả → xử lý), right column is read-only context (tiến trình + nhật ký) —
+// flow (lô → kết quả → xử lý), right column is read-only context (tiến trình + nhật ký) —
 // same `xl:grid-cols-[minmax(0,1fr)_340px]` shell as IqcDetailForm.tsx.
 export function OqcDetailForm({ oqc }: OqcDetailFormProps) {
   const { form, mutation } = useOqcDetailForm(oqc)
@@ -107,7 +104,6 @@ export function OqcDetailForm({ oqc }: OqcDetailFormProps) {
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex flex-col gap-4">
           <OqcLotSummaryCard oqc={oqc} />
-          <OqcAqlInputCard form={form} disabled={disabled} />
           <OqcResultCard form={form} disabled={disabled} />
           <OqcEvidenceCard
             form={form}

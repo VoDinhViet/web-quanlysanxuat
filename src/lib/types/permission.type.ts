@@ -97,10 +97,6 @@ export const PERMISSION_CODES = [
   "oqc:update",
   "oqc:delete",
 
-  "qc-aql:read",
-  "qc-aql:create",
-  "qc-aql:update",
-
   "outbound:read",
   "outbound:create",
   "outbound:update",

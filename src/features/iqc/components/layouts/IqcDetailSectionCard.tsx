@@ -20,8 +20,8 @@ type IqcDetailSectionCardProps = {
 // optional description/trailing action), same idiom as SupplierReturnDetailSectionCard.tsx/
 // PurchaseOrderStatusLegend's bespoke header, but feature-local per this repo's own convention
 // (this feature's icons come from @solar-icons/react, matching IqcStatCards, not lucide-react).
-// Every card on the page uses it — THÔNG TIN CHUNG, THÔNG TIN KIỂM TRA (AQL), KẾT QUẢ KIỂM TRA,
-// 2 thẻ bằng chứng, QUYẾT ĐỊNH XỬ LÝ, LUỒNG XỬ LÝ, TRẠNG THÁI IQC, QUY TẮC QUAN TRỌNG.
+// Every card on the page uses it — THÔNG TIN CHUNG, KẾT QUẢ KIỂM TRA, 2 thẻ bằng chứng,
+// QUYẾT ĐỊNH XỬ LÝ, LUỒNG XỬ LÝ, TRẠNG THÁI IQC, QUY TẮC QUAN TRỌNG.
 export function IqcDetailSectionCard({
   icon: Icon,
   title,

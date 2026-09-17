@@ -1,12 +1,12 @@
 import { IqcResult } from "@/lib/types/iqc.type"
-import type { IqcInspectionLevel, QcFile } from "@/lib/types/iqc.type"
+import type { QcFile } from "@/lib/types/iqc.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
-// OQC (kiểm chất lượng đầu ra) tái dùng IqcResult/IqcInspectionLevel/aqlLevels và các label map
-// của chúng thẳng từ iqc.type.ts — cùng khái niệm domain, đã sống ở `src/lib/types` (dùng chung
-// toàn cục theo quy ước repo), không định nghĩa lại. Import trực tiếp ở call site:
-// `import { IqcResult, iqcResultLabels, ... } from "@/lib/types/iqc.type"`.
+// OQC (kiểm chất lượng đầu ra) tái dùng IqcResult và label map của nó thẳng từ iqc.type.ts — cùng
+// khái niệm domain, đã sống ở `src/lib/types` (dùng chung toàn cục theo quy ước repo), không định
+// nghĩa lại. Import trực tiếp ở call site: `import { IqcResult, iqcResultLabels } from
+// "@/lib/types/iqc.type"`.
 
 // Giá trị đổi 2026-08-29 (`NOT_INSPECTED→DRAFT`, `REWORK→IN_PROGRESS`) — backend bỏ lớp dịch status,
 // API giờ trả thẳng vocabulary DB (`docs/decisions/quality-schema-rename.md` ở be-quanlysanxuat, D5
@@ -96,11 +96,9 @@ export type Oqc = {
   disposition: OqcDisposition | null
 }
 
-/** Mirrors the backend's OqcResDto (GET /api/oqc/:oqcId) — adds the AQL/confirm fields over
- *  `Oqc`, all null until `POST /oqc/:oqcId/confirm` runs. The AQL lookup numbers (code letter/n/
- *  Ac/Re) and the server-derived PASS/FAIL are deliberately NOT here — the screen reads them live
- *  from `GET /oqc/aql-plan` via `useOqcAqlVerdict`, keyed by whatever inspectionLevel/aqlLevel is
- *  currently typed; a copy frozen on this response would go stale mid-edit.
+/** Mirrors the backend's OqcResDto (GET /api/oqc/:oqcId) — adds the confirm fields over `Oqc`,
+ *  all null until `POST /oqc/:oqcId/confirm` runs. The server-derived PASS/FAIL is deliberately
+ *  not modeled here — `result` is chosen by QC, not server-computed.
  *  `disposition`/`dispositionNote` (the latter only) only ever set when `result = FAIL` (DB check
  *  constraint). `status === COMPLETED` locks the sheet permanently (no un-complete route exists) —
  *  `REWORK` stays open for re-confirm. `files` is the latest attempt's evidence — both kinds
@@ -116,10 +114,6 @@ export type OqcDetail = Oqc & {
   item: { id: string; code: string; name: string }
   creatorBy: UserRef | null
   createdAt: string
-  inspectionLevel: IqcInspectionLevel | null
-  aqlLevel: number | null
-  sampleSize: number | null
-  defectQty: number | null
   resultNote: string | null
   dispositionNote: string | null
   files: QcFile[]
