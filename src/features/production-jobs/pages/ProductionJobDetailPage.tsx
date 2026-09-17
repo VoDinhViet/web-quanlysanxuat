@@ -59,13 +59,18 @@ export function ProductionJobDetailPage() {
             </TabsContent>
 
             <TabsContent value="bom" className="m-0 outline-none">
-              <ProductionJobBomTab productionJobId={productionJobId} />
+              <ProductionJobBomTab
+                productionJobId={productionJobId}
+                status={productionJob.status}
+                itemId={productionJob.itemId}
+              />
             </TabsContent>
 
             <TabsContent value="operations" className="m-0 outline-none">
               <ProductionJobOperationsTab
                 productionJobId={productionJobId}
                 status={productionJob.status}
+                itemId={productionJob.itemId}
               />
             </TabsContent>
           </Tabs>

@@ -61,10 +61,7 @@ const sourceOptions: SourceOption[] = [
   },
 ]
 
-const ACTIVE_JOB_STATUSES = [
-  ProductionJobStatus.PENDING,
-  ProductionJobStatus.IN_PROGRESS,
-]
+const ACTIVE_JOB_STATUSES = [ProductionJobStatus.IN_PROGRESS]
 
 export const CreateInventoryRequisitionSourceSection = withForm({
   defaultValues: createInventoryRequisitionFormDefaultValues,
@@ -73,7 +70,8 @@ export const CreateInventoryRequisitionSourceSection = withForm({
     const type = useField({ form, name: "type" }).state.value
     const isJobFlow = type === InventoryRequisitionType.PRODUCTION
 
-    // Chọn Job bằng React Table đồng bộ với toàn hệ thống: backend lọc PENDING/IN_PROGRESS trực tiếp qua statuses.
+    // Chọn Job bằng React Table đồng bộ với toàn hệ thống: backend lọc IN_PROGRESS trực tiếp qua statuses
+    // — Job PENDING chưa có snapshot vật tư nào để lãnh (be-quanlysanxuat/docs/decisions/job-snapshot-at-start.md).
     const [jobQ, setJobQ] = useState("")
     const [debouncedJobQ] = useDebounceValue(jobQ, 300)
     const jobsQuery = useQuery({

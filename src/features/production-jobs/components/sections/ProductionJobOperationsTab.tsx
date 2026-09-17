@@ -2,6 +2,8 @@ import { useMemo } from "react"
 import { Route } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 
+import { LinkButton } from "@/components/ui/button"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { ProductionJobOperationsLegend } from "@/features/production-jobs/components/composites/ProductionJobOperationsLegend"
@@ -22,6 +24,7 @@ const outsourceableOperationsLimit = 200
 type ProductionJobOperationsTabProps = {
   productionJobId: string
   status: ProductionJobStatus
+  itemId: string
 }
 
 // Reads GET /production-jobs/:jobId/operations directly (client-driven, tab-gated) — the backend
@@ -29,14 +32,19 @@ type ProductionJobOperationsTabProps = {
 // no client-side grouping is needed (see ProductionJobBomItem's doc comment). Tab chỉ đọc — nhập
 // SL hoàn thành/không đạt đi qua dialog "Nhập báo cáo" dùng chung
 // (JobOperationReportDialog.tsx, cũng dùng bởi màn "Thực hiện sản xuất"), tự khoá + hiện lý do
-// khi Job chưa `IN_PROGRESS` thay vì tab tự ẩn control.
+// khi Job chưa `IN_PROGRESS` thay vì tab tự ẩn control. Job `PENDING` chưa có snapshot công đoạn
+// nào (chốt lần đầu lúc "Xác nhận sản xuất", be-quanlysanxuat/docs/decisions/job-snapshot-at-start.md)
+// — không gọi API, hiện thẳng empty state trỏ sang cấu trúc sản phẩm sống.
 export function ProductionJobOperationsTab({
   productionJobId,
   status,
+  itemId,
 }: ProductionJobOperationsTabProps) {
-  const operationsQuery = useQuery(
-    productionJobOperationsQueryOptions(productionJobId)
-  )
+  const isPending = status === ProductionJobStatus.PENDING
+  const operationsQuery = useQuery({
+    ...productionJobOperationsQueryOptions(productionJobId),
+    enabled: !isPending,
+  })
   const isInProgress = status === ProductionJobStatus.IN_PROGRESS
   const groups = operationsQuery.data ?? []
 
@@ -73,7 +81,21 @@ export function ProductionJobOperationsTab({
         </div>
       </div>
 
-      {operationsQuery.isPending ? (
+      {isPending ? (
+        <TableEmpty
+          title="Job chưa xác nhận sản xuất"
+          description="Công đoạn sản xuất sẽ hiện sau khi bấm “Xác nhận”."
+          action={
+            <LinkButton
+              to="/manage/products/$productId"
+              params={{ productId: itemId }}
+              search={{ tab: "boms" }}
+            >
+              Xem cấu trúc sản phẩm
+            </LinkButton>
+          }
+        />
+      ) : operationsQuery.isPending ? (
         <TableQueryLoading rows={operationsRowEstimate} />
       ) : operationsQuery.isError ? (
         <TableQueryError
@@ -88,9 +110,11 @@ export function ProductionJobOperationsTab({
         />
       )}
 
-      <div className="px-4 pb-4 sm:px-5">
-        <ProductionJobOperationsLegend />
-      </div>
+      {isPending ? null : (
+        <div className="px-4 pb-4 sm:px-5">
+          <ProductionJobOperationsLegend />
+        </div>
+      )}
     </div>
   )
 }
