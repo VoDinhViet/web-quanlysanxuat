@@ -1,15 +1,11 @@
 import {
   BarChart3,
   CheckCircle2,
-  Edit3,
-  Eye,
   Factory,
   Package,
-  PlusCircle,
   ShieldCheck,
   ShoppingBag,
   ShoppingCart,
-  Trash2,
   Warehouse,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -23,18 +19,37 @@ import type { PermissionCode } from "@/lib/types/permission.type"
 type GridActionDef = {
   key: string
   label: string
-  icon: LucideIcon
+  // Viền dưới cùng tone — kẻ ranh giới cột ngay dưới header (Xem xanh dương thông tin, Tạo xanh
+  // lá tạo mới, Sửa hổ phách chỉnh sửa, Duyệt tím xét duyệt, Xoá đỏ cùng tone với nút xoá còn lại
+  // trong app), giúp quét nhanh theo cột dễ hơn.
+  headerAccentClassName: string
 }
 
 /** The 5 CRUD-shaped actions the matrix renders as columns. Any permission whose action
  *  isn't one of these (items:copy, items:bom-manage, …) becomes a chip on its module row
  *  instead — see `PermissionModule.extras`. */
 export const gridActions = [
-  { key: "read", label: "Xem", icon: Eye },
-  { key: "create", label: "Tạo", icon: PlusCircle },
-  { key: "update", label: "Sửa", icon: Edit3 },
-  { key: "approve", label: "Duyệt", icon: CheckCircle2 },
-  { key: "delete", label: "Xoá", icon: Trash2 },
+  { key: "read", label: "Xem", headerAccentClassName: "border-b-blue-500/50" },
+  {
+    key: "create",
+    label: "Tạo",
+    headerAccentClassName: "border-b-emerald-500/50",
+  },
+  {
+    key: "update",
+    label: "Sửa",
+    headerAccentClassName: "border-b-amber-500/50",
+  },
+  {
+    key: "approve",
+    label: "Duyệt",
+    headerAccentClassName: "border-b-violet-500/50",
+  },
+  {
+    key: "delete",
+    label: "Xoá",
+    headerAccentClassName: "border-b-destructive/50",
+  },
 ] as const satisfies GridActionDef[]
 
 export type GridAction = (typeof gridActions)[number]["key"]

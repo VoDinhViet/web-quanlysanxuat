@@ -11,6 +11,7 @@ import type { PermissionModule } from "@/features/roles/constants/permission-blo
 import { PermissionGrantCheckbox } from "@/features/roles/components/primitives/PermissionGrantCheckbox"
 import { SpecialPermissionChip } from "@/features/roles/components/primitives/SpecialPermissionChip"
 import type { PermissionCode } from "@/lib/types/permission.type"
+import { cn } from "@/lib/utils"
 
 export type RolePermissionsTableMeta = {
   selected: Set<PermissionCode>
@@ -94,19 +95,16 @@ export const rolePermissionsColumns = columnHelper.columns([
   ...gridActions.map((action) =>
     columnHelper.display({
       id: action.key,
-      header: () => {
-        const Icon = action.icon
-        return (
-          <div className="flex items-center justify-center gap-1.5">
-            <Icon className="size-3.5 text-muted-foreground" />
-            <span className="text-xs font-semibold text-foreground normal-case">
-              {action.label}
-            </span>
-          </div>
-        )
-      },
+      header: () => (
+        <span className="text-sm font-bold tracking-wide text-foreground uppercase">
+          {action.label}
+        </span>
+      ),
       meta: {
-        headerClassName: "h-11 p-0 text-center align-middle",
+        headerClassName: cn(
+          "h-11 border-b-2 p-0 text-center align-middle",
+          action.headerAccentClassName
+        ),
         cellClassName: "p-0 text-center align-middle",
       },
       cell: ({ row, table }) => {
