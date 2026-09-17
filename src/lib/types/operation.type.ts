@@ -13,7 +13,7 @@ export enum OperationStatus {
 }
 
 export const operationTypeLabels: Record<OperationType, string> = {
-  [OperationType.INHOUSE]: "Trong nhà",
+  [OperationType.INHOUSE]: "Nội bộ",
   [OperationType.OUTSOURCE]: "Gia công ngoài",
 }
 

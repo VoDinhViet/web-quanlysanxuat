@@ -29,10 +29,10 @@ export const getUnits = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<UnitDetail[]> => {
     try {
       // `scope` is optional at the wire level so the Đơn vị tính admin screen
-      // can list every unit — but `unitOptionsQueryOptions` (the dropdown
-      // consumables/products read) always passes one: omitting it there would
-      // let a user pick a unit whose create/update then rejects with
-      // unit.error.scope_mismatch, so filter at the source instead.
+      // can list every unit — `unitOptionsQueryOptions` (the dropdown consumables/products/BOM
+      // COMPONENT read) passes one whenever the target write actually validates by scope
+      // (product/consumable create-update), and omits it for the BOM COMPONENT unit picker,
+      // which the backend never scope-checks.
       //
       // Unlike the other reference lists, /units is not paginated: it returns
       // a bare array, so there is no envelope to unwrap and no `limit` to cap.

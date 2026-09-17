@@ -31,6 +31,8 @@ function resolveCreateBomItemErrorMessage(error: unknown): string {
       return "Dữ liệu hạng mục không hợp lệ."
     case "bom_item.error.quantity_not_integer":
       return "Số lượng phải là số nguyên đối với cấu trúc con."
+    case "file.error.not_found":
+      return "Ảnh đã tải lên không còn tồn tại, vui lòng tải lại."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -51,17 +53,24 @@ const createBomItemInputSchema = z.discriminatedUnion("type", [
   createConsumableItemSchema.extend(bomItemRootFieldsSchema.shape),
 ])
 
-// `drawing` carries a display URL the backend has no field for — only the file id goes on the
-// wire. Empty note trims to `undefined` (POST — an omitted key means "not provided").
+// Empty note trims to `undefined` (POST — an omitted key means "not provided"). `image` (nhánh
+// COMPONENT) mang URL hiển thị mà backend không có field — chỉ id lên dây dưới tên `imageFileId`.
 const createBomItemPayloadSchema = createBomItemInputSchema.transform(
-  ({ note, drawing, ...rest }) => {
+  ({ note, ...rest }) => {
     const trimmedNote = note.trim()
+    const wireNote = trimmedNote === "" ? undefined : trimmedNote
 
-    return {
-      ...rest,
-      note: trimmedNote === "" ? undefined : trimmedNote,
-      drawingFileId: resolveApiFileId(drawing, "create"),
+    if (rest.type === "COMPONENT") {
+      const { image, ...component } = rest
+
+      return {
+        ...component,
+        note: wireNote,
+        imageFileId: resolveApiFileId(image, "create"),
+      }
     }
+
+    return { ...rest, note: wireNote }
   }
 )
 

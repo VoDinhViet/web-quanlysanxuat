@@ -14,10 +14,7 @@ import {
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { CopyProductDialog } from "@/features/products/components/composites/CopyProductDialog"
 import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
-import {
-  ProductStatusBadge,
-  ProductTypeBadge,
-} from "@/features/products/components/primitives/ProductBadges"
+import { ProductStatusBadge } from "@/features/products/components/primitives/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Item } from "@/lib/types/item.type"
 
@@ -68,14 +65,6 @@ export const productColumns = productColumnHelper.columns([
         </div>
       )
     },
-  }),
-  productColumnHelper.accessor("type", {
-    header: "Loại",
-    meta: {
-      headerClassName: "min-w-28 text-center",
-      cellClassName: "text-center",
-    },
-    cell: ({ getValue }) => <ProductTypeBadge type={getValue()} />,
   }),
   productColumnHelper.accessor((row) => row.client?.name ?? "—", {
     id: "client",

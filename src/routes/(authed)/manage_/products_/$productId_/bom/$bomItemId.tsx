@@ -3,10 +3,12 @@ import { createFileRoute, redirect } from "@tanstack/react-router"
 import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { BomItemDetailPage } from "@/features/products/pages/BomItemDetailPage"
 import {
+  bomItemOperationsQueryOptions,
   itemBomQueryOptions,
   itemQueryOptions,
 } from "@/features/products/api/options"
 import { bomItemDetailSearchSchema } from "@/features/products/schemas/bom-item-detail-search.schema"
+import { unitOptionsQueryOptions } from "@/features/units/api"
 
 // The trailing underscore on `$productId_` opts this route out of nesting under
 // `products_/$productId.tsx` (the detail page, which renders no <Outlet/>) while keeping the
@@ -23,6 +25,18 @@ export const Route = createFileRoute(
       }),
       context.queryClient.query({
         ...itemBomQueryOptions(params.productId),
+        staleTime: "static",
+      }),
+      // Unscoped list — dùng cho picker "ĐVT" của node COMPONENT trong BomItemInfoTab, không giới
+      // hạn theo unit scope.
+      context.queryClient.query({
+        ...unitOptionsQueryOptions(),
+        staleTime: "static",
+      }),
+      // Công đoạn của riêng node này — không còn kèm trong GET .../bom nữa (BE gọn lại, mỗi lần
+      // đọc cây không cần join thêm bảng công đoạn), fetch riêng cho tab "Công đoạn".
+      context.queryClient.query({
+        ...bomItemOperationsQueryOptions(params.productId, params.bomItemId),
         staleTime: "static",
       }),
     ])

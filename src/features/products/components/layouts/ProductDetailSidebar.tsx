@@ -27,7 +27,7 @@ import {
   ProductStatusBadge,
   ProductTypeBadge,
 } from "@/features/products/components/primitives/ProductBadges"
-import { getDocumentTypeInfo } from "@/features/products/utils/document-badge.util"
+import { getDocumentTypeInfo } from "@/features/products/utils/document-type"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Item, ItemFile } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"

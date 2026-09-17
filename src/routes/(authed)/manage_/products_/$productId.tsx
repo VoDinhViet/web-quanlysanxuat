@@ -18,6 +18,12 @@ export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
         ...unitOptionsQueryOptions("PRODUCT"),
         staleTime: "static",
       }),
+      // Unscoped list — dùng cho picker "ĐVT" của node COMPONENT (Thêm cấu trúc con), không giới
+      // hạn theo unit scope.
+      context.queryClient.query({
+        ...unitOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: ProductDetailPage,
   pendingComponent: LayoutPagePending,

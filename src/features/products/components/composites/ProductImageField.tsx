@@ -9,6 +9,7 @@ import { resolveFileUrl } from "@/lib/file-url"
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_IMAGE_SIZE_BYTES,
+  UploadType,
 } from "@/lib/types/file.type"
 import { uploadFile } from "@/lib/upload-file"
 import { cn } from "@/lib/utils"
@@ -34,12 +35,16 @@ type ProductImageFieldProps = {
   value: FileFieldValue | null
   onChange: (value: FileFieldValue | null) => void
   disabled?: boolean
+  // Mặc định là ảnh sản phẩm; ảnh riêng của node BOM COMPONENT dùng lại đúng ô này với
+  // `UploadType.BOM_ITEM_IMAGE` (cùng policy IMAGE phía backend, chỉ khác nhãn audit trong registry).
+  uploadType?: UploadType
 }
 
 export function ProductImageField({
   value,
   onChange,
   disabled,
+  uploadType = UploadType.PRODUCT_IMAGE,
 }: ProductImageFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
   // File đã upload nhưng bị dọn (orphan sweep sau 24h nếu không gắn vào sản phẩm nào, hoặc bị
@@ -63,7 +68,7 @@ export function ProductImageField({
     mutationFn: (file: File) => {
       const formData = new FormData()
       formData.append("file", file)
-      formData.append("type", "PRODUCT_IMAGE")
+      formData.append("type", uploadType)
       return uploadFileFn({ data: formData })
     },
     onSuccess: (result) => onChange(result),
@@ -94,7 +99,7 @@ export function ProductImageField({
         <div
           {...getRootProps({
             role: "button",
-            "aria-label": "Tải hình ảnh sản phẩm lên",
+            "aria-label": "Tải hình ảnh lên",
             className: cn(
               "w-40 outline-none focus-visible:ring-2 focus-visible:ring-ring",
               disabled && "pointer-events-none opacity-50"
@@ -112,7 +117,7 @@ export function ProductImageField({
             {value && !isPreviewBroken ? (
               <img
                 src={resolveFileUrl(value.url)}
-                alt="Hình ảnh sản phẩm"
+                alt="Hình ảnh"
                 className="size-full object-cover"
                 onError={() => setIsPreviewBroken(true)}
               />

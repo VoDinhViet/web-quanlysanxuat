@@ -44,8 +44,7 @@ export type ItemCreator = {
 }
 
 /** Mirrors the backend's ItemFileResDto — one row of the item's attached-documents
- *  list (item_files), distinct from the single `image` field and from a BOM
- *  node's own `drawingFileId`. */
+ *  list (item_files), distinct from the single `image` field. */
 export type ItemFile = {
   id: string
   file: FileResource

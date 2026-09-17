@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 
@@ -7,8 +7,10 @@ import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoad
 import { CreateComponentItemDialog } from "@/features/products/components/composites/CreateComponentItemDialog"
 import { DeleteBomItemDialog } from "@/features/products/components/composites/DeleteBomItemDialog"
 import { ProductBomTable } from "@/features/products/components/composites/ProductBomTable"
+import type { BomTableActions } from "@/features/products/components/primitives/BomRowActions"
 import { useProductBom } from "@/features/products/hooks/use-product-bom"
 import { itemBomQueryOptions } from "@/features/products/api/options"
+import type { BomCreateOptions } from "@/features/products/utils/bom-rows.util"
 import type { Item } from "@/lib/types/item.type"
 import type { BomItem } from "@/lib/types/bom-item.type"
 
@@ -27,11 +29,14 @@ function BomTabMessage({ children }: { children: ReactNode }) {
 
 export function ProductBomTab({ product }: ProductBomTabProps) {
   // Chỉ có đúng 1 dialog tạo còn lại (tạo COMPONENT từ bảng cây) — vật tư (CONSUMABLE) và
-  // sửa hạng mục giờ mở ở trang riêng (BomItemDetailPage), không còn dialog. `createParentId`
+  // sửa hạng mục giờ mở ở trang riêng (BomItemDetailPage), không còn dialog. `createOptions`
   // chỉ có nghĩa khi dialog đang mở — tách riêng khỏi `isCreateOpen` thay vì gộp "đóng"/"tạo ở
   // gốc" vào cùng một sentinel `undefined`/`null`, cùng khuôn với `deletingBomItem` bên dưới.
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [createParentId, setCreateParentId] = useState<string | null>(null)
+  const [createOptions, setCreateOptions] = useState<BomCreateOptions>({
+    childTarget: { parentId: null, parentLabel: null },
+    siblingTarget: null,
+  })
   const [deletingBomItem, setDeletingBomItem] = useState<BomItem | null>(null)
 
   const bomQuery = useQuery(itemBomQueryOptions(product.id))
@@ -39,6 +44,18 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
   const bom = useProductBom(product.id, {
     onSuccessDelete: () => setDeletingBomItem(null),
   })
+
+  const handleCreate = useCallback((options: BomCreateOptions) => {
+    setCreateOptions(options)
+    setIsCreateOpen(true)
+  }, [])
+
+  // `actions` phải ổn định tham chiếu — ProductBomTable memoize cột theo nó,
+  // một object literal mới mỗi render sẽ vô hiệu hoá memo đó.
+  const actions = useMemo<BomTableActions>(
+    () => ({ onCreate: handleCreate, onDelete: setDeletingBomItem }),
+    [handleCreate]
+  )
 
   function handleDeleteConfirm() {
     if (deletingBomItem) {
@@ -69,20 +86,14 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
           <ProductBomTable
             product={product}
             nodes={bomQuery.data}
-            actions={{
-              onCreate: (parentId) => {
-                setCreateParentId(parentId)
-                setIsCreateOpen(true)
-              },
-              onDelete: setDeletingBomItem,
-            }}
+            actions={actions}
           />
           {/* Small inline hint beneath the BOM tree, not a full-table empty state — too
           small-scale for TableEmpty's icon-badge treatment, intentionally not using it here. */}
           {bomQuery.data.length === 0 ? (
             <p className="mt-3 text-xs font-medium text-muted-foreground">
-              Chưa có thành phần con — nhấn "Thêm thành phần" ở dòng sản phẩm để
-              bắt đầu.
+              Chưa có thành phần con — nhấn "Thêm Part" ở dòng sản phẩm để bắt
+              đầu.
             </p>
           ) : null}
         </>
@@ -91,8 +102,10 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
       <CreateComponentItemDialog
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
-        onSubmit={(value) =>
-          bom.createItem(value, createParentId, () => setIsCreateOpen(false))
+        childTarget={createOptions.childTarget}
+        siblingTarget={createOptions.siblingTarget}
+        onSubmit={(value, target) =>
+          bom.createItem(value, target.parentId, () => setIsCreateOpen(false))
         }
         isSaving={bom.isSaving}
       />

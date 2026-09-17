@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { fileFieldSchema } from "@/lib/file-field.schema"
+import { imageFieldSchema } from "@/lib/file-field.schema"
 
 // Raw shape for adding a BOM item — an item is either a COMPONENT (cấu trúc con, người dùng nhập tay
 // code/name) or an CONSUMABLE (vật tư). `type` cố định theo nơi tạo ra nó — CreateComponentItemDialog (từ "+"
@@ -17,14 +17,17 @@ const bomItemCommonSchema = z.object({
     .optional()
     .pipe(z.number("Số lượng phải lớn hơn 0")),
   note: z.string(),
-  // Bản vẽ (PDF) riêng của item — không bắt buộc.
-  drawing: fileFieldSchema.nullable(),
 })
 
 export const createComponentItemSchema = bomItemCommonSchema.extend({
   type: z.literal("COMPONENT"),
   code: z.string().trim().min(1, "Vui lòng nhập mã"),
   name: z.string().trim().min(1, "Vui lòng nhập tên"),
+  // ĐVT riêng của COMPONENT — không bắt buộc, không giới hạn theo unit scope (chỉ node này có
+  // field này; CONSUMABLE/ROOT vẫn lấy ĐVT từ item liên kết).
+  unitId: z.string().optional(),
+  // Ảnh riêng của COMPONENT — cùng phạm vi với `unitId`; server function map sang `imageFileId`.
+  image: imageFieldSchema,
 })
 
 export const createConsumableItemSchema = bomItemCommonSchema.extend({
@@ -39,15 +42,20 @@ export const createBomItemSchema = z.discriminatedUnion("type", [
   createConsumableItemSchema,
 ])
 
-export type CreateComponentItemSchema = z.input<typeof createComponentItemSchema>
-export type CreateConsumableItemSchema = z.input<typeof createConsumableItemSchema>
+export type CreateComponentItemSchema = z.input<
+  typeof createComponentItemSchema
+>
+export type CreateConsumableItemSchema = z.input<
+  typeof createConsumableItemSchema
+>
 export type CreateBomItemSchema = z.input<typeof createBomItemSchema>
 
 export const createComponentItemDefaultValues: CreateComponentItemSchema = {
   type: "COMPONENT",
   code: "",
   name: "",
+  unitId: undefined,
+  image: null,
   quantity: 1,
   note: "",
-  drawing: null,
 }

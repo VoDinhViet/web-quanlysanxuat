@@ -20,7 +20,7 @@ type BomItemDetailTabItem = {
 }
 
 const bomItemDetailTabItems: BomItemDetailTabItem[] = [
-  { value: "info", label: "Thông tin hạng mục", icon: LayersMinimalistic },
+  { value: "info", label: "Thông tin chung", icon: LayersMinimalistic },
   { value: "consumables", label: "Vật tư", icon: Box },
   { value: "operations", label: "Công đoạn", icon: ClipboardList },
 ]

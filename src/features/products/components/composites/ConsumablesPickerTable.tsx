@@ -18,53 +18,42 @@ import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildConsumablePickerColumns } from "@/features/products/components/composites/ConsumablePickerColumns"
 import { consumablesQueryOptions } from "@/features/consumables/api"
-import type {
-  ConsumablePickerRow,
-  PickedConsumableValue,
-} from "@/features/products/components/composites/ConsumablePickerColumns"
-import type { PageSize } from "@/components/shared/composites/Pagination"
+import type { ConsumablePickerRow } from "@/features/products/components/composites/ConsumablePickerColumns"
 
-export type PickedConsumableSubmission = {
-  itemId: string
-  quantity: string
-  note: string
-}
-
-function toSubmission(
-  picked: Map<string, PickedConsumableValue>
-): PickedConsumableSubmission[] {
-  return Array.from(picked, ([itemId, value]) => ({ itemId, ...value }))
-}
+// Chỉ 6 dòng/trang — đây là bảng trong dialog, không phải trang riêng, giữ dialog gọn theo
+// chiều cao thay vì cuộn dài; không có selector đổi cỡ trang (Pagination ẩn selector khi bỏ qua
+// `onPageSizeChange`) vì 6 là cố định cho ngữ cảnh này.
+const PAGE_SIZE = 6
 
 type ConsumablesPickerTableProps = {
   disabled: boolean
-  // Gọi mỗi lần `picked` đổi (chọn/bỏ chọn, sửa số lượng/ghi chú) — ngay trong handler, không
-  // qua effect, để CreateConsumableForm (nơi giữ nút Thêm ở footer, ngoài component này) luôn có
-  // sẵn danh sách mới nhất tại thời điểm submit.
-  onPickedChange: (values: PickedConsumableSubmission[]) => void
+  pickedIds: Set<string>
+  onToggleRow: (row: ConsumablePickerRow) => void
+  // Chọn/bỏ chọn cả trang hiện tại cùng lúc — bảng tự biết `rows` của trang đang xem, cha chỉ cần
+  // áp `checked` cho đúng các dòng đó vào state `picked` của mình.
+  onToggleAllRows: (rows: ConsumablePickerRow[], checked: boolean) => void
 }
 
-// Bảng vật tư tìm-kiếm-được, phân trang, chọn nhiều (checkbox) — Số lượng/Ghi chú nhập ngay tại
-// dòng đã chọn. Chỉ còn picker vật tư (CONSUMABLE): node COMPONENT không còn trỏ item nào, người dùng nhập
-// thẳng code/name trên form (docs/decisions/wip-removal.md). Tự giữ state `picked` (khoá theo id,
-// sống qua đổi trang/tìm kiếm) và chỉ báo lên CreateConsumableForm giá trị cuối cùng để submit —
-// hiển thị (ảnh/mã/tên các dòng đã chọn) là việc riêng của bảng này.
+// Bước 1 (chọn vật tư) — bảng tìm-kiếm-được, phân trang, chọn nhiều (checkbox). Số lượng/Ghi chú
+// chuyển sang bước 2 (CreateConsumableDetailsTable) từ khi dialog "Thêm vật tư" tách 2 bước. Lựa
+// chọn (`pickedIds`) được điều khiển từ CreateConsumableDialog.tsx (không tự giữ state) — bước 2
+// cũng sửa được cùng state đó (bỏ chọn tại dòng), 2 bước phải cùng nhìn vào một nguồn. Số lượng đã
+// chọn hiện ở badge trên tab "② Số lượng & ghi chú" (CreateConsumableStepsTabs.tsx), không lặp lại
+// ở đây nữa.
 export function ConsumablesPickerTable({
   disabled,
-  onPickedChange,
+  pickedIds,
+  onToggleRow,
+  onToggleAllRows,
 }: ConsumablesPickerTableProps) {
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState<PageSize>(10)
   const [q, setQ] = useState("")
   const [debouncedQ] = useDebounceValue(q, 300)
-  const [picked, setPicked] = useState<Map<string, PickedConsumableValue>>(
-    new Map()
-  )
 
   const query = useQuery({
     ...consumablesQueryOptions({
       page,
-      limit: pageSize,
+      limit: PAGE_SIZE,
       q: debouncedQ.trim() || undefined,
     }),
     placeholderData: keepPreviousData,
@@ -73,59 +62,15 @@ export function ConsumablesPickerTable({
   const rows: ConsumablePickerRow[] = query.data?.data ?? []
   const pagination = query.data?.pagination
 
-  function commit(next: Map<string, PickedConsumableValue>) {
-    setPicked(next)
-    onPickedChange(toSubmission(next))
-  }
-
-  function toggleRow(row: ConsumablePickerRow) {
-    const next = new Map(picked)
-    if (next.has(row.id)) {
-      next.delete(row.id)
-    } else {
-      next.set(row.id, { quantity: "1", note: "" })
-    }
-    commit(next)
-  }
-
-  function toggleAll(checked: boolean) {
-    const next = new Map(picked)
-    rows.forEach((row) => {
-      if (checked) {
-        if (!next.has(row.id)) next.set(row.id, { quantity: "1", note: "" })
-      } else {
-        next.delete(row.id)
-      }
-    })
-    commit(next)
-  }
-
-  function updateQuantity(id: string, quantity: string) {
-    const current = picked.get(id)
-    if (!current) return
-    const next = new Map(picked)
-    next.set(id, { ...current, quantity })
-    commit(next)
-  }
-
-  function updateNote(id: string, note: string) {
-    const current = picked.get(id)
-    if (!current) return
-    const next = new Map(picked)
-    next.set(id, { ...current, note })
-    commit(next)
-  }
-
-  const allChecked = rows.length > 0 && rows.every((row) => picked.has(row.id))
+  const allChecked =
+    rows.length > 0 && rows.every((row) => pickedIds.has(row.id))
 
   const columns = buildConsumablePickerColumns({
-    picked,
+    pickedIds,
     disabled,
     allChecked,
-    onToggleRow: toggleRow,
-    onToggleAll: toggleAll,
-    onQuantityChange: updateQuantity,
-    onNoteChange: updateNote,
+    onToggleRow,
+    onToggleAll: (checked) => onToggleAllRows(rows, checked),
   })
   const table = useTable({
     data: rows,
@@ -135,23 +80,18 @@ export function ConsumablesPickerTable({
 
   return (
     <div className="space-y-2.5">
-      <div className="flex items-center justify-between gap-3">
-        <div className="relative flex-1">
-          <Input
-            className="pr-9 text-xs placeholder:text-muted-foreground/75"
-            placeholder="Tìm theo mã hoặc tên..."
-            value={q}
-            disabled={disabled}
-            onChange={(event) => {
-              setQ(event.target.value)
-              setPage(1)
-            }}
-          />
-          <Magnifier className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-        </div>
-        <span className="shrink-0 text-xs font-medium text-primary">
-          Đã chọn {picked.size} vật tư
-        </span>
+      <div className="relative">
+        <Input
+          className="pr-9 text-xs placeholder:text-muted-foreground/75"
+          placeholder="Tìm theo mã hoặc tên..."
+          value={q}
+          disabled={disabled}
+          onChange={(event) => {
+            setQ(event.target.value)
+            setPage(1)
+          }}
+        />
+        <Magnifier className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
       </div>
 
       <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
@@ -220,10 +160,6 @@ export function ConsumablesPickerTable({
           pageSize={pagination.limit}
           total={pagination.totalRecords}
           onPageChange={setPage}
-          onPageSizeChange={(nextPageSize) => {
-            setPageSize(nextPageSize)
-            setPage(1)
-          }}
           disabled={disabled}
         />
       )}

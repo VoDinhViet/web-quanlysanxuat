@@ -21,7 +21,9 @@ function resolveUpdateBomItemErrorMessage(error: unknown): string {
     case "bom_item.error.quantity_not_integer":
       return "Số lượng phải là số nguyên đối với cấu trúc con."
     case "bom_item.error.invalid_node_payload":
-      return "Không sửa được mã/tên trên vật tư — hai trường này chỉ áp dụng cho cấu trúc con."
+      return "Không sửa được mã/tên/ĐVT/ảnh trên vật tư — các trường này chỉ áp dụng cho cấu trúc con."
+    case "file.error.not_found":
+      return "Ảnh đã tải lên không còn tồn tại, vui lòng tải lại."
     default:
       return GENERIC_ERROR_MESSAGE
   }
@@ -32,16 +34,19 @@ const updateBomItemInputSchema = updateBomItemSchema.extend({
   bomItemId: z.uuid(),
 })
 
-// `drawing` carries a display URL the backend has no field for — only the file id goes on the
-// wire. Empty note clears the field (null); PATCH treats a missing key as "leave unchanged".
+// Empty note clears the field (null); PATCH treats a missing key as "leave unchanged". `image`
+// chỉ có key khi node là COMPONENT (BomItemDetailScreen `getBomItemDefaultValues`) — thiếu key thì
+// không gửi `imageFileId`, có key null thì gửi null để xoá ảnh.
 const updateBomItemPayloadSchema = updateBomItemInputSchema.transform(
-  ({ note, drawing, ...rest }) => {
+  ({ note, image, ...rest }) => {
     const trimmedNote = note.trim()
 
     return {
       ...rest,
       note: trimmedNote === "" ? null : trimmedNote,
-      drawingFileId: resolveApiFileId(drawing, "update"),
+      ...(image !== undefined
+        ? { imageFileId: resolveApiFileId(image, "update") }
+        : {}),
     }
   }
 )

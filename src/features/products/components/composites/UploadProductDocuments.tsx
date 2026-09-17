@@ -11,7 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { getDocumentTypeInfo } from "@/features/products/utils/document-badge.util"
+import { getDocumentTypeInfo } from "@/features/products/utils/document-type"
 import { resolveFileUrl } from "@/lib/file-url"
 import {
   ACCEPTED_DOCUMENT_TYPES,

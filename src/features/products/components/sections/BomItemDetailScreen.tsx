@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { revalidateLogic } from "@tanstack/react-form"
 import { Lock } from "lucide-react"
 import type { Key } from "react-aria-components"
@@ -13,6 +14,7 @@ import { BomItemConsumablesTable } from "@/features/products/components/composit
 import { ProductOperationsPanel } from "@/features/products/components/composites/ProductOperationsPanel"
 import { DeleteBomItemDialog } from "@/features/products/components/composites/DeleteBomItemDialog"
 import { useProductBom } from "@/features/products/hooks/use-product-bom"
+import { bomItemOperationsQueryOptions } from "@/features/products/api/options"
 import { useHasPermission } from "@/hooks/use-permissions"
 import { useAppForm } from "@/hooks/use-app-form"
 import { bomItemDetailTabSchema } from "@/features/products/schemas/bom-item-detail-search.schema"
@@ -31,16 +33,20 @@ const CONSUMABLES_LOCKED_HINT =
 // ROOT: `quantity` cố định (1), gửi lên sẽ bị backend chặn E271 dù giữ nguyên giá trị cũ (chặn
 // theo key có mặt, không theo giá trị) — không đưa field này vào default values, form cũng ẩn
 // luôn field tương ứng cho ROOT (docs/decisions/root-bom-item.md). `sortOrder` không có ô sửa ở
-// form Thông tin hạng mục nữa (BomItemInfoTab) nên cũng không vào defaultValues cho mọi loại node
+// form Thông tin chung nữa (BomItemInfoTab) nên cũng không vào defaultValues cho mọi loại node
 // — thiếu key = PATCH giữ nguyên thứ tự hiện tại, đúng ngữ nghĩa của field này.
 function getBomItemDefaultValues(bomItem: BomItem): UpdateBomItemSchema {
   return {
     ...(bomItem.type === "COMPONENT"
-      ? { code: bomItem.code, name: bomItem.name }
+      ? {
+          code: bomItem.code,
+          name: bomItem.name,
+          unitId: bomItem.unit?.id,
+          image: bomItem.image,
+        }
       : {}),
     ...(bomItem.type !== "ROOT" ? { quantity: bomItem.quantity } : {}),
     note: bomItem.note ?? "",
-    drawing: bomItem.drawing,
   }
 }
 
@@ -79,25 +85,35 @@ export function BomItemDetailScreen({
   })
   const canEditBom = useHasPermission("items:bom-manage")
 
+  // Không còn kèm trong GET .../bom nữa — route loader đã prefetch, nên đọc ngay được ở cả tab
+  // Công đoạn lẫn số đếm trên sidebar (tab Thông tin) mà không cần chờ.
+  const { data: operations } = useSuspenseQuery(
+    bomItemOperationsQueryOptions(product.id, bomItem.id)
+  )
+
   const [deletingBomItem, setDeletingBomItem] = useState<BomItem | null>(null)
 
-  // Một lượt qua `nodes` thay vì find/filter/some riêng lẻ — cùng gom cha, vật tư con trực tiếp,
-  // và "còn cấu trúc con COMPONENT bên dưới" (quyết định canAddConsumables/khoá tab Vật tư).
+  // Một lượt qua `nodes` thay vì find/filter/some riêng lẻ — cùng gom cha, đếm vật tư con trực
+  // tiếp (chỉ cần số đếm cho sidebar — danh sách thật giờ đọc qua query riêng, phân trang ở BE,
+  // xem BomItemConsumablesTable.tsx), và "còn cấu trúc con COMPONENT bên dưới" (quyết định
+  // canCreateConsumables/khoá tab Vật tư).
   let parent: BomItem | null = null
-  const consumables: BomItem[] = []
+  let consumablesCount = 0
   let hasChildPart = false
   for (const node of nodes) {
     if (node.id === bomItem.parentId) parent = node
     if (node.parentId === bomItem.id) {
-      if (node.type === "CONSUMABLE") consumables.push(node)
+      if (node.type === "CONSUMABLE") consumablesCount += 1
       else if (node.type === "COMPONENT") hasChildPart = true
     }
   }
   // Chỉ cấp cuối cùng (không còn cấu trúc con COMPONENT bên dưới) mới thêm được vật tư trực tiếp —
   // tránh vật tư nằm rải giữa các cấp làm sai lệch cách nổ (explode) nhu cầu vật tư theo cây.
   // Không còn leaf → khoá luôn cả tab "Vật tư", không chỉ nút thêm bên trong.
-  const canAddConsumables = !hasChildPart
-  const lockedTabs: BomItemDetailTab[] = canAddConsumables ? [] : ["consumables"]
+  const canCreateConsumables = !hasChildPart
+  const lockedTabs: BomItemDetailTab[] = canCreateConsumables
+    ? []
+    : ["consumables"]
 
   const bom = useProductBom(product.id, {
     onSuccessDelete: () => {
@@ -183,18 +199,17 @@ export function BomItemDetailScreen({
                 >
                   <BomItemInfoTab
                     form={form}
-                    bomItemType={bomItem.type}
                     disabled={!canEditBom || bom.isSaving}
                   />
                 </TabsContent>
 
                 <TabsContent value="consumables" className="m-0 outline-none">
-                  {canAddConsumables ? (
+                  {canCreateConsumables ? (
                     <div className="px-4 py-5 sm:px-5">
                       <BomItemConsumablesTable
+                        productId={product.id}
                         bomItem={bomItem}
-                        consumables={consumables}
-                        canAddConsumables={canAddConsumables}
+                        canCreateConsumables={canCreateConsumables}
                         bom={bom}
                       />
                     </div>
@@ -207,7 +222,7 @@ export function BomItemDetailScreen({
                   <div className="px-4 py-5 sm:px-5">
                     <ProductOperationsPanel
                       target={{ productId: product.id, bomItemId: bomItem.id }}
-                      productOperations={bomItem.operations}
+                      productOperations={operations}
                       isPending={false}
                     />
                   </div>
@@ -222,8 +237,8 @@ export function BomItemDetailScreen({
                     product={product}
                     bomItem={bomItem}
                     parent={parent}
-                    consumablesCount={consumables.length}
-                    operationsCount={bomItem.operations.length}
+                    consumablesCount={consumablesCount}
+                    operationsCount={operations.length}
                   />
                 </aside>
               ) : null}

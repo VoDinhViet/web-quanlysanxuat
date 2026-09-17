@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router"
 import {
   Box,
   ClipboardList,
-  Documents,
   Gallery,
   Hashtag,
   InfoCircle,
@@ -10,15 +9,11 @@ import {
   LayersMinimalistic,
   MagniferZoomIn,
   Notes,
-  Paperclip,
   Ruler,
   SortVertical,
 } from "@solar-icons/react"
-import prettyBytes from "pretty-bytes"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
-
-import { ExternalLink, FileText } from "lucide-react"
 
 import { useBrokenImage } from "@/features/products/hooks/use-broken-image"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -38,9 +33,9 @@ type BomItemDetailSidebarProps = {
   operationsCount: number
 }
 
-// Keeps the node's key facts, image and drawing in view while the user works
-// in the info form. The Vật tư/Công đoạn tabs (BomItemDetailPage) hide this
-// column entirely — their tables run wide enough to need the full row.
+// Keeps the node's key facts and image in view while the user works in the
+// info form. The Vật tư/Công đoạn tabs (BomItemDetailPage) hide this column
+// entirely — their tables run wide enough to need the full row.
 export function BomItemDetailSidebar({
   product,
   bomItem,
@@ -51,7 +46,7 @@ export function BomItemDetailSidebar({
   return (
     <>
       {/* Code and name aren't repeated — the header already shows them large. */}
-      <SidebarSection title="Thông tin hạng mục" icon={InfoCircle}>
+      <SidebarSection title="Thông tin chung" icon={InfoCircle}>
         <dl className="divide-y divide-border">
           <SummaryRow
             icon={Layers}
@@ -105,13 +100,9 @@ export function BomItemDetailSidebar({
       </SidebarSection>
 
       <SidebarSection title="Hình ảnh" icon={Gallery} padded>
-        {/* `image` is coalesced from the linked item (CONSUMABLE/ROOT) — a COMPONENT node
-            has none of its own, so this usually shows the empty state there. */}
+        {/* `image` is coalesced: the linked item's (CONSUMABLE/ROOT) or the node's own
+            `imageFileId` (COMPONENT, edited on the Thông tin tab). */}
         <BomItemImagePreview image={bomItem.image} name={bomItem.name} />
-      </SidebarSection>
-
-      <SidebarSection title="Bản vẽ" icon={Paperclip} padded>
-        <BomItemDrawingLink drawing={bomItem.drawing} />
       </SidebarSection>
     </>
   )
@@ -198,52 +189,6 @@ function SummaryRow({ icon: IconComponent, label, value }: SummaryRowProps) {
         {value}
       </dd>
     </div>
-  )
-}
-
-type BomItemDrawingLinkProps = {
-  drawing: FileResource | null
-}
-
-// Chỉ-đọc — thay/xoá bản vẽ ở tab "Thông tin hạng mục" (BomItemDrawingField).
-function BomItemDrawingLink({ drawing }: BomItemDrawingLinkProps) {
-  if (!drawing) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
-        <Documents className="size-7 text-muted-foreground/40" />
-        <p className="text-[11px] font-medium text-muted-foreground">
-          Chưa có bản vẽ
-        </p>
-      </div>
-    )
-  }
-
-  return (
-    <a
-      href={resolveFileUrl(drawing.url)}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex min-w-0 items-center justify-between gap-2.5 rounded-lg border border-border/80 bg-background p-2 transition-all hover:border-primary/40 hover:bg-muted/30"
-    >
-      <div className="flex min-w-0 flex-1 items-center gap-2.5">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border/60 bg-muted/60 text-muted-foreground">
-          <FileText className="size-4" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-medium text-foreground transition-colors group-hover:text-primary">
-            {drawing.originalName}
-          </p>
-          <p className="text-[10px] text-muted-foreground">
-            <span className="font-mono text-[9px] text-foreground/70 uppercase">
-              PDF
-            </span>
-            <span> · </span>
-            <span>{prettyBytes(drawing.size)}</span>
-          </p>
-        </div>
-      </div>
-      <ExternalLink className="size-3.5 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-foreground" />
-    </a>
   )
 }
 

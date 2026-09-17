@@ -11,7 +11,10 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import type { BomItem } from "@/lib/types/bom-item.type"
+
+const partLabel = bomItemTypeLabels.COMPONENT
 
 type DeleteBomItemDialogProps = {
   bomItem: BomItem | null
@@ -31,10 +34,10 @@ export function DeleteBomItemDialog({
           <AlertDialogMedia>
             <Trash2 />
           </AlertDialogMedia>
-          <AlertDialogTitle>Xoá thành phần này?</AlertDialogTitle>
+          <AlertDialogTitle>Xoá {partLabel} này?</AlertDialogTitle>
           <AlertDialogDescription>
             {bomItem
-              ? `"${bomItem.name}" (${bomItem.code}) và toàn bộ thành phần con bên trong sẽ bị xoá khỏi cấu trúc sản phẩm.`
+              ? `"${bomItem.name}" (${bomItem.code}) và toàn bộ ${partLabel} con bên trong sẽ bị xoá khỏi cấu trúc sản phẩm.`
               : ""}
           </AlertDialogDescription>
         </AlertDialogHeader>
