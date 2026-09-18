@@ -51,7 +51,7 @@ type BomItemConsumablesTableProps = {
   bom: UseProductBomResult
 }
 
-// Vật tư con trực tiếp của một BomItem (ROOT hoặc COMPONENT) — bảng bên trong tab
+// Vật tư con trực tiếp của một BomItem (COMPONENT) — bảng bên trong tab
 // "Vật tư" của BomItemDetailPage, tách hẳn khỏi cây cấu trúc chính (ProductBomTable
 // không còn hiển thị dòng CONSUMABLE nào nữa). Đọc qua bomItemConsumablesQueryOptions
 // (phân trang/tìm kiếm thật ở BE) thay vì lọc client-side từ cây đầy đủ đã tải —

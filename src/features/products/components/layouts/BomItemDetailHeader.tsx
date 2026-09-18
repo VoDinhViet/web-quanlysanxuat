@@ -23,7 +23,6 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 // Tint recipe mirrors ProductOperationsPanel's OperationTypeBadge: shadcn Badge
 // (variant="outline") + a bg-<token>/15 text-<token> tint per node type.
 const bomItemTypeStyles: Record<BomItemType, string> = {
-  ROOT: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
   COMPONENT: "bg-primary/15 text-primary",
   CONSUMABLE: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
 }
@@ -85,12 +84,8 @@ export function BomItemDetailHeader({
               <span>Cấp {bomItem.level}</span>
               <Dot />
               <span>ĐVT: {bomItem.unit?.name ?? "—"}</span>
-              {bomItem.type !== "ROOT" && (
-                <>
-                  <Dot />
-                  <span>SL: {quantityFormatter.format(bomItem.quantity)}</span>
-                </>
-              )}
+              <Dot />
+              <span>SL: {quantityFormatter.format(bomItem.quantity)}</span>
               <Dot />
               <span>
                 Sản phẩm:{" "}
@@ -137,20 +132,17 @@ export function BomItemDetailHeader({
             </p>
           )}
 
-          {/* ROOT is the product itself — it goes away with the product, never on its own. */}
-          {bomItem.type !== "ROOT" && (
-            <PermissionGate permission="items:bom-manage">
-              <Button
-                type="button"
-                variant="outline"
-                className="border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive"
-                onClick={() => onRequestDelete(bomItem)}
-              >
-                <TrashBinTrash className="size-4" />
-                Xóa
-              </Button>
-            </PermissionGate>
-          )}
+          <PermissionGate permission="items:bom-manage">
+            <Button
+              type="button"
+              variant="outline"
+              className="border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive"
+              onClick={() => onRequestDelete(bomItem)}
+            >
+              <TrashBinTrash className="size-4" />
+              Xóa
+            </Button>
+          </PermissionGate>
         </div>
       </div>
 

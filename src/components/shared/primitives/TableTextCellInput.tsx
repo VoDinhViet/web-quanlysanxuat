@@ -1,6 +1,7 @@
 import { useState } from "react"
 
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 type TableTextCellInputProps = {
   value: string
@@ -8,6 +9,7 @@ type TableTextCellInputProps = {
   disabled?: boolean
   placeholder?: string
   id?: string
+  className?: string
 }
 
 // Bare text input for a compare-grid or picker cell — same local-state-until-blur reasoning as
@@ -22,6 +24,7 @@ export function TableTextCellInput({
   disabled,
   placeholder,
   id,
+  className,
 }: TableTextCellInputProps) {
   const [localValue, setLocalValue] = useState(value)
   // Re-sync local state from an external value change (draft restore, reset) without an effect —
@@ -35,7 +38,7 @@ export function TableTextCellInput({
   return (
     <Input
       id={id}
-      className="h-8 bg-background text-xs"
+      className={cn("h-8 bg-background text-xs", className)}
       placeholder={placeholder}
       value={localValue}
       disabled={disabled}

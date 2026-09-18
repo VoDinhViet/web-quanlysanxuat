@@ -31,6 +31,8 @@ export enum UploadType {
   // Ảnh riêng của một node BOM COMPONENT (bom_items.image_file_id, tối đa 1) — khác PRODUCT_IMAGE
   // là ảnh của chính item.
   BOM_ITEM_IMAGE = "BOM_ITEM_IMAGE",
+  // File LSX đã ký (bản scan/PDF) đính kèm trên trang chi tiết LSX
+  PRODUCTION_ORDER_SIGNED_DOCUMENT = "PRODUCTION_ORDER_SIGNED_DOCUMENT",
 }
 
 export enum FileKind {

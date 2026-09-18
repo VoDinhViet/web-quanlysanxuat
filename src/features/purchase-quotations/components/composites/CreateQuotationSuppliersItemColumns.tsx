@@ -1,7 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import type { AnyFieldApi } from "@tanstack/react-form"
-import { AddCircle, TrashBinTrash } from "@solar-icons/react"
+import { AddCircle, DangerTriangle, TrashBinTrash } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,6 +12,7 @@ import {
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import { QuotationAllocationsDialog } from "@/features/purchase-quotations/components/composites/QuotationAllocationsDialog"
+import { cn } from "@/lib/utils"
 import type { PickedQuotationItemValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 const quotationItemColumnHelper = createColumnHelper<
@@ -85,6 +86,12 @@ export function buildQuotationSuppliersItemColumns({
             (sum, allocation) => sum + (allocation.quantity ?? 0),
             0
           )
+          const requestedTotal = item.allocations.reduce(
+            (sum, allocation) => sum + allocation.requestedQuantity,
+            0
+          )
+          const isOver = total > requestedTotal
+          const diff = total - requestedTotal
 
           return (
             <Tooltip>
@@ -103,12 +110,21 @@ export function buildQuotationSuppliersItemColumns({
                         size="sm"
                         disabled={disabled}
                         aria-label={`${item.allocations.length} dòng ĐXMH`}
-                        className="h-8 w-full max-w-36 justify-between gap-1.5 px-2 text-xs font-normal tabular-nums transition-colors hover:border-primary hover:text-primary"
+                        className={cn(
+                          "h-8 w-full max-w-36 justify-between gap-1.5 px-2 text-xs font-normal tabular-nums transition-colors hover:border-primary hover:text-primary",
+                          isOver && "border-warning/70 text-warning hover:border-warning"
+                        )}
                       >
                         <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                           {item.allocations.length} dòng
                         </span>
-                        <span className="font-semibold text-foreground">
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-1 font-semibold",
+                            isOver ? "text-warning" : "text-foreground"
+                          )}
+                        >
+                          {isOver && <DangerTriangle className="size-3 shrink-0" />}
                           {total}
                         </span>
                       </Button>
@@ -116,25 +132,51 @@ export function buildQuotationSuppliersItemColumns({
                   />
                 }
               />
-              <TooltipContent>{`Gộp từ ${item.allocations.length} dòng ĐXMH — Bấm để chỉnh SL`}</TooltipContent>
+              <TooltipContent>
+                {isOver
+                  ? `Gộp từ ${item.allocations.length} dòng ĐXMH — SL vượt đề xuất (+${diff}). Bấm để chỉnh SL`
+                  : `Gộp từ ${item.allocations.length} dòng ĐXMH — Bấm để chỉnh SL`}
+              </TooltipContent>
             </Tooltip>
           )
         }
 
         const allocation = item.allocations[0]
+        const isOver = (allocation.quantity ?? 0) > allocation.requestedQuantity
+        const diff = (allocation.quantity ?? 0) - allocation.requestedQuantity
+
         return (
-          <NumericCellInput
-            value={allocation.quantity}
-            min={1}
-            max={allocation.requestedQuantity}
-            disabled={disabled}
-            onValueChange={(value) =>
-              itemsField.replaceValue(row.index, {
-                ...item,
-                allocations: [{ ...allocation, quantity: value }],
-              })
-            }
-          />
+          <div className="relative flex items-center">
+            <NumericCellInput
+              value={allocation.quantity}
+              min={1}
+              disabled={disabled}
+              className={cn(
+                "text-right tabular-nums",
+                isOver && "border-warning/70 pr-7 text-warning focus-visible:ring-warning/30 hover:border-warning"
+              )}
+              onValueChange={(value) =>
+                itemsField.replaceValue(row.index, {
+                  ...item,
+                  allocations: [{ ...allocation, quantity: value }],
+                })
+              }
+            />
+            {isOver && (
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <span className="pointer-events-auto absolute right-2 flex items-center text-warning">
+                      <DangerTriangle className="size-3.5 shrink-0" />
+                    </span>
+                  }
+                />
+                <TooltipContent>
+                  {`SL báo giá lớn hơn SL đề xuất (${allocation.quantity}/${allocation.requestedQuantity}, vượt +${diff})`}
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
         )
       },
     }),
@@ -158,11 +200,22 @@ export function buildQuotationSuppliersItemColumns({
         }
 
         const allocation = item.allocations[0]
+        const isOver = (allocation.quantity ?? 0) > allocation.requestedQuantity
+        const needsReason = isOver && !allocation.quantityAdjustmentReason?.trim()
+
         return (
           <TableTextCellInput
             id={`quotation-item-adjustment-reason-${row.index}`}
             value={allocation.quantityAdjustmentReason}
-            placeholder="Nếu SL báo giá khác SL yêu cầu"
+            placeholder={
+              isOver
+                ? "Nhập lý do SL vượt đề xuất *"
+                : "Nếu SL báo giá khác SL yêu cầu"
+            }
+            className={cn(
+              needsReason &&
+                "border-warning/60 placeholder:text-warning/70 focus-visible:ring-warning/30"
+            )}
             disabled={disabled}
             onValueChange={(value) =>
               itemsField.replaceValue(row.index, {

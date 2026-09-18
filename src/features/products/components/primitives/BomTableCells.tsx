@@ -29,9 +29,9 @@ export function BomLevelBadge({ level }: { level: number }) {
   )
 }
 
-// Ảnh + mã/tên dùng chung cho mọi dòng (ROOT, dòng gốc tạm khi BOM rỗng, và
-// COMPONENT) — đọc từ view model `BomRow` thay vì `BomItem`, nhờ đó dòng gốc
-// tạm (dựng từ `product`) dùng lại đúng component này thay vì tự vẽ riêng.
+// Ảnh + mã/tên dùng chung cho mọi dòng (Cấp 0 và COMPONENT/CONSUMABLE) — đọc
+// từ view model `BomRow` thay vì `BomItem`, nhờ đó dòng Cấp 0 (dựng từ
+// `product`) dùng lại đúng component này thay vì tự vẽ riêng.
 export function BomCodeCell({ row }: { row: BomRow }) {
   const indent = row.isRoot ? 0 : row.level - 1
 
@@ -61,16 +61,12 @@ export function BomCodeCell({ row }: { row: BomRow }) {
 }
 
 // Xem nhanh chuỗi công đoạn ngay trong bảng cây, không phải mở trang chi tiết
-// mới thấy. Chỉ node COMPONENT có công đoạn (ROOT/dòng gốc tạm không). Đọc
-// thẳng từ `row.component.operations` — backend đã join sẵn trong cùng
-// response GET .../bom (một query `IN (...)` cho cả cây), không gọi riêng
-// `bomItemOperationsQueryOptions` cho từng dòng.
+// mới thấy. Cả Cấp 0 lẫn COMPONENT đều gắn được công đoạn — `row.operations`
+// đã gộp sẵn 2 nguồn khác nhau ở `buildBomRows` (Cấp 0: query riêng
+// `itemOperationsQueryOptions`; node thật: join sẵn trong response GET
+// .../bom), cell này không cần biết nguồn nào.
 export function BomOperationsCell({ row }: { row: BomRow }) {
-  if (row.component === null) {
-    return <span className="text-muted-foreground">—</span>
-  }
-
-  const sequence = formatOperationSequence(row.component.operations)
+  const sequence = formatOperationSequence(row.operations)
 
   return (
     <span

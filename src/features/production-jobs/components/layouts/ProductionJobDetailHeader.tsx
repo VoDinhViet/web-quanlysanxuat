@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft, Diskette } from "@solar-icons/react"
@@ -11,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { itemQueryOptions } from "@/features/products/api"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/layouts/ProductionJobDetailTabs"
 import { RequestProductionJobQcDialog } from "@/features/production-jobs/components/composites/RequestProductionJobQcDialog"
@@ -36,9 +38,20 @@ type ProductionJobDetailHeaderProps = {
 // there is no manual create screen left to deep-link to. No client-side gate beyond each
 // button's own disabledReason — the backend enforces every precondition
 // (E213/E214/E196/E197/...) and each dialog surfaces its own error inline.
+function getJobQuantityLabel(
+  job: ProductionJobDetail,
+  enrichedUnit?: string
+) {
+  const unit = job.item.unit?.name ?? enrichedUnit
+
+  return unit ? `${job.quantity} ${unit}` : job.quantity
+}
+
 export function ProductionJobDetailHeader({
   productionJob,
 }: ProductionJobDetailHeaderProps) {
+  const { data: item } = useQuery(itemQueryOptions(productionJob.itemId))
+
   return (
     <>
       <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
@@ -77,7 +90,7 @@ export function ProductionJobDetailHeader({
             />
             <InfoField
               label="SL sản xuất"
-              value={`${productionJob.quantity} Bộ`}
+              value={getJobQuantityLabel(productionJob, item?.unit.name)}
             />
             <InfoField
               label="PO / HĐ"

@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { Fragment, useMemo, useState } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { InfoCircle } from "@solar-icons/react"
 
@@ -14,10 +14,13 @@ import { appTableFeatures } from "@/lib/table-features"
 import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import { cn } from "@/lib/utils"
 import { createBomColumns } from "@/features/products/components/composites/ProductBomTableColumns"
+import { ProductOperationsPanel } from "@/features/products/components/composites/ProductOperationsPanel"
 import type { BomTableActions } from "@/features/products/components/primitives/BomRowActions"
 import { buildBomRows } from "@/features/products/utils/bom-rows.util"
+import type { OperationsTarget } from "@/features/products/hooks/use-product-operations"
 import type { BomItem } from "@/lib/types/bom-item.type"
 import type { Item } from "@/lib/types/item.type"
+import type { ProductOperation } from "@/lib/types/operation.type"
 
 const partLabel = bomItemTypeLabels.COMPONENT
 
@@ -42,6 +45,11 @@ function BomTableGuidance() {
 type ProductBomTableProps = {
   product: Item
   nodes: BomItem[]
+  // Công đoạn Cấp 0 — không nằm trong `nodes` nữa (docs/decisions/
+  // level-0-outside-bom-tree-response.md), đọc riêng qua
+  // `itemOperationsQueryOptions` ở ProductBomTab.tsx.
+  rootOperations: ProductOperation[]
+  routingOperationsPending: boolean
   actions: BomTableActions
 }
 
@@ -50,14 +58,34 @@ type ProductBomTableProps = {
 export function ProductBomTable({
   product,
   nodes,
+  rootOperations,
+  routingOperationsPending,
   actions,
 }: ProductBomTableProps) {
-  const rows = useMemo(() => buildBomRows(product, nodes), [product, nodes])
+  // Đóng/mở bảng công đoạn của dòng Cấp 0 — state cục bộ (không phải URL/form
+  // state), toggle qua nút "Thêm công đoạn" ở cột THAO TÁC (ProductBomTableColumns.tsx).
+  const [isRoutingOperationsOpen, setIsRoutingOperationsOpen] = useState(false)
+  // Dựng thẳng từ `product.id` thay vì nhận qua prop — target routing operations chỉ cần
+  // đúng giá trị này (không có `bomItemId`, xem OperationsTarget).
+  const routingOperationsTarget = useMemo<OperationsTarget>(
+    () => ({ productId: product.id }),
+    [product.id]
+  )
+
+  const rows = useMemo(
+    () => buildBomRows(product, nodes, rootOperations),
+    [product, nodes, rootOperations]
+  )
   const columns = useMemo(
-    () => createBomColumns(product.id, actions),
-    [product.id, actions]
+    () =>
+      createBomColumns(product.id, actions, {
+        isOpen: isRoutingOperationsOpen,
+        onToggle: () => setIsRoutingOperationsOpen((open) => !open),
+      }),
+    [product.id, actions, isRoutingOperationsOpen]
   )
   const table = useTable({ data: rows, columns, features: appTableFeatures })
+  const columnCount = table.getFlatHeaders().length
 
   return (
     <div className="space-y-3">
@@ -83,20 +111,41 @@ export function ProductBomTable({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                id={row.original.id}
-                className={cn("h-14", row.original.isRoot && "bg-muted/10")}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={cell.column.columnDef.meta?.cellClassName}
+              <Fragment key={row.id}>
+                <TableRow
+                  key={row.id}
+                  id={row.original.id}
+                  className={cn("h-14", row.original.isRoot && "bg-muted/10")}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+                {/* Bảng công đoạn đầy đủ của dòng Cấp 0 — chỉ mount khi mở, ngay dưới dòng "0"
+                    thay vì đứng cố định trên cả bảng cây. */}
+                {row.original.isRoot && isRoutingOperationsOpen && (
+                  <TableRow
+                    key={`${row.id}-operations`}
+                    className="bg-muted/5 hover:bg-muted/5"
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
+                    <TableCell colSpan={columnCount} className="p-0">
+                      <ProductOperationsPanel
+                        target={routingOperationsTarget}
+                        productOperations={row.original.operations}
+                        isPending={routingOperationsPending}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </Fragment>
             ))}
           </TableBody>
         </Table>

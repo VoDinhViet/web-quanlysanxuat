@@ -7,9 +7,11 @@ import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 // an Outlet for the list's own route, which owns the data loading and its
 // pendingComponent — see production-jobs' route.tsx for the pilot this
 // mirrors.
-export const Route = createFileRoute("/(authed)/manage_/inventory-consumables")({
-  component: InventoryConsumablesLayout,
-})
+export const Route = createFileRoute("/(authed)/manage_/inventory-consumables")(
+  {
+    component: InventoryConsumablesLayout,
+  }
+)
 
 function InventoryConsumablesLayout() {
   return (

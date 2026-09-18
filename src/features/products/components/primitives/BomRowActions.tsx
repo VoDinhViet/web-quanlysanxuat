@@ -26,10 +26,12 @@ export type BomTableActions = {
 }
 
 // "Xem chi tiết" mở trang BomItemDetailPage (thông tin, vật tư, công đoạn) —
-// chỉ cho COMPONENT, dòng ROOT (kể cả dòng gốc tạm khi BOM rỗng) không có
-// trang chi tiết riêng. Icon-only + Tooltip — hành động phụ, không cần nhãn
-// chữ như CreatePartAction. Dùng ArrowRightUp (điều hướng) thay vì Eye — đây
-// là chuyển trang, không phải xem nhanh tại chỗ.
+// chỉ COMPONENT có trang chi tiết riêng; dòng Cấp 0 (`bomItem: null`, xem
+// docs/decisions/level-0-outside-bom-tree-response.md) không có gì để chuyển
+// tới — trang sản phẩm hiện tại đã là "trang chi tiết" của nó. Icon-only +
+// Tooltip — hành động phụ, không cần nhãn chữ như CreatePartAction. Dùng
+// ArrowRightUp (điều hướng) thay vì Eye — đây là chuyển trang, không phải xem
+// nhanh tại chỗ.
 export function ViewDetailAction({
   productId,
   row,
@@ -37,7 +39,7 @@ export function ViewDetailAction({
   productId: string
   row: BomRow
 }) {
-  if (row.component === null) {
+  if (row.bomItem === null) {
     return null
   }
 
@@ -49,7 +51,7 @@ export function ViewDetailAction({
         render={
           <LinkButton
             to="/manage/products/$productId/bom/$bomItemId"
-            params={{ productId, bomItemId: row.component.id }}
+            params={{ productId, bomItemId: row.bomItem.id }}
             search={{ tab: "info" }}
             variant="outline"
             size="icon-sm"
@@ -67,7 +69,7 @@ export function ViewDetailAction({
 // "Thêm Part" — một nút duy nhất cho mỗi dòng (trước đây tách "Thêm Part con"/
 // "Thêm Part cùng cấp" thành 2 nút riêng); dialog tự quyết định có hiện bước
 // chọn vị trí (con/cùng cấp) hay không dựa vào `options.siblingTarget` (null
-// với dòng ROOT/dòng gốc tạm). Icon luôn hiện, nhãn chữ chỉ hiện từ `xl` —
+// với dòng Cấp 0). Icon luôn hiện, nhãn chữ chỉ hiện từ `xl` —
 // Tooltip vẫn giữ để trạng thái co lại tự giải thích được (tiền lệ
 // ProductionExecutionOperationsTable.tsx).
 export function CreatePartAction({
@@ -101,8 +103,8 @@ export function CreatePartAction({
   )
 }
 
-// Xoá — chỉ hợp lệ cho node COMPONENT (ROOT không xoá qua đây, dòng gốc tạm
-// khi BOM rỗng cũng chưa có gì để xoá).
+// Xoá — chỉ hợp lệ cho node COMPONENT/CONSUMABLE thật (dòng Cấp 0 không xoá
+// qua đây, xem ProductBomTableColumns.tsx).
 export function DeletePartAction({
   bomItem,
   actions,

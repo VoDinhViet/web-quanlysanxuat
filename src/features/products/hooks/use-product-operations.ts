@@ -3,19 +3,23 @@ import { useServerFn } from "@tanstack/react-start"
 import { toast } from "sonner"
 
 import { createBomOperation } from "@/features/products/api/server-functions/create-bom-operation.api"
+import { createRoutingOperation } from "@/features/products/api/server-functions/create-routing-operation.api"
 import { deleteBomOperation } from "@/features/products/api/server-functions/delete-bom-operation.api"
+import { deleteRoutingOperation } from "@/features/products/api/server-functions/delete-routing-operation.api"
 import { updateBomOperation } from "@/features/products/api/server-functions/update-bom-operation.api"
+import { updateRoutingOperation } from "@/features/products/api/server-functions/update-routing-operation.api"
 import type {
   OperationType,
   ProductOperation,
 } from "@/lib/types/operation.type"
 
-// `bomItemId` bắt buộc — Cấp 0 (ROOT) giờ cũng là một `bom_items` node thật, nên mọi công đoạn
-// (kể cả của chính item gốc) đều ghi qua cùng route bom-operations, chỉ khác `bomItemId` trỏ vào
-// đúng node nào (`docs/decisions/root-bom-item.md`, backend).
+// `bomItemId` omit = công đoạn Cấp 0 (route riêng `items/:itemId/operations`, bảng
+// `routing_operations` — Cấp 0 không phải một node `bom_items`, không có id nào để truyền cho
+// route bom-operations nữa, xem `docs/decisions/level-0-outside-bom-tree-response.md`); có giá
+// trị = công đoạn của chính node COMPONENT đó (route `.../bom/items/:bomItemId/operations`).
 export type OperationsTarget = {
   productId: string
-  bomItemId: string
+  bomItemId?: string
 }
 
 export type MoveDirection = "up" | "down"
@@ -40,19 +44,30 @@ type SortOrderSwapPair = {
 function useCreateOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
   const createBomFn = useServerFn(createBomOperation)
+  const createRoutingFn = useServerFn(createRoutingOperation)
 
   return useMutation({
     mutationFn: (input: CreateOperationInput) =>
-      createBomFn({
-        data: {
-          itemId: target.productId,
-          bomItemId: target.bomItemId,
-          operationId: input.operationId,
-          type: input.type,
-          sortOrder: input.sortOrder,
-          note: input.note,
-        },
-      }),
+      target.bomItemId
+        ? createBomFn({
+            data: {
+              itemId: target.productId,
+              bomItemId: target.bomItemId,
+              operationId: input.operationId,
+              type: input.type,
+              sortOrder: input.sortOrder,
+              note: input.note,
+            },
+          })
+        : createRoutingFn({
+            data: {
+              itemId: target.productId,
+              operationId: input.operationId,
+              type: input.type,
+              sortOrder: input.sortOrder,
+              note: input.note,
+            },
+          }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã thêm công đoạn thành công")
@@ -64,6 +79,7 @@ function useCreateOperation(target: OperationsTarget) {
 function useUpdateOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
   const updateBomFn = useServerFn(updateBomOperation)
+  const updateRoutingFn = useServerFn(updateRoutingOperation)
 
   return useMutation({
     mutationFn: (input: {
@@ -71,15 +87,24 @@ function useUpdateOperation(target: OperationsTarget) {
       sortOrder?: number
       note?: string
     }) =>
-      updateBomFn({
-        data: {
-          itemId: target.productId,
-          bomItemId: target.bomItemId,
-          stepId: input.stepId,
-          sortOrder: input.sortOrder,
-          note: input.note,
-        },
-      }),
+      target.bomItemId
+        ? updateBomFn({
+            data: {
+              itemId: target.productId,
+              bomItemId: target.bomItemId,
+              stepId: input.stepId,
+              sortOrder: input.sortOrder,
+              note: input.note,
+            },
+          })
+        : updateRoutingFn({
+            data: {
+              itemId: target.productId,
+              stepId: input.stepId,
+              sortOrder: input.sortOrder,
+              note: input.note,
+            },
+          }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã cập nhật công đoạn thành công")
@@ -91,19 +116,28 @@ function useUpdateOperation(target: OperationsTarget) {
 function useMoveOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
   const updateBomFn = useServerFn(updateBomOperation)
+  const updateRoutingFn = useServerFn(updateRoutingOperation)
 
   return useMutation({
     mutationFn: (pairs: SortOrderSwapPair[]) =>
       Promise.all(
         pairs.map((pair) =>
-          updateBomFn({
-            data: {
-              itemId: target.productId,
-              bomItemId: target.bomItemId,
-              stepId: pair.stepId,
-              sortOrder: pair.sortOrder,
-            },
-          })
+          target.bomItemId
+            ? updateBomFn({
+                data: {
+                  itemId: target.productId,
+                  bomItemId: target.bomItemId,
+                  stepId: pair.stepId,
+                  sortOrder: pair.sortOrder,
+                },
+              })
+            : updateRoutingFn({
+                data: {
+                  itemId: target.productId,
+                  stepId: pair.stepId,
+                  sortOrder: pair.sortOrder,
+                },
+              })
         )
       ),
     onSuccess: async () => {
@@ -116,16 +150,21 @@ function useMoveOperation(target: OperationsTarget) {
 function useDeleteOperation(target: OperationsTarget) {
   const queryClient = useQueryClient()
   const deleteBomFn = useServerFn(deleteBomOperation)
+  const deleteRoutingFn = useServerFn(deleteRoutingOperation)
 
   return useMutation({
     mutationFn: (stepId: string) =>
-      deleteBomFn({
-        data: {
-          itemId: target.productId,
-          bomItemId: target.bomItemId,
-          stepId,
-        },
-      }),
+      target.bomItemId
+        ? deleteBomFn({
+            data: {
+              itemId: target.productId,
+              bomItemId: target.bomItemId,
+              stepId,
+            },
+          })
+        : deleteRoutingFn({
+            data: { itemId: target.productId, stepId },
+          }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã xoá công đoạn thành công")

@@ -15,3 +15,6 @@ export { productionJobOperationsQueryOptions } from "@/features/production-jobs/
 // `qlsx/shared-reads-features-through-the-barrel` (eslint.config.js). Cùng khuôn `useLogout`
 // (`@/features/auth/api`) đang được PageTitleBar.tsx dùng.
 export { useCreateJobOperationReport } from "@/features/production-jobs/api/use-create-job-operation-report"
+// Cùng lý do trên — ô "Hạn hoàn thành" (JobOperationDueDateCell.tsx) cũng dùng chung bởi cả 2 màn,
+// ghi cùng entity này.
+export { useUpdateJobOperationDueDate } from "@/features/production-jobs/api/use-update-job-operation-due-date"

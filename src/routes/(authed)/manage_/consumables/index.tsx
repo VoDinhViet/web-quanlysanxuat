@@ -17,7 +17,9 @@ export const Route = createFileRoute("/(authed)/manage_/consumables/")({
   loader: ({ context, location }) =>
     Promise.all([
       context.queryClient.query({
-        ...consumablesQueryOptions(consumablesSearchSchema.parse(location.search)),
+        ...consumablesQueryOptions(
+          consumablesSearchSchema.parse(location.search)
+        ),
         staleTime: "static",
       }),
       context.queryClient.query({

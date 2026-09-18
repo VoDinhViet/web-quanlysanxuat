@@ -1,6 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { DangerTriangle } from "@solar-icons/react"
 import type { appTableFeatures } from "@/lib/table-features"
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { PurchaseQuotationItemAllocationDetail } from "@/lib/types/purchase-quotation.type"
 
 const purchaseQuotationAllocationColumnHelper = createColumnHelper<
@@ -35,11 +41,38 @@ export const purchaseQuotationAllocationsColumns =
         },
       }
     ),
-    purchaseQuotationAllocationColumnHelper.accessor("quantity", {
+    purchaseQuotationAllocationColumnHelper.display({
+      id: "quantity",
       header: "SL báo giá",
       meta: {
         headerClassName: "w-28 text-right text-[10px]",
         cellClassName: "text-right tabular-nums font-medium",
+      },
+      cell: ({ row }) => {
+        const isOver =
+          row.original.quantity > row.original.purchaseRequestItem.quantity
+        const diff =
+          row.original.quantity - row.original.purchaseRequestItem.quantity
+
+        if (!isOver) {
+          return row.original.quantity
+        }
+
+        return (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <span className="inline-flex items-center justify-end gap-1 font-semibold text-warning">
+                  <DangerTriangle className="size-3 shrink-0" />
+                  {row.original.quantity}
+                </span>
+              }
+            />
+            <TooltipContent>
+              {`Vượt SL đề xuất (+${diff})`}
+            </TooltipContent>
+          </Tooltip>
+        )
       },
     }),
     purchaseQuotationAllocationColumnHelper.accessor(

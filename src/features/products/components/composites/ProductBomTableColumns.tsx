@@ -1,5 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { AltArrowDown, AltArrowUp } from "@solar-icons/react"
 
+import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { appTableFeatures } from "@/lib/table-features"
 import {
   BomCodeCell,
@@ -18,10 +25,24 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 const bomColumnHelper = createColumnHelper<typeof appTableFeatures, BomRow>()
 
+// Trạng thái đóng/mở bảng công đoạn của dòng Cấp 0 — sở hữu ở ProductBomTable
+// (state cục bộ, không phải URL/form state), chỉ truyền xuống đây để vẽ nút.
+// Đặt tên "routing" theo đúng thuật ngữ backend (routing_operations/
+// createRoutingOperation, xem use-product-operations.ts) — Cấp 0 không phải
+// một node `bom_items` nên công đoạn của nó không đi qua bảng `bom_operations`.
+export type RoutingOperationsToggle = {
+  isOpen: boolean
+  onToggle: () => void
+}
+
 // Factory, không phải hằng module-scope như các bảng khác — cột THAO TÁC cần
-// `productId`/`actions`, memoize ở call site (ProductBomTable.tsx) thay vì
-// thread qua TableMeta chỉ để chuyền 2 giá trị.
-export function createBomColumns(productId: string, actions: BomTableActions) {
+// `productId`/`actions`/`routingOperationsToggle`, memoize ở call site
+// (ProductBomTable.tsx) thay vì thread qua TableMeta chỉ để chuyền vài giá trị.
+export function createBomColumns(
+  productId: string,
+  actions: BomTableActions,
+  routingOperationsToggle: RoutingOperationsToggle
+) {
   return bomColumnHelper.columns([
     bomColumnHelper.accessor("path", {
       header: "STT",
@@ -99,12 +120,42 @@ export function createBomColumns(productId: string, actions: BomTableActions) {
         return (
           <div className="flex justify-end gap-1">
             <ViewDetailAction productId={productId} row={bomRow} />
+            {/* Chỉ dòng Cấp 0 có bảng công đoạn mở/đóng ngay tại chỗ — COMPONENT sửa công đoạn ở
+                trang chi tiết riêng (xem ViewDetailAction). Inline luôn (không tách
+                BomRowActions.tsx) vì chỉ dùng đúng 1 chỗ. */}
+            {bomRow.isRoot && (
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      aria-label="Thêm công đoạn"
+                      aria-expanded={routingOperationsToggle.isOpen}
+                      onClick={routingOperationsToggle.onToggle}
+                      className="gap-1 border border-border/60 text-xs hover:bg-muted"
+                    >
+                      {routingOperationsToggle.isOpen ? (
+                        <AltArrowUp className="size-3.5" />
+                      ) : (
+                        <AltArrowDown className="size-3.5" />
+                      )}
+                      <span className="hidden xl:inline">Thêm công đoạn</span>
+                    </Button>
+                  }
+                />
+                <TooltipContent>Thêm công đoạn</TooltipContent>
+              </Tooltip>
+            )}
             <CreatePartAction
               options={bomRow.createOptions}
               actions={actions}
             />
-            {bomRow.component && (
-              <DeletePartAction bomItem={bomRow.component} actions={actions} />
+            {/* Dòng Cấp 0 có `bomItem: null` (đi cùng sản phẩm, không xoá riêng) — chỉ node thật
+                mới render DeletePartAction. */}
+            {bomRow.bomItem && (
+              <DeletePartAction bomItem={bomRow.bomItem} actions={actions} />
             )}
           </div>
         )

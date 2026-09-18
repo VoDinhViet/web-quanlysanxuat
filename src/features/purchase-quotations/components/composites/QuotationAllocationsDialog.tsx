@@ -1,11 +1,16 @@
 import { useState } from "react"
-import { Diskette } from "@solar-icons/react"
+import { DangerTriangle, Diskette } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { NumericFormat } from "react-number-format"
 import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   Dialog,
   DialogContent,
@@ -23,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { cn } from "@/lib/utils"
 import type { QuotationItemAllocationValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
 type QuotationAllocationsDialogProps = {
@@ -101,6 +107,12 @@ function QuotationAllocationsDialogForm({
     (sum, allocation) => sum + (allocation.quantity ?? 0),
     0
   )
+  const totalRequested = localAllocations.reduce(
+    (sum, allocation) => sum + allocation.requestedQuantity,
+    0
+  )
+  const totalOver = total > totalRequested
+  const totalDiff = total - totalRequested
 
   return (
     <form
@@ -122,95 +134,148 @@ function QuotationAllocationsDialogForm({
       </DialogHeader>
 
       <div className="overflow-hidden rounded-md border border-border/50 bg-card">
-        <Table aria-label="Danh sách phân bổ số lượng">
-          <TableHeader className="[&>tr]:h-10 [&>tr]:hover:bg-muted/45">
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableHead id="prCode" className="w-28">
-                Mã PR
-              </TableHead>
+              <TableHead id="prCode">Mã ĐXMH</TableHead>
               <TableHead id="requestedQuantity" className="w-28 text-right">
                 SL đề xuất
               </TableHead>
-              <TableHead id="quantity" className="w-32 text-right">
+              <TableHead id="quantity" className="w-36 text-right">
                 SL báo giá
               </TableHead>
-              <TableHead id="reason">Lý do điều chỉnh SL</TableHead>
+              <TableHead id="quantityAdjustmentReason" className="w-64">
+                Lý do điều chỉnh SL
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {localAllocations.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4}>
-                  <TableEmpty colSpan={4} title="Chưa có dòng phân bổ nào" />
-                </TableCell>
-              </TableRow>
+              <TableEmpty
+                colSpan={4}
+                title="Không có dòng đề xuất nào để phân bổ"
+              />
             ) : (
-              localAllocations.map((allocation, index) => (
-                <TableRow
-                  key={allocation.purchaseRequestItemId}
-                  id={allocation.purchaseRequestItemId}
-                  className="h-12"
-                >
-                  <TableCell>
-                    <span className="font-mono text-xs font-semibold text-primary">
-                      {allocation.prCode}
-                    </span>
-                    <p className="text-[11px] text-muted-foreground">
-                      Cần{" "}
-                      {DateTime.fromISO(allocation.neededDate).toFormat(
-                        "dd/MM/yyyy"
-                      )}
-                    </p>
-                  </TableCell>
-                  <TableCell className="text-right text-xs tabular-nums">
-                    {allocation.requestedQuantity}
-                  </TableCell>
-                  <TableCell>
-                    <NumericFormat
-                      customInput={Input}
-                      className="h-8 w-full bg-background text-right text-xs tabular-nums"
-                      value={allocation.quantity ?? ""}
-                      thousandSeparator="."
-                      decimalSeparator=","
-                      allowNegative={false}
-                      isAllowed={(values) => {
-                        const { floatValue } = values
-                        if (floatValue === undefined) return true
-                        if (floatValue < 1) return false
-                        if (floatValue > allocation.requestedQuantity)
-                          return false
-                        return true
-                      }}
-                      placeholder="Nhập SL"
-                      onValueChange={(values) =>
-                        updateAllocation(index, { quantity: values.floatValue })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      id={`allocation-reason-${allocation.purchaseRequestItemId}`}
-                      className="h-8 bg-background text-xs"
-                      placeholder="Nếu SL báo giá khác SL đề xuất"
-                      value={allocation.quantityAdjustmentReason ?? ""}
-                      onChange={(event) =>
-                        updateAllocation(index, {
-                          quantityAdjustmentReason: event.target.value,
-                        })
-                      }
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
+              localAllocations.map((allocation, index) => {
+                const isOver =
+                  (allocation.quantity ?? 0) > allocation.requestedQuantity
+                const diff =
+                  (allocation.quantity ?? 0) - allocation.requestedQuantity
+                const needsReason =
+                  isOver && !allocation.quantityAdjustmentReason?.trim()
+
+                return (
+                  <TableRow
+                    key={allocation.purchaseRequestItemId}
+                    id={allocation.purchaseRequestItemId}
+                    className="h-12"
+                  >
+                    <TableCell>
+                      <span className="font-mono text-xs font-semibold text-primary">
+                        {allocation.prCode}
+                      </span>
+                      <p className="text-[11px] text-muted-foreground">
+                        Cần{" "}
+                        {DateTime.fromISO(allocation.neededDate).toFormat(
+                          "dd/MM/yyyy"
+                        )}
+                      </p>
+                    </TableCell>
+                    <TableCell className="text-right text-xs tabular-nums">
+                      {allocation.requestedQuantity}
+                    </TableCell>
+                    <TableCell>
+                      <div className="relative flex items-center">
+                        <NumericFormat
+                          customInput={Input}
+                          className={cn(
+                            "h-8 w-full bg-background text-right text-xs tabular-nums",
+                            isOver &&
+                              "border-warning/70 pr-7 text-warning focus-visible:ring-warning/30 hover:border-warning"
+                          )}
+                          value={allocation.quantity ?? ""}
+                          thousandSeparator="."
+                          decimalSeparator=","
+                          allowNegative={false}
+                          isAllowed={(values) => {
+                            const { floatValue } = values
+                            if (floatValue === undefined) return true
+                            // Chỉ chặn nhập < 1 — không giới hạn trên so với SL đề xuất
+                            return floatValue >= 1
+                          }}
+                          placeholder="Nhập SL"
+                          onValueChange={(values) =>
+                            updateAllocation(index, {
+                              quantity: values.floatValue,
+                            })
+                          }
+                        />
+                        {isOver && (
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={
+                                <span className="pointer-events-auto absolute right-2 flex items-center text-warning">
+                                  <DangerTriangle className="size-3.5 shrink-0" />
+                                </span>
+                              }
+                            />
+                            <TooltipContent>
+                              {`SL báo giá lớn hơn SL đề xuất (${allocation.quantity}/${allocation.requestedQuantity}, vượt +${diff})`}
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        id={`allocation-reason-${allocation.purchaseRequestItemId}`}
+                        className={cn(
+                          "h-8 bg-background text-xs",
+                          needsReason &&
+                            "border-warning/60 placeholder:text-warning/70 focus-visible:ring-warning/30"
+                        )}
+                        placeholder={
+                          isOver
+                            ? "Nhập lý do SL vượt đề xuất *"
+                            : "Nếu SL báo giá khác SL đề xuất"
+                        }
+                        value={allocation.quantityAdjustmentReason ?? ""}
+                        onChange={(event) =>
+                          updateAllocation(index, {
+                            quantityAdjustmentReason: event.target.value,
+                          })
+                        }
+                      />
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             )}
           </TableBody>
         </Table>
       </div>
 
-      <p className="text-right text-xs font-medium text-foreground">
-        Tổng SL báo giá:{" "}
-        <span className="font-semibold text-primary">{total}</span>
-      </p>
+      <div className="flex items-center justify-between text-xs">
+        {totalOver ? (
+          <div className="flex items-center gap-1.5 font-medium text-warning">
+            <DangerTriangle className="size-4 shrink-0" />
+            <span>Tổng SL báo giá vượt SL đề xuất (+{totalDiff})</span>
+          </div>
+        ) : (
+          <div />
+        )}
+        <p className="text-right text-xs font-medium text-foreground">
+          Tổng SL báo giá:{" "}
+          <span
+            className={cn(
+              "font-semibold",
+              totalOver ? "text-warning" : "text-primary"
+            )}
+          >
+            {total}
+          </span>
+        </p>
+      </div>
 
       <DialogFooter className="gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>

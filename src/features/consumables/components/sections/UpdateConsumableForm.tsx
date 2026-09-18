@@ -16,7 +16,9 @@ import type { Consumable } from "@/lib/types/consumable.type"
 
 // Consumable → raw form values: nullable fields become "", specificWeight stays
 // number | undefined for the NumberField (null → undefined).
-function getConsumableDefaultValues(consumable: Consumable): UpdateConsumableSchema {
+function getConsumableDefaultValues(
+  consumable: Consumable
+): UpdateConsumableSchema {
   return {
     consumableId: consumable.id,
     name: consumable.name,
@@ -42,8 +44,12 @@ type UpdateConsumableFormProps = {
   consumable: Consumable
 }
 
-export function UpdateConsumableForm({ consumable }: UpdateConsumableFormProps) {
-  const navigate = useNavigate({ from: "/manage/consumables/$consumableId/update" })
+export function UpdateConsumableForm({
+  consumable,
+}: UpdateConsumableFormProps) {
+  const navigate = useNavigate({
+    from: "/manage/consumables/$consumableId/update",
+  })
   const queryClient = useQueryClient()
   const updateConsumableFn = useServerFn(updateConsumable)
 

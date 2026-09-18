@@ -9,3 +9,4 @@ export { itemIssuesQueryOptions } from "@/features/products/api/options/item-iss
 export { itemOptionsQueryOptions } from "@/features/products/api/options/item-options.options"
 export { bomItemOperationsQueryOptions } from "@/features/products/api/options/bom-operations.options"
 export { bomItemConsumablesQueryOptions } from "@/features/products/api/options/bom-consumables.options"
+export { itemOperationsQueryOptions } from "@/features/products/api/options/routing-operations.options"

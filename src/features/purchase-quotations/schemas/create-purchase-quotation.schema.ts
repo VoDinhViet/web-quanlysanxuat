@@ -52,16 +52,7 @@ const quotationItemAllocationFields = {
 
 export const quotationItemAllocationSchema = z
   .object(quotationItemAllocationFields)
-  .refine(
-    (data) =>
-      data.quantity === undefined ||
-      data.requestedQuantity === undefined ||
-      data.quantity <= data.requestedQuantity,
-    {
-      message: "Số lượng báo giá không được lớn hơn số lượng cần mua",
-      path: ["quantity"],
-    }
-  )
+  // Không giới hạn trên — SL báo giá có thể vượt SL đề xuất.
 export type QuotationItemAllocationValue = z.input<
   typeof quotationItemAllocationSchema
 >

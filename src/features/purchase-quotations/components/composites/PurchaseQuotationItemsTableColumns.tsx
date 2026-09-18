@@ -1,6 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { DangerTriangle } from "@solar-icons/react"
 import type { appTableFeatures } from "@/lib/table-features"
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { PurchaseQuotationItemDetail } from "@/lib/types/purchase-quotation.type"
 
 const purchaseQuotationItemColumnHelper = createColumnHelper<
@@ -23,10 +29,10 @@ export const purchaseQuotationItemsColumns =
     }),
     purchaseQuotationItemColumnHelper.accessor((row) => row.item.code, {
       id: "itemCode",
-      header: "Mã vật tư",
+      header: "Mã VT",
       meta: {
         headerClassName: "w-32",
-        cellClassName: "font-mono text-primary",
+        cellClassName: "font-mono text-xs font-semibold text-primary",
       },
     }),
     purchaseQuotationItemColumnHelper.accessor((row) => row.item.name, {
@@ -53,11 +59,40 @@ export const purchaseQuotationItemsColumns =
           0
         ),
     }),
-    purchaseQuotationItemColumnHelper.accessor("quantity", {
+    purchaseQuotationItemColumnHelper.display({
+      id: "quantity",
       header: "SL báo giá",
       meta: {
         headerClassName: "w-28 text-right",
         cellClassName: "text-right tabular-nums font-medium",
+      },
+      cell: ({ row }) => {
+        const requestedQuantity = row.original.allocations.reduce(
+          (sum, allocation) => sum + allocation.purchaseRequestItem.quantity,
+          0
+        )
+        const isOver = row.original.quantity > requestedQuantity
+        const diff = row.original.quantity - requestedQuantity
+
+        if (!isOver) {
+          return row.original.quantity
+        }
+
+        return (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <span className="inline-flex items-center justify-end gap-1 font-semibold text-warning">
+                  <DangerTriangle className="size-3.5 shrink-0" />
+                  {row.original.quantity}
+                </span>
+              }
+            />
+            <TooltipContent>
+              {`SL báo giá lớn hơn SL yêu cầu (${row.original.quantity}/${requestedQuantity}, vượt +${diff})`}
+            </TooltipContent>
+          </Tooltip>
+        )
       },
     }),
   ])

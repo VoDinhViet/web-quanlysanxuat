@@ -27,7 +27,7 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 type BomItemDetailSidebarProps = {
   product: Item
   bomItem: BomItem
-  // Cha trực tiếp trong cây (null với ROOT) — tra sẵn ở page, nơi giữ cả cây.
+  // Cha trực tiếp trong cây (null nghĩa là ngay dưới Cấp 0) — tra sẵn ở page, nơi giữ cả cây.
   parent: BomItem | null
   consumablesCount: number
   operationsCount: number
@@ -54,20 +54,16 @@ export function BomItemDetailSidebar({
             value={bomItemTypeLabels[bomItem.type]}
           />
           <SummaryRow icon={Hashtag} label="Cấp" value={bomItem.level} />
-          {bomItem.type !== "ROOT" && (
-            <>
-              <SummaryRow
-                icon={Box}
-                label="Số lượng"
-                value={quantityFormatter.format(bomItem.quantity)}
-              />
-              <SummaryRow
-                icon={SortVertical}
-                label="Thứ tự sắp xếp"
-                value={bomItem.sortOrder}
-              />
-            </>
-          )}
+          <SummaryRow
+            icon={Box}
+            label="Số lượng"
+            value={quantityFormatter.format(bomItem.quantity)}
+          />
+          <SummaryRow
+            icon={SortVertical}
+            label="Thứ tự sắp xếp"
+            value={bomItem.sortOrder}
+          />
           <SummaryRow
             icon={Ruler}
             label="Đơn vị tính"
@@ -100,7 +96,7 @@ export function BomItemDetailSidebar({
       </SidebarSection>
 
       <SidebarSection title="Hình ảnh" icon={Gallery} padded>
-        {/* `image` is coalesced: the linked item's (CONSUMABLE/ROOT) or the node's own
+        {/* `image` is coalesced: the linked item's (CONSUMABLE) or the node's own
             `imageFileId` (COMPONENT, edited on the Thông tin tab). */}
         <BomItemImagePreview image={bomItem.image} name={bomItem.name} />
       </SidebarSection>
@@ -113,14 +109,12 @@ type ParentLinkProps = {
   parent: BomItem | null
 }
 
-// ROOT has no parent; a node directly under ROOT links back to the product's
-// BOM tab rather than to ROOT's own page, since the tree is where ROOT lives.
+// `parent === null` nghĩa là node nằm ngay dưới Cấp 0 (BomItem.parentId, không phải "chưa tìm
+// thấy cha" — mọi node đều có cha, kể cả Cấp 0) — link về tab cấu trúc của sản phẩm thay vì trang
+// chi tiết riêng, vì Cấp 0 không có trang chi tiết riêng nữa (docs/decisions/
+// level-0-outside-bom-tree-response.md).
 function ParentLink({ product, parent }: ParentLinkProps) {
   if (parent === null) {
-    return "—"
-  }
-
-  if (parent.type === "ROOT") {
     return (
       <Link
         to="/manage/products/$productId"

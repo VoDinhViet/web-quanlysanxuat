@@ -17,6 +17,7 @@ import { orderQueryOptions } from "@/features/orders/api"
 import { ProductionOrderDetailSummaryCard } from "@/features/production-orders/components/composites/ProductionOrderDetailSummaryCard"
 import { ProductionOrderItemsCard } from "@/features/production-orders/components/composites/ProductionOrderItemsCard"
 import { ProductionOrderLogsCard } from "@/features/production-orders/components/composites/ProductionOrderLogsCard"
+import { ProductionOrderSignedFileCard } from "@/features/production-orders/components/composites/ProductionOrderSignedFileCard"
 import {
   productionOrderLogsQueryOptions,
   productionOrderQueryOptions,
@@ -128,6 +129,8 @@ export function ProductionOrderDetailPage() {
             isSaving={isPending}
           />
         </section>
+
+        <ProductionOrderSignedFileCard production={production} />
 
         <ProductionOrderLogsCard
           logs={logsQuery.data?.data ?? []}

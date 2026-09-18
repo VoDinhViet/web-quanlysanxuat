@@ -91,17 +91,15 @@ export const BomItemInfoTab = withForm({
               {/* Thứ tự sắp xếp (sortOrder) không có ô sửa ở đây — không nằm trong defaultValues (xem
                   getBomItemDefaultValues), nên form không gửi key này lên PATCH — giữ nguyên thứ tự
                   hiện tại theo đúng ngữ nghĩa "thiếu key = không đổi" của update-bom-item.schema.ts. */}
-              {bomItemType !== "ROOT" ? (
-                <form.AppField name="quantity">
-                  {(field) => (
-                    <field.NumberField
-                      label="Số lượng"
-                      required
-                      disabled={disabled}
-                    />
-                  )}
-                </form.AppField>
-              ) : null}
+              <form.AppField name="quantity">
+                {(field) => (
+                  <field.NumberField
+                    label="Số lượng"
+                    required
+                    disabled={disabled}
+                  />
+                )}
+              </form.AppField>
 
               <form.AppField name="note">
                 {(field) => (

@@ -26,6 +26,11 @@ import {
   JobOperationReportDialog,
   resolveJobOperationReportDisabledReason,
 } from "@/components/shared/composites/JobOperationReportDialog"
+import {
+  JobOperationDueDateCell,
+  formatJobOperationDueDate,
+  resolveJobOperationDueDateDisabledReason,
+} from "@/components/shared/composites/JobOperationDueDateCell"
 import type {
   ProductionJobBomItem,
   ProductionJobOperation,
@@ -35,7 +40,7 @@ import { OperationType } from "@/lib/types/operation.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 import { cn } from "@/lib/utils"
 
-const columnCount = 8
+const columnCount = 9
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 export type OperationProgressStatus =
@@ -314,11 +319,16 @@ function OperationRow({
   isAssemblyBlocked,
   outsourceableByOperationId,
 }: OperationRowProps) {
+  const { productionJobId } = useParams({
+    from: "/(authed)/manage_/production-jobs_/$productionJobId",
+  })
   const reportDisabledReason = resolveJobOperationReportDisabledReason(
     jobStatus,
     operation.type,
     isAssemblyBlocked
   )
+  const dueDateDisabledReason =
+    resolveJobOperationDueDateDisabledReason(jobStatus)
 
   return (
     <TableRow id={operation.id} className="h-16 bg-card hover:bg-muted/20">
@@ -361,6 +371,23 @@ function OperationRow({
       </TableCell>
       <TableCell className="text-center">
         <OperationStatusBadge operation={operation} />
+      </TableCell>
+      <TableCell className="text-center">
+        <PermissionGate
+          permission="production:update"
+          fallback={
+            <span className="text-muted-foreground">
+              {formatJobOperationDueDate(operation.dueDate)}
+            </span>
+          }
+        >
+          <JobOperationDueDateCell
+            productionJobId={productionJobId}
+            jobOperationId={operation.id}
+            dueDate={operation.dueDate}
+            disabledReason={dueDateDisabledReason}
+          />
+        </PermissionGate>
       </TableCell>
       <TableCell className="text-center text-muted-foreground">
         {operation.completedDate === null
@@ -405,13 +432,15 @@ function OperationRow({
 // BOM item, mỗi phần tử mảng là một BOM item kèm operations[] của riêng nó (không cần tự dựng
 // nhóm ở FE nữa). Mỗi BOM item hiện một khối header (BomItemHeaderRow) rồi tới các dòng công đoạn
 // của riêng nó (OperationRow), theo thứ tự backend trả (đã sort sortOrder/createdAt). "SL KẾ
-// HOẠCH" đọc thẳng `plannedQuantity` — cùng một BOM item thì mọi công đoạn của nó có cùng số. 8
+// HOẠCH" đọc thẳng `plannedQuantity` — cùng một BOM item thì mọi công đoạn của nó có cùng số. 9
 // cột tách bạch: CÔNG ĐOẠN (STT + tên/mã/ghi chú), LOẠI (Trong xưởng/Gia công ngoài — 1 BOM item
 // có thể có cả 2), SL KẾ HOẠCH, SL HOÀN THÀNH (chỉ đọc — "Đạt"/"NG"), SL ĐÃ GỬI (chỉ dòng Gia
 // công ngoài — ghép từ `outsourceableByOperationId`, xem OperationSentQuantityCell), TRẠNG THÁI
 // (Chưa bắt đầu/Đang thực hiện/Hoàn thành — suy từ completedQuantity/completedDate, không phải
-// field riêng trên DTO), NGÀY HOÀN THÀNH (ngày người báo cáo tự chọn, không phải ngày lưu),
-// THAO TÁC ("Nhập báo cáo" ở mọi dòng — cộng dồn SL, kèm ngày/ghi chú/ảnh và một dòng nhật ký,
+// field riêng trên DTO), HẠN HOÀN THÀNH (kế hoạch — DatePicker inline, ghi đè ngay khi chọn qua
+// PATCH .../due-date, xem JobOperationDueDateCell.tsx; gate quyền qua PermissionGate ngay ở đây,
+// không đẩy vào component dùng chung), NGÀY HOÀN THÀNH (ngày người báo cáo tự chọn, không phải
+// ngày lưu), THAO TÁC ("Nhập báo cáo" ở mọi dòng — cộng dồn SL, kèm ngày/ghi chú/ảnh và một dòng nhật ký,
 // xem JobOperationReportDialog.tsx — cùng dialog với màn "Thực hiện sản xuất"; dòng Gia công
 // ngoài có thêm nút Gửi gia công ngoài, khoá khi đã gửi đủ định mức, xem
 // OperationSendActionCell). "Yêu cầu OQC" không còn ở đây nữa — đã gộp thành 1 nút duy nhất ở
@@ -476,6 +505,12 @@ export function ProductionJobOperationsTable({
                 className="w-36 text-center font-bold text-foreground"
               >
                 TRẠNG THÁI
+              </TableHead>
+              <TableHead
+                id="dueDate"
+                className="w-32 text-center font-bold text-foreground"
+              >
+                HẠN HOÀN THÀNH
               </TableHead>
               <TableHead
                 id="completedDate"

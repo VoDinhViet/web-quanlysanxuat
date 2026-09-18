@@ -34,6 +34,7 @@ export type ItemRef = {
   code: string
   revision: string
   name: string
+  unit?: Unit
 }
 
 /** Mirrors the backend's nested creator relation (UserRefResDto). */

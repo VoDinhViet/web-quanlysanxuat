@@ -67,12 +67,15 @@ export function buildPurchaseRequestConsumablePickerColumns({
         </div>
       ),
     }),
-    purchaseRequestConsumablePickerColumnHelper.accessor((row) => row.unit.name, {
-      id: "unit",
-      header: "ĐVT",
-      meta: { headerClassName: "min-w-16" },
-      cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
-    }),
+    purchaseRequestConsumablePickerColumnHelper.accessor(
+      (row) => row.unit.name,
+      {
+        id: "unit",
+        header: "ĐVT",
+        meta: { headerClassName: "min-w-16" },
+        cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
+      }
+    ),
     purchaseRequestConsumablePickerColumnHelper.accessor("minStock", {
       header: "Định mức tồn",
       meta: {

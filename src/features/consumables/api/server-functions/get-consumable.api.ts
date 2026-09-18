@@ -25,7 +25,9 @@ export const getConsumable = createServerFn({ method: "GET" })
   .validator(z.object({ consumableId: z.uuid() }))
   .handler(async ({ data }): Promise<Consumable> => {
     try {
-      const response = await http.get<Consumable>(`/api/items/${data.consumableId}`)
+      const response = await http.get<Consumable>(
+        `/api/items/${data.consumableId}`
+      )
 
       return response.data
     } catch (error) {

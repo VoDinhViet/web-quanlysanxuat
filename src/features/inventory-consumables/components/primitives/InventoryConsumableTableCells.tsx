@@ -11,7 +11,11 @@ const numberFormatter = new Intl.NumberFormat("vi-VN")
 // components) — but with the real signed-URL path (`resolveFileUrl` + `@unpic/react`'s `Image`),
 // not that one's mock raw `<img>`. Standalone "Ảnh" column now — used to be fused into the "Vật
 // tư" cell alongside code/name.
-export function ConsumableImageCell({ item }: { item: ConsumableInventoryItem }) {
+export function ConsumableImageCell({
+  item,
+}: {
+  item: ConsumableInventoryItem
+}) {
   const imageUrl = item.image ? resolveFileUrl(item.image.url) : null
 
   return (

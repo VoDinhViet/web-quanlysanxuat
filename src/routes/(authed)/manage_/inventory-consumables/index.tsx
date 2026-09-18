@@ -6,7 +6,9 @@ import { consumableInventoryQueryOptions } from "@/features/inventory-consumable
 import { inventoryConsumablesSearchSchema } from "@/features/inventory-consumables/schemas/inventory-consumables-search.schema"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 
-export const Route = createFileRoute("/(authed)/manage_/inventory-consumables/")({
+export const Route = createFileRoute(
+  "/(authed)/manage_/inventory-consumables/"
+)({
   validateSearch: inventoryConsumablesSearchSchema,
   // No loaderDeps: filter/pagination navigation must not create a new route
   // match (that would re-trigger the loader and blank the outlet). The list is

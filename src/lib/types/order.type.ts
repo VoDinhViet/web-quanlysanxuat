@@ -1,7 +1,7 @@
 import { DateTime } from "luxon"
 
 import type { FileResource } from "@/lib/types/file.type"
-import type { ItemRef } from "@/lib/types/item.type"
+import type { ItemFile, ItemRef } from "@/lib/types/item.type"
 import type { PaymentTerm } from "@/lib/types/payment-term.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -201,9 +201,11 @@ export type Order = {
 export type OrderItemRef = {
   id: string
   code: string
+  revision?: string
   name: string
   unit: Unit
   image: FileResource | null
+  files?: ItemFile[]
 }
 
 /** Mirrors the backend's OrderItemResDto — one line of an order's item list (GET

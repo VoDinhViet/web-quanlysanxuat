@@ -30,11 +30,9 @@ import type { Item } from "@/lib/types/item.type"
 const CONSUMABLES_LOCKED_HINT =
   "Hạng mục này còn cấu trúc con bên dưới — chỉ cấp cuối cùng mới gắn được vật tư trực tiếp."
 
-// ROOT: `quantity` cố định (1), gửi lên sẽ bị backend chặn E271 dù giữ nguyên giá trị cũ (chặn
-// theo key có mặt, không theo giá trị) — không đưa field này vào default values, form cũng ẩn
-// luôn field tương ứng cho ROOT (docs/decisions/root-bom-item.md). `sortOrder` không có ô sửa ở
-// form Thông tin chung nữa (BomItemInfoTab) nên cũng không vào defaultValues cho mọi loại node
-// — thiếu key = PATCH giữ nguyên thứ tự hiện tại, đúng ngữ nghĩa của field này.
+// `sortOrder` không có ô sửa ở form Thông tin chung nữa (BomItemInfoTab) nên không vào
+// defaultValues cho mọi loại node — thiếu key = PATCH giữ nguyên thứ tự hiện tại, đúng ngữ nghĩa
+// của field này.
 function getBomItemDefaultValues(bomItem: BomItem): UpdateBomItemSchema {
   return {
     ...(bomItem.type === "COMPONENT"
@@ -45,7 +43,7 @@ function getBomItemDefaultValues(bomItem: BomItem): UpdateBomItemSchema {
           image: bomItem.image,
         }
       : {}),
-    ...(bomItem.type !== "ROOT" ? { quantity: bomItem.quantity } : {}),
+    quantity: bomItem.quantity,
     note: bomItem.note ?? "",
   }
 }
@@ -104,7 +102,7 @@ export function BomItemDetailScreen({
     if (node.id === bomItem.parentId) parent = node
     if (node.parentId === bomItem.id) {
       if (node.type === "CONSUMABLE") consumablesCount += 1
-      else if (node.type === "COMPONENT") hasChildPart = true
+      else hasChildPart = true
     }
   }
   // Chỉ cấp cuối cùng (không còn cấu trúc con COMPONENT bên dưới) mới thêm được vật tư trực tiếp —

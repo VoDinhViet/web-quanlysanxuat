@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type {
   OrderClientRef,
   OrderItemRef,
@@ -71,6 +72,8 @@ export type ProductionOrderDetail = {
   approvedAt: string | null
   order: OrderRef
   items: ProductionOrderDetailItem[]
+  // Bản scan/PDF của LSX đã ký tên đóng dấu
+  signedFile?: FileResource | null
 }
 
 /** Mirrors the backend's `production_order_logs.action` column. `COMPLETED` ghi khi LSX tự đóng
@@ -79,6 +82,7 @@ export enum ProductionOrderLogAction {
   CREATED = "CREATED",
   QUANTITY_UPDATED = "QUANTITY_UPDATED",
   APPROVED = "APPROVED",
+  SIGNED_FILE_UPDATED = "SIGNED_FILE_UPDATED",
   COMPLETED = "COMPLETED",
 }
 
@@ -89,6 +93,7 @@ export const productionOrderLogActionLabels: Record<
   [ProductionOrderLogAction.CREATED]: "Tạo LSX",
   [ProductionOrderLogAction.QUANTITY_UPDATED]: "Cập nhật SL sản xuất",
   [ProductionOrderLogAction.APPROVED]: "Duyệt LSX",
+  [ProductionOrderLogAction.SIGNED_FILE_UPDATED]: "Cập nhật file LSX đã ký",
   [ProductionOrderLogAction.COMPLETED]: "Hoàn thành LSX",
 }
 

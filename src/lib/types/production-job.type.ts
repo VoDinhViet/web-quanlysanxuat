@@ -72,18 +72,22 @@ export type ProductionJobDetail = {
 }
 
 /** Mirrors the backend's ProductionJobBomOperationResDto, nested in ProductionJobBomItem below —
- *  the as-used routing snapshot copied from `routing_steps` onto a single BOM node at LSX approval
- *  time (`production_job_operations`). `code`/`name`/`type`/`sortOrder`/`note`/`operationId` stay
- *  frozen; `completedQuantity`/`rejectedQuantity`/`completedDate` are the only fields editable
- *  afterwards, via `POST /production-execution/operations/:jobOperationId/reports` — accumulates
+ *  the as-used routing snapshot copied from `routing_steps` onto a single BOM node at Job `start`
+ *  time (`production_job_operations`) — not LSX approval; a `PENDING` Job has no rows here yet
+ *  (`docs/decisions/job-snapshot-at-start.md` backend). `code`/`name`/`type`/`sortOrder`/`note`/
+ *  `operationId` stay frozen; `completedQuantity`/`rejectedQuantity`/`completedDate` are editable
+ *  via `POST /production-execution/operations/:jobOperationId/reports` — accumulates
  *  (doesn't overwrite), only runs once the Job is `IN_PROGRESS` (E087 otherwise, see
  *  ProductionJobDetail). `completedDate` is caller-supplied (the date the report names), set once
  *  `completedQuantity` (pass count only, NG doesn't count) reaches the parent node's planned
  *  quantity — never auto-cleared afterwards on the in-house path (only an OS-IN cancel can pull an
- *  OUTSOURCE row's `completedQuantity` back down). `plannedQuantity` is the parent BOM node's
- *  planned quantity (cumulative BOM ratio × Job quantity), frozen at LSX approval — same value on
- *  every operation of the same node; it's also the cap `completedQuantity` alone is checked
- *  against server-side (E256) — `rejectedQuantity` is uncapped. */
+ *  OUTSOURCE row's `completedQuantity` back down). `dueDate` is the one other editable field — a
+ *  planning deadline, set/overwritten (not accumulated) via
+ *  `PATCH /production-jobs/:jobId/operations/:jobOperationId/due-date`, allowed on OUTSOURCE rows
+ *  too (unlike the report route). `plannedQuantity` is the parent BOM node's planned quantity
+ *  (cumulative BOM ratio × Job quantity), frozen at `start` — same value on every operation of the
+ *  same node; it's also the cap `completedQuantity` alone is checked against server-side (E256) —
+ *  `rejectedQuantity` is uncapped. */
 export type ProductionJobOperation = {
   id: string
   operationId: string | null
@@ -96,6 +100,7 @@ export type ProductionJobOperation = {
   completedQuantity: number
   rejectedQuantity: number
   completedDate: string | null
+  dueDate: string | null
   createdAt: string
 }
 

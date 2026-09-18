@@ -78,7 +78,8 @@ export function PurchaseRequestCreateForm() {
     onSubmit: ({ value }) => create(value),
   })
 
-  const [step, setStep] = useState<PurchaseRequestCreateWizardStep>("consumables")
+  const [step, setStep] =
+    useState<PurchaseRequestCreateWizardStep>("consumables")
   const canGoToQuantities =
     useField({ form, name: "items" }).state.value.length > 0
 

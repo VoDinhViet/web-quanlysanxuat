@@ -35,8 +35,8 @@ type CreateComponentItemDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   childTarget: BomCreateTarget
-  // null với dòng ROOT/dòng gốc tạm — mỗi BOM chỉ có đúng 1 dòng ROOT nên
-  // không có "cùng cấp"; dialog bỏ qua bước chọn vị trí khi null.
+  // null với dòng Cấp 0 — chỉ có đúng 1 dòng Cấp 0 nên không có "cùng cấp";
+  // dialog bỏ qua bước chọn vị trí khi null.
   siblingTarget: BomCreateTarget | null
   onSubmit: (value: CreateComponentItemSchema, target: BomCreateTarget) => void
   isSaving: boolean
@@ -192,8 +192,8 @@ function CreatePartItemForm({
           })}
         </RadioGroup>
       ) : (
-        // Không có lựa chọn vị trí (ROOT/dòng gốc tạm không có "cùng cấp") —
-        // một dòng chữ đơn giản, không cần thẻ như `placementOptions`.
+        // Không có lựa chọn vị trí (dòng Cấp 0 không có "cùng cấp") — một
+        // dòng chữ đơn giản, không cần thẻ như `placementOptions`.
         <p className="text-sm text-muted-foreground">
           Thêm vào:{" "}
           <span className="font-semibold text-foreground">

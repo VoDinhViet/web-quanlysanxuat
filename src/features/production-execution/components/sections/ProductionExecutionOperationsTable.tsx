@@ -25,6 +25,11 @@ import {
   JobOperationReportDialog,
   resolveJobOperationReportDisabledReason,
 } from "@/components/shared/composites/JobOperationReportDialog"
+import {
+  JobOperationDueDateCell,
+  formatJobOperationDueDate,
+  resolveJobOperationDueDateDisabledReason,
+} from "@/components/shared/composites/JobOperationDueDateCell"
 import { OperationType } from "@/lib/types/operation.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 import type {
@@ -34,7 +39,7 @@ import type {
 } from "@/lib/types/production-job.type"
 import { cn } from "@/lib/utils"
 
-const columnCount = 8
+const columnCount = 9
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 export type OperationProgressStatus =
@@ -280,6 +285,8 @@ function OperationRow({
     operation.type,
     isAssemblyBlocked
   )
+  const dueDateDisabledReason =
+    resolveJobOperationDueDateDisabledReason(jobStatus)
 
   return (
     <TableRow
@@ -325,6 +332,23 @@ function OperationRow({
       </TableCell>
       <TableCell className="text-center">
         <OperationStatusBadge operation={operation} />
+      </TableCell>
+      <TableCell className="text-center">
+        <PermissionGate
+          permission="production:update"
+          fallback={
+            <span className="text-muted-foreground">
+              {formatJobOperationDueDate(operation.dueDate)}
+            </span>
+          }
+        >
+          <JobOperationDueDateCell
+            productionJobId={productionJobId}
+            jobOperationId={operation.id}
+            dueDate={operation.dueDate}
+            disabledReason={dueDateDisabledReason}
+          />
+        </PermissionGate>
       </TableCell>
       <TableCell className="text-center text-muted-foreground">
         {operation.completedDate === null
@@ -431,6 +455,12 @@ export function ProductionExecutionOperationsTable({
               className="w-36 text-center font-bold text-foreground"
             >
               TRẠNG THÁI
+            </TableHead>
+            <TableHead
+              id="dueDate"
+              className="w-32 text-center font-bold text-foreground"
+            >
+              HẠN HOÀN THÀNH
             </TableHead>
             <TableHead
               id="completedDate"

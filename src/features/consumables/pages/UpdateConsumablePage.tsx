@@ -10,7 +10,9 @@ export function UpdateConsumablePage() {
     from: "/(authed)/manage_/consumables_/$consumableId/update",
   })
 
-  const { data: consumable } = useSuspenseQuery(consumableQueryOptions(consumableId))
+  const { data: consumable } = useSuspenseQuery(
+    consumableQueryOptions(consumableId)
+  )
 
   return (
     <main className="min-h-svh bg-background text-foreground">

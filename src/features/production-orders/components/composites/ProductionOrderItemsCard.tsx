@@ -184,7 +184,7 @@ export const ProductionOrderItemsCard = withForm({
                   </TableBody>
                   <TableFooter>
                     <TableRow className="h-14">
-                      <TableCell colSpan={3}>Tổng cộng</TableCell>
+                      <TableCell colSpan={4}>Tổng cộng</TableCell>
                       <TableCell className="text-right tabular-nums">
                         {quantityFormatter.format(totalOrderQty)}
                       </TableCell>
