@@ -16,9 +16,6 @@ export const updateUnitSchema = z.object({
     .trim()
     .min(1, "Vui lòng nhập tên đơn vị tính")
     .max(100, "Tên đơn vị tính tối đa 100 ký tự"),
-  scopes: z
-    .array(z.enum(["CONSUMABLE", "PRODUCT"]))
-    .min(1, "Vui lòng chọn ít nhất một phạm vi sử dụng"),
 })
 
 export type UpdateUnitSchema = z.input<typeof updateUnitSchema>
@@ -27,5 +24,4 @@ export const updateUnitFormDefaultValues: UpdateUnitSchema = {
   unitId: "",
   code: "",
   name: "",
-  scopes: [],
 }

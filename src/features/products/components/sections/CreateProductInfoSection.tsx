@@ -18,9 +18,7 @@ export const CreateProductInfoSection = withForm({
   },
   render: function Render({ form, disabled }) {
     // The route loader already prefetches this — resolves synchronously off cache.
-    const { data: unitOptions } = useSuspenseQuery(
-      unitOptionsQueryOptions("PRODUCT")
-    )
+    const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
 
     const unitSelectOptions = buildSelectOptions(unitOptions)
 

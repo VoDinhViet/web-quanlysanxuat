@@ -8,19 +8,3 @@ export type Unit = {
   code: string
   name: string
 }
-
-/** Only the two scopes the Đơn vị tính admin screen offers — the backend's `UnitScope` also has
- *  `SEMI_FINISHED`, but no module reads it yet, so it isn't exposed here. */
-export type UnitScope = "CONSUMABLE" | "PRODUCT"
-
-export const unitScopeLabels: Record<UnitScope, string> = {
-  CONSUMABLE: "Vật tư",
-  PRODUCT: "Sản phẩm",
-}
-
-/** Mirrors the backend's UnitResDto (GET /api/units, GET /api/units/:id) — the detail shape used
- *  by the Đơn vị tính admin screen. Nested `unit` fields elsewhere stay on the plain `Unit` shape
- *  above, since the backend doesn't send `scopes` there. */
-export type UnitDetail = Unit & {
-  scopes: UnitScope[]
-}

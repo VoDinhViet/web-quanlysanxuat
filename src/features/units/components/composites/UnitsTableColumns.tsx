@@ -10,14 +10,10 @@ import {
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteUnitDialog } from "@/features/units/components/composites/DeleteUnitDialog"
-import { UnitScopeBadge } from "@/features/units/components/primitives/UnitBadges"
 import { UpdateUnitDialog } from "@/features/units/components/composites/UpdateUnitDialog"
-import type { UnitDetail } from "@/lib/types/unit.type"
+import type { Unit } from "@/lib/types/unit.type"
 
-const unitColumnHelper = createColumnHelper<
-  typeof appTableFeatures,
-  UnitDetail
->()
+const unitColumnHelper = createColumnHelper<typeof appTableFeatures, Unit>()
 
 export const unitColumns = unitColumnHelper.columns([
   unitColumnHelper.display({
@@ -42,17 +38,6 @@ export const unitColumns = unitColumnHelper.columns([
       <p className="truncate text-xs font-medium text-foreground">
         {getValue()}
       </p>
-    ),
-  }),
-  unitColumnHelper.accessor("scopes", {
-    header: "Phạm vi sử dụng",
-    meta: { headerClassName: "min-w-40" },
-    cell: ({ getValue }) => (
-      <div className="flex flex-wrap gap-1">
-        {getValue().map((scope) => (
-          <UnitScopeBadge key={scope} scope={scope} />
-        ))}
-      </div>
     ),
   }),
   unitColumnHelper.display({

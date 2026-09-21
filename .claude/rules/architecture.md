@@ -214,7 +214,7 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
   call site would need the same review pass regardless of whether the literal lives in one
   file or many), and a typo'd key is a `tsc`/`invalidateQueries`-miss caught immediately in
   dev, not a silent bug worth a shared-constant indirection to prevent. An api-only feature's
-  options key nests under `"options"` instead (e.g. `["units", "options", scope]`,
+  options key nests under `"options"` instead (e.g. `["units", "options"]`,
   `["operations", "options", q, type]`) since it has no list/detail/stats of its own to key
   alongside.
 - **Loaders prefetch, don't return:** a route `loader` calls

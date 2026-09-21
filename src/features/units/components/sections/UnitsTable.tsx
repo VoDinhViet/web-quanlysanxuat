@@ -16,10 +16,10 @@ import { CreateUnitDialog } from "@/features/units/components/composites/CreateU
 import { unitColumns } from "@/features/units/components/composites/UnitsTableColumns"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import type { UnitDetail } from "@/lib/types/unit.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 type UnitsTableProps = {
-  rows: UnitDetail[]
+  rows: Unit[]
   isPending: boolean
 }
 

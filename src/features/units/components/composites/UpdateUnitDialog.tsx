@@ -3,10 +3,10 @@ import type { ReactElement } from "react"
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { UpdateUnitForm } from "@/features/units/components/composites/UpdateUnitForm"
-import type { UnitDetail } from "@/lib/types/unit.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 type UpdateUnitDialogProps = {
-  unit: UnitDetail
+  unit: Unit
   trigger: ReactElement
 }
 

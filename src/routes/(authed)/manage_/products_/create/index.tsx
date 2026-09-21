@@ -7,7 +7,7 @@ import { unitOptionsQueryOptions } from "@/features/units/api"
 export const Route = createFileRoute("/(authed)/manage_/products_/create/")({
   loader: ({ context }) =>
     context.queryClient.query({
-      ...unitOptionsQueryOptions("PRODUCT"),
+      ...unitOptionsQueryOptions(),
       staleTime: "static",
     }),
   component: CreateProductPage,

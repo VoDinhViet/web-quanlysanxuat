@@ -12,23 +12,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useAppForm } from "@/hooks/use-app-form"
-import { UnitScopesField } from "@/features/units/components/composites/UnitScopesField"
 import { updateUnit } from "@/features/units/api/server-functions/update-unit.api"
 import { updateUnitSchema } from "@/features/units/schemas/update-unit.schema"
 import type { UpdateUnitSchema } from "@/features/units/schemas/update-unit.schema"
-import type { UnitDetail } from "@/lib/types/unit.type"
+import type { Unit } from "@/lib/types/unit.type"
 
-function getUnitDefaultValues(unit: UnitDetail): UpdateUnitSchema {
+function getUnitDefaultValues(unit: Unit): UpdateUnitSchema {
   return {
     unitId: unit.id,
     code: unit.code,
     name: unit.name,
-    scopes: unit.scopes,
   }
 }
 
 type UpdateUnitFormProps = {
-  unit: UnitDetail
+  unit: Unit
   onSuccess: () => void
   onCancel: () => void
 }
@@ -75,7 +73,7 @@ export function UpdateUnitForm({
           Chỉnh sửa đơn vị tính
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Mã, tên và phạm vi sử dụng của đơn vị tính
+          Mã và tên của đơn vị tính
         </DialogDescription>
       </DialogHeader>
 
@@ -102,8 +100,6 @@ export function UpdateUnitForm({
           )}
         </form.AppField>
       </div>
-
-      <UnitScopesField form={form} disabled={isPending} />
 
       <DialogFooter className="gap-2">
         <Button
