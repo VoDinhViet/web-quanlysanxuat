@@ -16,7 +16,7 @@ export const Route = createFileRoute(
         staleTime: "static",
       }),
       context.queryClient.query({
-        ...unitOptionsQueryOptions("CONSUMABLE"),
+        ...unitOptionsQueryOptions(),
         staleTime: "static",
       }),
       context.queryClient.query({

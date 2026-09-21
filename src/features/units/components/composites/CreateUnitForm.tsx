@@ -12,7 +12,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useAppForm } from "@/hooks/use-app-form"
-import { UnitScopesField } from "@/features/units/components/composites/UnitScopesField"
 import { createUnit } from "@/features/units/api/server-functions/create-unit.api"
 import {
   createUnitFormDefaultValues,
@@ -63,7 +62,7 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
           Thêm đơn vị tính
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Tên và phạm vi sử dụng của đơn vị tính — mã được cấp tự động
+          Nhập tên đơn vị tính — mã được cấp tự động
         </DialogDescription>
       </DialogHeader>
 
@@ -77,8 +76,6 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
           />
         )}
       </form.AppField>
-
-      <UnitScopesField form={form} disabled={isPending} />
 
       <DialogFooter className="gap-2">
         <Button

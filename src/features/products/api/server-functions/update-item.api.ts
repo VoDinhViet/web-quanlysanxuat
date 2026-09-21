@@ -34,8 +34,6 @@ function resolveUpdateItemErrorMessage(error: unknown): string {
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "unit.error.not_found":
       return "Đơn vị tính không tồn tại."
-    case "unit.error.scope_mismatch":
-      return "Đơn vị tính không dùng được cho loại này."
     case "client.error.not_found":
       return "Khách hàng không tồn tại."
     case "auth.error.forbidden":

@@ -31,8 +31,6 @@ function resolveCreateItemErrorMessage(error: unknown): string {
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "unit.error.not_found":
       return "Đơn vị tính không tồn tại."
-    case "unit.error.scope_mismatch":
-      return "Đơn vị tính không dùng được cho loại này."
     case "auth.error.forbidden":
       return "Bạn không có quyền thực hiện thao tác này."
     default:

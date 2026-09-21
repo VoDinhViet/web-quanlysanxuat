@@ -10,7 +10,7 @@ import { imageFieldSchema } from "@/lib/file-field.schema"
 export const updateBomItemSchema = z.object({
   code: z.string().trim().min(1, "Vui lòng nhập mã").optional(),
   name: z.string().trim().min(1, "Vui lòng nhập tên").optional(),
-  // Bỏ trống = giữ nguyên; null xoá ĐVT đã gán — không giới hạn theo unit scope.
+  // Bỏ trống = giữ nguyên; null xoá ĐVT đã gán.
   unitId: z.string().nullable().optional(),
   // Thiếu key = giữ nguyên (node không phải COMPONENT không đưa key này vào defaultValues); null xoá
   // ảnh đã gán. Server function map sang `imageFileId`.

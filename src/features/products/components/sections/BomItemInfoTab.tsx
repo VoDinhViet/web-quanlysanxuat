@@ -31,7 +31,7 @@ export const BomItemInfoTab = withForm({
     const { data: nodes } = useSuspenseQuery(itemBomQueryOptions(productId))
     const bomItemType = nodes.find((node) => node.id === bomItemId)?.type
 
-    // Không giới hạn theo unit scope — route loader (`$bomItemId.tsx`) đã prefetch danh sách đầy đủ.
+    // Route loader (`$bomItemId.tsx`) đã prefetch danh sách này.
     const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
     const unitSelectOptions = buildSelectOptions(unitOptions)
 

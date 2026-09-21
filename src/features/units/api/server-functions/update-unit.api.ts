@@ -17,10 +17,6 @@ function resolveUpdateUnitErrorMessage(error: unknown): string {
       return "Không tìm thấy đơn vị tính."
     case "unit.error.code_exists":
       return "Mã đơn vị tính đã tồn tại."
-    case "unit.error.scopes_required":
-      return "Vui lòng chọn ít nhất một phạm vi sử dụng."
-    case "unit.error.scope_in_use":
-      return "Không thể bỏ phạm vi này: đang có vật tư/sản phẩm dùng đơn vị tính."
     case "auth.error.forbidden":
       return "Bạn không có quyền sửa đơn vị tính."
     default:

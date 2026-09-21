@@ -23,9 +23,7 @@ export const CreateConsumableInfoSection = withForm({
   render: function Render({ form, disabled, selectedClient }) {
     const client = useGetClientOptions()
     // The route loader already prefetches this — resolves synchronously off cache.
-    const { data: unitOptions } = useSuspenseQuery(
-      unitOptionsQueryOptions("CONSUMABLE")
-    )
+    const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
 
     const unitSelectOptions = buildSelectOptions(unitOptions)
 

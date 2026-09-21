@@ -15,8 +15,6 @@ function resolveCreateUnitErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "unit.error.code_exists":
       return "Mã đơn vị tính đã tồn tại."
-    case "unit.error.scopes_required":
-      return "Vui lòng chọn ít nhất một phạm vi sử dụng."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo đơn vị tính."
     default:

@@ -27,8 +27,7 @@ export const Route = createFileRoute(
         ...itemBomQueryOptions(params.productId),
         staleTime: "static",
       }),
-      // Unscoped list — dùng cho picker "ĐVT" của node COMPONENT trong BomItemInfoTab, không giới
-      // hạn theo unit scope.
+      // Picker "ĐVT" của node COMPONENT trong BomItemInfoTab.
       context.queryClient.query({
         ...unitOptionsQueryOptions(),
         staleTime: "static",

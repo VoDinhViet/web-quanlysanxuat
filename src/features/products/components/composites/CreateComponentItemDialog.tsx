@@ -116,7 +116,7 @@ function CreatePartItemForm({
     },
   ]
 
-  // Không giới hạn theo unit scope — route loader (`$productId.tsx`) đã prefetch danh sách đầy đủ.
+  // Route loader (`$productId.tsx`) đã prefetch danh sách này.
   const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
   const unitSelectOptions = buildSelectOptions(unitOptions)
 

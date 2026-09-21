@@ -23,8 +23,8 @@ export const createComponentItemSchema = bomItemCommonSchema.extend({
   type: z.literal("COMPONENT"),
   code: z.string().trim().min(1, "Vui lòng nhập mã"),
   name: z.string().trim().min(1, "Vui lòng nhập tên"),
-  // ĐVT riêng của COMPONENT — không bắt buộc, không giới hạn theo unit scope (chỉ node này có
-  // field này; CONSUMABLE vẫn lấy ĐVT từ item liên kết).
+  // ĐVT riêng của COMPONENT — không bắt buộc (chỉ node này có field này; CONSUMABLE vẫn lấy ĐVT
+  // từ item liên kết).
   unitId: z.string().optional(),
   // Ảnh riêng của COMPONENT — cùng phạm vi với `unitId`; server function map sang `imageFileId`.
   image: imageFieldSchema,

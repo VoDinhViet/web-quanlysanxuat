@@ -23,7 +23,7 @@ const paymentTermOptions = buildOptionsFromLabels(paymentTermShortLabels)
 // giá auto-fill theo tiền tệ nằm trực tiếp trong Render (không tách hàm riêng): `form` ở đây có
 // kiểu `AppFieldExtendedReactFormApi<...>` do `withForm` gán — tách thành 1 function riêng sẽ
 // phải viết tay lại generic đó, không dùng `AnyFormApi` được (kiểu đó không mang theo
-// `.AppField`, xem UnitScopesField.tsx).
+// `.AppField`).
 export const CreateOrderInfoSection = withForm({
   defaultValues: createOrderFormDefaultValues,
   props: { disabled: false },

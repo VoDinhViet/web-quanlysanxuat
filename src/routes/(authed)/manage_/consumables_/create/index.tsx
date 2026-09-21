@@ -9,7 +9,7 @@ export const Route = createFileRoute("/(authed)/manage_/consumables_/create/")({
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.query({
-        ...unitOptionsQueryOptions("CONSUMABLE"),
+        ...unitOptionsQueryOptions(),
         staleTime: "static",
       }),
       context.queryClient.query({
