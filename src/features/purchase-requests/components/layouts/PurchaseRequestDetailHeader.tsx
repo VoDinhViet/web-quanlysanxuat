@@ -6,6 +6,7 @@ import type { ReactNode } from "react"
 import { LinkButton } from "@/components/ui/button"
 import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/primitives/PurchaseRequestBadges"
 import { PurchaseRequestDetailActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestDetailActions"
+import { PurchaseRequestNoteField } from "@/features/purchase-requests/components/composites/PurchaseRequestNoteField"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestDetailHeaderProps = {
@@ -32,72 +33,78 @@ export function PurchaseRequestDetailHeader({
   const source = getSourceLabel(purchaseRequest)
 
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5 print:hidden">
-      <div className="flex min-w-0 flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <LinkButton
-            to="/manage/purchase-requests"
-            search={{ page: 1, limit: 10 }}
-            variant="ghost"
-            className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
-            aria-label="Quay lại danh sách đề xuất mua hàng"
-          >
-            <AltArrowLeft className="size-4" />
-            <span className="hidden sm:inline">Quay lại</span>
-          </LinkButton>
+    <div className="flex flex-col gap-4 px-4 py-4 sm:px-5 print:hidden">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <LinkButton
+              to="/manage/purchase-requests"
+              search={{ page: 1, limit: 10 }}
+              variant="ghost"
+              className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
+              aria-label="Quay lại danh sách đề xuất mua hàng"
+            >
+              <AltArrowLeft className="size-4" />
+              <span className="hidden sm:inline">Quay lại</span>
+            </LinkButton>
 
-          <span className="font-mono text-lg font-bold text-foreground">
-            {purchaseRequest.code}
-          </span>
-          <PurchaseRequestStatusBadge status={purchaseRequest.status} />
+            <span className="font-mono text-lg font-bold text-foreground">
+              {purchaseRequest.code}
+            </span>
+            <PurchaseRequestStatusBadge status={purchaseRequest.status} />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <MetaField label="Nguồn" value={source} />
+            <MetaField
+              label="PO liên quan"
+              value={
+                purchaseRequest.productionOrder ? (
+                  <Link
+                    to="/manage/production-orders/$productionOrderId"
+                    params={{
+                      productionOrderId: purchaseRequest.productionOrder.id,
+                    }}
+                    className="font-mono text-primary hover:underline"
+                  >
+                    {purchaseRequest.productionOrder.code ?? "—"}
+                  </Link>
+                ) : (
+                  "—"
+                )
+              }
+            />
+            <MetaField
+              label="Bộ phận đề xuất"
+              value={purchaseRequest.department.name}
+            />
+            <MetaField
+              label="Người tạo"
+              value={purchaseRequest.requesterBy?.fullName ?? "—"}
+            />
+            <MetaField
+              label="Ngày tạo"
+              value={DateTime.fromISO(purchaseRequest.createdAt).toFormat(
+                "dd/MM/yyyy HH:mm"
+              )}
+            />
+            <MetaField
+              label="Ngày cần"
+              value={DateTime.fromISO(purchaseRequest.neededDate).toFormat(
+                "dd/MM/yyyy"
+              )}
+            />
+            <MetaField label="Tổng số vật tư" value={String(itemCount)} />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <MetaField label="Nguồn" value={source} />
-          <MetaField
-            label="PO liên quan"
-            value={
-              purchaseRequest.productionOrder ? (
-                <Link
-                  to="/manage/production-orders/$productionOrderId"
-                  params={{
-                    productionOrderId: purchaseRequest.productionOrder.id,
-                  }}
-                  className="font-mono text-primary hover:underline"
-                >
-                  {purchaseRequest.productionOrder.code ?? "—"}
-                </Link>
-              ) : (
-                "—"
-              )
-            }
-          />
-          <MetaField
-            label="Bộ phận đề xuất"
-            value={purchaseRequest.department.name}
-          />
-          <MetaField
-            label="Người tạo"
-            value={purchaseRequest.requesterBy?.fullName ?? "—"}
-          />
-          <MetaField
-            label="Ngày tạo"
-            value={DateTime.fromISO(purchaseRequest.createdAt).toFormat(
-              "dd/MM/yyyy HH:mm"
-            )}
-          />
-          <MetaField
-            label="Ngày cần"
-            value={DateTime.fromISO(purchaseRequest.neededDate).toFormat(
-              "dd/MM/yyyy"
-            )}
-          />
-          <MetaField label="Tổng số vật tư" value={String(itemCount)} />
-          <MetaField label="Ghi chú" value="—" />
-        </div>
+        <PurchaseRequestDetailActions purchaseRequest={purchaseRequest} />
       </div>
 
-      <PurchaseRequestDetailActions purchaseRequest={purchaseRequest} />
+      <PurchaseRequestNoteField
+        purchaseRequestId={purchaseRequest.id}
+        note={purchaseRequest.note}
+      />
     </div>
   )
 }

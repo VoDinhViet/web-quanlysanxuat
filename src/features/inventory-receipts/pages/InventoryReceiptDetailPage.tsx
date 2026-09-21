@@ -7,6 +7,7 @@ import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/
 import { InventoryReceiptDetailHeader } from "@/features/inventory-receipts/components/layouts/InventoryReceiptDetailHeader"
 import { InventoryReceiptDetailItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptDetailItemsSection"
 import { InventoryReceiptDetailInfoCard } from "@/features/inventory-receipts/components/composites/InventoryReceiptDetailInfoCard"
+import { InventoryReceiptRelatedNotesCard } from "@/features/inventory-receipts/components/composites/InventoryReceiptRelatedNotesCard"
 
 export function InventoryReceiptDetailPage() {
   const { inventoryReceiptId } = useParams({
@@ -46,6 +47,9 @@ export function InventoryReceiptDetailPage() {
           <div className="flex flex-col gap-4">
             <InventoryReceiptDetailInfoCard
               inventoryReceipt={inventoryReceipt}
+            />
+            <InventoryReceiptRelatedNotesCard
+              receiptId={inventoryReceipt.id}
             />
           </div>
         </div>

@@ -9,6 +9,7 @@ import { PurchaseQuotationDetailQuotesSection } from "@/features/purchase-quotat
 import { PurchaseQuotationDetailTimelineCard } from "@/features/purchase-quotations/components/composites/PurchaseQuotationDetailTimelineCard"
 import { PurchaseQuotationGeneratedOrdersCard } from "@/features/purchase-quotations/components/composites/PurchaseQuotationGeneratedOrdersCard"
 import { PurchaseQuotationRejectionNotice } from "@/features/purchase-quotations/components/composites/PurchaseQuotationRejectionNotice"
+import { PurchaseQuotationRelatedNotesCard } from "@/features/purchase-quotations/components/composites/PurchaseQuotationRelatedNotesCard"
 
 export function PurchaseQuotationDetailPage() {
   const { purchaseQuotationId } = useParams({
@@ -52,6 +53,9 @@ export function PurchaseQuotationDetailPage() {
             />
             <PurchaseQuotationGeneratedOrdersCard
               purchaseQuotation={purchaseQuotation}
+            />
+            <PurchaseQuotationRelatedNotesCard
+              purchaseQuotationId={purchaseQuotation.id}
             />
           </div>
         </div>

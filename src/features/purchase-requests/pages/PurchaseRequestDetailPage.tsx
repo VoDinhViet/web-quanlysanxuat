@@ -7,6 +7,7 @@ import { purchaseRequestQueryOptions } from "@/features/purchase-requests/api/op
 import { PurchaseRequestDetailHeader } from "@/features/purchase-requests/components/layouts/PurchaseRequestDetailHeader"
 import { PurchaseRequestItemsSection } from "@/features/purchase-requests/components/sections/PurchaseRequestItemsSection"
 import { PurchaseRequestRejectionNotice } from "@/features/purchase-requests/components/composites/PurchaseRequestRejectionNotice"
+import { PurchaseRequestRelatedNotesCard } from "@/features/purchase-requests/components/composites/PurchaseRequestRelatedNotesCard"
 import { useHasPermission } from "@/hooks/use-permissions"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 
@@ -44,16 +45,24 @@ export function PurchaseRequestDetailPage() {
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <PurchaseRequestRejectionNotice purchaseRequest={purchaseRequest} />
 
-        <Surface>
-          <PurchaseRequestDetailHeader
-            purchaseRequest={purchaseRequest}
-            itemCount={purchaseRequest.items.length}
-          />
-          <PurchaseRequestItemsSection
-            rows={purchaseRequest.items}
-            editable={editable}
-          />
-        </Surface>
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <Surface>
+            <PurchaseRequestDetailHeader
+              purchaseRequest={purchaseRequest}
+              itemCount={purchaseRequest.items.length}
+            />
+            <PurchaseRequestItemsSection
+              rows={purchaseRequest.items}
+              editable={editable}
+            />
+          </Surface>
+
+          <div className="flex flex-col gap-4">
+            <PurchaseRequestRelatedNotesCard
+              purchaseRequestId={purchaseRequest.id}
+            />
+          </div>
+        </div>
       </div>
     </main>
   )

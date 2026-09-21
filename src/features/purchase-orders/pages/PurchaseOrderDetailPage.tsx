@@ -8,6 +8,7 @@ import { PurchaseOrderCancellationNotice } from "@/features/purchase-orders/comp
 import { PurchaseOrderDetailHeader } from "@/features/purchase-orders/components/layouts/PurchaseOrderDetailHeader"
 import { PurchaseOrderDetailTimelineCard } from "@/features/purchase-orders/components/composites/PurchaseOrderDetailTimelineCard"
 import { PurchaseOrderItemsSection } from "@/features/purchase-orders/components/sections/PurchaseOrderItemsSection"
+import { PurchaseOrderRelatedNotesCard } from "@/features/purchase-orders/components/composites/PurchaseOrderRelatedNotesCard"
 import { PurchaseOrderStatusLegend } from "@/features/purchase-orders/components/composites/PurchaseOrderStatusLegend"
 import { PurchaseOrderSummaryCard } from "@/features/purchase-orders/components/composites/PurchaseOrderSummaryCard"
 import { useHasPermission } from "@/hooks/use-permissions"
@@ -59,6 +60,7 @@ export function PurchaseOrderDetailPage() {
           <div className="flex flex-col gap-4">
             <PurchaseOrderDetailTimelineCard purchaseOrder={purchaseOrder} />
             <PurchaseOrderSummaryCard purchaseOrder={purchaseOrder} />
+            <PurchaseOrderRelatedNotesCard purchaseOrderId={purchaseOrder.id} />
             <PurchaseOrderStatusLegend />
           </div>
         </div>

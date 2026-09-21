@@ -3,3 +3,4 @@
 // `invalidateQueries({ queryKey: ["purchase-requests"] })` refreshes the whole feature.
 export { purchaseRequestsQueryOptions } from "@/features/purchase-requests/api/options/purchase-requests.options"
 export { purchaseRequestQueryOptions } from "@/features/purchase-requests/api/options/purchase-request.options"
+export { purchaseRequestRelatedNotesQueryOptions } from "@/features/purchase-requests/api/options/purchase-request-related-notes.options"

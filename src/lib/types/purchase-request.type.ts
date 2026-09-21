@@ -110,12 +110,15 @@ export type PurchaseRequestItem = {
  *  `senderBy`/`approverBy`/`rejecterBy` (+ their `*At` timestamps) are the approval audit trail —
  *  populated by the `send`/`approve`/`reject` routes; `rejectionReason` stays populated as history
  *  even after a rejected request is edited back to `DRAFT` and resent (the backend never clears
- *  it), so don't treat its presence alone as "currently rejected" — check `status` too. */
+ *  it), so don't treat its presence alone as "currently rejected" — check `status` too. `note` is
+ *  writable via `PATCH /purchase-requests/:purchaseRequestId/note` at any status, requires
+ *  `purchase-requests:update`. */
 export type PurchaseRequestDetail = {
   id: string
   code: string
   neededDate: string
   status: PurchaseRequestStatus
+  note: string | null
   createdAt: string
   department: Department
   requesterBy: PurchaseRequestUserRef | null

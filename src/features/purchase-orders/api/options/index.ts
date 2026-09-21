@@ -4,3 +4,4 @@
 export { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api/options/purchase-orders.options"
 export { purchaseOrdersByQuotationOptions } from "@/features/purchase-orders/api/options/purchase-orders-by-quotation.options"
 export { purchaseOrderQueryOptions } from "@/features/purchase-orders/api/options/purchase-order.options"
+export { purchaseOrderRelatedNotesQueryOptions } from "@/features/purchase-orders/api/options/purchase-order-related-notes.options"

@@ -3,3 +3,4 @@
 // invalidateQueries({ queryKey: ["purchase-quotations"] }) refreshes the whole feature.
 export { purchaseQuotationsQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotations.options"
 export { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation.options"
+export { purchaseQuotationRelatedNotesQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation-related-notes.options"
