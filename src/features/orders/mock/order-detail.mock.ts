@@ -1,25 +1,22 @@
-import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 
 import { roundMoney } from "@/lib/utils"
 import { OrderStatus } from "@/lib/types/order.type"
 import type {
   OrderDetail,
-  OrderMockClientProfile,
+  OrderItem,
   OrderMockDeliveryProgress,
   OrderMockDeliveryRow,
-  OrderMockPaymentRow,
-  OrderMockPaymentStatus,
 } from "@/lib/types/order.type"
 
-// Placeholder data for the order detail page's 3 data-less sections (see the
-// matching types in order.type.ts) — same idea as
-// src/features/manage/mock/manage-dashboard.mock.ts, but seeded per order
-// (via the order's own id) instead of once globally: two different orders
-// shouldn't render identical numbers, while the SAME order must render the
-// same numbers across re-renders/refetches. Delete this file once the
-// backend ships DO tracking and a payments ledger. (The approval timeline
-// used to live here too — it's now real data, see order-timeline.ts.)
+// Placeholder data for the order detail page's one remaining data-less section (order-level
+// delivery/DO history — see the matching types in order.type.ts) — same idea as
+// src/features/manage/mock/manage-dashboard.mock.ts, but seeded per order (via the order's own
+// id) instead of once globally: two different orders shouldn't render identical numbers, while
+// the SAME order must render the same numbers across re-renders/refetches. Delete this file once
+// the backend ships DO tracking. (Payment history used to be mock too — now real, see
+// get-order-payments.api.ts. The approval timeline used to live here too — it's now real data,
+// see order-timeline.ts.)
 
 // DateTime#toISO() types as `string | null` (it only returns null for an
 // invalid DateTime) — every caller here builds off an already-valid ISO
@@ -28,20 +25,21 @@ function toIso(dateTime: DateTime, fallback: string): string {
   return dateTime.toISO() ?? fallback
 }
 
-function seedFor(order: OrderDetail): void {
+function hashOrderId(order: OrderDetail): number {
   let hash = 0
   for (let index = 0; index < order.id.length; index++) {
     hash = (hash * 31 + order.id.charCodeAt(index)) | 0
   }
-  faker.seed(Math.abs(hash))
+  return Math.abs(hash)
 }
 
 // Share of the order considered "delivered" so far — a stand-in for real DO
 // tracking. Nothing ships before production starts; a cancelled order never
 // ships at all.
-const DELIVERED_PERCENT_BY_STATUS: Record<OrderStatus, number> = {
+const deliveredPercentByStatus: Record<OrderStatus, number> = {
   [OrderStatus.DRAFT]: 0,
   [OrderStatus.PENDING_CONFIRMATION]: 0,
+  [OrderStatus.REJECTED]: 0,
   [OrderStatus.AWAITING_PRODUCTION]: 0,
   [OrderStatus.IN_PROGRESS]: 45,
   [OrderStatus.COMPLETED]: 100,
@@ -49,13 +47,11 @@ const DELIVERED_PERCENT_BY_STATUS: Record<OrderStatus, number> = {
 }
 
 export function buildMockDeliveryProgress(
-  order: OrderDetail
+  order: OrderDetail,
+  items: OrderItem[]
 ): OrderMockDeliveryProgress {
-  const totalQuantity = order.items.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  )
-  const deliveredPercent = DELIVERED_PERCENT_BY_STATUS[order.status]
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
+  const deliveredPercent = deliveredPercentByStatus[order.status]
   const deliveredQuantity = Math.round((totalQuantity * deliveredPercent) / 100)
 
   return {
@@ -67,28 +63,18 @@ export function buildMockDeliveryProgress(
   }
 }
 
-// Same order-wide percent applied to one line's own quantity — the mock has
-// no per-item delivery log, so every line is assumed to ship at the same
-// pace as the order overall.
-export function deriveMockItemDelivered(
-  quantity: number,
-  deliveredPercent: number
-): { delivered: number; remaining: number } {
-  const delivered = Math.round((quantity * deliveredPercent) / 100)
-  return { delivered, remaining: quantity - delivered }
-}
-
-const DELIVERY_VEHICLES = ["51C-12345", "51D-67890", "50A-11223"]
+const deliveryVehicles = ["51C-12345", "51D-67890", "50A-11223"]
 
 export function buildMockDeliveryHistory(
-  order: OrderDetail
+  order: OrderDetail,
+  items: OrderItem[]
 ): OrderMockDeliveryRow[] {
-  const progress = buildMockDeliveryProgress(order)
+  const progress = buildMockDeliveryProgress(order, items)
   if (progress.deliveredQuantity === 0) {
     return []
   }
 
-  seedFor(order)
+  const hash = hashOrderId(order)
   const orderDate = DateTime.fromISO(order.orderDate)
   const rowCount = order.status === OrderStatus.COMPLETED ? 2 : 1
 
@@ -103,71 +89,7 @@ export function buildMockDeliveryHistory(
       ),
       quantity: Math.round(progress.deliveredQuantity * share),
       valueVnd: roundMoney(progress.deliveredVnd * share),
-      vehicle: faker.helpers.arrayElement(DELIVERY_VEHICLES),
+      vehicle: deliveryVehicles[(hash + index) % deliveryVehicles.length],
     }
   })
-}
-
-const PAYMENT_METHODS = ["Chuyển khoản", "Tiền mặt"]
-
-export function buildMockPaymentHistory(
-  order: OrderDetail
-): OrderMockPaymentRow[] {
-  const progress = buildMockDeliveryProgress(order)
-  if (progress.deliveredPercent === 0) {
-    return []
-  }
-
-  seedFor(order)
-  const orderDate = DateTime.fromISO(order.orderDate)
-  const rowCount = order.status === OrderStatus.COMPLETED ? 2 : 1
-  const collectedBy = order.staff?.fullName ?? "Kế toán"
-
-  return Array.from({ length: rowCount }, (_, index) => {
-    const share = rowCount === 1 ? 1 : 0.5
-
-    return {
-      paidAt: toIso(orderDate.plus({ days: 3 + index * 4 }), order.orderDate),
-      amountVnd: roundMoney(
-        order.totalVnd * (progress.deliveredPercent / 100) * share
-      ),
-      method: faker.helpers.arrayElement(PAYMENT_METHODS),
-      collectedBy,
-    }
-  })
-}
-
-export function resolveMockPaymentStatus(
-  order: OrderDetail
-): OrderMockPaymentStatus {
-  const deliveredPercent = DELIVERED_PERCENT_BY_STATUS[order.status]
-
-  if (deliveredPercent >= 100) {
-    return "paid"
-  }
-
-  return deliveredPercent > 0 ? "partially_paid" : "unpaid"
-}
-
-const DELIVERY_TERMS = [
-  "FOB - Bình Dương",
-  "CIF - Cảng Cát Lái",
-  "Giao tại kho người bán",
-  "EXW - Nhà máy",
-]
-
-// The client entity has no billing address/tax code on the wire yet
-// (`OrderClientRef` only carries id/code/name), and delivery terms (FOB/CIF/…)
-// aren't a real field either — this stands in for all 3 until the client API
-// grows those fields.
-export function buildMockClientProfile(
-  order: OrderDetail
-): OrderMockClientProfile {
-  seedFor(order)
-
-  return {
-    address: faker.location.streetAddress({ useFullAddress: true }),
-    taxCode: faker.string.numeric(10),
-    deliveryTerm: faker.helpers.arrayElement(DELIVERY_TERMS),
-  }
 }

@@ -1,9 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { UpdateOrderPage } from "@/features/orders/pages/UpdateOrderPage"
-import { orderQueryOptions } from "@/features/orders/api/options"
+import {
+  orderItemsQueryOptions,
+  orderQueryOptions,
+} from "@/features/orders/api/options"
 import { canUpdateOrder } from "@/lib/types/order.type"
 
 // The trailing underscore on `$orderId_` opts this route out of nesting under
@@ -12,12 +14,17 @@ import { canUpdateOrder } from "@/lib/types/order.type"
 export const Route = createFileRoute(
   "/(authed)/manage_/orders_/$orderId_/update"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "orders:update"),
   loader: async ({ context, params }) => {
-    const order = await context.queryClient.ensureQueryData(
-      orderQueryOptions(params.orderId)
-    )
+    const [order] = await Promise.all([
+      context.queryClient.query({
+        ...orderQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...orderItemsQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
+    ])
 
     // Backend rejects a PATCH on a finished order (order.error.not_editable); PENDING_CONFIRMATION
     // and everything from AWAITING_PRODUCTION onward are blocked here too, but those are a
@@ -34,5 +41,5 @@ export const Route = createFileRoute(
     }
   },
   component: UpdateOrderPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

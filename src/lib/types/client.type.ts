@@ -3,7 +3,7 @@ export enum ClientStatus {
   PAUSED = "PAUSED",
 }
 
-export const CLIENT_STATUS_LABELS: Record<ClientStatus, string> = {
+export const clientStatusLabels: Record<ClientStatus, string> = {
   [ClientStatus.ACTIVE]: "Hoạt động",
   [ClientStatus.PAUSED]: "Tạm ngưng",
 }
@@ -16,7 +16,7 @@ export type ClientGroupRef = {
 }
 
 /** Lightweight reference to a client itself (GET /api/clients) — used by other
- *  domains' nested `client` relation (e.g. Material.client, Product.client). */
+ *  domains' nested `client` relation (e.g. Consumable.client, Product.client). */
 export type ClientRef = Pick<Client, "id" | "code" | "name">
 
 /** Mirrors the backend's ClientContactResDto — a client can have several

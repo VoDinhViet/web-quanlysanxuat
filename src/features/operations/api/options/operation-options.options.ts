@@ -1,14 +1,13 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { getOperations } from "@/features/operations/api/server-functions/get-operations.api"
-import type { OperationType } from "@/lib/types/operation.type"
+import { getOperationOptions } from "@/features/operations/api/server-functions/get-operation-options.api"
 
-// `operations` has no UI of its own (no components/pages) — it's an api-only
-// feature, same as units/countries: a reference resource used only by
-// products today, but master data that products doesn't own.
-export const operationOptionsQueryOptions = (q: string, type?: OperationType) =>
+// Narrow picker variant for the BOM/routing step combobox (id/code/name only, silent-fail
+// on error) — distinct from `operationsQueryOptions`, the full-detail list backing the
+// `/manage/operations` management screen (`operations.options.ts`).
+export const operationOptionsQueryOptions = (q: string) =>
   queryOptions({
-    queryKey: ["operations", "options", q, type],
-    queryFn: () => getOperations({ data: { q, type } }),
+    queryKey: ["operations", "options", q],
+    queryFn: () => getOperationOptions({ data: { q } }),
     staleTime: 5 * 60_000,
   })

@@ -1,7 +1,11 @@
 import { z } from "zod"
 
 import { clientContactsSchema } from "@/features/clients/schemas/client-contact.schema"
-import { emptyToUndefined, refineOptionalEmail } from "@/lib/zod-transforms"
+import {
+  emptyToUndefined,
+  refineOptionalEmail,
+  refineOptionalPhoneNumber,
+} from "@/lib/zod-transforms"
 
 import { ClientStatus } from "@/lib/types/client.type"
 
@@ -11,6 +15,11 @@ import { ClientStatus } from "@/lib/types/client.type"
 // definitions with update-client.schema.ts: the two flows evolve independently.
 export const createClientSchema = z
   .object({
+    code: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng nhập mã khách hàng")
+      .max(50, "Mã khách hàng tối đa 50 ký tự"),
     name: z
       .string()
       .trim()
@@ -42,10 +51,12 @@ export const createClientSchema = z
     contacts: clientContactsSchema,
   })
   .superRefine(refineOptionalEmail("email"))
+  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 export type CreateClientSchema = z.input<typeof createClientSchema>
 
 export const createClientFormDefaultValues: CreateClientSchema = {
+  code: "",
   name: "",
   clientGroupId: "",
   taxCode: "",

@@ -1,7 +1,7 @@
+import { noop } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { orderQueryOptions } from "@/features/orders/api"
 import {
   productionOrderLogsQueryOptions,
@@ -17,23 +17,23 @@ import { ProductionOrderDetailPage } from "@/features/production-orders/pages/Pr
 export const Route = createFileRoute(
   "/(authed)/manage_/production-orders_/$productionOrderId"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "production:read"),
   loader: async ({ context, params }) => {
-    const production = await context.queryClient.ensureQueryData(
-      productionOrderQueryOptions(params.productionOrderId)
-    )
+    const production = await context.queryClient.query({
+      ...productionOrderQueryOptions(params.productionOrderId),
+      staleTime: "static",
+    })
 
     // Logs are a secondary section on this page — seed the cache without
     // blocking the route on it (ProductionOrderLogsCard reads it itself).
-    void context.queryClient.prefetchQuery(
-      productionOrderLogsQueryOptions(params.productionOrderId, 1)
-    )
+    void context.queryClient
+      .query(productionOrderLogsQueryOptions(params.productionOrderId, 1))
+      .catch(noop)
 
-    await context.queryClient.ensureQueryData(
-      orderQueryOptions(production.order.id)
-    )
+    await context.queryClient.query({
+      ...orderQueryOptions(production.order.id),
+      staleTime: "static",
+    })
   },
   component: ProductionOrderDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

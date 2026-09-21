@@ -1,0 +1,103 @@
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
+import { Plus, ShieldCheck } from "lucide-react"
+
+import { LinkButton } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { roleColumns } from "@/features/roles/components/composites/RolesTableColumns"
+import { cn } from "@/lib/utils"
+import type { Role } from "@/lib/types/role.type"
+
+type RolesTableProps = {
+  rows: Role[]
+  isPending: boolean
+}
+
+// Bảng danh sách vai trò — không phân trang, vì GET /roles trả cả danh mục (không quá vài chục
+// dòng) chứ không phải offset/limit như các danh sách khác.
+export function RolesTable({ rows, isPending }: RolesTableProps) {
+  const table = useTable({
+    data: rows,
+    columns: roleColumns,
+    features: appTableFeatures,
+  })
+
+  return (
+    <div
+      className={cn(
+        "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
+        isPending && "pointer-events-none opacity-50"
+      )}
+    >
+      {rows.length === 0 ? (
+        <TableEmpty
+          icon={ShieldCheck}
+          title="Chưa có vai trò nào"
+          description="Bắt đầu bằng cách thêm vai trò đầu tiên vào danh sách của bạn."
+          action={
+            <RoutePermissionGate route="/manage/roles/create">
+              <LinkButton
+                to="/manage/roles/create"
+                size="sm"
+                className="text-xs"
+              >
+                <Plus className="size-4" />
+                Tạo vai trò
+              </LinkButton>
+            </RoutePermissionGate>
+          }
+        />
+      ) : (
+        <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
+          <Table aria-label="Danh sách vai trò">
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {table.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="h-14 bg-card hover:bg-muted/25"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+    </div>
+  )
+}

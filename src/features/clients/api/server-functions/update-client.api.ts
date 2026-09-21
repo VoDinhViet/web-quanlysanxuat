@@ -16,6 +16,8 @@ function resolveUpdateClientErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "client.error.not_found":
       return "Không tìm thấy khách hàng."
+    case "client.error.code_exists":
+      return "Mã khách hàng đã tồn tại."
     case "client.error.tax_code_exists":
       return "Mã số thuế đã tồn tại."
     case "client_group.error.not_found":

@@ -2,12 +2,15 @@ import { queryOptions } from "@tanstack/react-query"
 
 import { getDepartments } from "@/features/departments/api/server-functions/get-departments.api"
 
-// `departments` has no UI of its own (no components/pages) — it's an api-only
-// feature, same as units/operations/countries: a reference resource with more
-// than one consumer (users, purchase-requests), so it isn't owned by either.
-export const departmentOptionsQueryOptions = () =>
+// The reference-list read every other feature's form/filter uses (users, purchase-requests,
+// ...) — full unfiltered set, long `staleTime`. The admin screen's own filtered list lives in
+// `departmentsQueryOptions` instead.
+export const departmentQueryOptions = () =>
   queryOptions({
     queryKey: ["departments", "options"],
-    queryFn: () => getDepartments(),
+    queryFn: async () => {
+      const response = await getDepartments({ data: { limit: 100 } })
+      return response.data
+    },
     staleTime: 5 * 60_000,
   })

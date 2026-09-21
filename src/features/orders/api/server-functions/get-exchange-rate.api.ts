@@ -17,7 +17,7 @@ const getExchangeRateSchema = z.object({
 // baseURL-scoped to the internal backend and attaches the session's
 // Authorization header + cookies (src/lib/http.ts) — reusing it here would
 // leak both to a third-party host. Degrades to `null` on failure like the
-// app's other non-core reference lookups (see get-operations.api.ts) — the
+// app's other non-core reference lookups (see get-operation-options.api.ts) — the
 // field stays editable either way.
 export const getExchangeRate = createServerFn({ method: "GET" })
   .validator(getExchangeRateSchema)

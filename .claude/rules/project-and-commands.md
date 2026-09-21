@@ -39,6 +39,7 @@ src/
       server-functions/         # createServerFn handlers, one per operation (*.api.ts)
       options/                   # queryOptions factories, one per file (*.options.ts) + own index.ts barrel
     components/              # presentational pieces — flat by default (see below)
+    constants/               # pure helpers: timeline builders, totals, stat tiles — no JSX
     hooks/                   # feature-local hooks (option hooks, mutation hubs owning state)
     pages/                   # route-level composition
     schemas/                 # *.schema.ts — zod schemas + z.infer types

@@ -4,9 +4,10 @@
 export { productionJobsQueryOptions } from "@/features/production-jobs/api/options/production-jobs.options"
 export { productionJobQueryOptions } from "@/features/production-jobs/api/options/production-job.options"
 export { productionJobBomQueryOptions } from "@/features/production-jobs/api/options/production-job-bom.options"
-export { productionJobMaterialsQueryOptions } from "@/features/production-jobs/api/options/production-job-materials.options"
-export { productionJobAttachmentsQueryOptions } from "@/features/production-jobs/api/options/production-job-attachments.options"
+export { productionJobOperationsQueryOptions } from "@/features/production-jobs/api/options/production-job-operations.options"
 export {
-  PRODUCTION_JOB_NOTES_PAGE_LIMIT,
+  productionJobNotesPageLimit,
   productionJobNotesQueryOptions,
 } from "@/features/production-jobs/api/options/production-job-notes.options"
+export { productionJobLogsQueryOptions } from "@/features/production-jobs/api/options/production-job-logs.options"
+export { productionJobOptionsQueryOptions } from "@/features/production-jobs/api/options/production-job-options.options"

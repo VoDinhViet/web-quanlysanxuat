@@ -5,7 +5,7 @@ import { usersSearchSchema } from "@/features/users/schemas/users-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { User } from "@/lib/types/user.type"
+import type { UserListItem } from "@/lib/types/user.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -22,11 +22,14 @@ function resolveGetUsersErrorMessage(error: unknown): string {
 
 export const getUsers = createServerFn({ method: "GET" })
   .validator(usersSearchSchema)
-  .handler(async ({ data }): Promise<PaginatedResponse<User>> => {
+  .handler(async ({ data }): Promise<PaginatedResponse<UserListItem>> => {
     try {
-      const response = await http.get<PaginatedResponse<User>>("/api/users", {
-        params: data,
-      })
+      const response = await http.get<PaginatedResponse<UserListItem>>(
+        "/api/users",
+        {
+          params: data,
+        }
+      )
 
       return response.data
     } catch (error) {

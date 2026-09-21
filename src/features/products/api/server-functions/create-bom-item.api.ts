@@ -2,11 +2,14 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 import { z } from "zod"
 
-import { createBomItemSchema } from "@/features/products/schemas/create-bom-item.schema"
+import {
+  createComponentItemSchema,
+  createConsumableItemSchema,
+} from "@/features/products/schemas/create-bom-item.schema"
 import { resolveApiFileId } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { BomItemNode } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -16,55 +19,69 @@ function resolveCreateBomItemErrorMessage(error: unknown): string {
   }
 
   switch (error.response?.data.errorCode) {
-    case "product.error.not_found":
+    case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
-    case "material.error.not_found":
-      return "Không tìm thấy vật tư."
     case "bom_item.error.parent_not_found":
       return "Không tìm thấy hạng mục cha."
-    case "bom_item.error.parent_is_material":
-      return "Không thể thêm hạng mục con vào một vật tư."
-    case "bom_item.error.product_not_wip":
-      return "Chỉ thêm được sản phẩm dạng bán thành phẩm (WIP) vào cấu trúc."
-    case "bom_item.error.cycle_detected":
-      return "Không thể thêm: sẽ tạo vòng lặp trong cấu trúc sản phẩm."
+    case "bom_item.error.parent_is_leaf":
+      return "Vật tư luôn là lá của cấu trúc — không thể thêm hạng mục con vào đây."
+    case "bom_item.error.item_not_consumable":
+      return "Vật tư đã chọn không phải là vật tư (CONSUMABLE) hợp lệ."
+    case "bom_item.error.invalid_node_payload":
+      return "Dữ liệu hạng mục không hợp lệ."
     case "bom_item.error.quantity_not_integer":
-      return "Sản phẩm phải có số lượng nguyên."
+      return "Số lượng phải là số nguyên đối với cấu trúc con."
+    case "file.error.not_found":
+      return "Ảnh đã tải lên không còn tồn tại, vui lòng tải lại."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
-const createBomItemInputSchema = createBomItemSchema.extend({
-  productId: z.uuid(),
+// `rootItemId` (not `itemId`) — the CONSUMABLE branch of the schema already has its own `itemId` (the
+// linked vật tư item, see create-bom-item.schema.ts); this one is the FG item whose BOM tree
+// the new item is added to. Different entities, so they can't share a name once the two
+// schemas are merged here.
+const bomItemRootFieldsSchema = z.object({
+  rootItemId: z.uuid(),
   parentId: z.uuid().nullable(),
   sortOrder: z.number().int().min(0).optional(),
 })
 
-type CreateBomItemInput = z.infer<typeof createBomItemInputSchema>
+const createBomItemInputSchema = z.discriminatedUnion("type", [
+  createComponentItemSchema.extend(bomItemRootFieldsSchema.shape),
+  createConsumableItemSchema.extend(bomItemRootFieldsSchema.shape),
+])
 
-function toCreateBomItemPayload(data: Omit<CreateBomItemInput, "productId">) {
-  const note = data.note.trim()
+// Empty note trims to `undefined` (POST — an omitted key means "not provided"). `image` (nhánh
+// COMPONENT) mang URL hiển thị mà backend không có field — chỉ id lên dây dưới tên `imageFileId`.
+const createBomItemPayloadSchema = createBomItemInputSchema.transform(
+  ({ note, ...rest }) => {
+    const trimmedNote = note.trim()
+    const wireNote = trimmedNote === "" ? undefined : trimmedNote
 
-  return {
-    itemType: data.itemType,
-    itemId: data.itemId,
-    parentId: data.parentId,
-    quantity: Number(data.quantity),
-    sortOrder: data.sortOrder,
-    note: note === "" ? undefined : note,
-    drawingFileId: resolveApiFileId(data.drawing, "create"),
+    if (rest.type === "COMPONENT") {
+      const { image, ...component } = rest
+
+      return {
+        ...component,
+        note: wireNote,
+        imageFileId: resolveApiFileId(image, "create"),
+      }
+    }
+
+    return { ...rest, note: wireNote }
   }
-}
+)
 
 export const createBomItem = createServerFn({ method: "POST" })
-  .validator(createBomItemInputSchema)
-  .handler(async ({ data }): Promise<BomItemNode> => {
+  .validator(createBomItemPayloadSchema)
+  .handler(async ({ data }): Promise<BomItem> => {
     try {
-      const { productId, ...rest } = data
-      const response = await http.post<BomItemNode>(
-        `/api/products/${productId}/bom/items`,
-        toCreateBomItemPayload(rest)
+      const { rootItemId, ...payload } = data
+      const response = await http.post<BomItem>(
+        `/api/items/${rootItemId}/bom/items`,
+        payload
       )
 
       return response.data

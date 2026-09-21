@@ -2,20 +2,21 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { createOrderSchema } from "@/features/orders/schemas/create-order.schema"
-import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
+import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import type { OrderDetail } from "@/lib/types/order.type"
 
 // Every field is already wire-ready by the time this runs — string->number
 // mapping happens field-by-field on createOrderSchema/orderItemFormFields, and
 // the two UI-only item fields are already dropped by orderItemFormSchema's own
-// transform (order-item-form.schema.ts). All that's left is collapsing attachments
-// into attachmentFileIds — kept here, not on the schema, matching every other
+// transform (order-item-form.schema.ts). All that's left is collapsing files
+// into fileIds — kept here, not on the schema, matching every other
 // feature's file-field handling (see "Server functions" in architecture.md).
 const createOrderPayloadSchema = createOrderSchema.transform(
-  ({ attachments, ...rest }) => ({
+  ({ files, ...rest }) => ({
     ...rest,
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
+    fileIds: resolveApiFileIds(files),
   })
 )
 
@@ -33,7 +34,7 @@ function resolveCreateOrderErrorMessage(error: unknown): string {
       return "Khách hàng không tồn tại."
     case "order.error.staff_not_found":
       return "Nhân viên kinh doanh không tồn tại."
-    case "order.error.product_not_found":
+    case "order.error.item_not_found":
       return "Một sản phẩm trong đơn hàng không tồn tại."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."
@@ -46,9 +47,11 @@ function resolveCreateOrderErrorMessage(error: unknown): string {
 
 export const createOrder = createServerFn({ method: "POST" })
   .validator(createOrderPayloadSchema)
-  .handler(async ({ data }): Promise<void> => {
+  .handler(async ({ data }): Promise<OrderDetail> => {
     try {
-      await http.post("/api/orders", data)
+      const response = await http.post<OrderDetail>("/api/orders", data)
+
+      return response.data
     } catch (error) {
       logHttpError(error, "createOrder")
 

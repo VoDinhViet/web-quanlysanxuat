@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useParams } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import {
   keepPreviousData,
@@ -10,32 +11,31 @@ import {
 } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { useAppForm } from "@/hooks/use-app-form"
 import { orderQueryOptions } from "@/features/orders/api"
-import { ProductionOrderDetailSummaryCard } from "@/features/production-orders/components/detail/ProductionOrderDetailSummaryCard"
-import { ProductionOrderItemsCard } from "@/features/production-orders/components/detail/ProductionOrderItemsCard"
-import { ProductionOrderLogsCard } from "@/features/production-orders/components/detail/ProductionOrderLogsCard"
+import { ProductionOrderDetailSummaryCard } from "@/features/production-orders/components/composites/ProductionOrderDetailSummaryCard"
+import { ProductionOrderItemsCard } from "@/features/production-orders/components/composites/ProductionOrderItemsCard"
+import { ProductionOrderLogsCard } from "@/features/production-orders/components/composites/ProductionOrderLogsCard"
+import { ProductionOrderSignedFileCard } from "@/features/production-orders/components/composites/ProductionOrderSignedFileCard"
 import {
   productionOrderLogsQueryOptions,
   productionOrderQueryOptions,
 } from "@/features/production-orders/api/options"
-import { findChangedProductionQuantities } from "@/features/production-orders/production-order-decision"
+import { getChangedProductionItems } from "@/features/production-orders/constants/production-order-decision"
 import { updateProductionOrder } from "@/features/production-orders/api/server-functions/update-production-order.api"
 import { updateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
 import type { UpdateProductionOrderSchema } from "@/features/production-orders/schemas/update-production-order.schema"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
-// production.items → raw form values: quantity becomes a string for the numeric <Input>,
-// parsed back to a number by updateProductionOrderSchema on submit.
-function buildDefaultValues(
+function getProductionOrderDefaultValues(
   production: ProductionOrderDetail
 ): UpdateProductionOrderSchema {
   return {
     productionOrderId: production.id,
     items: production.items.map((item) => ({
       orderItemId: item.orderItemId,
-      quantity: String(item.quantity),
+      quantity: item.quantity,
     })),
   }
 }
@@ -80,14 +80,15 @@ export function ProductionOrderDetailPage() {
   })
 
   const form = useAppForm({
-    defaultValues: buildDefaultValues(production),
-    validators: { onSubmit: updateProductionOrderSchema },
+    defaultValues: getProductionOrderDefaultValues(production),
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: updateProductionOrderSchema },
     // Chỉ gửi dòng đã đổi — PATCH của backend là partial, dòng không gửi giữ nguyên giá trị đã
     // lưu.
     onSubmit: ({ value }) =>
       update({
         ...value,
-        items: findChangedProductionQuantities(value, production),
+        items: getChangedProductionItems(value, production),
       }),
   })
 
@@ -96,17 +97,16 @@ export function ProductionOrderDetailPage() {
       <PageTitleBar
         title="Chi tiết lệnh sản xuất"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Lệnh sản xuất (LSX)", href: "/manage/production-orders" },
           { label: order.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <form.Subscribe
           selector={(state) =>
-            findChangedProductionQuantities(state.values, production).length > 0
+            getChangedProductionItems(state.values, production).length > 0
           }
         >
           {(hasUnsavedChanges) => (
@@ -114,7 +114,10 @@ export function ProductionOrderDetailPage() {
               production={production}
               hasUnsavedChanges={hasUnsavedChanges}
               isSaving={isPending}
-              onSave={() => void form.handleSubmit()}
+              onSave={() => {
+                if (form.state.isSubmitting) return
+                void form.handleSubmit()
+              }}
             />
           )}
         </form.Subscribe>
@@ -127,10 +130,11 @@ export function ProductionOrderDetailPage() {
           />
         </section>
 
+        <ProductionOrderSignedFileCard production={production} />
+
         <ProductionOrderLogsCard
           logs={logsQuery.data?.data ?? []}
           pagination={logsQuery.data?.pagination}
-          page={logsPage}
           onPageChange={setLogsPage}
           isPending={logsQuery.isPending}
           isFetching={logsQuery.isFetching}

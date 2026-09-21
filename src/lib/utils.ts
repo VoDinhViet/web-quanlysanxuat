@@ -6,6 +6,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// Narrows an unknown thrown value (e.g. from a route errorComponent, which can catch
+// anything) down to a displayable message — an Error's own message, or a fallback for
+// anything else thrown (a string, a plain object, etc).
+export function getErrorMessage(
+  error: unknown,
+  fallback = "Đã có lỗi xảy ra. Vui lòng thử lại."
+): string {
+  return error instanceof Error ? error.message : fallback
+}
+
 // Rounds to 2 decimal places — matches the backend's own round(..., 2) at every money
 // computation step (see OrdersService.recalculateTotals), so client-side previews of order
 // totals/item lines/currency conversions never drift from what the server stores.
@@ -13,14 +23,14 @@ export function roundMoney(value: number): number {
   return Math.round(value * 100) / 100
 }
 
-type SelectOptionItem = {
+export interface SelectOptionItem {
   id: string
   name: string
 }
 
-type SelectOption = {
-  value: string
+export interface SelectOption {
   label: string
+  value: string
 }
 
 // Turns `{id, name}` reference rows (departments, positions, roles) into

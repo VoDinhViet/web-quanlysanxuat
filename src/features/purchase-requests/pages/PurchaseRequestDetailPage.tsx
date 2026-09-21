@@ -1,0 +1,69 @@
+import { useParams } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { Surface } from "@/components/shared/layouts/Surface"
+import { purchaseRequestQueryOptions } from "@/features/purchase-requests/api/options"
+import { PurchaseRequestDetailHeader } from "@/features/purchase-requests/components/layouts/PurchaseRequestDetailHeader"
+import { PurchaseRequestItemsSection } from "@/features/purchase-requests/components/sections/PurchaseRequestItemsSection"
+import { PurchaseRequestRejectionNotice } from "@/features/purchase-requests/components/composites/PurchaseRequestRejectionNotice"
+import { PurchaseRequestRelatedNotesCard } from "@/features/purchase-requests/components/composites/PurchaseRequestRelatedNotesCard"
+import { useHasPermission } from "@/hooks/use-permissions"
+import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
+
+export function PurchaseRequestDetailPage() {
+  const { purchaseRequestId } = useParams({
+    from: "/(authed)/manage_/purchase-requests_/$purchaseRequestId",
+  })
+
+  const { data: purchaseRequest } = useSuspenseQuery(
+    purchaseRequestQueryOptions(purchaseRequestId)
+  )
+
+  // SL đề xuất/Ghi chú/Xóa dòng đều ghi thật xuống backend giờ — mỗi cell tự chứa mutation riêng
+  // và tự invalidate ["purchase-requests"] khi thành công, nên trang không cần giữ bản sao `rows`
+  // trong state nữa: đọc thẳng `purchaseRequest.items`, refetch sau invalidate tự resync mọi cột (kể cả 4
+  // số tính sống bomDemand/onHand/available/fromStock). `editable` cho phép cả REJECTED — đó là
+  // cách duy nhất thoát khỏi REJECTED (sửa/xóa 1 dòng tự đưa status về DRAFT), không chỉ DRAFT.
+  const editable =
+    useHasPermission("purchase-requests:update") &&
+    (purchaseRequest.status === PurchaseRequestStatus.DRAFT ||
+      purchaseRequest.status === PurchaseRequestStatus.REJECTED)
+
+  return (
+    <main className="min-h-svh bg-background text-foreground">
+      <PageTitleBar
+        title="Chi tiết đề xuất mua hàng"
+        breadcrumbs={[
+          { label: "Bảng điều khiển", href: "/manage" },
+          { label: "Quản lý mua hàng" },
+          { label: "Đề xuất mua hàng", href: "/manage/purchase-requests" },
+          { label: purchaseRequest.code },
+        ]}
+      />
+
+      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+        <PurchaseRequestRejectionNotice purchaseRequest={purchaseRequest} />
+
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <Surface>
+            <PurchaseRequestDetailHeader
+              purchaseRequest={purchaseRequest}
+              itemCount={purchaseRequest.items.length}
+            />
+            <PurchaseRequestItemsSection
+              rows={purchaseRequest.items}
+              editable={editable}
+            />
+          </Surface>
+
+          <div className="flex flex-col gap-4">
+            <PurchaseRequestRelatedNotesCard
+              purchaseRequestId={purchaseRequest.id}
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}

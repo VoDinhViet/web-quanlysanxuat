@@ -1,0 +1,207 @@
+import { Link } from "@tanstack/react-router"
+import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
+import { Image } from "@unpic/react"
+import { Gallery } from "@solar-icons/react"
+
+import { Badge } from "@/components/ui/badge"
+import { currencyFormatter } from "@/lib/currency"
+import { resolveFileUrl } from "@/lib/file-url"
+import { orderItemStatusLabels, OrderItemStatus } from "@/lib/types/order.type"
+import type { OrderItem } from "@/lib/types/order.type"
+import { cn } from "@/lib/utils"
+
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
+const col = createColumnHelper<typeof appTableFeatures, OrderItem>()
+
+export const orderDetailItemColumns = col.columns([
+  col.display({
+    id: "index",
+    header: "#",
+    meta: { headerClassName: "w-10", cellClassName: "text-muted-foreground" },
+    cell: ({ row }) => row.index + 1,
+  }),
+
+  // Thumbnail + name-over-code — same combined identity cell as
+  // ProductsTableColumns, so a product reads the same way whether staff are
+  // browsing the catalog or an order's line items. `image` is the line's own
+  // snapshot (OrderItem.image), not the live product's current image.
+  col.display({
+    id: "product",
+    header: "Sản phẩm",
+    meta: { headerClassName: "min-w-56" },
+    cell: ({ row }) => {
+      const { item, image } = row.original
+
+      return (
+        <div className="flex min-w-0 items-center gap-3 py-1">
+          <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
+            {image ? (
+              <Image
+                src={resolveFileUrl(image.url)}
+                alt={item.name}
+                layout="fullWidth"
+                objectFit="cover"
+                className="size-full"
+              />
+            ) : (
+              <Gallery className="size-4 text-muted-foreground/50" />
+            )}
+          </div>
+          <div className="min-w-0">
+            <Link
+              to="/manage/products/$productId"
+              params={{ productId: item.id }}
+              search={{ tab: "info" }}
+              className="block truncate font-medium text-foreground hover:text-primary hover:underline"
+            >
+              {item.name}
+            </Link>
+            <p className="truncate font-mono text-[11px] text-muted-foreground">
+              {item.code}
+            </p>
+          </div>
+        </div>
+      )
+    },
+  }),
+
+  col.accessor((row) => row.unit.name, {
+    id: "unit",
+    header: "ĐVT",
+  }),
+
+  // Hiện thêm SL đã chốt ở LSX khi khác SL đặt gốc — remainingQty/tự đóng đơn tính theo số LSX, nên
+  // cần lộ ra lý do lệch thay vì chỉ hiện SL đặt gốc như trước
+  // (docs/decisions/order-target-quantity-follows-lsx.md, be-quanlysanxuat).
+  col.display({
+    id: "quantity",
+    header: "Số lượng",
+    meta: {
+      headerClassName: "text-right",
+      cellClassName: "text-right tabular-nums",
+    },
+    cell: ({ row }) => {
+      const { quantity, productionQuantity } = row.original
+      const adjusted =
+        productionQuantity !== null && productionQuantity !== quantity
+
+      return (
+        <div>
+          {quantityFormatter.format(quantity)}
+          {adjusted && (
+            <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
+              LSX: {quantityFormatter.format(productionQuantity)}
+            </p>
+          )}
+        </div>
+      )
+    },
+  }),
+
+  col.accessor("unitPrice", {
+    header: "Đơn giá",
+    meta: {
+      headerClassName: "text-right",
+      cellClassName: "text-right tabular-nums",
+    },
+    cell: ({ getValue }) => currencyFormatter.format(getValue()),
+  }),
+
+  col.accessor("discountPercent", {
+    header: "CK (%)",
+    meta: {
+      headerClassName: "text-right",
+      cellClassName: "text-right tabular-nums",
+    },
+  }),
+
+  // Chỉ thêm hiển thị — không đổi lineTotal gốc (vẫn là số tiền đã chốt trên đơn với SL đặt gốc).
+  // Ghi chú dưới là thành tiền ước theo SL LSX, tính lại ở FE bằng đúng công thức server dùng
+  // (quantity * unitPrice * (1 - discountPercent/100)) — cùng cách xử lý cột Số lượng ở trên.
+  col.display({
+    id: "lineTotal",
+    header: "Thành tiền",
+    meta: {
+      headerClassName: "text-right",
+      cellClassName: "text-right font-medium tabular-nums",
+    },
+    cell: ({ row }) => {
+      const {
+        lineTotal,
+        quantity,
+        productionQuantity,
+        unitPrice,
+        discountPercent,
+      } = row.original
+      const adjusted =
+        productionQuantity !== null && productionQuantity !== quantity
+      const productionLineTotal = adjusted
+        ? productionQuantity * unitPrice * (1 - discountPercent / 100)
+        : null
+
+      return (
+        <div>
+          {currencyFormatter.format(lineTotal)}
+          {productionLineTotal !== null && (
+            <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
+              LSX: {currencyFormatter.format(productionLineTotal)}
+            </p>
+          )}
+        </div>
+      )
+    },
+  }),
+
+  col.accessor("issuedQty", {
+    header: "Đã giao",
+    meta: {
+      headerClassName: "text-right",
+      cellClassName: "text-right text-muted-foreground tabular-nums",
+    },
+    cell: ({ getValue }) => quantityFormatter.format(getValue()),
+  }),
+
+  // Can go negative if the line was issued past its ordered quantity — flagged destructive
+  // instead of the usual muted tone so an over-issue doesn't read as a normal balance.
+  col.accessor("remainingQty", {
+    header: "Còn lại",
+    meta: { headerClassName: "text-right", cellClassName: "text-right" },
+    cell: ({ getValue }) => {
+      const remaining = getValue()
+      return (
+        <span
+          className={cn(
+            "tabular-nums",
+            remaining < 0
+              ? "font-semibold text-destructive"
+              : "text-muted-foreground"
+          )}
+        >
+          {quantityFormatter.format(remaining)}
+        </span>
+      )
+    },
+  }),
+
+  col.accessor("status", {
+    header: "Trạng thái",
+    meta: { headerClassName: "text-center", cellClassName: "text-center" },
+    cell: ({ getValue }) => {
+      const status = getValue()
+      return (
+        <Badge
+          variant="outline"
+          className={cn(
+            status === OrderItemStatus.CANCELLED
+              ? "text-destructive"
+              : "text-success"
+          )}
+        >
+          {orderItemStatusLabels[status]}
+        </Badge>
+      )
+    },
+  }),
+])

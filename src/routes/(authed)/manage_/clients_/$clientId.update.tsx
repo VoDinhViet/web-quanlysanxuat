@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import {
   clientGroupOptionsQueryOptions,
   clientQueryOptions,
@@ -11,13 +10,17 @@ import { UpdateClientPage } from "@/features/clients/pages/UpdateClientPage"
 export const Route = createFileRoute(
   "/(authed)/manage_/clients_/$clientId/update"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "clients:update"),
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(clientQueryOptions(params.clientId)),
-      context.queryClient.ensureQueryData(clientGroupOptionsQueryOptions()),
+      context.queryClient.query({
+        ...clientQueryOptions(params.clientId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...clientGroupOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: UpdateClientPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

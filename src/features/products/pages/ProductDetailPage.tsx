@@ -1,4 +1,5 @@
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
+import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import {
   useMutation,
@@ -6,35 +7,36 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query"
 import { toast } from "sonner"
+import type { Key } from "react-aria-components"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { ProductDetailHeader } from "@/features/products/components/ProductDetailHeader"
-import { ProductDetailSidebar } from "@/features/products/components/ProductDetailSidebar"
-import { ProductBomTab } from "@/features/products/components/ProductBomTab"
-import { ProductMaterialsTab } from "@/features/products/components/ProductMaterialsTab"
-import { ProductInfoTab } from "@/features/products/components/ProductInfoTab"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { ProductDetailHeader } from "@/features/products/components/layouts/ProductDetailHeader"
+import { ProductDetailSidebar } from "@/features/products/components/layouts/ProductDetailSidebar"
+import { ProductBomTab } from "@/features/products/components/sections/ProductBomTab"
+import { ProductIssuesTab } from "@/features/products/components/sections/ProductIssuesTab"
+import { ProductInfoTab } from "@/features/products/components/sections/ProductInfoTab"
 import { updateProductSchema } from "@/features/products/schemas/update-product.schema"
-import { PRODUCT_DETAIL_TABS } from "@/features/products/schemas/product-detail-search.schema"
-import { updateProduct } from "@/features/products/api/server-functions/update-product.api"
-import { productQueryOptions } from "@/features/products/api/options"
+import { productDetailTabSchema } from "@/features/products/schemas/product-detail-search.schema"
+import { updateItem } from "@/features/products/api/server-functions/update-item.api"
+import { itemQueryOptions } from "@/features/products/api/options"
 import { useAppForm } from "@/hooks/use-app-form"
-import { buildSelectOption } from "@/lib/utils"
+import { buildSelectOption, cn } from "@/lib/utils"
 import type { UpdateProductSchema } from "@/features/products/schemas/update-product.schema"
-import type { Product } from "@/lib/types/product.type"
+import type { Item } from "@/lib/types/item.type"
 
-// Product → raw form values: nullable relations/text become "", the nested
-// unit/group/client refs collapse to their id for the selects.
-function buildProductDefaultValues(product: Product): UpdateProductSchema {
+// Item → raw form values: nullable relations/text become "", the nested
+// unit/client refs collapse to their id for the selects.
+function getProductDefaultValues(product: Item): UpdateProductSchema {
   return {
-    productId: product.id,
+    itemId: product.id,
     code: product.code,
+    revision: product.revision,
     name: product.name,
     unitId: product.unit.id,
-    type: product.type,
-    productGroupId: product.group?.id ?? "",
     clientId: product.client?.id ?? "",
     image: product.image,
+    files: product.files.map((itemFile) => itemFile.file),
     status: product.status,
     note: product.note ?? "",
   }
@@ -47,35 +49,35 @@ export function ProductDetailPage() {
   const { tab } = useSearch({ from: "/(authed)/manage_/products_/$productId" })
   const navigate = useNavigate({ from: "/manage/products/$productId" })
   const queryClient = useQueryClient()
-  const updateProductFn = useServerFn(updateProduct)
+  const updateItemFn = useServerFn(updateItem)
 
-  const { data: product } = useSuspenseQuery(productQueryOptions(productId))
+  const { data: product } = useSuspenseQuery(itemQueryOptions(productId))
 
   const { mutate: update, isPending } = useMutation({
-    mutationFn: (value: UpdateProductSchema) =>
-      updateProductFn({ data: value }),
+    mutationFn: (value: UpdateProductSchema) => updateItemFn({ data: value }),
     // Stay on the page: this is a multi-tab authoring screen, so saving one tab
     // is no reason to navigate away.
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] })
+      await queryClient.invalidateQueries({ queryKey: ["items"] })
       toast.success("Đã lưu thông tin sản phẩm")
     },
     onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
-    defaultValues: buildProductDefaultValues(product),
-    validators: { onSubmit: updateProductSchema },
+    defaultValues: getProductDefaultValues(product),
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: updateProductSchema },
     onSubmit: ({ value }) => update(value),
   })
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a
-  // cast, and an unrecognised value simply doesn't navigate.
-  const handleTabChange = (value: string) => {
-    const nextTab = PRODUCT_DETAIL_TABS.find((item) => item === value)
+  // RAC's onSelectionChange returns a `Key` (string | number); safeParse narrows it back
+  // without a cast, and an unrecognised value simply doesn't navigate.
+  const handleTabChange = (key: Key) => {
+    const nextTab = productDetailTabSchema.safeParse(String(key))
 
-    if (nextTab) {
-      void navigate({ search: { tab: nextTab } })
+    if (nextTab.success) {
+      void navigate({ search: { tab: nextTab.data } })
     }
   }
 
@@ -84,11 +86,10 @@ export function ProductDetailPage() {
       <PageTitleBar
         title="Chi tiết sản phẩm"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Sản phẩm", href: "/manage/products" },
-          { label: product.code },
+          { label: `${product.code} · ${product.revision}` },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
@@ -100,19 +101,33 @@ export function ProductDetailPage() {
               product={product}
               activeTab={tab}
               isSaving={isPending}
-              onSave={() => void form.handleSubmit()}
+              onSave={() => {
+                if (form.state.isSubmitting) return
+                void form.handleSubmit()
+              }}
             />
 
             {/* `minmax(0,1fr)` (not `1fr`) so a wide table scrolls inside its own
-                column instead of blowing the grid out horizontally. */}
-            <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
+                column instead of blowing the grid out horizontally. The "boms"
+                tab's BOM table already runs wide (STT/mã/tên/cấp/số lượng/đvt/
+                công đoạn/thao tác), so it drops the sidebar column entirely and
+                takes the full width rather than fighting it for space. */}
+            <div
+              className={cn(
+                "grid grid-cols-1",
+                tab !== "boms" &&
+                  "xl:grid-cols-[minmax(0,1fr)_340px] 2xl:grid-cols-[minmax(0,1fr)_380px]"
+              )}
+            >
               <div className="min-w-0">
-                {/* forceMount: Radix unmounts inactive panels by default, which
-                  would discard unsaved form state on every tab switch. */}
+                {/* keepMounted: Base UI unmounts inactive panels by default, which
+                  would discard unsaved form state on every tab switch. Kept mounted
+                  but inactive still gets `data-hidden` as the CSS hook that actually
+                  hides it. */}
                 <TabsContent
                   value="info"
-                  forceMount
-                  className="m-0 outline-none data-[state=inactive]:hidden"
+                  keepMounted
+                  className="m-0 outline-none data-hidden:hidden"
                 >
                   <ProductInfoTab
                     form={form}
@@ -121,20 +136,22 @@ export function ProductDetailPage() {
                   />
                 </TabsContent>
 
-                <TabsContent value="structure" className="m-0 outline-none">
+                <TabsContent value="boms" className="m-0 outline-none">
                   <ProductBomTab product={product} />
                 </TabsContent>
 
-                <TabsContent value="materials" className="m-0 outline-none">
-                  <ProductMaterialsTab product={product} />
+                <TabsContent value="consumables" className="m-0 outline-none">
+                  <ProductIssuesTab product={product} />
                 </TabsContent>
               </div>
 
               {/* A grid item stretches by default, so the rule runs the full
                   height of the row instead of stopping at the content. */}
-              <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
-                <ProductDetailSidebar product={product} />
-              </aside>
+              {tab !== "boms" ? (
+                <aside className="min-w-0 border-t border-border xl:border-t-0 xl:border-l">
+                  <ProductDetailSidebar product={product} />
+                </aside>
+              ) : null}
             </div>
           </Tabs>
         </section>

@@ -6,7 +6,7 @@ import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item
 import { resolveApiFileId } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { BomItemNode } from "@/lib/types/bom-item.type"
+import type { BomItem } from "@/lib/types/bom-item.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -19,42 +19,46 @@ function resolveUpdateBomItemErrorMessage(error: unknown): string {
     case "bom_item.error.not_found":
       return "Không tìm thấy hạng mục."
     case "bom_item.error.quantity_not_integer":
-      return "Sản phẩm phải có số lượng nguyên."
+      return "Số lượng phải là số nguyên đối với cấu trúc con."
+    case "bom_item.error.invalid_node_payload":
+      return "Không sửa được mã/tên/ĐVT/ảnh trên vật tư — các trường này chỉ áp dụng cho cấu trúc con."
+    case "file.error.not_found":
+      return "Ảnh đã tải lên không còn tồn tại, vui lòng tải lại."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
 const updateBomItemInputSchema = updateBomItemSchema.extend({
-  productId: z.uuid(),
   itemId: z.uuid(),
+  bomItemId: z.uuid(),
 })
 
-type UpdateBomItemInput = z.infer<typeof updateBomItemInputSchema>
+// Empty note clears the field (null); PATCH treats a missing key as "leave unchanged". `image`
+// chỉ có key khi node là COMPONENT (BomItemDetailScreen `getBomItemDefaultValues`) — thiếu key thì
+// không gửi `imageFileId`, có key null thì gửi null để xoá ảnh.
+const updateBomItemPayloadSchema = updateBomItemInputSchema.transform(
+  ({ note, image, ...rest }) => {
+    const trimmedNote = note.trim()
 
-function toUpdateBomItemPayload(
-  data: Omit<UpdateBomItemInput, "productId" | "itemId">
-) {
-  const note = data.note.trim()
-  const sortOrder = data.sortOrder.trim()
-
-  return {
-    quantity: Number(data.quantity),
-    sortOrder: sortOrder === "" ? undefined : Number(sortOrder),
-    // Empty clears the note (null); a value updates it.
-    note: note === "" ? null : note,
-    drawingFileId: resolveApiFileId(data.drawing, "update"),
+    return {
+      ...rest,
+      note: trimmedNote === "" ? null : trimmedNote,
+      ...(image !== undefined
+        ? { imageFileId: resolveApiFileId(image, "update") }
+        : {}),
+    }
   }
-}
+)
 
 export const updateBomItem = createServerFn({ method: "POST" })
-  .validator(updateBomItemInputSchema)
-  .handler(async ({ data }): Promise<BomItemNode> => {
+  .validator(updateBomItemPayloadSchema)
+  .handler(async ({ data }): Promise<BomItem> => {
     try {
-      const { productId, itemId, ...rest } = data
-      const response = await http.patch<BomItemNode>(
-        `/api/products/${productId}/bom/items/${itemId}`,
-        toUpdateBomItemPayload(rest)
+      const { itemId, bomItemId, ...payload } = data
+      const response = await http.patch<BomItem>(
+        `/api/items/${itemId}/bom/items/${bomItemId}`,
+        payload
       )
 
       return response.data

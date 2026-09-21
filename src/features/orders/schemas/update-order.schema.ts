@@ -4,10 +4,6 @@ import { orderItemFormSchema } from "@/features/orders/schemas/order-item-form.s
 import { fileFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToNull,
-  isNonNegativeNumberString,
-  isPercentString,
-  isPositiveNumberString,
-  optionalEmail,
   optionalEnumNullable,
   toIsoDate,
 } from "@/lib/zod-transforms"
@@ -16,8 +12,8 @@ import {
   Currency,
   OrderDiscountType,
   OrderStatus,
-  PaymentTerm,
 } from "@/lib/types/order.type"
+import { PaymentTerm } from "@/lib/types/payment-term.type"
 
 // Wire contract for PATCH /api/orders/:orderId — also the client-side onSubmit validator
 // for UpdateOrderForm. `orderId` lives directly in the form's own state (the update flow's
@@ -28,24 +24,11 @@ import {
 // provided", so every optional field here transforms ""→null (an explicit clear) instead of
 // ""→undefined — see UpdateOrderReqDto's `nullable: true` fields on the backend. Also carries
 // `status`, which CreateOrderReqDto has no field for (the backend defaults a new order to
-// DRAFT).
+// DRAFT). No contact snapshot fields — see create-order.schema.ts's comment.
 export const updateOrderSchema = z.object({
   orderId: z.uuid(),
   clientId: z.string().trim().min(1, "Vui lòng chọn khách hàng"),
-  contactName: z
-    .string()
-    .trim()
-    .max(255, "Họ tên tối đa 255 ký tự")
-    .transform(emptyToNull),
-  contactPhone: z
-    .string()
-    .trim()
-    .max(30, "Số điện thoại tối đa 30 ký tự")
-    .transform(emptyToNull),
-  // optionalEmail() transforms ""→undefined; a PATCH needs an explicit null to actually
-  // clear the field (an omitted key means "leave unchanged"), so re-map the last step.
-  contactEmail: optionalEmail().transform((value) => value ?? null),
-  staffId: z.string().trim().transform(emptyToNull),
+  assignedUserId: z.string().trim().transform(emptyToNull),
   orderDate: z
     .string()
     .min(1, "Vui lòng chọn ngày đặt hàng")
@@ -54,7 +37,7 @@ export const updateOrderSchema = z.object({
     .string()
     .min(1, "Vui lòng chọn ngày giao hàng yêu cầu")
     .transform(toIsoDate),
-  deliveryAddress: z
+  consigneeAddress: z
     .string()
     .trim()
     .max(500, "Địa chỉ tối đa 500 ký tự")
@@ -62,26 +45,27 @@ export const updateOrderSchema = z.object({
   paymentTerm: optionalEnumNullable(PaymentTerm),
   currency: z.enum(Currency),
   exchangeRate: z
-    .string()
-    .trim()
-    .refine(isPositiveNumberString, "Tỷ giá phải là số dương")
-    .transform(Number),
+    .number("Tỷ giá phải là số dương")
+    .positive("Tỷ giá phải là số dương")
+    .optional()
+    .pipe(z.number("Tỷ giá phải là số dương")),
   discountType: z.enum(OrderDiscountType),
   discountValue: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Chiết khấu không được âm")
-    .transform(Number),
+    .number("Chiết khấu không được âm")
+    .min(0, "Chiết khấu không được âm")
+    .optional()
+    .pipe(z.number("Chiết khấu không được âm")),
   vatPercent: z
-    .string()
-    .trim()
-    .refine(isPercentString, "VAT phải trong khoảng 0-100")
-    .transform(Number),
+    .number("VAT phải trong khoảng 0-100")
+    .min(0, "VAT phải trong khoảng 0-100")
+    .max(100, "VAT phải trong khoảng 0-100")
+    .optional()
+    .pipe(z.number("VAT phải trong khoảng 0-100")),
   shippingFee: z
-    .string()
-    .trim()
-    .refine(isNonNegativeNumberString, "Phí vận chuyển không được âm")
-    .transform(Number),
+    .number("Phí vận chuyển không được âm")
+    .min(0, "Phí vận chuyển không được âm")
+    .optional()
+    .pipe(z.number("Phí vận chuyển không được âm")),
   // Only present on the update flow — CreateOrderReqDto has no field for it, the backend
   // defaults a new order to DRAFT.
   status: z.enum(OrderStatus),
@@ -98,34 +82,32 @@ export const updateOrderSchema = z.object({
   // Replace-all on the backend: an empty array clears the set, an omitted key keeps the
   // existing one. The form always sends both, so a save always replaces the full set.
   items: z.array(orderItemFormSchema),
-  attachments: z.array(fileFieldSchema),
+  files: z.array(fileFieldSchema),
 })
 
 export type UpdateOrderSchema = z.input<typeof updateOrderSchema>
 
-// Only used for withForm's type inference in the update flow's own sections — the real
-// values always come from UpdateOrderForm's own `defaultValues`, so "" placeholders here are
-// harmless.
+// Type template only — `withForm`'s child sections (UpdateOrderInfoSection.tsx etc.) need a
+// value of this shape to infer `AppFieldExtendedReactFormApi<UpdateOrderSchema>`; the mounted
+// form's real defaults come from UpdateOrderForm.tsx's own getOrderDefaultValues(order, items)
+// call, same relationship as createOrderFormDefaultValues in create-order.schema.ts.
 export const updateOrderFormDefaultValues: UpdateOrderSchema = {
   orderId: "",
   clientId: "",
-  contactName: "",
-  contactPhone: "",
-  contactEmail: "",
-  staffId: "",
+  assignedUserId: "",
   orderDate: "",
   dueDate: "",
-  deliveryAddress: "",
-  paymentTerm: "",
+  consigneeAddress: "",
+  paymentTerm: PaymentTerm.IMMEDIATE,
   currency: Currency.VND,
-  exchangeRate: "1",
+  exchangeRate: 1,
   discountType: OrderDiscountType.PERCENT,
-  discountValue: "0",
-  vatPercent: "0",
-  shippingFee: "0",
+  discountValue: 0,
+  vatPercent: 0,
+  shippingFee: 0,
   status: OrderStatus.DRAFT,
   note: "",
   internalNote: "",
   items: [],
-  attachments: [],
+  files: [],
 }

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { UpdateSupplierPage } from "@/features/suppliers/pages/UpdateSupplierPage"
 import {
   supplierGroupOptionsQueryOptions,
@@ -12,16 +11,21 @@ import { countryOptionsQueryOptions } from "@/features/countries/api"
 export const Route = createFileRoute(
   "/(authed)/manage_/suppliers_/$supplierId/update"
 )({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "suppliers:update"),
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        supplierQueryOptions(params.supplierId)
-      ),
-      context.queryClient.ensureQueryData(supplierGroupOptionsQueryOptions()),
-      context.queryClient.ensureQueryData(countryOptionsQueryOptions()),
+      context.queryClient.query({
+        ...supplierQueryOptions(params.supplierId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...supplierGroupOptionsQueryOptions(),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...countryOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: UpdateSupplierPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

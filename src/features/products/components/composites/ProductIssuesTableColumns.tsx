@@ -1,0 +1,75 @@
+import { createColumnHelper } from "@tanstack/react-table"
+import type { appTableFeatures } from "@/lib/table-features"
+import { Image } from "@unpic/react"
+import { Gallery } from "@solar-icons/react"
+
+import { resolveFileUrl } from "@/lib/file-url"
+import type { ItemIssue } from "@/lib/types/item.type"
+
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
+const col = createColumnHelper<typeof appTableFeatures, ItemIssue>()
+
+export const itemIssueColumns = col.columns([
+  col.display({
+    id: "index",
+    header: "#",
+    cell: ({ row }) => row.index + 1,
+    meta: {
+      headerClassName: "w-12 text-center",
+      cellClassName: "text-center text-muted-foreground",
+    },
+  }),
+  col.display({
+    id: "consumable",
+    header: "Vật tư",
+    meta: { headerClassName: "min-w-64" },
+    cell: ({ row }) => {
+      const consumable = row.original
+      const imageUrl = consumable.image
+        ? typeof consumable.image === "string"
+          ? resolveFileUrl(consumable.image)
+          : resolveFileUrl(consumable.image.url)
+        : null
+
+      return (
+        <div className="flex min-w-0 items-center gap-3 py-1">
+          <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={consumable.name}
+                layout="fullWidth"
+                objectFit="cover"
+                className="size-full"
+              />
+            ) : (
+              <Gallery className="size-4 text-muted-foreground/50" />
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-xs font-semibold text-foreground">
+              {consumable.name}
+            </p>
+            <p className="truncate font-mono text-[11px] text-muted-foreground">
+              {consumable.code}
+            </p>
+          </div>
+        </div>
+      )
+    },
+  }),
+  col.accessor((row) => row.unit.name, {
+    id: "unit",
+    header: "ĐVT",
+    meta: { headerClassName: "min-w-20" },
+  }),
+  col.accessor("requiredQty", {
+    header: "Định mức / 1 bộ",
+    meta: {
+      headerClassName: "min-w-32 text-right",
+      cellClassName: "text-right font-medium text-foreground",
+    },
+    cell: ({ getValue }) => quantityFormatter.format(getValue()),
+  }),
+])

@@ -4,17 +4,17 @@ import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
 import {
   emptyToUndefined,
   emptyToUndefinedIsoDate,
-  emptyToUndefinedNumber,
   optionalEnum,
   refineOptionalEmail,
+  refineOptionalPhoneNumber,
 } from "@/lib/zod-transforms"
 
 import {
   PaymentMethod,
-  PaymentTerm,
   SupplierStatus,
   SupplierType,
 } from "@/lib/types/supplier.type"
+import { PaymentTerm } from "@/lib/types/payment-term.type"
 
 // Wire contract for POST /api/suppliers — also the client-side onSubmit validator for
 // CreateSupplierForm. Every optional field transforms "" straight to undefined here, so the
@@ -63,7 +63,7 @@ export const createSupplierSchema = z
       .trim()
       .max(1000, "Ghi chú nội bộ tối đa 1000 ký tự")
       .transform(emptyToUndefined),
-    attachments: z.array(fileFieldSchema),
+    files: z.array(fileFieldSchema),
     payment: z.object({
       bankName: z.string().trim().transform(emptyToUndefined),
       bankAccountNumber: z.string().trim().transform(emptyToUndefined),
@@ -72,15 +72,10 @@ export const createSupplierSchema = z
       defaultPaymentMethod: optionalEnum(PaymentMethod),
       defaultPaymentTerm: optionalEnum(PaymentTerm),
       creditLimit: z
-        .string()
-        .trim()
-        .transform(emptyToUndefinedNumber)
-        .refine((value) => value === undefined || Number.isInteger(value), {
-          message: "Hạn mức công nợ phải là số nguyên",
-        })
-        .refine((value) => value === undefined || value >= 0, {
-          message: "Hạn mức công nợ không được âm",
-        }),
+        .number("Hạn mức công nợ phải là số nguyên")
+        .int("Hạn mức công nợ phải là số nguyên")
+        .min(0, "Hạn mức công nợ không được âm")
+        .optional(),
       creditLimitStartDate: z
         .string()
         .trim()
@@ -88,6 +83,8 @@ export const createSupplierSchema = z
     }),
   })
   .superRefine(refineOptionalEmail("email"))
+  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
+  .superRefine(refineOptionalPhoneNumber("representativePhone"))
 
 export type CreateSupplierSchema = z.input<typeof createSupplierSchema>
 
@@ -106,7 +103,7 @@ export const createSupplierFormDefaultValues: CreateSupplierSchema = {
   countryId: "",
   status: SupplierStatus.ACTIVE,
   internalNote: "",
-  attachments: [],
+  files: [],
   payment: {
     bankName: "",
     bankAccountNumber: "",
@@ -114,7 +111,7 @@ export const createSupplierFormDefaultValues: CreateSupplierSchema = {
     bankBranch: "",
     defaultPaymentMethod: "",
     defaultPaymentTerm: "",
-    creditLimit: "",
+    creditLimit: undefined,
     creditLimitStartDate: "",
   },
 }

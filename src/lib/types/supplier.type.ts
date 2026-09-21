@@ -1,4 +1,5 @@
 import type { FileResource } from "@/lib/types/file.type"
+import type { PaymentTerm } from "@/lib/types/payment-term.type"
 
 export enum SupplierStatus {
   ACTIVE = "ACTIVE",
@@ -6,7 +7,7 @@ export enum SupplierStatus {
   STOPPED = "STOPPED",
 }
 
-export const SUPPLIER_STATUS_LABELS: Record<SupplierStatus, string> = {
+export const supplierStatusLabels: Record<SupplierStatus, string> = {
   [SupplierStatus.ACTIVE]: "Đang hoạt động",
   [SupplierStatus.PAUSED]: "Tạm ngưng",
   [SupplierStatus.STOPPED]: "Đã ngừng hợp tác",
@@ -18,7 +19,7 @@ export enum SupplierType {
   HOUSEHOLD = "HOUSEHOLD",
 }
 
-export const SUPPLIER_TYPE_LABELS: Record<SupplierType, string> = {
+export const supplierTypeLabels: Record<SupplierType, string> = {
   [SupplierType.INDIVIDUAL]: "Cá nhân",
   [SupplierType.COMPANY]: "Công ty",
   [SupplierType.HOUSEHOLD]: "Hộ kinh doanh",
@@ -29,23 +30,9 @@ export enum PaymentMethod {
   BANK_TRANSFER = "BANK_TRANSFER",
 }
 
-export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+export const paymentMethodLabels: Record<PaymentMethod, string> = {
   [PaymentMethod.CASH]: "Tiền mặt",
   [PaymentMethod.BANK_TRANSFER]: "Chuyển khoản",
-}
-
-export enum PaymentTerm {
-  IMMEDIATE = "IMMEDIATE",
-  NET_15 = "NET_15",
-  NET_30 = "NET_30",
-  NET_60 = "NET_60",
-}
-
-export const PAYMENT_TERM_LABELS: Record<PaymentTerm, string> = {
-  [PaymentTerm.IMMEDIATE]: "Thanh toán ngay",
-  [PaymentTerm.NET_15]: "Net 15 ngày",
-  [PaymentTerm.NET_30]: "Net 30 ngày",
-  [PaymentTerm.NET_60]: "Net 60 ngày",
 }
 
 /** Mirrors the backend's nested supplier-group relation (GET /api/supplier-groups). */
@@ -70,7 +57,7 @@ export type SupplierCreatorRef = {
 }
 
 /** Lightweight reference to a supplier itself (GET /api/suppliers) — used by
- *  other domains' nested relation (e.g. Material.preferredSupplier). */
+ *  other domains' nested relation (e.g. Consumable.preferredSupplier). */
 export type SupplierRef = {
   id: string
   code: string
@@ -86,6 +73,14 @@ export type SupplierRepresentative = {
   isPrimary: boolean
 }
 
+/** The representative to show when only one can be displayed — the one marked
+ *  `isPrimary`, or the first if none is. */
+export function getPrimaryRepresentative(
+  representatives: SupplierRepresentative[]
+): SupplierRepresentative | undefined {
+  return representatives.find((rep) => rep.isPrimary) ?? representatives[0]
+}
+
 /** Mirrors the backend's SupplierPaymentResDto — always present, sub-fields nullable. */
 export type SupplierPayment = {
   bankName: string | null
@@ -98,9 +93,9 @@ export type SupplierPayment = {
   creditLimitStartDate: string | null
 }
 
-/** Mirrors the backend's SupplierAttachmentResDto — a join row carrying the
+/** Mirrors the backend's SupplierFileResDto — a join row carrying the
  *  registry file it points at. */
-export type SupplierAttachment = {
+export type SupplierFile = {
   id: string
   file: FileResource
 }
@@ -124,7 +119,7 @@ export type Supplier = {
   rating: number | null
   status: SupplierStatus
   internalNote: string | null
-  attachments: SupplierAttachment[]
+  files: SupplierFile[]
   creator: SupplierCreatorRef | null
   createdAt: string
   updatedAt: string

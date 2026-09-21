@@ -1,29 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { ProductDetailPage } from "@/features/products/pages/ProductDetailPage"
 import { productDetailSearchSchema } from "@/features/products/schemas/product-detail-search.schema"
-import {
-  productGroupOptionsQueryOptions,
-  productQueryOptions,
-} from "@/features/products/api/options"
+import { itemQueryOptions } from "@/features/products/api/options"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 
-// Guarded on `products:read`, not `products:update`: a read-only viewer should
-// reach this screen. The write actions gate themselves with PermissionGate.
 export const Route = createFileRoute("/(authed)/manage_/products_/$productId")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "products:read"),
   validateSearch: productDetailSearchSchema,
   loader: ({ context, params }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(
-        productQueryOptions(params.productId)
-      ),
-      context.queryClient.ensureQueryData(unitOptionsQueryOptions("PRODUCT")),
-      context.queryClient.ensureQueryData(productGroupOptionsQueryOptions()),
+      context.queryClient.query({
+        ...itemQueryOptions(params.productId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...unitOptionsQueryOptions("PRODUCT"),
+        staleTime: "static",
+      }),
+      // Unscoped list — dùng cho picker "ĐVT" của node COMPONENT (Thêm cấu trúc con), không giới
+      // hạn theo unit scope.
+      context.queryClient.query({
+        ...unitOptionsQueryOptions(),
+        staleTime: "static",
+      }),
     ]),
   component: ProductDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

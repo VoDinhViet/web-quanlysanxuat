@@ -1,15 +1,16 @@
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import type { Key } from "react-aria-components"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { Surface } from "@/components/shared/Surface"
-import { ProductionJobBomTab } from "@/features/production-jobs/components/detail/ProductionJobBomTab"
-import { ProductionJobDetailHeader } from "@/features/production-jobs/components/detail/ProductionJobDetailHeader"
-import { ProductionJobInfoTab } from "@/features/production-jobs/components/detail/ProductionJobInfoTab"
-import { ProductionJobMaterialsTab } from "@/features/production-jobs/components/detail/ProductionJobMaterialsTab"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { Surface } from "@/components/shared/layouts/Surface"
+import { ProductionJobBomTab } from "@/features/production-jobs/components/sections/ProductionJobBomTab"
+import { ProductionJobDetailHeader } from "@/features/production-jobs/components/layouts/ProductionJobDetailHeader"
+import { ProductionJobInfoTab } from "@/features/production-jobs/components/sections/ProductionJobInfoTab"
+import { ProductionJobOperationsTab } from "@/features/production-jobs/components/sections/ProductionJobOperationsTab"
 import { productionJobQueryOptions } from "@/features/production-jobs/api/options"
-import { PRODUCTION_JOB_DETAIL_TABS } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
+import { productionJobDetailTabs } from "@/features/production-jobs/schemas/production-job-detail-search.schema"
 
 export function ProductionJobDetailPage() {
   const { productionJobId } = useParams({
@@ -22,14 +23,15 @@ export function ProductionJobDetailPage() {
     from: "/manage/production-jobs/$productionJobId",
   })
 
-  const { data: detail } = useSuspenseQuery(
+  const { data: productionJob } = useSuspenseQuery(
     productionJobQueryOptions(productionJobId)
   )
 
-  // Radix widens onValueChange to `string`; `find` narrows it back without a cast, and an
-  // unrecognised value simply doesn't navigate.
-  const handleTabChange = (value: string) => {
-    const nextTab = PRODUCTION_JOB_DETAIL_TABS.find((item) => item === value)
+  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back to
+  // the search param's literal union without a cast, and an unrecognised value simply
+  // doesn't navigate.
+  const handleTabChange = (key: Key) => {
+    const nextTab = productionJobDetailTabs.find((item) => item === String(key))
 
     if (nextTab) {
       void navigate({ search: { tab: nextTab } })
@@ -41,30 +43,34 @@ export function ProductionJobDetailPage() {
       <PageTitleBar
         title="Chi tiết Job"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Quản lý sản xuất", href: "/manage/production-jobs" },
-          { label: detail.code },
+          { label: productionJob.code },
         ]}
-        notificationCount={5}
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <Surface>
           <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
-            <ProductionJobDetailHeader detail={detail} />
+            <ProductionJobDetailHeader productionJob={productionJob} />
 
             <TabsContent value="info" className="m-0 outline-none">
-              <ProductionJobInfoTab detail={detail} />
-            </TabsContent>
-
-            <TabsContent value="materials" className="m-0 outline-none">
-              <ProductionJobMaterialsTab productionJobId={productionJobId} />
+              <ProductionJobInfoTab productionJob={productionJob} />
             </TabsContent>
 
             <TabsContent value="bom" className="m-0 outline-none">
               <ProductionJobBomTab
                 productionJobId={productionJobId}
-                status={detail.status}
+                status={productionJob.status}
+                itemId={productionJob.itemId}
+              />
+            </TabsContent>
+
+            <TabsContent value="operations" className="m-0 outline-none">
+              <ProductionJobOperationsTab
+                productionJobId={productionJobId}
+                status={productionJob.status}
+                itemId={productionJob.itemId}
               />
             </TabsContent>
           </Tabs>

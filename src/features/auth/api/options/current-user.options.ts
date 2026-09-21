@@ -5,8 +5,9 @@ import { getCurrentProfile } from "@/features/auth/api/server-functions/get-curr
 /**
  * The signed-in user's profile + RBAC (role, permissions), fetched once from
  * `/api/users/me` and cached. Loaded in the `(authed)` layout's `beforeLoad`
- * (via `ensureQueryData`) so route guards can read permissions, and read in
- * components via `useQuery`/`useHasPermission` without refetching.
+ * (via `query({ ...options, staleTime: "static" })`) so route guards can read
+ * permissions, and read in components via `useQuery`/`useHasPermission` without
+ * refetching.
  */
 export const currentUserQueryOptions = queryOptions({
   queryKey: ["auth", "current-user"],

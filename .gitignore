@@ -24,3 +24,9 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# superpowers subagent-driven-development scratch workspace
+.superpowers/
+
+# chrome-devtools-mcp / playwright-mcp test-run artifacts
+.playwright-mcp/

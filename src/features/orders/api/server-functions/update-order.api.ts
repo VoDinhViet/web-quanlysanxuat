@@ -2,27 +2,30 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { updateOrderSchema } from "@/features/orders/schemas/update-order.schema"
-import { resolveApiAttachmentFileIds } from "@/lib/file-field.schema"
+import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import { OrderStatus } from "@/lib/types/order.type"
-import type { OrderDetail } from "@/lib/types/order.type"
 
 // Every field is already wire-ready by the time this runs — string->number mapping happens
 // field-by-field on updateOrderSchema, and the two UI-only item fields are already dropped
 // by orderItemFormSchema's own transform (order-item-form.schema.ts). All that's left is
-// collapsing attachments into attachmentFileIds — kept here, not on the schema, matching
+// collapsing files into fileIds — kept here, not on the schema, matching
 // every other feature's file-field handling (see "Server functions" in architecture.md).
-// `status` is dropped entirely when it's AWAITING_PRODUCTION: that value is only reachable
-// through POST .../approve (approve-order.api.ts) — sending it here hits
+// `status` is dropped entirely when it's AWAITING_PRODUCTION or REJECTED: both are only
+// reachable through POST .../approve / .../reject — sending either here hits
 // order.error.status_not_settable_directly. A PATCH treats a missing key as "leave
-// unchanged", which is exactly right since the form can only ever be *displaying* that
-// status here, never setting it.
+// unchanged", which is exactly right since the form can only ever be *displaying* those
+// statuses here, never setting them (UpdateOrderForm already seeds DRAFT instead of REJECTED,
+// so this is a safety net, not the normal path).
 const updateOrderPayloadSchema = updateOrderSchema.transform(
-  ({ attachments, status, ...rest }) => ({
+  ({ files, status, ...rest }) => ({
     ...rest,
-    ...(status === OrderStatus.AWAITING_PRODUCTION ? {} : { status }),
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
+    ...(status === OrderStatus.AWAITING_PRODUCTION ||
+    status === OrderStatus.REJECTED
+      ? {}
+      : { status }),
+    fileIds: resolveApiFileIds(files),
   })
 )
 
@@ -42,8 +45,14 @@ function resolveUpdateOrderErrorMessage(error: unknown): string {
       return "Khách hàng không tồn tại."
     case "order.error.staff_not_found":
       return "Nhân viên kinh doanh không tồn tại."
-    case "order.error.product_not_found":
+    case "order.error.item_not_found":
       return "Một sản phẩm trong đơn hàng không tồn tại."
+    case "order.error.status_not_settable_directly":
+      return "Không thể đặt trạng thái này trực tiếp."
+    case "order.error.has_approved_production_order":
+      return "Đơn hàng đã có lệnh sản xuất được duyệt, không thể huỷ."
+    case "order.error.items_locked_by_production":
+      return "Đơn hàng đã có lệnh sản xuất, không thể chỉnh sửa danh sách mặt hàng."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":
@@ -55,15 +64,10 @@ function resolveUpdateOrderErrorMessage(error: unknown): string {
 
 export const updateOrder = createServerFn({ method: "POST" })
   .validator(updateOrderPayloadSchema)
-  .handler(async ({ data }): Promise<OrderDetail> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
       const { orderId, ...payload } = data
-      const response = await http.patch<OrderDetail>(
-        `/api/orders/${orderId}`,
-        payload
-      )
-
-      return response.data
+      await http.patch(`/api/orders/${orderId}`, payload)
     } catch (error) {
       logHttpError(error, "updateOrder")
 

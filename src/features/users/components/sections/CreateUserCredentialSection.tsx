@@ -1,0 +1,108 @@
+import { useField } from "@tanstack/react-form"
+import { useQuery } from "@tanstack/react-query"
+
+import { Switch } from "@/components/ui/switch"
+import { withForm } from "@/hooks/use-app-form"
+import { rolesQueryOptions } from "@/features/roles/api"
+import { createUserFormDefaultValues } from "@/features/users/schemas/create-user.schema"
+import { buildSelectOptions } from "@/lib/utils"
+
+export const CreateUserCredentialSection = withForm({
+  defaultValues: createUserFormDefaultValues,
+  props: {
+    disabled: false,
+  },
+  render: function Render({ form, disabled }) {
+    // `GET /roles` đòi `roles:read`, còn trang này chỉ đòi `users:create` — không thể prefetch
+    // ở loader (thiếu quyền sẽ làm sập cả trang qua errorComponent chung). `useQuery` để thiếu
+    // quyền chỉ làm rỗng combobox Vai trò, vốn đã optional.
+    const rolesQuery = useQuery(rolesQueryOptions())
+    const roles = rolesQuery.data ?? []
+    const roleOptions = buildSelectOptions(roles)
+
+    // Fields stay on screen when the toggle is off so the section keeps its shape — they're
+    // just inert. `credential` is undefined then, so an untoggled account still submits as "no
+    // account".
+    const credentialEnabled =
+      useField({ form, name: "credential" }).state.value != null
+    const fieldsDisabled = disabled || !credentialEnabled
+
+    return (
+      <div>
+        <div className="flex items-start justify-between gap-3 px-4 py-4 sm:px-5">
+          <div>
+            <h2 className="font-heading text-base font-semibold text-foreground">
+              Tài khoản ERP
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Tùy chọn — cho phép nhân viên đăng nhập hệ thống
+            </p>
+          </div>
+
+          <form.Field name="credential">
+            {(field) => (
+              <Switch
+                checked={field.state.value != null}
+                onCheckedChange={(checked) =>
+                  field.handleChange(
+                    checked
+                      ? { username: "", email: "", password: "", roleId: "" }
+                      : undefined
+                  )
+                }
+                disabled={disabled}
+                className="mt-1 shrink-0"
+                aria-label="Cấp tài khoản ERP cho nhân viên này"
+              />
+            )}
+          </form.Field>
+        </div>
+
+        <div className="space-y-5 px-4 pb-5 sm:px-5">
+          <form.AppField name="credential.username">
+            {(field) => (
+              <field.TextField
+                label="Tên đăng nhập"
+                placeholder="Nhập tên đăng nhập"
+                disabled={fieldsDisabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="credential.email">
+            {(field) => (
+              <field.TextField
+                label="Email đăng nhập"
+                type="email"
+                placeholder="Nhập email đăng nhập"
+                disabled={fieldsDisabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="credential.password">
+            {(field) => (
+              <field.PasswordField
+                label="Mật khẩu"
+                placeholder="Nhập mật khẩu"
+                disabled={fieldsDisabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="credential.roleId">
+            {(field) => (
+              <field.SelectField
+                label="Vai trò"
+                placeholder="Chọn vai trò (tuỳ chọn)"
+                options={roleOptions}
+                isPending={rolesQuery.isPending}
+                disabled={fieldsDisabled}
+              />
+            )}
+          </form.AppField>
+        </div>
+      </div>
+    )
+  },
+})

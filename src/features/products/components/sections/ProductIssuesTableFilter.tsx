@@ -1,0 +1,51 @@
+import { useState } from "react"
+import { useDebounceCallback } from "usehooks-ts"
+import { Search } from "lucide-react"
+
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+type ProductIssuesTableFilterProps = {
+  q: string | undefined
+  onSearchChange: (q: string | undefined) => void
+}
+
+export function ProductIssuesTableFilter({
+  q,
+  onSearchChange,
+}: ProductIssuesTableFilterProps) {
+  const [value, setValue] = useState(q ?? "")
+
+  // Filters as the user types, 300ms after the last keystroke — same delay as
+  // the other list filters in this app.
+  const handleSearch = useDebounceCallback((term: string) => {
+    const trimmed = term.trim()
+    onSearchChange(trimmed.length > 0 ? trimmed : undefined)
+  }, 300)
+
+  return (
+    <div className="bg-card px-4 py-4 lg:px-5">
+      <div className="max-w-sm space-y-1.5">
+        <Label
+          htmlFor="product-consumables-search"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Tìm kiếm
+        </Label>
+        <div className="relative">
+          <Input
+            id="product-consumables-search"
+            className="pr-9 text-xs placeholder:text-muted-foreground/75"
+            placeholder="Tìm kiếm theo mã, tên vật tư..."
+            value={value}
+            onChange={(event) => {
+              setValue(event.target.value)
+              handleSearch(event.target.value)
+            }}
+          />
+          <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        </div>
+      </div>
+    </div>
+  )
+}

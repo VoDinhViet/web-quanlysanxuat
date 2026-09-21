@@ -1,8 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { PageTitleBar } from "@/components/shared/PageTitleBar"
-import { UpdateClientForm } from "@/features/clients/components/update/UpdateClientForm"
+import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
+import { UpdateClientForm } from "@/features/clients/components/sections/UpdateClientForm"
 import { clientQueryOptions } from "@/features/clients/api/options"
 
 export function UpdateClientPage() {
@@ -17,11 +17,10 @@ export function UpdateClientPage() {
       <PageTitleBar
         title="Chỉnh sửa khách hàng"
         breadcrumbs={[
-          { label: "Dashboard", href: "/manage" },
+          { label: "Bảng điều khiển", href: "/manage" },
           { label: "Khách hàng", href: "/manage/clients" },
           { label: "Chỉnh sửa khách hàng" },
         ]}
-        notificationCount={5}
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">

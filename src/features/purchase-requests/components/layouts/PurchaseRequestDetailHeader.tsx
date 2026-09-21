@@ -1,0 +1,129 @@
+import { Link } from "@tanstack/react-router"
+import { DateTime } from "luxon"
+import { AltArrowLeft } from "@solar-icons/react"
+import type { ReactNode } from "react"
+
+import { LinkButton } from "@/components/ui/button"
+import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/primitives/PurchaseRequestBadges"
+import { PurchaseRequestDetailActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestDetailActions"
+import { PurchaseRequestNoteField } from "@/features/purchase-requests/components/composites/PurchaseRequestNoteField"
+import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
+
+type PurchaseRequestDetailHeaderProps = {
+  purchaseRequest: PurchaseRequestDetail
+  itemCount: number
+}
+
+// Chỉ có 1 đường ghi vào purchase_requests hiện nay — ProductionJobsService.startJob — nên có
+// productionJob/productionOrder nghĩa là đề xuất tự sinh từ đó; ngược lại là thủ công (tương lai,
+// xem docs/domains/purchase-requests.md ở backend).
+const getSourceLabel = ({
+  productionJob,
+  productionOrder,
+}: PurchaseRequestDetail): string =>
+  productionJob || productionOrder ? "Từ Job/PO" : "Thủ công"
+
+// Identity + info row, same single-block idiom as ProductionJobDetailHeader.tsx —
+// `itemCount` is a prop (not `purchaseRequest.items.length`) so "Tổng số vật tư" tracks the page's own
+// editable row list (a vật tư removed locally shouldn't still count here).
+export function PurchaseRequestDetailHeader({
+  purchaseRequest,
+  itemCount,
+}: PurchaseRequestDetailHeaderProps) {
+  const source = getSourceLabel(purchaseRequest)
+
+  return (
+    <div className="flex flex-col gap-4 px-4 py-4 sm:px-5 print:hidden">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <LinkButton
+              to="/manage/purchase-requests"
+              search={{ page: 1, limit: 10 }}
+              variant="ghost"
+              className="-ml-1.5 gap-1.5 text-muted-foreground hover:text-foreground"
+              aria-label="Quay lại danh sách đề xuất mua hàng"
+            >
+              <AltArrowLeft className="size-4" />
+              <span className="hidden sm:inline">Quay lại</span>
+            </LinkButton>
+
+            <span className="font-mono text-lg font-bold text-foreground">
+              {purchaseRequest.code}
+            </span>
+            <PurchaseRequestStatusBadge status={purchaseRequest.status} />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <MetaField label="Nguồn" value={source} />
+            <MetaField
+              label="PO liên quan"
+              value={
+                purchaseRequest.productionOrder ? (
+                  <Link
+                    to="/manage/production-orders/$productionOrderId"
+                    params={{
+                      productionOrderId: purchaseRequest.productionOrder.id,
+                    }}
+                    className="font-mono text-primary hover:underline"
+                  >
+                    {purchaseRequest.productionOrder.code ?? "—"}
+                  </Link>
+                ) : (
+                  "—"
+                )
+              }
+            />
+            <MetaField
+              label="Bộ phận đề xuất"
+              value={purchaseRequest.department.name}
+            />
+            <MetaField
+              label="Người tạo"
+              value={purchaseRequest.requesterBy?.fullName ?? "—"}
+            />
+            <MetaField
+              label="Ngày tạo"
+              value={DateTime.fromISO(purchaseRequest.createdAt).toFormat(
+                "dd/MM/yyyy HH:mm"
+              )}
+            />
+            <MetaField
+              label="Ngày cần"
+              value={DateTime.fromISO(purchaseRequest.neededDate).toFormat(
+                "dd/MM/yyyy"
+              )}
+            />
+            <MetaField label="Tổng số vật tư" value={String(itemCount)} />
+          </div>
+        </div>
+
+        <PurchaseRequestDetailActions purchaseRequest={purchaseRequest} />
+      </div>
+
+      <PurchaseRequestNoteField
+        purchaseRequestId={purchaseRequest.id}
+        note={purchaseRequest.note}
+      />
+    </div>
+  )
+}
+
+type MetaFieldProps = {
+  label: string
+  value: ReactNode
+}
+
+// Same label-above-value tile idiom as ProductionOrderDetailSummaryCard.tsx's MetaField — more
+// scannable than the previous inline "label: value" list, and reuses an existing identity-block
+// pattern instead of inventing a new one.
+function MetaField({ label, value }: MetaFieldProps) {
+  return (
+    <div className="min-w-0 space-y-1">
+      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        {label}
+      </p>
+      <p className="truncate text-sm font-medium text-foreground">{value}</p>
+    </div>
+  )
+}

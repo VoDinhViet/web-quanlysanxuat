@@ -9,7 +9,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource/cal-sans";
-/* Create-order page only ("bản vẽ kỹ thuật" theme, see .order-drafting below) */
+/* Create/update-order pages only ("bản vẽ kỹ thuật" theme, see .order-drafting below) */
 @import "@fontsource-variable/space-grotesk";
 @import "@fontsource/ibm-plex-sans/400.css";
 @import "@fontsource/ibm-plex-sans/500.css";
@@ -187,10 +187,11 @@
   }
 }
 
-/* Create-order page only — a "technical drawing" typographic identity for
-   /manage/orders/create (see CreateOrderPage.tsx), scoped entirely behind
-   this one class so every other route is untouched. Colors stay the app's
-   normal theme — only type + the title-block decoration are distinct here. */
+/* Create/update-order pages only — a "technical drawing" typographic identity
+   for /manage/orders/create and /manage/orders/$orderId/update (see
+   CreateOrderPage.tsx/UpdateOrderPage.tsx), scoped entirely behind this one
+   class so every other route is untouched. Colors stay the app's normal
+   theme — only type + the title-block decoration are distinct here. */
 .order-drafting {
   --font-heading: "Space Grotesk Variable", var(--font-sans);
   --font-sans: "IBM Plex Sans", sans-serif;
@@ -210,7 +211,9 @@
 }
 
 .order-drafting .tabular-nums,
-.order-drafting .font-mono {
+.order-drafting .font-mono,
+.requisition-sheet .tabular-nums,
+.requisition-sheet .font-mono {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
 }
 
@@ -242,4 +245,72 @@
   right: -1px;
   border-left: none;
   border-top: none;
+}
+
+/* Signature element on the order detail page's totals box (OrderDetailPaymentSummary) — a
+   scalloped top edge that reads as a ticket stub torn off the product list above it, echoing
+   the printed phiếu this total ultimately belongs to. Pure CSS mask, no image asset; degrades
+   to a plain straight edge if mask isn't supported.
+
+   Two mask layers: the radial-gradient draws the scalloped notches in a thin strip at the
+   top; the linear-gradient is a plain opaque rectangle covering everything below that strip.
+   Both are required — a single non-repeating mask tile only defines the top notch band, and
+   per the CSS Masking spec, everything outside a non-repeated tile is transparent (i.e.
+   hidden), so without the second layer the entire box below the notches disappears. */
+.receipt-stub {
+  --notch: 8px;
+  -webkit-mask-image:
+    radial-gradient(
+      circle at var(--notch) 0,
+      transparent var(--notch),
+      black calc(var(--notch) + 0.5px)
+    ),
+    linear-gradient(black, black);
+  mask-image:
+    radial-gradient(
+      circle at var(--notch) 0,
+      transparent var(--notch),
+      black calc(var(--notch) + 0.5px)
+    ),
+    linear-gradient(black, black);
+  -webkit-mask-size:
+    calc(var(--notch) * 2) var(--notch),
+    100% calc(100% - var(--notch));
+  mask-size:
+    calc(var(--notch) * 2) var(--notch),
+    100% calc(100% - var(--notch));
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-position:
+    top left,
+    bottom left;
+  mask-position:
+    top left,
+    bottom left;
+  mask-composite: add;
+}
+
+/* In chứng từ — mỗi trang chi tiết render sẵn một PaymentRequestPrintSheet ẩn (`.print-sheet`,
+   `hidden print:block`); khi in, ẩn toàn bộ phần còn lại của trang (sidebar, header, nội dung
+   xem trên web) và chỉ hiện đúng chứng từ đó. Một rule toàn cục ở đây thay vì rải `print:hidden`
+   lên từng shared component (sidebar, PageTitleBar, mọi card khác). */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-sheet,
+  .print-sheet * {
+    visibility: visible;
+  }
+
+  .print-sheet {
+    position: absolute;
+    inset: 0;
+  }
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
 }

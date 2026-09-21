@@ -1,27 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { UpdateUserPage } from "@/features/users/pages/UpdateUserPage"
-import { departmentOptionsQueryOptions } from "@/features/departments/api"
-import {
-  positionsQueryOptions,
-  rolesQueryOptions,
-  userQueryOptions,
-} from "@/features/users/api/options"
+import { departmentQueryOptions } from "@/features/departments/api"
+import { positionOptionsQueryOptions } from "@/features/positions/api"
+import { userQueryOptions } from "@/features/users/api/options"
 
+// `positionOptionsQueryOptions` needs the user's current `departmentId`, only known after the
+// user itself resolves — so this loader awaits it first instead of one flat `Promise.all`.
+// `rolesQueryOptions` needs `roles:read`, which this route doesn't require (UpdateUserCredentialSection
+// fetches it itself via `useQuery`, tolerating 403).
 export const Route = createFileRoute("/(authed)/manage_/users_/$userId/update")(
   {
-    beforeLoad: ({ context }) =>
-      requirePermission(context.permissions, "users:update"),
-    loader: ({ context, params }) =>
-      Promise.all([
-        context.queryClient.ensureQueryData(userQueryOptions(params.userId)),
-        context.queryClient.ensureQueryData(departmentOptionsQueryOptions()),
-        context.queryClient.ensureQueryData(positionsQueryOptions()),
-        context.queryClient.ensureQueryData(rolesQueryOptions()),
-      ]),
+    loader: async ({ context, params }) => {
+      const user = await context.queryClient.query({
+        ...userQueryOptions(params.userId),
+        staleTime: "static",
+      })
+
+      await Promise.all([
+        context.queryClient.query({
+          ...departmentQueryOptions(),
+          staleTime: "static",
+        }),
+        context.queryClient.query({
+          ...positionOptionsQueryOptions(user.department.id),
+          staleTime: "static",
+        }),
+      ])
+    },
     component: UpdateUserPage,
-    pendingComponent: PageLoading,
+    pendingComponent: LayoutPagePending,
   }
 )

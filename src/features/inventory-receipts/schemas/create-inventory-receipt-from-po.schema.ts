@@ -1,0 +1,71 @@
+import { z } from "zod"
+
+import { InventoryReceiptAssetType } from "@/lib/types/inventory-receipt.type"
+
+// Bước ③ của wizard "Nhập kho từ PO" — một dòng cho mỗi dòng PO đã chọn ở bước ②. itemLabel/
+// itemUnit/requestedQuantity/remainingQuantity là UI-only (hiển thị lại không cần fetch lần 2, cùng idiom
+// inventory-receipt-item-form.schema.ts). Cố ý không có `unitPrice` — ảnh mẫu không cho sửa đơn
+// giá ở luồng này; submit lấy thẳng unitPrice từ dòng PO gốc (xem
+// InventoryReceiptCreateFromPoForm.tsx's buildCreateInventoryReceiptPayload).
+const inventoryReceiptFromPoItemFields = {
+  purchaseOrderItemId: z.string().trim().min(1),
+  itemId: z.string().trim().min(1),
+  itemLabel: z.string(),
+  itemUnit: z.string(),
+  requestedQuantity: z.number(),
+  remainingQuantity: z.number().optional(),
+  quantity: z
+    .number("Số lượng nhận phải lớn hơn 0")
+    .positive("Số lượng nhận phải lớn hơn 0")
+    .optional()
+    .pipe(z.number("Số lượng nhận phải lớn hơn 0")),
+  note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
+}
+
+// SL nhận lần này không được vượt SL còn lại — cùng ràng buộc backend tự kiểm lại ở confirm
+// (`ensureReceiptQuantitiesWithinOrdered`), chặn ngay ở form thay vì để round-trip lên server
+// rồi báo lỗi.
+export const inventoryReceiptFromPoItemSchema = z
+  .object(inventoryReceiptFromPoItemFields)
+  .refine(
+    (item) => {
+      const limit =
+        item.remainingQuantity !== undefined && item.remainingQuantity > 0
+          ? item.remainingQuantity
+          : item.requestedQuantity
+      return item.quantity <= limit
+    },
+    {
+      message: "SL nhận lần này không được lớn hơn SL còn lại cần nhận",
+      path: ["quantity"],
+    }
+  )
+export type InventoryReceiptFromPoItemValue = z.input<
+  typeof inventoryReceiptFromPoItemSchema
+>
+
+// Toàn bộ form 4 bước — `purchaseOrderId` (bước ①), `requiresIqc` (bước ③, dạng "no"/"yes" để
+// khớp RadioPillField<TValue extends string>, đổi sang boolean thật khi build payload thật gửi
+// server function), `items` (bước ③). Cố ý không có supplierId/receiptDate/receiptType — wizard
+// tự suy ra từ PO đã chọn lúc submit (NCC của PO, ngày = hôm nay, loại phiếu luôn PURCHASE),
+// không có ô nhập tay nào cho chúng trong 4 bước.
+export const createInventoryReceiptFromPoFormSchema = z.object({
+  purchaseOrderId: z.string().trim().min(1, "Vui lòng chọn PO cần nhập"),
+  requiresIqc: z.enum(["no", "yes"]),
+  assetType: z.enum(InventoryReceiptAssetType),
+  items: z
+    .array(inventoryReceiptFromPoItemSchema)
+    .min(1, "Cần ít nhất một dòng vật tư"),
+})
+
+export type CreateInventoryReceiptFromPoFormSchema = z.input<
+  typeof createInventoryReceiptFromPoFormSchema
+>
+
+export const createInventoryReceiptFromPoFormDefaultValues: CreateInventoryReceiptFromPoFormSchema =
+  {
+    purchaseOrderId: "",
+    requiresIqc: "no",
+    assetType: InventoryReceiptAssetType.COMPANY,
+    items: [],
+  }

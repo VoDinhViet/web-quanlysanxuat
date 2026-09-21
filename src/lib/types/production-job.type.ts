@@ -1,23 +1,27 @@
-import type { BomItemType } from "@/lib/types/bom-item.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
-import type { ProductRef } from "@/lib/types/product.type"
+import type { ItemRef } from "@/lib/types/item.type"
 
 /** Mirrors the backend's real `production_jobs.status` column (`GET /production-jobs`,
- *  `GET /production-jobs/:jobId`). Rút còn 2 giá trị 2026-08-01 theo yêu cầu nghiệp vụ — không
- *  còn `WAITING`, một chiều `PENDING → IN_PROGRESS`, không có đường lùi và không có điểm kết
- *  thúc nào khác `IN_PROGRESS` (xem `src/database/schemas/production.ts`, backend). */
+ *  `GET /production-jobs/:jobId`). Khôi phục điểm kết thúc 2026-08-24 — `PENDING → IN_PROGRESS →
+ *  WAITING_QC → WAITING_DELIVERY → COMPLETED`, một chiều, không đường lùi (xem
+ *  `be-quanlysanxuat/docs/decisions/production-lifecycle-closing.md`). */
 export enum ProductionJobStatus {
   PENDING = "PENDING",
   IN_PROGRESS = "IN_PROGRESS",
+  WAITING_QC = "WAITING_QC",
+  WAITING_DELIVERY = "WAITING_DELIVERY",
+  COMPLETED = "COMPLETED",
 }
 
-export const PRODUCTION_JOB_STATUS_LABELS: Record<ProductionJobStatus, string> =
-  {
-    [ProductionJobStatus.PENDING]: "Chưa SX",
-    [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
-  }
+export const productionJobStatusLabels: Record<ProductionJobStatus, string> = {
+  [ProductionJobStatus.PENDING]: "Chưa SX",
+  [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
+  [ProductionJobStatus.WAITING_QC]: "Chờ QC",
+  [ProductionJobStatus.WAITING_DELIVERY]: "Chờ giao hàng",
+  [ProductionJobStatus.COMPLETED]: "Hoàn thành",
+}
 
 /** Mirrors the backend's ProductionJobResDto — one row of `GET /production-jobs`, the "Quản lý
  *  sản xuất" screen. Split off from the detail shape 2026-07-31: the list only carries the columns
@@ -38,9 +42,9 @@ export type ProductionJob = {
 }
 
 /** Mirrors the backend's ProductionJobDetailResDto (`GET /production-jobs/:jobId`) — joins in
- *  the parent order, its client and the FG product (`OrderBaseResDto`/`ClientBaseResDto`/
- *  `ProductBaseResDto` server-side, 2026-08-01). `productionOrderId` has no matching LSX code on
- *  this endpoint — the detail screen links to the LSX by id instead of rendering its code. */
+ *  the parent order, its client and the FG item (`OrderBaseResDto`/`ClientBaseResDto`/
+ *  `ItemRefResDto` server-side). `productionOrderId` has no matching LSX code on this endpoint —
+ *  the detail screen links to the LSX by id instead of rendering its code. */
 export type ProductionJobDetail = {
   id: string
   code: string
@@ -49,23 +53,41 @@ export type ProductionJobDetail = {
   // Cùng một dòng `clients` với `order.client` (service leftJoin `clients` trên
   // `orders.client_id`) — backend expose ở cả 2 chỗ; UI đọc field top-level này.
   client: OrderClientRef | null
-  productId: string
-  product: ProductRef
+  itemId: string
+  item: ItemRef
   quantity: number
   status: ProductionJobStatus
   startedBy: string | null
   startedAt: string | null
+  // Thêm 2026-08-25 — từng ghi bởi `POST .../approve-operations` (route đó đã xoá 2026-09-03,
+  // bỏ bước duyệt công đoạn riêng). Giữ lại cho dữ liệu cũ, không còn route nào ghi và không
+  // còn gate nào đọc — `PATCH .../operations/:operationId` mở ngay khi Job `IN_PROGRESS`.
+  operationsApprovedBy: string | null
+  operationsApprovedAt: string | null
+  // true thì nút "Yêu cầu OQC" ở ProductionJobDetailHeader.tsx khoá lại — BE chặn tạo phiếu OQC
+  // lần 2 cho cùng công đoạn Cấp 0 (E198).
+  oqcRequested: boolean
   createdAt: string
   updatedAt: string
 }
 
-/** Mirrors the backend's ProductionJobOperationResDto, nested in ProductionJobBomItem below — the
- *  as-used routing snapshot copied from `routing_steps` onto a single BOM node at LSX approval
- *  time (`production_job_operations`). `code`/`name`/`type`/`sortOrder`/`note`/`operationId` stay
- *  frozen; `completedQuantity`/`completedDate` are the only two fields editable afterwards, via
- *  `PATCH /production-jobs/:jobId/operations/:operationId` — `completedDate` is server-set (not
- *  part of the update payload), auto-filled once `completedQuantity` reaches the parent node's
- *  `plannedQuantity`, auto-cleared if edited back down. */
+/** Mirrors the backend's ProductionJobBomOperationResDto, nested in ProductionJobBomItem below —
+ *  the as-used routing snapshot copied from `routing_steps` onto a single BOM node at Job `start`
+ *  time (`production_job_operations`) — not LSX approval; a `PENDING` Job has no rows here yet
+ *  (`docs/decisions/job-snapshot-at-start.md` backend). `code`/`name`/`type`/`sortOrder`/`note`/
+ *  `operationId` stay frozen; `completedQuantity`/`rejectedQuantity`/`completedDate` are editable
+ *  via `POST /production-execution/operations/:jobOperationId/reports` — accumulates
+ *  (doesn't overwrite), only runs once the Job is `IN_PROGRESS` (E087 otherwise, see
+ *  ProductionJobDetail). `completedDate` is caller-supplied (the date the report names), set once
+ *  `completedQuantity` (pass count only, NG doesn't count) reaches the parent node's planned
+ *  quantity — never auto-cleared afterwards on the in-house path (only an OS-IN cancel can pull an
+ *  OUTSOURCE row's `completedQuantity` back down). `dueDate` is the one other editable field — a
+ *  planning deadline, set/overwritten (not accumulated) via
+ *  `PATCH /production-jobs/:jobId/operations/:jobOperationId/due-date`, allowed on OUTSOURCE rows
+ *  too (unlike the report route). `plannedQuantity` is the parent BOM node's planned quantity
+ *  (cumulative BOM ratio × Job quantity), frozen at `start` — same value on every operation of the
+ *  same node; it's also the cap `completedQuantity` alone is checked against server-side (E256) —
+ *  `rejectedQuantity` is uncapped. */
 export type ProductionJobOperation = {
   id: string
   operationId: string | null
@@ -74,44 +96,74 @@ export type ProductionJobOperation = {
   type: OperationType
   sortOrder: number
   note: string | null
+  plannedQuantity: number
   completedQuantity: number
+  rejectedQuantity: number
   completedDate: string | null
+  dueDate: string | null
   createdAt: string
 }
 
-/** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/bom`) — one row
- *  of the Job's BOM tree, frozen at LSX approval time. A flat parent-child list (FE builds the
- *  tree via `parentId`; `parentId = null` is a top-level node, a direct child of the FG product),
- *  not a nested tree like `BomItem` — and it never includes the FG product itself, only real BOM
- *  nodes. Each node carries its own as-used `operations[]`. `plannedQuantity` (SL Job × cumulative
- *  parent-chain ratio) and `level` (1-based depth) are computed/stored server-side, not derived
- *  here. */
+/** `FG` = node Cấp 0 (lắp ráp/đóng gói thành phẩm, luôn đứng cuối bảng "Công đoạn sản xuất",
+ *  `ProductionJobsService.copyFinalAssemblyRouting` backend) — `COMPONENT`/`CONSUMABLE` = node cây BOM thường
+ *  (`BomItemType`, bom-item.type.ts). Enum riêng của snapshot Job, có thể là cả 3 giá trị — cố ý
+ *  tách khỏi `BomItemType`/`ROOT` dù cả hai giờ đều có 3 giá trị (`docs/decisions/root-bom-item.md`
+ *  backend, mục "Đừng hoàn lại": Job snapshot giữ node `FG` riêng, không gộp vào `ROOT`). */
+export type ProductionJobBomItemType = "FG" | "COMPONENT" | "CONSUMABLE"
+
+/** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/operations`,
+ *  a plain array, not paginated) — "Công đoạn sản xuất" tab: every BOM node (part) that has at
+ *  least one as-used operation, each carrying its own `operations[]` (server-grouped — no more
+ *  client-side grouping needed). Despite the name, this is NOT the full BOM tree: it's scoped to
+ *  parts with operations, flat (no `parentId`) — no image, no gia công ngoài counts (see
+ *  ProductionJobOperation's doc comment for `plannedQuantity`, carried per-operation not here). */
 export type ProductionJobBomItem = {
   id: string
-  parentId: string | null
-  itemType: BomItemType
   code: string
   name: string
-  quantity: number
-  plannedQuantity: number
-  level: number
+  itemType: ProductionJobBomItemType
   operations: ProductionJobOperation[]
 }
 
-/** Mirrors the backend's ProductionJobMaterialResDto (`GET /production-jobs/:jobId/materials`,
- *  paginated) — flat text snapshots off `production_job_materials`, independent of the live
- *  `materials`/`units` tables (`materialId` is a reference-only link, nullable). `issuedQty` has
- *  no equivalent here (no stock-issue linkage on this endpoint) — the tab renders that column as
- *  "Chưa có API" via MissingFieldValue. */
-export type ProductionJobMaterial = {
-  materialId: string | null
-  materialCode: string
-  materialName: string
-  unitCode: string
-  unitName: string
-  image: FileResource | null
-  unitQty: number | null
+/** Một dòng "Part × công đoạn" cho dialog nhập báo cáo — dùng bởi cả bảng "DANH SÁCH COMPONENT"
+ *  (màn "Thực hiện sản xuất") lẫn bảng "Công đoạn sản xuất" (chi tiết Job). Không mirror DTO
+ *  nào: cả 2 màn tự ghép từ `GET /production-jobs/:jobId/operations` (BE nhóm sẵn theo BOM
+ *  item). */
+export type JobOperationReportRow = {
+  bomItem: ProductionJobBomItem
+  operation: ProductionJobOperation
+}
+
+/** Mirrors the backend's ProductionJobItemResDto, nested in ProductionJobIssue below — a snapshot
+ *  text ref off the shared dimension table `production_job_items` (no `id`; identity is the
+ *  content triple `(itemId, code, name)`, see docs/domains/production.md). */
+export type ProductionJobIssueItemRef = {
+  code: string
+  name: string
+}
+
+/** Mirrors the backend's ProductionJobUnitResDto, nested in ProductionJobIssue below — same
+ *  snapshot-dimension idiom as ProductionJobIssueItemRef above, off `production_job_units`. */
+export type ProductionJobIssueUnitRef = {
+  code: string
+  name: string
+}
+
+/** Mirrors the backend's ProductionJobIssueResDto (`GET /production-jobs/:jobId/bom`, paginated,
+ *  `q` filters `item.code`/`item.name`) — "BOM vật tư" tab: the Job's consumable demand, read off
+ *  `production_job_issues` joined to the two shared dimension tables. Despite the route's name
+ *  (`.../bom`), this is NOT the BOM tree — the tree has no read route at all (see
+ *  ProductionJobOperation's doc comment and docs/domains/production.md, "Common mistakes" #15).
+ *  `requiredQty` is BOM demand exploded through every ancestor COMPONENT node × SL Job, computed once
+ *  at LSX approval (BUG-086 fix, 2026-08-26) — same concept as ItemIssue.requiredQty in
+ *  item.type.ts, different seed (SL Job here vs. 1 unit of the root item there). No
+ *  `id`/`itemId`/`unitQty`/`image` on this DTO. */
+export type ProductionJobIssue = {
+  item: ProductionJobIssueItemRef
+  unit: ProductionJobIssueUnitRef
   requiredQty: number
+  issuedQuantity: number
+  remainingQuantity: number
 }
 
 /** Mirrors the backend's UserRefResDto nested in ProductionJobNoteResDto. */
@@ -128,4 +180,119 @@ export type ProductionJobNote = {
   content: string
   creator: ProductionJobNoteCreator | null
   createdAt: string
+}
+
+/** Mirrors the backend's `production_job_logs.action` — cố ý không trùng tên
+ *  `ProductionJobStatus` (`CREATED`/`STARTED` thay cho `PENDING`/`IN_PROGRESS`). Chỉ 2 giá trị đó
+ *  là hành động của người dùng; 3 giá trị còn lại là mốc chuyển tự động, không có actor. */
+export enum ProductionJobLogAction {
+  CREATED = "CREATED",
+  STARTED = "STARTED",
+  WAITING_QC = "WAITING_QC",
+  WAITING_DELIVERY = "WAITING_DELIVERY",
+  COMPLETED = "COMPLETED",
+}
+
+// Động từ mô tả hành động vừa xảy ra — khác `productionJobStatusLabels` phía trên (danh từ trạng
+// thái hiện tại), cùng tinh thần `productionOrderLogActionLabels`.
+export const productionJobLogActionLabels: Record<
+  ProductionJobLogAction,
+  string
+> = {
+  [ProductionJobLogAction.CREATED]: "Tạo Job",
+  [ProductionJobLogAction.STARTED]: "Bắt đầu SX",
+  [ProductionJobLogAction.WAITING_QC]: "Chuyển chờ QC",
+  [ProductionJobLogAction.WAITING_DELIVERY]: "Chuyển chờ giao hàng",
+  [ProductionJobLogAction.COMPLETED]: "Hoàn thành Job",
+}
+
+/** Mirrors the backend's UserRefResDto nested in ProductionJobLogResDto. */
+export type ProductionJobLogPerformerRef = {
+  id: string
+  code: string
+  fullName: string
+}
+
+/** Mirrors the backend's ProductionJobLogResDto (`GET /production-jobs/:jobId/logs`, paginated,
+ *  sorted desc(createdAt) — audit log thật, khác `ProductionJobNote` (hội thoại tự do, asc)).
+ *  `content` là câu tiếng Việt dựng sẵn ở backend lúc ghi — không tự suy diễn/dựng câu ở đây.
+ *  `performerBy` NULL nghĩa là mốc tự động (không có actor), không phải user bị xoá. */
+export type ProductionJobLog = {
+  id: string
+  action: ProductionJobLogAction
+  content: string
+  performerBy: ProductionJobLogPerformerRef | null
+  createdAt: string
+}
+
+/** Mirrors `GET /production-execution/operations` — một dòng / công đoạn có ít nhất 1 Job khớp
+ *  filter, dùng để dựng dãy thẻ "CHỌN CÔNG ĐOẠN". `jobCount` đếm số Job phân biệt, không phải số
+ *  dòng (Job × Part). */
+export type ProductionOperationSummary = {
+  operationId: string
+  code: string
+  name: string
+  type: OperationType
+  jobCount: number
+}
+
+/** Trạng thái tiến độ của MỘT công đoạn trên MỘT Job — gộp qua mọi part của Job có công đoạn đó
+ *  (`ProductionJobByOperation.operationStatus` bên dưới). Khác `OperationProgressStatus` cục bộ
+ *  của `ProductionJobOperationsTable.tsx` (trạng thái một dòng công đoạn/part đơn lẻ, nhãn khác:
+ *  "Chưa bắt đầu"/"Đang thực hiện"/"Hoàn thành") — đây là mức Job, đúng 3 nhãn trong khung "GHI
+ *  CHÚ" của màn "Thực hiện sản xuất". */
+export type ProductionOperationProgressStatus =
+  | "NOT_STARTED"
+  | "IN_PROGRESS"
+  | "DONE"
+
+export const productionOperationProgressStatusLabels: Record<
+  ProductionOperationProgressStatus,
+  string
+> = {
+  NOT_STARTED: "Chưa làm",
+  IN_PROGRESS: "Đang làm",
+  DONE: "Hoàn thành",
+}
+
+/** Mirrors `GET /production-execution/jobs` — một dòng / (Job × công đoạn), số lượng gộp (SUM)
+ *  qua mọi part của Job có công đoạn đó. Nguồn cho bảng "DANH SÁCH CÔNG VIỆC" của màn "Thực hiện
+ *  sản xuất". */
+export type ProductionJobByOperation = {
+  jobId: string
+  jobCode: string
+  orderCode: string
+  item: { code: string; name: string }
+  quantity: number
+  orderDate: string
+  dueDate: string | null
+  jobStatus: ProductionJobStatus
+  plannedQuantity: number
+  completedQuantity: number
+  rejectedQuantity: number
+  operationCompletedDate: string | null
+  operationStatus: ProductionOperationProgressStatus
+}
+
+/** Mirrors `GET /production-execution/jobs/:productionJobId/reports` — một dòng nhật ký báo cáo sản lượng
+ *  hoàn thành/không đạt của công đoạn kèm người báo và ảnh minh chứng. */
+export type ProductionExecutionReport = {
+  id: string
+  productionJobOperationId: string
+  operationCode: string
+  operationName: string
+  bomItemId: string
+  bomItemCode: string
+  bomItemName: string
+  completedQuantityDelta: number
+  rejectedQuantityDelta: number
+  completedDate: string
+  note: string | null
+  createdAt: string
+  creator: {
+    id: string
+    code: string
+    fullName: string
+  } | null
+  files: FileResource[]
 }

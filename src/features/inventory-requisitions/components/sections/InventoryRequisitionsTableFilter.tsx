@@ -1,0 +1,151 @@
+import { useState } from "react"
+import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useDebounceCallback } from "usehooks-ts"
+import { Factory, PackageSearch, RotateCw, Search } from "lucide-react"
+
+import { Button, LinkButton } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import {
+  InventoryRequisitionType,
+  inventoryRequisitionStatusLabels,
+} from "@/lib/types/inventory-requisition.type"
+import { buildOptionsFromLabels } from "@/lib/utils"
+import type { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
+
+const statusOptions = [
+  { value: "all", label: "Tất cả" },
+  ...buildOptionsFromLabels(inventoryRequisitionStatusLabels),
+]
+
+export function InventoryRequisitionsTableFilter() {
+  const search = useSearch({
+    from: "/(authed)/manage_/inventory-requisitions/",
+  })
+  const navigate = useNavigate({ from: "/manage/inventory-requisitions/" })
+
+  const [q, setQ] = useState(search.q ?? "")
+
+  const handleSearchDebounced = useDebounceCallback(() => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: q.trim().length > 0 ? q.trim() : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
+  }, 300)
+
+  const handleStatusChange = (value: string) => {
+    const status =
+      value === "all" ? undefined : (value as InventoryRequisitionStatus)
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+  }
+
+  const resetFilters = () => {
+    handleSearchDebounced.cancel()
+    setQ("")
+    void navigate({
+      search: (prev) => {
+        const { q: _q, status: _status, ...rest } = prev
+        return { ...rest, page: 1 }
+      },
+    })
+  }
+
+  return (
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(12rem,1.2fr)]">
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="lv-code"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
+            <div className="relative">
+              <Input
+                id="lv-code"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo mã phiếu, PO, Job, lý do..."
+                value={q}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  handleSearchDebounced()
+                }}
+              />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="lv-status"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
+            <Select
+              items={statusOptions}
+              value={search.status ?? "all"}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
+            >
+              <SelectTrigger id="lv-status" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-4" />
+            Làm mới
+          </Button>
+
+          <RoutePermissionGate route="/manage/inventory-requisitions/create">
+            <LinkButton
+              to="/manage/inventory-requisitions/create"
+              search={{ type: InventoryRequisitionType.PRODUCTION }}
+              className="gap-1.5 text-xs"
+            >
+              <Factory className="size-3.5" />+ Lãnh từ LSX
+            </LinkButton>
+            <LinkButton
+              to="/manage/inventory-requisitions/create"
+              search={{ type: InventoryRequisitionType.OTHER }}
+              variant="outline"
+              className="gap-1.5 text-xs"
+            >
+              <PackageSearch className="size-3.5" />+ Lãnh khác
+            </LinkButton>
+          </RoutePermissionGate>
+        </div>
+      </div>
+    </div>
+  )
+}

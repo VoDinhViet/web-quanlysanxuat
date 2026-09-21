@@ -1,7 +1,7 @@
 import { Outlet } from "@tanstack/react-router"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { IndustrialBrandPanel } from "@/features/auth/components/IndustrialBrandPanel"
+import { IndustrialBrandPanel } from "@/features/auth/components/composites/IndustrialBrandPanel"
 
 export function AuthLayout() {
   return (

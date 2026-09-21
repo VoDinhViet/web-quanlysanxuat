@@ -1,7 +1,8 @@
 import * as React from "react"
-import { Slot } from "radix-ui"
-
-import { cn } from "@/lib/utils"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import { createLink } from "@tanstack/react-router"
+import { cn } from "cn"
 import { IconChevronRight, IconDots } from "@tabler/icons-react"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
@@ -38,23 +39,27 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   )
 }
 
-function BreadcrumbLink({
-  asChild,
+// Router-compatible breadcrumb link, same TanStack Router pattern as LinkButton in
+// button.tsx (https://tanstack.com/router/latest/docs/how-to/integrate-shadcn-ui).
+const BreadcrumbLink = createLink(function BreadcrumbLink({
   className,
+  render,
   ...props
-}: React.ComponentProps<"a"> & {
-  asChild?: boolean
-}) {
-  const Comp = asChild ? Slot.Root : "a"
-
-  return (
-    <Comp
-      data-slot="breadcrumb-link"
-      className={cn("transition-colors hover:text-foreground", className)}
-      {...props}
-    />
-  )
-}
+}: useRender.ComponentProps<"a">) {
+  return useRender({
+    defaultTagName: "a",
+    props: mergeProps<"a">(
+      {
+        className: cn("transition-colors hover:text-foreground", className),
+      },
+      props
+    ),
+    render,
+    state: {
+      slot: "breadcrumb-link",
+    },
+  })
+})
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (

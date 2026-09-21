@@ -1,0 +1,222 @@
+import { useState } from "react"
+import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { useDebounceCallback } from "usehooks-ts"
+import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { toast } from "sonner"
+
+import { Button, LinkButton } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { departmentQueryOptions } from "@/features/departments/api"
+import { exportUsers } from "@/features/users/api/server-functions/export-users.api"
+import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
+import { employeeStatusLabels } from "@/lib/types/user.type"
+import type { EmployeeStatus } from "@/lib/types/user.type"
+import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
+import type { SelectOption } from "@/lib/utils"
+
+const statusFilterOptions: SelectOption[] = [
+  { value: "all", label: "Tất cả" },
+  ...buildOptionsFromLabels(employeeStatusLabels),
+]
+
+export function UsersTableFilter() {
+  const search = useSearch({ from: "/(authed)/manage_/users/" })
+  const navigate = useNavigate({ from: "/manage/users/" })
+  const [q, setQ] = useState(search.q ?? "")
+
+  const departmentsQuery = useQuery(departmentQueryOptions())
+  const departmentFilterOptions: SelectOption[] = [
+    { value: "all", label: "Tất cả" },
+    ...buildSelectOptions(departmentsQuery.data ?? []),
+  ]
+
+  const exportUsersFn = useServerFn(exportUsers)
+  const exportMutation = useMutation({
+    mutationFn: () => exportUsersFn({ data: search }),
+    onSuccess: ({ base64, filename }) => {
+      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      toast.success("Đã xuất file Excel")
+    },
+    onError: (error) => toast.error(error.message),
+  })
+
+  const handleSearch = useDebounceCallback((term: string) => {
+    const trimmed = term.trim()
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
+      }),
+      replace: true,
+    })
+  }, 300)
+
+  const handleStatusChange = (value: string) => {
+    const status = value === "all" ? undefined : (value as EmployeeStatus)
+    void navigate({
+      search: (prev) => ({ ...prev, status, page: 1 }),
+    })
+  }
+
+  const handleDepartmentChange = (value: string) => {
+    const departmentId = value === "all" ? undefined : value
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        departmentId,
+        positionId: undefined,
+        page: 1,
+      }),
+    })
+  }
+
+  const resetFilters = () => {
+    handleSearch.cancel()
+    setQ("")
+    void navigate({
+      search: (prev) => {
+        const {
+          q: _q,
+          status: _status,
+          departmentId: _departmentId,
+          positionId: _positionId,
+          ...rest
+        } = prev
+        return { ...rest, page: 1 }
+      },
+    })
+  }
+
+  return (
+    <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(8rem,0.8fr)_minmax(10rem,1fr)]">
+          <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="users-search-input"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Tìm kiếm
+            </Label>
+            <div className="relative">
+              <Input
+                id="users-search-input"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm kiếm theo tên, email, SĐT, mã NV..."
+                value={q}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  handleSearch(event.target.value)
+                }}
+              />
+              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="users-status-select"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Trạng thái
+            </Label>
+            <Select
+              items={statusFilterOptions}
+              value={search.status ?? "all"}
+              onValueChange={(value) =>
+                value !== null && handleStatusChange(value)
+              }
+            >
+              <SelectTrigger
+                id="users-status-select"
+                className="w-full text-xs"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {statusFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="users-department-select"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Phòng ban
+            </Label>
+            <Select
+              items={departmentFilterOptions}
+              value={search.departmentId ?? "all"}
+              onValueChange={(value) =>
+                value !== null && handleDepartmentChange(value)
+              }
+            >
+              <SelectTrigger
+                id="users-department-select"
+                className="w-full text-xs"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {departmentFilterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate()}
+          >
+            <Download className="size-4" />
+            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-4" />
+            Làm mới
+          </Button>
+          <RoutePermissionGate route="/manage/users/create">
+            <LinkButton to="/manage/users/create" className="text-xs">
+              <Plus className="size-4" />
+              Thêm nhân sự
+            </LinkButton>
+          </RoutePermissionGate>
+        </div>
+      </div>
+    </div>
+  )
+}

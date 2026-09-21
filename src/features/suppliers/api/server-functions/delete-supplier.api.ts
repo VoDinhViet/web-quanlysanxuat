@@ -15,6 +15,8 @@ function resolveDeleteSupplierErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "supplier.error.not_found":
       return "Không tìm thấy nhà cung cấp."
+    case "supplier.error.in_use":
+      return "Nhà cung cấp đang được sử dụng, không thể xoá."
     case "auth.error.forbidden":
       return "Bạn không có quyền thực hiện thao tác này."
     default:

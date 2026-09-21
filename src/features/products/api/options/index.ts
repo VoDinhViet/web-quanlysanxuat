@@ -1,12 +1,12 @@
 // Every read in this feature — one queryOptions factory per file. Query key convention
-// (see .claude/rules/architecture.md): `["products"]` is the feature root, so
-// `invalidateQueries({ queryKey: ["products"] })` after a write refreshes list + detail + the
+// (see .claude/rules/architecture.md): `["items"]` is the feature root, so
+// `invalidateQueries({ queryKey: ["items"] })` after a write refreshes list + detail + the
 // options dropdown in one call.
-export { productsQueryOptions } from "@/features/products/api/options/products.options"
-export { productQueryOptions } from "@/features/products/api/options/product.options"
-export { productGroupOptionsQueryOptions } from "@/features/products/api/options/product-group-options.options"
-export { productBomQueryOptions } from "@/features/products/api/options/product-bom.options"
-export { bomMaterialsQueryOptions } from "@/features/products/api/options/bom-materials.options"
-export { productOperationsQueryOptions } from "@/features/products/api/options/product-operations.options"
-export { productOptionsQueryOptions } from "@/features/products/api/options/product-options.options"
-export { orderProductOptionsQueryOptions } from "@/features/products/api/options/order-product-options.options"
+export { itemsQueryOptions } from "@/features/products/api/options/items.options"
+export { itemQueryOptions } from "@/features/products/api/options/item.options"
+export { itemBomQueryOptions } from "@/features/products/api/options/item-bom.options"
+export { itemIssuesQueryOptions } from "@/features/products/api/options/item-issues.options"
+export { itemOptionsQueryOptions } from "@/features/products/api/options/item-options.options"
+export { bomItemOperationsQueryOptions } from "@/features/products/api/options/bom-operations.options"
+export { bomItemConsumablesQueryOptions } from "@/features/products/api/options/bom-consumables.options"
+export { itemOperationsQueryOptions } from "@/features/products/api/options/routing-operations.options"

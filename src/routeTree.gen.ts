@@ -14,30 +14,115 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as authedRouteRouteImport } from './routes/(authed)/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authedManageRouteImport } from './routes/(authed)/manage'
-import { Route as authedManageClientsRouteImport } from './routes/(authed)/manage_/clients'
-import { Route as authedManageMaterialsRouteImport } from './routes/(authed)/manage_/materials'
-import { Route as authedManageOrdersRouteImport } from './routes/(authed)/manage_/orders'
-import { Route as authedManageProductionJobsRouteImport } from './routes/(authed)/manage_/production-jobs'
-import { Route as authedManageProductionOrdersRouteImport } from './routes/(authed)/manage_/production-orders'
-import { Route as authedManageProductsRouteImport } from './routes/(authed)/manage_/products'
-import { Route as authedManagePurchaseRequestsRouteImport } from './routes/(authed)/manage_/purchase-requests'
-import { Route as authedManageSuppliersRouteImport } from './routes/(authed)/manage_/suppliers'
-import { Route as authedManageUsersRouteImport } from './routes/(authed)/manage_/users'
-import { Route as authedManageClientsCreateRouteImport } from './routes/(authed)/manage_/clients_/create'
-import { Route as authedManageMaterialsCreateRouteImport } from './routes/(authed)/manage_/materials_/create'
+import { Route as authedManageClientsRouteRouteImport } from './routes/(authed)/manage_/clients/route'
+import { Route as authedManageConsumablesRouteRouteImport } from './routes/(authed)/manage_/consumables/route'
+import { Route as authedManageDepartmentsRouteRouteImport } from './routes/(authed)/manage_/departments/route'
+import { Route as authedManageInventoryConsumablesRouteRouteImport } from './routes/(authed)/manage_/inventory-consumables/route'
+import { Route as authedManageInventoryIssuesRouteRouteImport } from './routes/(authed)/manage_/inventory-issues/route'
+import { Route as authedManageInventoryProductsRouteRouteImport } from './routes/(authed)/manage_/inventory-products/route'
+import { Route as authedManageInventoryReceiptsRouteRouteImport } from './routes/(authed)/manage_/inventory-receipts/route'
+import { Route as authedManageInventoryRequisitionsRouteRouteImport } from './routes/(authed)/manage_/inventory-requisitions/route'
+import { Route as authedManageIqcRouteRouteImport } from './routes/(authed)/manage_/iqc/route'
+import { Route as authedManageOperationsRouteRouteImport } from './routes/(authed)/manage_/operations/route'
+import { Route as authedManageOqcRouteRouteImport } from './routes/(authed)/manage_/oqc/route'
+import { Route as authedManageOrdersRouteRouteImport } from './routes/(authed)/manage_/orders/route'
+import { Route as authedManageOutboundOrdersRouteRouteImport } from './routes/(authed)/manage_/outbound-orders/route'
+import { Route as authedManageOutsourcingOrdersRouteRouteImport } from './routes/(authed)/manage_/outsourcing-orders/route'
+import { Route as authedManageOutsourcingReceiptsRouteRouteImport } from './routes/(authed)/manage_/outsourcing-receipts/route'
+import { Route as authedManagePaymentRequestsRouteRouteImport } from './routes/(authed)/manage_/payment-requests/route'
+import { Route as authedManageProductionExecutionRouteRouteImport } from './routes/(authed)/manage_/production-execution/route'
+import { Route as authedManageProductionJobsRouteRouteImport } from './routes/(authed)/manage_/production-jobs/route'
+import { Route as authedManageProductionOrdersRouteRouteImport } from './routes/(authed)/manage_/production-orders/route'
+import { Route as authedManageProductsRouteRouteImport } from './routes/(authed)/manage_/products/route'
+import { Route as authedManagePurchaseLedgerRouteRouteImport } from './routes/(authed)/manage_/purchase-ledger/route'
+import { Route as authedManagePurchaseOrdersRouteRouteImport } from './routes/(authed)/manage_/purchase-orders/route'
+import { Route as authedManagePurchaseQuotationsRouteRouteImport } from './routes/(authed)/manage_/purchase-quotations/route'
+import { Route as authedManagePurchaseRequestsRouteRouteImport } from './routes/(authed)/manage_/purchase-requests/route'
+import { Route as authedManageRolesRouteRouteImport } from './routes/(authed)/manage_/roles/route'
+import { Route as authedManageSupplierReturnsRouteRouteImport } from './routes/(authed)/manage_/supplier-returns/route'
+import { Route as authedManageSuppliersRouteRouteImport } from './routes/(authed)/manage_/suppliers/route'
+import { Route as authedManageUnitsRouteRouteImport } from './routes/(authed)/manage_/units/route'
+import { Route as authedManageUsersRouteRouteImport } from './routes/(authed)/manage_/users/route'
+import { Route as authedManageClientsIndexRouteImport } from './routes/(authed)/manage_/clients/index'
+import { Route as authedManageClientsCreateRouteRouteImport } from './routes/(authed)/manage_/clients_/create/route'
+import { Route as authedManageConsumablesIndexRouteImport } from './routes/(authed)/manage_/consumables/index'
+import { Route as authedManageConsumablesCreateRouteRouteImport } from './routes/(authed)/manage_/consumables_/create/route'
+import { Route as authedManageDepartmentsIndexRouteImport } from './routes/(authed)/manage_/departments/index'
+import { Route as authedManageDepartmentsDepartmentIdRouteImport } from './routes/(authed)/manage_/departments_/$departmentId'
+import { Route as authedManageInventoryConsumablesIndexRouteImport } from './routes/(authed)/manage_/inventory-consumables/index'
+import { Route as authedManageInventoryIssuesIndexRouteImport } from './routes/(authed)/manage_/inventory-issues/index'
+import { Route as authedManageInventoryIssuesIssueIdRouteImport } from './routes/(authed)/manage_/inventory-issues_/$issueId'
+import { Route as authedManageInventoryProductsIndexRouteImport } from './routes/(authed)/manage_/inventory-products/index'
+import { Route as authedManageInventoryProductsItemIdRouteImport } from './routes/(authed)/manage_/inventory-products_/$itemId'
+import { Route as authedManageInventoryReceiptsIndexRouteImport } from './routes/(authed)/manage_/inventory-receipts/index'
+import { Route as authedManageInventoryReceiptsInventoryReceiptIdRouteImport } from './routes/(authed)/manage_/inventory-receipts_/$inventoryReceiptId'
+import { Route as authedManageInventoryReceiptsCreateRouteImport } from './routes/(authed)/manage_/inventory-receipts_/create'
+import { Route as authedManageInventoryReceiptsCreateReceiptRouteImport } from './routes/(authed)/manage_/inventory-receipts_/create-receipt'
+import { Route as authedManageInventoryRequisitionsIndexRouteImport } from './routes/(authed)/manage_/inventory-requisitions/index'
+import { Route as authedManageInventoryRequisitionsRequisitionIdRouteImport } from './routes/(authed)/manage_/inventory-requisitions_/$requisitionId'
+import { Route as authedManageInventoryRequisitionsCreateRouteImport } from './routes/(authed)/manage_/inventory-requisitions_/create'
+import { Route as authedManageIqcIndexRouteImport } from './routes/(authed)/manage_/iqc/index'
+import { Route as authedManageIqcIqcIdRouteImport } from './routes/(authed)/manage_/iqc_/$iqcId'
+import { Route as authedManageOperationsIndexRouteImport } from './routes/(authed)/manage_/operations/index'
+import { Route as authedManageOqcIndexRouteImport } from './routes/(authed)/manage_/oqc/index'
+import { Route as authedManageOqcOqcIdRouteImport } from './routes/(authed)/manage_/oqc_/$oqcId'
+import { Route as authedManageOrdersIndexRouteImport } from './routes/(authed)/manage_/orders/index'
 import { Route as authedManageOrdersOrderIdRouteImport } from './routes/(authed)/manage_/orders_/$orderId'
 import { Route as authedManageOrdersCreateRouteImport } from './routes/(authed)/manage_/orders_/create'
+import { Route as authedManageOutboundOrdersIndexRouteImport } from './routes/(authed)/manage_/outbound-orders/index'
+import { Route as authedManageOutboundOrdersOutboundOrderIdRouteImport } from './routes/(authed)/manage_/outbound-orders_/$outboundOrderId'
+import { Route as authedManageOutboundOrdersCreateRouteImport } from './routes/(authed)/manage_/outbound-orders_/create'
+import { Route as authedManageOutsourcingOrdersIndexRouteImport } from './routes/(authed)/manage_/outsourcing-orders/index'
+import { Route as authedManageOutsourcingOrdersOutsourcingOrderIdRouteImport } from './routes/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId'
+import { Route as authedManageOutsourcingOrdersCreateRouteImport } from './routes/(authed)/manage_/outsourcing-orders_/create'
+import { Route as authedManageOutsourcingReceiptsIndexRouteImport } from './routes/(authed)/manage_/outsourcing-receipts/index'
+import { Route as authedManageOutsourcingReceiptsOutsourcingReceiptIdRouteImport } from './routes/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId'
+import { Route as authedManageOutsourcingReceiptsCreateRouteImport } from './routes/(authed)/manage_/outsourcing-receipts_/create'
+import { Route as authedManagePaymentRequestsIndexRouteImport } from './routes/(authed)/manage_/payment-requests/index'
+import { Route as authedManagePaymentRequestsPaymentRequestIdRouteImport } from './routes/(authed)/manage_/payment-requests_/$paymentRequestId'
+import { Route as authedManageProductionExecutionIndexRouteImport } from './routes/(authed)/manage_/production-execution/index'
+import { Route as authedManageProductionExecutionProductionJobIdRouteImport } from './routes/(authed)/manage_/production-execution_/$productionJobId'
+import { Route as authedManageProductionJobsIndexRouteImport } from './routes/(authed)/manage_/production-jobs/index'
 import { Route as authedManageProductionJobsProductionJobIdRouteImport } from './routes/(authed)/manage_/production-jobs_/$productionJobId'
+import { Route as authedManageProductionOrdersIndexRouteImport } from './routes/(authed)/manage_/production-orders/index'
 import { Route as authedManageProductionOrdersProductionOrderIdRouteImport } from './routes/(authed)/manage_/production-orders_/$productionOrderId'
+import { Route as authedManageProductsIndexRouteImport } from './routes/(authed)/manage_/products/index'
 import { Route as authedManageProductsProductIdRouteImport } from './routes/(authed)/manage_/products_/$productId'
-import { Route as authedManageProductsCreateRouteImport } from './routes/(authed)/manage_/products_/create'
-import { Route as authedManageSuppliersCreateRouteImport } from './routes/(authed)/manage_/suppliers_/create'
-import { Route as authedManageUsersCreateRouteImport } from './routes/(authed)/manage_/users_/create'
+import { Route as authedManageProductsCreateRouteRouteImport } from './routes/(authed)/manage_/products_/create/route'
+import { Route as authedManagePurchaseLedgerIndexRouteImport } from './routes/(authed)/manage_/purchase-ledger/index'
+import { Route as authedManagePurchaseOrdersIndexRouteImport } from './routes/(authed)/manage_/purchase-orders/index'
+import { Route as authedManagePurchaseOrdersPurchaseOrderIdRouteImport } from './routes/(authed)/manage_/purchase-orders_/$purchaseOrderId'
+import { Route as authedManagePurchaseOrdersCreateRouteImport } from './routes/(authed)/manage_/purchase-orders_/create'
+import { Route as authedManagePurchaseQuotationsIndexRouteImport } from './routes/(authed)/manage_/purchase-quotations/index'
+import { Route as authedManagePurchaseQuotationsPurchaseQuotationIdRouteImport } from './routes/(authed)/manage_/purchase-quotations_/$purchaseQuotationId'
+import { Route as authedManagePurchaseQuotationsCreateRouteImport } from './routes/(authed)/manage_/purchase-quotations_/create'
+import { Route as authedManagePurchaseRequestsIndexRouteImport } from './routes/(authed)/manage_/purchase-requests/index'
+import { Route as authedManagePurchaseRequestsPurchaseRequestIdRouteImport } from './routes/(authed)/manage_/purchase-requests_/$purchaseRequestId'
+import { Route as authedManagePurchaseRequestsCreateRouteImport } from './routes/(authed)/manage_/purchase-requests_/create'
+import { Route as authedManageRolesIndexRouteImport } from './routes/(authed)/manage_/roles/index'
+import { Route as authedManageRolesCreateRouteImport } from './routes/(authed)/manage_/roles_/create'
+import { Route as authedManageSupplierReturnsIndexRouteImport } from './routes/(authed)/manage_/supplier-returns/index'
+import { Route as authedManageSupplierReturnsSupplierReturnIdRouteImport } from './routes/(authed)/manage_/supplier-returns_/$supplierReturnId'
+import { Route as authedManageSuppliersIndexRouteImport } from './routes/(authed)/manage_/suppliers/index'
+import { Route as authedManageSuppliersSupplierIdRouteImport } from './routes/(authed)/manage_/suppliers_/$supplierId'
+import { Route as authedManageSuppliersCreateRouteRouteImport } from './routes/(authed)/manage_/suppliers_/create/route'
+import { Route as authedManageUnitsIndexRouteImport } from './routes/(authed)/manage_/units/index'
+import { Route as authedManageUsersIndexRouteImport } from './routes/(authed)/manage_/users/index'
+import { Route as authedManageUsersCreateRouteRouteImport } from './routes/(authed)/manage_/users_/create/route'
 import { Route as authedManageClientsClientIdUpdateRouteImport } from './routes/(authed)/manage_/clients_/$clientId.update'
-import { Route as authedManageMaterialsMaterialIdUpdateRouteImport } from './routes/(authed)/manage_/materials_/$materialId.update'
+import { Route as authedManageClientsCreateIndexRouteImport } from './routes/(authed)/manage_/clients_/create/index'
+import { Route as authedManageConsumablesConsumableIdUpdateRouteImport } from './routes/(authed)/manage_/consumables_/$consumableId.update'
+import { Route as authedManageConsumablesCreateIndexRouteImport } from './routes/(authed)/manage_/consumables_/create/index'
+import { Route as authedManageInventoryReceiptsInventoryReceiptIdUpdateRouteImport } from './routes/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_.update'
 import { Route as authedManageOrdersOrderIdUpdateRouteImport } from './routes/(authed)/manage_/orders_/$orderId_.update'
+import { Route as authedManageProductsCreateIndexRouteImport } from './routes/(authed)/manage_/products_/create/index'
+import { Route as authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRouteImport } from './routes/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_.update'
+import { Route as authedManageRolesRoleIdUpdateRouteImport } from './routes/(authed)/manage_/roles_/$roleId.update'
 import { Route as authedManageSuppliersSupplierIdUpdateRouteImport } from './routes/(authed)/manage_/suppliers_/$supplierId.update'
+import { Route as authedManageSuppliersCreateIndexRouteImport } from './routes/(authed)/manage_/suppliers_/create/index'
 import { Route as authedManageUsersUserIdUpdateRouteImport } from './routes/(authed)/manage_/users_/$userId.update'
+import { Route as authedManageUsersCreateIndexRouteImport } from './routes/(authed)/manage_/users_/create/index'
+import { Route as authedManageProductsProductIdBomBomItemIdRouteImport } from './routes/(authed)/manage_/products_/$productId_/bom/$bomItemId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -62,66 +147,313 @@ const authedManageRoute = authedManageRouteImport.update({
   path: '/manage',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageClientsRoute = authedManageClientsRouteImport.update({
-  id: '/manage_/clients',
-  path: '/manage/clients',
+const authedManageClientsRouteRoute =
+  authedManageClientsRouteRouteImport.update({
+    id: '/manage_/clients',
+    path: '/manage/clients',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageConsumablesRouteRoute =
+  authedManageConsumablesRouteRouteImport.update({
+    id: '/manage_/consumables',
+    path: '/manage/consumables',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageDepartmentsRouteRoute =
+  authedManageDepartmentsRouteRouteImport.update({
+    id: '/manage_/departments',
+    path: '/manage/departments',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryConsumablesRouteRoute =
+  authedManageInventoryConsumablesRouteRouteImport.update({
+    id: '/manage_/inventory-consumables',
+    path: '/manage/inventory-consumables',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryIssuesRouteRoute =
+  authedManageInventoryIssuesRouteRouteImport.update({
+    id: '/manage_/inventory-issues',
+    path: '/manage/inventory-issues',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryProductsRouteRoute =
+  authedManageInventoryProductsRouteRouteImport.update({
+    id: '/manage_/inventory-products',
+    path: '/manage/inventory-products',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryReceiptsRouteRoute =
+  authedManageInventoryReceiptsRouteRouteImport.update({
+    id: '/manage_/inventory-receipts',
+    path: '/manage/inventory-receipts',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryRequisitionsRouteRoute =
+  authedManageInventoryRequisitionsRouteRouteImport.update({
+    id: '/manage_/inventory-requisitions',
+    path: '/manage/inventory-requisitions',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageIqcRouteRoute = authedManageIqcRouteRouteImport.update({
+  id: '/manage_/iqc',
+  path: '/manage/iqc',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageMaterialsRoute = authedManageMaterialsRouteImport.update({
-  id: '/manage_/materials',
-  path: '/manage/materials',
+const authedManageOperationsRouteRoute =
+  authedManageOperationsRouteRouteImport.update({
+    id: '/manage_/operations',
+    path: '/manage/operations',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOqcRouteRoute = authedManageOqcRouteRouteImport.update({
+  id: '/manage_/oqc',
+  path: '/manage/oqc',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageOrdersRoute = authedManageOrdersRouteImport.update({
+const authedManageOrdersRouteRoute = authedManageOrdersRouteRouteImport.update({
   id: '/manage_/orders',
   path: '/manage/orders',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageProductionJobsRoute =
-  authedManageProductionJobsRouteImport.update({
+const authedManageOutboundOrdersRouteRoute =
+  authedManageOutboundOrdersRouteRouteImport.update({
+    id: '/manage_/outbound-orders',
+    path: '/manage/outbound-orders',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOutsourcingOrdersRouteRoute =
+  authedManageOutsourcingOrdersRouteRouteImport.update({
+    id: '/manage_/outsourcing-orders',
+    path: '/manage/outsourcing-orders',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOutsourcingReceiptsRouteRoute =
+  authedManageOutsourcingReceiptsRouteRouteImport.update({
+    id: '/manage_/outsourcing-receipts',
+    path: '/manage/outsourcing-receipts',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePaymentRequestsRouteRoute =
+  authedManagePaymentRequestsRouteRouteImport.update({
+    id: '/manage_/payment-requests',
+    path: '/manage/payment-requests',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageProductionExecutionRouteRoute =
+  authedManageProductionExecutionRouteRouteImport.update({
+    id: '/manage_/production-execution',
+    path: '/manage/production-execution',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageProductionJobsRouteRoute =
+  authedManageProductionJobsRouteRouteImport.update({
     id: '/manage_/production-jobs',
     path: '/manage/production-jobs',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageProductionOrdersRoute =
-  authedManageProductionOrdersRouteImport.update({
+const authedManageProductionOrdersRouteRoute =
+  authedManageProductionOrdersRouteRouteImport.update({
     id: '/manage_/production-orders',
     path: '/manage/production-orders',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageProductsRoute = authedManageProductsRouteImport.update({
-  id: '/manage_/products',
-  path: '/manage/products',
-  getParentRoute: () => authedRouteRoute,
-} as any)
-const authedManagePurchaseRequestsRoute =
-  authedManagePurchaseRequestsRouteImport.update({
+const authedManageProductsRouteRoute =
+  authedManageProductsRouteRouteImport.update({
+    id: '/manage_/products',
+    path: '/manage/products',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseLedgerRouteRoute =
+  authedManagePurchaseLedgerRouteRouteImport.update({
+    id: '/manage_/purchase-ledger',
+    path: '/manage/purchase-ledger',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseOrdersRouteRoute =
+  authedManagePurchaseOrdersRouteRouteImport.update({
+    id: '/manage_/purchase-orders',
+    path: '/manage/purchase-orders',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseQuotationsRouteRoute =
+  authedManagePurchaseQuotationsRouteRouteImport.update({
+    id: '/manage_/purchase-quotations',
+    path: '/manage/purchase-quotations',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseRequestsRouteRoute =
+  authedManagePurchaseRequestsRouteRouteImport.update({
     id: '/manage_/purchase-requests',
     path: '/manage/purchase-requests',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageSuppliersRoute = authedManageSuppliersRouteImport.update({
-  id: '/manage_/suppliers',
-  path: '/manage/suppliers',
+const authedManageRolesRouteRoute = authedManageRolesRouteRouteImport.update({
+  id: '/manage_/roles',
+  path: '/manage/roles',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageUsersRoute = authedManageUsersRouteImport.update({
+const authedManageSupplierReturnsRouteRoute =
+  authedManageSupplierReturnsRouteRouteImport.update({
+    id: '/manage_/supplier-returns',
+    path: '/manage/supplier-returns',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageSuppliersRouteRoute =
+  authedManageSuppliersRouteRouteImport.update({
+    id: '/manage_/suppliers',
+    path: '/manage/suppliers',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageUnitsRouteRoute = authedManageUnitsRouteRouteImport.update({
+  id: '/manage_/units',
+  path: '/manage/units',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageUsersRouteRoute = authedManageUsersRouteRouteImport.update({
   id: '/manage_/users',
   path: '/manage/users',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedManageClientsCreateRoute =
-  authedManageClientsCreateRouteImport.update({
+const authedManageClientsIndexRoute =
+  authedManageClientsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageClientsRouteRoute,
+  } as any)
+const authedManageClientsCreateRouteRoute =
+  authedManageClientsCreateRouteRouteImport.update({
     id: '/manage_/clients_/create',
     path: '/manage/clients/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageMaterialsCreateRoute =
-  authedManageMaterialsCreateRouteImport.update({
-    id: '/manage_/materials_/create',
-    path: '/manage/materials/create',
+const authedManageConsumablesIndexRoute =
+  authedManageConsumablesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageConsumablesRouteRoute,
+  } as any)
+const authedManageConsumablesCreateRouteRoute =
+  authedManageConsumablesCreateRouteRouteImport.update({
+    id: '/manage_/consumables_/create',
+    path: '/manage/consumables/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageDepartmentsIndexRoute =
+  authedManageDepartmentsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageDepartmentsRouteRoute,
+  } as any)
+const authedManageDepartmentsDepartmentIdRoute =
+  authedManageDepartmentsDepartmentIdRouteImport.update({
+    id: '/manage_/departments_/$departmentId',
+    path: '/manage/departments/$departmentId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryConsumablesIndexRoute =
+  authedManageInventoryConsumablesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageInventoryConsumablesRouteRoute,
+  } as any)
+const authedManageInventoryIssuesIndexRoute =
+  authedManageInventoryIssuesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageInventoryIssuesRouteRoute,
+  } as any)
+const authedManageInventoryIssuesIssueIdRoute =
+  authedManageInventoryIssuesIssueIdRouteImport.update({
+    id: '/manage_/inventory-issues_/$issueId',
+    path: '/manage/inventory-issues/$issueId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryProductsIndexRoute =
+  authedManageInventoryProductsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageInventoryProductsRouteRoute,
+  } as any)
+const authedManageInventoryProductsItemIdRoute =
+  authedManageInventoryProductsItemIdRouteImport.update({
+    id: '/manage_/inventory-products_/$itemId',
+    path: '/manage/inventory-products/$itemId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryReceiptsIndexRoute =
+  authedManageInventoryReceiptsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageInventoryReceiptsRouteRoute,
+  } as any)
+const authedManageInventoryReceiptsInventoryReceiptIdRoute =
+  authedManageInventoryReceiptsInventoryReceiptIdRouteImport.update({
+    id: '/manage_/inventory-receipts_/$inventoryReceiptId',
+    path: '/manage/inventory-receipts/$inventoryReceiptId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryReceiptsCreateRoute =
+  authedManageInventoryReceiptsCreateRouteImport.update({
+    id: '/manage_/inventory-receipts_/create',
+    path: '/manage/inventory-receipts/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryReceiptsCreateReceiptRoute =
+  authedManageInventoryReceiptsCreateReceiptRouteImport.update({
+    id: '/manage_/inventory-receipts_/create-receipt',
+    path: '/manage/inventory-receipts/create-receipt',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryRequisitionsIndexRoute =
+  authedManageInventoryRequisitionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageInventoryRequisitionsRouteRoute,
+  } as any)
+const authedManageInventoryRequisitionsRequisitionIdRoute =
+  authedManageInventoryRequisitionsRequisitionIdRouteImport.update({
+    id: '/manage_/inventory-requisitions_/$requisitionId',
+    path: '/manage/inventory-requisitions/$requisitionId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageInventoryRequisitionsCreateRoute =
+  authedManageInventoryRequisitionsCreateRouteImport.update({
+    id: '/manage_/inventory-requisitions_/create',
+    path: '/manage/inventory-requisitions/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageIqcIndexRoute = authedManageIqcIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedManageIqcRouteRoute,
+} as any)
+const authedManageIqcIqcIdRoute = authedManageIqcIqcIdRouteImport.update({
+  id: '/manage_/iqc_/$iqcId',
+  path: '/manage/iqc/$iqcId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageOperationsIndexRoute =
+  authedManageOperationsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageOperationsRouteRoute,
+  } as any)
+const authedManageOqcIndexRoute = authedManageOqcIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedManageOqcRouteRoute,
+} as any)
+const authedManageOqcOqcIdRoute = authedManageOqcOqcIdRouteImport.update({
+  id: '/manage_/oqc_/$oqcId',
+  path: '/manage/oqc/$oqcId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageOrdersIndexRoute = authedManageOrdersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedManageOrdersRouteRoute,
+} as any)
 const authedManageOrdersOrderIdRoute =
   authedManageOrdersOrderIdRouteImport.update({
     id: '/manage_/orders_/$orderId',
@@ -134,11 +466,101 @@ const authedManageOrdersCreateRoute =
     path: '/manage/orders/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageOutboundOrdersIndexRoute =
+  authedManageOutboundOrdersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageOutboundOrdersRouteRoute,
+  } as any)
+const authedManageOutboundOrdersOutboundOrderIdRoute =
+  authedManageOutboundOrdersOutboundOrderIdRouteImport.update({
+    id: '/manage_/outbound-orders_/$outboundOrderId',
+    path: '/manage/outbound-orders/$outboundOrderId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOutboundOrdersCreateRoute =
+  authedManageOutboundOrdersCreateRouteImport.update({
+    id: '/manage_/outbound-orders_/create',
+    path: '/manage/outbound-orders/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOutsourcingOrdersIndexRoute =
+  authedManageOutsourcingOrdersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageOutsourcingOrdersRouteRoute,
+  } as any)
+const authedManageOutsourcingOrdersOutsourcingOrderIdRoute =
+  authedManageOutsourcingOrdersOutsourcingOrderIdRouteImport.update({
+    id: '/manage_/outsourcing-orders_/$outsourcingOrderId',
+    path: '/manage/outsourcing-orders/$outsourcingOrderId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOutsourcingOrdersCreateRoute =
+  authedManageOutsourcingOrdersCreateRouteImport.update({
+    id: '/manage_/outsourcing-orders_/create',
+    path: '/manage/outsourcing-orders/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOutsourcingReceiptsIndexRoute =
+  authedManageOutsourcingReceiptsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageOutsourcingReceiptsRouteRoute,
+  } as any)
+const authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute =
+  authedManageOutsourcingReceiptsOutsourcingReceiptIdRouteImport.update({
+    id: '/manage_/outsourcing-receipts_/$outsourcingReceiptId',
+    path: '/manage/outsourcing-receipts/$outsourcingReceiptId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageOutsourcingReceiptsCreateRoute =
+  authedManageOutsourcingReceiptsCreateRouteImport.update({
+    id: '/manage_/outsourcing-receipts_/create',
+    path: '/manage/outsourcing-receipts/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePaymentRequestsIndexRoute =
+  authedManagePaymentRequestsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManagePaymentRequestsRouteRoute,
+  } as any)
+const authedManagePaymentRequestsPaymentRequestIdRoute =
+  authedManagePaymentRequestsPaymentRequestIdRouteImport.update({
+    id: '/manage_/payment-requests_/$paymentRequestId',
+    path: '/manage/payment-requests/$paymentRequestId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageProductionExecutionIndexRoute =
+  authedManageProductionExecutionIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageProductionExecutionRouteRoute,
+  } as any)
+const authedManageProductionExecutionProductionJobIdRoute =
+  authedManageProductionExecutionProductionJobIdRouteImport.update({
+    id: '/manage_/production-execution_/$productionJobId',
+    path: '/manage/production-execution/$productionJobId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageProductionJobsIndexRoute =
+  authedManageProductionJobsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageProductionJobsRouteRoute,
+  } as any)
 const authedManageProductionJobsProductionJobIdRoute =
   authedManageProductionJobsProductionJobIdRouteImport.update({
     id: '/manage_/production-jobs_/$productionJobId',
     path: '/manage/production-jobs/$productionJobId',
     getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageProductionOrdersIndexRoute =
+  authedManageProductionOrdersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageProductionOrdersRouteRoute,
   } as any)
 const authedManageProductionOrdersProductionOrderIdRoute =
   authedManageProductionOrdersProductionOrderIdRouteImport.update({
@@ -146,39 +568,168 @@ const authedManageProductionOrdersProductionOrderIdRoute =
     path: '/manage/production-orders/$productionOrderId',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageProductsIndexRoute =
+  authedManageProductsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageProductsRouteRoute,
+  } as any)
 const authedManageProductsProductIdRoute =
   authedManageProductsProductIdRouteImport.update({
     id: '/manage_/products_/$productId',
     path: '/manage/products/$productId',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageProductsCreateRoute =
-  authedManageProductsCreateRouteImport.update({
+const authedManageProductsCreateRouteRoute =
+  authedManageProductsCreateRouteRouteImport.update({
     id: '/manage_/products_/create',
     path: '/manage/products/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageSuppliersCreateRoute =
-  authedManageSuppliersCreateRouteImport.update({
+const authedManagePurchaseLedgerIndexRoute =
+  authedManagePurchaseLedgerIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManagePurchaseLedgerRouteRoute,
+  } as any)
+const authedManagePurchaseOrdersIndexRoute =
+  authedManagePurchaseOrdersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManagePurchaseOrdersRouteRoute,
+  } as any)
+const authedManagePurchaseOrdersPurchaseOrderIdRoute =
+  authedManagePurchaseOrdersPurchaseOrderIdRouteImport.update({
+    id: '/manage_/purchase-orders_/$purchaseOrderId',
+    path: '/manage/purchase-orders/$purchaseOrderId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseOrdersCreateRoute =
+  authedManagePurchaseOrdersCreateRouteImport.update({
+    id: '/manage_/purchase-orders_/create',
+    path: '/manage/purchase-orders/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseQuotationsIndexRoute =
+  authedManagePurchaseQuotationsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManagePurchaseQuotationsRouteRoute,
+  } as any)
+const authedManagePurchaseQuotationsPurchaseQuotationIdRoute =
+  authedManagePurchaseQuotationsPurchaseQuotationIdRouteImport.update({
+    id: '/manage_/purchase-quotations_/$purchaseQuotationId',
+    path: '/manage/purchase-quotations/$purchaseQuotationId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseQuotationsCreateRoute =
+  authedManagePurchaseQuotationsCreateRouteImport.update({
+    id: '/manage_/purchase-quotations_/create',
+    path: '/manage/purchase-quotations/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseRequestsIndexRoute =
+  authedManagePurchaseRequestsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManagePurchaseRequestsRouteRoute,
+  } as any)
+const authedManagePurchaseRequestsPurchaseRequestIdRoute =
+  authedManagePurchaseRequestsPurchaseRequestIdRouteImport.update({
+    id: '/manage_/purchase-requests_/$purchaseRequestId',
+    path: '/manage/purchase-requests/$purchaseRequestId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManagePurchaseRequestsCreateRoute =
+  authedManagePurchaseRequestsCreateRouteImport.update({
+    id: '/manage_/purchase-requests_/create',
+    path: '/manage/purchase-requests/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageRolesIndexRoute = authedManageRolesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedManageRolesRouteRoute,
+} as any)
+const authedManageRolesCreateRoute = authedManageRolesCreateRouteImport.update({
+  id: '/manage_/roles_/create',
+  path: '/manage/roles/create',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageSupplierReturnsIndexRoute =
+  authedManageSupplierReturnsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageSupplierReturnsRouteRoute,
+  } as any)
+const authedManageSupplierReturnsSupplierReturnIdRoute =
+  authedManageSupplierReturnsSupplierReturnIdRouteImport.update({
+    id: '/manage_/supplier-returns_/$supplierReturnId',
+    path: '/manage/supplier-returns/$supplierReturnId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageSuppliersIndexRoute =
+  authedManageSuppliersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageSuppliersRouteRoute,
+  } as any)
+const authedManageSuppliersSupplierIdRoute =
+  authedManageSuppliersSupplierIdRouteImport.update({
+    id: '/manage_/suppliers_/$supplierId',
+    path: '/manage/suppliers/$supplierId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageSuppliersCreateRouteRoute =
+  authedManageSuppliersCreateRouteRouteImport.update({
     id: '/manage_/suppliers_/create',
     path: '/manage/suppliers/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageUsersCreateRoute = authedManageUsersCreateRouteImport.update({
-  id: '/manage_/users_/create',
-  path: '/manage/users/create',
-  getParentRoute: () => authedRouteRoute,
+const authedManageUnitsIndexRoute = authedManageUnitsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedManageUnitsRouteRoute,
 } as any)
+const authedManageUsersIndexRoute = authedManageUsersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedManageUsersRouteRoute,
+} as any)
+const authedManageUsersCreateRouteRoute =
+  authedManageUsersCreateRouteRouteImport.update({
+    id: '/manage_/users_/create',
+    path: '/manage/users/create',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageClientsClientIdUpdateRoute =
   authedManageClientsClientIdUpdateRouteImport.update({
     id: '/manage_/clients_/$clientId/update',
     path: '/manage/clients/$clientId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManageMaterialsMaterialIdUpdateRoute =
-  authedManageMaterialsMaterialIdUpdateRouteImport.update({
-    id: '/manage_/materials_/$materialId/update',
-    path: '/manage/materials/$materialId/update',
+const authedManageClientsCreateIndexRoute =
+  authedManageClientsCreateIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageClientsCreateRouteRoute,
+  } as any)
+const authedManageConsumablesConsumableIdUpdateRoute =
+  authedManageConsumablesConsumableIdUpdateRouteImport.update({
+    id: '/manage_/consumables_/$consumableId/update',
+    path: '/manage/consumables/$consumableId/update',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageConsumablesCreateIndexRoute =
+  authedManageConsumablesCreateIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageConsumablesCreateRouteRoute,
+  } as any)
+const authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute =
+  authedManageInventoryReceiptsInventoryReceiptIdUpdateRouteImport.update({
+    id: '/manage_/inventory-receipts_/$inventoryReceiptId_/update',
+    path: '/manage/inventory-receipts/$inventoryReceiptId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
 const authedManageOrdersOrderIdUpdateRoute =
@@ -187,11 +738,35 @@ const authedManageOrdersOrderIdUpdateRoute =
     path: '/manage/orders/$orderId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageProductsCreateIndexRoute =
+  authedManageProductsCreateIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageProductsCreateRouteRoute,
+  } as any)
+const authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute =
+  authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRouteImport.update({
+    id: '/manage_/purchase-quotations_/$purchaseQuotationId_/update',
+    path: '/manage/purchase-quotations/$purchaseQuotationId/update',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageRolesRoleIdUpdateRoute =
+  authedManageRolesRoleIdUpdateRouteImport.update({
+    id: '/manage_/roles_/$roleId/update',
+    path: '/manage/roles/$roleId/update',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageSuppliersSupplierIdUpdateRoute =
   authedManageSuppliersSupplierIdUpdateRouteImport.update({
-    id: '/manage_/suppliers_/$supplierId/update',
-    path: '/manage/suppliers/$supplierId/update',
-    getParentRoute: () => authedRouteRoute,
+    id: '/update',
+    path: '/update',
+    getParentRoute: () => authedManageSuppliersSupplierIdRoute,
+  } as any)
+const authedManageSuppliersCreateIndexRoute =
+  authedManageSuppliersCreateIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageSuppliersCreateRouteRoute,
   } as any)
 const authedManageUsersUserIdUpdateRoute =
   authedManageUsersUserIdUpdateRouteImport.update({
@@ -199,64 +774,212 @@ const authedManageUsersUserIdUpdateRoute =
     path: '/manage/users/$userId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageUsersCreateIndexRoute =
+  authedManageUsersCreateIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageUsersCreateRouteRoute,
+  } as any)
+const authedManageProductsProductIdBomBomItemIdRoute =
+  authedManageProductsProductIdBomBomItemIdRouteImport.update({
+    id: '/manage_/products_/$productId_/bom/$bomItemId',
+    path: '/manage/products/$productId/bom/$bomItemId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
-  '/manage/clients': typeof authedManageClientsRoute
-  '/manage/materials': typeof authedManageMaterialsRoute
-  '/manage/orders': typeof authedManageOrdersRoute
-  '/manage/production-jobs': typeof authedManageProductionJobsRoute
-  '/manage/production-orders': typeof authedManageProductionOrdersRoute
-  '/manage/products': typeof authedManageProductsRoute
-  '/manage/purchase-requests': typeof authedManagePurchaseRequestsRoute
-  '/manage/suppliers': typeof authedManageSuppliersRoute
-  '/manage/users': typeof authedManageUsersRoute
-  '/manage/clients/create': typeof authedManageClientsCreateRoute
-  '/manage/materials/create': typeof authedManageMaterialsCreateRoute
+  '/manage/clients': typeof authedManageClientsRouteRouteWithChildren
+  '/manage/consumables': typeof authedManageConsumablesRouteRouteWithChildren
+  '/manage/departments': typeof authedManageDepartmentsRouteRouteWithChildren
+  '/manage/inventory-consumables': typeof authedManageInventoryConsumablesRouteRouteWithChildren
+  '/manage/inventory-issues': typeof authedManageInventoryIssuesRouteRouteWithChildren
+  '/manage/inventory-products': typeof authedManageInventoryProductsRouteRouteWithChildren
+  '/manage/inventory-receipts': typeof authedManageInventoryReceiptsRouteRouteWithChildren
+  '/manage/inventory-requisitions': typeof authedManageInventoryRequisitionsRouteRouteWithChildren
+  '/manage/iqc': typeof authedManageIqcRouteRouteWithChildren
+  '/manage/operations': typeof authedManageOperationsRouteRouteWithChildren
+  '/manage/oqc': typeof authedManageOqcRouteRouteWithChildren
+  '/manage/orders': typeof authedManageOrdersRouteRouteWithChildren
+  '/manage/outbound-orders': typeof authedManageOutboundOrdersRouteRouteWithChildren
+  '/manage/outsourcing-orders': typeof authedManageOutsourcingOrdersRouteRouteWithChildren
+  '/manage/outsourcing-receipts': typeof authedManageOutsourcingReceiptsRouteRouteWithChildren
+  '/manage/payment-requests': typeof authedManagePaymentRequestsRouteRouteWithChildren
+  '/manage/production-execution': typeof authedManageProductionExecutionRouteRouteWithChildren
+  '/manage/production-jobs': typeof authedManageProductionJobsRouteRouteWithChildren
+  '/manage/production-orders': typeof authedManageProductionOrdersRouteRouteWithChildren
+  '/manage/products': typeof authedManageProductsRouteRouteWithChildren
+  '/manage/purchase-ledger': typeof authedManagePurchaseLedgerRouteRouteWithChildren
+  '/manage/purchase-orders': typeof authedManagePurchaseOrdersRouteRouteWithChildren
+  '/manage/purchase-quotations': typeof authedManagePurchaseQuotationsRouteRouteWithChildren
+  '/manage/purchase-requests': typeof authedManagePurchaseRequestsRouteRouteWithChildren
+  '/manage/roles': typeof authedManageRolesRouteRouteWithChildren
+  '/manage/supplier-returns': typeof authedManageSupplierReturnsRouteRouteWithChildren
+  '/manage/suppliers': typeof authedManageSuppliersRouteRouteWithChildren
+  '/manage/units': typeof authedManageUnitsRouteRouteWithChildren
+  '/manage/users': typeof authedManageUsersRouteRouteWithChildren
+  '/manage/clients/create': typeof authedManageClientsCreateRouteRouteWithChildren
+  '/manage/consumables/create': typeof authedManageConsumablesCreateRouteRouteWithChildren
+  '/manage/products/create': typeof authedManageProductsCreateRouteRouteWithChildren
+  '/manage/suppliers/create': typeof authedManageSuppliersCreateRouteRouteWithChildren
+  '/manage/users/create': typeof authedManageUsersCreateRouteRouteWithChildren
+  '/manage/departments/$departmentId': typeof authedManageDepartmentsDepartmentIdRoute
+  '/manage/inventory-issues/$issueId': typeof authedManageInventoryIssuesIssueIdRoute
+  '/manage/inventory-products/$itemId': typeof authedManageInventoryProductsItemIdRoute
+  '/manage/inventory-receipts/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
+  '/manage/inventory-receipts/create': typeof authedManageInventoryReceiptsCreateRoute
+  '/manage/inventory-receipts/create-receipt': typeof authedManageInventoryReceiptsCreateReceiptRoute
+  '/manage/inventory-requisitions/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
+  '/manage/inventory-requisitions/create': typeof authedManageInventoryRequisitionsCreateRoute
+  '/manage/iqc/$iqcId': typeof authedManageIqcIqcIdRoute
+  '/manage/oqc/$oqcId': typeof authedManageOqcOqcIdRoute
   '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
   '/manage/orders/create': typeof authedManageOrdersCreateRoute
+  '/manage/outbound-orders/$outboundOrderId': typeof authedManageOutboundOrdersOutboundOrderIdRoute
+  '/manage/outbound-orders/create': typeof authedManageOutboundOrdersCreateRoute
+  '/manage/outsourcing-orders/$outsourcingOrderId': typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
+  '/manage/outsourcing-orders/create': typeof authedManageOutsourcingOrdersCreateRoute
+  '/manage/outsourcing-receipts/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
+  '/manage/outsourcing-receipts/create': typeof authedManageOutsourcingReceiptsCreateRoute
+  '/manage/payment-requests/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  '/manage/production-execution/$productionJobId': typeof authedManageProductionExecutionProductionJobIdRoute
   '/manage/production-jobs/$productionJobId': typeof authedManageProductionJobsProductionJobIdRoute
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
-  '/manage/products/create': typeof authedManageProductsCreateRoute
-  '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
-  '/manage/users/create': typeof authedManageUsersCreateRoute
+  '/manage/purchase-orders/$purchaseOrderId': typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
+  '/manage/purchase-orders/create': typeof authedManagePurchaseOrdersCreateRoute
+  '/manage/purchase-quotations/$purchaseQuotationId': typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
+  '/manage/purchase-quotations/create': typeof authedManagePurchaseQuotationsCreateRoute
+  '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
+  '/manage/purchase-requests/create': typeof authedManagePurchaseRequestsCreateRoute
+  '/manage/roles/create': typeof authedManageRolesCreateRoute
+  '/manage/supplier-returns/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
+  '/manage/suppliers/$supplierId': typeof authedManageSuppliersSupplierIdRouteWithChildren
+  '/manage/clients/': typeof authedManageClientsIndexRoute
+  '/manage/consumables/': typeof authedManageConsumablesIndexRoute
+  '/manage/departments/': typeof authedManageDepartmentsIndexRoute
+  '/manage/inventory-consumables/': typeof authedManageInventoryConsumablesIndexRoute
+  '/manage/inventory-issues/': typeof authedManageInventoryIssuesIndexRoute
+  '/manage/inventory-products/': typeof authedManageInventoryProductsIndexRoute
+  '/manage/inventory-receipts/': typeof authedManageInventoryReceiptsIndexRoute
+  '/manage/inventory-requisitions/': typeof authedManageInventoryRequisitionsIndexRoute
+  '/manage/iqc/': typeof authedManageIqcIndexRoute
+  '/manage/operations/': typeof authedManageOperationsIndexRoute
+  '/manage/oqc/': typeof authedManageOqcIndexRoute
+  '/manage/orders/': typeof authedManageOrdersIndexRoute
+  '/manage/outbound-orders/': typeof authedManageOutboundOrdersIndexRoute
+  '/manage/outsourcing-orders/': typeof authedManageOutsourcingOrdersIndexRoute
+  '/manage/outsourcing-receipts/': typeof authedManageOutsourcingReceiptsIndexRoute
+  '/manage/payment-requests/': typeof authedManagePaymentRequestsIndexRoute
+  '/manage/production-execution/': typeof authedManageProductionExecutionIndexRoute
+  '/manage/production-jobs/': typeof authedManageProductionJobsIndexRoute
+  '/manage/production-orders/': typeof authedManageProductionOrdersIndexRoute
+  '/manage/products/': typeof authedManageProductsIndexRoute
+  '/manage/purchase-ledger/': typeof authedManagePurchaseLedgerIndexRoute
+  '/manage/purchase-orders/': typeof authedManagePurchaseOrdersIndexRoute
+  '/manage/purchase-quotations/': typeof authedManagePurchaseQuotationsIndexRoute
+  '/manage/purchase-requests/': typeof authedManagePurchaseRequestsIndexRoute
+  '/manage/roles/': typeof authedManageRolesIndexRoute
+  '/manage/supplier-returns/': typeof authedManageSupplierReturnsIndexRoute
+  '/manage/suppliers/': typeof authedManageSuppliersIndexRoute
+  '/manage/units/': typeof authedManageUnitsIndexRoute
+  '/manage/users/': typeof authedManageUsersIndexRoute
   '/manage/clients/$clientId/update': typeof authedManageClientsClientIdUpdateRoute
-  '/manage/materials/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
+  '/manage/consumables/$consumableId/update': typeof authedManageConsumablesConsumableIdUpdateRoute
+  '/manage/inventory-receipts/$inventoryReceiptId/update': typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   '/manage/orders/$orderId/update': typeof authedManageOrdersOrderIdUpdateRoute
+  '/manage/purchase-quotations/$purchaseQuotationId/update': typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
+  '/manage/roles/$roleId/update': typeof authedManageRolesRoleIdUpdateRoute
   '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
   '/manage/users/$userId/update': typeof authedManageUsersUserIdUpdateRoute
+  '/manage/clients/create/': typeof authedManageClientsCreateIndexRoute
+  '/manage/consumables/create/': typeof authedManageConsumablesCreateIndexRoute
+  '/manage/products/create/': typeof authedManageProductsCreateIndexRoute
+  '/manage/suppliers/create/': typeof authedManageSuppliersCreateIndexRoute
+  '/manage/users/create/': typeof authedManageUsersCreateIndexRoute
+  '/manage/products/$productId/bom/$bomItemId': typeof authedManageProductsProductIdBomBomItemIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
-  '/manage/clients': typeof authedManageClientsRoute
-  '/manage/materials': typeof authedManageMaterialsRoute
-  '/manage/orders': typeof authedManageOrdersRoute
-  '/manage/production-jobs': typeof authedManageProductionJobsRoute
-  '/manage/production-orders': typeof authedManageProductionOrdersRoute
-  '/manage/products': typeof authedManageProductsRoute
-  '/manage/purchase-requests': typeof authedManagePurchaseRequestsRoute
-  '/manage/suppliers': typeof authedManageSuppliersRoute
-  '/manage/users': typeof authedManageUsersRoute
-  '/manage/clients/create': typeof authedManageClientsCreateRoute
-  '/manage/materials/create': typeof authedManageMaterialsCreateRoute
+  '/manage/departments/$departmentId': typeof authedManageDepartmentsDepartmentIdRoute
+  '/manage/inventory-issues/$issueId': typeof authedManageInventoryIssuesIssueIdRoute
+  '/manage/inventory-products/$itemId': typeof authedManageInventoryProductsItemIdRoute
+  '/manage/inventory-receipts/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
+  '/manage/inventory-receipts/create': typeof authedManageInventoryReceiptsCreateRoute
+  '/manage/inventory-receipts/create-receipt': typeof authedManageInventoryReceiptsCreateReceiptRoute
+  '/manage/inventory-requisitions/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
+  '/manage/inventory-requisitions/create': typeof authedManageInventoryRequisitionsCreateRoute
+  '/manage/iqc/$iqcId': typeof authedManageIqcIqcIdRoute
+  '/manage/oqc/$oqcId': typeof authedManageOqcOqcIdRoute
   '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
   '/manage/orders/create': typeof authedManageOrdersCreateRoute
+  '/manage/outbound-orders/$outboundOrderId': typeof authedManageOutboundOrdersOutboundOrderIdRoute
+  '/manage/outbound-orders/create': typeof authedManageOutboundOrdersCreateRoute
+  '/manage/outsourcing-orders/$outsourcingOrderId': typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
+  '/manage/outsourcing-orders/create': typeof authedManageOutsourcingOrdersCreateRoute
+  '/manage/outsourcing-receipts/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
+  '/manage/outsourcing-receipts/create': typeof authedManageOutsourcingReceiptsCreateRoute
+  '/manage/payment-requests/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  '/manage/production-execution/$productionJobId': typeof authedManageProductionExecutionProductionJobIdRoute
   '/manage/production-jobs/$productionJobId': typeof authedManageProductionJobsProductionJobIdRoute
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
-  '/manage/products/create': typeof authedManageProductsCreateRoute
-  '/manage/suppliers/create': typeof authedManageSuppliersCreateRoute
-  '/manage/users/create': typeof authedManageUsersCreateRoute
+  '/manage/purchase-orders/$purchaseOrderId': typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
+  '/manage/purchase-orders/create': typeof authedManagePurchaseOrdersCreateRoute
+  '/manage/purchase-quotations/$purchaseQuotationId': typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
+  '/manage/purchase-quotations/create': typeof authedManagePurchaseQuotationsCreateRoute
+  '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
+  '/manage/purchase-requests/create': typeof authedManagePurchaseRequestsCreateRoute
+  '/manage/roles/create': typeof authedManageRolesCreateRoute
+  '/manage/supplier-returns/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
+  '/manage/suppliers/$supplierId': typeof authedManageSuppliersSupplierIdRouteWithChildren
+  '/manage/clients': typeof authedManageClientsIndexRoute
+  '/manage/consumables': typeof authedManageConsumablesIndexRoute
+  '/manage/departments': typeof authedManageDepartmentsIndexRoute
+  '/manage/inventory-consumables': typeof authedManageInventoryConsumablesIndexRoute
+  '/manage/inventory-issues': typeof authedManageInventoryIssuesIndexRoute
+  '/manage/inventory-products': typeof authedManageInventoryProductsIndexRoute
+  '/manage/inventory-receipts': typeof authedManageInventoryReceiptsIndexRoute
+  '/manage/inventory-requisitions': typeof authedManageInventoryRequisitionsIndexRoute
+  '/manage/iqc': typeof authedManageIqcIndexRoute
+  '/manage/operations': typeof authedManageOperationsIndexRoute
+  '/manage/oqc': typeof authedManageOqcIndexRoute
+  '/manage/orders': typeof authedManageOrdersIndexRoute
+  '/manage/outbound-orders': typeof authedManageOutboundOrdersIndexRoute
+  '/manage/outsourcing-orders': typeof authedManageOutsourcingOrdersIndexRoute
+  '/manage/outsourcing-receipts': typeof authedManageOutsourcingReceiptsIndexRoute
+  '/manage/payment-requests': typeof authedManagePaymentRequestsIndexRoute
+  '/manage/production-execution': typeof authedManageProductionExecutionIndexRoute
+  '/manage/production-jobs': typeof authedManageProductionJobsIndexRoute
+  '/manage/production-orders': typeof authedManageProductionOrdersIndexRoute
+  '/manage/products': typeof authedManageProductsIndexRoute
+  '/manage/purchase-ledger': typeof authedManagePurchaseLedgerIndexRoute
+  '/manage/purchase-orders': typeof authedManagePurchaseOrdersIndexRoute
+  '/manage/purchase-quotations': typeof authedManagePurchaseQuotationsIndexRoute
+  '/manage/purchase-requests': typeof authedManagePurchaseRequestsIndexRoute
+  '/manage/roles': typeof authedManageRolesIndexRoute
+  '/manage/supplier-returns': typeof authedManageSupplierReturnsIndexRoute
+  '/manage/suppliers': typeof authedManageSuppliersIndexRoute
+  '/manage/units': typeof authedManageUnitsIndexRoute
+  '/manage/users': typeof authedManageUsersIndexRoute
   '/manage/clients/$clientId/update': typeof authedManageClientsClientIdUpdateRoute
-  '/manage/materials/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
+  '/manage/consumables/$consumableId/update': typeof authedManageConsumablesConsumableIdUpdateRoute
+  '/manage/inventory-receipts/$inventoryReceiptId/update': typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   '/manage/orders/$orderId/update': typeof authedManageOrdersOrderIdUpdateRoute
+  '/manage/purchase-quotations/$purchaseQuotationId/update': typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
+  '/manage/roles/$roleId/update': typeof authedManageRolesRoleIdUpdateRoute
   '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
   '/manage/users/$userId/update': typeof authedManageUsersUserIdUpdateRoute
+  '/manage/clients/create': typeof authedManageClientsCreateIndexRoute
+  '/manage/consumables/create': typeof authedManageConsumablesCreateIndexRoute
+  '/manage/products/create': typeof authedManageProductsCreateIndexRoute
+  '/manage/suppliers/create': typeof authedManageSuppliersCreateIndexRoute
+  '/manage/users/create': typeof authedManageUsersCreateIndexRoute
+  '/manage/products/$productId/bom/$bomItemId': typeof authedManageProductsProductIdBomBomItemIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -265,30 +988,115 @@ export interface FileRoutesById {
   '/(authed)': typeof authedRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(authed)/manage': typeof authedManageRoute
-  '/(authed)/manage_/clients': typeof authedManageClientsRoute
-  '/(authed)/manage_/materials': typeof authedManageMaterialsRoute
-  '/(authed)/manage_/orders': typeof authedManageOrdersRoute
-  '/(authed)/manage_/production-jobs': typeof authedManageProductionJobsRoute
-  '/(authed)/manage_/production-orders': typeof authedManageProductionOrdersRoute
-  '/(authed)/manage_/products': typeof authedManageProductsRoute
-  '/(authed)/manage_/purchase-requests': typeof authedManagePurchaseRequestsRoute
-  '/(authed)/manage_/suppliers': typeof authedManageSuppliersRoute
-  '/(authed)/manage_/users': typeof authedManageUsersRoute
-  '/(authed)/manage_/clients_/create': typeof authedManageClientsCreateRoute
-  '/(authed)/manage_/materials_/create': typeof authedManageMaterialsCreateRoute
+  '/(authed)/manage_/clients': typeof authedManageClientsRouteRouteWithChildren
+  '/(authed)/manage_/consumables': typeof authedManageConsumablesRouteRouteWithChildren
+  '/(authed)/manage_/departments': typeof authedManageDepartmentsRouteRouteWithChildren
+  '/(authed)/manage_/inventory-consumables': typeof authedManageInventoryConsumablesRouteRouteWithChildren
+  '/(authed)/manage_/inventory-issues': typeof authedManageInventoryIssuesRouteRouteWithChildren
+  '/(authed)/manage_/inventory-products': typeof authedManageInventoryProductsRouteRouteWithChildren
+  '/(authed)/manage_/inventory-receipts': typeof authedManageInventoryReceiptsRouteRouteWithChildren
+  '/(authed)/manage_/inventory-requisitions': typeof authedManageInventoryRequisitionsRouteRouteWithChildren
+  '/(authed)/manage_/iqc': typeof authedManageIqcRouteRouteWithChildren
+  '/(authed)/manage_/operations': typeof authedManageOperationsRouteRouteWithChildren
+  '/(authed)/manage_/oqc': typeof authedManageOqcRouteRouteWithChildren
+  '/(authed)/manage_/orders': typeof authedManageOrdersRouteRouteWithChildren
+  '/(authed)/manage_/outbound-orders': typeof authedManageOutboundOrdersRouteRouteWithChildren
+  '/(authed)/manage_/outsourcing-orders': typeof authedManageOutsourcingOrdersRouteRouteWithChildren
+  '/(authed)/manage_/outsourcing-receipts': typeof authedManageOutsourcingReceiptsRouteRouteWithChildren
+  '/(authed)/manage_/payment-requests': typeof authedManagePaymentRequestsRouteRouteWithChildren
+  '/(authed)/manage_/production-execution': typeof authedManageProductionExecutionRouteRouteWithChildren
+  '/(authed)/manage_/production-jobs': typeof authedManageProductionJobsRouteRouteWithChildren
+  '/(authed)/manage_/production-orders': typeof authedManageProductionOrdersRouteRouteWithChildren
+  '/(authed)/manage_/products': typeof authedManageProductsRouteRouteWithChildren
+  '/(authed)/manage_/purchase-ledger': typeof authedManagePurchaseLedgerRouteRouteWithChildren
+  '/(authed)/manage_/purchase-orders': typeof authedManagePurchaseOrdersRouteRouteWithChildren
+  '/(authed)/manage_/purchase-quotations': typeof authedManagePurchaseQuotationsRouteRouteWithChildren
+  '/(authed)/manage_/purchase-requests': typeof authedManagePurchaseRequestsRouteRouteWithChildren
+  '/(authed)/manage_/roles': typeof authedManageRolesRouteRouteWithChildren
+  '/(authed)/manage_/supplier-returns': typeof authedManageSupplierReturnsRouteRouteWithChildren
+  '/(authed)/manage_/suppliers': typeof authedManageSuppliersRouteRouteWithChildren
+  '/(authed)/manage_/units': typeof authedManageUnitsRouteRouteWithChildren
+  '/(authed)/manage_/users': typeof authedManageUsersRouteRouteWithChildren
+  '/(authed)/manage_/clients_/create': typeof authedManageClientsCreateRouteRouteWithChildren
+  '/(authed)/manage_/consumables_/create': typeof authedManageConsumablesCreateRouteRouteWithChildren
+  '/(authed)/manage_/products_/create': typeof authedManageProductsCreateRouteRouteWithChildren
+  '/(authed)/manage_/suppliers_/create': typeof authedManageSuppliersCreateRouteRouteWithChildren
+  '/(authed)/manage_/users_/create': typeof authedManageUsersCreateRouteRouteWithChildren
+  '/(authed)/manage_/departments_/$departmentId': typeof authedManageDepartmentsDepartmentIdRoute
+  '/(authed)/manage_/inventory-issues_/$issueId': typeof authedManageInventoryIssuesIssueIdRoute
+  '/(authed)/manage_/inventory-products_/$itemId': typeof authedManageInventoryProductsItemIdRoute
+  '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
+  '/(authed)/manage_/inventory-receipts_/create': typeof authedManageInventoryReceiptsCreateRoute
+  '/(authed)/manage_/inventory-receipts_/create-receipt': typeof authedManageInventoryReceiptsCreateReceiptRoute
+  '/(authed)/manage_/inventory-requisitions_/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
+  '/(authed)/manage_/inventory-requisitions_/create': typeof authedManageInventoryRequisitionsCreateRoute
+  '/(authed)/manage_/iqc_/$iqcId': typeof authedManageIqcIqcIdRoute
+  '/(authed)/manage_/oqc_/$oqcId': typeof authedManageOqcOqcIdRoute
   '/(authed)/manage_/orders_/$orderId': typeof authedManageOrdersOrderIdRoute
   '/(authed)/manage_/orders_/create': typeof authedManageOrdersCreateRoute
+  '/(authed)/manage_/outbound-orders_/$outboundOrderId': typeof authedManageOutboundOrdersOutboundOrderIdRoute
+  '/(authed)/manage_/outbound-orders_/create': typeof authedManageOutboundOrdersCreateRoute
+  '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId': typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
+  '/(authed)/manage_/outsourcing-orders_/create': typeof authedManageOutsourcingOrdersCreateRoute
+  '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
+  '/(authed)/manage_/outsourcing-receipts_/create': typeof authedManageOutsourcingReceiptsCreateRoute
+  '/(authed)/manage_/payment-requests_/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  '/(authed)/manage_/production-execution_/$productionJobId': typeof authedManageProductionExecutionProductionJobIdRoute
   '/(authed)/manage_/production-jobs_/$productionJobId': typeof authedManageProductionJobsProductionJobIdRoute
   '/(authed)/manage_/production-orders_/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/(authed)/manage_/products_/$productId': typeof authedManageProductsProductIdRoute
-  '/(authed)/manage_/products_/create': typeof authedManageProductsCreateRoute
-  '/(authed)/manage_/suppliers_/create': typeof authedManageSuppliersCreateRoute
-  '/(authed)/manage_/users_/create': typeof authedManageUsersCreateRoute
+  '/(authed)/manage_/purchase-orders_/$purchaseOrderId': typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
+  '/(authed)/manage_/purchase-orders_/create': typeof authedManagePurchaseOrdersCreateRoute
+  '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId': typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
+  '/(authed)/manage_/purchase-quotations_/create': typeof authedManagePurchaseQuotationsCreateRoute
+  '/(authed)/manage_/purchase-requests_/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
+  '/(authed)/manage_/purchase-requests_/create': typeof authedManagePurchaseRequestsCreateRoute
+  '/(authed)/manage_/roles_/create': typeof authedManageRolesCreateRoute
+  '/(authed)/manage_/supplier-returns_/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
+  '/(authed)/manage_/suppliers_/$supplierId': typeof authedManageSuppliersSupplierIdRouteWithChildren
+  '/(authed)/manage_/clients/': typeof authedManageClientsIndexRoute
+  '/(authed)/manage_/consumables/': typeof authedManageConsumablesIndexRoute
+  '/(authed)/manage_/departments/': typeof authedManageDepartmentsIndexRoute
+  '/(authed)/manage_/inventory-consumables/': typeof authedManageInventoryConsumablesIndexRoute
+  '/(authed)/manage_/inventory-issues/': typeof authedManageInventoryIssuesIndexRoute
+  '/(authed)/manage_/inventory-products/': typeof authedManageInventoryProductsIndexRoute
+  '/(authed)/manage_/inventory-receipts/': typeof authedManageInventoryReceiptsIndexRoute
+  '/(authed)/manage_/inventory-requisitions/': typeof authedManageInventoryRequisitionsIndexRoute
+  '/(authed)/manage_/iqc/': typeof authedManageIqcIndexRoute
+  '/(authed)/manage_/operations/': typeof authedManageOperationsIndexRoute
+  '/(authed)/manage_/oqc/': typeof authedManageOqcIndexRoute
+  '/(authed)/manage_/orders/': typeof authedManageOrdersIndexRoute
+  '/(authed)/manage_/outbound-orders/': typeof authedManageOutboundOrdersIndexRoute
+  '/(authed)/manage_/outsourcing-orders/': typeof authedManageOutsourcingOrdersIndexRoute
+  '/(authed)/manage_/outsourcing-receipts/': typeof authedManageOutsourcingReceiptsIndexRoute
+  '/(authed)/manage_/payment-requests/': typeof authedManagePaymentRequestsIndexRoute
+  '/(authed)/manage_/production-execution/': typeof authedManageProductionExecutionIndexRoute
+  '/(authed)/manage_/production-jobs/': typeof authedManageProductionJobsIndexRoute
+  '/(authed)/manage_/production-orders/': typeof authedManageProductionOrdersIndexRoute
+  '/(authed)/manage_/products/': typeof authedManageProductsIndexRoute
+  '/(authed)/manage_/purchase-ledger/': typeof authedManagePurchaseLedgerIndexRoute
+  '/(authed)/manage_/purchase-orders/': typeof authedManagePurchaseOrdersIndexRoute
+  '/(authed)/manage_/purchase-quotations/': typeof authedManagePurchaseQuotationsIndexRoute
+  '/(authed)/manage_/purchase-requests/': typeof authedManagePurchaseRequestsIndexRoute
+  '/(authed)/manage_/roles/': typeof authedManageRolesIndexRoute
+  '/(authed)/manage_/supplier-returns/': typeof authedManageSupplierReturnsIndexRoute
+  '/(authed)/manage_/suppliers/': typeof authedManageSuppliersIndexRoute
+  '/(authed)/manage_/units/': typeof authedManageUnitsIndexRoute
+  '/(authed)/manage_/users/': typeof authedManageUsersIndexRoute
   '/(authed)/manage_/clients_/$clientId/update': typeof authedManageClientsClientIdUpdateRoute
-  '/(authed)/manage_/materials_/$materialId/update': typeof authedManageMaterialsMaterialIdUpdateRoute
+  '/(authed)/manage_/consumables_/$consumableId/update': typeof authedManageConsumablesConsumableIdUpdateRoute
+  '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update': typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   '/(authed)/manage_/orders_/$orderId_/update': typeof authedManageOrdersOrderIdUpdateRoute
+  '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_/update': typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
+  '/(authed)/manage_/roles_/$roleId/update': typeof authedManageRolesRoleIdUpdateRoute
   '/(authed)/manage_/suppliers_/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
   '/(authed)/manage_/users_/$userId/update': typeof authedManageUsersUserIdUpdateRoute
+  '/(authed)/manage_/clients_/create/': typeof authedManageClientsCreateIndexRoute
+  '/(authed)/manage_/consumables_/create/': typeof authedManageConsumablesCreateIndexRoute
+  '/(authed)/manage_/products_/create/': typeof authedManageProductsCreateIndexRoute
+  '/(authed)/manage_/suppliers_/create/': typeof authedManageSuppliersCreateIndexRoute
+  '/(authed)/manage_/users_/create/': typeof authedManageUsersCreateIndexRoute
+  '/(authed)/manage_/products_/$productId_/bom/$bomItemId': typeof authedManageProductsProductIdBomBomItemIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -297,58 +1105,194 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage'
     | '/manage/clients'
-    | '/manage/materials'
+    | '/manage/consumables'
+    | '/manage/departments'
+    | '/manage/inventory-consumables'
+    | '/manage/inventory-issues'
+    | '/manage/inventory-products'
+    | '/manage/inventory-receipts'
+    | '/manage/inventory-requisitions'
+    | '/manage/iqc'
+    | '/manage/operations'
+    | '/manage/oqc'
     | '/manage/orders'
+    | '/manage/outbound-orders'
+    | '/manage/outsourcing-orders'
+    | '/manage/outsourcing-receipts'
+    | '/manage/payment-requests'
+    | '/manage/production-execution'
     | '/manage/production-jobs'
     | '/manage/production-orders'
     | '/manage/products'
+    | '/manage/purchase-ledger'
+    | '/manage/purchase-orders'
+    | '/manage/purchase-quotations'
     | '/manage/purchase-requests'
+    | '/manage/roles'
+    | '/manage/supplier-returns'
     | '/manage/suppliers'
+    | '/manage/units'
     | '/manage/users'
     | '/manage/clients/create'
-    | '/manage/materials/create'
-    | '/manage/orders/$orderId'
-    | '/manage/orders/create'
-    | '/manage/production-jobs/$productionJobId'
-    | '/manage/production-orders/$productionOrderId'
-    | '/manage/products/$productId'
+    | '/manage/consumables/create'
     | '/manage/products/create'
     | '/manage/suppliers/create'
     | '/manage/users/create'
+    | '/manage/departments/$departmentId'
+    | '/manage/inventory-issues/$issueId'
+    | '/manage/inventory-products/$itemId'
+    | '/manage/inventory-receipts/$inventoryReceiptId'
+    | '/manage/inventory-receipts/create'
+    | '/manage/inventory-receipts/create-receipt'
+    | '/manage/inventory-requisitions/$requisitionId'
+    | '/manage/inventory-requisitions/create'
+    | '/manage/iqc/$iqcId'
+    | '/manage/oqc/$oqcId'
+    | '/manage/orders/$orderId'
+    | '/manage/orders/create'
+    | '/manage/outbound-orders/$outboundOrderId'
+    | '/manage/outbound-orders/create'
+    | '/manage/outsourcing-orders/$outsourcingOrderId'
+    | '/manage/outsourcing-orders/create'
+    | '/manage/outsourcing-receipts/$outsourcingReceiptId'
+    | '/manage/outsourcing-receipts/create'
+    | '/manage/payment-requests/$paymentRequestId'
+    | '/manage/production-execution/$productionJobId'
+    | '/manage/production-jobs/$productionJobId'
+    | '/manage/production-orders/$productionOrderId'
+    | '/manage/products/$productId'
+    | '/manage/purchase-orders/$purchaseOrderId'
+    | '/manage/purchase-orders/create'
+    | '/manage/purchase-quotations/$purchaseQuotationId'
+    | '/manage/purchase-quotations/create'
+    | '/manage/purchase-requests/$purchaseRequestId'
+    | '/manage/purchase-requests/create'
+    | '/manage/roles/create'
+    | '/manage/supplier-returns/$supplierReturnId'
+    | '/manage/suppliers/$supplierId'
+    | '/manage/clients/'
+    | '/manage/consumables/'
+    | '/manage/departments/'
+    | '/manage/inventory-consumables/'
+    | '/manage/inventory-issues/'
+    | '/manage/inventory-products/'
+    | '/manage/inventory-receipts/'
+    | '/manage/inventory-requisitions/'
+    | '/manage/iqc/'
+    | '/manage/operations/'
+    | '/manage/oqc/'
+    | '/manage/orders/'
+    | '/manage/outbound-orders/'
+    | '/manage/outsourcing-orders/'
+    | '/manage/outsourcing-receipts/'
+    | '/manage/payment-requests/'
+    | '/manage/production-execution/'
+    | '/manage/production-jobs/'
+    | '/manage/production-orders/'
+    | '/manage/products/'
+    | '/manage/purchase-ledger/'
+    | '/manage/purchase-orders/'
+    | '/manage/purchase-quotations/'
+    | '/manage/purchase-requests/'
+    | '/manage/roles/'
+    | '/manage/supplier-returns/'
+    | '/manage/suppliers/'
+    | '/manage/units/'
+    | '/manage/users/'
     | '/manage/clients/$clientId/update'
-    | '/manage/materials/$materialId/update'
+    | '/manage/consumables/$consumableId/update'
+    | '/manage/inventory-receipts/$inventoryReceiptId/update'
     | '/manage/orders/$orderId/update'
+    | '/manage/purchase-quotations/$purchaseQuotationId/update'
+    | '/manage/roles/$roleId/update'
     | '/manage/suppliers/$supplierId/update'
     | '/manage/users/$userId/update'
+    | '/manage/clients/create/'
+    | '/manage/consumables/create/'
+    | '/manage/products/create/'
+    | '/manage/suppliers/create/'
+    | '/manage/users/create/'
+    | '/manage/products/$productId/bom/$bomItemId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/manage'
-    | '/manage/clients'
-    | '/manage/materials'
-    | '/manage/orders'
-    | '/manage/production-jobs'
-    | '/manage/production-orders'
-    | '/manage/products'
-    | '/manage/purchase-requests'
-    | '/manage/suppliers'
-    | '/manage/users'
-    | '/manage/clients/create'
-    | '/manage/materials/create'
+    | '/manage/departments/$departmentId'
+    | '/manage/inventory-issues/$issueId'
+    | '/manage/inventory-products/$itemId'
+    | '/manage/inventory-receipts/$inventoryReceiptId'
+    | '/manage/inventory-receipts/create'
+    | '/manage/inventory-receipts/create-receipt'
+    | '/manage/inventory-requisitions/$requisitionId'
+    | '/manage/inventory-requisitions/create'
+    | '/manage/iqc/$iqcId'
+    | '/manage/oqc/$oqcId'
     | '/manage/orders/$orderId'
     | '/manage/orders/create'
+    | '/manage/outbound-orders/$outboundOrderId'
+    | '/manage/outbound-orders/create'
+    | '/manage/outsourcing-orders/$outsourcingOrderId'
+    | '/manage/outsourcing-orders/create'
+    | '/manage/outsourcing-receipts/$outsourcingReceiptId'
+    | '/manage/outsourcing-receipts/create'
+    | '/manage/payment-requests/$paymentRequestId'
+    | '/manage/production-execution/$productionJobId'
     | '/manage/production-jobs/$productionJobId'
     | '/manage/production-orders/$productionOrderId'
     | '/manage/products/$productId'
+    | '/manage/purchase-orders/$purchaseOrderId'
+    | '/manage/purchase-orders/create'
+    | '/manage/purchase-quotations/$purchaseQuotationId'
+    | '/manage/purchase-quotations/create'
+    | '/manage/purchase-requests/$purchaseRequestId'
+    | '/manage/purchase-requests/create'
+    | '/manage/roles/create'
+    | '/manage/supplier-returns/$supplierReturnId'
+    | '/manage/suppliers/$supplierId'
+    | '/manage/clients'
+    | '/manage/consumables'
+    | '/manage/departments'
+    | '/manage/inventory-consumables'
+    | '/manage/inventory-issues'
+    | '/manage/inventory-products'
+    | '/manage/inventory-receipts'
+    | '/manage/inventory-requisitions'
+    | '/manage/iqc'
+    | '/manage/operations'
+    | '/manage/oqc'
+    | '/manage/orders'
+    | '/manage/outbound-orders'
+    | '/manage/outsourcing-orders'
+    | '/manage/outsourcing-receipts'
+    | '/manage/payment-requests'
+    | '/manage/production-execution'
+    | '/manage/production-jobs'
+    | '/manage/production-orders'
+    | '/manage/products'
+    | '/manage/purchase-ledger'
+    | '/manage/purchase-orders'
+    | '/manage/purchase-quotations'
+    | '/manage/purchase-requests'
+    | '/manage/roles'
+    | '/manage/supplier-returns'
+    | '/manage/suppliers'
+    | '/manage/units'
+    | '/manage/users'
+    | '/manage/clients/$clientId/update'
+    | '/manage/consumables/$consumableId/update'
+    | '/manage/inventory-receipts/$inventoryReceiptId/update'
+    | '/manage/orders/$orderId/update'
+    | '/manage/purchase-quotations/$purchaseQuotationId/update'
+    | '/manage/roles/$roleId/update'
+    | '/manage/suppliers/$supplierId/update'
+    | '/manage/users/$userId/update'
+    | '/manage/clients/create'
+    | '/manage/consumables/create'
     | '/manage/products/create'
     | '/manage/suppliers/create'
     | '/manage/users/create'
-    | '/manage/clients/$clientId/update'
-    | '/manage/materials/$materialId/update'
-    | '/manage/orders/$orderId/update'
-    | '/manage/suppliers/$supplierId/update'
-    | '/manage/users/$userId/update'
+    | '/manage/products/$productId/bom/$bomItemId'
   id:
     | '__root__'
     | '/'
@@ -357,29 +1301,114 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(authed)/manage'
     | '/(authed)/manage_/clients'
-    | '/(authed)/manage_/materials'
+    | '/(authed)/manage_/consumables'
+    | '/(authed)/manage_/departments'
+    | '/(authed)/manage_/inventory-consumables'
+    | '/(authed)/manage_/inventory-issues'
+    | '/(authed)/manage_/inventory-products'
+    | '/(authed)/manage_/inventory-receipts'
+    | '/(authed)/manage_/inventory-requisitions'
+    | '/(authed)/manage_/iqc'
+    | '/(authed)/manage_/operations'
+    | '/(authed)/manage_/oqc'
     | '/(authed)/manage_/orders'
+    | '/(authed)/manage_/outbound-orders'
+    | '/(authed)/manage_/outsourcing-orders'
+    | '/(authed)/manage_/outsourcing-receipts'
+    | '/(authed)/manage_/payment-requests'
+    | '/(authed)/manage_/production-execution'
     | '/(authed)/manage_/production-jobs'
     | '/(authed)/manage_/production-orders'
     | '/(authed)/manage_/products'
+    | '/(authed)/manage_/purchase-ledger'
+    | '/(authed)/manage_/purchase-orders'
+    | '/(authed)/manage_/purchase-quotations'
     | '/(authed)/manage_/purchase-requests'
+    | '/(authed)/manage_/roles'
+    | '/(authed)/manage_/supplier-returns'
     | '/(authed)/manage_/suppliers'
+    | '/(authed)/manage_/units'
     | '/(authed)/manage_/users'
     | '/(authed)/manage_/clients_/create'
-    | '/(authed)/manage_/materials_/create'
-    | '/(authed)/manage_/orders_/$orderId'
-    | '/(authed)/manage_/orders_/create'
-    | '/(authed)/manage_/production-jobs_/$productionJobId'
-    | '/(authed)/manage_/production-orders_/$productionOrderId'
-    | '/(authed)/manage_/products_/$productId'
+    | '/(authed)/manage_/consumables_/create'
     | '/(authed)/manage_/products_/create'
     | '/(authed)/manage_/suppliers_/create'
     | '/(authed)/manage_/users_/create'
+    | '/(authed)/manage_/departments_/$departmentId'
+    | '/(authed)/manage_/inventory-issues_/$issueId'
+    | '/(authed)/manage_/inventory-products_/$itemId'
+    | '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId'
+    | '/(authed)/manage_/inventory-receipts_/create'
+    | '/(authed)/manage_/inventory-receipts_/create-receipt'
+    | '/(authed)/manage_/inventory-requisitions_/$requisitionId'
+    | '/(authed)/manage_/inventory-requisitions_/create'
+    | '/(authed)/manage_/iqc_/$iqcId'
+    | '/(authed)/manage_/oqc_/$oqcId'
+    | '/(authed)/manage_/orders_/$orderId'
+    | '/(authed)/manage_/orders_/create'
+    | '/(authed)/manage_/outbound-orders_/$outboundOrderId'
+    | '/(authed)/manage_/outbound-orders_/create'
+    | '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId'
+    | '/(authed)/manage_/outsourcing-orders_/create'
+    | '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId'
+    | '/(authed)/manage_/outsourcing-receipts_/create'
+    | '/(authed)/manage_/payment-requests_/$paymentRequestId'
+    | '/(authed)/manage_/production-execution_/$productionJobId'
+    | '/(authed)/manage_/production-jobs_/$productionJobId'
+    | '/(authed)/manage_/production-orders_/$productionOrderId'
+    | '/(authed)/manage_/products_/$productId'
+    | '/(authed)/manage_/purchase-orders_/$purchaseOrderId'
+    | '/(authed)/manage_/purchase-orders_/create'
+    | '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId'
+    | '/(authed)/manage_/purchase-quotations_/create'
+    | '/(authed)/manage_/purchase-requests_/$purchaseRequestId'
+    | '/(authed)/manage_/purchase-requests_/create'
+    | '/(authed)/manage_/roles_/create'
+    | '/(authed)/manage_/supplier-returns_/$supplierReturnId'
+    | '/(authed)/manage_/suppliers_/$supplierId'
+    | '/(authed)/manage_/clients/'
+    | '/(authed)/manage_/consumables/'
+    | '/(authed)/manage_/departments/'
+    | '/(authed)/manage_/inventory-consumables/'
+    | '/(authed)/manage_/inventory-issues/'
+    | '/(authed)/manage_/inventory-products/'
+    | '/(authed)/manage_/inventory-receipts/'
+    | '/(authed)/manage_/inventory-requisitions/'
+    | '/(authed)/manage_/iqc/'
+    | '/(authed)/manage_/operations/'
+    | '/(authed)/manage_/oqc/'
+    | '/(authed)/manage_/orders/'
+    | '/(authed)/manage_/outbound-orders/'
+    | '/(authed)/manage_/outsourcing-orders/'
+    | '/(authed)/manage_/outsourcing-receipts/'
+    | '/(authed)/manage_/payment-requests/'
+    | '/(authed)/manage_/production-execution/'
+    | '/(authed)/manage_/production-jobs/'
+    | '/(authed)/manage_/production-orders/'
+    | '/(authed)/manage_/products/'
+    | '/(authed)/manage_/purchase-ledger/'
+    | '/(authed)/manage_/purchase-orders/'
+    | '/(authed)/manage_/purchase-quotations/'
+    | '/(authed)/manage_/purchase-requests/'
+    | '/(authed)/manage_/roles/'
+    | '/(authed)/manage_/supplier-returns/'
+    | '/(authed)/manage_/suppliers/'
+    | '/(authed)/manage_/units/'
+    | '/(authed)/manage_/users/'
     | '/(authed)/manage_/clients_/$clientId/update'
-    | '/(authed)/manage_/materials_/$materialId/update'
+    | '/(authed)/manage_/consumables_/$consumableId/update'
+    | '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update'
     | '/(authed)/manage_/orders_/$orderId_/update'
+    | '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_/update'
+    | '/(authed)/manage_/roles_/$roleId/update'
     | '/(authed)/manage_/suppliers_/$supplierId/update'
     | '/(authed)/manage_/users_/$userId/update'
+    | '/(authed)/manage_/clients_/create/'
+    | '/(authed)/manage_/consumables_/create/'
+    | '/(authed)/manage_/products_/create/'
+    | '/(authed)/manage_/suppliers_/create/'
+    | '/(authed)/manage_/users_/create/'
+    | '/(authed)/manage_/products_/$productId_/bom/$bomItemId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -429,78 +1458,372 @@ declare module '@tanstack/react-router' {
       id: '/(authed)/manage_/clients'
       path: '/manage/clients'
       fullPath: '/manage/clients'
-      preLoaderRoute: typeof authedManageClientsRouteImport
+      preLoaderRoute: typeof authedManageClientsRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/materials': {
-      id: '/(authed)/manage_/materials'
-      path: '/manage/materials'
-      fullPath: '/manage/materials'
-      preLoaderRoute: typeof authedManageMaterialsRouteImport
+    '/(authed)/manage_/consumables': {
+      id: '/(authed)/manage_/consumables'
+      path: '/manage/consumables'
+      fullPath: '/manage/consumables'
+      preLoaderRoute: typeof authedManageConsumablesRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/departments': {
+      id: '/(authed)/manage_/departments'
+      path: '/manage/departments'
+      fullPath: '/manage/departments'
+      preLoaderRoute: typeof authedManageDepartmentsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-consumables': {
+      id: '/(authed)/manage_/inventory-consumables'
+      path: '/manage/inventory-consumables'
+      fullPath: '/manage/inventory-consumables'
+      preLoaderRoute: typeof authedManageInventoryConsumablesRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-issues': {
+      id: '/(authed)/manage_/inventory-issues'
+      path: '/manage/inventory-issues'
+      fullPath: '/manage/inventory-issues'
+      preLoaderRoute: typeof authedManageInventoryIssuesRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-products': {
+      id: '/(authed)/manage_/inventory-products'
+      path: '/manage/inventory-products'
+      fullPath: '/manage/inventory-products'
+      preLoaderRoute: typeof authedManageInventoryProductsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-receipts': {
+      id: '/(authed)/manage_/inventory-receipts'
+      path: '/manage/inventory-receipts'
+      fullPath: '/manage/inventory-receipts'
+      preLoaderRoute: typeof authedManageInventoryReceiptsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-requisitions': {
+      id: '/(authed)/manage_/inventory-requisitions'
+      path: '/manage/inventory-requisitions'
+      fullPath: '/manage/inventory-requisitions'
+      preLoaderRoute: typeof authedManageInventoryRequisitionsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/iqc': {
+      id: '/(authed)/manage_/iqc'
+      path: '/manage/iqc'
+      fullPath: '/manage/iqc'
+      preLoaderRoute: typeof authedManageIqcRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/operations': {
+      id: '/(authed)/manage_/operations'
+      path: '/manage/operations'
+      fullPath: '/manage/operations'
+      preLoaderRoute: typeof authedManageOperationsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/oqc': {
+      id: '/(authed)/manage_/oqc'
+      path: '/manage/oqc'
+      fullPath: '/manage/oqc'
+      preLoaderRoute: typeof authedManageOqcRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/orders': {
       id: '/(authed)/manage_/orders'
       path: '/manage/orders'
       fullPath: '/manage/orders'
-      preLoaderRoute: typeof authedManageOrdersRouteImport
+      preLoaderRoute: typeof authedManageOrdersRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outbound-orders': {
+      id: '/(authed)/manage_/outbound-orders'
+      path: '/manage/outbound-orders'
+      fullPath: '/manage/outbound-orders'
+      preLoaderRoute: typeof authedManageOutboundOrdersRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-orders': {
+      id: '/(authed)/manage_/outsourcing-orders'
+      path: '/manage/outsourcing-orders'
+      fullPath: '/manage/outsourcing-orders'
+      preLoaderRoute: typeof authedManageOutsourcingOrdersRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-receipts': {
+      id: '/(authed)/manage_/outsourcing-receipts'
+      path: '/manage/outsourcing-receipts'
+      fullPath: '/manage/outsourcing-receipts'
+      preLoaderRoute: typeof authedManageOutsourcingReceiptsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/payment-requests': {
+      id: '/(authed)/manage_/payment-requests'
+      path: '/manage/payment-requests'
+      fullPath: '/manage/payment-requests'
+      preLoaderRoute: typeof authedManagePaymentRequestsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/production-execution': {
+      id: '/(authed)/manage_/production-execution'
+      path: '/manage/production-execution'
+      fullPath: '/manage/production-execution'
+      preLoaderRoute: typeof authedManageProductionExecutionRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/production-jobs': {
       id: '/(authed)/manage_/production-jobs'
       path: '/manage/production-jobs'
       fullPath: '/manage/production-jobs'
-      preLoaderRoute: typeof authedManageProductionJobsRouteImport
+      preLoaderRoute: typeof authedManageProductionJobsRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/production-orders': {
       id: '/(authed)/manage_/production-orders'
       path: '/manage/production-orders'
       fullPath: '/manage/production-orders'
-      preLoaderRoute: typeof authedManageProductionOrdersRouteImport
+      preLoaderRoute: typeof authedManageProductionOrdersRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/products': {
       id: '/(authed)/manage_/products'
       path: '/manage/products'
       fullPath: '/manage/products'
-      preLoaderRoute: typeof authedManageProductsRouteImport
+      preLoaderRoute: typeof authedManageProductsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-ledger': {
+      id: '/(authed)/manage_/purchase-ledger'
+      path: '/manage/purchase-ledger'
+      fullPath: '/manage/purchase-ledger'
+      preLoaderRoute: typeof authedManagePurchaseLedgerRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-orders': {
+      id: '/(authed)/manage_/purchase-orders'
+      path: '/manage/purchase-orders'
+      fullPath: '/manage/purchase-orders'
+      preLoaderRoute: typeof authedManagePurchaseOrdersRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-quotations': {
+      id: '/(authed)/manage_/purchase-quotations'
+      path: '/manage/purchase-quotations'
+      fullPath: '/manage/purchase-quotations'
+      preLoaderRoute: typeof authedManagePurchaseQuotationsRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/purchase-requests': {
       id: '/(authed)/manage_/purchase-requests'
       path: '/manage/purchase-requests'
       fullPath: '/manage/purchase-requests'
-      preLoaderRoute: typeof authedManagePurchaseRequestsRouteImport
+      preLoaderRoute: typeof authedManagePurchaseRequestsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/roles': {
+      id: '/(authed)/manage_/roles'
+      path: '/manage/roles'
+      fullPath: '/manage/roles'
+      preLoaderRoute: typeof authedManageRolesRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/supplier-returns': {
+      id: '/(authed)/manage_/supplier-returns'
+      path: '/manage/supplier-returns'
+      fullPath: '/manage/supplier-returns'
+      preLoaderRoute: typeof authedManageSupplierReturnsRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/suppliers': {
       id: '/(authed)/manage_/suppliers'
       path: '/manage/suppliers'
       fullPath: '/manage/suppliers'
-      preLoaderRoute: typeof authedManageSuppliersRouteImport
+      preLoaderRoute: typeof authedManageSuppliersRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/units': {
+      id: '/(authed)/manage_/units'
+      path: '/manage/units'
+      fullPath: '/manage/units'
+      preLoaderRoute: typeof authedManageUnitsRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/users': {
       id: '/(authed)/manage_/users'
       path: '/manage/users'
       fullPath: '/manage/users'
-      preLoaderRoute: typeof authedManageUsersRouteImport
+      preLoaderRoute: typeof authedManageUsersRouteRouteImport
       parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/clients/': {
+      id: '/(authed)/manage_/clients/'
+      path: '/'
+      fullPath: '/manage/clients/'
+      preLoaderRoute: typeof authedManageClientsIndexRouteImport
+      parentRoute: typeof authedManageClientsRouteRoute
     }
     '/(authed)/manage_/clients_/create': {
       id: '/(authed)/manage_/clients_/create'
       path: '/manage/clients/create'
       fullPath: '/manage/clients/create'
-      preLoaderRoute: typeof authedManageClientsCreateRouteImport
+      preLoaderRoute: typeof authedManageClientsCreateRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/materials_/create': {
-      id: '/(authed)/manage_/materials_/create'
-      path: '/manage/materials/create'
-      fullPath: '/manage/materials/create'
-      preLoaderRoute: typeof authedManageMaterialsCreateRouteImport
+    '/(authed)/manage_/consumables/': {
+      id: '/(authed)/manage_/consumables/'
+      path: '/'
+      fullPath: '/manage/consumables/'
+      preLoaderRoute: typeof authedManageConsumablesIndexRouteImport
+      parentRoute: typeof authedManageConsumablesRouteRoute
+    }
+    '/(authed)/manage_/consumables_/create': {
+      id: '/(authed)/manage_/consumables_/create'
+      path: '/manage/consumables/create'
+      fullPath: '/manage/consumables/create'
+      preLoaderRoute: typeof authedManageConsumablesCreateRouteRouteImport
       parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/departments/': {
+      id: '/(authed)/manage_/departments/'
+      path: '/'
+      fullPath: '/manage/departments/'
+      preLoaderRoute: typeof authedManageDepartmentsIndexRouteImport
+      parentRoute: typeof authedManageDepartmentsRouteRoute
+    }
+    '/(authed)/manage_/departments_/$departmentId': {
+      id: '/(authed)/manage_/departments_/$departmentId'
+      path: '/manage/departments/$departmentId'
+      fullPath: '/manage/departments/$departmentId'
+      preLoaderRoute: typeof authedManageDepartmentsDepartmentIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-consumables/': {
+      id: '/(authed)/manage_/inventory-consumables/'
+      path: '/'
+      fullPath: '/manage/inventory-consumables/'
+      preLoaderRoute: typeof authedManageInventoryConsumablesIndexRouteImport
+      parentRoute: typeof authedManageInventoryConsumablesRouteRoute
+    }
+    '/(authed)/manage_/inventory-issues/': {
+      id: '/(authed)/manage_/inventory-issues/'
+      path: '/'
+      fullPath: '/manage/inventory-issues/'
+      preLoaderRoute: typeof authedManageInventoryIssuesIndexRouteImport
+      parentRoute: typeof authedManageInventoryIssuesRouteRoute
+    }
+    '/(authed)/manage_/inventory-issues_/$issueId': {
+      id: '/(authed)/manage_/inventory-issues_/$issueId'
+      path: '/manage/inventory-issues/$issueId'
+      fullPath: '/manage/inventory-issues/$issueId'
+      preLoaderRoute: typeof authedManageInventoryIssuesIssueIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-products/': {
+      id: '/(authed)/manage_/inventory-products/'
+      path: '/'
+      fullPath: '/manage/inventory-products/'
+      preLoaderRoute: typeof authedManageInventoryProductsIndexRouteImport
+      parentRoute: typeof authedManageInventoryProductsRouteRoute
+    }
+    '/(authed)/manage_/inventory-products_/$itemId': {
+      id: '/(authed)/manage_/inventory-products_/$itemId'
+      path: '/manage/inventory-products/$itemId'
+      fullPath: '/manage/inventory-products/$itemId'
+      preLoaderRoute: typeof authedManageInventoryProductsItemIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-receipts/': {
+      id: '/(authed)/manage_/inventory-receipts/'
+      path: '/'
+      fullPath: '/manage/inventory-receipts/'
+      preLoaderRoute: typeof authedManageInventoryReceiptsIndexRouteImport
+      parentRoute: typeof authedManageInventoryReceiptsRouteRoute
+    }
+    '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId': {
+      id: '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId'
+      path: '/manage/inventory-receipts/$inventoryReceiptId'
+      fullPath: '/manage/inventory-receipts/$inventoryReceiptId'
+      preLoaderRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-receipts_/create': {
+      id: '/(authed)/manage_/inventory-receipts_/create'
+      path: '/manage/inventory-receipts/create'
+      fullPath: '/manage/inventory-receipts/create'
+      preLoaderRoute: typeof authedManageInventoryReceiptsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-receipts_/create-receipt': {
+      id: '/(authed)/manage_/inventory-receipts_/create-receipt'
+      path: '/manage/inventory-receipts/create-receipt'
+      fullPath: '/manage/inventory-receipts/create-receipt'
+      preLoaderRoute: typeof authedManageInventoryReceiptsCreateReceiptRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-requisitions/': {
+      id: '/(authed)/manage_/inventory-requisitions/'
+      path: '/'
+      fullPath: '/manage/inventory-requisitions/'
+      preLoaderRoute: typeof authedManageInventoryRequisitionsIndexRouteImport
+      parentRoute: typeof authedManageInventoryRequisitionsRouteRoute
+    }
+    '/(authed)/manage_/inventory-requisitions_/$requisitionId': {
+      id: '/(authed)/manage_/inventory-requisitions_/$requisitionId'
+      path: '/manage/inventory-requisitions/$requisitionId'
+      fullPath: '/manage/inventory-requisitions/$requisitionId'
+      preLoaderRoute: typeof authedManageInventoryRequisitionsRequisitionIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/inventory-requisitions_/create': {
+      id: '/(authed)/manage_/inventory-requisitions_/create'
+      path: '/manage/inventory-requisitions/create'
+      fullPath: '/manage/inventory-requisitions/create'
+      preLoaderRoute: typeof authedManageInventoryRequisitionsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/iqc/': {
+      id: '/(authed)/manage_/iqc/'
+      path: '/'
+      fullPath: '/manage/iqc/'
+      preLoaderRoute: typeof authedManageIqcIndexRouteImport
+      parentRoute: typeof authedManageIqcRouteRoute
+    }
+    '/(authed)/manage_/iqc_/$iqcId': {
+      id: '/(authed)/manage_/iqc_/$iqcId'
+      path: '/manage/iqc/$iqcId'
+      fullPath: '/manage/iqc/$iqcId'
+      preLoaderRoute: typeof authedManageIqcIqcIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/operations/': {
+      id: '/(authed)/manage_/operations/'
+      path: '/'
+      fullPath: '/manage/operations/'
+      preLoaderRoute: typeof authedManageOperationsIndexRouteImport
+      parentRoute: typeof authedManageOperationsRouteRoute
+    }
+    '/(authed)/manage_/oqc/': {
+      id: '/(authed)/manage_/oqc/'
+      path: '/'
+      fullPath: '/manage/oqc/'
+      preLoaderRoute: typeof authedManageOqcIndexRouteImport
+      parentRoute: typeof authedManageOqcRouteRoute
+    }
+    '/(authed)/manage_/oqc_/$oqcId': {
+      id: '/(authed)/manage_/oqc_/$oqcId'
+      path: '/manage/oqc/$oqcId'
+      fullPath: '/manage/oqc/$oqcId'
+      preLoaderRoute: typeof authedManageOqcOqcIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/orders/': {
+      id: '/(authed)/manage_/orders/'
+      path: '/'
+      fullPath: '/manage/orders/'
+      preLoaderRoute: typeof authedManageOrdersIndexRouteImport
+      parentRoute: typeof authedManageOrdersRouteRoute
     }
     '/(authed)/manage_/orders_/$orderId': {
       id: '/(authed)/manage_/orders_/$orderId'
@@ -516,6 +1839,104 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageOrdersCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/outbound-orders/': {
+      id: '/(authed)/manage_/outbound-orders/'
+      path: '/'
+      fullPath: '/manage/outbound-orders/'
+      preLoaderRoute: typeof authedManageOutboundOrdersIndexRouteImport
+      parentRoute: typeof authedManageOutboundOrdersRouteRoute
+    }
+    '/(authed)/manage_/outbound-orders_/$outboundOrderId': {
+      id: '/(authed)/manage_/outbound-orders_/$outboundOrderId'
+      path: '/manage/outbound-orders/$outboundOrderId'
+      fullPath: '/manage/outbound-orders/$outboundOrderId'
+      preLoaderRoute: typeof authedManageOutboundOrdersOutboundOrderIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outbound-orders_/create': {
+      id: '/(authed)/manage_/outbound-orders_/create'
+      path: '/manage/outbound-orders/create'
+      fullPath: '/manage/outbound-orders/create'
+      preLoaderRoute: typeof authedManageOutboundOrdersCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-orders/': {
+      id: '/(authed)/manage_/outsourcing-orders/'
+      path: '/'
+      fullPath: '/manage/outsourcing-orders/'
+      preLoaderRoute: typeof authedManageOutsourcingOrdersIndexRouteImport
+      parentRoute: typeof authedManageOutsourcingOrdersRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId': {
+      id: '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId'
+      path: '/manage/outsourcing-orders/$outsourcingOrderId'
+      fullPath: '/manage/outsourcing-orders/$outsourcingOrderId'
+      preLoaderRoute: typeof authedManageOutsourcingOrdersOutsourcingOrderIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-orders_/create': {
+      id: '/(authed)/manage_/outsourcing-orders_/create'
+      path: '/manage/outsourcing-orders/create'
+      fullPath: '/manage/outsourcing-orders/create'
+      preLoaderRoute: typeof authedManageOutsourcingOrdersCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-receipts/': {
+      id: '/(authed)/manage_/outsourcing-receipts/'
+      path: '/'
+      fullPath: '/manage/outsourcing-receipts/'
+      preLoaderRoute: typeof authedManageOutsourcingReceiptsIndexRouteImport
+      parentRoute: typeof authedManageOutsourcingReceiptsRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId': {
+      id: '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId'
+      path: '/manage/outsourcing-receipts/$outsourcingReceiptId'
+      fullPath: '/manage/outsourcing-receipts/$outsourcingReceiptId'
+      preLoaderRoute: typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-receipts_/create': {
+      id: '/(authed)/manage_/outsourcing-receipts_/create'
+      path: '/manage/outsourcing-receipts/create'
+      fullPath: '/manage/outsourcing-receipts/create'
+      preLoaderRoute: typeof authedManageOutsourcingReceiptsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/payment-requests/': {
+      id: '/(authed)/manage_/payment-requests/'
+      path: '/'
+      fullPath: '/manage/payment-requests/'
+      preLoaderRoute: typeof authedManagePaymentRequestsIndexRouteImport
+      parentRoute: typeof authedManagePaymentRequestsRouteRoute
+    }
+    '/(authed)/manage_/payment-requests_/$paymentRequestId': {
+      id: '/(authed)/manage_/payment-requests_/$paymentRequestId'
+      path: '/manage/payment-requests/$paymentRequestId'
+      fullPath: '/manage/payment-requests/$paymentRequestId'
+      preLoaderRoute: typeof authedManagePaymentRequestsPaymentRequestIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/production-execution/': {
+      id: '/(authed)/manage_/production-execution/'
+      path: '/'
+      fullPath: '/manage/production-execution/'
+      preLoaderRoute: typeof authedManageProductionExecutionIndexRouteImport
+      parentRoute: typeof authedManageProductionExecutionRouteRoute
+    }
+    '/(authed)/manage_/production-execution_/$productionJobId': {
+      id: '/(authed)/manage_/production-execution_/$productionJobId'
+      path: '/manage/production-execution/$productionJobId'
+      fullPath: '/manage/production-execution/$productionJobId'
+      preLoaderRoute: typeof authedManageProductionExecutionProductionJobIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/production-jobs/': {
+      id: '/(authed)/manage_/production-jobs/'
+      path: '/'
+      fullPath: '/manage/production-jobs/'
+      preLoaderRoute: typeof authedManageProductionJobsIndexRouteImport
+      parentRoute: typeof authedManageProductionJobsRouteRoute
+    }
     '/(authed)/manage_/production-jobs_/$productionJobId': {
       id: '/(authed)/manage_/production-jobs_/$productionJobId'
       path: '/manage/production-jobs/$productionJobId'
@@ -523,12 +1944,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageProductionJobsProductionJobIdRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/production-orders/': {
+      id: '/(authed)/manage_/production-orders/'
+      path: '/'
+      fullPath: '/manage/production-orders/'
+      preLoaderRoute: typeof authedManageProductionOrdersIndexRouteImport
+      parentRoute: typeof authedManageProductionOrdersRouteRoute
+    }
     '/(authed)/manage_/production-orders_/$productionOrderId': {
       id: '/(authed)/manage_/production-orders_/$productionOrderId'
       path: '/manage/production-orders/$productionOrderId'
       fullPath: '/manage/production-orders/$productionOrderId'
       preLoaderRoute: typeof authedManageProductionOrdersProductionOrderIdRouteImport
       parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/products/': {
+      id: '/(authed)/manage_/products/'
+      path: '/'
+      fullPath: '/manage/products/'
+      preLoaderRoute: typeof authedManageProductsIndexRouteImport
+      parentRoute: typeof authedManageProductsRouteRoute
     }
     '/(authed)/manage_/products_/$productId': {
       id: '/(authed)/manage_/products_/$productId'
@@ -541,21 +1976,147 @@ declare module '@tanstack/react-router' {
       id: '/(authed)/manage_/products_/create'
       path: '/manage/products/create'
       fullPath: '/manage/products/create'
-      preLoaderRoute: typeof authedManageProductsCreateRouteImport
+      preLoaderRoute: typeof authedManageProductsCreateRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-ledger/': {
+      id: '/(authed)/manage_/purchase-ledger/'
+      path: '/'
+      fullPath: '/manage/purchase-ledger/'
+      preLoaderRoute: typeof authedManagePurchaseLedgerIndexRouteImport
+      parentRoute: typeof authedManagePurchaseLedgerRouteRoute
+    }
+    '/(authed)/manage_/purchase-orders/': {
+      id: '/(authed)/manage_/purchase-orders/'
+      path: '/'
+      fullPath: '/manage/purchase-orders/'
+      preLoaderRoute: typeof authedManagePurchaseOrdersIndexRouteImport
+      parentRoute: typeof authedManagePurchaseOrdersRouteRoute
+    }
+    '/(authed)/manage_/purchase-orders_/$purchaseOrderId': {
+      id: '/(authed)/manage_/purchase-orders_/$purchaseOrderId'
+      path: '/manage/purchase-orders/$purchaseOrderId'
+      fullPath: '/manage/purchase-orders/$purchaseOrderId'
+      preLoaderRoute: typeof authedManagePurchaseOrdersPurchaseOrderIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-orders_/create': {
+      id: '/(authed)/manage_/purchase-orders_/create'
+      path: '/manage/purchase-orders/create'
+      fullPath: '/manage/purchase-orders/create'
+      preLoaderRoute: typeof authedManagePurchaseOrdersCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-quotations/': {
+      id: '/(authed)/manage_/purchase-quotations/'
+      path: '/'
+      fullPath: '/manage/purchase-quotations/'
+      preLoaderRoute: typeof authedManagePurchaseQuotationsIndexRouteImport
+      parentRoute: typeof authedManagePurchaseQuotationsRouteRoute
+    }
+    '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId': {
+      id: '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId'
+      path: '/manage/purchase-quotations/$purchaseQuotationId'
+      fullPath: '/manage/purchase-quotations/$purchaseQuotationId'
+      preLoaderRoute: typeof authedManagePurchaseQuotationsPurchaseQuotationIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-quotations_/create': {
+      id: '/(authed)/manage_/purchase-quotations_/create'
+      path: '/manage/purchase-quotations/create'
+      fullPath: '/manage/purchase-quotations/create'
+      preLoaderRoute: typeof authedManagePurchaseQuotationsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-requests/': {
+      id: '/(authed)/manage_/purchase-requests/'
+      path: '/'
+      fullPath: '/manage/purchase-requests/'
+      preLoaderRoute: typeof authedManagePurchaseRequestsIndexRouteImport
+      parentRoute: typeof authedManagePurchaseRequestsRouteRoute
+    }
+    '/(authed)/manage_/purchase-requests_/$purchaseRequestId': {
+      id: '/(authed)/manage_/purchase-requests_/$purchaseRequestId'
+      path: '/manage/purchase-requests/$purchaseRequestId'
+      fullPath: '/manage/purchase-requests/$purchaseRequestId'
+      preLoaderRoute: typeof authedManagePurchaseRequestsPurchaseRequestIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/purchase-requests_/create': {
+      id: '/(authed)/manage_/purchase-requests_/create'
+      path: '/manage/purchase-requests/create'
+      fullPath: '/manage/purchase-requests/create'
+      preLoaderRoute: typeof authedManagePurchaseRequestsCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/roles/': {
+      id: '/(authed)/manage_/roles/'
+      path: '/'
+      fullPath: '/manage/roles/'
+      preLoaderRoute: typeof authedManageRolesIndexRouteImport
+      parentRoute: typeof authedManageRolesRouteRoute
+    }
+    '/(authed)/manage_/roles_/create': {
+      id: '/(authed)/manage_/roles_/create'
+      path: '/manage/roles/create'
+      fullPath: '/manage/roles/create'
+      preLoaderRoute: typeof authedManageRolesCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/supplier-returns/': {
+      id: '/(authed)/manage_/supplier-returns/'
+      path: '/'
+      fullPath: '/manage/supplier-returns/'
+      preLoaderRoute: typeof authedManageSupplierReturnsIndexRouteImport
+      parentRoute: typeof authedManageSupplierReturnsRouteRoute
+    }
+    '/(authed)/manage_/supplier-returns_/$supplierReturnId': {
+      id: '/(authed)/manage_/supplier-returns_/$supplierReturnId'
+      path: '/manage/supplier-returns/$supplierReturnId'
+      fullPath: '/manage/supplier-returns/$supplierReturnId'
+      preLoaderRoute: typeof authedManageSupplierReturnsSupplierReturnIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/suppliers/': {
+      id: '/(authed)/manage_/suppliers/'
+      path: '/'
+      fullPath: '/manage/suppliers/'
+      preLoaderRoute: typeof authedManageSuppliersIndexRouteImport
+      parentRoute: typeof authedManageSuppliersRouteRoute
+    }
+    '/(authed)/manage_/suppliers_/$supplierId': {
+      id: '/(authed)/manage_/suppliers_/$supplierId'
+      path: '/manage/suppliers/$supplierId'
+      fullPath: '/manage/suppliers/$supplierId'
+      preLoaderRoute: typeof authedManageSuppliersSupplierIdRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/suppliers_/create': {
       id: '/(authed)/manage_/suppliers_/create'
       path: '/manage/suppliers/create'
       fullPath: '/manage/suppliers/create'
-      preLoaderRoute: typeof authedManageSuppliersCreateRouteImport
+      preLoaderRoute: typeof authedManageSuppliersCreateRouteRouteImport
       parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/units/': {
+      id: '/(authed)/manage_/units/'
+      path: '/'
+      fullPath: '/manage/units/'
+      preLoaderRoute: typeof authedManageUnitsIndexRouteImport
+      parentRoute: typeof authedManageUnitsRouteRoute
+    }
+    '/(authed)/manage_/users/': {
+      id: '/(authed)/manage_/users/'
+      path: '/'
+      fullPath: '/manage/users/'
+      preLoaderRoute: typeof authedManageUsersIndexRouteImport
+      parentRoute: typeof authedManageUsersRouteRoute
     }
     '/(authed)/manage_/users_/create': {
       id: '/(authed)/manage_/users_/create'
       path: '/manage/users/create'
       fullPath: '/manage/users/create'
-      preLoaderRoute: typeof authedManageUsersCreateRouteImport
+      preLoaderRoute: typeof authedManageUsersCreateRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/clients_/$clientId/update': {
@@ -565,11 +2126,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageClientsClientIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/manage_/materials_/$materialId/update': {
-      id: '/(authed)/manage_/materials_/$materialId/update'
-      path: '/manage/materials/$materialId/update'
-      fullPath: '/manage/materials/$materialId/update'
-      preLoaderRoute: typeof authedManageMaterialsMaterialIdUpdateRouteImport
+    '/(authed)/manage_/clients_/create/': {
+      id: '/(authed)/manage_/clients_/create/'
+      path: '/'
+      fullPath: '/manage/clients/create/'
+      preLoaderRoute: typeof authedManageClientsCreateIndexRouteImport
+      parentRoute: typeof authedManageClientsCreateRouteRoute
+    }
+    '/(authed)/manage_/consumables_/$consumableId/update': {
+      id: '/(authed)/manage_/consumables_/$consumableId/update'
+      path: '/manage/consumables/$consumableId/update'
+      fullPath: '/manage/consumables/$consumableId/update'
+      preLoaderRoute: typeof authedManageConsumablesConsumableIdUpdateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/consumables_/create/': {
+      id: '/(authed)/manage_/consumables_/create/'
+      path: '/'
+      fullPath: '/manage/consumables/create/'
+      preLoaderRoute: typeof authedManageConsumablesCreateIndexRouteImport
+      parentRoute: typeof authedManageConsumablesCreateRouteRoute
+    }
+    '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update': {
+      id: '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update'
+      path: '/manage/inventory-receipts/$inventoryReceiptId/update'
+      fullPath: '/manage/inventory-receipts/$inventoryReceiptId/update'
+      preLoaderRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/orders_/$orderId_/update': {
@@ -579,18 +2161,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageOrdersOrderIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/products_/create/': {
+      id: '/(authed)/manage_/products_/create/'
+      path: '/'
+      fullPath: '/manage/products/create/'
+      preLoaderRoute: typeof authedManageProductsCreateIndexRouteImport
+      parentRoute: typeof authedManageProductsCreateRouteRoute
+    }
+    '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_/update': {
+      id: '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_/update'
+      path: '/manage/purchase-quotations/$purchaseQuotationId/update'
+      fullPath: '/manage/purchase-quotations/$purchaseQuotationId/update'
+      preLoaderRoute: typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/roles_/$roleId/update': {
+      id: '/(authed)/manage_/roles_/$roleId/update'
+      path: '/manage/roles/$roleId/update'
+      fullPath: '/manage/roles/$roleId/update'
+      preLoaderRoute: typeof authedManageRolesRoleIdUpdateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/manage_/suppliers_/$supplierId/update': {
       id: '/(authed)/manage_/suppliers_/$supplierId/update'
-      path: '/manage/suppliers/$supplierId/update'
+      path: '/update'
       fullPath: '/manage/suppliers/$supplierId/update'
       preLoaderRoute: typeof authedManageSuppliersSupplierIdUpdateRouteImport
-      parentRoute: typeof authedRouteRoute
+      parentRoute: typeof authedManageSuppliersSupplierIdRoute
+    }
+    '/(authed)/manage_/suppliers_/create/': {
+      id: '/(authed)/manage_/suppliers_/create/'
+      path: '/'
+      fullPath: '/manage/suppliers/create/'
+      preLoaderRoute: typeof authedManageSuppliersCreateIndexRouteImport
+      parentRoute: typeof authedManageSuppliersCreateRouteRoute
     }
     '/(authed)/manage_/users_/$userId/update': {
       id: '/(authed)/manage_/users_/$userId/update'
       path: '/manage/users/$userId/update'
       fullPath: '/manage/users/$userId/update'
       preLoaderRoute: typeof authedManageUsersUserIdUpdateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/users_/create/': {
+      id: '/(authed)/manage_/users_/create/'
+      path: '/'
+      fullPath: '/manage/users/create/'
+      preLoaderRoute: typeof authedManageUsersCreateIndexRouteImport
+      parentRoute: typeof authedManageUsersCreateRouteRoute
+    }
+    '/(authed)/manage_/products_/$productId_/bom/$bomItemId': {
+      id: '/(authed)/manage_/products_/$productId_/bom/$bomItemId'
+      path: '/manage/products/$productId/bom/$bomItemId'
+      fullPath: '/manage/products/$productId/bom/$bomItemId'
+      preLoaderRoute: typeof authedManageProductsProductIdBomBomItemIdRouteImport
       parentRoute: typeof authedRouteRoute
     }
   }
@@ -608,65 +2232,714 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
+interface authedManageClientsRouteRouteChildren {
+  authedManageClientsIndexRoute: typeof authedManageClientsIndexRoute
+}
+
+const authedManageClientsRouteRouteChildren: authedManageClientsRouteRouteChildren =
+  {
+    authedManageClientsIndexRoute: authedManageClientsIndexRoute,
+  }
+
+const authedManageClientsRouteRouteWithChildren =
+  authedManageClientsRouteRoute._addFileChildren(
+    authedManageClientsRouteRouteChildren,
+  )
+
+interface authedManageConsumablesRouteRouteChildren {
+  authedManageConsumablesIndexRoute: typeof authedManageConsumablesIndexRoute
+}
+
+const authedManageConsumablesRouteRouteChildren: authedManageConsumablesRouteRouteChildren =
+  {
+    authedManageConsumablesIndexRoute: authedManageConsumablesIndexRoute,
+  }
+
+const authedManageConsumablesRouteRouteWithChildren =
+  authedManageConsumablesRouteRoute._addFileChildren(
+    authedManageConsumablesRouteRouteChildren,
+  )
+
+interface authedManageDepartmentsRouteRouteChildren {
+  authedManageDepartmentsIndexRoute: typeof authedManageDepartmentsIndexRoute
+}
+
+const authedManageDepartmentsRouteRouteChildren: authedManageDepartmentsRouteRouteChildren =
+  {
+    authedManageDepartmentsIndexRoute: authedManageDepartmentsIndexRoute,
+  }
+
+const authedManageDepartmentsRouteRouteWithChildren =
+  authedManageDepartmentsRouteRoute._addFileChildren(
+    authedManageDepartmentsRouteRouteChildren,
+  )
+
+interface authedManageInventoryConsumablesRouteRouteChildren {
+  authedManageInventoryConsumablesIndexRoute: typeof authedManageInventoryConsumablesIndexRoute
+}
+
+const authedManageInventoryConsumablesRouteRouteChildren: authedManageInventoryConsumablesRouteRouteChildren =
+  {
+    authedManageInventoryConsumablesIndexRoute:
+      authedManageInventoryConsumablesIndexRoute,
+  }
+
+const authedManageInventoryConsumablesRouteRouteWithChildren =
+  authedManageInventoryConsumablesRouteRoute._addFileChildren(
+    authedManageInventoryConsumablesRouteRouteChildren,
+  )
+
+interface authedManageInventoryIssuesRouteRouteChildren {
+  authedManageInventoryIssuesIndexRoute: typeof authedManageInventoryIssuesIndexRoute
+}
+
+const authedManageInventoryIssuesRouteRouteChildren: authedManageInventoryIssuesRouteRouteChildren =
+  {
+    authedManageInventoryIssuesIndexRoute:
+      authedManageInventoryIssuesIndexRoute,
+  }
+
+const authedManageInventoryIssuesRouteRouteWithChildren =
+  authedManageInventoryIssuesRouteRoute._addFileChildren(
+    authedManageInventoryIssuesRouteRouteChildren,
+  )
+
+interface authedManageInventoryProductsRouteRouteChildren {
+  authedManageInventoryProductsIndexRoute: typeof authedManageInventoryProductsIndexRoute
+}
+
+const authedManageInventoryProductsRouteRouteChildren: authedManageInventoryProductsRouteRouteChildren =
+  {
+    authedManageInventoryProductsIndexRoute:
+      authedManageInventoryProductsIndexRoute,
+  }
+
+const authedManageInventoryProductsRouteRouteWithChildren =
+  authedManageInventoryProductsRouteRoute._addFileChildren(
+    authedManageInventoryProductsRouteRouteChildren,
+  )
+
+interface authedManageInventoryReceiptsRouteRouteChildren {
+  authedManageInventoryReceiptsIndexRoute: typeof authedManageInventoryReceiptsIndexRoute
+}
+
+const authedManageInventoryReceiptsRouteRouteChildren: authedManageInventoryReceiptsRouteRouteChildren =
+  {
+    authedManageInventoryReceiptsIndexRoute:
+      authedManageInventoryReceiptsIndexRoute,
+  }
+
+const authedManageInventoryReceiptsRouteRouteWithChildren =
+  authedManageInventoryReceiptsRouteRoute._addFileChildren(
+    authedManageInventoryReceiptsRouteRouteChildren,
+  )
+
+interface authedManageInventoryRequisitionsRouteRouteChildren {
+  authedManageInventoryRequisitionsIndexRoute: typeof authedManageInventoryRequisitionsIndexRoute
+}
+
+const authedManageInventoryRequisitionsRouteRouteChildren: authedManageInventoryRequisitionsRouteRouteChildren =
+  {
+    authedManageInventoryRequisitionsIndexRoute:
+      authedManageInventoryRequisitionsIndexRoute,
+  }
+
+const authedManageInventoryRequisitionsRouteRouteWithChildren =
+  authedManageInventoryRequisitionsRouteRoute._addFileChildren(
+    authedManageInventoryRequisitionsRouteRouteChildren,
+  )
+
+interface authedManageIqcRouteRouteChildren {
+  authedManageIqcIndexRoute: typeof authedManageIqcIndexRoute
+}
+
+const authedManageIqcRouteRouteChildren: authedManageIqcRouteRouteChildren = {
+  authedManageIqcIndexRoute: authedManageIqcIndexRoute,
+}
+
+const authedManageIqcRouteRouteWithChildren =
+  authedManageIqcRouteRoute._addFileChildren(authedManageIqcRouteRouteChildren)
+
+interface authedManageOperationsRouteRouteChildren {
+  authedManageOperationsIndexRoute: typeof authedManageOperationsIndexRoute
+}
+
+const authedManageOperationsRouteRouteChildren: authedManageOperationsRouteRouteChildren =
+  {
+    authedManageOperationsIndexRoute: authedManageOperationsIndexRoute,
+  }
+
+const authedManageOperationsRouteRouteWithChildren =
+  authedManageOperationsRouteRoute._addFileChildren(
+    authedManageOperationsRouteRouteChildren,
+  )
+
+interface authedManageOqcRouteRouteChildren {
+  authedManageOqcIndexRoute: typeof authedManageOqcIndexRoute
+}
+
+const authedManageOqcRouteRouteChildren: authedManageOqcRouteRouteChildren = {
+  authedManageOqcIndexRoute: authedManageOqcIndexRoute,
+}
+
+const authedManageOqcRouteRouteWithChildren =
+  authedManageOqcRouteRoute._addFileChildren(authedManageOqcRouteRouteChildren)
+
+interface authedManageOrdersRouteRouteChildren {
+  authedManageOrdersIndexRoute: typeof authedManageOrdersIndexRoute
+}
+
+const authedManageOrdersRouteRouteChildren: authedManageOrdersRouteRouteChildren =
+  {
+    authedManageOrdersIndexRoute: authedManageOrdersIndexRoute,
+  }
+
+const authedManageOrdersRouteRouteWithChildren =
+  authedManageOrdersRouteRoute._addFileChildren(
+    authedManageOrdersRouteRouteChildren,
+  )
+
+interface authedManageOutboundOrdersRouteRouteChildren {
+  authedManageOutboundOrdersIndexRoute: typeof authedManageOutboundOrdersIndexRoute
+}
+
+const authedManageOutboundOrdersRouteRouteChildren: authedManageOutboundOrdersRouteRouteChildren =
+  {
+    authedManageOutboundOrdersIndexRoute: authedManageOutboundOrdersIndexRoute,
+  }
+
+const authedManageOutboundOrdersRouteRouteWithChildren =
+  authedManageOutboundOrdersRouteRoute._addFileChildren(
+    authedManageOutboundOrdersRouteRouteChildren,
+  )
+
+interface authedManageOutsourcingOrdersRouteRouteChildren {
+  authedManageOutsourcingOrdersIndexRoute: typeof authedManageOutsourcingOrdersIndexRoute
+}
+
+const authedManageOutsourcingOrdersRouteRouteChildren: authedManageOutsourcingOrdersRouteRouteChildren =
+  {
+    authedManageOutsourcingOrdersIndexRoute:
+      authedManageOutsourcingOrdersIndexRoute,
+  }
+
+const authedManageOutsourcingOrdersRouteRouteWithChildren =
+  authedManageOutsourcingOrdersRouteRoute._addFileChildren(
+    authedManageOutsourcingOrdersRouteRouteChildren,
+  )
+
+interface authedManageOutsourcingReceiptsRouteRouteChildren {
+  authedManageOutsourcingReceiptsIndexRoute: typeof authedManageOutsourcingReceiptsIndexRoute
+}
+
+const authedManageOutsourcingReceiptsRouteRouteChildren: authedManageOutsourcingReceiptsRouteRouteChildren =
+  {
+    authedManageOutsourcingReceiptsIndexRoute:
+      authedManageOutsourcingReceiptsIndexRoute,
+  }
+
+const authedManageOutsourcingReceiptsRouteRouteWithChildren =
+  authedManageOutsourcingReceiptsRouteRoute._addFileChildren(
+    authedManageOutsourcingReceiptsRouteRouteChildren,
+  )
+
+interface authedManagePaymentRequestsRouteRouteChildren {
+  authedManagePaymentRequestsIndexRoute: typeof authedManagePaymentRequestsIndexRoute
+}
+
+const authedManagePaymentRequestsRouteRouteChildren: authedManagePaymentRequestsRouteRouteChildren =
+  {
+    authedManagePaymentRequestsIndexRoute:
+      authedManagePaymentRequestsIndexRoute,
+  }
+
+const authedManagePaymentRequestsRouteRouteWithChildren =
+  authedManagePaymentRequestsRouteRoute._addFileChildren(
+    authedManagePaymentRequestsRouteRouteChildren,
+  )
+
+interface authedManageProductionExecutionRouteRouteChildren {
+  authedManageProductionExecutionIndexRoute: typeof authedManageProductionExecutionIndexRoute
+}
+
+const authedManageProductionExecutionRouteRouteChildren: authedManageProductionExecutionRouteRouteChildren =
+  {
+    authedManageProductionExecutionIndexRoute:
+      authedManageProductionExecutionIndexRoute,
+  }
+
+const authedManageProductionExecutionRouteRouteWithChildren =
+  authedManageProductionExecutionRouteRoute._addFileChildren(
+    authedManageProductionExecutionRouteRouteChildren,
+  )
+
+interface authedManageProductionJobsRouteRouteChildren {
+  authedManageProductionJobsIndexRoute: typeof authedManageProductionJobsIndexRoute
+}
+
+const authedManageProductionJobsRouteRouteChildren: authedManageProductionJobsRouteRouteChildren =
+  {
+    authedManageProductionJobsIndexRoute: authedManageProductionJobsIndexRoute,
+  }
+
+const authedManageProductionJobsRouteRouteWithChildren =
+  authedManageProductionJobsRouteRoute._addFileChildren(
+    authedManageProductionJobsRouteRouteChildren,
+  )
+
+interface authedManageProductionOrdersRouteRouteChildren {
+  authedManageProductionOrdersIndexRoute: typeof authedManageProductionOrdersIndexRoute
+}
+
+const authedManageProductionOrdersRouteRouteChildren: authedManageProductionOrdersRouteRouteChildren =
+  {
+    authedManageProductionOrdersIndexRoute:
+      authedManageProductionOrdersIndexRoute,
+  }
+
+const authedManageProductionOrdersRouteRouteWithChildren =
+  authedManageProductionOrdersRouteRoute._addFileChildren(
+    authedManageProductionOrdersRouteRouteChildren,
+  )
+
+interface authedManageProductsRouteRouteChildren {
+  authedManageProductsIndexRoute: typeof authedManageProductsIndexRoute
+}
+
+const authedManageProductsRouteRouteChildren: authedManageProductsRouteRouteChildren =
+  {
+    authedManageProductsIndexRoute: authedManageProductsIndexRoute,
+  }
+
+const authedManageProductsRouteRouteWithChildren =
+  authedManageProductsRouteRoute._addFileChildren(
+    authedManageProductsRouteRouteChildren,
+  )
+
+interface authedManagePurchaseLedgerRouteRouteChildren {
+  authedManagePurchaseLedgerIndexRoute: typeof authedManagePurchaseLedgerIndexRoute
+}
+
+const authedManagePurchaseLedgerRouteRouteChildren: authedManagePurchaseLedgerRouteRouteChildren =
+  {
+    authedManagePurchaseLedgerIndexRoute: authedManagePurchaseLedgerIndexRoute,
+  }
+
+const authedManagePurchaseLedgerRouteRouteWithChildren =
+  authedManagePurchaseLedgerRouteRoute._addFileChildren(
+    authedManagePurchaseLedgerRouteRouteChildren,
+  )
+
+interface authedManagePurchaseOrdersRouteRouteChildren {
+  authedManagePurchaseOrdersIndexRoute: typeof authedManagePurchaseOrdersIndexRoute
+}
+
+const authedManagePurchaseOrdersRouteRouteChildren: authedManagePurchaseOrdersRouteRouteChildren =
+  {
+    authedManagePurchaseOrdersIndexRoute: authedManagePurchaseOrdersIndexRoute,
+  }
+
+const authedManagePurchaseOrdersRouteRouteWithChildren =
+  authedManagePurchaseOrdersRouteRoute._addFileChildren(
+    authedManagePurchaseOrdersRouteRouteChildren,
+  )
+
+interface authedManagePurchaseQuotationsRouteRouteChildren {
+  authedManagePurchaseQuotationsIndexRoute: typeof authedManagePurchaseQuotationsIndexRoute
+}
+
+const authedManagePurchaseQuotationsRouteRouteChildren: authedManagePurchaseQuotationsRouteRouteChildren =
+  {
+    authedManagePurchaseQuotationsIndexRoute:
+      authedManagePurchaseQuotationsIndexRoute,
+  }
+
+const authedManagePurchaseQuotationsRouteRouteWithChildren =
+  authedManagePurchaseQuotationsRouteRoute._addFileChildren(
+    authedManagePurchaseQuotationsRouteRouteChildren,
+  )
+
+interface authedManagePurchaseRequestsRouteRouteChildren {
+  authedManagePurchaseRequestsIndexRoute: typeof authedManagePurchaseRequestsIndexRoute
+}
+
+const authedManagePurchaseRequestsRouteRouteChildren: authedManagePurchaseRequestsRouteRouteChildren =
+  {
+    authedManagePurchaseRequestsIndexRoute:
+      authedManagePurchaseRequestsIndexRoute,
+  }
+
+const authedManagePurchaseRequestsRouteRouteWithChildren =
+  authedManagePurchaseRequestsRouteRoute._addFileChildren(
+    authedManagePurchaseRequestsRouteRouteChildren,
+  )
+
+interface authedManageRolesRouteRouteChildren {
+  authedManageRolesIndexRoute: typeof authedManageRolesIndexRoute
+}
+
+const authedManageRolesRouteRouteChildren: authedManageRolesRouteRouteChildren =
+  {
+    authedManageRolesIndexRoute: authedManageRolesIndexRoute,
+  }
+
+const authedManageRolesRouteRouteWithChildren =
+  authedManageRolesRouteRoute._addFileChildren(
+    authedManageRolesRouteRouteChildren,
+  )
+
+interface authedManageSupplierReturnsRouteRouteChildren {
+  authedManageSupplierReturnsIndexRoute: typeof authedManageSupplierReturnsIndexRoute
+}
+
+const authedManageSupplierReturnsRouteRouteChildren: authedManageSupplierReturnsRouteRouteChildren =
+  {
+    authedManageSupplierReturnsIndexRoute:
+      authedManageSupplierReturnsIndexRoute,
+  }
+
+const authedManageSupplierReturnsRouteRouteWithChildren =
+  authedManageSupplierReturnsRouteRoute._addFileChildren(
+    authedManageSupplierReturnsRouteRouteChildren,
+  )
+
+interface authedManageSuppliersRouteRouteChildren {
+  authedManageSuppliersIndexRoute: typeof authedManageSuppliersIndexRoute
+}
+
+const authedManageSuppliersRouteRouteChildren: authedManageSuppliersRouteRouteChildren =
+  {
+    authedManageSuppliersIndexRoute: authedManageSuppliersIndexRoute,
+  }
+
+const authedManageSuppliersRouteRouteWithChildren =
+  authedManageSuppliersRouteRoute._addFileChildren(
+    authedManageSuppliersRouteRouteChildren,
+  )
+
+interface authedManageUnitsRouteRouteChildren {
+  authedManageUnitsIndexRoute: typeof authedManageUnitsIndexRoute
+}
+
+const authedManageUnitsRouteRouteChildren: authedManageUnitsRouteRouteChildren =
+  {
+    authedManageUnitsIndexRoute: authedManageUnitsIndexRoute,
+  }
+
+const authedManageUnitsRouteRouteWithChildren =
+  authedManageUnitsRouteRoute._addFileChildren(
+    authedManageUnitsRouteRouteChildren,
+  )
+
+interface authedManageUsersRouteRouteChildren {
+  authedManageUsersIndexRoute: typeof authedManageUsersIndexRoute
+}
+
+const authedManageUsersRouteRouteChildren: authedManageUsersRouteRouteChildren =
+  {
+    authedManageUsersIndexRoute: authedManageUsersIndexRoute,
+  }
+
+const authedManageUsersRouteRouteWithChildren =
+  authedManageUsersRouteRoute._addFileChildren(
+    authedManageUsersRouteRouteChildren,
+  )
+
+interface authedManageClientsCreateRouteRouteChildren {
+  authedManageClientsCreateIndexRoute: typeof authedManageClientsCreateIndexRoute
+}
+
+const authedManageClientsCreateRouteRouteChildren: authedManageClientsCreateRouteRouteChildren =
+  {
+    authedManageClientsCreateIndexRoute: authedManageClientsCreateIndexRoute,
+  }
+
+const authedManageClientsCreateRouteRouteWithChildren =
+  authedManageClientsCreateRouteRoute._addFileChildren(
+    authedManageClientsCreateRouteRouteChildren,
+  )
+
+interface authedManageConsumablesCreateRouteRouteChildren {
+  authedManageConsumablesCreateIndexRoute: typeof authedManageConsumablesCreateIndexRoute
+}
+
+const authedManageConsumablesCreateRouteRouteChildren: authedManageConsumablesCreateRouteRouteChildren =
+  {
+    authedManageConsumablesCreateIndexRoute:
+      authedManageConsumablesCreateIndexRoute,
+  }
+
+const authedManageConsumablesCreateRouteRouteWithChildren =
+  authedManageConsumablesCreateRouteRoute._addFileChildren(
+    authedManageConsumablesCreateRouteRouteChildren,
+  )
+
+interface authedManageProductsCreateRouteRouteChildren {
+  authedManageProductsCreateIndexRoute: typeof authedManageProductsCreateIndexRoute
+}
+
+const authedManageProductsCreateRouteRouteChildren: authedManageProductsCreateRouteRouteChildren =
+  {
+    authedManageProductsCreateIndexRoute: authedManageProductsCreateIndexRoute,
+  }
+
+const authedManageProductsCreateRouteRouteWithChildren =
+  authedManageProductsCreateRouteRoute._addFileChildren(
+    authedManageProductsCreateRouteRouteChildren,
+  )
+
+interface authedManageSuppliersCreateRouteRouteChildren {
+  authedManageSuppliersCreateIndexRoute: typeof authedManageSuppliersCreateIndexRoute
+}
+
+const authedManageSuppliersCreateRouteRouteChildren: authedManageSuppliersCreateRouteRouteChildren =
+  {
+    authedManageSuppliersCreateIndexRoute:
+      authedManageSuppliersCreateIndexRoute,
+  }
+
+const authedManageSuppliersCreateRouteRouteWithChildren =
+  authedManageSuppliersCreateRouteRoute._addFileChildren(
+    authedManageSuppliersCreateRouteRouteChildren,
+  )
+
+interface authedManageUsersCreateRouteRouteChildren {
+  authedManageUsersCreateIndexRoute: typeof authedManageUsersCreateIndexRoute
+}
+
+const authedManageUsersCreateRouteRouteChildren: authedManageUsersCreateRouteRouteChildren =
+  {
+    authedManageUsersCreateIndexRoute: authedManageUsersCreateIndexRoute,
+  }
+
+const authedManageUsersCreateRouteRouteWithChildren =
+  authedManageUsersCreateRouteRoute._addFileChildren(
+    authedManageUsersCreateRouteRouteChildren,
+  )
+
+interface authedManageSuppliersSupplierIdRouteChildren {
+  authedManageSuppliersSupplierIdUpdateRoute: typeof authedManageSuppliersSupplierIdUpdateRoute
+}
+
+const authedManageSuppliersSupplierIdRouteChildren: authedManageSuppliersSupplierIdRouteChildren =
+  {
+    authedManageSuppliersSupplierIdUpdateRoute:
+      authedManageSuppliersSupplierIdUpdateRoute,
+  }
+
+const authedManageSuppliersSupplierIdRouteWithChildren =
+  authedManageSuppliersSupplierIdRoute._addFileChildren(
+    authedManageSuppliersSupplierIdRouteChildren,
+  )
+
 interface authedRouteRouteChildren {
   authedManageRoute: typeof authedManageRoute
-  authedManageClientsRoute: typeof authedManageClientsRoute
-  authedManageMaterialsRoute: typeof authedManageMaterialsRoute
-  authedManageOrdersRoute: typeof authedManageOrdersRoute
-  authedManageProductionJobsRoute: typeof authedManageProductionJobsRoute
-  authedManageProductionOrdersRoute: typeof authedManageProductionOrdersRoute
-  authedManageProductsRoute: typeof authedManageProductsRoute
-  authedManagePurchaseRequestsRoute: typeof authedManagePurchaseRequestsRoute
-  authedManageSuppliersRoute: typeof authedManageSuppliersRoute
-  authedManageUsersRoute: typeof authedManageUsersRoute
-  authedManageClientsCreateRoute: typeof authedManageClientsCreateRoute
-  authedManageMaterialsCreateRoute: typeof authedManageMaterialsCreateRoute
+  authedManageClientsRouteRoute: typeof authedManageClientsRouteRouteWithChildren
+  authedManageConsumablesRouteRoute: typeof authedManageConsumablesRouteRouteWithChildren
+  authedManageDepartmentsRouteRoute: typeof authedManageDepartmentsRouteRouteWithChildren
+  authedManageInventoryConsumablesRouteRoute: typeof authedManageInventoryConsumablesRouteRouteWithChildren
+  authedManageInventoryIssuesRouteRoute: typeof authedManageInventoryIssuesRouteRouteWithChildren
+  authedManageInventoryProductsRouteRoute: typeof authedManageInventoryProductsRouteRouteWithChildren
+  authedManageInventoryReceiptsRouteRoute: typeof authedManageInventoryReceiptsRouteRouteWithChildren
+  authedManageInventoryRequisitionsRouteRoute: typeof authedManageInventoryRequisitionsRouteRouteWithChildren
+  authedManageIqcRouteRoute: typeof authedManageIqcRouteRouteWithChildren
+  authedManageOperationsRouteRoute: typeof authedManageOperationsRouteRouteWithChildren
+  authedManageOqcRouteRoute: typeof authedManageOqcRouteRouteWithChildren
+  authedManageOrdersRouteRoute: typeof authedManageOrdersRouteRouteWithChildren
+  authedManageOutboundOrdersRouteRoute: typeof authedManageOutboundOrdersRouteRouteWithChildren
+  authedManageOutsourcingOrdersRouteRoute: typeof authedManageOutsourcingOrdersRouteRouteWithChildren
+  authedManageOutsourcingReceiptsRouteRoute: typeof authedManageOutsourcingReceiptsRouteRouteWithChildren
+  authedManagePaymentRequestsRouteRoute: typeof authedManagePaymentRequestsRouteRouteWithChildren
+  authedManageProductionExecutionRouteRoute: typeof authedManageProductionExecutionRouteRouteWithChildren
+  authedManageProductionJobsRouteRoute: typeof authedManageProductionJobsRouteRouteWithChildren
+  authedManageProductionOrdersRouteRoute: typeof authedManageProductionOrdersRouteRouteWithChildren
+  authedManageProductsRouteRoute: typeof authedManageProductsRouteRouteWithChildren
+  authedManagePurchaseLedgerRouteRoute: typeof authedManagePurchaseLedgerRouteRouteWithChildren
+  authedManagePurchaseOrdersRouteRoute: typeof authedManagePurchaseOrdersRouteRouteWithChildren
+  authedManagePurchaseQuotationsRouteRoute: typeof authedManagePurchaseQuotationsRouteRouteWithChildren
+  authedManagePurchaseRequestsRouteRoute: typeof authedManagePurchaseRequestsRouteRouteWithChildren
+  authedManageRolesRouteRoute: typeof authedManageRolesRouteRouteWithChildren
+  authedManageSupplierReturnsRouteRoute: typeof authedManageSupplierReturnsRouteRouteWithChildren
+  authedManageSuppliersRouteRoute: typeof authedManageSuppliersRouteRouteWithChildren
+  authedManageUnitsRouteRoute: typeof authedManageUnitsRouteRouteWithChildren
+  authedManageUsersRouteRoute: typeof authedManageUsersRouteRouteWithChildren
+  authedManageClientsCreateRouteRoute: typeof authedManageClientsCreateRouteRouteWithChildren
+  authedManageConsumablesCreateRouteRoute: typeof authedManageConsumablesCreateRouteRouteWithChildren
+  authedManageProductsCreateRouteRoute: typeof authedManageProductsCreateRouteRouteWithChildren
+  authedManageSuppliersCreateRouteRoute: typeof authedManageSuppliersCreateRouteRouteWithChildren
+  authedManageUsersCreateRouteRoute: typeof authedManageUsersCreateRouteRouteWithChildren
+  authedManageDepartmentsDepartmentIdRoute: typeof authedManageDepartmentsDepartmentIdRoute
+  authedManageInventoryIssuesIssueIdRoute: typeof authedManageInventoryIssuesIssueIdRoute
+  authedManageInventoryProductsItemIdRoute: typeof authedManageInventoryProductsItemIdRoute
+  authedManageInventoryReceiptsInventoryReceiptIdRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
+  authedManageInventoryReceiptsCreateRoute: typeof authedManageInventoryReceiptsCreateRoute
+  authedManageInventoryReceiptsCreateReceiptRoute: typeof authedManageInventoryReceiptsCreateReceiptRoute
+  authedManageInventoryRequisitionsRequisitionIdRoute: typeof authedManageInventoryRequisitionsRequisitionIdRoute
+  authedManageInventoryRequisitionsCreateRoute: typeof authedManageInventoryRequisitionsCreateRoute
+  authedManageIqcIqcIdRoute: typeof authedManageIqcIqcIdRoute
+  authedManageOqcOqcIdRoute: typeof authedManageOqcOqcIdRoute
   authedManageOrdersOrderIdRoute: typeof authedManageOrdersOrderIdRoute
   authedManageOrdersCreateRoute: typeof authedManageOrdersCreateRoute
+  authedManageOutboundOrdersOutboundOrderIdRoute: typeof authedManageOutboundOrdersOutboundOrderIdRoute
+  authedManageOutboundOrdersCreateRoute: typeof authedManageOutboundOrdersCreateRoute
+  authedManageOutsourcingOrdersOutsourcingOrderIdRoute: typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
+  authedManageOutsourcingOrdersCreateRoute: typeof authedManageOutsourcingOrdersCreateRoute
+  authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute: typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
+  authedManageOutsourcingReceiptsCreateRoute: typeof authedManageOutsourcingReceiptsCreateRoute
+  authedManagePaymentRequestsPaymentRequestIdRoute: typeof authedManagePaymentRequestsPaymentRequestIdRoute
+  authedManageProductionExecutionProductionJobIdRoute: typeof authedManageProductionExecutionProductionJobIdRoute
   authedManageProductionJobsProductionJobIdRoute: typeof authedManageProductionJobsProductionJobIdRoute
   authedManageProductionOrdersProductionOrderIdRoute: typeof authedManageProductionOrdersProductionOrderIdRoute
   authedManageProductsProductIdRoute: typeof authedManageProductsProductIdRoute
-  authedManageProductsCreateRoute: typeof authedManageProductsCreateRoute
-  authedManageSuppliersCreateRoute: typeof authedManageSuppliersCreateRoute
-  authedManageUsersCreateRoute: typeof authedManageUsersCreateRoute
+  authedManagePurchaseOrdersPurchaseOrderIdRoute: typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
+  authedManagePurchaseOrdersCreateRoute: typeof authedManagePurchaseOrdersCreateRoute
+  authedManagePurchaseQuotationsPurchaseQuotationIdRoute: typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
+  authedManagePurchaseQuotationsCreateRoute: typeof authedManagePurchaseQuotationsCreateRoute
+  authedManagePurchaseRequestsPurchaseRequestIdRoute: typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
+  authedManagePurchaseRequestsCreateRoute: typeof authedManagePurchaseRequestsCreateRoute
+  authedManageRolesCreateRoute: typeof authedManageRolesCreateRoute
+  authedManageSupplierReturnsSupplierReturnIdRoute: typeof authedManageSupplierReturnsSupplierReturnIdRoute
+  authedManageSuppliersSupplierIdRoute: typeof authedManageSuppliersSupplierIdRouteWithChildren
   authedManageClientsClientIdUpdateRoute: typeof authedManageClientsClientIdUpdateRoute
-  authedManageMaterialsMaterialIdUpdateRoute: typeof authedManageMaterialsMaterialIdUpdateRoute
+  authedManageConsumablesConsumableIdUpdateRoute: typeof authedManageConsumablesConsumableIdUpdateRoute
+  authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   authedManageOrdersOrderIdUpdateRoute: typeof authedManageOrdersOrderIdUpdateRoute
-  authedManageSuppliersSupplierIdUpdateRoute: typeof authedManageSuppliersSupplierIdUpdateRoute
+  authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute: typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
+  authedManageRolesRoleIdUpdateRoute: typeof authedManageRolesRoleIdUpdateRoute
   authedManageUsersUserIdUpdateRoute: typeof authedManageUsersUserIdUpdateRoute
+  authedManageProductsProductIdBomBomItemIdRoute: typeof authedManageProductsProductIdBomBomItemIdRoute
 }
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageRoute: authedManageRoute,
-  authedManageClientsRoute: authedManageClientsRoute,
-  authedManageMaterialsRoute: authedManageMaterialsRoute,
-  authedManageOrdersRoute: authedManageOrdersRoute,
-  authedManageProductionJobsRoute: authedManageProductionJobsRoute,
-  authedManageProductionOrdersRoute: authedManageProductionOrdersRoute,
-  authedManageProductsRoute: authedManageProductsRoute,
-  authedManagePurchaseRequestsRoute: authedManagePurchaseRequestsRoute,
-  authedManageSuppliersRoute: authedManageSuppliersRoute,
-  authedManageUsersRoute: authedManageUsersRoute,
-  authedManageClientsCreateRoute: authedManageClientsCreateRoute,
-  authedManageMaterialsCreateRoute: authedManageMaterialsCreateRoute,
+  authedManageClientsRouteRoute: authedManageClientsRouteRouteWithChildren,
+  authedManageConsumablesRouteRoute:
+    authedManageConsumablesRouteRouteWithChildren,
+  authedManageDepartmentsRouteRoute:
+    authedManageDepartmentsRouteRouteWithChildren,
+  authedManageInventoryConsumablesRouteRoute:
+    authedManageInventoryConsumablesRouteRouteWithChildren,
+  authedManageInventoryIssuesRouteRoute:
+    authedManageInventoryIssuesRouteRouteWithChildren,
+  authedManageInventoryProductsRouteRoute:
+    authedManageInventoryProductsRouteRouteWithChildren,
+  authedManageInventoryReceiptsRouteRoute:
+    authedManageInventoryReceiptsRouteRouteWithChildren,
+  authedManageInventoryRequisitionsRouteRoute:
+    authedManageInventoryRequisitionsRouteRouteWithChildren,
+  authedManageIqcRouteRoute: authedManageIqcRouteRouteWithChildren,
+  authedManageOperationsRouteRoute:
+    authedManageOperationsRouteRouteWithChildren,
+  authedManageOqcRouteRoute: authedManageOqcRouteRouteWithChildren,
+  authedManageOrdersRouteRoute: authedManageOrdersRouteRouteWithChildren,
+  authedManageOutboundOrdersRouteRoute:
+    authedManageOutboundOrdersRouteRouteWithChildren,
+  authedManageOutsourcingOrdersRouteRoute:
+    authedManageOutsourcingOrdersRouteRouteWithChildren,
+  authedManageOutsourcingReceiptsRouteRoute:
+    authedManageOutsourcingReceiptsRouteRouteWithChildren,
+  authedManagePaymentRequestsRouteRoute:
+    authedManagePaymentRequestsRouteRouteWithChildren,
+  authedManageProductionExecutionRouteRoute:
+    authedManageProductionExecutionRouteRouteWithChildren,
+  authedManageProductionJobsRouteRoute:
+    authedManageProductionJobsRouteRouteWithChildren,
+  authedManageProductionOrdersRouteRoute:
+    authedManageProductionOrdersRouteRouteWithChildren,
+  authedManageProductsRouteRoute: authedManageProductsRouteRouteWithChildren,
+  authedManagePurchaseLedgerRouteRoute:
+    authedManagePurchaseLedgerRouteRouteWithChildren,
+  authedManagePurchaseOrdersRouteRoute:
+    authedManagePurchaseOrdersRouteRouteWithChildren,
+  authedManagePurchaseQuotationsRouteRoute:
+    authedManagePurchaseQuotationsRouteRouteWithChildren,
+  authedManagePurchaseRequestsRouteRoute:
+    authedManagePurchaseRequestsRouteRouteWithChildren,
+  authedManageRolesRouteRoute: authedManageRolesRouteRouteWithChildren,
+  authedManageSupplierReturnsRouteRoute:
+    authedManageSupplierReturnsRouteRouteWithChildren,
+  authedManageSuppliersRouteRoute: authedManageSuppliersRouteRouteWithChildren,
+  authedManageUnitsRouteRoute: authedManageUnitsRouteRouteWithChildren,
+  authedManageUsersRouteRoute: authedManageUsersRouteRouteWithChildren,
+  authedManageClientsCreateRouteRoute:
+    authedManageClientsCreateRouteRouteWithChildren,
+  authedManageConsumablesCreateRouteRoute:
+    authedManageConsumablesCreateRouteRouteWithChildren,
+  authedManageProductsCreateRouteRoute:
+    authedManageProductsCreateRouteRouteWithChildren,
+  authedManageSuppliersCreateRouteRoute:
+    authedManageSuppliersCreateRouteRouteWithChildren,
+  authedManageUsersCreateRouteRoute:
+    authedManageUsersCreateRouteRouteWithChildren,
+  authedManageDepartmentsDepartmentIdRoute:
+    authedManageDepartmentsDepartmentIdRoute,
+  authedManageInventoryIssuesIssueIdRoute:
+    authedManageInventoryIssuesIssueIdRoute,
+  authedManageInventoryProductsItemIdRoute:
+    authedManageInventoryProductsItemIdRoute,
+  authedManageInventoryReceiptsInventoryReceiptIdRoute:
+    authedManageInventoryReceiptsInventoryReceiptIdRoute,
+  authedManageInventoryReceiptsCreateRoute:
+    authedManageInventoryReceiptsCreateRoute,
+  authedManageInventoryReceiptsCreateReceiptRoute:
+    authedManageInventoryReceiptsCreateReceiptRoute,
+  authedManageInventoryRequisitionsRequisitionIdRoute:
+    authedManageInventoryRequisitionsRequisitionIdRoute,
+  authedManageInventoryRequisitionsCreateRoute:
+    authedManageInventoryRequisitionsCreateRoute,
+  authedManageIqcIqcIdRoute: authedManageIqcIqcIdRoute,
+  authedManageOqcOqcIdRoute: authedManageOqcOqcIdRoute,
   authedManageOrdersOrderIdRoute: authedManageOrdersOrderIdRoute,
   authedManageOrdersCreateRoute: authedManageOrdersCreateRoute,
+  authedManageOutboundOrdersOutboundOrderIdRoute:
+    authedManageOutboundOrdersOutboundOrderIdRoute,
+  authedManageOutboundOrdersCreateRoute: authedManageOutboundOrdersCreateRoute,
+  authedManageOutsourcingOrdersOutsourcingOrderIdRoute:
+    authedManageOutsourcingOrdersOutsourcingOrderIdRoute,
+  authedManageOutsourcingOrdersCreateRoute:
+    authedManageOutsourcingOrdersCreateRoute,
+  authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute:
+    authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute,
+  authedManageOutsourcingReceiptsCreateRoute:
+    authedManageOutsourcingReceiptsCreateRoute,
+  authedManagePaymentRequestsPaymentRequestIdRoute:
+    authedManagePaymentRequestsPaymentRequestIdRoute,
+  authedManageProductionExecutionProductionJobIdRoute:
+    authedManageProductionExecutionProductionJobIdRoute,
   authedManageProductionJobsProductionJobIdRoute:
     authedManageProductionJobsProductionJobIdRoute,
   authedManageProductionOrdersProductionOrderIdRoute:
     authedManageProductionOrdersProductionOrderIdRoute,
   authedManageProductsProductIdRoute: authedManageProductsProductIdRoute,
-  authedManageProductsCreateRoute: authedManageProductsCreateRoute,
-  authedManageSuppliersCreateRoute: authedManageSuppliersCreateRoute,
-  authedManageUsersCreateRoute: authedManageUsersCreateRoute,
+  authedManagePurchaseOrdersPurchaseOrderIdRoute:
+    authedManagePurchaseOrdersPurchaseOrderIdRoute,
+  authedManagePurchaseOrdersCreateRoute: authedManagePurchaseOrdersCreateRoute,
+  authedManagePurchaseQuotationsPurchaseQuotationIdRoute:
+    authedManagePurchaseQuotationsPurchaseQuotationIdRoute,
+  authedManagePurchaseQuotationsCreateRoute:
+    authedManagePurchaseQuotationsCreateRoute,
+  authedManagePurchaseRequestsPurchaseRequestIdRoute:
+    authedManagePurchaseRequestsPurchaseRequestIdRoute,
+  authedManagePurchaseRequestsCreateRoute:
+    authedManagePurchaseRequestsCreateRoute,
+  authedManageRolesCreateRoute: authedManageRolesCreateRoute,
+  authedManageSupplierReturnsSupplierReturnIdRoute:
+    authedManageSupplierReturnsSupplierReturnIdRoute,
+  authedManageSuppliersSupplierIdRoute:
+    authedManageSuppliersSupplierIdRouteWithChildren,
   authedManageClientsClientIdUpdateRoute:
     authedManageClientsClientIdUpdateRoute,
-  authedManageMaterialsMaterialIdUpdateRoute:
-    authedManageMaterialsMaterialIdUpdateRoute,
+  authedManageConsumablesConsumableIdUpdateRoute:
+    authedManageConsumablesConsumableIdUpdateRoute,
+  authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute:
+    authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute,
   authedManageOrdersOrderIdUpdateRoute: authedManageOrdersOrderIdUpdateRoute,
-  authedManageSuppliersSupplierIdUpdateRoute:
-    authedManageSuppliersSupplierIdUpdateRoute,
+  authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute:
+    authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute,
+  authedManageRolesRoleIdUpdateRoute: authedManageRolesRoleIdUpdateRoute,
   authedManageUsersUserIdUpdateRoute: authedManageUsersUserIdUpdateRoute,
+  authedManageProductsProductIdBomBomItemIdRoute:
+    authedManageProductsProductIdBomBomItemIdRoute,
 }
 
 const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(

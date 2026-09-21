@@ -5,7 +5,6 @@ import { z } from "zod"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import { OrderStatus } from "@/lib/types/order.type"
-import type { OrderDetail } from "@/lib/types/order.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -30,14 +29,11 @@ function resolveReqOrderApprovalErrorMessage(error: unknown): string {
 // UpdateOrderReqDto), same permission (orders:update) as any other edit.
 export const reqOrderApproval = createServerFn({ method: "POST" })
   .validator(z.object({ orderId: z.uuid() }))
-  .handler(async ({ data }): Promise<OrderDetail> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
-      const response = await http.patch<OrderDetail>(
-        `/api/orders/${data.orderId}`,
-        { status: OrderStatus.PENDING_CONFIRMATION }
-      )
-
-      return response.data
+      await http.patch(`/api/orders/${data.orderId}`, {
+        status: OrderStatus.PENDING_CONFIRMATION,
+      })
     } catch (error) {
       logHttpError(error, "reqOrderApproval")
 

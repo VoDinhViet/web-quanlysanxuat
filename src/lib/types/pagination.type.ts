@@ -13,6 +13,4 @@ export type PaginatedResponse<T> = {
   pagination: Pagination
 }
 
-// Shared sort direction for list endpoints — reused by z.enum in feature schemas.
-export const SORT_ORDERS = ["ASC", "DESC"] as const
-export type SortOrder = (typeof SORT_ORDERS)[number]
+export type SortOrder = "ASC" | "DESC"

@@ -1,24 +1,30 @@
 import { z } from "zod"
 
-import { imageFieldSchema } from "@/lib/file-field.schema"
+import { fileFieldSchema, imageFieldSchema } from "@/lib/file-field.schema"
 import { emptyToNull, emptyToUndefined } from "@/lib/zod-transforms"
-import { ProductStatus, ProductType } from "@/lib/types/product.type"
+import { ItemStatus } from "@/lib/types/item.type"
 
-// Wire contract for PATCH /api/products/:id — also the client-side onSubmit validator for
+// Wire contract for PATCH /api/items/:id — also the client-side onSubmit validator for
 // UpdateProductForm (via ProductInfoTab, both driven by ProductDetailPage's own form).
-// `productId` lives directly in the form's own state, so mutationFn receives the form value
+// `itemId` lives directly in the form's own state, so mutationFn receives the form value
 // as-is — no manual id merge at the call site. Deliberately shares no field definitions with
 // create-product.schema.ts: on a PATCH an omitted key means "leave unchanged", not "not
-// provided", so `clientId`/`productGroupId`/`note` here transform ""→null (an explicit clear)
-// instead of ""→undefined — see UpdateProductReqDto's `nullable: true` fields on the backend.
-// `code` stays ""→undefined on both flows: the backend treats a missing `code` as "keep the
-// current one", not "clear it".
+// provided", so `clientId`/`note` here transform ""→null (an explicit clear) instead of
+// ""→undefined — see UpdateItemReqDto's `nullable: true` fields on the backend. `code` stays
+// ""→undefined on both flows: the backend treats a missing `code` as "keep the current one",
+// not "clear it". Không còn field `type` — trang này chỉ sửa FG, server-function
+// (update-item.api.ts) tự gửi cứng `type: "FG"`.
 export const updateProductSchema = z.object({
-  productId: z.uuid(),
+  itemId: z.uuid(),
   code: z
     .string()
     .trim()
     .max(50, "Mã sản phẩm tối đa 50 ký tự")
+    .transform(emptyToUndefined),
+  revision: z
+    .string()
+    .trim()
+    .max(50, "Phiên bản tối đa 50 ký tự")
     .transform(emptyToUndefined),
   name: z
     .string()
@@ -26,11 +32,10 @@ export const updateProductSchema = z.object({
     .min(1, "Vui lòng nhập tên sản phẩm")
     .max(255, "Tên sản phẩm tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
-  type: z.enum(ProductType),
-  productGroupId: z.string().trim().transform(emptyToNull),
   clientId: z.string().trim().transform(emptyToNull),
   image: imageFieldSchema,
-  status: z.enum(ProductStatus),
+  files: z.array(fileFieldSchema),
+  status: z.enum(ItemStatus),
   note: z
     .string()
     .trim()
@@ -43,14 +48,14 @@ export type UpdateProductSchema = z.input<typeof updateProductSchema>
 // Only used for withForm's type inference in the update flow's own sections — the real values
 // always come from ProductDetailPage's own `defaultValues`, so placeholders here are harmless.
 export const updateProductFormDefaultValues: UpdateProductSchema = {
-  productId: "",
+  itemId: "",
   code: "",
+  revision: "",
   name: "",
   unitId: "",
-  type: ProductType.FINISHED_GOOD,
-  productGroupId: "",
   clientId: "",
   image: null,
-  status: ProductStatus.ACTIVE,
+  files: [],
+  status: ItemStatus.ACTIVE,
   note: "",
 }

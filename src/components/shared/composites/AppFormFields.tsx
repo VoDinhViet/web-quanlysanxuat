@@ -1,0 +1,427 @@
+import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
+import { Radio } from "@base-ui/react/radio"
+import { NumericFormat } from "react-number-format"
+import type { ComponentProps, ReactNode } from "react"
+
+import { Button } from "@/components/ui/button"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { RadioGroup } from "@/components/ui/radio-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
+import { useFieldContext } from "@/hooks/use-app-form-context"
+import { cn } from "@/lib/utils"
+
+type TextFieldProps = {
+  label: string
+  required?: boolean
+  placeholder?: string
+  type?: ComponentProps<typeof Input>["type"]
+  disabled?: boolean
+  className?: string
+}
+
+export function TextField({
+  label,
+  required,
+  placeholder,
+  type = "text",
+  disabled,
+  className,
+}: TextFieldProps) {
+  const field = useFieldContext<string | undefined>()
+  const inputId = field.name
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <Field className={className} data-invalid={isInvalid}>
+      <FieldLabel
+        htmlFor={inputId}
+        className="text-xs font-medium text-foreground"
+      >
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <Input
+        id={inputId}
+        name={field.name}
+        type={type}
+        placeholder={placeholder}
+        className="h-9 bg-background text-xs"
+        value={field.state.value ?? ""}
+        onBlur={field.handleBlur}
+        onChange={(event) => field.handleChange(event.target.value)}
+        aria-invalid={isInvalid}
+        disabled={disabled}
+      />
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
+  )
+}
+
+type NumberFieldProps = {
+  label: string
+  required?: boolean
+  placeholder?: string
+  disabled?: boolean
+  className?: string
+  // Nhóm hàng nghìn kiểu vi-VN ("1.234,5") — tắt cho field luôn nhỏ hơn 1000 (VAT %, chiết
+  // khấu %), nơi nhóm không có tác dụng và chỉ thêm nhiễu mắt. Mặc định bật cho các field
+  // tiền (đơn giá, thành tiền, phí vận chuyển...).
+  thousandSeparator?: boolean
+  // Dòng gợi ý dưới ô nhập (vd "≈ 1.234.000 VND" cho đơn giá ngoại tệ) — có slot này nên chỗ
+  // cần một gợi ý sống theo giá trị đang gõ không phải dựng lại NumericFormat bằng tay.
+  description?: ReactNode
+}
+
+// Field value là number thật (`undefined` khi ô trống) — đúng với `values.floatValue` mà
+// react-number-format trả về, và đúng với kiểu z.input mà mỗi schema số khai báo (xem
+// zod field categories trong kế hoạch). react-number-format chỉ còn lo phần hiển thị.
+export function NumberField({
+  label,
+  required,
+  placeholder,
+  disabled,
+  className,
+  thousandSeparator = true,
+  description,
+}: NumberFieldProps) {
+  const field = useFieldContext<number | undefined>()
+  const inputId = field.name
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <Field className={className} data-invalid={isInvalid}>
+      <FieldLabel
+        htmlFor={inputId}
+        className="text-xs font-medium text-foreground"
+      >
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <NumericFormat
+        customInput={Input}
+        id={inputId}
+        name={field.name}
+        placeholder={placeholder}
+        className="h-9 bg-background text-xs"
+        // `?? ""` chỉ để tránh cảnh báo controlled → uncontrolled của React khi ô trống.
+        value={field.state.value ?? ""}
+        thousandSeparator={thousandSeparator ? "." : undefined}
+        decimalSeparator=","
+        allowNegative={false}
+        onBlur={field.handleBlur}
+        onValueChange={(values) => field.handleChange(values.floatValue)}
+        aria-invalid={isInvalid}
+        disabled={disabled}
+      />
+      {description ? (
+        <FieldDescription className="text-[11px] tabular-nums">
+          {description}
+        </FieldDescription>
+      ) : null}
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
+  )
+}
+
+type TextareaFieldProps = {
+  label: string
+  required?: boolean
+  placeholder?: string
+  disabled?: boolean
+  className?: string
+  // Caps the HTML input and renders a live "x/N" counter under the field — the Zod schema's
+  // `.max(N)` stays the source of truth for validation; this is only the UX affordance, so the
+  // two must agree at each call site.
+  maxLength?: number
+}
+
+export function TextareaField({
+  label,
+  required,
+  placeholder,
+  disabled,
+  className,
+  maxLength,
+}: TextareaFieldProps) {
+  const field = useFieldContext<string>()
+  const inputId = field.name
+
+  return (
+    <Field className={className}>
+      <FieldLabel
+        htmlFor={inputId}
+        className="text-xs font-medium text-foreground"
+      >
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <Textarea
+        id={inputId}
+        name={field.name}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        className="min-h-20 resize-none bg-background text-xs"
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(event) => field.handleChange(event.target.value)}
+        disabled={disabled}
+      />
+      <div className="flex items-center justify-between gap-2">
+        <FieldError errors={field.state.meta.errors} />
+        {maxLength ? (
+          <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
+            {field.state.value.length}/{maxLength}
+          </span>
+        ) : null}
+      </div>
+    </Field>
+  )
+}
+
+type PasswordFieldProps = {
+  label: string
+  placeholder?: string
+  disabled?: boolean
+}
+
+export function PasswordField({
+  label,
+  placeholder,
+  disabled,
+}: PasswordFieldProps) {
+  const field = useFieldContext<string | undefined>()
+  const [showPassword, setShowPassword] = useState(false)
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <Field data-invalid={isInvalid}>
+      <FieldLabel
+        htmlFor={field.name}
+        className="text-xs font-medium text-foreground"
+      >
+        {label}
+      </FieldLabel>
+      <div className="relative">
+        <Input
+          id={field.name}
+          name={field.name}
+          type={showPassword ? "text" : "password"}
+          placeholder={placeholder}
+          autoComplete="new-password"
+          className="h-9 bg-background pr-9 text-xs"
+          value={field.state.value ?? ""}
+          onBlur={field.handleBlur}
+          onChange={(event) => field.handleChange(event.target.value)}
+          aria-invalid={isInvalid}
+          disabled={disabled}
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className="absolute top-1/2 right-1 -translate-y-1/2"
+          onClick={() => setShowPassword(!showPassword)}
+          disabled={disabled}
+          aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+        >
+          {showPassword ? (
+            <EyeOff className="size-4" />
+          ) : (
+            <Eye className="size-4" />
+          )}
+        </Button>
+      </div>
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
+  )
+}
+
+type SelectOption = {
+  value: string
+  label: string
+}
+
+type SelectFieldProps = {
+  label: string
+  required?: boolean
+  placeholder?: string
+  options: SelectOption[]
+  disabled?: boolean
+  // Options list is still loading (a `useQuery` the caller can't prefetch in the loader, e.g.
+  // gated behind a permission or another field's value) — swaps the placeholder to "Đang tải..."
+  // instead of the caller building that string itself. Mirrors `ComboboxField`'s `isPending`.
+  isPending?: boolean
+}
+
+export function SelectField({
+  label,
+  required,
+  placeholder,
+  options,
+  disabled,
+  isPending,
+}: SelectFieldProps) {
+  const field = useFieldContext<string | undefined>()
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <Field data-invalid={isInvalid}>
+      <FieldLabel
+        htmlFor={field.name}
+        className="text-xs font-medium text-foreground"
+      >
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <Select
+        items={options}
+        value={field.state.value ?? null}
+        onValueChange={(value) => value !== null && field.handleChange(value)}
+        disabled={disabled}
+      >
+        <SelectTrigger
+          id={field.name}
+          onBlur={field.handleBlur}
+          aria-invalid={isInvalid}
+          className="h-9 w-full bg-background text-xs"
+        >
+          <SelectValue placeholder={isPending ? "Đang tải..." : placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="text-xs"
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
+  )
+}
+
+type DateFieldProps = {
+  label: string
+  required?: boolean
+  disabled?: boolean
+}
+
+export function DateField({ label, required, disabled }: DateFieldProps) {
+  const field = useFieldContext<string>()
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <Field data-invalid={isInvalid}>
+      <FieldLabel className="text-xs font-medium text-foreground">
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <DatePicker
+        value={field.state.value}
+        onChange={field.handleChange}
+        onBlur={field.handleBlur}
+        disabled={disabled}
+      />
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
+  )
+}
+
+type RadioPillOption<TValue extends string> = {
+  value: TValue
+  label: string
+}
+
+type RadioPillFieldProps<TValue extends string> = {
+  label: string
+  required?: boolean
+  options: RadioPillOption<TValue>[]
+  disabled?: boolean
+  className?: string
+}
+
+export function RadioPillField<TValue extends string>({
+  label,
+  required,
+  options,
+  disabled,
+  className,
+}: RadioPillFieldProps<TValue>) {
+  const field = useFieldContext<TValue>()
+
+  return (
+    <div className={cn("space-y-1.5", className)}>
+      <span className="block text-xs font-medium text-foreground">
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </span>
+      <RadioGroup
+        value={field.state.value}
+        onValueChange={(value) => field.handleChange(value as TValue)}
+        disabled={disabled}
+        className="flex flex-row flex-wrap gap-2"
+      >
+        {options.map((option) => (
+          <Radio.Root
+            key={option.value}
+            value={option.value}
+            className="cursor-pointer gap-2 rounded-md border border-input px-4 py-2 text-xs font-medium text-foreground data-checked:border-primary data-checked:bg-primary/5 data-checked:text-primary"
+          >
+            {option.label}
+          </Radio.Root>
+        ))}
+      </RadioGroup>
+    </div>
+  )
+}
+
+type SwitchFieldProps = {
+  label: string
+  onLabel: string
+  offLabel: string
+  disabled?: boolean
+  className?: string
+}
+
+export function SwitchField({
+  label,
+  onLabel,
+  offLabel,
+  disabled,
+  className,
+}: SwitchFieldProps) {
+  const field = useFieldContext<boolean>()
+
+  return (
+    <div className={cn("space-y-1.5", className)}>
+      <span className="block text-xs font-medium text-foreground">{label}</span>
+      <Switch
+        className="flex h-9 cursor-pointer items-center gap-2 text-xs font-medium text-foreground"
+        checked={field.state.value}
+        onCheckedChange={field.handleChange}
+        disabled={disabled}
+      >
+        {field.state.value ? onLabel : offLabel}
+      </Switch>
+    </div>
+  )
+}

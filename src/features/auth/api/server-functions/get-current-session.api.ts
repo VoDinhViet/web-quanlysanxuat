@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start"
+import { setResponseHeader } from "@tanstack/react-start/server"
 
 import { isAccessTokenExpired, refreshAccessToken } from "@/lib/auth-token"
 import { logHttpError } from "@/lib/http"
@@ -7,6 +8,11 @@ import type { CurrentSession } from "@/lib/types/login.type"
 
 export const getCurrentSession = createServerFn({ method: "GET" }).handler(
   async (): Promise<CurrentSession> => {
+    // Gọi lại đúng URL /_serverFn mọi lần (GET không tham số) — không set no-store thì trình
+    // duyệt/proxy trung gian có thể phục vụ nhầm phiên của tài khoản trước đó sau khi đổi tài
+    // khoản mà không F5 (BUG-005).
+    setResponseHeader("Cache-Control", "no-store")
+
     let session = await useAppSession()
 
     // Renew ahead of the loaders rather than letting each of their requests

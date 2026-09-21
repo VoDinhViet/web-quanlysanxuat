@@ -1,0 +1,47 @@
+import { useSearch } from "@tanstack/react-router"
+import { Eye } from "lucide-react"
+
+import { LinkButton } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+type ProductionExecutionJobActionsCellProps = {
+  productionJobId: string
+}
+
+// Đọc `operationId` qua useSearch (route search hiện tại của chính trang danh sách) thay vì nhận
+// qua prop cột — giữ `productionExecutionJobColumns` ở module scope (forms-and-ui.md: columns
+// không được tạo lại mỗi render), cùng idiom OperationSendActionCell.tsx đọc `productionJobId` qua
+// useParams. Trang chi tiết cần đúng operationId này để BE lọc bảng Part
+// (GET .../operations?operationId=...).
+export function ProductionExecutionJobActionsCell({
+  productionJobId,
+}: ProductionExecutionJobActionsCellProps) {
+  const { operationId } = useSearch({
+    from: "/(authed)/manage_/production-execution/",
+  })
+
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <LinkButton
+            to="/manage/production-execution/$productionJobId"
+            params={{ productionJobId }}
+            search={{ operationId }}
+            variant="outline"
+            size="icon-sm"
+            aria-label="Xem chi tiết"
+            className="bg-background text-muted-foreground"
+          >
+            <Eye className="size-3.5" />
+          </LinkButton>
+        }
+      />
+      <TooltipContent>Xem chi tiết</TooltipContent>
+    </Tooltip>
+  )
+}

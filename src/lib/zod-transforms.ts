@@ -37,11 +37,6 @@ export function emptyToUndefined(value: string): string | undefined {
   return value.length > 0 ? value : undefined
 }
 
-/** Bản số của `emptyToUndefined` — dùng cho input số nhập bằng chuỗi. */
-export function emptyToUndefinedNumber(value: string): number | undefined {
-  return value.length > 0 ? Number(value) : undefined
-}
-
 /**
  * Chuỗi date-only (yyyy-MM-dd) từ date picker → ISO datetime.
  * Bắt buộc `{zone:"utc"}`: parse ở zone local (+07:00) rồi đọc lại theo UTC sẽ lệch 1 ngày.
@@ -61,29 +56,6 @@ export function emptyToNull(value: string): string | null {
   return value.length > 0 ? value : null
 }
 
-/** Chuỗi số hợp lệ và > 0 — số lượng, đơn giá dương, tỷ giá... */
-export function isPositiveNumberString(value: string): boolean {
-  const parsed = Number(value)
-  return value.trim() !== "" && Number.isFinite(parsed) && parsed > 0
-}
-
-/** Chuỗi số hợp lệ và >= 0 — đơn giá, chiết khấu tiền, phí vận chuyển... */
-export function isNonNegativeNumberString(value: string): boolean {
-  const parsed = Number(value)
-  return value.trim() !== "" && Number.isFinite(parsed) && parsed >= 0
-}
-
-/** Chuỗi số hợp lệ trong khoảng 0-100 — VAT, chiết khấu phần trăm... */
-export function isPercentString(value: string): boolean {
-  const parsed = Number(value)
-  return (
-    value.trim() !== "" &&
-    Number.isFinite(parsed) &&
-    parsed >= 0 &&
-    parsed <= 100
-  )
-}
-
 /** Ô email không bắt buộc: ""→undefined rồi chỉ validate khi thực sự có giá trị. Dùng ở
  * cấp field thay cho `.superRefine(refineOptionalEmail(...))` cấp object — xem
  * users/schemas/create-user.schema.ts. */
@@ -96,6 +68,17 @@ export function optionalEmail() {
       message: "Email không đúng định dạng",
     })
 }
+
+/** Chuỗi ngày ISO (yyyy-MM-dd) cho search-param filter — không hợp lệ thì `.catch(undefined)` thay
+ * vì lỗi, vì đây chỉ là filter tuỳ chọn, không phải input bắt buộc. Trước đây mỗi search schema
+ * (orders/production-orders/purchase-requests/...) tự khai lại khối này. */
+export const isoDateFilter = z
+  .string()
+  .refine((value) => DateTime.fromISO(value).isValid, {
+    message: "Ngày không hợp lệ",
+  })
+  .optional()
+  .catch(undefined)
 
 /** Chỉ báo lỗi khi có giá trị (field email đã transform ""→undefined trước đó) — dùng
  * `.superRefine(refineOptionalEmail("email"))` (hoặc tên field khác, vd "contactEmail") trên
@@ -115,6 +98,35 @@ export function refineOptionalEmail<TFieldName extends string>(
         code: "custom",
         path: [fieldName],
         message: "Email không đúng định dạng",
+      })
+    }
+  }
+}
+
+/** Mirror của `PHONE_NUMBER_PATTERN` bên BE (`field.decorators.ts`) — sửa một bên thì phải sửa
+ *  cả bên kia, nếu không FE chặn khác BE. Không giới hạn riêng số VN: `+` đầu (tuỳ chọn) rồi
+ *  8-15 chữ số (độ dài tối đa theo chuẩn E.164). */
+const PHONE_NUMBER_REGEX = /^\+?\d{8,15}$/
+const PHONE_NUMBER_MESSAGE =
+  'Số điện thoại không hợp lệ — chỉ nhận chữ số (có thể có dấu "+" ở đầu), 8-15 chữ số.'
+
+/** Bản SĐT của `refineOptionalEmail`: chỉ báo lỗi khi có giá trị (field đã transform
+ * ""→undefined/null trước đó) — dùng `.superRefine(refineOptionalPhoneNumber("phoneNumber"))`
+ * (hoặc tên field khác, vd "representativePhone") trên schema object đã có field đó. */
+export function refineOptionalPhoneNumber<TFieldName extends string>(
+  fieldName: TFieldName
+) {
+  return function (
+    value: Record<TFieldName, string | null | undefined>,
+    ctx: z.RefinementCtx
+  ): void {
+    const phoneNumber = value[fieldName]
+
+    if (phoneNumber && !PHONE_NUMBER_REGEX.test(phoneNumber)) {
+      ctx.addIssue({
+        code: "custom",
+        path: [fieldName],
+        message: PHONE_NUMBER_MESSAGE,
       })
     }
   }

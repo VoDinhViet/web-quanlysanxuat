@@ -1,71 +1,74 @@
 import type { FileResource } from "@/lib/types/file.type"
+import type { ProductOperation } from "@/lib/types/operation.type"
 import type { Unit } from "@/lib/types/unit.type"
 
-/**
- * One node of a product's BOM tree. Mirrors the backend's BomItemResDto /
- * BomItemNodeResDto 1:1 (GET/POST/PATCH under /api/products/:productId/bom) —
- * field names and shapes match the DTOs, no renamed abstraction layer.
- *
- * `code`/`name`/`unit`/`image` are flattened from whichever product/material
- * this node links to (see `itemType`). `children` holds this same node type —
- * the tree is nested.
- */
-export enum BomItemType {
-  PRODUCT = "PRODUCT",
-  MATERIAL = "MATERIAL",
+/** Mirrors the backend's `BomType` (`bom_items.type`) — COMPONENT là node cấu trúc con: KHÔNG trỏ
+ *  item, mang `code`/`name` nhập tay riêng cho vị trí này trong cây, lồng được nhiều cấp và gắn
+ *  được công đoạn; CONSUMABLE là lá vật tư trỏ `items` (không con, không công đoạn). Cấp 0 (chính
+ *  item FG) không có giá trị nào ở đây — không phải một dòng `bom_items`, không nằm trong response
+ *  `GET .../bom` — đọc qua `itemQueryOptions`/`itemOperationsQueryOptions`
+ *  (`docs/decisions/level-0-outside-bom-tree-response.md`, backend). `buildBomRows` tự dựng một
+ *  dòng hiển thị riêng cho Cấp 0, không đọc field này. */
+export type BomItemType = "COMPONENT" | "CONSUMABLE"
+
+export const bomItemTypeLabels: Record<BomItemType, string> = {
+  // Giữ nguyên tiếng Anh theo yêu cầu — khác quy ước "UI text tiếng Việt" chung của dự án.
+  COMPONENT: "Part",
+  CONSUMABLE: "Vật tư",
 }
 
-export const BOM_ITEM_TYPE_LABELS: Record<BomItemType, string> = {
-  [BomItemType.PRODUCT]: "Sản phẩm",
-  [BomItemType.MATERIAL]: "Vật tư",
-}
-
-// The flat node — returned by the add/update endpoints (BomItemNodeResDto).
-export type BomItemNode = {
+// One node — mirrors the backend's BomItemResDto 1:1, the single shape shared
+// by the BOM GET (tree), and the add/update endpoints (GET/POST/PATCH under
+// /api/items/:itemId/bom). The backend returns the tree flat (`parentId`
+// links each node to its parent, no nested `children`), already sorted
+// depth-first with `path` pre-computed (`BomsService.getBomItem` +
+// `bom-tree.util.ts`) — build the display rows client-side (filter
+// CONSUMABLE, format `path`), see `buildBomRows` in
+// products/utils/bom-rows.util.ts.
+// `parentId: null` means directly under Cấp 0 — multiple nodes may share it (a forest of
+// top-level nodes, not a single root), since Cấp 0 itself never appears as a row here.
+export type BomItem = {
   id: string
   parentId: string | null
-  itemType: BomItemType
+  type: BomItemType
+  // Vật tư node CONSUMABLE trỏ tới; null với node COMPONENT (không phải một item).
+  itemId: string | null
+  // COMPONENT: nhập tay trên node; CONSUMABLE: mã/tên item liên kết.
+  code: string
+  name: string
+  // Chỉ node CONSUMABLE có (đọc từ item liên kết); null với node COMPONENT.
+  revision: string | null
+  // CONSUMABLE: ảnh của item liên kết; COMPONENT: ảnh riêng gán trên node (`imageFileId`, upload
+  // với type BOM_ITEM_IMAGE) — null nếu chưa gán.
+  image: FileResource | null
+  unit: Unit | null
+  quantity: number
+  sortOrder: number
+  // Depth tính từ Cấp 0, backend tính sẵn — con trực tiếp của Cấp 0 = 1, …
+  level: number
+  // Vị trí trong cây, mảng rank anh em từng cấp — con trực tiếp của Cấp 0 bắt đầu từ [1], ví dụ
+  // [1,2] nghĩa là con thứ 1 của Cấp 0 rồi con thứ 2 của node đó. Backend tính sẵn
+  // (BomsService.getBomItem), mảng trả về đã đúng thứ tự depth-first — FE chỉ format thành chuỗi
+  // hiển thị ("0.1.2"), không tự dựng lại cây nữa.
+  path: number[]
+  note: string | null
+  // Chuỗi công đoạn gắn trên node này, đã join sẵn trong cùng response cây (không phải gọi riêng
+  // bomItemOperationsQueryOptions cho từng node) — CONSUMABLE luôn rỗng.
+  operations: ProductOperation[]
+}
+
+// Mirrors the backend's BomConsumableResDto (GET .../bom/items/:bomItemId/consumables) — vật tư
+// (CONSUMABLE) gắn trực tiếp vào một node cha, đọc riêng qua query phân trang/tìm kiếm được thay
+// vì lọc client-side từ cây đầy đủ. `itemId` ở đây luôn có giá trị (khác `BomItem.itemId` có thể
+// null) — mọi dòng trả về từ endpoint này chắc chắn là CONSUMABLE trỏ item thật.
+export type BomConsumable = {
+  id: string
   itemId: string
   code: string
+  revision: string | null
   name: string
   image: FileResource | null
-  // Đơn vị tính — dùng type Unit chung ở @/lib/types/unit.type.
-  unit: Unit
-  // Numeric, serialized as a string by the backend — parse at the display edge.
-  quantity: string
-  sortOrder: number
+  unit: Unit | null
+  quantity: number
   note: string | null
-  // A technical drawing (bản vẽ, PDF) specific to this node — independent of
-  // `image` above, which is coalesced from the linked product/material.
-  drawing: FileResource | null
-}
-
-// The tree node — returned by the BOM GET (BomItemResDto): a flat node plus its
-// computed depth and recursive children.
-export type BomItem = BomItemNode & {
-  // 1-based depth from the tree top, computed by the backend.
-  level: number
-  children: BomItem[]
-}
-
-// Lightweight {id, code, name} row for the "add BOM item" pickers (WIP products
-// / materials), narrowed from the products/materials list responses.
-export type BomEntityOption = {
-  id: string
-  code: string
-  name: string
-}
-
-// One row of a BOM's material list, aggregated per material across the whole
-// tree — GET /api/products/:productId/bom/materials (BomMaterialResDto).
-// `totalQuantity` is a raw sum across every MATERIAL node linking to this
-// material, NOT a BOM explosion (no multiplication through a parent's own
-// quantity).
-export type BomMaterial = {
-  materialId: string
-  code: string
-  name: string
-  unit: Unit
-  image: FileResource | null
-  totalQuantity: number
 }

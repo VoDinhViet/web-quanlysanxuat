@@ -4,10 +4,7 @@ import axios from "axios"
 import { updateSupplierSchema } from "@/features/suppliers/schemas/update-supplier.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import {
-  resolveApiAttachmentFileIds,
-  resolveApiFileId,
-} from "@/lib/file-field.schema"
+import { resolveApiFileId, resolveApiFileIds } from "@/lib/file-field.schema"
 import type { Supplier } from "@/lib/types/supplier.type"
 
 type SupplierRepresentativePayload = {
@@ -27,21 +24,15 @@ function buildRepresentativesPayload(
   return name ? [{ name, phoneNumber, isPrimary: true }] : []
 }
 
-// `logo`/`attachments` carry display URLs the backend has no field for — only the file ids go
+// `logo`/`files` carry display URLs the backend has no field for — only the file ids go
 // on the wire. `updateSupplierSchema` already leaves every other field wire-ready
 // (emptyToNull-transformed), so this only maps file ids and folds the flat representative
 // fields into `representatives[]`.
 const updateSupplierPayloadSchema = updateSupplierSchema.transform(
-  ({
-    logo,
-    attachments,
-    representativeName,
-    representativePhone,
-    ...rest
-  }) => ({
+  ({ logo, files, representativeName, representativePhone, ...rest }) => ({
     ...rest,
     logoFileId: resolveApiFileId(logo, "update"),
-    attachmentFileIds: resolveApiAttachmentFileIds(attachments),
+    fileIds: resolveApiFileIds(files),
     representatives: buildRepresentativesPayload(
       representativeName,
       representativePhone

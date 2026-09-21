@@ -18,7 +18,7 @@ const getClientOptionsSchema = z.object({
 // Like the other option lists behind a filter control, a failed fetch
 // degrades to an empty option list instead of taking down the whole page —
 // this dropdown is non-core and callers may lack `clients:read` (same
-// precedent as get-operations.api.ts).
+// precedent as get-operation-options.api.ts).
 export const getClientOptions = createServerFn({ method: "GET" })
   .validator(getClientOptionsSchema)
   .handler(async ({ data }): Promise<ClientRef[]> => {

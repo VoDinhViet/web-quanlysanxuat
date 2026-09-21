@@ -1,10 +1,18 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
+import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
-import type { Department } from "@/lib/types/user.type"
+import type { Department } from "@/lib/types/department.type"
+
+const getDepartmentsSchema = z.object({
+  page: z.number().int().min(1).optional(),
+  limit: z.number().int().min(1).optional(),
+  q: z.string().optional(),
+  isActive: z.boolean().optional(),
+})
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -19,19 +27,19 @@ function resolveGetDepartmentsErrorMessage(error: unknown): string {
   }
 }
 
-export const getDepartments = createServerFn({ method: "GET" }).handler(
-  async (): Promise<Department[]> => {
+export const getDepartments = createServerFn({ method: "GET" })
+  .validator(getDepartmentsSchema)
+  .handler(async ({ data }): Promise<PaginatedResponse<Department>> => {
     try {
       const response = await http.get<PaginatedResponse<Department>>(
         "/api/departments",
-        { params: { limit: 100 } }
+        { params: data }
       )
 
-      return response.data.data
+      return response.data
     } catch (error) {
       logHttpError(error, "getDepartments")
 
       throw new Error(resolveGetDepartmentsErrorMessage(error))
     }
-  }
-)
+  })

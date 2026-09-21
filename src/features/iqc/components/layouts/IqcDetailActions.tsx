@@ -1,0 +1,112 @@
+import { Diskette, MenuDots, Printer } from "@solar-icons/react"
+
+import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLinkItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
+import type { IqcDetail } from "@/lib/types/iqc.type"
+
+type IqcDetailActionsProps = {
+  form: IqcDetailFormApi
+  iqc: IqcDetail
+  isLocked: boolean
+  isPending: boolean
+}
+
+// "In phiếu" + "Khác" (link sang PNK/PO/phiếu trả NCC liên quan, chỉ hiện mục nào thật sự có) +
+// "Lưu" (`type="submit"`, nằm trong <form> bọc cả trang ở IqcDetailForm.tsx). Ẩn hẳn nút Lưu khi
+// `isLocked` (status = WAITING_RETURN, đã chốt đường trả NCC — E159 nếu vẫn cố lưu).
+export function IqcDetailActions({
+  form,
+  iqc,
+  isLocked,
+  isPending,
+}: IqcDetailActionsProps) {
+  const { inventoryReceipt, purchaseOrder, supplierReturn } = iqc
+  const hasOtherLinks =
+    !!inventoryReceipt || !!purchaseOrder || !!supplierReturn
+
+  return (
+    <div className="flex flex-col items-end gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <PendingAction label="In phiếu" hint="tính năng sắp có">
+          <Printer className="size-4" />
+          In phiếu
+        </PendingAction>
+
+        {hasOtherLinks && (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  aria-label="Khác"
+                >
+                  <MenuDots className="size-4" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end">
+              {inventoryReceipt && (
+                <DropdownMenuLinkItem
+                  to="/manage/inventory-receipts/$inventoryReceiptId"
+                  params={{ inventoryReceiptId: inventoryReceipt.id }}
+                >
+                  Xem phiếu nhập kho
+                </DropdownMenuLinkItem>
+              )}
+              {purchaseOrder && (
+                <DropdownMenuLinkItem
+                  to="/manage/purchase-orders/$purchaseOrderId"
+                  params={{ purchaseOrderId: purchaseOrder.id }}
+                >
+                  Xem đơn mua hàng (PO)
+                </DropdownMenuLinkItem>
+              )}
+              {supplierReturn && (
+                <DropdownMenuLinkItem
+                  to="/manage/supplier-returns/$supplierReturnId"
+                  params={{ supplierReturnId: supplierReturn.id }}
+                >
+                  Xem phiếu trả NCC
+                </DropdownMenuLinkItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
+        {!isLocked && (
+          <PermissionGate permission="iqc:update">
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+            >
+              {([canSubmit, isSubmitting]) => (
+                <Button
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting || isPending}
+                >
+                  <Diskette className="size-4" />
+                  {isSubmitting || isPending ? "Đang lưu..." : "Lưu"}
+                </Button>
+              )}
+            </form.Subscribe>
+          </PermissionGate>
+        )}
+      </div>
+
+      {isLocked && (
+        <p className="max-w-64 text-right text-[11px] text-muted-foreground">
+          Đã chốt đường trả NCC — không sửa được kết quả IQC nữa.
+        </p>
+      )}
+    </div>
+  )
+}

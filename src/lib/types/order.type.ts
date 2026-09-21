@@ -1,32 +1,41 @@
 import { DateTime } from "luxon"
 
 import type { FileResource } from "@/lib/types/file.type"
+import type { ItemFile, ItemRef } from "@/lib/types/item.type"
+import type { PaymentTerm } from "@/lib/types/payment-term.type"
 import type { Unit } from "@/lib/types/unit.type"
 
 // Mirrors the backend's OrderStatus exactly. DRAFT → PENDING_CONFIRMATION (submit) →
 // AWAITING_PRODUCTION (director approve only, never a direct PATCH) → IN_PROGRESS →
-// COMPLETED/CANCELLED; a reject sends PENDING_CONFIRMATION back to DRAFT.
-export enum OrderStatus {
-  DRAFT = "DRAFT",
-  PENDING_CONFIRMATION = "PENDING_CONFIRMATION",
-  AWAITING_PRODUCTION = "AWAITING_PRODUCTION",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED",
-}
+// COMPLETED/CANCELLED. A reject sends PENDING_CONFIRMATION to REJECTED; editing a REJECTED
+// order without changing `status` reverts it to DRAFT, or it can be resubmitted straight to
+// PENDING_CONFIRMATION without editing anything.
+export const OrderStatus = {
+  DRAFT: "DRAFT",
+  PENDING_CONFIRMATION: "PENDING_CONFIRMATION",
+  REJECTED: "REJECTED",
+  AWAITING_PRODUCTION: "AWAITING_PRODUCTION",
+  IN_PROGRESS: "IN_PROGRESS",
+  COMPLETED: "COMPLETED",
+  CANCELLED: "CANCELLED",
+} as const
 
-export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+export const orderStatusLabels: Record<OrderStatus, string> = {
   [OrderStatus.DRAFT]: "Nháp",
   [OrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận",
+  [OrderStatus.REJECTED]: "Từ chối",
   [OrderStatus.AWAITING_PRODUCTION]: "Chờ sản xuất",
   [OrderStatus.IN_PROGRESS]: "Đang thực hiện",
   [OrderStatus.COMPLETED]: "Hoàn thành",
   [OrderStatus.CANCELLED]: "Đã hủy",
 }
 
-export const ORDER_STATUS_DESCRIPTIONS: Record<OrderStatus, string> = {
+export const orderStatusDescriptions: Record<OrderStatus, string> = {
   [OrderStatus.DRAFT]: "Đơn nháp, sửa tự do, chưa gửi duyệt",
   [OrderStatus.PENDING_CONFIRMATION]: "Đã gửi, chờ Giám đốc duyệt",
+  [OrderStatus.REJECTED]: "Giám đốc từ chối — sửa lại sẽ tự về Nháp",
   [OrderStatus.AWAITING_PRODUCTION]: "Đã duyệt, chờ đưa vào sản xuất",
   [OrderStatus.IN_PROGRESS]: "Đơn hàng đang được xử lý",
   [OrderStatus.COMPLETED]: "Đã hoàn thành, kết thúc đơn hàng",
@@ -36,10 +45,11 @@ export const ORDER_STATUS_DESCRIPTIONS: Record<OrderStatus, string> = {
 // Statuses where the order can no longer be edited: PENDING_CONFIRMATION (already sent for
 // director approval — editing now would change the ground under the approver), everything from
 // AWAITING_PRODUCTION onward (once approved, the order is locked for good — there is no editable
-// status past this point), plus the two terminal statuses. Shared by both "Chỉnh sửa" buttons and
-// the update route's loader guard so all three stay in sync by construction instead of by
-// duplicated status literals.
-const NOT_UPDATABLE_STATUSES: ReadonlySet<OrderStatus> = new Set([
+// status past this point), plus the two terminal statuses. REJECTED stays editable on purpose —
+// editing it (without changing `status`) is exactly how it reverts to DRAFT. Shared by both
+// "Chỉnh sửa" buttons and the update route's loader guard so all three stay in sync by
+// construction instead of by duplicated status literals.
+const notUpdatableStatuses: ReadonlySet<OrderStatus> = new Set([
   OrderStatus.PENDING_CONFIRMATION,
   OrderStatus.AWAITING_PRODUCTION,
   OrderStatus.IN_PROGRESS,
@@ -48,7 +58,7 @@ const NOT_UPDATABLE_STATUSES: ReadonlySet<OrderStatus> = new Set([
 ])
 
 export function canUpdateOrder(status: OrderStatus): boolean {
-  return !NOT_UPDATABLE_STATUSES.has(status)
+  return !notUpdatableStatuses.has(status)
 }
 
 // Only meaningful when canUpdateOrder(status) is false — callers only read this inside that
@@ -66,41 +76,27 @@ export function resolveOrderUpdateDisabledHint(status: OrderStatus): string {
   return "Đơn hàng đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa"
 }
 
-// Derived pseudo-status. `isOverdue` is a backend-computed flag on every row,
-// not an OrderStatus member — an overdue order keeps its real status, so a row
-// can read "Đang thực hiện" next to a red delivery date. These constants exist
-// so the legend, the filter select and the stat card share one label.
-export const OVERDUE_FILTER_VALUE = "OVERDUE"
-export const OVERDUE_LABEL = "Trễ hạn"
-export const OVERDUE_DESCRIPTION = "Đơn hàng đã quá ngày giao"
+// Derived pseudo-status. `expired` is a backend-computed flag on every row, not an
+// OrderStatus member — an overdue order keeps its real status, so a row can read "Đang thực
+// hiện" next to a red delivery date. The backend has no `overdue` list filter (only
+// `expired` on each row), so this is display-only now — the status legend and the badge's
+// tone map, not a selectable filter option.
+export const overdueTone = "OVERDUE"
+export const overdueLabel = "Trễ hạn"
+export const overdueDescription = "Đơn hàng đã quá ngày giao"
 
-// Payment terms as worded on a sales order. The suppliers slice has a similar
-// enum with purchasing wording ("Net 30 ngày"); features must not import each
-// other, and promoting to src/lib is an abstraction at the second use.
-export enum PaymentTerm {
-  IMMEDIATE = "IMMEDIATE",
-  NET_15 = "NET_15",
-  NET_30 = "NET_30",
-  NET_60 = "NET_60",
-}
+export const Currency = {
+  VND: "VND",
+  USD: "USD",
+  EUR: "EUR",
+  JPY: "JPY",
+  CNY: "CNY",
+  KRW: "KRW",
+} as const
 
-export const PAYMENT_TERM_LABELS: Record<PaymentTerm, string> = {
-  [PaymentTerm.IMMEDIATE]: "TT ngay",
-  [PaymentTerm.NET_15]: "TT 15 ngày",
-  [PaymentTerm.NET_30]: "TT 30 ngày",
-  [PaymentTerm.NET_60]: "TT 60 ngày",
-}
+export type Currency = (typeof Currency)[keyof typeof Currency]
 
-export enum Currency {
-  VND = "VND",
-  USD = "USD",
-  EUR = "EUR",
-  JPY = "JPY",
-  CNY = "CNY",
-  KRW = "KRW",
-}
-
-export const CURRENCY_LABELS: Record<Currency, string> = {
+export const currencyLabels: Record<Currency, string> = {
   [Currency.VND]: "VND",
   [Currency.USD]: "USD",
   [Currency.EUR]: "EUR",
@@ -111,44 +107,53 @@ export const CURRENCY_LABELS: Record<Currency, string> = {
 
 // "Chiết khấu đơn" applies to either the whole order (PERCENT of subtotal, or a flat
 // AMOUNT) — see OrdersService.recalculateTotals.
-export enum OrderDiscountType {
-  PERCENT = "PERCENT",
-  AMOUNT = "AMOUNT",
-}
+export const OrderDiscountType = {
+  PERCENT: "PERCENT",
+  AMOUNT: "AMOUNT",
+} as const
 
-export const ORDER_DISCOUNT_TYPE_LABELS: Record<OrderDiscountType, string> = {
+export type OrderDiscountType =
+  (typeof OrderDiscountType)[keyof typeof OrderDiscountType]
+
+export const orderDiscountTypeLabels: Record<OrderDiscountType, string> = {
   [OrderDiscountType.PERCENT]: "%",
   [OrderDiscountType.AMOUNT]: "Số tiền",
 }
 
 // "Bình thường" / "Đã hủy" on a single order line — a cancelled line is excluded
 // from `subtotal` server-side.
-export enum OrderItemStatus {
-  NORMAL = "NORMAL",
-  CANCELLED = "CANCELLED",
-}
+export const OrderItemStatus = {
+  NORMAL: "NORMAL",
+  CANCELLED: "CANCELLED",
+} as const
 
-export const ORDER_ITEM_STATUS_LABELS: Record<OrderItemStatus, string> = {
+export type OrderItemStatus =
+  (typeof OrderItemStatus)[keyof typeof OrderItemStatus]
+
+export const orderItemStatusLabels: Record<OrderItemStatus, string> = {
   [OrderItemStatus.NORMAL]: "Bình thường",
   [OrderItemStatus.CANCELLED]: "Đã hủy",
 }
 
+// Mirrors the backend's ClientBaseResDto (a subset — orders only ever nest this much of a
+// client). taxCode/phoneNumber/email/address are what the order detail page now reads for
+// "contact" info, since the order itself no longer snapshots a contact (see `Order` below).
 export type OrderClientRef = {
   id: string
   code: string
   name: string
+  taxCode: string | null
+  phoneNumber: string | null
+  email: string | null
+  address: string | null
 }
 
-export type OrderSalesRepRef = {
+/** Mirrors the backend's UserRefResDto — shared by every order-level user relation
+ *  (assignedUser, creatorBy, approverBy, rejecterBy). */
+export type OrderUserRef = {
   id: string
   code: string
   fullName: string
-}
-
-/** Mirrors the backend's nested creator relation (OrderCreatorResDto). */
-export type OrderCreator = {
-  id: string
-  username: string
 }
 
 /** Lightweight order reference nested inside another module's response DTO (e.g.
@@ -166,12 +171,14 @@ export type OrderRef = {
 // Mirrors the backend's OrderResDto. There is no per-order delivered/remaining
 // amount on the wire yet (only the dashboard stats have a "Đã giao" proxy) —
 // don't add those fields back until the backend actually computes them.
+// No `contactName`/`contactPhone` snapshot anymore — the backend dropped it, contact info
+// now reads through `client` instead (see OrderClientRef).
 export type Order = {
   id: string
   code: string
-  client: OrderClientRef
-  contactName: string | null
-  contactPhone: string | null
+  // `clientId` is temporarily optional on create (docs/domains/orders.md), so a real order
+  // can have no client — every consumer must guard this, not just chain `.client.*`.
+  client: OrderClientRef | null
   orderDate: string
   dueDate: string | null
   totalVnd: number
@@ -180,25 +187,44 @@ export type Order = {
   // Kept off OrderStatus so a row can be both IN_PROGRESS and overdue.
   expired: boolean
   paymentTerm: PaymentTerm | null
-  staff: OrderSalesRepRef | null
-  creator: OrderCreator | null
+  assignedUser: OrderUserRef | null
+  creatorBy: OrderUserRef | null
   createdAt: string
   updatedAt: string
 }
 
-/** Mirrors the backend's nested product relation on an order line (OrderItemProductRefResDto). */
-export type OrderItemProductRef = {
+/** Mirrors the backend's OrderItemRefResDto — a different, older nested-item shape than the
+ *  order-item endpoint below uses now. Kept only because `ProductionOrderDetailItem`
+ *  (production-order.type.ts) still nests `unit`/`image` inside `item` for its own resource
+ *  (ProductionOrderItemResDto) — not used by `OrderItem` itself anymore, see its own doc comment.
+ */
+export type OrderItemRef = {
   id: string
   code: string
+  revision?: string
   name: string
   unit: Unit
   image: FileResource | null
+  files?: ItemFile[]
 }
 
-/** Mirrors the backend's OrderItemResDto — one line of an order's product list. */
+/** Mirrors the backend's OrderItemResDto — one line of an order's item list (GET
+ *  /api/orders/:orderId/items, a separate endpoint from the order detail — see `OrderDetail`
+ *  below). `unit`/`image` are top-level siblings of `item`, not nested inside it — `item` itself
+ *  is just the lightweight {id, code, name} `ItemRef`. */
 export type OrderItem = {
   id: string
   quantity: number
+  // Server-computed from inventory_transactions.orderItemId — the line's real issued/delivered
+  // quantity so far.
+  issuedQty: number
+  // production_order_items.quantity — the LSX-decided quantity (initial snapshot, or edited while
+  // PENDING), null until the order is approved/has an LSX. See docs/decisions/
+  // order-target-quantity-follows-lsx.md (be-quanlysanxuat) — this, not `quantity`, is now the
+  // fulfillment target once it's non-null.
+  productionQuantity: number | null
+  // Server-computed: (productionQuantity ?? quantity) - issuedQty. Can go negative if over-issued.
+  remainingQty: number
   unitPrice: number
   discountPercent: number
   // Server-computed: quantity * unitPrice * (1 - discountPercent / 100).
@@ -206,22 +232,41 @@ export type OrderItem = {
   note: string | null
   status: OrderItemStatus
   sortOrder: number
-  product: OrderItemProductRef
+  item: ItemRef
+  unit: Unit
+  image: FileResource | null
 }
 
-/** Mirrors the backend's OrderAttachmentResDto — a join row carrying the registry file it points at. */
-export type OrderAttachment = {
+/** Mirrors the backend's OrderFileResDto — a join row carrying the registry file it points at. */
+export type OrderFile = {
   id: string
   file: FileResource
 }
 
+// Mirrors the backend's OrderPaymentStatus — computed at read time (SUM(order_payments.amount)
+// vs. order.total), not a stored column.
+export const OrderPaymentStatus = {
+  UNPAID: "UNPAID",
+  PARTIAL: "PARTIAL",
+  PAID: "PAID",
+} as const
+
+export type OrderPaymentStatus =
+  (typeof OrderPaymentStatus)[keyof typeof OrderPaymentStatus]
+
+export const orderPaymentStatusLabels: Record<OrderPaymentStatus, string> = {
+  [OrderPaymentStatus.UNPAID]: "Chưa thanh toán",
+  [OrderPaymentStatus.PARTIAL]: "Thanh toán một phần",
+  [OrderPaymentStatus.PAID]: "Đã thanh toán",
+}
+
 // Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
-// endpoint (GET /api/orders, `Order` above) intentionally skips items/attachments
+// endpoint (GET /api/orders, `Order` above) intentionally skips items/files
 // for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
-// extends `Order` rather than folding everything onto one shared type.
+// extends `Order` rather than folding everything onto one shared type. Items are their own
+// endpoint too — GET /api/orders/:id/items, `OrderItem` above — no longer embedded here.
 export type OrderDetail = Order & {
-  contactEmail: string | null
-  deliveryAddress: string | null
+  consigneeAddress: string | null
   currency: Currency
   exchangeRate: number
   // Tổng tiền hàng — server-computed sum of non-cancelled line totals.
@@ -238,15 +283,18 @@ export type OrderDetail = Order & {
   total: number
   note: string | null
   internalNote: string | null
-  items: OrderItem[]
-  attachments: OrderAttachment[]
+  files: OrderFile[]
   // Approval flow (see OrderStatus doc comment) — only the most recent approve/reject is
-  // kept, no history table. `approver`/`rejecter` share the same shape as `creator`.
-  approver: OrderCreator | null
+  // kept, no history table.
+  approverBy: OrderUserRef | null
   approvedAt: string | null
-  rejecter: OrderCreator | null
+  rejecterBy: OrderUserRef | null
   rejectedAt: string | null
   rejectionReason: string | null
+  // Tổng đã trả — server-computed: SUM(order_payments.amount).
+  paidAmount: number
+  // Server-computed at read time from paidAmount vs. total — not a stored column.
+  paymentStatus: OrderPaymentStatus
 }
 
 // Mirrors the backend's OrderStatsResDto exactly (the 6 dashboard cards). Trend/ratio
@@ -268,15 +316,10 @@ export type OrderStats = {
   completedPercentOfTotal: number
 }
 
-export type OrderFilterOption = {
-  id: string
-  name: string
-}
-
 export type DeliveryTone = "overdue" | "near-due" | "normal"
 
 // Days before dueDate at which the date turns orange. Presentation-only.
-const NEAR_DUE_DAYS = 3
+const nearDueDays = 3
 
 // `overdue` comes straight off the row because deriving it here would run once
 // on the server and again in the browser, possibly in different timezones — a
@@ -295,32 +338,14 @@ export function resolveDeliveryTone(order: Order): DeliveryTone {
     .startOf("day")
     .diff(DateTime.now().startOf("day"), "days").days
 
-  return daysLeft <= NEAR_DUE_DAYS ? "near-due" : "normal"
-}
-
-// Built by src/features/orders/order-timeline.ts from real OrderDetail fields
-// (createdAt/creator, approvedAt/approver, rejectedAt/rejecter, updatedAt) — no mock data.
-export type OrderTimelineStepState =
-  | "done"
-  | "current"
-  | "upcoming"
-  | "cancelled"
-
-export type OrderTimelineStep = {
-  key: string
-  label: string
-  state: OrderTimelineStepState
-  timestamp: string | null
-  actor: string | null
-  detail: string | null
+  return daysLeft <= nearDueDays ? "near-due" : "normal"
 }
 
 // ---- UI-only mock scaffolding ----
-// The 3 types below describe placeholder data built by
-// src/features/orders/mock/order-detail.mock.ts for concepts the backend has
-// no table for yet: per-order delivered/remaining, delivery history and
-// payment history. Delete these alongside that file once DO tracking and a
-// payments ledger actually exist.
+// The 2 types below describe placeholder data built by
+// src/features/orders/mock/order-detail.mock.ts for the one concept the backend still has no
+// table for: order-level delivery/DO history. Delete these alongside that file once DO
+// tracking exists.
 
 export type OrderMockDeliveryProgress = {
   deliveredPercent: number
@@ -336,31 +361,4 @@ export type OrderMockDeliveryRow = {
   quantity: number
   valueVnd: number
   vehicle: string
-}
-
-export type OrderMockPaymentRow = {
-  paidAt: string
-  amountVnd: number
-  method: string
-  collectedBy: string
-}
-
-export type OrderMockPaymentStatus = "unpaid" | "partially_paid" | "paid"
-
-export const ORDER_MOCK_PAYMENT_STATUS_LABELS: Record<
-  OrderMockPaymentStatus,
-  string
-> = {
-  unpaid: "Chưa thanh toán",
-  partially_paid: "Thanh toán một phần",
-  paid: "Đã thanh toán",
-}
-
-// Client-profile facts the reference layout shows but that don't exist
-// anywhere on `OrderClientRef`/`OrderDetail` yet (no billing address, tax
-// code, or delivery-term field on the wire).
-export type OrderMockClientProfile = {
-  address: string
-  taxCode: string
-  deliveryTerm: string
 }

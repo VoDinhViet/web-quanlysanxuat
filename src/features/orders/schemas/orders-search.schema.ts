@@ -1,45 +1,28 @@
-import { DateTime } from "luxon"
 import { z } from "zod"
 
-import {
-  OVERDUE_FILTER_VALUE,
-  OrderStatus,
-  PaymentTerm,
-} from "@/lib/types/order.type"
-import { SORT_ORDERS } from "@/lib/types/pagination.type"
+import { OrderStatus } from "@/lib/types/order.type"
 
-// A plain `^\d{4}-\d{2}-\d{2}$` regex would accept 2025-13-45, so validity is
-// checked with luxon. `.catch(undefined)` swallows a hand-mangled URL instead of
-// letting validateSearch throw and take the route down.
-const isoDateFilter = z
-  .string()
-  .refine((value) => DateTime.fromISO(value).isValid, {
-    message: "Ngày không hợp lệ",
-  })
-  .optional()
-  .catch(undefined)
-
-// Mirrors the backend's GetOrdersReqDto (page/limit/q/order inherited from
-// PageOptionsDto). `status` carries one extra value beyond OrderStatus:
-// "OVERDUE" is a UI-only filter choice that get-orders.ts maps to a separate
-// `overdue` query param.
-//
-// `orderDateFrom <= orderDateTo` is deliberately NOT enforced here — a
-// schema-level .superRefine has no `.catch()` escape hatch, so a bad pair in the
-// URL would crash the route. The filter UI clamps it and the backend rejects it.
+// The backend's GetOrdersReqDto has no `paymentTerm` or `overdue` filter and no `salesRepId`
+// (it's `assignedUserId`) — a URL carrying the old `status=OVERDUE`/`paymentTerm` params from
+// before this schema changed just falls through each field's own `.catch(undefined)` instead
+// of crashing.
 export const ordersSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
   q: z.string().trim().min(1).optional().catch(undefined),
-  status: z
-    .union([z.enum(OrderStatus), z.literal(OVERDUE_FILTER_VALUE)])
-    .optional()
-    .catch(undefined),
-  paymentTerm: z.enum(PaymentTerm).optional().catch(undefined),
-  salesRepId: z.string().trim().min(1).optional().catch(undefined),
-  orderDateFrom: isoDateFilter,
-  orderDateTo: isoDateFilter,
-  order: z.enum(SORT_ORDERS).optional().catch(undefined),
+  status: z.enum(OrderStatus).optional().catch(undefined),
+  assignedUserId: z.string().trim().min(1).optional().catch(undefined),
+  // Used programmatically by the finished-goods inventory detail screen's "PO liên quan" card
+  // (InventoryProductRecentActivityCards.tsx), via `ordersQueryOptions({itemId, limit: 10, ...})`
+  // (only the first row is used) through this feature's `api/index.ts` barrel — not a filter on
+  // this screen's own filter bar. The item lives on an order *line*, so this means joining
+  // through `order_items.item_id`, not an `orders`-table column — backend prerequisite, not yet
+  // on GetOrdersReqDto; proceeding on the assumption it lands alongside this frontend change,
+  // per the plan.
+  itemId: z.uuid().optional().catch(undefined),
+  orderDateFrom: z.iso.date().optional().catch(undefined),
+  orderDateTo: z.iso.date().optional().catch(undefined),
+  order: z.enum(["ASC", "DESC"]).optional().catch(undefined),
 })
 
 export type OrdersSearchSchema = z.infer<typeof ordersSearchSchema>

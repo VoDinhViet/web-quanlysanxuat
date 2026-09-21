@@ -1,20 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { PageLoading } from "@/components/shared/PageLoading"
-import { requirePermission } from "@/features/auth/guard"
+import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage"
-import { orderQueryOptions } from "@/features/orders/api/options"
+import {
+  orderItemsQueryOptions,
+  orderQueryOptions,
+} from "@/features/orders/api/options"
 
-// Guarded on `orders:read`, not `orders:update`: a read-only viewer should
-// reach this screen. The write action gates itself (OrderDetailActions'
-// "Chỉnh sửa" is wrapped in `PermissionGate permission="orders:update"`).
 // No `validateSearch`: the page is a single continuous scroll of cards (no
 // tabs), so there's no shareable UI state left to keep in the URL.
 export const Route = createFileRoute("/(authed)/manage_/orders_/$orderId")({
-  beforeLoad: ({ context }) =>
-    requirePermission(context.permissions, "orders:read"),
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
+    Promise.all([
+      context.queryClient.query({
+        ...orderQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...orderItemsQueryOptions(params.orderId),
+        staleTime: "static",
+      }),
+    ]),
   component: OrderDetailPage,
-  pendingComponent: PageLoading,
+  pendingComponent: LayoutPagePending,
 })

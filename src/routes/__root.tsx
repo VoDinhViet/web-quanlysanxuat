@@ -6,9 +6,11 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { SolarProvider } from "@solar-icons/react"
+import { I18nProvider } from "react-aria-components"
 import type { QueryClient } from "@tanstack/react-query"
 
-import { ThemeProvider } from "@/components/shared/ThemeProvider"
+import { ThemeProvider } from "@/components/shared/layouts/ThemeProvider"
+import { Toaster } from "@/components/ui/sonner"
 // Side-effect import, must run before any DateTime.fromISO() call on either
 // server or client — see src/lib/luxon-config.ts for why.
 import "@/lib/luxon-config"
@@ -38,12 +40,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
-  notFoundComponent: () => (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>404</h1>
-      <p>Không tìm thấy trang bạn yêu cầu.</p>
-    </main>
-  ),
   shellComponent: RootDocument,
 })
 
@@ -53,9 +49,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider>
-          <SolarProvider value={{ weight: "Bold" }}>{children}</SolarProvider>
+          {/* Đặt tên locale "vi-VN" cho mọi component React Aria (Calendar, DatePicker's chọn
+              ngày, Select, ...) — mất khi migrate từ Radix sang RAC (xem comment ở
+              DatePicker.tsx), gắn lại 1 lần ở gốc app thay vì từng chỗ dùng Calendar riêng lẻ. */}
+          <I18nProvider locale="vi-VN">
+            <SolarProvider value={{ weight: "Bold" }}>{children}</SolarProvider>
+          </I18nProvider>
+          <Toaster richColors />
         </ThemeProvider>
         <TanStackDevtools
           config={{
