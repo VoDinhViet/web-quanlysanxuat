@@ -43,13 +43,17 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuItem,
   SidebarMenuLinkButton,
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { currentPermissionsQueryOptions } from "@/features/auth/api"
+import { pendingApprovalsQueryOptions } from "@/features/reports/api"
 import { canAccessRoute } from "@/lib/route-permissions"
+import { cn } from "@/lib/utils"
 import type { ManageRoutePath } from "@/lib/route-permissions"
+import type { PendingApprovals } from "@/lib/types/report.type"
 
 type MenuItem = {
   label: string
@@ -57,6 +61,8 @@ type MenuItem = {
   // Typed against the generated route tree — a href to a route that doesn't exist is a
   // compile error, not a silent fallback link.
   href: ManageRoutePath
+  // Số đếm "chờ duyệt" của module này trên PendingApprovals — không set thì không có badge.
+  badgeKey?: keyof PendingApprovals
 }
 
 type MenuGroup = {
@@ -78,11 +84,13 @@ const menuGroups: MenuGroup[] = [
         label: "Đơn hàng (SO)",
         icon: ShoppingCart,
         href: "/manage/orders",
+        badgeKey: "orders",
       },
       {
         label: "Giao hàng (DO)",
         icon: Truck,
         href: "/manage/outbound-orders",
+        badgeKey: "outboundOrders",
       },
     ],
   },
@@ -93,11 +101,13 @@ const menuGroups: MenuGroup[] = [
         label: "Đề xuất mua hàng",
         icon: ClipboardList,
         href: "/manage/purchase-requests",
+        badgeKey: "purchaseRequests",
       },
       {
         label: "Báo giá NCC (RFQ)",
         icon: FileText,
         href: "/manage/purchase-quotations",
+        badgeKey: "purchaseQuotations",
       },
       {
         label: "Danh mục mua hàng",
@@ -143,6 +153,7 @@ const menuGroups: MenuGroup[] = [
         label: "Lệnh sản xuất (LSX)",
         icon: Factory,
         href: "/manage/production-orders",
+        badgeKey: "productionOrders",
       },
       {
         label: "Quản lý sản xuất",
@@ -158,6 +169,7 @@ const menuGroups: MenuGroup[] = [
         label: "Phiếu lãnh vật tư",
         icon: ClipboardMinus,
         href: "/manage/inventory-requisitions",
+        badgeKey: "inventoryRequisitions",
       },
     ],
   },
@@ -256,6 +268,7 @@ const menuButtonClass =
 export function AppSidebar() {
   const location = useLocation()
   const { data: permissions = [] } = useQuery(currentPermissionsQueryOptions)
+  const { data: pendingApprovals } = useQuery(pendingApprovalsQueryOptions())
 
   const visibleMenuGroups = useMemo(() => {
     return menuGroups
@@ -301,6 +314,7 @@ export function AppSidebar() {
             key={group.label}
             group={group}
             pathname={location.pathname}
+            pendingApprovals={pendingApprovals}
           />
         ))}
       </SidebarContent>
@@ -339,9 +353,11 @@ function SidebarBrand() {
 function MenuGroup({
   group,
   pathname,
+  pendingApprovals,
 }: {
   group: MenuGroup
   pathname: string
+  pendingApprovals?: PendingApprovals
 }) {
   return (
     <SidebarGroup className="gap-1 p-0">
@@ -352,7 +368,12 @@ function MenuGroup({
       <SidebarGroupContent>
         <SidebarMenu className="gap-0.5">
           {group.items.map((item) => (
-            <MenuButton key={item.label} item={item} pathname={pathname} />
+            <MenuButton
+              key={item.label}
+              item={item}
+              pathname={pathname}
+              pendingApprovals={pendingApprovals}
+            />
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
@@ -360,21 +381,41 @@ function MenuGroup({
   )
 }
 
-function MenuButton({ item, pathname }: { item: MenuItem; pathname: string }) {
+function MenuButton({
+  item,
+  pathname,
+  pendingApprovals,
+}: {
+  item: MenuItem
+  pathname: string
+  pendingApprovals?: PendingApprovals
+}) {
   const Icon = item.icon
   const isActive = pathname === item.href
+  const badgeCount = item.badgeKey
+    ? (pendingApprovals?.[item.badgeKey] ?? 0)
+    : 0
+  const hasBadge = badgeCount > 0
 
   return (
     <SidebarMenuItem>
       <SidebarMenuLinkButton
         to={item.href}
-        tooltip={item.label}
+        tooltip={
+          hasBadge ? `${item.label}: ${badgeCount} chờ duyệt` : item.label
+        }
         isActive={isActive}
-        className={menuButtonClass}
+        className={cn(menuButtonClass, hasBadge && "pr-11")}
       >
         <Icon />
-        <span>{item.label}</span>
+        <span className="min-w-0 truncate">{item.label}</span>
+        {hasBadge && <span className="sr-only">, {badgeCount} chờ duyệt</span>}
       </SidebarMenuLinkButton>
+      {hasBadge && (
+        <SidebarMenuBadge className="top-2.5! right-3 h-4 min-w-4 bg-destructive px-1 text-[10px] leading-none font-semibold text-destructive-foreground">
+          {badgeCount > 99 ? "99+" : badgeCount}
+        </SidebarMenuBadge>
+      )}
     </SidebarMenuItem>
   )
 }

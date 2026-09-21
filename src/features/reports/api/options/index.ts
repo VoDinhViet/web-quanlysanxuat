@@ -10,3 +10,4 @@ export { reportStatsQueryOptions } from "@/features/reports/api/options/report-s
 export type { ReportStatsParams } from "@/features/reports/api/options/report-stats.options"
 export { productionProgressQueryOptions } from "@/features/reports/api/options/production-progress.options"
 export type { ProductionProgressParams } from "@/features/reports/api/options/production-progress.options"
+export { pendingApprovalsQueryOptions } from "@/features/reports/api/options/pending-approvals.options"

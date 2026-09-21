@@ -71,6 +71,17 @@ export type QcPassRatePoint = {
   oqcPassRate: number | null
 }
 
+/** Mirrors the backend's PendingApprovalsResDto (GET /api/reports/pending-approvals) — mỗi field
+ *  chỉ > 0 khi user hiện tại có quyền approve module đó, ngược lại backend luôn trả 0. */
+export type PendingApprovals = {
+  purchaseRequests: number
+  purchaseQuotations: number
+  orders: number
+  productionOrders: number
+  inventoryRequisitions: number
+  outboundOrders: number
+}
+
 /** Mirrors the backend's ProductionProgressResDto (GET /api/reports/production-progress).
  *  `breakdown` is always exactly 5 entries, in ProductionJobStatus declaration order, even when
  *  a status has 0 jobs — the caller never needs to fill in missing statuses itself. */
