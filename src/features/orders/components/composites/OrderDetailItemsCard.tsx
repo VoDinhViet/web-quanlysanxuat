@@ -56,7 +56,7 @@ export function OrderDetailItemsCard({
           description="Danh sách sản phẩm sẽ hiện ở đây khi đơn hàng được cập nhật."
         />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="overflow-x-auto rounded-md border border-border/50">
             <Table aria-label="Danh sách sản phẩm">
               <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
@@ -100,7 +100,7 @@ export function OrderDetailItemsCard({
                   >
                     Tổng cộng
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
+                  <TableCell className="text-right font-semibold text-foreground tabular-nums">
                     {quantityFormatter.format(totalQuantity)}
                   </TableCell>
                   <TableCell />

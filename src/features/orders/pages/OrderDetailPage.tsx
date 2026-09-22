@@ -4,7 +4,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { OrderDetailAddressCard } from "@/features/orders/components/composites/OrderDetailAddressCard"
 import { OrderDetailFilesCard } from "@/features/orders/components/composites/OrderDetailFilesCard"
-import { OrderDetailDeliveryHistoryCard } from "@/features/orders/components/composites/OrderDetailDeliveryHistoryCard"
 import { OrderDetailInfoCard } from "@/features/orders/components/composites/OrderDetailInfoCard"
 import { OrderDetailItemsCard } from "@/features/orders/components/composites/OrderDetailItemsCard"
 import { OrderDetailNotesCard } from "@/features/orders/components/composites/OrderDetailNotesCard"
@@ -54,7 +53,6 @@ export function OrderDetailPage() {
         </div>
 
         <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3">
-          <OrderDetailDeliveryHistoryCard order={order} items={items} />
           <OrderDetailNotesCard order={order} />
           <OrderDetailFilesCard order={order} />
         </div>
