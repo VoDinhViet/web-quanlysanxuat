@@ -50,14 +50,22 @@ export function OutboundOrdersTableFilter() {
   const [q, setQ] = useState(search.q ?? "")
 
   const exportOutboundOrdersFn = useServerFn(exportOutboundOrders)
-  const exportMutation = useMutation({
+  const { mutateAsync: exportExcel, isPending: isExporting } = useMutation({
     mutationFn: () => exportOutboundOrdersFn({ data: search }),
-    onSuccess: ({ base64, filename }) => {
-      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
-      toast.success("Đã xuất file Excel")
-    },
-    onError: (error) => toast.error(error.message),
   })
+
+  const handleExport = () => {
+    toast.promise(
+      exportExcel().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      }),
+      {
+        loading: "Đang xuất file Excel lệnh xuất kho...",
+        success: "Đã xuất file Excel lệnh xuất kho",
+        error: (error) => error.message || "Xuất file thất bại",
+      },
+    )
+  }
 
   // Unlike production-jobs.tsx, this route's loader doesn't prefetch client options — so a
   // `clientId` already in the URL gets its label from `client.clients` once this hook's own
@@ -255,11 +263,11 @@ export function OutboundOrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            disabled={exportMutation.isPending}
-            onClick={() => exportMutation.mutate()}
+            disabled={isExporting}
+            onClick={handleExport}
           >
             <Download className="size-4" />
-            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+            {isExporting ? "Đang xuất..." : "Xuất Excel"}
           </Button>
 
           <PendingAction

@@ -51,14 +51,22 @@ export function OqcTableFilter() {
   const [q, setQ] = useState(search.q ?? "")
 
   const exportOqcFn = useServerFn(exportOqc)
-  const exportMutation = useMutation({
+  const { mutateAsync: exportExcel, isPending: isExporting } = useMutation({
     mutationFn: () => exportOqcFn({ data: search }),
-    onSuccess: ({ base64, filename }) => {
-      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
-      toast.success("Đã xuất file Excel")
-    },
-    onError: (error) => toast.error(error.message),
   })
+
+  const handleExport = () => {
+    toast.promise(
+      exportExcel().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      }),
+      {
+        loading: "Đang xuất file Excel OQC...",
+        success: "Đã xuất file Excel OQC",
+        error: (error) => error.message || "Xuất file thất bại",
+      },
+    )
+  }
 
   const handleQChange = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
@@ -250,11 +258,11 @@ export function OqcTableFilter() {
         type="button"
         variant="outline"
         className="gap-1.5 text-xs"
-        disabled={exportMutation.isPending}
-        onClick={() => exportMutation.mutate()}
+        disabled={isExporting}
+        onClick={handleExport}
       >
         <Download className="size-3.5" />
-        {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+        {isExporting ? "Đang xuất..." : "Xuất Excel"}
       </Button>
     </div>
   )

@@ -1,4 +1,7 @@
-import { CircleCheck, Loader2, Save } from "lucide-react"
+import { CircleCheck, Download, Loader2, Save } from "lucide-react"
+import { useMutation } from "@tanstack/react-query"
+import { useServerFn } from "@tanstack/react-start"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -8,6 +11,8 @@ import {
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ApproveProductionOrderDialog } from "@/features/production-orders/components/composites/ApproveProductionOrderDialog"
+import { exportProductionOrderPdf } from "@/features/production-orders/api/server-functions/export-production-order-pdf.api"
+import { downloadBase64File, PDF_MIME_TYPE } from "@/lib/download-file"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
@@ -32,9 +37,46 @@ export function ProductionOrderDetailActions({
   onSave,
 }: ProductionOrderDetailActionsProps) {
   const isPending = production.status === ProductionOrderStatus.PENDING
+  const exportProductionOrderPdfFn = useServerFn(exportProductionOrderPdf)
+
+  const { mutateAsync: exportPdf, isPending: isExporting } = useMutation({
+    mutationFn: () =>
+      exportProductionOrderPdfFn({
+        data: { productionOrderId: production.id },
+      }),
+  })
+
+  const handleExport = () => {
+    toast.promise(
+      exportPdf().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, PDF_MIME_TYPE)
+      }),
+      {
+        loading: "Đang tạo file PDF lệnh sản xuất...",
+        success: "Đã xuất file PDF lệnh sản xuất",
+        error: (error) => error.message || "Xuất file thất bại",
+      },
+    )
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
+      <PermissionGate permission="production:read">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isExporting}
+          onClick={handleExport}
+        >
+          {isExporting ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Download className="size-4" />
+          )}
+          Xuất PDF
+        </Button>
+      </PermissionGate>
+
       {isPending ? (
         <PermissionGate permission="production:update">
           <Button

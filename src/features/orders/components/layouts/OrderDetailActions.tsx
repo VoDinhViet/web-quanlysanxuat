@@ -1,4 +1,4 @@
-import { FileDownload, PenNewSquare, Printer } from "@solar-icons/react"
+import { PenNewSquare } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
@@ -10,40 +10,42 @@ import {
 } from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { OrderApprovalActions } from "@/features/orders/components/layouts/OrderApprovalActions"
+import { OrderExportActions } from "@/features/orders/components/layouts/OrderExportActions"
 import {
   canUpdateOrder,
   resolveOrderUpdateDisabledHint,
 } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
+import { cn } from "@/lib/utils"
 
 type OrderDetailActionsProps = {
   order: OrderDetail
 }
 
-// In / Xuất Excel / Chỉnh sửa — printing and Excel export don't exist yet, so both stay
-// disabled with the generic "tính năng sắp có" hint, same idiom as OrderActionsCell's
-// row-level actions.
 export function OrderDetailActions({ order }: OrderDetailActionsProps) {
   const isEditable = canUpdateOrder(order.status)
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
       <OrderApprovalActions order={order} />
-      <DisabledAction icon={Printer} label="In" />
-      <DisabledAction icon={FileDownload} label="Xuất Excel" />
+
+      <OrderExportActions orderId={order.id} />
+
       {isEditable ? (
         <RoutePermissionGate route="/manage/orders/$orderId/update">
           <LinkButton
             to="/manage/orders/$orderId/update"
             params={{ orderId: order.id }}
+            variant="outline"
           >
-            <PenNewSquare className="size-4" />
+            <PenNewSquare className="size-4 text-amber-600 dark:text-amber-400" />
             Chỉnh sửa
           </LinkButton>
         </RoutePermissionGate>
       ) : (
         <DisabledAction
           icon={PenNewSquare}
+          iconClassName="text-amber-600 dark:text-amber-400"
           label="Chỉnh sửa"
           hint={resolveOrderUpdateDisabledHint(order.status)}
         />
@@ -54,12 +56,14 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
 
 type DisabledActionProps = {
   icon: ComponentType<IconProps>
+  iconClassName?: string
   label: string
   hint?: string
 }
 
 function DisabledAction({
   icon: IconComponent,
+  iconClassName,
   label,
   hint = "Tính năng sắp có",
 }: DisabledActionProps) {
@@ -74,7 +78,7 @@ function DisabledAction({
               disabled
               className="pointer-events-none text-muted-foreground"
             >
-              <IconComponent className="size-4" />
+              <IconComponent className={cn("size-4", iconClassName)} />
               {label}
             </Button>
           </span>
