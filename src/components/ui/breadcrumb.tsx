@@ -1,9 +1,8 @@
 import * as React from "react"
-import { mergeProps } from "@base-ui/react/merge-props"
-import { useRender } from "@base-ui/react/use-render"
 import { createLink } from "@tanstack/react-router"
-import { cn } from "cn"
-import { IconChevronRight, IconDots } from "@tabler/icons-react"
+import { ChevronRight, MoreHorizontal } from "lucide-react"
+
+import { cn } from "@/lib/utils"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -21,7 +20,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
     <ol
       data-slot="breadcrumb-list"
       className={cn(
-        "flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground sm:gap-2.5",
+        "flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground sm:gap-2",
         className
       )}
       {...props}
@@ -39,27 +38,21 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   )
 }
 
-// Router-compatible breadcrumb link, same TanStack Router pattern as LinkButton in
-// button.tsx (https://tanstack.com/router/latest/docs/how-to/integrate-shadcn-ui).
-const BreadcrumbLink = createLink(function BreadcrumbLink({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"a">) {
-  return useRender({
-    defaultTagName: "a",
-    props: mergeProps<"a">(
-      {
-        className: cn("transition-colors hover:text-foreground", className),
-      },
-      props
-    ),
-    render,
-    state: {
-      slot: "breadcrumb-link",
-    },
-  })
+const BreadcrumbLinkBase = React.forwardRef<
+  HTMLAnchorElement,
+  React.ComponentProps<"a">
+>(({ className, ...props }, ref) => {
+  return (
+    <a
+      ref={ref}
+      className={cn("transition-colors hover:text-foreground", className)}
+      {...props}
+    />
+  )
 })
+BreadcrumbLinkBase.displayName = "BreadcrumbLink"
+
+const BreadcrumbLink = createLink(BreadcrumbLinkBase)
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (
@@ -84,10 +77,10 @@ function BreadcrumbSeparator({
       data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
-      className={cn("[&>svg]:size-3.5", className)}
+      className={cn("[&>svg]:size-3.5 text-muted-foreground/60", className)}
       {...props}
     >
-      {children ?? <IconChevronRight />}
+      {children ?? <ChevronRight className="size-3.5" />}
     </li>
   )
 }
@@ -107,7 +100,7 @@ function BreadcrumbEllipsis({
       )}
       {...props}
     >
-      <IconDots />
+      <MoreHorizontal className="size-4" />
       <span className="sr-only">More</span>
     </span>
   )

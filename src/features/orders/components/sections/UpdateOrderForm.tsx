@@ -36,10 +36,12 @@ const stepFields: Record<UpdateOrderWizardStep, DeepKeys<UpdateOrderSchema>[]> =
     info: [
       "orderId",
       "clientId",
+      "clientContactId",
       "assignedUserId",
       "status",
       "orderDate",
       "dueDate",
+      "buyerPoNo",
       "consigneeAddress",
       "paymentTerm",
       "currency",
@@ -71,6 +73,7 @@ function getOrderDefaultValues(
   return {
     orderId: order.id,
     clientId: order.client?.id ?? "",
+    clientContactId: order.clientContact?.id ?? "",
     assignedUserId: order.assignedUser?.id ?? "",
     orderDate: DateTime.fromISO(order.orderDate, { zone: "utc" }).toFormat(
       "yyyy-MM-dd"
@@ -78,6 +81,7 @@ function getOrderDefaultValues(
     dueDate: order.dueDate
       ? DateTime.fromISO(order.dueDate, { zone: "utc" }).toFormat("yyyy-MM-dd")
       : "",
+    buyerPoNo: order.buyerPoNo ?? "",
     consigneeAddress: order.consigneeAddress ?? "",
     paymentTerm: order.paymentTerm ?? "",
     currency: order.currency,

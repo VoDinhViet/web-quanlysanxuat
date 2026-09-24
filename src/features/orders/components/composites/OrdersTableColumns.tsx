@@ -68,6 +68,19 @@ export function buildOrderColumns(options?: BuildOrderColumnsOptions) {
         </span>
       ),
     }),
+    orderColumnHelper.accessor((row) => row.buyerPoNo ?? "--", {
+      id: "buyerPoNo",
+      header: "PO",
+      meta: { headerClassName: "min-w-28" },
+      cell: ({ getValue }) => {
+        const val = getValue()
+        return val === "--" ? (
+          <span className="text-muted-foreground">--</span>
+        ) : (
+          <span className="font-mono font-medium">{val}</span>
+        )
+      },
+    }),
     orderColumnHelper.accessor((row) => row.client?.name ?? "--", {
       id: "client",
       header: "Khách hàng",

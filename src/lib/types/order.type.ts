@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 
+import type { ClientContact } from "@/lib/types/client.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { ItemFile, ItemRef } from "@/lib/types/item.type"
 import type { PaymentTerm } from "@/lib/types/payment-term.type"
@@ -176,6 +177,8 @@ export type OrderRef = {
 export type Order = {
   id: string
   code: string
+  // Số PO của khách hàng (Buyer PO No) — user tự nhập, khác `code` (mã nội bộ hệ thống sinh).
+  buyerPoNo: string | null
   // `clientId` is temporarily optional on create (docs/domains/orders.md), so a real order
   // can have no client — every consumer must guard this, not just chain `.client.*`.
   client: OrderClientRef | null
@@ -250,6 +253,8 @@ export type OrderFile = {
 // endpoint too — GET /api/orders/:id/items, `OrderItem` above — no longer embedded here.
 export type OrderDetail = Order & {
   consigneeAddress: string | null
+  // Người liên hệ của khách hàng được chọn cho đơn (null = chưa chọn / đơn cũ).
+  clientContact: ClientContact | null
   currency: Currency
   exchangeRate: number
   // Tổng tiền hàng — server-computed sum of non-cancelled line totals.

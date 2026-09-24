@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { useQuery } from "@tanstack/react-query"
 import {
   Bell,
@@ -18,6 +19,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
@@ -63,17 +65,20 @@ function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
           const isLast = index === breadcrumbs.length - 1
 
           return (
-            <BreadcrumbItem key={`${breadcrumb.label}-${index}`}>
-              {isLast ? (
-                <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
-              ) : breadcrumb.href ? (
-                <BreadcrumbLink to={breadcrumb.href}>
-                  {breadcrumb.label}
-                </BreadcrumbLink>
-              ) : (
-                breadcrumb.label
-              )}
-            </BreadcrumbItem>
+            <Fragment key={`${breadcrumb.label}-${index}`}>
+              <BreadcrumbItem>
+                {isLast ? (
+                  <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+                ) : breadcrumb.href ? (
+                  <BreadcrumbLink to={breadcrumb.href}>
+                    {breadcrumb.label}
+                  </BreadcrumbLink>
+                ) : (
+                  <span>{breadcrumb.label}</span>
+                )}
+              </BreadcrumbItem>
+              {!isLast && <BreadcrumbSeparator />}
+            </Fragment>
           )
         })}
       </BreadcrumbList>
