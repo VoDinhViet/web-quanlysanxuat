@@ -32,11 +32,12 @@ export function getSupplierDefaultValues(
 
   return {
     supplierId: supplier.id,
+    code: supplier.code,
     name: supplier.name,
-    supplierGroupId: supplier.group.id,
+    supplierGroupId: supplier.group?.id ?? "",
     type: supplier.type,
-    taxCode: supplier.taxCode,
-    phoneNumber: supplier.phoneNumber,
+    taxCode: supplier.taxCode ?? "",
+    phoneNumber: supplier.phoneNumber ?? "",
     email: supplier.email ?? "",
     representativeName: primaryRepresentative?.name ?? "",
     representativePhone: primaryRepresentative?.phoneNumber ?? "",

@@ -1,7 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
 import { SupplierLogoField } from "@/features/suppliers/components/composites/SupplierLogoField"
 import { supplierGroupOptionsQueryOptions } from "@/features/suppliers/api/options"
@@ -42,17 +40,16 @@ export const UpdateSupplierInfoSection = withForm({
         <div className="px-4 pb-5 sm:px-5">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto]">
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
-              <Field>
-                <FieldLabel className="text-xs font-medium text-foreground">
-                  Mã nhà cung cấp <span className="text-destructive">*</span>
-                </FieldLabel>
-                <Input
-                  readOnly
-                  disabled
-                  placeholder="Tự động"
-                  className="h-9 bg-background text-xs"
-                />
-              </Field>
+              <form.AppField name="code">
+                {(field) => (
+                  <field.TextField
+                    label="Mã nhà cung cấp"
+                    required
+                    placeholder="Nhập mã nhà cung cấp"
+                    disabled={disabled}
+                  />
+                )}
+              </form.AppField>
 
               <form.AppField name="name">
                 {(field) => (
@@ -69,7 +66,6 @@ export const UpdateSupplierInfoSection = withForm({
                 {(field) => (
                   <field.SelectField
                     label="Nhóm NCC"
-                    required
                     placeholder="Chọn nhóm nhà cung cấp"
                     options={supplierGroupSelectOptions}
                     disabled={disabled}
@@ -93,7 +89,6 @@ export const UpdateSupplierInfoSection = withForm({
                 {(field) => (
                   <field.TextField
                     label="Mã số thuế"
-                    required
                     placeholder="Nhập mã số thuế"
                     disabled={disabled}
                   />
@@ -104,7 +99,6 @@ export const UpdateSupplierInfoSection = withForm({
                 {(field) => (
                   <field.TextField
                     label="Điện thoại"
-                    required
                     type="tel"
                     placeholder="Nhập số điện thoại"
                     disabled={disabled}

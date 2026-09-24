@@ -88,12 +88,13 @@ export const supplierColumns = supplierColumnHelper.columns([
       )
     },
   }),
-  supplierColumnHelper.accessor((row) => row.group.name, {
+  supplierColumnHelper.accessor((row) => row.group?.name ?? "—", {
     id: "group",
     header: "Nhóm NCC",
     meta: { headerClassName: "min-w-32" },
   }),
-  supplierColumnHelper.accessor("taxCode", {
+  supplierColumnHelper.accessor((row) => row.taxCode ?? "—", {
+    id: "taxCode",
     header: "Mã số thuế",
     meta: { headerClassName: "min-w-28" },
   }),
@@ -125,7 +126,8 @@ export const supplierColumns = supplierColumnHelper.columns([
       },
     }
   ),
-  supplierColumnHelper.accessor("phoneNumber", {
+  supplierColumnHelper.accessor((row) => row.phoneNumber ?? "—", {
+    id: "phoneNumber",
     header: "Điện thoại",
     meta: { headerClassName: "min-w-28" },
   }),

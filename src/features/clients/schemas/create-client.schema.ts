@@ -1,11 +1,7 @@
 import { z } from "zod"
 
 import { clientContactsSchema } from "@/features/clients/schemas/client-contact.schema"
-import {
-  emptyToUndefined,
-  refineOptionalEmail,
-  refineOptionalPhoneNumber,
-} from "@/lib/zod-transforms"
+import { emptyToUndefined, refineOptionalEmail } from "@/lib/zod-transforms"
 
 import { ClientStatus } from "@/lib/types/client.type"
 
@@ -34,6 +30,10 @@ export const createClientSchema = z
     phoneNumber: z
       .string()
       .trim()
+      .refine(
+        (value) => value === "" || /^\+?\d{8,15}$/.test(value),
+        'Số điện thoại không hợp lệ — chỉ nhận chữ số (có thể có dấu "+" ở đầu), 8-15 chữ số.'
+      )
       .max(30, "Số điện thoại tối đa 30 ký tự")
       .transform(emptyToUndefined),
     email: z.string().trim().transform(emptyToUndefined),
@@ -51,7 +51,6 @@ export const createClientSchema = z
     contacts: clientContactsSchema,
   })
   .superRefine(refineOptionalEmail("email"))
-  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
 
 export type CreateClientSchema = z.input<typeof createClientSchema>
 
