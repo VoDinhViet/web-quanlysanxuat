@@ -105,10 +105,10 @@ export type Supplier = {
   id: string
   code: string
   name: string
-  group: SupplierGroupRef
+  group: SupplierGroupRef | null
   type: SupplierType
-  taxCode: string
-  phoneNumber: string
+  taxCode: string | null
+  phoneNumber: string | null
   email: string | null
   representatives: SupplierRepresentative[]
   address: string

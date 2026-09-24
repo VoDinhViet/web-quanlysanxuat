@@ -6,7 +6,6 @@ import {
   emptyToUndefinedIsoDate,
   optionalEnum,
   refineOptionalEmail,
-  refineOptionalPhoneNumber,
 } from "@/lib/zod-transforms"
 
 import {
@@ -22,29 +21,42 @@ import { PaymentTerm } from "@/lib/types/payment-term.type"
 // definitions with update-supplier.schema.ts: the two flows evolve independently.
 export const createSupplierSchema = z
   .object({
+    code: z
+      .string()
+      .trim()
+      .min(1, "Vui lòng nhập mã nhà cung cấp")
+      .max(50, "Mã nhà cung cấp tối đa 50 ký tự"),
     name: z
       .string()
       .trim()
       .min(1, "Vui lòng nhập tên nhà cung cấp")
       .max(255, "Tên nhà cung cấp tối đa 255 ký tự"),
-    supplierGroupId: z
-      .string()
-      .trim()
-      .min(1, "Vui lòng chọn nhóm nhà cung cấp"),
+    supplierGroupId: z.string().trim().transform(emptyToUndefined),
     type: z.enum(SupplierType),
     taxCode: z
       .string()
       .trim()
-      .min(1, "Vui lòng nhập mã số thuế")
-      .max(50, "Mã số thuế tối đa 50 ký tự"),
+      .max(50, "Mã số thuế tối đa 50 ký tự")
+      .transform(emptyToUndefined),
     phoneNumber: z
       .string()
       .trim()
-      .min(1, "Vui lòng nhập số điện thoại")
-      .max(30, "Số điện thoại tối đa 30 ký tự"),
+      .refine(
+        (value) => value === "" || /^\+?\d{8,15}$/.test(value),
+        'Số điện thoại không hợp lệ — chỉ nhận chữ số (có thể có dấu "+" ở đầu), 8-15 chữ số.'
+      )
+      .max(30, "Số điện thoại tối đa 30 ký tự")
+      .transform(emptyToUndefined),
     email: z.string().trim().transform(emptyToUndefined),
     representativeName: z.string().trim().transform(emptyToUndefined),
-    representativePhone: z.string().trim().transform(emptyToUndefined),
+    representativePhone: z
+      .string()
+      .trim()
+      .refine(
+        (value) => value === "" || /^\+?\d{8,15}$/.test(value),
+        'Số điện thoại không hợp lệ — chỉ nhận chữ số (có thể có dấu "+" ở đầu), 8-15 chữ số.'
+      )
+      .transform(emptyToUndefined),
     address: z
       .string()
       .trim()
@@ -83,12 +95,11 @@ export const createSupplierSchema = z
     }),
   })
   .superRefine(refineOptionalEmail("email"))
-  .superRefine(refineOptionalPhoneNumber("phoneNumber"))
-  .superRefine(refineOptionalPhoneNumber("representativePhone"))
 
 export type CreateSupplierSchema = z.input<typeof createSupplierSchema>
 
 export const createSupplierFormDefaultValues: CreateSupplierSchema = {
+  code: "",
   name: "",
   supplierGroupId: "",
   type: SupplierType.COMPANY,
