@@ -22,7 +22,7 @@ const productionJobColumnHelper = createColumnHelper<
 const baseProductionJobColumns = [
   productionJobColumnHelper.display({
     id: "image",
-    header: "",
+    header: "Hình",
     meta: { headerClassName: "w-16" },
     cell: ({ row }) => <ProductImageCell image={row.original.image} />,
   }),
@@ -31,8 +31,14 @@ const baseProductionJobColumns = [
     header: "KH",
     meta: { headerClassName: "min-w-36" },
   }),
-  productionJobColumnHelper.accessor("orderCode", {
+  productionJobColumnHelper.accessor((row) => row.buyerPoNo ?? "—", {
+    id: "buyerPoNo",
     header: "PO",
+    meta: { headerClassName: "min-w-24" },
+    cell: ({ getValue }) => <span className="font-mono">{getValue()}</span>,
+  }),
+  productionJobColumnHelper.accessor("orderCode", {
+    header: "SO",
     meta: { headerClassName: "min-w-24" },
     cell: ({ getValue }) => (
       <span className="font-mono font-semibold text-primary">{getValue()}</span>

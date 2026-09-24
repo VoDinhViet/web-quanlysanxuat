@@ -33,6 +33,7 @@ export type ProductionJob = {
   id: string
   code: string
   orderCode: string
+  buyerPoNo: string | null
   client: OrderClientRef | null
   image: FileResource | null
   quantity: number
