@@ -27,6 +27,8 @@ function resolveCreateConsumableErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "item.error.code_exists":
       return "Mã vật tư đã tồn tại."
+    case "item.error.consumable_code_required":
+      return "Vui lòng nhập mã vật tư."
     case "file.error.not_found":
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "unit.error.not_found":
