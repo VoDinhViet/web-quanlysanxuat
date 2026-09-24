@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { Factory } from "lucide-react"
@@ -13,7 +14,7 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { useRoutePagination } from "@/hooks/use-route-pagination"
-import { productionJobColumns } from "@/features/production-jobs/components/composites/ProductionJobsTableColumns"
+import { buildProductionJobColumns } from "@/features/production-jobs/components/composites/ProductionJobsTableColumns"
 import { cn } from "@/lib/utils"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
@@ -22,6 +23,10 @@ type ProductionJobsTableProps = {
   rows: ProductionJob[]
   pagination: PaginationMeta
   isPending: boolean
+  selectedJobIds: Set<string>
+  selectedClientId: string | undefined
+  onToggleJob: (job: ProductionJob) => void
+  onToggleAll: (checked: boolean) => void
 }
 
 // Bảng danh sách Job — tự dựng useReactTable/flexRender thay vì qua một khung DataTable dùng
@@ -30,10 +35,46 @@ export function ProductionJobsTable({
   rows,
   pagination,
   isPending,
+  selectedJobIds,
+  selectedClientId,
+  onToggleJob,
+  onToggleAll,
 }: ProductionJobsTableProps) {
+  // Nút "chọn tất cả" áp cho khách hàng đang khoá, hoặc khách hàng của Job đầu tiên trên trang.
+  const targetClientId =
+    selectedClientId ?? rows.find((row) => row.client !== null)?.client?.id
+  const selectableRows = rows.filter((row) => row.client?.id === targetClientId)
+  const allChecked =
+    selectableRows.length > 0 &&
+    selectableRows.every((row) => selectedJobIds.has(row.id))
+  const isIndeterminate =
+    !allChecked && selectableRows.some((row) => selectedJobIds.has(row.id))
+
+  const columns = useMemo(
+    () =>
+      buildProductionJobColumns({
+        selectedJobIds,
+        onToggleJob,
+        onToggleAll,
+        allChecked,
+        isIndeterminate,
+        selectedClientId,
+        hasSelectableRows: selectableRows.length > 0,
+      }),
+    [
+      selectedJobIds,
+      onToggleJob,
+      onToggleAll,
+      allChecked,
+      isIndeterminate,
+      selectedClientId,
+      selectableRows.length,
+    ]
+  )
+
   const table = useTable({
     data: rows,
-    columns: productionJobColumns,
+    columns,
     features: appTableFeatures,
   })
 
@@ -77,7 +118,14 @@ export function ProductionJobsTable({
               {table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="h-14 bg-card hover:bg-muted/25"
+                  className={cn(
+                    "h-14 bg-card transition-colors hover:bg-muted/25",
+                    selectedJobIds.has(row.original.id) &&
+                      "bg-primary/[0.04] hover:bg-primary/[0.08]",
+                    selectedClientId !== undefined &&
+                      row.original.client?.id !== selectedClientId &&
+                      "opacity-45"
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

@@ -3,13 +3,10 @@ import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
-import { Badge } from "@/components/ui/badge"
 import { OrderDetailActions } from "@/features/orders/components/layouts/OrderDetailActions"
 import { OrderDetailStatTiles } from "@/features/orders/components/composites/OrderDetailStatTiles"
 import { OrderStatusBadge } from "@/features/orders/components/primitives/OrderBadges"
 import {
-  orderPaymentStatusLabels,
-  OrderPaymentStatus,
   overdueTone,
   OrderStatus,
   resolveDeliveryTone,
@@ -25,12 +22,6 @@ const deliveryToneClassName: Record<DeliveryTone, string> = {
   overdue: "text-destructive",
   "near-due": "text-warning",
   normal: "text-foreground",
-}
-
-const paymentStatusClassName: Record<OrderPaymentStatus, string> = {
-  [OrderPaymentStatus.UNPAID]: "border-warning/40 bg-warning/5 text-warning",
-  [OrderPaymentStatus.PARTIAL]: "border-warning/40 bg-warning/5 text-warning",
-  [OrderPaymentStatus.PAID]: "border-success/40 bg-success/5 text-success",
 }
 
 function formatDueDateNote(order: OrderDetail): string | null {
@@ -138,17 +129,6 @@ export function OrderDetailSummaryCard({
                 order.paymentTerm
                   ? paymentTermShortLabels[order.paymentTerm]
                   : "—"
-              }
-            />
-            <MetaField
-              label="Trạng thái thanh toán"
-              value={
-                <Badge
-                  variant="outline"
-                  className={paymentStatusClassName[order.paymentStatus]}
-                >
-                  {orderPaymentStatusLabels[order.paymentStatus]}
-                </Badge>
               }
             />
           </div>

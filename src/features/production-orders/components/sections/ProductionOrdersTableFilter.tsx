@@ -35,14 +35,22 @@ export function ProductionOrdersTableFilter() {
   const [q, setQ] = useState(search.q ?? "")
 
   const exportProductionOrdersFn = useServerFn(exportProductionOrders)
-  const exportMutation = useMutation({
+  const { mutateAsync: exportExcel, isPending: isExporting } = useMutation({
     mutationFn: () => exportProductionOrdersFn({ data: search }),
-    onSuccess: ({ base64, filename }) => {
-      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
-      toast.success("Đã xuất file Excel")
-    },
-    onError: (error) => toast.error(error.message),
   })
+
+  const handleExport = () => {
+    toast.promise(
+      exportExcel().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      }),
+      {
+        loading: "Đang xuất file Excel lệnh sản xuất...",
+        success: "Đã xuất file Excel lệnh sản xuất",
+        error: (error) => error.message || "Xuất file thất bại",
+      },
+    )
+  }
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // OrdersTableFilter.tsx. An empty term becomes `undefined` so the search
@@ -175,11 +183,11 @@ export function ProductionOrdersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            disabled={exportMutation.isPending}
-            onClick={() => exportMutation.mutate()}
+            disabled={isExporting}
+            onClick={handleExport}
           >
             <Download className="size-4" />
-            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+            {isExporting ? "Đang xuất..." : "Xuất Excel"}
           </Button>
           <Button
             type="button"

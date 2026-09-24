@@ -1,7 +1,16 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CheckCircle, CloseCircle, Printer } from "@solar-icons/react"
+import {
+  AltArrowDown,
+  CheckCircle,
+  CloseCircle,
+  DocumentText,
+  FileDownload,
+  Printer,
+} from "@solar-icons/react"
+import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,11 +21,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { cancelInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/cancel-inventory-receipt.api"
 import { confirmInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/confirm-inventory-receipt.api"
+import { exportInventoryReceiptPdf } from "@/features/inventory-receipts/api/server-functions/export-inventory-receipt-pdf.api"
 import { postInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/post-inventory-receipt.api"
+import {
+  downloadBase64File,
+  PDF_MIME_TYPE,
+  printBase64Pdf,
+} from "@/lib/download-file"
 import { InventoryReceiptStatus } from "@/lib/types/inventory-receipt.type"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
@@ -34,6 +56,39 @@ export function InventoryReceiptDetailActions({
   const confirmInventoryReceiptFn = useServerFn(confirmInventoryReceipt)
   const postInventoryReceiptFn = useServerFn(postInventoryReceipt)
   const cancelInventoryReceiptFn = useServerFn(cancelInventoryReceipt)
+
+  const exportInventoryReceiptPdfFn = useServerFn(exportInventoryReceiptPdf)
+
+  const { mutateAsync: fetchPdf, isPending: isFetchingPdf } = useMutation({
+    mutationFn: () =>
+      exportInventoryReceiptPdfFn({ data: { receiptId: inventoryReceipt.id } }),
+  })
+
+  const handlePrint = () => {
+    toast.promise(
+      fetchPdf().then(({ base64 }) => {
+        printBase64Pdf(base64)
+      }),
+      {
+        loading: "Đang tải dữ liệu in...",
+        success: "Đã mở bản in phiếu nhập kho",
+        error: (error) => error.message || "In thất bại",
+      }
+    )
+  }
+
+  const handleExportPdf = () => {
+    toast.promise(
+      fetchPdf().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, PDF_MIME_TYPE)
+      }),
+      {
+        loading: "Đang tạo phiếu nhập kho...",
+        success: "Đã xuất phiếu nhập kho",
+        error: (error) => error.message || "Xuất file thất bại",
+      }
+    )
+  }
 
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: ["inventory-receipts"] })
@@ -96,10 +151,60 @@ export function InventoryReceiptDetailActions({
   return (
     <div className="flex shrink-0 flex-col items-end gap-2">
       <div className="flex flex-wrap items-center gap-2">
-        <PendingAction label="In phiếu" hint="tính năng sắp có">
-          <Printer className="size-4" />
-          In phiếu
-        </PendingAction>
+        <PermissionGate permission="inventory:read">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isFetchingPdf}
+            onClick={handlePrint}
+          >
+            {isFetchingPdf ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Printer className="size-4" />
+            )}
+            In
+          </Button>
+        </PermissionGate>
+
+        <PermissionGate permission="inventory:read">
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isFetchingPdf}
+                >
+                  <FileDownload className="size-4" />
+                  <span>Xuất</span>
+                  <AltArrowDown className="size-3.5 opacity-60" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end" className="w-60 p-1.5">
+              <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+                Tùy chọn xuất dữ liệu
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="my-1" />
+              <DropdownMenuItem
+                disabled={isFetchingPdf}
+                onClick={handleExportPdf}
+                className="flex cursor-pointer items-start gap-2.5 rounded-md px-2.5 py-2 hover:bg-muted/80"
+              >
+                <DocumentText className="mt-0.5 size-4 shrink-0 text-rose-500" />
+                <div className="flex flex-col">
+                  <span className="text-xs font-medium text-foreground">
+                    Phiếu nhập kho
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">
+                    File tài liệu PDF
+                  </span>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </PermissionGate>
 
         {isDraft && (
           <PermissionGate permission="inventory:update">

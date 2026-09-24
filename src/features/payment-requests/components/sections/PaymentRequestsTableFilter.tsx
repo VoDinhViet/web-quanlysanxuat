@@ -36,14 +36,22 @@ export function PaymentRequestsTableFilter() {
   const [poCode, setPoCode] = useState(search.poCode ?? "")
 
   const exportPaymentRequestsFn = useServerFn(exportPaymentRequests)
-  const exportMutation = useMutation({
+  const { mutateAsync: exportExcel, isPending: isExporting } = useMutation({
     mutationFn: () => exportPaymentRequestsFn({ data: search }),
-    onSuccess: ({ base64, filename }) => {
-      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
-      toast.success("Đã xuất file Excel")
-    },
-    onError: (error) => toast.error(error.message),
   })
+
+  const handleExport = () => {
+    toast.promise(
+      exportExcel().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      }),
+      {
+        loading: "Đang xuất file Excel đề nghị thanh toán...",
+        success: "Đã xuất file Excel đề nghị thanh toán",
+        error: (error) => error.message || "Xuất file thất bại",
+      },
+    )
+  }
 
   // The route loader already prefetches this — resolves synchronously off cache.
   const { data: suppliers } = useSuspenseQuery(supplierOptionsQueryOptions())
@@ -240,11 +248,11 @@ export function PaymentRequestsTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            disabled={exportMutation.isPending}
-            onClick={() => exportMutation.mutate()}
+            disabled={isExporting}
+            onClick={handleExport}
           >
             <Download className="size-4" />
-            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+            {isExporting ? "Đang xuất..." : "Xuất Excel"}
           </Button>
 
           <Button

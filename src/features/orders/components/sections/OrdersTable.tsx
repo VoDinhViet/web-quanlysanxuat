@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { ClipboardList } from "lucide-react"
@@ -13,7 +14,7 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { useRoutePagination } from "@/hooks/use-route-pagination"
-import { orderColumns } from "@/features/orders/components/composites/OrdersTableColumns"
+import { buildOrderColumns } from "@/features/orders/components/composites/OrdersTableColumns"
 import { cn } from "@/lib/utils"
 import type { Order } from "@/lib/types/order.type"
 import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
@@ -22,14 +23,43 @@ type OrdersTableProps = {
   rows: Order[]
   pagination: PaginationMeta
   isPending: boolean
+  selectedOrderIds?: Set<string>
+  onToggleOrder?: (orderId: string) => void
+  onToggleAll?: (checked: boolean) => void
 }
 
 // Bảng danh sách đơn hàng — tự dựng useReactTable/flexRender thay vì qua một khung DataTable dùng
-// chung, để mỗi trang danh sách tự do tiến hoá riêng.
-export function OrdersTable({ rows, pagination, isPending }: OrdersTableProps) {
+// chung, để mỗi trang danh sách tự do tiến hoá riêng. Bổ sung hỗ trợ tích chọn dòng để xuất biểu mẫu
+// theo nghiệp vụ exportOrdersSummaryPdf.
+export function OrdersTable({
+  rows,
+  pagination,
+  isPending,
+  selectedOrderIds = new Set(),
+  onToggleOrder = () => {},
+  onToggleAll = () => {},
+}: OrdersTableProps) {
+  const allChecked =
+    rows.length > 0 && rows.every((row) => selectedOrderIds.has(row.id))
+
+  const isIndeterminate =
+    !allChecked && rows.some((row) => selectedOrderIds.has(row.id))
+
+  const columns = useMemo(
+    () =>
+      buildOrderColumns({
+        selectedOrderIds,
+        onToggleOrder,
+        onToggleAll,
+        allChecked,
+        isIndeterminate,
+      }),
+    [selectedOrderIds, onToggleOrder, onToggleAll, allChecked, isIndeterminate]
+  )
+
   const table = useTable({
     data: rows,
-    columns: orderColumns,
+    columns,
     features: appTableFeatures,
   })
 
@@ -49,7 +79,7 @@ export function OrdersTable({ rows, pagination, isPending }: OrdersTableProps) {
           description="Đơn hàng sẽ xuất hiện ở đây sau khi được tạo."
         />
       ) : (
-        <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
+        <div className="overflow-x-auto rounded-md border border-border/50 bg-card shadow-2xs">
           <Table aria-label="Danh sách đơn hàng">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
               <TableRow>
@@ -68,24 +98,30 @@ export function OrdersTable({ rows, pagination, isPending }: OrdersTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="h-14 bg-card hover:bg-muted/25"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              {table.getRowModel().rows.map((row) => {
+                const isSelected = selectedOrderIds.has(row.original.id)
+                return (
+                  <TableRow
+                    key={row.id}
+                    className={cn(
+                      "h-14 bg-card transition-colors hover:bg-muted/25",
+                      isSelected && "bg-primary/[0.04] hover:bg-primary/[0.08]"
+                    )}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </div>

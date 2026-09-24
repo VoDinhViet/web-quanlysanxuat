@@ -1,124 +1,127 @@
+import { FileText } from "lucide-react"
+
 import { formatSignedAmount } from "@/features/orders/constants/order-totals"
 import { currencyFormatter, vndFormatter } from "@/lib/currency"
 import { Currency, OrderDiscountType } from "@/lib/types/order.type"
+import { paymentTermLabels } from "@/lib/types/payment-term.type"
+import { toVietnameseCurrencyWords } from "@/lib/vietnamese-number-words"
 import type { OrderDetail } from "@/lib/types/order.type"
-import { cn } from "@/lib/utils"
 
 type OrderDetailPaymentSummaryProps = {
   order: OrderDetail
 }
 
-// The subtotal/discount/VAT/shipping/total box — real, server-computed
-// (OrdersService.recalculateTotals) — sits directly under the items table it
-// totals, right-aligned and styled as a torn receipt stub (see .receipt-stub
-// in styles.css) so it reads like what it is: the total due on this order.
 export function OrderDetailPaymentSummary({
   order,
 }: OrderDetailPaymentSummaryProps) {
-  const remainingAmount = order.total - order.paidAmount
-  const isFullyPaid = remainingAmount <= 0
-  // Same "derive color from the ratio itself" idiom as OperationProgressBar —
-  // the bar and the paid/remaining figures below it are read off the same two
-  // numbers, so they can never disagree.
-  const paidRatio =
-    order.total > 0 ? Math.min(order.paidAmount / order.total, 1) : 0
-  const paidPercent = Math.round(paidRatio * 100)
-
   return (
-    <div className="receipt-stub ml-auto w-full max-w-sm rounded-b-lg border border-border bg-muted/30 p-4 pt-6 sm:p-5 sm:pt-7">
-      <p className="text-xs font-semibold tracking-wide text-foreground uppercase">
-        Thanh toán
-      </p>
-
-      <dl className="mt-3 space-y-1.5 text-xs text-muted-foreground">
-        <div className="flex items-center justify-between">
-          <dt>Tổng tiền hàng</dt>
-          <dd className="tabular-nums">
-            {currencyFormatter.format(order.subtotal)}
-          </dd>
-        </div>
-        <div className="flex items-center justify-between">
-          <dt>
-            Chiết khấu
-            {order.discountType === OrderDiscountType.PERCENT &&
-            order.discountValue > 0
-              ? ` (${currencyFormatter.format(order.discountValue)}%)`
-              : ""}
-          </dt>
-          <dd className="tabular-nums">
-            {formatSignedAmount(order.discountAmount, "−")}
-          </dd>
-        </div>
-        <div className="flex items-center justify-between">
-          <dt>Thuế VAT ({currencyFormatter.format(order.vatPercent)}%)</dt>
-          <dd className="tabular-nums">
-            {formatSignedAmount(order.vatAmount, "+")}
-          </dd>
-        </div>
-        <div className="flex items-center justify-between">
-          <dt>Phí vận chuyển</dt>
-          <dd className="tabular-nums">
-            {formatSignedAmount(order.shippingFee, "+")}
-          </dd>
-        </div>
-      </dl>
-
-      <div className="mt-4 flex items-center justify-between gap-3 rounded-md border border-primary/15 bg-primary/5 px-3 py-2.5">
-        <span className="font-heading text-sm text-foreground">
-          Tổng thanh toán
-        </span>
-        <span className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-semibold text-primary tabular-nums">
-            {currencyFormatter.format(order.total)}
-          </span>
-          <span className="text-xs font-medium text-muted-foreground">
-            {order.currency}
-          </span>
-        </span>
-      </div>
-
-      {order.currency !== Currency.VND ? (
-        <p className="mt-1 text-right text-xs text-muted-foreground tabular-nums">
-          ≈ {vndFormatter.format(order.totalVnd)} VND
-        </p>
-      ) : null}
-
-      <div className="mt-4 space-y-2 border-t border-dashed border-border pt-3">
-        <div className="flex items-center gap-2">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-            <div
-              className={cn(
-                "h-full rounded-full transition-all",
-                isFullyPaid ? "bg-success" : "bg-warning"
-              )}
-              style={{ width: `${paidPercent}%` }}
-            />
+    <div className="pt-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-10">
+        {/* Cột trái: Ghi chú & Điều khoản đơn hàng */}
+        <div className="flex flex-col justify-between space-y-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <FileText className="size-4" />
+              <span className="text-xs font-semibold tracking-wide uppercase">
+                Ghi chú & Điều khoản
+              </span>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              <p className="font-medium text-foreground">Ghi chú đơn hàng:</p>
+              <p className="mt-0.5 leading-relaxed whitespace-pre-line">
+                {order.note ? order.note : "Không có ghi chú kèm theo."}
+              </p>
+            </div>
           </div>
-          <span
-            className={cn(
-              "w-9 shrink-0 text-right text-[11px] font-semibold tabular-nums",
-              isFullyPaid ? "text-success" : "text-warning"
+
+          <div className="space-y-2 border-t border-border/40 pt-3 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">
+                Điều khoản thanh toán:
+              </span>
+              <span className="font-medium text-foreground">
+                {order.paymentTerm
+                  ? paymentTermLabels[order.paymentTerm]
+                  : "Chưa xác định"}
+              </span>
+            </div>
+
+            {order.currency !== Currency.VND && (
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Tỷ giá quy đổi:</span>
+                <span className="font-mono font-medium text-foreground tabular-nums">
+                  1 {order.currency} = {vndFormatter.format(order.exchangeRate)}{" "}
+                  VND
+                </span>
+              </div>
             )}
-          >
-            {paidPercent}%
-          </span>
+
+            <div className="pt-1">
+              <span className="text-muted-foreground">
+                Số tiền viết bằng chữ:{" "}
+              </span>
+              <span className="font-medium text-foreground italic">
+                {toVietnameseCurrencyWords(order.totalVnd)}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">
-            Đã trả{" "}
-            <span className="font-medium text-foreground tabular-nums">
-              {currencyFormatter.format(order.paidAmount)} {order.currency}
-            </span>
-          </span>
-          <span
-            className={cn(
-              "font-medium tabular-nums",
-              isFullyPaid ? "text-success" : "text-warning"
-            )}
-          >
-            Còn lại {currencyFormatter.format(remainingAmount)} {order.currency}
-          </span>
+        {/* Cột phải: Bảng chi tiết chi phí & Tổng thanh toán */}
+        <div className="flex flex-col justify-between space-y-4 lg:border-l lg:border-border/60 lg:pl-10">
+          <dl className="space-y-2.5 text-xs text-muted-foreground">
+            <div className="flex items-center justify-between">
+              <dt>Tổng tiền hàng</dt>
+              <dd className="font-medium text-foreground tabular-nums">
+                {currencyFormatter.format(order.subtotal)} {order.currency}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between">
+              <dt>
+                Chiết khấu
+                {order.discountType === OrderDiscountType.PERCENT &&
+                order.discountValue > 0
+                  ? ` (${currencyFormatter.format(order.discountValue)}%)`
+                  : ""}
+              </dt>
+              <dd className="font-medium text-foreground tabular-nums">
+                {formatSignedAmount(order.discountAmount, "−")} {order.currency}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between">
+              <dt>Thuế VAT ({currencyFormatter.format(order.vatPercent)}%)</dt>
+              <dd className="font-medium text-foreground tabular-nums">
+                {formatSignedAmount(order.vatAmount, "+")} {order.currency}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between">
+              <dt>Phí vận chuyển</dt>
+              <dd className="font-medium text-foreground tabular-nums">
+                {formatSignedAmount(order.shippingFee, "+")} {order.currency}
+              </dd>
+            </div>
+          </dl>
+
+          <div className="border-t border-border/60 pt-3">
+            <div className="flex items-baseline justify-between">
+              <span className="font-heading text-sm font-semibold text-foreground">
+                Tổng thanh toán
+              </span>
+              <div className="text-right">
+                <span className="font-mono text-2xl font-bold tracking-tight text-primary tabular-nums">
+                  {currencyFormatter.format(order.total)}
+                </span>
+                <span className="ml-1 text-xs font-semibold text-primary">
+                  {order.currency}
+                </span>
+                {order.currency !== Currency.VND && (
+                  <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">
+                    ≈ {vndFormatter.format(order.totalVnd)} VND
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

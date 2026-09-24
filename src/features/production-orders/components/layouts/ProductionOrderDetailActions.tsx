@@ -1,6 +1,24 @@
-import { CircleCheck, Loader2, Save } from "lucide-react"
+import {
+  AltArrowDown,
+  CheckCircle,
+  Diskette,
+  DocumentText,
+  FileDownload,
+} from "@solar-icons/react"
+import { Loader2 } from "lucide-react"
+import { useMutation } from "@tanstack/react-query"
+import { useServerFn } from "@tanstack/react-start"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Tooltip,
   TooltipContent,
@@ -8,6 +26,8 @@ import {
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ApproveProductionOrderDialog } from "@/features/production-orders/components/composites/ApproveProductionOrderDialog"
+import { exportProductionOrderPdf } from "@/features/production-orders/api/server-functions/export-production-order-pdf.api"
+import { downloadBase64File, PDF_MIME_TYPE } from "@/lib/download-file"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
@@ -32,9 +52,69 @@ export function ProductionOrderDetailActions({
   onSave,
 }: ProductionOrderDetailActionsProps) {
   const isPending = production.status === ProductionOrderStatus.PENDING
+  const exportProductionOrderPdfFn = useServerFn(exportProductionOrderPdf)
+
+  const { mutateAsync: exportPdf, isPending: isExporting } = useMutation({
+    mutationFn: () =>
+      exportProductionOrderPdfFn({
+        data: { productionOrderId: production.id },
+      }),
+  })
+
+  const handleExport = () => {
+    toast.promise(
+      exportPdf().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, PDF_MIME_TYPE)
+      }),
+      {
+        loading: "Đang tạo file PDF lệnh sản xuất...",
+        success: "Đã xuất file PDF lệnh sản xuất",
+        error: (error) => error.message || "Xuất file thất bại",
+      }
+    )
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
+      <PermissionGate permission="production:read">
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button type="button" variant="outline" disabled={isExporting}>
+                {isExporting ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <FileDownload className="size-4" />
+                )}
+                <span>Xuất</span>
+                <AltArrowDown className="size-3.5 opacity-60" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end" className="w-60 p-1.5">
+            <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+              Tùy chọn xuất dữ liệu
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="my-1" />
+            <DropdownMenuItem
+              disabled={isExporting}
+              onClick={handleExport}
+              className="flex cursor-pointer items-start gap-2.5 rounded-md px-2.5 py-2 hover:bg-muted/80"
+            >
+              <DocumentText className="mt-0.5 size-4 shrink-0 text-rose-500" />
+              <div className="flex flex-col">
+                <span className="text-xs font-medium text-foreground">
+                  Biểu mẫu lệnh sản xuất
+                </span>
+                <span className="text-[11px] text-muted-foreground">
+                  File tài liệu PDF
+                </span>
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </PermissionGate>
+
       {isPending ? (
         <PermissionGate permission="production:update">
           <Button
@@ -46,7 +126,7 @@ export function ProductionOrderDetailActions({
             {isSaving ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
-              <Save className="size-4" />
+              <Diskette className="size-4" />
             )}
             Lưu thay đổi
           </Button>
@@ -65,7 +145,7 @@ export function ProductionOrderDetailActions({
                       disabled
                       className="pointer-events-none"
                     >
-                      <CircleCheck className="size-4" />
+                      <CheckCircle className="size-4" />
                       Duyệt LSX
                     </Button>
                   </span>
@@ -80,7 +160,7 @@ export function ProductionOrderDetailActions({
               production={production}
               trigger={
                 <Button type="button">
-                  <CircleCheck className="size-4" />
+                  <CheckCircle className="size-4" />
                   Duyệt LSX
                 </Button>
               }

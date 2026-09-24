@@ -43,14 +43,22 @@ export function UsersTableFilter() {
   ]
 
   const exportUsersFn = useServerFn(exportUsers)
-  const exportMutation = useMutation({
+  const { mutateAsync: exportExcel, isPending: isExporting } = useMutation({
     mutationFn: () => exportUsersFn({ data: search }),
-    onSuccess: ({ base64, filename }) => {
-      downloadBase64File(base64, filename, XLSX_MIME_TYPE)
-      toast.success("Đã xuất file Excel")
-    },
-    onError: (error) => toast.error(error.message),
   })
+
+  const handleExport = () => {
+    toast.promise(
+      exportExcel().then(({ base64, filename }) => {
+        downloadBase64File(base64, filename, XLSX_MIME_TYPE)
+      }),
+      {
+        loading: "Đang xuất file Excel danh sách người dùng...",
+        success: "Đã xuất file Excel danh sách người dùng",
+        error: (error) => error.message || "Xuất file thất bại",
+      },
+    )
+  }
 
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
@@ -194,11 +202,11 @@ export function UsersTableFilter() {
             type="button"
             variant="outline"
             className="text-xs"
-            disabled={exportMutation.isPending}
-            onClick={() => exportMutation.mutate()}
+            disabled={isExporting}
+            onClick={handleExport}
           >
             <Download className="size-4" />
-            {exportMutation.isPending ? "Đang xuất..." : "Xuất Excel"}
+            {isExporting ? "Đang xuất..." : "Xuất Excel"}
           </Button>
           <Button
             type="button"

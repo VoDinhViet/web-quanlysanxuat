@@ -17,10 +17,6 @@ type PurchaseOrderDetailActionsProps = {
 export function PurchaseOrderDetailActions({
   purchaseOrder,
 }: PurchaseOrderDetailActionsProps) {
-  if (purchaseOrder.status === PurchaseOrderStatus.CANCELLED) {
-    return null
-  }
-
   const isConfirmable =
     purchaseOrder.status === PurchaseOrderStatus.DRAFT &&
     purchaseOrder.expectedDate !== null &&
@@ -43,21 +39,23 @@ export function PurchaseOrderDetailActions({
           </PermissionGate>
         )}
 
-        <PermissionGate permission="purchasing:approve">
-          <PurchaseOrderCancelDialog
-            purchaseOrder={purchaseOrder}
-            trigger={
-              <Button
-                type="button"
-                variant="outline"
-                className="border-destructive/40 text-destructive"
-              >
-                <CloseCircle className="size-4" />
-                Huỷ PO
-              </Button>
-            }
-          />
-        </PermissionGate>
+        {purchaseOrder.status !== PurchaseOrderStatus.CANCELLED && (
+          <PermissionGate permission="purchasing:approve">
+            <PurchaseOrderCancelDialog
+              purchaseOrder={purchaseOrder}
+              trigger={
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-destructive/40 text-destructive"
+                >
+                  <CloseCircle className="size-4" />
+                  Huỷ PO
+                </Button>
+              }
+            />
+          </PermissionGate>
+        )}
       </div>
 
       {purchaseOrder.status === PurchaseOrderStatus.DRAFT && !isConfirmable && (
