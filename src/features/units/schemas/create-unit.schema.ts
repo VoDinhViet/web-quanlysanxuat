@@ -1,9 +1,14 @@
 import { z } from "zod"
 
 // Wire contract for POST /api/units — also the client-side onSubmit validator for
-// CreateUnitForm. No `code` — the backend always assigns it, no manual override. Deliberately
+// CreateUnitForm. `code` is user-entered (the backend 409s on a duplicate). Deliberately
 // shares no field definitions with update-unit.schema.ts: the two flows evolve independently.
 export const createUnitSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng nhập mã đơn vị tính")
+    .max(50, "Mã đơn vị tính tối đa 50 ký tự"),
   name: z
     .string()
     .trim()
@@ -14,5 +19,6 @@ export const createUnitSchema = z.object({
 export type CreateUnitSchema = z.input<typeof createUnitSchema>
 
 export const createUnitFormDefaultValues: CreateUnitSchema = {
+  code: "",
   name: "",
 }

@@ -59,11 +59,18 @@ export const productColumns = productColumnHelper.columns([
               {product.name}
             </p>
             <p className="truncate font-mono text-[11px] text-muted-foreground">
-              {product.code} · {product.revision}
+              {product.code}
             </p>
           </div>
         </div>
       )
+    },
+  }),
+  productColumnHelper.accessor("revision", {
+    header: "Rev",
+    meta: {
+      headerClassName: "min-w-16 text-center",
+      cellClassName: "text-center font-mono",
     },
   }),
   productColumnHelper.accessor((row) => row.client?.name ?? "—", {

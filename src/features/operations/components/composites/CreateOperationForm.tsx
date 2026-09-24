@@ -70,11 +70,22 @@ export function CreateOperationForm({
           Tạo công đoạn
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Tên và trạng thái của công đoạn — mã được cấp tự động
+          Mã, tên và trạng thái của công đoạn
         </DialogDescription>
       </DialogHeader>
 
       <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
+        <form.AppField name="code">
+          {(field) => (
+            <field.TextField
+              label="Mã công đoạn"
+              required
+              placeholder="Nhập mã công đoạn, vd. CAT-LASER"
+              disabled={isPending}
+            />
+          )}
+        </form.AppField>
+
         <form.AppField name="name">
           {(field) => (
             <field.TextField

@@ -67,6 +67,12 @@ export const orderDetailItemColumns = col.columns([
     },
   }),
 
+  col.accessor((row) => row.item.revision, {
+    id: "revision",
+    header: "Rev",
+    meta: { cellClassName: "font-mono" },
+  }),
+
   col.accessor((row) => row.unit.name, {
     id: "unit",
     header: "ĐVT",

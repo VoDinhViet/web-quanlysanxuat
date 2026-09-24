@@ -62,9 +62,20 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
           Thêm đơn vị tính
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Nhập tên đơn vị tính — mã được cấp tự động
+          Nhập mã và tên đơn vị tính
         </DialogDescription>
       </DialogHeader>
+
+      <form.AppField name="code">
+        {(field) => (
+          <field.TextField
+            label="Mã đơn vị tính"
+            required
+            placeholder="Nhập mã đơn vị tính, vd. THUNG"
+            disabled={isPending}
+          />
+        )}
+      </form.AppField>
 
       <form.AppField name="name">
         {(field) => (
