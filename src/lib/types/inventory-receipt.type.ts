@@ -3,15 +3,17 @@ import type { ItemRef } from "@/lib/types/item.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 
-// PENDING_RECEIPT/PENDING_IQC sit between DRAFT and POSTED — reached via `confirm`
+// PENDING_RECEIPT/PENDING_IQC/IQC_COMPLETED sit between DRAFT and POSTED — reached via `confirm`
 // (InventoryReceiptsController's `POST :id/confirm`), which the create-from-PO wizard calls
 // right after create (see inventory-receipts/components/create-from-po/). `requiresIqc` on the
 // receipt decides which of the two `confirm` lands on; `post` accepts either (PENDING_IQC only
-// once every IQC inspection tied to it is COMPLETED).
+// once every IQC inspection tied to it is COMPLETED). The backend flips PENDING_IQC to
+// IQC_COMPLETED on its own when the last inspection finishes.
 export const InventoryReceiptStatus = {
   DRAFT: "DRAFT",
   PENDING_RECEIPT: "PENDING_RECEIPT",
   PENDING_IQC: "PENDING_IQC",
+  IQC_COMPLETED: "IQC_COMPLETED",
   POSTED: "POSTED",
   CANCELLED: "CANCELLED",
 } as const
@@ -26,6 +28,7 @@ export const inventoryReceiptStatusLabels: Record<
   [InventoryReceiptStatus.DRAFT]: "Nháp",
   [InventoryReceiptStatus.PENDING_RECEIPT]: "Chờ nhập kho",
   [InventoryReceiptStatus.PENDING_IQC]: "Chờ IQC",
+  [InventoryReceiptStatus.IQC_COMPLETED]: "Đã xong IQC",
   [InventoryReceiptStatus.POSTED]: "Đã nhập kho",
   [InventoryReceiptStatus.CANCELLED]: "Đã huỷ",
 }
@@ -39,6 +42,8 @@ export const inventoryReceiptStatusDescriptions: Record<
     "Phiếu đã xác nhận, sẵn sàng để nhập kho.",
   [InventoryReceiptStatus.PENDING_IQC]:
     "Phiếu đã xác nhận và đang chờ kiểm tra chất lượng (IQC).",
+  [InventoryReceiptStatus.IQC_COMPLETED]:
+    "Mọi phiếu IQC đã hoàn tất, sẵn sàng để nhập kho.",
   [InventoryReceiptStatus.POSTED]:
     "Đã ghi sổ, tồn kho đã cập nhật — phiếu bất biến từ đây.",
   [InventoryReceiptStatus.CANCELLED]: "Phiếu đã bị huỷ.",

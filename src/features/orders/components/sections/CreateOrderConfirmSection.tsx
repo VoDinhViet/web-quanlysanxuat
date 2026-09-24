@@ -1,7 +1,7 @@
 import { DateTime } from "luxon"
 
 import { CreateOrderTotalsSummary } from "@/features/orders/components/composites/CreateOrderTotalsSummary"
-import { OrderDocumentsField } from "@/features/orders/components/composites/OrderDocumentsField"
+import { UploadOrderDocuments } from "@/features/orders/components/composites/UploadOrderDocuments"
 import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
@@ -76,7 +76,7 @@ export const CreateOrderConfirmSection = withForm({
         <div className="border-t border-border px-4 py-5 sm:px-5">
           <form.Field name="files">
             {(field) => (
-              <OrderDocumentsField
+              <UploadOrderDocuments
                 value={field.state.value}
                 onChange={field.handleChange}
                 disabled={disabled}

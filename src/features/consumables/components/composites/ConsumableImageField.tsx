@@ -11,6 +11,7 @@ import {
   MAX_IMAGE_SIZE_BYTES,
 } from "@/lib/types/file.type"
 import { uploadFile } from "@/lib/upload-file"
+import { usePasteToDropzone } from "@/hooks/use-paste-to-dropzone"
 import { cn } from "@/lib/utils"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 import type { FileRejection } from "react-dropzone"
@@ -69,20 +70,23 @@ export function ConsumableImageField({
     onSuccess: (result) => onChange(result),
   })
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ACCEPTED_IMAGE_TYPES,
-    maxSize: MAX_IMAGE_SIZE_BYTES,
-    multiple: false,
-    disabled,
-    onDropAccepted: ([file]) => {
-      setClientError(null)
-      upload(file)
-    },
-    onDropRejected: (rejections) =>
-      setClientError(resolveDropRejectionMessage(rejections)),
-  })
+  const { getRootProps, getInputProps, isDragActive, rootRef, inputRef } =
+    useDropzone({
+      accept: ACCEPTED_IMAGE_TYPES,
+      maxSize: MAX_IMAGE_SIZE_BYTES,
+      multiple: false,
+      disabled,
+      onDropAccepted: ([file]) => {
+        setClientError(null)
+        upload(file)
+      },
+      onDropRejected: (rejections) =>
+        setClientError(resolveDropRejectionMessage(rejections)),
+    })
 
   const errorMessage = clientError ?? error?.message ?? null
+
+  usePasteToDropzone({ rootRef, inputRef, disabled })
 
   return (
     <div className="flex flex-col items-center gap-2 text-center">
@@ -122,7 +126,7 @@ export function ConsumableImageField({
               <>
                 <ImageUp className="size-6 text-muted-foreground/60" />
                 <p className="text-[11px] text-muted-foreground">
-                  Kéo thả ảnh vào đây hoặc{" "}
+                  Kéo thả, dán (Ctrl+V) ảnh vào đây hoặc{" "}
                   <span className="font-medium text-primary">chọn file</span>
                 </p>
               </>

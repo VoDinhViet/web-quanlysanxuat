@@ -16,6 +16,7 @@ import {
 } from "@/lib/types/file.type"
 import type { UploadType } from "@/lib/types/file.type"
 import { uploadFile } from "@/lib/upload-file"
+import { usePasteToDropzone } from "@/hooks/use-paste-to-dropzone"
 import { cn } from "@/lib/utils"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
@@ -63,36 +64,39 @@ export function IqcEvidenceCard({
     },
   })
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ACCEPTED_EVIDENCE_TYPES,
-    maxSize: MAX_DOCUMENT_SIZE_BYTES,
-    multiple: true,
-    disabled,
-    onDropAccepted: async (files) => {
-      setClientError(null)
-      const results = await Promise.allSettled(
-        files.map((file) => upload(file))
-      )
-      const uploaded = results
-        .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value)
-
-      if (uploaded.length > 0) {
-        form.setFieldValue(name, (prev) => [...prev, ...uploaded])
-      }
-
-      const failedCount = results.length - uploaded.length
-      if (failedCount > 0) {
-        setClientError(
-          `${failedCount} file tải lên thất bại. Vui lòng thử lại.`
+  const { getRootProps, getInputProps, isDragActive, rootRef, inputRef } =
+    useDropzone({
+      accept: ACCEPTED_EVIDENCE_TYPES,
+      maxSize: MAX_DOCUMENT_SIZE_BYTES,
+      multiple: true,
+      disabled,
+      onDropAccepted: async (files) => {
+        setClientError(null)
+        const results = await Promise.allSettled(
+          files.map((file) => upload(file))
         )
-      }
-    },
-    onDropRejected: (rejections) =>
-      setClientError(resolveDropRejectionMessage(rejections)),
-  })
+        const uploaded = results
+          .filter((result) => result.status === "fulfilled")
+          .map((result) => result.value)
+
+        if (uploaded.length > 0) {
+          form.setFieldValue(name, (prev) => [...prev, ...uploaded])
+        }
+
+        const failedCount = results.length - uploaded.length
+        if (failedCount > 0) {
+          setClientError(
+            `${failedCount} file tải lên thất bại. Vui lòng thử lại.`
+          )
+        }
+      },
+      onDropRejected: (rejections) =>
+        setClientError(resolveDropRejectionMessage(rejections)),
+    })
 
   const errorMessage = clientError ?? error?.message
+
+  const { isPasteTarget } = usePasteToDropzone({ rootRef, inputRef, disabled })
 
   return (
     <IqcDetailSectionCard icon={icon} title={title} description={description}>
@@ -113,8 +117,9 @@ export function IqcEvidenceCard({
 
               <div
                 className={cn(
-                  "flex min-h-24 w-full items-center gap-4 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-4 transition-colors",
-                  isDragActive && "border-primary bg-primary/5"
+                  "flex min-h-16 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-3 transition-colors hover:border-primary/50 hover:bg-primary/5",
+                  isDragActive && "border-primary bg-primary/5",
+                  isPasteTarget && "border-primary bg-primary/5"
                 )}
               >
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
@@ -122,10 +127,15 @@ export function IqcEvidenceCard({
                 </div>
                 <div className="min-w-0 space-y-0.5">
                   <p className="text-xs text-muted-foreground">
-                    Kéo thả file vào đây hoặc{" "}
+                    Kéo thả, dán (Ctrl+V) file vào đây hoặc{" "}
                     <span className="font-medium text-primary">chọn file</span>
                   </p>
                   <p className="text-[11px] text-muted-foreground">{hint}</p>
+                  {isPasteTarget && (
+                    <p className="text-[11px] font-medium text-primary">
+                      Ctrl+V để dán vào đây
+                    </p>
+                  )}
                 </div>
 
                 {isPending && (
@@ -141,7 +151,7 @@ export function IqcEvidenceCard({
             )}
 
             {field.state.value.length > 0 && (
-              <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
+              <ul>
                 {field.state.value.map((file) => (
                   <QcEvidenceThumbnail
                     key={file.id}

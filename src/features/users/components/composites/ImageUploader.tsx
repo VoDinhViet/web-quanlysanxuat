@@ -13,6 +13,7 @@ import {
 } from "@/lib/types/file.type"
 import { uploadFile } from "@/lib/upload-file"
 import type { FileFieldValue } from "@/lib/file-field.schema"
+import { usePasteToDropzone } from "@/hooks/use-paste-to-dropzone"
 import { cn } from "@/lib/utils"
 import type { FileRejection } from "react-dropzone"
 
@@ -59,20 +60,23 @@ export function ImageUploader({
     onSuccess: (result) => onChange(result),
   })
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ACCEPTED_IMAGE_TYPES,
-    maxSize: MAX_IMAGE_SIZE_BYTES,
-    multiple: false,
-    disabled,
-    onDropAccepted: ([file]) => {
-      setClientError(null)
-      upload(file)
-    },
-    onDropRejected: (rejections) =>
-      setClientError(resolveDropRejectionMessage(rejections)),
-  })
+  const { getRootProps, getInputProps, isDragActive, rootRef, inputRef } =
+    useDropzone({
+      accept: ACCEPTED_IMAGE_TYPES,
+      maxSize: MAX_IMAGE_SIZE_BYTES,
+      multiple: false,
+      disabled,
+      onDropAccepted: ([file]) => {
+        setClientError(null)
+        upload(file)
+      },
+      onDropRejected: (rejections) =>
+        setClientError(resolveDropRejectionMessage(rejections)),
+    })
 
   const errorMessage = clientError ?? error?.message ?? null
+
+  usePasteToDropzone({ rootRef, inputRef, disabled })
 
   return (
     <div className="flex flex-col items-center gap-3 text-center">
@@ -126,8 +130,9 @@ export function ImageUploader({
       </div>
 
       <p className="text-[11px] text-muted-foreground">
-        Kéo thả hoặc bấm <Camera className="inline size-3 -translate-y-px" /> ·
-        JPG, PNG, WEBP, GIF · tối đa 5MB
+        Kéo thả, dán hoặc bấm{" "}
+        <Camera className="inline size-3 -translate-y-px" /> · JPG, PNG, WEBP,
+        GIF · tối đa 5MB
       </p>
 
       {errorMessage && (

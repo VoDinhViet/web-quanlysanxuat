@@ -1,44 +1,26 @@
 import { useState } from "react"
 import prettyBytes from "pretty-bytes"
-import { FileSpreadsheet, FileText, FileType, X } from "lucide-react"
-import { Gallery } from "@solar-icons/react"
+import {
+  Archive,
+  Document,
+  DocumentText,
+  Eye,
+  SquareArrowRightUp,
+  TrashBinTrash,
+} from "@solar-icons/react"
 import { ErrorCode } from "react-dropzone"
 import type { FileRejection } from "react-dropzone"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { ImageLightbox } from "@/components/ui/image-lightbox"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 import type { FileFieldValue } from "@/lib/file-field.schema"
-import type { ComponentType } from "react"
-
-type DocBadge = {
-  icon: ComponentType<{ className?: string }>
-  className: string
-}
-
-// Categorical color per doc type — dùng cho bằng chứng IQC/OQC, trộn cả ảnh lẫn PDF/DOCX/XLSX
-// (ACCEPTED_EVIDENCE_TYPES), khác OrderDocumentsField (chỉ toàn document).
-export function resolveDocBadge(mimetype: string): DocBadge {
-  if (mimetype === "application/pdf") {
-    return {
-      icon: FileText,
-      className: "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400",
-    }
-  }
-  if (mimetype.includes("wordprocessingml")) {
-    return {
-      icon: FileType,
-      className:
-        "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
-    }
-  }
-  return {
-    icon: FileSpreadsheet,
-    className:
-      "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400",
-  }
-}
 
 export function resolveDropRejectionMessage(
   rejections: FileRejection[]
@@ -53,15 +35,56 @@ export function resolveDropRejectionMessage(
   }
 }
 
+// Tinted file-type tile for non-image evidence (ACCEPTED_EVIDENCE_TYPES mixes images with
+// PDF/Word/Excel).
+function DocTile({ mimetype }: { mimetype: string }) {
+  let Icon = DocumentText
+  let tint = "bg-muted text-muted-foreground"
+
+  if (mimetype === "application/pdf") {
+    tint = "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400"
+  } else if (mimetype.includes("word")) {
+    tint = "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400"
+  } else if (
+    mimetype.includes("spreadsheet") ||
+    mimetype.includes("excel") ||
+    mimetype.includes("csv")
+  ) {
+    tint = "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400"
+    Icon = Document
+  } else if (mimetype.includes("zip") || mimetype.includes("compressed")) {
+    tint = "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400"
+    Icon = Archive
+  }
+
+  return (
+    <span
+      className={cn(
+        "flex size-full items-center justify-center rounded-md",
+        tint
+      )}
+    >
+      <Icon className="size-5" />
+    </span>
+  )
+}
+
+function resolveExtension(fileName: string): string {
+  const dotIndex = fileName.lastIndexOf(".")
+
+  return dotIndex === -1 ? "" : fileName.slice(dotIndex + 1).toUpperCase()
+}
+
 type QcEvidenceThumbnailProps = {
   file: FileFieldValue
   onRemove: (id: string) => void
   disabled?: boolean
 }
 
-// `isBroken` — <img> error event bắt trường hợp file đã bị xoá khỏi storage, rơi về icon thay vì
-// ảnh vỡ. Ảnh nhấn vào mở ImageLightbox tại chỗ (zoom/xoay); PDF/DOCX/XLSX vẫn mở tab mới như cũ
-// — không zoom được các định dạng đó.
+// One flat row per file (separated by a bottom border): thumbnail (or a file icon), name, "PNG · 38.1 kB", and a remove button. The
+// whole row opens the file — an image in the lightbox (zoom/rotate), anything else in a new tab.
+// `isBroken` — the <img> error event catches a file already deleted from storage and falls back
+// to the icon instead of a broken image.
 export function QcEvidenceThumbnail({
   file,
   onRemove,
@@ -69,66 +92,60 @@ export function QcEvidenceThumbnail({
 }: QcEvidenceThumbnailProps) {
   const [isBroken, setIsBroken] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
-  const isImage = file.mimetype.startsWith("image/")
-  const canPreview = isImage && !isBroken
+  const canPreview = file.mimetype.startsWith("image/") && !isBroken
   const fileUrl = resolveFileUrl(file.url)
-  const docBadge = isImage ? null : resolveDocBadge(file.mimetype)
+  const extension = resolveExtension(file.originalName)
 
-  const thumbnail = canPreview ? (
-    <div className="aspect-square w-full overflow-hidden bg-muted">
-      <img
-        src={fileUrl}
-        alt={file.originalName}
-        className="size-full object-cover"
-        onError={() => setIsBroken(true)}
-      />
-    </div>
-  ) : (
-    <div
-      className={cn(
-        "flex aspect-square w-full items-center justify-center",
-        docBadge ? docBadge.className : "bg-muted text-muted-foreground/40"
-      )}
-    >
-      {docBadge ? (
-        <docBadge.icon className="size-6" />
-      ) : (
-        <Gallery className="size-6" />
-      )}
-    </div>
+  const content = (
+    <>
+      <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+        {canPreview ? (
+          <img
+            src={fileUrl}
+            alt={file.originalName}
+            className="size-full object-cover"
+            onError={() => setIsBroken(true)}
+          />
+        ) : (
+          <DocTile mimetype={file.mimetype} />
+        )}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span
+          title={file.originalName}
+          className="block truncate text-sm font-medium text-foreground"
+        >
+          {file.originalName}
+        </span>
+        <span className="block text-xs text-muted-foreground">
+          {extension && `${extension} · `}
+          {prettyBytes(file.size)}
+        </span>
+      </span>
+    </>
   )
 
-  const caption = (
-    <div className="space-y-0 px-1.5 py-1">
-      <p className="truncate text-[11px] font-medium text-foreground">
-        {file.originalName}
-      </p>
-      <p className="text-[10px] text-muted-foreground">
-        {prettyBytes(file.size)}
-      </p>
-    </div>
-  )
+  const rowClassName =
+    "flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left outline-none focus-visible:bg-muted/60"
 
   return (
-    <li className="relative overflow-hidden rounded-md border border-border bg-card">
+    <li className="flex items-center border-b border-border pr-3 transition-colors hover:bg-muted/40">
       {canPreview ? (
         <button
           type="button"
           onClick={() => setPreviewOpen(true)}
-          className="block w-full text-left hover:opacity-90"
+          className={rowClassName}
         >
-          {thumbnail}
-          {caption}
+          {content}
         </button>
       ) : (
         <a
           href={fileUrl}
           target="_blank"
           rel="noreferrer"
-          className="block hover:opacity-90"
+          className={rowClassName}
         >
-          {thumbnail}
-          {caption}
+          {content}
         </a>
       )}
 
@@ -141,17 +158,58 @@ export function QcEvidenceThumbnail({
         />
       )}
 
-      <Button
-        type="button"
-        variant="outline"
-        size="icon-xs"
-        disabled={disabled}
-        aria-label={`Xóa ${file.originalName}`}
-        onClick={() => onRemove(file.id)}
-        className="absolute top-1 right-1 rounded-full border-border/60 bg-background/90 shadow-sm hover:border-destructive/40 hover:text-destructive"
-      >
-        <X className="size-3" />
-      </Button>
+      <div className="flex shrink-0 items-center gap-1.5">
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              canPreview ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label={`Xem ${file.originalName}`}
+                  onClick={() => setPreviewOpen(true)}
+                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                >
+                  <Eye className="size-3.5" />
+                </Button>
+              ) : (
+                <a
+                  href={fileUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`Mở ${file.originalName}`}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "icon-sm" }),
+                    "text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  )}
+                >
+                  <SquareArrowRightUp className="size-3.5" />
+                </a>
+              )
+            }
+          />
+          <TooltipContent>{canPreview ? "Xem ảnh" : "Mở tệp"}</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                disabled={disabled}
+                aria-label={`Xóa ${file.originalName}`}
+                onClick={() => onRemove(file.id)}
+                className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+              >
+                <TrashBinTrash className="size-3.5" />
+              </Button>
+            }
+          />
+          <TooltipContent>Xóa</TooltipContent>
+        </Tooltip>
+      </div>
     </li>
   )
 }
