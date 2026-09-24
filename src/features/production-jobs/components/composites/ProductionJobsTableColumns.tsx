@@ -15,10 +15,6 @@ const productionJobColumnHelper = createColumnHelper<
   ProductionJob
 >()
 
-// No "Mã SP"/"Tên sản phẩm" columns — ProductionJobResDto (list) dropped the nested `product`
-// object 2026-07-31 in favor of a flat `image`, keeping only the columns the table needs (see
-// production-job.type.ts). Those two columns aren't recoverable from this endpoint; the full
-// product reference is only on GET /production-jobs/:jobId.
 const baseProductionJobColumns = [
   productionJobColumnHelper.display({
     id: "image",
@@ -50,6 +46,17 @@ const baseProductionJobColumns = [
     cell: ({ getValue }) => (
       <span className="font-mono font-semibold text-primary">{getValue()}</span>
     ),
+  }),
+  productionJobColumnHelper.accessor((row) => row.item.code, {
+    id: "itemCode",
+    header: "Mã SP",
+    meta: { headerClassName: "min-w-24" },
+    cell: ({ getValue }) => <span className="font-mono">{getValue()}</span>,
+  }),
+  productionJobColumnHelper.accessor((row) => row.item.name, {
+    id: "itemName",
+    header: "Tên sản phẩm",
+    meta: { headerClassName: "min-w-48" },
   }),
   productionJobColumnHelper.accessor("quantity", {
     header: "Qty (PO)",
