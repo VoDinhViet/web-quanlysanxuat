@@ -14,6 +14,7 @@ import {
   UploadType,
 } from "@/lib/types/file.type"
 import { uploadFile } from "@/lib/upload-file"
+import { usePasteToDropzone } from "@/hooks/use-paste-to-dropzone"
 import { cn } from "@/lib/utils"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 
@@ -50,34 +51,39 @@ export function JobOperationReportEvidenceField({
     },
   })
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ACCEPTED_IMAGE_TYPES,
-    maxSize: MAX_IMAGE_SIZE_BYTES,
-    multiple: true,
-    disabled,
-    onDropAccepted: async (files) => {
-      setClientError(null)
-      const results = await Promise.allSettled(
-        files.map((file) => upload(file))
-      )
-      const uploaded = results
-        .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value)
+  const { getRootProps, getInputProps, isDragActive, rootRef, inputRef } =
+    useDropzone({
+      accept: ACCEPTED_IMAGE_TYPES,
+      maxSize: MAX_IMAGE_SIZE_BYTES,
+      multiple: true,
+      disabled,
+      onDropAccepted: async (files) => {
+        setClientError(null)
+        const results = await Promise.allSettled(
+          files.map((file) => upload(file))
+        )
+        const uploaded = results
+          .filter((result) => result.status === "fulfilled")
+          .map((result) => result.value)
 
-      if (uploaded.length > 0) {
-        onChange((prev) => [...prev, ...uploaded])
-      }
+        if (uploaded.length > 0) {
+          onChange((prev) => [...prev, ...uploaded])
+        }
 
-      const failedCount = results.length - uploaded.length
-      if (failedCount > 0) {
-        setClientError(`${failedCount} ảnh tải lên thất bại. Vui lòng thử lại.`)
-      }
-    },
-    onDropRejected: (rejections) =>
-      setClientError(resolveDropRejectionMessage(rejections)),
-  })
+        const failedCount = results.length - uploaded.length
+        if (failedCount > 0) {
+          setClientError(
+            `${failedCount} ảnh tải lên thất bại. Vui lòng thử lại.`
+          )
+        }
+      },
+      onDropRejected: (rejections) =>
+        setClientError(resolveDropRejectionMessage(rejections)),
+    })
 
   const errorMessage = clientError ?? error?.message
+
+  usePasteToDropzone({ rootRef, inputRef, disabled })
 
   return (
     <div className="space-y-3">
@@ -99,7 +105,7 @@ export function JobOperationReportEvidenceField({
 
         <div
           className={cn(
-            "flex min-h-24 w-full items-center gap-4 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-4 transition-colors",
+            "flex min-h-16 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-3 transition-colors hover:border-primary/50 hover:bg-primary/5",
             isDragActive && "border-primary bg-primary/5"
           )}
         >
@@ -108,7 +114,7 @@ export function JobOperationReportEvidenceField({
           </div>
           <div className="min-w-0 space-y-0.5">
             <p className="text-xs text-muted-foreground">
-              Kéo thả file vào đây hoặc{" "}
+              Kéo thả, dán (Ctrl+V) file vào đây hoặc{" "}
               <span className="font-medium text-primary">chọn file</span>
             </p>
             <p className="text-[11px] text-muted-foreground">
@@ -129,7 +135,7 @@ export function JobOperationReportEvidenceField({
       )}
 
       {value.length > 0 && (
-        <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
+        <ul>
           {value.map((file) => (
             <QcEvidenceThumbnail
               key={file.id}

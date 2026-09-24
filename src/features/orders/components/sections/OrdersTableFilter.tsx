@@ -7,7 +7,6 @@ import {
   DocumentText,
   File,
   FileDownload,
-  Printer,
 } from "@solar-icons/react"
 import { toast } from "sonner"
 
@@ -46,22 +45,18 @@ const statusFilterOptions = [
 type OrdersTableFilterProps = {
   selectedOrderCount?: number
   onExportOrdersForm?: () => void
-  onPrintOrdersForm?: () => void
   onExportOrdersExcel?: () => void
   onClearSelection?: () => void
   isExportingForm?: boolean
-  isPrintingForm?: boolean
   isExportingExcel?: boolean
 }
 
 export function OrdersTableFilter({
   selectedOrderCount = 0,
   onExportOrdersForm,
-  onPrintOrdersForm,
   onExportOrdersExcel,
   onClearSelection,
   isExportingForm = false,
-  isPrintingForm = false,
   isExportingExcel = false,
 }: OrdersTableFilterProps) {
   const search = useSearch({ from: "/(authed)/manage_/orders/" })
@@ -126,7 +121,7 @@ export function OrdersTableFilter({
   }
 
   const hasSelectedOrders = selectedOrderCount > 0
-  const isExporting = isExportingForm || isPrintingForm || isExportingExcel
+  const isExporting = isExportingForm || isExportingExcel
 
   const handleExportFormClick = () => {
     if (!hasSelectedOrders) {
@@ -137,17 +132,6 @@ export function OrdersTableFilter({
       return
     }
     onExportOrdersForm?.()
-  }
-
-  const handlePrintFormClick = () => {
-    if (!hasSelectedOrders) {
-      toast.info("Vui lòng tích chọn đơn hàng trên bảng để in biểu mẫu", {
-        description:
-          "Bạn có thể tích chọn từng dòng hoặc chọn ô vuông ở đầu bảng để chọn toàn bộ trang này.",
-      })
-      return
-    }
-    onPrintOrdersForm?.()
   }
 
   const handleExportExcelClick = () => {
@@ -274,9 +258,9 @@ export function OrdersTableFilter({
                     disabled={isExporting}
                   >
                     {isExporting ? (
-                      <Loader2 className="size-4 animate-spin text-emerald-600" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      <FileDownload className="size-4 text-emerald-600 dark:text-emerald-400" />
+                      <FileDownload className="size-4" />
                     )}
                     <span>Xuất</span>
                     {hasSelectedOrders && (
@@ -307,22 +291,6 @@ export function OrdersTableFilter({
                     </span>
                     <span className="text-[11px] text-muted-foreground">
                       File tài liệu PDF
-                      {hasSelectedOrders ? ` (${selectedOrderCount} đơn)` : ""}
-                    </span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={isPrintingForm}
-                  onClick={handlePrintFormClick}
-                  className="flex cursor-pointer items-start gap-2.5 rounded-md px-2.5 py-2 hover:bg-muted/80"
-                >
-                  <Printer className="mt-0.5 size-4 shrink-0 text-sky-600" />
-                  <div className="flex flex-col">
-                    <span className="text-xs font-medium text-foreground">
-                      In biểu mẫu (BM-03/KD)
-                    </span>
-                    <span className="text-[11px] text-muted-foreground">
-                      In trực tiếp
                       {hasSelectedOrders ? ` (${selectedOrderCount} đơn)` : ""}
                     </span>
                   </div>

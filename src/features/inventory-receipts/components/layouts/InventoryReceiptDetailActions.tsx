@@ -126,10 +126,12 @@ export function InventoryReceiptDetailActions({
   const isPosted = inventoryReceipt.status === InventoryReceiptStatus.POSTED
   const isCancelled =
     inventoryReceipt.status === InventoryReceiptStatus.CANCELLED
-  // `post` accepts both PENDING_RECEIPT and PENDING_IQC (backend re-checks IQC completion itself,
-  // E153 if not done yet) — same button for both, no local IQC-completion lookup needed.
+  // `post` accepts PENDING_RECEIPT, PENDING_IQC and IQC_COMPLETED (backend re-checks IQC
+  // completion itself, E153 if not done yet) — same button for all, no local IQC-completion
+  // lookup needed.
   const canPost =
     inventoryReceipt.status === InventoryReceiptStatus.PENDING_RECEIPT ||
+    inventoryReceipt.status === InventoryReceiptStatus.IQC_COMPLETED ||
     isPendingIqc
 
   const activeMutation =

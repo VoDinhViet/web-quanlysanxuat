@@ -18,7 +18,6 @@ import { exportOrdersExcel } from "@/features/orders/api/server-functions/export
 import {
   downloadBase64File,
   PDF_MIME_TYPE,
-  printBase64Pdf,
   XLSX_MIME_TYPE,
 } from "@/lib/download-file"
 
@@ -107,33 +106,7 @@ export function OrdersPage() {
         loading: "Đang tạo biểu mẫu danh sách đơn hàng...",
         success: "Đã xuất biểu mẫu danh sách đơn hàng (BM-03/KD)",
         error: (error) => error.message || "Xuất file thất bại",
-      },
-    )
-  }
-
-  const { mutateAsync: printPdf, isPending: isPrintingForm } = useMutation({
-    mutationFn: () => {
-      if (selectedOrderIds.size === 0) {
-        throw new Error("Vui lòng tích chọn ít nhất 1 đơn hàng để in biểu mẫu.")
       }
-      return exportOrdersSummaryPdfFn({
-        data: {
-          orderIds: Array.from(selectedOrderIds),
-        },
-      })
-    },
-  })
-
-  const handlePrintOrdersForm = () => {
-    toast.promise(
-      printPdf().then(({ base64 }) => {
-        printBase64Pdf(base64)
-      }),
-      {
-        loading: "Đang tải dữ liệu in...",
-        success: "Đã mở bản in biểu mẫu",
-        error: (error) => error.message || "In thất bại",
-      },
     )
   }
 
@@ -141,7 +114,9 @@ export function OrdersPage() {
     {
       mutationFn: () => {
         if (selectedOrderIds.size === 0) {
-          throw new Error("Vui lòng tích chọn ít nhất 1 đơn hàng để xuất Excel.")
+          throw new Error(
+            "Vui lòng tích chọn ít nhất 1 đơn hàng để xuất Excel."
+          )
         }
         return exportOrdersExcelFn({
           data: {
@@ -161,7 +136,7 @@ export function OrdersPage() {
         loading: "Đang xuất danh sách đơn hàng ra file Excel...",
         success: "Đã xuất danh sách đơn hàng ra file Excel",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -176,11 +151,9 @@ export function OrdersPage() {
         <OrdersTableFilter
           selectedOrderCount={selectedOrderIds.size}
           onExportOrdersForm={handleExportOrdersForm}
-          onPrintOrdersForm={handlePrintOrdersForm}
           onExportOrdersExcel={handleExportOrdersExcel}
           onClearSelection={handleClearSelection}
           isExportingForm={isExportingForm}
-          isPrintingForm={isPrintingForm}
           isExportingExcel={isExportingExcel}
         />
 
@@ -210,12 +183,10 @@ export function OrdersPage() {
         allPageChecked={allPageChecked}
         currentPageCount={orders.length}
         isExportingForm={isExportingForm}
-        isPrintingForm={isPrintingForm}
         isExportingExcel={isExportingExcel}
         onSelectAllPage={handleSelectAllPage}
         onClearSelection={handleClearSelection}
         onExportForm={handleExportOrdersForm}
-        onPrintForm={handlePrintOrdersForm}
         onExportExcel={handleExportOrdersExcel}
       />
     </div>

@@ -4,7 +4,6 @@ import {
   DocumentText,
   File,
   FileDownload,
-  Printer,
 } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
 
@@ -23,12 +22,10 @@ type OrdersTableBulkActionsProps = {
   allPageChecked: boolean
   currentPageCount: number
   isExportingForm?: boolean
-  isPrintingForm?: boolean
   isExportingExcel?: boolean
   onSelectAllPage: () => void
   onClearSelection: () => void
   onExportForm: () => void
-  onPrintForm: () => void
   onExportExcel: () => void
 }
 
@@ -37,17 +34,15 @@ export function OrdersTableBulkActions({
   allPageChecked,
   currentPageCount,
   isExportingForm = false,
-  isPrintingForm = false,
   isExportingExcel = false,
   onSelectAllPage,
   onClearSelection,
   onExportForm,
-  onPrintForm,
   onExportExcel,
 }: OrdersTableBulkActionsProps) {
   if (selectedCount === 0) return null
 
-  const isExporting = isExportingForm || isPrintingForm || isExportingExcel
+  const isExporting = isExportingForm || isExportingExcel
 
   return (
     <div className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2 animate-in duration-150 fade-in slide-in-from-bottom-2">
@@ -112,21 +107,6 @@ export function OrdersTableBulkActions({
                 </span>
                 <span className="text-[11px] text-muted-foreground">
                   File tài liệu PDF
-                </span>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              disabled={isPrintingForm}
-              onClick={onPrintForm}
-              className="flex cursor-pointer items-start gap-2.5 rounded-md px-2.5 py-2 hover:bg-muted/80"
-            >
-              <Printer className="mt-0.5 size-4 shrink-0 text-sky-600" />
-              <div className="flex flex-col">
-                <span className="text-xs font-medium text-foreground">
-                  In biểu mẫu (BM-03/KD)
-                </span>
-                <span className="text-[11px] text-muted-foreground">
-                  In trực tiếp
                 </span>
               </div>
             </DropdownMenuItem>
