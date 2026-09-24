@@ -1,7 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
 import { withForm } from "@/hooks/use-app-form"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { ConsumableImageField } from "@/features/consumables/components/composites/ConsumableImageField"
@@ -43,21 +41,16 @@ export const CreateConsumableInfoSection = withForm({
         <div className="px-4 py-5 sm:px-5">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto]">
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
-              <Field>
-                <FieldLabel
-                  htmlFor="consumable-code"
-                  className="text-xs font-medium text-foreground"
-                >
-                  Mã vật tư
-                </FieldLabel>
-                <Input
-                  id="consumable-code"
-                  readOnly
-                  disabled
-                  placeholder="Tự động"
-                  className="h-9 bg-background text-xs"
-                />
-              </Field>
+              <form.AppField name="code">
+                {(field) => (
+                  <field.TextField
+                    label="Mã vật tư"
+                    required
+                    placeholder="Nhập mã vật tư"
+                    disabled={disabled}
+                  />
+                )}
+              </form.AppField>
 
               <form.AppField name="name">
                 {(field) => (

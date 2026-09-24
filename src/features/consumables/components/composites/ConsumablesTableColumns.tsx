@@ -2,7 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
-import { CircleCheck, CirclePause, Edit3 } from "lucide-react"
+import { CircleCheck, CirclePause, Copy, Edit3 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import {
@@ -13,6 +13,7 @@ import {
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { ConsumableStatusBadge } from "@/features/consumables/components/primitives/ConsumableBadges"
+import { CopyConsumableDialog } from "@/features/consumables/components/composites/CopyConsumableDialog"
 import { ToggleConsumableStatusDialog } from "@/features/consumables/components/composites/ToggleConsumableStatusDialog"
 import { ItemStatus } from "@/lib/types/item.type"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -104,7 +105,7 @@ export const consumableColumns = consumableColumnHelper.columns([
     id: "actions",
     header: "Thao tác",
     meta: {
-      headerClassName: "min-w-36 text-center",
+      headerClassName: "min-w-44 text-center",
       cellClassName: "font-normal",
     },
     cell: ({ row }) => {
@@ -132,6 +133,29 @@ export const consumableColumns = consumableColumnHelper.columns([
               <TooltipContent>Chỉnh sửa</TooltipContent>
             </Tooltip>
           </RoutePermissionGate>
+          <PermissionGate permission="items:copy">
+            <Tooltip>
+              <CopyConsumableDialog
+                consumable={consumable}
+                trigger={
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        aria-label="Sao chép"
+                        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                      >
+                        <Copy className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                }
+              />
+              <TooltipContent>Sao chép</TooltipContent>
+            </Tooltip>
+          </PermissionGate>
           <PermissionGate permission="items:update">
             <Tooltip>
               <ToggleConsumableStatusDialog

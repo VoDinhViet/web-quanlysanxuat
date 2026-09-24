@@ -7,14 +7,18 @@ import { ItemStatus } from "@/lib/types/item.type"
 
 // Wire contract for POST /api/items (`type` fixed to "CONSUMABLE" by the server function, not a form
 // field) — also the client-side onSubmit validator for CreateConsumableForm (`code` is
-// intentionally omitted — the form never sets it; the backend auto-generates VTxxxx when
-// omitted). Every optional field transforms "" straight to undefined here, so the parsed value
+// user-entered and required; the backend 409s on a duplicate code + revision). Every optional field transforms "" straight to undefined here, so the parsed value
 // is already wire-ready — no separate mapping step. Deliberately shares no field definitions
 // with update-consumable.schema.ts: the two flows evolve independently. No `consumableGroupId`/
 // `type` (INTERNAL/CLIENT) — both concepts were dropped when products+consumables merged into
 // `items` (be-quanlysanxuat/docs/decisions/items-merge.md), taking the "CLIENT requires a
 // client" rule with them. No `attachments` — `consumable_attachments` was dropped too.
 export const createConsumableSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng nhập mã vật tư")
+    .max(50, "Mã vật tư tối đa 50 ký tự"),
   name: z
     .string()
     .trim()
@@ -80,6 +84,7 @@ export const createConsumableSchema = z.object({
 export type CreateConsumableSchema = z.input<typeof createConsumableSchema>
 
 export const createConsumableFormDefaultValues: CreateConsumableSchema = {
+  code: "",
   name: "",
   unitId: "",
   clientId: "",

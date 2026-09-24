@@ -47,7 +47,7 @@ export function ConsumablesTableFilter() {
         loading: "Đang xuất file Excel vật tư tiêu hao...",
         success: "Đã xuất file Excel vật tư tiêu hao",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 

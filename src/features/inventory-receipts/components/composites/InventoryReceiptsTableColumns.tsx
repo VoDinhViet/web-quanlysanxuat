@@ -10,6 +10,7 @@ import {
 import {
   InventoryReceiptActionsCell,
   InventoryReceiptSourceCell,
+  SupplierLink,
 } from "@/features/inventory-receipts/components/primitives/InventoryReceiptTableCells"
 import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
 import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
@@ -66,6 +67,18 @@ export const inventoryReceiptsColumns = col.columns([
     cell: ({ getValue }) => (
       <InventoryReceiptItemTypeBadge receiptType={getValue()} />
     ),
+  }),
+
+  col.display({
+    id: "supplier",
+    header: "Nhà cung cấp",
+    meta: { headerClassName: "min-w-44" },
+    cell: ({ row }) =>
+      row.original.supplier ? (
+        <SupplierLink supplier={row.original.supplier} />
+      ) : (
+        <span className="text-xs text-muted-foreground">—</span>
+      ),
   }),
 
   col.display({

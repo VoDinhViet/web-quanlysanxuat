@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Eye, Pencil, Printer, Trash2 } from "lucide-react"
@@ -31,6 +32,18 @@ import type {
 import type { ClientRef } from "@/lib/types/client.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 
+export function SupplierLink({ supplier }: { supplier: SupplierRef }) {
+  return (
+    <Link
+      to="/manage/suppliers/$supplierId"
+      params={{ supplierId: supplier.id }}
+      className="text-xs text-foreground hover:text-primary hover:underline"
+    >
+      {supplier.name}
+    </Link>
+  )
+}
+
 type InventoryReceiptSourceCellProps = {
   purchaseOrder: InventoryReceiptPurchaseOrderRef | null
   supplier: SupplierRef | null
@@ -51,14 +64,18 @@ export function InventoryReceiptSourceCell({
 }: InventoryReceiptSourceCellProps) {
   if (purchaseOrder) {
     return (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <Link
+        to="/manage/purchase-orders/$purchaseOrderId"
+        params={{ purchaseOrderId: purchaseOrder.id }}
+        className="font-mono text-xs font-semibold text-primary hover:underline"
+      >
         {purchaseOrder.code}
-      </span>
+      </Link>
     )
   }
 
   if (supplier) {
-    return <span className="text-xs text-foreground">{supplier.name}</span>
+    return <SupplierLink supplier={supplier} />
   }
 
   if (client) {

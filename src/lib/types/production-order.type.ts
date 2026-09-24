@@ -1,9 +1,5 @@
 import type { FileResource } from "@/lib/types/file.type"
-import type {
-  OrderClientRef,
-  OrderItemRef,
-  OrderRef,
-} from "@/lib/types/order.type"
+import type { OrderItemRef, OrderRef } from "@/lib/types/order.type"
 
 /** Mirrors the backend's real `production_orders.status` column (`GET /production-orders`,
  *  `GET /production-orders/:productionOrderId`) — one enum for both the list queue and the
@@ -28,18 +24,14 @@ export const productionOrderStatusLabels: Record<
 
 /** Mirrors the backend's ProductionOrderResDto — one row of `GET /production-orders`, the LSX
  *  queue screen. `id` is the production order's own id (used for `GET /production-orders/:id`);
- *  `orderId`/`orderCode` identify the order it belongs to. No `createdAt`/`creator` — the backend
- *  DTO doesn't expose them, so the queue can't show "Ngày tạo"/"Người tạo" columns. */
+ *  `order` is the order it belongs to. No `createdAt`/`creator` — the backend DTO doesn't expose
+ *  them, so the queue can't show "Ngày tạo"/"Người tạo" columns. */
 export type ProductionOrder = {
   id: string
   code: string | null
-  orderId: string
-  orderCode: string
-  client: OrderClientRef | null
-  orderDate: string
-  dueDate: string | null
+  order: OrderRef
   status: ProductionOrderStatus
-  note: string | null
+  productionOrderNote: string | null
 }
 
 /** Mirrors the backend's ProductionOrderItemResDto — one row of the decision table. `quantity`
