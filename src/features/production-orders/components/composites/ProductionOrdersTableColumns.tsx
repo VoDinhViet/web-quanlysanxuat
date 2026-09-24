@@ -28,19 +28,27 @@ export const productionOrderColumns = productionOrderColumnHelper.columns([
       )
     },
   }),
-  productionOrderColumnHelper.accessor("orderCode", {
+  productionOrderColumnHelper.accessor((row) => row.order.code, {
+    id: "orderCode",
     header: "Số đơn hàng (SO)",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
       <span className="font-mono font-semibold text-primary">{getValue()}</span>
     ),
   }),
-  productionOrderColumnHelper.accessor((row) => row.client?.name ?? "—", {
+  productionOrderColumnHelper.accessor((row) => row.order.buyerPoNo ?? "—", {
+    id: "buyerPoNo",
+    header: "PO",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ getValue }) => <span className="font-mono">{getValue()}</span>,
+  }),
+  productionOrderColumnHelper.accessor((row) => row.order.client?.name ?? "—", {
     id: "client",
     header: "Khách hàng",
     meta: { headerClassName: "min-w-44" },
   }),
-  productionOrderColumnHelper.accessor("orderDate", {
+  productionOrderColumnHelper.accessor((row) => row.order.orderDate, {
+    id: "orderDate",
     header: "Ngày đặt đơn",
     meta: {
       headerClassName: "min-w-32 text-center",
@@ -48,7 +56,8 @@ export const productionOrderColumns = productionOrderColumnHelper.columns([
     },
     cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
-  productionOrderColumnHelper.accessor("dueDate", {
+  productionOrderColumnHelper.accessor((row) => row.order.dueDate, {
+    id: "dueDate",
     header: "Ngày giao",
     meta: {
       headerClassName: "min-w-32 text-center",

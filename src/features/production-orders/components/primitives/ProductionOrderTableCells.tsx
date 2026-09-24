@@ -47,7 +47,7 @@ function resolveProductionDueDateTone(dueDate: string | null): DeliveryTone {
 export function DueDateCell({
   dueDate,
 }: {
-  dueDate: ProductionOrder["dueDate"]
+  dueDate: ProductionOrder["order"]["dueDate"]
 }) {
   return (
     <span

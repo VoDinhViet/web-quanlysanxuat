@@ -163,6 +163,7 @@ export type OrderUserRef = {
 export type OrderRef = {
   id: string
   code: string
+  buyerPoNo: string | null
   client: OrderClientRef | null
   orderDate: string
   dueDate: string | null
