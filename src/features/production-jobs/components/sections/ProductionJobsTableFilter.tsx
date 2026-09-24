@@ -1,10 +1,25 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { RotateCw, Search } from "lucide-react"
+import {
+  AltArrowDown,
+  DocumentText,
+  FileDownload,
+  Magnifer,
+  Restart,
+} from "@solar-icons/react"
+import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Select,
   SelectContent,
@@ -13,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { useGetClientOptions } from "@/features/clients/api"
@@ -25,7 +41,17 @@ const statusFilterOptions = [
   ...buildOptionsFromLabels(productionJobStatusLabels),
 ]
 
-export function ProductionJobsTableFilter() {
+type ProductionJobsTableFilterProps = {
+  selectedJobCount: number
+  isExportingPlan: boolean
+  onExportPlan: () => void
+}
+
+export function ProductionJobsTableFilter({
+  selectedJobCount,
+  isExportingPlan,
+  onExportPlan,
+}: ProductionJobsTableFilterProps) {
   const search = useSearch({ from: "/(authed)/manage_/production-jobs/" })
   const navigate = useNavigate({ from: "/manage/production-jobs/" })
   const [q, setQ] = useState(search.q ?? "")
@@ -78,6 +104,11 @@ export function ProductionJobsTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
+  const exportHint =
+    selectedJobCount === 0
+      ? "Tích chọn Job trong bảng để xuất"
+      : "File tài liệu PDF"
+
   const resetFilters = () => {
     // Cancel first: a debounced call still in flight would re-apply the term the
     // user just cleared, ~300ms after the box goes blank.
@@ -120,7 +151,7 @@ export function ProductionJobsTableFilter() {
                   handleSearch(event.target.value)
                 }}
               />
-              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             </div>
           </div>
 
@@ -191,15 +222,62 @@ export function ProductionJobsTableFilter() {
           </div>
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="text-xs"
-          onClick={resetFilters}
-        >
-          <RotateCw className="size-4" />
-          Làm mới
-        </Button>
+        <div className="flex items-center gap-2">
+          <PermissionGate permission="production:read">
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="text-xs"
+                    disabled={isExportingPlan}
+                  >
+                    {isExportingPlan ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <FileDownload className="size-4" />
+                    )}
+                    <span>Xuất</span>
+                    <AltArrowDown className="size-3.5 opacity-60" />
+                  </Button>
+                }
+              />
+              <DropdownMenuContent align="end" className="w-64 p-1.5">
+                <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+                  Tùy chọn xuất dữ liệu
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="my-1" />
+                <DropdownMenuItem
+                  disabled={selectedJobCount === 0}
+                  onClick={onExportPlan}
+                  className="flex cursor-pointer items-start gap-2.5 rounded-md px-2.5 py-2 hover:bg-muted/80"
+                >
+                  <DocumentText className="mt-0.5 size-4 shrink-0 text-rose-500" />
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-foreground">
+                      Biểu mẫu kế hoạch sản xuất
+                      {selectedJobCount > 0 && ` (${selectedJobCount} Job)`}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground">
+                      {exportHint}
+                    </span>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </PermissionGate>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            onClick={resetFilters}
+          >
+            <Restart className="size-4" />
+            Làm mới
+          </Button>
+        </div>
       </div>
     </div>
   )

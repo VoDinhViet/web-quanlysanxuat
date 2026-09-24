@@ -243,23 +243,6 @@ export type OrderFile = {
   file: FileResource
 }
 
-// Mirrors the backend's OrderPaymentStatus — computed at read time (SUM(order_payments.amount)
-// vs. order.total), not a stored column.
-export const OrderPaymentStatus = {
-  UNPAID: "UNPAID",
-  PARTIAL: "PARTIAL",
-  PAID: "PAID",
-} as const
-
-export type OrderPaymentStatus =
-  (typeof OrderPaymentStatus)[keyof typeof OrderPaymentStatus]
-
-export const orderPaymentStatusLabels: Record<OrderPaymentStatus, string> = {
-  [OrderPaymentStatus.UNPAID]: "Chưa thanh toán",
-  [OrderPaymentStatus.PARTIAL]: "Thanh toán một phần",
-  [OrderPaymentStatus.PAID]: "Đã thanh toán",
-}
-
 // Mirrors the backend's OrderResDto in full — GET /api/orders/:id only. The list
 // endpoint (GET /api/orders, `Order` above) intentionally skips items/files
 // for query performance (see OrdersService.getOrders vs. getOrderDetail), so this
@@ -291,10 +274,6 @@ export type OrderDetail = Order & {
   rejecterBy: OrderUserRef | null
   rejectedAt: string | null
   rejectionReason: string | null
-  // Tổng đã trả — server-computed: SUM(order_payments.amount).
-  paidAmount: number
-  // Server-computed at read time from paidAmount vs. total — not a stored column.
-  paymentStatus: OrderPaymentStatus
 }
 
 // Mirrors the backend's OrderStatsResDto exactly (the 6 dashboard cards). Trend/ratio

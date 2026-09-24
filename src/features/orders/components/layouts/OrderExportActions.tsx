@@ -45,14 +45,16 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
     mutationFn: () => exportOrderPdfFn({ data: { orderId } }),
   })
 
-  const { mutateAsync: exportExcel, isPending: isExportingExcel } = useMutation({
-    mutationFn: () =>
-      exportOrdersExcelFn({
-        data: {
-          orderIds: [orderId],
-        },
-      }),
-  })
+  const { mutateAsync: exportExcel, isPending: isExportingExcel } = useMutation(
+    {
+      mutationFn: () =>
+        exportOrdersExcelFn({
+          data: {
+            orderIds: [orderId],
+          },
+        }),
+    }
+  )
 
   const handlePrint = () => {
     toast.promise(
@@ -63,7 +65,7 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
         loading: "Đang tải dữ liệu in...",
         success: "Đã mở bản in biểu mẫu",
         error: (error) => error.message || "In thất bại",
-      },
+      }
     )
   }
 
@@ -76,7 +78,7 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
         loading: "Đang tạo biểu mẫu đơn hàng...",
         success: "Đã xuất biểu mẫu đơn hàng (BM-01/KD)",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -89,7 +91,7 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
         loading: "Đang xuất bảng tính đơn hàng ra file Excel...",
         success: "Đã xuất bảng tính đơn hàng ra file Excel",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -105,9 +107,9 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
           onClick={handlePrint}
         >
           {isPrinting ? (
-            <Loader2 className="size-4 animate-spin text-sky-600" />
+            <Loader2 className="size-4 animate-spin" />
           ) : (
-            <Printer className="size-4 text-sky-600 dark:text-sky-400" />
+            <Printer className="size-4" />
           )}
           In
         </Button>
@@ -119,9 +121,9 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
             render={
               <Button type="button" variant="outline" disabled={isExporting}>
                 {isExporting ? (
-                  <Loader2 className="size-4 animate-spin text-emerald-600" />
+                  <Loader2 className="size-4 animate-spin" />
                 ) : (
-                  <FileDownload className="size-4 text-emerald-600 dark:text-emerald-400" />
+                  <FileDownload className="size-4" />
                 )}
                 <span>Xuất</span>
                 <AltArrowDown className="size-3.5 opacity-60" />

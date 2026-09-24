@@ -16,7 +16,6 @@ import {
   resolveOrderUpdateDisabledHint,
 } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
-import { cn } from "@/lib/utils"
 
 type OrderDetailActionsProps = {
   order: OrderDetail
@@ -38,14 +37,13 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
             params={{ orderId: order.id }}
             variant="outline"
           >
-            <PenNewSquare className="size-4 text-amber-600 dark:text-amber-400" />
+            <PenNewSquare className="size-4" />
             Chỉnh sửa
           </LinkButton>
         </RoutePermissionGate>
       ) : (
         <DisabledAction
           icon={PenNewSquare}
-          iconClassName="text-amber-600 dark:text-amber-400"
           label="Chỉnh sửa"
           hint={resolveOrderUpdateDisabledHint(order.status)}
         />
@@ -56,14 +54,12 @@ export function OrderDetailActions({ order }: OrderDetailActionsProps) {
 
 type DisabledActionProps = {
   icon: ComponentType<IconProps>
-  iconClassName?: string
   label: string
   hint?: string
 }
 
 function DisabledAction({
   icon: IconComponent,
-  iconClassName,
   label,
   hint = "Tính năng sắp có",
 }: DisabledActionProps) {
@@ -78,7 +74,7 @@ function DisabledAction({
               disabled
               className="pointer-events-none text-muted-foreground"
             >
-              <IconComponent className={cn("size-4", iconClassName)} />
+              <IconComponent className="size-4" />
               {label}
             </Button>
           </span>
