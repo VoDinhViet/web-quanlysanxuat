@@ -37,7 +37,9 @@ export function OrderDetailAddressCard({ order }: OrderDetailAddressCardProps) {
         <AddressRow
           icon={Phone}
           label="Điện thoại"
-          value={order.client?.phoneNumber ?? "—"}
+          value={
+            order.clientContact?.phoneNumber ?? order.client?.phoneNumber ?? "—"
+          }
         />
       </dl>
     </OrderDetailSectionCard>

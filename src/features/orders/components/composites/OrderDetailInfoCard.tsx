@@ -16,20 +16,29 @@ type OrderDetailInfoCardProps = {
 // A dense 2-column record of order facts, matching the reference layout —
 // "Điều khoản giao hàng" has no backing field on `OrderDetail` yet, so it
 // falls back to "--" like every other field the API hasn't populated.
-// "Địa chỉ"/"Mã số thuế"/"Điện thoại"/"Email" read off `order.client` — the
-// order itself no longer snapshots a contact (see order.type.ts's `Order`).
+// "Địa chỉ"/"Mã số thuế"/"Email" read off `order.client`; "Người liên hệ" (and its phone, falling
+// back to the client's) is the contact picked on the order (`order.clientContact`).
 export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
   return (
     <OrderDetailSectionCard icon={InfoCircle} title="Thông tin đơn hàng">
       <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
         <div className="space-y-3">
           <InfoRow label="Mã đơn hàng" value={order.code} />
+          <InfoRow label="PO" value={order.buyerPoNo ?? "--"} />
           <InfoRow label="Khách hàng" value={order.client?.name ?? "--"} />
+          <InfoRow
+            label="Người liên hệ"
+            value={order.clientContact?.name ?? "--"}
+          />
           <InfoRow label="Địa chỉ" value={order.client?.address ?? "--"} />
           <InfoRow label="Mã số thuế" value={order.client?.taxCode ?? "--"} />
           <InfoRow
             label="Điện thoại"
-            value={order.client?.phoneNumber ?? "--"}
+            value={
+              order.clientContact?.phoneNumber ??
+              order.client?.phoneNumber ??
+              "--"
+            }
           />
           <InfoRow label="Email" value={order.client?.email ?? "--"} />
         </div>

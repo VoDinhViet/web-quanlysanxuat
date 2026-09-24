@@ -17,6 +17,7 @@ import { PaymentTerm } from "@/lib/types/payment-term.type"
 // info now reads through `clientId` instead (see order.type.ts's `OrderClientRef`).
 export const createOrderSchema = z.object({
   clientId: z.string().trim().min(1, "Vui lòng chọn khách hàng"),
+  clientContactId: z.string().trim().transform(emptyToUndefined),
   assignedUserId: z.string().trim().transform(emptyToUndefined),
   orderDate: z
     .string()
@@ -28,6 +29,11 @@ export const createOrderSchema = z.object({
     .string()
     .min(1, "Vui lòng chọn ngày giao hàng yêu cầu")
     .transform(toIsoDate),
+  buyerPoNo: z
+    .string()
+    .trim()
+    .max(100, "PO tối đa 100 ký tự")
+    .transform(emptyToUndefined),
   consigneeAddress: z
     .string()
     .trim()
@@ -75,9 +81,11 @@ export type CreateOrderSchema = z.input<typeof createOrderSchema>
 
 export const createOrderFormDefaultValues: CreateOrderSchema = {
   clientId: "",
+  clientContactId: "",
   assignedUserId: "",
   orderDate: "",
   dueDate: "",
+  buyerPoNo: "",
   consigneeAddress: "",
   paymentTerm: PaymentTerm.IMMEDIATE,
   currency: Currency.VND,

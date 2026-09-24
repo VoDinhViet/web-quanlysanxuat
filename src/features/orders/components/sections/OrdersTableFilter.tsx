@@ -176,7 +176,7 @@ export function OrdersTableFilter({
               <Input
                 id="orders-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo Mã SO, tên/mã KH, tên/mã sản phẩm..."
+                placeholder="Tìm theo Mã SO, PO, tên/mã KH, tên/mã sản phẩm..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)

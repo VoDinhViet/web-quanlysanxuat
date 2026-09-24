@@ -28,6 +28,7 @@ import { PaymentTerm } from "@/lib/types/payment-term.type"
 export const updateOrderSchema = z.object({
   orderId: z.uuid(),
   clientId: z.string().trim().min(1, "Vui lòng chọn khách hàng"),
+  clientContactId: z.string().trim().transform(emptyToNull),
   assignedUserId: z.string().trim().transform(emptyToNull),
   orderDate: z
     .string()
@@ -37,6 +38,11 @@ export const updateOrderSchema = z.object({
     .string()
     .min(1, "Vui lòng chọn ngày giao hàng yêu cầu")
     .transform(toIsoDate),
+  buyerPoNo: z
+    .string()
+    .trim()
+    .max(100, "PO tối đa 100 ký tự")
+    .transform(emptyToNull),
   consigneeAddress: z
     .string()
     .trim()
@@ -94,9 +100,11 @@ export type UpdateOrderSchema = z.input<typeof updateOrderSchema>
 export const updateOrderFormDefaultValues: UpdateOrderSchema = {
   orderId: "",
   clientId: "",
+  clientContactId: "",
   assignedUserId: "",
   orderDate: "",
   dueDate: "",
+  buyerPoNo: "",
   consigneeAddress: "",
   paymentTerm: PaymentTerm.IMMEDIATE,
   currency: Currency.VND,
