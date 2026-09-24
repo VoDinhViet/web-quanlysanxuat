@@ -4,6 +4,7 @@ import {
   Diskette,
   DocumentText,
   FileDownload,
+  Printer,
 } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
 import { useMutation } from "@tanstack/react-query"
@@ -27,7 +28,11 @@ import {
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { ApproveProductionOrderDialog } from "@/features/production-orders/components/composites/ApproveProductionOrderDialog"
 import { exportProductionOrderPdf } from "@/features/production-orders/api/server-functions/export-production-order-pdf.api"
-import { downloadBase64File, PDF_MIME_TYPE } from "@/lib/download-file"
+import {
+  downloadBase64File,
+  PDF_MIME_TYPE,
+  printBase64Pdf,
+} from "@/lib/download-file"
 import { ProductionOrderStatus } from "@/lib/types/production-order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
@@ -61,6 +66,26 @@ export function ProductionOrderDetailActions({
       }),
   })
 
+  const { mutateAsync: printPdf, isPending: isPrinting } = useMutation({
+    mutationFn: () =>
+      exportProductionOrderPdfFn({
+        data: { productionOrderId: production.id },
+      }),
+  })
+
+  const handlePrint = () => {
+    toast.promise(
+      printPdf().then(({ base64 }) => {
+        printBase64Pdf(base64)
+      }),
+      {
+        loading: "Đang tải dữ liệu in...",
+        success: "Đã mở bản in biểu mẫu",
+        error: (error) => error.message || "In thất bại",
+      }
+    )
+  }
+
   const handleExport = () => {
     toast.promise(
       exportPdf().then(({ base64, filename }) => {
@@ -76,6 +101,22 @@ export function ProductionOrderDetailActions({
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
+      <PermissionGate permission="production:read">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isPrinting}
+          onClick={handlePrint}
+        >
+          {isPrinting ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Printer className="size-4" />
+          )}
+          In
+        </Button>
+      </PermissionGate>
+
       <PermissionGate permission="production:read">
         <DropdownMenu>
           <DropdownMenuTrigger
