@@ -4,7 +4,6 @@ import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { Edit3, Eye, Trash2 } from "lucide-react"
 
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { Button, LinkButton } from "@/components/ui/button"
 import {
@@ -44,15 +43,12 @@ export const supplierColumns = supplierColumnHelper.columns([
   supplierColumnHelper.display({
     id: "logo",
     header: "",
-    meta: { headerClassName: "w-14", cellClassName: "pr-0" },
+    meta: { headerClassName: "w-16", cellClassName: "pl-4 pr-1" },
     cell: ({ row }) => {
       const supplier = row.original
 
       return (
-        <AspectRatio
-          ratio={1}
-          className="size-9 shrink-0 overflow-hidden rounded-lg bg-muted/40"
-        >
+        <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
           {supplier.logo ? (
             <Image
               src={resolveFileUrl(supplier.logo.url)}
@@ -64,7 +60,7 @@ export const supplierColumns = supplierColumnHelper.columns([
           ) : (
             <Gallery className="size-4 text-muted-foreground/50" />
           )}
-        </AspectRatio>
+        </div>
       )
     },
   }),
