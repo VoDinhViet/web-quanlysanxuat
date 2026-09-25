@@ -89,7 +89,7 @@ export function CreatePurchaseOrderForm() {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}

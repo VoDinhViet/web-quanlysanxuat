@@ -215,7 +215,7 @@ export function InventoryReceiptCreateReturnForm() {
                 })
               }
             >
-              Hủy
+              Thoát
             </Button>
           )}
 

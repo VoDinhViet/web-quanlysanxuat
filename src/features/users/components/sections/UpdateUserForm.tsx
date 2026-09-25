@@ -137,7 +137,7 @@ export function UpdateUserForm() {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}

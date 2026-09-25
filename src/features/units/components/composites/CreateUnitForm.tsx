@@ -95,7 +95,7 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
           disabled={isPending}
           onClick={onCancel}
         >
-          Hủy
+          Thoát
         </Button>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}

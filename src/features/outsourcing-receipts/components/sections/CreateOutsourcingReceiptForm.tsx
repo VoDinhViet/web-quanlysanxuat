@@ -149,7 +149,7 @@ export function CreateOutsourcingReceiptForm() {
                 })
               }
             >
-              Hủy
+              Thoát
             </Button>
           )}
 

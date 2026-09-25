@@ -49,7 +49,7 @@ type OutboundOrderEditFormProps = {
 }
 
 // Sửa edit-inline trên trang Chi tiết (BUG-090) — thay cho trang /update riêng ban đầu. Vỏ phẳng
-// (không wizard) khuôn InventoryReceiptUpdateForm.tsx: header + bảng dòng + footer Hủy/Lưu. `Hủy`
+// (không wizard) khuôn InventoryReceiptUpdateForm.tsx: header + bảng dòng + footer Thoát/Lưu. `Thoát`
 // và lúc lưu thành công đều quay về `?mode=view` trên chính route này (state chia sẻ qua URL, xem
 // outbound-order-detail-search.schema.ts) — không có route riêng để điều hướng tới/lui.
 export function OutboundOrderEditForm({
@@ -114,7 +114,7 @@ export function OutboundOrderEditForm({
           disabled={isPending}
           onClick={() => void navigate({ search: { mode: "view" } })}
         >
-          Hủy
+          Thoát
         </Button>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting] as const}

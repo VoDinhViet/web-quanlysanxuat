@@ -165,7 +165,7 @@ export function CreateOrderForm() {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
         )}
 

@@ -107,7 +107,7 @@ export function UpdateDirectForm({ direct }: UpdateDirectFormProps) {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}

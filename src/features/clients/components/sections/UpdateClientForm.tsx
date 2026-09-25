@@ -94,7 +94,7 @@ export function UpdateClientForm({ client }: UpdateClientFormProps) {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}

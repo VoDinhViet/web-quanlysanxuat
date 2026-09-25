@@ -274,7 +274,7 @@ function CreatePartItemForm({
           onClick={onCancel}
           disabled={isSaving}
         >
-          Hủy
+          Thoát
         </Button>
         <Button type="submit" disabled={isSaving}>
           <CheckCircle className="size-4" />

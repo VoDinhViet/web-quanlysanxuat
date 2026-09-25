@@ -175,7 +175,7 @@ export function PurchaseRequestCreateForm() {
                   })
                 }
               >
-                Hủy
+                Thoát
               </Button>
             )}
 

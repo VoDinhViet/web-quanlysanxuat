@@ -225,7 +225,7 @@ function CreateDirectWizard({
             onClick={onCancel}
             disabled={isSaving}
           >
-            Hủy
+            Thoát
           </Button>
         )}
 

@@ -98,7 +98,7 @@ export function CreateSupplierForm() {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
           <div className="flex flex-wrap items-center gap-2">
             <Button
