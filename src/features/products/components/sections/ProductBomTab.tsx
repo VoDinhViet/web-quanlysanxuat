@@ -8,13 +8,13 @@ import { CreateDirectDialog } from "@/features/products/components/composites/Cr
 import { CreateComponentItemDialog } from "@/features/products/components/composites/CreateComponentItemDialog"
 import { DeleteBomItemDialog } from "@/features/products/components/composites/DeleteBomItemDialog"
 import { ProductBomTable } from "@/features/products/components/composites/ProductBomTable"
-import type { BomTableActions } from "@/features/products/components/primitives/BomRowActions"
+import type { BomTableActions } from "@/features/products/components/primitives/BomTreeActions"
 import { useProductBom } from "@/features/products/hooks/use-product-bom"
 import {
   itemBomQueryOptions,
   itemOperationsQueryOptions,
 } from "@/features/products/api/options"
-import type { BomCreateOptions } from "@/features/products/utils/bom-rows.util"
+import type { BomCreateOptions } from "@/features/products/utils/bom-tree"
 import type { Item } from "@/lib/types/item.type"
 import type { BomItem } from "@/lib/types/bom-item.type"
 

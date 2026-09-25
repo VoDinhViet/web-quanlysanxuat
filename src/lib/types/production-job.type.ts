@@ -117,13 +117,14 @@ export type ProductionJobBomItemType = "FG" | "COMPONENT" | "DIRECT"
  *  a plain array, not paginated) — "Công đoạn sản xuất" tab: every BOM node (part) that has at
  *  least one as-used operation, each carrying its own `operations[]` (server-grouped — no more
  *  client-side grouping needed). Despite the name, this is NOT the full BOM tree: it's scoped to
- *  parts with operations, flat (no `parentId`) — no image, no gia công ngoài counts (see
+ *  parts with operations, flat (no `parentId`) — no gia công ngoài counts (see
  *  ProductionJobOperation's doc comment for `plannedQuantity`, carried per-operation not here). */
 export type ProductionJobBomItem = {
   id: string
   code: string
   name: string
   itemType: ProductionJobBomItemType
+  image: FileResource | null
   operations: ProductionJobOperation[]
 }
 

@@ -7,7 +7,7 @@ import type { Unit } from "@/lib/types/unit.type"
  *  được công đoạn; DIRECT là lá vật tư trỏ `items` (không con, không công đoạn). Cấp 0 (chính
  *  item FG) không có giá trị nào ở đây — không phải một dòng `bom_items`, không nằm trong response
  *  `GET .../bom` — đọc qua `itemQueryOptions`/`itemOperationsQueryOptions`
- *  (`docs/decisions/level-0-outside-bom-tree-response.md`, backend). `buildBomRows` tự dựng một
+ *  (`docs/decisions/level-0-outside-bom-tree-response.md`, backend). `buildBomTree` tự dựng một
  *  dòng hiển thị riêng cho Cấp 0, không đọc field này. */
 export type BomItemType = "COMPONENT" | "DIRECT"
 
@@ -23,8 +23,8 @@ export const bomItemTypeLabels: Record<BomItemType, string> = {
 // links each node to its parent, no nested `children`), already sorted
 // depth-first with `path` pre-computed (`BomsService.getBomItem` +
 // `bom-tree.util.ts`) — build the display rows client-side (filter
-// DIRECT, format `path`), see `buildBomRows` in
-// products/utils/bom-rows.util.ts.
+// DIRECT, format `path`), see `buildBomTree` in
+// products/utils/bom-tree.ts.
 // `parentId: null` means directly under Cấp 0 — multiple nodes may share it (a forest of
 // top-level nodes, not a single root), since Cấp 0 itself never appears as a row here.
 export type BomItem = {

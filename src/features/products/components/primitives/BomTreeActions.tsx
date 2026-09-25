@@ -1,9 +1,9 @@
 import {
   AddSquare,
-  AltArrowDown,
   ArrowRightUp,
   Box,
   Layers,
+  PenNewSquare,
   TrashBinTrash,
 } from "@solar-icons/react"
 
@@ -22,10 +22,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import type {
   BomCreateOptions,
-  BomRow,
-} from "@/features/products/utils/bom-rows.util"
+  BomTree,
+} from "@/features/products/utils/bom-tree"
 import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import type { BomItem } from "@/lib/types/bom-item.type"
 
@@ -55,7 +56,7 @@ export function ViewDetailAction({
   row,
 }: {
   productId: string
-  row: BomRow
+  row: BomTree
 }) {
   if (row.bomItem === null || row.bomItem.isOffStructure) {
     return null
@@ -92,7 +93,7 @@ export function CreateActionsMenu({
   row,
   actions,
 }: {
-  row: BomRow
+  row: BomTree
   actions: BomTableActions
 }) {
   return (
@@ -102,8 +103,7 @@ export function CreateActionsMenu({
           render={
             <Button type="button" variant="outline" size="sm" aria-label="Thêm">
               <AddSquare className="size-3.5" />
-              <span className="hidden xl:inline">Thêm</span>
-              <AltArrowDown className="size-3.5 opacity-60" />
+              <span>Thêm</span>
             </Button>
           }
         />
@@ -180,15 +180,15 @@ export function DeletePartAction({
   )
 }
 
-// Xoá một dòng vật tư ngoài — cũng là một node `bom_items` (`row.bomItem`), dùng chung hộp thoại xác nhận với Part.
-export function DeleteExtraDirectAction({
+// Xoá một dòng vật tư trực tiếp — cũng là một node `bom_items` (`row.bomItem`), dùng chung hộp thoại xác nhận với Part.
+export function DeleteDirectAction({
   row,
   actions,
 }: {
-  row: BomRow
+  row: BomTree
   actions: BomTableActions
 }) {
-  const label = `Xoá ${extraLabel.toLowerCase()}`
+  const label = "Xoá vật tư"
 
   return (
     <PermissionGate permission="items:bom-manage">
@@ -212,3 +212,36 @@ export function DeleteExtraDirectAction({
     </PermissionGate>
   )
 }
+
+// "Chỉnh sửa vật tư" — mở trang UpdateDirectPage cho dòng vật tư trực tiếp ngoài cấu trúc.
+export function EditDirectAction({ row }: { row: BomTree }) {
+  const directId = row.bomItem?.itemId
+  if (!directId) {
+    return null
+  }
+
+  const label = "Chỉnh sửa vật tư"
+
+  return (
+    <RoutePermissionGate route="/manage/directs/$directId/update">
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <LinkButton
+              to="/manage/directs/$directId/update"
+              params={{ directId }}
+              variant="outline"
+              size="icon-sm"
+              aria-label={label}
+              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+            >
+              <PenNewSquare className="size-3.5" />
+            </LinkButton>
+          }
+        />
+        <TooltipContent>{label}</TooltipContent>
+      </Tooltip>
+    </RoutePermissionGate>
+  )
+}
+

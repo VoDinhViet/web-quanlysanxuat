@@ -26,7 +26,7 @@ import {
   createComponentItemSchema,
 } from "@/features/products/schemas/create-bom-item.schema"
 import { unitOptionsQueryOptions } from "@/features/units/api"
-import type { BomCreateTarget } from "@/features/products/utils/bom-rows.util"
+import type { BomCreateTarget } from "@/features/products/utils/bom-tree"
 import { UploadType } from "@/lib/types/file.type"
 import { buildSelectOptions, cn } from "@/lib/utils"
 import type { CreateComponentItemSchema } from "@/features/products/schemas/create-bom-item.schema"

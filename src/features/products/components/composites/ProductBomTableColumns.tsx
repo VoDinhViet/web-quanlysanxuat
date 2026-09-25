@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { AltArrowDown, AltArrowUp, Routing } from "@solar-icons/react"
+import { Routing } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -15,16 +15,17 @@ import {
 } from "@/features/products/components/primitives/BomTableCells"
 import {
   CreateActionsMenu,
-  DeleteExtraDirectAction,
+  DeleteDirectAction,
   DeletePartAction,
+  EditDirectAction,
   ViewDetailAction,
-} from "@/features/products/components/primitives/BomRowActions"
-import type { BomTableActions } from "@/features/products/components/primitives/BomRowActions"
-import type { BomRow } from "@/features/products/utils/bom-rows.util"
+} from "@/features/products/components/primitives/BomTreeActions"
+import type { BomTableActions } from "@/features/products/components/primitives/BomTreeActions"
+import type { BomTree } from "@/features/products/utils/bom-tree"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const bomColumnHelper = createColumnHelper<typeof appTableFeatures, BomRow>()
+const bomColumnHelper = createColumnHelper<typeof appTableFeatures, BomTree>()
 
 // Trạng thái đóng/mở bảng công đoạn của dòng Cấp 0 — sở hữu ở ProductBomTable
 // (state cục bộ, không phải URL/form state), chỉ truyền xuống đây để vẽ nút.
@@ -47,13 +48,15 @@ export function createBomColumns(
   return bomColumnHelper.columns([
     bomColumnHelper.accessor("path", {
       header: "STT",
-      meta: { headerClassName: "w-14" },
+      meta: { headerClassName: "w-16" },
       cell: ({ row }) => (
         <span
           className={
             row.original.isRoot
-              ? "font-mono font-bold text-foreground"
-              : "font-mono font-bold text-muted-foreground"
+              ? "font-mono font-bold text-foreground text-sm"
+              : row.original.bomItem?.isOffStructure
+                ? "font-mono font-semibold text-amber-700 dark:text-amber-400 text-xs"
+                : "font-mono font-semibold text-muted-foreground text-xs"
           }
         >
           {row.original.path}
@@ -63,7 +66,7 @@ export function createBomColumns(
     bomColumnHelper.display({
       id: "code",
       header: "MÃ BẢN VẼ",
-      meta: { headerClassName: "w-48" },
+      meta: { headerClassName: "min-w-60" },
       cell: ({ row }) => <BomCodeCell row={row.original} />,
     }),
     bomColumnHelper.accessor("name", {
@@ -123,7 +126,7 @@ export function createBomColumns(
             <ViewDetailAction productId={productId} row={bomRow} />
             {/* Chỉ dòng Cấp 0 có bảng công đoạn mở/đóng ngay tại chỗ — COMPONENT sửa công đoạn ở
                 trang chi tiết riêng (xem ViewDetailAction). Inline luôn (không tách
-                BomRowActions.tsx) vì chỉ dùng đúng 1 chỗ. */}
+                BomTreeActions.tsx) vì chỉ dùng đúng 1 chỗ. */}
             {bomRow.isRoot && (
               <Tooltip>
                 <TooltipTrigger
@@ -131,18 +134,12 @@ export function createBomColumns(
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
+                      size="icon-sm"
                       aria-label="Công đoạn"
                       aria-expanded={routingOperationsToggle.isOpen}
                       onClick={routingOperationsToggle.onToggle}
                     >
                       <Routing className="size-3.5" />
-                      <span className="hidden xl:inline">Công đoạn</span>
-                      {routingOperationsToggle.isOpen ? (
-                        <AltArrowUp className="size-3.5 opacity-60" />
-                      ) : (
-                        <AltArrowDown className="size-3.5 opacity-60" />
-                      )}
                     </Button>
                   }
                 />
@@ -150,7 +147,10 @@ export function createBomColumns(
               </Tooltip>
             )}
             {bomRow.bomItem?.isOffStructure ? (
-              <DeleteExtraDirectAction row={bomRow} actions={actions} />
+              <>
+                <EditDirectAction row={bomRow} />
+                <DeleteDirectAction row={bomRow} actions={actions} />
+              </>
             ) : (
               <>
                 <CreateActionsMenu row={bomRow} actions={actions} />

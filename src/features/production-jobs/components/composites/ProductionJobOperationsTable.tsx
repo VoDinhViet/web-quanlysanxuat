@@ -1,5 +1,6 @@
 import { Fragment, useMemo } from "react"
 import { useParams } from "@tanstack/react-router"
+import { Image } from "@unpic/react"
 import { ClipboardCheck, SendSquare } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { Package } from "lucide-react"
@@ -37,6 +38,7 @@ import type {
   ProductionJobStatus,
 } from "@/lib/types/production-job.type"
 import { OperationType } from "@/lib/types/operation.type"
+import { resolveFileUrl } from "@/lib/file-url"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 import { cn } from "@/lib/utils"
 
@@ -260,8 +262,8 @@ function OperationSendActionCell({
   )
 }
 
-// One BOM item's group header — a generic icon (this endpoint carries no image field, unlike the
-// product-structure BOM) + code/name, ahead of its operation rows below. `itemType === "FG"` is
+// One BOM item's group header — part image (generic icon when it has none) + code/name, ahead of
+// its operation rows below. `itemType === "FG"` is
 // the node Cấp 0 backend snapshots from the FG's own routing
 // (`copyFinalAssemblyRouting`, luôn đứng cuối bảng) — gắn thẳng badge "Lắp ráp thành phẩm" tại đây,
 // không tách component riêng cho một nhãn điều kiện đơn giản như vậy.
@@ -273,8 +275,18 @@ function BomItemHeaderRow({ bomItem }: { bomItem: ProductionJobBomItem }) {
     >
       <TableCell colSpan={columnCount} className="py-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground">
-            <Package className="size-4" />
+          <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border text-muted-foreground">
+            {bomItem.image ? (
+              <Image
+                src={resolveFileUrl(bomItem.image.url)}
+                alt={bomItem.name}
+                layout="fullWidth"
+                objectFit="cover"
+                className="size-full"
+              />
+            ) : (
+              <Package className="size-4" />
+            )}
           </div>
           <span className="font-mono font-semibold text-foreground">
             {bomItem.code}
