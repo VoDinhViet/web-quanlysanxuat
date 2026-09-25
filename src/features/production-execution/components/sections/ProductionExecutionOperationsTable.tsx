@@ -80,7 +80,7 @@ export const operationProgressStatusDescriptions: Record<
 > = {
   NOT_STARTED: "SL hoàn thành = 0",
   IN_PROGRESS: "SL hoàn thành lớn hơn 0 và nhỏ hơn SL kế hoạch",
-  COMPLETED: "SL hoàn thành đạt đủ SL kế hoạch — Ngày hoàn thành tự điền",
+  COMPLETED: "SL hoàn thành đạt đủ SL kế hoạch",
 }
 
 function resolveOperationProgressStatus(
@@ -351,9 +351,11 @@ function OperationRow({
         </PermissionGate>
       </TableCell>
       <TableCell className="text-center text-muted-foreground">
-        {operation.completedDate === null
+        {operation.lastReportedAt === null
           ? "—"
-          : DateTime.fromISO(operation.completedDate).toFormat("dd/MM/yyyy")}
+          : DateTime.fromISO(operation.lastReportedAt).toFormat(
+              "dd/MM/yyyy HH:mm"
+            )}
       </TableCell>
       <TableCell className="text-center">
         <div className="flex items-center justify-center gap-2">
@@ -463,10 +465,10 @@ export function ProductionExecutionOperationsTable({
               HẠN HOÀN THÀNH
             </TableHead>
             <TableHead
-              id="completedDate"
+              id="lastReportedAt"
               className="w-32 text-center font-bold text-foreground"
             >
-              NGÀY HOÀN THÀNH
+              THỜI GIAN CẬP NHẬT
             </TableHead>
             <TableHead
               id="actions"

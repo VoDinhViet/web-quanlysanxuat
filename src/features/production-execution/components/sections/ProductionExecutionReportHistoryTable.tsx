@@ -153,16 +153,11 @@ export function ProductionExecutionReportHistoryTable({
             </TableHeader>
             <TableBody className="divide-y divide-border/40">
               {filteredReports.map((report) => {
-                const formattedCompletedDate = report.completedDate
-                  ? DateTime.fromISO(report.completedDate).toFormat(
-                      "dd/MM/yyyy"
-                    )
-                  : "—"
                 const formattedCreatedAt = report.createdAt
                   ? DateTime.fromISO(report.createdAt).toFormat(
-                      "HH:mm, dd/MM/yyyy"
+                      "dd/MM/yyyy HH:mm"
                     )
-                  : ""
+                  : "—"
 
                 return (
                   <TableRow
@@ -170,14 +165,9 @@ export function ProductionExecutionReportHistoryTable({
                     className="h-14 transition-colors hover:bg-muted/25"
                   >
                     <TableCell className="py-2.5">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-medium text-foreground">
-                          {formattedCompletedDate}
-                        </span>
-                        <span className="text-[11px] text-muted-foreground">
-                          {formattedCreatedAt}
-                        </span>
-                      </div>
+                      <span className="text-xs font-medium text-foreground">
+                        {formattedCreatedAt}
+                      </span>
                     </TableCell>
 
                     <TableCell className="py-2.5">

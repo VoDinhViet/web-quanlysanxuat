@@ -62,7 +62,6 @@ export function ProductionJobDetailPage() {
               <ProductionJobBomTab
                 productionJobId={productionJobId}
                 status={productionJob.status}
-                itemId={productionJob.itemId}
               />
             </TabsContent>
 
@@ -70,7 +69,6 @@ export function ProductionJobDetailPage() {
               <ProductionJobOperationsTab
                 productionJobId={productionJobId}
                 status={productionJob.status}
-                itemId={productionJob.itemId}
               />
             </TabsContent>
           </Tabs>

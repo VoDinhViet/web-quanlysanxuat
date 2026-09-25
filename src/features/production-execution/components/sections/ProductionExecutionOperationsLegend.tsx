@@ -108,7 +108,7 @@ export function ProductionExecutionOperationsLegend() {
             • SL hoàn thành công đoạn Gia công ngoài tự cập nhật theo SL đã nhận
             về (OS-IN) — không nhập tay được.
           </p>
-          <p>• Ngày hoàn thành tự điền khi SL hoàn thành đạt đủ SL kế hoạch.</p>
+          <p>• Thời gian cập nhật do hệ thống tự ghi mỗi lần báo cáo.</p>
         </div>
       </div>
     </div>

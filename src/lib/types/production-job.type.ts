@@ -102,6 +102,7 @@ export type ProductionJobOperation = {
   completedQuantity: number
   rejectedQuantity: number
   completedDate: string | null
+  lastReportedAt: string | null
   dueDate: string | null
   createdAt: string
 }
@@ -127,6 +128,24 @@ export type ProductionJobBomItem = {
   image: FileResource | null
   operations: ProductionJobOperation[]
 }
+
+/** Cùng route `GET /production-jobs/:jobId/operations` nhưng khi Job `PENDING`: kế hoạch tạm tính
+ *  từ cấu trúc sản phẩm hiện tại × SL Job, chưa lưu — công đoạn chưa có `id`. */
+export type ProductionJobPlanOperation = Pick<
+  ProductionJobOperation,
+  | "operationId"
+  | "code"
+  | "name"
+  | "type"
+  | "sortOrder"
+  | "note"
+  | "plannedQuantity"
+>
+
+export type ProductionJobPlanBomItem = Omit<
+  ProductionJobBomItem,
+  "operations"
+> & { operations: ProductionJobPlanOperation[] }
 
 /** Một dòng "Part × công đoạn" cho dialog nhập báo cáo — dùng bởi cả bảng "DANH SÁCH COMPONENT"
  *  (màn "Thực hiện sản xuất") lẫn bảng "Công đoạn sản xuất" (chi tiết Job). Không mirror DTO
@@ -273,7 +292,7 @@ export type ProductionJobByOperation = {
   plannedQuantity: number
   completedQuantity: number
   rejectedQuantity: number
-  operationCompletedDate: string | null
+  operationLastReportedAt: string | null
   operationStatus: ProductionOperationProgressStatus
 }
 
@@ -289,7 +308,6 @@ export type ProductionExecutionReport = {
   bomItemName: string
   completedQuantityDelta: number
   rejectedQuantityDelta: number
-  completedDate: string
   note: string | null
   createdAt: string
   creator: {

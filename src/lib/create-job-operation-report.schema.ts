@@ -26,7 +26,6 @@ export const createJobOperationReportSchema = z.object({
   rejectedQuantityDelta: z
     .number("SL không đạt phải là số")
     .min(0, "SL không đạt không được nhỏ hơn 0."),
-  completedDate: z.string().min(1, "Vui lòng chọn ngày hoàn thành."),
   note: z
     .string()
     .trim()

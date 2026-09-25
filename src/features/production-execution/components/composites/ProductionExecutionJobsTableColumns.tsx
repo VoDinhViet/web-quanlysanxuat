@@ -95,17 +95,17 @@ export const productionExecutionJobColumns = columnHelper.columns([
       />
     ),
   }),
-  columnHelper.accessor("operationCompletedDate", {
-    header: "Ngày hoàn thành CĐ",
+  columnHelper.accessor("operationLastReportedAt", {
+    header: "Thời gian cập nhật CĐ",
     meta: {
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
     cell: ({ getValue }) => {
-      const completedDate = getValue()
-      return completedDate === null
+      const lastReportedAt = getValue()
+      return lastReportedAt === null
         ? "—"
-        : DateTime.fromISO(completedDate).toFormat("dd/MM/yyyy")
+        : DateTime.fromISO(lastReportedAt).toFormat("dd/MM/yyyy HH:mm")
     },
   }),
   columnHelper.display({

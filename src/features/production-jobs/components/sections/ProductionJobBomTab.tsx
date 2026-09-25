@@ -8,10 +8,10 @@ import { Input } from "@/components/ui/input"
 import { LinkButton } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { ProductionJobBomTable } from "@/features/production-jobs/components/composites/ProductionJobBomTable"
+import { ProductionJobPlanNotice } from "@/features/production-jobs/components/primitives/ProductionJobPlanNotice"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
@@ -19,20 +19,17 @@ import { ProductionJobStatus } from "@/lib/types/production-job.type"
 type ProductionJobBomTabProps = {
   productionJobId: string
   status: ProductionJobStatus
-  itemId: string
 }
 
 // Tab "BOM" — vật tư cần cho Job này, đọc trực tiếp GET /production-jobs/:jobId/bom
 // (phân trang, cùng route tên "bom" nhưng trả bảng nhu cầu vật tư đã gộp kèm tiến độ xuất kho:
 // số lượng đã lãnh `issuedQuantity` và còn lại `remainingQuantity` — xem doc comment ProductionJobIssue),
 // cùng pattern client-driven useQuery với ProductIssuesTab.tsx. Các cột đọc snapshot text lồng trong
-// `item`/`unit` (item.code/item.name/unit.name). Job `PENDING` chưa có snapshot vật tư nào (chốt
-// lần đầu lúc "Xác nhận sản xuất", be-quanlysanxuat/docs/decisions/job-snapshot-at-start.md) —
-// không gọi API, hiện thẳng empty state trỏ sang cấu trúc sản phẩm sống.
+// `item`/`unit` (item.code/item.name/unit.name). Job `PENDING` nhận nhu cầu vật tư tạm tính (BE tính
+// sống từ sản phẩm × SL Job, chưa lãnh gì) cho tới khi "Xác nhận kế hoạch" chốt snapshot.
 export function ProductionJobBomTab({
   productionJobId,
   status,
-  itemId,
 }: ProductionJobBomTabProps) {
   const search = useSearch({
     from: "/(authed)/manage_/production-jobs_/$productionJobId",
@@ -52,7 +49,6 @@ export function ProductionJobBomTab({
       q: search.q,
     }),
     placeholderData: keepPreviousData,
-    enabled: !isPending,
   })
 
   const handleSearchChange = (q: string | undefined) => {
@@ -71,21 +67,9 @@ export function ProductionJobBomTab({
         onSearchChange={handleSearchChange}
       />
 
-      {isPending ? (
-        <TableEmpty
-          title="Job chưa xác nhận sản xuất"
-          description="Nhu cầu vật tư sẽ hiện sau khi bấm “Xác nhận”."
-          action={
-            <LinkButton
-              to="/manage/products/$productId"
-              params={{ productId: itemId }}
-              search={{ tab: "boms" }}
-            >
-              Xem cấu trúc sản phẩm
-            </LinkButton>
-          }
-        />
-      ) : bomQuery.isPending ? (
+      {isPending ? <ProductionJobPlanNotice /> : null}
+
+      {bomQuery.isPending ? (
         <TableQueryLoading rows={limit} />
       ) : bomQuery.isError ? (
         <TableQueryError
@@ -151,7 +135,7 @@ function ProductionJobBomFilter({
         {status === ProductionJobStatus.PENDING ? (
           <DisabledAction
             label="Lãnh vật tư cho Job"
-            hint="Job chưa xác nhận sản xuất"
+            hint="Job chưa xác nhận kế hoạch"
           >
             <ClipboardMinus className="size-3.5" />
           </DisabledAction>
