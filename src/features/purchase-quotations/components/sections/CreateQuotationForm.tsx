@@ -160,7 +160,7 @@ export function CreateQuotationForm() {
                 })
               }
             >
-              Hủy
+              Thoát
             </Button>
           )}
 

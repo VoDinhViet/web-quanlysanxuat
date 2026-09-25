@@ -45,6 +45,9 @@ export type PurchaseRequestProductionOrderRef = {
  *  xuất mua hàng" list screen. Carries the full approval audit trail
  *  (`senderBy`/`sentAt`/`approverBy`/`approvedAt`/`rejecterBy`/`rejectedAt`/`rejectionReason`) even
  *  though the list table doesn't render it yet — kept for type accuracy with the wire shape. */
+// Minimal identity the status-change dialogs need — satisfied by both list rows and detail.
+export type PurchaseRequestRef = Pick<PurchaseRequest, "id" | "code">
+
 export type PurchaseRequest = {
   id: string
   code: string
@@ -72,9 +75,9 @@ export type PurchaseRequestProductionJobRef = {
 }
 
 /** Mirrors the backend's OrderItemRefResDto nested in a purchase request line —
- *  `purchase_request_items` always points at an CONSUMABLE in practice, but the column itself references
+ *  `purchase_request_items` always points at an DIRECT in practice, but the column itself references
  *  the shared `items` table. The DTO also carries `image` — omitted here since this feature never
- *  renders an item's image (same narrowing idiom as `item.type.ts`'s CONSUMABLE-only field omission). */
+ *  renders an item's image (same narrowing idiom as `item.type.ts`'s DIRECT-only field omission). */
 export type PurchaseRequestItemRef = {
   id: string
   code: string

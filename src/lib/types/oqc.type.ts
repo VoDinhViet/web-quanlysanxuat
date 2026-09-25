@@ -58,7 +58,7 @@ export const oqcDispositionLabels: Record<OqcDisposition, string> = {
 }
 
 // OQC's own PASS/FAIL hint text for OqcResultCard's radio cards — `iqc.type.ts`'s
-// `iqcResultDescriptions` says "Vật tư" (consumable), the wrong noun on a finished-goods screen.
+// `iqcResultDescriptions` says "Vật tư" (direct), the wrong noun on a finished-goods screen.
 export const oqcResultDescriptions: Record<IqcResult, string> = {
   [IqcResult.PASS]: "Lô thành phẩm đạt yêu cầu, được phép nhập kho.",
   [IqcResult.FAIL]: "Lô thành phẩm không đạt — chọn hướng xử lý bên dưới.",

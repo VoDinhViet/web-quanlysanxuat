@@ -21,7 +21,7 @@ export const PurchaseRequestCreateQuantitySection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     // `useField`, not `form.Field`'s render-prop — useReactTable/useMemo below are real hooks,
-    // same reasoning as PurchaseRequestCreateConsumablePickerSection.tsx.
+    // same reasoning as PurchaseRequestCreateDirectPickerSection.tsx.
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 

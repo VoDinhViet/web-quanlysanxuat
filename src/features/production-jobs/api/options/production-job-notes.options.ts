@@ -5,7 +5,7 @@ import { getProductionJobNotes } from "@/features/production-jobs/api/server-fun
 export const productionJobNotesPageLimit = 10
 
 // The "Ghi chú" sub-section's own pagination — kept as local component state rather than a route
-// search param because `page`/`limit` on this route are already owned by the "consumables" tab (see
+// search param because `page`/`limit` on this route are already owned by the "directs" tab (see
 // production-job-detail-search.schema.ts), same idiom as productionOrderLogsQueryOptions.
 export const productionJobNotesQueryOptions = (
   productionJobId: string,

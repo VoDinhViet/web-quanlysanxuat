@@ -26,7 +26,7 @@ import {
   createComponentItemSchema,
 } from "@/features/products/schemas/create-bom-item.schema"
 import { unitOptionsQueryOptions } from "@/features/units/api"
-import type { BomCreateTarget } from "@/features/products/utils/bom-rows.util"
+import type { BomCreateTarget } from "@/features/products/utils/bom-tree"
 import { UploadType } from "@/lib/types/file.type"
 import { buildSelectOptions, cn } from "@/lib/utils"
 import type { CreateComponentItemSchema } from "@/features/products/schemas/create-bom-item.schema"
@@ -42,8 +42,8 @@ type CreateComponentItemDialogProps = {
   isSaving: boolean
 }
 
-// Chỉ còn tạo item COMPONENT (Part) — vật tư (CONSUMABLE) giờ thêm bằng dòng mở
-// tại chỗ ngay trong BomItemConsumablesTable, không qua dialog nữa. Dialog này
+// Chỉ còn tạo item COMPONENT (Part) — vật tư (DIRECT) giờ thêm bằng dòng mở
+// tại chỗ ngay trong BomItemDirectsTable, không qua dialog nữa. Dialog này
 // chỉ mở được từ hàng trong ProductBomTable (BomItemDetailPage là một trang
 // riêng, không phải dialog) nên không có nguy cơ chồng dialog.
 export function CreateComponentItemDialog({
@@ -274,7 +274,7 @@ function CreatePartItemForm({
           onClick={onCancel}
           disabled={isSaving}
         >
-          Hủy
+          Thoát
         </Button>
         <Button type="submit" disabled={isSaving}>
           <CheckCircle className="size-4" />

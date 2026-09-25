@@ -102,7 +102,7 @@ export function InventoryReceiptCreateForm() {
             })
           }
         >
-          Hủy
+          Thoát
         </Button>
         <div className="flex flex-wrap items-center gap-2">
           <Button

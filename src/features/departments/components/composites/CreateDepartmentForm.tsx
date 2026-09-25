@@ -99,7 +99,7 @@ export function CreateDepartmentForm({
           disabled={isPending}
           onClick={onCancel}
         >
-          Hủy
+          Thoát
         </Button>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}

@@ -14,8 +14,8 @@ export const itemStatusLabels: Record<ItemStatus, string> = {
 
 /** Mirrors the backend's ItemType, narrowed to the one value this feature ever
  *  sends/filters on — FG (thành phẩm) is a sellable end product and the root of
- *  its own BOM. The backend's other value, CONSUMABLE (vật tư), is a different domain
- *  concept (consumables feature) and never appears on an `Item`. Node cấu trúc
+ *  its own BOM. The backend's other value, DIRECT (vật tư), is a different domain
+ *  concept (directs feature) and never appears on an `Item`. Node cấu trúc
  *  con không còn là item (xem `BomItemType` in bom-item.type.ts). Giữ dạng
  *  enum 1 giá trị để không vỡ mọi import. */
 export enum ItemType {
@@ -54,8 +54,8 @@ export type ItemFile = {
 /**
  * Mirrors the backend's ItemResDto/ItemDetailResDto (GET /api/items,
  * GET /api/items/:id) narrowed to the fields this feature (FG only) reads.
- * The backend also returns a set of CONSUMABLE-only fields (supplier, minStock,
- * consumableGrade, technicalStandard, dimensions, specificWeight, colorSurface,
+ * The backend also returns a set of DIRECT-only fields (supplier, minStock,
+ * directGrade, technicalStandard, dimensions, specificWeight, colorSurface,
  * description, origin, leadTime) that are always null/default on a FG row
  * — omitted here since this feature never reads or writes them.
  */
@@ -80,21 +80,21 @@ export type Item = {
 }
 
 // Mirrors the backend's ItemIssueResDto (GET /api/items/:itemId/issues,
-// paginated, `q` filters code/name) — "Thành phần vật tư" tab: every CONSUMABLE
-// this item's BOM tree consumes, one row per consumable (grouped by
-// `itemId`, not per `bom_items` node — the same consumable can appear under
+// paginated, `q` filters code/name) — "Thành phần vật tư" tab: every DIRECT
+// this item's BOM tree consumes, one row per direct (grouped by
+// `itemId`, not per `bom_items` node — the same direct can appear under
 // several parent nodes in the tree, so this list has no
-// `id`/`sortOrder`/`note`, those are per-node, not per-consumable; see
+// `id`/`sortOrder`/`note`, those are per-node, not per-direct; see
 // BomItem in bom-item.type.ts for the raw per-node tree instead).
 //
 // `requiredQty` is the exploded amount for 1 unit of the root item —
 // multiplied cumulatively through every ancestor COMPONENT node's own quantity,
-// then summed across all occurrences of that consumable. Same field name as
-// the production-job consumable demand (`ProductionJobIssue.requiredQty`,
+// then summed across all occurrences of that direct. Same field name as
+// the production-job direct demand (`ProductionJobIssue.requiredQty`,
 // see production-job.type.ts) — same concept, different seed (1 unit of
 // the root item here vs. the Job quantity there). Named `*Issue` to match
-// that Job-side concept, not the unrelated `Consumable` type (consumable.type.ts,
-// the CONSUMABLE master-data shape) or `inventory-issues` (real stock-issue
+// that Job-side concept, not the unrelated `Direct` type (direct.type.ts,
+// the DIRECT master-data shape) or `inventory-issues` (real stock-issue
 // documents) — deliberate, not a typo.
 export type ItemIssue = {
   itemId: string

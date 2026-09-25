@@ -12,7 +12,7 @@ import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 const col = createColumnHelper<typeof appTableFeatures, ProductInventoryItem>()
 
 // A right-aligned header with a decorative ⓘ + a static formula sub-line — same shape
-// inventory-consumables uses for its own quantity columns.
+// inventory-directs uses for its own quantity columns.
 function QuantityColumnHeader({
   label,
   formula,

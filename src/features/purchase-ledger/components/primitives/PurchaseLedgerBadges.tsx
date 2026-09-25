@@ -13,7 +13,7 @@ type BadgeStyle = {
 }
 
 // 4 statuses need more distinct tones than the 3 semantic ones (success/warning/destructive)
-// can tell apart, so this mirrors OrderBadges' palette (not InventoryConsumableStatusBadge's,
+// can tell apart, so this mirrors OrderBadges' palette (not InventoryDirectStatusBadge's,
 // which only has 3 tones to cover). PurchaseLedgerLegend also reads this map, to render the dot
 // on its own without a badge.
 export const purchaseLedgerStatusStyles: Record<
@@ -40,7 +40,7 @@ export const purchaseLedgerStatusStyles: Record<
 }
 
 // Only 2 warnings — these do fit the semantic tokens, same idiom as
-// InventoryConsumableStatusBadge's WARNING/SHORTAGE.
+// InventoryDirectStatusBadge's WARNING/SHORTAGE.
 export const purchaseLedgerWarningStyles: Record<
   PurchaseLedgerWarning,
   BadgeStyle

@@ -18,7 +18,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { consumablesQueryOptions } from "@/features/consumables/api"
+import { directsQueryOptions } from "@/features/directs/api"
 import { buildInventoryReceiptReturnPickerColumns } from "@/features/inventory-receipts/components/composites/InventoryReceiptCreateReturnPickerColumns"
 import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
 import { withForm } from "@/hooks/use-app-form"
@@ -26,22 +26,20 @@ import { ItemStatus } from "@/lib/types/item.type"
 import { inventoryReceiptItemDefaultValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
 import { cn } from "@/lib/utils"
 import type { InventoryReceiptItemFormValue } from "@/features/inventory-receipts/schemas/inventory-receipt-item-form.schema"
-import type { Consumable } from "@/lib/types/consumable.type"
+import type { Direct } from "@/lib/types/direct.type"
 import type { PageSize } from "@/components/shared/composites/Pagination"
 
-function buildPickedReturnItem(
-  consumable: Consumable
-): InventoryReceiptItemFormValue {
+function buildPickedReturnItem(direct: Direct): InventoryReceiptItemFormValue {
   return {
     ...inventoryReceiptItemDefaultValue,
-    itemId: consumable.id,
-    itemLabel: `${consumable.code} — ${consumable.name}`,
-    itemUnit: consumable.unit.name,
+    itemId: direct.id,
+    itemLabel: `${direct.code} — ${direct.name}`,
+    itemUnit: direct.unit.name,
   }
 }
 
 // Bước ② của wizard "Khách hàng" — checkbox picker rập khuôn
-// PurchaseRequestCreateConsumablePickerSection.tsx/CreateInventoryRequisitionPickerSection.tsx. Lọc
+// PurchaseRequestCreateDirectPickerSection.tsx/CreateInventoryRequisitionPickerSection.tsx. Lọc
 // sẵn theo `clientId` đã chọn ở bước ① (vật tư master data đã gắn `client` — không cần combobox
 // khách hàng riêng như bản purchase-requests, vốn chưa biết trước khách hàng nào).
 export const InventoryReceiptCreateReturnPickerSection = withForm({
@@ -57,8 +55,8 @@ export const InventoryReceiptCreateReturnPickerSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
-    const consumablesQuery = useQuery({
-      ...consumablesQueryOptions({
+    const directsQuery = useQuery({
+      ...directsQueryOptions({
         page,
         limit: pageSize,
         q: debouncedQ.trim() || undefined,
@@ -70,22 +68,22 @@ export const InventoryReceiptCreateReturnPickerSection = withForm({
     })
 
     const toggleRow = useCallback(
-      (consumable: Consumable) => {
-        const index = items.findIndex((item) => item.itemId === consumable.id)
+      (direct: Direct) => {
+        const index = items.findIndex((item) => item.itemId === direct.id)
         if (index >= 0) {
           itemsField.removeValue(index)
         } else {
-          itemsField.pushValue(buildPickedReturnItem(consumable))
+          itemsField.pushValue(buildPickedReturnItem(direct))
         }
       },
       [items, itemsField]
     )
 
     const rows = useMemo(
-      () => consumablesQuery.data?.data ?? [],
-      [consumablesQuery.data]
+      () => directsQuery.data?.data ?? [],
+      [directsQuery.data]
     )
-    const pagination = consumablesQuery.data?.pagination
+    const pagination = directsQuery.data?.pagination
     const pickedIds = useMemo(
       () => new Set(items.map((item) => item.itemId)),
       [items]
@@ -194,7 +192,7 @@ export const InventoryReceiptCreateReturnPickerSection = withForm({
                       title={
                         !clientId
                           ? "Chọn khách hàng ở bước ① trước"
-                          : consumablesQuery.isPending
+                          : directsQuery.isPending
                             ? "Đang tải..."
                             : "Không tìm thấy vật tư nào"
                       }

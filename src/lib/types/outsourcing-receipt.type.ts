@@ -33,7 +33,7 @@ export const outsourcingReceiptStatusDescriptions: Record<
 
 // Mirrors OutsourcingReceiptItemResDto (1 dòng của phiếu — mỗi dòng ứng với 1 dòng OS-OUT nguồn).
 // `itemCode`/`itemName` là snapshot copy từ dòng OS-OUT, nguồn hiển thị chính; `item`/`unit` chỉ
-// có khi node là CONSUMABLE (cùng quy ước OutsourcingOrderItem, xem outsourcing-order.type.ts).
+// có khi node là DIRECT (cùng quy ước OutsourcingOrderItem, xem outsourcing-order.type.ts).
 export type OutsourcingReceiptItem = {
   id: string
   outsourcingOrder: {

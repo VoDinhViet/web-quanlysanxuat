@@ -28,8 +28,8 @@ function resolveCreateInventoryRequisitionErrorMessage(error: unknown): string {
       return "Có vật tư bị chọn trùng lặp trong phiếu."
     case "item.error.not_found":
       return "Có vật tư không tồn tại hoặc đã bị xoá."
-    case "inventory_requisition_item.error.item_not_consumable":
-      return "Chỉ được lãnh vật tư nguyên liệu (CONSUMABLE)."
+    case "inventory_requisition_item.error.item_not_direct":
+      return "Chỉ được lãnh vật tư nguyên liệu (DIRECT)."
     case "inventory_requisition_item.error.not_in_job_bom":
       return "Có vật tư không nằm trong định mức BOM của Job."
     case "inventory_requisition_item.error.quantity_exceeds_issuable":

@@ -337,7 +337,7 @@ export function InventoryReceiptCreateFromPoForm() {
                 })
               }
             >
-              Hủy
+              Thoát
             </Button>
           )}
 

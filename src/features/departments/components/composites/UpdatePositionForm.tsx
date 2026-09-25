@@ -113,7 +113,7 @@ export function UpdatePositionForm({
           disabled={isPending}
           onClick={onCancel}
         >
-          Hủy
+          Thoát
         </Button>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}

@@ -29,7 +29,7 @@ type BomItemDetailSidebarProps = {
   bomItem: BomItem
   // Cha trực tiếp trong cây (null nghĩa là ngay dưới Cấp 0) — tra sẵn ở page, nơi giữ cả cây.
   parent: BomItem | null
-  consumablesCount: number
+  directsCount: number
   operationsCount: number
 }
 
@@ -40,7 +40,7 @@ export function BomItemDetailSidebar({
   product,
   bomItem,
   parent,
-  consumablesCount,
+  directsCount,
   operationsCount,
 }: BomItemDetailSidebarProps) {
   return (
@@ -74,7 +74,7 @@ export function BomItemDetailSidebar({
             label="Hạng mục cha"
             value={<ParentLink product={product} parent={parent} />}
           />
-          <SummaryRow icon={Box} label="Vật tư" value={consumablesCount} />
+          <SummaryRow icon={Box} label="Vật tư" value={directsCount} />
           <SummaryRow
             icon={ClipboardList}
             label="Công đoạn"
@@ -96,7 +96,7 @@ export function BomItemDetailSidebar({
       </SidebarSection>
 
       <SidebarSection title="Hình ảnh" icon={Gallery} padded>
-        {/* `image` is coalesced: the linked item's (CONSUMABLE) or the node's own
+        {/* `image` is coalesced: the linked item's (DIRECT) or the node's own
             `imageFileId` (COMPONENT, edited on the Thông tin tab). */}
         <BomItemImagePreview image={bomItem.image} name={bomItem.name} />
       </SidebarSection>

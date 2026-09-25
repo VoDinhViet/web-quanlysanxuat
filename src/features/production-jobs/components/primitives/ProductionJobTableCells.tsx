@@ -15,7 +15,7 @@ import type { FileResource } from "@/lib/types/file.type"
 // `image` is the product's image, already resolved server-side (ProductionJobResDto.image) — the
 // list row no longer carries a `product` object to read it off (see production-job.type.ts), so
 // there's no product name for `alt` either; a generic label is the accepted cost. Cùng khuôn
-// image-cell mọi bảng khác dùng (ProductsTableColumns.tsx/ConsumablesTableColumns.tsx/...) —
+// image-cell mọi bảng khác dùng (ProductsTableColumns.tsx/DirectsTableColumns.tsx/...) —
 // `border border-border/60` quanh ô mới đúng, thiếu viền làm ô trống nhìn như lỗi hiển thị.
 export function ProductImageCell({ image }: { image: FileResource | null }) {
   return (

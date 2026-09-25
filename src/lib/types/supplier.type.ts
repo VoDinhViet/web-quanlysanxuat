@@ -57,7 +57,7 @@ export type SupplierCreatorRef = {
 }
 
 /** Lightweight reference to a supplier itself (GET /api/suppliers) — used by
- *  other domains' nested relation (e.g. Consumable.preferredSupplier). */
+ *  other domains' nested relation (e.g. Direct.preferredSupplier). */
 export type SupplierRef = {
   id: string
   code: string

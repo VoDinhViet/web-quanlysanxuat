@@ -10,7 +10,7 @@ import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
-import { IqcConsumableStrip } from "@/features/iqc/components/composites/IqcConsumableStrip"
+import { IqcDirectStrip } from "@/features/iqc/components/composites/IqcDirectStrip"
 import { IqcPoOrReasonCell } from "@/features/iqc/components/primitives/IqcTableCells"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import type { IqcDetail } from "@/lib/types/iqc.type"
@@ -21,7 +21,7 @@ type IqcGeneralInfoCardProps = {
   disabled?: boolean
 }
 
-// THÔNG TIN CHUNG — dải vật tư (xem IqcConsumableStrip.tsx) + tham chiếu (NCC, PO/lý do, người
+// THÔNG TIN CHUNG — dải vật tư (xem IqcDirectStrip.tsx) + tham chiếu (NCC, PO/lý do, người
 // tạo, ngày tạo, gộp từ IqcDetailReferenceCard cũ đã xoá) + field user sửa được ở card này: Ngày
 // kiểm tra (gộp từ IqcAqlInputCard cũ đã xoá cùng đợt bỏ AQL). Tham chiếu render dạng ô
 // label/icon/value xếp chồng, mỗi ô có icon riêng cho dễ quét mắt, thay vì hàng dt/dd dẹt.
@@ -38,7 +38,7 @@ export function IqcGeneralInfoCard({
     >
       <div className="space-y-5">
         <div className="border-b border-border pb-5">
-          <IqcConsumableStrip iqc={iqc} />
+          <IqcDirectStrip iqc={iqc} />
         </div>
 
         <div className="space-y-3">

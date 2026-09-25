@@ -14,7 +14,7 @@ type OqcFinishedGoodStripProps = {
   oqc: OqcDetail
 }
 
-// Dải thành phẩm nổi bật đầu §1 Lô kiểm tra — cùng khuôn IqcConsumableStrip.tsx. Nhãn/mã đọc từ
+// Dải thành phẩm nổi bật đầu §1 Lô kiểm tra — cùng khuôn IqcDirectStrip.tsx. Nhãn/mã đọc từ
 // `oqc.bomItem` (snapshot BOM của Job, cùng nguồn cột bảng danh sách OQC) chứ không phải `item`
 // sống, để chi tiết và danh sách không bao giờ lệch tên; ảnh vẫn cần gọi `GET /api/items/:id`
 // (itemQueryOptions, prefetch phụ thuộc ở route loader — xem $oqcId.tsx).

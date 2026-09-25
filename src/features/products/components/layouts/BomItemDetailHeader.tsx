@@ -24,7 +24,7 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 // (variant="outline") + a bg-<token>/15 text-<token> tint per node type.
 const bomItemTypeStyles: Record<BomItemType, string> = {
   COMPONENT: "bg-primary/15 text-primary",
-  CONSUMABLE: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
+  DIRECT: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
 }
 
 type BomItemDetailHeaderProps = {
@@ -107,7 +107,7 @@ export function BomItemDetailHeader({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {/* Only the info tab buffers edits in a form. The consumables and
+          {/* Only the info tab buffers edits in a form. The directs and
               operations tabs write on each action, so a shared "Lưu" there would
               either do nothing or silently submit a different tab's data. */}
           {activeTab === "info" ? (

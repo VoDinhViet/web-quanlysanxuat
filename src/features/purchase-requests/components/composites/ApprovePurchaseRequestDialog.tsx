@@ -17,10 +17,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { approvePurchaseRequest } from "@/features/purchase-requests/api/server-functions/approve-purchase-request.api"
-import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
+import type { PurchaseRequestRef } from "@/lib/types/purchase-request.type"
 
 type ApprovePurchaseRequestDialogProps = {
-  purchaseRequest: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestRef
   trigger: ReactElement
 }
 

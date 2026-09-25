@@ -31,7 +31,7 @@ const itemColumns = col.columns([
     cell: ({ row }) => row.index + 1,
   }),
 
-  col.accessor("consumableCode", {
+  col.accessor("directCode", {
     header: "Mã vật tư",
     meta: { headerClassName: "min-w-24" },
     cell: ({ getValue }) => (
@@ -39,7 +39,7 @@ const itemColumns = col.columns([
     ),
   }),
 
-  col.accessor("consumableName", {
+  col.accessor("directName", {
     header: "Tên vật tư / hàng hóa",
     meta: { headerClassName: "min-w-48" },
   }),

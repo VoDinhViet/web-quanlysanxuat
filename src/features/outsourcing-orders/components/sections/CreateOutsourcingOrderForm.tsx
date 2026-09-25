@@ -193,7 +193,7 @@ export function CreateOutsourcingOrderForm({
                 })
               }
             >
-              Hủy
+              Thoát
             </Button>
           )}
 

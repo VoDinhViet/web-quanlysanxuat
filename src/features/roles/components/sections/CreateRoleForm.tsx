@@ -138,7 +138,7 @@ export function CreateRoleForm() {
             disabled={isPending}
             onClick={() => void navigate({ to: "/manage/roles" })}
           >
-            Hủy
+            Thoát
           </Button>
 
           <div className="flex flex-wrap items-center gap-2">

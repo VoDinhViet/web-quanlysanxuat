@@ -138,7 +138,7 @@ function CopyProductForm({ product, onClose }: CopyProductFormProps) {
           onClick={onClose}
           disabled={mutation.isPending}
         >
-          Hủy
+          Thoát
         </Button>
         <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}

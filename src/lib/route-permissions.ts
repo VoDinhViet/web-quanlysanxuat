@@ -45,7 +45,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/inventory-issues": "inventory:read",
   "/manage/inventory-issues/$issueId": "inventory:read",
 
-  "/manage/inventory-consumables": "inventory:read",
+  "/manage/inventory-directs": "inventory:read",
   "/manage/inventory-products": "inventory:read",
   // Guarded on `inventory:read`, not a write permission: a read-only viewer should reach this
   // screen. It has no write actions of its own — editing stays on the Products feature.
@@ -65,9 +65,9 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/iqc": "iqc:read",
   "/manage/iqc/$iqcId": "iqc:read",
 
-  "/manage/consumables": "items:read",
-  "/manage/consumables/create": "items:create",
-  "/manage/consumables/$consumableId/update": "items:update",
+  "/manage/directs": "items:read",
+  "/manage/directs/create": "items:create",
+  "/manage/directs/$directId/update": "items:update",
 
   "/manage/operations": "operations:read",
 

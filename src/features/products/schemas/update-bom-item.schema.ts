@@ -4,7 +4,7 @@ import { imageFieldSchema } from "@/lib/file-field.schema"
 
 // Raw form shape for editing a BOM node — `type`/`itemId`/`parentId` bất biến. `code`/`name`/`unitId`
 // chỉ sửa được trên node COMPONENT (form chỉ render các field này khi `bomItem.type === "COMPONENT"`, xem
-// BomItemInfoTab.tsx) — gửi cho node CONSUMABLE sẽ bị backend chặn E271.
+// BomItemInfoTab.tsx) — gửi cho node DIRECT sẽ bị backend chặn E271.
 // Bỏ trống sortOrder nghĩa là "giữ nguyên thứ tự hiện tại": PATCH thiếu key = không đổi, nên
 // `.optional()` (bỏ hẳn key) chứ không phải một giá trị mặc định.
 export const updateBomItemSchema = z.object({

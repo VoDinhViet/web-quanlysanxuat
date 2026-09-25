@@ -79,7 +79,7 @@ export const purchaseRequestColumns = purchaseRequestColumnHelper.columns([
       cellClassName: "font-normal",
     },
     cell: ({ row }) => (
-      <PurchaseRequestActionsCell purchaseRequestId={row.original.id} />
+      <PurchaseRequestActionsCell purchaseRequest={row.original} />
     ),
   }),
 ])

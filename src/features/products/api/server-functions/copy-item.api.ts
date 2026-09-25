@@ -17,7 +17,7 @@ function resolveCopyItemErrorMessage(error: unknown): string {
       return "Không tìm thấy sản phẩm."
     case "item.error.code_exists":
       return "Mã + phiên bản này đã tồn tại."
-    case "item.error.cannot_copy_consumable":
+    case "item.error.cannot_copy_direct":
       return "Không thể nhân bản vật tư."
     case "auth.error.forbidden":
       return "Bạn không có quyền thực hiện thao tác này."

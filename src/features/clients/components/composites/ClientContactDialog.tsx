@@ -147,7 +147,7 @@ function ClientContactDialogForm({
 
       <DialogFooter className="gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Hủy
+          Thoát
         </Button>
         <Button type="submit">
           <Check className="size-4" />

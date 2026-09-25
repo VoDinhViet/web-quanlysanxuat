@@ -25,7 +25,7 @@ type PurchaseLedgerTableProps = {
   isPending: boolean
 }
 
-// Flags an urgent row the same way InventoryConsumablesTable flags a shortage row.
+// Flags an urgent row the same way InventoryDirectsTable flags a shortage row.
 function purchaseLedgerRowClassName(
   row: PurchaseLedgerRow
 ): string | undefined {

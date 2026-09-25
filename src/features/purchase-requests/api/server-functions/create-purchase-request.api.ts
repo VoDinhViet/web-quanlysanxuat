@@ -17,7 +17,7 @@ function resolveCreatePurchaseRequestErrorMessage(error: unknown): string {
       return "Đề xuất cần ít nhất một dòng vật tư."
     case "purchase_request_item.error.duplicate_item":
       return "Vật tư bị trùng lặp trong đề xuất."
-    case "purchase_request_item.error.item_not_consumable":
+    case "purchase_request_item.error.item_not_direct":
       return "Vật tư được chọn không phải nguyên vật liệu."
     case "department.error.not_found":
       return "Phòng ban không tồn tại."

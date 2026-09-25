@@ -143,7 +143,7 @@ export function CreateOutboundOrderForm() {
                 })
               }
             >
-              Hủy
+              Thoát
             </Button>
           )}
 

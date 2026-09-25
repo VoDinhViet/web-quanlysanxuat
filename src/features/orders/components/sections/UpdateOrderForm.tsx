@@ -128,15 +128,24 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
   const queryClient = useQueryClient()
   const updateOrderFn = useServerFn(updateOrder)
 
+  const goToDetail = () =>
+    void navigate({
+      to: "/manage/orders/$orderId",
+      params: { orderId: order.id },
+    })
+
   const { mutate: update, isPending } = useMutation({
     mutationFn: (value: UpdateOrderSchema) => updateOrderFn({ data: value }),
     // Stay on the page: editing an order is often several passes over the
     // same record, and the totals panel already labels itself "số liệu tạm
-    // tính" — the settled numbers live on the detail page. The "Hủy" button
-    // in the wizard's action bar at bước ① is the way out.
+    // tính" — the settled numbers live on the detail page. The "Xem chi tiết"
+    // button in the wizard's action bar (every step) and the toast action are
+    // the ways out.
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["orders"] })
-      toast.success("Đã cập nhật đơn hàng")
+      toast.success("Đã cập nhật đơn hàng", {
+        action: { label: "Xem chi tiết", onClick: goToDetail },
+      })
     },
     onError: (error) => toast.error(error.message),
   })
@@ -231,33 +240,29 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
       </Tabs>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-4 sm:px-5">
-        {prevStep ? (
+        <div className="flex items-center gap-1">
           <Button
             type="button"
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
             disabled={isPending}
-            onClick={() => setStep(prevStep)}
+            onClick={goToDetail}
           >
-            <ArrowLeft className="size-4" />
-            {prevLabel}
+            Xem chi tiết
           </Button>
-        ) : (
-          <Button
-            type="button"
-            variant="ghost"
-            className="text-muted-foreground hover:text-foreground"
-            disabled={isPending}
-            onClick={() =>
-              void navigate({
-                to: "/manage/orders/$orderId",
-                params: { orderId: order.id },
-              })
-            }
-          >
-            Hủy
-          </Button>
-        )}
+          {prevStep && (
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground"
+              disabled={isPending}
+              onClick={() => setStep(prevStep)}
+            >
+              <ArrowLeft className="size-4" />
+              {prevLabel}
+            </Button>
+          )}
+        </div>
 
         {nextStep ? (
           <Button

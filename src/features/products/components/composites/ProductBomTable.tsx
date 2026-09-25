@@ -15,8 +15,8 @@ import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import { cn } from "@/lib/utils"
 import { createBomColumns } from "@/features/products/components/composites/ProductBomTableColumns"
 import { ProductOperationsPanel } from "@/features/products/components/composites/ProductOperationsPanel"
-import type { BomTableActions } from "@/features/products/components/primitives/BomRowActions"
-import { buildBomRows } from "@/features/products/utils/bom-rows.util"
+import type { BomTableActions } from "@/features/products/components/primitives/BomTreeActions"
+import { buildBomTree } from "@/features/products/utils/bom-tree"
 import type { OperationsTarget } from "@/features/products/hooks/use-product-operations"
 import type { BomItem } from "@/lib/types/bom-item.type"
 import type { Item } from "@/lib/types/item.type"
@@ -35,8 +35,11 @@ function BomTableGuidance() {
         Cây kết cấu (BOM) thể hiện các {partLabel} lắp ráp nên sản phẩm — một{" "}
         {partLabel} có thể chứa {partLabel} con khác. Nhấn{" "}
         <span className="font-medium text-foreground">"Thêm {partLabel}"</span>{" "}
-        rồi chọn thêm bên trong hay ngang hàng, và biểu tượng mắt để mở trang
-        chi tiết vật tư và công đoạn của một dòng.
+        rồi chọn thêm bên trong hay ngang hàng,{" "}
+        <span className="font-medium text-foreground">"Thêm vật tư"</span> để
+        khai vật tư ngoài cấu trúc ngay dưới dòng đó, và biểu tượng{" "}
+        <span className="font-medium text-foreground">↗</span> để mở trang chi
+        tiết vật tư và công đoạn của một Part.
       </p>
     </div>
   )
@@ -73,7 +76,7 @@ export function ProductBomTable({
   )
 
   const rows = useMemo(
-    () => buildBomRows(product, nodes, rootOperations),
+    () => buildBomTree(product, nodes, rootOperations),
     [product, nodes, rootOperations]
   )
   const columns = useMemo(

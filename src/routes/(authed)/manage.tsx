@@ -19,7 +19,7 @@ export const Route = createFileRoute("/(authed)/manage")({
   // No loaderDeps: đổi khoảng ngày ở "Tiến độ sản xuất" không được re-trigger loader này (nó
   // fire-and-forget prefetch 7 widget — chạy lại sẽ làm trắng cả trang). `location.search` đã
   // được router validate ở runtime nhưng LoaderFnContext gõ kiểu `{}` (do không có loaderDeps) —
-  // parse lại là cách lấy đúng type mà không cần `as` — theo đúng pattern ConsumablesPage.
+  // parse lại là cách lấy đúng type mà không cần `as` — theo đúng pattern DirectsPage.
   //
   // Fire-and-forget, không chặn route — mọi widget dashboard tự `useQuery` với skeleton/lỗi
   // riêng (như ManageStatCards đã làm), trang không đợi toàn bộ load xong mới hiện. Mỗi query ở

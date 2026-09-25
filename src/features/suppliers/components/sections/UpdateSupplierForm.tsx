@@ -125,7 +125,7 @@ export function UpdateSupplierForm({ supplier }: UpdateSupplierFormProps) {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}

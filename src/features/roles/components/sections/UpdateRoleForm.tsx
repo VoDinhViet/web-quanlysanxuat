@@ -137,7 +137,7 @@ export function UpdateRoleForm({ role }: UpdateRoleFormProps) {
             disabled={isPending}
             onClick={() => void navigate({ to: "/manage/roles" })}
           >
-            Hủy
+            Thoát
           </Button>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}

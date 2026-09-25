@@ -16,7 +16,7 @@ function resolveDeleteOrderErrorMessage(error: unknown): string {
     case "order.error.not_found":
       return "Không tìm thấy đơn hàng."
     case "order.error.not_deletable":
-      return "Đơn hàng không còn ở trạng thái Nháp — không thể xoá."
+      return "Chỉ xoá được đơn chưa được duyệt (Nháp hoặc Từ chối)."
     case "auth.error.forbidden":
       return "Bạn không có quyền xoá đơn hàng này."
     default:
@@ -24,7 +24,7 @@ function resolveDeleteOrderErrorMessage(error: unknown): string {
   }
 }
 
-// Xoá mềm — chỉ khi DRAFT (order.error.not_deletable nếu khác).
+// Xoá mềm — chỉ khi đơn chưa được duyệt: DRAFT hoặc REJECTED (order.error.not_deletable nếu khác).
 export const deleteOrder = createServerFn({ method: "POST" })
   .validator(z.object({ orderId: z.uuid() }))
   .handler(async ({ data }): Promise<void> => {

@@ -45,7 +45,7 @@ export function buildCreateInventoryRequisitionItemColumns({
       ),
     }),
     createInventoryRequisitionItemColumnHelper.display({
-      id: "consumable",
+      id: "direct",
       header: "Vật tư",
       meta: { headerClassName: "min-w-56" },
       cell: ({ row }) => (

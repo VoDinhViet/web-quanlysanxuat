@@ -16,7 +16,7 @@ function resolveCreateRoutingOperationErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "item.error.not_found":
       return "Không tìm thấy sản phẩm."
-    case "item.error.consumable_not_allowed":
+    case "item.error.direct_not_allowed":
       return "Vật tư không có công đoạn Cấp 0."
     case "operation.error.not_found":
       return "Không tìm thấy công đoạn trong danh mục."
@@ -25,12 +25,10 @@ function resolveCreateRoutingOperationErrorMessage(error: unknown): string {
   }
 }
 
-const createRoutingOperationInputSchema = createProductOperationSchema.extend(
-  {
-    itemId: z.uuid(),
-    sortOrder: z.number().int().min(0),
-  }
-)
+const createRoutingOperationInputSchema = createProductOperationSchema.extend({
+  itemId: z.uuid(),
+  sortOrder: z.number().int().min(0),
+})
 
 export const createRoutingOperation = createServerFn({ method: "POST" })
   .validator(createRoutingOperationInputSchema)

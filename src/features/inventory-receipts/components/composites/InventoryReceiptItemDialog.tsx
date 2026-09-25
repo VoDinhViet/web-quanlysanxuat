@@ -25,9 +25,9 @@ type InventoryReceiptItemDialogProps = {
   // `null` = add mode; a row value = edit mode.
   initialValue: InventoryReceiptItemFormValue | null
   onSubmit: (value: InventoryReceiptItemFormValue) => void
-  // "CONSUMABLE" (vật tư) hay "FG" (thành phẩm) — theo `resolveInventoryReceiptItemType(receiptType)`
+  // "DIRECT" (vật tư) hay "FG" (thành phẩm) — theo `resolveInventoryReceiptItemType(receiptType)`
   // ở nơi gọi, quyết định combobox tìm trong tập item nào.
-  itemType: "CONSUMABLE" | "FG"
+  itemType: "DIRECT" | "FG"
 }
 
 // Chế độ chọn vật tư/thành phẩm chung (không theo PO) — dùng chung bởi
@@ -65,7 +65,7 @@ type InventoryReceiptItemDialogFormProps = {
   initialValue: InventoryReceiptItemFormValue | null
   onSubmit: (value: InventoryReceiptItemFormValue) => void
   onCancel: () => void
-  itemType: "CONSUMABLE" | "FG"
+  itemType: "DIRECT" | "FG"
 }
 
 function InventoryReceiptItemDialogForm({
@@ -76,7 +76,7 @@ function InventoryReceiptItemDialogForm({
 }: InventoryReceiptItemDialogFormProps) {
   const isEditing = initialValue !== null
   const itemNoun = itemType === "FG" ? "thành phẩm" : "vật tư"
-  const consumable = useGetInventoryReceiptItemOptions(itemType)
+  const direct = useGetInventoryReceiptItemOptions(itemType)
 
   const form = useAppForm({
     defaultValues: initialValue ?? inventoryReceiptItemDefaultValue,
@@ -112,16 +112,14 @@ function InventoryReceiptItemDialogForm({
           <form.Field name="itemId">
             {(field) => (
               <ComboboxField
-                id="inventory-receipt-item-consumable"
+                id="inventory-receipt-item-direct"
                 label={itemType === "FG" ? "Thành phẩm" : "Vật tư"}
                 required
                 placeholder={`Tìm mã hoặc tên ${itemNoun}...`}
                 value={field.state.value || undefined}
                 onValueChange={(next) => {
                   field.handleChange(next ?? "")
-                  const selected = consumable.items.find(
-                    (item) => item.id === next
-                  )
+                  const selected = direct.items.find((item) => item.id === next)
                   form.setFieldValue(
                     "itemLabel",
                     selected ? `${selected.code} — ${selected.name}` : ""
@@ -133,9 +131,9 @@ function InventoryReceiptItemDialogForm({
                   field.state.meta.errors.length > 0
                 }
                 errors={field.state.meta.errors}
-                options={consumable.options}
-                onSearchChange={consumable.onSearchChange}
-                isPending={consumable.isFetching}
+                options={direct.options}
+                onSearchChange={direct.onSearchChange}
+                isPending={direct.isFetching}
                 initialOption={
                   initialValue
                     ? {

@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { AltArrowDown, AltArrowUp } from "@solar-icons/react"
+import { Routing } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,16 +14,18 @@ import {
   BomOperationsCell,
 } from "@/features/products/components/primitives/BomTableCells"
 import {
-  CreatePartAction,
+  CreateActionsMenu,
+  DeleteDirectAction,
   DeletePartAction,
+  EditDirectAction,
   ViewDetailAction,
-} from "@/features/products/components/primitives/BomRowActions"
-import type { BomTableActions } from "@/features/products/components/primitives/BomRowActions"
-import type { BomRow } from "@/features/products/utils/bom-rows.util"
+} from "@/features/products/components/primitives/BomTreeActions"
+import type { BomTableActions } from "@/features/products/components/primitives/BomTreeActions"
+import type { BomTree } from "@/features/products/utils/bom-tree"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-const bomColumnHelper = createColumnHelper<typeof appTableFeatures, BomRow>()
+const bomColumnHelper = createColumnHelper<typeof appTableFeatures, BomTree>()
 
 // Trạng thái đóng/mở bảng công đoạn của dòng Cấp 0 — sở hữu ở ProductBomTable
 // (state cục bộ, không phải URL/form state), chỉ truyền xuống đây để vẽ nút.
@@ -46,13 +48,15 @@ export function createBomColumns(
   return bomColumnHelper.columns([
     bomColumnHelper.accessor("path", {
       header: "STT",
-      meta: { headerClassName: "w-14" },
+      meta: { headerClassName: "w-16" },
       cell: ({ row }) => (
         <span
           className={
             row.original.isRoot
-              ? "font-mono font-bold text-foreground"
-              : "font-mono font-bold text-muted-foreground"
+              ? "font-mono font-bold text-foreground text-sm"
+              : row.original.bomItem?.isOffStructure
+                ? "font-mono font-semibold text-amber-700 dark:text-amber-400 text-xs"
+                : "font-mono font-semibold text-muted-foreground text-xs"
           }
         >
           {row.original.path}
@@ -62,7 +66,7 @@ export function createBomColumns(
     bomColumnHelper.display({
       id: "code",
       header: "MÃ BẢN VẼ",
-      meta: { headerClassName: "w-48" },
+      meta: { headerClassName: "min-w-60" },
       cell: ({ row }) => <BomCodeCell row={row.original} />,
     }),
     bomColumnHelper.accessor("name", {
@@ -122,7 +126,7 @@ export function createBomColumns(
             <ViewDetailAction productId={productId} row={bomRow} />
             {/* Chỉ dòng Cấp 0 có bảng công đoạn mở/đóng ngay tại chỗ — COMPONENT sửa công đoạn ở
                 trang chi tiết riêng (xem ViewDetailAction). Inline luôn (không tách
-                BomRowActions.tsx) vì chỉ dùng đúng 1 chỗ. */}
+                BomTreeActions.tsx) vì chỉ dùng đúng 1 chỗ. */}
             {bomRow.isRoot && (
               <Tooltip>
                 <TooltipTrigger
@@ -130,32 +134,35 @@ export function createBomColumns(
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
-                      aria-label="Thêm công đoạn"
+                      size="icon-sm"
+                      aria-label="Công đoạn"
                       aria-expanded={routingOperationsToggle.isOpen}
                       onClick={routingOperationsToggle.onToggle}
-                      className="gap-1 border border-border/60 text-xs hover:bg-muted"
                     >
-                      {routingOperationsToggle.isOpen ? (
-                        <AltArrowUp className="size-3.5" />
-                      ) : (
-                        <AltArrowDown className="size-3.5" />
-                      )}
-                      <span className="hidden xl:inline">Thêm công đoạn</span>
+                      <Routing className="size-3.5" />
                     </Button>
                   }
                 />
-                <TooltipContent>Thêm công đoạn</TooltipContent>
+                <TooltipContent>Công đoạn</TooltipContent>
               </Tooltip>
             )}
-            <CreatePartAction
-              options={bomRow.createOptions}
-              actions={actions}
-            />
-            {/* Dòng Cấp 0 có `bomItem: null` (đi cùng sản phẩm, không xoá riêng) — chỉ node thật
-                mới render DeletePartAction. */}
-            {bomRow.bomItem && (
-              <DeletePartAction bomItem={bomRow.bomItem} actions={actions} />
+            {bomRow.bomItem?.isOffStructure ? (
+              <>
+                <EditDirectAction row={bomRow} />
+                <DeleteDirectAction row={bomRow} actions={actions} />
+              </>
+            ) : (
+              <>
+                <CreateActionsMenu row={bomRow} actions={actions} />
+                {/* Dòng Cấp 0 có `bomItem: null` (đi cùng sản phẩm, không xoá riêng) — chỉ node
+                    thật mới render DeletePartAction. */}
+                {bomRow.bomItem && (
+                  <DeletePartAction
+                    bomItem={bomRow.bomItem}
+                    actions={actions}
+                  />
+                )}
+              </>
             )}
           </div>
         )

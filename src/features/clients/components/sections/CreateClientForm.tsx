@@ -88,7 +88,7 @@ export function CreateClientForm() {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
           <div className="flex flex-wrap items-center gap-2">
             <Button

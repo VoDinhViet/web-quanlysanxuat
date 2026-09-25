@@ -22,7 +22,11 @@ export function UpdateOrderPage() {
       breadcrumbs={[
         { label: "Bán hàng" },
         { label: "Đơn hàng (SO)", href: "/manage/orders" },
-        { label: order.code },
+        {
+          label: order.code,
+          href: "/manage/orders/$orderId",
+          params: { orderId },
+        },
         { label: "Cập nhật" },
       ]}
     >

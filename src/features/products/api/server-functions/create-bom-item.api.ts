@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import {
   createComponentItemSchema,
-  createConsumableItemSchema,
+  createDirectItemSchema,
 } from "@/features/products/schemas/create-bom-item.schema"
 import { resolveApiFileId } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
@@ -25,8 +25,10 @@ function resolveCreateBomItemErrorMessage(error: unknown): string {
       return "Không tìm thấy hạng mục cha."
     case "bom_item.error.parent_is_leaf":
       return "Vật tư luôn là lá của cấu trúc — không thể thêm hạng mục con vào đây."
-    case "bom_item.error.item_not_consumable":
-      return "Vật tư đã chọn không phải là vật tư (CONSUMABLE) hợp lệ."
+    case "bom_item.error.item_not_direct":
+      return "Vật tư đã chọn không phải là vật tư (DIRECT) hợp lệ."
+    case "bom_item.error.duplicate":
+      return "Vật tư này đã có trong hạng mục này."
     case "bom_item.error.invalid_node_payload":
       return "Dữ liệu hạng mục không hợp lệ."
     case "bom_item.error.quantity_not_integer":
@@ -38,7 +40,7 @@ function resolveCreateBomItemErrorMessage(error: unknown): string {
   }
 }
 
-// `rootItemId` (not `itemId`) — the CONSUMABLE branch of the schema already has its own `itemId` (the
+// `rootItemId` (not `itemId`) — the DIRECT branch of the schema already has its own `itemId` (the
 // linked vật tư item, see create-bom-item.schema.ts); this one is the FG item whose BOM tree
 // the new item is added to. Different entities, so they can't share a name once the two
 // schemas are merged here.
@@ -50,7 +52,7 @@ const bomItemRootFieldsSchema = z.object({
 
 const createBomItemInputSchema = z.discriminatedUnion("type", [
   createComponentItemSchema.extend(bomItemRootFieldsSchema.shape),
-  createConsumableItemSchema.extend(bomItemRootFieldsSchema.shape),
+  createDirectItemSchema.extend(bomItemRootFieldsSchema.shape),
 ])
 
 // Empty note trims to `undefined` (POST — an omitted key means "not provided"). `image` (nhánh

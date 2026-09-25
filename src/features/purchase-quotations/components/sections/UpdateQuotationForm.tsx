@@ -158,7 +158,7 @@ export function UpdateQuotationForm({
               className="text-muted-foreground hover:text-foreground"
               onClick={handleCancel}
             >
-              Hủy
+              Thoát
             </Button>
           )}
 
@@ -183,7 +183,7 @@ export function UpdateQuotationForm({
                 disabled={isPending}
                 onClick={handleCancel}
               >
-                Hủy
+                Thoát
               </Button>
               <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}

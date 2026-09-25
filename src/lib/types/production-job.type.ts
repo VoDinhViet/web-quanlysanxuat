@@ -107,23 +107,24 @@ export type ProductionJobOperation = {
 }
 
 /** `FG` = node Cấp 0 (lắp ráp/đóng gói thành phẩm, luôn đứng cuối bảng "Công đoạn sản xuất",
- *  `ProductionJobsService.copyFinalAssemblyRouting` backend) — `COMPONENT`/`CONSUMABLE` = node cây BOM thường
+ *  `ProductionJobsService.copyFinalAssemblyRouting` backend) — `COMPONENT`/`DIRECT` = node cây BOM thường
  *  (`BomItemType`, bom-item.type.ts). Enum riêng của snapshot Job, có thể là cả 3 giá trị — cố ý
  *  tách khỏi `BomItemType`/`ROOT` dù cả hai giờ đều có 3 giá trị (`docs/decisions/root-bom-item.md`
  *  backend, mục "Đừng hoàn lại": Job snapshot giữ node `FG` riêng, không gộp vào `ROOT`). */
-export type ProductionJobBomItemType = "FG" | "COMPONENT" | "CONSUMABLE"
+export type ProductionJobBomItemType = "FG" | "COMPONENT" | "DIRECT"
 
 /** Mirrors the backend's ProductionJobBomItemResDto (`GET /production-jobs/:jobId/operations`,
  *  a plain array, not paginated) — "Công đoạn sản xuất" tab: every BOM node (part) that has at
  *  least one as-used operation, each carrying its own `operations[]` (server-grouped — no more
  *  client-side grouping needed). Despite the name, this is NOT the full BOM tree: it's scoped to
- *  parts with operations, flat (no `parentId`) — no image, no gia công ngoài counts (see
+ *  parts with operations, flat (no `parentId`) — no gia công ngoài counts (see
  *  ProductionJobOperation's doc comment for `plannedQuantity`, carried per-operation not here). */
 export type ProductionJobBomItem = {
   id: string
   code: string
   name: string
   itemType: ProductionJobBomItemType
+  image: FileResource | null
   operations: ProductionJobOperation[]
 }
 
@@ -152,7 +153,7 @@ export type ProductionJobIssueUnitRef = {
 }
 
 /** Mirrors the backend's ProductionJobIssueResDto (`GET /production-jobs/:jobId/bom`, paginated,
- *  `q` filters `item.code`/`item.name`) — "BOM vật tư" tab: the Job's consumable demand, read off
+ *  `q` filters `item.code`/`item.name`) — "BOM vật tư" tab: the Job's direct demand, read off
  *  `production_job_issues` joined to the two shared dimension tables. Despite the route's name
  *  (`.../bom`), this is NOT the BOM tree — the tree has no read route at all (see
  *  ProductionJobOperation's doc comment and docs/domains/production.md, "Common mistakes" #15).

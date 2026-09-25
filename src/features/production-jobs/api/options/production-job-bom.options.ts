@@ -8,7 +8,7 @@ type ProductionJobBomParams = {
   q?: string
 }
 
-// Tab "BOM" — the Job's consumable demand, paginated (see get-production-job-bom.api.ts for
+// Tab "BOM" — the Job's direct demand, paginated (see get-production-job-bom.api.ts for
 // why this reads GET .../bom despite the tab not being about the BOM tree).
 export const productionJobBomQueryOptions = (
   productionJobId: string,

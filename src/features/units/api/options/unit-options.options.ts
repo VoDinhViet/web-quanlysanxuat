@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query"
 
 import { getUnits } from "@/features/units/api/server-functions/get-units.api"
 
-// Reference-option list read by consumables/products/BOM pickers.
+// Reference-option list read by directs/products/BOM pickers.
 export const unitOptionsQueryOptions = () =>
   queryOptions({
     queryKey: ["units", "options"],

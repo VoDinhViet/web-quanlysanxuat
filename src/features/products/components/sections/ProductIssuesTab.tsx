@@ -22,7 +22,7 @@ export function ProductIssuesTab({ product }: ProductIssuesTabProps) {
   const page = search.page ?? defaultPage
   const limit = search.limit ?? defaultLimit
 
-  const consumablesQuery = useQuery(
+  const directsQuery = useQuery(
     itemIssuesQueryOptions(product.id, { page, limit, q: search.q })
   )
 
@@ -40,18 +40,18 @@ export function ProductIssuesTab({ product }: ProductIssuesTabProps) {
         onSearchChange={handleSearchChange}
       />
 
-      {consumablesQuery.isPending ? (
+      {directsQuery.isPending ? (
         <TableQueryLoading rows={limit} />
-      ) : consumablesQuery.isError ? (
+      ) : directsQuery.isError ? (
         <TableQueryError
-          error={consumablesQuery.error.message}
-          onRetry={() => void consumablesQuery.refetch()}
+          error={directsQuery.error.message}
+          onRetry={() => void directsQuery.refetch()}
         />
       ) : (
         <ProductIssuesTable
-          rows={consumablesQuery.data.data}
-          pagination={consumablesQuery.data.pagination}
-          isPending={consumablesQuery.isFetching}
+          rows={directsQuery.data.data}
+          pagination={directsQuery.data.pagination}
+          isPending={directsQuery.isFetching}
         />
       )}
     </div>

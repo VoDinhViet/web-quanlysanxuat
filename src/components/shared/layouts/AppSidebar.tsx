@@ -204,7 +204,7 @@ const menuGroups: MenuGroup[] = [
       {
         label: "Tồn kho vật tư",
         icon: Warehouse,
-        href: "/manage/inventory-consumables",
+        href: "/manage/inventory-directs",
       },
       {
         label: "Tồn kho thành phẩm",
@@ -234,7 +234,7 @@ const menuGroups: MenuGroup[] = [
       {
         label: "Vật tư",
         icon: Layers,
-        href: "/manage/consumables",
+        href: "/manage/directs",
       },
       {
         label: "Đơn vị tính",

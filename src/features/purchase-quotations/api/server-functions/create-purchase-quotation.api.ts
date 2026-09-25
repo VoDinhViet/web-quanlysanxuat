@@ -8,7 +8,7 @@ import type { ApiErrorResponse } from "@/lib/http"
 
 // Mirrors CreateQuotationReqDto exactly — one POST carries the whole item→allocations/suppliers
 // tree. Chained onto the form's own schema (not a hand-written parallel one) so `data` inside
-// `.handler()` is already wire-ready, same pattern as update-user.api.ts/create-consumable.api.ts.
+// `.handler()` is already wire-ready, same pattern as update-user.api.ts/create-direct.api.ts.
 // unitPrice/leadTimeDays are already number|undefined coming out of the form's own schema; only
 // quantityAdjustmentReason/note (still strings) go through emptyToUndefined — the backend only
 // allows explicit `null` for the header-level `note` (never sent here, per product decision — no

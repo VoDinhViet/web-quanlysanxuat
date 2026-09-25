@@ -211,7 +211,7 @@ export function CreateInventoryRequisitionForm() {
               })
             }
           >
-            Hủy
+            Thoát
           </Button>
         )}
 

@@ -5,7 +5,7 @@ import { emptyToUndefined } from "@/lib/zod-transforms"
 // One dòng vật tư của đề xuất mua hàng. Không có unitPrice/status như order-item-form.schema.ts
 // hay inventory-receipt-item-form.schema.ts — PR không có khái niệm giá. itemCode/itemName/
 // itemUnit/minStock đều UI-only — vật tư được chọn từ bảng tích chọn ở tab 1
-// (consumablesQueryOptions, có unit/minStock), re-displayed ở tab 2 và trên rail "Phiếu tạm" mà
+// (directsQueryOptions, có unit/minStock), re-displayed ở tab 2 và trên rail "Phiếu tạm" mà
 // không cần fetch lại; dropped by purchaseRequestItemFormSchema's own transform below before the
 // payload reaches the create server function.
 export const purchaseRequestItemFormFields = {
