@@ -8,5 +8,5 @@ export { itemBomQueryOptions } from "@/features/products/api/options/item-bom.op
 export { itemIssuesQueryOptions } from "@/features/products/api/options/item-issues.options"
 export { itemOptionsQueryOptions } from "@/features/products/api/options/item-options.options"
 export { bomItemOperationsQueryOptions } from "@/features/products/api/options/bom-operations.options"
-export { bomItemConsumablesQueryOptions } from "@/features/products/api/options/bom-consumables.options"
+export { bomItemDirectsQueryOptions } from "@/features/products/api/options/bom-directs.options"
 export { itemOperationsQueryOptions } from "@/features/products/api/options/routing-operations.options"

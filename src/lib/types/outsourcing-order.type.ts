@@ -67,7 +67,7 @@ export type OutsourcingOrder = {
 
 // Mirrors OutsourcingOrderItemResDto (1 dòng của phiếu — mỗi dòng 1 công đoạn/part).
 // `itemCode`/`itemName` là snapshot bắt buộc và là nguồn hiển thị chính; `item`/`unit` chỉ có khi
-// node gửi đi là CONSUMABLE (node COMPONENT không phải một item → null). plannedQuantity/sentBeforeQuantity là
+// node gửi đi là DIRECT (node COMPONENT không phải một item → null). plannedQuantity/sentBeforeQuantity là
 // snapshot lúc gửi, chỉ để hiển thị/in — không dùng để validate lại.
 export type OutsourcingOrderItem = {
   id: string
@@ -120,7 +120,7 @@ export type OutsourcingOrderDetail = {
 export type OutsourceableOperation = {
   productionJobOperationId: string // id gửi lại khi tạo phiếu
   productionJobBomItemId: string // node BOM của Job — gửi lại khi tạo phiếu
-  itemId: string | null // vật tư tham khảo, chỉ khi node là CONSUMABLE; null với node COMPONENT
+  itemId: string | null // vật tư tham khảo, chỉ khi node là DIRECT; null với node COMPONENT
   job: { id: string; code: string }
   bomItem: { code: string; name: string } // snapshot BOM của Job — gửi lại làm itemCode/itemName
   operation: {
@@ -128,7 +128,7 @@ export type OutsourceableOperation = {
     code: string
     name: string
   }
-  unit: Unit | null // chỉ khi node là CONSUMABLE
+  unit: Unit | null // chỉ khi node là DIRECT
   plannedQuantity: number // SL định mức (theo Job) — đóng băng lúc duyệt LSX
   sentQuantity: number // SL đã gửi (OS-OUT trước, POSTED)
   remainingQuantity: number // Còn được phép gửi = plannedQuantity − sentQuantity (BE tính SQL)

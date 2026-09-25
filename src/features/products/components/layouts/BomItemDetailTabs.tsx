@@ -21,13 +21,13 @@ type BomItemDetailTabItem = {
 
 const bomItemDetailTabItems: BomItemDetailTabItem[] = [
   { value: "info", label: "Thông tin chung", icon: LayersMinimalistic },
-  { value: "consumables", label: "Vật tư", icon: Box },
+  { value: "directs", label: "Vật tư", icon: Box },
   { value: "operations", label: "Công đoạn", icon: ClipboardList },
 ]
 
 type BomItemDetailTabsProps = {
   // Tab "Vật tư" khoá khi hạng mục còn cấu trúc con (COMPONENT) bên dưới — chỉ cấp cuối cùng mới
-  // gắn được vật tư trực tiếp, xem canAddConsumables ở BomItemDetailScreen.
+  // gắn được vật tư trực tiếp, xem canAddDirects ở BomItemDetailScreen.
   lockedTabs?: BomItemDetailTab[]
   lockedHint?: string
 }

@@ -27,7 +27,7 @@ type ProductionJobNotesSectionProps = {
 // Sub-section of "Thông tin chung" (ProductionJobInfoTab.tsx's InfoSection) — a free-form
 // conversation feed (GET/POST /production-jobs/:jobId/notes), sorted asc(createdAt) by the
 // backend. `page` is local component state rather than a route search param: `page`/`limit` on
-// this route already back the "consumables" tab's list (production-job-detail-search.schema.ts), and this
+// this route already back the "directs" tab's list (production-job-detail-search.schema.ts), and this
 // is a secondary section on a page with no pagination state of its own — same idiom as
 // productionOrderLogsQueryOptions/ProductionOrderLogsCard. Feed rendering lives in the sibling
 // ProductionJobNotes to keep this file focused on the mutation/form it owns.

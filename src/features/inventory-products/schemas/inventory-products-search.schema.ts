@@ -10,7 +10,7 @@ import { isoDateFilter } from "@/lib/zod-transforms"
 // dòng tồn kho không liên kết ngược về đơn nào.
 // Không có `status` — không còn cột nào hiển thị (backend chỉ dùng để lọc, không trả field). DTO
 // vẫn nhận `status` server-side, FE màn này chỉ không gửi. `supplierId` không còn tồn tại trên DTO
-// này nữa — chỉ CONSUMABLE (`GetInventoryConsumablesReqDto`) có.
+// này nữa — chỉ DIRECT (`GetInventoryDirectsReqDto`) có.
 // `asOfDate`: `yyyy-MM-dd`, calendar date picked in "Xem tồn tại ngày". Undefined = tồn hiện tại.
 export const inventoryProductsSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),

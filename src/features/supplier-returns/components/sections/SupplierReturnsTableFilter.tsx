@@ -48,21 +48,19 @@ export function SupplierReturnsTableFilter() {
     search.iqcCode,
   ].filter(Boolean).length
 
-  const [consumableKeyword, setConsumableKeyword] = useState(
-    search.consumableKeyword ?? ""
-  )
+  const [directKeyword, setDirectKeyword] = useState(search.directKeyword ?? "")
   const [poCode, setPoCode] = useState(search.poCode ?? "")
   const [iqcCode, setIqcCode] = useState(search.iqcCode ?? "")
 
   // Filters as the user types, 300ms after the last keystroke — same idiom as
   // IqcTableFilter.tsx. `replace: true` keeps rapid keystrokes from flooding history; discrete
   // Select changes below push instead so Back undoes them one at a time.
-  const handleConsumableKeywordChange = useDebounceCallback((term: string) => {
+  const handleDirectKeywordChange = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
     void navigate({
       search: (prev) => ({
         ...prev,
-        consumableKeyword: trimmed.length > 0 ? trimmed : undefined,
+        directKeyword: trimmed.length > 0 ? trimmed : undefined,
         page: 1,
       }),
       replace: true,
@@ -107,16 +105,16 @@ export function SupplierReturnsTableFilter() {
   const resetFilters = () => {
     // Cancel every debounce first — a call still in flight would re-apply the term the user just
     // cleared, ~300ms after the box goes blank.
-    handleConsumableKeywordChange.cancel()
+    handleDirectKeywordChange.cancel()
     handlePoCodeChange.cancel()
     handleIqcCodeChange.cancel()
-    setConsumableKeyword("")
+    setDirectKeyword("")
     setPoCode("")
     setIqcCode("")
     void navigate({
       search: (prev) => {
         const {
-          consumableKeyword: _consumableKeyword,
+          directKeyword: _directKeyword,
           poCode: _poCode,
           iqcCode: _iqcCode,
           supplierId: _supplierId,
@@ -133,13 +131,13 @@ export function SupplierReturnsTableFilter() {
       {/* Tìm kiếm vật tư — ô search chính, luôn hiện; các field còn lại nằm trong popover "Bộ lọc" */}
       <div className="relative flex-1 lg:max-w-sm">
         <Input
-          id="supplier-returns-consumable-keyword"
+          id="supplier-returns-direct-keyword"
           className="pr-9 text-xs placeholder:text-muted-foreground/75"
           placeholder="Nhập mã vật tư, tên vật tư..."
-          value={consumableKeyword}
+          value={directKeyword}
           onChange={(event) => {
-            setConsumableKeyword(event.target.value)
-            handleConsumableKeywordChange(event.target.value)
+            setDirectKeyword(event.target.value)
+            handleDirectKeywordChange(event.target.value)
           }}
         />
         <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />

@@ -8,7 +8,7 @@ import { IqcResult, IqcStatus } from "@/lib/types/iqc.type"
 // field name as clients-search.schema.ts/users-search.schema.ts use for their own primary code/
 // name search box. `order` isn't here: PageOptionsDto accepts it but the service hardcodes
 // `orderBy: desc(iqcInspections.createdAt)`, same as supplier-returns-search.schema.ts.
-// `consumableKeyword`/`poCode` removed — backend dropped them (they 500'd `GET /iqc`, a correlated
+// `directKeyword`/`poCode` removed — backend dropped them (they 500'd `GET /iqc`, a correlated
 // `exists()` subquery colliding with the relational query API's own FROM alias).
 export const iqcSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),

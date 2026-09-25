@@ -72,7 +72,7 @@ function resolveRequisitionLinesEmptyTitle(params: {
   return "Không tìm thấy vật tư nào"
 }
 
-// Checkbox picker rập khuôn PurchaseRequestCreateConsumablePickerSection.tsx — đọc lại
+// Checkbox picker rập khuôn PurchaseRequestCreateDirectPickerSection.tsx — đọc lại
 // type/productionJobId của form qua useField (`productionJobId` chọn ở bước Job của luồng LSX).
 // Cả 2 luồng dùng chung 1 API (requisitionLinesQueryOptions) — productionJobId optional quyết
 // định có khoanh vùng theo định mức BOM của Job hay không, không phải hai nguồn dữ liệu khác
@@ -198,7 +198,7 @@ export const CreateInventoryRequisitionPickerSection = withForm({
             <p className="text-sm text-muted-foreground">
               {isJobFlow
                 ? "Danh sách vật tư trong định mức BOM của Job đã chọn."
-                : "Mọi vật tư nguyên liệu (CONSUMABLE) tại Kho nguyên vật liệu."}
+                : "Mọi vật tư nguyên liệu (DIRECT) tại Kho nguyên vật liệu."}
             </p>
           </div>
           <div className="flex items-center gap-3 text-xs">

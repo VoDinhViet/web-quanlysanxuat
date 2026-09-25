@@ -104,10 +104,10 @@ export function PaymentRequestPrintSheet({
                 {index + 1}
               </td>
               <td className="border border-black px-2 py-1">
-                {item.consumableCode}
+                {item.directCode}
               </td>
               <td className="border border-black px-2 py-1">
-                {item.consumableName}
+                {item.directName}
               </td>
               <td className="border border-black px-2 py-1 text-center">
                 {item.unit}

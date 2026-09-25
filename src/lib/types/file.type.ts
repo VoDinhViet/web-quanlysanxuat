@@ -4,10 +4,10 @@
 // backend enum value — an unknown one is rejected before Multer runs.
 export enum UploadType {
   USER_AVATAR = "USER_AVATAR",
-  CONSUMABLE_IMAGE = "CONSUMABLE_IMAGE",
-  CONSUMABLE_DOCUMENT = "CONSUMABLE_DOCUMENT",
+  DIRECT_IMAGE = "DIRECT_IMAGE",
+  DIRECT_DOCUMENT = "DIRECT_DOCUMENT",
   PRODUCT_IMAGE = "PRODUCT_IMAGE",
-  // Retired 2026-08-27 — thay bằng ITEM_DOCUMENT. Bị bỏ nhầm khi gộp products/consumables thành
+  // Retired 2026-08-27 — thay bằng ITEM_DOCUMENT. Bị bỏ nhầm khi gộp products/directs thành
   // items, tưởng bản vẽ theo node BOM thay thế được (không đúng — BUG-007). Kept because the
   // backend enum can't drop a value either; don't use for new files.
   PRODUCT_DOCUMENT = "PRODUCT_DOCUMENT",
@@ -25,7 +25,7 @@ export enum UploadType {
   PRODUCTION_OPERATION_EVIDENCE = "PRODUCTION_OPERATION_EVIDENCE",
   // File đính kèm khi kho xác nhận xuất trả NCC (POST /supplier-returns/:id/post).
   SUPPLIER_RETURN_EVIDENCE = "SUPPLIER_RETURN_EVIDENCE",
-  // Tài liệu đính kèm cấp item — mọi type (FG/CONSUMABLE), danh sách nhiều file. Thay
+  // Tài liệu đính kèm cấp item — mọi type (FG/DIRECT), danh sách nhiều file. Thay
   // PRODUCT_DOCUMENT đã nghỉ hưu.
   ITEM_DOCUMENT = "ITEM_DOCUMENT",
   // Ảnh riêng của một node BOM COMPONENT (bom_items.image_file_id, tối đa 1) — khác PRODUCT_IMAGE
@@ -44,7 +44,7 @@ export enum FileKind {
 
 /**
  * Mirrors the backend's FileResDto — returned by POST /api/files and embedded in
- * every entity response (`product.image`, `user.avatar`, `consumable.image`).
+ * every entity response (`product.image`, `user.avatar`, `direct.image`).
  *
  * `url` is a public, permanent, host-relative static link — render it through
  * `resolveFileUrl` (src/lib/file-url.ts) to get an absolute one.

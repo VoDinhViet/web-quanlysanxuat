@@ -2,6 +2,7 @@ import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 
 import { resolveFileUrl } from "@/lib/file-url"
+import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import { formatOperationSequence } from "@/lib/types/operation.type"
 import type { BomRow } from "@/features/products/utils/bom-rows.util"
 
@@ -29,7 +30,7 @@ export function BomLevelBadge({ level }: { level: number }) {
   )
 }
 
-// Ảnh + mã/tên dùng chung cho mọi dòng (Cấp 0 và COMPONENT/CONSUMABLE) — đọc
+// Ảnh + mã/tên dùng chung cho mọi dòng (Cấp 0 và COMPONENT/DIRECT) — đọc
 // từ view model `BomRow` thay vì `BomItem`, nhờ đó dòng Cấp 0 (dựng từ
 // `product`) dùng lại đúng component này thay vì tự vẽ riêng.
 export function BomCodeCell({ row }: { row: BomRow }) {
@@ -56,6 +57,11 @@ export function BomCodeCell({ row }: { row: BomRow }) {
       <span className="font-mono font-bold text-foreground">
         {row.revision ? `${row.code} · ${row.revision}` : row.code}
       </span>
+      {row.bomItem?.isOffStructure && (
+        <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+          {bomItemTypeLabels.DIRECT}
+        </span>
+      )}
     </div>
   )
 }

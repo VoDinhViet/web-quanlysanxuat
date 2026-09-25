@@ -75,13 +75,13 @@ type ItemTypeBadgeStyle = {
   icon: ComponentType<IconProps>
 }
 
-// Màu/icon copy nguyên từ ProductBadges.tsx (CONSUMABLE/FG type badges) để đồng nhất toàn app cho cùng 1
+// Màu/icon copy nguyên từ ProductBadges.tsx (DIRECT/FG type badges) để đồng nhất toàn app cho cùng 1
 // khái niệm.
 export const inventoryReceiptItemTypeStyles: Record<
   InventoryReceiptItemType,
   ItemTypeBadgeStyle
 > = {
-  CONSUMABLE: { badge: "bg-info/10 text-info", icon: Bolt },
+  DIRECT: { badge: "bg-info/10 text-info", icon: Bolt },
   FG: { badge: "bg-primary/10 text-primary", icon: Box },
 }
 
@@ -90,7 +90,7 @@ type InventoryReceiptItemTypeBadgeProps = {
   className?: string
 }
 
-// Phân biệt phiếu nhập vật tư (CONSUMABLE) hay thành phẩm (FG) — trục khác với `assetType`
+// Phân biệt phiếu nhập vật tư (DIRECT) hay thành phẩm (FG) — trục khác với `assetType`
 // ("Vật tư công ty"/"Vật tư khách hàng" = ai sở hữu, không phải loại hàng gì).
 export function InventoryReceiptItemTypeBadge({
   receiptType,

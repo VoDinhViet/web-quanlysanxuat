@@ -2,22 +2,22 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
-import type { Consumable } from "@/lib/types/consumable.type"
+import type { Direct } from "@/lib/types/direct.type"
 
 const inventoryReceiptReturnPickerColumnHelper = createColumnHelper<
   typeof appTableFeatures,
-  Consumable
+  Direct
 >()
 
 type BuildInventoryReceiptReturnPickerColumnsArgs = {
   pickedIds: Set<string>
   disabled: boolean
   allChecked: boolean
-  onToggleRow: (row: Consumable) => void
+  onToggleRow: (row: Direct) => void
   onToggleAll: (checked: boolean) => void
 }
 
-// Own useReactTable columns, cùng khuôn PurchaseRequestCreateConsumablePickerColumns.tsx — không có
+// Own useReactTable columns, cùng khuôn PurchaseRequestCreateDirectPickerColumns.tsx — không có
 // cột "Định mức tồn"/"Khách hàng" như bản đó vì bảng này đã lọc sẵn theo đúng 1 khách hàng
 // (clientId chọn ở bước ①), lặp lại cột đó là thừa.
 export function buildInventoryReceiptReturnPickerColumns({
@@ -49,7 +49,7 @@ export function buildInventoryReceiptReturnPickerColumns({
       ),
     }),
     inventoryReceiptReturnPickerColumnHelper.display({
-      id: "consumable",
+      id: "direct",
       header: "Vật tư",
       meta: { headerClassName: "min-w-56" },
       cell: ({ row }) => (

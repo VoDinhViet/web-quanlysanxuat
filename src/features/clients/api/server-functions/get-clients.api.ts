@@ -25,7 +25,7 @@ function resolveGetClientsErrorMessage(error: unknown): string {
 // Broader than the clients feature's route-facing `clientsSearchSchema`
 // (page/limit restricted to 10|20|50, `.catch()` defaults for URL parsing,
 // which stays local to that route) — this one only needs to stay wire-valid
-// for the backend. The cross-domain reference dropdown (consumables/products/
+// for the backend. The cross-domain reference dropdown (directs/products/
 // orders) no longer goes through here — it calls the dedicated
 // GET /api/clients/options endpoint (get-client-options.api.ts) instead.
 const getClientsSchema = z.object({

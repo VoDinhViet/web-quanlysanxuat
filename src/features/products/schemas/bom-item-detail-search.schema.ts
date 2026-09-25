@@ -1,14 +1,10 @@
 import { z } from "zod"
 
-export type BomItemDetailTab = "info" | "consumables" | "operations"
+export type BomItemDetailTab = "info" | "directs" | "operations"
 
 // Exported for BomItemDetailPage's onValueChange guard: Radix widens the value
 // to `string`, and safeParse narrows it back without a cast.
-export const bomItemDetailTabSchema = z.enum([
-  "info",
-  "consumables",
-  "operations",
-])
+export const bomItemDetailTabSchema = z.enum(["info", "directs", "operations"])
 
 // The active tab is shareable state, so it lives in the URL rather than
 // useState (see .claude/rules/forms-and-ui.md). `.catch` keeps a hand-mangled

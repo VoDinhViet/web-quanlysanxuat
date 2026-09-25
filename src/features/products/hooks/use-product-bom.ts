@@ -17,7 +17,7 @@ export type UpdateBomItemInput = UpdateBomItemSchema & {
 }
 
 // Create/update giờ đều mở tại chỗ (form nội tuyến trong ProductBomTable/
-// BomItemDetailPage/BomItemConsumablesTable, không còn dialog riêng), nên
+// BomItemDetailPage/BomItemDirectsTable, không còn dialog riêng), nên
 // callback đóng UI đi kèm mỗi lượt gọi qua tham số `onSuccess` của
 // `createItem`/`updateItem` — không cần callback chung ở đây nữa. Xoá vẫn
 // dùng chung một `DeleteBomItemDialog` xác nhận từ nhiều nơi (bảng cây lẫn
@@ -109,7 +109,7 @@ export interface UseProductBomResult {
     parentId: string | null,
     onSuccess?: () => void
   ) => void
-  // Thêm nhiều vật tư (CONSUMABLE) cùng lúc — CreateConsumableDialog. `values` đã kèm `parentId` riêng cho
+  // Thêm nhiều vật tư (DIRECT) cùng lúc — CreateDirectDialog. `values` đã kèm `parentId` riêng cho
   // từng phần tử (luôn giống nhau trong thực tế — cùng một bomItem — nhưng để mảng tự khai báo
   // thay vì một `parentId` chung, khỏi phải zip lại ở đây).
   createItems: (values: CreateBomItemInput[], onSuccess?: () => void) => void

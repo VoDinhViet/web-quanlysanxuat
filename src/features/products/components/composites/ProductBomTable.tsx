@@ -35,8 +35,10 @@ function BomTableGuidance() {
         Cây kết cấu (BOM) thể hiện các {partLabel} lắp ráp nên sản phẩm — một{" "}
         {partLabel} có thể chứa {partLabel} con khác. Nhấn{" "}
         <span className="font-medium text-foreground">"Thêm {partLabel}"</span>{" "}
-        rồi chọn thêm bên trong hay ngang hàng, và biểu tượng mắt để mở trang
-        chi tiết vật tư và công đoạn của một dòng.
+        rồi chọn thêm bên trong hay ngang hàng,{" "}
+        <span className="font-medium text-foreground">"Thêm vật tư"</span> để
+        khai vật tư ngoài cấu trúc ngay dưới dòng đó, và biểu tượng mắt để mở
+        trang chi tiết vật tư và công đoạn của một Part.
       </p>
     </div>
   )

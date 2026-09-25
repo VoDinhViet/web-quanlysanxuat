@@ -14,7 +14,7 @@ import { z } from "zod"
 const createOutsourcingOrderItemFields = {
   productionJobOperationId: z.string().trim().min(1),
   productionJobBomItemId: z.string().trim().min(1),
-  // Vật tư tham khảo — chỉ khi node là CONSUMABLE; null với node COMPONENT. `bomItem.code`/`name` mới là
+  // Vật tư tham khảo — chỉ khi node là DIRECT; null với node COMPONENT. `bomItem.code`/`name` mới là
   // nguồn hiển thị/payload chính thức (itemCode/itemName), xem create-outsourcing-order.api.ts.
   itemId: z.string().trim().min(1).nullable(),
   job: z.object({

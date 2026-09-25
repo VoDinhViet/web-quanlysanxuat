@@ -140,7 +140,7 @@ export function ProductDetailPage() {
                   <ProductBomTab product={product} />
                 </TabsContent>
 
-                <TabsContent value="consumables" className="m-0 outline-none">
+                <TabsContent value="directs" className="m-0 outline-none">
                   <ProductIssuesTab product={product} />
                 </TabsContent>
               </div>

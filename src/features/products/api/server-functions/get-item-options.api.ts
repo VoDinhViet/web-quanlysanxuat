@@ -5,11 +5,11 @@ import { http, logHttpError } from "@/lib/http"
 import type { ItemRef } from "@/lib/types/item.type"
 import { optional } from "@/lib/zod-transforms"
 
-// `type` also accepts "CONSUMABLE" here (unlike ItemType, which is FG-only) — dùng bởi các picker
-// FG/CONSUMABLE khác nhau (đơn hàng, phiếu nhập kho), không phải BOM.
+// `type` also accepts "DIRECT" here (unlike ItemType, which is FG-only) — dùng bởi các picker
+// FG/DIRECT khác nhau (đơn hàng, phiếu nhập kho), không phải BOM.
 const getItemOptionsSchema = z.object({
   q: optional(z.string().trim()),
-  type: z.enum(["FG", "CONSUMABLE"]).optional(),
+  type: z.enum(["FG", "DIRECT"]).optional(),
 })
 
 // Purpose-built dropdown endpoint (GET /api/items/options), distinct from

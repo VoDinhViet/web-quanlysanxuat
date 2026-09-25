@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { AltArrowDown, AltArrowUp } from "@solar-icons/react"
+import { AltArrowDown, AltArrowUp, Routing } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,7 +14,8 @@ import {
   BomOperationsCell,
 } from "@/features/products/components/primitives/BomTableCells"
 import {
-  CreatePartAction,
+  CreateActionsMenu,
+  DeleteExtraDirectAction,
   DeletePartAction,
   ViewDetailAction,
 } from "@/features/products/components/primitives/BomRowActions"
@@ -131,31 +132,37 @@ export function createBomColumns(
                       type="button"
                       variant="outline"
                       size="sm"
-                      aria-label="Thêm công đoạn"
+                      aria-label="Công đoạn"
                       aria-expanded={routingOperationsToggle.isOpen}
                       onClick={routingOperationsToggle.onToggle}
-                      className="gap-1 border border-border/60 text-xs hover:bg-muted"
                     >
+                      <Routing className="size-3.5" />
+                      <span className="hidden xl:inline">Công đoạn</span>
                       {routingOperationsToggle.isOpen ? (
-                        <AltArrowUp className="size-3.5" />
+                        <AltArrowUp className="size-3.5 opacity-60" />
                       ) : (
-                        <AltArrowDown className="size-3.5" />
+                        <AltArrowDown className="size-3.5 opacity-60" />
                       )}
-                      <span className="hidden xl:inline">Thêm công đoạn</span>
                     </Button>
                   }
                 />
-                <TooltipContent>Thêm công đoạn</TooltipContent>
+                <TooltipContent>Công đoạn</TooltipContent>
               </Tooltip>
             )}
-            <CreatePartAction
-              options={bomRow.createOptions}
-              actions={actions}
-            />
-            {/* Dòng Cấp 0 có `bomItem: null` (đi cùng sản phẩm, không xoá riêng) — chỉ node thật
-                mới render DeletePartAction. */}
-            {bomRow.bomItem && (
-              <DeletePartAction bomItem={bomRow.bomItem} actions={actions} />
+            {bomRow.bomItem?.isOffStructure ? (
+              <DeleteExtraDirectAction row={bomRow} actions={actions} />
+            ) : (
+              <>
+                <CreateActionsMenu row={bomRow} actions={actions} />
+                {/* Dòng Cấp 0 có `bomItem: null` (đi cùng sản phẩm, không xoá riêng) — chỉ node
+                    thật mới render DeletePartAction. */}
+                {bomRow.bomItem && (
+                  <DeletePartAction
+                    bomItem={bomRow.bomItem}
+                    actions={actions}
+                  />
+                )}
+              </>
             )}
           </div>
         )

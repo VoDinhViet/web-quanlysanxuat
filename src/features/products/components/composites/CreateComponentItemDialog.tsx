@@ -42,8 +42,8 @@ type CreateComponentItemDialogProps = {
   isSaving: boolean
 }
 
-// Chỉ còn tạo item COMPONENT (Part) — vật tư (CONSUMABLE) giờ thêm bằng dòng mở
-// tại chỗ ngay trong BomItemConsumablesTable, không qua dialog nữa. Dialog này
+// Chỉ còn tạo item COMPONENT (Part) — vật tư (DIRECT) giờ thêm bằng dòng mở
+// tại chỗ ngay trong BomItemDirectsTable, không qua dialog nữa. Dialog này
 // chỉ mở được từ hàng trong ProductBomTable (BomItemDetailPage là một trang
 // riêng, không phải dialog) nên không có nguy cơ chồng dialog.
 export function CreateComponentItemDialog({

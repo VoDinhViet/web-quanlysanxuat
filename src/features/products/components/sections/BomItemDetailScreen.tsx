@@ -2,7 +2,6 @@ import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { revalidateLogic } from "@tanstack/react-form"
-import { Lock } from "lucide-react"
 import type { Key } from "react-aria-components"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -10,7 +9,7 @@ import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { BomItemDetailHeader } from "@/features/products/components/layouts/BomItemDetailHeader"
 import { BomItemDetailSidebar } from "@/features/products/components/layouts/BomItemDetailSidebar"
 import { BomItemInfoTab } from "@/features/products/components/sections/BomItemInfoTab"
-import { BomItemConsumablesTable } from "@/features/products/components/composites/BomItemConsumablesTable"
+import { BomItemDirectsTable } from "@/features/products/components/composites/BomItemDirectsTable"
 import { ProductOperationsPanel } from "@/features/products/components/composites/ProductOperationsPanel"
 import { DeleteBomItemDialog } from "@/features/products/components/composites/DeleteBomItemDialog"
 import { useProductBom } from "@/features/products/hooks/use-product-bom"
@@ -21,14 +20,8 @@ import { bomItemDetailTabSchema } from "@/features/products/schemas/bom-item-det
 import { updateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
 import { cn } from "@/lib/utils"
 import type { UpdateBomItemSchema } from "@/features/products/schemas/update-bom-item.schema"
-import type { BomItemDetailTab } from "@/features/products/schemas/bom-item-detail-search.schema"
 import type { BomItem } from "@/lib/types/bom-item.type"
 import type { Item } from "@/lib/types/item.type"
-
-// Cả 2 nơi (header/tooltip khoá tab, và ghi chú thay bảng khi truy cập trực tiếp qua URL) dùng
-// chung một câu — tách hằng số để không lệch chữ giữa hai chỗ.
-const CONSUMABLES_LOCKED_HINT =
-  "Hạng mục này còn cấu trúc con bên dưới — chỉ cấp cuối cùng mới gắn được vật tư trực tiếp."
 
 // `sortOrder` không có ô sửa ở form Thông tin chung nữa (BomItemInfoTab) nên không vào
 // defaultValues cho mọi loại node — thiếu key = PATCH giữ nguyên thứ tự hiện tại, đúng ngữ nghĩa
@@ -46,21 +39,6 @@ function getBomItemDefaultValues(bomItem: BomItem): UpdateBomItemSchema {
     quantity: bomItem.quantity,
     note: bomItem.note ?? "",
   }
-}
-
-// Thay cho bảng vật tư khi tab bị khoá nhưng vẫn được vào thẳng qua URL (trigger disabled chỉ
-// chặn click, không chặn `value` khớp tay) — cùng lý do khoá, không lặng lẽ hiện bảng rỗng.
-function ConsumablesLockedNotice() {
-  return (
-    <div className="flex min-h-64 flex-col items-center justify-center gap-3 px-6 py-12 text-center">
-      <div className="flex size-11 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-        <Lock className="size-5" />
-      </div>
-      <p className="max-w-md text-sm font-medium text-muted-foreground">
-        {CONSUMABLES_LOCKED_HINT}
-      </p>
-    </div>
-  )
 }
 
 type BomItemDetailScreenProps = {
@@ -93,26 +71,18 @@ export function BomItemDetailScreen({
 
   // Một lượt qua `nodes` thay vì find/filter/some riêng lẻ — cùng gom cha, đếm vật tư con trực
   // tiếp (chỉ cần số đếm cho sidebar — danh sách thật giờ đọc qua query riêng, phân trang ở BE,
-  // xem BomItemConsumablesTable.tsx), và "còn cấu trúc con COMPONENT bên dưới" (quyết định
-  // canCreateConsumables/khoá tab Vật tư).
+  // xem BomItemDirectsTable.tsx), và "còn cấu trúc con COMPONENT bên dưới" (quyết định
+  // `hasChildPart`: vật tư thêm ở tab Vật tư là vật tư ngoài cấu trúc).
   let parent: BomItem | null = null
-  let consumablesCount = 0
+  let directsCount = 0
   let hasChildPart = false
   for (const node of nodes) {
     if (node.id === bomItem.parentId) parent = node
     if (node.parentId === bomItem.id) {
-      if (node.type === "CONSUMABLE") consumablesCount += 1
+      if (node.type === "DIRECT") directsCount += 1
       else hasChildPart = true
     }
   }
-  // Chỉ cấp cuối cùng (không còn cấu trúc con COMPONENT bên dưới) mới thêm được vật tư trực tiếp —
-  // tránh vật tư nằm rải giữa các cấp làm sai lệch cách nổ (explode) nhu cầu vật tư theo cây.
-  // Không còn leaf → khoá luôn cả tab "Vật tư", không chỉ nút thêm bên trong.
-  const canCreateConsumables = !hasChildPart
-  const lockedTabs: BomItemDetailTab[] = canCreateConsumables
-    ? []
-    : ["consumables"]
-
   const bom = useProductBom(product.id, {
     onSuccessDelete: () => {
       setDeletingBomItem(null)
@@ -170,8 +140,6 @@ export function BomItemDetailScreen({
               isSaving={bom.isSaving}
               onSave={handleSave}
               onRequestDelete={setDeletingBomItem}
-              lockedTabs={lockedTabs}
-              lockedHint={CONSUMABLES_LOCKED_HINT}
             />
 
             {/* `minmax(0,1fr)` (not `1fr`) so a wide table scrolls inside its own column
@@ -201,19 +169,15 @@ export function BomItemDetailScreen({
                   />
                 </TabsContent>
 
-                <TabsContent value="consumables" className="m-0 outline-none">
-                  {canCreateConsumables ? (
-                    <div className="px-4 py-5 sm:px-5">
-                      <BomItemConsumablesTable
-                        productId={product.id}
-                        bomItem={bomItem}
-                        canCreateConsumables={canCreateConsumables}
-                        bom={bom}
-                      />
-                    </div>
-                  ) : (
-                    <ConsumablesLockedNotice />
-                  )}
+                <TabsContent value="directs" className="m-0 outline-none">
+                  <div className="px-4 py-5 sm:px-5">
+                    <BomItemDirectsTable
+                      productId={product.id}
+                      bomItem={bomItem}
+                      hasChildPart={hasChildPart}
+                      bom={bom}
+                    />
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="operations" className="m-0 outline-none">
@@ -235,7 +199,7 @@ export function BomItemDetailScreen({
                     product={product}
                     bomItem={bomItem}
                     parent={parent}
-                    consumablesCount={consumablesCount}
+                    directsCount={directsCount}
                     operationsCount={operations.length}
                   />
                 </aside>

@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
+import { CreateDirectDialog } from "@/features/products/components/composites/CreateDirectDialog"
 import { CreateComponentItemDialog } from "@/features/products/components/composites/CreateComponentItemDialog"
 import { DeleteBomItemDialog } from "@/features/products/components/composites/DeleteBomItemDialog"
 import { ProductBomTable } from "@/features/products/components/composites/ProductBomTable"
@@ -31,7 +32,7 @@ function BomTabMessage({ children }: { children: ReactNode }) {
 }
 
 export function ProductBomTab({ product }: ProductBomTabProps) {
-  // Chỉ có đúng 1 dialog tạo còn lại (tạo COMPONENT từ bảng cây) — vật tư (CONSUMABLE) và
+  // Chỉ có đúng 1 dialog tạo còn lại (tạo COMPONENT từ bảng cây) — vật tư (DIRECT) và
   // sửa hạng mục giờ mở ở trang riêng (BomItemDetailPage), không còn dialog. `createOptions`
   // chỉ có nghĩa khi dialog đang mở — tách riêng khỏi `isCreateOpen` thay vì gộp "đóng"/"tạo ở
   // gốc" vào cùng một sentinel `undefined`/`null`, cùng khuôn với `deletingBomItem` bên dưới.
@@ -41,6 +42,11 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
     siblingTarget: null,
   })
   const [deletingBomItem, setDeletingBomItem] = useState<BomItem | null>(null)
+  // Dialog thêm vật tư ngoài: `undefined` = chưa mở; `{ bomItemId }` với `bomItemId` undefined = gắn
+  // sản phẩm chính (Cấp 0), ngược lại là part.
+  const [extraOwner, setExtraOwner] = useState<
+    { bomItemId: string | undefined } | undefined
+  >()
 
   const bomQuery = useQuery(itemBomQueryOptions(product.id))
   // Công đoạn Cấp 0 — không nằm trong `bomQuery` nữa (docs/decisions/
@@ -59,7 +65,11 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
   // `actions` phải ổn định tham chiếu — ProductBomTable memoize cột theo nó,
   // một object literal mới mỗi render sẽ vô hiệu hoá memo đó.
   const actions = useMemo<BomTableActions>(
-    () => ({ onCreate: handleCreate, onDelete: setDeletingBomItem }),
+    () => ({
+      onCreate: handleCreate,
+      onDelete: setDeletingBomItem,
+      onCreateExtra: (bomItemId) => setExtraOwner({ bomItemId }),
+    }),
     [handleCreate]
   )
 
@@ -114,6 +124,24 @@ export function ProductBomTab({ product }: ProductBomTabProps) {
         siblingTarget={createOptions.siblingTarget}
         onSubmit={(value, target) =>
           bom.createItem(value, target.parentId, () => setIsCreateOpen(false))
+        }
+        isSaving={bom.isSaving}
+      />
+
+      <CreateDirectDialog
+        open={extraOwner !== undefined}
+        onOpenChange={(open) => {
+          if (!open) setExtraOwner(undefined)
+        }}
+        onSubmit={(values) =>
+          bom.createItems(
+            values.map((value) => ({
+              ...value,
+              parentId: extraOwner?.bomItemId ?? null,
+              isOffStructure: true,
+            })),
+            () => setExtraOwner(undefined)
+          )
         }
         isSaving={bom.isSaving}
       />

@@ -22,7 +22,7 @@ export type BomCreateOptions = {
 }
 
 // Một dòng hiển thị trong bảng cây BOM — dòng Cấp 0 (đầu bảng) và dòng
-// COMPONENT/CONSUMABLE thật dùng chung shape này để bảng chỉ còn một đường
+// COMPONENT/DIRECT thật dùng chung shape này để bảng chỉ còn một đường
 // render.
 export type BomRow = {
   id: string
@@ -35,6 +35,7 @@ export type BomRow = {
   quantity: number
   level: number
   isRoot: boolean
+  // Dòng vật tư ngoài cấu trúc — `bomItem` là node từ API cây nhưng `id` là id dòng vật tư ngoài.
   // Chuỗi công đoạn của dòng — Cấp 0 đọc từ query riêng (route
   // `items/:itemId/operations`, không nằm trong response GET .../bom nữa),
   // node thật đọc thẳng `bomItem.operations`.
@@ -114,21 +115,51 @@ function toBomRow(
   }
 }
 
+// Vật tư ngoài đứng ngay sau chủ trong `nodes` (BE đã sắp) — STT `<STT chủ>.V<n>`, không đụng STT Part.
+function toExtraRow(node: BomItem, index: number): BomRow {
+  return {
+    id: node.id,
+    path: ["0", ...node.path, `V${index}`].join("."),
+    code: node.code,
+    name: node.name,
+    revision: null,
+    image: node.image,
+    unit: node.unit,
+    quantity: node.quantity,
+    level: node.level,
+    isRoot: false,
+    operations: [],
+    bomItem: node,
+    createOptions: {
+      childTarget: { parentId: null, parentLabel: null },
+      siblingTarget: null,
+    },
+  }
+}
+
 export function buildBomRows(
   product: Item,
   nodes: BomItem[],
   rootOperations: ProductOperation[]
 ): BomRow[] {
   // Backend đã trả `nodes` đúng thứ tự depth-first kèm `path` tính sẵn
-  // (BomsService.getBomItem) — chỉ cần lọc bỏ CONSUMABLE (chỉ hiện trong tab
-  // "Vật tư" ở trang chi tiết, không phải trong cây) rồi map thẳng, không cần
-  // tự dựng lại cây/đệ quy nữa.
-  const treeNodes = nodes.filter((node) => node.type !== "CONSUMABLE")
+  // (BomsService.getBomItem) — chỉ cần lọc bỏ DIRECT thật (chỉ hiện trong tab "Vật tư" ở trang
+  // chi tiết) nhưng giữ vật tư ngoài cấu trúc (`isOffStructure`) rồi map thẳng.
+  const treeNodes = nodes.filter(
+    (node) => node.isOffStructure || node.type !== "DIRECT"
+  )
   const labelByBomItemId = new Map<string, string>()
+  const extraCountByOwner = new Map<string | null, number>()
 
   // Một lượt duy nhất: cha luôn đứng trước con trong thứ tự depth-first, nên
   // `labelByBomItemId` của cha đã sẵn sàng khi con đọc nó cho `siblingTarget`.
   const rows = treeNodes.map((node) => {
+    if (node.isOffStructure) {
+      const index = (extraCountByOwner.get(node.parentId) ?? 0) + 1
+      extraCountByOwner.set(node.parentId, index)
+      return toExtraRow(node, index)
+    }
+
     labelByBomItemId.set(node.id, `${formatBomPath(node.path)} · ${node.name}`)
     return toBomRow(node, labelByBomItemId)
   })

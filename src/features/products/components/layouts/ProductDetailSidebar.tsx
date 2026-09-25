@@ -37,7 +37,7 @@ type ProductDetailSidebarProps = {
 }
 
 // Keeps the product's key facts, image and documents in view while the user
-// works in the consumables tab, where the info form isn't rendered. The BOM
+// works in the directs tab, where the info form isn't rendered. The BOM
 // tab (ProductDetailPage) hides this column entirely — its table runs wide
 // enough to need the full row.
 export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
