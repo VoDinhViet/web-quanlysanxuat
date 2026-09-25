@@ -18,10 +18,10 @@ import {
 import { useAppForm } from "@/hooks/use-app-form"
 import { rejectPurchaseRequest } from "@/features/purchase-requests/api/server-functions/reject-purchase-request.api"
 import { rejectPurchaseRequestSchema } from "@/features/purchase-requests/schemas/reject-purchase-request.schema"
-import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
+import type { PurchaseRequestRef } from "@/lib/types/purchase-request.type"
 
 type RejectPurchaseRequestDialogProps = {
-  purchaseRequest: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestRef
   trigger: ReactElement
 }
 
@@ -50,7 +50,7 @@ export function RejectPurchaseRequestDialog({
 }
 
 type RejectPurchaseRequestFormProps = {
-  purchaseRequest: PurchaseRequestDetail
+  purchaseRequest: PurchaseRequestRef
   onClose: () => void
 }
 

@@ -45,6 +45,9 @@ export type PurchaseRequestProductionOrderRef = {
  *  xuất mua hàng" list screen. Carries the full approval audit trail
  *  (`senderBy`/`sentAt`/`approverBy`/`approvedAt`/`rejecterBy`/`rejectedAt`/`rejectionReason`) even
  *  though the list table doesn't render it yet — kept for type accuracy with the wire shape. */
+// Minimal identity the status-change dialogs need — satisfied by both list rows and detail.
+export type PurchaseRequestRef = Pick<PurchaseRequest, "id" | "code">
+
 export type PurchaseRequest = {
   id: string
   code: string
