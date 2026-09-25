@@ -60,11 +60,12 @@ export function DueDateCell({ order }: { order: Order }) {
 // with a status-specific hint. Otherwise it links to the update screen, gated on `orders:update`
 // same as the create button on the toolbar. The <span tabIndex={0}> wrapper on the disabled action
 // is required — a disabled button swallows pointer events and the tooltip would never fire.
-// "Xoá" only works while DRAFT (backend gate E264) — every other status keeps DisabledAction, same
-// idiom as OutboundOrderActionsCell.
+// "Xoá" only works while the order is unapproved — DRAFT or REJECTED (backend gate E264) — every
+// other status keeps DisabledAction, same idiom as OutboundOrderActionsCell.
 export function OrderActionsCell({ order }: { order: Order }) {
   const isEditable = canUpdateOrder(order.status)
-  const isDraft = order.status === OrderStatus.DRAFT
+  const canDelete =
+    order.status === OrderStatus.DRAFT || order.status === OrderStatus.REJECTED
 
   return (
     <div className="flex items-center justify-center gap-1.5">
@@ -111,7 +112,7 @@ export function OrderActionsCell({ order }: { order: Order }) {
           <Pencil className="size-3.5" />
         </DisabledAction>
       )}
-      {isDraft ? (
+      {canDelete ? (
         <PermissionGate permission="orders:delete">
           <Tooltip>
             <DeleteOrderDialog
@@ -137,7 +138,7 @@ export function OrderActionsCell({ order }: { order: Order }) {
       ) : (
         <DisabledAction
           label="Xoá đơn hàng"
-          hint="chỉ xoá được khi đơn ở trạng thái Nháp"
+          hint="chỉ xoá được đơn chưa được duyệt (Nháp hoặc Từ chối)"
         >
           <Trash2 className="size-3.5" />
         </DisabledAction>

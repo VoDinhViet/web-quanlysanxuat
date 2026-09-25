@@ -26,7 +26,7 @@ type DeleteOrderDialogProps = {
   onDeleted?: () => void
 }
 
-// Cùng khuôn DeleteOutboundOrderDialog.tsx — chỉ nên render khi order.status === DRAFT (BE cũng
+// Cùng khuôn DeleteOutboundOrderDialog.tsx — chỉ nên render khi đơn còn DRAFT/REJECTED (BE cũng
 // chặn lại bằng E264 nếu không, xem OrderTableCells.tsx's caller).
 export function DeleteOrderDialog({
   order,
