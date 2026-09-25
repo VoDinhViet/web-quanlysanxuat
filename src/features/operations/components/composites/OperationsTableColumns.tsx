@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { Edit3, Trash2 } from "lucide-react"
+import { PenNewSquare, Routing, TrashBinTrash } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
@@ -38,11 +38,16 @@ export const operationColumns = operationColumnHelper.columns([
   }),
   operationColumnHelper.accessor("code", {
     header: "Mã công đoạn",
-    meta: { headerClassName: "min-w-28" },
+    meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
-        {getValue()}
-      </span>
+      <div className="flex items-center gap-2.5">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/15 text-info">
+          <Routing className="size-4" />
+        </span>
+        <span className="font-mono text-xs font-bold text-foreground">
+          {getValue()}
+        </span>
+      </div>
     ),
   }),
   operationColumnHelper.accessor("name", {
@@ -71,6 +76,11 @@ export const operationColumns = operationColumnHelper.columns([
         </Badge>
       )
     },
+  }),
+  operationColumnHelper.accessor((row) => row.creatorBy?.fullName ?? "—", {
+    id: "creator",
+    header: "Người tạo",
+    meta: { headerClassName: "min-w-32" },
   }),
   operationColumnHelper.accessor("createdAt", {
     header: "Ngày tạo",
@@ -103,7 +113,7 @@ export const operationColumns = operationColumnHelper.columns([
                         aria-label="Chỉnh sửa"
                         className="text-muted-foreground hover:border-primary/30 hover:text-primary"
                       >
-                        <Edit3 className="size-3.5" />
+                        <PenNewSquare className="size-3.5" />
                       </Button>
                     }
                   />
@@ -126,7 +136,7 @@ export const operationColumns = operationColumnHelper.columns([
                         aria-label="Xóa"
                         className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
                       >
-                        <Trash2 className="size-3.5" />
+                        <TrashBinTrash className="size-3.5" />
                       </Button>
                     }
                   />

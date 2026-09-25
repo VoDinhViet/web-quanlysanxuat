@@ -1,6 +1,6 @@
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { Plus, Wrench } from "lucide-react"
+import { AddCircle, Routing } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -35,30 +35,32 @@ export function OperationsTable({ rows, isPending }: OperationsTableProps) {
   return (
     <div
       className={cn(
-        "min-w-0 flex-1 px-4 pb-4 transition-opacity lg:px-5",
+        "min-w-0 flex-1 transition-opacity",
         isPending && "pointer-events-none opacity-50"
       )}
     >
       {rows.length === 0 ? (
-        <TableEmpty
-          icon={Wrench}
-          title="Chưa có công đoạn nào"
-          description="Bắt đầu bằng cách thêm công đoạn đầu tiên vào danh mục của bạn."
-          action={
-            <PermissionGate permission="operations:create">
-              <CreateOperationDialog
-                trigger={
-                  <Button size="sm" className="text-xs">
-                    <Plus className="size-4" />
-                    Tạo công đoạn
-                  </Button>
-                }
-              />
-            </PermissionGate>
-          }
-        />
+        <div className="p-4 sm:p-5">
+          <TableEmpty
+            icon={Routing}
+            title="Chưa có công đoạn nào"
+            description="Bắt đầu bằng cách thêm công đoạn đầu tiên vào danh mục của bạn."
+            action={
+              <PermissionGate permission="operations:create">
+                <CreateOperationDialog
+                  trigger={
+                    <Button size="sm" className="text-xs">
+                      <AddCircle className="size-4" />
+                      Tạo công đoạn
+                    </Button>
+                  }
+                />
+              </PermissionGate>
+            }
+          />
+        </div>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
+        <div className="overflow-x-auto bg-card">
           <Table aria-label="Danh sách công đoạn">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
               <TableRow>
@@ -80,7 +82,7 @@ export function OperationsTable({ rows, isPending }: OperationsTableProps) {
               {table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="h-14 bg-card hover:bg-muted/25"
+                  className="h-12 bg-card hover:bg-muted/25"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
@@ -97,6 +99,9 @@ export function OperationsTable({ rows, isPending }: OperationsTableProps) {
               ))}
             </TableBody>
           </Table>
+          <p className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
+            Tổng {rows.length} công đoạn
+          </p>
         </div>
       )}
     </div>

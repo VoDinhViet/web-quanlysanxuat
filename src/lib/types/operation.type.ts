@@ -48,7 +48,7 @@ export type OperationDetail = {
   name: string
   note: string | null
   status: OperationStatus
-  creatorBy: UserRef
+  creatorBy: UserRef | null
   createdAt: string
   updatedAt: string
 }

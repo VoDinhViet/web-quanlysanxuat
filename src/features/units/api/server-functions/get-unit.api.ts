@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import type { Unit } from "@/lib/types/unit.type"
+import type { UnitDetail } from "@/lib/types/unit.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -23,9 +23,9 @@ function resolveGetUnitErrorMessage(error: unknown): string {
 
 export const getUnit = createServerFn({ method: "GET" })
   .validator(z.object({ unitId: z.uuid() }))
-  .handler(async ({ data }): Promise<Unit> => {
+  .handler(async ({ data }): Promise<UnitDetail> => {
     try {
-      const response = await http.get<Unit>(`/api/units/${data.unitId}`)
+      const response = await http.get<UnitDetail>(`/api/units/${data.unitId}`)
 
       return response.data
     } catch (error) {

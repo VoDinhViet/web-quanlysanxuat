@@ -150,6 +150,11 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   // opened from this list page — so they gate themselves with `PermissionGate` instead of
   // an entry here (see UnitsPage.tsx/UnitsTableColumns.tsx).
   "/manage/units": "items:read",
+  // Settings layout route is open to any user with permission to at least one sub-page.
+  // Child routes gate themselves with items:read / operations:read.
+  "/manage/settings": null,
+  "/manage/settings/units": "items:read",
+  "/manage/settings/operations": "operations:read",
 
   // No `users:read` exists in the backend catalogue — reading the staff list is gated on
   // `users:update`, matching the backend's own guard.
@@ -185,6 +190,12 @@ export function canAccessRoute(
   path: ManageRoutePath,
   permissions: string[]
 ): boolean {
+  if (path === "/manage/settings") {
+    return (
+      hasPermission(permissions, "items:read") ||
+      hasPermission(permissions, "operations:read")
+    )
+  }
   const required = requiredPermissionForPath(path)
   return required === null || hasPermission(permissions, required)
 }

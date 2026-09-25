@@ -1,7 +1,8 @@
 import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Loader2, Save } from "lucide-react"
+import { Diskette } from "@solar-icons/react"
+import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -145,7 +146,7 @@ export function CreateOperationForm({
                 </>
               ) : (
                 <>
-                  <Save />
+                  <Diskette />
                   Lưu công đoạn
                 </>
               )}

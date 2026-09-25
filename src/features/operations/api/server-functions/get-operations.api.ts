@@ -4,6 +4,7 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import { OperationStatus } from "@/lib/types/operation.type"
 import type { OperationDetail } from "@/lib/types/operation.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
@@ -23,6 +24,7 @@ function resolveGetOperationsErrorMessage(error: unknown): string {
 
 const getOperationsSchema = z.object({
   q: z.string().optional(),
+  status: z.enum(OperationStatus).optional(),
 })
 
 // Full-detail variant for the management screen (list/create/update/delete) — distinct from
@@ -33,7 +35,7 @@ export const getOperations = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<OperationDetail[]> => {
     try {
       const response = await http.get<OperationDetail[]>("/api/operations", {
-        params: { q: data.q },
+        params: { q: data.q, status: data.status },
       })
 
       return response.data

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Trash2 } from "lucide-react"
+import { TrashBinTrash } from "@solar-icons/react"
 import { toast } from "sonner"
 import type { ReactElement } from "react"
 
@@ -52,7 +52,7 @@ export function DeleteOperationDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
-            <Trash2 />
+            <TrashBinTrash />
           </AlertDialogMedia>
           <AlertDialogTitle>Xóa công đoạn này?</AlertDialogTitle>
           <AlertDialogDescription>
