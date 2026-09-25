@@ -46,6 +46,7 @@ export type PageTitleBreadcrumb = {
   // Typed against the generated route tree — see AppSidebar.tsx's MenuItem.href for why. A
   // href-less, non-last crumb renders as plain text (a group label, not a link) below.
   href?: FileRouteTypes["to"]
+  params?: Record<string, string>
 }
 
 type PageTitleBarProps = {
@@ -70,7 +71,10 @@ function PageBreadcrumbs({ breadcrumbs }: PageBreadcrumbsProps) {
                 {isLast ? (
                   <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
                 ) : breadcrumb.href ? (
-                  <BreadcrumbLink to={breadcrumb.href}>
+                  <BreadcrumbLink
+                    to={breadcrumb.href}
+                    params={breadcrumb.params}
+                  >
                     {breadcrumb.label}
                   </BreadcrumbLink>
                 ) : (
