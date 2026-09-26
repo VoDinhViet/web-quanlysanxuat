@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { LinkButton } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
@@ -99,14 +99,15 @@ export function DirectsPickerTable({
         </div>
         {/* Mở tab mới để không mất lựa chọn đang dở trong dialog. */}
         <RoutePermissionGate route="/manage/directs/create">
-          <LinkButton
-            to="/manage/directs/create"
+          <a
+            href="/manage/directs/create"
             target="_blank"
-            className="text-xs"
+            rel="noreferrer"
+            className={buttonVariants({ className: "text-xs" })}
           >
             <Plus className="size-4" />
             Thêm vật tư
-          </LinkButton>
+          </a>
         </RoutePermissionGate>
       </div>
 
