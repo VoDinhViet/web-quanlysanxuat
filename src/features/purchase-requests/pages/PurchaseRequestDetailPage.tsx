@@ -45,8 +45,11 @@ export function PurchaseRequestDetailPage() {
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <PurchaseRequestRejectionNotice purchaseRequest={purchaseRequest} />
 
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-          <Surface>
+        {/* Flex, not a fixed 320px grid track: the sidebar only holds the related-notes card, which
+            renders nothing when the chain has no other notes — `empty:hidden` then lets the main
+            column take the full width instead of leaving a blank strip. */}
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-start">
+          <Surface className="min-w-0 flex-1">
             <PurchaseRequestDetailHeader
               purchaseRequest={purchaseRequest}
               itemCount={purchaseRequest.items.length}
@@ -57,7 +60,7 @@ export function PurchaseRequestDetailPage() {
             />
           </Surface>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 empty:hidden xl:w-80 xl:shrink-0">
             <PurchaseRequestRelatedNotesCard
               purchaseRequestId={purchaseRequest.id}
             />
