@@ -1,3 +1,5 @@
+import { AddCircle, CheckCircle } from "@solar-icons/react"
+
 import {
   Tooltip,
   TooltipContent,
@@ -35,10 +37,15 @@ export function SpecialPermissionChip({
         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors select-none",
         checked
           ? "border-primary/30 bg-primary/10 text-primary"
-          : "border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-foreground",
+          : "border-border bg-muted/40 text-muted-foreground hover:border-primary/40 hover:text-foreground",
         disabled && "cursor-not-allowed opacity-50"
       )}
     >
+      {checked ? (
+        <CheckCircle className="size-3.5" />
+      ) : (
+        <AddCircle className="size-3.5" />
+      )}
       {label}
     </button>
   )

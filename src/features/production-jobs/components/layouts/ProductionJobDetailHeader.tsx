@@ -38,10 +38,7 @@ type ProductionJobDetailHeaderProps = {
 // there is no manual create screen left to deep-link to. No client-side gate beyond each
 // button's own disabledReason — the backend enforces every precondition
 // (E213/E214/E196/E197/...) and each dialog surfaces its own error inline.
-function getJobQuantityLabel(
-  job: ProductionJobDetail,
-  enrichedUnit?: string
-) {
+function getJobQuantityLabel(job: ProductionJobDetail, enrichedUnit?: string) {
   const unit = job.item.unit?.name ?? enrichedUnit
 
   return unit ? `${job.quantity} ${unit}` : job.quantity

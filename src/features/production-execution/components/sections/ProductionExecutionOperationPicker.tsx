@@ -1,9 +1,8 @@
 import { useMemo, useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
-import { Radio } from "@base-ui/react/radio"
 import { CircleAlert, Inbox } from "lucide-react"
-import { Layers, Routing, Settings, Sort } from "@solar-icons/react"
+import { Layers, Settings, Sort } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { LinkButton } from "@/components/ui/button"
@@ -18,12 +17,16 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import {
+  AllOperationsChip,
+  OperationChip,
+} from "@/features/production-execution/components/composites/ProductionExecutionOperationChip"
+import { ALL_OPERATIONS } from "@/features/production-execution/schemas/production-execution-search.schema"
 import { productionExecutionOperationsQueryOptions } from "@/features/production-execution/api/options"
 import type { ProductionExecutionOperation } from "@/lib/types/production-job.type"
-import { cn } from "@/lib/utils"
 
-const gridClassName =
-  "grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+const chipsClassName = "flex flex-wrap gap-2"
+
 type OperationSort = "default" | "name" | "jobCount"
 
 const sortOptions = [
@@ -143,9 +146,9 @@ export function ProductionExecutionOperationPicker() {
         </div>
 
         {operationsQuery.isPending ? (
-          <div className={gridClassName}>
+          <div className={chipsClassName}>
             {skeletonKeys.map((key) => (
-              <Skeleton key={key} className="h-[72px] rounded-lg" />
+              <Skeleton key={key} className="h-14 w-44 rounded-md" />
             ))}
           </div>
         ) : operationsQuery.isError ? (
@@ -156,17 +159,22 @@ export function ProductionExecutionOperationPicker() {
         ) : operationsQuery.data.length === 0 ? (
           <PickerMessage
             icon={Inbox}
-            message="Không có công đoạn nào khớp bộ lọc."
+            message="Không có công đoạn nào khớp bộ lọc, hoặc bạn chưa được phân công vào công đoạn nào."
           />
         ) : (
           <RadioGroup
             aria-label="Chọn công đoạn sản xuất"
             value={search.operationId ?? ""}
             onValueChange={handleChange}
-            className={gridClassName}
+            className={chipsClassName}
           >
+            <AllOperationsChip
+              value={ALL_OPERATIONS}
+              operations={operationsQuery.data}
+              isChecked={search.operationId === ALL_OPERATIONS}
+            />
             {sortedOperations.map(({ operation, position }) => (
-              <OperationCard
+              <OperationChip
                 key={operation.operationId}
                 operation={operation}
                 position={position}
@@ -191,56 +199,5 @@ function PickerMessage({ icon: Icon, message }: PickerMessageProps) {
       <Icon className="size-4" />
       {message}
     </div>
-  )
-}
-
-type OperationCardProps = {
-  operation: ProductionExecutionOperation
-  position: number
-  isChecked: boolean
-}
-
-function OperationCard({ operation, position, isChecked }: OperationCardProps) {
-  return (
-    <Radio.Root
-      value={operation.operationId}
-      className={cn(
-        "flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-card p-3 text-start outline-none hover:bg-muted/40 focus-visible:ring-3 focus-visible:ring-ring/50",
-        isChecked && "border-primary bg-primary/5 hover:bg-primary/5"
-      )}
-    >
-      <span
-        className={cn(
-          "flex size-11 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground",
-          isChecked && "bg-primary/10 text-primary"
-        )}
-      >
-        <Routing className="size-5" />
-      </span>
-
-      <span className="min-w-0 flex-1">
-        <span className="flex items-baseline gap-2">
-          <span className="font-mono text-xs text-muted-foreground tabular-nums">
-            {String(position).padStart(2, "0")}
-          </span>
-          <span
-            title={operation.name}
-            className="truncate text-sm font-semibold text-foreground"
-          >
-            {operation.name}
-          </span>
-        </span>
-        <span className="mt-1 block truncate text-xs text-muted-foreground">
-          {operation.jobCount} job
-        </span>
-      </span>
-
-      <Radio.Indicator
-        keepMounted
-        className="flex size-4 shrink-0 items-center justify-center rounded-full border border-input data-checked:border-primary data-checked:bg-primary"
-      >
-        <span className="size-1.5 rounded-full bg-primary-foreground" />
-      </Radio.Indicator>
-    </Radio.Root>
   )
 }

@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import {
-  productionJobOperationsQueryOptions,
-  productionJobQueryOptions,
-} from "@/features/production-jobs/api"
+  productionExecutionJobOperationsQueryOptions,
+  productionExecutionJobQueryOptions,
+} from "@/features/production-execution/api"
 import { ProductionExecutionJobPage } from "@/features/production-execution/pages/ProductionExecutionJobPage"
 import { productionExecutionJobSearchSchema } from "@/features/production-execution/schemas/production-execution-job-search.schema"
 
@@ -16,20 +16,26 @@ export const Route = createFileRoute(
   // keystroke), this route's entire dataset depends on `operationId` — it SHOULD re-run the
   // loader when it changes.
   loaderDeps: ({ search }) => ({ operationId: search.operationId }),
+  // Thiếu `operationId` (link cũ/gõ tay): bỏ qua loader, trang tự quay về màn chọn công đoạn.
   loader: ({ context, params, deps }) =>
-    Promise.all([
-      context.queryClient.query({
-        ...productionJobQueryOptions(params.productionJobId),
-        staleTime: "static",
-      }),
-      context.queryClient.query({
-        ...productionJobOperationsQueryOptions(
-          params.productionJobId,
-          deps.operationId
-        ),
-        staleTime: "static",
-      }),
-    ]),
+    deps.operationId
+      ? Promise.all([
+          context.queryClient.query({
+            ...productionExecutionJobQueryOptions(
+              params.productionJobId,
+              deps.operationId
+            ),
+            staleTime: "static",
+          }),
+          context.queryClient.query({
+            ...productionExecutionJobOperationsQueryOptions(
+              params.productionJobId,
+              deps.operationId
+            ),
+            staleTime: "static",
+          }),
+        ])
+      : undefined,
   component: ProductionExecutionJobPage,
   pendingComponent: LayoutPagePending,
 })

@@ -1,3 +1,4 @@
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { ManageAlerts } from "@/features/manage/components/sections/ManageAlerts"
 import { ManageAnalyticsRow } from "@/features/manage/components/layouts/ManageAnalyticsRow"
@@ -14,14 +15,23 @@ export function ManagePage() {
         breadcrumbs={[{ label: "Tổng quan điều hành" }]}
       />
 
-      <div className="w-full space-y-5 p-4 sm:p-5 lg:p-6">
-        <ManageStatCards />
-        <ManageAlerts />
-        <ManageProductionRow />
-        <ManageOperationsRow />
-        <ManageAnalyticsRow />
-        <ManageFooter />
-      </div>
+      <PermissionGate
+        permission="reports:read"
+        fallback={
+          <p className="p-6 text-center text-sm text-muted-foreground">
+            Bạn không có quyền xem báo cáo tổng quan.
+          </p>
+        }
+      >
+        <div className="w-full space-y-5 p-4 sm:p-5 lg:p-6">
+          <ManageStatCards />
+          <ManageAlerts />
+          <ManageProductionRow />
+          <ManageOperationsRow />
+          <ManageAnalyticsRow />
+          <ManageFooter />
+        </div>
+      </PermissionGate>
     </main>
   )
 }

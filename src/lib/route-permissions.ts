@@ -101,8 +101,8 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/payment-requests": "purchasing:read",
   "/manage/payment-requests/$paymentRequestId": "purchasing:read",
 
-  "/manage/production-execution": "production:read",
-  "/manage/production-execution/$productionJobId": "production:read",
+  "/manage/production-execution": "production-execution:read",
+  "/manage/production-execution/$productionJobId": "production-execution:read",
 
   "/manage/production-jobs": "production:read",
   "/manage/production-jobs/$productionJobId": "production:read",
@@ -191,6 +191,11 @@ export function canAccessRoute(
   path: ManageRoutePath,
   permissions: string[]
 ): boolean {
+  // `/manage` stays open to everyone in `routePermissions` (redirect target), but its
+  // dashboard content is reports — so the sidebar entry follows `reports:read`.
+  if (path === "/manage") {
+    return hasPermission(permissions, "reports:read")
+  }
   if (path === "/manage/settings") {
     return (
       hasPermission(permissions, "items:read") ||
@@ -199,4 +204,19 @@ export function canAccessRoute(
   }
   const required = requiredPermissionForPath(path)
   return required === null || hasPermission(permissions, required)
+}
+
+/**
+ * First list page (in `routePermissions` order) the user may read — where a user without
+ * dashboard access lands instead. `$param` routes and non-`:read` entries are skipped, so it
+ * only ever picks a plain list route. `null` when the user can read nothing.
+ */
+export function firstReadableRoute(permissions: string[]): string | null {
+  const found = Object.entries(routePermissions).find(
+    ([path, required]) =>
+      required?.endsWith(":read") &&
+      !path.includes("$") &&
+      hasPermission(permissions, required)
+  )
+  return found ? found[0] : null
 }

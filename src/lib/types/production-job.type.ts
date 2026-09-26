@@ -73,6 +73,12 @@ export type ProductionJobDetail = {
   updatedAt: string
 }
 
+/** Mirrors `GET /production-execution/jobs/:productionJobId` — `ProductionJobDetail` plus the
+ *  FG item's image, so the "Thực hiện sản xuất" screen needs no separate `GET /items/:id`. */
+export type ProductionExecutionJobDetail = ProductionJobDetail & {
+  image: FileResource | null
+}
+
 /** Mirrors the backend's ProductionJobBomOperationResDto, nested in ProductionJobBomItem below —
  *  the as-used routing snapshot copied from `routing_steps` onto a single BOM node at Job `start`
  *  time (`production_job_operations`) — not LSX approval; a `PENDING` Job has no rows here yet
@@ -256,6 +262,10 @@ export type ProductionExecutionOperation = {
   name: string
   type: OperationType
   jobCount: number
+  /** Số Job đang sản xuất (status IN_PROGRESS) trong `jobCount`. */
+  inProgressCount: number
+  /** Số Job có dòng công đoạn này chưa xong mà đã quá hạn hoàn thành. */
+  overdueCount: number
 }
 
 /** Trạng thái tiến độ của MỘT công đoạn trên MỘT Job — gộp qua mọi part của Job có công đoạn đó
@@ -297,6 +307,10 @@ export const productionOperationEvaluationLabels: Record<
 export type ProductionJobByOperation = {
   jobId: string
   jobCode: string
+  /** Công đoạn của dòng này — bằng công đoạn đang chọn, hoặc từng công đoạn khi xem "Tất cả". */
+  operationId: string
+  operationCode: string
+  operationName: string
   orderCode: string
   item: { code: string; name: string }
   image: FileResource | null

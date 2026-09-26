@@ -71,16 +71,16 @@ export function RolePermissionsTable({
       aria-label="Bảng phân quyền"
     >
       <colgroup>
-        <col className="w-[40%] min-w-65" />
-        <col className="w-[12%]" />
-        <col className="w-[12%]" />
-        <col className="w-[12%]" />
-        <col className="w-[12%]" />
-        <col className="w-[12%]" />
+        <col className="w-[30%] min-w-65" />
+        <col className="w-[14%]" />
+        <col className="w-[14%]" />
+        <col className="w-[14%]" />
+        <col className="w-[14%]" />
+        <col className="w-[14%]" />
       </colgroup>
 
       <TableHeader className="[&_tr]:hover:bg-transparent">
-        <TableRow className="sticky top-0 z-20 divide-x divide-border/60 border-b-2 border-b-primary/15 bg-muted/60">
+        <TableRow className="sticky top-0 z-20 divide-x divide-border/60 border-b-2 border-b-primary/15 bg-card">
           {table.getFlatHeaders().map((header) => (
             <TableHead
               key={header.id}
@@ -106,7 +106,7 @@ export function RolePermissionsTable({
 
           return (
             <Fragment key={block.key}>
-              <TableRow className="sticky top-11 z-10 h-9 border-b border-border/60 bg-muted/40 hover:bg-muted/40">
+              <TableRow className="sticky top-14 z-10 h-11 border-y border-border/60 bg-muted/50 hover:bg-muted/50">
                 <TableCell
                   colSpan={rolePermissionsColumns.length}
                   className="px-4 py-0"
@@ -122,8 +122,8 @@ export function RolePermissionsTable({
                       label={`Toàn bộ quyền của khối ${block.label}`}
                       className="size-3.5"
                     />
-                    <BlockIcon className="size-3.5 text-muted-foreground" />
-                    <span className="text-xs font-semibold text-foreground">
+                    <BlockIcon className="size-5 text-muted-foreground" />
+                    <span className="text-sm font-semibold text-foreground">
                       {block.label}
                     </span>
                     <span className="text-xs text-muted-foreground">

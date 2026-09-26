@@ -7,6 +7,10 @@ import { ProductionJobStatus } from "@/lib/types/production-job.type"
 // the first tile client-side once the operations query resolves (see
 // ProductionExecutionPage.tsx) rather than baking in a guess here, so the jobs table stays
 // `enabled: Boolean(search.operationId)` until then.
+// Giá trị `operationId` đặc biệt cho thẻ "Tất cả công đoạn": server function bỏ hẳn tham số này
+// để BE trả mọi Job × công đoạn người dùng được phép.
+export const ALL_OPERATIONS = "all"
+
 export const productionExecutionSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),

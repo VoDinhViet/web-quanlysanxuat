@@ -1,4 +1,3 @@
-import { useSearch } from "@tanstack/react-router"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
 import { ArrowRight } from "lucide-react"
@@ -108,20 +107,16 @@ export function ProductionExecutionEvaluationBadge({
 
 type ProductionExecutionJobActionsCellProps = {
   productionJobId: string
+  // Công đoạn của chính dòng này — khi xem "Tất cả công đoạn" mỗi dòng một công đoạn khác nhau nên
+  // không đọc từ route search. Trang chi tiết cần đúng operationId này để BE lọc bảng Part
+  // (GET .../operations?operationId=...).
+  operationId: string
 }
 
-// Đọc `operationId` qua useSearch (route search hiện tại của chính trang danh sách) thay vì nhận
-// qua prop cột — giữ `productionExecutionJobColumns` ở module scope (forms-and-ui.md: columns
-// không được tạo lại mỗi render), cùng idiom OperationSendActionCell.tsx đọc `productionJobId` qua
-// useParams. Trang chi tiết cần đúng operationId này để BE lọc bảng Part
-// (GET .../operations?operationId=...).
 export function ProductionExecutionJobActionsCell({
   productionJobId,
+  operationId,
 }: ProductionExecutionJobActionsCellProps) {
-  const { operationId } = useSearch({
-    from: "/(authed)/manage_/production-execution/",
-  })
-
   return (
     <LinkButton
       to="/manage/production-execution/$productionJobId"

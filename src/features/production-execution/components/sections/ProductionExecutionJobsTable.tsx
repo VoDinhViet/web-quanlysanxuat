@@ -22,6 +22,8 @@ type ProductionExecutionJobsTableProps = {
   rows: ProductionJobByOperation[]
   pagination: PaginationMeta
   isPending: boolean
+  // "Tất cả công đoạn": mỗi dòng một công đoạn khác nhau nên hiện thêm cột "Công đoạn".
+  showOperation: boolean
 }
 
 // Bảng "DANH SÁCH CÔNG VIỆC" — cùng khuôn ProductionJobsTable.tsx (tự dựng useReactTable/
@@ -30,11 +32,13 @@ export function ProductionExecutionJobsTable({
   rows,
   pagination,
   isPending,
+  showOperation,
 }: ProductionExecutionJobsTableProps) {
   const table = useTable({
     data: rows,
     columns: productionExecutionJobColumns,
     features: appTableFeatures,
+    state: { columnVisibility: { operation: showOperation } },
   })
 
   const { onPageChange, onPageSizeChange } = useRoutePagination()

@@ -64,7 +64,7 @@ export function OqcTableFilter() {
         loading: "Đang xuất file Excel OQC...",
         success: "Đã xuất file Excel OQC",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
