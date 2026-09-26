@@ -5,7 +5,7 @@ import { operationOptionsQueryOptions } from "@/features/operations/api/options"
 import { buildSelectOptions } from "@/lib/utils"
 
 // Server-searched options for the "add step" combobox: debounces the typed
-// term and reads operationOptionsQueryOptions (GET /api/operations?q=...)
+// term and reads operationOptionsQueryOptions (GET /api/operations/options?q=...)
 // from the shared query cache. `select` maps each master operation ref
 // (OperationRef) to the {value, label} pairs ComboboxField expects;
 // `onSearchChange` is the debounced setter.

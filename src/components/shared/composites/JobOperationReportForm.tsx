@@ -93,7 +93,7 @@ export function JobOperationReportForm({
       </DialogHeader>
 
       <PermissionGate
-        permission="production:update"
+        permission="production-execution:report"
         fallback={
           <Alert className="border-warning/30 bg-warning/10 py-2.5">
             <TriangleAlert className="text-warning" />

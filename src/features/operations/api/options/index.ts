@@ -3,3 +3,5 @@
 export { operationOptionsQueryOptions } from "@/features/operations/api/options/operation-options.options"
 export { operationQueryOptions } from "@/features/operations/api/options/operation.options"
 export { operationsQueryOptions } from "@/features/operations/api/options/operations.options"
+export { operationAssignmentsQueryOptions } from "@/features/operations/api/options/operation-assignments.options"
+export { operationAssignmentIdsQueryOptions } from "@/features/operations/api/options/operation-assignment-ids.options"

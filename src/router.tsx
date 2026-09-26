@@ -10,11 +10,18 @@ export function getRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        // Data is considered stale immediately so navigating between pages
-        // triggers an automatic background refetch to guarantee fresh ERP state
-        // while serving cached data instantly.
-        staleTime: 0,
+        // Three freshness tiers. This is the default one: data is fresh for 30s, so going back to
+        // a page just visited reuses the cache instead of refetching; older data is served
+        // instantly and revalidated in the background. Reference lists (units, clients, ...)
+        // override it upward with a literal 5–15 min `staleTime`; fast-moving screens (stock,
+        // production execution) override it to 0. Every mutation invalidates the feature roots
+        // it affects, so the user's own writes are never hidden behind this window.
+        staleTime: 30_000,
+        // Longer than the 5 min default so back/forward navigation still finds the cache.
+        // Always >= staleTime.
+        gcTime: 15 * 60_000,
         refetchOnMount: true,
+        refetchOnReconnect: true,
         // Server functions already throw clean Vietnamese messages — one retry
         // is enough, don't hammer a failing backend.
         retry: 1,

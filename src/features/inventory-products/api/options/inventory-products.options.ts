@@ -8,5 +8,7 @@ export const inventoryProductsQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ["inventory-products", "list", search],
+    // Fast-moving tier (see src/router.tsx): stock levels change with every receipt/issue — always revalidate on mount.
+    staleTime: 0,
     queryFn: () => getProductInventory({ data: search }),
   })

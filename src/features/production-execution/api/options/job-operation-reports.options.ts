@@ -16,6 +16,8 @@ export const jobOperationReportsQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ["production-execution", "reports", params],
+    // Fast-moving tier (see src/router.tsx): floor progress reports — always revalidate on mount.
+    staleTime: 0,
     queryFn: () => getJobOperationReports({ data: params }),
     placeholderData: keepPreviousData,
   })

@@ -45,7 +45,11 @@ function useOqcDetailForm(oqc: OqcDetail) {
   const mutation = useMutation({
     mutationFn: (value: ConfirmOqcSchema) => confirmOqcFn({ data: value }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["oqc"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["oqc"] }),
+        queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+        queryClient.invalidateQueries({ queryKey: ["production-execution"] }),
+      ])
       toast.success("Đã lưu kết quả QC")
     },
     onError: (error) => toast.error(error.message),

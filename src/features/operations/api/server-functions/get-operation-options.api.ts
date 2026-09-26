@@ -20,13 +20,15 @@ export const getOperationOptions = createServerFn({ method: "GET" })
   .validator(getOperationOptionsSchema)
   .handler(async ({ data }): Promise<OperationRef[]> => {
     try {
-      const response = await http.get<OperationRef[]>("/api/operations", {
-        params: {
-          q: data.q,
-          limit: 100,
-          status: "ACTIVE",
-        },
-      })
+      const response = await http.get<OperationRef[]>(
+        "/api/operations/options",
+        {
+          params: {
+            q: data.q,
+            status: "ACTIVE",
+          },
+        }
+      )
 
       return response.data
     } catch (error) {

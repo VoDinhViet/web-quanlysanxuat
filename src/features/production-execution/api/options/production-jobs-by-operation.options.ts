@@ -27,6 +27,8 @@ export const productionJobsByOperationQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ["production-execution", "list", search],
+    // Fast-moving tier (see src/router.tsx): floor progress per operation — always revalidate on mount.
+    staleTime: 0,
     queryFn: () =>
       search.operationId
         ? getProductionJobsByOperation({

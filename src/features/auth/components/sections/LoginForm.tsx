@@ -35,7 +35,7 @@ export function LoginForm() {
       loginWithEmailPasswordFn({ data: value }),
     onSuccess: async () => {
       // The QueryClient outlives a logout/login cycle, so a previous user's cache can
-      // still be fresh (staleTime 60s) — wipe it before the guard below re-reads the
+      // still be fresh (default staleTime 30s) — wipe it before the guard below re-reads the
       // profile, or the new user inherits the old user's permissions and list data.
       queryClient.clear()
       // The session cookie only exists after the server function resolves, so the

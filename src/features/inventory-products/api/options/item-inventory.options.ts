@@ -7,5 +7,7 @@ import { getItemInventory } from "@/features/inventory-products/api/server-funct
 export const itemInventoryQueryOptions = (itemId: string) =>
   queryOptions({
     queryKey: ["inventory-products", "detail", itemId],
+    // Fast-moving tier (see src/router.tsx): stock changes with every receipt/issue — always revalidate on mount.
+    staleTime: 0,
     queryFn: () => getItemInventory({ data: { itemId } }),
   })

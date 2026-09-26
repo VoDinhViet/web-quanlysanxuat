@@ -5,3 +5,5 @@
 export { productionExecutionOperationsQueryOptions } from "@/features/production-execution/api/options"
 export { productionJobsByOperationQueryOptions } from "@/features/production-execution/api/options"
 export { jobOperationReportsQueryOptions } from "@/features/production-execution/api/options"
+export { productionExecutionJobQueryOptions } from "@/features/production-execution/api/options"
+export { productionExecutionJobOperationsQueryOptions } from "@/features/production-execution/api/options"

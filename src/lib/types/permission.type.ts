@@ -70,6 +70,10 @@ export const PERMISSION_CODES = [
   "production:update",
   "production:approve",
 
+  "production-execution:read",
+  "production-execution:report",
+  "production-execution:read-all",
+
   "purchase-requests:read",
   "purchase-requests:create",
   "purchase-requests:update",

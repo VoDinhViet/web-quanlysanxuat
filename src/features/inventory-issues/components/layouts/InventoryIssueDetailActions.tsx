@@ -42,8 +42,13 @@ export function InventoryIssueDetailActions({
   const postInventoryIssueFn = useServerFn(postInventoryIssue)
   const cancelInventoryIssueFn = useServerFn(cancelInventoryIssue)
 
+  // Posting/cancelling an issue moves stock and updates the requisition it was raised from.
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ["inventory-issues"] })
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
+      queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
+      queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
+    ])
 
   const postMutation = useMutation({
     mutationFn: () =>

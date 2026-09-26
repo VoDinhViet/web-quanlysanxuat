@@ -48,45 +48,65 @@ export const rolePermissionsColumns = columnHelper.columns([
     header: "Phân hệ / Chức năng",
     meta: {
       headerClassName:
-        "sticky left-0 z-30 h-11 bg-muted/60 px-4 text-left align-middle text-sm font-semibold text-foreground normal-case",
+        "sticky left-0 z-30 h-14 bg-card px-4 text-left align-middle text-sm font-semibold text-foreground normal-case",
       cellClassName:
-        "sticky left-0 z-1 bg-card px-4 py-2.5 align-middle whitespace-normal",
+        "sticky left-0 z-1 bg-card px-4 py-3 align-middle whitespace-normal",
     },
     cell: ({ row, table }) => {
       const module = row.original
       const { selected, disabled, onToggleOne } = getTableMeta(table)
 
+      const codes = [
+        ...gridActions.flatMap((a) => module.byAction[a.key] ?? []),
+        ...module.extras,
+      ].map((permission) => permission.code)
+      const grantedCount = codes.filter((code) => selected.has(code)).length
+
       return (
-        <div className="min-w-0">
-          <div className="flex items-baseline gap-2">
-            <p className="text-sm font-medium text-foreground">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-foreground">
               {module.label}
             </p>
-            <span className="font-mono text-[10px] text-muted-foreground/60">
-              {module.resource}
-            </span>
+            {module.description && (
+              <p
+                title={module.description}
+                className="mt-0.5 line-clamp-1 text-xs font-normal text-muted-foreground"
+              >
+                {module.description}
+              </p>
+            )}
+            {module.extras.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {module.extras.map((extra) => (
+                  <SpecialPermissionChip
+                    key={extra.code}
+                    label={extra.label}
+                    description={extra.description}
+                    checked={selected.has(extra.code)}
+                    disabled={disabled}
+                    onCheckedChange={(checked) =>
+                      onToggleOne(extra.code, checked)
+                    }
+                  />
+                ))}
+              </div>
+            )}
           </div>
-          {module.description && (
-            <p className="mt-0.5 text-xs leading-relaxed font-normal text-muted-foreground">
-              {module.description}
-            </p>
-          )}
-          {module.extras.length > 0 && (
-            <div className="mt-1.5 flex flex-wrap gap-1.5">
-              {module.extras.map((extra) => (
-                <SpecialPermissionChip
-                  key={extra.code}
-                  label={extra.label}
-                  description={extra.description}
-                  checked={selected.has(extra.code)}
-                  disabled={disabled}
-                  onCheckedChange={(checked) =>
-                    onToggleOne(extra.code, checked)
-                  }
-                />
-              ))}
-            </div>
-          )}
+          <span
+            className={cn(
+              "min-w-10 shrink-0 rounded-full px-2 py-0.5 text-center text-[11px] font-medium tabular-nums",
+              grantedCount === 0 && "bg-muted text-muted-foreground",
+              grantedCount > 0 &&
+                grantedCount < codes.length &&
+                "bg-primary/10 text-primary",
+              grantedCount === codes.length &&
+                codes.length > 0 &&
+                "bg-success/15 text-success"
+            )}
+          >
+            {grantedCount}/{codes.length}
+          </span>
         </div>
       )
     },
@@ -96,13 +116,23 @@ export const rolePermissionsColumns = columnHelper.columns([
     columnHelper.display({
       id: action.key,
       header: () => (
-        <span className="text-sm font-bold tracking-wide text-foreground uppercase">
-          {action.label}
+        <span className="flex items-center justify-center gap-2.5 px-2 text-left">
+          <action.icon
+            className={cn("size-5 shrink-0", action.iconClassName)}
+          />
+          <span className="flex min-w-0 flex-col leading-tight">
+            <span className="text-xs font-bold tracking-wide text-foreground uppercase">
+              {action.label}
+            </span>
+            <span className="truncate text-[11px] font-normal text-muted-foreground normal-case">
+              {action.hint}
+            </span>
+          </span>
         </span>
       ),
       meta: {
         headerClassName: cn(
-          "h-11 border-b-2 p-0 text-center align-middle",
+          "h-14 border-b-2 p-0 text-center align-middle",
           action.headerAccentClassName
         ),
         cellClassName: "p-0 text-center align-middle",
@@ -112,15 +142,9 @@ export const rolePermissionsColumns = columnHelper.columns([
         const { selected, disabled, onToggleOne } = getTableMeta(table)
         const permission = module.byAction[action.key]
 
+        // Phân hệ không có quyền ở cột này: để trống, không vẽ ô checkbox giả.
         if (!permission) {
-          return (
-            <div className="flex h-11 items-center justify-center">
-              <span
-                aria-hidden
-                className="h-4 w-4 rounded-sm bg-muted-foreground/10"
-              />
-            </div>
-          )
+          return <div className="h-11" />
         }
 
         return (

@@ -6,3 +6,4 @@
 // and not exported here yet.
 export { userOptionsQueryOptions } from "@/features/users/api/options"
 export { useGetUserOptions } from "@/features/users/api/use-get-user-options"
+export { usersQueryOptions } from "@/features/users/api/options"

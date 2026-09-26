@@ -195,7 +195,7 @@ function ProductDrawingsCell({ item }: ProductDrawingsCellProps) {
           render={
             <button
               type="button"
-              className="inline-flex h-6 items-center gap-0.5 rounded-md border border-border/60 bg-muted/50 px-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer shrink-0"
+              className="inline-flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded-md border border-border/60 bg-muted/50 px-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title={`Xem thêm ${extraCount} tài liệu khác`}
             >
               <span>+{extraCount}</span>
@@ -255,7 +255,7 @@ function ProductDrawingsCell({ item }: ProductDrawingsCellProps) {
               to="/manage/products/$productId"
               params={{ productId: item.id }}
               search={{ tab: "info" }}
-              className="w-full "
+              className="w-full"
             >
               <span>Xem chi tiết sản phẩm</span>
               <ArrowUpRight className="size-3.5" />

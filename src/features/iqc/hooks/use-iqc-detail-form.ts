@@ -25,7 +25,12 @@ export function useIqcDetailForm(iqc: IqcDetail) {
     mutationFn: (value: z.input<typeof confirmIqcSchema>) =>
       confirmIqcFn({ data: value }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["iqc"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["iqc"] }),
+        queryClient.invalidateQueries({ queryKey: ["inventory-receipts"] }),
+        queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
+        queryClient.invalidateQueries({ queryKey: ["supplier-returns"] }),
+      ])
       toast.success("Đã lưu kết quả QC")
     },
     onError: (error) => toast.error(error.message),

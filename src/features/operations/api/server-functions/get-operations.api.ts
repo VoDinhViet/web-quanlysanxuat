@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import { z } from "zod"
 
+import { operationsSearchSchema } from "@/features/operations/schemas/operations-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
-import { OperationStatus } from "@/lib/types/operation.type"
+import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { OperationDetail } from "@/lib/types/operation.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
@@ -22,21 +22,17 @@ function resolveGetOperationsErrorMessage(error: unknown): string {
   }
 }
 
-const getOperationsSchema = z.object({
-  q: z.string().optional(),
-  status: z.enum(OperationStatus).optional(),
-})
-
-// Full-detail variant for the management screen (list/create/update/delete) — distinct from
-// get-operation-options.api.ts, which is a silent-fail combobox picker returning the narrower
-// `OperationRef` shape for BOM/routing steps. Both call the same `GET /api/operations`.
+// Full-detail, paginated variant for the management screen (list/create/update/delete) — distinct
+// from get-operation-options.api.ts, the silent-fail combobox picker over `GET /api/operations/options`
+// returning the narrower `OperationRef` shape for BOM/routing steps.
 export const getOperations = createServerFn({ method: "GET" })
-  .validator(getOperationsSchema)
-  .handler(async ({ data }): Promise<OperationDetail[]> => {
+  .validator(operationsSearchSchema)
+  .handler(async ({ data }): Promise<PaginatedResponse<OperationDetail>> => {
     try {
-      const response = await http.get<OperationDetail[]>("/api/operations", {
-        params: { q: data.q, status: data.status },
-      })
+      const response = await http.get<PaginatedResponse<OperationDetail>>(
+        "/api/operations",
+        { params: data }
+      )
 
       return response.data
     } catch (error) {

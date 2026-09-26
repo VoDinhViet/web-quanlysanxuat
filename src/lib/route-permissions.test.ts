@@ -3,9 +3,10 @@ import { canAccessRoute } from "@/lib/route-permissions"
 import { SUPER_PERMISSION } from "@/lib/types/permission.type"
 
 describe("canAccessRoute", () => {
-  it("allows access to unrestricted route /manage for any user", () => {
-    expect(canAccessRoute("/manage", [])).toBe(true)
-    expect(canAccessRoute("/manage", ["orders:read"])).toBe(true)
+  it("gates the /manage dashboard entry on reports:read", () => {
+    expect(canAccessRoute("/manage", [])).toBe(false)
+    expect(canAccessRoute("/manage", ["orders:read"])).toBe(false)
+    expect(canAccessRoute("/manage", ["reports:read"])).toBe(true)
   })
 
   it("denies access when user lacks required permission", () => {

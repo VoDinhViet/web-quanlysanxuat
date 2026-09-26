@@ -9,6 +9,7 @@ import { ProductionExecutionJobsTable } from "@/features/production-execution/co
 import { ProductionExecutionOperationPicker } from "@/features/production-execution/components/sections/ProductionExecutionOperationPicker"
 import { ProductionExecutionJobsTableFilter } from "@/features/production-execution/components/sections/ProductionExecutionJobsTableFilter"
 import { ProductionExecutionLegend } from "@/features/production-execution/components/primitives/ProductionExecutionLegend"
+import { ALL_OPERATIONS } from "@/features/production-execution/schemas/production-execution-search.schema"
 import {
   productionJobsByOperationQueryOptions,
   productionExecutionOperationsQueryOptions,
@@ -39,9 +40,12 @@ export function ProductionExecutionPage() {
   // chọn công đoạn đầu tiên ngay khi danh sách về. `replace` để không tạo thêm 1 bước back vô nghĩa.
   useEffect(() => {
     if (operationsQuery.data === undefined) return
-    const stillValid = operationsQuery.data.some(
-      (operation) => operation.operationId === operationId
-    )
+    // "Tất cả công đoạn" là lựa chọn hợp lệ dù không nằm trong danh sách thẻ công đoạn.
+    const stillValid =
+      operationId === ALL_OPERATIONS ||
+      operationsQuery.data.some(
+        (operation) => operation.operationId === operationId
+      )
     if (stillValid) return
 
     const firstOperationId = operationsQuery.data.at(0)?.operationId
@@ -82,6 +86,7 @@ export function ProductionExecutionPage() {
             rows={jobsQuery.data.data}
             pagination={jobsQuery.data.pagination}
             isPending={jobsQuery.isFetching}
+            showOperation={operationId === ALL_OPERATIONS}
           />
         )}
       </Surface>

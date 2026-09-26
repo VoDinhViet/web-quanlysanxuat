@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { useParams, useSearch } from "@tanstack/react-router"
+import { Navigate, useParams, useSearch } from "@tanstack/react-router"
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { History, Layers, Magnifer } from "@solar-icons/react"
 import { DateTime } from "luxon"
@@ -16,18 +16,18 @@ import { ProductionExecutionPartsTable } from "@/features/production-execution/c
 import { ProductionExecutionOperationsLegend } from "@/features/production-execution/components/sections/ProductionExecutionOperationsLegend"
 import { ProductionExecutionReportHistoryTable } from "@/features/production-execution/components/sections/ProductionExecutionReportHistoryTable"
 import type { PageSize } from "@/components/shared/composites/Pagination"
-import { jobOperationReportsQueryOptions } from "@/features/production-execution/api"
+import {
+  jobOperationReportsQueryOptions,
+  productionExecutionJobOperationsQueryOptions,
+  productionExecutionJobQueryOptions,
+} from "@/features/production-execution/api"
 import {
   buildPartRows,
   isAllPartsCompleted,
   resolveLatestDueDate,
 } from "@/features/production-execution/constants/production-execution-parts"
-import {
-  productionJobOperationsQueryOptions,
-  productionJobQueryOptions,
-} from "@/features/production-jobs/api"
-import { itemQueryOptions } from "@/features/products/api"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api"
+import { useHasPermission } from "@/hooks/use-permissions"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 
@@ -42,6 +42,34 @@ export function ProductionExecutionJobPage() {
     from: "/(authed)/manage_/production-execution_/$productionJobId",
   })
 
+  // Mọi dữ liệu của trang phụ thuộc công đoạn đang chọn — thiếu thì quay về màn chọn công đoạn.
+  if (!operationId) {
+    return (
+      <Navigate
+        to="/manage/production-execution"
+        search={{ page: 1, limit: 10 }}
+        replace
+      />
+    )
+  }
+
+  return (
+    <ProductionExecutionJobContent
+      productionJobId={productionJobId}
+      operationId={operationId}
+    />
+  )
+}
+
+type ProductionExecutionJobContentProps = {
+  productionJobId: string
+  operationId: string
+}
+
+function ProductionExecutionJobContent({
+  productionJobId,
+  operationId,
+}: ProductionExecutionJobContentProps) {
   const [activeTab, setActiveTab] = useState<string>("parts")
   const [partSearch, setPartSearch] = useState("")
   const [selectedBomItemId, setSelectedBomItemId] = useState<string | null>(
@@ -50,16 +78,14 @@ export function ProductionExecutionJobPage() {
   const [reportPage, setReportPage] = useState(1)
   const [reportPageSize, setReportPageSize] = useState<PageSize>(10)
 
+  // Header Job kèm ảnh sản phẩm tổng — BE kiểm công đoạn đang chọn nằm trong phạm vi được phân công.
   const { data: job } = useSuspenseQuery(
-    productionJobQueryOptions(productionJobId)
+    productionExecutionJobQueryOptions(productionJobId, operationId)
   )
-
-  // Revision + ảnh sản phẩm tổng — không có trên GET /production-jobs/:jobId.
-  const { data: item } = useQuery(itemQueryOptions(job.itemId))
 
   // BE lọc sẵn theo công đoạn đang chọn (`operationId` trên URL), mỗi Part kèm công đoạn kế tiếp.
   const operationsQuery = useQuery(
-    productionJobOperationsQueryOptions(productionJobId, operationId)
+    productionExecutionJobOperationsQueryOptions(productionJobId, operationId)
   )
 
   const groups = useMemo(
@@ -67,14 +93,16 @@ export function ProductionExecutionJobPage() {
     [operationsQuery.data]
   )
 
-  // Thông tin số lượng đã gửi cho công đoạn gia công ngoài
+  // Thông tin số lượng đã gửi cho công đoạn gia công ngoài — cần quyền xem gia công ngoài.
+  const canReadOutsourcing = useHasPermission("outsourcing:read")
   const outsourceableQuery = useQuery({
     ...outsourceableOperationsQueryOptions({
       productionJobId,
       operationId,
       limit: 200,
     }),
-    enabled: job.status === ProductionJobStatus.IN_PROGRESS,
+    enabled:
+      job.status === ProductionJobStatus.IN_PROGRESS && canReadOutsourcing,
   })
 
   const outsourceableByOperationId = useMemo(
@@ -131,9 +159,7 @@ export function ProductionExecutionJobPage() {
   )
 
   const image =
-    item?.image ??
-    groups.find((group) => group.itemType === "FG")?.image ??
-    null
+    job.image ?? groups.find((group) => group.itemType === "FG")?.image ?? null
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -151,7 +177,7 @@ export function ProductionExecutionJobPage() {
           <ProductionExecutionJobHeader
             job={job}
             image={image}
-            revision={item?.revision}
+            revision={job.item.revision}
             operationId={operationId}
             dueDate={latestDueDate}
             isDueDateOverdue={isDueDateOverdue}

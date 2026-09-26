@@ -245,7 +245,7 @@ function PartActionCell({
   )
 
   return (
-    <PermissionGate permission="production:update">
+    <PermissionGate permission="production-execution:report">
       <Tooltip>
         <TooltipTrigger
           render={

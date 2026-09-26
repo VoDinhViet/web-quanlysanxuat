@@ -2,7 +2,10 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 import { z } from "zod"
 
-import { productionExecutionSearchSchema } from "@/features/production-execution/schemas/production-execution-search.schema"
+import {
+  ALL_OPERATIONS,
+  productionExecutionSearchSchema,
+} from "@/features/production-execution/schemas/production-execution-search.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { ProductionJobByOperation } from "@/lib/types/production-job.type"
@@ -14,8 +17,9 @@ import type { PaginatedResponse } from "@/lib/types/pagination.type"
 // giống get-production-jobs.api.ts.
 const getProductionJobsByOperationParamsSchema = productionExecutionSearchSchema
   .extend({ operationId: z.string().trim().min(1) })
-  .transform(({ dueDateFrom, dueDateTo, ...rest }) => ({
+  .transform(({ dueDateFrom, dueDateTo, operationId, ...rest }) => ({
     ...rest,
+    operationId: operationId === ALL_OPERATIONS ? undefined : operationId,
     startDate: dueDateFrom,
     endDate: dueDateTo,
   }))
@@ -38,7 +42,7 @@ function resolveGetProductionJobsByOperationErrorMessage(
 }
 
 // "DANH SÁCH CÔNG VIỆC" — GET /production-execution/jobs. Một dòng / (Job × công đoạn đang
-// chọn), số lượng gộp qua mọi part của Job có công đoạn đó.
+// chọn, hoặc mọi công đoạn được phép khi `operationId` là ALL_OPERATIONS), số lượng gộp qua mọi part của Job có công đoạn đó.
 export const getProductionJobsByOperation = createServerFn({ method: "GET" })
   .validator(getProductionJobsByOperationParamsSchema)
   .handler(

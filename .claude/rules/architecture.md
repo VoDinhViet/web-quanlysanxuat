@@ -174,7 +174,14 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
 - `QueryClient` is created once, in `src/router.tsx`, and wired to the router via
   `@tanstack/react-router-ssr-query`'s `setupRouterSsrQueryIntegration`. Don't create a
   second `QueryClient` instance anywhere else. Its `defaultOptions.queries` set
-  `staleTime: 0`, `refetchOnMount: true` and `retry: 1`; reference-option factories override `staleTime` longer.
+  `staleTime: 30_000`, `gcTime: 15 * 60_000`, `refetchOnMount: true`, `refetchOnReconnect: true`,
+  `retry: 1` and `refetchOnWindowFocus: false`. Freshness has three tiers: the 30s default;
+  reference-option factories (units, clients, operations, ...) override `staleTime` upward with a
+  literal 5–15 min; fast-moving screens (stock in `inventory-products`, floor progress in
+  `production-execution`) override it to `0`. The 30s window is only safe because every mutation
+  invalidates the feature roots it affects **including other features that read the same data**
+  (e.g. posting an inventory issue also invalidates `inventory-requisitions` and
+  `inventory-products`) — when adding a mutation, check what else reads what it writes.
   Route loaders additionally pass `staleTime: "static"` at the call site (see "Loaders
   prefetch, don't return" below) — that's a read-through switch, not a third freshness tier;
   the factory's own `staleTime` is still what the mounted observer (`useSuspenseQuery`/
@@ -224,7 +231,7 @@ useMutation({...})` (name `mutate` per action, e.g. `mutate: create` /
   read-through — return whatever's in the cache, even stale or invalidated, and fetch only on a
   true cache miss — so navigation is never blocked on a background revalidation (the mounted
   `useSuspenseQuery` does that using the factory's own `staleTime`). Drop it and every loader
-  becomes a blocking refetch once its data passes 60s — the exact regression that used to push
+  becomes a blocking refetch once its data passes the default `staleTime` (30s) — the exact regression that used to push
   `beforeLoad` past `defaultPendingMs` and remount the whole sidebar shell (see
   `(authed)/route.tsx`). Secondary/non-blocking data uses the fire-and-forget form instead —
   `void context.queryClient.query(<thing>QueryOptions(...)).catch(noop)` (`noop` from

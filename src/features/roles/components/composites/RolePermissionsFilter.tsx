@@ -1,4 +1,10 @@
-import { Check, Eye, RotateCcw, Search, X } from "lucide-react"
+import {
+  CheckCircle,
+  CloseCircle,
+  Eye,
+  Magnifer,
+  Restart,
+} from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -39,7 +45,7 @@ export function RolePermissionsFilter({
     <div className="flex flex-col gap-3 border-b border-border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
       <InputGroup className="h-9 sm:max-w-xs">
         <InputGroupAddon>
-          <Search className="size-3.5" />
+          <Magnifer className="size-4" />
         </InputGroupAddon>
         <InputGroupInput
           value={query}
@@ -54,7 +60,7 @@ export function RolePermissionsFilter({
               onClick={() => onQueryChange("")}
               aria-label="Xóa tìm kiếm"
             >
-              <X className="size-3" />
+              <CloseCircle className="size-4" />
             </InputGroupButton>
           </InputGroupAddon>
         )}
@@ -67,21 +73,21 @@ export function RolePermissionsFilter({
           size="sm"
           disabled={disabled}
           onClick={onGrantReadOnly}
-          className="text-xs"
+          className="gap-1.5 text-xs"
         >
-          <Eye className="size-3.5" />
+          <Eye className="size-4 text-muted-foreground" />
           Chỉ xem{scopeSuffix}
         </Button>
 
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           size="sm"
           disabled={disabled}
           onClick={onGrantAll}
-          className="text-xs"
+          className="gap-1.5 text-xs"
         >
-          <Check className="size-3.5" />
+          <CheckCircle className="size-4 text-muted-foreground" />
           Toàn quyền{scopeSuffix}
         </Button>
 
@@ -93,9 +99,9 @@ export function RolePermissionsFilter({
           size="sm"
           disabled={disabled || !canRevoke}
           onClick={onRevokeAll}
-          className="text-xs text-muted-foreground hover:text-destructive"
+          className="gap-1.5 text-xs text-muted-foreground hover:text-destructive"
         >
-          <RotateCcw className="size-3" />
+          <Restart className="size-4" />
           Bỏ chọn{scopeSuffix}
         </Button>
       </div>

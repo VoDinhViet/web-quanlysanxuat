@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { AddCircle, Routing } from "@solar-icons/react"
@@ -11,24 +12,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Pagination } from "@/components/shared/composites/Pagination"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { CreateOperationDialog } from "@/features/operations/components/composites/CreateOperationDialog"
-import { operationColumns } from "@/features/operations/components/composites/OperationsTableColumns"
+import { buildOperationColumns } from "@/features/operations/components/composites/OperationsTableColumns"
+import { useRoutePagination } from "@/hooks/use-route-pagination"
 import { cn } from "@/lib/utils"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 import type { OperationDetail } from "@/lib/types/operation.type"
 
 type OperationsTableProps = {
   rows: OperationDetail[]
+  pagination: PaginationMeta
   isPending: boolean
 }
 
-// Bảng danh sách công đoạn — không phân trang, vì GET /operations trả cả danh mục (không quá vài
-// chục dòng) chứ không phải offset/limit như các danh sách khác, cùng khuôn RolesTable.
-export function OperationsTable({ rows, isPending }: OperationsTableProps) {
+// Bảng danh sách công đoạn — phân trang theo `page`/`limit` trên URL (GET /operations trả kèm `pagination`).
+export function OperationsTable({
+  rows,
+  pagination,
+  isPending,
+}: OperationsTableProps) {
+  const { onPageChange, onPageSizeChange } = useRoutePagination()
+  const columns = useMemo(
+    () =>
+      buildOperationColumns({
+        offset: (pagination.currentPage - 1) * pagination.limit,
+      }),
+    [pagination.currentPage, pagination.limit]
+  )
   const table = useTable({
     data: rows,
-    columns: operationColumns,
+    columns,
     features: appTableFeatures,
   })
 
@@ -99,11 +115,17 @@ export function OperationsTable({ rows, isPending }: OperationsTableProps) {
               ))}
             </TableBody>
           </Table>
-          <p className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
-            Tổng {rows.length} công đoạn
-          </p>
         </div>
       )}
+
+      <Pagination
+        page={pagination.currentPage}
+        pageSize={pagination.limit}
+        total={pagination.totalRecords}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        className="border-t border-border px-4 py-3 sm:px-5"
+      />
     </div>
   )
 }

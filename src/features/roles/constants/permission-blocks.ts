@@ -1,14 +1,20 @@
 import {
-  BarChart3,
-  CheckCircle2,
-  Factory,
-  Package,
+  AddCircle,
+  Bag4,
+  Box,
+  Buildings2,
+  Cart3,
+  ChartSquare,
+  CheckCircle,
+  Eye,
+  Pen,
   ShieldCheck,
-  ShoppingBag,
-  ShoppingCart,
-  Warehouse,
-} from "lucide-react"
-import type { LucideIcon } from "lucide-react"
+  MedalRibbon,
+  TrashBinTrash,
+  Widget,
+} from "@solar-icons/react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
 import type {
   PermissionCatalogueGroup,
@@ -16,9 +22,16 @@ import type {
 } from "@/features/roles/api/server-functions/get-permission-catalogue.api"
 import type { PermissionCode } from "@/lib/types/permission.type"
 
+type Icon = ComponentType<IconProps>
+
 type GridActionDef = {
   key: string
   label: string
+  // Icon + màu cùng tone với viền header — nhận diện cột bằng hình trước khi đọc chữ.
+  icon: Icon
+  iconClassName: string
+  // Dòng phụ dưới nhãn cột.
+  hint: string
   // Viền dưới cùng tone — kẻ ranh giới cột ngay dưới header (Xem xanh dương thông tin, Tạo xanh
   // lá tạo mới, Sửa hổ phách chỉnh sửa, Duyệt tím xét duyệt, Xoá đỏ cùng tone với nút xoá còn lại
   // trong app), giúp quét nhanh theo cột dễ hơn.
@@ -29,24 +42,43 @@ type GridActionDef = {
  *  isn't one of these (items:copy, items:bom-manage, …) becomes a chip on its module row
  *  instead — see `PermissionModule.extras`. */
 export const gridActions = [
-  { key: "read", label: "Xem", headerAccentClassName: "border-b-blue-500/50" },
+  {
+    key: "read",
+    icon: Eye,
+    iconClassName: "text-blue-500",
+    hint: "Xem dữ liệu",
+    label: "Xem",
+    headerAccentClassName: "border-b-blue-500/50",
+  },
   {
     key: "create",
+    icon: AddCircle,
+    iconClassName: "text-emerald-500",
+    hint: "Thêm mới",
     label: "Tạo",
     headerAccentClassName: "border-b-emerald-500/50",
   },
   {
     key: "update",
+    icon: Pen,
+    iconClassName: "text-amber-500",
+    hint: "Chỉnh sửa",
     label: "Sửa",
     headerAccentClassName: "border-b-amber-500/50",
   },
   {
     key: "approve",
+    icon: MedalRibbon,
+    iconClassName: "text-violet-500",
+    hint: "Phê duyệt",
     label: "Duyệt",
     headerAccentClassName: "border-b-violet-500/50",
   },
   {
     key: "delete",
+    icon: TrashBinTrash,
+    iconClassName: "text-destructive",
+    hint: "Xoá dữ liệu",
     label: "Xoá",
     headerAccentClassName: "border-b-destructive/50",
   },
@@ -61,15 +93,15 @@ function isGridAction(action: string): action is GridAction {
 /** Icon per business block — presentation only; the block grouping itself (which resource
  *  belongs to which block, and in what order) comes from the backend catalogue's own
  *  `block`/`blockLabel` fields, not a parallel map kept here. */
-const blockIcons: Record<string, LucideIcon> = {
+const blockIcons: Record<string, Icon> = {
   system: ShieldCheck,
-  catalog: Package,
-  sales: ShoppingCart,
-  warehouse: Warehouse,
-  production: Factory,
-  purchasing: ShoppingBag,
-  quality: CheckCircle2,
-  reports: BarChart3,
+  catalog: Box,
+  sales: Cart3,
+  warehouse: Buildings2,
+  production: Widget,
+  purchasing: Bag4,
+  quality: CheckCircle,
+  reports: ChartSquare,
 }
 
 export type PermissionModule = {
@@ -83,7 +115,7 @@ export type PermissionModule = {
 export type PermissionBlock = {
   key: string
   label: string
-  icon: LucideIcon
+  icon: Icon
   modules: PermissionModule[]
 }
 
@@ -126,7 +158,7 @@ export function buildPermissionBlocks(
       blocks.push({
         key: group.block,
         label: group.blockLabel,
-        icon: blockIcons[group.block] ?? Package,
+        icon: blockIcons[group.block] ?? Box,
         modules: [module],
       })
     }

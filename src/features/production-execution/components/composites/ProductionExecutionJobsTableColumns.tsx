@@ -50,6 +50,15 @@ export const productionExecutionJobColumns = columnHelper.columns([
       <span className="font-mono font-semibold text-primary">{getValue()}</span>
     ),
   }),
+  // Chỉ hiện khi xem "Tất cả công đoạn" (ProductionExecutionJobsTable ẩn/hiện qua columnVisibility).
+  columnHelper.accessor("operationName", {
+    id: "operation",
+    header: "Công đoạn",
+    meta: { headerClassName: "min-w-32" },
+    cell: ({ getValue }) => (
+      <span className="font-medium text-foreground">{getValue()}</span>
+    ),
+  }),
   columnHelper.accessor((row) => row.item.code, {
     id: "itemCode",
     header: "Mã sản phẩm",
@@ -133,7 +142,10 @@ export const productionExecutionJobColumns = columnHelper.columns([
       cellClassName: "text-center",
     },
     cell: ({ row }) => (
-      <ProductionExecutionJobActionsCell productionJobId={row.original.jobId} />
+      <ProductionExecutionJobActionsCell
+        productionJobId={row.original.jobId}
+        operationId={row.original.operationId}
+      />
     ),
   }),
 ])

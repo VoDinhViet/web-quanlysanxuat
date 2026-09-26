@@ -1,6 +1,8 @@
 import { noop } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 
+import { hasPermission } from "@/lib/permissions"
+import { firstReadableRoute } from "@/lib/route-permissions"
 import { ManagePage } from "@/features/manage/pages/ManagePage"
 import { upcomingDeliveriesQueryOptions } from "@/features/manage/hooks/use-upcoming-deliveries"
 import { manageSearchSchema } from "@/features/manage/schemas/manage-search.schema"
@@ -16,6 +18,16 @@ import {
 
 export const Route = createFileRoute("/(authed)/manage")({
   validateSearch: manageSearchSchema,
+  // The dashboard is reports; a user without `reports:read` lands on the first page they can read.
+  beforeLoad: ({ context }) => {
+    if (hasPermission(context.permissions, "reports:read")) {
+      return
+    }
+    const href = firstReadableRoute(context.permissions)
+    if (href) {
+      throw redirect({ href })
+    }
+  },
   // No loaderDeps: đổi khoảng ngày ở "Tiến độ sản xuất" không được re-trigger loader này (nó
   // fire-and-forget prefetch 7 widget — chạy lại sẽ làm trắng cả trang). `location.search` đã
   // được router validate ở runtime nhưng LoaderFnContext gõ kiểu `{}` (do không có loaderDeps) —

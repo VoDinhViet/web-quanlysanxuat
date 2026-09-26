@@ -44,7 +44,10 @@ export function StartProductionJobDialog({
       startProductionJobFn({ data: { productionJobId: job.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ["production-jobs"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+        queryClient.invalidateQueries({ queryKey: ["production-execution"] }),
+      ])
     },
   })
 
