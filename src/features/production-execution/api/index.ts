@@ -2,6 +2,6 @@
 // import from `production-execution` (see .claude/rules/architecture.md's cross-feature
 // import rule) — never reach into `api/server-functions/` or
 // `api/options/` directly.
-export { productionOperationSummaryQueryOptions } from "@/features/production-execution/api/options"
+export { productionExecutionOperationsQueryOptions } from "@/features/production-execution/api/options"
 export { productionJobsByOperationQueryOptions } from "@/features/production-execution/api/options"
 export { jobOperationReportsQueryOptions } from "@/features/production-execution/api/options"

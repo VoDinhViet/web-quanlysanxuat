@@ -250,7 +250,7 @@ export type ProductionJobLog = {
 /** Mirrors `GET /production-execution/operations` — một dòng / công đoạn có ít nhất 1 Job khớp
  *  filter, dùng để dựng dãy thẻ "CHỌN CÔNG ĐOẠN". `jobCount` đếm số Job phân biệt, không phải số
  *  dòng (Job × Part). */
-export type ProductionOperationSummary = {
+export type ProductionExecutionOperation = {
   operationId: string
   code: string
   name: string
@@ -261,9 +261,10 @@ export type ProductionOperationSummary = {
 /** Trạng thái tiến độ của MỘT công đoạn trên MỘT Job — gộp qua mọi part của Job có công đoạn đó
  *  (`ProductionJobByOperation.operationStatus` bên dưới). Khác `OperationProgressStatus` cục bộ
  *  của `ProductionJobOperationsTable.tsx` (trạng thái một dòng công đoạn/part đơn lẻ, nhãn khác:
- *  "Chưa bắt đầu"/"Đang thực hiện"/"Hoàn thành") — đây là mức Job, đúng 3 nhãn trong khung "GHI
+ *  "Chưa bắt đầu"/"Đang thực hiện"/"Hoàn thành") — đây là mức Job, các nhãn trong khung "GHI
  *  CHÚ" của màn "Thực hiện sản xuất". */
 export type ProductionOperationProgressStatus =
+  | "OVERDUE"
   | "NOT_STARTED"
   | "IN_PROGRESS"
   | "DONE"
@@ -272,9 +273,22 @@ export const productionOperationProgressStatusLabels: Record<
   ProductionOperationProgressStatus,
   string
 > = {
-  NOT_STARTED: "Chưa làm",
-  IN_PROGRESS: "Đang làm",
+  OVERDUE: "Quá hạn",
+  NOT_STARTED: "Chưa bắt đầu",
+  IN_PROGRESS: "Đang thực hiện",
   DONE: "Hoàn thành",
+}
+
+/** Đúng/trễ hạn của công đoạn đã xong trên một Job — `null` (ở `ProductionJobByOperation`) khi
+ *  chưa xong hoặc không có hạn hoàn thành để so. */
+export type ProductionOperationEvaluation = "ON_TIME" | "LATE"
+
+export const productionOperationEvaluationLabels: Record<
+  ProductionOperationEvaluation,
+  string
+> = {
+  ON_TIME: "Đúng hạn",
+  LATE: "Trễ",
 }
 
 /** Mirrors `GET /production-execution/jobs` — một dòng / (Job × công đoạn), số lượng gộp (SUM)
@@ -285,15 +299,15 @@ export type ProductionJobByOperation = {
   jobCode: string
   orderCode: string
   item: { code: string; name: string }
+  image: FileResource | null
   quantity: number
   orderDate: string
   dueDate: string | null
   jobStatus: ProductionJobStatus
-  plannedQuantity: number
-  completedQuantity: number
-  rejectedQuantity: number
-  operationLastReportedAt: string | null
+  /** Hạn hoàn thành công đoạn đang chọn — muộn nhất qua mọi part; null = chưa đặt hạn. */
+  operationDueDate: string | null
   operationStatus: ProductionOperationProgressStatus
+  operationEvaluation: ProductionOperationEvaluation | null
 }
 
 /** Mirrors `GET /production-execution/jobs/:productionJobId/reports` — một dòng nhật ký báo cáo sản lượng
@@ -301,11 +315,8 @@ export type ProductionJobByOperation = {
 export type ProductionExecutionReport = {
   id: string
   productionJobOperationId: string
-  operationCode: string
-  operationName: string
-  bomItemId: string
-  bomItemCode: string
-  bomItemName: string
+  operation: { code: string; name: string }
+  bomItem: { id: string; code: string; name: string }
   completedQuantityDelta: number
   rejectedQuantityDelta: number
   note: string | null
