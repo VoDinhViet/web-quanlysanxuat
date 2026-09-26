@@ -29,3 +29,12 @@ export const updateOperationSchema = z.object({
 })
 
 export type UpdateOperationSchema = z.input<typeof updateOperationSchema>
+
+// Shape-only seed for `withForm` on the detail page (the real values come from the loaded operation).
+export const updateOperationFormDefaultValues: UpdateOperationSchema = {
+  operationId: "",
+  code: "",
+  name: "",
+  note: "",
+  status: OperationStatus.ACTIVE,
+}

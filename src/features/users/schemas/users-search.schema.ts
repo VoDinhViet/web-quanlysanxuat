@@ -13,6 +13,9 @@ export const usersSearchSchema = z.object({
   order: z.enum(["ASC", "DESC"]).optional().catch(undefined),
   departmentId: z.uuid().optional().catch(undefined),
   positionId: z.uuid().optional().catch(undefined),
+  // Only used by the operation detail page's assign dialog (hide staff already on that operation);
+  // no filter control of its own.
+  excludeOperationId: z.uuid().optional().catch(undefined),
 })
 
 export type UsersSearchSchema = z.infer<typeof usersSearchSchema>

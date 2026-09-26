@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { AddCircle, CloseCircle, Magnifer } from "@solar-icons/react"
 
@@ -41,6 +41,7 @@ export function OperationsPage() {
       search: (prev) => ({
         ...prev,
         q: trimmed.length > 0 ? trimmed : undefined,
+        page: 1,
       }),
       replace: true,
     })
@@ -48,7 +49,7 @@ export function OperationsPage() {
 
   const handleStatusChange = (value: string) => {
     const status = value === "all" ? undefined : (value as OperationStatus)
-    void navigate({ search: (prev) => ({ ...prev, status }) })
+    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
   const hasFilters = Boolean(search.q ?? search.status)
@@ -57,10 +58,13 @@ export function OperationsPage() {
     // Cancel first: a debounced call still in flight would re-apply the term the user just cleared.
     handleSearch.cancel()
     setQ("")
-    void navigate({ search: {}, replace: true })
+    void navigate({ search: { page: 1, limit: search.limit }, replace: true })
   }
 
-  const operationsQuery = useQuery(operationsQueryOptions(search))
+  const operationsQuery = useQuery({
+    ...operationsQueryOptions(search),
+    placeholderData: keepPreviousData,
+  })
 
   return (
     <div className="flex min-w-0 flex-col">
@@ -142,7 +146,8 @@ export function OperationsPage() {
           />
         ) : (
           <OperationsTable
-            rows={operationsQuery.data}
+            rows={operationsQuery.data.data}
+            pagination={operationsQuery.data.pagination}
             isPending={operationsQuery.isFetching}
           />
         )}

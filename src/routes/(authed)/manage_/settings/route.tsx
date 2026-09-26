@@ -59,7 +59,7 @@ function SettingsLayout() {
       label: "Công đoạn sản xuất",
       icon: Routing,
       permission: "operations:read",
-      count: operationsQuery.data?.length,
+      count: operationsQuery.data?.pagination.totalRecords,
     },
   ]
 

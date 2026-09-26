@@ -70,6 +70,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/directs/$directId/update": "items:update",
 
   "/manage/operations": "operations:read",
+  "/manage/operations/$operationId": "operations:read",
 
   "/manage/oqc": "oqc:read",
   "/manage/oqc/$oqcId": "oqc:read",

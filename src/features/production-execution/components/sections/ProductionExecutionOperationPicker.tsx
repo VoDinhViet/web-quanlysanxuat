@@ -131,6 +131,7 @@ export function ProductionExecutionOperationPicker() {
             <RoutePermissionGate route="/manage/settings/operations">
               <LinkButton
                 to="/manage/settings/operations"
+                search={{ page: 1, limit: 10 }}
                 variant="outline"
                 className="text-xs"
               >
