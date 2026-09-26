@@ -75,19 +75,19 @@ export function RolePermissionsFilter({
           onClick={onGrantReadOnly}
           className="gap-1.5 text-xs"
         >
-          <Eye className="size-4 text-info" />
+          <Eye className="size-4 text-muted-foreground" />
           Chỉ xem{scopeSuffix}
         </Button>
 
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           size="sm"
           disabled={disabled}
           onClick={onGrantAll}
-          className="gap-1.5 bg-primary/10 text-xs text-primary hover:bg-primary/15"
+          className="gap-1.5 text-xs"
         >
-          <CheckCircle className="size-4" />
+          <CheckCircle className="size-4 text-muted-foreground" />
           Toàn quyền{scopeSuffix}
         </Button>
 
