@@ -88,7 +88,7 @@ export const operationProgressStatusDescriptions: Record<
 > = {
   NOT_STARTED: "SL hoàn thành = 0",
   IN_PROGRESS: "SL hoàn thành lớn hơn 0 và nhỏ hơn SL kế hoạch",
-  COMPLETED: "SL hoàn thành đạt đủ SL kế hoạch — Ngày hoàn thành tự điền",
+  COMPLETED: "SL hoàn thành đạt đủ SL kế hoạch",
 }
 
 // `completedDate` được server set đúng lúc `completedQuantity` đạt `plannedQuantity` (chốt E088)
@@ -123,7 +123,7 @@ type ProductionJobOperationsTableProps = {
   outsourceableByOperationId: Map<string, OutsourceableOperation>
 }
 
-function OperationTypeBadge({ type }: { type: OperationType }) {
+export function OperationTypeBadge({ type }: { type: OperationType }) {
   const isInhouse = type === OperationType.INHOUSE
 
   return (
@@ -267,13 +267,19 @@ function OperationSendActionCell({
 // the node Cấp 0 backend snapshots from the FG's own routing
 // (`copyFinalAssemblyRouting`, luôn đứng cuối bảng) — gắn thẳng badge "Lắp ráp thành phẩm" tại đây,
 // không tách component riêng cho một nhãn điều kiện đơn giản như vậy.
-function BomItemHeaderRow({ bomItem }: { bomItem: ProductionJobBomItem }) {
+export function BomItemHeaderRow({
+  bomItem,
+  columnSpan = columnCount,
+}: {
+  bomItem: Omit<ProductionJobBomItem, "operations">
+  columnSpan?: number
+}) {
   return (
     <TableRow
       id={`${bomItem.id}-header`}
       className="h-14 bg-muted/10 hover:bg-muted/15"
     >
-      <TableCell colSpan={columnCount} className="py-3">
+      <TableCell colSpan={columnSpan} className="py-3">
         <div className="flex items-center gap-2.5">
           <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border text-muted-foreground">
             {bomItem.image ? (
@@ -402,9 +408,11 @@ function OperationRow({
         </PermissionGate>
       </TableCell>
       <TableCell className="text-center text-muted-foreground">
-        {operation.completedDate === null
+        {operation.lastReportedAt === null
           ? "—"
-          : DateTime.fromISO(operation.completedDate).toFormat("dd/MM/yyyy")}
+          : DateTime.fromISO(operation.lastReportedAt).toFormat(
+              "dd/MM/yyyy HH:mm"
+            )}
       </TableCell>
       <TableCell className="text-center">
         <div className="flex items-center justify-center gap-2">
@@ -451,7 +459,7 @@ function OperationRow({
 // (Chưa bắt đầu/Đang thực hiện/Hoàn thành — suy từ completedQuantity/completedDate, không phải
 // field riêng trên DTO), HẠN HOÀN THÀNH (kế hoạch — DatePicker inline, ghi đè ngay khi chọn qua
 // PATCH .../due-date, xem JobOperationDueDateCell.tsx; gate quyền qua PermissionGate ngay ở đây,
-// không đẩy vào component dùng chung), NGÀY HOÀN THÀNH (ngày người báo cáo tự chọn, không phải
+// không đẩy vào component dùng chung), THỜI GIAN CẬP NHẬT (giờ server tự ghi lúc báo cáo tự chọn, không phải
 // ngày lưu), THAO TÁC ("Nhập báo cáo" ở mọi dòng — cộng dồn SL, kèm ngày/ghi chú/ảnh và một dòng nhật ký,
 // xem JobOperationReportDialog.tsx — cùng dialog với màn "Thực hiện sản xuất"; dòng Gia công
 // ngoài có thêm nút Gửi gia công ngoài, khoá khi đã gửi đủ định mức, xem
@@ -525,10 +533,10 @@ export function ProductionJobOperationsTable({
                 HẠN HOÀN THÀNH
               </TableHead>
               <TableHead
-                id="completedDate"
+                id="lastReportedAt"
                 className="w-32 text-center font-bold text-foreground"
               >
-                NGÀY HOÀN THÀNH
+                THỜI GIAN CẬP NHẬT
               </TableHead>
               <TableHead
                 id="actions"

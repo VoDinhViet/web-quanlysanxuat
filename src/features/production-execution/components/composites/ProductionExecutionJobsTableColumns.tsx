@@ -1,10 +1,14 @@
 import { DateTime } from "luxon"
+import { formatJobOperationDueDate } from "@/components/shared/composites/JobOperationDueDateCell"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { Box } from "lucide-react"
 
-import { ProductionExecutionJobActionsCell } from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
-import { OperationProgressBar } from "@/features/production-execution/components/primitives/OperationProgressBar"
+import {
+  ProductionExecutionEvaluationBadge,
+  ProductionExecutionImageCell,
+  ProductionExecutionJobActionsCell,
+  ProductionExecutionJobStatusBadge,
+} from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
 import type { ProductionJobByOperation } from "@/lib/types/production-job.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -14,20 +18,22 @@ const columnHelper = createColumnHelper<
   ProductionJobByOperation
 >()
 
-// Bảng "DANH SÁCH CÔNG VIỆC" — cột "Tiến độ" thay hẳn badge "Trạng thái" cũ: cùng lúc trả lời
-// "đang ở đâu" (thanh + %) và "còn bao nhiêu" (x/y pcs), đọc thẳng plannedQuantity/
-// completedQuantity đã có trên ProductionJobByOperation (số của ĐÚNG công đoạn đang chọn, gộp qua
-// mọi part — khác `quantity`, là SL thành phẩm của cả Job). Cột icon đầu dòng chỉ trang trí (data
-// hiện chưa có ảnh sản phẩm ở endpoint này) — dùng 1 icon trung tính, không suy diễn hình thật.
+// Bảng "DANH SÁCH CÔNG VIỆC" — một dòng / (Job × công đoạn đang chọn). "Hạn hoàn thành"/"Đánh giá"/
+// "Trạng thái" là của ĐÚNG công đoạn đang chọn (BE gộp qua mọi part), khác "Ngày giao" là hạn giao
+// của cả đơn hàng.
 export const productionExecutionJobColumns = columnHelper.columns([
   columnHelper.display({
-    id: "icon",
-    header: "",
-    meta: { headerClassName: "w-10", cellClassName: "pr-0" },
-    cell: () => (
-      <span className="flex size-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-        <Box className="size-4" />
-      </span>
+    id: "index",
+    header: "#",
+    cell: ({ row }) => row.index + 1,
+    meta: { headerClassName: "w-12 text-center", cellClassName: "text-center" },
+  }),
+  columnHelper.display({
+    id: "image",
+    header: "Hình ảnh",
+    meta: { headerClassName: "w-20 text-center" },
+    cell: ({ row }) => (
+      <ProductionExecutionImageCell image={row.original.image} />
     ),
   }),
   columnHelper.accessor("orderCode", {
@@ -46,7 +52,7 @@ export const productionExecutionJobColumns = columnHelper.columns([
   }),
   columnHelper.accessor((row) => row.item.code, {
     id: "itemCode",
-    header: "Mã SP",
+    header: "Mã sản phẩm",
     meta: { headerClassName: "min-w-24" },
     cell: ({ getValue }) => <span className="font-mono">{getValue()}</span>,
   }),
@@ -56,12 +62,12 @@ export const productionExecutionJobColumns = columnHelper.columns([
     meta: { headerClassName: "min-w-40" },
   }),
   columnHelper.accessor("quantity", {
-    header: "SL (pcs)",
+    header: "Số lượng",
     meta: {
       headerClassName: "min-w-20 text-center",
       cellClassName: "text-center tabular-nums",
     },
-    cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    cell: ({ getValue }) => `${quantityFormatter.format(getValue())} pcs`,
   }),
   columnHelper.accessor("orderDate", {
     header: "Ngày đặt hàng",
@@ -72,47 +78,58 @@ export const productionExecutionJobColumns = columnHelper.columns([
     cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
   columnHelper.accessor("dueDate", {
-    header: "Ngày giao hàng",
+    header: "Ngày giao",
     meta: {
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => {
-      const dueDate = getValue()
-      return dueDate === null
-        ? "—"
-        : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
-    },
+    cell: ({ getValue }) => formatJobOperationDueDate(getValue()),
   }),
-  columnHelper.display({
-    id: "progress",
-    header: "Tiến độ",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ row }) => (
-      <OperationProgressBar
-        plannedQuantity={row.original.plannedQuantity}
-        completedQuantity={row.original.completedQuantity}
-      />
-    ),
-  }),
-  columnHelper.accessor("operationCompletedDate", {
-    header: "Ngày hoàn thành CĐ",
+  columnHelper.accessor("operationDueDate", {
+    header: "Hạn hoàn thành",
     meta: {
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => {
-      const completedDate = getValue()
-      return completedDate === null
-        ? "—"
-        : DateTime.fromISO(completedDate).toFormat("dd/MM/yyyy")
+    cell: ({ getValue, row }) => {
+      return (
+        <span
+          className={
+            row.original.operationStatus === "OVERDUE"
+              ? "text-destructive"
+              : undefined
+          }
+        >
+          {formatJobOperationDueDate(getValue())}
+        </span>
+      )
     },
+  }),
+  columnHelper.accessor("operationEvaluation", {
+    header: "Đánh giá",
+    meta: {
+      headerClassName: "min-w-24 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ getValue }) => (
+      <ProductionExecutionEvaluationBadge evaluation={getValue()} />
+    ),
+  }),
+  columnHelper.accessor("operationStatus", {
+    header: "Trạng thái",
+    meta: {
+      headerClassName: "min-w-32 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ getValue }) => (
+      <ProductionExecutionJobStatusBadge status={getValue()} />
+    ),
   }),
   columnHelper.display({
     id: "actions",
     header: "Thao tác",
     meta: {
-      headerClassName: "min-w-16 text-center",
+      headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
     cell: ({ row }) => (

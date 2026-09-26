@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { RotateCw, Search } from "lucide-react"
 
@@ -16,8 +15,6 @@ import {
 import { Label } from "@/components/ui/label"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { OperationSelect } from "@/features/production-execution/components/primitives/OperationSelect"
-import { productionOperationSummaryQueryOptions } from "@/features/production-execution/api/options"
 import { useGetClientOptions } from "@/features/clients/api"
 import { productionJobStatusLabels } from "@/lib/types/production-job.type"
 import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
@@ -29,7 +26,7 @@ const statusFilterOptions = [
 ]
 
 // Cùng khuôn ProductionJobsTableFilter.tsx — reset chỉ xoá filter, giữ nguyên `operationId` (thẻ
-// công đoạn đang chọn ở panel 1 không phải một filter tuỳ chọn, đổi nó là đổi màn).
+// công đoạn đang chọn ở OperationPicker không phải một filter tuỳ chọn, đổi nó là đổi màn).
 export function ProductionExecutionJobsTableFilter() {
   const search = useSearch({
     from: "/(authed)/manage_/production-execution/",
@@ -40,18 +37,6 @@ export function ProductionExecutionJobsTableFilter() {
   const client = useGetClientOptions()
   const selectedClient = client.clients.find(
     (option) => option.id === search.clientId
-  )
-
-  // Cùng query key với ProductionExecutionPage.tsx (dùng để tự chọn công đoạn đầu tiên) — React
-  // Query dùng chung cache theo key, không gọi API 2 lần.
-  const operationSummary = useQuery(
-    productionOperationSummaryQueryOptions({
-      q: search.q,
-      status: search.status,
-      clientId: search.clientId,
-      dueDateFrom: search.dueDateFrom,
-      dueDateTo: search.dueDateTo,
-    })
   )
 
   const handleSearch = useDebounceCallback((term: string) => {
@@ -112,22 +97,7 @@ export function ProductionExecutionJobsTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(11rem,1fr)_minmax(14rem,1.3fr)_minmax(11rem,1.1fr)_minmax(14rem,1.3fr)_minmax(9rem,0.9fr)]">
-          <div className="flex flex-col gap-1.5">
-            <Label
-              htmlFor="production-execution-operation"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Công đoạn
-            </Label>
-            <OperationSelect
-              summary={operationSummary.data ?? []}
-              selectedOperationId={search.operationId}
-              isPending={operationSummary.isPending}
-              isError={operationSummary.isError}
-            />
-          </div>
-
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.3fr)_minmax(11rem,1.1fr)_minmax(14rem,1.3fr)_minmax(9rem,0.9fr)]">
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="production-execution-search"

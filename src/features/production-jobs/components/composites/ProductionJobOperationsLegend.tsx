@@ -130,9 +130,8 @@ export function ProductionJobOperationsLegend() {
             về (OS-IN) — không nhập tay được.
           </p>
           <p>
-            • Ngày hoàn thành tự điền khi SL hoàn thành đạt đủ SL kế hoạch — chỉ
-            huỷ OS-IN mới làm SL nhận tụt xuống dưới mức đó (riêng công đoạn Gia
-            công ngoài).
+            • Thời gian cập nhật do hệ thống tự ghi mỗi lần báo cáo hoặc khi
+            OS-IN thay đổi SL nhận (riêng công đoạn Gia công ngoài).
           </p>
         </div>
       </div>

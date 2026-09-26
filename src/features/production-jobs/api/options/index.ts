@@ -5,6 +5,7 @@ export { productionJobsQueryOptions } from "@/features/production-jobs/api/optio
 export { productionJobQueryOptions } from "@/features/production-jobs/api/options/production-job.options"
 export { productionJobBomQueryOptions } from "@/features/production-jobs/api/options/production-job-bom.options"
 export { productionJobOperationsQueryOptions } from "@/features/production-jobs/api/options/production-job-operations.options"
+export { productionJobPlanOperationsQueryOptions } from "@/features/production-jobs/api/options/production-job-plan-operations.options"
 export {
   productionJobNotesPageLimit,
   productionJobNotesQueryOptions,

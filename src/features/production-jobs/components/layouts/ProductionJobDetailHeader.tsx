@@ -157,7 +157,7 @@ function StartJobButton({ job }: { job: ProductionJobDetail }) {
       trigger={
         <Button type="button" className="gap-1.5">
           <Diskette className="size-4" />
-          Xác nhận
+          Xác nhận kế hoạch
         </Button>
       }
     />

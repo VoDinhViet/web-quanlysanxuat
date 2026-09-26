@@ -16,14 +16,17 @@ export const Route = createFileRoute(
   // keystroke), this route's entire dataset depends on `operationId` — it SHOULD re-run the
   // loader when it changes.
   loaderDeps: ({ search }) => ({ operationId: search.operationId }),
-  loader: ({ context, params }) =>
+  loader: ({ context, params, deps }) =>
     Promise.all([
       context.queryClient.query({
         ...productionJobQueryOptions(params.productionJobId),
         staleTime: "static",
       }),
       context.queryClient.query({
-        ...productionJobOperationsQueryOptions(params.productionJobId),
+        ...productionJobOperationsQueryOptions(
+          params.productionJobId,
+          deps.operationId
+        ),
         staleTime: "static",
       }),
     ]),

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { DateTime } from "luxon"
-import { History, User } from "lucide-react"
+import { History } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { ImageLightbox } from "@/components/ui/image-lightbox"
@@ -19,10 +19,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import type { PageSize } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { resolveFileUrl } from "@/lib/file-url"
+import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 import type { ProductionExecutionReport } from "@/lib/types/production-job.type"
 
 type PartOption = {
@@ -33,6 +36,9 @@ type PartOption = {
 
 type ProductionExecutionReportHistoryTableProps = {
   reports: ProductionExecutionReport[]
+  pagination?: PaginationMeta
+  onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: PageSize) => void
   isPending: boolean
   isError: boolean
   error?: string
@@ -46,6 +52,9 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 export function ProductionExecutionReportHistoryTable({
   reports,
+  pagination,
+  onPageChange,
+  onPageSizeChange,
   isPending,
   isError,
   error,
@@ -58,10 +67,6 @@ export function ProductionExecutionReportHistoryTable({
     src: string
     alt: string
   } | null>(null)
-
-  const filteredReports = selectedBomItemId
-    ? reports.filter((r) => r.bomItemId === selectedBomItemId)
-    : reports
 
   if (isPending) {
     return <TableQueryLoading rows={5} />
@@ -94,7 +99,7 @@ export function ProductionExecutionReportHistoryTable({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL" className="text-xs">
-                Tất cả Part ({reports.length})
+                Tất cả Part
               </SelectItem>
               {partOptions.map((part) => (
                 <SelectItem key={part.id} value={part.id} className="text-xs">
@@ -112,12 +117,12 @@ export function ProductionExecutionReportHistoryTable({
             variant="secondary"
             className="px-2 py-0.5 text-xs font-semibold"
           >
-            {filteredReports.length}
+            {pagination?.totalRecords ?? 0}
           </Badge>
         </div>
       </div>
 
-      {filteredReports.length === 0 ? (
+      {reports.length === 0 ? (
         <TableEmpty
           icon={History}
           title="Chưa có báo cáo nào"
@@ -152,17 +157,12 @@ export function ProductionExecutionReportHistoryTable({
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-border/40">
-              {filteredReports.map((report) => {
-                const formattedCompletedDate = report.completedDate
-                  ? DateTime.fromISO(report.completedDate).toFormat(
-                      "dd/MM/yyyy"
-                    )
-                  : "—"
+              {reports.map((report) => {
                 const formattedCreatedAt = report.createdAt
                   ? DateTime.fromISO(report.createdAt).toFormat(
-                      "HH:mm, dd/MM/yyyy"
+                      "dd/MM/yyyy HH:mm"
                     )
-                  : ""
+                  : "—"
 
                 return (
                   <TableRow
@@ -170,30 +170,20 @@ export function ProductionExecutionReportHistoryTable({
                     className="h-14 transition-colors hover:bg-muted/25"
                   >
                     <TableCell className="py-2.5">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-medium text-foreground">
-                          {formattedCompletedDate}
-                        </span>
-                        <span className="text-[11px] text-muted-foreground">
-                          {formattedCreatedAt}
-                        </span>
-                      </div>
+                      <span className="text-xs font-medium text-foreground">
+                        {formattedCreatedAt}
+                      </span>
                     </TableCell>
 
                     <TableCell className="py-2.5">
                       {report.creator ? (
-                        <div className="flex items-center gap-2">
-                          <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
-                            <User className="size-3.5" />
-                          </div>
-                          <div className="flex min-w-0 flex-col">
-                            <span className="truncate text-xs font-medium text-foreground">
-                              {report.creator.fullName}
-                            </span>
-                            <span className="font-mono text-[10px] text-muted-foreground">
-                              {report.creator.code}
-                            </span>
-                          </div>
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate text-xs font-medium text-foreground">
+                            {report.creator.fullName}
+                          </span>
+                          <span className="font-mono text-[10px] text-muted-foreground">
+                            {report.creator.code}
+                          </span>
                         </div>
                       ) : (
                         <span className="text-xs text-muted-foreground">
@@ -205,10 +195,10 @@ export function ProductionExecutionReportHistoryTable({
                     <TableCell className="py-2.5">
                       <div className="flex min-w-0 flex-col">
                         <span className="truncate text-xs font-medium text-foreground">
-                          {report.bomItemName}
+                          {report.bomItem.name}
                         </span>
                         <span className="font-mono text-[11px] text-muted-foreground">
-                          {report.bomItemCode}
+                          {report.bomItem.code}
                         </span>
                       </div>
                     </TableCell>
@@ -290,6 +280,16 @@ export function ProductionExecutionReportHistoryTable({
           </Table>
         </div>
       )}
+
+      {pagination ? (
+        <Pagination
+          page={pagination.currentPage}
+          pageSize={pagination.limit}
+          total={pagination.totalRecords}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+        />
+      ) : null}
 
       {activeImage && (
         <ImageLightbox

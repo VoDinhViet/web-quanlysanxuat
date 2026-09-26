@@ -39,6 +39,7 @@ import { Route as authedManagePurchaseOrdersRouteRouteImport } from './routes/(a
 import { Route as authedManagePurchaseQuotationsRouteRouteImport } from './routes/(authed)/manage_/purchase-quotations/route'
 import { Route as authedManagePurchaseRequestsRouteRouteImport } from './routes/(authed)/manage_/purchase-requests/route'
 import { Route as authedManageRolesRouteRouteImport } from './routes/(authed)/manage_/roles/route'
+import { Route as authedManageSettingsRouteRouteImport } from './routes/(authed)/manage_/settings/route'
 import { Route as authedManageSupplierReturnsRouteRouteImport } from './routes/(authed)/manage_/supplier-returns/route'
 import { Route as authedManageSuppliersRouteRouteImport } from './routes/(authed)/manage_/suppliers/route'
 import { Route as authedManageUnitsRouteRouteImport } from './routes/(authed)/manage_/units/route'
@@ -101,6 +102,9 @@ import { Route as authedManagePurchaseRequestsPurchaseRequestIdRouteImport } fro
 import { Route as authedManagePurchaseRequestsCreateRouteImport } from './routes/(authed)/manage_/purchase-requests_/create'
 import { Route as authedManageRolesIndexRouteImport } from './routes/(authed)/manage_/roles/index'
 import { Route as authedManageRolesCreateRouteImport } from './routes/(authed)/manage_/roles_/create'
+import { Route as authedManageSettingsIndexRouteImport } from './routes/(authed)/manage_/settings/index'
+import { Route as authedManageSettingsOperationsRouteImport } from './routes/(authed)/manage_/settings/operations'
+import { Route as authedManageSettingsUnitsRouteImport } from './routes/(authed)/manage_/settings/units'
 import { Route as authedManageSupplierReturnsIndexRouteImport } from './routes/(authed)/manage_/supplier-returns/index'
 import { Route as authedManageSupplierReturnsSupplierReturnIdRouteImport } from './routes/(authed)/manage_/supplier-returns_/$supplierReturnId'
 import { Route as authedManageSuppliersIndexRouteImport } from './routes/(authed)/manage_/suppliers/index'
@@ -293,6 +297,12 @@ const authedManageRolesRouteRoute = authedManageRolesRouteRouteImport.update({
   path: '/manage/roles',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManageSettingsRouteRoute =
+  authedManageSettingsRouteRouteImport.update({
+    id: '/manage_/settings',
+    path: '/manage/settings',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageSupplierReturnsRouteRoute =
   authedManageSupplierReturnsRouteRouteImport.update({
     id: '/manage_/supplier-returns',
@@ -656,6 +666,24 @@ const authedManageRolesCreateRoute = authedManageRolesCreateRouteImport.update({
   path: '/manage/roles/create',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedManageSettingsIndexRoute =
+  authedManageSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageSettingsRouteRoute,
+  } as any)
+const authedManageSettingsOperationsRoute =
+  authedManageSettingsOperationsRouteImport.update({
+    id: '/operations',
+    path: '/operations',
+    getParentRoute: () => authedManageSettingsRouteRoute,
+  } as any)
+const authedManageSettingsUnitsRoute =
+  authedManageSettingsUnitsRouteImport.update({
+    id: '/units',
+    path: '/units',
+    getParentRoute: () => authedManageSettingsRouteRoute,
+  } as any)
 const authedManageSupplierReturnsIndexRoute =
   authedManageSupplierReturnsIndexRouteImport.update({
     id: '/',
@@ -816,6 +844,7 @@ export interface FileRoutesByFullPath {
   '/manage/purchase-quotations': typeof authedManagePurchaseQuotationsRouteRouteWithChildren
   '/manage/purchase-requests': typeof authedManagePurchaseRequestsRouteRouteWithChildren
   '/manage/roles': typeof authedManageRolesRouteRouteWithChildren
+  '/manage/settings': typeof authedManageSettingsRouteRouteWithChildren
   '/manage/supplier-returns': typeof authedManageSupplierReturnsRouteRouteWithChildren
   '/manage/suppliers': typeof authedManageSuppliersRouteRouteWithChildren
   '/manage/units': typeof authedManageUnitsRouteRouteWithChildren
@@ -855,6 +884,8 @@ export interface FileRoutesByFullPath {
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/manage/purchase-requests/create': typeof authedManagePurchaseRequestsCreateRoute
   '/manage/roles/create': typeof authedManageRolesCreateRoute
+  '/manage/settings/operations': typeof authedManageSettingsOperationsRoute
+  '/manage/settings/units': typeof authedManageSettingsUnitsRoute
   '/manage/supplier-returns/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
   '/manage/suppliers/$supplierId': typeof authedManageSuppliersSupplierIdRouteWithChildren
   '/manage/clients/': typeof authedManageClientsIndexRoute
@@ -882,6 +913,7 @@ export interface FileRoutesByFullPath {
   '/manage/purchase-quotations/': typeof authedManagePurchaseQuotationsIndexRoute
   '/manage/purchase-requests/': typeof authedManagePurchaseRequestsIndexRoute
   '/manage/roles/': typeof authedManageRolesIndexRoute
+  '/manage/settings/': typeof authedManageSettingsIndexRoute
   '/manage/supplier-returns/': typeof authedManageSupplierReturnsIndexRoute
   '/manage/suppliers/': typeof authedManageSuppliersIndexRoute
   '/manage/units/': typeof authedManageUnitsIndexRoute
@@ -935,6 +967,8 @@ export interface FileRoutesByTo {
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/manage/purchase-requests/create': typeof authedManagePurchaseRequestsCreateRoute
   '/manage/roles/create': typeof authedManageRolesCreateRoute
+  '/manage/settings/operations': typeof authedManageSettingsOperationsRoute
+  '/manage/settings/units': typeof authedManageSettingsUnitsRoute
   '/manage/supplier-returns/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
   '/manage/suppliers/$supplierId': typeof authedManageSuppliersSupplierIdRouteWithChildren
   '/manage/clients': typeof authedManageClientsIndexRoute
@@ -962,6 +996,7 @@ export interface FileRoutesByTo {
   '/manage/purchase-quotations': typeof authedManagePurchaseQuotationsIndexRoute
   '/manage/purchase-requests': typeof authedManagePurchaseRequestsIndexRoute
   '/manage/roles': typeof authedManageRolesIndexRoute
+  '/manage/settings': typeof authedManageSettingsIndexRoute
   '/manage/supplier-returns': typeof authedManageSupplierReturnsIndexRoute
   '/manage/suppliers': typeof authedManageSuppliersIndexRoute
   '/manage/units': typeof authedManageUnitsIndexRoute
@@ -1013,6 +1048,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/purchase-quotations': typeof authedManagePurchaseQuotationsRouteRouteWithChildren
   '/(authed)/manage_/purchase-requests': typeof authedManagePurchaseRequestsRouteRouteWithChildren
   '/(authed)/manage_/roles': typeof authedManageRolesRouteRouteWithChildren
+  '/(authed)/manage_/settings': typeof authedManageSettingsRouteRouteWithChildren
   '/(authed)/manage_/supplier-returns': typeof authedManageSupplierReturnsRouteRouteWithChildren
   '/(authed)/manage_/suppliers': typeof authedManageSuppliersRouteRouteWithChildren
   '/(authed)/manage_/units': typeof authedManageUnitsRouteRouteWithChildren
@@ -1052,6 +1088,8 @@ export interface FileRoutesById {
   '/(authed)/manage_/purchase-requests_/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/(authed)/manage_/purchase-requests_/create': typeof authedManagePurchaseRequestsCreateRoute
   '/(authed)/manage_/roles_/create': typeof authedManageRolesCreateRoute
+  '/(authed)/manage_/settings/operations': typeof authedManageSettingsOperationsRoute
+  '/(authed)/manage_/settings/units': typeof authedManageSettingsUnitsRoute
   '/(authed)/manage_/supplier-returns_/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
   '/(authed)/manage_/suppliers_/$supplierId': typeof authedManageSuppliersSupplierIdRouteWithChildren
   '/(authed)/manage_/clients/': typeof authedManageClientsIndexRoute
@@ -1079,6 +1117,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/purchase-quotations/': typeof authedManagePurchaseQuotationsIndexRoute
   '/(authed)/manage_/purchase-requests/': typeof authedManagePurchaseRequestsIndexRoute
   '/(authed)/manage_/roles/': typeof authedManageRolesIndexRoute
+  '/(authed)/manage_/settings/': typeof authedManageSettingsIndexRoute
   '/(authed)/manage_/supplier-returns/': typeof authedManageSupplierReturnsIndexRoute
   '/(authed)/manage_/suppliers/': typeof authedManageSuppliersIndexRoute
   '/(authed)/manage_/units/': typeof authedManageUnitsIndexRoute
@@ -1129,6 +1168,7 @@ export interface FileRouteTypes {
     | '/manage/purchase-quotations'
     | '/manage/purchase-requests'
     | '/manage/roles'
+    | '/manage/settings'
     | '/manage/supplier-returns'
     | '/manage/suppliers'
     | '/manage/units'
@@ -1168,6 +1208,8 @@ export interface FileRouteTypes {
     | '/manage/purchase-requests/$purchaseRequestId'
     | '/manage/purchase-requests/create'
     | '/manage/roles/create'
+    | '/manage/settings/operations'
+    | '/manage/settings/units'
     | '/manage/supplier-returns/$supplierReturnId'
     | '/manage/suppliers/$supplierId'
     | '/manage/clients/'
@@ -1195,6 +1237,7 @@ export interface FileRouteTypes {
     | '/manage/purchase-quotations/'
     | '/manage/purchase-requests/'
     | '/manage/roles/'
+    | '/manage/settings/'
     | '/manage/supplier-returns/'
     | '/manage/suppliers/'
     | '/manage/units/'
@@ -1248,6 +1291,8 @@ export interface FileRouteTypes {
     | '/manage/purchase-requests/$purchaseRequestId'
     | '/manage/purchase-requests/create'
     | '/manage/roles/create'
+    | '/manage/settings/operations'
+    | '/manage/settings/units'
     | '/manage/supplier-returns/$supplierReturnId'
     | '/manage/suppliers/$supplierId'
     | '/manage/clients'
@@ -1275,6 +1320,7 @@ export interface FileRouteTypes {
     | '/manage/purchase-quotations'
     | '/manage/purchase-requests'
     | '/manage/roles'
+    | '/manage/settings'
     | '/manage/supplier-returns'
     | '/manage/suppliers'
     | '/manage/units'
@@ -1325,6 +1371,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/purchase-quotations'
     | '/(authed)/manage_/purchase-requests'
     | '/(authed)/manage_/roles'
+    | '/(authed)/manage_/settings'
     | '/(authed)/manage_/supplier-returns'
     | '/(authed)/manage_/suppliers'
     | '/(authed)/manage_/units'
@@ -1364,6 +1411,8 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/purchase-requests_/$purchaseRequestId'
     | '/(authed)/manage_/purchase-requests_/create'
     | '/(authed)/manage_/roles_/create'
+    | '/(authed)/manage_/settings/operations'
+    | '/(authed)/manage_/settings/units'
     | '/(authed)/manage_/supplier-returns_/$supplierReturnId'
     | '/(authed)/manage_/suppliers_/$supplierId'
     | '/(authed)/manage_/clients/'
@@ -1391,6 +1440,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/purchase-quotations/'
     | '/(authed)/manage_/purchase-requests/'
     | '/(authed)/manage_/roles/'
+    | '/(authed)/manage_/settings/'
     | '/(authed)/manage_/supplier-returns/'
     | '/(authed)/manage_/suppliers/'
     | '/(authed)/manage_/units/'
@@ -1627,6 +1677,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/roles'
       fullPath: '/manage/roles'
       preLoaderRoute: typeof authedManageRolesRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/settings': {
+      id: '/(authed)/manage_/settings'
+      path: '/manage/settings'
+      fullPath: '/manage/settings'
+      preLoaderRoute: typeof authedManageSettingsRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/supplier-returns': {
@@ -2062,6 +2119,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/manage/roles/create'
       preLoaderRoute: typeof authedManageRolesCreateRouteImport
       parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/settings/': {
+      id: '/(authed)/manage_/settings/'
+      path: '/'
+      fullPath: '/manage/settings/'
+      preLoaderRoute: typeof authedManageSettingsIndexRouteImport
+      parentRoute: typeof authedManageSettingsRouteRoute
+    }
+    '/(authed)/manage_/settings/operations': {
+      id: '/(authed)/manage_/settings/operations'
+      path: '/operations'
+      fullPath: '/manage/settings/operations'
+      preLoaderRoute: typeof authedManageSettingsOperationsRouteImport
+      parentRoute: typeof authedManageSettingsRouteRoute
+    }
+    '/(authed)/manage_/settings/units': {
+      id: '/(authed)/manage_/settings/units'
+      path: '/units'
+      fullPath: '/manage/settings/units'
+      preLoaderRoute: typeof authedManageSettingsUnitsRouteImport
+      parentRoute: typeof authedManageSettingsRouteRoute
     }
     '/(authed)/manage_/supplier-returns/': {
       id: '/(authed)/manage_/supplier-returns/'
@@ -2588,6 +2666,24 @@ const authedManageRolesRouteRouteWithChildren =
     authedManageRolesRouteRouteChildren,
   )
 
+interface authedManageSettingsRouteRouteChildren {
+  authedManageSettingsOperationsRoute: typeof authedManageSettingsOperationsRoute
+  authedManageSettingsUnitsRoute: typeof authedManageSettingsUnitsRoute
+  authedManageSettingsIndexRoute: typeof authedManageSettingsIndexRoute
+}
+
+const authedManageSettingsRouteRouteChildren: authedManageSettingsRouteRouteChildren =
+  {
+    authedManageSettingsOperationsRoute: authedManageSettingsOperationsRoute,
+    authedManageSettingsUnitsRoute: authedManageSettingsUnitsRoute,
+    authedManageSettingsIndexRoute: authedManageSettingsIndexRoute,
+  }
+
+const authedManageSettingsRouteRouteWithChildren =
+  authedManageSettingsRouteRoute._addFileChildren(
+    authedManageSettingsRouteRouteChildren,
+  )
+
 interface authedManageSupplierReturnsRouteRouteChildren {
   authedManageSupplierReturnsIndexRoute: typeof authedManageSupplierReturnsIndexRoute
 }
@@ -2758,6 +2854,7 @@ interface authedRouteRouteChildren {
   authedManagePurchaseQuotationsRouteRoute: typeof authedManagePurchaseQuotationsRouteRouteWithChildren
   authedManagePurchaseRequestsRouteRoute: typeof authedManagePurchaseRequestsRouteRouteWithChildren
   authedManageRolesRouteRoute: typeof authedManageRolesRouteRouteWithChildren
+  authedManageSettingsRouteRoute: typeof authedManageSettingsRouteRouteWithChildren
   authedManageSupplierReturnsRouteRoute: typeof authedManageSupplierReturnsRouteRouteWithChildren
   authedManageSuppliersRouteRoute: typeof authedManageSuppliersRouteRouteWithChildren
   authedManageUnitsRouteRoute: typeof authedManageUnitsRouteRouteWithChildren
@@ -2854,6 +2951,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManagePurchaseRequestsRouteRoute:
     authedManagePurchaseRequestsRouteRouteWithChildren,
   authedManageRolesRouteRoute: authedManageRolesRouteRouteWithChildren,
+  authedManageSettingsRouteRoute: authedManageSettingsRouteRouteWithChildren,
   authedManageSupplierReturnsRouteRoute:
     authedManageSupplierReturnsRouteRouteWithChildren,
   authedManageSuppliersRouteRoute: authedManageSuppliersRouteRouteWithChildren,

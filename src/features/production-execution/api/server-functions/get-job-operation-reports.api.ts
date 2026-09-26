@@ -4,12 +4,16 @@ import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { ProductionExecutionReport } from "@/lib/types/production-job.type"
 
 const getJobOperationReportsParamsSchema = z.object({
   productionJobId: z.string().uuid(),
   operationId: z.string().uuid().optional(),
   jobOperationId: z.string().uuid().optional(),
+  bomItemId: z.string().uuid().optional(),
+  page: z.number().int().min(1).optional(),
+  limit: z.number().int().min(1).optional(),
 })
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra khi tải lịch sử báo cáo."
@@ -29,18 +33,21 @@ function resolveGetJobOperationReportsErrorMessage(error: unknown): string {
 
 export const getJobOperationReports = createServerFn({ method: "GET" })
   .validator(getJobOperationReportsParamsSchema)
-  .handler(async ({ data }): Promise<ProductionExecutionReport[]> => {
-    try {
-      const { productionJobId, ...params } = data
-      const response = await http.get<ProductionExecutionReport[]>(
-        `/api/production-execution/jobs/${productionJobId}/reports`,
-        { params }
-      )
+  .handler(
+    async ({ data }): Promise<PaginatedResponse<ProductionExecutionReport>> => {
+      try {
+        const { productionJobId, ...params } = data
+        const response = await http.get<
+          PaginatedResponse<ProductionExecutionReport>
+        >(`/api/production-execution/jobs/${productionJobId}/reports`, {
+          params,
+        })
 
-      return response.data
-    } catch (error) {
-      logHttpError(error, "getJobOperationReports")
+        return response.data
+      } catch (error) {
+        logHttpError(error, "getJobOperationReports")
 
-      throw new Error(resolveGetJobOperationReportsErrorMessage(error))
+        throw new Error(resolveGetJobOperationReportsErrorMessage(error))
+      }
     }
-  })
+  )

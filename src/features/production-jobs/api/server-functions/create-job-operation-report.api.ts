@@ -4,7 +4,6 @@ import { z } from "zod"
 
 import { fileFieldSchema, resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
-import { toIsoDate } from "@/lib/zod-transforms"
 import type { ApiErrorResponse } from "@/lib/http"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
@@ -46,7 +45,6 @@ const createJobOperationReportParamsSchema = z
     jobOperationId: z.uuid(),
     completedQuantityDelta: z.number().min(0),
     rejectedQuantityDelta: z.number().min(0),
-    completedDate: z.string().min(1).transform(toIsoDate),
     note: z.string().trim().max(500).optional(),
     images: z.array(fileFieldSchema).default([]),
   })

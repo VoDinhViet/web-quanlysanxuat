@@ -62,11 +62,13 @@ export function StartProductionJobDialog({
           <AlertDialogMedia>
             <CircleCheck />
           </AlertDialogMedia>
-          <AlertDialogTitle>Xác nhận sản xuất Job này?</AlertDialogTitle>
+          <AlertDialogTitle>Xác nhận kế hoạch Job này?</AlertDialogTitle>
           <AlertDialogDescription>
-            Job {job.code} sẽ chuyển sang trạng thái "
-            {productionJobStatusLabels[ProductionJobStatus.IN_PROGRESS]}". Sau
-            khi xác nhận, không thể quay lại trạng thái trước đó.
+            BOM, nhu cầu vật tư và công đoạn của Job {job.code} sẽ được chốt
+            theo cấu trúc sản phẩm hiện tại; vật tư thiếu tự sinh đề xuất mua.
+            Job chuyển sang "
+            {productionJobStatusLabels[ProductionJobStatus.IN_PROGRESS]}" và
+            không thể quay lại.
           </AlertDialogDescription>
         </AlertDialogHeader>
 

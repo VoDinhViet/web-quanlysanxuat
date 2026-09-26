@@ -31,7 +31,7 @@ import {
   Upload,
   UserRound,
   Warehouse,
-  Wrench,
+  Workflow,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -236,15 +236,20 @@ const menuGroups: MenuGroup[] = [
         icon: Layers,
         href: "/manage/directs",
       },
+    ],
+  },
+  {
+    label: "Danh mục",
+    items: [
       {
         label: "Đơn vị tính",
         icon: Ruler,
-        href: "/manage/units",
+        href: "/manage/settings/units",
       },
       {
-        label: "Công đoạn",
-        icon: Wrench,
-        href: "/manage/operations",
+        label: "Công đoạn sản xuất",
+        icon: Workflow,
+        href: "/manage/settings/operations",
       },
     ],
   },
@@ -391,7 +396,10 @@ function MenuButton({
   pendingApprovals?: PendingApprovals
 }) {
   const Icon = item.icon
-  const isActive = pathname === item.href
+  const isActive =
+    item.href === "/manage"
+      ? pathname === "/manage"
+      : pathname === item.href || pathname.startsWith(`${item.href}/`)
   const badgeCount = item.badgeKey
     ? (pendingApprovals?.[item.badgeKey] ?? 0)
     : 0

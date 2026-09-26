@@ -2,13 +2,16 @@ import { useMemo } from "react"
 import { Route } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 
-import { LinkButton } from "@/components/ui/button"
-import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { ProductionJobOperationsLegend } from "@/features/production-jobs/components/composites/ProductionJobOperationsLegend"
 import { ProductionJobOperationsTable } from "@/features/production-jobs/components/composites/ProductionJobOperationsTable"
-import { productionJobOperationsQueryOptions } from "@/features/production-jobs/api/options"
+import { ProductionJobPlanOperationsTable } from "@/features/production-jobs/components/composites/ProductionJobPlanOperationsTable"
+import { ProductionJobPlanNotice } from "@/features/production-jobs/components/primitives/ProductionJobPlanNotice"
+import {
+  productionJobOperationsQueryOptions,
+  productionJobPlanOperationsQueryOptions,
+} from "@/features/production-jobs/api/options"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
@@ -24,7 +27,6 @@ const outsourceableOperationsLimit = 200
 type ProductionJobOperationsTabProps = {
   productionJobId: string
   status: ProductionJobStatus
-  itemId: string
 }
 
 // Reads GET /production-jobs/:jobId/operations directly (client-driven, tab-gated) — the backend
@@ -32,18 +34,20 @@ type ProductionJobOperationsTabProps = {
 // no client-side grouping is needed (see ProductionJobBomItem's doc comment). Tab chỉ đọc — nhập
 // SL hoàn thành/không đạt đi qua dialog "Nhập báo cáo" dùng chung
 // (JobOperationReportDialog.tsx, cũng dùng bởi màn "Thực hiện sản xuất"), tự khoá + hiện lý do
-// khi Job chưa `IN_PROGRESS` thay vì tab tự ẩn control. Job `PENDING` chưa có snapshot công đoạn
-// nào (chốt lần đầu lúc "Xác nhận sản xuất", be-quanlysanxuat/docs/decisions/job-snapshot-at-start.md)
-// — không gọi API, hiện thẳng empty state trỏ sang cấu trúc sản phẩm sống.
+// khi Job chưa `IN_PROGRESS` thay vì tab tự ẩn control. Job `PENDING` đọc kế hoạch tạm tính (cùng
+// route, BE tính sống từ sản phẩm × SL Job) và chỉ cho nhập leadtime tới khi "Xác nhận kế hoạch".
 export function ProductionJobOperationsTab({
   productionJobId,
   status,
-  itemId,
 }: ProductionJobOperationsTabProps) {
   const isPending = status === ProductionJobStatus.PENDING
   const operationsQuery = useQuery({
     ...productionJobOperationsQueryOptions(productionJobId),
     enabled: !isPending,
+  })
+  const planQuery = useQuery({
+    ...productionJobPlanOperationsQueryOptions(productionJobId),
+    enabled: isPending,
   })
   const isInProgress = status === ProductionJobStatus.IN_PROGRESS
   const groups = operationsQuery.data ?? []
@@ -82,19 +86,19 @@ export function ProductionJobOperationsTab({
       </div>
 
       {isPending ? (
-        <TableEmpty
-          title="Job chưa xác nhận sản xuất"
-          description="Công đoạn sản xuất sẽ hiện sau khi bấm “Xác nhận”."
-          action={
-            <LinkButton
-              to="/manage/products/$productId"
-              params={{ productId: itemId }}
-              search={{ tab: "boms" }}
-            >
-              Xem cấu trúc sản phẩm
-            </LinkButton>
-          }
-        />
+        <>
+          <ProductionJobPlanNotice />
+          {planQuery.isPending ? (
+            <TableQueryLoading rows={operationsRowEstimate} />
+          ) : planQuery.isError ? (
+            <TableQueryError
+              error={planQuery.error.message}
+              onRetry={() => void planQuery.refetch()}
+            />
+          ) : (
+            <ProductionJobPlanOperationsTable groups={planQuery.data} />
+          )}
+        </>
       ) : operationsQuery.isPending ? (
         <TableQueryLoading rows={operationsRowEstimate} />
       ) : operationsQuery.isError ? (

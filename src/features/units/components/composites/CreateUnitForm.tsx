@@ -1,7 +1,8 @@
 import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Loader2, Save } from "lucide-react"
+import { Diskette } from "@solar-icons/react"
+import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -11,13 +12,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { useAppForm } from "@/hooks/use-app-form"
+import { UnitTypeSelect } from "@/features/units/components/primitives/UnitTypeSelect"
+import { unitStatusLabels } from "@/lib/types/unit.type"
+import { buildOptionsFromLabels } from "@/lib/utils"
 import { createUnit } from "@/features/units/api/server-functions/create-unit.api"
 import {
   createUnitFormDefaultValues,
   createUnitSchema,
 } from "@/features/units/schemas/create-unit.schema"
 import type { CreateUnitSchema } from "@/features/units/schemas/create-unit.schema"
+
+const statusOptions = buildOptionsFromLabels(unitStatusLabels)
 
 type CreateUnitFormProps = {
   onSuccess: () => void
@@ -88,6 +95,44 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
         )}
       </form.AppField>
 
+      <form.Field name="type">
+        {(field) => {
+          const isInvalid =
+            field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+          return (
+            <Field data-invalid={isInvalid}>
+              <FieldLabel
+                htmlFor={field.name}
+                className="text-xs font-medium text-foreground"
+              >
+                Loại đơn vị <span className="text-destructive">*</span>
+              </FieldLabel>
+              <UnitTypeSelect
+                id={field.name}
+                value={field.state.value}
+                onChange={field.handleChange}
+                onBlur={field.handleBlur}
+                disabled={isPending}
+                isInvalid={isInvalid}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )
+        }}
+      </form.Field>
+
+      <form.AppField name="status">
+        {(field) => (
+          <field.RadioPillField
+            label="Trạng thái"
+            required
+            options={statusOptions}
+            disabled={isPending}
+          />
+        )}
+      </form.AppField>
+
       <DialogFooter className="gap-2">
         <Button
           type="button"
@@ -112,7 +157,7 @@ export function CreateUnitForm({ onSuccess, onCancel }: CreateUnitFormProps) {
                 </>
               ) : (
                 <>
-                  <Save />
+                  <Diskette />
                   Lưu đơn vị tính
                 </>
               )}

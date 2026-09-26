@@ -50,7 +50,6 @@ export function JobOperationReportForm({
       jobOperationId: operation.id,
       completedQuantityDelta: 0,
       rejectedQuantityDelta: 0,
-      completedDate: "",
       note: "",
       images: [] as FileFieldValue[],
     },
@@ -149,16 +148,6 @@ export function JobOperationReportForm({
                 )}
               </form.AppField>
             </div>
-
-            <form.AppField name="completedDate">
-              {(field) => (
-                <field.DateField
-                  label="Ngày hoàn thành"
-                  required
-                  disabled={isPending}
-                />
-              )}
-            </form.AppField>
 
             <form.AppField name="note">
               {(field) => (

@@ -4,7 +4,7 @@ import { PagePending } from "@/components/shared/layouts/PagePending"
 import { clientOptionsQueryOptions } from "@/features/clients/api"
 import {
   productionJobsByOperationQueryOptions,
-  productionOperationSummaryQueryOptions,
+  productionExecutionOperationsQueryOptions,
 } from "@/features/production-execution/api/options"
 import { ProductionExecutionPage } from "@/features/production-execution/pages/ProductionExecutionPage"
 import { productionExecutionSearchSchema } from "@/features/production-execution/schemas/production-execution-search.schema"
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/(authed)/manage_/production-execution/")(
 
       return Promise.all([
         context.queryClient.query({
-          ...productionOperationSummaryQueryOptions({
+          ...productionExecutionOperationsQueryOptions({
             q: search.q,
             status: search.status,
             clientId: search.clientId,
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/(authed)/manage_/production-execution/")(
           staleTime: "static",
         }),
         // Chỉ khi URL đã mang sẵn operationId (link chia sẻ/bookmark) — lần vào đầu không có, trang
-        // tự chọn thẻ đầu tiên phía client sau khi operation-summary về (ProductionExecutionPage.tsx).
+        // tự chọn thẻ đầu tiên phía client sau khi operations về (ProductionExecutionPage.tsx).
         search.operationId
           ? context.queryClient.query({
               ...productionJobsByOperationQueryOptions(search),
