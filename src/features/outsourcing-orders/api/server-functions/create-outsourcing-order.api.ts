@@ -56,6 +56,8 @@ function resolveCreateOutsourcingOrderErrorMessage(error: unknown): string {
       return "Phiếu cần ít nhất một chi tiết cần gia công."
     case "outsourcing_order.error.duplicate_operation":
       return "Có chi tiết bị chọn trùng công đoạn."
+    case "outsourcing_order.error.mixed_operations":
+      return "Mỗi phiếu chỉ được gửi gia công cùng một công đoạn."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo phiếu gia công ngoài."
     default:

@@ -65,6 +65,14 @@ export const createOutsourcingOrderItemSchema = z
     path: ["quantity"],
   })
 
+// "Cùng công đoạn" của một phiếu OS-OUT: công đoạn danh mục, hoặc mã công đoạn khi snapshot mất
+// liên kết danh mục (`operationId` null) — cùng khóa BE dùng ở validateOrderItems.
+export function getOutsourcingItemOperationKey(item: {
+  operation: { operationId: string | null; code: string }
+}): string {
+  return item.operation.operationId ?? item.operation.code
+}
+
 export type CreateOutsourcingOrderItemValue = z.input<
   typeof createOutsourcingOrderItemSchema
 >
@@ -90,6 +98,14 @@ export const createOutsourcingOrderSchema = z
     {
       message: "Ngày cần nhận về không được trước ngày gửi đi",
       path: ["expectedReturnDate"],
+    }
+  )
+  .refine(
+    (value) =>
+      new Set(value.items.map(getOutsourcingItemOperationKey)).size <= 1,
+    {
+      message: "Mỗi phiếu chỉ được gửi gia công 1 công đoạn",
+      path: ["items"],
     }
   )
 
