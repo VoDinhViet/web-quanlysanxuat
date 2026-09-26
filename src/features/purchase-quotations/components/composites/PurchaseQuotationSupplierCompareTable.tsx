@@ -23,7 +23,7 @@ type PurchaseQuotationSupplierCompareTableProps = {
   isApproved: boolean
 }
 
-// Read-only twin of QuotationCompareQuoteTable.tsx (same nested-table shell: compact h-8
+// Read-only twin of QuotationItemsListColumns.tsx (same nested-table shell: compact h-8
 // header, border-b border-primary/15 cells). Rendered directly under every outer row — see
 // PurchaseQuotationDetailQuotesSection.tsx's row map.
 export function PurchaseQuotationSupplierCompareTable({

@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from "react"
+import { Fragment, useMemo, useState } from "react"
 import { useField } from "@tanstack/react-form"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
@@ -12,12 +12,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import { buildQuotationSuppliersItemColumns } from "@/features/purchase-quotations/components/composites/CreateQuotationSuppliersItemColumns"
-import { QuotationAddSupplierDialog } from "@/features/purchase-quotations/components/composites/QuotationAddSupplierDialog"
-import { QuotationCompareQuoteTable } from "@/features/purchase-quotations/components/composites/QuotationCompareQuoteTable"
-import { useQuotationAddSupplierDialog } from "@/features/purchase-quotations/hooks/use-quotation-add-supplier-dialog"
+import { QuotationAddSupplierInlineRow } from "@/features/purchase-quotations/components/composites/QuotationAddSupplierInlineRow"
+import { QuotationAdjustmentReasonRow } from "@/features/purchase-quotations/components/composites/QuotationAdjustmentReasonRow"
+import { buildQuotationItemsListColumns } from "@/features/purchase-quotations/components/composites/QuotationItemsListColumns"
+import { QuotationSupplierTreeRow } from "@/features/purchase-quotations/components/composites/QuotationSupplierTreeRow"
+import { getQuotationItemStatus } from "@/features/purchase-quotations/constants/quotation-item-status"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { cn } from "@/lib/utils"
 
 export const CreateQuotationSuppliersSection = withForm({
   defaultValues: createQuotationFormDefaultValues,
@@ -26,16 +28,25 @@ export const CreateQuotationSuppliersSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
-    const addSupplierDialog = useQuotationAddSupplierDialog(itemsField, items)
+    // Tree rows start expanded; only the ones the user folds are tracked.
+    const [collapsedIds, setCollapsedIds] = useState<ReadonlySet<string>>(
+      () => new Set()
+    )
 
     const columns = useMemo(
       () =>
-        buildQuotationSuppliersItemColumns({
+        buildQuotationItemsListColumns({
           itemsField,
           disabled,
-          onOpenAddSupplier: addSupplierDialog.openForItem,
+          collapsedIds,
+          onToggleItem: (itemId) =>
+            setCollapsedIds((previous) => {
+              const next = new Set(previous)
+              if (!next.delete(itemId)) next.add(itemId)
+              return next
+            }),
         }),
-      [itemsField, disabled, addSupplierDialog.openForItem]
+      [itemsField, disabled, collapsedIds]
     )
 
     const table = useTable({
@@ -47,6 +58,7 @@ export const CreateQuotationSuppliersSection = withForm({
     const suppliedCount = items.filter(
       (item) => item.suppliers.length > 0
     ).length
+    const isComplete = items.length > 0 && suppliedCount === items.length
 
     return (
       <div className="px-4 py-5 sm:px-5">
@@ -56,18 +68,28 @@ export const CreateQuotationSuppliersSection = withForm({
               Khai báo NCC & báo giá
             </h2>
             <p className="text-sm text-muted-foreground">
-              Giá gần nhất và ngày mua gần nhất được hệ thống tự động hiển thị
-              từ lịch sử mua hàng
+              Mỗi vật tư có các nhà cung cấp ngay bên dưới — chọn NCC ở dòng
+              cuối rồi nhập giá báo, leadtime tại chỗ. Giá gần nhất được hệ
+              thống tự động hiển thị từ lịch sử mua hàng.
             </p>
           </div>
-          <span className="text-xs font-medium text-muted-foreground">
-            {suppliedCount}/{items.length} vật tư đã có NCC
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
+                isComplete
+                  ? "bg-success/10 text-success"
+                  : "bg-warning/10 text-warning"
+              )}
+            >
+              {suppliedCount}/{items.length} vật tư đã có NCC
+            </span>
+          </div>
         </div>
 
-        <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
-          <Table aria-label="Danh sách vật tư & NCC">
-            <TableHeader className="[&>tr]:h-11 [&>tr]:hover:bg-muted/45">
+        <div className="mt-4 overflow-hidden rounded-md border border-border/40">
+          <Table aria-label="Danh sách vật tư và nhà cung cấp báo giá">
+            <TableHeader className="bg-transparent [&>tr]:h-12 [&>tr]:hover:bg-transparent">
               <TableRow>
                 {table.getFlatHeaders().map((header) => (
                   <TableHead
@@ -94,62 +116,115 @@ export const CreateQuotationSuppliersSection = withForm({
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map((row) => (
-                  <Fragment key={row.original.itemId}>
-                    <TableRow className="h-14 bg-card hover:bg-muted/25">
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          key={cell.id}
-                          className={cell.column.columnDef.meta?.cellClassName}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
+                table.getRowModel().rows.map((row) => {
+                  const item = row.original
+                  const itemIndex = row.index
+                  const status = getQuotationItemStatus(item)
+                  const isExpanded = !collapsedIds.has(item.itemId)
 
-                    {/* Left accent reads as "detail of the row above" — reads unmistakably at a
-                        glance which vật tư a NCC block belongs to, even with several items stacked.
-                        An inset ring rather than `border-l`: Tailwind's `ring-*` has no single-side
-                        variant (it's always a uniform box-shadow), so this is that same inset
-                        box-shadow mechanism hand-scoped to just the left edge via an arbitrary
-                        value — drawn inside the cell's own bounds (no layout width added, unlike
-                        border-l) and never clipped by the outer wrapper's `overflow-hidden`. Set on
-                        the <td>, not the <tr> — a border-collapse:separate table (the default,
-                        unset elsewhere in this app) only paints borders/shadows declared on
-                        table/td/th; one set on <tr> is silently dropped. */}
-                    <TableRow
-                      id={`${row.original.itemId}-detail`}
-                      className="bg-card hover:bg-card"
-                    >
-                      <TableCell
-                        colSpan={row.getVisibleCells().length}
-                        className="p-0 shadow-[inset_3px_0_0_0_var(--color-primary)]"
-                      >
-                        <QuotationCompareQuoteTable
-                          item={row.original}
-                          itemIndex={row.index}
-                          itemsField={itemsField}
+                  return (
+                    <Fragment key={item.itemId}>
+                      <TableRow className="h-14 bg-card hover:bg-card">
+                        {row.getVisibleCells().map((cell) => {
+                          const columnId = cell.column.id
+                          // The NCC summary spans the price/leadtime/note columns.
+                          if (columnId === "leadTime" || columnId === "note") {
+                            return null
+                          }
+                          return (
+                            <TableCell
+                              key={cell.id}
+                              colSpan={columnId === "unitPrice" ? 3 : undefined}
+                              className={cn(
+                                cell.column.columnDef.meta?.cellClassName,
+                                columnId === "unitPrice" && "text-left"
+                              )}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+
+                      {isExpanded && status.isAdjusted && status.allocation && (
+                        <QuotationAdjustmentReasonRow
+                          itemIndex={itemIndex}
+                          reason={status.allocation.quantityAdjustmentReason}
+                          isOver={status.isOver}
+                          needsReason={status.needsReason}
                           disabled={disabled}
+                          onChange={(reason) => {
+                            const allocation = status.allocation
+                            if (!allocation) return
+                            itemsField.replaceValue(itemIndex, {
+                              ...item,
+                              allocations: [
+                                {
+                                  ...allocation,
+                                  quantityAdjustmentReason: reason,
+                                },
+                              ],
+                            })
+                          }}
                         />
-                      </TableCell>
-                    </TableRow>
-                  </Fragment>
-                ))
+                      )}
+
+                      {isExpanded &&
+                        item.suppliers.map((supplier, supplierIndex) => (
+                          <QuotationSupplierTreeRow
+                            key={supplier.supplierId}
+                            supplier={supplier}
+                            disabled={disabled}
+                            onChange={(patch) =>
+                              itemsField.replaceValue(itemIndex, {
+                                ...item,
+                                suppliers: item.suppliers.map(
+                                  (current, index) =>
+                                    index === supplierIndex
+                                      ? { ...current, ...patch }
+                                      : current
+                                ),
+                              })
+                            }
+                            onRemove={() =>
+                              itemsField.replaceValue(itemIndex, {
+                                ...item,
+                                suppliers: item.suppliers.filter(
+                                  (_, index) => index !== supplierIndex
+                                ),
+                              })
+                            }
+                          />
+                        ))}
+
+                      {isExpanded && (
+                        <QuotationAddSupplierInlineRow
+                          // Remount after each add so the combobox clears its typed/picked text.
+                          key={`add-${item.suppliers.length}`}
+                          itemIndex={itemIndex}
+                          assignedSupplierIds={
+                            new Set(item.suppliers.map((s) => s.supplierId))
+                          }
+                          hasSuppliers={item.suppliers.length > 0}
+                          disabled={disabled}
+                          onAdd={(supplier) =>
+                            itemsField.replaceValue(itemIndex, {
+                              ...item,
+                              suppliers: [...item.suppliers, supplier],
+                            })
+                          }
+                        />
+                      )}
+                    </Fragment>
+                  )
+                })
               )}
             </TableBody>
           </Table>
         </div>
-
-        <QuotationAddSupplierDialog
-          open={addSupplierDialog.isOpen}
-          onOpenChange={addSupplierDialog.setOpen}
-          items={items}
-          initialItemIds={addSupplierDialog.initialItemIds}
-          onSubmit={addSupplierDialog.handleSupplierSelection}
-        />
       </div>
     )
   },
