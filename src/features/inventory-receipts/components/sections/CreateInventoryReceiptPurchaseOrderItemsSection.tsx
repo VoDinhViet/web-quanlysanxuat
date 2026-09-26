@@ -1,6 +1,8 @@
+import { useMemo, useState } from "react"
 import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 import { NumericFormat } from "react-number-format"
+import { Magnifer } from "@solar-icons/react"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -29,6 +31,7 @@ export const CreateInventoryReceiptPurchaseOrderItemsSection = withForm({
   defaultValues: createInventoryReceiptFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
+    const [materialSearch, setMaterialSearch] = useState("")
     const purchaseOrderId = useField({ form, name: "purchaseOrderId" }).state
       .value
 
@@ -36,6 +39,25 @@ export const CreateInventoryReceiptPurchaseOrderItemsSection = withForm({
       ...purchaseOrderQueryOptions(purchaseOrderId),
       enabled: Boolean(purchaseOrderId),
     })
+
+    // useMemo để `[]` lúc chưa có PO không sinh identity mới mỗi render, giữ filteredLines memo.
+    const allLines = useMemo(
+      () => purchaseOrder?.items ?? [],
+      [purchaseOrder?.items]
+    )
+    const searchTerm = materialSearch.trim()
+
+    const filteredLines = useMemo(() => {
+      const term = searchTerm.toLowerCase()
+      if (!term) return allLines
+      return allLines.filter((line) => {
+        const { item } = line.purchaseRequestItem
+        return (
+          item.code.toLowerCase().includes(term) ||
+          item.name.toLowerCase().includes(term)
+        )
+      })
+    }, [allLines, searchTerm])
 
     return (
       <form.Field name="items" mode="array">
@@ -80,15 +102,33 @@ export const CreateInventoryReceiptPurchaseOrderItemsSection = withForm({
 
           return (
             <div className="px-4 py-5 sm:px-5">
-              <div>
-                <h2 className="font-heading text-base font-semibold text-foreground">
-                  Dòng vật tư từ đơn mua hàng
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Chọn dòng cần nhận và điều chỉnh số lượng thực nhận nếu khác
-                  số lượng đặt. Chưa hiển thị số lượng đã nhận trước đó/còn lại
-                  của từng dòng.
-                </p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 className="font-heading text-base font-semibold text-foreground">
+                    Dòng vật tư từ đơn mua hàng
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Chọn dòng cần nhận và điều chỉnh số lượng thực nhận nếu khác
+                    số lượng đặt. Chưa hiển thị số lượng đã nhận trước đó/còn
+                    lại của từng dòng.
+                  </p>
+                </div>
+
+                {allLines.length > 0 && (
+                  <div className="relative w-full max-w-xs shrink-0">
+                    <Input
+                      id="receipt-po-items-search"
+                      className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                      placeholder="Tìm theo tên hoặc mã vật tư..."
+                      value={materialSearch}
+                      disabled={disabled}
+                      onChange={(event) =>
+                        setMaterialSearch(event.target.value)
+                      }
+                    />
+                    <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 overflow-hidden rounded-md border border-dashed border-border/50 bg-card">
@@ -103,7 +143,7 @@ export const CreateInventoryReceiptPurchaseOrderItemsSection = withForm({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(purchaseOrder?.items ?? []).length === 0 ? (
+                    {filteredLines.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={5}>
                           <TableEmpty
@@ -111,13 +151,20 @@ export const CreateInventoryReceiptPurchaseOrderItemsSection = withForm({
                             title={
                               isFetching
                                 ? "Đang tải dòng đơn mua hàng..."
-                                : "Đơn mua hàng không có dòng nào"
+                                : searchTerm
+                                  ? "Không tìm thấy vật tư phù hợp"
+                                  : "Đơn mua hàng không có dòng nào"
+                            }
+                            description={
+                              searchTerm
+                                ? "Thử tìm kiếm với tên hoặc mã vật tư khác."
+                                : undefined
                             }
                           />
                         </TableCell>
                       </TableRow>
                     ) : (
-                      (purchaseOrder?.items ?? []).map((line) => {
+                      filteredLines.map((line) => {
                         const index = findIndex(line.id)
                         const isSelected = index >= 0
                         const row = isSelected ? items[index] : null

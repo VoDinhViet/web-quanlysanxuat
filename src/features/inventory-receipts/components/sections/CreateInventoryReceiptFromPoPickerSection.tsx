@@ -5,7 +5,9 @@ import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { useDebounceValue } from "usehooks-ts"
 import { Magnifer } from "@solar-icons/react"
+import { RotateCw } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Pagination } from "@/components/shared/composites/Pagination"
@@ -19,6 +21,7 @@ import {
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { CreateInventoryReceiptFromPoItemsDialog } from "@/features/inventory-receipts/components/composites/CreateInventoryReceiptFromPoItemsDialog"
 import { buildCreateInventoryReceiptFromPoPickerColumns } from "@/features/inventory-receipts/components/composites/CreateInventoryReceiptFromPoPickerColumns"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api"
@@ -28,9 +31,8 @@ import type { PageSize } from "@/components/shared/composites/Pagination"
 const columns = buildCreateInventoryReceiptFromPoPickerColumns()
 
 // Bước ① của wizard — chọn đúng 1 PO đã ORDERED và còn hàng chưa nhận đủ
-// (`hasRemainingReceipt: true`, xem purchase-orders-search.schema.ts). Rập khuôn
-// CreateQuotationItemsPickerSection.tsx (page/pageSize/q + debounce, bảng useReactTable riêng), chỉ
-// khác select là radio (1 PO) thay vì checkbox (nhiều dòng).
+// (`hasRemainingReceipt: true`, xem purchase-orders-search.schema.ts). Hỗ trợ tìm theo mã PO
+// hoặc theo tên/mã vật tư trong PO (`directKeyword`), radio chọn 1 PO.
 export const CreateInventoryReceiptFromPoPickerSection = withForm({
   defaultValues: createInventoryReceiptFromPoFormDefaultValues,
   props: { disabled: false },
@@ -39,6 +41,12 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
     const [pageSize, setPageSize] = useState<PageSize>(10)
     const [q, setQ] = useState("")
     const [debouncedQ] = useDebounceValue(q, 300)
+    const [directKeyword, setDirectKeyword] = useState("")
+    const [debouncedDirectKeyword] = useDebounceValue(directKeyword, 300)
+    // PO đang mở dialog "xem nhanh" — một id thay vì boolean mỗi hàng, để chỉ mở được 1 lúc.
+    const [peekPurchaseOrderId, setPeekPurchaseOrderId] = useState<
+      string | null
+    >(null)
 
     const purchaseOrderIdField = useField({ form, name: "purchaseOrderId" })
 
@@ -47,10 +55,21 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
         page,
         limit: pageSize,
         q: debouncedQ.trim() || undefined,
+        directKeyword: debouncedDirectKeyword.trim() || undefined,
         hasRemainingReceipt: true,
       }),
       placeholderData: keepPreviousData,
     })
+
+    // Trim giống hệt query bên trên: gõ toàn khoảng trắng không lọc gì, nên cũng không hiện
+    // nút "Xóa tìm kiếm" lẫn empty state "không tìm thấy".
+    const hasFilter = Boolean(q.trim() || directKeyword.trim())
+
+    const handleResetSearch = () => {
+      setQ("")
+      setDirectKeyword("")
+      setPage(1)
+    }
 
     const rows = poQuery.data?.data ?? []
     const pagination = poQuery.data?.pagination
@@ -68,31 +87,71 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
             ① Chọn PO cần nhập
           </h2>
           <p className="text-sm text-muted-foreground">
-            Chỉ hiện các PO đã đặt hàng và còn vật tư chưa nhập kho.
+            Chỉ hiện các PO đã đặt hàng và còn vật tư chưa nhập kho. Có thể tìm
+            theo mã PO hoặc theo tên/mã vật tư.
           </p>
         </div>
 
-        <div className="mt-4 max-w-sm space-y-1.5">
-          <Label
-            htmlFor="receipt-from-po-search"
-            className="text-[11px] font-medium text-muted-foreground"
-          >
-            Tìm kiếm
-          </Label>
-          <div className="relative">
-            <Input
-              id="receipt-from-po-search"
-              className="pr-9 text-xs placeholder:text-muted-foreground/75"
-              placeholder="Tìm theo mã PO, nhà cung cấp..."
-              value={q}
-              disabled={disabled}
-              onChange={(event) => {
-                setQ(event.target.value)
-                setPage(1)
-              }}
-            />
-            <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="w-full max-w-xs space-y-1.5">
+            <Label
+              htmlFor="receipt-from-po-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Mã PO
+            </Label>
+            <div className="relative">
+              <Input
+                id="receipt-from-po-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo mã PO..."
+                value={q}
+                disabled={disabled}
+                onChange={(event) => {
+                  setQ(event.target.value)
+                  setPage(1)
+                }}
+              />
+              <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
           </div>
+
+          <div className="w-full max-w-xs space-y-1.5">
+            <Label
+              htmlFor="receipt-from-po-direct-search"
+              className="text-[11px] font-medium text-muted-foreground"
+            >
+              Vật tư
+            </Label>
+            <div className="relative">
+              <Input
+                id="receipt-from-po-direct-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo tên hoặc mã vật tư..."
+                value={directKeyword}
+                disabled={disabled}
+                onChange={(event) => {
+                  setDirectKeyword(event.target.value)
+                  setPage(1)
+                }}
+              />
+              <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </div>
+
+          {hasFilter && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-9 shrink-0 text-xs"
+              disabled={disabled}
+              onClick={handleResetSearch}
+            >
+              <RotateCw className="size-3.5" />
+              Xóa tìm kiếm
+            </Button>
+          )}
         </div>
 
         <RadioGroup
@@ -126,7 +185,14 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
                       title={
                         poQuery.isPending
                           ? "Đang tải..."
-                          : "Không có PO nào cần nhập kho"
+                          : hasFilter
+                            ? "Không tìm thấy đơn mua phù hợp"
+                            : "Không có PO nào cần nhập kho"
+                      }
+                      description={
+                        hasFilter
+                          ? "Thử tìm kiếm với từ khóa khác hoặc xóa tìm kiếm."
+                          : undefined
                       }
                     />
                   </TableCell>
@@ -136,11 +202,19 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
                   <TableRow
                     key={row.id}
                     className="h-14 cursor-pointer bg-card hover:bg-muted/25"
+                    onClick={() => setPeekPurchaseOrderId(row.original.id)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         className={cell.column.columnDef.meta?.cellClassName}
+                        // Ô radio là nút chọn PO, không phải vùng mở xem nhanh — chặn bubble
+                        // để click radio không bật dialog cùng lúc.
+                        onClick={
+                          cell.column.id === "select"
+                            ? (event) => event.stopPropagation()
+                            : undefined
+                        }
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -169,6 +243,11 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
             className="mt-3"
           />
         )}
+
+        <CreateInventoryReceiptFromPoItemsDialog
+          purchaseOrderId={peekPurchaseOrderId}
+          onClose={() => setPeekPurchaseOrderId(null)}
+        />
       </div>
     )
   },

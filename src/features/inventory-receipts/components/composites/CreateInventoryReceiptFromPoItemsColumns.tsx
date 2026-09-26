@@ -20,13 +20,26 @@ const inventoryReceiptFromPoItemColumnHelper = createColumnHelper<
   InventoryReceiptFromPoItemValue
 >()
 
-type BuildCreateInventoryReceiptFromPoItemColumnsArgs = {
+export type BuildCreateInventoryReceiptFromPoItemColumnsArgs = {
   itemsField: AnyFieldApi
   disabled?: boolean
 }
 
+// Bảng được feed `filteredItems` (ô tìm kiếm ở section), nên `row.index` KHÔNG còn là index
+// trong `itemsField` — mọi ô ghi phải tra lại index thật theo `purchaseOrderItemId` qua helper
+// này. `row.index` giờ chỉ dùng để hiển thị (STT/nhãn "Bỏ dòng N").
+function findItemIndex(
+  itemsField: AnyFieldApi,
+  purchaseOrderItemId: string
+): number {
+  const items: InventoryReceiptFromPoItemValue[] = itemsField.state.value
+  return items.findIndex(
+    (item) => item.purchaseOrderItemId === purchaseOrderItemId
+  )
+}
+
 // Own useReactTable columns cho bước ③ — mỗi ô ghi trực tiếp vào `itemsField` qua
-// `row.index`/`row.original`, cùng idiom PurchaseRequestCreateQuantityColumns.tsx. SL nhận vượt
+// `findItemIndex`, cùng idiom PurchaseRequestCreateQuantityColumns.tsx. SL nhận vượt
 // SL còn lại vẫn gõ được (không khoá phím) nhưng bị chặn ở submit qua schema's `.refine` — dòng cảnh
 // báo dưới ô chỉ là gợi ý tức thời, không phải nguồn validate duy nhất.
 export function buildCreateInventoryReceiptFromPoItemColumns({
@@ -91,9 +104,15 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
               value={item.quantity}
               min={1}
               disabled={disabled}
-              onValueChange={(value) =>
-                itemsField.replaceValue(row.index, { ...item, quantity: value })
-              }
+              onValueChange={(value) => {
+                const index = findItemIndex(
+                  itemsField,
+                  item.purchaseOrderItemId
+                )
+                if (index >= 0) {
+                  itemsField.replaceValue(index, { ...item, quantity: value })
+                }
+              }}
             />
             {exceedsRemaining && (
               <p className="mt-1 text-right text-[10px] text-destructive">
@@ -110,7 +129,7 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
       meta: { headerClassName: "w-48" },
       cell: ({ row }) => {
         const item = row.original
-        const inputId = `inventory-receipt-from-po-note-${row.index}`
+        const inputId = `inventory-receipt-from-po-note-${item.purchaseOrderItemId}`
         return (
           <>
             <label htmlFor={inputId} className="sr-only">
@@ -121,9 +140,15 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
               value={item.note}
               placeholder="Ghi chú (nếu có)"
               disabled={disabled}
-              onValueChange={(value) =>
-                itemsField.replaceValue(row.index, { ...item, note: value })
-              }
+              onValueChange={(value) => {
+                const index = findItemIndex(
+                  itemsField,
+                  item.purchaseOrderItemId
+                )
+                if (index >= 0) {
+                  itemsField.replaceValue(index, { ...item, note: value })
+                }
+              }}
             />
           </>
         )
@@ -147,7 +172,15 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
                 aria-label={`Bỏ dòng ${row.index + 1}`}
                 className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
                 disabled={disabled}
-                onClick={() => itemsField.removeValue(row.index)}
+                onClick={() => {
+                  const index = findItemIndex(
+                    itemsField,
+                    row.original.purchaseOrderItemId
+                  )
+                  if (index >= 0) {
+                    itemsField.removeValue(index)
+                  }
+                }}
               >
                 <TrashBinTrash className="size-3.5" />
               </Button>

@@ -1,9 +1,11 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
+import { Magnifer } from "@solar-icons/react"
 
+import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -29,6 +31,7 @@ export const CreateInventoryReceiptFromPoItemsSection = withForm({
   defaultValues: createInventoryReceiptFromPoFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
+    const [itemSearch, setItemSearch] = useState("")
     const purchaseOrderId = useField({ form, name: "purchaseOrderId" }).state
       .value
     const { isFetching: isPoFetching } = useQuery({
@@ -39,13 +42,26 @@ export const CreateInventoryReceiptFromPoItemsSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
+    const searchTerm = itemSearch.trim()
+
+    const filteredItems = useMemo(() => {
+      const term = searchTerm.toLowerCase()
+      if (!term) return items
+      return items.filter(
+        (item) =>
+          item.itemLabel.toLowerCase().includes(term) ||
+          item.note.toLowerCase().includes(term)
+      )
+    }, [items, searchTerm])
+
     const columns = useMemo(
-      () => buildCreateInventoryReceiptFromPoItemColumns({ itemsField, disabled }),
+      () =>
+        buildCreateInventoryReceiptFromPoItemColumns({ itemsField, disabled }),
       [itemsField, disabled]
     )
 
     const table = useTable({
-      data: items,
+      data: filteredItems,
       columns,
       features: appTableFeatures,
     })
@@ -94,6 +110,27 @@ export const CreateInventoryReceiptFromPoItemsSection = withForm({
           </form.AppField>
         </div>
 
+        {items.length > 0 && (
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="relative w-full max-w-xs">
+              <Input
+                id="receipt-from-po-items-search"
+                className="pr-9 text-xs placeholder:text-muted-foreground/75"
+                placeholder="Tìm theo tên hoặc mã vật tư..."
+                value={itemSearch}
+                disabled={disabled}
+                onChange={(e) => setItemSearch(e.target.value)}
+              />
+              <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
+            {searchTerm && (
+              <span className="text-xs text-muted-foreground">
+                Hiển thị {filteredItems.length} / {items.length} vật tư
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="mt-4 overflow-hidden rounded-md border border-border/50 bg-card">
           <Table aria-label="Danh sách vật tư nhận">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
@@ -121,14 +158,18 @@ export const CreateInventoryReceiptFromPoItemsSection = withForm({
                       title={
                         isPoFetching
                           ? "Đang tải danh sách vật tư..."
-                          : "Chưa có dòng nào"
+                          : searchTerm
+                            ? "Không tìm thấy vật tư phù hợp"
+                            : "Chưa có dòng nào"
                       }
                       description={
                         isPoFetching
                           ? "Vui lòng chờ trong giây lát"
-                          : purchaseOrderId
-                            ? "Đơn mua hàng này không còn vật tư nào cần nhập (đã nhận đủ)."
-                            : "Quay lại bước ① để chọn PO."
+                          : searchTerm
+                            ? "Thử tìm kiếm với tên hoặc mã vật tư khác."
+                            : purchaseOrderId
+                              ? "Đơn mua hàng này không còn vật tư nào cần nhập (đã nhận đủ)."
+                              : "Quay lại bước ① để chọn PO."
                       }
                     />
                   </TableCell>

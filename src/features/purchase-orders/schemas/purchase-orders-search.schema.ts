@@ -24,6 +24,8 @@ export const purchaseOrdersSearchSchema = z.object({
   // inventory-receipts/components/sections/CreateInventoryReceiptFromPoPickerSection.tsx
   // để chỉ liệt kê PO còn cần nhập kho.
   hasRemainingReceipt: z.boolean().optional().catch(undefined),
+  // Matches GetPurchaseOrdersReqDto.directKeyword — tìm theo tên hoặc mã vật tư trong dòng đơn mua
+  directKeyword: z.string().trim().min(1).optional().catch(undefined),
 })
 
 export type PurchaseOrdersSearchSchema = z.infer<

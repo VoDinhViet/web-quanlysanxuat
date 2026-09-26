@@ -8,7 +8,11 @@ type HelpStep = {
 const helpSteps: HelpStep[] = [
   {
     title: "1. Chọn PO cần nhập",
-    tips: ["Chỉ hiện các PO chưa nhập kho.", "Chọn 01 PO cho mỗi phiếu nhập."],
+    tips: [
+      "Chỉ hiện các PO chưa nhập kho.",
+      "Có thể tìm theo mã PO hoặc tên/mã vật tư cần nhập.",
+      "Chọn 01 PO cho mỗi phiếu nhập.",
+    ],
   },
   {
     title: "2. Xem trước nội dung đơn mua",
