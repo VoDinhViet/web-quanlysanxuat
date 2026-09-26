@@ -39,8 +39,6 @@ export const getInventoryReceiptRelatedNotes = createServerFn({
     } catch (error) {
       logHttpError(error, "getInventoryReceiptRelatedNotes")
 
-      throw new Error(
-        resolveGetInventoryReceiptRelatedNotesErrorMessage(error)
-      )
+      throw new Error(resolveGetInventoryReceiptRelatedNotesErrorMessage(error))
     }
   })

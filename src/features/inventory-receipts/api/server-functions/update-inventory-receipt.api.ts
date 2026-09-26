@@ -40,7 +40,7 @@ function resolveUpdateInventoryReceiptErrorMessage(error: unknown): string {
   }
 }
 
-// Chỉ hợp lệ khi phiếu còn DRAFT — xem InventoryReceiptUpdateForm.tsx. Không trả về entity
+// Chỉ hợp lệ khi phiếu còn DRAFT — xem UpdateInventoryReceiptForm.tsx. Không trả về entity
 // vừa sửa — nơi gọi tự invalidate rồi đọc lại qua query cache.
 export const updateInventoryReceipt = createServerFn({ method: "POST" })
   .validator(updateInventoryReceiptSchema)

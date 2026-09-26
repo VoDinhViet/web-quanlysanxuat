@@ -29,7 +29,7 @@ import type { CreateOutsourcingReceiptWizardTab } from "@/features/outsourcing-r
 // Vỏ wizard "Nhập hàng gia công về" (OS-IN) — rập khuôn CreateOutsourcingOrderForm.tsx, 3 tab.
 // POST /outsourcing-receipts trả về void (không có mã phiếu để hiện lại), nên không có dialog
 // thành công — chỉ toast rồi điều hướng thẳng về danh sách, cùng pattern
-// InventoryReceiptCreateFromPoForm.tsx (POST không trả dữ liệu hữu ích để dừng lại xem).
+// CreateInventoryReceiptFromPoForm.tsx (POST không trả dữ liệu hữu ích để dừng lại xem).
 export function CreateOutsourcingReceiptForm() {
   const navigate = useNavigate({ from: "/manage/outsourcing-receipts/create" })
   const queryClient = useQueryClient()

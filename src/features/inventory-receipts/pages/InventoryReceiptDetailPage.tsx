@@ -48,9 +48,7 @@ export function InventoryReceiptDetailPage() {
             <InventoryReceiptDetailInfoCard
               inventoryReceipt={inventoryReceipt}
             />
-            <InventoryReceiptRelatedNotesCard
-              receiptId={inventoryReceipt.id}
-            />
+            <InventoryReceiptRelatedNotesCard receiptId={inventoryReceipt.id} />
           </div>
         </div>
       </div>

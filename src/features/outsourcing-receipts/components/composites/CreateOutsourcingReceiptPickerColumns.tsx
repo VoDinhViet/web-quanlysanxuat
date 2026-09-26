@@ -23,7 +23,7 @@ type BuildCreateOutsourcingReceiptPickerColumnsArgs = {
 }
 
 // Own useReactTable columns cho bước ① — cùng idiom CreateOutsourcingOrderPickerColumns.tsx (bảng
-// checkbox nhiều dòng, không phải radio 1 dòng như InventoryReceiptCreateFromPoPickerColumns.tsx,
+// checkbox nhiều dòng, không phải radio 1 dòng như CreateInventoryReceiptFromPoPickerColumns.tsx,
 // vì một phiếu OS-IN ở màn hình này có thể gộp nhiều dòng OS-OUT khác nhau, miễn cùng NCC). NCC
 // không chọn tay trước — `lockedSupplierId` là NCC của dòng đầu tiên đã chọn (undefined nếu chưa
 // chọn dòng nào); dòng khác NCC bị khoá không cho tích, tránh vi phạm ràng buộc BE (E187). Dòng đã

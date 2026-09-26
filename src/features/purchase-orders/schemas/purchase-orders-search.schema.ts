@@ -21,7 +21,7 @@ export const purchaseOrdersSearchSchema = z.object({
   // Independent from `progress` (matches GetPurchaseOrdersReqDto.hasRemainingReceipt) — PO đã
   // ORDERED và còn hàng chưa nhập đủ (progress ORDERED hoặc RECEIVING). Chưa dùng ở trang danh
   // sách PO (route ở đó không set field này); dùng bởi bước chọn PO của
-  // inventory-receipts/components/create-from-po/InventoryReceiptCreateFromPoPickerSection.tsx
+  // inventory-receipts/components/sections/CreateInventoryReceiptFromPoPickerSection.tsx
   // để chỉ liệt kê PO còn cần nhập kho.
   hasRemainingReceipt: z.boolean().optional().catch(undefined),
 })

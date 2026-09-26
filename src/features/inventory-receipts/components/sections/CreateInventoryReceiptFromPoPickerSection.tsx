@@ -1,0 +1,175 @@
+import { useState } from "react"
+import { useField } from "@tanstack/react-form"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { flexRender, useTable } from "@tanstack/react-table"
+import { appTableFeatures } from "@/lib/table-features"
+import { useDebounceValue } from "usehooks-ts"
+import { Magnifer } from "@solar-icons/react"
+
+import { Input } from "@/components/ui/input"
+import { RadioGroup } from "@/components/ui/radio-group"
+import { Pagination } from "@/components/shared/composites/Pagination"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Label } from "@/components/ui/label"
+import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { buildCreateInventoryReceiptFromPoPickerColumns } from "@/features/inventory-receipts/components/composites/CreateInventoryReceiptFromPoPickerColumns"
+import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
+import { purchaseOrdersQueryOptions } from "@/features/purchase-orders/api"
+import { withForm } from "@/hooks/use-app-form"
+import type { PageSize } from "@/components/shared/composites/Pagination"
+
+const columns = buildCreateInventoryReceiptFromPoPickerColumns()
+
+// Bước ① của wizard — chọn đúng 1 PO đã ORDERED và còn hàng chưa nhận đủ
+// (`hasRemainingReceipt: true`, xem purchase-orders-search.schema.ts). Rập khuôn
+// CreateQuotationItemsPickerSection.tsx (page/pageSize/q + debounce, bảng useReactTable riêng), chỉ
+// khác select là radio (1 PO) thay vì checkbox (nhiều dòng).
+export const CreateInventoryReceiptFromPoPickerSection = withForm({
+  defaultValues: createInventoryReceiptFromPoFormDefaultValues,
+  props: { disabled: false },
+  render: function Render({ form, disabled }) {
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState<PageSize>(10)
+    const [q, setQ] = useState("")
+    const [debouncedQ] = useDebounceValue(q, 300)
+
+    const purchaseOrderIdField = useField({ form, name: "purchaseOrderId" })
+
+    const poQuery = useQuery({
+      ...purchaseOrdersQueryOptions({
+        page,
+        limit: pageSize,
+        q: debouncedQ.trim() || undefined,
+        hasRemainingReceipt: true,
+      }),
+      placeholderData: keepPreviousData,
+    })
+
+    const rows = poQuery.data?.data ?? []
+    const pagination = poQuery.data?.pagination
+
+    const reactTable = useTable({
+      data: rows,
+      columns,
+      features: appTableFeatures,
+    })
+
+    return (
+      <div className="px-4 py-5 sm:px-5">
+        <div>
+          <h2 className="font-heading text-base font-semibold text-foreground">
+            ① Chọn PO cần nhập
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Chỉ hiện các PO đã đặt hàng và còn vật tư chưa nhập kho.
+          </p>
+        </div>
+
+        <div className="mt-4 max-w-sm space-y-1.5">
+          <Label
+            htmlFor="receipt-from-po-search"
+            className="text-[11px] font-medium text-muted-foreground"
+          >
+            Tìm kiếm
+          </Label>
+          <div className="relative">
+            <Input
+              id="receipt-from-po-search"
+              className="pr-9 text-xs placeholder:text-muted-foreground/75"
+              placeholder="Tìm theo mã PO, nhà cung cấp..."
+              value={q}
+              disabled={disabled}
+              onChange={(event) => {
+                setQ(event.target.value)
+                setPage(1)
+              }}
+            />
+            <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          </div>
+        </div>
+
+        <RadioGroup
+          value={purchaseOrderIdField.state.value}
+          onValueChange={(value) => purchaseOrderIdField.handleChange(value)}
+          className="mt-4 block gap-0 overflow-hidden rounded-md border border-dashed border-border/50 bg-card"
+        >
+          <Table aria-label="Danh sách PO cần nhập">
+            <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
+              <TableRow>
+                {reactTable.getFlatHeaders().map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {reactTable.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length}>
+                    <TableEmpty
+                      colSpan={columns.length}
+                      title={
+                        poQuery.isPending
+                          ? "Đang tải..."
+                          : "Không có PO nào cần nhập kho"
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                reactTable.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="h-14 cursor-pointer bg-card hover:bg-muted/25"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </RadioGroup>
+
+        {pagination && (
+          <Pagination
+            page={pagination.currentPage}
+            pageSize={pagination.limit}
+            total={pagination.totalRecords}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize)
+              setPage(1)
+            }}
+            disabled={disabled}
+            className="mt-3"
+          />
+        )}
+      </div>
+    )
+  },
+})

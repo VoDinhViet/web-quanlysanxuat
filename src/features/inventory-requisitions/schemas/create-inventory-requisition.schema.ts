@@ -5,7 +5,7 @@ import { emptyToNull, emptyToUndefined, toIsoDate } from "@/lib/zod-transforms"
 
 // Snapshot dòng picker giữ trong form. Không chỉ để hiển thị: 2 `.refine` bên dưới đọc chính nó
 // để chặn E231/E232 ngay trên client thay vì round-trip lên server. Gom một key thay vì rải phẳng
-// (khác InventoryReceiptCreateFromPoItemsSchema's itemLabel/itemUnit/requestedQuantity) để chỗ
+// (khác inventoryReceiptFromPoItemSchema's itemLabel/itemUnit/requestedQuantity) để chỗ
 // strip ở validator (create-inventory-requisition.api.ts) là một dòng, và nhìn schema là biết
 // ngay field nào lên wire.
 const requisitionLineSnapshotSchema = z.object({

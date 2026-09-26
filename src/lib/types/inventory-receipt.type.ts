@@ -86,9 +86,9 @@ export const inventoryReceiptItemTypeLabels: Record<
 
 // Loại vật phẩm hợp lệ cho combobox chọn dòng — PURCHASE là nguyên vật liệu mua về (DIRECT); RETURN là
 // vật tư DO khách hàng cung cấp cho gia công (DIRECT, không phải khách trả lại hàng đã mua — xem
-// InventoryReceiptCreateReturnHeaderSection.tsx); chỉ PRODUCTION là thành phẩm (hàng ra từ Job sản
+// CreateInventoryReceiptReturnHeaderSection.tsx); chỉ PRODUCTION là thành phẩm (hàng ra từ Job sản
 // xuất). Không receiptType nào trộn cả hai loại trên cùng 1 phiếu. Dùng bởi
-// InventoryReceiptCreateGenericItemsSection.tsx/InventoryReceiptUpdateGenericItemsSection.tsx để
+// CreateInventoryReceiptGenericItemsSection.tsx/UpdateInventoryReceiptGenericItemsSection.tsx để
 // truyền đúng `type` xuống GET /items/options — không dùng `ItemType` (chỉ FG, item.type.ts)
 // vì DIRECT không nằm trong union đó.
 export function resolveInventoryReceiptItemType(

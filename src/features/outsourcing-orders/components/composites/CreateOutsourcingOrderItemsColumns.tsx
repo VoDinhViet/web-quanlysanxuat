@@ -26,7 +26,7 @@ type BuildCreateOutsourcingOrderItemColumnsArgs = {
 }
 
 // Own useReactTable columns cho bước ② — mỗi ô ghi trực tiếp vào `itemsField` qua row.index,
-// cùng idiom InventoryReceiptCreateFromPoItemsColumns.tsx. SL gửi vượt "Còn được phép gửi" vẫn gõ
+// cùng idiom CreateInventoryReceiptFromPoItemsColumns.tsx. SL gửi vượt "Còn được phép gửi" vẫn gõ
 // được (không khoá phím) nhưng bị chặn ở submit qua schema's `.refine` — dòng cảnh báo dưới ô chỉ
 // là gợi ý tức thời.
 export function buildCreateOutsourcingOrderItemColumns({
