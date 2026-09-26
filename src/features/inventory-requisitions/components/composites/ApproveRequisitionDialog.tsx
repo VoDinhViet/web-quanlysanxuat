@@ -41,9 +41,10 @@ export function ApproveRequisitionDialog({
       approveInventoryRequisitionFn({ data: { requisitionId: detail.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({
-        queryKey: ["inventory-requisitions"],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
+        queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
+      ])
     },
   })
 

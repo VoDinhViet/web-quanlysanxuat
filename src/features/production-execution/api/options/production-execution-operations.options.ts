@@ -9,5 +9,7 @@ export const productionExecutionOperationsQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ["production-execution", "operations", filters],
+    // Fast-moving tier (see src/router.tsx): floor progress per operation — always revalidate on mount.
+    staleTime: 0,
     queryFn: () => getProductionExecutionOperations({ data: filters }),
   })

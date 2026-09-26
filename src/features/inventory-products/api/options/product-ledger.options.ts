@@ -17,5 +17,7 @@ export const productLedgerQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ["inventory-products", "ledger", itemId, search],
+    // Fast-moving tier (see src/router.tsx): stock ledger — always revalidate on mount.
+    staleTime: 0,
     queryFn: () => getProductLedger({ data: { itemId, ...search } }),
   })

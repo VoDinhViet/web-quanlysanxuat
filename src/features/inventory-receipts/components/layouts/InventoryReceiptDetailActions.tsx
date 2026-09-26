@@ -90,8 +90,16 @@ export function InventoryReceiptDetailActions({
     )
   }
 
+  // Confirming/posting a receipt moves stock, opens IQC inspections and advances the
+  // production order/job it was received for.
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ["inventory-receipts"] })
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["inventory-receipts"] }),
+      queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
+      queryClient.invalidateQueries({ queryKey: ["iqc"] }),
+      queryClient.invalidateQueries({ queryKey: ["production-orders"] }),
+      queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+    ])
 
   const confirmMutation = useMutation({
     mutationFn: () =>

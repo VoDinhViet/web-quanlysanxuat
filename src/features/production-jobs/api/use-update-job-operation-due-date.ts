@@ -22,6 +22,7 @@ export function useUpdateJobOperationDueDate() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["production-execution"] }),
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
     },
     onError: (error) => toast.error(error.message),

@@ -43,6 +43,7 @@ export function ApproveProductionOrderDialog({
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["production-orders"] }),
         queryClient.invalidateQueries({ queryKey: ["orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
       ])
     },
   })
