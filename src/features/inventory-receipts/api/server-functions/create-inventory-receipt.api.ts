@@ -38,9 +38,9 @@ function resolveCreateInventoryReceiptErrorMessage(error: unknown): string {
   }
 }
 
-// Luôn tạo ở DRAFT, chưa đụng tồn kho — xem InventoryReceiptCreateForm.tsx. Trả về id vừa tạo:
+// Luôn tạo ở DRAFT, chưa đụng tồn kho — xem CreateInventoryReceiptForm.tsx. Trả về id vừa tạo:
 // form chung tự invalidate rồi điều hướng, không đọc id, nhưng
-// InventoryReceiptCreateFromPoForm.tsx cần id để gọi confirmInventoryReceipt ngay sau đó khi
+// CreateInventoryReceiptFromPoForm.tsx cần id để gọi confirmInventoryReceipt ngay sau đó khi
 // người dùng chọn "Xác nhận" thay vì "Lưu nháp".
 export const createInventoryReceipt = createServerFn({ method: "POST" })
   .validator(createInventoryReceiptSchema)

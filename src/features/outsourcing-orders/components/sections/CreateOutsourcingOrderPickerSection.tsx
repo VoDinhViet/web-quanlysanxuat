@@ -3,6 +3,7 @@ import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
+import { CloseCircle } from "@solar-icons/react"
 import { Search } from "lucide-react"
 import { useDebounceValue } from "usehooks-ts"
 
@@ -28,7 +29,10 @@ import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { useGetOperationOptions } from "@/features/operations/api"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api/options"
 import { buildCreateOutsourcingOrderPickerColumns } from "@/features/outsourcing-orders/components/composites/CreateOutsourcingOrderPickerColumns"
-import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
+import {
+  createOutsourcingOrderFormDefaultValues,
+  getOutsourcingItemOperationKey,
+} from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { useGetProductionJobOptions } from "@/features/production-jobs/api"
 import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
@@ -84,6 +88,13 @@ export const CreateOutsourcingOrderPickerSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
+    // Một phiếu chỉ gửi 1 công đoạn: dòng đầu tiên được tích khóa công đoạn của cả phiếu. Các dòng
+    // công đoạn khác vẫn hiện nhưng bị vô hiệu hóa (không lọc ẩn đi) — bỏ chọn hết là mở lại.
+    const lockedItem = items.at(0)
+    const lockedOperationKey = lockedItem
+      ? getOutsourcingItemOperationKey(lockedItem)
+      : undefined
+
     const query = useQuery({
       ...outsourceableOperationsQueryOptions({
         page,
@@ -102,6 +113,14 @@ export const CreateOutsourcingOrderPickerSection = withForm({
       [items]
     )
 
+    const isRowLocked = useCallback(
+      (row: OutsourceableOperation) =>
+        row.remainingQuantity <= 0 ||
+        (lockedOperationKey !== undefined &&
+          getOutsourcingItemOperationKey(row) !== lockedOperationKey),
+      [lockedOperationKey]
+    )
+
     const toggleRow = useCallback(
       (row: OutsourceableOperation) => {
         const index = items.findIndex(
@@ -118,9 +137,14 @@ export const CreateOutsourcingOrderPickerSection = withForm({
     )
 
     const pickableRows = useMemo(
-      () => rows.filter((row) => row.remainingQuantity > 0),
-      [rows]
+      () => rows.filter((row) => !isRowLocked(row)),
+      [rows, isRowLocked]
     )
+    // Chọn cả trang chỉ hợp lệ khi mọi dòng chọn được cùng một công đoạn. Không cần thêm nhánh
+    // `lockedOperationKey !== undefined` (isRowLocked đã loại mọi dòng khác key, nên các dòng còn
+    // lại tất yếu cùng key) lẫn `length > 0` (size === 1 đã bao hàm).
+    const canToggleAll =
+      new Set(pickableRows.map(getOutsourcingItemOperationKey)).size === 1
 
     const toggleAll = useCallback(
       (checked: boolean) => {
@@ -158,10 +182,20 @@ export const CreateOutsourcingOrderPickerSection = withForm({
           pickedOperationIds,
           disabled: Boolean(disabled),
           allChecked,
+          canToggleAll,
+          isRowLocked,
           onToggleRow: toggleRow,
           onToggleAll: toggleAll,
         }),
-      [pickedOperationIds, disabled, allChecked, toggleRow, toggleAll]
+      [
+        pickedOperationIds,
+        disabled,
+        allChecked,
+        canToggleAll,
+        isRowLocked,
+        toggleRow,
+        toggleAll,
+      ]
     )
 
     const table = useTable({
@@ -280,6 +314,27 @@ export const CreateOutsourcingOrderPickerSection = withForm({
           </div>
         </div>
 
+        {lockedItem && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-sm">
+            <span className="text-muted-foreground">Đang chọn công đoạn</span>
+            <button
+              type="button"
+              disabled={disabled}
+              aria-label={`Bỏ chọn công đoạn ${lockedItem.operation.name} để đổi công đoạn`}
+              title="Bỏ chọn tất cả để đổi công đoạn"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 py-1 pr-2 pl-3 font-medium text-primary transition-colors hover:bg-primary/15 disabled:pointer-events-none disabled:opacity-50"
+              onClick={() => itemsField.setValue([])}
+            >
+              {lockedItem.operation.name}
+              <CloseCircle weight="Bold" className="size-4" />
+            </button>
+            <span className="text-xs text-muted-foreground">
+              · {items.length} chi tiết. Chi tiết công đoạn khác không chọn được
+              trong cùng một phiếu.
+            </span>
+          </div>
+        )}
+
         <div className="mt-4 overflow-x-auto rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách chi tiết cần gia công">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
@@ -321,7 +376,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
                   const isPicked = pickedOperationIds.has(
                     row.original.productionJobOperationId
                   )
-                  const isLocked = row.original.remainingQuantity <= 0
+                  const isLocked = isRowLocked(row.original)
 
                   return (
                     <TableRow
@@ -333,6 +388,11 @@ export const CreateOutsourcingOrderPickerSection = withForm({
                           : "cursor-pointer hover:bg-muted/25",
                         isPicked && "bg-primary/5"
                       )}
+                      title={
+                        isLocked && row.original.remainingQuantity > 0
+                          ? "Khác công đoạn đang chọn của phiếu"
+                          : undefined
+                      }
                       onClick={() =>
                         !disabled && !isLocked && toggleRow(row.original)
                       }

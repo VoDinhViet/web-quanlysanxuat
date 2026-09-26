@@ -6,7 +6,7 @@ import { InventoryReceiptAssetType } from "@/lib/types/inventory-receipt.type"
 // itemUnit/requestedQuantity/remainingQuantity là UI-only (hiển thị lại không cần fetch lần 2, cùng idiom
 // inventory-receipt-item-form.schema.ts). Cố ý không có `unitPrice` — ảnh mẫu không cho sửa đơn
 // giá ở luồng này; submit lấy thẳng unitPrice từ dòng PO gốc (xem
-// InventoryReceiptCreateFromPoForm.tsx's buildCreateInventoryReceiptPayload).
+// CreateInventoryReceiptFromPoForm.tsx's buildCreateInventoryReceiptPayload).
 const inventoryReceiptFromPoItemFields = {
   purchaseOrderItemId: z.string().trim().min(1),
   itemId: z.string().trim().min(1),

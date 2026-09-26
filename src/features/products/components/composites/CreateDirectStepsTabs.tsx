@@ -38,7 +38,7 @@ type CreateDirectStepsTabsProps = {
 }
 
 // Chỉ vẽ dải trigger — Tabs root + TabsContent panel sống ở CreateDirectDialog.tsx, cùng cách
-// InventoryReceiptCreateFromPoStepsTabs.tsx tách (dùng @solar-icons/react nên không qua
+// CreateInventoryReceiptFromPoStepsTabs.tsx tách (dùng @solar-icons/react nên không qua
 // WizardStepsTabs dùng chung — component đó cố định kiểu icon lucide-react).
 export function CreateDirectStepsTabs({
   canGoToDetails,

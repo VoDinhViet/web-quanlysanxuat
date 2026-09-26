@@ -86,90 +86,40 @@ export function PurchaseRequestItemsSection({
         </Table>
       )}
 
-      {/* Hướng dẫn đọc số liệu + chú ý điều kiện chỉnh sửa — 2 thẻ song song, mỗi thẻ 1 tiêu đề +
-          danh sách gạch đầu dòng có bold từ khóa, thay vì đoạn văn dài. Viền nhấn trái (border-l-4)
-          cùng công thức với alertItems trong manage-dashboard.mock.ts (thẻ cảnh báo dashboard),
-          tái dùng để 2 thẻ này rõ ràng là 1 khối riêng chứ không hòa vào bảng phía trên. */}
-      <div className="grid grid-cols-1 gap-3 px-4 pb-4 sm:px-5 lg:grid-cols-2">
-        <div className="rounded-lg border border-l-4 border-primary/30 border-l-primary bg-primary/5 p-3.5">
-          <div className="flex items-center gap-2 text-primary">
-            <Info className="size-4 shrink-0" />
-            <p className="text-xs font-bold tracking-wide uppercase">
-              Cách đọc các cột số liệu
-            </p>
-          </div>
-          <ul className="mt-2 space-y-1.5 text-xs text-primary/90">
-            <li className="flex gap-1.5">
-              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary" />
-              <span>
-                <span className="font-semibold text-foreground">
-                  Tồn thực tế, Nhu cầu BOM, Tồn khả dụng, Đã báo tồn
-                </span>{" "}
-                — đọc trực tiếp tại thời điểm xem, có thể khác lúc tạo phiếu.
+      {/* Chú thích ngắn dưới bảng — 2 dòng thường thay cho 2 thẻ màu: cách đọc số liệu, và điều
+          kiện chỉnh sửa (chỉ hiện khi người xem thật sự sửa được). */}
+      <div className="mx-4 mb-4 flex flex-col gap-1.5 rounded-md bg-muted/40 px-3.5 py-3 text-xs text-muted-foreground sm:mx-5">
+        <p className="flex items-start gap-2">
+          <Info className="mt-0.5 size-3.5 shrink-0" />
+          <span>
+            <span className="font-medium text-foreground">
+              Tồn thực tế, Nhu cầu BOM, Tồn khả dụng, Đã báo tồn
+            </span>{" "}
+            đọc trực tiếp lúc xem;{" "}
+            <span className="font-medium text-foreground">SL đề xuất</span> là
+            phần thiếu đã chốt lúc tạo phiếu. Xem thêm tại{" "}
+            <Link
+              to="/manage/inventory-directs"
+              search={{ page: 1, limit: 10 }}
+              className="font-medium text-primary underline-offset-2 hover:underline"
+            >
+              Tồn kho
+            </Link>
+            .
+          </span>
+        </p>
+        {editable && (
+          <p className="flex items-start gap-2">
+            <TriangleAlert className="mt-0.5 size-3.5 shrink-0 text-warning" />
+            <span>
+              Sửa/xóa được khi phiếu ở trạng thái{" "}
+              <span className="font-medium text-foreground">
+                Nháp hoặc Từ chối
               </span>
-            </li>
-            <li className="flex gap-1.5">
-              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary" />
-              <span>
-                <span className="font-semibold text-foreground">
-                  SL đề xuất
-                </span>{" "}
-                là phần thiếu đã chốt sẵn lúc tạo phiếu — không cộng/trừ trực
-                tiếp với các số ở trên.
-              </span>
-            </li>
-            <li className="flex gap-1.5">
-              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary" />
-              <span>
-                Xem chi tiết tại menu{" "}
-                <Link
-                  to="/manage/inventory-directs"
-                  search={{ page: 1, limit: 10 }}
-                  className="font-medium underline underline-offset-2"
-                >
-                  Tồn kho
-                </Link>
-                .
-              </span>
-            </li>
-          </ul>
-        </div>
-
-        <div className="rounded-lg border border-l-4 border-warning/30 border-l-warning bg-warning/10 p-3.5">
-          <div className="flex items-center gap-2 text-warning">
-            <TriangleAlert className="size-4 shrink-0" />
-            <p className="text-xs font-bold tracking-wide uppercase">
-              Lưu ý khi chỉnh sửa
-            </p>
-          </div>
-          <ul className="mt-2 space-y-1.5 text-xs text-warning/90">
-            <li className="flex gap-1.5">
-              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-warning" />
-              <span>
-                Chỉ sửa/xóa được khi đề xuất còn ở trạng thái{" "}
-                <span className="font-semibold text-foreground">
-                  Nháp hoặc Từ chối
-                </span>
-              </span>
-            </li>
-            <li className="flex gap-1.5">
-              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-warning" />
-              <span>
-                SL đề xuất phải{" "}
-                <span className="font-semibold text-foreground">lớn hơn 0</span>
-              </span>
-            </li>
-            <li className="flex gap-1.5">
-              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-warning" />
-              <span>
-                Đề xuất phải còn{" "}
-                <span className="font-semibold text-foreground">
-                  ít nhất 1 dòng vật tư
-                </span>
-              </span>
-            </li>
-          </ul>
-        </div>
+              ; SL đề xuất phải lớn hơn 0 và phiếu còn ít nhất 1 dòng vật tư.
+            </span>
+          </p>
+        )}
       </div>
     </div>
   )

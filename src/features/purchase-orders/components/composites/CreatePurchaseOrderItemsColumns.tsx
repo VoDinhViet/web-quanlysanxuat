@@ -25,7 +25,7 @@ type BuildPurchaseOrderItemsColumnsArgs = {
 
 // A PO item maps 1:1 to a dòng ĐXMH (no allocation merge like RFQ's), so every cell here edits
 // the row directly — no per-item breakdown dialog needed like
-// CreateQuotationSuppliersItemColumns.tsx's quantity/reason cells.
+// QuotationItemsListColumns.tsx's quantity/reason cells.
 export function buildPurchaseOrderItemsColumns({
   itemsField,
   disabled,

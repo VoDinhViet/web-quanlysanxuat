@@ -90,15 +90,19 @@ export function ProductionJobDetailHeader({
               value={getJobQuantityLabel(productionJob, item?.unit.name)}
             />
             <InfoField
-              label="PO / HĐ"
+              label="PO khách hàng"
               value={
-                <Link
-                  to="/manage/orders/$orderId"
-                  params={{ orderId: productionJob.order.id }}
-                  className="text-primary hover:underline"
-                >
-                  {productionJob.order.code}
-                </Link>
+                productionJob.order.buyerPoNo ? (
+                  <Link
+                    to="/manage/orders/$orderId"
+                    params={{ orderId: productionJob.order.id }}
+                    className="text-primary hover:underline"
+                  >
+                    {productionJob.order.buyerPoNo}
+                  </Link>
+                ) : (
+                  "—"
+                )
               }
               mono
             />

@@ -27,7 +27,7 @@ type BuildPurchaseRequestQuantityColumnsArgs = {
 
 // Own useReactTable columns for the tab-2 quantity table — each cell mutates `itemsField`
 // directly via `row.index`/`row.original`, same idiom as
-// CreateQuotationSuppliersItemColumns.tsx's quantity/note columns.
+// QuotationItemsListColumns.tsx's quantity/note columns.
 export function buildPurchaseRequestQuantityColumns({
   itemsField,
   disabled,

@@ -31,8 +31,8 @@ type InventoryReceiptItemDialogProps = {
 }
 
 // Chế độ chọn vật tư/thành phẩm chung (không theo PO) — dùng chung bởi
-// create/InventoryReceiptCreateGenericItemsSection.tsx và
-// update/InventoryReceiptUpdateGenericItemsSection.tsx, nên đặt ở `components/` root thay vì
+// create/CreateInventoryReceiptGenericItemsSection.tsx và
+// update/UpdateInventoryReceiptGenericItemsSection.tsx, nên đặt ở `components/` root thay vì
 // dưới `create/` (xem project-and-commands.md, "anything shared across screens ... stays at
 // the components/ root"). Không có currency/discountPercent/status như dòng đơn hàng
 // (Create/UpdateOrderQuantitiesStep.tsx): phiếu nhập kho không có khái niệm này.

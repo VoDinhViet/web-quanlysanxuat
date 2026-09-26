@@ -53,7 +53,7 @@ export function PurchaseQuotationAllocationsTable({
           <TableRow>
             <TableCell colSpan={purchaseQuotationAllocationsColumns.length}>
               {/* Nested sub-row hint, indented under the outer item row — same "too small-scale
-                  for TableEmpty" treatment as QuotationCompareQuoteTable.tsx /
+                  for TableEmpty" treatment as QuotationItemsListColumns.tsx /
                   PurchaseQuotationSupplierCompareTable.tsx, this table's twin stacked right
                   below it. */}
               <div className="flex h-11 items-center pl-10">

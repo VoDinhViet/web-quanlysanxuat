@@ -32,7 +32,7 @@ const col = createColumnHelper<
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
 // itemNoun: "vật tư" (PURCHASE/RETURN) hay "thành phẩm" (PRODUCTION) — theo
-// resolveInventoryReceiptItemType(receiptType), cùng khuôn InventoryReceiptCreateGenericItemsSection.tsx.
+// resolveInventoryReceiptItemType(receiptType), cùng khuôn CreateInventoryReceiptGenericItemsSection.tsx.
 function buildInventoryReceiptDetailItemColumns({
   itemNoun,
 }: {

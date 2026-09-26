@@ -37,7 +37,7 @@ type CreateOutsourcingOrderFormProps = {
   initialOperationId?: string
 }
 
-// Vỏ wizard "Tạo phiếu OS-OUT" — rập khuôn InventoryReceiptCreateFromPoForm.tsx/
+// Vỏ wizard "Tạo phiếu OS-OUT" — rập khuôn CreateInventoryReceiptFromPoForm.tsx/
 // PurchaseRequestCreateForm.tsx, 3 tab, không có "Lưu nháp" riêng (chỉ 1 hành động submit —
 // POST /outsourcing-orders luôn tạo ở trạng thái DRAFT).
 export function CreateOutsourcingOrderForm({

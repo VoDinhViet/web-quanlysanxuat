@@ -39,6 +39,8 @@ const ACCEPTED_SIGNED_FILE_TYPES = {
   "image/webp": [".webp"],
 }
 
+const SIGNED_FILE_FORMAT_LABELS = ["PDF", "PNG", "JPG", "WEBP"]
+
 const MAX_SIGNED_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
 
 function resolveDropRejectionMessage(rejections: FileRejection[]): string {
@@ -139,9 +141,7 @@ export function ProductionOrderSignedFileCard({
       <div className="space-y-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
           <div className="flex items-center gap-2">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <FileCheck2 className="size-4" />
-            </div>
+            <FileCheck2 className="size-5 shrink-0 text-primary" />
             <div>
               <h3 className="text-sm font-semibold text-foreground sm:text-base">
                 File Lệnh sản xuất (LSX) đã ký
@@ -319,33 +319,49 @@ export function ProductionOrderSignedFileCard({
             <div
               {...getRootProps()}
               className={cn(
-                "group relative flex cursor-pointer flex-col items-center justify-center gap-2.5 rounded-lg border-2 border-dashed border-border/80 bg-muted/10 p-6 text-center transition-colors hover:border-primary/50 hover:bg-muted/25",
+                "group flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-dashed border-border bg-muted/20 px-4 py-5 text-center transition-colors hover:border-primary/50 hover:bg-primary/5 sm:flex-row sm:text-left",
                 isDragActive && "border-primary bg-primary/5",
                 isBusy && "pointer-events-none opacity-60"
               )}
             >
               <input {...getInputProps()} />
 
-              <div className="flex size-11 items-center justify-center rounded-full bg-muted transition-transform group-hover:scale-105">
-                {isUploading ? (
-                  <Loader2 className="size-5 animate-spin text-primary" />
-                ) : (
-                  <UploadCloud className="size-5 text-muted-foreground group-hover:text-primary" />
-                )}
-              </div>
+              {isUploading ? (
+                <Loader2 className="size-7 shrink-0 animate-spin text-primary" />
+              ) : (
+                <UploadCloud className="size-7 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+              )}
 
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-foreground sm:text-sm">
+              <div className="min-w-0 flex-1 space-y-1.5">
+                <p className="text-sm font-medium text-foreground">
                   {isUploading
                     ? "Đang tải lên và lưu file..."
                     : isDragActive
                       ? "Thả tệp vào đây..."
-                      : "Kéo thả bản scan hoặc file PDF LSX đã ký vào đây, hoặc nhấn để chọn"}
+                      : "Kéo thả bản scan hoặc PDF LSX đã ký vào đây"}
                 </p>
-                <p className="text-[11px] text-muted-foreground">
-                  Hỗ trợ định dạng: PDF, PNG, JPG, WEBP (dung lượng tối đa 10MB)
-                </p>
+                <div className="flex flex-wrap items-center justify-center gap-1.5 text-[11px] text-muted-foreground sm:justify-start">
+                  {SIGNED_FILE_FORMAT_LABELS.map((format) => (
+                    <span
+                      key={format}
+                      className="rounded border border-border bg-card px-1.5 py-0.5 font-medium"
+                    >
+                      {format}
+                    </span>
+                  ))}
+                  <span>· Tối đa 10MB</span>
+                </div>
               </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isBusy}
+                className="shrink-0 bg-card"
+              >
+                Chọn tệp
+              </Button>
             </div>
           </PermissionGate>
         )}

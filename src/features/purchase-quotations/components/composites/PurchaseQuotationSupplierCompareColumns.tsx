@@ -18,7 +18,7 @@ type BuildPurchaseQuotationSupplierCompareColumnsArgs = {
   isApproved: boolean
 }
 
-// Read-only twin of CreateQuotationSuppliersQuoteColumns.tsx's inner columns — same header
+// Read-only twin of QuotationSupplierQuoteRow.tsx's inner columns — same header
 // labels/widths, but every cell displays a value instead of editing one. The leading column is
 // the one interactive/status surface: a radio while selecting a supplier (PENDING_APPROVAL), a
 // "Trúng thầu" mark once approved, or empty otherwise.

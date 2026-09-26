@@ -38,7 +38,7 @@ function resolveConfirmInventoryReceiptErrorMessage(error: unknown): string {
 
 // DRAFT → PENDING_RECEIPT/PENDING_IQC — quyết định theo `requiresIqc` đã lưu trên phiếu (không
 // truyền lên đây), sinh kèm phiếu IQC cho mỗi dòng nếu true. Gọi từ
-// InventoryReceiptCreateFromPoForm.tsx (ngay sau createInventoryReceipt khi chọn "Xác nhận" thay
+// CreateInventoryReceiptFromPoForm.tsx (ngay sau createInventoryReceipt khi chọn "Xác nhận" thay
 // vì "Lưu nháp") và từ InventoryReceiptDetailActions.tsx (nút "Xác nhận" trên phiếu DRAFT có sẵn).
 export const confirmInventoryReceipt = createServerFn({ method: "POST" })
   .validator(z.object({ receiptId: z.uuid() }))

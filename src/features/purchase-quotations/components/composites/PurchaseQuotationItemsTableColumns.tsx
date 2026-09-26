@@ -14,7 +14,7 @@ const purchaseQuotationItemColumnHelper = createColumnHelper<
   PurchaseQuotationItemDetail
 >()
 
-// Read-only twin of CreateQuotationSuppliersItemColumns.tsx's outer columns — no "Thao tác"
+// Read-only twin of QuotationItemsListColumns.tsx's outer columns — no "Thao tác"
 // column and no inputs, so this is a plain module-level array rather than a factory (no
 // per-instance state to close over, unlike the create-flow version).
 export const purchaseQuotationItemsColumns =

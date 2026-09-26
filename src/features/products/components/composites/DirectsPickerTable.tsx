@@ -3,6 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { BoxMinimalistic, Magnifier } from "@solar-icons/react"
+import { Plus } from "lucide-react"
 import { useDebounceValue } from "usehooks-ts"
 
 import {
@@ -13,8 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Pagination } from "@/components/shared/composites/Pagination"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildDirectPickerColumns } from "@/features/products/components/composites/DirectPickerColumns"
 import { directsQueryOptions } from "@/features/directs/api"
@@ -80,18 +83,32 @@ export function DirectsPickerTable({
 
   return (
     <div className="space-y-2.5">
-      <div className="relative">
-        <Input
-          className="pr-9 text-xs placeholder:text-muted-foreground/75"
-          placeholder="Tìm theo mã hoặc tên..."
-          value={q}
-          disabled={disabled}
-          onChange={(event) => {
-            setQ(event.target.value)
-            setPage(1)
-          }}
-        />
-        <Magnifier className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Input
+            className="pr-9 text-xs placeholder:text-muted-foreground/75"
+            placeholder="Tìm theo mã hoặc tên..."
+            value={q}
+            disabled={disabled}
+            onChange={(event) => {
+              setQ(event.target.value)
+              setPage(1)
+            }}
+          />
+          <Magnifier className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        </div>
+        {/* Mở tab mới để không mất lựa chọn đang dở trong dialog. */}
+        <RoutePermissionGate route="/manage/directs/create">
+          <a
+            href="/manage/directs/create"
+            target="_blank"
+            rel="noreferrer"
+            className={buttonVariants({ className: "text-xs" })}
+          >
+            <Plus className="size-4" />
+            Thêm vật tư
+          </a>
+        </RoutePermissionGate>
       </div>
 
       <div className="overflow-x-auto rounded-md border border-border/50 bg-card">

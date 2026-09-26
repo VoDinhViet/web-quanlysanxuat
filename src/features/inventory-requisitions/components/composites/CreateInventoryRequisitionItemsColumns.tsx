@@ -27,7 +27,7 @@ type BuildCreateInventoryRequisitionItemColumnsArgs = {
   disabled?: boolean
 }
 
-// Own useReactTable columns cho bước ③, cùng khuôn InventoryReceiptCreateFromPoItemsColumns.tsx —
+// Own useReactTable columns cho bước ③, cùng khuôn CreateInventoryReceiptFromPoItemsColumns.tsx —
 // mỗi ô ghi trực tiếp vào `itemsField` qua `row.index`/`row.original`. Cảnh báo vượt ngưỡng dùng
 // đúng 2 điều kiện của inventoryRequisitionItemFormSchema's 2 `.refine` (E231/E232) — gõ vượt vẫn
 // được (không khoá phím), chỉ chặn ở submit.

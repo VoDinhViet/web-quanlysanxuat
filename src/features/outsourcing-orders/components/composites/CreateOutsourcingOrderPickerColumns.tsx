@@ -15,17 +15,24 @@ type BuildCreateOutsourcingOrderPickerColumnsArgs = {
   pickedOperationIds: Set<string>
   disabled: boolean
   allChecked: boolean
+  // "Chọn tất cả" chỉ dùng được khi mọi dòng chọn được trên trang cùng 1 công đoạn (hoặc đã khóa
+  // công đoạn) — một phiếu chỉ gửi 1 công đoạn.
+  canToggleAll: boolean
+  // Đã gửi đủ định mức, hoặc khác công đoạn đang chọn của phiếu.
+  isRowLocked: (row: OutsourceableOperation) => boolean
   onToggleRow: (row: OutsourceableOperation) => void
   onToggleAll: (checked: boolean) => void
 }
 
 // Own useReactTable columns, independent of the shared DataTable — same reasoning as
 // PurchaseRequestCreateDirectPickerColumns.tsx (the repo's other checkbox-column picker). A row
-// đã gửi đủ định mức (`remainingQuantity <= 0`) không chọn được, bất kể prop `disabled`.
+// đã gửi đủ định mức hoặc khác công đoạn đang chọn (`isRowLocked`) không chọn được, bất kể prop `disabled`.
 export function buildCreateOutsourcingOrderPickerColumns({
   pickedOperationIds,
   disabled,
   allChecked,
+  canToggleAll,
+  isRowLocked,
   onToggleRow,
   onToggleAll,
 }: BuildCreateOutsourcingOrderPickerColumnsArgs) {
@@ -35,9 +42,14 @@ export function buildCreateOutsourcingOrderPickerColumns({
       header: () => (
         <Checkbox
           checked={allChecked}
-          disabled={disabled}
+          disabled={disabled || !canToggleAll}
           onCheckedChange={onToggleAll}
           aria-label="Chọn tất cả trang này"
+          title={
+            canToggleAll
+              ? undefined
+              : "Chọn 1 công đoạn (hoặc tích 1 dòng) để chọn tất cả"
+          }
         />
       ),
       meta: { headerClassName: "w-10" },
@@ -46,7 +58,7 @@ export function buildCreateOutsourcingOrderPickerColumns({
           checked={pickedOperationIds.has(
             row.original.productionJobOperationId
           )}
-          disabled={disabled || row.original.remainingQuantity <= 0}
+          disabled={disabled || isRowLocked(row.original)}
           onCheckedChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.bomItem.name}`}
         />

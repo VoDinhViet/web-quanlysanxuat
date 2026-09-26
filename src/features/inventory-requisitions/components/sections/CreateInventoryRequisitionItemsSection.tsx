@@ -23,7 +23,7 @@ import { withForm } from "@/hooks/use-app-form"
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 // Bảng nhập SL lãnh + ghi chú cho các dòng đã chọn ở bước ②, cùng khuôn
-// InventoryReceiptCreateFromPoItemsSection.tsx. useField, không phải form.Field's render-prop —
+// CreateInventoryReceiptFromPoItemsSection.tsx. useField, không phải form.Field's render-prop —
 // useReactTable/useMemo bên dưới là hook thật.
 export const CreateInventoryRequisitionItemsSection = withForm({
   defaultValues: createInventoryRequisitionFormDefaultValues,

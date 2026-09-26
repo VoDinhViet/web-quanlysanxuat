@@ -43,7 +43,7 @@ function PreviewField({ label, value, className }: PreviewFieldProps) {
 
 // Bước ③ — xem lại toàn bộ phiếu trước khi tạo, trình bày như một chứng từ hoàn chỉnh (header
 // phiếu → lưới thông tin → dải số liệu → bảng chi tiết có dòng tổng), khớp aesthetic "phiếu kho"
-// của các trang confirm khác (InventoryReceiptCreateFromPoConfirmSection.tsx). `sendDate`/
+// của các trang confirm khác (CreateInventoryReceiptFromPoConfirmSection.tsx). `sendDate`/
 // `expectedReturnDate` là chuỗi yyyy-MM-dd từ date picker — bắt buộc `{zone:"utc"}` khi parse,
 // nếu không sẽ lệch 1 ngày ở múi giờ +07:00 (xem project_luxon_date_utc_bug). Không dùng
 // `OutsourcingOrderStatusBadge` cho badge "Nháp": enum FE (`OutsourcingOrderStatus`) suy từ mock
