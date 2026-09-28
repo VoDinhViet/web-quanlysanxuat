@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -66,6 +67,7 @@ export type PurchaseQuotationItemSupplierDetail = {
   lastPurchase: PurchaseQuotationLastPurchase | null
   selectorBy: PurchaseQuotationUserRef | null
   selectedAt: string | null
+  files?: FileResource[]
 }
 
 /** Mirrors the backend's `QuotationItemAllocationResDto` — một dòng ĐXMH nguồn đã gộp vào dòng
@@ -74,11 +76,11 @@ export type PurchaseQuotationItemAllocationDetail = {
   id: string
   quantity: number
   quantityAdjustmentReason: string | null
+  purchaseRequest: { id: string; code: string }
   purchaseRequestItem: {
     id: string
     quantity: number
-    purchaseRequest: { id: string; code: string }
-    item: { id: string; code: string; name: string; unit: Unit }
+    note?: string | null
   }
 }
 

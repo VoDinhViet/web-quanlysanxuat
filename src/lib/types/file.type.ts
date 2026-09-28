@@ -33,6 +33,8 @@ export enum UploadType {
   BOM_ITEM_IMAGE = "BOM_ITEM_IMAGE",
   // File LSX đã ký (bản scan/PDF) đính kèm trên trang chi tiết LSX
   PRODUCTION_ORDER_SIGNED_DOCUMENT = "PRODUCTION_ORDER_SIGNED_DOCUMENT",
+  // File báo giá / chứng từ / catalogue đính kèm của nhà cung cấp trong phiếu báo giá
+  QUOTATION_SUPPLIER_EVIDENCE = "QUOTATION_SUPPLIER_EVIDENCE",
 }
 
 export enum FileKind {

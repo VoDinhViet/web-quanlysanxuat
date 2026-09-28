@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
+import { QuotationSupplierAttachmentCell } from "@/features/purchase-quotations/components/primitives/QuotationSupplierAttachmentCell"
 import { QuotationTreeGuide } from "@/features/purchase-quotations/components/composites/QuotationTreeGuide"
 import { cn } from "@/lib/utils"
 import type { QuotationItemSupplierValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
@@ -99,6 +100,14 @@ export function QuotationSupplierTreeRow({
           placeholder="Ghi chú"
           disabled={disabled}
           onValueChange={(value) => onChange({ note: value })}
+        />
+      </TableCell>
+      <TableCell className="text-center">
+        <QuotationSupplierAttachmentCell
+          supplierName={supplier.supplierLabel}
+          value={supplier.files}
+          disabled={disabled}
+          onChange={(files) => onChange({ files })}
         />
       </TableCell>
       <TableCell className="text-center">

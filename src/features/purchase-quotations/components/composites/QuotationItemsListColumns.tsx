@@ -139,6 +139,11 @@ export function buildQuotationItemsListColumns({
       meta: { headerClassName: "min-w-44" },
     }),
     quotationItemColumnHelper.display({
+      id: "files",
+      header: "Tệp đính kèm",
+      meta: { headerClassName: "w-28 text-center" },
+    }),
+    quotationItemColumnHelper.display({
       id: "actions",
       header: "",
       meta: { headerClassName: "w-16", cellClassName: "text-center" },

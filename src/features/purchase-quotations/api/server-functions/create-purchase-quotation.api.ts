@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
 import { createQuotationFormSchema } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
+import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import { emptyToUndefined } from "@/lib/zod-transforms"
 import type { ApiErrorResponse } from "@/lib/http"
@@ -30,6 +31,7 @@ const createQuotationPayloadSchema = createQuotationFormSchema.transform(
         unitPrice: supplier.unitPrice,
         leadTimeDays: supplier.leadTimeDays,
         note: emptyToUndefined(supplier.note),
+        fileIds: resolveApiFileIds(supplier.files),
       })),
     })),
   })
