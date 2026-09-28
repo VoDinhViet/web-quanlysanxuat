@@ -97,6 +97,16 @@ export function buildCreateOutboundOrderItemColumns({
       },
     }),
     createOutboundOrderItemColumnHelper.display({
+      id: "revision",
+      header: "Rev",
+      meta: {
+        headerClassName: "w-16 text-center",
+        cellClassName: "text-center font-mono text-xs",
+      },
+      cell: ({ row }) =>
+        lookupUnfulfilledOrderItem(row.original.orderItemId)?.item.revision ?? "—",
+    }),
+    createOutboundOrderItemColumnHelper.display({
       id: "unitName",
       header: "ĐVT",
       meta: {

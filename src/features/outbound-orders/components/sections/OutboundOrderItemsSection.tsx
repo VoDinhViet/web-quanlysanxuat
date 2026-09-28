@@ -79,6 +79,15 @@ const itemColumns = col.columns([
     ),
   }),
 
+  col.accessor((row) => row.item.revision, {
+    id: "revision",
+    header: "Rev",
+    meta: {
+      headerClassName: "w-16 text-center",
+      cellClassName: "text-center font-mono text-xs",
+    },
+  }),
+
   col.accessor("orderedQuantity", {
     header: "SL PO",
     meta: {

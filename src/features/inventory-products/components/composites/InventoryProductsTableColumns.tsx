@@ -69,6 +69,14 @@ export const inventoryProductsColumns = col.columns([
     meta: { headerClassName: "min-w-36" },
   }),
 
+  col.accessor("revision", {
+    header: "Rev",
+    meta: {
+      headerClassName: "min-w-16 text-center",
+      cellClassName: "text-center font-mono text-xs",
+    },
+  }),
+
   col.accessor((row) => row.unit.name, {
     id: "unit",
     header: "ĐVT",

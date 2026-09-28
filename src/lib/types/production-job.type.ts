@@ -312,7 +312,7 @@ export type ProductionJobByOperation = {
   operationCode: string
   operationName: string
   orderCode: string
-  item: { code: string; name: string }
+  item: { code: string; name: string; revision: string }
   image: FileResource | null
   quantity: number
   orderDate: string

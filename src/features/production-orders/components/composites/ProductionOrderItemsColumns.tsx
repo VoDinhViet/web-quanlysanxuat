@@ -82,11 +82,18 @@ export function buildProductionOrderItemsColumns({
               </Link>
               <p className="truncate font-mono text-[11px] text-muted-foreground">
                 {item.code}
-                {item.revision ? ` · ${item.revision}` : ""}
               </p>
             </div>
           </div>
         )
+      },
+    }),
+    productionOrderItemsColumnHelper.accessor((row) => row.item.revision, {
+      id: "revision",
+      header: "Rev",
+      meta: {
+        headerClassName: "w-16 text-center",
+        cellClassName: "text-center font-mono",
       },
     }),
     productionOrderItemsColumnHelper.accessor(

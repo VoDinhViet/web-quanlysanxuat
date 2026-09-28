@@ -51,6 +51,14 @@ const baseProductionJobColumns = [
     header: "Tên sản phẩm",
     meta: { headerClassName: "min-w-48" },
   }),
+  productionJobColumnHelper.accessor((row) => row.item.revision, {
+    id: "revision",
+    header: "Rev",
+    meta: {
+      headerClassName: "min-w-16 text-center",
+      cellClassName: "text-center font-mono",
+    },
+  }),
   productionJobColumnHelper.accessor("quantity", {
     header: "Qty (PO)",
     meta: {

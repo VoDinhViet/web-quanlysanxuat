@@ -81,7 +81,7 @@ export function ProductionJobDetailHeader({
                   search={{ tab: "info" }}
                   className="text-primary hover:underline"
                 >
-                  {productionJob.item.code} — {productionJob.item.name}
+                  {productionJob.item.code} · Rev {productionJob.item.revision} — {productionJob.item.name}
                 </Link>
               }
             />

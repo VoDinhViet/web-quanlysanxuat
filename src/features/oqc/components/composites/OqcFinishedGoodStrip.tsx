@@ -25,11 +25,17 @@ export function OqcFinishedGoodStrip({ oqc }: OqcFinishedGoodStripProps) {
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
       <ItemImagePreview image={item.image} name={oqc.bomItem.name} />
 
-      <dl className="grid flex-1 grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+      <dl className="grid flex-1 grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-5">
         <InfoField
           label="Mã thành phẩm"
           value={
             <span className="font-mono text-primary">{oqc.bomItem.code}</span>
+          }
+        />
+        <InfoField
+          label="Phiên bản (Rev)"
+          value={
+            <span className="font-mono text-primary">{item.revision}</span>
           }
         />
         <InfoField label="Tên thành phẩm" value={oqc.bomItem.name} />

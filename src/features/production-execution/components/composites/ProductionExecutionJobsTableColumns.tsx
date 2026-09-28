@@ -70,6 +70,14 @@ export const productionExecutionJobColumns = columnHelper.columns([
     header: "Tên sản phẩm",
     meta: { headerClassName: "min-w-40" },
   }),
+  columnHelper.accessor((row) => row.item.revision, {
+    id: "revision",
+    header: "Rev",
+    meta: {
+      headerClassName: "min-w-16 text-center",
+      cellClassName: "text-center font-mono",
+    },
+  }),
   columnHelper.accessor("quantity", {
     header: "Số lượng",
     meta: {

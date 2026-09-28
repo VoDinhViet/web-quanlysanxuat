@@ -1,5 +1,6 @@
 import { IqcResult } from "@/lib/types/iqc.type"
 import type { QcFile } from "@/lib/types/iqc.type"
+import type { ItemRef } from "@/lib/types/item.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
@@ -88,6 +89,7 @@ export type Oqc = {
   orderCode: string | null
   operation: { code: string; name: string }
   bomItem: { code: string; name: string }
+  item: ItemRef
   unit: Unit
   quantity: number
   inspectionDate: string
