@@ -11,37 +11,22 @@ import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { ApprovePurchaseRequestDialog } from "@/features/purchase-requests/components/composites/ApprovePurchaseRequestDialog"
 import { RejectPurchaseRequestDialog } from "@/features/purchase-requests/components/composites/RejectPurchaseRequestDialog"
 import { SendPurchaseRequestDialog } from "@/features/purchase-requests/components/composites/SendPurchaseRequestDialog"
+
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type {
   PurchaseRequest,
   PurchaseRequestProductionOrderRef,
 } from "@/lib/types/purchase-request.type"
 
-// "PO liên quan / Lý do": hiển thị số PO khách hàng (buyerPoNo) của đơn hàng gốc —
-// nếu chưa có buyerPoNo thì fallback về mã LSX; đề xuất thủ công bị từ chối hiện lý do từ chối.
+// "PO liên quan / Lý do": chỉ hiển thị số PO khách hàng (buyerPoNo), không có thì "—".
 export function PurchaseRequestSourceCell({
   productionOrder,
-  status,
-  rejectionReason,
 }: {
   productionOrder: PurchaseRequestProductionOrderRef | null
-  status: PurchaseRequestStatus
-  rejectionReason: string | null
 }) {
-  if (productionOrder) {
-    const display = productionOrder.buyerPoNo ?? productionOrder.code
-    return display === null ? (
-      <span>—</span>
-    ) : (
-      <span className="font-mono font-semibold text-primary">{display}</span>
-    )
-  }
-
-  if (status === PurchaseRequestStatus.REJECTED && rejectionReason) {
-    return <span>{rejectionReason}</span>
-  }
-
-  return <span>—</span>
+  const buyerPoNo = productionOrder?.buyerPoNo ?? null
+  if (!buyerPoNo) return <span>—</span>
+  return <span className="font-mono font-semibold text-primary">{buyerPoNo}</span>
 }
 
 type PurchaseRequestActionsCellProps = {
