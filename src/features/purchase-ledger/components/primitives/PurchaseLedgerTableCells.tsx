@@ -3,9 +3,9 @@ import { Eye } from "lucide-react"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PurchaseLedgerWarningBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import { cn } from "@/lib/utils"
-import type {
-  PurchaseLedgerProductionOrderRef,
+import {
   PurchaseLedgerWarning,
+  type PurchaseLedgerProductionOrderRef,
 } from "@/lib/types/purchase-ledger.type"
 
 type PurchaseLedgerSourceCellProps = {
@@ -98,12 +98,18 @@ export function PurchaseLedgerWarningCell({
   warnings,
 }: PurchaseLedgerWarningCellProps) {
   if (warnings.length === 0) {
-    return <span className="text-muted-foreground">—</span>
+    return <span className="font-mono text-xs text-muted-foreground/40">—</span>
   }
 
+  const sortedWarnings = [...warnings].sort((a, b) => {
+    if (a === PurchaseLedgerWarning.URGENT) return -1
+    if (b === PurchaseLedgerWarning.URGENT) return 1
+    return 0
+  })
+
   return (
-    <div className="flex flex-col items-start gap-1">
-      {warnings.map((warning) => (
+    <div className="flex flex-row items-center gap-1.5 flex-nowrap">
+      {sortedWarnings.map((warning) => (
         <PurchaseLedgerWarningBadge key={warning} warning={warning} />
       ))}
     </div>

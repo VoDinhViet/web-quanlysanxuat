@@ -129,7 +129,10 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
 
   purchaseLedgerColumnHelper.accessor("warnings", {
     header: "Cảnh báo",
-    meta: { headerClassName: "min-w-36" },
+    meta: {
+      headerClassName: "min-w-56",
+      cellClassName: "whitespace-nowrap",
+    },
     cell: ({ getValue }) => <PurchaseLedgerWarningCell warnings={getValue()} />,
   }),
 
