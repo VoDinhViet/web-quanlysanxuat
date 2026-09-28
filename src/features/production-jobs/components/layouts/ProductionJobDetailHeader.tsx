@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft, Diskette } from "@solar-icons/react"
-import { ClipboardCheck } from "lucide-react"
+import { Calendar, ClipboardCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { Button, LinkButton } from "@/components/ui/button"
@@ -16,6 +16,7 @@ import { itemQueryOptions } from "@/features/products/api"
 import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
 import { ProductionJobDetailTabs } from "@/features/production-jobs/components/layouts/ProductionJobDetailTabs"
 import { RequestProductionJobQcDialog } from "@/features/production-jobs/components/composites/RequestProductionJobQcDialog"
+import { PlanProductionJobDialog } from "@/features/production-jobs/components/composites/PlanProductionJobDialog"
 import { StartProductionJobDialog } from "@/features/production-jobs/components/composites/StartProductionJobDialog"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
@@ -132,6 +133,7 @@ export function ProductionJobDetailHeader({
         <div className="flex flex-wrap items-center gap-2">
           <PermissionGate permission="production:update">
             <StartJobButton job={productionJob} />
+            <PlanJobButton job={productionJob} />
           </PermissionGate>
 
           <PermissionGate permission="oqc:create">
@@ -147,6 +149,25 @@ export function ProductionJobDetailHeader({
 
 // Khác RequestOqcButton — ẩn hẳn (không disable) ngoài PENDING, theo đúng yêu cầu chỉ giữ
 // disable-not-hide cho "Yêu cầu OQC".
+
+function PlanJobButton({ job }: { job: ProductionJobDetail }) {
+  if (job.status !== ProductionJobStatus.IN_PROGRESS) {
+    return null
+  }
+
+  return (
+    <PlanProductionJobDialog
+      job={job}
+      trigger={
+        <Button type="button" className="gap-1.5">
+          <Calendar className="size-4" />
+          Lập kế hoạch
+        </Button>
+      }
+    />
+  )
+}
+
 function StartJobButton({ job }: { job: ProductionJobDetail }) {
   if (job.status !== ProductionJobStatus.PENDING) {
     return null

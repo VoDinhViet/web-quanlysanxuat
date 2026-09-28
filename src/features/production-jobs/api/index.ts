@@ -18,3 +18,4 @@ export { useCreateJobOperationReport } from "@/features/production-jobs/api/use-
 // Cùng lý do trên — ô "Hạn hoàn thành" (JobOperationDueDateCell.tsx) cũng dùng chung bởi cả 2 màn,
 // ghi cùng entity này.
 export { useUpdateJobOperationDueDate } from "@/features/production-jobs/api/use-update-job-operation-due-date"
+export { useUpdateProductionJobPlan } from "@/features/production-jobs/api/use-update-production-job-plan"
