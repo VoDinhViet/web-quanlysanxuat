@@ -15,6 +15,22 @@ export enum ProductionJobStatus {
   COMPLETED = "COMPLETED",
 }
 
+export enum ProductionJobWarning {
+  NORMAL = "NORMAL",
+  DUE_SOON = "DUE_SOON",
+  URGENT = "URGENT",
+  OVERDUE = "OVERDUE",
+  COMPLETED = "COMPLETED",
+}
+
+export const productionJobWarningLabels: Record<ProductionJobWarning, string> = {
+  [ProductionJobWarning.NORMAL]: "Bình thường",
+  [ProductionJobWarning.DUE_SOON]: "Sắp tới hạn",
+  [ProductionJobWarning.URGENT]: "Gấp",
+  [ProductionJobWarning.OVERDUE]: "Trễ hạn",
+  [ProductionJobWarning.COMPLETED]: "Hoàn thành",
+}
+
 export const productionJobStatusLabels: Record<ProductionJobStatus, string> = {
   [ProductionJobStatus.PENDING]: "Chưa SX",
   [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
