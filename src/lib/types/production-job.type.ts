@@ -358,3 +358,16 @@ export type ProductionExecutionReport = {
   } | null
   files: FileResource[]
 }
+
+/** Mirrors `GET /production-jobs/:productionJobId/operations/plan` — danh sách các nhóm công đoạn
+ *  độc nhất trong một Job để lập kế hoạch sản xuất (Leadtime và hạn hoàn thành). */
+export type ProductionJobPlanGroupOperation = {
+  key: string
+  code: string
+  name: string
+  bomItemCodes: string[]
+  operationIds: string[]
+  sortOrder: number
+  dueDate: string | null
+}
+

@@ -12,7 +12,8 @@ export function useUpdateProductionJobPlan() {
     mutationFn: (input: {
       productionJobId: string
       operations: Array<{
-        id: string
+        id?: string
+        operationIds?: string[]
         dueDate: string
       }>
     }) => updatePlanFn({ data: input }),

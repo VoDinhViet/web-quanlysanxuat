@@ -27,7 +27,8 @@ const updateProductionJobPlanParamsSchema = z.object({
   productionJobId: z.uuid(),
   operations: z.array(
     z.object({
-      id: z.uuid(),
+      id: z.uuid().optional(),
+      operationIds: z.array(z.uuid()).optional(),
       dueDate: z.string().min(1).transform(toIsoDate),
     })
   ),
