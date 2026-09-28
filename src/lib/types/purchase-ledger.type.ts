@@ -94,6 +94,7 @@ export type PurchaseLedgerApiRow = {
   quantity: number
   quotedQuantity: number
   orderedQuantity: number
+  receivedQuantity: number
   createdAt: string
   neededDate: string
   status: PurchaseLedgerStatus

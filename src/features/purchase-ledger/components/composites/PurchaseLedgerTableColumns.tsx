@@ -18,7 +18,7 @@ const purchaseLedgerColumnHelper = createColumnHelper<
 
 // Shared by the 3 quantity columns — same idiom as OrdersTableColumns' moneyColumnMeta.
 const quantityColumnMeta = {
-  headerClassName: "min-w-24 text-right",
+  headerClassName: "min-w-28 text-right",
   cellClassName: "text-right",
 }
 
@@ -80,19 +80,23 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
     ),
   }),
 
-  purchaseLedgerColumnHelper.accessor("quotedQuantity", {
-    header: "SL báo giá",
-    meta: quantityColumnMeta,
-    cell: ({ getValue }) => (
-      <PurchaseLedgerQuantityCell value={getValue()} tone="primary" />
-    ),
-  }),
-
   purchaseLedgerColumnHelper.accessor("orderedQuantity", {
     header: "SL đặt mua",
     meta: quantityColumnMeta,
     cell: ({ getValue }) => (
       <PurchaseLedgerQuantityCell value={getValue()} tone="ordered" />
+    ),
+  }),
+
+  purchaseLedgerColumnHelper.accessor("receivedQuantity", {
+    header: "SL đã nhập kho",
+    meta: quantityColumnMeta,
+    cell: ({ row }) => (
+      <PurchaseLedgerQuantityCell
+        value={row.original.receivedQuantity}
+        tone="received"
+        comparisonTarget={row.original.orderedQuantity}
+      />
     ),
   }),
 
