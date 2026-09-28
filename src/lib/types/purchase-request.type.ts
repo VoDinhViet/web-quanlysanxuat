@@ -1,4 +1,5 @@
 import type { Department } from "@/lib/types/department.type"
+import type { FileResource } from "@/lib/types/file.type"
 import type { Unit } from "@/lib/types/unit.type"
 
 /** Mirrors the backend's `purchase_requests.status` column. `DRAFT → PENDING_APPROVAL` (send) →
@@ -83,6 +84,7 @@ export type PurchaseRequestItemRef = {
   code: string
   name: string
   unit: Unit
+  image: FileResource | null
 }
 
 /** Mirrors the backend's PurchaseRequestItemResDto — one line of a request (`purchase_request_items`).

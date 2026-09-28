@@ -11,6 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { PurchaseRequestItemImageCell } from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
 import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/schemas/purchase-request-item-form.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -39,6 +40,20 @@ export function buildPurchaseRequestQuantityColumns({
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.index + 1}</span>
+      ),
+    }),
+    purchaseRequestQuantityColumnHelper.display({
+      id: "image",
+      header: "Ảnh",
+      meta: {
+        headerClassName: "w-14 text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => (
+        <PurchaseRequestItemImageCell
+          image={row.original.itemImage}
+          name={row.original.itemName}
+        />
       ),
     }),
     purchaseRequestQuantityColumnHelper.accessor("itemCode", {

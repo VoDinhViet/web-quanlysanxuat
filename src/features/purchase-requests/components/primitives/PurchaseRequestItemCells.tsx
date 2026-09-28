@@ -1,6 +1,8 @@
 import { useParams } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Image } from "@unpic/react"
+import { Gallery } from "@solar-icons/react"
 import { Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { NumericFormat } from "react-number-format"
@@ -13,9 +15,37 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { resolveFileUrl } from "@/lib/file-url"
+import type { FileResource } from "@/lib/types/file.type"
 import { updatePurchaseRequestItem } from "@/features/purchase-requests/api/server-functions/update-purchase-request-item.api"
 import { DeletePurchaseRequestItemDialog } from "@/features/purchase-requests/components/composites/DeletePurchaseRequestItemDialog"
 import { PurchaseRequestItemNoteDialog } from "@/features/purchase-requests/components/composites/PurchaseRequestItemNoteDialog"
+
+export function PurchaseRequestItemImageCell({
+  image,
+  name,
+}: {
+  image?: FileResource | { url: string } | null
+  name?: string
+}) {
+  const imageUrl = image ? resolveFileUrl(image.url) : null
+
+  return (
+    <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={name ?? "Vật tư"}
+          layout="fullWidth"
+          objectFit="cover"
+          className="size-full"
+        />
+      ) : (
+        <Gallery className="size-4 text-muted-foreground/50" />
+      )}
+    </div>
+  )
+}
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 

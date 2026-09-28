@@ -2,6 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import { PurchaseRequestItemImageCell } from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
 import type { Direct } from "@/lib/types/direct.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -49,6 +50,20 @@ export function buildPurchaseRequestDirectPickerColumns({
           disabled={disabled}
           onCheckedChange={() => onToggleRow(row.original)}
           aria-label={`Chọn ${row.original.name}`}
+        />
+      ),
+    }),
+    purchaseRequestDirectPickerColumnHelper.display({
+      id: "image",
+      header: "Ảnh",
+      meta: {
+        headerClassName: "w-14 text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => (
+        <PurchaseRequestItemImageCell
+          image={row.original.image}
+          name={row.original.name}
         />
       ),
     }),
