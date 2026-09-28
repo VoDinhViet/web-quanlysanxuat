@@ -28,7 +28,8 @@ export const purchaseRequestItemFormFields = {
     .string()
     .trim()
     .max(500, "Ghi chú tối đa 500 ký tự")
-    .transform(emptyToUndefined),
+    .transform(emptyToUndefined)
+    .optional(),
 }
 
 export const purchaseRequestItemFormSchema = z

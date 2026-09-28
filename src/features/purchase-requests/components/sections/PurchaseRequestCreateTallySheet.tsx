@@ -131,9 +131,10 @@ export const PurchaseRequestCreateTallySheet = withForm({
           selector={(state) => ({
             departmentId: state.values.departmentId,
             neededDate: state.values.neededDate,
+            note: state.values.note,
           })}
         >
-          {({ departmentId, neededDate }) => {
+          {({ departmentId, neededDate, note }) => {
             const department = departments.find((d) => d.id === departmentId)
             const neededDateLabel =
               neededDate.length > 0
@@ -160,6 +161,14 @@ export const PurchaseRequestCreateTallySheet = withForm({
                     {neededDateLabel}
                   </dd>
                 </div>
+                {note ? (
+                  <div className="flex flex-col gap-1 border-t border-border/50 pt-2 text-xs">
+                    <dt className="text-muted-foreground">Lý do / Ghi chú</dt>
+                    <dd className="line-clamp-3 font-medium text-foreground whitespace-pre-wrap">
+                      {note}
+                    </dd>
+                  </div>
+                ) : null}
               </dl>
             )
           }}

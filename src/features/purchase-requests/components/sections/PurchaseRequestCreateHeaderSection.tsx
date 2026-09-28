@@ -47,6 +47,17 @@ export const PurchaseRequestCreateHeaderSection = withForm({
             )}
           </form.AppField>
 
+          <form.AppField name="note">
+            {(field) => (
+              <field.TextareaField
+                label="Lý do / Ghi chú"
+                placeholder="Nhập lý do đề xuất mua hàng hoặc ghi chú (nếu có)"
+                disabled={disabled}
+                className="sm:col-span-2"
+              />
+            )}
+          </form.AppField>
+
           <p className="text-xs text-muted-foreground sm:col-span-2">
             Đề xuất sẽ được lưu ở trạng thái Nháp. Vào trang chi tiết để gửi
             duyệt sau khi tạo.
