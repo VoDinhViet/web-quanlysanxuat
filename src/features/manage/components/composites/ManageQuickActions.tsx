@@ -106,7 +106,7 @@ const quickActions: QuickAction[] = [
     accentClassName: "text-slate-600 dark:text-slate-400",
     tileClassName:
       "border-slate-200 bg-slate-50 hover:bg-slate-100 dark:border-slate-700/40 dark:bg-slate-500/10 dark:hover:bg-slate-500/20",
-    to: "/manage/purchase-orders/create",
+    hint: "Đơn mua được tạo tự động khi duyệt báo giá (RFQ) — không có tạo tay",
   },
 ]
 
