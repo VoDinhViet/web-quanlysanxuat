@@ -21,6 +21,7 @@ export type AuthLoginResponse = {
  * the object itself.
  */
 export type AuthUserProfile = {
+  id: string
   fullName: string | null
   username: string
   email: string

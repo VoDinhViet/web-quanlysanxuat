@@ -3,7 +3,10 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
-import { ProductionJobStatusBadge } from "@/features/production-jobs/components/primitives/ProductionJobBadges"
+import {
+  ProductionJobStatusBadge,
+  ProductionJobWarningBadge,
+} from "@/features/production-jobs/components/primitives/ProductionJobBadges"
 import {
   ProductImageCell,
   ProductionJobActionsCell,
@@ -51,6 +54,14 @@ const baseProductionJobColumns = [
     header: "Tên sản phẩm",
     meta: { headerClassName: "min-w-48" },
   }),
+  productionJobColumnHelper.accessor((row) => row.item.revision, {
+    id: "revision",
+    header: "Rev",
+    meta: {
+      headerClassName: "min-w-16 text-center",
+      cellClassName: "text-center font-mono",
+    },
+  }),
   productionJobColumnHelper.accessor("quantity", {
     header: "Qty (PO)",
     meta: {
@@ -79,6 +90,20 @@ const baseProductionJobColumns = [
         ? "—"
         : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
     },
+  }),
+  productionJobColumnHelper.display({
+    id: "warning",
+    header: "Cảnh báo",
+    meta: {
+      headerClassName: "min-w-28 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ row }) => (
+      <ProductionJobWarningBadge
+        dueDate={row.original.dueDate}
+        status={row.original.status}
+      />
+    ),
   }),
   productionJobColumnHelper.accessor("status", {
     header: "Trạng thái",

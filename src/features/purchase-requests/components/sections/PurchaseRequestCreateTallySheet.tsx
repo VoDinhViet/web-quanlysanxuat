@@ -5,6 +5,7 @@ import { DateTime } from "luxon"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { withForm } from "@/hooks/use-app-form"
 import { departmentQueryOptions } from "@/features/departments/api"
+import { PurchaseRequestItemImageCell } from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
 import { createPurchaseRequestFormDefaultValues } from "@/features/purchase-requests/schemas/create-purchase-request.schema"
 
 // Above this many picked lines, the list caps its height and scrolls instead of growing forever
@@ -73,6 +74,10 @@ export const PurchaseRequestCreateTallySheet = withForm({
                     <span className="w-9 shrink-0 pt-0.5 text-right font-mono text-[11px] text-muted-foreground tabular-nums">
                       {String(index + 1).padStart(2, "0")}
                     </span>
+                    <PurchaseRequestItemImageCell
+                      image={item.itemImage}
+                      name={item.itemName}
+                    />
                     <div className="min-w-0 flex-1 space-y-1 border-l border-primary/20 pl-3">
                       <p className="text-xs font-medium text-foreground">
                         {item.itemName}
@@ -126,9 +131,10 @@ export const PurchaseRequestCreateTallySheet = withForm({
           selector={(state) => ({
             departmentId: state.values.departmentId,
             neededDate: state.values.neededDate,
+            note: state.values.note,
           })}
         >
-          {({ departmentId, neededDate }) => {
+          {({ departmentId, neededDate, note }) => {
             const department = departments.find((d) => d.id === departmentId)
             const neededDateLabel =
               neededDate.length > 0
@@ -155,6 +161,14 @@ export const PurchaseRequestCreateTallySheet = withForm({
                     {neededDateLabel}
                   </dd>
                 </div>
+                {note ? (
+                  <div className="flex flex-col gap-1 border-t border-border/50 pt-2 text-xs">
+                    <dt className="text-muted-foreground">Lý do / Ghi chú</dt>
+                    <dd className="line-clamp-3 font-medium text-foreground whitespace-pre-wrap">
+                      {note}
+                    </dd>
+                  </div>
+                ) : null}
               </dl>
             )
           }}

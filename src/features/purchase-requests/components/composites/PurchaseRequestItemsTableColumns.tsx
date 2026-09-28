@@ -3,6 +3,7 @@ import type { appTableFeatures } from "@/lib/table-features"
 
 import {
   PurchaseRequestItemActionsCell,
+  PurchaseRequestItemImageCell,
   PurchaseRequestItemNoteCell,
   PurchaseRequestItemQuantityCell,
 } from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
@@ -30,6 +31,20 @@ export function buildPurchaseRequestItemColumns(editable: boolean) {
         headerClassName: "w-14 text-center",
         cellClassName: "text-center text-muted-foreground",
       },
+    }),
+    purchaseRequestItemColumnHelper.display({
+      id: "image",
+      header: "Ảnh",
+      meta: {
+        headerClassName: "w-14 text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => (
+        <PurchaseRequestItemImageCell
+          image={row.original.item.image}
+          name={row.original.item.name}
+        />
+      ),
     }),
     purchaseRequestItemColumnHelper.accessor((row) => row.item.code, {
       id: "code",

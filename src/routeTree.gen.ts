@@ -94,7 +94,6 @@ import { Route as authedManageProductsCreateRouteRouteImport } from './routes/(a
 import { Route as authedManagePurchaseLedgerIndexRouteImport } from './routes/(authed)/manage_/purchase-ledger/index'
 import { Route as authedManagePurchaseOrdersIndexRouteImport } from './routes/(authed)/manage_/purchase-orders/index'
 import { Route as authedManagePurchaseOrdersPurchaseOrderIdRouteImport } from './routes/(authed)/manage_/purchase-orders_/$purchaseOrderId'
-import { Route as authedManagePurchaseOrdersCreateRouteImport } from './routes/(authed)/manage_/purchase-orders_/create'
 import { Route as authedManagePurchaseQuotationsIndexRouteImport } from './routes/(authed)/manage_/purchase-quotations/index'
 import { Route as authedManagePurchaseQuotationsPurchaseQuotationIdRouteImport } from './routes/(authed)/manage_/purchase-quotations_/$purchaseQuotationId'
 import { Route as authedManagePurchaseQuotationsCreateRouteImport } from './routes/(authed)/manage_/purchase-quotations_/create'
@@ -621,12 +620,6 @@ const authedManagePurchaseOrdersPurchaseOrderIdRoute =
     path: '/manage/purchase-orders/$purchaseOrderId',
     getParentRoute: () => authedRouteRoute,
   } as any)
-const authedManagePurchaseOrdersCreateRoute =
-  authedManagePurchaseOrdersCreateRouteImport.update({
-    id: '/manage_/purchase-orders_/create',
-    path: '/manage/purchase-orders/create',
-    getParentRoute: () => authedRouteRoute,
-  } as any)
 const authedManagePurchaseQuotationsIndexRoute =
   authedManagePurchaseQuotationsIndexRouteImport.update({
     id: '/',
@@ -886,7 +879,6 @@ export interface FileRoutesByFullPath {
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
   '/manage/purchase-orders/$purchaseOrderId': typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
-  '/manage/purchase-orders/create': typeof authedManagePurchaseOrdersCreateRoute
   '/manage/purchase-quotations/$purchaseQuotationId': typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
   '/manage/purchase-quotations/create': typeof authedManagePurchaseQuotationsCreateRoute
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
@@ -970,7 +962,6 @@ export interface FileRoutesByTo {
   '/manage/production-orders/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/manage/products/$productId': typeof authedManageProductsProductIdRoute
   '/manage/purchase-orders/$purchaseOrderId': typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
-  '/manage/purchase-orders/create': typeof authedManagePurchaseOrdersCreateRoute
   '/manage/purchase-quotations/$purchaseQuotationId': typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
   '/manage/purchase-quotations/create': typeof authedManagePurchaseQuotationsCreateRoute
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
@@ -1092,7 +1083,6 @@ export interface FileRoutesById {
   '/(authed)/manage_/production-orders_/$productionOrderId': typeof authedManageProductionOrdersProductionOrderIdRoute
   '/(authed)/manage_/products_/$productId': typeof authedManageProductsProductIdRoute
   '/(authed)/manage_/purchase-orders_/$purchaseOrderId': typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
-  '/(authed)/manage_/purchase-orders_/create': typeof authedManagePurchaseOrdersCreateRoute
   '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId': typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
   '/(authed)/manage_/purchase-quotations_/create': typeof authedManagePurchaseQuotationsCreateRoute
   '/(authed)/manage_/purchase-requests_/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
@@ -1213,7 +1203,6 @@ export interface FileRouteTypes {
     | '/manage/production-orders/$productionOrderId'
     | '/manage/products/$productId'
     | '/manage/purchase-orders/$purchaseOrderId'
-    | '/manage/purchase-orders/create'
     | '/manage/purchase-quotations/$purchaseQuotationId'
     | '/manage/purchase-quotations/create'
     | '/manage/purchase-requests/$purchaseRequestId'
@@ -1297,7 +1286,6 @@ export interface FileRouteTypes {
     | '/manage/production-orders/$productionOrderId'
     | '/manage/products/$productId'
     | '/manage/purchase-orders/$purchaseOrderId'
-    | '/manage/purchase-orders/create'
     | '/manage/purchase-quotations/$purchaseQuotationId'
     | '/manage/purchase-quotations/create'
     | '/manage/purchase-requests/$purchaseRequestId'
@@ -1418,7 +1406,6 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/production-orders_/$productionOrderId'
     | '/(authed)/manage_/products_/$productId'
     | '/(authed)/manage_/purchase-orders_/$purchaseOrderId'
-    | '/(authed)/manage_/purchase-orders_/create'
     | '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId'
     | '/(authed)/manage_/purchase-quotations_/create'
     | '/(authed)/manage_/purchase-requests_/$purchaseRequestId'
@@ -2075,13 +2062,6 @@ declare module '@tanstack/react-router' {
       path: '/manage/purchase-orders/$purchaseOrderId'
       fullPath: '/manage/purchase-orders/$purchaseOrderId'
       preLoaderRoute: typeof authedManagePurchaseOrdersPurchaseOrderIdRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
-    '/(authed)/manage_/purchase-orders_/create': {
-      id: '/(authed)/manage_/purchase-orders_/create'
-      path: '/manage/purchase-orders/create'
-      fullPath: '/manage/purchase-orders/create'
-      preLoaderRoute: typeof authedManagePurchaseOrdersCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/purchase-quotations/': {
@@ -2909,7 +2889,6 @@ interface authedRouteRouteChildren {
   authedManageProductionOrdersProductionOrderIdRoute: typeof authedManageProductionOrdersProductionOrderIdRoute
   authedManageProductsProductIdRoute: typeof authedManageProductsProductIdRoute
   authedManagePurchaseOrdersPurchaseOrderIdRoute: typeof authedManagePurchaseOrdersPurchaseOrderIdRoute
-  authedManagePurchaseOrdersCreateRoute: typeof authedManagePurchaseOrdersCreateRoute
   authedManagePurchaseQuotationsPurchaseQuotationIdRoute: typeof authedManagePurchaseQuotationsPurchaseQuotationIdRoute
   authedManagePurchaseQuotationsCreateRoute: typeof authedManagePurchaseQuotationsCreateRoute
   authedManagePurchaseRequestsPurchaseRequestIdRoute: typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
@@ -3032,7 +3011,6 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageProductsProductIdRoute: authedManageProductsProductIdRoute,
   authedManagePurchaseOrdersPurchaseOrderIdRoute:
     authedManagePurchaseOrdersPurchaseOrderIdRoute,
-  authedManagePurchaseOrdersCreateRoute: authedManagePurchaseOrdersCreateRoute,
   authedManagePurchaseQuotationsPurchaseQuotationIdRoute:
     authedManagePurchaseQuotationsPurchaseQuotationIdRoute,
   authedManagePurchaseQuotationsCreateRoute:

@@ -1,6 +1,14 @@
+import { Clock, TriangleAlert } from "lucide-react"
+
 import { Badge } from "@/components/ui/badge"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {
   purchaseLedgerStatusLabels,
+  purchaseLedgerWarningDescriptions,
   purchaseLedgerWarningLabels,
   PurchaseLedgerStatus,
   PurchaseLedgerWarning,
@@ -39,19 +47,20 @@ export const purchaseLedgerStatusStyles: Record<
   },
 }
 
-// Only 2 warnings — these do fit the semantic tokens, same idiom as
-// InventoryDirectStatusBadge's WARNING/SHORTAGE.
+// Only 2 warnings — refined capsule styling with rich semantic colors
 export const purchaseLedgerWarningStyles: Record<
   PurchaseLedgerWarning,
   BadgeStyle
 > = {
   [PurchaseLedgerWarning.NO_PO]: {
-    badge: "border-warning/20 bg-warning/10 text-warning",
-    dot: "bg-warning",
+    badge:
+      "border-amber-300/80 bg-amber-50/90 text-amber-800 hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20",
+    dot: "bg-amber-500",
   },
   [PurchaseLedgerWarning.URGENT]: {
-    badge: "border-destructive/20 bg-destructive/10 text-destructive",
-    dot: "bg-destructive",
+    badge:
+      "border-rose-300/80 bg-rose-50/90 text-rose-800 hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20",
+    dot: "bg-rose-500",
   },
 }
 
@@ -83,19 +92,29 @@ export function PurchaseLedgerWarningBadge({
   warning,
   className,
 }: PurchaseLedgerWarningBadgeProps) {
-  const { badge, dot } = purchaseLedgerWarningStyles[warning]
+  const { badge } = purchaseLedgerWarningStyles[warning]
+  const Icon =
+    warning === PurchaseLedgerWarning.URGENT ? Clock : TriangleAlert
 
   return (
-    <Badge
-      variant="outline"
-      className={cn(
-        "inline-flex items-center gap-1.5 text-[11px] font-medium",
-        badge,
-        className
-      )}
-    >
-      <span className={cn("size-1.5 rounded-full", dot)} />
-      {purchaseLedgerWarningLabels[warning]}
-    </Badge>
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <span
+            className={cn(
+              "inline-flex h-5.5 cursor-help items-center gap-1.25 rounded-full border px-2 text-[11px] font-medium leading-none whitespace-nowrap shadow-2xs transition-colors",
+              badge,
+              className
+            )}
+          >
+            <Icon className="size-3 shrink-0" />
+            <span>{purchaseLedgerWarningLabels[warning]}</span>
+          </span>
+        }
+      />
+      <TooltipContent side="top" className="max-w-xs text-xs">
+        {purchaseLedgerWarningDescriptions[warning]}
+      </TooltipContent>
+    </Tooltip>
   )
 }

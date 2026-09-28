@@ -1,9 +1,10 @@
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { currentUserQueryOptions } from "@/features/auth/api"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
 import { useGetUserOptions } from "@/features/users/api"
 import type { PurchaseOrderUserRef } from "@/lib/types/purchase-order.type"
@@ -24,7 +25,8 @@ export function PurchaseOrderAssigneeField({
 }: PurchaseOrderAssigneeFieldProps) {
   const queryClient = useQueryClient()
   const updatePurchaseOrderFn = useServerFn(updatePurchaseOrder)
-  const [value, setValue] = useState(assignedUser?.id)
+  const { data: profile } = useQuery(currentUserQueryOptions)
+  const [value, setValue] = useState(assignedUser?.id ?? profile?.id)
   const user = useGetUserOptions()
 
   const { mutate: save } = useMutation({
@@ -37,6 +39,13 @@ export function PurchaseOrderAssigneeField({
       setValue(assignedUser?.id)
     },
   })
+
+  // Đơn mua chưa có người phụ trách: mặc định gán theo user đăng nhập
+  useEffect(() => {
+    if (editable && !assignedUser && profile?.id) {
+      save(profile.id)
+    }
+  }, [editable, assignedUser, profile?.id, save])
 
   if (!editable) {
     return (
@@ -51,6 +60,12 @@ export function PurchaseOrderAssigneeField({
     )
   }
 
+  const initialOption = assignedUser
+    ? { value: assignedUser.id, label: assignedUser.fullName }
+    : profile
+      ? { value: profile.id, label: profile.fullName ?? profile.username }
+      : undefined
+
   return (
     <div className="min-w-0 space-y-1">
       <label
@@ -62,7 +77,7 @@ export function PurchaseOrderAssigneeField({
       <ComboboxField
         id="purchase-order-assignee"
         placeholder="Chọn người phụ trách"
-        value={value}
+        value={value ?? profile?.id}
         onValueChange={(nextValue) => {
           setValue(nextValue)
           save(nextValue ?? null)
@@ -70,11 +85,7 @@ export function PurchaseOrderAssigneeField({
         options={user.options}
         onSearchChange={user.onSearchChange}
         isPending={user.isFetching}
-        initialOption={
-          assignedUser
-            ? { value: assignedUser.id, label: assignedUser.fullName }
-            : undefined
-        }
+        initialOption={initialOption}
         emptyMessage="Không tìm thấy nhân viên"
       />
     </div>

@@ -29,6 +29,12 @@ export function InventoryProductInfoCard({
           value={item.code}
           mono
         />
+        <InfoField
+          icon={Hashtag}
+          label="Phiên bản (Rev)"
+          value={item.revision}
+          mono
+        />
         <InfoField icon={Ruler} label="Đơn vị tính" value={item.unit.name} />
         <InfoField
           icon={User}

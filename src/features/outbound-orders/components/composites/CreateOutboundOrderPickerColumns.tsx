@@ -124,6 +124,14 @@ export function buildCreateOutboundOrderPickerColumns({
         </div>
       ),
     }),
+    unfulfilledOrderItemColumnHelper.accessor((row) => row.item.revision, {
+      id: "revision",
+      header: "Rev",
+      meta: {
+        headerClassName: "w-16 text-center",
+        cellClassName: "text-center font-mono text-xs",
+      },
+    }),
     unfulfilledOrderItemColumnHelper.accessor((row) => row.unit.name, {
       id: "unitName",
       header: "ĐVT",

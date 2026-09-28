@@ -9,6 +9,7 @@ import type { Unit } from "@/lib/types/unit.type"
 export type ProductInventoryItem = {
   id: string
   code: string
+  revision: string
   name: string
   unit: Unit
   image: { url: string } | null

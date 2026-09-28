@@ -3,9 +3,9 @@ import { Eye } from "lucide-react"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PurchaseLedgerWarningBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import { cn } from "@/lib/utils"
-import type {
-  PurchaseLedgerProductionOrderRef,
+import {
   PurchaseLedgerWarning,
+  type PurchaseLedgerProductionOrderRef,
 } from "@/lib/types/purchase-ledger.type"
 
 type PurchaseLedgerSourceCellProps = {
@@ -34,22 +34,34 @@ export function PurchaseLedgerSourceCell({
   return <span className="text-xs text-muted-foreground">{note ?? "—"}</span>
 }
 
-type QuantityCellTone = "neutral" | "primary" | "ordered"
+type QuantityCellTone = "neutral" | "primary" | "ordered" | "received"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 // "ordered" tone reads the value itself, not a fixed class — SL đặt mua = 0 is the same signal
 // PurchaseLedgerWarning.NO_PO is derived from, so it gets flagged red at a glance even before
-// the warning column is read.
+// the warning column is read. "received" tone highlights partial receipts in amber and complete in green.
 function resolveQuantityToneClassName(
   tone: QuantityCellTone,
-  value: number
+  value: number,
+  comparisonTarget?: number
 ): string {
   switch (tone) {
     case "primary":
       return "text-primary"
     case "ordered":
       return value > 0 ? "text-success" : "text-destructive"
+    case "received": {
+      if (value === 0) return "text-muted-foreground"
+      if (
+        comparisonTarget !== undefined &&
+        comparisonTarget > 0 &&
+        value < comparisonTarget
+      ) {
+        return "text-amber-600 dark:text-amber-400"
+      }
+      return "text-success"
+    }
     case "neutral":
       return "text-foreground"
   }
@@ -58,17 +70,19 @@ function resolveQuantityToneClassName(
 type PurchaseLedgerQuantityCellProps = {
   value: number
   tone: QuantityCellTone
+  comparisonTarget?: number
 }
 
 export function PurchaseLedgerQuantityCell({
   value,
   tone,
+  comparisonTarget,
 }: PurchaseLedgerQuantityCellProps) {
   return (
     <span
       className={cn(
         "font-semibold tabular-nums",
-        resolveQuantityToneClassName(tone, value)
+        resolveQuantityToneClassName(tone, value, comparisonTarget)
       )}
     >
       {quantityFormatter.format(value)}
@@ -84,12 +98,18 @@ export function PurchaseLedgerWarningCell({
   warnings,
 }: PurchaseLedgerWarningCellProps) {
   if (warnings.length === 0) {
-    return <span className="text-muted-foreground">—</span>
+    return <span className="font-mono text-xs text-muted-foreground/40">—</span>
   }
 
+  const sortedWarnings = [...warnings].sort((a, b) => {
+    if (a === PurchaseLedgerWarning.URGENT) return -1
+    if (b === PurchaseLedgerWarning.URGENT) return 1
+    return 0
+  })
+
   return (
-    <div className="flex flex-col items-start gap-1">
-      {warnings.map((warning) => (
+    <div className="flex flex-row items-center gap-1.5 flex-nowrap">
+      {sortedWarnings.map((warning) => (
         <PurchaseLedgerWarningBadge key={warning} warning={warning} />
       ))}
     </div>

@@ -116,6 +116,18 @@ export function buildOutboundOrderEditItemColumns({
       },
     }),
     editItemColumnHelper.display({
+      id: "revision",
+      header: "Rev",
+      meta: {
+        headerClassName: "w-16 text-center",
+        cellClassName: "text-center font-mono text-xs",
+      },
+      cell: ({ row }) => {
+        const display = displayByOrderItemId.get(row.original.orderItemId)
+        return display?.item.revision ?? "—"
+      },
+    }),
+    editItemColumnHelper.display({
       id: "orderedQuantity",
       header: "SL PO",
       meta: {

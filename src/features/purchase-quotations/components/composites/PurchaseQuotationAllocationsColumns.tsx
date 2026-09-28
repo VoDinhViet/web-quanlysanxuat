@@ -20,7 +20,7 @@ const purchaseQuotationAllocationColumnHelper = createColumnHelper<
 export const purchaseQuotationAllocationsColumns =
   purchaseQuotationAllocationColumnHelper.columns([
     purchaseQuotationAllocationColumnHelper.accessor(
-      (row) => row.purchaseRequestItem.purchaseRequest.code,
+      (row) => row.purchaseRequest.code,
       {
         id: "prCode",
         header: "Mã PR",

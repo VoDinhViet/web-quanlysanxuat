@@ -5,12 +5,12 @@ import type { AnyFieldApi } from "@tanstack/react-form"
 
 import { Button } from "@/components/ui/button"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
-import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { PurchaseRequestItemImageCell } from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
 import type { PurchaseRequestItemFormValue } from "@/features/purchase-requests/schemas/purchase-request-item-form.schema"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -39,6 +39,20 @@ export function buildPurchaseRequestQuantityColumns({
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.index + 1}</span>
+      ),
+    }),
+    purchaseRequestQuantityColumnHelper.display({
+      id: "image",
+      header: "Ảnh",
+      meta: {
+        headerClassName: "w-14 text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => (
+        <PurchaseRequestItemImageCell
+          image={row.original.itemImage}
+          name={row.original.itemName}
+        />
       ),
     }),
     purchaseRequestQuantityColumnHelper.accessor("itemCode", {
@@ -97,31 +111,6 @@ export function buildPurchaseRequestQuantityColumns({
               </p>
             )}
           </div>
-        )
-      },
-    }),
-    purchaseRequestQuantityColumnHelper.display({
-      id: "note",
-      header: "Ghi chú",
-      meta: { headerClassName: "w-48" },
-      cell: ({ row }) => {
-        const item = row.original
-        const inputId = `purchase-request-item-note-${row.index}`
-        return (
-          <>
-            <label htmlFor={inputId} className="sr-only">
-              Ghi chú — {item.itemName}
-            </label>
-            <TableTextCellInput
-              id={inputId}
-              value={item.note}
-              placeholder="Ghi chú (nếu có)"
-              disabled={disabled}
-              onValueChange={(value) =>
-                itemsField.replaceValue(row.index, { ...item, note: value })
-              }
-            />
-          </>
         )
       },
     }),

@@ -41,6 +41,7 @@ function buildPickedPurchaseRequestItem(
     itemCode: direct.code,
     itemName: direct.name,
     itemUnit: direct.unit.name,
+    itemImage: direct.image,
     minStock: direct.minStock,
     quantity: 1,
     note: "",

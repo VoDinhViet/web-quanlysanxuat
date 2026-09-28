@@ -127,14 +127,18 @@ export const CreateQuotationSuppliersSection = withForm({
                       <TableRow className="h-14 bg-card hover:bg-card">
                         {row.getVisibleCells().map((cell) => {
                           const columnId = cell.column.id
-                          // The NCC summary spans the price/leadtime/note columns.
-                          if (columnId === "leadTime" || columnId === "note") {
+                          // The NCC summary spans the price/leadtime/note/files columns.
+                          if (
+                            columnId === "leadTime" ||
+                            columnId === "note" ||
+                            columnId === "files"
+                          ) {
                             return null
                           }
                           return (
                             <TableCell
                               key={cell.id}
-                              colSpan={columnId === "unitPrice" ? 3 : undefined}
+                              colSpan={columnId === "unitPrice" ? 4 : undefined}
                               className={cn(
                                 cell.column.columnDef.meta?.cellClassName,
                                 columnId === "unitPrice" && "text-left"

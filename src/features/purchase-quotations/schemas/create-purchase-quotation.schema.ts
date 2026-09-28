@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { fileFieldSchema } from "@/lib/file-field.schema"
+
 // Real backend constraint: one purchase_quotations row can carry any number of vật tư, and each
 // vật tư line can carry any number of NCC (`suppliers`) — quantity lives once per item,
 // unitPrice/leadTimeDays/note live once per (item, NCC) pair
@@ -23,6 +25,7 @@ const quotationItemSupplierFields = {
     .pipe(z.number("Vui lòng nhập giá báo")),
   leadTimeDays: z.number().min(0, "Leadtime không được âm").optional(),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
+  files: z.array(fileFieldSchema).default([]),
 }
 
 export const quotationItemSupplierSchema = z.object(quotationItemSupplierFields)
@@ -118,7 +121,7 @@ export function mapQuotationDetailToFormValues(
       unit: item.item.unit.name,
       allocations: item.allocations.map((allocation) => ({
         purchaseRequestItemId: allocation.purchaseRequestItem.id,
-        prCode: allocation.purchaseRequestItem.purchaseRequest.code,
+        prCode: allocation.purchaseRequest.code,
         requestedQuantity: allocation.purchaseRequestItem.quantity,
         neededDate: "",
         quantity: allocation.quantity,
@@ -132,6 +135,16 @@ export function mapQuotationDetailToFormValues(
         unitPrice: supplier.unitPrice ?? undefined,
         leadTimeDays: supplier.leadTimeDays ?? undefined,
         note: supplier.note ?? "",
+        files: (supplier.files ?? []).map((file) => ({
+          id: file.id,
+          url: file.url,
+          originalName: file.originalName,
+          mimetype: file.mimetype,
+          size: file.size,
+          type: file.type,
+          kind: file.kind,
+          createdAt: file.createdAt,
+        })),
       })),
     })),
   }

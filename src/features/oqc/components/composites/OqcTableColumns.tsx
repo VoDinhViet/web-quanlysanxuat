@@ -52,6 +52,15 @@ export const oqcColumns = oqcColumnHelper.columns([
     },
   }),
 
+  oqcColumnHelper.accessor((row) => row.item.revision, {
+    id: "revision",
+    header: "Rev",
+    meta: {
+      headerClassName: "min-w-16 text-center",
+      cellClassName: "text-center font-mono text-xs",
+    },
+  }),
+
   oqcColumnHelper.accessor((row) => row.operation.name, {
     id: "operation",
     header: "Công đoạn",

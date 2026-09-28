@@ -4,6 +4,7 @@ import { DateTime } from "luxon"
 import { CheckCircle } from "@solar-icons/react"
 
 import { RadioGroupItem } from "@/components/ui/radio-group"
+import { QuotationSupplierAttachmentCell } from "@/features/purchase-quotations/components/primitives/QuotationSupplierAttachmentCell"
 import type { PurchaseQuotationItemSupplierDetail } from "@/lib/types/purchase-quotation.type"
 
 const purchaseQuotationSupplierColumnHelper = createColumnHelper<
@@ -107,6 +108,21 @@ export function buildPurchaseQuotationSupplierCompareColumns({
       id: "note",
       header: "Ghi chú",
       meta: { headerClassName: "text-[10px]", cellClassName: "truncate" },
+    }),
+    purchaseQuotationSupplierColumnHelper.display({
+      id: "files",
+      header: "Tệp đính kèm",
+      meta: {
+        headerClassName: "w-28 text-[10px] text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => (
+        <QuotationSupplierAttachmentCell
+          supplierName={row.original.supplier.name}
+          value={row.original.files}
+          disabled={true}
+        />
+      ),
     }),
   ])
 }

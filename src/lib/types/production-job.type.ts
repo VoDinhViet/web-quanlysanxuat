@@ -15,6 +15,22 @@ export enum ProductionJobStatus {
   COMPLETED = "COMPLETED",
 }
 
+export enum ProductionJobWarning {
+  NORMAL = "NORMAL",
+  DUE_SOON = "DUE_SOON",
+  URGENT = "URGENT",
+  OVERDUE = "OVERDUE",
+  COMPLETED = "COMPLETED",
+}
+
+export const productionJobWarningLabels: Record<ProductionJobWarning, string> = {
+  [ProductionJobWarning.NORMAL]: "Bình thường",
+  [ProductionJobWarning.DUE_SOON]: "Sắp tới hạn",
+  [ProductionJobWarning.URGENT]: "Gấp",
+  [ProductionJobWarning.OVERDUE]: "Trễ hạn",
+  [ProductionJobWarning.COMPLETED]: "Hoàn thành",
+}
+
 export const productionJobStatusLabels: Record<ProductionJobStatus, string> = {
   [ProductionJobStatus.PENDING]: "Chưa SX",
   [ProductionJobStatus.IN_PROGRESS]: "Đang SX",
@@ -312,7 +328,7 @@ export type ProductionJobByOperation = {
   operationCode: string
   operationName: string
   orderCode: string
-  item: { code: string; name: string }
+  item: { code: string; name: string; revision: string }
   image: FileResource | null
   quantity: number
   orderDate: string
@@ -342,3 +358,16 @@ export type ProductionExecutionReport = {
   } | null
   files: FileResource[]
 }
+
+/** Mirrors `GET /production-jobs/:productionJobId/operations/plan` — danh sách các nhóm công đoạn
+ *  độc nhất trong một Job để lập kế hoạch sản xuất (Leadtime và hạn hoàn thành). */
+export type ProductionJobPlanGroupOperation = {
+  key: string
+  code: string
+  name: string
+  bomItemCodes: string[]
+  operationIds: string[]
+  sortOrder: number
+  dueDate: string | null
+}
+
