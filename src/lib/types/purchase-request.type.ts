@@ -36,10 +36,11 @@ export type PurchaseRequestUserRef = {
 }
 
 /** Mirrors the backend's ProductionOrderRefResDto — `code` is only set once the LSX is APPROVED,
- *  hence nullable. */
+ *  hence nullable. `buyerPoNo` is flattened from `order.buyerPoNo` on the backend. */
 export type PurchaseRequestProductionOrderRef = {
   id: string
   code: string | null
+  buyerPoNo: string | null
 }
 
 /** Mirrors the backend's PagePurchaseRequestResDto — one row of `GET /purchase-requests`, the "Đề

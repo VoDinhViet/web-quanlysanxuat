@@ -17,9 +17,8 @@ import type {
   PurchaseRequestProductionOrderRef,
 } from "@/lib/types/purchase-request.type"
 
-// "PO liên quan / Lý do": a request auto-generated from a LSX shows its production order code; a
-// manually-created request that got rejected shows why; anything else (manual + not rejected)
-// genuinely has neither, so it's a plain "—" rather than a placeholder.
+// "PO liên quan / Lý do": hiển thị số PO khách hàng (buyerPoNo) của đơn hàng gốc —
+// nếu chưa có buyerPoNo thì fallback về mã LSX; đề xuất thủ công bị từ chối hiện lý do từ chối.
 export function PurchaseRequestSourceCell({
   productionOrder,
   status,
@@ -30,12 +29,11 @@ export function PurchaseRequestSourceCell({
   rejectionReason: string | null
 }) {
   if (productionOrder) {
-    return productionOrder.code === null ? (
+    const display = productionOrder.buyerPoNo ?? productionOrder.code
+    return display === null ? (
       <span>—</span>
     ) : (
-      <span className="font-mono font-semibold text-primary">
-        {productionOrder.code}
-      </span>
+      <span className="font-mono font-semibold text-primary">{display}</span>
     )
   }
 
