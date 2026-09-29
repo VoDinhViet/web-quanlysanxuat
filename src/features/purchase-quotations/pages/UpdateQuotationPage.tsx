@@ -1,8 +1,12 @@
+import { useMemo } from "react"
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
-import { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options"
+import {
+  purchaseQuotationComparisonQueryOptions,
+  purchaseQuotationQueryOptions,
+} from "@/features/purchase-quotations/api/options"
 import { UpdateQuotationForm } from "@/features/purchase-quotations/components/sections/UpdateQuotationForm"
 
 export function UpdateQuotationPage() {
@@ -12,6 +16,14 @@ export function UpdateQuotationPage() {
 
   const { data: purchaseQuotation } = useSuspenseQuery(
     purchaseQuotationQueryOptions(purchaseQuotationId)
+  )
+  const { data: items } = useSuspenseQuery(
+    purchaseQuotationComparisonQueryOptions(purchaseQuotationId)
+  )
+
+  const quotationWithItems = useMemo(
+    () => ({ ...purchaseQuotation, items }),
+    [purchaseQuotation, items]
   )
 
   return (
@@ -28,7 +40,7 @@ export function UpdateQuotationPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <UpdateQuotationForm purchaseQuotation={purchaseQuotation} />
+        <UpdateQuotationForm purchaseQuotation={quotationWithItems} />
       </div>
     </main>
   )

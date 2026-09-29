@@ -114,7 +114,7 @@ export function mapQuotationDetailToFormValues(
   quotation: PurchaseQuotationDetail
 ): CreateQuotationFormSchema {
   return {
-    items: quotation.items.map((item) => ({
+    items: (quotation.items ?? []).map((item) => ({
       itemId: item.item.id,
       itemCode: item.item.code,
       itemName: item.item.name,

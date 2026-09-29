@@ -4,3 +4,4 @@
 export { purchaseQuotationsQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotations.options"
 export { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation.options"
 export { purchaseQuotationRelatedNotesQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation-related-notes.options"
+export { purchaseQuotationComparisonQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation-comparison.options"
