@@ -50,9 +50,11 @@ export function CreateQuotationForm() {
       createQuotationFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await queryClient.invalidateQueries({
-        queryKey: ["purchase-quotations"],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
       toast.success("Đã tạo RFQ")
       await navigate({
         to: "/manage/purchase-quotations",

@@ -43,7 +43,11 @@ export function DeleteQuotationDialog({
     onSuccess: async () => {
       setOpen(false)
       toast.success(`Đã xoá báo giá "${purchaseQuotation.code}".`)
-      await queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
       onDeleted?.()
     },
     onError: (error) => {

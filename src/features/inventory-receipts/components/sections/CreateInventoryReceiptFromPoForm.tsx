@@ -127,9 +127,11 @@ export function CreateInventoryReceiptFromPoForm() {
     },
     onSuccess: async () => {
       clearDraft()
-      await queryClient.invalidateQueries({
-        queryKey: ["inventory-receipts"],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["inventory-receipts"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
+      ])
       toast.success(
         shouldConfirmRef.current
           ? "Đã tạo và xác nhận phiếu nhập kho"

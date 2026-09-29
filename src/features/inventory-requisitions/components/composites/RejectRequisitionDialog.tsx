@@ -64,9 +64,10 @@ function RejectRequisitionForm({
       }),
     onSuccess: async () => {
       onClose()
-      await queryClient.invalidateQueries({
-        queryKey: ["inventory-requisitions"],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

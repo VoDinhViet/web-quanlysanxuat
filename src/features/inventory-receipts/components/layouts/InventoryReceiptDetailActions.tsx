@@ -99,6 +99,9 @@ export function InventoryReceiptDetailActions({
       queryClient.invalidateQueries({ queryKey: ["iqc"] }),
       queryClient.invalidateQueries({ queryKey: ["production-orders"] }),
       queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+      queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
+      queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
+      queryClient.invalidateQueries({ queryKey: ["reports"] }),
     ])
 
   const confirmMutation = useMutation({

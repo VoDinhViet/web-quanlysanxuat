@@ -37,7 +37,10 @@ export function ReqOrderApprovalDialog({
     mutationFn: () => reqOrderApprovalFn({ data: { orderId: order.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ["orders"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

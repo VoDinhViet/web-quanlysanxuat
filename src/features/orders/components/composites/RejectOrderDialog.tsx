@@ -53,7 +53,10 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
       rejectOrderFn({ data: { orderId: order.id, reason } }),
     onSuccess: async () => {
       onClose()
-      await queryClient.invalidateQueries({ queryKey: ["orders"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

@@ -21,9 +21,9 @@ export const purchaseOrderStatusStyles: Record<
   PurchaseOrderStatus,
   BadgeStyle
 > = {
-  [PurchaseOrderStatus.DRAFT]: {
-    badge: "border-dashed bg-transparent text-muted-foreground",
-    dot: "bg-muted-foreground/60",
+  [PurchaseOrderStatus.PENDING_CONFIRMATION]: {
+    badge: "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseOrderStatus.ORDERED]: {
     badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
@@ -61,9 +61,9 @@ export const purchaseOrderProgressStyles: Record<
   PurchaseOrderProgress,
   BadgeStyle
 > = {
-  [PurchaseOrderProgress.DRAFT]: {
-    badge: "border-dashed bg-transparent text-muted-foreground",
-    dot: "bg-muted-foreground/60",
+  [PurchaseOrderProgress.PENDING_CONFIRMATION]: {
+    badge: "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseOrderProgress.ORDERED]: {
     badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",

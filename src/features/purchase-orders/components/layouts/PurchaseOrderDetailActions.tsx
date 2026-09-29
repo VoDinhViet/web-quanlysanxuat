@@ -18,14 +18,14 @@ export function PurchaseOrderDetailActions({
   purchaseOrder,
 }: PurchaseOrderDetailActionsProps) {
   const isConfirmable =
-    purchaseOrder.status === PurchaseOrderStatus.DRAFT &&
+    purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION &&
     purchaseOrder.expectedDate !== null &&
     purchaseOrder.items.every((item) => item.unitPrice !== null)
 
   return (
     <div className="flex shrink-0 flex-col items-end gap-1.5">
       <div className="flex items-center gap-2">
-        {purchaseOrder.status === PurchaseOrderStatus.DRAFT && (
+        {purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION && (
           <PermissionGate permission="purchasing:update">
             <PurchaseOrderConfirmDialog
               purchaseOrder={purchaseOrder}
@@ -58,7 +58,7 @@ export function PurchaseOrderDetailActions({
         )}
       </div>
 
-      {purchaseOrder.status === PurchaseOrderStatus.DRAFT && !isConfirmable && (
+      {purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION && !isConfirmable && (
         <p className="max-w-64 text-right text-[11px] text-muted-foreground">
           Cần nhập ngày giao dự kiến và đơn giá cho mọi dòng trước khi xác nhận.
         </p>
