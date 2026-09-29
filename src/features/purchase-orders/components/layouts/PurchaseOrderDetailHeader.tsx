@@ -57,71 +57,67 @@ export function PurchaseOrderDetailHeader({
         </div>
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
-          <div className="flex flex-col gap-4">
-            <MetaField label="NCC" value={purchaseOrder.supplier.name} />
-            <MetaField
-              label="RFQ nguồn"
-              value={
-                purchaseOrder.quotation ? (
-                  <Link
-                    to="/manage/purchase-quotations/$purchaseQuotationId"
-                    params={{ purchaseQuotationId: purchaseOrder.quotation.id }}
-                    className="font-mono text-primary hover:underline"
-                  >
-                    {purchaseOrder.quotation.code}
-                  </Link>
-                ) : (
-                  "Không có"
-                )
-              }
-            />
-            <MetaField
-              label="PR nguồn"
-              value={
-                purchaseRequests.length > 0 ? (
-                  <span className="flex flex-col gap-0.5">
-                    {purchaseRequests.map((purchaseRequest) => (
-                      <Link
-                        key={purchaseRequest.id}
-                        to="/manage/purchase-requests/$purchaseRequestId"
-                        params={{ purchaseRequestId: purchaseRequest.id }}
-                        className="font-mono text-primary hover:underline"
-                      >
-                        {purchaseRequest.code}
-                      </Link>
-                    ))}
-                  </span>
-                ) : (
-                  "Không có"
-                )
-              }
-            />
-          </div>
+          <MetaField label="NCC" value={purchaseOrder.supplier.name} />
+          <MetaField
+            label="Người phụ trách"
+            value={purchaseOrder.assignedUser?.fullName ?? "—"}
+          />
+          <MetaField
+            label="Ngày đặt"
+            value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
+              "dd/MM/yyyy"
+            )}
+          />
 
-          <div className="flex flex-col gap-4">
-            <MetaField
-              label="Người phụ trách"
-              value={purchaseOrder.assignedUser?.fullName ?? "—"}
-            />
-            <PurchaseOrderPaymentTermField
-              purchaseOrderId={purchaseOrder.id}
-              paymentTerm={purchaseOrder.paymentTerm}
-              editable={editable}
-            />
-            <MetaField
-              label="Ngày đặt"
-              value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
-                "dd/MM/yyyy"
-              )}
-            />
-          </div>
+          <MetaField
+            label="RFQ nguồn"
+            value={
+              purchaseOrder.quotation ? (
+                <Link
+                  to="/manage/purchase-quotations/$purchaseQuotationId"
+                  params={{ purchaseQuotationId: purchaseOrder.quotation.id }}
+                  className="font-mono text-primary hover:underline"
+                >
+                  {purchaseOrder.quotation.code}
+                </Link>
+              ) : (
+                "Không có"
+              )
+            }
+          />
+          <PurchaseOrderPaymentTermField
+            purchaseOrderId={purchaseOrder.id}
+            paymentTerm={purchaseOrder.paymentTerm}
+            editable={editable}
+          />
+          <PurchaseOrderExpectedDateField
+            purchaseOrderId={purchaseOrder.id}
+            expectedDate={purchaseOrder.expectedDate}
+            editable={editable}
+          />
 
-          <div className="flex flex-col gap-4">
-            <PurchaseOrderExpectedDateField
-              purchaseOrderId={purchaseOrder.id}
-              expectedDate={purchaseOrder.expectedDate}
-              editable={editable}
-            />
+          <MetaField
+            label="PR nguồn"
+            value={
+              purchaseRequests.length > 0 ? (
+                <span className="flex flex-wrap gap-1.5">
+                  {purchaseRequests.map((purchaseRequest) => (
+                    <Link
+                      key={purchaseRequest.id}
+                      to="/manage/purchase-requests/$purchaseRequestId"
+                      params={{ purchaseRequestId: purchaseRequest.id }}
+                      className="font-mono text-primary hover:underline"
+                    >
+                      {purchaseRequest.code}
+                    </Link>
+                  ))}
+                </span>
+              ) : (
+                "Không có"
+              )
+            }
+          />
+          <div className="sm:col-span-2">
             <PurchaseOrderNoteField
               purchaseOrderId={purchaseOrder.id}
               note={purchaseOrder.note}
