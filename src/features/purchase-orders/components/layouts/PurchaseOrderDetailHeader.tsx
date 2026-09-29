@@ -4,7 +4,6 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
-import { PurchaseOrderAssigneeField } from "@/features/purchase-orders/components/composites/PurchaseOrderAssigneeField"
 import { PurchaseOrderDetailActions } from "@/features/purchase-orders/components/layouts/PurchaseOrderDetailActions"
 import { PurchaseOrderExpectedDateField } from "@/features/purchase-orders/components/composites/PurchaseOrderExpectedDateField"
 import { PurchaseOrderNoteField } from "@/features/purchase-orders/components/composites/PurchaseOrderNoteField"
@@ -100,10 +99,9 @@ export function PurchaseOrderDetailHeader({
           </div>
 
           <div className="flex flex-col gap-4">
-            <PurchaseOrderAssigneeField
-              purchaseOrderId={purchaseOrder.id}
-              assignedUser={purchaseOrder.assignedUser}
-              editable={editable}
+            <MetaField
+              label="Người phụ trách"
+              value={purchaseOrder.assignedUser?.fullName ?? "—"}
             />
             <PurchaseOrderPaymentTermField
               purchaseOrderId={purchaseOrder.id}
