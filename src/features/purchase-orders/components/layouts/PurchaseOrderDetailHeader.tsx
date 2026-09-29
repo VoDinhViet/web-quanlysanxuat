@@ -1,14 +1,10 @@
 import { Link } from "@tanstack/react-router"
 import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useServerFn } from "@tanstack/react-start"
-import { useEffect } from "react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
-import { currentUserQueryOptions } from "@/features/auth/api"
-import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
+import { PurchaseOrderAssignee } from "@/features/purchase-orders/components/composites/PurchaseOrderAssignee"
 import { PurchaseOrderDetailActions } from "@/features/purchase-orders/components/layouts/PurchaseOrderDetailActions"
 import { PurchaseOrderExpectedDateField } from "@/features/purchase-orders/components/composites/PurchaseOrderExpectedDateField"
 import { PurchaseOrderNoteField } from "@/features/purchase-orders/components/composites/PurchaseOrderNoteField"
@@ -31,32 +27,6 @@ export function PurchaseOrderDetailHeader({
   purchaseOrder,
   editable,
 }: PurchaseOrderDetailHeaderProps) {
-  const queryClient = useQueryClient()
-  const updatePurchaseOrderFn = useServerFn(updatePurchaseOrder)
-  const { data: profile } = useQuery(currentUserQueryOptions)
-
-  const { mutate: assignCurrentUser } = useMutation({
-    mutationFn: (assignedUserId: string) =>
-      updatePurchaseOrderFn({
-        data: { purchaseOrderId: purchaseOrder.id, assignedUserId },
-      }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
-  })
-
-  // Đơn mua chưa có người phụ trách: mặc định gán theo user đăng nhập
-  useEffect(() => {
-    if (editable && !purchaseOrder.assignedUser && profile?.id) {
-      assignCurrentUser(profile.id)
-    }
-  }, [editable, purchaseOrder.assignedUser, profile?.id, assignCurrentUser])
-
-  const assignedUserName =
-    purchaseOrder.assignedUser?.fullName ??
-    profile?.fullName ??
-    profile?.username ??
-    "—"
-
   const purchaseRequests = Array.from(
     new Map(
       purchaseOrder.items.map((item) => [
@@ -89,7 +59,11 @@ export function PurchaseOrderDetailHeader({
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
           <MetaField label="NCC" value={purchaseOrder.supplier.name} />
-          <MetaField label="Người phụ trách" value={assignedUserName} />
+          <PurchaseOrderAssignee
+            purchaseOrderId={purchaseOrder.id}
+            assignedUser={purchaseOrder.assignedUser}
+            editable={editable}
+          />
           <MetaField
             label="Ngày đặt"
             value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
