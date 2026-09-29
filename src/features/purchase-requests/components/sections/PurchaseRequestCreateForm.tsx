@@ -59,7 +59,10 @@ export function PurchaseRequestCreateForm() {
       createPurchaseRequestFn({ data: value }),
     onSuccess: async () => {
       clearDraft()
-      await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
       toast.success("Đã tạo đề xuất mua hàng")
       await navigate({
         to: "/manage/purchase-requests",

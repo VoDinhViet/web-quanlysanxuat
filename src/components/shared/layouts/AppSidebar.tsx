@@ -118,6 +118,7 @@ const menuGroups: MenuGroup[] = [
         label: "Đơn mua hàng (PO)",
         icon: ReceiptText,
         href: "/manage/purchase-orders",
+        badgeKey: "purchaseOrders",
       },
       {
         label: "Yêu cầu thanh toán",

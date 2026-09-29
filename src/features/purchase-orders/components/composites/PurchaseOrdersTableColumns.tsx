@@ -18,7 +18,7 @@ const purchaseOrderColumnHelper = createColumnHelper<
 
 export const purchaseOrdersColumns = purchaseOrderColumnHelper.columns([
   purchaseOrderColumnHelper.accessor("code", {
-    header: "Mã PO",
+    header: "Mã đơn mua",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
       <span className="font-mono font-semibold text-primary">{getValue()}</span>

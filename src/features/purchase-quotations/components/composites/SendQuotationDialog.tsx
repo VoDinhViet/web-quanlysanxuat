@@ -43,9 +43,10 @@ export function SendQuotationDialog({
       }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({
-        queryKey: ["purchase-quotations"],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

@@ -4,3 +4,4 @@
 // `api/options/` directly.
 export { purchaseQuotationsQueryOptions } from "@/features/purchase-quotations/api/options"
 export { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options"
+export { purchaseQuotationComparisonQueryOptions } from "@/features/purchase-quotations/api/options"

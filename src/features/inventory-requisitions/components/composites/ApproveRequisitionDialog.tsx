@@ -44,6 +44,7 @@ export function ApproveRequisitionDialog({
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
         queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
     },
   })

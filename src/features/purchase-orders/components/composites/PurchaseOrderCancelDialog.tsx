@@ -67,7 +67,11 @@ function PurchaseOrderCancelForm({
       }),
     onSuccess: async () => {
       onClose()
-      await queryClient.invalidateQueries({ queryKey: ["purchase-orders"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
+      ])
     },
   })
 

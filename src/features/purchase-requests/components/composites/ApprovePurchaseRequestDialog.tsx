@@ -40,7 +40,11 @@ export function ApprovePurchaseRequestDialog({
       }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

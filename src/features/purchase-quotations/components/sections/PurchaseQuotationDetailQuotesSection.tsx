@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { appTableFeatures } from "@/lib/table-features"
 import { PackageSearch } from "lucide-react"
 
@@ -12,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { purchaseQuotationComparisonQueryOptions } from "@/features/purchase-quotations/api/options"
 import { purchaseQuotationItemsColumns } from "@/features/purchase-quotations/components/composites/PurchaseQuotationItemsTableColumns"
 import { PurchaseQuotationAllocationsTable } from "@/features/purchase-quotations/components/composites/PurchaseQuotationAllocationsTable"
 import { PurchaseQuotationApprovalBar } from "@/features/purchase-quotations/components/layouts/PurchaseQuotationApprovalBar"
@@ -44,8 +46,12 @@ export function PurchaseQuotationDetailQuotesSection({
   const [selectedSuppliers, setSelectedSuppliers] =
     useState<PurchaseQuotationSupplierSelection>({})
 
+  const { data: items = [] } = useSuspenseQuery(
+    purchaseQuotationComparisonQueryOptions(purchaseQuotation.id)
+  )
+
   const table = useTable({
-    data: purchaseQuotation.items,
+    data: items,
     columns: purchaseQuotationItemsColumns,
     features: appTableFeatures,
   })
@@ -64,7 +70,7 @@ export function PurchaseQuotationDetailQuotesSection({
       </div>
 
       <div className="overflow-hidden">
-        {purchaseQuotation.items.length === 0 ? (
+        {items.length === 0 ? (
           <TableEmpty
             icon={PackageSearch}
             title="Chưa có vật tư nào"
@@ -153,7 +159,7 @@ export function PurchaseQuotationDetailQuotesSection({
         <PurchaseQuotationApprovalBar
           purchaseQuotation={purchaseQuotation}
           selectedSuppliers={selectedSuppliers}
-          totalItems={purchaseQuotation.items.length}
+          totalItems={items.length}
         />
       )}
     </div>

@@ -9,7 +9,7 @@ import type { Unit } from "@/lib/types/unit.type"
  *  (`PurchaseOrderStatusBadge`, `purchase-orders/components/PurchaseOrderBadges.tsx`) — the list
  *  page still reads the synthetic 5-value `PurchaseOrderProgress` below instead. */
 export const PurchaseOrderStatus = {
-  DRAFT: "DRAFT",
+  PENDING_CONFIRMATION: "PENDING_CONFIRMATION",
   ORDERED: "ORDERED",
   CANCELLED: "CANCELLED",
 } as const
@@ -18,7 +18,7 @@ export type PurchaseOrderStatus =
   (typeof PurchaseOrderStatus)[keyof typeof PurchaseOrderStatus]
 
 export const purchaseOrderStatusLabels: Record<PurchaseOrderStatus, string> = {
-  [PurchaseOrderStatus.DRAFT]: "Nháp",
+  [PurchaseOrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận",
   [PurchaseOrderStatus.ORDERED]: "Đã đặt hàng",
   [PurchaseOrderStatus.CANCELLED]: "Đã hủy",
 }
@@ -27,7 +27,7 @@ export const purchaseOrderStatusDescriptions: Record<
   PurchaseOrderStatus,
   string
 > = {
-  [PurchaseOrderStatus.DRAFT]: "Đang soạn, chưa đặt với NCC",
+  [PurchaseOrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận để đặt hàng với NCC",
   [PurchaseOrderStatus.ORDERED]: "Đã đặt với NCC, chờ nhận hàng",
   [PurchaseOrderStatus.CANCELLED]: "Đơn đã bị hủy",
 }
@@ -39,7 +39,7 @@ export const purchaseOrderStatusDescriptions: Record<
  *  `receivedQuantity`/`orderedQuantity` and sent as-is on `PurchaseOrder.progress` — not a
  *  stored column, and not re-derived client-side. */
 export const PurchaseOrderProgress = {
-  DRAFT: "DRAFT",
+  PENDING_CONFIRMATION: "PENDING_CONFIRMATION",
   ORDERED: "ORDERED",
   RECEIVING: "RECEIVING",
   COMPLETED: "COMPLETED",
@@ -53,7 +53,7 @@ export const purchaseOrderProgressLabels: Record<
   PurchaseOrderProgress,
   string
 > = {
-  [PurchaseOrderProgress.DRAFT]: "Draft",
+  [PurchaseOrderProgress.PENDING_CONFIRMATION]: "Chờ xác nhận",
   [PurchaseOrderProgress.ORDERED]: "Đã đặt hàng",
   [PurchaseOrderProgress.RECEIVING]: "Đang nhận hàng",
   [PurchaseOrderProgress.COMPLETED]: "Hoàn tất",
@@ -64,7 +64,7 @@ export const purchaseOrderProgressDescriptions: Record<
   PurchaseOrderProgress,
   string
 > = {
-  [PurchaseOrderProgress.DRAFT]: "Đang soạn, chưa đặt với NCC",
+  [PurchaseOrderProgress.PENDING_CONFIRMATION]: "Chờ xác nhận để đặt hàng với NCC",
   [PurchaseOrderProgress.ORDERED]: "Đã đặt với NCC, chưa nhận hàng",
   [PurchaseOrderProgress.RECEIVING]: "Đã nhận một phần",
   [PurchaseOrderProgress.COMPLETED]: "Đã nhận đủ số lượng đặt",

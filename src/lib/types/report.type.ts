@@ -76,6 +76,7 @@ export type QcPassRatePoint = {
 export type PendingApprovals = {
   purchaseRequests: number
   purchaseQuotations: number
+  purchaseOrders: number
   orders: number
   productionOrders: number
   inventoryRequisitions: number

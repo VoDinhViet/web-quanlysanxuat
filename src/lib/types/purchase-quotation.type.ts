@@ -88,7 +88,14 @@ export type PurchaseQuotationItemAllocationDetail = {
  *  `allocations[].quantity`), backend gắn vào lúc đọc — không phải cột DB. */
 export type PurchaseQuotationItemDetail = {
   id: string
-  item: { id: string; code: string; name: string; unit: Unit }
+  item: {
+    id: string
+    code: string
+    name: string
+    unit: Unit
+    image?: FileResource | null
+  }
+  image?: FileResource | null
   quantity: number
   allocations: PurchaseQuotationItemAllocationDetail[]
   suppliers: PurchaseQuotationItemSupplierDetail[]
@@ -108,7 +115,7 @@ export type PurchaseQuotationDetail = {
   code: string
   status: PurchaseQuotationStatus
   note: string | null
-  items: PurchaseQuotationItemDetail[]
+  items?: PurchaseQuotationItemDetail[]
   senderBy: PurchaseQuotationUserRef | null
   sentAt: string | null
   approverBy: PurchaseQuotationUserRef | null

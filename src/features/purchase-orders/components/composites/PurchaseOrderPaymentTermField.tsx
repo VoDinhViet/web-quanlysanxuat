@@ -69,7 +69,7 @@ export function PurchaseOrderPaymentTermField({
   }
 
   return (
-    <div className="flex min-w-0 flex-col gap-1">
+    <div className="min-w-0 space-y-1">
       <label
         htmlFor="purchase-order-payment-term"
         className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"

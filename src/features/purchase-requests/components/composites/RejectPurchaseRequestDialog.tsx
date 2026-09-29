@@ -68,7 +68,10 @@ function RejectPurchaseRequestForm({
       }),
     onSuccess: async () => {
       onClose()
-      await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

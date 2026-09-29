@@ -42,12 +42,12 @@ export function RecallQuotationDialog({
       }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({
-        queryKey: ["purchase-quotations"],
-      })
-      await queryClient.invalidateQueries({
-        queryKey: ["purchase-orders"],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

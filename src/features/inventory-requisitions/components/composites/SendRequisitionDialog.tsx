@@ -38,9 +38,10 @@ export function SendRequisitionDialog({
       sendInventoryRequisitionFn({ data: { requisitionId: detail.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({
-        queryKey: ["inventory-requisitions"],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

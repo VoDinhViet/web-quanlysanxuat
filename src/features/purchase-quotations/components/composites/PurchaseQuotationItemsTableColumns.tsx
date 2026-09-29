@@ -7,6 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { PurchaseRequestItemImageCell } from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
 import type { PurchaseQuotationItemDetail } from "@/lib/types/purchase-quotation.type"
 
 const purchaseQuotationItemColumnHelper = createColumnHelper<
@@ -22,9 +23,23 @@ export const purchaseQuotationItemsColumns =
     purchaseQuotationItemColumnHelper.display({
       id: "index",
       header: "STT",
-      meta: { headerClassName: "w-10" },
+      meta: { headerClassName: "w-10 text-center", cellClassName: "text-center" },
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.index + 1}</span>
+      ),
+    }),
+    purchaseQuotationItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-16 text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => (
+        <PurchaseRequestItemImageCell
+          image={row.original.image ?? row.original.item.image}
+          name={row.original.item.name}
+        />
       ),
     }),
     purchaseQuotationItemColumnHelper.accessor((row) => row.item.code, {

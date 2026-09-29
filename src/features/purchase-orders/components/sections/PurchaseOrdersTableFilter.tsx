@@ -186,7 +186,7 @@ export function PurchaseOrdersTableFilter() {
               <Input
                 id="purchase-orders-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Tìm theo mã PO..."
+                placeholder="Tìm mã PO, mã/tên VT, PR nguồn..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)

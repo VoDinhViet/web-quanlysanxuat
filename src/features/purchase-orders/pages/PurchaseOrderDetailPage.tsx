@@ -28,7 +28,7 @@ export function PurchaseOrderDetailPage() {
   // thuộc `editable`. Vật tư trong PO (SL đặt, đơn giá, lý do điều chỉnh) là chỉ xem (read-only).
   const editable =
     useHasPermission("purchasing:update") &&
-    purchaseOrder.status === PurchaseOrderStatus.DRAFT
+    purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION
 
   return (
     <main className="min-h-svh bg-background text-foreground">

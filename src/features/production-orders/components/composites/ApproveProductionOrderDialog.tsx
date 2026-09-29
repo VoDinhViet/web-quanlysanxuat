@@ -44,6 +44,7 @@ export function ApproveProductionOrderDialog({
         queryClient.invalidateQueries({ queryKey: ["production-orders"] }),
         queryClient.invalidateQueries({ queryKey: ["orders"] }),
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
     },
   })
