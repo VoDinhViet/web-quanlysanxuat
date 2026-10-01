@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 
@@ -12,24 +13,32 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { useRoutePagination } from "@/hooks/use-route-pagination"
-import { productionJobBomColumns } from "@/features/production-jobs/components/composites/ProductionJobBomTableColumns"
+import { buildProductionJobBomColumns } from "@/features/production-jobs/components/composites/ProductionJobBomTableColumns"
+import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { ProductionJobIssue } from "@/lib/types/production-job.type"
 import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
-const columnCount = productionJobBomColumns.length
-
 type ProductionJobBomTableProps = {
+  productionJobId: string
+  status: ProductionJobStatus
   rows: ProductionJobIssue[]
   pagination: PaginationMeta
 }
 
 export function ProductionJobBomTable({
+  productionJobId,
+  status,
   rows,
   pagination,
 }: ProductionJobBomTableProps) {
+  const isEditable = status === ProductionJobStatus.PENDING
+  const columns = useMemo(
+    () => buildProductionJobBomColumns({ productionJobId, isEditable }),
+    [productionJobId, isEditable]
+  )
   const table = useTable({
     data: rows,
-    columns: productionJobBomColumns,
+    columns,
     features: appTableFeatures,
   })
 
@@ -57,8 +66,8 @@ export function ProductionJobBomTable({
         <TableBody>
           {table.getRowModel().rows.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={productionJobBomColumns.length}>
-                <TableEmpty colSpan={columnCount} title="Không có dữ liệu" />
+              <TableCell colSpan={columns.length}>
+                <TableEmpty colSpan={columns.length} title="Không có dữ liệu" />
               </TableCell>
             </TableRow>
           ) : (

@@ -9,7 +9,6 @@ import { PurchaseRequestItemsSection } from "@/features/purchase-requests/compon
 import { PurchaseRequestRejectionNotice } from "@/features/purchase-requests/components/composites/PurchaseRequestRejectionNotice"
 import { PurchaseRequestRelatedNotesCard } from "@/features/purchase-requests/components/composites/PurchaseRequestRelatedNotesCard"
 import { useHasPermission } from "@/hooks/use-permissions"
-import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 
 export function PurchaseRequestDetailPage() {
   const { purchaseRequestId } = useParams({
@@ -25,10 +24,7 @@ export function PurchaseRequestDetailPage() {
   // trong state nữa: đọc thẳng `purchaseRequest.items`, refetch sau invalidate tự resync mọi cột (kể cả 4
   // số tính sống bomDemand/onHand/available/fromStock). `editable` cho phép cả REJECTED — đó là
   // cách duy nhất thoát khỏi REJECTED (sửa/xóa 1 dòng tự đưa status về DRAFT), không chỉ DRAFT.
-  const editable =
-    useHasPermission("purchase-requests:update") &&
-    (purchaseRequest.status === PurchaseRequestStatus.DRAFT ||
-      purchaseRequest.status === PurchaseRequestStatus.REJECTED)
+  const canUpdate = useHasPermission("purchase-requests:update")
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -56,7 +52,8 @@ export function PurchaseRequestDetailPage() {
             />
             <PurchaseRequestItemsSection
               rows={purchaseRequest.items}
-              editable={editable}
+              status={purchaseRequest.status}
+              canUpdate={canUpdate}
             />
           </Surface>
 

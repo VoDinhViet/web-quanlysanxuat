@@ -1,6 +1,6 @@
 import { ClockCircle } from "@solar-icons/react"
 
-// Job PENDING: BOM/vật tư/công đoạn tính sống theo sản phẩm hiện tại × SL Job, chưa đóng băng.
+// Job PENDING: BOM/vật tư/công đoạn là snapshot chụp từ sản phẩm lúc tạo Job hoặc lần tải lại gần nhất.
 export function ProductionJobPlanNotice() {
   return (
     <div className="px-4 py-4 sm:px-5">
@@ -8,10 +8,10 @@ export function ProductionJobPlanNotice() {
         <ClockCircle className="size-4 shrink-0 text-warning" />
         <p className="min-w-0 text-muted-foreground">
           <span className="font-semibold text-foreground">
-            Kế hoạch tạm tính · Chưa xác nhận.
+            Kế hoạch chưa xác nhận.
           </span>{" "}
-          Số liệu tự cập nhật khi sản phẩm thay đổi; bấm “Xác nhận kế hoạch” để
-          chốt.
+          Dữ liệu lấy từ sản phẩm lúc tạo Job; thay đổi ở sản phẩm không ảnh
+          hưởng Job — bấm “Tải lại từ sản phẩm” để cập nhật.
         </p>
       </div>
     </div>

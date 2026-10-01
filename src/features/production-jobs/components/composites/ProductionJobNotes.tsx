@@ -1,4 +1,5 @@
 import { DateTime } from "luxon"
+import { Notes } from "@solar-icons/react"
 
 import { Spinner } from "@/components/ui/spinner"
 import { Pagination } from "@/components/shared/composites/Pagination"
@@ -15,7 +16,8 @@ type ProductionJobNotesProps = {
 }
 
 // Feed + pager half of ProductionJobNotesSection, split out to keep that file under the ~150-line
-// guideline — the form/mutation stays in the parent since it owns the mutation.
+// guideline — the form/mutation stays in the parent since it owns the mutation. The pager only
+// shows once there is more than one page; otherwise "0 đến 0 trong tổng số 0" is just noise.
 export function ProductionJobNotes({
   notes,
   pagination,
@@ -33,7 +35,10 @@ export function ProductionJobNotes({
       ) : isError ? (
         <p className="py-2 text-xs text-muted-foreground">{errorMessage}</p>
       ) : notes && notes.length === 0 ? (
-        <p className="py-2 text-xs text-muted-foreground">Chưa có ghi chú.</p>
+        <div className="flex flex-col items-center gap-1.5 rounded-md border border-dashed border-border py-6 text-muted-foreground">
+          <Notes className="size-5" />
+          <p className="text-xs">Chưa có ghi chú nào.</p>
+        </div>
       ) : (
         <ul className="space-y-3">
           {notes?.map((note) => (
@@ -56,7 +61,7 @@ export function ProductionJobNotes({
         </ul>
       )}
 
-      {pagination && (
+      {pagination && pagination.totalRecords > pagination.limit && (
         <Pagination
           page={pagination.currentPage}
           pageSize={pagination.limit}

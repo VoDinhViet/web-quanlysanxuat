@@ -87,13 +87,12 @@ export function ProductionJobNotesSection({
             if (form.state.isSubmitting) return
             form.handleSubmit()
           }}
-          className="flex flex-col gap-2 border-t border-border pt-3"
+          className="flex flex-col gap-3 border-t border-border pt-4"
         >
           <form.AppField name="content">
             {(field) => (
               <field.TextareaField
                 label="Thêm ghi chú"
-                required
                 placeholder="Nhập ghi chú cho Job..."
                 disabled={isPending}
               />

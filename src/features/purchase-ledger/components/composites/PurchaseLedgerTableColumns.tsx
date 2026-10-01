@@ -5,8 +5,7 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import {
   PurchaseLedgerActionsCell,
-  PurchaseLedgerQuantityCell,
-  PurchaseLedgerSourceCell,
+  PurchaseLedgerProgressCell,
   PurchaseLedgerWarningCell,
 } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerTableCells"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
@@ -16,112 +15,122 @@ const purchaseLedgerColumnHelper = createColumnHelper<
   PurchaseLedgerRow
 >()
 
-// Shared by the 3 quantity columns — same idiom as OrdersTableColumns' moneyColumnMeta.
-const quantityColumnMeta = {
-  headerClassName: "min-w-28 text-right",
-  cellClassName: "text-right",
-}
-
 export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
-  purchaseLedgerColumnHelper.accessor((row) => row.purchaseRequest.code, {
-    id: "purchaseRequestCode",
-    header: "Mã PR",
-    meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
-    ),
-  }),
-
   purchaseLedgerColumnHelper.display({
-    id: "source",
-    header: "PO / Lý do",
+    id: "requestSource",
+    header: "Đề xuất / Nguồn",
     meta: {
-      headerClassName: "min-w-36",
-      cellClassName: "max-w-56 truncate",
+      headerClassName: "min-w-32 max-w-40",
     },
-    cell: ({ row }) => (
-      <PurchaseLedgerSourceCell
-        productionOrder={row.original.productionOrder}
-        note={row.original.note}
-      />
-    ),
-  }),
-
-  purchaseLedgerColumnHelper.display({
-    id: "item",
-    header: "Vật tư",
-    meta: { headerClassName: "min-w-56" },
     cell: ({ row }) => {
-      const { item } = row.original
+      const prCode = row.original.purchaseRequest.code
+      const po = row.original.productionOrder
+      const note = row.original.note
+
       return (
-        <div className="min-w-0">
-          <p className="truncate text-xs font-semibold text-foreground">
-            {item.name}
-          </p>
-          <p className="truncate font-mono text-[11px] text-primary">
-            {item.code}
-          </p>
+        <div className="flex min-w-0 flex-col py-0.5">
+          <span className="font-mono text-xs font-semibold text-primary">
+            {prCode}
+          </span>
+          <div
+            className="truncate text-[11px] text-muted-foreground"
+            title={po?.code ? `PO: ${po.code}` : note ?? undefined}
+          >
+            {po ? (
+              po.code ? (
+                <span className="font-mono text-muted-foreground">
+                  PO: {po.code}
+                </span>
+              ) : (
+                <span className="text-muted-foreground/50">—</span>
+              )
+            ) : (
+              <span>{note ?? "—"}</span>
+            )}
+          </div>
         </div>
       )
     },
   }),
 
-  purchaseLedgerColumnHelper.accessor((row) => row.unit.name, {
-    id: "unit",
-    header: "ĐVT",
-    meta: { headerClassName: "min-w-16" },
+  purchaseLedgerColumnHelper.display({
+    id: "item",
+    header: "Vật tư",
+    meta: { headerClassName: "min-w-44 max-w-64" },
+    cell: ({ row }) => {
+      const { item, unit } = row.original
+      return (
+        <div className="min-w-0 py-0.5">
+          <p
+            className="truncate text-xs font-medium text-foreground"
+            title={item.name}
+          >
+            {item.name}
+          </p>
+          <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+            <span className="font-semibold text-primary">{item.code}</span>
+            <span className="text-muted-foreground/40">•</span>
+            <span className="font-sans text-muted-foreground">{unit.name}</span>
+          </div>
+        </div>
+      )
+    },
   }),
 
-  purchaseLedgerColumnHelper.accessor("quantity", {
-    header: "SL cần mua",
-    meta: quantityColumnMeta,
-    cell: ({ getValue }) => (
-      <PurchaseLedgerQuantityCell value={getValue()} tone="neutral" />
-    ),
-  }),
-
-  purchaseLedgerColumnHelper.accessor("orderedQuantity", {
-    header: "SL đặt mua",
-    meta: quantityColumnMeta,
-    cell: ({ getValue }) => (
-      <PurchaseLedgerQuantityCell value={getValue()} tone="ordered" />
-    ),
-  }),
-
-  purchaseLedgerColumnHelper.accessor("receivedQuantity", {
-    header: "SL đã nhập kho",
-    meta: quantityColumnMeta,
+  purchaseLedgerColumnHelper.display({
+    id: "fulfillment",
+    header: "Số lượng",
+    meta: {
+      headerClassName: "w-32 min-w-28",
+    },
     cell: ({ row }) => (
-      <PurchaseLedgerQuantityCell
-        value={row.original.receivedQuantity}
-        tone="received"
-        comparisonTarget={row.original.orderedQuantity}
+      <PurchaseLedgerProgressCell
+        quantity={row.original.quantity}
+        orderedQuantity={row.original.orderedQuantity}
+        receivedQuantity={row.original.receivedQuantity}
+        unitName={row.original.unit.name}
       />
     ),
   }),
 
-  purchaseLedgerColumnHelper.accessor("createdAt", {
-    header: "Ngày tạo PR",
+  purchaseLedgerColumnHelper.display({
+    id: "dates",
+    header: "Thời gian",
     meta: {
-      headerClassName: "min-w-28 text-center",
+      headerClassName: "w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
-  }),
+    cell: ({ row }) => {
+      const neededDate = DateTime.fromISO(row.original.neededDate).toFormat(
+        "dd/MM/yyyy"
+      )
+      const createdAt = DateTime.fromISO(row.original.createdAt).toFormat(
+        "dd/MM/yyyy"
+      )
 
-  purchaseLedgerColumnHelper.accessor("neededDate", {
-    header: "Ngày cần",
-    meta: {
-      headerClassName: "min-w-28 text-center",
-      cellClassName: "text-center",
+      return (
+        <div className="flex flex-col items-center py-0.5">
+          <span
+            className="text-xs font-semibold text-foreground"
+            title="Ngày cần hàng"
+          >
+            {neededDate}
+          </span>
+          <span
+            className="text-[11px] text-muted-foreground"
+            title="Ngày tạo đề xuất"
+          >
+            Tạo: {createdAt}
+          </span>
+        </div>
+      )
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
 
   purchaseLedgerColumnHelper.accessor("status", {
     header: "Trạng thái",
     meta: {
-      headerClassName: "min-w-32 text-center",
+      headerClassName: "w-28 text-center",
       cellClassName: "text-center",
     },
     cell: ({ getValue }) => <PurchaseLedgerStatusBadge status={getValue()} />,
@@ -130,8 +139,8 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
   purchaseLedgerColumnHelper.accessor("warnings", {
     header: "Cảnh báo",
     meta: {
-      headerClassName: "min-w-56",
-      cellClassName: "whitespace-nowrap",
+      headerClassName: "w-32 text-center",
+      cellClassName: "text-center",
     },
     cell: ({ getValue }) => <PurchaseLedgerWarningCell warnings={getValue()} />,
   }),
@@ -140,8 +149,8 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
     id: "actions",
     header: "Thao tác",
     meta: {
-      headerClassName: "min-w-20 text-center",
-      cellClassName: "font-normal",
+      headerClassName: "w-16 text-center",
+      cellClassName: "text-center font-normal",
     },
     cell: () => <PurchaseLedgerActionsCell />,
   }),

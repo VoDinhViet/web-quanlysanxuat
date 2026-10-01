@@ -7,7 +7,11 @@ import {
   PurchaseRequestItemNoteCell,
   PurchaseRequestItemQuantityCell,
 } from "@/features/purchase-requests/components/primitives/PurchaseRequestItemCells"
-import type { PurchaseRequestItem } from "@/lib/types/purchase-request.type"
+import type {
+  PurchaseRequestItem,
+  PurchaseRequestStatus,
+} from "@/lib/types/purchase-request.type"
+import { PurchaseRequestStatus as PRStatus } from "@/lib/types/purchase-request.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -16,12 +20,17 @@ const purchaseRequestItemColumnHelper = createColumnHelper<
   PurchaseRequestItem
 >()
 
-// A factory (paired with `useMemo` at the call site) rather than a module-scope constant — the
-// last 3 columns gate on `editable`, which changes per-page (permission + phiếu status), so they
-// can't be built once at module load like every read-only column list in this codebase. Each of
-// those 3 cells now owns its own mutation (reads `purchaseRequestId` via `useParams`), so no
-// per-row callbacks are threaded through here anymore.
-export function buildPurchaseRequestItemColumns(editable: boolean) {
+type BuildPurchaseRequestItemColumnsOptions = {
+  status: PurchaseRequestStatus
+  canUpdate: boolean
+}
+
+export function buildPurchaseRequestItemColumns({
+  status,
+  canUpdate,
+}: BuildPurchaseRequestItemColumnsOptions) {
+  const isDraft = status === PRStatus.DRAFT
+  const editable = canUpdate && isDraft
   return purchaseRequestItemColumnHelper.columns([
     purchaseRequestItemColumnHelper.display({
       id: "index",
@@ -143,9 +152,9 @@ export function buildPurchaseRequestItemColumns(editable: boolean) {
     }),
     purchaseRequestItemColumnHelper.display({
       id: "actions",
-      header: "Thao tác",
+      header: isDraft ? "Thao tác" : "Mua hàng",
       meta: {
-        headerClassName: "w-24 text-center",
+        headerClassName: isDraft ? "w-24 text-center" : "w-32 text-center",
         cellClassName: "text-center",
       },
       cell: ({ row, table }) => (
@@ -153,7 +162,11 @@ export function buildPurchaseRequestItemColumns(editable: boolean) {
           purchaseRequestItemId={row.original.id}
           itemName={row.original.item.name}
           itemCode={row.original.item.code}
-          editable={editable}
+          requiresPurchase={
+            row.original.requiresPurchase ?? !row.original.cancelledAt
+          }
+          status={status}
+          canUpdate={canUpdate}
           isLastItem={table.getRowModel().rows.length <= 1}
         />
       ),
