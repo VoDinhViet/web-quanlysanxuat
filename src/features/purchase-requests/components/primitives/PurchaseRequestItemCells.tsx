@@ -20,6 +20,16 @@ import type { FileResource } from "@/lib/types/file.type"
 import { updatePurchaseRequestItem } from "@/features/purchase-requests/api/server-functions/update-purchase-request-item.api"
 import { DeletePurchaseRequestItemDialog } from "@/features/purchase-requests/components/composites/DeletePurchaseRequestItemDialog"
 import { PurchaseRequestItemNoteDialog } from "@/features/purchase-requests/components/composites/PurchaseRequestItemNoteDialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { cn } from "@/lib/utils"
+import { updatePurchaseRequestItemPurchasable } from "@/features/purchase-requests/api/server-functions/update-purchase-request-item-purchasable.api"
+import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 
 export function PurchaseRequestItemImageCell({
   image,
@@ -175,11 +185,107 @@ export function PurchaseRequestItemNoteCell({
   )
 }
 
+
+type PurchaseRequestItemPurchasableSelectProps = {
+  purchaseRequestItemId: string
+  itemName: string
+  requiresPurchase: boolean
+  canUpdate: boolean
+}
+
+export function PurchaseRequestItemPurchasableSelect({
+  purchaseRequestItemId,
+  itemName,
+  requiresPurchase,
+  canUpdate,
+}: PurchaseRequestItemPurchasableSelectProps) {
+  const { purchaseRequestId } = useParams({
+    from: "/(authed)/manage_/purchase-requests_/$purchaseRequestId",
+  })
+  const queryClient = useQueryClient()
+  const updatePurchasableFn = useServerFn(updatePurchaseRequestItemPurchasable)
+
+  const [pendingStatus, setPendingStatus] = useState<boolean | null>(null)
+  const isCurrentRequiresPurchase = pendingStatus ?? requiresPurchase
+
+  const { mutate: changePurchasable, isPending } = useMutation({
+    mutationFn: (nextRequiresPurchase: boolean) => {
+      setPendingStatus(nextRequiresPurchase)
+      return updatePurchasableFn({
+        data: {
+          purchaseRequestId,
+          purchaseRequestItemId,
+          requiresPurchase: nextRequiresPurchase,
+        },
+      })
+    },
+    onSuccess: async (_data, nextRequiresPurchase) => {
+      await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
+      toast.success(
+        nextRequiresPurchase
+          ? `Đã chuyển sang mua vật tư "${itemName}"`
+          : `Đã chuyển sang không mua vật tư "${itemName}"`
+      )
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+    onSettled: () => setPendingStatus(null),
+  })
+
+  const select = (
+    <Select
+      value={isCurrentRequiresPurchase ? "true" : "false"}
+      onValueChange={(val) => changePurchasable(val === "true")}
+      disabled={!canUpdate || isPending}
+    >
+      <SelectTrigger
+        size="sm"
+        className={cn(
+          "h-8 w-28 text-xs font-medium",
+          isCurrentRequiresPurchase
+            ? "text-success font-semibold"
+            : "text-muted-foreground font-normal"
+        )}
+        aria-label={`Trạng thái mua hàng của ${itemName}`}
+      >
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent align="center">
+        <SelectItem value="true" className="text-xs font-medium text-success">
+          Mua
+        </SelectItem>
+        <SelectItem
+          value="false"
+          className="text-xs font-medium text-muted-foreground"
+        >
+          Không mua
+        </SelectItem>
+      </SelectContent>
+    </Select>
+  )
+
+  if (!canUpdate) {
+    return (
+      <div className="flex items-center justify-center">
+        <Tooltip>
+          <TooltipTrigger render={<span tabIndex={0}>{select}</span>} />
+          <TooltipContent>Bạn không có quyền sửa đề xuất mua hàng</TooltipContent>
+        </Tooltip>
+      </div>
+    )
+  }
+
+  return <div className="flex items-center justify-center">{select}</div>
+}
+
 type PurchaseRequestItemActionsCellProps = {
   purchaseRequestItemId: string
   itemName: string
   itemCode: string
-  editable: boolean
+  requiresPurchase?: boolean
+  status: PurchaseRequestStatus
+  canUpdate: boolean
   isLastItem: boolean
 }
 
@@ -187,44 +293,60 @@ export function PurchaseRequestItemActionsCell({
   purchaseRequestItemId,
   itemName,
   itemCode,
-  editable,
+  requiresPurchase = true,
+  status,
+  canUpdate,
   isLastItem,
 }: PurchaseRequestItemActionsCellProps) {
-  if (!editable) {
-    return null
-  }
+  // Chỉ trạng thái nháp mới hiển thị nút xóa
+  if (status === PurchaseRequestStatus.DRAFT) {
+    if (!canUpdate) {
+      return null
+    }
 
-  const removeButton = (
-    <Button
-      type="button"
-      variant="ghost"
-      size="sm"
-      className="gap-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
-      aria-label={`Xóa ${itemName} khỏi đề xuất`}
-      disabled={isLastItem}
-    >
-      <Trash2 className="size-3.5" />
-      Xóa
-    </Button>
-  )
+    const removeButton = (
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        className="gap-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
+        aria-label={`Xóa ${itemName} khỏi đề xuất`}
+        disabled={isLastItem}
+      >
+        <Trash2 className="size-3.5" />
+        Xóa
+      </Button>
+    )
 
-  if (isLastItem) {
-    // Disabled button swallows pointer events — the wrapper is what the tooltip
-    // actually attaches to (see DisabledAction.tsx for the same trick).
+    if (isLastItem) {
+      // Disabled button swallows pointer events — the wrapper is what the tooltip
+      // actually attaches to (see DisabledAction.tsx for the same trick).
+      return (
+        <Tooltip>
+          <TooltipTrigger render={<span tabIndex={0}>{removeButton}</span>} />
+          <TooltipContent>Đề xuất phải còn ít nhất 1 dòng vật tư</TooltipContent>
+        </Tooltip>
+      )
+    }
+
     return (
-      <Tooltip>
-        <TooltipTrigger render={<span tabIndex={0}>{removeButton}</span>} />
-        <TooltipContent>Đề xuất phải còn ít nhất 1 dòng vật tư</TooltipContent>
-      </Tooltip>
+      <DeletePurchaseRequestItemDialog
+        purchaseRequestItemId={purchaseRequestItemId}
+        itemName={itemName}
+        itemCode={itemCode}
+        trigger={removeButton}
+      />
     )
   }
 
+  // Các trạng thái còn lại (sau khi duyệt xong) chuyển sang đánh dấu mua / không mua
   return (
-    <DeletePurchaseRequestItemDialog
+    <PurchaseRequestItemPurchasableSelect
       purchaseRequestItemId={purchaseRequestItemId}
       itemName={itemName}
-      itemCode={itemCode}
-      trigger={removeButton}
+      requiresPurchase={requiresPurchase}
+      canUpdate={canUpdate}
     />
   )
 }
+

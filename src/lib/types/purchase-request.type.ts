@@ -108,6 +108,8 @@ export type PurchaseRequestItem = {
   available: number
   fromStock: number
   note: string | null
+  cancelledAt?: string | null
+  requiresPurchase?: boolean
 }
 
 /** Mirrors the backend's PurchaseRequestResDto (`GET /purchase-requests/:purchaseRequestId`). The

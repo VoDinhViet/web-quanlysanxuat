@@ -12,24 +12,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildPurchaseRequestItemColumns } from "@/features/purchase-requests/components/composites/PurchaseRequestItemsTableColumns"
-import type { PurchaseRequestItem } from "@/lib/types/purchase-request.type"
+import {
+  PurchaseRequestStatus,
+  type PurchaseRequestItem,
+} from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestItemsSectionProps = {
   rows: PurchaseRequestItem[]
-  editable: boolean
+  status: PurchaseRequestStatus
+  canUpdate: boolean
 }
 
 // Section header + table, same "tiêu đề dải" idiom as InfoSection in ProductionJobInfoTab.tsx —
 // a single-section screen doesn't earn a Tabs strip (rule "no abstraction until the 3rd use").
 export function PurchaseRequestItemsSection({
   rows,
-  editable,
+  status,
+  canUpdate,
 }: PurchaseRequestItemsSectionProps) {
+  const isDraft = status === PurchaseRequestStatus.DRAFT
+  const editable = canUpdate && isDraft
+
   const columns = useMemo(
-    () => buildPurchaseRequestItemColumns(editable),
-    [editable]
+    () => buildPurchaseRequestItemColumns({ status, canUpdate }),
+    [status, canUpdate]
   )
 
   const table = useTable({
@@ -71,7 +80,15 @@ export function PurchaseRequestItemsSection({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
+              <TableRow
+                key={row.id}
+                className={cn(
+                  "h-14 bg-card hover:bg-muted/25",
+                  (row.original.requiresPurchase === false ||
+                    Boolean(row.original.cancelledAt)) &&
+                    "bg-muted/15 opacity-75"
+                )}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
@@ -113,10 +130,8 @@ export function PurchaseRequestItemsSection({
             <TriangleAlert className="mt-0.5 size-3.5 shrink-0 text-warning" />
             <span>
               Sửa/xóa được khi phiếu ở trạng thái{" "}
-              <span className="font-medium text-foreground">
-                Nháp hoặc Từ chối
-              </span>
-              ; SL đề xuất phải lớn hơn 0 và phiếu còn ít nhất 1 dòng vật tư.
+              <span className="font-medium text-foreground">Nháp</span>; SL đề
+              xuất phải lớn hơn 0 và phiếu còn ít nhất 1 dòng vật tư.
             </span>
           </p>
         )}
