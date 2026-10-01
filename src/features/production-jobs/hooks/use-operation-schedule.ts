@@ -4,7 +4,6 @@ import {
   buildOperationSchedule,
   countWorkDays,
   recalculateSchedule,
-  suggestOperationSequence,
 } from "@/features/production-jobs/utils/plan-schedule"
 import type { ProductionJobPlanGroupOperation } from "@/lib/types/production-job.type"
 
@@ -71,10 +70,12 @@ export function useOperationSchedule({
     )
   }
 
+  // Thứ tự gợi ý: cấp BOM sâu hơn làm trước (level giảm dần), cùng cấp thì theo sortOrder tăng dần.
   const applySuggestedSequence = () => {
-    setEditedSchedule(
-      recalculateSchedule(suggestOperationSequence(schedule), startDateStr)
+    const suggested = [...schedule].sort(
+      (a, b) => b.level - a.level || a.sortOrder - b.sortOrder
     )
+    setEditedSchedule(recalculateSchedule(suggested, startDateStr))
   }
 
   const discardChanges = () => setEditedSchedule(null)

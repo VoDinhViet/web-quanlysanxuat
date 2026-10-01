@@ -1,4 +1,3 @@
-import { orderBy } from "lodash-es"
 import { DateTime } from "luxon"
 
 /**
@@ -66,16 +65,6 @@ export function recalculateSchedule<T extends PlanScheduleItem>(
 export type OperationSequenceItem = {
   level: number
   sortOrder: number
-}
-
-/**
- * Thứ tự gợi ý: chi tiết cấp BOM sâu nhất làm trước, thành phẩm (cấp 0: lắp ráp, đóng gói) làm
- * sau cùng; cùng cấp thì theo thứ tự trong routing.
- */
-export function suggestOperationSequence<T extends OperationSequenceItem>(
-  items: T[]
-): T[] {
-  return orderBy(items, ["level", "sortOrder"], ["desc", "asc"])
 }
 
 /**
