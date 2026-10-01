@@ -36,7 +36,8 @@ export const productionExecutionJobColumns = columnHelper.columns([
       <ProductionExecutionImageCell image={row.original.image} />
     ),
   }),
-  columnHelper.accessor("orderCode", {
+  columnHelper.accessor((row) => row.buyerPoNo ?? "—", {
+    id: "buyerPoNo",
     header: "PO",
     meta: { headerClassName: "min-w-24" },
     cell: ({ getValue }) => (
