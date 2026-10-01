@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Image } from "@unpic/react"
 import { Gallery } from "@solar-icons/react"
-import { Pencil, Trash2 } from "lucide-react"
+import { Ban, Loader2, Pencil, ShoppingCart, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { NumericFormat } from "react-number-format"
 import { toast } from "sonner"
@@ -185,6 +185,10 @@ export function PurchaseRequestItemNoteCell({
   )
 }
 
+const purchasableOptions = [
+  { value: "true", label: "Mua" },
+  { value: "false", label: "Không mua" },
+]
 
 type PurchaseRequestItemPurchasableSelectProps = {
   purchaseRequestItemId: string
@@ -205,12 +209,14 @@ export function PurchaseRequestItemPurchasableSelect({
   const queryClient = useQueryClient()
   const updatePurchasableFn = useServerFn(updatePurchaseRequestItemPurchasable)
 
-  const [pendingStatus, setPendingStatus] = useState<boolean | null>(null)
-  const isCurrentRequiresPurchase = pendingStatus ?? requiresPurchase
+  const [pendingRequiresPurchase, setPendingRequiresPurchase] = useState<
+    boolean | null
+  >(null)
+  const currentRequiresPurchase = pendingRequiresPurchase ?? requiresPurchase
 
-  const { mutate: changePurchasable, isPending } = useMutation({
+  const { mutate: updateRequiresPurchase, isPending } = useMutation({
     mutationFn: (nextRequiresPurchase: boolean) => {
-      setPendingStatus(nextRequiresPurchase)
+      setPendingRequiresPurchase(nextRequiresPurchase)
       return updatePurchasableFn({
         data: {
           purchaseRequestId,
@@ -230,36 +236,72 @@ export function PurchaseRequestItemPurchasableSelect({
     onError: (error) => {
       toast.error(error.message)
     },
-    onSettled: () => setPendingStatus(null),
+    onSettled: () => setPendingRequiresPurchase(null),
   })
 
   const select = (
     <Select
-      value={isCurrentRequiresPurchase ? "true" : "false"}
-      onValueChange={(val) => changePurchasable(val === "true")}
-      disabled={!canUpdate || isPending}
+      items={purchasableOptions}
+      value={currentRequiresPurchase ? "true" : "false"}
+      onValueChange={(val) =>
+        val !== null && updateRequiresPurchase(val === "true")
+      }
+      disabled={isPending}
     >
       <SelectTrigger
         size="sm"
         className={cn(
-          "h-8 w-28 text-xs font-medium",
-          isCurrentRequiresPurchase
-            ? "text-success font-semibold"
-            : "text-muted-foreground font-normal"
+          "h-8 w-28 rounded-md px-2.5 text-xs font-medium shadow-none transition-all duration-150 justify-between",
+          currentRequiresPurchase
+            ? "border-emerald-200/90 bg-emerald-50/90 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100/90 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50 [&_svg:last-child]:text-emerald-600/70 dark:[&_svg:last-child]:text-emerald-400/70"
+            : "border-border/80 bg-muted/50 text-muted-foreground hover:border-border hover:bg-muted/90 hover:text-foreground dark:border-border/60 dark:bg-muted/30 dark:hover:bg-muted/60 [&_svg:last-child]:text-muted-foreground/70"
         )}
         aria-label={`Trạng thái mua hàng của ${itemName}`}
       >
-        <SelectValue />
+        <SelectValue>
+          {(selected: { value: string; label: string } | string | null) => {
+            const val =
+              typeof selected === "object" && selected !== null
+                ? selected.value
+                : selected
+            const isPurchase = val !== "false"
+            return (
+              <span className="flex items-center gap-1.5 font-medium">
+                {isPending ? (
+                  <Loader2 className="size-3.5 shrink-0 animate-spin text-muted-foreground" />
+                ) : isPurchase ? (
+                  <ShoppingCart className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                ) : (
+                  <Ban className="size-3.5 shrink-0 text-muted-foreground/70" />
+                )}
+                <span className="truncate">{isPurchase ? "Mua" : "Không mua"}</span>
+              </span>
+            )
+          }}
+        </SelectValue>
       </SelectTrigger>
-      <SelectContent align="center">
-        <SelectItem value="true" className="text-xs font-medium text-success">
-          Mua
+      <SelectContent align="center" className="min-w-44 p-1">
+        <SelectItem value="true" className="cursor-pointer py-1.5">
+          <span className="flex items-center gap-2">
+            <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+              <ShoppingCart className="size-3" />
+            </span>
+            <span className="flex flex-col text-left">
+              <span className="text-xs font-medium text-foreground">Mua</span>
+              <span className="text-[10px] text-muted-foreground">Cần mua cho đề xuất</span>
+            </span>
+          </span>
         </SelectItem>
-        <SelectItem
-          value="false"
-          className="text-xs font-medium text-muted-foreground"
-        >
-          Không mua
+        <SelectItem value="false" className="cursor-pointer py-1.5">
+          <span className="flex items-center gap-2">
+            <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+              <Ban className="size-3" />
+            </span>
+            <span className="flex flex-col text-left">
+              <span className="text-xs font-medium text-foreground">Không mua</span>
+              <span className="text-[10px] text-muted-foreground">Bỏ qua vật tư này</span>
+            </span>
+          </span>
         </SelectItem>
       </SelectContent>
     </Select>
@@ -269,7 +311,28 @@ export function PurchaseRequestItemPurchasableSelect({
     return (
       <div className="flex items-center justify-center">
         <Tooltip>
-          <TooltipTrigger render={<span tabIndex={0}>{select}</span>} />
+          <TooltipTrigger
+            render={
+              <span
+                tabIndex={0}
+                className={cn(
+                  "inline-flex h-8 w-28 cursor-not-allowed items-center justify-between gap-1.5 rounded-md border px-2.5 text-xs font-medium shadow-none select-none opacity-80",
+                  requiresPurchase
+                    ? "border-emerald-200/80 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/30 dark:text-emerald-300"
+                    : "border-border/80 bg-muted/60 text-muted-foreground dark:border-border/60 dark:bg-muted/30"
+                )}
+              >
+                <span className="flex items-center gap-1.5">
+                  {requiresPurchase ? (
+                    <ShoppingCart className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  ) : (
+                    <Ban className="size-3.5 shrink-0 text-muted-foreground/70" />
+                  )}
+                  <span>{requiresPurchase ? "Mua" : "Không mua"}</span>
+                </span>
+              </span>
+            }
+          />
           <TooltipContent>Bạn không có quyền sửa đề xuất mua hàng</TooltipContent>
         </Tooltip>
       </div>

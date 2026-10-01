@@ -12,7 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { cn } from "@/lib/utils"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildPurchaseRequestItemColumns } from "@/features/purchase-requests/components/composites/PurchaseRequestItemsTableColumns"
 import {
@@ -80,15 +79,7 @@ export function PurchaseRequestItemsSection({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className={cn(
-                  "h-14 bg-card hover:bg-muted/25",
-                  (row.original.requiresPurchase === false ||
-                    Boolean(row.original.cancelledAt)) &&
-                    "bg-muted/15 opacity-75"
-                )}
-              >
+              <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
