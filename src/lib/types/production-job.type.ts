@@ -363,5 +363,7 @@ export type ProductionJobPlanGroupOperation = {
   bomItemCodes: string[]
   operationIds: string[]
   sortOrder: number
+  // Cấp BOM sâu nhất có công đoạn này (0 = thành phẩm) — cấp sâu hơn phải xong trước.
+  level: number
   dueDate: string | null
 }

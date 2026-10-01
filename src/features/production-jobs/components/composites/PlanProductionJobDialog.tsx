@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { DateTime } from "luxon"
 import {
@@ -20,25 +20,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { productionJobPlanGroupOperationsQueryOptions } from "@/features/production-jobs/api/options"
 import { useUpdateProductionJobPlan } from "@/features/production-jobs/api"
-import {
-  addWorkDays,
-  countWorkDays,
-  recalculateSchedule,
-} from "@/features/production-jobs/utils/plan-schedule.util"
+import { useOperationSchedule } from "@/features/production-jobs/hooks/use-operation-schedule"
+import type { OperationScheduleRow } from "@/features/production-jobs/hooks/use-operation-schedule"
+import { OperationScheduleTable } from "@/features/production-jobs/components/composites/OperationScheduleTable"
 import { cn } from "@/lib/utils"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
@@ -47,22 +35,11 @@ type PlanProductionJobDialogProps = {
   trigger: ReactElement
 }
 
-type PlanRow = {
-  key: string
-  name: string
-  code: string
-  operationIds: string[]
-  bomItemCodes: string[]
-  leadtime: number
-  dueDate: string // yyyy-MM-dd
-}
-
 export function PlanProductionJobDialog({
   job,
   trigger,
 }: PlanProductionJobDialogProps) {
   const [open, setOpen] = useState(false)
-  const [rows, setRows] = useState<PlanRow[]>([])
 
   // Lấy danh sách nhóm công đoạn từ API (mỗi công đoạn trong Job hiển thị 1 lần)
   const planQuery = useQuery({
@@ -80,58 +57,24 @@ export function PlanProductionJobDialog({
       : DateTime.now().toFormat("yyyy-MM-dd")
   }, [job.order.orderDate, job.startedAt])
 
-  // Khởi tạo dòng kế hoạch từ API
-  useEffect(() => {
-    if (!open || !planQuery.data) return
-
-    let prev = startDateStr
-    const initialRows: PlanRow[] = planQuery.data.map((item) => {
-      let dueDate: string
-      let leadtime: number
-
-      if (item.dueDate) {
-        dueDate = DateTime.fromISO(item.dueDate).toFormat("yyyy-MM-dd")
-        leadtime = countWorkDays(prev, dueDate)
-      } else {
-        leadtime = 1
-        dueDate = addWorkDays(prev, 1)
-      }
-      prev = dueDate
-
-      return {
-        ...item,
-        leadtime,
-        dueDate,
-      }
-    })
-
-    setRows(initialRows)
-  }, [open, planQuery.data, startDateStr])
-
-  const handleLeadtimeChange = (index: number, newLeadtime: number) => {
-    const next = [...rows]
-    next[index] = { ...next[index], leadtime: Math.max(1, newLeadtime) }
-    setRows(recalculateSchedule(next, startDateStr, index))
-  }
-
-  const handleDueDateChange = (index: number, newDueDateStr: string) => {
-    if (!newDueDateStr) return
-    const prev = index === 0 ? startDateStr : rows[index - 1].dueDate
-    const next = [...rows]
-    next[index] = {
-      ...next[index],
-      leadtime: countWorkDays(prev, newDueDateStr),
-      dueDate: newDueDateStr,
-    }
-    setRows(recalculateSchedule(next, startDateStr, index + 1))
-  }
+  const {
+    schedule,
+    setLeadtime,
+    setDueDate,
+    reorder,
+    applySuggestedSequence,
+    discardChanges,
+  } = useOperationSchedule({
+    planOperations: planQuery.data,
+    startDateStr,
+  })
 
   const handleSave = () => {
-    if (!rows.length) return
+    if (!schedule.length) return
     savePlan(
       {
         productionJobId: job.id,
-        operations: rows.map((r) => ({
+        operations: schedule.map((r) => ({
           operationIds: r.operationIds,
           dueDate: r.dueDate,
         })),
@@ -143,7 +86,13 @@ export function PlanProductionJobDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        discardChanges()
+      }}
+    >
       <DialogTrigger render={trigger} />
       <DialogContent className="max-h-[92vh] w-[calc(100%-1rem)] overflow-y-auto p-4 sm:max-w-3xl sm:p-6 lg:max-w-4xl">
         <DialogHeader className="gap-1 pb-1">
@@ -160,17 +109,17 @@ export function PlanProductionJobDialog({
           <PlanJobProgressHeader
             job={job}
             startDateStr={startDateStr}
-            rows={rows}
+            schedule={schedule}
           />
 
           {/* Tiêu đề bảng công đoạn */}
           <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
             <span className="font-semibold text-foreground">
-              Tiến độ từng công đoạn ({rows.length})
+              Tiến độ từng công đoạn ({schedule.length})
             </span>
             <span className="flex items-center gap-1.5 text-[11px]">
               <Info className="size-3.5 shrink-0" />
-              Leadtime tự tính bỏ qua Chủ nhật
+              Kéo thả hàng để đổi thứ tự · Leadtime tự tính bỏ qua Chủ nhật
             </span>
           </div>
 
@@ -181,15 +130,17 @@ export function PlanProductionJobDialog({
               error={planQuery.error.message}
               onRetry={() => void planQuery.refetch()}
             />
-          ) : rows.length === 0 ? (
+          ) : schedule.length === 0 ? (
             <div className="py-8 text-center text-sm text-muted-foreground">
               Không có công đoạn nào trong Job này.
             </div>
           ) : (
-            <PlanJobTable
-              rows={rows}
-              onLeadtimeChange={handleLeadtimeChange}
-              onDueDateChange={handleDueDateChange}
+            <OperationScheduleTable
+              schedule={schedule}
+              onLeadtimeChange={setLeadtime}
+              onDueDateChange={setDueDate}
+              onReorder={reorder}
+              onApplySuggestedSequence={applySuggestedSequence}
             />
           )}
         </div>
@@ -208,7 +159,7 @@ export function PlanProductionJobDialog({
             type="button"
             className="w-full sm:w-auto"
             onClick={handleSave}
-            disabled={isSaving || rows.length === 0}
+            disabled={isSaving || schedule.length === 0}
           >
             {isSaving ? "Đang lưu..." : "Lưu kế hoạch"}
           </Button>
@@ -222,18 +173,18 @@ export function PlanProductionJobDialog({
 function PlanJobProgressHeader({
   job,
   startDateStr,
-  rows,
+  schedule,
 }: {
   job: ProductionJobDetail
   startDateStr: string
-  rows: PlanRow[]
+  schedule: OperationScheduleRow[]
 }) {
   const orderDueDate = job.order.dueDate
     ? DateTime.fromISO(job.order.dueDate).startOf("day")
     : null
   const finalPlannedDueDate =
-    rows.length > 0
-      ? DateTime.fromISO(rows[rows.length - 1].dueDate).startOf("day")
+    schedule.length > 0
+      ? DateTime.fromISO(schedule[schedule.length - 1].dueDate).startOf("day")
       : null
 
   const isLate =
@@ -243,7 +194,7 @@ function PlanJobProgressHeader({
       ? Math.round(finalPlannedDueDate.diff(orderDueDate, "days").days)
       : 0
 
-  const totalLeadtime = rows.reduce((sum, r) => sum + r.leadtime, 0)
+  const totalLeadtime = schedule.reduce((sum, r) => sum + r.leadtime, 0)
 
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2.5">
@@ -323,85 +274,6 @@ function PlanJobProgressHeader({
           </div>
         </div>
       </div>
-    </div>
-  )
-}
-
-/** Bảng danh sách công đoạn với input Leadtime và DatePicker */
-function PlanJobTable({
-  rows,
-  onLeadtimeChange,
-  onDueDateChange,
-}: {
-  rows: PlanRow[]
-  onLeadtimeChange: (index: number, val: number) => void
-  onDueDateChange: (index: number, dateStr: string) => void
-}) {
-  return (
-    <div className="overflow-x-auto rounded-md border border-border/60">
-      <Table aria-label="Kế hoạch công đoạn" className="min-w-[460px]">
-        <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
-          <TableRow>
-            <TableHead className="w-10 min-w-10 text-center font-bold text-foreground">
-              STT
-            </TableHead>
-            <TableHead className="min-w-36 font-bold text-foreground">
-              CÔNG ĐOẠN
-            </TableHead>
-            <TableHead className="w-28 min-w-28 text-center font-bold text-foreground">
-              LEADTIME (NGÀY)
-            </TableHead>
-            <TableHead className="w-38 min-w-38 text-center font-bold text-foreground">
-              HẠN HOÀN THÀNH
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((row, index) => (
-            <TableRow key={row.key} className="h-14 bg-card hover:bg-muted/20">
-              <TableCell className="text-center font-mono text-xs text-muted-foreground tabular-nums">
-                {index + 1}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-medium text-foreground sm:text-sm">
-                    {row.name}
-                  </span>
-                  {row.code ? (
-                    <span className="font-mono text-[11px] text-muted-foreground">
-                      ({row.code})
-                    </span>
-                  ) : null}
-                </div>
-              </TableCell>
-              <TableCell className="text-center">
-                <div className="flex justify-center">
-                  <NumericCellInput
-                    value={row.leadtime}
-                    min={1}
-                    onValueChange={(val) => {
-                      if (val !== undefined && val >= 1) {
-                        onLeadtimeChange(index, val)
-                      }
-                    }}
-                    className="h-8 w-18 text-center text-xs font-medium tabular-nums"
-                  />
-                </div>
-              </TableCell>
-              <TableCell className="text-center">
-                <div className="flex justify-center">
-                  <div className="w-34">
-                    <DatePicker
-                      value={row.dueDate}
-                      onChange={(newDate) => onDueDateChange(index, newDate)}
-                    />
-                  </div>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </div>
   )
 }
