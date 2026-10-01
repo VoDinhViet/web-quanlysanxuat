@@ -5,11 +5,13 @@ import { useDebounceCallback } from "usehooks-ts"
 import { ClipboardMinus, Plus, Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
-import { LinkButton } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
+import { CreateProductionJobIssuesDialog } from "@/features/production-jobs/components/composites/CreateProductionJobIssuesDialog"
 import { ProductionJobBomTable } from "@/features/production-jobs/components/composites/ProductionJobBomTable"
 import { ProductionJobPlanNotice } from "@/features/production-jobs/components/primitives/ProductionJobPlanNotice"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
@@ -25,8 +27,8 @@ type ProductionJobBomTabProps = {
 // (phân trang, cùng route tên "bom" nhưng trả bảng nhu cầu vật tư đã gộp kèm tiến độ xuất kho:
 // số lượng đã lãnh `issuedQuantity` và còn lại `remainingQuantity` — xem doc comment ProductionJobIssue),
 // cùng pattern client-driven useQuery với ProductIssuesTab.tsx. Các cột đọc snapshot text lồng trong
-// `item`/`unit` (item.code/item.name/unit.name). Job `PENDING` nhận nhu cầu vật tư tạm tính (BE tính
-// sống từ sản phẩm × SL Job, chưa lãnh gì) cho tới khi "Xác nhận kế hoạch" chốt snapshot.
+// `item`/`unit` (item.code/item.name/unit.name). Job `PENDING` đọc snapshot chụp lúc tạo Job (hoặc lúc
+// "Tải lại từ sản phẩm"), chưa lãnh gì cho tới khi "Xác nhận kế hoạch".
 export function ProductionJobBomTab({
   productionJobId,
   status,
@@ -78,6 +80,8 @@ export function ProductionJobBomTab({
         />
       ) : (
         <ProductionJobBomTable
+          productionJobId={productionJobId}
+          status={status}
           rows={bomQuery.data.data}
           pagination={bomQuery.data.pagination}
         />
@@ -93,11 +97,9 @@ type ProductionJobBomFilterProps = {
   onSearchChange: (q: string | undefined) => void
 }
 
-// "Thêm vật tư" ở đây, "Sửa"/"Xoá" theo từng dòng trong ProductionJobBomTable — cả ba đều
-// DisabledAction: `production_job_issues` chỉ có đúng một đường ghi (transaction "Xác nhận sản
-// xuất"), chưa có route thêm/sửa/xoá độc lập nào (xem docs/domains/production.md, Invariants).
-// Giữ chỗ nút cho tới khi backend mở route, cùng idiom "chưa được xây dựng" các nơi khác trong
-// app. "Lãnh vật tư cho Job" cũng khoá khi `status === PENDING` — chưa có gì để lãnh.
+// "Thêm vật tư" ở đây, "Sửa"/"Xoá" theo từng dòng trong ProductionJobBomTable — chỉ mở khi Job
+// `PENDING` (sửa riêng Job này, không đổi sản phẩm gốc); từ lúc "Xác nhận kế hoạch" khoá lại.
+// "Lãnh vật tư cho Job" ngược lại: khoá khi `PENDING` — chưa được lãnh.
 function ProductionJobBomFilter({
   productionJobId,
   status,
@@ -155,9 +157,23 @@ function ProductionJobBomFilter({
           </RoutePermissionGate>
         )}
 
-        <DisabledAction label="Thêm vật tư" hint="chưa được xây dựng">
-          <Plus className="size-3.5" />
-        </DisabledAction>
+        {status === ProductionJobStatus.PENDING ? (
+          <PermissionGate permission="production:update">
+            <CreateProductionJobIssuesDialog
+              productionJobId={productionJobId}
+              trigger={
+                <Button type="button" className="gap-1.5 text-xs">
+                  <Plus className="size-3.5" />
+                  Thêm vật tư
+                </Button>
+              }
+            />
+          </PermissionGate>
+        ) : (
+          <DisabledAction label="Thêm vật tư" hint="Job đã xác nhận kế hoạch">
+            <Plus className="size-3.5" />
+          </DisabledAction>
+        )}
       </div>
     </div>
   )

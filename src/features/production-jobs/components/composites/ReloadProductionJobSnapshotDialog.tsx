@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CircleCheck } from "lucide-react"
+import { Refresh } from "@solar-icons/react"
 import type { ReactElement } from "react"
 
 import {
@@ -16,38 +16,29 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { startProductionJob } from "@/features/production-jobs/api/server-functions/start-production-job.api"
-import {
-  productionJobStatusLabels,
-  ProductionJobStatus,
-} from "@/lib/types/production-job.type"
+import { reloadProductionJobSnapshot } from "@/features/production-jobs/api/server-functions/reload-production-job-snapshot.api"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
-type StartProductionJobDialogProps = {
+type ReloadProductionJobSnapshotDialogProps = {
   job: ProductionJobDetail
   trigger: ReactElement
 }
 
-// PENDING → IN_PROGRESS, one-way — no revert route exists (production-job.type.ts). Invalidates
-// the whole "production-jobs" root, not just the detail key: the BOM tab's `canEdit` also
-// depends on this status.
-export function StartProductionJobDialog({
+// Chỉ Job PENDING. Invalidates the whole "production-jobs" root: the BOM/operations tabs and the
+// detail header all read what the snapshot rewrites.
+export function ReloadProductionJobSnapshotDialog({
   job,
   trigger,
-}: StartProductionJobDialogProps) {
+}: ReloadProductionJobSnapshotDialogProps) {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
-  const startProductionJobFn = useServerFn(startProductionJob)
+  const reloadSnapshotFn = useServerFn(reloadProductionJobSnapshot)
 
   const mutation = useMutation({
-    mutationFn: () =>
-      startProductionJobFn({ data: { productionJobId: job.id } }),
+    mutationFn: () => reloadSnapshotFn({ data: { productionJobId: job.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
-        queryClient.invalidateQueries({ queryKey: ["production-execution"] }),
-      ])
+      await queryClient.invalidateQueries({ queryKey: ["production-jobs"] })
     },
   })
 
@@ -63,14 +54,12 @@ export function StartProductionJobDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
-            <CircleCheck />
+            <Refresh />
           </AlertDialogMedia>
-          <AlertDialogTitle>Xác nhận kế hoạch Job này?</AlertDialogTitle>
+          <AlertDialogTitle>Tải lại dữ liệu từ sản phẩm gốc?</AlertDialogTitle>
           <AlertDialogDescription>
-            BOM, nhu cầu vật tư và công đoạn hiện có của Job {job.code} sẽ được
-            chốt; vật tư thiếu tự sinh đề xuất mua. Job chuyển sang "
-            {productionJobStatusLabels[ProductionJobStatus.IN_PROGRESS]}" và
-            không thể quay lại.
+            BOM, nhu cầu vật tư và công đoạn của Job {job.code} sẽ được lấy lại
+            theo cấu trúc sản phẩm hiện tại và ghi đè dữ liệu đang có trong Job.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -88,7 +77,7 @@ export function StartProductionJobDialog({
               mutation.mutate()
             }}
           >
-            {mutation.isPending ? "Đang xử lý..." : "Xác nhận"}
+            {mutation.isPending ? "Đang tải..." : "Tải lại"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

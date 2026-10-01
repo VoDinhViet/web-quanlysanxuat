@@ -23,13 +23,14 @@ export enum ProductionJobWarning {
   COMPLETED = "COMPLETED",
 }
 
-export const productionJobWarningLabels: Record<ProductionJobWarning, string> = {
-  [ProductionJobWarning.NORMAL]: "Bình thường",
-  [ProductionJobWarning.DUE_SOON]: "Sắp tới hạn",
-  [ProductionJobWarning.URGENT]: "Gấp",
-  [ProductionJobWarning.OVERDUE]: "Trễ hạn",
-  [ProductionJobWarning.COMPLETED]: "Hoàn thành",
-}
+export const productionJobWarningLabels: Record<ProductionJobWarning, string> =
+  {
+    [ProductionJobWarning.NORMAL]: "Bình thường",
+    [ProductionJobWarning.DUE_SOON]: "Sắp tới hạn",
+    [ProductionJobWarning.URGENT]: "Gấp",
+    [ProductionJobWarning.OVERDUE]: "Trễ hạn",
+    [ProductionJobWarning.COMPLETED]: "Hoàn thành",
+  }
 
 export const productionJobStatusLabels: Record<ProductionJobStatus, string> = {
   [ProductionJobStatus.PENDING]: "Chưa SX",
@@ -77,6 +78,10 @@ export type ProductionJobDetail = {
   status: ProductionJobStatus
   startedBy: string | null
   startedAt: string | null
+  // Lần cuối BOM/công đoạn/vật tư được chụp từ sản phẩm; null = Job cũ chưa snapshot.
+  snapshotLoadedAt: string | null
+  // Lần cuối vật tư của Job bị sửa tay; null = nguyên bản từ sản phẩm.
+  snapshotEditedAt: string | null
   // Thêm 2026-08-25 — từng ghi bởi `POST .../approve-operations` (route đó đã xoá 2026-09-03,
   // bỏ bước duyệt công đoạn riêng). Giữ lại cho dữ liệu cũ, không còn route nào ghi và không
   // còn gate nào đọc — `PATCH .../operations/:operationId` mở ngay khi Job `IN_PROGRESS`.
@@ -151,24 +156,6 @@ export type ProductionJobBomItem = {
   operations: ProductionJobOperation[]
 }
 
-/** Cùng route `GET /production-jobs/:jobId/operations` nhưng khi Job `PENDING`: kế hoạch tạm tính
- *  từ cấu trúc sản phẩm hiện tại × SL Job, chưa lưu — công đoạn chưa có `id`. */
-export type ProductionJobPlanOperation = Pick<
-  ProductionJobOperation,
-  | "operationId"
-  | "code"
-  | "name"
-  | "type"
-  | "sortOrder"
-  | "note"
-  | "plannedQuantity"
->
-
-export type ProductionJobPlanBomItem = Omit<
-  ProductionJobBomItem,
-  "operations"
-> & { operations: ProductionJobPlanOperation[] }
-
 /** Một dòng "Part × công đoạn" cho dialog nhập báo cáo — dùng bởi cả bảng "DANH SÁCH COMPONENT"
  *  (màn "Thực hiện sản xuất") lẫn bảng "Công đoạn sản xuất" (chi tiết Job). Không mirror DTO
  *  nào: cả 2 màn tự ghép từ `GET /production-jobs/:jobId/operations` (BE nhóm sẵn theo BOM
@@ -200,11 +187,17 @@ export type ProductionJobIssueUnitRef = {
  *  ProductionJobOperation's doc comment and docs/domains/production.md, "Common mistakes" #15).
  *  `requiredQty` is BOM demand exploded through every ancestor COMPONENT node × SL Job, computed once
  *  at LSX approval (BUG-086 fix, 2026-08-26) — same concept as ItemIssue.requiredQty in
- *  item.type.ts, different seed (SL Job here vs. 1 unit of the root item there). No
- *  `id`/`itemId`/`unitQty`/`image` on this DTO. */
+ *  item.type.ts, different seed (SL Job here vs. 1 unit of the root item there). `id` is the
+ *  Job's own line id (PATCH/DELETE `.../bom/:issueId`). No `itemId`/`unitQty` on this DTO. */
 export type ProductionJobIssue = {
+  id: string
   item: ProductionJobIssueItemRef
   unit: ProductionJobIssueUnitRef
+  image: FileResource | null
+  // Live stock figures (not a snapshot): `onHand` = tồn thực tế mọi kho, `availableQuantity` = cùng
+  // công thức "Khả dụng" của màn Tồn kho vật tư, có thể âm.
+  onHand: number
+  availableQuantity: number
   requiredQty: number
   issuedQuantity: number
   remainingQuantity: number
@@ -235,6 +228,7 @@ export enum ProductionJobLogAction {
   WAITING_QC = "WAITING_QC",
   WAITING_DELIVERY = "WAITING_DELIVERY",
   COMPLETED = "COMPLETED",
+  ITEMS_EDITED = "ITEMS_EDITED",
 }
 
 // Động từ mô tả hành động vừa xảy ra — khác `productionJobStatusLabels` phía trên (danh từ trạng
@@ -248,6 +242,7 @@ export const productionJobLogActionLabels: Record<
   [ProductionJobLogAction.WAITING_QC]: "Chuyển chờ QC",
   [ProductionJobLogAction.WAITING_DELIVERY]: "Chuyển chờ giao hàng",
   [ProductionJobLogAction.COMPLETED]: "Hoàn thành Job",
+  [ProductionJobLogAction.ITEMS_EDITED]: "Sửa vật tư",
 }
 
 /** Mirrors the backend's UserRefResDto nested in ProductionJobLogResDto. */
@@ -370,4 +365,3 @@ export type ProductionJobPlanGroupOperation = {
   sortOrder: number
   dueDate: string | null
 }
-

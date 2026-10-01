@@ -6,12 +6,8 @@ import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { ProductionJobOperationsLegend } from "@/features/production-jobs/components/composites/ProductionJobOperationsLegend"
 import { ProductionJobOperationsTable } from "@/features/production-jobs/components/composites/ProductionJobOperationsTable"
-import { ProductionJobPlanOperationsTable } from "@/features/production-jobs/components/composites/ProductionJobPlanOperationsTable"
 import { ProductionJobPlanNotice } from "@/features/production-jobs/components/primitives/ProductionJobPlanNotice"
-import {
-  productionJobOperationsQueryOptions,
-  productionJobPlanOperationsQueryOptions,
-} from "@/features/production-jobs/api/options"
+import { productionJobOperationsQueryOptions } from "@/features/production-jobs/api/options"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
@@ -34,21 +30,16 @@ type ProductionJobOperationsTabProps = {
 // no client-side grouping is needed (see ProductionJobBomItem's doc comment). Tab chỉ đọc — nhập
 // SL hoàn thành/không đạt đi qua dialog "Nhập báo cáo" dùng chung
 // (JobOperationReportDialog.tsx, cũng dùng bởi màn "Thực hiện sản xuất"), tự khoá + hiện lý do
-// khi Job chưa `IN_PROGRESS` thay vì tab tự ẩn control. Job `PENDING` đọc kế hoạch tạm tính (cùng
-// route, BE tính sống từ sản phẩm × SL Job) và chỉ cho nhập leadtime tới khi "Xác nhận kế hoạch".
+// khi Job chưa `IN_PROGRESS` thay vì tab tự ẩn control. Job `PENDING` đọc snapshot đã chụp lúc tạo
+// Job (hoặc lúc "Tải lại từ sản phẩm"), không đọc sống từ sản phẩm.
 export function ProductionJobOperationsTab({
   productionJobId,
   status,
 }: ProductionJobOperationsTabProps) {
   const isPending = status === ProductionJobStatus.PENDING
-  const operationsQuery = useQuery({
-    ...productionJobOperationsQueryOptions(productionJobId),
-    enabled: !isPending,
-  })
-  const planQuery = useQuery({
-    ...productionJobPlanOperationsQueryOptions(productionJobId),
-    enabled: isPending,
-  })
+  const operationsQuery = useQuery(
+    productionJobOperationsQueryOptions(productionJobId)
+  )
   const isInProgress = status === ProductionJobStatus.IN_PROGRESS
   const groups = operationsQuery.data ?? []
 
@@ -85,21 +76,9 @@ export function ProductionJobOperationsTab({
         </div>
       </div>
 
-      {isPending ? (
-        <>
-          <ProductionJobPlanNotice />
-          {planQuery.isPending ? (
-            <TableQueryLoading rows={operationsRowEstimate} />
-          ) : planQuery.isError ? (
-            <TableQueryError
-              error={planQuery.error.message}
-              onRetry={() => void planQuery.refetch()}
-            />
-          ) : (
-            <ProductionJobPlanOperationsTable groups={planQuery.data} />
-          )}
-        </>
-      ) : operationsQuery.isPending ? (
+      {isPending && <ProductionJobPlanNotice />}
+
+      {operationsQuery.isPending ? (
         <TableQueryLoading rows={operationsRowEstimate} />
       ) : operationsQuery.isError ? (
         <TableQueryError
@@ -114,7 +93,7 @@ export function ProductionJobOperationsTab({
         />
       )}
 
-      {isPending ? null : (
+      {!isPending && (
         <div className="px-4 pb-4 sm:px-5">
           <ProductionJobOperationsLegend />
         </div>
