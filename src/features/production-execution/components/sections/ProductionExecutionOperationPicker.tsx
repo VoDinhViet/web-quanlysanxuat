@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { CircleAlert, Inbox } from "lucide-react"
@@ -18,51 +17,20 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import {
-  AllOperationsChip,
-  OperationChip,
-} from "@/features/production-execution/components/composites/ProductionExecutionOperationChip"
+  AllOperationsCard,
+  OperationCard,
+} from "@/features/production-execution/components/composites/ProductionExecutionOperationCard"
 import { ALL_OPERATIONS } from "@/features/production-execution/schemas/production-execution-search.schema"
+import type { OperationSort } from "@/features/production-execution/schemas/production-execution-search.schema"
 import { productionExecutionOperationsQueryOptions } from "@/features/production-execution/api/options"
-import type { ProductionExecutionOperation } from "@/lib/types/production-job.type"
 
-const chipsClassName = "flex flex-wrap gap-2"
-
-type OperationSort = "default" | "name" | "remainingJobCount"
-
-const sortOptions = [
+const operationSortOptions: { value: OperationSort; label: string }[] = [
   { value: "default", label: "Thứ tự mặc định" },
   { value: "name", label: "Tên A → Z" },
   { value: "remainingJobCount", label: "Nhiều job nhất" },
 ]
 
-// `position` giữ số thứ tự gốc của API để "01, 02…" không nhảy khi đổi kiểu sắp xếp.
-type PositionedOperation = {
-  operation: ProductionExecutionOperation
-  position: number
-}
-
-function sortOperations(
-  operations: ProductionExecutionOperation[],
-  sort: OperationSort
-): PositionedOperation[] {
-  const positioned = operations.map((operation, index) => ({
-    operation,
-    position: index + 1,
-  }))
-  if (sort === "name") {
-    return positioned.sort((a, b) =>
-      a.operation.name.localeCompare(b.operation.name, "vi")
-    )
-  }
-  if (sort === "remainingJobCount") {
-    return positioned.sort(
-      (a, b) => b.operation.remainingJobCount - a.operation.remainingJobCount
-    )
-  }
-  return positioned
-}
-
-const skeletonKeys = Array.from({ length: 8 }, (_, index) => index)
+const skeletonKeys = Array.from({ length: 12 }, (_, index) => index)
 
 // "CHỌN CÔNG ĐOẠN" — lưới thẻ radio. Cùng query key với ProductionExecutionPage.tsx (dùng để
 // tự chọn công đoạn đầu tiên) — React Query dùng chung cache, không gọi API 2 lần.
@@ -72,25 +40,35 @@ export function ProductionExecutionOperationPicker() {
   })
   const navigate = useNavigate({ from: "/manage/production-execution/" })
 
-  const operationsQuery = useQuery(
+  const operationSort: OperationSort = search.operationSort ?? "default"
+
+  const {
+    data: operations = [],
+    isPending,
+    isError,
+  } = useQuery(
     productionExecutionOperationsQueryOptions({
       q: search.q,
       status: search.status,
       clientId: search.clientId,
       dueDateFrom: search.dueDateFrom,
       dueDateTo: search.dueDateTo,
+      operationSort: search.operationSort,
     })
-  )
-
-  const [sort, setSort] = useState<OperationSort>("default")
-  const sortedOperations = useMemo(
-    () => sortOperations(operationsQuery.data ?? [], sort),
-    [operationsQuery.data, sort]
   )
 
   const handleChange = (operationId: string) => {
     void navigate({
       search: (prev) => ({ ...prev, operationId, page: 1 }),
+    })
+  }
+
+  const handleOperationSortChange = (value: OperationSort) => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        operationSort: value === "default" ? undefined : value,
+      }),
     })
   }
 
@@ -105,25 +83,27 @@ export function ProductionExecutionOperationPicker() {
             <h2 className="text-sm font-semibold text-foreground">
               Công đoạn sản xuất
             </h2>
-            {operationsQuery.data !== undefined && (
+            {!isPending && !isError && (
               <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground tabular-nums">
-                {operationsQuery.data.length}
+                {operations.length}
               </span>
             )}
           </div>
 
           <div className="flex items-center gap-2">
             <Select
-              items={sortOptions}
-              value={sort}
-              onValueChange={(value) => value !== null && setSort(value)}
+              items={operationSortOptions}
+              value={operationSort}
+              onValueChange={(value) =>
+                value !== null && handleOperationSortChange(value)
+              }
             >
               <SelectTrigger aria-label="Sắp xếp công đoạn" className="text-xs">
                 <Sort className="size-4" />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {sortOptions.map((option) => (
+                {operationSortOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -145,18 +125,18 @@ export function ProductionExecutionOperationPicker() {
           </div>
         </div>
 
-        {operationsQuery.isPending ? (
-          <div className={chipsClassName}>
+        {isPending ? (
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {skeletonKeys.map((key) => (
-              <Skeleton key={key} className="h-14 w-44 rounded-md" />
+              <Skeleton key={key} className="h-[58px] w-full rounded-md" />
             ))}
           </div>
-        ) : operationsQuery.isError ? (
+        ) : isError ? (
           <PickerMessage
             icon={CircleAlert}
             message="Không tải được danh sách công đoạn."
           />
-        ) : operationsQuery.data.length === 0 ? (
+        ) : operations.length === 0 ? (
           <PickerMessage
             icon={Inbox}
             message="Không có công đoạn nào khớp bộ lọc, hoặc bạn chưa được phân công vào công đoạn nào."
@@ -166,18 +146,17 @@ export function ProductionExecutionOperationPicker() {
             aria-label="Chọn công đoạn sản xuất"
             value={search.operationId ?? ""}
             onValueChange={handleChange}
-            className={chipsClassName}
+            className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
           >
-            <AllOperationsChip
+            <AllOperationsCard
               value={ALL_OPERATIONS}
-              operations={operationsQuery.data}
+              operations={operations}
               isChecked={search.operationId === ALL_OPERATIONS}
             />
-            {sortedOperations.map(({ operation, position }) => (
-              <OperationChip
+            {operations.map((operation) => (
+              <OperationCard
                 key={operation.operationId}
                 operation={operation}
-                position={position}
                 isChecked={operation.operationId === search.operationId}
               />
             ))}

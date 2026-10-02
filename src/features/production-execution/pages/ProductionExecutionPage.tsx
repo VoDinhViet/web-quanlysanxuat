@@ -20,8 +20,16 @@ export function ProductionExecutionPage() {
     from: "/(authed)/manage_/production-execution/",
   })
   const navigate = useNavigate({ from: "/manage/production-execution/" })
-  const { operationId, limit, q, status, clientId, dueDateFrom, dueDateTo } =
-    search
+  const {
+    operationId,
+    limit,
+    q,
+    status,
+    clientId,
+    dueDateFrom,
+    dueDateTo,
+    operationSort,
+  } = search
 
   // Chỉ để tự chọn công đoạn đầu tiên bên dưới — lưới thẻ thật nằm trong
   // ProductionExecutionOperationPicker.tsx, tự gọi lại đúng query key này (React Query dùng chung
@@ -33,6 +41,7 @@ export function ProductionExecutionPage() {
       clientId,
       dueDateFrom,
       dueDateTo,
+      operationSort,
     })
   )
 

@@ -18,11 +18,13 @@ const getProductionExecutionOperationsParamsSchema =
       clientId: true,
       dueDateFrom: true,
       dueDateTo: true,
+      operationSort: true,
     })
-    .transform(({ dueDateFrom, dueDateTo, ...rest }) => ({
+    .transform(({ dueDateFrom, dueDateTo, operationSort, ...rest }) => ({
       ...rest,
       startDate: dueDateFrom,
       endDate: dueDateTo,
+      sort: operationSort,
     }))
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."

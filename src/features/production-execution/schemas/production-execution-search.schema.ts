@@ -11,6 +11,14 @@ import { ProductionJobStatus } from "@/lib/types/production-job.type"
 // để BE trả mọi Job × công đoạn người dùng được phép.
 export const ALL_OPERATIONS = "all"
 
+export const OPERATION_SORTS = [
+  "default",
+  "name",
+  "remainingJobCount",
+] as const
+
+export type OperationSort = (typeof OPERATION_SORTS)[number]
+
 export const productionExecutionSearchSchema = z.object({
   page: z.number().int().min(1).catch(1),
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(10),
@@ -20,6 +28,7 @@ export const productionExecutionSearchSchema = z.object({
   dueDateFrom: z.iso.date().optional().catch(undefined),
   dueDateTo: z.iso.date().optional().catch(undefined),
   operationId: z.string().trim().min(1).optional().catch(undefined),
+  operationSort: z.enum(OPERATION_SORTS).optional().catch(undefined),
 })
 
 export type ProductionExecutionSearchSchema = z.infer<
@@ -33,5 +42,5 @@ export type ProductionExecutionSearchSchema = z.infer<
 // same shape so the two can't drift.
 export type ProductionExecutionFilters = Pick<
   ProductionExecutionSearchSchema,
-  "q" | "status" | "clientId" | "dueDateFrom" | "dueDateTo"
+  "q" | "status" | "clientId" | "dueDateFrom" | "dueDateTo" | "operationSort"
 >
