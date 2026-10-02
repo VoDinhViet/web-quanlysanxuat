@@ -2,7 +2,9 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
+import { Loader2, Save } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { updatePurchaseRequestNote } from "@/features/purchase-requests/api/server-functions/update-purchase-request-note.api"
 import { useHasPermission } from "@/hooks/use-permissions"
@@ -12,10 +14,10 @@ type PurchaseRequestNoteFieldProps = {
   note: string | null
 }
 
-// Mirror PurchaseOrderNoteField.tsx's local-state-until-blur + render-phase resync — commit on
-// blur, not per keystroke. Khác PurchaseOrderNoteField: sửa được ở MỌI trạng thái (BE
-// `PATCH .../note` không chặn theo status), nên chỉ cần quyền, không cần DRAFT/REJECTED như phần
-// sửa dòng vật tư của trang này.
+// Giữ giá trị nhập trong state cục bộ + render-phase resync khi `note` từ server đổi, nhưng chỉ lưu
+// khi bấm nút "Lưu" (không tự lưu khi rời ô nhập — người dùng thấy rõ khi nào ghi chú được ghi).
+// Khác PurchaseOrderNoteField: sửa được ở MỌI trạng thái (BE `PATCH .../note` không chặn theo
+// status), nên chỉ cần quyền, không cần DRAFT/REJECTED như phần sửa dòng vật tư của trang này.
 export function PurchaseRequestNoteField({
   purchaseRequestId,
   note,
@@ -30,18 +32,19 @@ export function PurchaseRequestNoteField({
     setLocalValue(note ?? "")
   }
 
-  const { mutate: save } = useMutation({
+  const { mutate: save, isPending } = useMutation({
     mutationFn: (nextNote: string) =>
       updatePurchaseRequestNoteFn({
         data: { purchaseRequestId, note: nextNote || null },
       }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
-    onError: (error) => {
-      toast.error(error.message)
-      setLocalValue(note ?? "")
+    onSuccess: async () => {
+      toast.success("Đã lưu ghi chú")
+      await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
     },
+    onError: (error) => toast.error(error.message),
   })
+
+  const isDirty = localValue !== (note ?? "")
 
   if (!editable) {
     return (
@@ -68,13 +71,32 @@ export function PurchaseRequestNoteField({
         id="purchase-request-note"
         className="min-h-20 w-full resize-y bg-background text-sm"
         placeholder="Nhập ghi chú"
+        maxLength={1000}
+        disabled={isPending}
         value={localValue}
         onChange={(event) => setLocalValue(event.target.value)}
-        onBlur={() => {
-          if (localValue === (note ?? "")) return
-          save(localValue)
-        }}
       />
+      <div className="flex justify-end gap-2 pt-1">
+        {isDirty && !isPending && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocalValue(note ?? "")}
+          >
+            Hủy thay đổi
+          </Button>
+        )}
+        <Button
+          type="button"
+          size="sm"
+          disabled={!isDirty || isPending}
+          onClick={() => save(localValue)}
+        >
+          {isPending ? <Loader2 className="animate-spin" /> : <Save />}
+          Lưu ghi chú
+        </Button>
+      </div>
     </div>
   )
 }
