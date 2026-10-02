@@ -102,7 +102,7 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
           <div>
             <NumericCellInput
               value={item.quantity}
-              min={1}
+              min={0.001}
               disabled={disabled}
               onValueChange={(value) => {
                 const index = findItemIndex(
