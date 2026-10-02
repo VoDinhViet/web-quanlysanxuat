@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type { PaymentTerm } from "@/lib/types/payment-term.type"
 import type { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
@@ -143,7 +144,13 @@ export type PurchaseOrderItemDetail = {
     id: string
     quantity: number
     purchaseRequest: { id: string; code: string }
-    item: { id: string; code: string; name: string; unit: Unit }
+    item: {
+      id: string
+      code: string
+      name: string
+      unit: Unit
+      image?: FileResource | null
+    }
   }
 }
 

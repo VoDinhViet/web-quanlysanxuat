@@ -1,6 +1,9 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import type { appTableFeatures } from "@/lib/table-features"
+import { Image } from "@unpic/react"
+import { Gallery } from "@solar-icons/react"
 
+import type { appTableFeatures } from "@/lib/table-features"
+import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 import type { PurchaseOrderItemDetail } from "@/lib/types/purchase-order.type"
 
@@ -21,6 +24,45 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
       meta: {
         headerClassName: "w-14 text-center",
         cellClassName: "text-center text-muted-foreground",
+      },
+    }),
+    purchaseOrderItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-16 text-center",
+        cellClassName: "text-center py-2",
+      },
+      cell: ({ row }) => {
+        const item = row.original.purchaseRequestItem.item
+        const image = item.image
+        if (!image) {
+          return (
+            <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
+              <Gallery className="size-4 text-muted-foreground/50" />
+            </div>
+          )
+        }
+
+        const imageUrl = resolveFileUrl(image.url)
+
+        return (
+          <a
+            href={imageUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="group mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40 transition hover:border-primary/50"
+            title={`Xem ảnh ${item.name}`}
+          >
+            <Image
+              src={imageUrl}
+              alt={item.name}
+              layout="fullWidth"
+              objectFit="cover"
+              className="size-full transition group-hover:scale-105"
+            />
+          </a>
+        )
       },
     }),
     // Vật tư trùng do gộp nhiều dòng ĐXMH ở RFQ vẫn tách lại thành nhiều dòng PO (1 dòng PO ↔ 1
@@ -147,12 +189,24 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
     purchaseOrderItemColumnHelper.accessor("quantityAdjustmentReason", {
       id: "quantityAdjustmentReason",
       header: "Lý do điều chỉnh SL",
-      meta: { headerClassName: "w-40" },
-      cell: ({ getValue }) => (
-        <span className="truncate text-xs text-muted-foreground">
-          {getValue() ?? "—"}
-        </span>
-      ),
+      meta: {
+        headerClassName: "min-w-44 max-w-64",
+        cellClassName: "max-w-64 py-2.5",
+      },
+      cell: ({ getValue }) => {
+        const reason = getValue()
+        if (!reason) {
+          return <span className="text-xs text-muted-foreground">—</span>
+        }
+        return (
+          <p
+            className="text-xs text-muted-foreground whitespace-normal break-words leading-relaxed"
+            title={reason}
+          >
+            {reason}
+          </p>
+        )
+      },
     }),
     purchaseOrderItemColumnHelper.accessor("unitPrice", {
       id: "unitPrice",
