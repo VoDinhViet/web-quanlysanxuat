@@ -14,7 +14,7 @@ import {
 import { getDocumentTypeInfo } from "@/features/products/utils/document-type"
 import { resolveFileUrl } from "@/lib/file-url"
 import {
-  ACCEPTED_DOCUMENT_TYPES,
+  ACCEPTED_EVIDENCE_TYPES,
   MAX_DOCUMENT_SIZE_BYTES,
   UploadType,
 } from "@/lib/types/file.type"
@@ -53,7 +53,7 @@ export type UploadOrderDocumentsProps = {
 }
 
 /**
- * Upload tài liệu đính kèm đơn hàng (hợp đồng, bản vẽ, chứng từ).
+ * Upload tài liệu, hình ảnh đính kèm đơn hàng (hợp đồng, bản vẽ, chứng từ, ảnh PO).
  * Thiết kế đồng bộ phong cách với UploadProductDocuments.
  */
 export function UploadOrderDocuments({
@@ -79,7 +79,7 @@ export function UploadOrderDocuments({
   })
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ACCEPTED_DOCUMENT_TYPES,
+    accept: ACCEPTED_EVIDENCE_TYPES,
     maxSize: MAX_DOCUMENT_SIZE_BYTES,
     multiple: true,
     disabled: disabled || isPending,
@@ -175,13 +175,13 @@ export function UploadOrderDocuments({
 
         <div>
           <p className="text-xs text-muted-foreground">
-            Kéo thả tài liệu vào đây hoặc{" "}
+            Kéo thả tài liệu, hình ảnh vào đây hoặc{" "}
             <span className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground">
               chọn tệp
             </span>
           </p>
           <p className="mt-0.5 text-[11px] text-muted-foreground/70">
-            CAD, PDF, Word, Excel, ZIP (tối đa 10MB)
+            Hình ảnh, CAD, PDF, Word, Excel, ZIP (tối đa 10MB)
           </p>
         </div>
 

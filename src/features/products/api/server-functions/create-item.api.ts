@@ -29,6 +29,8 @@ function resolveCreateItemErrorMessage(error: unknown): string {
       return "Mã + phiên bản này đã tồn tại."
     case "file.error.not_found":
       return "File đính kèm không còn tồn tại. Vui lòng tải lên lại."
+    case "item.error.client_required":
+      return "Vui lòng chọn khách hàng."
     case "unit.error.not_found":
       return "Đơn vị tính không tồn tại."
     case "auth.error.forbidden":

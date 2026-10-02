@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,6 +18,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
+import { currentUserQueryOptions } from "@/features/auth/api"
 import { CreateOrderConfirmSection } from "@/features/orders/components/sections/CreateOrderConfirmSection"
 import { CreateOrderInfoSection } from "@/features/orders/components/sections/CreateOrderInfoSection"
 import { CreateOrderQuantitiesStep } from "@/features/orders/components/sections/CreateOrderQuantitiesStep"
@@ -82,6 +83,14 @@ export function CreateOrderForm() {
       restoreFormDraft(form, draft)
     }
   }, [draft, form])
+
+  // Nhân viên kinh doanh mặc định là người đang đăng nhập; nháp đã khôi phục (có người khác) thì giữ.
+  const { data: profile } = useQuery(currentUserQueryOptions)
+  useEffect(() => {
+    if (profile?.userId && !form.getFieldValue("assignedUserId")) {
+      form.setFieldValue("assignedUserId", profile.userId)
+    }
+  }, [profile?.userId, draft, form])
 
   const [step, setStep] = useState<CreateOrderWizardStep>("info")
 

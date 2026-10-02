@@ -25,6 +25,7 @@ import { pickDefaultContactId } from "@/features/orders/constants/pick-default-c
 import { resolveExchangeRatePlaceholder } from "@/features/orders/constants/resolve-exchange-rate-placeholder"
 import { useClientContactOptions } from "@/features/orders/hooks/use-client-contact-options"
 import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
+import { currentUserQueryOptions } from "@/features/auth/api"
 import { useGetUserOptions } from "@/features/users/api"
 import { withForm } from "@/hooks/use-app-form"
 import { Currency, currencyLabels } from "@/lib/types/order.type"
@@ -62,7 +63,12 @@ function OrderFormSection({
             </h3>
           </div>
           {description ? (
-            <p className={cn("mt-0.5 text-xs text-muted-foreground", Icon && "pl-6")}>
+            <p
+              className={cn(
+                "mt-0.5 text-xs text-muted-foreground",
+                Icon && "pl-6"
+              )}
+            >
               {description}
             </p>
           ) : null}
@@ -84,6 +90,19 @@ export const CreateOrderInfoSection = withForm({
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const user = useGetUserOptions()
+    // Người đăng nhập luôn có trong danh sách để nhãn của giá trị mặc định hiển thị đúng dù
+    // không nằm trong trang kết quả tìm kiếm.
+    const { data: profile } = useQuery(currentUserQueryOptions)
+    const userOptions =
+      profile?.userId && !user.options.some((o) => o.value === profile.userId)
+        ? [
+            {
+              value: profile.userId,
+              label: profile.fullName ?? profile.username,
+            },
+            ...user.options,
+          ]
+        : user.options
 
     // Auto-fills a starting rate on a non-VND currency pick (GET open.er-api.com via
     // get-exchange-rate.api.ts), but the field stays editable — this only seeds it.
@@ -154,7 +173,8 @@ export const CreateOrderInfoSection = withForm({
                 </span>
               </div>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Thiết lập đối tác khách hàng, tiến độ giao hàng và điều kiện thanh toán
+                Thiết lập đối tác khách hàng, tiến độ giao hàng và điều kiện
+                thanh toán
               </p>
             </div>
           </div>
@@ -182,9 +202,7 @@ export const CreateOrderInfoSection = withForm({
                       </FieldLabel>
                       <ClientPicker
                         value={field.state.value || undefined}
-                        onValueChange={(next) =>
-                          field.handleChange(next ?? "")
-                        }
+                        onValueChange={(next) => field.handleChange(next ?? "")}
                         onClientSelect={(client) => {
                           clientContactField.handleChange(
                             pickDefaultContactId(client)
@@ -239,7 +257,7 @@ export const CreateOrderInfoSection = withForm({
                       field.state.meta.errors.length > 0
                     }
                     errors={field.state.meta.errors}
-                    options={user.options}
+                    options={userOptions}
                     onSearchChange={user.onSearchChange}
                     isPending={user.isFetching}
                     emptyMessage="Không tìm thấy nhân viên"
@@ -463,7 +481,8 @@ export const CreateOrderInfoSection = withForm({
                 </form.AppField>
                 <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <Lock className="size-3 text-amber-500" />
-                  Chỉ lưu hành nội bộ xưởng sản xuất và kế toán, không in gửi khách.
+                  Chỉ lưu hành nội bộ xưởng sản xuất và kế toán, không in gửi
+                  khách.
                 </p>
               </div>
             </div>
@@ -473,4 +492,3 @@ export const CreateOrderInfoSection = withForm({
     )
   },
 })
-

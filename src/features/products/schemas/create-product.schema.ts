@@ -28,6 +28,7 @@ export const createProductSchema = z.object({
     .min(1, "Vui lòng nhập tên sản phẩm")
     .max(255, "Tên sản phẩm tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
+  clientId: z.string().trim().min(1, "Vui lòng chọn khách hàng"),
   image: imageFieldSchema,
   files: z.array(fileFieldSchema),
   status: z.enum(ItemStatus),
@@ -45,6 +46,7 @@ export const createProductFormDefaultValues: CreateProductSchema = {
   revision: "",
   name: "",
   unitId: "",
+  clientId: "",
   image: null,
   files: [],
   status: ItemStatus.ACTIVE,

@@ -2,9 +2,11 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { PackageSearch } from "lucide-react"
 
 import { withForm } from "@/hooks/use-app-form"
+import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { UploadProductDocuments } from "@/features/products/components/composites/UploadProductDocuments"
 import { ProductImageField } from "@/features/products/components/composites/ProductImageField"
 import { createProductFormDefaultValues } from "@/features/products/schemas/create-product.schema"
+import { useGetClientOptions } from "@/features/clients/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -21,6 +23,7 @@ export const CreateProductInfoSection = withForm({
     const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
 
     const unitSelectOptions = buildSelectOptions(unitOptions)
+    const client = useGetClientOptions()
 
     return (
       <div>
@@ -83,6 +86,30 @@ export const CreateProductInfoSection = withForm({
                   />
                 )}
               </form.AppField>
+
+              <form.Field name="clientId">
+                {(field) => (
+                  <ComboboxField
+                    id={field.name}
+                    label="Khách hàng"
+                    required
+                    placeholder="Chọn khách hàng"
+                    value={field.state.value || undefined}
+                    onValueChange={(next) => field.handleChange(next ?? "")}
+                    onBlur={field.handleBlur}
+                    isInvalid={
+                      field.state.meta.isTouched &&
+                      field.state.meta.errors.length > 0
+                    }
+                    errors={field.state.meta.errors}
+                    options={client.options}
+                    onSearchChange={client.onSearchChange}
+                    isPending={client.isFetching}
+                    emptyMessage="Không tìm thấy khách hàng"
+                    disabled={disabled}
+                  />
+                )}
+              </form.Field>
 
               <form.AppField name="status">
                 {(field) => (
