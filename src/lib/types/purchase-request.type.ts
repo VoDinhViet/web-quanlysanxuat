@@ -55,6 +55,7 @@ export type PurchaseRequest = {
   code: string
   neededDate: string
   status: PurchaseRequestStatus
+  note: string | null
   createdAt: string
   department: Department
   requesterBy: PurchaseRequestUserRef | null

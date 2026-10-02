@@ -6,6 +6,7 @@ import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components
 import {
   PurchaseLedgerActionsCell,
   PurchaseLedgerProgressCell,
+  PurchaseLedgerSourceCell,
   PurchaseLedgerWarningCell,
 } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerTableCells"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
@@ -24,30 +25,16 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
     },
     cell: ({ row }) => {
       const prCode = row.original.purchaseRequest.code
-      const po = row.original.productionOrder
-      const note = row.original.note
 
       return (
         <div className="flex min-w-0 flex-col py-0.5">
           <span className="font-mono text-xs font-semibold text-primary">
             {prCode}
           </span>
-          <div
-            className="truncate text-[11px] text-muted-foreground"
-            title={po?.code ? `PO: ${po.code}` : note ?? undefined}
-          >
-            {po ? (
-              po.code ? (
-                <span className="font-mono text-muted-foreground">
-                  PO: {po.code}
-                </span>
-              ) : (
-                <span className="text-muted-foreground/50">—</span>
-              )
-            ) : (
-              <span>{note ?? "—"}</span>
-            )}
-          </div>
+          <PurchaseLedgerSourceCell
+            buyerPoNo={row.original.buyerPoNo}
+            requestNote={row.original.requestNote}
+          />
         </div>
       )
     },

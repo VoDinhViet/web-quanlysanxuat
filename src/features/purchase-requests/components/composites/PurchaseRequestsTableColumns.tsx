@@ -58,6 +58,7 @@ export const purchaseRequestColumns = purchaseRequestColumnHelper.columns([
     cell: ({ row }) => (
       <PurchaseRequestSourceCell
         productionOrder={row.original.productionOrder}
+        note={row.original.note}
       />
     ),
   }),

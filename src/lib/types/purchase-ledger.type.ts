@@ -82,9 +82,10 @@ export type PurchaseLedgerProductionOrderRef = {
 }
 
 /** Mirrors the backend's `PurchaseLedgerItemResDto` (`GET /purchase-ledger`) exactly — one row per
- *  `purchase_request_items` line of an `APPROVED` purchase request. `productionOrder`/`note` are
- *  mutually exclusive in practice: `note` "hiển thị khi đề xuất không gắn LSX (productionOrder
- *  null)" per the backend DTO's own comment — a row shows one or the other, never both. */
+ *  `purchase_request_items` line of an `APPROVED` purchase request. `buyerPoNo`/`requestNote` feed
+ *  the "PO liên quan / Lý do" column: the customer PO number when there is one, otherwise the
+ *  reason on the request header — a row shows one or the other, never both. `note` is the line's
+ *  own note, a different thing from `requestNote`. */
 export type PurchaseLedgerApiRow = {
   id: string
   purchaseRequest: PurchaseLedgerPurchaseRequestRef
@@ -92,6 +93,8 @@ export type PurchaseLedgerApiRow = {
   unit: Unit
   productionOrder: PurchaseLedgerProductionOrderRef | null
   note: string | null
+  buyerPoNo: string | null
+  requestNote: string | null
   quantity: number
   quotedQuantity: number
   orderedQuantity: number

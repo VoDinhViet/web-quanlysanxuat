@@ -13,35 +13,37 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import { cn } from "@/lib/utils"
-import {
-  PurchaseLedgerWarning,
-  type PurchaseLedgerProductionOrderRef,
-} from "@/lib/types/purchase-ledger.type"
+import { PurchaseLedgerWarning } from "@/lib/types/purchase-ledger.type"
 
 type PurchaseLedgerSourceCellProps = {
-  productionOrder: PurchaseLedgerProductionOrderRef | null
-  note: string | null
+  buyerPoNo: string | null
+  requestNote: string | null
 }
 
-// "PO liên quan / Lý do" shows exactly one of the two, never both — the backend DTO's own
-// comment: `note` "hiển thị khi đề xuất không gắn LSX (productionOrder null)". A linked LSX whose
-// code isn't assigned yet (not APPROVED) shows a dash rather than falling back to `note`, same as
-// PurchaseRequestSourceCell (purchase-requests feature).
+// "PO liên quan / Lý do" shows exactly one of the two, never both: the customer PO number
+// (`buyerPoNo`, via the linked LSX's order) when there is one, otherwise the reason on the request
+// header (`requestNote`), otherwise a dash. Same rule as PurchaseRequestSourceCell
+// (purchase-requests feature). The LSX code is deliberately not shown here (PH-40).
 export function PurchaseLedgerSourceCell({
-  productionOrder,
-  note,
+  buyerPoNo,
+  requestNote,
 }: PurchaseLedgerSourceCellProps) {
-  if (productionOrder) {
-    return productionOrder.code ? (
+  if (buyerPoNo) {
+    return (
       <span className="font-mono text-xs font-semibold text-primary">
-        {productionOrder.code}
+        {buyerPoNo}
       </span>
-    ) : (
-      <span className="text-xs text-muted-foreground">—</span>
     )
   }
 
-  return <span className="text-xs text-muted-foreground">{note ?? "—"}</span>
+  return (
+    <span
+      className="line-clamp-2 text-xs text-muted-foreground"
+      title={requestNote ?? undefined}
+    >
+      {requestNote ?? "—"}
+    </span>
+  )
 }
 
 type QuantityCellTone = "neutral" | "primary" | "ordered" | "received"
@@ -114,9 +116,13 @@ export function PurchaseLedgerProgressCell({
   unitName,
 }: PurchaseLedgerProgressCellProps) {
   const orderedPct =
-    quantity > 0 ? Math.min(100, Math.round((orderedQuantity / quantity) * 100)) : 0
+    quantity > 0
+      ? Math.min(100, Math.round((orderedQuantity / quantity) * 100))
+      : 0
   const receivedPct =
-    quantity > 0 ? Math.min(100, Math.round((receivedQuantity / quantity) * 100)) : 0
+    quantity > 0
+      ? Math.min(100, Math.round((receivedQuantity / quantity) * 100))
+      : 0
 
   const isCompleted = receivedQuantity >= quantity && quantity > 0
   const isOrdered = orderedQuantity >= quantity && quantity > 0
@@ -127,10 +133,10 @@ export function PurchaseLedgerProgressCell({
         delay={80}
         closeDelay={120}
         render={
-          <div className="group flex flex-col gap-0.5 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-muted/70 cursor-default">
+          <div className="group flex cursor-default flex-col gap-0.5 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-muted/70">
             {/* Dòng 1: Số lượng cần mua */}
             <div className="flex items-baseline gap-1 text-xs">
-              <span className="font-semibold tabular-nums text-foreground group-hover:text-primary transition-colors">
+              <span className="font-semibold text-foreground tabular-nums transition-colors group-hover:text-primary">
                 {quantityFormatter.format(quantity)}
               </span>
               <span className="text-[11px] font-normal text-muted-foreground">
@@ -139,14 +145,14 @@ export function PurchaseLedgerProgressCell({
             </div>
 
             {/* Dòng 2: Thực tế Đặt / Nhập */}
-            <div className="flex items-center gap-1.5 text-[11px] tabular-nums text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground tabular-nums">
               <span>
                 Đặt:{" "}
                 <span
                   className={cn(
                     "font-medium",
                     isOrdered
-                      ? "text-blue-600 dark:text-blue-400 font-semibold"
+                      ? "font-semibold text-blue-600 dark:text-blue-400"
                       : orderedQuantity > 0
                         ? "text-foreground"
                         : "text-muted-foreground/60"
@@ -162,7 +168,7 @@ export function PurchaseLedgerProgressCell({
                   className={cn(
                     "font-medium",
                     isCompleted
-                      ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+                      ? "font-semibold text-emerald-600 dark:text-emerald-400"
                       : receivedQuantity > 0
                         ? "text-foreground"
                         : "text-muted-foreground/60"
@@ -177,10 +183,10 @@ export function PurchaseLedgerProgressCell({
       />
       <HoverCardContent
         align="start"
-        className="w-72 border border-border/70 bg-popover p-3.5 shadow-lg rounded-lg"
+        className="w-72 rounded-lg border border-border/70 bg-popover p-3.5 shadow-lg"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-border/50">
+        <div className="flex items-center justify-between border-b border-border/50 pb-2">
           <div className="flex items-center gap-1.5">
             <CartLargeMinimalistic className="size-3.5 text-muted-foreground" />
             <span className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
@@ -213,7 +219,9 @@ export function PurchaseLedgerProgressCell({
               <span
                 className={cn(
                   "font-medium",
-                  orderedQuantity > 0 ? "text-foreground" : "text-muted-foreground/60"
+                  orderedQuantity > 0
+                    ? "text-foreground"
+                    : "text-muted-foreground/60"
                 )}
               >
                 {quantityFormatter.format(orderedQuantity)}
@@ -239,7 +247,7 @@ export function PurchaseLedgerProgressCell({
                 className={cn(
                   "font-medium",
                   isCompleted
-                    ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+                    ? "font-semibold text-emerald-600 dark:text-emerald-400"
                     : receivedQuantity > 0
                       ? "text-foreground"
                       : "text-muted-foreground/60"
@@ -255,8 +263,8 @@ export function PurchaseLedgerProgressCell({
         </dl>
 
         {/* Thanh tiến độ hoàn thành tinh tế */}
-        <div className="mt-3 pt-2.5 border-t border-border/50">
-          <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
+        <div className="mt-3 border-t border-border/50 pt-2.5">
+          <div className="mb-1.5 flex items-center justify-between text-[11px] text-muted-foreground">
             <span>Tiến độ nhập kho</span>
             <span
               className={cn(
@@ -302,7 +310,7 @@ export function PurchaseLedgerWarningCell({
   })
 
   return (
-    <div className="flex flex-row items-center gap-1.5 flex-nowrap">
+    <div className="flex flex-row flex-nowrap items-center gap-1.5">
       {sortedWarnings.map((warning) => (
         <PurchaseLedgerWarningBadge key={warning} warning={warning} />
       ))}

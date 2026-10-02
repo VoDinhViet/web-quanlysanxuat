@@ -18,15 +18,30 @@ import type {
   PurchaseRequestProductionOrderRef,
 } from "@/lib/types/purchase-request.type"
 
-// "PO liên quan / Lý do": chỉ hiển thị số PO khách hàng (buyerPoNo), không có thì "—".
+// "PO liên quan / Lý do": có số PO khách hàng (buyerPoNo, qua LSX gắn với đề xuất) thì hiện số PO;
+// không có (đề xuất tạo tay, hoặc LSX chưa có số PO) thì hiện lý do người lập đã nhập (note);
+// không có cả hai thì "—". Không bao giờ hiện cả hai.
 export function PurchaseRequestSourceCell({
   productionOrder,
+  note,
 }: {
   productionOrder: PurchaseRequestProductionOrderRef | null
+  note: string | null
 }) {
   const buyerPoNo = productionOrder?.buyerPoNo ?? null
-  if (!buyerPoNo) return <span>—</span>
-  return <span className="font-mono font-semibold text-primary">{buyerPoNo}</span>
+  if (buyerPoNo) {
+    return (
+      <span className="font-mono font-semibold text-primary">{buyerPoNo}</span>
+    )
+  }
+
+  return note ? (
+    <span className="line-clamp-2 max-w-64 text-wrap" title={note}>
+      {note}
+    </span>
+  ) : (
+    <span>—</span>
+  )
 }
 
 type PurchaseRequestActionsCellProps = {
