@@ -29,6 +29,8 @@ function resolveConfirmInventoryReceiptErrorMessage(error: unknown): string {
       return "Job chưa được QC thành phẩm (bước Lắp ráp) — chưa thể nhập kho."
     case "purchase_order_item.error.received_quantity_exceeded":
       return "SL nhận vượt quá SL còn lại của dòng đơn mua hàng. Vui lòng tải lại trang và kiểm tra lại số lượng."
+    case "purchase_order.error.not_ordered":
+      return "Đơn mua hàng đã bị huỷ hoặc không còn ở trạng thái đã đặt hàng."
     case "auth.error.forbidden":
       return "Bạn không có quyền xác nhận phiếu nhập kho."
     default:

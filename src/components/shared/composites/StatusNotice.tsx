@@ -12,6 +12,8 @@ type StatusNoticeProps = {
   // The one call site (PurchaseRequestRejectionNotice.tsx) that needs a 3rd line — a hint shown
   // only in one of its 2 gated statuses.
   extra?: ReactNode
+  // `neutral` for a notice that is informative rather than a failure (e.g. a PO closed early).
+  tone?: "destructive" | "neutral"
   className?: string
 }
 
@@ -28,18 +30,34 @@ export function StatusNotice({
   actorName,
   timestamp,
   extra,
+  tone = "destructive",
   className,
 }: StatusNoticeProps) {
+  const isNeutral = tone === "neutral"
+
   return (
     <div
       className={cn(
-        "flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4 sm:p-5",
+        "flex gap-3 rounded-lg border p-4 sm:p-5",
+        isNeutral ? "bg-muted/40" : "border-destructive/30 bg-destructive/5",
         className
       )}
     >
-      <TriangleAlert className="mt-0.5 size-5 shrink-0 text-destructive" />
+      <TriangleAlert
+        className={cn(
+          "mt-0.5 size-5 shrink-0",
+          isNeutral ? "text-muted-foreground" : "text-destructive"
+        )}
+      />
       <div className="min-w-0 space-y-1">
-        <p className="text-sm font-semibold text-destructive">{title}</p>
+        <p
+          className={cn(
+            "text-sm font-semibold",
+            isNeutral ? "text-foreground" : "text-destructive"
+          )}
+        >
+          {title}
+        </p>
         <p className="text-sm text-foreground">{reason}</p>
         {actorName && timestamp ? (
           <p className="text-xs text-muted-foreground">

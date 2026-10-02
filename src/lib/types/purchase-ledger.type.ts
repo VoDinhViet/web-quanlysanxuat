@@ -3,15 +3,14 @@ import type { Unit } from "@/lib/types/unit.type"
 
 /** Mirrors the backend's `PurchaseLedgerStatus` (`be-quanlysanxuat/src/api/purchase-ledger/
  *  purchase-ledger.constant.ts`) exactly — computed at read time from `quotedQuantity`/
- *  `orderedQuantity`/`receivedQuantity`, not a stored column. `COMPLETED` needs `receivedQuantity`
- *  (joined via `purchaseOrderItemId`, `POSTED` receipts), so it can't appear yet until
- *  `inventory-receipts` writes that link. `orderedQuantity` only counts PO status `ORDERED` (a
- *  `DRAFT` PO auto-generated from an approved RFQ doesn't count) — see `docs/domains/purchasing.md`
- *  in the backend repo. */
+ *  `orderedQuantity`/`receivedQuantity`, not a stored column. `orderedQuantity` only counts PO
+ *  status `ORDERED` (a PO still waiting for confirmation doesn't count) and `receivedQuantity` only
+ *  counts `POSTED` receipts — see `docs/domains/purchasing.md` in the backend repo. */
 export const PurchaseLedgerStatus = {
   WAITING_TO_PURCHASE: "WAITING_TO_PURCHASE",
   QUOTING: "QUOTING",
   ORDERED: "ORDERED",
+  RECEIVING: "RECEIVING",
   COMPLETED: "COMPLETED",
 } as const
 
@@ -23,6 +22,7 @@ export const purchaseLedgerStatusLabels: Record<PurchaseLedgerStatus, string> =
     [PurchaseLedgerStatus.WAITING_TO_PURCHASE]: "Chờ mua",
     [PurchaseLedgerStatus.QUOTING]: "Đang báo giá",
     [PurchaseLedgerStatus.ORDERED]: "Đã đặt hàng",
+    [PurchaseLedgerStatus.RECEIVING]: "Nhập một phần",
     [PurchaseLedgerStatus.COMPLETED]: "Hoàn tất",
   }
 
@@ -32,7 +32,8 @@ export const purchaseLedgerStatusDescriptions: Record<
 > = {
   [PurchaseLedgerStatus.WAITING_TO_PURCHASE]: "Chưa có báo giá, chưa có PO",
   [PurchaseLedgerStatus.QUOTING]: "Có báo giá, chưa có PO",
-  [PurchaseLedgerStatus.ORDERED]: "Có PO, chưa nhập đủ",
+  [PurchaseLedgerStatus.ORDERED]: "Đã đặt, chưa nhập",
+  [PurchaseLedgerStatus.RECEIVING]: "Đã nhập một phần",
   [PurchaseLedgerStatus.COMPLETED]: "Đã nhập đủ",
 }
 

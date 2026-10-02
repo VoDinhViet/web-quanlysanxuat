@@ -19,6 +19,8 @@ function resolveCancelInventoryReceiptErrorMessage(error: unknown): string {
       return "Phiếu đã bị huỷ."
     case "inventory_document.error.insufficient_stock":
       return "Không thể huỷ — vật tư đã nhập có phần đã bị tiêu đi, huỷ sẽ làm tồn xuống âm."
+    case "payment_request.error.already_paid":
+      return "Yêu cầu thanh toán của đơn mua hàng này đã thanh toán, không thể huỷ."
     case "auth.error.forbidden":
       return "Bạn không có quyền huỷ phiếu nhập kho này."
     default:

@@ -9,7 +9,7 @@ import { PurchaseOrderDetailActions } from "@/features/purchase-orders/component
 import { PurchaseOrderExpectedDateField } from "@/features/purchase-orders/components/composites/PurchaseOrderExpectedDateField"
 import { PurchaseOrderNoteField } from "@/features/purchase-orders/components/composites/PurchaseOrderNoteField"
 import { PurchaseOrderPaymentTermField } from "@/features/purchase-orders/components/composites/PurchaseOrderPaymentTermField"
-import { PurchaseOrderStatusBadge } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
+import { PurchaseOrderProgressBadge } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderDetailHeaderProps = {
@@ -19,10 +19,9 @@ type PurchaseOrderDetailHeaderProps = {
 
 // Identity + info row, same shell as PurchaseQuotationDetailHeader.tsx / (purchase-requests' own
 // copy) — 5th duplicate of this MetaField tile idiom, per the repo's own "no abstraction until
-// 3rd use" convention already applied consistently at the other 4 sites. 3-column grid (not the
-// generic 1-3 column wrap the other detail headers use): nguồn gốc (NCC/RFQ/PR — dọn từ thẻ
-// sidebar riêng vào đây) / thông tin phụ trách+thanh toán / thông tin giao nhận, mirror layout
-// tham khảo ban đầu.
+// 3rd use" convention already applied consistently at the other 4 sites. Top row: back/code/status
+// left, actions right. Below, a 4-column grid: hàng 1 chỉ đọc (NCC/RFQ/PR nguồn/ngày đặt), hàng 2
+// các trường chỉnh được (phụ trách/điều khoản TT/ngày giao), ghi chú chiếm trọn hàng cuối.
 export function PurchaseOrderDetailHeader({
   purchaseOrder,
   editable,
@@ -37,8 +36,8 @@ export function PurchaseOrderDetailHeader({
   )
 
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5">
-      <div className="flex min-w-0 flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 py-4 sm:px-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <LinkButton
             to="/manage/purchase-orders"
@@ -54,82 +53,82 @@ export function PurchaseOrderDetailHeader({
           <span className="font-mono text-lg font-bold text-foreground">
             {purchaseOrder.code}
           </span>
-          <PurchaseOrderStatusBadge status={purchaseOrder.status} />
+          <PurchaseOrderProgressBadge progress={purchaseOrder.progress} />
         </div>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
-          <MetaField label="NCC" value={purchaseOrder.supplier.name} />
-          <PurchaseOrderAssignee
-            purchaseOrderId={purchaseOrder.id}
-            assignedUser={purchaseOrder.assignedUser}
-            editable={editable}
-          />
-          <MetaField
-            label="Ngày đặt"
-            value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
-              "dd/MM/yyyy"
-            )}
-          />
-
-          <MetaField
-            label="RFQ nguồn"
-            value={
-              purchaseOrder.quotation ? (
-                <Link
-                  to="/manage/purchase-quotations/$purchaseQuotationId"
-                  params={{ purchaseQuotationId: purchaseOrder.quotation.id }}
-                  className="font-mono text-primary hover:underline"
-                >
-                  {purchaseOrder.quotation.code}
-                </Link>
-              ) : (
-                "Không có"
-              )
-            }
-          />
-          <PurchaseOrderPaymentTermField
-            purchaseOrderId={purchaseOrder.id}
-            paymentTerm={purchaseOrder.paymentTerm}
-            editable={editable}
-          />
-          <PurchaseOrderExpectedDateField
-            purchaseOrderId={purchaseOrder.id}
-            expectedDate={purchaseOrder.expectedDate}
-            editable={editable}
-          />
-
-          <MetaField
-            label="PR nguồn"
-            value={
-              purchaseRequests.length > 0 ? (
-                <span className="flex flex-wrap gap-1.5">
-                  {purchaseRequests.map((purchaseRequest) => (
-                    <Link
-                      key={purchaseRequest.id}
-                      to="/manage/purchase-requests/$purchaseRequestId"
-                      params={{ purchaseRequestId: purchaseRequest.id }}
-                      className="font-mono text-primary hover:underline"
-                    >
-                      {purchaseRequest.code}
-                    </Link>
-                  ))}
-                </span>
-              ) : (
-                "Không có"
-              )
-            }
-          />
-          <div className="sm:col-span-2">
-            <PurchaseOrderNoteField
-              purchaseOrderId={purchaseOrder.id}
-              note={purchaseOrder.note}
-              editable={editable}
-            />
-          </div>
-        </div>
+        <PurchaseOrderDetailActions purchaseOrder={purchaseOrder} />
       </div>
 
-      <PurchaseOrderDetailActions purchaseOrder={purchaseOrder} />
+      <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MetaField label="NCC" value={purchaseOrder.supplier.name} />
+        <MetaField
+          label="RFQ nguồn"
+          value={
+            purchaseOrder.quotation ? (
+              <Link
+                to="/manage/purchase-quotations/$purchaseQuotationId"
+                params={{ purchaseQuotationId: purchaseOrder.quotation.id }}
+                className="font-mono text-primary hover:underline"
+              >
+                {purchaseOrder.quotation.code}
+              </Link>
+            ) : (
+              "Không có"
+            )
+          }
+        />
+        <MetaField
+          label="PR nguồn"
+          value={
+            purchaseRequests.length > 0 ? (
+              <span className="flex flex-col gap-0.5">
+                {purchaseRequests.map((purchaseRequest) => (
+                  <Link
+                    key={purchaseRequest.id}
+                    to="/manage/purchase-requests/$purchaseRequestId"
+                    params={{ purchaseRequestId: purchaseRequest.id }}
+                    className="font-mono text-primary hover:underline"
+                  >
+                    {purchaseRequest.code}
+                  </Link>
+                ))}
+              </span>
+            ) : (
+              "Không có"
+            )
+          }
+        />
+        <MetaField
+          label="Ngày đặt"
+          value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
+            "dd/MM/yyyy"
+          )}
+        />
+
+        <PurchaseOrderAssignee
+          purchaseOrderId={purchaseOrder.id}
+          assignedUser={purchaseOrder.assignedUser}
+          editable={editable}
+        />
+        <PurchaseOrderPaymentTermField
+          purchaseOrderId={purchaseOrder.id}
+          paymentTerm={purchaseOrder.paymentTerm}
+          editable={editable}
+        />
+        <PurchaseOrderExpectedDateField
+          purchaseOrderId={purchaseOrder.id}
+          expectedDate={purchaseOrder.expectedDate}
+          editable={editable}
+        />
+
+        <div className="sm:col-span-2 lg:col-span-4">
+          <PurchaseOrderNoteField
+            purchaseOrderId={purchaseOrder.id}
+            note={purchaseOrder.note}
+            editable={editable}
+          />
+        </div>
+      </div>
     </div>
   )
 }

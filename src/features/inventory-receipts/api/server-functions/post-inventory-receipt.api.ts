@@ -21,6 +21,8 @@ function resolvePostInventoryReceiptErrorMessage(error: unknown): string {
       return "Không thể xác nhận — thao tác sẽ làm tồn một mặt hàng xuống âm."
     case "inventory_receipt.error.iqc_not_completed":
       return "Còn phiếu IQC chưa hoàn tất — kiểm tra chất lượng xong mới nhập kho được."
+    case "purchase_order.error.not_ordered":
+      return "Đơn mua hàng đã bị huỷ hoặc không còn ở trạng thái đã đặt hàng."
     case "auth.error.forbidden":
       return "Bạn không có quyền xác nhận nhập kho."
     default:

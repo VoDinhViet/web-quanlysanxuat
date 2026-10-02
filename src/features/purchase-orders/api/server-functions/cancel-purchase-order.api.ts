@@ -19,6 +19,10 @@ function resolveCancelPurchaseOrderErrorMessage(error: unknown): string {
       return "Đơn mua hàng đã bị huỷ."
     case "purchase_order.error.has_posted_receipts":
       return "Đã có phiếu nhập kho ghi nhận cho đơn này, không thể huỷ."
+    case "purchase_quotation.error.order_already_placed":
+      return "Báo giá còn đơn mua khác đã đặt hàng. Hãy huỷ các đơn đó trước khi mở lại báo giá."
+    case "payment_request.error.already_paid":
+      return "Yêu cầu thanh toán của đơn mua hàng này đã thanh toán, không thể huỷ."
     case "auth.error.forbidden":
       return "Bạn không có quyền huỷ đơn mua hàng này."
     default:
@@ -33,6 +37,7 @@ export const cancelPurchaseOrder = createServerFn({ method: "POST" })
     try {
       await http.post(`/api/purchase-orders/${data.purchaseOrderId}/cancel`, {
         reason: data.reason,
+        reopenQuotation: data.reopenQuotation,
       })
     } catch (error) {
       logHttpError(error, "cancelPurchaseOrder")

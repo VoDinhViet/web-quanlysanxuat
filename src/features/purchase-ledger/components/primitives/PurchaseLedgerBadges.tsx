@@ -20,7 +20,7 @@ type BadgeStyle = {
   dot: string
 }
 
-// 4 statuses need more distinct tones than the 3 semantic ones (success/warning/destructive)
+// 5 statuses need more distinct tones than the 3 semantic ones (success/warning/destructive)
 // can tell apart, so this mirrors OrderBadges' palette (not InventoryDirectStatusBadge's,
 // which only has 3 tones to cover). PurchaseLedgerLegend also reads this map, to render the dot
 // on its own without a badge.
@@ -40,6 +40,11 @@ export const purchaseLedgerStatusStyles: Record<
   [PurchaseLedgerStatus.ORDERED]: {
     badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
     dot: "bg-blue-500 dark:bg-blue-400",
+  },
+  [PurchaseLedgerStatus.RECEIVING]: {
+    badge:
+      "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
+    dot: "bg-violet-500 dark:bg-violet-400",
   },
   [PurchaseLedgerStatus.COMPLETED]: {
     badge: "bg-success/10 text-success",
@@ -93,8 +98,7 @@ export function PurchaseLedgerWarningBadge({
   className,
 }: PurchaseLedgerWarningBadgeProps) {
   const { badge } = purchaseLedgerWarningStyles[warning]
-  const Icon =
-    warning === PurchaseLedgerWarning.URGENT ? Clock : TriangleAlert
+  const Icon = warning === PurchaseLedgerWarning.URGENT ? Clock : TriangleAlert
 
   return (
     <Tooltip>
@@ -102,7 +106,7 @@ export function PurchaseLedgerWarningBadge({
         render={
           <span
             className={cn(
-              "inline-flex h-5.5 cursor-help items-center gap-1.25 rounded-full border px-2 text-[11px] font-medium leading-none whitespace-nowrap shadow-2xs transition-colors",
+              "inline-flex h-5.5 cursor-help items-center gap-1.25 rounded-full border px-2 text-[11px] leading-none font-medium whitespace-nowrap shadow-2xs transition-colors",
               badge,
               className
             )}

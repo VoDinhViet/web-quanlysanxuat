@@ -101,6 +101,7 @@ export function InventoryReceiptDetailActions({
       queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
       queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
       queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
+      queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
       queryClient.invalidateQueries({ queryKey: ["reports"] }),
     ])
 
@@ -298,6 +299,9 @@ export function InventoryReceiptDetailActions({
                     đã được nhập kho — hủy sẽ đảo ngược bút toán và trừ lại tồn
                     kho đã cộng. Nếu vật tư đã được tiêu đi, thao tác này sẽ
                     thất bại để tránh tồn âm.
+                    {inventoryReceipt.purchaseOrder
+                      ? " Yêu cầu thanh toán đang chờ của đơn mua hàng cũng sẽ bị huỷ (tự sinh lại khi nhận đủ hàng); nếu đã thanh toán thì không huỷ được."
+                      : null}
                   </>
                 ) : (
                   <>

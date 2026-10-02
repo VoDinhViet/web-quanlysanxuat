@@ -99,8 +99,15 @@ export const purchaseOrdersColumns = purchaseOrderColumnHelper.columns([
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => (
-      <PurchaseOrderProgressBadge progress={getValue()} />
+    cell: ({ getValue, row }) => (
+      <div className="flex flex-col items-center gap-1">
+        <PurchaseOrderProgressBadge progress={getValue()} />
+        {row.original.closedAt ? (
+          <span className="text-[10px] font-medium text-muted-foreground">
+            Đóng sớm
+          </span>
+        ) : null}
+      </div>
     ),
   }),
 

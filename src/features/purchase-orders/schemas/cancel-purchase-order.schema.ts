@@ -10,6 +10,9 @@ export const cancelPurchaseOrderSchema = z.object({
     .trim()
     .min(1, "Vui lòng nhập lý do huỷ")
     .max(1000, "Lý do tối đa 1000 ký tự"),
+  // true → the backend also moves the source RFQ APPROVED → DRAFT so the price can be fixed and
+  // the quotation re-approved (regenerates POs). Omitted/false → only the PO is cancelled.
+  reopenQuotation: z.boolean().optional(),
 })
 
 export type CancelPurchaseOrderSchema = z.infer<

@@ -5,6 +5,7 @@ import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api/options"
 import { PurchaseOrderCancellationNotice } from "@/features/purchase-orders/components/composites/PurchaseOrderCancellationNotice"
+import { PurchaseOrderClosureNotice } from "@/features/purchase-orders/components/composites/PurchaseOrderClosureNotice"
 import { PurchaseOrderDetailHeader } from "@/features/purchase-orders/components/layouts/PurchaseOrderDetailHeader"
 import { PurchaseOrderDetailTimelineCard } from "@/features/purchase-orders/components/composites/PurchaseOrderDetailTimelineCard"
 import { PurchaseOrderItemsSection } from "@/features/purchase-orders/components/sections/PurchaseOrderItemsSection"
@@ -44,6 +45,7 @@ export function PurchaseOrderDetailPage() {
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
         <PurchaseOrderCancellationNotice purchaseOrder={purchaseOrder} />
+        <PurchaseOrderClosureNotice purchaseOrder={purchaseOrder} />
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           <Surface>

@@ -26,7 +26,9 @@ export function PurchaseQuotationRejectionNotice({
       <TriangleAlert className="mt-0.5 size-5 shrink-0 text-destructive" />
       <div className="min-w-0 space-y-1">
         <p className="text-sm font-semibold text-destructive">
-          Báo giá bị từ chối
+          {purchaseQuotation.approvedAt
+            ? "Báo giá đã bị huỷ"
+            : "Báo giá bị từ chối"}
         </p>
         <p className="text-sm text-foreground">
           {purchaseQuotation.cancellationReason}

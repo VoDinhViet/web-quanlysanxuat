@@ -1,4 +1,5 @@
 import type { PaymentTerm } from "@/lib/types/payment-term.type"
+import type { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -27,7 +28,8 @@ export const purchaseOrderStatusDescriptions: Record<
   PurchaseOrderStatus,
   string
 > = {
-  [PurchaseOrderStatus.PENDING_CONFIRMATION]: "Chờ xác nhận để đặt hàng với NCC",
+  [PurchaseOrderStatus.PENDING_CONFIRMATION]:
+    "Chờ xác nhận để đặt hàng với NCC",
   [PurchaseOrderStatus.ORDERED]: "Đã đặt với NCC, chờ nhận hàng",
   [PurchaseOrderStatus.CANCELLED]: "Đơn đã bị hủy",
 }
@@ -64,7 +66,8 @@ export const purchaseOrderProgressDescriptions: Record<
   PurchaseOrderProgress,
   string
 > = {
-  [PurchaseOrderProgress.PENDING_CONFIRMATION]: "Chờ xác nhận để đặt hàng với NCC",
+  [PurchaseOrderProgress.PENDING_CONFIRMATION]:
+    "Chờ xác nhận để đặt hàng với NCC",
   [PurchaseOrderProgress.ORDERED]: "Đã đặt với NCC, chưa nhận hàng",
   [PurchaseOrderProgress.RECEIVING]: "Đã nhận một phần",
   [PurchaseOrderProgress.COMPLETED]: "Đã nhận đủ số lượng đặt",
@@ -117,6 +120,9 @@ export type PurchaseOrder = {
   orderedAt: string | null
   cancellerBy: PurchaseOrderUserRef | null
   cancelledAt: string | null
+  /** Set when the PO was closed early (received part of the order, the rest is not coming) —
+   *  `status` stays ORDERED, `progress` becomes COMPLETED. */
+  closedAt: string | null
   creatorBy: PurchaseOrderUserRef | null
   createdAt: string
   updatedAt: string
@@ -153,18 +159,33 @@ export type PurchaseOrderDetail = {
   code: string
   supplier: SupplierRef
   status: PurchaseOrderStatus
+  /** Same value the list shows (`PurchaseOrder.progress`) — computed by the backend. */
+  progress: PurchaseOrderProgress
   orderDate: string
   expectedDate: string | null
   assignedUser: PurchaseOrderUserRef | null
   paymentTerm: PaymentTerm | null
   note: string | null
   quotation: { id: string; code: string } | null
+  quotationStatus: PurchaseQuotationStatus | null
+  /** True when cancelling can also reopen the source RFQ (`reopenQuotation`): the RFQ is
+   *  APPROVED and none of its other POs is ORDERED. */
+  canReopenQuotation: boolean
+  /** Other ORDERED POs of the same RFQ — the reason `canReopenQuotation` is false. */
+  reopenBlockedBy: { id: string; code: string }[]
   items: PurchaseOrderItemDetail[]
   ordererBy: PurchaseOrderUserRef | null
   orderedAt: string | null
   cancellerBy: PurchaseOrderUserRef | null
   cancelledAt: string | null
   cancellationReason: string | null
+  closerBy: PurchaseOrderUserRef | null
+  closedAt: string | null
+  closureReason: string | null
+  /** Partially received, not yet closed, and no unposted receipt in the way. */
+  canClose: boolean
+  /** Unposted receipts (DRAFT/PENDING_*) blocking an otherwise possible early close. */
+  closeBlockedBy: { id: string; code: string }[]
   creatorBy: PurchaseOrderUserRef | null
   createdAt: string
   updatedAt: string
