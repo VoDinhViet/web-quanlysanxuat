@@ -3,9 +3,12 @@ import { useField } from "@tanstack/react-form"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
+import { Link } from "@tanstack/react-router"
 import { Gallery, Magnifer } from "@solar-icons/react"
+import { Plus } from "lucide-react"
 import { useDebounceValue } from "usehooks-ts"
 
+import { buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -16,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Pagination } from "@/components/shared/composites/Pagination"
+import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { inventoryProductsQueryOptions } from "@/features/inventory-products/api"
 import { buildOrderItemsSelectColumns } from "@/features/orders/components/composites/OrderItemsSelectColumns"
@@ -149,17 +153,30 @@ export const CreateOrderSelectItemsStep = withForm({
           </p>
         </div>
 
-        <div className="relative mt-4">
-          <Input
-            className="pr-9 text-xs placeholder:text-muted-foreground/75"
-            placeholder="Tìm mã hoặc tên sản phẩm..."
-            value={q}
-            onChange={(event) => {
-              setQ(event.target.value)
-              setPage(1)
-            }}
-          />
-          <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="mt-4 flex items-center gap-2">
+          <div className="relative flex-1">
+            <Input
+              className="pr-9 text-xs placeholder:text-muted-foreground/75"
+              placeholder="Tìm mã hoặc tên sản phẩm..."
+              value={q}
+              onChange={(event) => {
+                setQ(event.target.value)
+                setPage(1)
+              }}
+            />
+            <Magnifer className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          </div>
+          <RoutePermissionGate route="/manage/products/create">
+            <Link
+              to="/manage/products/create"
+              target="_blank"
+              rel="noreferrer"
+              className={buttonVariants({ className: "gap-1.5 text-xs" })}
+            >
+              <Plus className="size-4" />
+              Tạo sản phẩm
+            </Link>
+          </RoutePermissionGate>
         </div>
 
         <div className="mt-4 max-h-[420px] overflow-x-auto overflow-y-auto rounded-md border border-dashed border-border/50 bg-card">
