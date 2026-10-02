@@ -1,27 +1,32 @@
 import { Link } from "@tanstack/react-router"
 import {
   Bill,
-  Calendar,
   Checklist,
   ClipboardText,
   Layers,
+  User,
 } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
 import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import { OqcFinishedGoodStrip } from "@/features/oqc/components/composites/OqcFinishedGoodStrip"
+import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
 type OqcLotSummaryCardProps = {
+  form: OqcDetailFormApi
   oqc: OqcDetail
+  disabled?: boolean
 }
 
 // §1 LÔ KIỂM TRA — dải thành phẩm (xem OqcFinishedGoodStrip.tsx) + tham chiếu (PO, Job, Công
-// đoạn, ngày kiểm tra — gộp từ lưới 9 MetaField cũ ở OqcDetailHeader.tsx đã bỏ). Tham
-// chiếu render dạng ô label/icon/value xếp chồng, cùng idiom IqcGeneralInfoCard.tsx.
-export function OqcLotSummaryCard({ oqc }: OqcLotSummaryCardProps) {
+// đoạn, người tạo) + Ngày kiểm tra (field user tự chọn, cùng idiom IqcGeneralInfoCard.tsx).
+export function OqcLotSummaryCard({
+  form,
+  oqc,
+  disabled,
+}: OqcLotSummaryCardProps) {
   return (
     <OqcDetailSectionCard
       icon={Layers}
@@ -55,11 +60,23 @@ export function OqcLotSummaryCard({ oqc }: OqcLotSummaryCardProps) {
             value={oqc.operation.name}
           />
           <InfoTile
-            icon={Calendar}
-            label="Ngày kiểm tra"
-            value={DateTime.fromISO(oqc.inspectionDate).toFormat("dd/MM/yyyy")}
+            icon={User}
+            label="Người tạo"
+            value={oqc.creatorBy?.fullName ?? "—"}
           />
         </dl>
+
+        <div className="border-t border-border pt-5 sm:max-w-xs">
+          <form.AppField name="inspectionDate">
+            {(field) => (
+              <field.TextField
+                label="Ngày kiểm tra"
+                type="datetime-local"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+        </div>
       </div>
     </OqcDetailSectionCard>
   )

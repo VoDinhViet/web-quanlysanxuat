@@ -107,7 +107,7 @@ export function OqcDetailForm({ oqc }: OqcDetailFormProps) {
 
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex flex-col gap-4">
-          <OqcLotSummaryCard oqc={oqc} />
+          <OqcLotSummaryCard form={form} oqc={oqc} disabled={disabled} />
           <OqcResultCard form={form} disabled={disabled} />
           <OqcEvidenceCard
             form={form}

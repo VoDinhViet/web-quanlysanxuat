@@ -1,3 +1,4 @@
+import { DateTime } from "luxon"
 import { z } from "zod"
 
 import { IqcResult } from "@/lib/types/iqc.type"
@@ -8,13 +9,22 @@ import type { FileFieldValue } from "@/lib/file-field.schema"
 import { emptyToUndefined, optionalEnum } from "@/lib/zod-transforms"
 
 // Wire contract for POST /api/oqc/:oqcId/confirm — the single "Lưu" button of the whole detail
-// page. Unlike confirm-iqc.schema.ts, there is no attachments/context fields group and no
-// `inspectionDate` (not part of ConfirmOqcReqDto — OQC's inspection date is set once at
-// create and shown read-only). `disposition`/`dispositionNote` only render (OqcDispositionCard)
-// when `result` is live FAIL — optional here for the same reason IQC's are: not choosing a
-// disposition is a valid save (→ PENDING). Also the client-side onDynamic validator.
+// page.
 export const confirmOqcSchema = z.object({
   oqcId: z.uuid(),
+  // `<input type="datetime-local">` value — parsed at the local zone, not `{zone:"utc"}`.
+  inspectionDate: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value.length === 0 || DateTime.fromISO(value).isValid,
+      "Ngày kiểm tra không hợp lệ"
+    )
+    .transform((value) =>
+      value.length > 0
+        ? DateTime.fromISO(value).toJSDate().toISOString()
+        : undefined
+    ),
   result: z.enum(IqcResult),
   resultNote: z
     .string()
@@ -40,6 +50,7 @@ export type ConfirmOqcSchema = z.input<typeof confirmOqcSchema>
 // OqcDetailForm.tsx's useOqcDetailForm).
 export type ConfirmOqcFormValue = {
   oqcId: string
+  inspectionDate: string
   result: IqcResult | ""
   resultNote: string
   qcEvidence: FileFieldValue[]
@@ -53,6 +64,7 @@ export type ConfirmOqcFormValue = {
 // OqcDetailForm.tsx's useOqcDetailForm.
 export const confirmOqcFormDefaultValues: ConfirmOqcFormValue = {
   oqcId: "",
+  inspectionDate: "",
   result: "",
   resultNote: "",
   qcEvidence: [],
@@ -67,6 +79,9 @@ export const confirmOqcFormDefaultValues: ConfirmOqcFormValue = {
 export function getOqcDefaultValues(oqc: OqcDetail): ConfirmOqcFormValue {
   return {
     oqcId: oqc.id,
+    inspectionDate: DateTime.fromISO(oqc.inspectionDate).toFormat(
+      "yyyy-MM-dd'T'HH:mm"
+    ),
     result: oqc.result ?? "",
     resultNote: oqc.resultNote ?? "",
     qcEvidence: oqc.files
