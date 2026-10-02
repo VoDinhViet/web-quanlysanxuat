@@ -22,6 +22,8 @@ export type AuthLoginResponse = {
  */
 export type AuthUserProfile = {
   id: string
+  /** users.id of the linked profile — `id` is the credential id. */
+  userId: string
   fullName: string | null
   username: string
   email: string

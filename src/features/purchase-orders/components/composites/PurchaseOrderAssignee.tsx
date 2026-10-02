@@ -72,9 +72,9 @@ export function PurchaseOrderAssignee({
     if (assignedUser) {
       return { value: assignedUser.id, label: assignedUser.fullName }
     }
-    if (profile?.id) {
+    if (profile?.userId) {
       return {
-        value: profile.id,
+        value: profile.userId,
         label: profile.fullName ?? profile.username,
       }
     }
@@ -103,10 +103,10 @@ export function PurchaseOrderAssignee({
 
   // Đơn mua chưa có người phụ trách: mặc định gán theo user đăng nhập
   useEffect(() => {
-    if (editable && !assignedUser && profile?.id) {
-      save(profile.id)
+    if (editable && !assignedUser && profile?.userId) {
+      save(profile.userId)
     }
-  }, [editable, assignedUser, profile?.id, save])
+  }, [editable, assignedUser, profile?.userId, save])
 
   if (!editable) {
     return (
