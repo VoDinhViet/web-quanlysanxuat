@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import { AlertTriangle, PackageSearch } from "lucide-react"
+import { Gallery } from "@solar-icons/react"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 
@@ -23,6 +24,7 @@ import type {
 } from "@/lib/types/inventory-receipt.type"
 import { resolveInventoryReceiptItemType } from "@/lib/types/inventory-receipt.type"
 import { vndFormatter } from "@/lib/currency"
+import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 
 const col = createColumnHelper<
@@ -47,6 +49,39 @@ function buildInventoryReceiptDetailItemColumns({
         cellClassName: "text-center text-muted-foreground",
       },
       cell: ({ row }) => row.index + 1,
+    }),
+
+    col.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-20 text-center",
+        cellClassName: "py-2 text-center",
+      },
+      cell: ({ row }) => {
+        const { image, name } = row.original.item
+        return (
+          <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
+            {image ? (
+              <a
+                href={resolveFileUrl(image.url)}
+                target="_blank"
+                rel="noreferrer"
+                className="size-full"
+              >
+                <img
+                  src={resolveFileUrl(image.url)}
+                  alt={name}
+                  loading="lazy"
+                  className="size-full object-cover"
+                />
+              </a>
+            ) : (
+              <Gallery className="size-4 text-muted-foreground/50" />
+            )}
+          </div>
+        )
+      },
     }),
 
     col.accessor("item.code", {

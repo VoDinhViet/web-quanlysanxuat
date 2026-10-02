@@ -81,8 +81,11 @@ export const oqcColumns = oqcColumnHelper.columns([
       const bomItem = row.original.bomItem
 
       return (
-        <div className="max-w-56 min-w-0">
-          <p className="truncate text-xs font-semibold text-foreground">
+        <div className="max-w-72 min-w-0">
+          <p
+            className="line-clamp-2 text-xs font-semibold break-words text-foreground"
+            title={bomItem.name}
+          >
             {bomItem.name}
           </p>
           <p className="truncate font-mono text-[11px] text-muted-foreground">

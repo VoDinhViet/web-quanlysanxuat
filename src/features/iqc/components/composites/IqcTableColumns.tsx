@@ -34,10 +34,13 @@ export const iqcColumns = iqcColumnHelper.columns([
   iqcColumnHelper.display({
     id: "item",
     header: "Vật tư",
-    meta: { headerClassName: "min-w-48" },
+    meta: { headerClassName: "min-w-56" },
     cell: ({ row }) => (
-      <div className="max-w-56 min-w-0">
-        <p className="truncate text-xs font-semibold text-foreground">
+      <div className="max-w-72 min-w-0">
+        <p
+          className="line-clamp-2 text-xs font-semibold break-words text-foreground"
+          title={row.original.itemName}
+        >
           {row.original.itemName}
         </p>
         <p className="truncate font-mono text-[11px] text-muted-foreground">

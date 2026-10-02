@@ -114,7 +114,7 @@ export function InventoryReceiptsTableFilter() {
               <Input
                 id="nk-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Mã phiếu, PO, khách hàng, NCC..."
+                placeholder="Mã phiếu, mã/tên vật tư..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)

@@ -1,4 +1,5 @@
 import type { ClientRef } from "@/lib/types/client.type"
+import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
@@ -167,7 +168,7 @@ export type InventoryReceiptPurchaseOrderItemRef = {
  *  line shape below (`.claude/rules/api.md` two-layer Page/Detail convention). */
 export type InventoryReceiptItem = {
   id: string
-  item: ItemRef
+  item: ItemRef & { image: FileResource | null }
   unit: Unit
   quantity: number
   unitPrice: number | null
