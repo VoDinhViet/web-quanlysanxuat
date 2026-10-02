@@ -6,7 +6,7 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { InventoryIssueStatusBadge } from "@/features/inventory-issues/components/primitives/InventoryIssueBadges"
 import {
   InventoryIssueActionsCell,
-  InventoryIssueSourceCell,
+  InventoryIssueJobLsxCell,
 } from "@/features/inventory-issues/components/primitives/InventoryIssueTableCells"
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
@@ -65,14 +65,34 @@ export const inventoryIssuesColumns = col.columns([
   }),
 
   col.display({
-    id: "source",
-    header: "Đối tượng",
-    meta: { headerClassName: "min-w-40" },
+    id: "requisition",
+    header: "Phiếu lãnh",
+    meta: { headerClassName: "min-w-32" },
+    cell: ({ row }) => {
+      const requisition = row.original.requisition
+      if (!requisition) {
+        return <span className="text-muted-foreground">—</span>
+      }
+      return (
+        <Link
+          to="/manage/inventory-requisitions/$requisitionId"
+          params={{ requisitionId: requisition.id }}
+          className="font-mono text-xs font-semibold text-primary hover:underline"
+        >
+          {requisition.code}
+        </Link>
+      )
+    },
+  }),
+
+  col.display({
+    id: "jobAndOrder",
+    header: "Job / LSX",
+    meta: { headerClassName: "min-w-32" },
     cell: ({ row }) => (
-      <InventoryIssueSourceCell
+      <InventoryIssueJobLsxCell
         productionOrder={row.original.productionOrder}
         productionJob={row.original.productionJob}
-        department={row.original.department}
       />
     ),
   }),

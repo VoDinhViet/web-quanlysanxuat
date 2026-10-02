@@ -94,12 +94,19 @@ export type InventoryIssueItem = {
 
 /** Mirrors the backend's `PageInventoryIssueResDto` (`GET /inventory-issues`) — the list
  *  row shape. */
+/** Mirrors the backend's `InventoryRequisitionRefResDto` — phiếu lãnh sinh ra phiếu xuất này. */
+export type InventoryIssueRequisitionRef = {
+  id: string
+  code: string
+}
+
 export type InventoryIssue = {
   id: string
   code: string
   issueType: InventoryIssueType
   status: InventoryIssueStatus
   issueDate: string
+  requisition: InventoryIssueRequisitionRef | null
   productionOrder: InventoryIssueProductionOrderRef | null
   productionJob: InventoryIssueProductionJobRef | null
   department: InventoryIssueDepartmentRef | null

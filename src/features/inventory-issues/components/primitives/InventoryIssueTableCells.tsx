@@ -51,6 +51,34 @@ export function InventoryIssueSourceCell({
   return <span className="text-xs text-muted-foreground">—</span>
 }
 
+type InventoryIssueJobLsxCellProps = {
+  productionOrder: InventoryIssueProductionOrderRef | null
+  productionJob: InventoryIssueProductionJobRef | null
+}
+
+// Cột "Job / LSX" của danh sách — cùng cách hiển thị với màn Lãnh vật tư
+// (InventoryRequisitionsTableColumns): Job đậm, LSX nhỏ bên dưới, "—" khi phiếu không gắn Job/LSX.
+export function InventoryIssueJobLsxCell({
+  productionOrder,
+  productionJob,
+}: InventoryIssueJobLsxCellProps) {
+  const jobCode = productionJob?.code
+  const lsxCode = productionOrder?.code
+  if (!jobCode && !lsxCode) {
+    return <span className="text-muted-foreground">—</span>
+  }
+  return (
+    <div className="flex flex-col gap-0.5 font-mono text-xs">
+      {jobCode ? (
+        <span className="font-semibold text-foreground">{jobCode}</span>
+      ) : null}
+      {lsxCode ? (
+        <span className="text-[11px] text-muted-foreground">{lsxCode}</span>
+      ) : null}
+    </div>
+  )
+}
+
 type InventoryIssueActionsCellProps = {
   issue: InventoryIssue
 }

@@ -111,7 +111,7 @@ export function InventoryIssuesTableFilter() {
               <Input
                 id="xk-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Mã phiếu xuất..."
+                placeholder="Mã phiếu, lý do/PO, Job/LSX, mã/tên vật tư..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)
