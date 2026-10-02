@@ -1,10 +1,10 @@
 // Lifecycle (be-quanlysanxuat/docs/workflows/inventory-requisition.md):
 // DRAFT --send--> PENDING_APPROVAL --approve--> APPROVED --(kho post PXK)--> ISSUED (điểm cuối)
 //                        |
-//                        +--reject--> REJECTED --send--> PENDING_APPROVAL
+//                        +--reject--> REJECTED --send--> PENDING_APPROVAL (hoặc cancel)
 // approve tự sinh 1 phiếu xuất kho (Nháp, module inventory-issues) — không còn hành động "issue"
 // riêng ở đây; APPROVED chỉ còn đổi trạng thái theo đúng phiếu xuất kho đó: kho post → ISSUED,
-// kho cancel PXK → CANCELLED. Mọi trạng thái trừ ISSUED/CANCELLED đều huỷ được (cancel) — huỷ từ
+// kho cancel PXK → CANCELLED. Mọi trạng thái trừ ISSUED/CANCELLED đều hủy được (cancel) — hủy từ
 // APPROVED hủy kèm luôn phiếu xuất kho (Nháp) đi cùng.
 export const InventoryRequisitionStatus = {
   DRAFT: "DRAFT",
@@ -41,7 +41,7 @@ export const inventoryRequisitionStatusDescriptions: Record<
     "Phiếu đã được duyệt, đã tự sinh phiếu xuất kho — chờ kho xác nhận xuất.",
   [InventoryRequisitionStatus.ISSUED]: "Phiếu đã xuất kho, tồn kho đã trừ.",
   [InventoryRequisitionStatus.REJECTED]:
-    "Phiếu bị từ chối, có thể sửa và gửi lại.",
+    "Phiếu bị từ chối, có thể gửi duyệt lại hoặc hủy.",
   [InventoryRequisitionStatus.CANCELLED]: "Phiếu đã bị hủy trước khi xuất.",
 }
 

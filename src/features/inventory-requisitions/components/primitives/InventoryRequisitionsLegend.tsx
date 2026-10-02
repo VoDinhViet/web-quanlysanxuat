@@ -39,10 +39,11 @@ export function InventoryRequisitionsLegend() {
             <strong className="font-medium text-foreground">Chờ duyệt</strong>.
           </p>
           <p>
-            • Chỉ phiếu{" "}
-            <strong className="font-medium text-foreground">Nháp</strong> hoặc{" "}
-            <strong className="font-medium text-foreground">Từ chối</strong> mới
-            có thể chỉnh sửa hoặc xóa.
+            • Phiếu{" "}
+            <strong className="font-medium text-foreground">Từ chối</strong> có
+            thể gửi duyệt lại, hủy hoặc xoá; phiếu{" "}
+            <strong className="font-medium text-foreground">Nháp</strong> có thể
+            gửi duyệt hoặc xoá.
           </p>
         </div>
       </div>

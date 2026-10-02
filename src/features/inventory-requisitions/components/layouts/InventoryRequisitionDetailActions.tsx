@@ -12,6 +12,7 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { ApproveRequisitionDialog } from "@/features/inventory-requisitions/components/composites/ApproveRequisitionDialog"
+import { CancelRequisitionDialog } from "@/features/inventory-requisitions/components/composites/CancelRequisitionDialog"
 import { DeleteRequisitionDialog } from "@/features/inventory-requisitions/components/composites/DeleteRequisitionDialog"
 import { RejectRequisitionDialog } from "@/features/inventory-requisitions/components/composites/RejectRequisitionDialog"
 import { SendRequisitionDialog } from "@/features/inventory-requisitions/components/composites/SendRequisitionDialog"
@@ -24,6 +25,7 @@ type InventoryRequisitionDetailActionsProps = {
 
 // Thao tác chuẩn theo luồng phê duyệt:
 // - DRAFT: Xoá phiếu (xác nhận) / Gửi duyệt
+// - REJECTED: Xoá phiếu / Hủy phiếu / Gửi duyệt lại (gửi thẳng, không bắt sửa dòng trước)
 // - PENDING_APPROVAL: Từ chối / Duyệt (người duyệt)
 // - APPROVED: Xem phiếu xuất kho (nếu đã có PXK tự sinh)
 // - In phiếu
@@ -32,13 +34,14 @@ export function InventoryRequisitionDetailActions({
 }: InventoryRequisitionDetailActionsProps) {
   const navigate = useNavigate()
   const isDraft = detail.status === InventoryRequisitionStatus.DRAFT
+  const isRejected = detail.status === InventoryRequisitionStatus.REJECTED
   const isPendingApproval =
     detail.status === InventoryRequisitionStatus.PENDING_APPROVAL
   const isApproved = detail.status === InventoryRequisitionStatus.APPROVED
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
-      {isDraft && (
+      {(isDraft || isRejected) && (
         <>
           <PermissionGate permission="inventory-requisitions:delete">
             <DeleteRequisitionDialog
@@ -62,13 +65,31 @@ export function InventoryRequisitionDetailActions({
             />
           </PermissionGate>
 
+          {isRejected && (
+            <PermissionGate permission="inventory-requisitions:update">
+              <CancelRequisitionDialog
+                detail={detail}
+                trigger={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="border-destructive/40 text-destructive hover:bg-destructive/10"
+                  >
+                    <CircleX className="size-4" />
+                    Hủy phiếu
+                  </Button>
+                }
+              />
+            </PermissionGate>
+          )}
+
           <PermissionGate permission="inventory-requisitions:update">
             <SendRequisitionDialog
               detail={detail}
               trigger={
                 <Button type="button">
                   <Send className="size-4" />
-                  Gửi duyệt
+                  {isRejected ? "Gửi duyệt lại" : "Gửi duyệt"}
                 </Button>
               }
             />

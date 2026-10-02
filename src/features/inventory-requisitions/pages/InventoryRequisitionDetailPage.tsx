@@ -20,9 +20,10 @@ export function InventoryRequisitionDetailPage() {
     inventoryRequisitionQueryOptions(requisitionId)
   )
 
+  const isRejected = detail.status === InventoryRequisitionStatus.REJECTED
+  // Cancelled after a rejection keeps the rejection reason on the record.
   const isRejectedOrCancelled =
-    (detail.status === InventoryRequisitionStatus.CANCELLED ||
-      detail.status === InventoryRequisitionStatus.REJECTED) &&
+    (detail.status === InventoryRequisitionStatus.CANCELLED || isRejected) &&
     Boolean(detail.rejectionReason)
 
   return (
@@ -37,13 +38,19 @@ export function InventoryRequisitionDetailPage() {
       <PageBody>
         {isRejectedOrCancelled && (
           <StatusNotice
-            title="Phiếu lãnh vật tư đã bị từ chối (Đã hủy)"
+            title={
+              isRejected
+                ? "Phiếu lãnh vật tư bị từ chối"
+                : "Phiếu lãnh vật tư đã bị từ chối và hủy"
+            }
             reason={detail.rejectionReason!}
             actorName={detail.rejecterBy?.fullName}
             timestamp={detail.rejectedAt}
             extra={
               <p className="text-xs text-muted-foreground">
-                Phiếu đã bị hủy. Vui lòng tạo phiếu mới nếu cần lãnh vật tư.
+                {isRejected
+                  ? "Bạn có thể gửi duyệt lại hoặc hủy phiếu."
+                  : "Phiếu đã bị hủy. Vui lòng tạo phiếu mới nếu cần lãnh vật tư."}
               </p>
             }
           />
