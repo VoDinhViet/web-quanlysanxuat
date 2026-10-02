@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -96,13 +96,7 @@ export function ItemCell({ item }: ItemCellProps) {
     <div className="flex items-center gap-2">
       <div className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
         {item.image ? (
-          <Image
-            src={resolveFileUrl(item.image.url)}
-            alt={item.name}
-            layout="fullWidth"
-            objectFit="cover"
-            className="size-full"
-          />
+          <ZoomableImage src={resolveFileUrl(item.image.url)} alt={item.name} />
         ) : (
           <Gallery className="size-3 text-muted-foreground/50" />
         )}

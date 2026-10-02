@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -73,12 +73,9 @@ export function buildDirectPickerColumns({
         <div className="flex items-center gap-2">
           <div className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
             {row.original.image ? (
-              <Image
+              <ZoomableImage
                 src={resolveFileUrl(row.original.image.url)}
                 alt={row.original.name}
-                layout="fullWidth"
-                objectFit="cover"
-                className="size-full"
               />
             ) : (
               <Gallery className="size-3 text-muted-foreground/50" />

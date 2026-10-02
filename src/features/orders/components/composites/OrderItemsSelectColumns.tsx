@@ -1,7 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Gallery } from "@solar-icons/react"
-import { useState } from "react"
 import { Info } from "lucide-react"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -10,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 
@@ -49,22 +49,14 @@ export type SelectableProduct = ProductInventoryItem & {
   isSelected: boolean
 }
 
-// Ảnh sản phẩm: `<img>` thường thay vì unpic `Image layout="fullWidth"` (srcset/CDN transform làm
-// ảnh vỡ ở bước chọn sản phẩm); ảnh 404 (file đã bị dọn) rơi về icon thay vì hiện ô vỡ.
+// Ảnh sản phẩm: `ZoomableImage` (`<img>` thường + lightbox) thay vì unpic `Image layout="fullWidth"`
+// (srcset/CDN transform làm ảnh vỡ ở bước chọn sản phẩm); ảnh 404 rơi về icon thay vì ô vỡ.
 function ProductThumbnail({ product }: { product: ProductInventoryItem }) {
-  const [isBroken, setIsBroken] = useState(false)
-
-  if (!product.image || isBroken) {
+  if (!product.image) {
     return <Gallery className="size-5 text-muted-foreground/50" />
   }
   return (
-    <img
-      src={resolveFileUrl(product.image.url)}
-      alt={product.name}
-      loading="lazy"
-      onError={() => setIsBroken(true)}
-      className="size-full object-cover"
-    />
+    <ZoomableImage src={resolveFileUrl(product.image.url)} alt={product.name} />
   )
 }
 
@@ -119,7 +111,7 @@ export function buildOrderItemsSelectColumns({
         return (
           <div className="flex min-w-0 items-center gap-3 py-1.5">
             <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
-              <ProductThumbnail key={product.image?.url} product={product} />
+              <ProductThumbnail product={product} />
             </div>
             <div className="min-w-0">
               <p className="truncate text-xs font-semibold text-foreground">

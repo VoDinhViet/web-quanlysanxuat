@@ -10,6 +10,7 @@ import {
   PurchaseLedgerSourceCell,
   PurchaseLedgerWarningCell,
 } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerTableCells"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
@@ -61,19 +62,7 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
       return (
         <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
           {image ? (
-            <a
-              href={resolveFileUrl(image.url)}
-              target="_blank"
-              rel="noreferrer"
-              className="size-full"
-            >
-              <img
-                src={resolveFileUrl(image.url)}
-                alt={item.name}
-                loading="lazy"
-                className="size-full object-cover"
-              />
-            </a>
+            <ZoomableImage src={resolveFileUrl(image.url)} alt={item.name} />
           ) : (
             <Gallery className="size-4 text-muted-foreground/50" />
           )}

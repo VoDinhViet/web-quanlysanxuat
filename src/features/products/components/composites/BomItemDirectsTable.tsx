@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import {
   AddSquare,
   ArrowRightUp,
@@ -180,12 +180,9 @@ export function BomItemDirectsTable({
                       <div className="flex items-center gap-2">
                         <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
                           {direct.image ? (
-                            <Image
+                            <ZoomableImage
                               src={resolveFileUrl(direct.image.url)}
                               alt={direct.name}
-                              layout="fullWidth"
-                              objectFit="cover"
-                              className="size-full"
                             />
                           ) : (
                             <Gallery className="size-3.5 text-muted-foreground/50" />

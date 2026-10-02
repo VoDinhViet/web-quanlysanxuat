@@ -1,4 +1,4 @@
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 import { ArrowRight } from "lucide-react"
 
@@ -37,12 +37,10 @@ export function ProductionExecutionImageCell({
       )}
     >
       {image ? (
-        <Image
+        <ZoomableImage
           src={resolveFileUrl(image.url)}
           alt="Ảnh sản phẩm"
-          layout="fullWidth"
-          objectFit={fit}
-          className="size-full"
+          fit={fit}
         />
       ) : (
         <Gallery className="size-4 text-muted-foreground/50" />

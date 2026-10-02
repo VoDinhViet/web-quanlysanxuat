@@ -1,13 +1,10 @@
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 
 import { resolveFileUrl } from "@/lib/file-url"
 import { bomItemTypeLabels } from "@/lib/types/bom-item.type"
 import { formatOperationSequence } from "@/lib/types/operation.type"
-import type {
-  BomTree,
-  TreeGuideType,
-} from "@/features/products/utils/bom-tree"
+import type { BomTree, TreeGuideType } from "@/features/products/utils/bom-tree"
 
 // Thước kẻ phân nhánh cây BOM (h-14 khớp đúng chiều cao hàng bảng, nối liền mạch giữa các dòng)
 export function TreeGuideLine({ type }: { type: TreeGuideType }) {
@@ -70,10 +67,10 @@ export function BomLevelBadge({ level }: { level: number }) {
 // Ảnh + mã/tên — có thước kẻ phân nhánh cây hiển thị quan hệ cha-con trực quan, các chi tiết giữ đơn giản
 export function BomCodeCell({ row }: { row: BomTree }) {
   return (
-    <div className="flex items-center gap-1.5 min-w-0">
+    <div className="flex min-w-0 items-center gap-1.5">
       {/* Thước kẻ nhánh cây phân cấp cha-con */}
       {row.treeGuides && row.treeGuides.length > 0 && (
-        <div className="flex items-center shrink-0 self-stretch -my-2 mr-0.5">
+        <div className="-my-2 mr-0.5 flex shrink-0 items-center self-stretch">
           {row.treeGuides.map((type, idx) => (
             <TreeGuideLine key={idx} type={type} />
           ))}
@@ -83,26 +80,20 @@ export function BomCodeCell({ row }: { row: BomTree }) {
       {/* Ảnh đại diện */}
       <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
         {row.image ? (
-          <Image
-            src={resolveFileUrl(row.image.url)}
-            alt={row.name}
-            layout="fullWidth"
-            objectFit="cover"
-            className="size-full"
-          />
+          <ZoomableImage src={resolveFileUrl(row.image.url)} alt={row.name} />
         ) : (
           <Gallery className="size-3.5 text-muted-foreground/50" />
         )}
       </div>
 
       {/* Mã bản vẽ */}
-      <span className="font-mono font-bold text-foreground truncate">
+      <span className="truncate font-mono font-bold text-foreground">
         {row.revision ? `${row.code} · ${row.revision}` : row.code}
       </span>
 
       {/* Badge vật tư */}
       {row.bomItem?.isOffStructure && (
-        <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground shrink-0">
+        <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
           {bomItemTypeLabels.DIRECT}
         </span>
       )}

@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from "react"
 import { useParams } from "@tanstack/react-router"
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { ClipboardCheck, SendSquare } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { Package } from "lucide-react"
@@ -283,12 +283,9 @@ export function BomItemHeaderRow({
         <div className="flex items-center gap-2.5">
           <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border text-muted-foreground">
             {bomItem.image ? (
-              <Image
+              <ZoomableImage
                 src={resolveFileUrl(bomItem.image.url)}
                 alt={bomItem.name}
-                layout="fullWidth"
-                objectFit="cover"
-                className="size-full"
               />
             ) : (
               <Package className="size-4" />

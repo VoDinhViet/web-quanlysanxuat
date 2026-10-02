@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 
 import type { appTableFeatures } from "@/lib/table-features"
@@ -47,21 +47,13 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
         const imageUrl = resolveFileUrl(image.url)
 
         return (
-          <a
-            href={imageUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="group mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40 transition hover:border-primary/50"
-            title={`Xem ảnh ${item.name}`}
-          >
-            <Image
+          <div className="group mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40 transition hover:border-primary/50">
+            <ZoomableImage
               src={imageUrl}
               alt={item.name}
-              layout="fullWidth"
-              objectFit="cover"
-              className="size-full transition group-hover:scale-105"
+              className="transition group-hover:scale-105"
             />
-          </a>
+          </div>
         )
       },
     }),
@@ -200,7 +192,7 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
         }
         return (
           <p
-            className="text-xs text-muted-foreground whitespace-normal break-words leading-relaxed"
+            className="text-xs leading-relaxed break-words whitespace-normal text-muted-foreground"
             title={reason}
           >
             {reason}

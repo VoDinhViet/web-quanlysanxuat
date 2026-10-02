@@ -1,4 +1,4 @@
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 import { Eye, Pencil } from "lucide-react"
 
@@ -21,13 +21,7 @@ export function ProductImageCell({ image }: { image: FileResource | null }) {
   return (
     <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
       {image ? (
-        <Image
-          src={resolveFileUrl(image.url)}
-          alt="Ảnh sản phẩm"
-          layout="fullWidth"
-          objectFit="cover"
-          className="size-full"
-        />
+        <ZoomableImage src={resolveFileUrl(image.url)} alt="Ảnh sản phẩm" />
       ) : (
         <Gallery className="size-4 text-muted-foreground/50" />
       )}

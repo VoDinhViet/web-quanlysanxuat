@@ -1,4 +1,4 @@
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 
 import { resolveFileUrl } from "@/lib/file-url"
@@ -17,13 +17,7 @@ export function DirectImageCell({ item }: { item: DirectInventoryItem }) {
   return (
     <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
       {imageUrl ? (
-        <Image
-          src={imageUrl}
-          alt={item.name}
-          layout="fullWidth"
-          objectFit="cover"
-          className="size-full"
-        />
+        <ZoomableImage src={imageUrl} alt={item.name} />
       ) : (
         <Gallery className="size-4 text-muted-foreground/50" />
       )}

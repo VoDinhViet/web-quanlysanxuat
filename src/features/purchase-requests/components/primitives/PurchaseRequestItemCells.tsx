@@ -1,7 +1,7 @@
 import { useParams } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 import { Ban, Loader2, Pencil, ShoppingCart, Trash2 } from "lucide-react"
 import { useState } from "react"
@@ -43,13 +43,7 @@ export function PurchaseRequestItemImageCell({
   return (
     <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
       {imageUrl ? (
-        <Image
-          src={imageUrl}
-          alt={name ?? "Vật tư"}
-          layout="fullWidth"
-          objectFit="cover"
-          className="size-full"
-        />
+        <ZoomableImage src={imageUrl} alt={name ?? "Vật tư"} />
       ) : (
         <Gallery className="size-4 text-muted-foreground/50" />
       )}

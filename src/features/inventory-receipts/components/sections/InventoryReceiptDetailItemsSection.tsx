@@ -24,6 +24,7 @@ import type {
 } from "@/lib/types/inventory-receipt.type"
 import { resolveInventoryReceiptItemType } from "@/lib/types/inventory-receipt.type"
 import { vndFormatter } from "@/lib/currency"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 
@@ -63,19 +64,7 @@ function buildInventoryReceiptDetailItemColumns({
         return (
           <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
             {image ? (
-              <a
-                href={resolveFileUrl(image.url)}
-                target="_blank"
-                rel="noreferrer"
-                className="size-full"
-              >
-                <img
-                  src={resolveFileUrl(image.url)}
-                  alt={name}
-                  loading="lazy"
-                  className="size-full object-cover"
-                />
-              </a>
+              <ZoomableImage src={resolveFileUrl(image.url)} alt={name} />
             ) : (
               <Gallery className="size-4 text-muted-foreground/50" />
             )}

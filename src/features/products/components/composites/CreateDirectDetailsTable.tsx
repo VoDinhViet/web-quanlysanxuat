@@ -1,4 +1,4 @@
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery, TrashBinTrash } from "@solar-icons/react"
 
 import {
@@ -65,12 +65,9 @@ export function CreateDirectDetailsTable({
                 <div className="flex items-center gap-2">
                   <div className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
                     {item.row.image ? (
-                      <Image
+                      <ZoomableImage
                         src={resolveFileUrl(item.row.image.url)}
                         alt={item.row.name}
-                        layout="fullWidth"
-                        objectFit="cover"
-                        className="size-full"
                       />
                     ) : (
                       <Gallery className="size-3 text-muted-foreground/50" />

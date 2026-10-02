@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 import { DateTime } from "luxon"
 import { Copy, Eye, Trash2 } from "lucide-react"
@@ -43,12 +43,9 @@ export const productColumns = productColumnHelper.columns([
         <div className="flex min-w-0 items-center gap-3 py-1">
           <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
             {product.image ? (
-              <Image
+              <ZoomableImage
                 src={resolveFileUrl(product.image.url)}
                 alt={product.name}
-                layout="fullWidth"
-                objectFit="cover"
-                className="size-full"
               />
             ) : (
               <Gallery className="size-4 text-muted-foreground/50" />

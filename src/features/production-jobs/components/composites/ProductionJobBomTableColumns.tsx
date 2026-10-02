@@ -2,7 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Trash2 } from "lucide-react"
 
-import { Image } from "@unpic/react"
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
 
 import { Badge } from "@/components/ui/badge"
@@ -50,12 +50,9 @@ export function buildProductionJobBomColumns({
       cell: ({ row }) => (
         <div className="flex size-9 items-center justify-center overflow-hidden rounded-md border border-border/60 bg-muted/40">
           {row.original.image ? (
-            <Image
+            <ZoomableImage
               src={resolveFileUrl(row.original.image.url)}
               alt={row.original.item.name}
-              layout="fullWidth"
-              objectFit="cover"
-              className="size-full"
             />
           ) : (
             <Gallery className="size-4 text-muted-foreground/50" />
