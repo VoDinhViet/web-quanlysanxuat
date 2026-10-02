@@ -12,6 +12,8 @@ import type { ComponentType, ReactNode } from "react"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import { IqcDirectStrip } from "@/features/iqc/components/composites/IqcDirectStrip"
 import { IqcPoOrReasonCell } from "@/features/iqc/components/primitives/IqcTableCells"
+import { DateTimePicker } from "@/components/shared/composites/DateTimePicker"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 
@@ -77,15 +79,28 @@ export function IqcGeneralInfoCard({
         </div>
 
         <div className="border-t border-border pt-5 sm:max-w-xs">
-          <form.AppField name="inspectionDate">
-            {(field) => (
-              <field.TextField
-                label="Ngày kiểm tra"
-                type="datetime-local"
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
+          <form.Field name="inspectionDate">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel className="text-xs font-medium text-foreground">
+                    Ngày kiểm tra
+                  </FieldLabel>
+                  <DateTimePicker
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    onBlur={field.handleBlur}
+                    disabled={disabled}
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )
+            }}
+          </form.Field>
         </div>
       </div>
     </IqcDetailSectionCard>

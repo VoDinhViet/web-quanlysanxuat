@@ -11,6 +11,8 @@ import type { ComponentType, ReactNode } from "react"
 
 import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import { OqcFinishedGoodStrip } from "@/features/oqc/components/composites/OqcFinishedGoodStrip"
+import { DateTimePicker } from "@/components/shared/composites/DateTimePicker"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
@@ -67,15 +69,28 @@ export function OqcLotSummaryCard({
         </dl>
 
         <div className="border-t border-border pt-5 sm:max-w-xs">
-          <form.AppField name="inspectionDate">
-            {(field) => (
-              <field.TextField
-                label="Ngày kiểm tra"
-                type="datetime-local"
-                disabled={disabled}
-              />
-            )}
-          </form.AppField>
+          <form.Field name="inspectionDate">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel className="text-xs font-medium text-foreground">
+                    Ngày kiểm tra
+                  </FieldLabel>
+                  <DateTimePicker
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    onBlur={field.handleBlur}
+                    disabled={disabled}
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )
+            }}
+          </form.Field>
         </div>
       </div>
     </OqcDetailSectionCard>
