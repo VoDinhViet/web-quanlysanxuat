@@ -3,10 +3,10 @@ import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { Download, RotateCw, Search } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button, LinkButton } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label"
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { useGetClientOptions } from "@/features/clients/api"
+import { CreateDirectMenu } from "@/features/directs/components/composites/CreateDirectMenu"
 import { exportDirects } from "@/features/directs/api/server-functions/export-directs.api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { itemStatusLabels } from "@/lib/types/item.type"
@@ -201,10 +202,7 @@ export function DirectsTableFilter() {
             Làm mới
           </Button>
           <RoutePermissionGate route="/manage/directs/create">
-            <LinkButton to="/manage/directs/create" className="text-xs">
-              <Plus className="size-4" />
-              Thêm vật tư
-            </LinkButton>
+            <CreateDirectMenu />
           </RoutePermissionGate>
         </div>
       </div>

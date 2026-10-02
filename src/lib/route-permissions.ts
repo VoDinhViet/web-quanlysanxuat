@@ -67,6 +67,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
 
   "/manage/directs": "items:read",
   "/manage/directs/create": "items:create",
+  "/manage/directs/import": "items:create",
   "/manage/directs/$directId/update": "items:update",
 
   "/manage/operations": "operations:read",

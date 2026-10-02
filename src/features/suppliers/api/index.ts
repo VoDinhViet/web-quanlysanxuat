@@ -5,3 +5,4 @@
 export { supplierOptionsQueryOptions } from "@/features/suppliers/api/options"
 export { supplierQueryOptions } from "@/features/suppliers/api/options"
 export { useGetSupplierOptions } from "@/features/suppliers/api/use-get-supplier-options"
+export { suppliersQueryOptions } from "@/features/suppliers/api/options"

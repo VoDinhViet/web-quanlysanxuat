@@ -41,3 +41,55 @@ export type Direct = {
   createdAt: string
   updatedAt: string
 }
+
+export type DirectImportKey =
+  | "code"
+  | "revision"
+  | "name"
+  | "unitCode"
+  | "supplierCode"
+  | "clientCode"
+  | "minStock"
+  | "specificWeight"
+  | "directGrade"
+  | "technicalStandard"
+  | "dimensions"
+  | "colorSurface"
+  | "origin"
+  | "leadTime"
+  | "description"
+  | "note"
+
+export type DirectImportField = {
+  key: DirectImportKey
+  label: string
+  required?: boolean
+}
+
+/** Column order mirrors the backend's ITEM_IMPORT_FIELDS (the Excel template). */
+export const directImportFields: DirectImportField[] = [
+  { key: "code", label: "Mã vật tư", required: true },
+  { key: "revision", label: "Phiên bản" },
+  { key: "name", label: "Tên vật tư", required: true },
+  { key: "unitCode", label: "Mã ĐVT", required: true },
+  { key: "supplierCode", label: "Mã NCC" },
+  { key: "clientCode", label: "Mã khách hàng" },
+  { key: "minStock", label: "Tồn tối thiểu" },
+  { key: "specificWeight", label: "Trọng lượng riêng" },
+  { key: "directGrade", label: "Mác vật tư" },
+  { key: "technicalStandard", label: "Tiêu chuẩn" },
+  { key: "dimensions", label: "Quy cách" },
+  { key: "colorSurface", label: "Màu/Bề mặt" },
+  { key: "origin", label: "Xuất xứ" },
+  { key: "leadTime", label: "Thời gian giao" },
+  { key: "description", label: "Mô tả" },
+  { key: "note", label: "Ghi chú" },
+]
+
+export type DirectImportCellErrors = Partial<Record<DirectImportKey, string>>
+
+/** One editable row of the import preview; every cell is kept as the raw string the user sees. */
+export type DirectImportPreviewRow = {
+  rowNumber: number
+  values: Record<DirectImportKey, string>
+}
