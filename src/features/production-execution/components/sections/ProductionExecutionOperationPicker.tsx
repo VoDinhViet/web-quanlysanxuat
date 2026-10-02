@@ -27,12 +27,12 @@ import type { ProductionExecutionOperation } from "@/lib/types/production-job.ty
 
 const chipsClassName = "flex flex-wrap gap-2"
 
-type OperationSort = "default" | "name" | "jobCount"
+type OperationSort = "default" | "name" | "remainingJobCount"
 
 const sortOptions = [
   { value: "default", label: "Thứ tự mặc định" },
   { value: "name", label: "Tên A → Z" },
-  { value: "jobCount", label: "Nhiều job nhất" },
+  { value: "remainingJobCount", label: "Nhiều job nhất" },
 ]
 
 // `position` giữ số thứ tự gốc của API để "01, 02…" không nhảy khi đổi kiểu sắp xếp.
@@ -54,9 +54,9 @@ function sortOperations(
       a.operation.name.localeCompare(b.operation.name, "vi")
     )
   }
-  if (sort === "jobCount") {
+  if (sort === "remainingJobCount") {
     return positioned.sort(
-      (a, b) => b.operation.jobCount - a.operation.jobCount
+      (a, b) => b.operation.remainingJobCount - a.operation.remainingJobCount
     )
   }
   return positioned

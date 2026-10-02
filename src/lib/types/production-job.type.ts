@@ -265,18 +265,19 @@ export type ProductionJobLog = {
 }
 
 /** Mirrors `GET /production-execution/operations` — một dòng / công đoạn có ít nhất 1 Job khớp
- *  filter, dùng để dựng dãy thẻ "CHỌN CÔNG ĐOẠN". `jobCount` đếm số Job phân biệt, không phải số
+ *  filter, dùng để dựng dãy thẻ "CHỌN CÔNG ĐOẠN". Các `*JobCount` đếm số Job phân biệt, không phải số
  *  dòng (Job × Part). */
 export type ProductionExecutionOperation = {
   operationId: string
   code: string
   name: string
   type: OperationType
-  jobCount: number
-  /** Số Job đang sản xuất (status IN_PROGRESS) trong `jobCount`. */
-  inProgressCount: number
-  /** Số Job có dòng công đoạn này chưa xong mà đã quá hạn hoàn thành. */
-  overdueCount: number
+  /** Số Job còn công đoạn này chưa xong (`operationStatus` khác DONE) — về 0 khi mọi Job đã xong công đoạn. */
+  remainingJobCount: number
+  /** Số Job có công đoạn này đang thực hiện (`operationStatus` IN_PROGRESS) — không tính Job đã xong công đoạn. */
+  inProgressJobCount: number
+  /** Số Job có công đoạn này quá hạn chưa xong (`operationStatus` OVERDUE). */
+  overdueJobCount: number
 }
 
 /** Trạng thái tiến độ của MỘT công đoạn trên MỘT Job — gộp qua mọi part của Job có công đoạn đó

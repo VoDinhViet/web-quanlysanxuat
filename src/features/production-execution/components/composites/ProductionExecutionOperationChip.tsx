@@ -10,9 +10,9 @@ type OperationChipShellProps = {
   isChecked: boolean
   leading: ReactNode
   title: string
-  jobCount: number
-  overdueCount: number
-  inProgressCount: number
+  remainingJobCount: number
+  overdueJobCount: number
+  inProgressJobCount: number
 }
 
 // Thẻ nhỏ chọn công đoạn: [số thứ tự/icon] tên + số liệu, dấu check khi được chọn. Cả chip
@@ -22,9 +22,9 @@ function OperationChipShell({
   isChecked,
   leading,
   title,
-  jobCount,
-  overdueCount,
-  inProgressCount,
+  remainingJobCount,
+  overdueJobCount,
+  inProgressJobCount,
 }: OperationChipShellProps) {
   return (
     <Radio.Root
@@ -48,11 +48,11 @@ function OperationChipShell({
           {title}
         </span>
         <span className="text-xs text-muted-foreground tabular-nums">
-          {jobCount} job
-          {inProgressCount > 0 && ` · ${inProgressCount} đang chạy`}
-          {overdueCount > 0 && (
+          {remainingJobCount} job
+          {inProgressJobCount > 0 && ` · ${inProgressJobCount} đang chạy`}
+          {overdueJobCount > 0 && (
             <span className="font-medium text-destructive">
-              {` · ${overdueCount} quá hạn`}
+              {` · ${overdueJobCount} quá hạn`}
             </span>
           )}
         </span>
@@ -86,9 +86,9 @@ export function OperationChip({
       isChecked={isChecked}
       leading={String(position).padStart(2, "0")}
       title={operation.name}
-      jobCount={operation.jobCount}
-      inProgressCount={operation.inProgressCount}
-      overdueCount={operation.overdueCount}
+      remainingJobCount={operation.remainingJobCount}
+      inProgressJobCount={operation.inProgressJobCount}
+      overdueJobCount={operation.overdueJobCount}
     />
   )
 }
@@ -99,8 +99,8 @@ type AllOperationsChipProps = {
   isChecked: boolean
 }
 
-// Chip đầu tiên "Tất cả công đoạn": cộng số liệu của mọi chip. Số job là số dòng (Job × công đoạn)
-// — đúng bằng tổng bảng khi chọn chip này, nên một Job nhiều công đoạn được đếm mỗi công đoạn một lần.
+// Chip đầu tiên "Tất cả công đoạn": cộng số liệu của mọi chip. Số job là số cặp (Job × công đoạn)
+// còn chưa xong, nên một Job nhiều công đoạn được đếm mỗi công đoạn một lần.
 export function AllOperationsChip({
   value,
   operations,
@@ -115,9 +115,9 @@ export function AllOperationsChip({
       isChecked={isChecked}
       leading={<Layers className="size-4" />}
       title="Tất cả công đoạn"
-      jobCount={sum((item) => item.jobCount)}
-      inProgressCount={sum((item) => item.inProgressCount)}
-      overdueCount={sum((item) => item.overdueCount)}
+      remainingJobCount={sum((item) => item.remainingJobCount)}
+      inProgressJobCount={sum((item) => item.inProgressJobCount)}
+      overdueJobCount={sum((item) => item.overdueJobCount)}
     />
   )
 }
