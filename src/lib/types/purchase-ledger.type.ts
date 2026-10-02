@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -90,6 +91,7 @@ export type PurchaseLedgerApiRow = {
   id: string
   purchaseRequest: PurchaseLedgerPurchaseRequestRef
   item: ItemRef
+  image: FileResource | null
   unit: Unit
   productionOrder: PurchaseLedgerProductionOrderRef | null
   note: string | null

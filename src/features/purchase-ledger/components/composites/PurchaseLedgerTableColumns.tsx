@@ -1,5 +1,6 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { Gallery } from "@solar-icons/react"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
@@ -9,6 +10,7 @@ import {
   PurchaseLedgerSourceCell,
   PurchaseLedgerWarningCell,
 } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerTableCells"
+import { resolveFileUrl } from "@/lib/file-url"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
 const purchaseLedgerColumnHelper = createColumnHelper<
@@ -45,6 +47,39 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
         requestNote={row.original.requestNote}
       />
     ),
+  }),
+
+  purchaseLedgerColumnHelper.display({
+    id: "image",
+    header: "Hình ảnh",
+    meta: {
+      headerClassName: "w-20 text-center",
+      cellClassName: "py-2 text-center",
+    },
+    cell: ({ row }) => {
+      const { image, item } = row.original
+      return (
+        <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
+          {image ? (
+            <a
+              href={resolveFileUrl(image.url)}
+              target="_blank"
+              rel="noreferrer"
+              className="size-full"
+            >
+              <img
+                src={resolveFileUrl(image.url)}
+                alt={item.name}
+                loading="lazy"
+                className="size-full object-cover"
+              />
+            </a>
+          ) : (
+            <Gallery className="size-4 text-muted-foreground/50" />
+          )}
+        </div>
+      )
+    },
   }),
 
   purchaseLedgerColumnHelper.display({
