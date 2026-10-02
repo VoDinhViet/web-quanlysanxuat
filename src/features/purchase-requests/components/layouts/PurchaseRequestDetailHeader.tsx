@@ -6,6 +6,7 @@ import type { ReactNode } from "react"
 import { LinkButton } from "@/components/ui/button"
 import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/primitives/PurchaseRequestBadges"
 import { PurchaseRequestDetailActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestDetailActions"
+import { PurchaseRequestNeededDateField } from "@/features/purchase-requests/components/composites/PurchaseRequestNeededDateField"
 import { PurchaseRequestNoteField } from "@/features/purchase-requests/components/composites/PurchaseRequestNoteField"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
@@ -94,7 +95,7 @@ function getApprovalMeta(purchaseRequest: PurchaseRequestDetail): {
       return {
         label: "Phê duyệt",
         value: (
-          <span className="italic text-muted-foreground">Chưa gửi duyệt</span>
+          <span className="text-muted-foreground italic">Chưa gửi duyệt</span>
         ),
       }
   }
@@ -200,11 +201,10 @@ export function PurchaseRequestDetailHeader({
             "dd/MM/yyyy HH:mm"
           )}
         />
-        <MetaField
-          label="Ngày cần"
-          value={DateTime.fromISO(purchaseRequest.neededDate).toFormat(
-            "dd/MM/yyyy"
-          )}
+        <PurchaseRequestNeededDateField
+          purchaseRequestId={purchaseRequest.id}
+          neededDate={purchaseRequest.neededDate}
+          status={purchaseRequest.status}
         />
         <MetaField label={approvalMeta.label} value={approvalMeta.value} />
 
