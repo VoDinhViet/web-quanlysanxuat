@@ -31,7 +31,7 @@ type ApproveQuotationDialogProps = {
   trigger: ReactElement
 }
 
-// PENDING_APPROVAL → APPROVED (terminal short of a recall) — the final confirm step after
+// PENDING_APPROVAL → APPROVED (terminal short of a cancel/reopen) — the final confirm step after
 // picking a winning NCC for every vật tư inline in the compare table (PurchaseQuotationApprovalBar
 // only enables this trigger once `selectedSuppliers` covers every item).
 export function ApproveQuotationDialog({

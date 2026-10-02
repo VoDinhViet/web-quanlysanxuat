@@ -5,8 +5,8 @@ import type { Unit } from "@/lib/types/unit.type"
 /** Mirrors the backend's `PurchaseQuotationStatus` (`be-quanlysanxuat/src/database/schemas/
  *  purchasing/purchase-quotations.ts`) exactly — an approval lifecycle, same shape as
  *  `PurchaseRequestStatus`: `DRAFT → (send) → PENDING_APPROVAL → (approve) → APPROVED`, or
- *  `PENDING_APPROVAL → (reject) → CANCELLED`. An `APPROVED` quotation can also `recall` back to
- *  `DRAFT` as long as none of its generated purchase orders have been placed yet. */
+ *  `PENDING_APPROVAL → (reject) → CANCELLED`. An `APPROVED` quotation can also be `CANCELLED` directly
+ *  (`cancel`), or reopened to `DRAFT` when its purchase order is cancelled with `reopenQuotation`. */
 export const PurchaseQuotationStatus = {
   DRAFT: "DRAFT",
   PENDING_APPROVAL: "PENDING_APPROVAL",
@@ -107,8 +107,8 @@ export type PurchaseQuotationItemDetail = {
 export type PurchaseQuotationSupplierSelection = Record<string, string>
 
 /** Mirrors the backend's `QuotationResDto` (`GET /purchase-quotations/:id`) exactly,
- *  field-for-field. `approvedAt`/`approverBy` KHÔNG bị xóa khi một RFQ `APPROVED` được thu hồi
- *  (`recall`) về `DRAFT` — backend cố tình giữ lại làm dấu vết lịch sử — nên đừng suy
+ *  field-for-field. `approvedAt`/`approverBy` KHÔNG bị xóa khi một RFQ `APPROVED` được mở lại
+ *  về `DRAFT` (huỷ đơn mua kèm `reopenQuotation`) — backend cố tình giữ lại làm dấu vết lịch sử — nên đừng suy
  *  "đang duyệt" từ `approvedAt != null`, luôn kiểm tra `status`. */
 export type PurchaseQuotationDetail = {
   id: string

@@ -1,11 +1,15 @@
 import { useNavigate } from "@tanstack/react-router"
-import { SendSquare } from "@solar-icons/react"
-import { Pencil, Trash2 } from "lucide-react"
+import {
+  CloseCircle,
+  PenNewSquare,
+  SendSquare,
+  TrashBinTrash,
+} from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
+import { CancelQuotationDialog } from "@/features/purchase-quotations/components/composites/CancelQuotationDialog"
 import { DeleteQuotationDialog } from "@/features/purchase-quotations/components/composites/DeleteQuotationDialog"
-import { RecallQuotationDialog } from "@/features/purchase-quotations/components/composites/RecallQuotationDialog"
 import { SendQuotationDialog } from "@/features/purchase-quotations/components/composites/SendQuotationDialog"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
@@ -40,7 +44,7 @@ export function PurchaseQuotationDetailActions({
                 variant="outline"
                 className="border-destructive/40 text-destructive hover:bg-destructive/10"
               >
-                <Trash2 className="size-4" />
+                <TrashBinTrash className="size-4" />
                 Xoá báo giá
               </Button>
             }
@@ -54,7 +58,7 @@ export function PurchaseQuotationDetailActions({
             variant="outline"
             className="gap-1.5"
           >
-            <Pencil className="size-4" />
+            <PenNewSquare className="size-4" />
             Chỉnh sửa
           </LinkButton>
 
@@ -74,16 +78,23 @@ export function PurchaseQuotationDetailActions({
 
   if (purchaseQuotation.status === PurchaseQuotationStatus.APPROVED) {
     return (
-      <PermissionGate permission="purchasing:update">
-        <RecallQuotationDialog
-          purchaseQuotation={purchaseQuotation}
-          trigger={
-            <Button type="button" variant="outline">
-              Thu hồi về nháp
-            </Button>
-          }
-        />
-      </PermissionGate>
+      <div className="flex flex-wrap items-center gap-2">
+        <PermissionGate permission="purchasing:approve">
+          <CancelQuotationDialog
+            purchaseQuotation={purchaseQuotation}
+            trigger={
+              <Button
+                type="button"
+                variant="outline"
+                className="border-destructive/40 text-destructive hover:bg-destructive/10"
+              >
+                <CloseCircle className="size-4" />
+                Hủy báo giá
+              </Button>
+            }
+          />
+        </PermissionGate>
+      </div>
     )
   }
 

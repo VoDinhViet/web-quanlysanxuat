@@ -3,10 +3,10 @@ import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.typ
 import type { TimelineStep } from "@/lib/types/timeline.type"
 
 // Every step's state derives from `status`, never from a timestamp's mere presence — a
-// recalled quotation (APPROVED → DRAFT) keeps its old `approvedAt`/`approverBy` as history (the
-// backend never clears them), and a re-sent-then-recalled quotation can even keep a stale
+// reopened quotation (APPROVED → DRAFT) keeps its old `approvedAt`/`approverBy` as history (the
+// backend never clears them), and a re-sent-then-reopened quotation can even keep a stale
 // `sentAt` from a previous cycle. Reading `status` as the single source of truth is what keeps
-// this timeline honest across a recall.
+// this timeline honest across a reopen.
 export function buildQuotationTimeline(
   purchaseQuotation: PurchaseQuotationDetail
 ): TimelineStep[] {
