@@ -92,7 +92,10 @@ export function PurchaseRequestItemQuantityCell({
         },
       }),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
+      ]),
     onError: (error) => {
       toast.error(error.message)
       setValue(quantity)
@@ -226,7 +229,10 @@ export function PurchaseRequestItemPurchasableSelect({
       })
     },
     onSuccess: async (_data, nextRequiresPurchase) => {
-      await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
+      ])
       toast.success(
         nextRequiresPurchase
           ? `Đã chuyển sang mua vật tư "${itemName}"`

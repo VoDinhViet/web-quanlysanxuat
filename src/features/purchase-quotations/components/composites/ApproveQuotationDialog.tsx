@@ -64,6 +64,7 @@ export function ApproveQuotationDialog({
         queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
         queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
         queryClient.invalidateQueries({ queryKey: ["purchase-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
         queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
     },

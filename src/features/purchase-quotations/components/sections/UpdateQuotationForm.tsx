@@ -57,6 +57,7 @@ export function UpdateQuotationForm({
         queryClient.invalidateQueries({
           queryKey: ["purchase-quotations"],
         }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
         queryClient.invalidateQueries({
           queryKey: ["purchase-quotations", purchaseQuotation.id],
         }),

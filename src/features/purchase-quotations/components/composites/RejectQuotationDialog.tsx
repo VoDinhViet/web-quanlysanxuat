@@ -69,6 +69,7 @@ function RejectQuotationForm({
       onClose()
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
         queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
     },
