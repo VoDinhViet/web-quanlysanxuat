@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { Info, PackageOpen, PackageSearch, TriangleAlert } from "lucide-react"
+import { AddCircle } from "@solar-icons/react"
 import { useMemo } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
@@ -12,28 +13,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { CreatePurchaseRequestItemsDialog } from "@/features/purchase-requests/components/composites/CreatePurchaseRequestItemsDialog"
 import { buildPurchaseRequestItemColumns } from "@/features/purchase-requests/components/composites/PurchaseRequestItemsTableColumns"
-import {
-  PurchaseRequestStatus,
-  type PurchaseRequestItem,
-} from "@/lib/types/purchase-request.type"
+import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
+import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestItemsSectionProps = {
-  rows: PurchaseRequestItem[]
-  status: PurchaseRequestStatus
+  purchaseRequest: PurchaseRequestDetail
   canUpdate: boolean
 }
 
 // Section header + table, same "tiêu đề dải" idiom as InfoSection in ProductionJobInfoTab.tsx —
 // a single-section screen doesn't earn a Tabs strip (rule "no abstraction until the 3rd use").
 export function PurchaseRequestItemsSection({
-  rows,
-  status,
+  purchaseRequest,
   canUpdate,
 }: PurchaseRequestItemsSectionProps) {
+  const { items: rows, status } = purchaseRequest
   const isDraft = status === PurchaseRequestStatus.DRAFT
   const editable = canUpdate && isDraft
+  // Thêm dòng cùng cửa với sửa/xoá ở backend: Nháp hoặc Bị từ chối (Bị từ chối tự về Nháp).
+  const canCreateItems =
+    canUpdate && (isDraft || status === PurchaseRequestStatus.REJECTED)
 
   const columns = useMemo(
     () => buildPurchaseRequestItemColumns({ status, canUpdate }),
@@ -48,10 +51,23 @@ export function PurchaseRequestItemsSection({
 
   return (
     <div className="not-first:border-t not-first:border-border">
-      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-semibold tracking-wide text-foreground uppercase sm:px-5">
-        <PackageSearch className="size-3.5 text-muted-foreground" />
-        Chi tiết vật tư
-      </h3>
+      <div className="flex items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-2 sm:px-5">
+        <h3 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground uppercase">
+          <PackageSearch className="size-3.5 text-muted-foreground" />
+          Chi tiết vật tư
+        </h3>
+        {canCreateItems && (
+          <CreatePurchaseRequestItemsDialog
+            purchaseRequest={purchaseRequest}
+            trigger={
+              <Button type="button" size="sm">
+                <AddCircle className="size-4" />
+                Thêm vật tư
+              </Button>
+            }
+          />
+        )}
+      </div>
 
       {rows.length === 0 ? (
         <TableEmpty
@@ -120,7 +136,7 @@ export function PurchaseRequestItemsSection({
           <p className="flex items-start gap-2">
             <TriangleAlert className="mt-0.5 size-3.5 shrink-0 text-warning" />
             <span>
-              Sửa/xóa được khi phiếu ở trạng thái{" "}
+              Sửa/xóa dòng được khi phiếu ở trạng thái{" "}
               <span className="font-medium text-foreground">Nháp</span>; SL đề
               xuất phải lớn hơn 0 và phiếu còn ít nhất 1 dòng vật tư.
             </span>

@@ -51,8 +51,7 @@ export function PurchaseRequestDetailPage() {
               itemCount={purchaseRequest.items.length}
             />
             <PurchaseRequestItemsSection
-              rows={purchaseRequest.items}
-              status={purchaseRequest.status}
+              purchaseRequest={purchaseRequest}
               canUpdate={canUpdate}
             />
           </Surface>
