@@ -51,7 +51,6 @@ export function DateTimePicker({
 
   const currentHour = selectedDate ? format(selectedDate, "HH") : ""
   const currentMinute = selectedDate ? format(selectedDate, "mm") : ""
-  const currentTimeString = selectedDate ? format(selectedDate, "HH:mm") : ""
 
   const handleDateSelect = (date: Date | undefined) => {
     if (!date) return
@@ -81,6 +80,32 @@ export function DateTimePicker({
     const baseDate = selectedDate ?? new Date()
     const newDate = addMinutes(baseDate, delta)
     onChange(format(newDate, "yyyy-MM-dd'T'HH:mm"))
+  }
+
+  const handleAdjustHour = (delta: number) => {
+    const baseDate = selectedDate ?? new Date()
+    const newDate = addMinutes(baseDate, delta * 60)
+    onChange(format(newDate, "yyyy-MM-dd'T'HH:mm"))
+  }
+
+  const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, "").slice(0, 2)
+    if (raw === "") return
+    const num = parseInt(raw, 10)
+    if (num >= 0 && num <= 23) {
+      const baseDate = selectedDate ?? new Date()
+      onChange(format(setHours(baseDate, num), "yyyy-MM-dd'T'HH:mm"))
+    }
+  }
+
+  const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, "").slice(0, 2)
+    if (raw === "") return
+    const num = parseInt(raw, 10)
+    if (num >= 0 && num <= 59) {
+      const baseDate = selectedDate ?? new Date()
+      onChange(format(setMinutes(baseDate, num), "yyyy-MM-dd'T'HH:mm"))
+    }
   }
 
   const handlePresetSelect = (hour: number, minute: number) => {
@@ -158,9 +183,49 @@ export function DateTimePicker({
               <div className="flex items-center gap-1.5">
                 <Clock className="size-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">Thời gian:</span>
-                <span className="font-mono text-sm font-semibold text-foreground">
-                  {currentTimeString || "--:--"}
-                </span>
+                <div className="flex items-center gap-0.5 font-mono text-xs font-semibold">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={2}
+                    value={currentHour}
+                    onChange={handleHourChange}
+                    onFocus={(e) => e.target.select()}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowUp") {
+                        e.preventDefault()
+                        handleAdjustHour(1)
+                      } else if (e.key === "ArrowDown") {
+                        e.preventDefault()
+                        handleAdjustHour(-1)
+                      }
+                    }}
+                    placeholder="00"
+                    title="Gõ giờ (00-23) hoặc phím Lên/Xuống"
+                    className="h-6 w-7 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  />
+                  <span className="text-muted-foreground font-bold">:</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={2}
+                    value={currentMinute}
+                    onChange={handleMinuteChange}
+                    onFocus={(e) => e.target.select()}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowUp") {
+                        e.preventDefault()
+                        handleAdjustMinute(1)
+                      } else if (e.key === "ArrowDown") {
+                        e.preventDefault()
+                        handleAdjustMinute(-1)
+                      }
+                    }}
+                    placeholder="00"
+                    title="Gõ phút chính xác (00-59) hoặc phím Lên/Xuống"
+                    className="h-6 w-7 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  />
+                </div>
               </div>
 
               {/* Tinh chỉnh từng phút */}
