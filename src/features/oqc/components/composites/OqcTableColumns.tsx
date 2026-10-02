@@ -1,13 +1,16 @@
 import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
-import type { appTableFeatures } from "@/lib/table-features"
+import { Image } from "@unpic/react"
+import { Gallery } from "@solar-icons/react"
 
+import type { appTableFeatures } from "@/lib/table-features"
 import {
   OqcDispositionBadge,
   OqcResultBadge,
   OqcStatusBadge,
 } from "@/features/oqc/components/primitives/OqcBadges"
 import { OqcActionsCell } from "@/features/oqc/components/primitives/OqcTableCells"
+import { resolveFileUrl } from "@/lib/file-url"
 import type { Oqc } from "@/lib/types/oqc.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -33,6 +36,44 @@ export const oqcColumns = oqcColumnHelper.columns([
   }),
 
   oqcColumnHelper.display({
+    id: "image",
+    header: "Hình ảnh",
+    meta: {
+      headerClassName: "w-20 text-center font-bold text-foreground",
+      cellClassName: "text-center py-2",
+    },
+    cell: ({ row }) => {
+      const image = row.original.image
+      if (!image) {
+        return (
+          <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
+            <Gallery className="size-4 text-muted-foreground/50" />
+          </div>
+        )
+      }
+
+      const imageUrl = resolveFileUrl(image.url)
+
+      return (
+        <a
+          href={imageUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="group mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40 transition hover:border-primary/50"
+        >
+          <Image
+            src={imageUrl}
+            alt={row.original.bomItem.name}
+            layout="fullWidth"
+            objectFit="cover"
+            className="size-full transition group-hover:scale-105"
+          />
+        </a>
+      )
+    },
+  }),
+
+  oqcColumnHelper.display({
     id: "bomItem",
     header: "Thành phẩm",
     meta: { headerClassName: "min-w-48" },
@@ -52,13 +93,14 @@ export const oqcColumns = oqcColumnHelper.columns([
     },
   }),
 
-  oqcColumnHelper.accessor((row) => row.item.revision, {
+  oqcColumnHelper.accessor((row) => row.revision ?? row.item.revision, {
     id: "revision",
     header: "Rev",
     meta: {
       headerClassName: "min-w-16 text-center",
       cellClassName: "text-center font-mono text-xs",
     },
+    cell: ({ getValue }) => getValue() || "—",
   }),
 
   oqcColumnHelper.accessor((row) => row.operation.name, {

@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { addMinutes, format, isValid, parseISO, setHours, setMinutes } from "date-fns"
-import { CalendarIcon, ChevronDown, Clock } from "lucide-react"
+import { CalendarIcon, Check, Clock, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -38,16 +38,37 @@ export function DateTimePicker({
   onChange,
   onBlur,
   disabled,
-  placeholder = "Chọn ngày & giờ...",
+  placeholder = "dd/mm/yyyy hh:mm",
   className,
 }: DateTimePickerProps) {
   const [open, setOpen] = useState(false)
+  const hourInputRef = useRef<HTMLInputElement>(null)
+  const minuteInputRef = useRef<HTMLInputElement>(null)
 
   const selectedDate = useMemo(() => {
     if (!value || value.trim().length === 0) return undefined
     const parsed = parseISO(value)
     return isValid(parsed) ? parsed : undefined
   }, [value])
+
+  const [prevValue, setPrevValue] = useState(value)
+  const [hourInput, setHourInput] = useState<string>(() =>
+    selectedDate ? format(selectedDate, "HH") : ""
+  )
+  const [minuteInput, setMinuteInput] = useState<string>(() =>
+    selectedDate ? format(selectedDate, "mm") : ""
+  )
+
+  if (prevValue !== value) {
+    setPrevValue(value)
+    if (selectedDate) {
+      setHourInput(format(selectedDate, "HH"))
+      setMinuteInput(format(selectedDate, "mm"))
+    } else {
+      setHourInput("")
+      setMinuteInput("")
+    }
+  }
 
   const currentHour = selectedDate ? format(selectedDate, "HH") : ""
   const currentMinute = selectedDate ? format(selectedDate, "mm") : ""
@@ -67,6 +88,7 @@ export function DateTimePicker({
     const baseDate = selectedDate ?? new Date()
     const newDate = setHours(baseDate, h)
     onChange(format(newDate, "yyyy-MM-dd'T'HH:mm"))
+    setHourInput(hourStr)
   }
 
   const handleMinuteSelect = (minuteStr: string) => {
@@ -74,37 +96,114 @@ export function DateTimePicker({
     const baseDate = selectedDate ?? new Date()
     const newDate = setMinutes(baseDate, m)
     onChange(format(newDate, "yyyy-MM-dd'T'HH:mm"))
+    setMinuteInput(minuteStr)
   }
 
   const handleAdjustMinute = (delta: number) => {
     const baseDate = selectedDate ?? new Date()
     const newDate = addMinutes(baseDate, delta)
     onChange(format(newDate, "yyyy-MM-dd'T'HH:mm"))
+    setMinuteInput(format(newDate, "mm"))
+    setHourInput(format(newDate, "HH"))
   }
 
   const handleAdjustHour = (delta: number) => {
     const baseDate = selectedDate ?? new Date()
     const newDate = addMinutes(baseDate, delta * 60)
     onChange(format(newDate, "yyyy-MM-dd'T'HH:mm"))
+    setHourInput(format(newDate, "HH"))
   }
 
   const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value.replace(/\D/g, "").slice(0, 2)
-    if (raw === "") return
-    const num = parseInt(raw, 10)
-    if (num >= 0 && num <= 23) {
+    const raw = e.target.value.replace(/\D/g, "")
+    if (raw === "") {
+      setHourInput("")
+      return
+    }
+
+    const trimmed = raw.slice(-2)
+    const num = parseInt(trimmed, 10)
+    if (num > 23) {
+      const last = parseInt(trimmed.slice(-1), 10)
+      setHourInput(last.toString().padStart(2, "0"))
       const baseDate = selectedDate ?? new Date()
-      onChange(format(setHours(baseDate, num), "yyyy-MM-dd'T'HH:mm"))
+      onChange(format(setHours(baseDate, last), "yyyy-MM-dd'T'HH:mm"))
+      return
+    }
+
+    setHourInput(trimmed)
+    const baseDate = selectedDate ?? new Date()
+    onChange(format(setHours(baseDate, num), "yyyy-MM-dd'T'HH:mm"))
+
+    // Khi gõ đủ 2 chữ số hoặc số đầu >= 3 (vì giờ tối đa là 23), tự nhảy sang ô phút
+    if (trimmed.length === 2 || num >= 3) {
+      minuteInputRef.current?.focus()
+      minuteInputRef.current?.select()
     }
   }
 
+  const handleHourBlur = () => {
+    if (hourInput === "") {
+      setHourInput(selectedDate ? format(selectedDate, "HH") : "00")
+      return
+    }
+    const num = Math.min(23, Math.max(0, parseInt(hourInput, 10) || 0))
+    setHourInput(num.toString().padStart(2, "0"))
+  }
+
   const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value.replace(/\D/g, "").slice(0, 2)
-    if (raw === "") return
-    const num = parseInt(raw, 10)
-    if (num >= 0 && num <= 59) {
+    const raw = e.target.value.replace(/\D/g, "")
+    if (raw === "") {
+      setMinuteInput("")
+      return
+    }
+
+    const trimmed = raw.slice(-2)
+    const num = parseInt(trimmed, 10)
+    if (num > 59) {
+      const last = parseInt(trimmed.slice(-1), 10)
+      setMinuteInput(last.toString().padStart(2, "0"))
       const baseDate = selectedDate ?? new Date()
-      onChange(format(setMinutes(baseDate, num), "yyyy-MM-dd'T'HH:mm"))
+      onChange(format(setMinutes(baseDate, last), "yyyy-MM-dd'T'HH:mm"))
+      return
+    }
+
+    setMinuteInput(trimmed)
+    const baseDate = selectedDate ?? new Date()
+    onChange(format(setMinutes(baseDate, num), "yyyy-MM-dd'T'HH:mm"))
+  }
+
+  const handleMinuteBlur = () => {
+    if (minuteInput === "") {
+      setMinuteInput(selectedDate ? format(selectedDate, "mm") : "00")
+      return
+    }
+    const num = Math.min(59, Math.max(0, parseInt(minuteInput, 10) || 0))
+    setMinuteInput(num.toString().padStart(2, "0"))
+  }
+
+  const handleHourWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    handleAdjustHour(e.deltaY < 0 ? 1 : -1)
+  }
+
+  const handleMinuteWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    handleAdjustMinute(e.deltaY < 0 ? 1 : -1)
+  }
+
+  const handlePasteTime = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = e.clipboardData.getData("text").trim()
+    const match = text.match(/^(\d{1,2})[:\s-]?(\d{1,2})$/)
+    if (match) {
+      e.preventDefault()
+      const h = Math.min(23, Math.max(0, parseInt(match[1], 10)))
+      const m = Math.min(59, Math.max(0, parseInt(match[2], 10)))
+      const baseDate = selectedDate ?? new Date()
+      const newDate = setMinutes(setHours(baseDate, h), m)
+      onChange(format(newDate, "yyyy-MM-dd'T'HH:mm"))
+      setHourInput(h.toString().padStart(2, "0"))
+      setMinuteInput(m.toString().padStart(2, "0"))
     }
   }
 
@@ -138,26 +237,17 @@ export function DateTimePicker({
             variant="outline"
             disabled={disabled}
             className={cn(
-              "h-9 w-full justify-between bg-background text-xs font-normal transition-all hover:border-ring/50",
+              "h-9 w-full justify-between bg-background text-xs font-normal",
               !selectedDate && "text-muted-foreground",
               className
             )}
           >
-            <span className="flex items-center gap-2 truncate">
-              <CalendarIcon className="size-4 shrink-0 text-primary" />
-              {selectedDate ? (
-                <span className="flex items-center gap-1.5 font-medium text-foreground">
-                  <span>{format(selectedDate, "dd/MM/yyyy")}</span>
-                  <span className="inline-flex items-center gap-1 rounded bg-muted/80 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-primary">
-                    <Clock className="size-3" />
-                    {format(selectedDate, "HH:mm")}
-                  </span>
-                </span>
-              ) : (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
-            </span>
-            <ChevronDown className="size-3.5 shrink-0 text-muted-foreground/70" />
+            {selectedDate ? (
+              <span>{format(selectedDate, "dd/MM/yyyy HH:mm")}</span>
+            ) : (
+              <span>{placeholder}</span>
+            )}
+            <CalendarIcon className="size-4 text-muted-foreground" />
           </Button>
         }
       />
@@ -176,21 +266,25 @@ export function DateTimePicker({
             />
           </div>
 
-          {/* Phần chọn giờ trực quan (phẳng, phân tách bằng border mảnh) */}
-          <div className="flex flex-col p-3 sm:w-[280px]">
+          {/* Phần chọn & nhập giờ trực quan (phẳng, phân tách bằng border mảnh) */}
+          <div className="flex flex-col p-3 sm:w-[290px]">
             {/* Header thời gian & nút tăng giảm phút */}
             <div className="flex items-center justify-between pb-2 border-b border-border/50">
               <div className="flex items-center gap-1.5">
                 <Clock className="size-4 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">Thời gian:</span>
+                <span className="text-xs text-muted-foreground">Giờ:</span>
                 <div className="flex items-center gap-0.5 font-mono text-xs font-semibold">
                   <input
+                    ref={hourInputRef}
                     type="text"
                     inputMode="numeric"
                     maxLength={2}
-                    value={currentHour}
+                    value={hourInput}
                     onChange={handleHourChange}
+                    onBlur={handleHourBlur}
+                    onPaste={handlePasteTime}
                     onFocus={(e) => e.target.select()}
+                    onWheel={handleHourWheel}
                     onKeyDown={(e) => {
                       if (e.key === "ArrowUp") {
                         e.preventDefault()
@@ -198,20 +292,27 @@ export function DateTimePicker({
                       } else if (e.key === "ArrowDown") {
                         e.preventDefault()
                         handleAdjustHour(-1)
+                      } else if (e.key === "ArrowRight") {
+                        minuteInputRef.current?.focus()
+                        minuteInputRef.current?.select()
                       }
                     }}
                     placeholder="00"
-                    title="Gõ giờ (00-23) hoặc phím Lên/Xuống"
-                    className="h-6 w-7 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                    title="Gõ giờ (00-23), cuộn chuột hoặc phím Lên/Xuống"
+                    className="h-7 w-8.5 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   />
                   <span className="text-muted-foreground font-bold">:</span>
                   <input
+                    ref={minuteInputRef}
                     type="text"
                     inputMode="numeric"
                     maxLength={2}
-                    value={currentMinute}
+                    value={minuteInput}
                     onChange={handleMinuteChange}
+                    onBlur={handleMinuteBlur}
+                    onPaste={handlePasteTime}
                     onFocus={(e) => e.target.select()}
+                    onWheel={handleMinuteWheel}
                     onKeyDown={(e) => {
                       if (e.key === "ArrowUp") {
                         e.preventDefault()
@@ -219,22 +320,35 @@ export function DateTimePicker({
                       } else if (e.key === "ArrowDown") {
                         e.preventDefault()
                         handleAdjustMinute(-1)
+                      } else if (e.key === "ArrowLeft") {
+                        hourInputRef.current?.focus()
+                        hourInputRef.current?.select()
                       }
                     }}
                     placeholder="00"
-                    title="Gõ phút chính xác (00-59) hoặc phím Lên/Xuống"
-                    className="h-6 w-7 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                    title="Gõ phút chính xác (00-59), cuộn chuột hoặc phím Lên/Xuống"
+                    className="h-7 w-8.5 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   />
                 </div>
               </div>
 
-              {/* Tinh chỉnh từng phút */}
+              {/* Tinh chỉnh nhanh phút: -5, -1, +1, +5 */}
               <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  className="h-7 w-7 p-0 font-mono text-xs text-muted-foreground hover:text-foreground"
+                  title="Giảm 5 phút"
+                  onClick={() => handleAdjustMinute(-5)}
+                >
+                  -5
+                </Button>
                 <Button
                   type="button"
                   variant="outline"
                   size="xs"
-                  className="h-6 w-7 p-0 font-mono text-[11px] border-border/60 hover:bg-muted"
+                  className="h-7 w-7 p-0 font-mono text-xs border-border/60 hover:bg-muted"
                   title="Giảm 1 phút"
                   onClick={() => handleAdjustMinute(-1)}
                 >
@@ -244,17 +358,36 @@ export function DateTimePicker({
                   type="button"
                   variant="outline"
                   size="xs"
-                  className="h-6 w-7 p-0 font-mono text-[11px] border-border/60 hover:bg-muted"
+                  className="h-7 w-7 p-0 font-mono text-xs border-border/60 hover:bg-muted"
                   title="Tăng 1 phút"
                   onClick={() => handleAdjustMinute(1)}
                 >
                   +1
                 </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  className="h-7 w-7 p-0 font-mono text-xs text-muted-foreground hover:text-foreground"
+                  title="Tăng 5 phút"
+                  onClick={() => handleAdjustMinute(5)}
+                >
+                  +5
+                </Button>
               </div>
             </div>
 
-            {/* Phím tắt ca làm việc nhanh */}
+            {/* Phím tắt mốc thời gian nhanh & Hiện tại */}
             <div className="flex items-center gap-1 py-2 border-b border-border/50">
+              <button
+                type="button"
+                className="flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors select-none"
+                onClick={handleSetNow}
+                title="Đặt theo ngày & giờ hiện tại"
+              >
+                <Clock className="size-3 text-primary" />
+                Hiện tại
+              </button>
               {PRESET_TIMES.map((preset) => {
                 const isPresetActive =
                   currentHour === preset.hour.toString().padStart(2, "0") &&
@@ -347,38 +480,29 @@ export function DateTimePicker({
           </div>
         </div>
 
-        {/* Thanh công cụ dưới cùng: tinh giản, thanh thoát */}
-        <div className="flex items-center justify-between border-t border-border/50 px-3 py-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="xs"
-            className="h-7 px-2 text-xs font-normal text-muted-foreground hover:text-foreground"
-            onClick={handleSetNow}
-          >
-            Hiện tại
-          </Button>
-          <div className="flex items-center gap-1.5">
-            {value.length > 0 && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="xs"
-                className="h-7 px-2 text-xs font-normal text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                onClick={handleClear}
-              >
-                Xóa
-              </Button>
-            )}
+        {/* Thanh công cụ dưới cùng: Tinh giản, thẳng hàng bên phải */}
+        <div className="flex items-center justify-end gap-2 border-t border-border/50 bg-muted/20 px-3 py-2">
+          {value.length > 0 && (
             <Button
               type="button"
-              size="xs"
-              className="h-7 px-3 text-xs font-medium"
-              onClick={() => setOpen(false)}
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1.5 px-3 text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              onClick={handleClear}
             >
-              Xong
+              <Trash2 className="size-3.5" />
+              Xóa
             </Button>
-          </div>
+          )}
+          <Button
+            type="button"
+            size="sm"
+            className="h-8 gap-1.5 px-4 text-xs font-medium shadow-xs"
+            onClick={() => setOpen(false)}
+          >
+            <Check className="size-4" />
+            Xong
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
