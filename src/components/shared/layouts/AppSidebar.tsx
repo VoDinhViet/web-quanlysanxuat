@@ -95,6 +95,33 @@ const menuGroups: MenuGroup[] = [
     ],
   },
   {
+    label: "Quản lý sản xuất",
+    items: [
+      {
+        label: "Lệnh sản xuất (LSX)",
+        icon: Factory,
+        href: "/manage/production-orders",
+        badgeKey: "productionOrders",
+      },
+      {
+        label: "Quản lý sản xuất",
+        icon: GitBranch,
+        href: "/manage/production-jobs",
+      },
+      {
+        label: "Thực hiện sản xuất",
+        icon: Cog,
+        href: "/manage/production-execution",
+      },
+      {
+        label: "Phiếu lãnh vật tư",
+        icon: ClipboardMinus,
+        href: "/manage/inventory-requisitions",
+        badgeKey: "inventoryRequisitions",
+      },
+    ],
+  },
+  {
     label: "Quản lý mua hàng",
     items: [
       {
@@ -133,63 +160,6 @@ const menuGroups: MenuGroup[] = [
     ],
   },
   {
-    label: "Kiểm tra chất lượng (QC)",
-    items: [
-      {
-        label: "IQC",
-        icon: ClipboardCheck,
-        href: "/manage/iqc",
-      },
-      {
-        label: "OQC",
-        icon: PackageCheck,
-        href: "/manage/oqc",
-      },
-    ],
-  },
-  {
-    label: "Quản lý sản xuất",
-    items: [
-      {
-        label: "Lệnh sản xuất (LSX)",
-        icon: Factory,
-        href: "/manage/production-orders",
-        badgeKey: "productionOrders",
-      },
-      {
-        label: "Quản lý sản xuất",
-        icon: GitBranch,
-        href: "/manage/production-jobs",
-      },
-      {
-        label: "Thực hiện sản xuất",
-        icon: Cog,
-        href: "/manage/production-execution",
-      },
-      {
-        label: "Phiếu lãnh vật tư",
-        icon: ClipboardMinus,
-        href: "/manage/inventory-requisitions",
-        badgeKey: "inventoryRequisitions",
-      },
-    ],
-  },
-  {
-    label: "Gia công ngoài",
-    items: [
-      {
-        label: "Xuất đi gia công (OS-OUT)",
-        icon: Send,
-        href: "/manage/outsourcing-orders",
-      },
-      {
-        label: "Nhập về (OS-IN)",
-        icon: Upload,
-        href: "/manage/outsourcing-receipts",
-      },
-    ],
-  },
-  {
     label: "Quản lý kho",
     items: [
       {
@@ -211,6 +181,36 @@ const menuGroups: MenuGroup[] = [
         label: "Tồn kho thành phẩm",
         icon: Boxes,
         href: "/manage/inventory-products",
+      },
+    ],
+  },
+  {
+    label: "Gia công ngoài",
+    items: [
+      {
+        label: "Xuất đi gia công (OS-OUT)",
+        icon: Send,
+        href: "/manage/outsourcing-orders",
+      },
+      {
+        label: "Nhập về (OS-IN)",
+        icon: Upload,
+        href: "/manage/outsourcing-receipts",
+      },
+    ],
+  },
+  {
+    label: "Kiểm tra chất lượng (QC)",
+    items: [
+      {
+        label: "IQC",
+        icon: ClipboardCheck,
+        href: "/manage/iqc",
+      },
+      {
+        label: "OQC",
+        icon: PackageCheck,
+        href: "/manage/oqc",
       },
     ],
   },
