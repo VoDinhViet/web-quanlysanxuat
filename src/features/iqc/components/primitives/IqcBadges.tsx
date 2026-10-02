@@ -106,6 +106,10 @@ export const iqcStatusStyles: Record<IqcStatus, BadgeStyle> = {
     badge: "bg-success/10 text-success",
     dot: "bg-success",
   },
+  [IqcStatus.CANCELLED]: {
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
+  },
 }
 
 type IqcStatusBadgeProps = {

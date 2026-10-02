@@ -28,7 +28,8 @@ type IqcDetailFormProps = {
 export function IqcDetailForm({ iqc }: IqcDetailFormProps) {
   const { form, mutation } = useIqcDetailForm(iqc)
   const result = useField({ form, name: "result" }).state.value
-  const isLocked = iqc.status === IqcStatus.IN_PROGRESS
+  const isLocked =
+    iqc.status === IqcStatus.IN_PROGRESS || iqc.status === IqcStatus.CANCELLED
   const disabled = isLocked || mutation.isPending
 
   return (

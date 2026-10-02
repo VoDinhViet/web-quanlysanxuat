@@ -27,7 +27,8 @@ export function IqcDetailHeader({
   iqc,
   isPending,
 }: IqcDetailHeaderProps) {
-  const isLocked = iqc.status === IqcStatus.IN_PROGRESS
+  const isLocked =
+    iqc.status === IqcStatus.IN_PROGRESS || iqc.status === IqcStatus.CANCELLED
 
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-5">

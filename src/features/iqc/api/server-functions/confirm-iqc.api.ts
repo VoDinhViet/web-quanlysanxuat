@@ -41,6 +41,8 @@ function resolveConfirmIqcErrorMessage(error: unknown): string {
   switch (error.response?.data.errorCode) {
     case "iqc_inspection.error.not_found":
       return "Không tìm thấy phiếu IQC."
+    case "iqc.error.cancelled":
+      return "Phiếu IQC đã bị hủy do phiếu nhập kho nguồn bị hủy."
     case "iqc_inspection.error.locked_for_return":
       return "Phiếu IQC này đã chốt đường trả NCC, không thể sửa lại kết quả."
     case "iqc_inspection.error.disposition_not_allowed_for_pass":

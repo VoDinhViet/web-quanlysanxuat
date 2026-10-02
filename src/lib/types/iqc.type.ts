@@ -55,6 +55,8 @@ export const IqcStatus = {
   PENDING: "PENDING",
   IN_PROGRESS: "IN_PROGRESS",
   COMPLETED: "COMPLETED",
+  // Phiếu nhập kho nguồn bị hủy — IQC giữ lại để truy vết, không thao tác được nữa.
+  CANCELLED: "CANCELLED",
 } as const
 
 export type IqcStatus = (typeof IqcStatus)[keyof typeof IqcStatus]
@@ -64,6 +66,7 @@ export const iqcStatusLabels: Record<IqcStatus, string> = {
   [IqcStatus.PENDING]: "Chờ xử lý",
   [IqcStatus.IN_PROGRESS]: "Chờ trả NCC",
   [IqcStatus.COMPLETED]: "Hoàn thành",
+  [IqcStatus.CANCELLED]: "Đã hủy",
 }
 
 // For IqcStatusLegend.tsx — same idiom as purchaseOrderStatusDescriptions.
@@ -72,6 +75,7 @@ export const iqcStatusDescriptions: Record<IqcStatus, string> = {
   [IqcStatus.PENDING]: "FAIL, đang chờ chọn hướng xử lý",
   [IqcStatus.IN_PROGRESS]: "Đang chờ trả hàng về NCC",
   [IqcStatus.COMPLETED]: "Đã hoàn tất kiểm tra (PASS hoặc đã xử lý xong)",
+  [IqcStatus.CANCELLED]: "Phiếu nhập kho nguồn đã bị hủy",
 }
 
 /** Mirrors the backend's PageIqcResDto (GET /api/iqc) — only the fields this list screen reads.
@@ -145,4 +149,5 @@ export type IqcStats = {
   pending: number
   waitingReturn: number
   completed: number
+  cancelled: number
 }

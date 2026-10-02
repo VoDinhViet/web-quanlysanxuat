@@ -238,7 +238,7 @@ export function InventoryReceiptDetailActions({
           </PermissionGate>
         )}
 
-        {!isCancelled && (
+        {!isCancelled && !isPosted && (
           <PermissionGate permission="inventory:update">
             <Button
               type="button"
@@ -290,26 +290,14 @@ export function InventoryReceiptDetailActions({
                     sẽ cộng tồn kho theo các dòng vật tư đã khai báo. Sau khi
                     xác nhận, phiếu không thể sửa được nữa.
                   </>
-                ) : isPosted ? (
-                  <>
-                    Phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
-                      {inventoryReceipt.code}
-                    </span>{" "}
-                    đã được nhập kho — hủy sẽ đảo ngược bút toán và trừ lại tồn
-                    kho đã cộng. Nếu vật tư đã được tiêu đi, thao tác này sẽ
-                    thất bại để tránh tồn âm.
-                    {inventoryReceipt.purchaseOrder
-                      ? " Yêu cầu thanh toán đang chờ của đơn mua hàng cũng sẽ bị huỷ (tự sinh lại khi nhận đủ hàng); nếu đã thanh toán thì không huỷ được."
-                      : null}
-                  </>
                 ) : (
                   <>
                     Bạn chắc chắn muốn hủy phiếu{" "}
                     <span className="font-mono font-semibold text-foreground">
                       {inventoryReceipt.code}
                     </span>
-                    ? Phiếu chưa cộng tồn kho nên không ảnh hưởng số liệu.
+                    ? Phiếu chưa cộng tồn kho nên không ảnh hưởng tồn. Các phiếu
+                    IQC của phiếu này (nếu có) cũng sẽ bị hủy.
                   </>
                 )}
               </DialogDescription>

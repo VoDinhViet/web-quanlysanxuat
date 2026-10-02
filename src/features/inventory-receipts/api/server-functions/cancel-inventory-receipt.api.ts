@@ -19,8 +19,10 @@ function resolveCancelInventoryReceiptErrorMessage(error: unknown): string {
       return "Phiếu đã bị huỷ."
     case "inventory_document.error.insufficient_stock":
       return "Không thể huỷ — vật tư đã nhập có phần đã bị tiêu đi, huỷ sẽ làm tồn xuống âm."
-    case "payment_request.error.already_paid":
-      return "Yêu cầu thanh toán của đơn mua hàng này đã thanh toán, không thể huỷ."
+    case "inventory_receipt.error.posted_not_cancellable":
+      return "Phiếu đã nhập kho nên không thể hủy. Muốn đảo hàng đã nhập, hãy dùng phiếu trả NCC."
+    case "inventory_receipt.error.has_posted_supplier_returns":
+      return "Phiếu đã có phiếu trả NCC được ghi sổ nên không thể hủy."
     case "auth.error.forbidden":
       return "Bạn không có quyền huỷ phiếu nhập kho này."
     default:
@@ -28,7 +30,7 @@ function resolveCancelInventoryReceiptErrorMessage(error: unknown): string {
   }
 }
 
-// DRAFT/POSTED → CANCELLED — từ POSTED thì đảo bút toán trước. Xem
+// Chỉ hủy được phiếu chưa ghi sổ; kéo theo hủy các phiếu IQC của phiếu. Xem
 // InventoryReceiptDetailActions.tsx.
 export const cancelInventoryReceipt = createServerFn({ method: "POST" })
   .validator(z.object({ receiptId: z.uuid() }))
