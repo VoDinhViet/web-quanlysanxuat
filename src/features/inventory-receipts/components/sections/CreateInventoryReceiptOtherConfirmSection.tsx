@@ -1,15 +1,11 @@
 import { useField } from "@tanstack/react-form"
-import { useQuery } from "@tanstack/react-query"
 import { DateTime } from "luxon"
 
 import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
-import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
-import { clientQueryOptions } from "@/features/clients/api"
+import { createInventoryReceiptOtherFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-other.schema"
 import { withForm } from "@/hooks/use-app-form"
 import {
-  InventoryReceiptAssetType,
   InventoryReceiptStatus,
-  inventoryReceiptAssetTypeLabels,
   inventoryReceiptStatusDescriptions,
 } from "@/lib/types/inventory-receipt.type"
 
@@ -33,23 +29,15 @@ function PreviewField({ label, value }: PreviewFieldProps) {
   )
 }
 
-// Phần dưới của bước ③ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận. Có 1 field suy từ fetch
-// riêng (`clientQueryOptions`, lấy tên khách hàng để hiển thị — form state chỉ giữ `clientId`),
-// cùng cách CreateInventoryReceiptFromPoConfirmSection.tsx fetch supplierQueryOptions.
-export const CreateInventoryReceiptReturnConfirmSection = withForm({
-  defaultValues: createInventoryReceiptReturnFormDefaultValues,
+// Phần dưới của bước ③ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận.
+export const CreateInventoryReceiptOtherConfirmSection = withForm({
+  defaultValues: createInventoryReceiptOtherFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form }) {
     const receiptDate = useField({ form, name: "receiptDate" }).state.value
-    const assetType = useField({ form, name: "assetType" }).state.value
-    const clientId = useField({ form, name: "clientId" }).state.value
+    const reason = useField({ form, name: "reason" }).state.value
     const note = useField({ form, name: "note" }).state.value
     const requiresIqc = useField({ form, name: "requiresIqc" }).state.value
-
-    const { data: client } = useQuery({
-      ...clientQueryOptions(clientId),
-      enabled: Boolean(clientId),
-    })
 
     return (
       <div className="border-t border-border px-4 py-5 sm:px-5">
@@ -63,15 +51,7 @@ export const CreateInventoryReceiptReturnConfirmSection = withForm({
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <PreviewField label="Nguồn nhập" value="Nhập từ khách hàng" />
-          <PreviewField
-            label="Loại tài sản"
-            value={
-              inventoryReceiptAssetTypeLabels[
-                assetType ?? InventoryReceiptAssetType.CLIENT
-              ]
-            }
-          />
+          <PreviewField label="Nguồn nhập" value="Nhập từ khác" />
           <PreviewField
             label="Ngày nhập"
             value={
@@ -80,10 +60,7 @@ export const CreateInventoryReceiptReturnConfirmSection = withForm({
                 : "—"
             }
           />
-          <PreviewField
-            label="Khách hàng cung cấp"
-            value={client?.name ?? "—"}
-          />
+          <PreviewField label="PO / Lý do" value={reason || "—"} />
           <PreviewField
             label="Yêu cầu QC (IQC)"
             value={requiresIqc ? "Có" : "Không"}

@@ -62,6 +62,9 @@ export const InventoryReceiptType = {
   PURCHASE: "PURCHASE",
   PRODUCTION: "PRODUCTION",
   RETURN: "RETURN",
+  // "Nhập từ khác" — không PO/NCC/khách; bắt buộc `reason`. Kiểm kê thừa KHÔNG nhập ở đây mà ở
+  // phiếu Điều chỉnh tồn.
+  OTHER: "OTHER",
 } as const
 
 export type InventoryReceiptType =
@@ -69,9 +72,10 @@ export type InventoryReceiptType =
 
 export const inventoryReceiptTypeLabels: Record<InventoryReceiptType, string> =
   {
-    [InventoryReceiptType.PURCHASE]: "Mua hàng",
-    [InventoryReceiptType.PRODUCTION]: "Từ sản xuất",
-    [InventoryReceiptType.RETURN]: "Từ khách hàng",
+    [InventoryReceiptType.PURCHASE]: "Nhập mua hàng",
+    [InventoryReceiptType.PRODUCTION]: "Nhập từ sản xuất",
+    [InventoryReceiptType.RETURN]: "Nhập từ khách hàng",
+    [InventoryReceiptType.OTHER]: "Nhập từ khác",
   }
 
 export type InventoryReceiptItemType = "DIRECT" | "FG"
@@ -200,6 +204,8 @@ export type InventoryReceipt = {
   productionJob: InventoryReceiptProductionJobRef | null
   purchaseOrder: InventoryReceiptPurchaseOrderRef | null
   note: string | null
+  // Lý do nhập — chỉ có khi receiptType = OTHER.
+  reason: string | null
   items: InventoryReceiptItem[]
   posterBy: InventoryReceiptUserRef | null
   postedAt: string | null

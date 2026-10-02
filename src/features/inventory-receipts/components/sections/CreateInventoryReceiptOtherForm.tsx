@@ -6,50 +6,48 @@ import { Loader2, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { CreateInventoryReceiptReturnConfirmSection } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptReturnConfirmSection"
-import { CreateInventoryReceiptReturnHeaderSection } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptReturnHeaderSection"
+import { CreateInventoryReceiptOtherConfirmSection } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptOtherConfirmSection"
+import { CreateInventoryReceiptOtherHeaderSection } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptOtherHeaderSection"
 import { CreateInventoryReceiptReturnItemsSection } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptReturnItemsSection"
-import { CreateInventoryReceiptReturnPickerSection } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptReturnPickerSection"
-import { CreateInventoryReceiptReturnHelpPanel } from "@/features/inventory-receipts/components/composites/CreateInventoryReceiptReturnHelpPanel"
+import { CreateInventoryReceiptOtherPickerSection } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptOtherPickerSection"
+import { CreateInventoryReceiptOtherHelpPanel } from "@/features/inventory-receipts/components/composites/CreateInventoryReceiptOtherHelpPanel"
 import {
-  CreateInventoryReceiptReturnStepsTabs,
+  CreateInventoryReceiptOtherStepsTabs,
   stepItems,
-} from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptReturnStepsTabs"
+} from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptOtherStepsTabs"
 import {
-  createInventoryReceiptReturnFormDefaultValues,
-  createInventoryReceiptReturnSchema,
-} from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
+  createInventoryReceiptOtherFormDefaultValues,
+  createInventoryReceiptOtherSchema,
+} from "@/features/inventory-receipts/schemas/create-inventory-receipt-other.schema"
 import { useSubmitInventoryReceipt } from "@/features/inventory-receipts/hooks/use-submit-inventory-receipt"
 import { useAppForm } from "@/hooks/use-app-form"
 import { getStepNav } from "@/lib/wizard-steps"
-import type { InventoryReceiptReturnWizardStep } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptReturnStepsTabs"
+import type { InventoryReceiptOtherWizardStep } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptOtherStepsTabs"
 
-// Vỏ wizard "Khách hàng" — 3 bước: Thông tin chung → Chọn vật tư (checkbox picker, lọc theo
-// clientId đã chọn) → Nhập số lượng & Xác nhận. Khác `CreateInventoryReceiptFromPoForm.tsx` ở
-// header section (combobox khách hàng thay "Nguồn nhập"/"PO / Lý do") và schema (bắt buộc
-// clientId — mở khoá bước ② thay "note" của làn "Khác").
-export function CreateInventoryReceiptReturnForm() {
+// Vỏ wizard "Nhập từ khác" — 3 bước: Thông tin chung (lý do nhập) → Chọn vật tư (checkbox picker, nhiều
+// vật tư) → Nhập số lượng & Xác nhận (bảng số lượng + tóm tắt phiếu + nút lưu trên cùng một bước), cùng khuôn CreateInventoryReceiptReturnForm.tsx. Bước ② mở
+// khoá khi đã có ngày nhập + lý do.
+export function CreateInventoryReceiptOtherForm() {
   const navigate = useNavigate({
     from: "/manage/inventory-receipts/create-receipt",
   })
   const { submit, isPending, actionRef } = useSubmitInventoryReceipt()
 
   const form = useAppForm({
-    defaultValues: createInventoryReceiptReturnFormDefaultValues,
+    defaultValues: createInventoryReceiptOtherFormDefaultValues,
     validationLogic: revalidateLogic(),
     validators: {
-      onDynamic: createInventoryReceiptReturnSchema,
+      onDynamic: createInventoryReceiptOtherSchema,
     },
     onSubmit: ({ value }) => submit(value),
   })
 
-  const [step, setStep] = useState<InventoryReceiptReturnWizardStep>("info")
+  const [step, setStep] = useState<InventoryReceiptOtherWizardStep>("info")
 
   const requiresIqc = useField({ form, name: "requiresIqc" }).state.value
   const hasInfo = useStore(
     form.store,
-    (state) =>
-      Boolean(state.values.receiptDate) && Boolean(state.values.clientId)
+    (state) => Boolean(state.values.receiptDate) && Boolean(state.values.reason)
   )
   const hasItems = useStore(
     form.store,
@@ -86,19 +84,19 @@ export function CreateInventoryReceiptReturnForm() {
           onValueChange={handleStepValueChange}
           className="gap-0"
         >
-          <CreateInventoryReceiptReturnStepsTabs
+          <CreateInventoryReceiptOtherStepsTabs
             canGoToPicker={hasInfo}
             canGoToItems={hasInfo && hasItems}
           />
 
           <TabsContent value="info" className="m-0 outline-none">
-            <CreateInventoryReceiptReturnHeaderSection
+            <CreateInventoryReceiptOtherHeaderSection
               form={form}
               disabled={isPending}
             />
           </TabsContent>
           <TabsContent value="picker" className="m-0 outline-none">
-            <CreateInventoryReceiptReturnPickerSection
+            <CreateInventoryReceiptOtherPickerSection
               form={form}
               disabled={isPending}
             />
@@ -108,7 +106,7 @@ export function CreateInventoryReceiptReturnForm() {
               form={form}
               disabled={isPending}
             />
-            <CreateInventoryReceiptReturnConfirmSection
+            <CreateInventoryReceiptOtherConfirmSection
               form={form}
               disabled={isPending}
             />
@@ -203,7 +201,7 @@ export function CreateInventoryReceiptReturnForm() {
         </div>
       </div>
 
-      <CreateInventoryReceiptReturnHelpPanel />
+      <CreateInventoryReceiptOtherHelpPanel />
     </form>
   )
 }

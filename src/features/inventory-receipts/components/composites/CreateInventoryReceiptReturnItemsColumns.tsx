@@ -24,8 +24,7 @@ export type BuildCreateInventoryReceiptReturnItemColumnsArgs = {
 }
 
 // Own useReactTable columns cho bước ③, cùng khuôn CreateInventoryReceiptFromPoItemsColumns.tsx —
-// không có cột "SL đặt"/"Còn lại" (không có PO đối chiếu ở lane này), có thêm "Đơn giá" (tuỳ chọn,
-// cùng field InventoryReceiptItemDialog.tsx vốn đang bị thay thế cho lane này).
+// không có cột "SL đặt"/"Còn lại" (không có PO đối chiếu ở lane này) và không có cột đơn giá.
 export function buildCreateInventoryReceiptReturnItemColumns({
   itemsField,
   disabled,
@@ -63,24 +62,6 @@ export function buildCreateInventoryReceiptReturnItemColumns({
             disabled={disabled}
             onValueChange={(value) =>
               itemsField.replaceValue(row.index, { ...item, quantity: value })
-            }
-          />
-        )
-      },
-    }),
-    inventoryReceiptReturnItemColumnHelper.display({
-      id: "unitPrice",
-      header: "Đơn giá",
-      meta: { headerClassName: "w-32 text-right" },
-      cell: ({ row }) => {
-        const item = row.original
-        return (
-          <NumericCellInput
-            value={item.unitPrice}
-            min={0}
-            disabled={disabled}
-            onValueChange={(value) =>
-              itemsField.replaceValue(row.index, { ...item, unitPrice: value })
             }
           />
         )

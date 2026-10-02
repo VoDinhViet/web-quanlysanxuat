@@ -21,6 +21,10 @@ export function InventoryReceiptDetailInfoCard({
       </div>
 
       <div className="flex flex-col gap-3 px-4 py-3.5 sm:px-5">
+        {inventoryReceipt.reason && (
+          <InfoRow label="Lý do nhập" value={inventoryReceipt.reason} />
+        )}
+
         <InfoRow
           label="Tạo lúc"
           value={`${DateTime.fromISO(inventoryReceipt.createdAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryReceipt.creatorBy ? ` · ${inventoryReceipt.creatorBy.fullName}` : ""}`}

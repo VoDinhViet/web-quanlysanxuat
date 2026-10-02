@@ -31,6 +31,10 @@ function resolveCreateInventoryReceiptErrorMessage(error: unknown): string {
       return "Dòng đơn mua hàng không thuộc đơn mua đã chọn."
     case "purchase_order_item.error.received_quantity_exceeded":
       return "SL nhận vượt quá SL còn lại của dòng đơn mua hàng. Vui lòng tải lại trang và kiểm tra lại số lượng."
+    case "inventory_receipt.error.other_reason_required":
+      return "Vui lòng nhập lý do nhập kho."
+    case "inventory_receipt.error.other_no_partner":
+      return "Phiếu nhập từ khác không được gắn PO, nhà cung cấp, khách hàng hay Job."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo phiếu nhập kho."
     default:

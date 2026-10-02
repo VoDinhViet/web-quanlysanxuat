@@ -34,8 +34,8 @@ function PreviewField({ label, value }: PreviewFieldProps) {
   )
 }
 
-// Bước ④ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận. Mọi field ở đây tự suy ra
-// từ PO đã chọn (không có ô nhập tay nào trong 4 bước, xem plan's Context) — kho nhận/NCC/PO từ
+// Phần dưới của bước ③ — xem lại thông tin phiếu sẽ tạo trước khi Lưu nháp/Xác nhận. Mọi field ở đây tự suy ra
+// từ PO đã chọn (không có ô nhập tay nào trong 3 bước, xem plan's Context) — kho nhận/NCC/PO từ
 // purchaseOrderQueryOptions (đã fetch ở bước ②, React Query dedupe nên không tốn round-trip
 // thêm), liên hệ/điện thoại từ supplierQueryOptions (đại diện chính, hoặc đại diện đầu tiên nếu
 // không có ai được đánh dấu chính; số điện thoại fallback về số của chính NCC nếu đại diện không
@@ -66,10 +66,10 @@ export const CreateInventoryReceiptFromPoConfirmSection = withForm({
     const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")
 
     return (
-      <div className="px-4 py-5 sm:px-5">
+      <div className="border-t border-border px-4 py-5 sm:px-5">
         <div>
           <h2 className="font-heading text-base font-semibold text-foreground">
-            ④ Lưu nháp hoặc xác nhận
+            Lưu nháp hoặc xác nhận
           </h2>
           <p className="text-sm text-muted-foreground">
             Kiểm tra lại thông tin phiếu trước khi lưu.

@@ -41,11 +41,15 @@ export const CreateInventoryReceiptHeaderSection = withForm({
       if (receiptType !== InventoryReceiptType.PRODUCTION) {
         form.setFieldValue("productionJobId", "")
       }
+      if (receiptType !== InventoryReceiptType.OTHER) {
+        form.setFieldValue("reason", "")
+      }
     }, [receiptType, form])
 
     const isPurchase = receiptType === InventoryReceiptType.PURCHASE
     const isReturn = receiptType === InventoryReceiptType.RETURN
     const isProduction = receiptType === InventoryReceiptType.PRODUCTION
+    const isOther = receiptType === InventoryReceiptType.OTHER
 
     return (
       <div className="drafting-title-block">
@@ -178,6 +182,20 @@ export const CreateInventoryReceiptHeaderSection = withForm({
                 />
               )}
             </form.Field>
+          )}
+
+          {isOther && (
+            <form.AppField name="reason">
+              {(field) => (
+                <field.TextField
+                  label="PO / Lý do"
+                  required
+                  placeholder="Ví dụ: Trả vật tư dư từ LSX..., Thu hồi vật tư..."
+                  disabled={disabled}
+                  className="sm:col-span-2"
+                />
+              )}
+            </form.AppField>
           )}
 
           <form.AppField name="note">

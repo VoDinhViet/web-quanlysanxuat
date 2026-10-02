@@ -1,25 +1,36 @@
-import { Box, Buildings2 } from "@solar-icons/react"
+import { Box, Buildings2, Inbox } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  InventoryReceiptType,
+  inventoryReceiptTypeLabels,
+} from "@/lib/types/inventory-receipt.type"
 import type { CreateInventoryReceiptLane } from "@/features/inventory-receipts/schemas/create-inventory-receipt-lane-search.schema"
 
 type LaneItem = {
   value: CreateInventoryReceiptLane
-  label: string
+  receiptType: InventoryReceiptType
   icon: ComponentType<IconProps>
 }
 
+// Tab labels are the backend's receipt-type names (`inventoryReceiptTypeLabels`), so a lane reads the
+// same here as on the receipt list/detail.
 const laneItems: LaneItem[] = [
-  { value: "po", label: "Từ PO", icon: Box },
-  { value: "return", label: "Khách hàng", icon: Buildings2 },
+  { value: "po", receiptType: InventoryReceiptType.PURCHASE, icon: Box },
+  {
+    value: "return",
+    receiptType: InventoryReceiptType.RETURN,
+    icon: Buildings2,
+  },
+  { value: "other", receiptType: InventoryReceiptType.OTHER, icon: Inbox },
 ]
 
-// Chỉ vẽ dải trigger — Tabs root (selectedKey/onSelectionChange) + TabsContent panel sống ở
+// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
 // CreateInventoryReceiptReceiptPage.tsx, cùng cách ProductDetailTabs.tsx tách ("Only the
 // triggers — the panels live in the page"). Không có prop khoá/disable như
-// CreateInventoryReceiptFromPoStepsTabs.tsx — 2 làn không phụ thuộc dữ liệu lẫn nhau, luôn tự
+// CreateInventoryReceiptFromPoStepsTabs.tsx — 3 làn không phụ thuộc dữ liệu lẫn nhau, luôn tự
 // do chuyển qua lại.
 export function CreateInventoryReceiptReceiptTabs() {
   return (
@@ -32,10 +43,10 @@ export function CreateInventoryReceiptReceiptTabs() {
           <TabsTrigger
             key={item.value}
             value={item.value}
-            className="h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5 hover:bg-muted/40 hover:text-foreground data-selected:bg-primary/5 data-selected:text-primary group-data-[variant=line]/tabs-list:data-selected:bg-primary/5 data-selected:hover:bg-primary/5"
+            className="h-12 flex-none gap-2 rounded-none px-4 capitalize after:bg-primary group-data-horizontal/tabs:after:-bottom-px hover:bg-muted/40 data-active:text-primary group-data-[variant=line]/tabs-list:data-active:bg-primary/5"
           >
             <item.icon className="size-3.5" />
-            {item.label}
+            {inventoryReceiptTypeLabels[item.receiptType]}
           </TabsTrigger>
         ))}
       </TabsList>

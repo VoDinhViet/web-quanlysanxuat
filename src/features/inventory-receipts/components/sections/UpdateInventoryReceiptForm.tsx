@@ -31,6 +31,7 @@ function getInventoryReceiptDefaultValues(
     productionJobId: inventoryReceipt.productionJob?.id ?? "",
     purchaseOrderId: inventoryReceipt.purchaseOrder?.id ?? "",
     note: inventoryReceipt.note ?? "",
+    reason: inventoryReceipt.reason ?? "",
     items: inventoryReceipt.items.map((item) => ({
       itemId: item.item.id,
       itemLabel: `${item.item.code} — ${item.item.name}`,

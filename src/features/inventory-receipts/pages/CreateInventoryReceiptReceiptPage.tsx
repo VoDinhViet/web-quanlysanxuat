@@ -1,14 +1,14 @@
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import type { Key } from "react-aria-components"
 
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { CreateInventoryReceiptReceiptTabs } from "@/features/inventory-receipts/components/layouts/CreateInventoryReceiptReceiptTabs"
 import { CreateInventoryReceiptFromPoForm } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptFromPoForm"
+import { CreateInventoryReceiptOtherForm } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptOtherForm"
 import { CreateInventoryReceiptReturnForm } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptReturnForm"
 import { createInventoryReceiptLaneSchema } from "@/features/inventory-receipts/schemas/create-inventory-receipt-lane-search.schema"
 
-// Trang gộp cả 2 làn tạo phiếu nhập kho ("Từ PO" wizard 4 bước / "Khách hàng") — một route, phân
+// Trang gộp cả 3 làn tạo phiếu nhập kho (Nhập mua hàng — wizard từ PO / Nhập từ khách hàng / Nhập từ khác) — một route, phân
 // làn bằng `?lane=`, thay vì route riêng. Mỗi TabsContent render nguyên 1 form tự chứa (bg-card +
 // help panel riêng) — dải tab không bọc card, không gộp "one continuous panel" như
 // ProductDetailPage.tsx, tránh card lồng card.
@@ -20,10 +20,9 @@ export function CreateInventoryReceiptReceiptPage() {
     from: "/manage/inventory-receipts/create-receipt",
   })
 
-  // RAC's onSelectionChange returns a `Key` (string | number); safeParse narrows it back
-  // without a cast, cùng khuôn ProductDetailPage.tsx's handleTabChange.
-  const handleLaneChange = (key: Key) => {
-    const nextLane = createInventoryReceiptLaneSchema.safeParse(String(key))
+  // safeParse narrows the tab value back to a lane without a cast, cùng khuôn ProductDetailPage.tsx.
+  const handleLaneChange = (value: unknown) => {
+    const nextLane = createInventoryReceiptLaneSchema.safeParse(value)
 
     if (nextLane.success) {
       void navigate({ search: { lane: nextLane.data } })
@@ -46,12 +45,16 @@ export function CreateInventoryReceiptReceiptPage() {
         <Tabs value={lane} onValueChange={handleLaneChange} className="gap-4">
           <CreateInventoryReceiptReceiptTabs />
 
-          <TabsContent value="po" className="m-0 outline-none">
+          <TabsContent value="po">
             <CreateInventoryReceiptFromPoForm />
           </TabsContent>
 
-          <TabsContent value="return" className="m-0 outline-none">
+          <TabsContent value="return">
             <CreateInventoryReceiptReturnForm />
+          </TabsContent>
+
+          <TabsContent value="other">
+            <CreateInventoryReceiptOtherForm />
           </TabsContent>
         </Tabs>
       </div>

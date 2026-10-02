@@ -28,6 +28,11 @@ export const updateInventoryReceiptSchema = z.object({
     .trim()
     .max(1000, "Ghi chú tối đa 1000 ký tự")
     .transform(emptyToNull),
+  reason: z
+    .string()
+    .trim()
+    .max(500, "Lý do tối đa 500 ký tự")
+    .transform(emptyToNull),
   items: z
     .array(inventoryReceiptItemFormSchema)
     .min(1, "Phiếu cần ít nhất một dòng vật tư"),
@@ -49,5 +54,6 @@ export const updateInventoryReceiptFormDefaultValues: UpdateInventoryReceiptSche
     productionJobId: "",
     purchaseOrderId: "",
     note: "",
+    reason: "",
     items: [],
   }

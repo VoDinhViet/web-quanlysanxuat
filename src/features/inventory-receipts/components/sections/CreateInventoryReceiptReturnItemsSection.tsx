@@ -18,7 +18,7 @@ import { withForm } from "@/hooks/use-app-form"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
-// Bước ③ — nhập SL nhận thực tế + đơn giá (tuỳ chọn) + ghi chú cho các dòng đã chọn ở bước ②
+// Bước ③ — nhập SL nhận thực tế + ghi chú cho các dòng đã chọn ở bước ②
 // (CreateInventoryReceiptReturnPickerSection.tsx), cùng khuôn CreateInventoryRequisitionItemsSection.tsx.
 export const CreateInventoryReceiptReturnItemsSection = withForm({
   defaultValues: createInventoryReceiptReturnFormDefaultValues,

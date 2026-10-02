@@ -19,18 +19,12 @@ const helpSteps: HelpStep[] = [
     tips: ["Xem chi tiết vật tư và số lượng đặt của PO đã chọn."],
   },
   {
-    title: "3. Nhập số lượng và chọn yêu cầu QC",
+    title: "3. Nhập số lượng & xác nhận",
     tips: [
-      "Nhập số lượng nhận cho từng vật tư.",
-      "Có thể bỏ bớt vật tư nếu không nhận.",
+      "Nhập số lượng nhận cho từng vật tư, có thể bỏ bớt vật tư nếu không nhận.",
       "Tích chọn “Yêu cầu QC (IQC)” nếu cần kiểm tra chất lượng đầu vào.",
-    ],
-  },
-  {
-    title: "4. Lưu nháp hoặc xác nhận",
-    tips: [
       "Lưu nháp: dữ liệu được lưu, có thể chỉnh sửa sau.",
-      "Xác nhận: tạo phiếu và chuyển sang Chờ nhập kho hoặc Chờ IQC, tuỳ lựa chọn ở bước 3.",
+      "Xác nhận: tạo phiếu và chuyển sang Chờ nhập kho hoặc Chờ IQC, tuỳ lựa chọn QC.",
     ],
   },
 ]
@@ -46,7 +40,7 @@ const processingLogic = [
 
 // Sidebar tĩnh cạnh wizard — thuần nội dung hướng dẫn, không đọc form state. Tách khỏi
 // CreateInventoryReceiptFromPoConfirmSection.tsx's "Ý nghĩa trạng thái" (cái đó giải thích trạng
-// thái phiếu, còn đây giải thích cách thao tác 4 bước + quy tắc nghiệp vụ).
+// thái phiếu, còn đây giải thích cách thao tác 3 bước + quy tắc nghiệp vụ).
 export function CreateInventoryReceiptFromPoHelpPanel() {
   return (
     <div className="space-y-4 rounded-lg bg-card p-4 shadow-card sm:p-5">

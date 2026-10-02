@@ -6,11 +6,7 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import type { WizardStepNavItem } from "@/lib/wizard-steps"
 
-export type InventoryReceiptReturnWizardStep =
-  | "info"
-  | "picker"
-  | "items"
-  | "confirm"
+export type InventoryReceiptReturnWizardStep = "info" | "picker" | "items"
 
 type StepItem = WizardStepNavItem<InventoryReceiptReturnWizardStep> & {
   label: string
@@ -33,37 +29,27 @@ export const stepItems: StepItem[] = [
   },
   {
     value: "items",
-    label: "3. Nhập số lượng",
-    icon: Checklist,
-    prevLabel: "Quay lại chọn vật tư",
-    nextLabel: "Tiếp theo: Xác nhận",
-  },
-  {
-    value: "confirm",
-    label: "4. Lưu nháp / Xác nhận",
+    label: "3. Nhập số lượng & Xác nhận",
     icon: CheckCircle,
-    prevLabel: "Quay lại nhập số lượng",
+    prevLabel: "Quay lại chọn vật tư",
   },
 ]
 
 type CreateInventoryReceiptReturnStepsTabsProps = {
   canGoToPicker: boolean
   canGoToItems: boolean
-  canGoToConfirm: boolean
 }
 
-// Chỉ vẽ dải trigger — Tabs root (selectedKey/onSelectionChange) + TabsContent panel sống ở
+// Chỉ vẽ dải trigger — Tabs root (value/onValueChange) + TabsContent panel sống ở
 // CreateInventoryReceiptReturnForm.tsx. Bước ① luôn mở được để quay lại đổi khách hàng.
 export function CreateInventoryReceiptReturnStepsTabs({
   canGoToPicker,
   canGoToItems,
-  canGoToConfirm,
 }: CreateInventoryReceiptReturnStepsTabsProps) {
   const disabledByStep: Record<InventoryReceiptReturnWizardStep, boolean> = {
     info: false,
     picker: !canGoToPicker,
     items: !canGoToItems,
-    confirm: !canGoToConfirm,
   }
 
   return (
@@ -81,10 +67,9 @@ export function CreateInventoryReceiptReturnStepsTabs({
               value={item.value}
               disabled={disabled}
               className={cn(
-                "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
-                "data-selected:bg-primary/5 data-selected:text-primary",
-                "group-data-[variant=line]/tabs-list:data-selected:bg-primary/5",
-                "data-selected:hover:bg-primary/5",
+                "h-12 flex-none gap-2 rounded-none px-4 hover:bg-muted/40",
+                "data-active:text-primary",
+                "group-data-[variant=line]/tabs-list:data-active:bg-primary/5",
                 "after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5",
                 disabled && "cursor-not-allowed opacity-60"
               )}

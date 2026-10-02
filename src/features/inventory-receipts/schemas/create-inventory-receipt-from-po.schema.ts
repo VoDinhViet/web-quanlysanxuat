@@ -44,11 +44,11 @@ export type InventoryReceiptFromPoItemValue = z.input<
   typeof inventoryReceiptFromPoItemSchema
 >
 
-// Toàn bộ form 4 bước — `purchaseOrderId` (bước ①), `requiresIqc` (bước ③, dạng "no"/"yes" để
+// Toàn bộ form 3 bước — `purchaseOrderId` (bước ①), `requiresIqc` (bước ③, dạng "no"/"yes" để
 // khớp RadioPillField<TValue extends string>, đổi sang boolean thật khi build payload thật gửi
 // server function), `items` (bước ③). Cố ý không có supplierId/receiptDate/receiptType — wizard
 // tự suy ra từ PO đã chọn lúc submit (NCC của PO, ngày = hôm nay, loại phiếu luôn PURCHASE),
-// không có ô nhập tay nào cho chúng trong 4 bước.
+// không có ô nhập tay nào cho chúng trong 3 bước.
 export const createInventoryReceiptFromPoFormSchema = z.object({
   purchaseOrderId: z.string().trim().min(1, "Vui lòng chọn PO cần nhập"),
   requiresIqc: z.enum(["no", "yes"]),

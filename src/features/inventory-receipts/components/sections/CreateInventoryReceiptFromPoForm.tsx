@@ -12,7 +12,6 @@ import {
 import { Loader2 } from "lucide-react"
 import { DateTime } from "luxon"
 import { toast } from "sonner"
-import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -46,7 +45,7 @@ import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 // Ghép giá trị wizard-local (UI-only field) + PO đã fetch thành đúng payload
 // CreateInventoryReceiptSchema mà createInventoryReceipt server function cần — không có ô nhập
-// tay nào cho supplierId/receiptDate/unitPrice trong 4 bước, tất cả tự suy ra từ PO.
+// tay nào cho supplierId/receiptDate/unitPrice trong 3 bước, tất cả tự suy ra từ PO.
 function buildCreateInventoryReceiptPayload(
   value: CreateInventoryReceiptFromPoFormSchema,
   purchaseOrder: PurchaseOrderDetail,
@@ -65,6 +64,7 @@ function buildCreateInventoryReceiptPayload(
     purchaseOrderId: value.purchaseOrderId,
     requiresIqc: value.requiresIqc === "yes",
     note: "",
+    reason: "",
     items: value.items.map((item) => {
       const poLine = purchaseOrder.items.find(
         (line) => line.id === item.purchaseOrderItemId
@@ -83,7 +83,7 @@ function buildCreateInventoryReceiptPayload(
   }
 }
 
-// Vỏ wizard "Nhập kho từ PO" — rập khuôn CreateQuotationForm.tsx, 4 bước thay vì 2. Khác với RFQ:
+// Vỏ wizard "Nhập kho từ PO" — rập khuôn CreateQuotationForm.tsx, 3 bước thay vì 2. Khác với RFQ:
 // "Lưu nháp" và "Xác nhận" ở đây đều là hành động server thật (backend luôn tạo DRAFT ở POST
 // /inventory-receipts, "Xác nhận" gọi thêm confirm để chuyển DRAFT → PENDING_RECEIPT/PENDING_IQC)
 // — không phải lưu cục bộ như RFQ. `useFormDraft` (localStorage) tách riêng, chỉ để khôi phục nếu
@@ -240,11 +240,10 @@ export function CreateInventoryReceiptFromPoForm() {
     saveDraft(form.state.values)
   }
 
-  // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
-  // without a cast, and an unrecognised value simply doesn't switch steps. Delegates to the
+  // `find` narrows the tab value back to a step without a cast; an unrecognised value simply doesn't switch steps. Delegates to the
   // typed `handleStepChange` above so the draft-on-step-change behavior stays in one place.
-  function handleStepValueChange(key: Key) {
-    const nextStep = stepItems.find((item) => item.value === String(key))
+  function handleStepValueChange(value: unknown) {
+    const nextStep = stepItems.find((item) => item.value === value)
 
     if (nextStep) {
       handleStepChange(nextStep.value)
@@ -283,7 +282,6 @@ export function CreateInventoryReceiptFromPoForm() {
               <CreateInventoryReceiptFromPoStepsTabs
                 canGoToPreview={hasPurchaseOrder}
                 canGoToItems={hasPurchaseOrder && hasItems}
-                canGoToConfirm={hasItems}
               />
             )}
           </form.Subscribe>
@@ -305,8 +303,6 @@ export function CreateInventoryReceiptFromPoForm() {
               form={form}
               disabled={isPending}
             />
-          </TabsContent>
-          <TabsContent value="confirm" keepMounted className="m-0 outline-none">
             <CreateInventoryReceiptFromPoConfirmSection
               form={form}
               disabled={isPending}

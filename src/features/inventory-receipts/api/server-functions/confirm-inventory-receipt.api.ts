@@ -31,6 +31,10 @@ function resolveConfirmInventoryReceiptErrorMessage(error: unknown): string {
       return "SL nhận vượt quá SL còn lại của dòng đơn mua hàng. Vui lòng tải lại trang và kiểm tra lại số lượng."
     case "purchase_order.error.not_ordered":
       return "Đơn mua hàng đã bị huỷ hoặc không còn ở trạng thái đã đặt hàng."
+    case "inventory_receipt.error.other_reason_required":
+      return "Vui lòng nhập lý do nhập kho."
+    case "inventory_receipt.error.other_no_partner":
+      return "Phiếu nhập từ khác không được gắn PO, nhà cung cấp, khách hàng hay Job."
     case "auth.error.forbidden":
       return "Bạn không có quyền xác nhận phiếu nhập kho."
     default:

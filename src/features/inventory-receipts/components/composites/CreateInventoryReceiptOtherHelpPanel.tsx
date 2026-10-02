@@ -8,22 +8,19 @@ type HelpStep = {
 const helpSteps: HelpStep[] = [
   {
     title: "1. Nhập thông tin chung",
-    tips: [
-      "Chọn khách hàng cung cấp vật tư.",
-      "Chọn “Yêu cầu QC” nếu vật tư cần kiểm tra chất lượng.",
-    ],
+    tips: ["Nhập “PO / Lý do” (bắt buộc) để truy vết vì sao nhập kho."],
   },
   {
     title: "2. Chọn vật tư",
     tips: [
-      "Tích chọn vật tư khách hàng cung cấp từ danh mục sẵn có.",
-      "Có thể tìm theo mã hoặc tên vật tư, chọn cả trang bằng ô tích ở đầu bảng.",
+      "Tích chọn một hoặc nhiều vật tư cần nhập trong danh mục.",
+      "Có thể tìm theo tên hoặc mã vật tư, chọn qua nhiều trang.",
     ],
   },
   {
     title: "3. Nhập số lượng & xác nhận",
     tips: [
-      "Nhập số lượng thực tế nhận được cho từng vật tư, có thể bỏ bớt vật tư khỏi danh sách.",
+      "Nhập số lượng thực tế nhận được cho từng vật tư đã chọn.",
       "Lưu nháp: phiếu ở trạng thái Draft.",
       "Xác nhận (Chờ IQC): chuyển sang bước kiểm tra chất lượng.",
       "Xác nhận & Nhập kho (Không qua IQC): nhập kho trực tiếp.",
@@ -32,17 +29,15 @@ const helpSteps: HelpStep[] = [
 ]
 
 const processingLogic = [
-  "Lưu phiếu ở trạng thái Draft khi chọn “Lưu nháp”.",
-  "Nếu chọn “Xác nhận (Chờ IQC)” → phiếu chuyển sang trạng thái “Chờ IQC”.",
-  "Nếu chọn “Xác nhận & Nhập kho (Không qua IQC)” → hệ thống ghi tăng tồn kho ngay.",
-  "Vật tư khách hàng cung cấp bị FAIL QC chỉ xử lý được “Chấp nhận có điều kiện” — chưa có phương án trả lại khách.",
+  "Không dùng cho hàng mua theo PO (dùng làn “Nhập mua hàng”) hay vật tư khách cung cấp (làn “Nhập từ khách hàng”).",
+  "Kiểm kê thừa không nhập ở đây — dùng phiếu Điều chỉnh tồn (lý do Kiểm kê).",
+  "Phiếu đã nhập kho không huỷ được; muốn đảo thì lập phiếu Điều chỉnh tồn giảm.",
   "Không cho lưu nếu chưa có ít nhất 1 dòng vật tư.",
   "Số lượng nhập được phép là số dương (> 0).",
 ]
 
-// Sidebar tĩnh cạnh form — không có "Ví dụ sử dụng" (chỉ 1 tình huống, khách hàng cung cấp vật
-// tư, không cần liệt kê ví dụ).
-export function CreateInventoryReceiptReturnHelpPanel() {
+// Sidebar tĩnh cạnh form "Nhập từ khác", cùng khuôn CreateInventoryReceiptReturnHelpPanel.tsx.
+export function CreateInventoryReceiptOtherHelpPanel() {
   return (
     <div className="space-y-4 rounded-lg bg-card p-4 shadow-card sm:p-5">
       <div>
