@@ -124,6 +124,14 @@ export function buildOrderItemsSelectColumns({
         )
       },
     }),
+    orderItemsSelectColumnHelper.accessor("revision", {
+      header: "Rev",
+      meta: {
+        headerClassName: "min-w-16 text-center",
+        cellClassName: "text-center font-mono text-xs",
+      },
+      cell: ({ getValue }) => getValue() || "—",
+    }),
     orderItemsSelectColumnHelper.accessor((row) => row.unit.name, {
       id: "unit",
       header: "ĐVT",
