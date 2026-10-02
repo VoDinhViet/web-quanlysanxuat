@@ -9,14 +9,14 @@ import type { ProductionExecutionOperation } from "@/lib/types/production-job.ty
 type OperationCardShellProps = {
   value: string
   isChecked: boolean
-  leading: ReactNode
+  leading?: ReactNode
   title: string
   remainingJobCount: number
   overdueJobCount: number
   inProgressJobCount: number
 }
 
-// Thẻ chọn công đoạn: [số thứ tự/icon] tên + số liệu, dấu check khi được chọn. Cả thẻ
+// Thẻ chọn công đoạn: tên + số liệu, dấu check khi được chọn. Cả thẻ
 // công đoạn lẫn thẻ "Tất cả công đoạn" dùng lại khung này.
 function OperationCardShell({
   value,
@@ -36,14 +36,16 @@ function OperationCardShell({
           "border-primary bg-primary/5 ring-1 ring-primary hover:bg-primary/5"
       )}
     >
-      <span
-        className={cn(
-          "flex min-w-5 shrink-0 items-center justify-center font-mono text-xs font-semibold text-muted-foreground tabular-nums",
-          isChecked && "text-primary"
-        )}
-      >
-        {leading}
-      </span>
+      {leading && (
+        <span
+          className={cn(
+            "flex min-w-5 shrink-0 items-center justify-center text-xs font-semibold text-muted-foreground",
+            isChecked && "text-primary"
+          )}
+        >
+          {leading}
+        </span>
+      )}
       <span className="flex min-w-0 flex-1 flex-col justify-center">
         <span
           className="truncate text-sm font-medium text-foreground"
@@ -75,23 +77,17 @@ function OperationCardShell({
 
 type OperationCardProps = {
   operation: ProductionExecutionOperation
-  position?: number
   isChecked: boolean
 }
 
 export function OperationCard({
   operation,
-  position,
   isChecked,
 }: OperationCardProps) {
   return (
     <OperationCardShell
       value={operation.operationId}
       isChecked={isChecked}
-      leading={
-        operation.code ||
-        (position !== undefined ? String(position).padStart(2, "0") : "")
-      }
       title={operation.name}
       remainingJobCount={operation.remainingJobCount}
       inProgressJobCount={operation.inProgressJobCount}
