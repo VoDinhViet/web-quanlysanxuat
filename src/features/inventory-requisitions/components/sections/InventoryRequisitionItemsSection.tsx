@@ -171,8 +171,13 @@ export function InventoryRequisitionItemsSection({
   detail,
 }: InventoryRequisitionItemsSectionProps) {
   const canUpdate = useHasPermission("inventory-requisitions:update")
-  const editable =
-    canUpdate && detail.status === InventoryRequisitionStatus.DRAFT
+  // Phiếu `REJECTED` cũng sửa được: BE tự đưa về `DRAFT` ngay lúc lưu (`ensureRequisitionEditable`),
+  // sau đó người dùng bấm "Gửi duyệt" như phiếu nháp.
+  const editableStatuses: InventoryRequisitionStatus[] = [
+    InventoryRequisitionStatus.DRAFT,
+    InventoryRequisitionStatus.REJECTED,
+  ]
+  const editable = canUpdate && editableStatuses.includes(detail.status)
 
   const columns = useMemo(
     () => buildItemColumns(detail, editable),
