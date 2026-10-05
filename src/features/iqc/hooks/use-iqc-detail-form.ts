@@ -30,6 +30,7 @@ export function useIqcDetailForm(iqc: IqcDetail) {
         queryClient.invalidateQueries({ queryKey: ["inventory-receipts"] }),
         queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
         queryClient.invalidateQueries({ queryKey: ["supplier-returns"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
       toast.success("Đã lưu kết quả QC")
     },
