@@ -22,7 +22,7 @@ function resolveConfirmInventoryReceiptErrorMessage(error: unknown): string {
     case "inventory_receipt.error.missing_supplier_for_iqc":
       return "Thiếu nhà cung cấp để tạo phiếu IQC — vui lòng chọn PO có NCC."
     case "inventory_receipt.error.oqc_not_completed":
-      return "Job chưa có phiếu OQC nào, hoặc còn phiếu OQC chưa hoàn thành — chưa thể nhập kho."
+      return "SL nhập vượt phần đã qua OQC của Job (hoặc Job chưa có phiếu OQC / còn IQC chưa hoàn thành) — chưa thể nhập kho."
     case "inventory_receipt.error.job_planned_quantity_exceeded":
       return "Tổng SL nhập kho của Job này vượt SL kế hoạch."
     case "inventory_receipt.error.final_oqc_missing":

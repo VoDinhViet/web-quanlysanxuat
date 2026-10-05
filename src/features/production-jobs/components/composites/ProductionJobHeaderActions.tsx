@@ -100,16 +100,19 @@ function StartJobButton({ job }: { job: ProductionJobDetail }) {
   )
 }
 
-// Disabled (not hidden) outside WAITING_QC or once Job đã có phiếu OQC nào (`job.oqcRequested`,
-// BE chặn tạo lần 2 cho cùng công đoạn Cấp 0, E198). A plain <Button disabled> swallows pointer
-// events so the Tooltip needs the <span> wrapper trick to still fire.
+// Disabled (not hidden) khi Job chưa/không còn ở trạng thái sản xuất hoặc chưa có SL hoàn thành mới
+// để kiểm (`job.oqcRequestableQuantity`, OQC theo lô một phần — BE chặn SL lô vượt số này, E198). A
+// plain <Button disabled> swallows pointer events so the Tooltip needs the <span> wrapper trick to
+// still fire.
 function RequestOqcButton({ job }: { job: ProductionJobDetail }) {
-  const disabledReason =
-    job.status !== ProductionJobStatus.WAITING_QC
-      ? "Chỉ yêu cầu OQC được khi Job đã xong công đoạn (chờ QC)."
-      : job.oqcRequested
-        ? "Job này đã được tạo phiếu OQC."
-        : null
+  const canRequest =
+    job.status === ProductionJobStatus.IN_PROGRESS ||
+    job.status === ProductionJobStatus.WAITING_QC
+  const disabledReason = !canRequest
+    ? "Chỉ yêu cầu OQC được khi Job đang sản xuất hoặc chờ QC."
+    : job.oqcRequestableQuantity <= 0
+      ? "Chưa có SL hoàn thành mới ở công đoạn cuối để kiểm."
+      : null
 
   const button = (
     <Button
@@ -118,7 +121,7 @@ function RequestOqcButton({ job }: { job: ProductionJobDetail }) {
       disabled={disabledReason !== null}
     >
       <ClipboardCheck className="size-4" />
-      {job.oqcRequested ? "Đã tạo OQC" : "Yêu cầu OQC"}
+      Yêu cầu OQC
     </Button>
   )
 

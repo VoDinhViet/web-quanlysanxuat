@@ -19,14 +19,12 @@ function resolveRequestProductionJobQcErrorMessage(error: unknown): string {
       return "Job không còn đang sản xuất (IN_PROGRESS)."
     case "production_job.error.no_final_assembly":
       return "Job không có công đoạn lắp ráp Cấp 0 — không thể yêu cầu QC qua đây."
-    case "production_job.error.operations_not_completed":
-      return "Còn công đoạn chưa hoàn thành — cần xong toàn bộ trước khi yêu cầu QC."
     case "oqc_inspection.error.item_not_resolvable":
       return "Không xác định được vật tư cần QC — dữ liệu BOM của Job đã mất liên kết."
     case "oqc_inspection.error.lot_size_exceeded":
       return "Tổng SL đã xin QC vượt định mức kế hoạch của Job."
     case "oqc_inspection.error.operation_completed_quantity_insufficient":
-      return "Job này đã được yêu cầu QC trước đó."
+      return "SL yêu cầu vượt phần đã hoàn thành chưa được kiểm. Vui lòng tải lại trang."
     case "auth.error.forbidden":
       return "Bạn không có quyền yêu cầu QC."
     default:
@@ -34,14 +32,21 @@ function resolveRequestProductionJobQcErrorMessage(error: unknown): string {
   }
 }
 
-// Yêu cầu QC thành phẩm cho cả Job — 1 cú bấm, server tự resolve công đoạn Cấp 0 (xem
-// production-job.type.ts). Không có đường hoàn tác — trùng lặp gọi lại sẽ bị BE chặn
-// (oqc_inspection.error.operation_completed_quantity_insufficient).
+// Yêu cầu OQC thành phẩm theo lô — server tự resolve công đoạn Cấp 0 (xem production-job.type.ts).
+// `quantity` bỏ trống = toàn bộ SL đã hoàn thành chưa kiểm. Không có đường hoàn tác — SL vượt phần
+// chưa kiểm sẽ bị BE chặn (oqc_inspection.error.operation_completed_quantity_insufficient).
 export const requestProductionJobQc = createServerFn({ method: "POST" })
-  .validator(z.object({ productionJobId: z.uuid() }))
+  .validator(
+    z.object({
+      productionJobId: z.uuid(),
+      quantity: z.number().positive().optional(),
+    })
+  )
   .handler(async ({ data }): Promise<void> => {
     try {
-      await http.post(`/api/production-jobs/${data.productionJobId}/qc`)
+      await http.post(`/api/production-jobs/${data.productionJobId}/qc`, {
+        quantity: data.quantity,
+      })
     } catch (error) {
       logHttpError(error, "requestProductionJobQc")
 

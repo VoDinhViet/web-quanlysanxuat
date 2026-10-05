@@ -18,7 +18,7 @@ function resolveSendOutboundOrderErrorMessage(error: unknown): string {
     case "outbound_order.error.not_sendable":
       return "Phiếu không còn ở trạng thái Nháp/Bị từ chối. Vui lòng tải lại trang."
     case "outbound_order.error.oqc_not_completed":
-      return "Còn lệnh sản xuất chưa qua hết kiểm tra chất lượng (OQC). Không thể gửi duyệt."
+      return "Có Job chưa có lô nào qua kiểm tra chất lượng (OQC). Không thể gửi duyệt."
     case "outbound_order.error.quantity_exceeds_deliverable":
       return "Có dòng vượt số lượng có thể giao — kiểm tra lại tồn kho hoặc lệnh xuất khác đang giữ hàng."
     case "auth.error.forbidden":

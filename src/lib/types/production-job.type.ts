@@ -87,9 +87,9 @@ export type ProductionJobDetail = {
   // còn gate nào đọc — `PATCH .../operations/:operationId` mở ngay khi Job `IN_PROGRESS`.
   operationsApprovedBy: string | null
   operationsApprovedAt: string | null
-  // true thì nút "Yêu cầu OQC" ở ProductionJobDetailHeader.tsx khoá lại — BE chặn tạo phiếu OQC
-  // lần 2 cho cùng công đoạn Cấp 0 (E198).
-  oqcRequested: boolean
+  // SL thành phẩm đã hoàn thành ở công đoạn cuối mà chưa xin OQC (OQC theo lô một phần) — bằng 0
+  // thì nút "Yêu cầu OQC" ở ProductionJobHeaderActions.tsx khoá lại; BE chặn SL lô vượt số này (E198).
+  oqcRequestableQuantity: number
   createdAt: string
   updatedAt: string
 }
