@@ -175,6 +175,16 @@ export type PurchaseOrderDetail = {
   assignedUser: PurchaseOrderUserRef | null
   paymentTerm: PaymentTerm | null
   note: string | null
+  /** Tiền hàng chưa thuế (Σ SL đặt × đơn giá), tính ở BE. */
+  subtotal: number
+  /** Thuế VAT (%) trên tiền hàng, nhập ở PO. */
+  vatPercent: number
+  vatAmount: number
+  /** Chi phí khác của cả đơn (vận chuyển, bốc xếp...) + diễn giải. */
+  otherCost: number
+  otherCostNote: string | null
+  /** Tổng tiền = subtotal + vatAmount + otherCost — số mà yêu cầu thanh toán chốt. */
+  totalAmount: number
   quotation: { id: string; code: string } | null
   quotationStatus: PurchaseQuotationStatus | null
   /** True when cancelling can also reopen the source RFQ (`reopenQuotation`): the RFQ is

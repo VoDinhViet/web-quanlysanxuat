@@ -98,6 +98,15 @@ const itemColumns = col.columns([
   }),
 ])
 
+function FooterRow({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="tabular-nums">{numberFmt.format(value)} VND</dd>
+    </div>
+  )
+}
+
 type PaymentRequestItemsSectionProps = {
   paymentRequest: PaymentRequestDetail
 }
@@ -113,10 +122,6 @@ export function PaymentRequestItemsSection({
     features: appTableFeatures,
   })
 
-  const totalAmount = paymentRequest.items.reduce(
-    (sum, item) => sum + item.lineTotal,
-    0
-  )
   const shortageCount = paymentRequest.items.filter(
     (item) => item.receivedQty < item.orderedQty
   ).length
@@ -178,16 +183,34 @@ export function PaymentRequestItemsSection({
         </div>
       )}
 
-      {/* Footer total row */}
+      {/* Cách ra số đề nghị chi: tiền hàng + VAT + chi phí khác của PO */}
       {paymentRequest.items.length > 0 && (
-        <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
-          <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Tổng cộng
-          </span>
-          <span className="font-semibold text-foreground tabular-nums">
-            {numberFmt.format(totalAmount)} VND
-          </span>
-        </div>
+        <dl className="ml-auto flex w-full max-w-sm flex-col gap-1.5 border-t border-border bg-muted/20 px-4 py-3 text-sm sm:px-5">
+          <FooterRow
+            label="Thành tiền (chưa thuế)"
+            value={paymentRequest.subtotal}
+          />
+          <FooterRow
+            label={`Thuế VAT (${numberFmt.format(paymentRequest.vatPercent)}%)`}
+            value={paymentRequest.vatAmount}
+          />
+          <FooterRow
+            label={
+              paymentRequest.otherCostNote
+                ? `Chi phí khác (${paymentRequest.otherCostNote})`
+                : "Chi phí khác"
+            }
+            value={paymentRequest.otherCost}
+          />
+          <div className="flex items-center justify-between gap-3 border-t border-border pt-2">
+            <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+              Tổng cộng
+            </dt>
+            <dd className="font-semibold text-foreground tabular-nums">
+              {numberFmt.format(paymentRequest.requestValue)} VND
+            </dd>
+          </div>
+        </dl>
       )}
     </div>
   )

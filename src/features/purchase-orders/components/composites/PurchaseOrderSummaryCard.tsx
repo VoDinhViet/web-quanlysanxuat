@@ -9,9 +9,17 @@ type PurchaseOrderSummaryCardProps = {
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const amountFormatter = new Intl.NumberFormat("vi-VN")
 
-// PurchaseOrderDetail (detail DTO) không có sẵn totalAmount (khác PurchaseOrder của màn danh
-// sách, DTO riêng có aggregate) — tính thẳng từ items[] ở đây, bỏ qua dòng chưa có unitPrice khi
-// cộng tiền nhưng vẫn báo rõ số dòng thiếu để không đánh lừa người dùng là tổng đã đầy đủ.
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 text-xs">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-foreground tabular-nums">{value}</span>
+    </div>
+  )
+}
+
+// Tiền hàng/VAT/tổng tiền do BE tính (cùng công thức với số yêu cầu thanh toán chốt); dòng chưa có
+// unitPrice tính 0 nên vẫn báo số dòng thiếu để không đánh lừa người dùng là tổng đã đầy đủ.
 export function PurchaseOrderSummaryCard({
   purchaseOrder,
 }: PurchaseOrderSummaryCardProps) {
@@ -24,10 +32,6 @@ export function PurchaseOrderSummaryCard({
     0
   )
   const totalRemaining = Math.max(totalQuantity - totalReceived, 0)
-  const totalAmount = purchaseOrder.items.reduce(
-    (sum, item) => sum + item.quantity * (item.unitPrice ?? 0),
-    0
-  )
   const missingUnitPriceCount = purchaseOrder.items.filter(
     (item) => item.unitPrice === null
   ).length
@@ -68,18 +72,33 @@ export function PurchaseOrderSummaryCard({
           </div>
         </div>
 
-        <div className="space-y-1 border-t border-border/50 pt-2">
-          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-            Tổng giá trị (VNĐ)
-          </p>
-          <p className="text-sm font-semibold text-foreground tabular-nums">
-            {amountFormatter.format(totalAmount)}
-          </p>
+        <div className="space-y-1.5 border-t border-border/50 pt-2">
+          <SummaryRow
+            label="Thành tiền (chưa thuế)"
+            value={amountFormatter.format(purchaseOrder.subtotal)}
+          />
+          <SummaryRow
+            label={`Thuế VAT (${amountFormatter.format(purchaseOrder.vatPercent)}%)`}
+            value={amountFormatter.format(purchaseOrder.vatAmount)}
+          />
+          <SummaryRow
+            label="Chi phí khác"
+            value={amountFormatter.format(purchaseOrder.otherCost)}
+          />
           {missingUnitPriceCount > 0 && (
             <p className="text-[11px] text-warning">
               Có {missingUnitPriceCount} dòng chưa nhập đơn giá
             </p>
           )}
+        </div>
+
+        <div className="space-y-1 border-t border-border/50 pt-2">
+          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+            Tổng tiền (VNĐ)
+          </p>
+          <p className="text-base font-semibold text-foreground tabular-nums">
+            {amountFormatter.format(purchaseOrder.totalAmount)}
+          </p>
         </div>
       </div>
     </section>

@@ -40,6 +40,9 @@ export const updatePurchaseOrder = createServerFn({ method: "POST" })
       assignedUserId: z.uuid().nullable().optional(),
       paymentTerm: z.enum(PaymentTerm).nullable().optional(),
       note: z.string().trim().max(1000).nullable().optional(),
+      vatPercent: z.number().min(0).max(100).optional(),
+      otherCost: z.number().min(0).optional(),
+      otherCostNote: z.string().trim().max(255).nullable().optional(),
     })
   )
   .handler(async ({ data }): Promise<void> => {
@@ -49,6 +52,9 @@ export const updatePurchaseOrder = createServerFn({ method: "POST" })
         assignedUserId: data.assignedUserId,
         paymentTerm: data.paymentTerm,
         note: data.note,
+        vatPercent: data.vatPercent,
+        otherCost: data.otherCost,
+        otherCostNote: data.otherCostNote,
       })
     } catch (error) {
       logHttpError(error, "updatePurchaseOrder")

@@ -84,6 +84,12 @@ export type PaymentRequestDetail = {
   supplier: PaymentRequestSupplierRef
   poValue: number
   requestValue: number
+  /** Cách ra `requestValue`: tiền hàng + VAT + chi phí khác của PO. */
+  subtotal: number
+  vatPercent: number
+  vatAmount: number
+  otherCost: number
+  otherCostNote: string | null
   dueDate: string
   status: PaymentRequestStatus
   items: PaymentRequestItem[]

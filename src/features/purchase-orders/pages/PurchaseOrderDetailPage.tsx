@@ -8,6 +8,7 @@ import { PurchaseOrderCancellationNotice } from "@/features/purchase-orders/comp
 import { PurchaseOrderClosureNotice } from "@/features/purchase-orders/components/composites/PurchaseOrderClosureNotice"
 import { PurchaseOrderDetailHeader } from "@/features/purchase-orders/components/layouts/PurchaseOrderDetailHeader"
 import { PurchaseOrderDetailTimelineCard } from "@/features/purchase-orders/components/composites/PurchaseOrderDetailTimelineCard"
+import { PurchaseOrderCostsSection } from "@/features/purchase-orders/components/sections/PurchaseOrderCostsSection"
 import { PurchaseOrderItemsSection } from "@/features/purchase-orders/components/sections/PurchaseOrderItemsSection"
 import { PurchaseOrderRelatedNotesCard } from "@/features/purchase-orders/components/composites/PurchaseOrderRelatedNotesCard"
 import { PurchaseOrderStatusLegend } from "@/features/purchase-orders/components/composites/PurchaseOrderStatusLegend"
@@ -54,6 +55,11 @@ export function PurchaseOrderDetailPage() {
               editable={editable}
             />
             <PurchaseOrderItemsSection
+              purchaseOrder={purchaseOrder}
+              editable={editable}
+            />
+            <PurchaseOrderCostsSection
+              key={purchaseOrder.updatedAt}
               purchaseOrder={purchaseOrder}
               editable={editable}
             />
