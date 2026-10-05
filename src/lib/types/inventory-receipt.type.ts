@@ -207,6 +207,8 @@ export type InventoryReceipt = {
   note: string | null
   // Lý do nhập — chỉ có khi receiptType = OTHER.
   reason: string | null
+  // Cột "PO / Lý do": BE tự suy (số PO khách / lý do mua của các đề xuất, PO của LSX, hoặc lý do nhập).
+  poOrReason: string | null
   items: InventoryReceiptItem[]
   posterBy: InventoryReceiptUserRef | null
   postedAt: string | null

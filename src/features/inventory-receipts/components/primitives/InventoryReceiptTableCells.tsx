@@ -44,6 +44,22 @@ export function SupplierLink({ supplier }: { supplier: SupplierRef }) {
   )
 }
 
+export function PurchaseOrderLink({
+  purchaseOrder,
+}: {
+  purchaseOrder: InventoryReceiptPurchaseOrderRef
+}) {
+  return (
+    <Link
+      to="/manage/purchase-orders/$purchaseOrderId"
+      params={{ purchaseOrderId: purchaseOrder.id }}
+      className="font-mono text-xs font-semibold text-primary hover:underline"
+    >
+      {purchaseOrder.code}
+    </Link>
+  )
+}
+
 type InventoryReceiptSourceCellProps = {
   purchaseOrder: InventoryReceiptPurchaseOrderRef | null
   supplier: SupplierRef | null
@@ -63,15 +79,7 @@ export function InventoryReceiptSourceCell({
   purchaseRequest,
 }: InventoryReceiptSourceCellProps) {
   if (purchaseOrder) {
-    return (
-      <Link
-        to="/manage/purchase-orders/$purchaseOrderId"
-        params={{ purchaseOrderId: purchaseOrder.id }}
-        className="font-mono text-xs font-semibold text-primary hover:underline"
-      >
-        {purchaseOrder.code}
-      </Link>
-    )
+    return <PurchaseOrderLink purchaseOrder={purchaseOrder} />
   }
 
   if (supplier) {

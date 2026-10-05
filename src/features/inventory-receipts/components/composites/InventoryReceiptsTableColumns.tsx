@@ -9,7 +9,7 @@ import {
 } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import {
   InventoryReceiptActionsCell,
-  InventoryReceiptSourceCell,
+  PurchaseOrderLink,
   SupplierLink,
 } from "@/features/inventory-receipts/components/primitives/InventoryReceiptTableCells"
 import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
@@ -40,6 +40,36 @@ export const inventoryReceiptsColumns = col.columns([
         {getValue()}
       </Link>
     ),
+  }),
+
+  col.display({
+    id: "purchaseOrder",
+    header: "Mã đơn mua",
+    meta: { headerClassName: "min-w-32" },
+    cell: ({ row }) =>
+      row.original.purchaseOrder ? (
+        <PurchaseOrderLink purchaseOrder={row.original.purchaseOrder} />
+      ) : (
+        <span className="text-xs text-muted-foreground">—</span>
+      ),
+  }),
+
+  col.accessor("poOrReason", {
+    header: "PO / Lý do",
+    meta: { headerClassName: "min-w-40" },
+    cell: ({ getValue }) => {
+      const poOrReason = getValue()
+      return poOrReason ? (
+        <span
+          className="line-clamp-2 max-w-64 text-xs text-wrap"
+          title={poOrReason}
+        >
+          {poOrReason}
+        </span>
+      ) : (
+        <span className="text-xs text-muted-foreground">—</span>
+      )
+    },
   }),
 
   col.accessor("receiptDate", {
@@ -81,21 +111,6 @@ export const inventoryReceiptsColumns = col.columns([
       ),
   }),
 
-  col.display({
-    id: "source",
-    header: "PO / Lý do",
-    meta: { headerClassName: "min-w-40" },
-    cell: ({ row }) => (
-      <InventoryReceiptSourceCell
-        purchaseOrder={row.original.purchaseOrder}
-        supplier={row.original.supplier}
-        client={row.original.client}
-        purchaseRequest={row.original.purchaseRequest}
-        productionOrder={row.original.productionOrder}
-      />
-    ),
-  }),
-
   col.accessor("status", {
     header: "Trạng thái",
     meta: {
@@ -103,12 +118,6 @@ export const inventoryReceiptsColumns = col.columns([
       cellClassName: "text-center",
     },
     cell: ({ getValue }) => <InventoryReceiptStatusBadge status={getValue()} />,
-  }),
-
-  col.accessor("creatorBy", {
-    header: "Người tạo",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => getValue()?.fullName ?? "—",
   }),
 
   col.display({
