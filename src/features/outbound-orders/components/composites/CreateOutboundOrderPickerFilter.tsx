@@ -87,105 +87,103 @@ export function CreateOutboundOrderPickerFilter({
   }
 
   return (
-    <div className="mt-4 flex flex-col gap-3 rounded-md border border-border/60 bg-card p-3 sm:p-4">
-      <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_repeat(3,minmax(10rem,1fr))_auto]">
-        <div className="space-y-1.5">
+    <div className="mt-4 grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_repeat(3,minmax(10rem,1fr))_auto]">
+      <div className="space-y-1.5">
+        <Label
+          htmlFor="do-picker-client"
+          className="text-[11px] font-medium text-muted-foreground"
+        >
+          Khách hàng
+        </Label>
+        <ComboboxField
+          id="do-picker-client"
+          value={filters.clientId}
+          onValueChange={(value) =>
+            onChange({ ...filters, clientId: value || undefined })
+          }
+          options={client.options}
+          onSearchChange={client.onSearchChange}
+          isPending={client.isFetching}
+          initialOption={buildSelectOption(selectedClient)}
+          emptyMessage="Không tìm thấy khách hàng"
+          placeholder="Tìm khách hàng..."
+          className="text-xs"
+        />
+      </div>
+
+      {textFilterFields.map((field) => (
+        <div key={field.key} className="space-y-1.5">
           <Label
-            htmlFor="do-picker-client"
+            htmlFor={`do-picker-${field.key}`}
             className="text-[11px] font-medium text-muted-foreground"
           >
-            Khách hàng
+            {field.label}
           </Label>
-          <ComboboxField
-            id="do-picker-client"
-            value={filters.clientId}
-            onValueChange={(value) =>
-              onChange({ ...filters, clientId: value || undefined })
-            }
-            options={client.options}
-            onSearchChange={client.onSearchChange}
-            isPending={client.isFetching}
-            initialOption={buildSelectOption(selectedClient)}
-            emptyMessage="Không tìm thấy khách hàng"
-            placeholder="Tìm khách hàng..."
-            className="text-xs"
-          />
-        </div>
-
-        {textFilterFields.map((field) => (
-          <div key={field.key} className="space-y-1.5">
-            <Label
-              htmlFor={`do-picker-${field.key}`}
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              {field.label}
-            </Label>
-            <div className="relative">
-              <Input
-                id={`do-picker-${field.key}`}
-                className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder={field.placeholder}
-                value={textValues[field.key]}
-                onChange={(event) =>
-                  handleTextChange(field.key, event.target.value)
-                }
-              />
-              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            </div>
-          </div>
-        ))}
-
-        <div className="flex items-center gap-2">
-          <Popover>
-            <PopoverTrigger
-              render={
-                <Button type="button" variant="outline" className="text-xs">
-                  <ListFilter className="size-3.5" />
-                  Bộ lọc khác
-                  {filters.deliverableOnly && (
-                    <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
-                      1
-                    </span>
-                  )}
-                </Button>
+          <div className="relative">
+            <Input
+              id={`do-picker-${field.key}`}
+              className="pr-9 text-xs placeholder:text-muted-foreground/75"
+              placeholder={field.placeholder}
+              value={textValues[field.key]}
+              onChange={(event) =>
+                handleTextChange(field.key, event.target.value)
               }
             />
-            <PopoverContent align="end" className="w-72 gap-3">
-              <div className="flex items-start justify-between gap-3">
-                <Label
-                  htmlFor="do-picker-deliverable-only"
-                  className="flex flex-col items-start gap-0.5 text-xs font-medium"
-                >
-                  Chỉ hiện dòng có thể giao
-                  <span className="text-[11px] font-normal text-muted-foreground">
-                    Ẩn dòng hết tồn hoặc đã bị DO khác giữ hết (Có thể giao &gt;
-                    0).
-                  </span>
-                </Label>
-                <Switch
-                  id="do-picker-deliverable-only"
-                  checked={filters.deliverableOnly ?? false}
-                  onCheckedChange={(checked) =>
-                    onChange({
-                      ...filters,
-                      deliverableOnly: checked || undefined,
-                    })
-                  }
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
-
-          <Button
-            type="button"
-            variant="ghost"
-            className="text-xs text-muted-foreground"
-            onClick={resetFilters}
-          >
-            <RotateCw className="size-3.5" />
-            Xóa bộ lọc
-          </Button>
+            <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          </div>
         </div>
+      ))}
+
+      <div className="flex items-center gap-2">
+        <Popover>
+          <PopoverTrigger
+            render={
+              <Button type="button" variant="outline" className="text-xs">
+                <ListFilter className="size-3.5" />
+                Bộ lọc khác
+                {filters.deliverableOnly && (
+                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                    1
+                  </span>
+                )}
+              </Button>
+            }
+          />
+          <PopoverContent align="end" className="w-72 gap-3">
+            <div className="flex items-start justify-between gap-3">
+              <Label
+                htmlFor="do-picker-deliverable-only"
+                className="flex flex-col items-start gap-0.5 text-xs font-medium"
+              >
+                Chỉ hiện dòng có thể giao
+                <span className="text-[11px] font-normal text-muted-foreground">
+                  Ẩn dòng hết tồn hoặc đã bị DO khác giữ hết (Có thể giao &gt;
+                  0).
+                </span>
+              </Label>
+              <Switch
+                id="do-picker-deliverable-only"
+                checked={filters.deliverableOnly ?? false}
+                onCheckedChange={(checked) =>
+                  onChange({
+                    ...filters,
+                    deliverableOnly: checked || undefined,
+                  })
+                }
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <Button
+          type="button"
+          variant="ghost"
+          className="text-xs text-muted-foreground"
+          onClick={resetFilters}
+        >
+          <RotateCw className="size-3.5" />
+          Xóa bộ lọc
+        </Button>
       </div>
     </div>
   )
