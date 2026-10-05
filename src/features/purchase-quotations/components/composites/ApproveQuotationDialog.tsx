@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { approvePurchaseQuotation } from "@/features/purchase-quotations/api/server-functions/approve-purchase-quotation.api"
 import type {
+  PurchaseQuotationApprovedReduction,
   PurchaseQuotationDetail,
   PurchaseQuotationSupplierSelection,
 } from "@/lib/types/purchase-quotation.type"
@@ -28,6 +29,8 @@ type ApproveQuotationDialogProps = {
   // PurchaseQuotationDetailQuotesSection's inline radio selection, passed down here only to be
   // confirmed and sent as-is.
   selectedSuppliers: PurchaseQuotationSupplierSelection
+  // Dòng phân bổ duyệt thiếu (đã kèm lý do) — rỗng = duyệt nguyên SL báo giá.
+  reductions: PurchaseQuotationApprovedReduction[]
   trigger: ReactElement
 }
 
@@ -37,6 +40,7 @@ type ApproveQuotationDialogProps = {
 export function ApproveQuotationDialog({
   purchaseQuotation,
   selectedSuppliers,
+  reductions,
   trigger,
 }: ApproveQuotationDialogProps) {
   const [open, setOpen] = useState(false)
@@ -56,6 +60,7 @@ export function ApproveQuotationDialog({
               quotationItemSupplierId,
             })
           ),
+          allocations: reductions,
         },
       }),
     onSuccess: async () => {
@@ -86,7 +91,7 @@ export function ApproveQuotationDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Duyệt báo giá này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Báo giá ${purchaseQuotation.code} sẽ chuyển sang trạng thái "Đã duyệt". Hệ thống sẽ tạo ${distinctSupplierCount} đơn mua nháp cho ${distinctSupplierCount} NCC thắng thầu.`}
+            {`Báo giá ${purchaseQuotation.code} sẽ chuyển sang trạng thái "Đã duyệt". Hệ thống sẽ tạo ${distinctSupplierCount} đơn mua nháp cho ${distinctSupplierCount} NCC thắng thầu.${reductions.length > 0 ? ` ${reductions.length} dòng được duyệt thiếu SL: phần chưa duyệt quay về sổ cái mua hàng để lập báo giá mới.` : ""}`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

@@ -106,6 +106,21 @@ export type PurchaseQuotationItemDetail = {
  *  `selectedAt`/`selectorBy` trên từng dòng NCC (`PurchaseQuotationItemSupplierDetail` ở trên). */
 export type PurchaseQuotationSupplierSelection = Record<string, string>
 
+/** Duyệt một phần: SL duyệt + lý do đang nhập trên trang chi tiết, khoá theo `allocationId`. Dòng
+ *  chưa đụng tới không có entry — hiểu là duyệt nguyên SL báo giá. `quantity` undefined = ô đang
+ *  xoá trống (chưa hợp lệ). */
+export type PurchaseQuotationApprovedAllocations = Partial<
+  Record<string, { quantity: number | undefined; reason: string }>
+>
+
+/** Một dòng phân bổ bị giảm SL khi duyệt — đúng shape `allocations[]` của
+ *  `POST /purchase-quotations/:id/approve`. */
+export type PurchaseQuotationApprovedReduction = {
+  allocationId: string
+  quantity: number
+  reason: string
+}
+
 /** Mirrors the backend's `QuotationResDto` (`GET /purchase-quotations/:id`) exactly,
  *  field-for-field. `approvedAt`/`approverBy` KHÔNG bị xóa khi một RFQ `APPROVED` được mở lại
  *  về `DRAFT` (huỷ đơn mua kèm `reopenQuotation`) — backend cố tình giữ lại làm dấu vết lịch sử — nên đừng suy

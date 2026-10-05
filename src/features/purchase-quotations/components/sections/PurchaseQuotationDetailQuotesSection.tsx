@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react"
+import { Fragment, useMemo, useState } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { appTableFeatures } from "@/lib/table-features"
@@ -21,6 +21,8 @@ import { PurchaseQuotationSupplierCompareTable } from "@/features/purchase-quota
 import { useHasPermission } from "@/hooks/use-permissions"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type {
+  PurchaseQuotationApprovedAllocations,
+  PurchaseQuotationApprovedReduction,
   PurchaseQuotationDetail,
   PurchaseQuotationSupplierSelection,
 } from "@/lib/types/purchase-quotation.type"
@@ -46,9 +48,37 @@ export function PurchaseQuotationDetailQuotesSection({
   const [selectedSuppliers, setSelectedSuppliers] =
     useState<PurchaseQuotationSupplierSelection>({})
 
+  // Duyệt một phần: chỉ chứa dòng người duyệt đã đụng tới; không có entry = duyệt nguyên SL.
+  const [approvedAllocations, setApprovedAllocations] =
+    useState<PurchaseQuotationApprovedAllocations>({})
+
   const { data: items = [] } = useSuspenseQuery(
     purchaseQuotationComparisonQueryOptions(purchaseQuotation.id)
   )
+
+  // Dòng bị giảm SL (gửi lên BE) + cờ chặn nút Duyệt khi SL xoá trống/không dương hoặc thiếu lý do.
+  const { reductions, hasInvalidApproval } = useMemo(() => {
+    const reduced: PurchaseQuotationApprovedReduction[] = []
+    let invalid = false
+    for (const item of items) {
+      for (const allocation of item.allocations) {
+        const entry = approvedAllocations[allocation.id]
+        if (!entry) continue
+        if (entry.quantity === undefined || entry.quantity <= 0) {
+          invalid = true
+          continue
+        }
+        if (entry.quantity >= allocation.quantity) continue
+        if (!entry.reason.trim()) invalid = true
+        reduced.push({
+          allocationId: allocation.id,
+          quantity: entry.quantity,
+          reason: entry.reason.trim(),
+        })
+      }
+    }
+    return { reductions: reduced, hasInvalidApproval: invalid }
+  }, [items, approvedAllocations])
 
   const table = useTable({
     data: items,
@@ -64,7 +94,7 @@ export function PurchaseQuotationDetailQuotesSection({
         </h2>
         <span className="text-xs font-medium text-muted-foreground">
           {selectable
-            ? "Chọn 1 NCC thắng thầu cho mỗi vật tư bên dưới"
+            ? 'Chọn 1 NCC thắng thầu cho mỗi vật tư; NCC chỉ đáp ứng một phần thì giảm "SL duyệt"'
             : "Giá gần nhất, ngày mua chỉ để tham khảo"}
         </span>
       </div>
@@ -127,7 +157,21 @@ export function PurchaseQuotationDetailQuotesSection({
                       <p className="px-4 pt-3 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
                         Nguồn ĐXMH
                       </p>
-                      <PurchaseQuotationAllocationsTable item={row.original} />
+                      <PurchaseQuotationAllocationsTable
+                        item={row.original}
+                        approval={
+                          selectable
+                            ? {
+                                approved: approvedAllocations,
+                                onChange: (allocationId, next) =>
+                                  setApprovedAllocations((current) => ({
+                                    ...current,
+                                    [allocationId]: next,
+                                  })),
+                              }
+                            : undefined
+                        }
+                      />
                       <p className="px-4 pt-2 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
                         Báo giá NCC
                       </p>
@@ -159,6 +203,8 @@ export function PurchaseQuotationDetailQuotesSection({
         <PurchaseQuotationApprovalBar
           purchaseQuotation={purchaseQuotation}
           selectedSuppliers={selectedSuppliers}
+          reductions={reductions}
+          hasInvalidApproval={hasInvalidApproval}
           totalItems={items.length}
         />
       )}

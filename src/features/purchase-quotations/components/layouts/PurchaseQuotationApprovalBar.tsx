@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ApproveQuotationDialog } from "@/features/purchase-quotations/components/composites/ApproveQuotationDialog"
 import { RejectQuotationDialog } from "@/features/purchase-quotations/components/composites/RejectQuotationDialog"
 import type {
+  PurchaseQuotationApprovedReduction,
   PurchaseQuotationDetail,
   PurchaseQuotationSupplierSelection,
 } from "@/lib/types/purchase-quotation.type"
@@ -11,6 +12,9 @@ import type {
 type PurchaseQuotationApprovalBarProps = {
   purchaseQuotation: PurchaseQuotationDetail
   selectedSuppliers: PurchaseQuotationSupplierSelection
+  reductions: PurchaseQuotationApprovedReduction[]
+  // SL duyệt xoá trống/không dương hoặc giảm SL mà thiếu lý do — chặn Duyệt cho tới khi sửa.
+  hasInvalidApproval: boolean
   totalItems: number
 }
 
@@ -22,6 +26,8 @@ type PurchaseQuotationApprovalBarProps = {
 export function PurchaseQuotationApprovalBar({
   purchaseQuotation,
   selectedSuppliers,
+  reductions,
+  hasInvalidApproval,
   totalItems,
 }: PurchaseQuotationApprovalBarProps) {
   const selectedItemCount = Object.keys(selectedSuppliers).length
@@ -39,6 +45,19 @@ export function PurchaseQuotationApprovalBar({
             {" "}
             — sẽ tạo {distinctSupplierCount} đơn mua nháp cho{" "}
             {distinctSupplierCount} NCC
+          </span>
+        )}
+        {reductions.length > 0 && (
+          <span>
+            {" "}
+            — duyệt thiếu {reductions.length} dòng, phần còn lại quay về sổ cái
+            để báo giá lại
+          </span>
+        )}
+        {hasInvalidApproval && (
+          <span className="text-destructive">
+            {" "}
+            — SL duyệt chưa hợp lệ hoặc thiếu lý do
           </span>
         )}
       </div>
@@ -60,8 +79,9 @@ export function PurchaseQuotationApprovalBar({
         <ApproveQuotationDialog
           purchaseQuotation={purchaseQuotation}
           selectedSuppliers={selectedSuppliers}
+          reductions={reductions}
           trigger={
-            <Button type="button" disabled={!isComplete}>
+            <Button type="button" disabled={!isComplete || hasInvalidApproval}>
               Duyệt & tạo đơn mua
             </Button>
           }
