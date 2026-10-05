@@ -72,10 +72,12 @@ export type QcPassRatePoint = {
 }
 
 /** Mirrors the backend's PendingApprovalsResDto (GET /api/reports/pending-approvals) — mỗi field
- *  chỉ > 0 khi user hiện tại có quyền approve module đó, ngược lại backend luôn trả 0. */
+ *  chỉ > 0 khi user hiện tại có quyền xử lý module đó (approve; riêng `purchaseQuotationsToQuote` là
+ *  create), ngược lại backend luôn trả 0. */
 export type PendingApprovals = {
   purchaseRequests: number
   purchaseQuotations: number
+  purchaseQuotationsToQuote: number
   purchaseOrders: number
   orders: number
   productionOrders: number

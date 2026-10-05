@@ -63,6 +63,9 @@ type MenuItem = {
   href: ManageRoutePath
   // Số đếm "chờ duyệt" của module này trên PendingApprovals — không set thì không có badge.
   badgeKey?: keyof PendingApprovals
+  // Số đếm "cần xử lý" (không phải chờ duyệt) hiện thêm bên trái badge chính — nền primary.
+  todoBadgeKey?: keyof PendingApprovals
+  todoBadgeLabel?: string
 }
 
 type MenuGroup = {
@@ -135,6 +138,8 @@ const menuGroups: MenuGroup[] = [
         icon: FileText,
         href: "/manage/purchase-quotations",
         badgeKey: "purchaseQuotations",
+        todoBadgeKey: "purchaseQuotationsToQuote",
+        todoBadgeLabel: "vật tư chờ báo giá",
       },
       {
         label: "Danh mục mua hàng",
@@ -405,21 +410,50 @@ function MenuButton({
     ? (pendingApprovals?.[item.badgeKey] ?? 0)
     : 0
   const hasBadge = badgeCount > 0
+  const todoCount = item.todoBadgeKey
+    ? (pendingApprovals?.[item.todoBadgeKey] ?? 0)
+    : 0
+  const hasTodoBadge = todoCount > 0
+  const tooltip = [
+    item.label,
+    hasBadge && `${badgeCount} chờ duyệt`,
+    hasTodoBadge && `${todoCount} ${item.todoBadgeLabel}`,
+  ]
+    .filter(Boolean)
+    .join(" · ")
 
   return (
     <SidebarMenuItem>
       <SidebarMenuLinkButton
         to={item.href}
-        tooltip={
-          hasBadge ? `${item.label}: ${badgeCount} chờ duyệt` : item.label
-        }
+        tooltip={tooltip}
         isActive={isActive}
-        className={cn(menuButtonClass, hasBadge && "pr-11")}
+        className={cn(
+          menuButtonClass,
+          hasBadge && "pr-11",
+          hasBadge && hasTodoBadge && "pr-[4.5rem]",
+          !hasBadge && hasTodoBadge && "pr-11",
+        )}
       >
         <Icon />
         <span className="min-w-0 truncate">{item.label}</span>
         {hasBadge && <span className="sr-only">, {badgeCount} chờ duyệt</span>}
+        {hasTodoBadge && (
+          <span className="sr-only">
+            , {todoCount} {item.todoBadgeLabel}
+          </span>
+        )}
       </SidebarMenuLinkButton>
+      {hasTodoBadge && (
+        <SidebarMenuBadge
+          className={cn(
+            "top-2.5! h-4 min-w-4 bg-primary px-1 text-[10px] leading-none font-semibold text-primary-foreground",
+            hasBadge ? "right-9" : "right-3",
+          )}
+        >
+          {todoCount > 99 ? "99+" : todoCount}
+        </SidebarMenuBadge>
+      )}
       {hasBadge && (
         <SidebarMenuBadge className="top-2.5! right-3 h-4 min-w-4 bg-destructive px-1 text-[10px] leading-none font-semibold text-destructive-foreground">
           {badgeCount > 99 ? "99+" : badgeCount}
