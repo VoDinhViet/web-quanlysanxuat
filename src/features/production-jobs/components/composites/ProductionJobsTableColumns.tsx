@@ -38,7 +38,7 @@ const baseProductionJobColumns = [
   }),
   productionJobColumnHelper.accessor("code", {
     header: "JOB",
-    meta: { headerClassName: "min-w-24" },
+    meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
       <span className="font-mono font-semibold text-primary">{getValue()}</span>
     ),
