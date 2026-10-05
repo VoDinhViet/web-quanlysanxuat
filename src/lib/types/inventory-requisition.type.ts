@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 // Lifecycle (be-quanlysanxuat/docs/workflows/inventory-requisition.md):
 // DRAFT --send--> PENDING_APPROVAL --approve--> APPROVED --(kho post PXK)--> ISSUED (điểm cuối)
 //                        |
@@ -112,12 +113,11 @@ export type InventoryRequisitionItemUnitRef = {
   name: string
 }
 
-/** Mirrors the backend's `ItemUnitRefResDto` as nested on a requisition line. */
+/** Mirrors the backend's `ItemRefResDto` of a requisition line (`unit`/`image` are sibling fields). */
 export type InventoryRequisitionItemRef = {
   id: string
   code: string
   name: string
-  unit: InventoryRequisitionItemUnitRef
 }
 
 /** Mirrors the backend's `InventoryRequisitionItemResDto` — one line of a requisition's detail.
@@ -128,6 +128,8 @@ export type InventoryRequisitionItemRef = {
 export type InventoryRequisitionItem = {
   id: string
   item: InventoryRequisitionItemRef
+  unit: InventoryRequisitionItemUnitRef
+  image: FileResource | null
   quantity: number
   bomQuantity: number | null
   issuedQuantity: number | null
@@ -145,6 +147,8 @@ export type InventoryRequisitionItem = {
  *  `suggestedQuantity` nhưng chưa có `id`/`quantity`/`note`. */
 export type InventoryRequisitionLine = {
   item: InventoryRequisitionItemRef
+  unit: InventoryRequisitionItemUnitRef
+  image: FileResource | null
   bomQuantity: number | null
   issuedQuantity: number | null
   onHand: number

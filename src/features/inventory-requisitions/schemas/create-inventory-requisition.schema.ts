@@ -12,6 +12,7 @@ const requisitionLineSnapshotSchema = z.object({
   itemCode: z.string(),
   itemName: z.string(),
   unitName: z.string(),
+  itemImage: z.object({ url: z.string() }).nullish(),
   bomQuantity: z.number().nullable(),
   issuedQuantity: z.number().nullable(),
   onHand: z.number(),

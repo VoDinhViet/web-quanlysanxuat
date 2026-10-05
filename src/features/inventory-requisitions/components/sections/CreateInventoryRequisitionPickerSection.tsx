@@ -42,7 +42,8 @@ function buildPickedRequisitionItem(
     line: {
       itemCode: line.item.code,
       itemName: line.item.name,
-      unitName: line.item.unit.name,
+      unitName: line.unit.name,
+      itemImage: line.image,
       bomQuantity: line.bomQuantity,
       issuedQuantity: line.issuedQuantity,
       onHand: line.onHand,

@@ -9,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import { ColumnHeaderWithHint } from "@/features/inventory-requisitions/components/composites/CreateInventoryRequisitionPickerColumns"
@@ -42,6 +43,20 @@ export function buildCreateInventoryRequisitionItemColumns({
       meta: { headerClassName: "w-10" },
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.index + 1}</span>
+      ),
+    }),
+    createInventoryRequisitionItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-20 text-center",
+        cellClassName: "py-2 text-center",
+      },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.line.itemImage}
+          name={row.original.line.itemName}
+        />
       ),
     }),
     createInventoryRequisitionItemColumnHelper.display({

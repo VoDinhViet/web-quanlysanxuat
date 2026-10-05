@@ -20,7 +20,7 @@ export function ProductionJobHeaderFacts({
   job,
 }: ProductionJobHeaderFactsProps) {
   const { data: item } = useQuery(itemQueryOptions(job.itemId))
-  const unit = job.item.unit?.name ?? item?.unit.name
+  const unit = job.unit?.name ?? item?.unit.name
 
   return (
     <dl className="grid grid-cols-2 gap-x-6 gap-y-4 lg:grid-cols-4">

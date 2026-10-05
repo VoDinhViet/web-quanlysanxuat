@@ -2,6 +2,7 @@ import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
 import type { ItemRef } from "@/lib/types/item.type"
+import type { Unit } from "@/lib/types/unit.type"
 
 /** Mirrors the backend's real `production_jobs.status` column (`GET /production-jobs`,
  *  `GET /production-jobs/:jobId`). Khôi phục điểm kết thúc 2026-08-24 — `PENDING → IN_PROGRESS →
@@ -74,6 +75,8 @@ export type ProductionJobDetail = {
   client: OrderClientRef | null
   itemId: string
   item: ItemRef
+  // Đơn vị tính của sản phẩm — null khi sản phẩm không còn đơn vị (BE leftJoin `units`).
+  unit: Unit | null
   quantity: number
   status: ProductionJobStatus
   startedBy: string | null

@@ -7,6 +7,7 @@ import { NumericFormat } from "react-number-format"
 import { toast } from "sonner"
 
 import { Input } from "@/components/ui/input"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import {
   Table,
@@ -46,6 +47,21 @@ function buildItemColumns(
       cell: ({ row }) => row.index + 1,
     }),
 
+    col.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-20 text-center",
+        cellClassName: "py-2 text-center",
+      },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.item.name}
+        />
+      ),
+    }),
+
     col.accessor("item.code", {
       header: "Mã VT",
       meta: { headerClassName: "min-w-28" },
@@ -59,7 +75,7 @@ function buildItemColumns(
       meta: { headerClassName: "min-w-48" },
     }),
 
-    col.accessor("item.unit.name", {
+    col.accessor("unit.name", {
       header: "ĐVT",
       meta: {
         headerClassName: "w-16",

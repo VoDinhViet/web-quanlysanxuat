@@ -3,6 +3,7 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { Info } from "lucide-react"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import {
   Tooltip,
   TooltipContent,
@@ -95,6 +96,20 @@ export function buildCreateInventoryRequisitionPickerColumns({
       },
     }),
     inventoryRequisitionPickerColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-20 text-center",
+        cellClassName: "py-2 text-center",
+      },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.item.name}
+        />
+      ),
+    }),
+    inventoryRequisitionPickerColumnHelper.display({
       id: "direct",
       header: "Vật tư",
       meta: { headerClassName: "min-w-56" },
@@ -132,15 +147,12 @@ export function buildCreateInventoryRequisitionPickerColumns({
         )
       },
     }),
-    inventoryRequisitionPickerColumnHelper.accessor(
-      (row) => row.item.unit.name,
-      {
-        id: "unit",
-        header: "ĐVT",
-        meta: { headerClassName: "min-w-14" },
-        cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
-      }
-    ),
+    inventoryRequisitionPickerColumnHelper.accessor((row) => row.unit.name, {
+      id: "unit",
+      header: "ĐVT",
+      meta: { headerClassName: "min-w-14" },
+      cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
+    }),
     inventoryRequisitionPickerColumnHelper.accessor("bomQuantity", {
       header: () => (
         <ColumnHeaderWithHint
