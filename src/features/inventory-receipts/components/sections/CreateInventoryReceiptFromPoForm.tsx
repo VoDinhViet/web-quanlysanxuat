@@ -229,7 +229,7 @@ export function CreateInventoryReceiptFromPoForm() {
           requestedQuantity: line.quantity,
           remainingQuantity: remaining,
           quantity: remaining,
-          note: "",
+          note: line.purchaseRequestItem.note ?? "",
         }
       })
       .filter((item) => item.remainingQuantity > 0)
