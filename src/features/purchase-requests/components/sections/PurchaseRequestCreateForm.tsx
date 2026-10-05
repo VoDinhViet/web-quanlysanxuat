@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,6 +16,7 @@ import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
+import { currentUserQueryOptions } from "@/features/auth/api"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
@@ -27,7 +28,6 @@ import {
   PurchaseRequestCreateStepsTabs,
   purchaseRequestCreateStepItems,
 } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateStepsTabs"
-import { PurchaseRequestCreateTallySheet } from "@/features/purchase-requests/components/sections/PurchaseRequestCreateTallySheet"
 import { createPurchaseRequest } from "@/features/purchase-requests/api/server-functions/create-purchase-request.api"
 import {
   createPurchaseRequestFormDefaultValues,
@@ -40,6 +40,14 @@ export function PurchaseRequestCreateForm() {
   const navigate = useNavigate({ from: "/manage/purchase-requests/create" })
   const queryClient = useQueryClient()
   const createPurchaseRequestFn = useServerFn(createPurchaseRequest)
+
+  // Phòng ban mặc định = phòng ban của người đang đăng nhập (hồ sơ đã được nạp sẵn ở layout
+  // `(authed)`), vẫn đổi được ở ô Phòng ban.
+  const { data: currentUser } = useQuery(currentUserQueryOptions)
+  const defaultValues = {
+    ...createPurchaseRequestFormDefaultValues,
+    departmentId: currentUser?.departmentId ?? "",
+  }
 
   // -v2: the item shape changed (itemLabel → itemCode/itemName/itemUnit/minStock, for the
   // picker-table redesign) — a v1 key would let restoreFormDraft() write a stale-shaped draft
@@ -73,7 +81,7 @@ export function PurchaseRequestCreateForm() {
   })
 
   const form = useAppForm({
-    defaultValues: createPurchaseRequestFormDefaultValues,
+    defaultValues,
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: createPurchaseRequestSchema,
@@ -104,9 +112,13 @@ export function PurchaseRequestCreateForm() {
   useEffect(() => {
     if (!draftRestoredRef.current && draft) {
       draftRestoredRef.current = true
-      restoreFormDraft(form, draft)
+      // Bản nháp cũ có thể chưa chọn phòng ban — giữ phòng ban mặc định của người dùng.
+      restoreFormDraft(form, {
+        ...draft,
+        departmentId: draft.departmentId || defaultValues.departmentId,
+      })
     }
-  }, [draft, form])
+  }, [draft, form, defaultValues.departmentId])
 
   const { prevStep, prevLabel, nextStep, nextLabel } = getStepNav(
     purchaseRequestCreateStepItems,
@@ -127,130 +139,121 @@ export function PurchaseRequestCreateForm() {
       noValidate
       className="space-y-6"
     >
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="overflow-hidden rounded-lg bg-card shadow-card">
-          <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
-            <PurchaseRequestCreateStepsTabs
-              canGoToQuantities={canGoToQuantities}
+      <div className="overflow-hidden rounded-lg bg-card shadow-card">
+        <Tabs value={step} onValueChange={handleStepChange} className="gap-0">
+          <PurchaseRequestCreateStepsTabs
+            canGoToQuantities={canGoToQuantities}
+          />
+
+          <TabsContent value="directs" className="m-0 outline-none">
+            <PurchaseRequestCreateDirectPickerSection
+              form={form}
+              disabled={isPending}
             />
-
-            <TabsContent value="directs" className="m-0 outline-none">
-              <PurchaseRequestCreateDirectPickerSection
+          </TabsContent>
+          <TabsContent value="quantities" className="m-0 outline-none">
+            <PurchaseRequestCreateHeaderSection
+              form={form}
+              disabled={isPending}
+            />
+            <div className="border-t border-border">
+              <PurchaseRequestCreateQuantitySection
                 form={form}
                 disabled={isPending}
               />
-            </TabsContent>
-            <TabsContent value="quantities" className="m-0 outline-none">
-              <PurchaseRequestCreateHeaderSection
-                form={form}
-                disabled={isPending}
-              />
-              <div className="border-t border-border">
-                <PurchaseRequestCreateQuantitySection
-                  form={form}
-                  disabled={isPending}
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </TabsContent>
+        </Tabs>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-            {prevStep ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+          {prevStep ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground"
+              disabled={isPending}
+              onClick={() => setStep(prevStep)}
+            >
+              <ArrowLeft className="size-4" />
+              {prevLabel}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground"
+              onClick={() =>
+                void navigate({
+                  to: "/manage/purchase-requests",
+                  search: { page: 1, limit: 10 },
+                })
+              }
+            >
+              Thoát
+            </Button>
+          )}
+
+          {nextStep ? (
+            <Button
+              type="button"
+              disabled={!canGoToQuantities}
+              onClick={() => setStep(nextStep)}
+            >
+              {nextLabel}
+              <ArrowRight className="size-4" />
+            </Button>
+          ) : (
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 type="button"
                 variant="ghost"
-                className="text-muted-foreground hover:text-foreground"
                 disabled={isPending}
-                onClick={() => setStep(prevStep)}
+                onClick={() => {
+                  form.reset()
+                  restoreFormDraft(form, defaultValues)
+                  clearDraft()
+                  setStep("directs")
+                }}
               >
-                <ArrowLeft className="size-4" />
-                {prevLabel}
+                <RotateCcw className="size-4" />
+                Đặt lại
               </Button>
-            ) : (
               <Button
                 type="button"
-                variant="ghost"
-                className="text-muted-foreground hover:text-foreground"
-                onClick={() =>
-                  void navigate({
-                    to: "/manage/purchase-requests",
-                    search: { page: 1, limit: 10 },
-                  })
-                }
+                variant="outline"
+                disabled={isPending}
+                onClick={() => {
+                  saveDraft(form.state.values)
+                  toast.success("Đã lưu nháp")
+                }}
               >
-                Thoát
+                <FileText className="size-4" />
+                Lưu nháp
               </Button>
-            )}
-
-            {nextStep ? (
-              <Button
-                type="button"
-                disabled={!canGoToQuantities}
-                onClick={() => setStep(nextStep)}
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
               >
-                {nextLabel}
-                <ArrowRight className="size-4" />
-              </Button>
-            ) : (
-              <div className="flex flex-wrap items-center gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={isPending}
-                  onClick={() => {
-                    form.reset()
-                    restoreFormDraft(
-                      form,
-                      createPurchaseRequestFormDefaultValues
-                    )
-                    clearDraft()
-                    setStep("directs")
-                  }}
-                >
-                  <RotateCcw className="size-4" />
-                  Đặt lại
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isPending}
-                  onClick={() => {
-                    saveDraft(form.state.values)
-                    toast.success("Đã lưu nháp")
-                  }}
-                >
-                  <FileText className="size-4" />
-                  Lưu nháp
-                </Button>
-                <form.Subscribe
-                  selector={(state) => [state.canSubmit, state.isSubmitting]}
-                >
-                  {([canSubmit, isSubmitting]) => (
-                    <Button
-                      type="submit"
-                      disabled={!canSubmit || isSubmitting || isPending}
-                    >
-                      {isSubmitting || isPending ? (
-                        <>
-                          <Loader2 className="animate-spin" />
-                          Đang lưu
-                        </>
-                      ) : (
-                        <>
-                          <Save />
-                          Tạo đề xuất
-                        </>
-                      )}
-                    </Button>
-                  )}
-                </form.Subscribe>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="sticky top-6 h-fit rounded-lg bg-card p-4 shadow-card sm:p-5">
-          <PurchaseRequestCreateTallySheet form={form} />
+                {([canSubmit, isSubmitting]) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || isSubmitting || isPending}
+                  >
+                    {isSubmitting || isPending ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                        Đang lưu
+                      </>
+                    ) : (
+                      <>
+                        <Save />
+                        Tạo đề xuất
+                      </>
+                    )}
+                  </Button>
+                )}
+              </form.Subscribe>
+            </div>
+          )}
         </div>
       </div>
     </form>

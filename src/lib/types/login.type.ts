@@ -25,6 +25,8 @@ export type AuthUserProfile = {
   /** users.id of the linked profile — `id` is the credential id. */
   userId: string
   fullName: string | null
+  /** users.departmentId — phòng ban mặc định khi lập chứng từ. */
+  departmentId: string
   username: string
   email: string
   avatar: FileResource | null
