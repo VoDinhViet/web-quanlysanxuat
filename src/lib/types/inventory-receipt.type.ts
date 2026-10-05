@@ -205,7 +205,7 @@ export type InventoryReceipt = {
   productionJob: InventoryReceiptProductionJobRef | null
   purchaseOrder: InventoryReceiptPurchaseOrderRef | null
   note: string | null
-  // Lý do nhập — chỉ có khi receiptType = OTHER.
+  // PO / Lý do nhập — chỉ có khi receiptType = OTHER hoặc RETURN (nhập từ khách hàng).
   reason: string | null
   // Cột "PO / Lý do": BE tự suy (số PO khách / lý do mua của các đề xuất, PO của LSX, hoặc lý do nhập).
   poOrReason: string | null

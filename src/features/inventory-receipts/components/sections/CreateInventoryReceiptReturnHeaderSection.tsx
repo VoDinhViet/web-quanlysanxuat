@@ -59,6 +59,18 @@ export const CreateInventoryReceiptReturnHeaderSection = withForm({
             )}
           </form.Field>
 
+          <form.AppField name="reason">
+            {(field) => (
+              <field.TextField
+                label="PO / Lý do"
+                required
+                placeholder="Ví dụ: PO khách số..., vật tư gia công cho đơn..."
+                disabled={disabled}
+                className="sm:col-span-2"
+              />
+            )}
+          </form.AppField>
+
           <form.AppField name="note">
             {(field) => (
               <field.TextareaField

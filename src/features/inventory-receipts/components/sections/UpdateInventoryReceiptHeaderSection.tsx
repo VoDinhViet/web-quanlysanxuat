@@ -43,27 +43,28 @@ export const UpdateInventoryReceiptHeaderSection = withForm({
     // `null` — mọi trạng thái Job: sửa phiếu nháp cũ vẫn cần thấy Job dù đã COMPLETED.
     const productionJob = useGetProductionJobOptions(null)
     const receiptType = useField({ form, name: "receiptType" }).state.value
+    const isOther = receiptType === InventoryReceiptType.OTHER
+    const isReturn = receiptType === InventoryReceiptType.RETURN
+    const hasReason = isOther || isReturn
 
     useEffect(() => {
       if (receiptType !== InventoryReceiptType.PURCHASE) {
         form.setFieldValue("supplierId", "")
         form.setFieldValue("purchaseOrderId", "")
       }
-      if (receiptType !== InventoryReceiptType.RETURN) {
+      if (!isReturn) {
         form.setFieldValue("clientId", "")
       }
       if (receiptType !== InventoryReceiptType.PRODUCTION) {
         form.setFieldValue("productionJobId", "")
       }
-      if (receiptType !== InventoryReceiptType.OTHER) {
+      if (!hasReason) {
         form.setFieldValue("reason", "")
       }
-    }, [receiptType, form])
+    }, [receiptType, isReturn, hasReason, form])
 
     const isPurchase = receiptType === InventoryReceiptType.PURCHASE
-    const isReturn = receiptType === InventoryReceiptType.RETURN
     const isProduction = receiptType === InventoryReceiptType.PRODUCTION
-    const isOther = receiptType === InventoryReceiptType.OTHER
 
     return (
       <div className="drafting-title-block">
@@ -202,13 +203,17 @@ export const UpdateInventoryReceiptHeaderSection = withForm({
             </form.Field>
           )}
 
-          {isOther && (
+          {hasReason && (
             <form.AppField name="reason">
               {(field) => (
                 <field.TextField
                   label="PO / Lý do"
-                  required
-                  placeholder="Ví dụ: Trả vật tư dư từ LSX..., Thu hồi vật tư..."
+                  required={isOther}
+                  placeholder={
+                    isOther
+                      ? "Ví dụ: Trả vật tư dư từ LSX..., Thu hồi vật tư..."
+                      : "Ví dụ: PO khách số..., vật tư gia công cho đơn..."
+                  }
                   disabled={disabled}
                   className="sm:col-span-2"
                 />

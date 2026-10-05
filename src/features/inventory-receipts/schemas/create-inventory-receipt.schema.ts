@@ -44,7 +44,7 @@ export const createInventoryReceiptSchema = z.object({
     .trim()
     .max(1000, "Ghi chú tối đa 1000 ký tự")
     .transform(emptyToUndefined),
-  // Lý do nhập — BE bắt buộc khi receiptType = OTHER (làn "Nhập từ khác" tự refine bắt buộc).
+  // PO / Lý do nhập — BE bắt buộc khi receiptType = OTHER; làn "Nhập từ khác" và "Khách hàng" tự refine bắt buộc.
   reason: z
     .string()
     .trim()

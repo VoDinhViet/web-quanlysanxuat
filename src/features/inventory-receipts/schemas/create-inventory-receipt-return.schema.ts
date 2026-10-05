@@ -11,15 +11,19 @@ import {
 // Validator cho làn "Khách hàng" (?lane=return trên route create-receipt,
 // CreateInventoryReceiptReturnForm.tsx) — dùng lại nguyên createInventoryReceiptSchema, chỉ
 // refine thêm bắt buộc `clientId` (khách hàng cung cấp vật tư gia công, không phải khách trả lại
-// hàng đã mua — xem CreateInventoryReceiptReturnHeaderSection.tsx). `note` để tuỳ chọn — đã
-// có combobox khách hàng xác định nguồn rõ ràng, không cần ép nhập lý do như làn "Khác". `refine` (không
-// `.extend()`) giữ nguyên z.input y hệt CreateInventoryReceiptSchema — cần thiết để
-// CreateInventoryReceiptGenericItemsSection (withForm khoá cứng theo type đó) tái dùng được
-// thẳng, không phải ép kiểu ở call site.
-export const createInventoryReceiptReturnSchema =
-  createInventoryReceiptSchema.refine((value) => Boolean(value.clientId), {
+// hàng đã mua — xem CreateInventoryReceiptReturnHeaderSection.tsx) và `reason` ("PO / Lý do" Kho
+// ghi để biết lô hàng nhập làm gì, hiện ở cột "PO / Lý do" của danh sách phiếu nhập; BE không
+// ép). `note` để tuỳ chọn. `refine` (không `.extend()`) giữ nguyên z.input y hệt
+// CreateInventoryReceiptSchema — cần thiết để CreateInventoryReceiptGenericItemsSection (withForm
+// khoá cứng theo type đó) tái dùng được thẳng, không phải ép kiểu ở call site.
+export const createInventoryReceiptReturnSchema = createInventoryReceiptSchema
+  .refine((value) => Boolean(value.clientId), {
     message: "Vui lòng chọn khách hàng",
     path: ["clientId"],
+  })
+  .refine((value) => Boolean(value.reason), {
+    message: "Vui lòng nhập PO / Lý do nhập",
+    path: ["reason"],
   })
 
 // receiptType cố định RETURN, requiresIqc khởi tạo false (radio QC ở

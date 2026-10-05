@@ -49,7 +49,9 @@ export function CreateInventoryReceiptReturnForm() {
   const hasInfo = useStore(
     form.store,
     (state) =>
-      Boolean(state.values.receiptDate) && Boolean(state.values.clientId)
+      Boolean(state.values.receiptDate) &&
+      Boolean(state.values.clientId) &&
+      Boolean(state.values.reason.trim())
   )
   const hasItems = useStore(
     form.store,

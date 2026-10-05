@@ -43,6 +43,7 @@ export const CreateInventoryReceiptReturnConfirmSection = withForm({
     const receiptDate = useField({ form, name: "receiptDate" }).state.value
     const assetType = useField({ form, name: "assetType" }).state.value
     const clientId = useField({ form, name: "clientId" }).state.value
+    const reason = useField({ form, name: "reason" }).state.value
     const note = useField({ form, name: "note" }).state.value
     const requiresIqc = useField({ form, name: "requiresIqc" }).state.value
 
@@ -84,6 +85,7 @@ export const CreateInventoryReceiptReturnConfirmSection = withForm({
             label="Khách hàng cung cấp"
             value={client?.name ?? "—"}
           />
+          <PreviewField label="PO / Lý do" value={reason || "—"} />
           <PreviewField
             label="Yêu cầu QC (IQC)"
             value={requiresIqc ? "Có" : "Không"}
