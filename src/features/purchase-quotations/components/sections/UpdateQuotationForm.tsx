@@ -50,6 +50,7 @@ export function UpdateQuotationForm({
         data: {
           purchaseQuotationId: purchaseQuotation.id,
           items: value.items,
+          note: value.note,
         },
       }),
     onSuccess: async () => {

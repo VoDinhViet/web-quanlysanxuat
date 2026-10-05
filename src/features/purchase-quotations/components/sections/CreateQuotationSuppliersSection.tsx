@@ -229,6 +229,17 @@ export const CreateQuotationSuppliersSection = withForm({
             </TableBody>
           </Table>
         </div>
+
+        <form.AppField name="note">
+          {(field) => (
+            <field.TextareaField
+              label="Ghi chú chung"
+              placeholder="Ghi chú cho cả phiếu báo giá (nếu có)"
+              disabled={disabled}
+              className="mt-4"
+            />
+          )}
+        </form.AppField>
       </div>
     )
   },

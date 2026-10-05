@@ -8,6 +8,7 @@ import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/compone
 import { PurchaseRequestDetailActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestDetailActions"
 import { PurchaseRequestNeededDateField } from "@/features/purchase-requests/components/composites/PurchaseRequestNeededDateField"
 import { PurchaseRequestNoteField } from "@/features/purchase-requests/components/composites/PurchaseRequestNoteField"
+import { usePurchaseRequestNote } from "@/features/purchase-requests/hooks/use-purchase-request-note"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
@@ -110,6 +111,10 @@ export function PurchaseRequestDetailHeader({
 }: PurchaseRequestDetailHeaderProps) {
   const source = getSourceLabel(purchaseRequest)
   const approvalMeta = getApprovalMeta(purchaseRequest)
+  const noteDraft = usePurchaseRequestNote(
+    purchaseRequest.id,
+    purchaseRequest.note
+  )
 
   const totalQuantity = purchaseRequest.items.reduce(
     (sum, item) => sum + (item.quantity ?? 0),
@@ -141,7 +146,10 @@ export function PurchaseRequestDetailHeader({
           <PurchaseRequestStatusBadge status={purchaseRequest.status} />
         </div>
 
-        <PurchaseRequestDetailActions purchaseRequest={purchaseRequest} />
+        <PurchaseRequestDetailActions
+          purchaseRequest={purchaseRequest}
+          noteDraft={noteDraft}
+        />
       </div>
 
       {/* Lưới thông tin và ghi chú chia 4 cột cân đối */}
@@ -213,8 +221,8 @@ export function PurchaseRequestDetailHeader({
         <MetaField label="Tổng SL đề xuất" value={formattedTotalQuantity} />
         <div className="sm:col-span-2 lg:col-span-2">
           <PurchaseRequestNoteField
-            purchaseRequestId={purchaseRequest.id}
             note={purchaseRequest.note}
+            draft={noteDraft}
           />
         </div>
       </div>

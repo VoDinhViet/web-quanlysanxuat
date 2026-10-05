@@ -1,12 +1,15 @@
-import { EllipsisVertical, Printer } from "lucide-react"
+import { EllipsisVertical, Loader2, Printer, Save } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PurchaseRequestApprovalActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestApprovalActions"
+import type { UsePurchaseRequestNoteResult } from "@/features/purchase-requests/hooks/use-purchase-request-note"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestDetailActionsProps = {
   purchaseRequest: PurchaseRequestDetail
+  noteDraft: UsePurchaseRequestNoteResult
 }
 
 // Gửi duyệt/Duyệt/Từ chối are real now — PurchaseRequestApprovalActions switches on
@@ -15,10 +18,25 @@ type PurchaseRequestDetailActionsProps = {
 // with a tooltip via PendingAction.
 export function PurchaseRequestDetailActions({
   purchaseRequest,
+  noteDraft,
 }: PurchaseRequestDetailActionsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
       <PurchaseRequestApprovalActions purchaseRequest={purchaseRequest} />
+      {noteDraft.editable && (
+        <Button
+          type="button"
+          disabled={!noteDraft.isDirty || noteDraft.isPending}
+          onClick={noteDraft.save}
+        >
+          {noteDraft.isPending ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Save className="size-4" />
+          )}
+          Lưu
+        </Button>
+      )}
       <PendingAction label="In" hint="chưa hỗ trợ in phiếu">
         <Printer className="size-4" />
         In

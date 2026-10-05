@@ -94,6 +94,9 @@ export const createQuotationFormSchema = z
     items: z
       .array(pickedQuotationItemSchema)
       .min(1, "Chọn ít nhất 1 vật tư cần báo giá"),
+    // Ghi chú chung của phiếu báo giá (khác `note` từng NCC ở từng dòng); `.default` để bản nháp
+    // localStorage cũ (chưa có khoá này) vẫn hợp lệ.
+    note: z.string().trim().max(1000, "Ghi chú tối đa 1000 ký tự").default(""),
   })
   .refine((value) => value.items.some((item) => item.suppliers.length > 0), {
     message: "Thêm ít nhất 1 NCC cho một vật tư bất kỳ",
@@ -108,12 +111,14 @@ export type CreateQuotationFormSchema = z.input<
 
 export const createQuotationFormDefaultValues: CreateQuotationFormSchema = {
   items: [],
+  note: "",
 }
 
 export function mapQuotationDetailToFormValues(
   quotation: PurchaseQuotationDetail
 ): CreateQuotationFormSchema {
   return {
+    note: quotation.note ?? "",
     items: (quotation.items ?? []).map((item) => ({
       itemId: item.item.id,
       itemCode: item.item.code,

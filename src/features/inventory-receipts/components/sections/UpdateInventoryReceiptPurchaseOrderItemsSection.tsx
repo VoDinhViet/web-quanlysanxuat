@@ -61,7 +61,7 @@ export const UpdateInventoryReceiptPurchaseOrderItemsSection = withForm({
               purchaseOrderItemId: line.id,
               quantity: line.quantity,
               unitPrice: line.unitPrice ?? undefined,
-              note: "",
+              note: line.purchaseRequestItem.note ?? "",
             }
             itemsField.pushValue(value)
           }

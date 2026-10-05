@@ -89,4 +89,20 @@ export const purchaseQuotationAllocationsColumns =
         ),
       }
     ),
+    purchaseQuotationAllocationColumnHelper.accessor(
+      (row) => row.purchaseRequestItem.note || "—",
+      {
+        id: "requestNote",
+        header: "Ghi chú ĐXMH",
+        meta: {
+          headerClassName: "text-[10px]",
+          cellClassName: "text-xs text-muted-foreground",
+        },
+        cell: ({ getValue }) => (
+          <span className="line-clamp-2" title={getValue()}>
+            {getValue()}
+          </span>
+        ),
+      }
+    ),
   ])

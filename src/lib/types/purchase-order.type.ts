@@ -143,6 +143,8 @@ export type PurchaseOrderItemDetail = {
   purchaseRequestItem: {
     id: string
     quantity: number
+    /** Ghi chú dòng ĐXMH nguồn — đi xuyên sang ĐMH/phiếu nhập/IQC (`note` của chính dòng PO luôn null). */
+    note: string | null
     purchaseRequest: { id: string; code: string }
     item: {
       id: string

@@ -21,8 +21,9 @@ type Group = {
   paramName: string
 }
 
-// Component dùng chung cho cả 4 trang chi tiết mua hàng (ĐXMH/Báo giá/Đơn mua/Phiếu kho) — biết
-// sẵn cả 4 route đích vì đây là widget riêng cho đúng 1 tính năng (ghi chú xuyên chuỗi mua hàng),
+// Component dùng chung cho cả 4 trang chi tiết mua hàng (ĐXMH/Báo giá/Đơn mua/Phiếu kho) — không
+// liệt kê note báo giá vì UI báo giá hiện không có ô ghi chú. Biết
+// sẵn các route đích vì đây là widget riêng cho đúng 1 tính năng (ghi chú xuyên chuỗi mua hàng),
 // không phải danh sách tổng quát, nên không cần nhận route qua props.
 export function RelatedNotesCard({ data, excludeId }: RelatedNotesCardProps) {
   const groups: Group[] = [
@@ -32,13 +33,6 @@ export function RelatedNotesCard({ data, excludeId }: RelatedNotesCardProps) {
       items: data.purchaseRequests,
       toRoute: "/manage/purchase-requests/$purchaseRequestId",
       paramName: "purchaseRequestId",
-    },
-    {
-      key: "quotations",
-      label: "Báo giá NCC",
-      items: data.quotations,
-      toRoute: "/manage/purchase-quotations/$purchaseQuotationId",
-      paramName: "purchaseQuotationId",
     },
     {
       key: "purchaseOrders",

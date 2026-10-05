@@ -200,6 +200,28 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
         )
       },
     }),
+    purchaseOrderItemColumnHelper.accessor((row) => row.purchaseRequestItem.note, {
+      id: "note",
+      header: "Ghi chú",
+      meta: {
+        headerClassName: "min-w-44 max-w-64",
+        cellClassName: "max-w-64 py-2.5",
+      },
+      cell: ({ getValue }) => {
+        const note = getValue()
+        if (!note) {
+          return <span className="text-xs text-muted-foreground">—</span>
+        }
+        return (
+          <p
+            className="text-xs leading-relaxed break-words whitespace-normal text-muted-foreground"
+            title={note}
+          >
+            {note}
+          </p>
+        )
+      },
+    }),
     purchaseOrderItemColumnHelper.accessor("unitPrice", {
       id: "unitPrice",
       header: "Đơn giá PO",

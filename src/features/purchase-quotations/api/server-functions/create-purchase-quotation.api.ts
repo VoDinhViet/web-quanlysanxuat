@@ -12,11 +12,11 @@ import type { ApiErrorResponse } from "@/lib/http"
 // `.handler()` is already wire-ready, same pattern as update-user.api.ts/create-direct.api.ts.
 // unitPrice/leadTimeDays are already number|undefined coming out of the form's own schema; only
 // quantityAdjustmentReason/note (still strings) go through emptyToUndefined — the backend only
-// allows explicit `null` for the header-level `note` (never sent here, per product decision — no
-// header note field on this form), so every other optional field must OMIT its key instead, or
-// the request 422s.
+// allows explicit `null` for the header-level `note` (never sent here — an empty header note is
+// simply omitted), so every other optional field must OMIT its key instead, or the request 422s.
 const createQuotationPayloadSchema = createQuotationFormSchema.transform(
-  ({ items }) => ({
+  ({ items, note }) => ({
+    note: emptyToUndefined(note),
     items: items.map((item) => ({
       itemId: item.itemId,
       allocations: item.allocations.map((allocation) => ({
