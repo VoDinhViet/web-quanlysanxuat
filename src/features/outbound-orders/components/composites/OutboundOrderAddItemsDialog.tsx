@@ -76,12 +76,14 @@ export function OutboundOrderAddItemsDialog({
   const pagination = query.data?.pagination
 
   const columns = col.columns([
-    col.accessor((row) => row.order.code, {
+    col.accessor((row) => row.order.buyerPoNo, {
       id: "orderCode",
       header: "PO",
       meta: { headerClassName: "min-w-24" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-xs text-primary">{getValue()}</span>
+        <span className="font-mono text-xs text-primary">
+          {getValue() ?? "—"}
+        </span>
       ),
     }),
     col.display({

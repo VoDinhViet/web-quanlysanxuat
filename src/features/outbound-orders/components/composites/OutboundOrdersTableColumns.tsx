@@ -54,13 +54,13 @@ export const outboundOrdersColumns = col.columns([
     meta: { headerClassName: "min-w-36" },
   }),
 
-  col.accessor("orderCodes", {
+  col.accessor("buyerPoNos", {
     id: "poOrReason",
     header: "PO / Lý do",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => {
-      const orderCodes = getValue()
-      return orderCodes.length > 0 ? orderCodes.join(", ") : "—"
+      const buyerPoNos = getValue()
+      return buyerPoNos.length > 0 ? buyerPoNos.join(", ") : "—"
     },
   }),
 

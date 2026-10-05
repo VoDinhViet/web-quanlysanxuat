@@ -6,6 +6,10 @@ type UnfulfilledOrderItemsParams = {
   page?: number
   limit?: number
   clientId?: string
+  poNo?: string
+  jobCode?: string
+  itemKeyword?: string
+  deliverableOnly?: boolean
   excludeOutboundOrderId?: string
 }
 

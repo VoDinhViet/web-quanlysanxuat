@@ -1,6 +1,7 @@
 // Domain types for Outbound Orders (Giao hàng - DO)
 
 import type { ClientRef } from "@/lib/types/client.type"
+import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
@@ -69,6 +70,8 @@ export type OutboundOrder = {
   // Mã đơn hàng nguồn — mảng, không phải 1 mã: một DO có thể gộp nhiều dòng PO từ nhiều đơn hàng
   // khác nhau. Rỗng khi phiếu chưa có dòng nào.
   orderCodes: string[]
+  // Số PO của khách (orders.buyerPoNo) của các đơn nguồn — bỏ qua đơn chưa nhập PO.
+  buyerPoNos: string[]
   totalQuantity: number
   note: string | null
   creatorBy: UserRef | null
@@ -132,14 +135,16 @@ export type OutboundOrderItem = {
 // "Thêm từ PO/Job" khi Sửa) — mirrors GET /outbound-orders/unfulfilled-order-items
 // (UnfulfilledOrderItemResDto) 1:1. 5 field tồn kho cuối (BUG-090) — `availableQuantity =
 // onHandQuantity − heldQuantity`, chỉ để hiển thị, không thay `E194` (vẫn tính lại ở BE khi lưu).
-// Chưa lọc theo q/operationId dù DTO có khai (service không dùng tới) — giới hạn thật (không vượt
+// Lọc phía BE theo khách hàng / PO / Job / thành phẩm / còn có thể giao — giới hạn thật (không vượt
 // SL đặt) được BE kiểm khi tạo phiếu (E193, dự phòng, chưa route nào ném).
+// `order.code` là mã SO nội bộ, `order.buyerPoNo` là số PO của khách (cột "PO" hiển thị).
 export type UnfulfilledOrderItem = {
   orderItemId: string
   client: ClientRef
-  order: { id: string; code: string }
+  order: { id: string; code: string; buyerPoNo: string | null }
   job: { id: string; code: string } | null
   item: ItemRef
+  image: FileResource | null
   unit: Unit
   orderedQuantity: number
   issuedQuantity: number

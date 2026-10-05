@@ -17,11 +17,14 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options"
+import { CreateOutboundOrderPickerFilter } from "@/features/outbound-orders/components/composites/CreateOutboundOrderPickerFilter"
+import { AvailableQuantityLegend } from "@/features/outbound-orders/components/primitives/UnfulfilledOrderItemCells"
 import { buildCreateOutboundOrderPickerColumns } from "@/features/outbound-orders/components/composites/CreateOutboundOrderPickerColumns"
 import { useUnfulfilledOrderItemLookup } from "@/features/outbound-orders/hooks/use-unfulfilled-order-item-lookup"
 import { createOutboundOrderFormDefaultValues } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
+import type { CreateOutboundOrderPickerFilters } from "@/features/outbound-orders/components/composites/CreateOutboundOrderPickerFilter"
 import type { CreateOutboundOrderItemValue } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 import type { PageSize } from "@/components/shared/composites/Pagination"
@@ -50,15 +53,15 @@ function buildPickedOutboundOrderItem(
 // Bước ① của wizard "Tạo phiếu giao hàng" (DO) — tích các dòng PO chưa hoàn thành cần giao (GET
 // /outbound-orders/unfulfilled-order-items). Khách hàng của cả phiếu tự suy ra theo dòng đầu tiên
 // được tích — BE bắt buộc mọi dòng cùng 1 khách hàng (E192), nên từ dòng thứ 2 trở đi chỉ được
-// tích dòng cùng khách hàng với dòng đã chọn (xem `toggleRow`/`toggleAll`). Không có ô tìm
-// kiếm/lọc nào — endpoint hiện chỉ phân trang thuần, DTO có khai q/operationId nhưng service
-// không dùng tới field nào trong `where`, nên không dựng UI lọc giả.
+// tích dòng cùng khách hàng với dòng đã chọn (xem `toggleRow`/`toggleAll`). Khung lọc phía trên
+// (CreateOutboundOrderPickerFilter) lọc ở BE; đổi lọc thì về trang 1, các dòng đã tích vẫn giữ.
 export const CreateOutboundOrderPickerSection = withForm({
   defaultValues: createOutboundOrderFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState<PageSize>(10)
+    const [filters, setFilters] = useState<CreateOutboundOrderPickerFilters>({})
 
     const lookupUnfulfilledOrderItem = useUnfulfilledOrderItemLookup()
     const clientIdField = useField({ form, name: "clientId" })
@@ -72,7 +75,11 @@ export const CreateOutboundOrderPickerSection = withForm({
         : undefined
 
     const query = useQuery({
-      ...unfulfilledOrderItemsQueryOptions({ page, limit: pageSize }),
+      ...unfulfilledOrderItemsQueryOptions({
+        page,
+        limit: pageSize,
+        ...filters,
+      }),
       placeholderData: keepPreviousData,
     })
 
@@ -214,6 +221,14 @@ export const CreateOutboundOrderPickerSection = withForm({
           </div>
         </div>
 
+        <CreateOutboundOrderPickerFilter
+          filters={filters}
+          onChange={(nextFilters) => {
+            setFilters(nextFilters)
+            setPage(1)
+          }}
+        />
+
         <div className="mt-4 overflow-x-auto rounded-md border border-dashed border-border/50 bg-card">
           <Table aria-label="Danh sách dòng PO/Job cần giao">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
@@ -295,6 +310,8 @@ export const CreateOutboundOrderPickerSection = withForm({
             </TableBody>
           </Table>
         </div>
+
+        <AvailableQuantityLegend />
 
         {pagination && (
           <Pagination

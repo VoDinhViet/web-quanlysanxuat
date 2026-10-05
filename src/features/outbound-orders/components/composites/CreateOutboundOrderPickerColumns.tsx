@@ -3,6 +3,10 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  AvailableQuantityCell,
+  UnfulfilledItemImageCell,
+} from "@/features/outbound-orders/components/primitives/UnfulfilledOrderItemCells"
 import type { UnfulfilledOrderItem } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -25,9 +29,9 @@ type BuildCreateOutboundOrderPickerColumnsArgs = {
 // CreateOutsourcingReceiptPickerColumns.tsx (bảng checkbox nhiều dòng, một phiếu DO ở màn hình
 // này có thể gộp nhiều dòng PO khác nhau, miễn cùng khách hàng). Khách hàng không chọn tay trước —
 // `lockedClientId` là khách hàng của dòng đầu tiên đã chọn (undefined nếu chưa chọn dòng nào);
-// dòng khác khách hàng bị khoá không cho tích, tránh vi phạm ràng buộc BE (E192). Không có
-// filter/search — GET .../unfulfilled-order-items chưa lọc được gì (xem
-// CreateOutboundOrderPickerSection.tsx's comment).
+// dòng khác khách hàng bị khoá không cho tích, tránh vi phạm ràng buộc BE (E192). Bộ lọc nằm ở
+// CreateOutboundOrderPickerFilter.tsx. Cột PO là số PO của khách (`order.buyerPoNo`), không phải
+// mã SO.
 export function buildCreateOutboundOrderPickerColumns({
   pickedIds,
   disabled,
@@ -73,7 +77,7 @@ export function buildCreateOutboundOrderPickerColumns({
       header: "Khách hàng",
       meta: { headerClassName: "min-w-32" },
     }),
-    unfulfilledOrderItemColumnHelper.accessor((row) => row.order.code, {
+    unfulfilledOrderItemColumnHelper.accessor((row) => row.order.buyerPoNo, {
       id: "orderCode",
       header: "PO",
       meta: { headerClassName: "min-w-24" },
@@ -83,7 +87,7 @@ export function buildCreateOutboundOrderPickerColumns({
           params={{ orderId: row.original.order.id }}
           className="font-mono text-xs text-primary hover:underline"
         >
-          {getValue()}
+          {getValue() ?? "—"}
         </Link>
       ),
     }),
@@ -108,6 +112,20 @@ export function buildCreateOutboundOrderPickerColumns({
           </Link>
         )
       },
+    }),
+    unfulfilledOrderItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-20 text-center",
+        cellClassName: "py-2 text-center",
+      },
+      cell: ({ row }) => (
+        <UnfulfilledItemImageCell
+          image={row.original.image}
+          name={row.original.item.name}
+        />
+      ),
     }),
     unfulfilledOrderItemColumnHelper.display({
       id: "item",
@@ -142,7 +160,7 @@ export function buildCreateOutboundOrderPickerColumns({
     }),
     unfulfilledOrderItemColumnHelper.accessor("orderedQuantity", {
       id: "orderedQuantity",
-      header: "SL đặt",
+      header: "SL PO",
       meta: {
         headerClassName: "w-20 text-right",
         cellClassName: "text-right tabular-nums text-muted-foreground",
@@ -158,41 +176,32 @@ export function buildCreateOutboundOrderPickerColumns({
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
-    unfulfilledOrderItemColumnHelper.display({
-      id: "remainingQuantity",
-      header: "Còn lại",
+    unfulfilledOrderItemColumnHelper.accessor("onHandQuantity", {
+      id: "onHandQuantity",
+      header: "Tồn TP",
       meta: {
-        headerClassName: "w-24 text-right",
-        cellClassName: "text-right tabular-nums",
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
       },
-      cell: ({ row }) => {
-        const remaining = Math.max(
-          0,
-          row.original.orderedQuantity - row.original.issuedQuantity
-        )
-        if (remaining <= 0) {
-          return (
-            <span className="text-xs font-medium text-muted-foreground">
-              Đã đủ
-            </span>
-          )
-        }
-        return (
-          <span className="font-semibold text-foreground">
-            {quantityFormatter.format(remaining)}
-          </span>
-        )
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+    }),
+    unfulfilledOrderItemColumnHelper.accessor("heldQuantity", {
+      id: "heldQuantity",
+      header: "Đã giữ",
+      meta: {
+        headerClassName: "w-20 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
       },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
     unfulfilledOrderItemColumnHelper.accessor("availableQuantity", {
       id: "availableQuantity",
-      header: "Tồn khả dụng",
+      header: "Có thể giao",
       meta: {
         headerClassName: "w-24 text-right",
-        cellClassName:
-          "text-right tabular-nums font-medium text-emerald-600 dark:text-emerald-400",
+        cellClassName: "text-right",
       },
-      cell: ({ getValue }) => quantityFormatter.format(getValue()),
+      cell: ({ getValue }) => <AvailableQuantityCell value={getValue()} />,
     }),
   ])
 }

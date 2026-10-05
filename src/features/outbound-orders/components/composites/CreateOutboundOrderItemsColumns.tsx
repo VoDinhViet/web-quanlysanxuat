@@ -63,7 +63,7 @@ export function buildCreateOutboundOrderItemColumns({
             params={{ orderId: source.order.id }}
             className="font-mono text-xs text-primary hover:underline"
           >
-            {source.order.code}
+            {source.order.buyerPoNo ?? "—"}
           </Link>
         )
       },

@@ -45,7 +45,7 @@ export function buildCreateOutboundOrderConfirmColumns(
             params={{ orderId: source.order.id }}
             className="truncate font-mono text-xs text-primary hover:underline"
           >
-            {source.order.code}
+            {source.order.buyerPoNo ?? "—"}
           </Link>
         )
       },
