@@ -70,11 +70,14 @@ export type InventoryRequisitionJobRef = {
 /** Mirrors the backend's `OrderRefResDto` as nested on `productionOrder`. */
 export type InventoryRequisitionOrderRef = {
   id: string
+  // Mã đơn hàng nội bộ (SO).
   code: string
+  // Số PO của khách hàng — giá trị hiển thị ở "PO / Lý do"; null khi đơn chưa nhập PO.
+  buyerPoNo: string | null
 }
 
 /** Mirrors the backend's `RequisitionProductionOrderResDto` — `code` is the LSX code, null
- *  until the LSX is `APPROVED`; `order.code` is the PO code shown in the "PO / Lý do" column. */
+ *  until the LSX is `APPROVED`; `order.buyerPoNo` is the customer PO shown in the "PO / Lý do" column. */
 export type InventoryRequisitionProductionOrderRef = {
   id: string
   code: string | null
@@ -97,7 +100,7 @@ export type InventoryRequisition = {
   type: InventoryRequisitionType
   status: InventoryRequisitionStatus
   department: InventoryRequisitionDepartmentRef | null
-  // LSX liên quan — productionOrder.order.code là mã PO hiển thị ở cột "PO / Lý do".
+  // LSX liên quan — productionOrder.order.buyerPoNo là số PO hiển thị ở cột "PO / Lý do".
   productionOrder: InventoryRequisitionProductionOrderRef | null
   productionJob: InventoryRequisitionJobRef | null
   // Lý do lãnh — chỉ có ý nghĩa khi type = OTHER.

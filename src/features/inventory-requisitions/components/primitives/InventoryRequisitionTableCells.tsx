@@ -21,16 +21,15 @@ type InventoryRequisitionSourceCellProps = {
   reason: string | null
 }
 
-// Ưu tiên hiện mã PO (productionOrder.order.code) → lý do tự do → "—", cùng idiom
-// InventoryIssueSourceCell.
+// Ưu tiên hiện số PO của khách (productionOrder.order.buyerPoNo) → lý do tự do → "—".
 export function InventoryRequisitionSourceCell({
   productionOrder,
   reason,
 }: InventoryRequisitionSourceCellProps) {
-  if (productionOrder) {
+  if (productionOrder?.order.buyerPoNo) {
     return (
       <span className="font-mono text-xs font-semibold text-primary">
-        {productionOrder.order.code}
+        {productionOrder.order.buyerPoNo}
       </span>
     )
   }

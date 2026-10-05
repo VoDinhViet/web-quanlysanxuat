@@ -57,7 +57,7 @@ export function InventoryRequisitionDetailHeader({
                       params={{ orderId: detail.productionOrder.order.id }}
                       className="font-mono font-semibold text-primary hover:underline"
                     >
-                      {detail.productionOrder.order.code}
+                      {detail.productionOrder.order.buyerPoNo ?? "—"}
                     </Link>
                   }
                 />
