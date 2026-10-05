@@ -38,32 +38,6 @@ export const inventoryIssuesColumns = col.columns([
     ),
   }),
 
-  col.accessor("issueDate", {
-    header: "Thời gian xuất",
-    meta: {
-      headerClassName: "min-w-28 text-center",
-      cellClassName: "text-center",
-    },
-    // `issueDate` là cột `date` thuần (không có giờ) — đọc theo zone "utc" để tránh lùi/lên
-    // một ngày do offset múi giờ cục bộ, cùng cách InventoryReceiptsTableColumns đọc receiptDate.
-    cell: ({ getValue }) =>
-      DateTime.fromISO(getValue(), { zone: "utc" }).toFormat("dd/MM/yyyy"),
-  }),
-
-  col.accessor("issueType", {
-    header: "Loại xuất",
-    meta: { headerClassName: "min-w-32" },
-    cell: ({ getValue }) => inventoryIssueTypeLabels[getValue()],
-  }),
-
-  // Không có field PO trên phiếu xuất (chỉ phiếu nhập mới có) — hiển thị ghi chú tự do,
-  // sẽ có dữ liệu phong phú hơn khi phiếu lãnh/DO-link được thêm ở backend.
-  col.accessor("note", {
-    header: "Lý do, PO",
-    meta: { headerClassName: "min-w-40" },
-    cell: ({ getValue }) => getValue() ?? "—",
-  }),
-
   col.display({
     id: "requisition",
     header: "Phiếu lãnh",
@@ -83,6 +57,36 @@ export const inventoryIssuesColumns = col.columns([
         </Link>
       )
     },
+  }),
+
+  col.accessor("issueDate", {
+    header: "Thời gian xuất",
+    meta: {
+      headerClassName: "min-w-28 text-center",
+      cellClassName: "text-center",
+    },
+    // `issueDate` là cột `date` thuần (không có giờ) — đọc theo zone "utc" để tránh lùi/lên
+    // một ngày do offset múi giờ cục bộ, cùng cách InventoryReceiptsTableColumns đọc receiptDate.
+    cell: ({ getValue }) =>
+      DateTime.fromISO(getValue(), { zone: "utc" }).toFormat("dd/MM/yyyy"),
+  }),
+
+  col.accessor("issueType", {
+    header: "Loại xuất",
+    meta: { headerClassName: "min-w-32" },
+    cell: ({ getValue }) => inventoryIssueTypeLabels[getValue()],
+  }),
+
+  col.accessor("department", {
+    header: "Bộ phận",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ getValue }) => getValue()?.name ?? "—",
+  }),
+
+  col.accessor("poOrReason", {
+    header: "PO / Lý do",
+    meta: { headerClassName: "min-w-40" },
+    cell: ({ getValue }) => getValue() ?? "—",
   }),
 
   col.display({

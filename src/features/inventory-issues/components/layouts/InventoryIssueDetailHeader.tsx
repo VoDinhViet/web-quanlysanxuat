@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { InventoryIssueStatusBadge } from "@/features/inventory-issues/components/primitives/InventoryIssueBadges"
-import { InventoryIssueSourceCell } from "@/features/inventory-issues/components/primitives/InventoryIssueTableCells"
+import { InventoryIssueJobLsxCell } from "@/features/inventory-issues/components/primitives/InventoryIssueTableCells"
 import { InventoryIssueDetailActions } from "@/features/inventory-issues/components/layouts/InventoryIssueDetailActions"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
 import type { InventoryIssueDetail } from "@/lib/types/inventory-issue.type"
@@ -40,12 +40,15 @@ export function InventoryIssueDetailHeader({
         <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-3">
           <div className="flex flex-col gap-4">
             <MetaField
-              label="Đối tượng"
+              label="Bộ phận"
+              value={inventoryIssue.department?.name ?? "—"}
+            />
+            <MetaField
+              label="Job / LSX"
               value={
-                <InventoryIssueSourceCell
+                <InventoryIssueJobLsxCell
                   productionOrder={inventoryIssue.productionOrder}
                   productionJob={inventoryIssue.productionJob}
-                  department={inventoryIssue.department}
                 />
               }
             />

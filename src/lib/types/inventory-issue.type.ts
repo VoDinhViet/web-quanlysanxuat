@@ -112,6 +112,9 @@ export type InventoryIssue = {
   department: InventoryIssueDepartmentRef | null
   requesterBy: InventoryIssueUserRef | null
   note: string | null
+  // Cột "PO / Lý do" của danh sách, BE tính theo phiếu lãnh: lãnh từ LSX → số PO khách, lãnh
+  // khác → lý do lãnh, không có phiếu lãnh → ghi chú phiếu.
+  poOrReason: string | null
   items: InventoryIssueItem[]
   posterBy: InventoryIssueUserRef | null
   postedAt: string | null

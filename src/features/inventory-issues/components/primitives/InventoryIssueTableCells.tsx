@@ -10,46 +10,9 @@ import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { RowActions } from "@/components/shared/primitives/RowActions"
 import type {
   InventoryIssue,
-  InventoryIssueDepartmentRef,
   InventoryIssueProductionJobRef,
   InventoryIssueProductionOrderRef,
 } from "@/lib/types/inventory-issue.type"
-
-type InventoryIssueSourceCellProps = {
-  productionOrder: InventoryIssueProductionOrderRef | null
-  productionJob: InventoryIssueProductionJobRef | null
-  department: InventoryIssueDepartmentRef | null
-}
-
-// Ưu tiên hiển thị LSX → Job → Bộ phận → "—", cùng idiom với
-// InventoryReceiptSourceCell (ưu tiên PO → NCC → PR → "—").
-export function InventoryIssueSourceCell({
-  productionOrder,
-  productionJob,
-  department,
-}: InventoryIssueSourceCellProps) {
-  if (productionOrder?.code) {
-    return (
-      <span className="font-mono text-xs font-semibold text-primary">
-        {productionOrder.code}
-      </span>
-    )
-  }
-
-  if (productionJob?.code) {
-    return (
-      <span className="font-mono text-xs text-foreground">
-        {productionJob.code}
-      </span>
-    )
-  }
-
-  if (department) {
-    return <span className="text-xs text-foreground">{department.name}</span>
-  }
-
-  return <span className="text-xs text-muted-foreground">—</span>
-}
 
 type InventoryIssueJobLsxCellProps = {
   productionOrder: InventoryIssueProductionOrderRef | null
