@@ -67,7 +67,10 @@ function PaymentRequestCancelForm({
       }),
     onSuccess: async () => {
       onClose()
-      await queryClient.invalidateQueries({ queryKey: ["payment-requests"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

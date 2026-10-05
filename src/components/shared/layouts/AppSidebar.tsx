@@ -156,6 +156,8 @@ const menuGroups: MenuGroup[] = [
         label: "Yêu cầu thanh toán",
         icon: CreditCard,
         href: "/manage/payment-requests",
+        todoBadgeKey: "paymentRequestsPending",
+        todoBadgeLabel: "yêu cầu chờ thanh toán",
       },
       {
         label: "Trả NCC",

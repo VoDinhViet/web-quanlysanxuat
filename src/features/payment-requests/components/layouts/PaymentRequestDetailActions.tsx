@@ -35,9 +35,13 @@ export function PaymentRequestDetailActions({
       markPaymentRequestPaidFn({
         data: { paymentRequestId: paymentRequest.id },
       }),
-    // No body on success (204) — invalidate list + paymentRequest so both refetch the new status.
+    // No body on success (204) — invalidate list + paymentRequest so both refetch the new status;
+    // `reports` refreshes the sidebar's "yêu cầu chờ thanh toán" count.
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ]),
   })
 
   if (paymentRequest.status !== "PENDING") return null
