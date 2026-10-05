@@ -41,7 +41,7 @@ export function OqcLotSummaryCard({
         </div>
 
         <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
-          <InfoTile icon={Bill} label="PO" value={oqc.orderCode ?? "—"} />
+          <InfoTile icon={Bill} label="PO" value={oqc.buyerPoNo ?? "—"} />
           <InfoTile
             icon={ClipboardText}
             label="Job (LSX)"

@@ -88,6 +88,8 @@ export type Oqc = {
   code: string
   productionJob: { id: string; code: string }
   orderCode: string | null
+  /** Số PO của khách (orders.buyerPoNo); `orderCode` là mã SO nội bộ. */
+  buyerPoNo: string | null
   operation: { code: string; name: string }
   bomItem: { code: string; name: string }
   item: ItemRef

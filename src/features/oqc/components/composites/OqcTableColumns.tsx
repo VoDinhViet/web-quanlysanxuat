@@ -125,7 +125,7 @@ export const oqcColumns = oqcColumnHelper.columns([
           {row.original.productionJob.code}
         </p>
         <p className="truncate font-mono text-[11px] text-muted-foreground">
-          {row.original.orderCode ?? "—"}
+          {row.original.buyerPoNo ?? "—"}
         </p>
       </div>
     ),
