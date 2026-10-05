@@ -9,9 +9,8 @@ is Vietnamese; all code, identifiers, comments, and docs are English.
 
 Detailed conventions are split into topic files:
 
-@.claude/rules/project-and-commands.md
+@.claude/rules/project-structure.md
+@.claude/rules/workflow.md
 @.claude/rules/architecture.md
+@.claude/rules/code-style.md
 @.claude/rules/type-safety-and-security.md
-@.claude/rules/forms-and-ui.md
-@.claude/rules/code-quality.md
-@.claude/rules/ui-kit.md
