@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { UnfulfilledItemImageCell } from "@/features/outbound-orders/components/primitives/UnfulfilledOrderItemCells"
 import type { OutboundOrderItem } from "@/lib/types/outbound-order.type"
 
 const col = createColumnHelper<typeof appTableFeatures, OutboundOrderItem>()
@@ -59,6 +60,18 @@ const itemColumns = col.columns([
         </div>
       )
     },
+  }),
+
+  col.display({
+    id: "image",
+    header: "Hình ảnh",
+    meta: { headerClassName: "w-20 text-center" },
+    cell: ({ row }) => (
+      <UnfulfilledItemImageCell
+        image={row.original.image}
+        name={row.original.item.name}
+      />
+    ),
   }),
 
   col.display({
@@ -239,7 +252,7 @@ export function OutboundOrderItemsSection({
           </TableBody>
           <TableFooter>
             <TableRow className="h-12">
-              <TableCell colSpan={7} className="text-right font-semibold">
+              <TableCell colSpan={8} className="text-right font-semibold">
                 Tổng SL giao
               </TableCell>
               <TableCell className="text-right font-bold text-primary tabular-nums">

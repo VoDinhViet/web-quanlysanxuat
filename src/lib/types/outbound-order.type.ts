@@ -121,6 +121,7 @@ export type OutboundOrderItem = {
   orderItemId: string
   productionJob: { id: string; code: string } | null
   item: ItemRef
+  image: FileResource | null
   unit: Unit
   quantity: number // SL giao dòng này
   note: string | null

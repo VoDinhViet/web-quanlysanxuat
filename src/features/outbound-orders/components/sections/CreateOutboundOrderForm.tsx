@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
-import { revalidateLogic } from "@tanstack/react-form"
+import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AltArrowLeft, AltArrowRight, CheckCircle } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
@@ -10,6 +10,7 @@ import type { Key } from "react-aria-components"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
+import { clientQueryOptions } from "@/features/clients/api"
 import { CreateOutboundOrderConfirmSection } from "@/features/outbound-orders/components/sections/CreateOutboundOrderConfirmSection"
 import { CreateOutboundOrderItemsSection } from "@/features/outbound-orders/components/sections/CreateOutboundOrderItemsSection"
 import { CreateOutboundOrderPickerSection } from "@/features/outbound-orders/components/sections/CreateOutboundOrderPickerSection"
@@ -18,6 +19,7 @@ import {
   wizardTabs,
 } from "@/features/outbound-orders/components/sections/CreateOutboundOrderTabs"
 import { createOutboundOrder } from "@/features/outbound-orders/api/server-functions/create-outbound-order.api"
+import { selectDefaultDeliveryInfo } from "@/features/outbound-orders/constants/select-default-delivery-info"
 import {
   createOutboundOrderFormDefaultValues,
   createOutboundOrderSchema,
@@ -57,6 +59,34 @@ export function CreateOutboundOrderForm() {
     },
     onSubmit: ({ value }) => create({ data: value }),
   })
+
+  // Khách hàng của phiếu do bước ① suy ra từ dòng đầu tiên đã chọn. Đổi sang khách khác thì ghi đè
+  // địa chỉ giao/người nhận/điện thoại theo khách đó (tránh giữ thông tin của khách cũ); người dùng
+  // vẫn sửa tay được vì effect chỉ chạy khi thông tin mặc định của khách đổi.
+  const clientId = useField({ form, name: "clientId" }).state.value
+  const { data: client } = useQuery({
+    ...clientQueryOptions(clientId),
+    enabled: Boolean(clientId),
+  })
+  const defaultDeliveryInfo = client
+    ? selectDefaultDeliveryInfo(client)
+    : undefined
+  const defaultDeliveryAddress = defaultDeliveryInfo?.deliveryAddress
+  const defaultReceiverName = defaultDeliveryInfo?.receiverName
+  const defaultReceiverPhone = defaultDeliveryInfo?.receiverPhone
+
+  useEffect(() => {
+    if (
+      defaultDeliveryAddress === undefined ||
+      defaultReceiverName === undefined ||
+      defaultReceiverPhone === undefined
+    ) {
+      return
+    }
+    form.setFieldValue("deliveryAddress", defaultDeliveryAddress)
+    form.setFieldValue("receiverName", defaultReceiverName)
+    form.setFieldValue("receiverPhone", defaultReceiverPhone)
+  }, [form, defaultDeliveryAddress, defaultReceiverName, defaultReceiverPhone])
 
   // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
   // without a cast, and an unrecognised value simply doesn't switch tabs.

@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
+import { UnfulfilledItemImageCell } from "@/features/outbound-orders/components/primitives/UnfulfilledOrderItemCells"
 import type { UpdateOutboundOrderItemValue } from "@/features/outbound-orders/schemas/update-outbound-order.schema"
+import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -26,6 +28,7 @@ export type OutboundOrderItemDisplay = {
   order: { id: string; code: string }
   job: { id: string; code: string } | null
   item: ItemRef
+  image: FileResource | null
   unit: Unit
   orderedQuantity: number
   issuedQuantity: number
@@ -91,6 +94,21 @@ export function buildOutboundOrderEditItemColumns({
               <span className="text-[11px] text-muted-foreground">—</span>
             )}
           </div>
+        )
+      },
+    }),
+    editItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: { headerClassName: "w-20 text-center" },
+      cell: ({ row }) => {
+        const display = displayByOrderItemId.get(row.original.orderItemId)
+        if (!display) return "—"
+        return (
+          <UnfulfilledItemImageCell
+            image={display.image}
+            name={display.item.name}
+          />
         )
       },
     }),
