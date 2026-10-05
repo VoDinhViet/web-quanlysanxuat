@@ -9,6 +9,7 @@ import { QuotationSupplierAttachmentCell } from "@/features/purchase-quotations/
 import { QuotationTreeGuide } from "@/features/purchase-quotations/components/composites/QuotationTreeGuide"
 import { cn } from "@/lib/utils"
 import type { QuotationItemSupplierValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
+import type { PurchaseQuotationLastPurchase } from "@/lib/types/purchase-quotation.type"
 
 // "Tên NCC (MÃ)" label → name + code chip; a label without a trailing code stays as the name.
 function splitSupplierLabel(label: string) {
@@ -23,6 +24,8 @@ const priceFormatter = new Intl.NumberFormat("vi-VN", {
 
 type QuotationSupplierTreeRowProps = {
   supplier: QuotationItemSupplierValue
+  // Lần mua gần nhất của vật tư: với chính NCC này nếu có, không thì với NCC khác (hiện tên NCC).
+  lastPurchase?: PurchaseQuotationLastPurchase
   disabled?: boolean
   onChange: (patch: Partial<QuotationItemSupplierValue>) => void
   onRemove: () => void
@@ -34,11 +37,16 @@ type QuotationSupplierTreeRowProps = {
 // to be created before the supplier has quoted.
 export function QuotationSupplierTreeRow({
   supplier,
+  lastPurchase,
   disabled,
   onChange,
   onRemove,
 }: QuotationSupplierTreeRowProps) {
-  const lastPurchase = DateTime.fromISO(supplier.lastPurchaseDate)
+  const lastPurchaseDate =
+    lastPurchase && DateTime.fromISO(lastPurchase.orderDate)
+  const isOtherSupplier =
+    lastPurchase !== undefined &&
+    lastPurchase.supplier.id !== supplier.supplierId
   const { name, code } = splitSupplierLabel(supplier.supplierLabel)
 
   return (
@@ -55,14 +63,17 @@ export function QuotationSupplierTreeRow({
             )}
           </p>
           <p className="text-xs text-muted-foreground tabular-nums">
-            {typeof supplier.lastPrice === "number" ? (
+            {lastPurchase ? (
               <>
-                Mua gần nhất{" "}
+                {isOtherSupplier
+                  ? "Chưa mua của NCC này · gần nhất "
+                  : "Mua gần nhất "}
                 <span className="font-medium text-foreground">
-                  {priceFormatter.format(supplier.lastPrice)}
+                  {priceFormatter.format(lastPurchase.unitPrice)}
                 </span>
-                {lastPurchase.isValid &&
-                  ` · ${lastPurchase.toFormat("dd/MM/yyyy")}`}
+                {lastPurchaseDate?.isValid &&
+                  ` · ${lastPurchaseDate.toFormat("dd/MM/yyyy")}`}
+                {isOtherSupplier && ` · ${lastPurchase.supplier.name}`}
               </>
             ) : (
               "Chưa từng mua"

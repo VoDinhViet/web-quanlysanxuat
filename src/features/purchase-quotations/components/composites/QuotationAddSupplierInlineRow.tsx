@@ -50,8 +50,6 @@ export function QuotationAddSupplierInlineRow({
                 onAdd({
                   supplierId: supplier.id,
                   supplierLabel: supplier.name,
-                  lastPrice: undefined,
-                  lastPurchaseDate: "",
                   unitPrice: undefined,
                   leadTimeDays: undefined,
                   note: "",

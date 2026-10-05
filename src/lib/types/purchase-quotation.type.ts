@@ -49,10 +49,18 @@ export type PurchaseQuotationUserRef = {
 
 /** Mirrors the backend's `QuotationItemSupplierLastPurchaseResDto` — giá + ngày lần đặt mua
  *  gần nhất của đúng vật tư này với đúng NCC này (không phải giá gần nhất nói chung). */
-export type PurchaseQuotationLastPurchase = {
+export type PurchaseQuotationItemSupplierLastPurchase = {
   unitPrice: number
   orderDate: string
 }
+
+/** Mirrors the backend's `QuotationLastPurchaseResDto` (`GET /purchase-quotations/last-purchases`) —
+ *  lần đặt mua gần nhất của một vật tư với một NCC đã từng bán nó. */
+export type PurchaseQuotationLastPurchase =
+  PurchaseQuotationItemSupplierLastPurchase & {
+    itemId: string
+    supplier: SupplierRef
+  }
 
 /** Mirrors the backend's `QuotationItemSupplierResDto` (`be-quanlysanxuat/src/api/
  *  purchase-quotations/dto/quotation-item-supplier.res.dto.ts`). `selectedAt !== null` nghĩa
@@ -64,7 +72,7 @@ export type PurchaseQuotationItemSupplierDetail = {
   unitPrice: number | null
   leadTimeDays: number | null
   note: string | null
-  lastPurchase: PurchaseQuotationLastPurchase | null
+  lastPurchase: PurchaseQuotationItemSupplierLastPurchase | null
   selectorBy: PurchaseQuotationUserRef | null
   selectedAt: string | null
   files?: FileResource[]

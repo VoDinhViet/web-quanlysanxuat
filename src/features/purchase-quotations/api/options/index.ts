@@ -5,3 +5,4 @@ export { purchaseQuotationsQueryOptions } from "@/features/purchase-quotations/a
 export { purchaseQuotationQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation.options"
 export { purchaseQuotationRelatedNotesQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation-related-notes.options"
 export { purchaseQuotationComparisonQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation-comparison.options"
+export { purchaseQuotationLastPurchasesQueryOptions } from "@/features/purchase-quotations/api/options/purchase-quotation-last-purchases.options"

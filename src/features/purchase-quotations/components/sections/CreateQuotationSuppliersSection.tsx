@@ -1,5 +1,6 @@
 import { Fragment, useMemo, useState } from "react"
 import { useField } from "@tanstack/react-form"
+import { useQuery } from "@tanstack/react-query"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 
@@ -12,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { purchaseQuotationLastPurchasesQueryOptions } from "@/features/purchase-quotations/api/options"
 import { QuotationAddSupplierInlineRow } from "@/features/purchase-quotations/components/composites/QuotationAddSupplierInlineRow"
 import { QuotationAdjustmentReasonRow } from "@/features/purchase-quotations/components/composites/QuotationAdjustmentReasonRow"
 import { buildQuotationItemsListColumns } from "@/features/purchase-quotations/components/composites/QuotationItemsListColumns"
@@ -20,6 +22,19 @@ import { getQuotationItemStatus } from "@/features/purchase-quotations/constants
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
+import type { PurchaseQuotationLastPurchase } from "@/lib/types/purchase-quotation.type"
+
+// `lastPurchases` đã sắp mới nhất trước: ưu tiên lần mua với chính NCC, không có thì lần mới nhất.
+function findLastPurchase(
+  lastPurchases: PurchaseQuotationLastPurchase[],
+  itemId: string,
+  supplierId: string
+) {
+  const ofItem = lastPurchases.filter((purchase) => purchase.itemId === itemId)
+  return (
+    ofItem.find((purchase) => purchase.supplier.id === supplierId) ?? ofItem[0]
+  )
+}
 
 export const CreateQuotationSuppliersSection = withForm({
   defaultValues: createQuotationFormDefaultValues,
@@ -27,6 +42,14 @@ export const CreateQuotationSuppliersSection = withForm({
   render: function Render({ form, disabled }) {
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
+
+    // Giá mua gần nhất của mọi vật tư trong cây, tra một lần (mới nhất trước) — mỗi dòng NCC lấy
+    // lần mua với chính NCC đó, không có thì lần mua gần nhất của vật tư với NCC khác.
+    const { data: lastPurchases = [] } = useQuery(
+      purchaseQuotationLastPurchasesQueryOptions(
+        items.map((item) => item.itemId)
+      )
+    )
 
     // Tree rows start expanded; only the ones the user folds are tracked.
     const [collapsedIds, setCollapsedIds] = useState<ReadonlySet<string>>(
@@ -181,6 +204,11 @@ export const CreateQuotationSuppliersSection = withForm({
                           <QuotationSupplierTreeRow
                             key={supplier.supplierId}
                             supplier={supplier}
+                            lastPurchase={findLastPurchase(
+                              lastPurchases,
+                              item.itemId,
+                              supplier.supplierId
+                            )}
                             disabled={disabled}
                             onChange={(patch) =>
                               itemsField.replaceValue(itemIndex, {

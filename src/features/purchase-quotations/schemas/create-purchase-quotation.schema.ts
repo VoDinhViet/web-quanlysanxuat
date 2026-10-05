@@ -12,12 +12,9 @@ import { fileFieldSchema } from "@/lib/file-field.schema"
 // created before that supplier has actually quoted (DRAFT), same as leaving a cell blank.
 // One (vật tư, NCC) pairing — supplierLabel is UI-only, carried alongside supplierId the same
 // way OrderItemFormValue carries itemLabel, so a row re-renders without a second suppliers fetch.
-// lastPrice/lastPurchaseDate are reference-only: automatically populated from purchase history.
 const quotationItemSupplierFields = {
   supplierId: z.string().trim().min(1, "Vui lòng chọn NCC"),
   supplierLabel: z.string(),
-  lastPrice: z.number().min(0, "Giá gần nhất không được âm").optional(),
-  lastPurchaseDate: z.string(),
   unitPrice: z
     .number("Vui lòng nhập giá báo")
     .min(0, "Giá báo không được âm")
@@ -53,9 +50,10 @@ const quotationItemAllocationFields = {
     .max(500, "Lý do tối đa 500 ký tự"),
 }
 
-export const quotationItemAllocationSchema = z
-  .object(quotationItemAllocationFields)
-  // Không giới hạn trên — SL báo giá có thể vượt SL đề xuất.
+export const quotationItemAllocationSchema = z.object(
+  quotationItemAllocationFields
+)
+// Không giới hạn trên — SL báo giá có thể vượt SL đề xuất.
 export type QuotationItemAllocationValue = z.input<
   typeof quotationItemAllocationSchema
 >
@@ -135,8 +133,6 @@ export function mapQuotationDetailToFormValues(
       suppliers: item.suppliers.map((supplier) => ({
         supplierId: supplier.supplier.id,
         supplierLabel: `${supplier.supplier.name} (${supplier.supplier.code})`,
-        lastPrice: supplier.lastPurchase?.unitPrice,
-        lastPurchaseDate: supplier.lastPurchase?.orderDate ?? "",
         unitPrice: supplier.unitPrice ?? undefined,
         leadTimeDays: supplier.leadTimeDays ?? undefined,
         note: supplier.note ?? "",
