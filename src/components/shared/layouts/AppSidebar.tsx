@@ -219,6 +219,8 @@ const menuGroups: MenuGroup[] = [
         label: "IQC",
         icon: ClipboardCheck,
         href: "/manage/iqc",
+        todoBadgeKey: "iqcToInspect",
+        todoBadgeLabel: "dòng chờ IQC",
       },
       {
         label: "OQC",
