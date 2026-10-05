@@ -1,9 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
+import { Gallery } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Checkbox } from "@/components/ui/checkbox"
 import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
+import { resolveFileUrl } from "@/lib/file-url"
 import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
 import { cn } from "@/lib/utils"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
@@ -63,6 +66,26 @@ export function buildQuotationItemsPickerColumns({
         ),
       }
     ),
+    quotationItemsPickerColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-20 text-center",
+        cellClassName: "py-2 text-center",
+      },
+      cell: ({ row }) => {
+        const { image, item } = row.original
+        return (
+          <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
+            {image ? (
+              <ZoomableImage src={resolveFileUrl(image.url)} alt={item.name} />
+            ) : (
+              <Gallery className="size-4 text-muted-foreground/50" />
+            )}
+          </div>
+        )
+      },
+    }),
     quotationItemsPickerColumnHelper.display({
       id: "item",
       header: "Vật tư",
