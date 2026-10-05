@@ -1,7 +1,9 @@
 import { useState } from "react"
+import { Delivery } from "@solar-icons/react"
 import { ListFilter, RotateCw, Search } from "lucide-react"
 import { useDebounceCallback } from "usehooks-ts"
 
+import { ClientCombobox } from "@/components/shared/composites/ClientCombobox"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,9 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
-import { ComboboxField } from "@/components/shared/composites/ComboboxField"
-import { useGetClientOptions } from "@/features/clients/api"
-import { buildSelectOption } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 export type CreateOutboundOrderPickerFilters = {
   clientId?: string
@@ -52,10 +52,6 @@ export function CreateOutboundOrderPickerFilter({
   filters,
   onChange,
 }: CreateOutboundOrderPickerFilterProps) {
-  const client = useGetClientOptions()
-  const selectedClient = client.clients.find(
-    (option) => option.id === filters.clientId
-  )
   const [textValues, setTextValues] = useState({
     poNo: filters.poNo ?? "",
     jobCode: filters.jobCode ?? "",
@@ -75,9 +71,8 @@ export function CreateOutboundOrderPickerFilter({
   )
 
   const handleTextChange = (key: TextFilterKey, value: string) => {
-    const next = { ...textValues, [key]: value }
-    setTextValues(next)
-    emitText(next)
+    setTextValues({ ...textValues, [key]: value })
+    emitText({ ...textValues, [key]: value })
   }
 
   const resetFilters = () => {
@@ -90,24 +85,14 @@ export function CreateOutboundOrderPickerFilter({
     <div className="mt-4 grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_repeat(3,minmax(10rem,1fr))_auto]">
       <div className="space-y-1.5">
         <Label
-          htmlFor="do-picker-client"
+          htmlFor="client-combobox"
           className="text-[11px] font-medium text-muted-foreground"
         >
           Khách hàng
         </Label>
-        <ComboboxField
-          id="do-picker-client"
-          value={filters.clientId}
-          onValueChange={(value) =>
-            onChange({ ...filters, clientId: value || undefined })
-          }
-          options={client.options}
-          onSearchChange={client.onSearchChange}
-          isPending={client.isFetching}
-          initialOption={buildSelectOption(selectedClient)}
-          emptyMessage="Không tìm thấy khách hàng"
-          placeholder="Tìm khách hàng..."
-          className="text-xs"
+        <ClientCombobox
+          selectedClientId={filters.clientId}
+          onSelectClient={(clientId) => onChange({ ...filters, clientId })}
         />
       </div>
 
@@ -138,31 +123,48 @@ export function CreateOutboundOrderPickerFilter({
         <Popover>
           <PopoverTrigger
             render={
-              <Button type="button" variant="outline" className="text-xs">
-                <ListFilter className="size-3.5" />
+              <Button
+                type="button"
+                variant="outline"
+                className={cn(
+                  "gap-1.5 text-xs",
+                  filters.deliverableOnly &&
+                    "border-primary/40 bg-primary/5 text-primary hover:bg-primary/10"
+                )}
+              >
+                <ListFilter className="size-4" />
                 Bộ lọc khác
                 {filters.deliverableOnly && (
-                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                  <span className="flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
                     1
                   </span>
                 )}
               </Button>
             }
           />
-          <PopoverContent align="end" className="w-72 gap-3">
-            <div className="flex items-start justify-between gap-3">
+          <PopoverContent align="end" className="w-72">
+            <div className="flex items-start gap-3">
+              <Delivery
+                className={cn(
+                  "mt-0.5 size-5 shrink-0",
+                  filters.deliverableOnly
+                    ? "text-success"
+                    : "text-muted-foreground"
+                )}
+              />
               <Label
                 htmlFor="do-picker-deliverable-only"
-                className="flex flex-col items-start gap-0.5 text-xs font-medium"
+                className="flex flex-1 cursor-pointer flex-col items-start gap-0.5 text-sm font-medium"
               >
                 Chỉ hiện dòng có thể giao
-                <span className="text-[11px] font-normal text-muted-foreground">
+                <span className="text-xs font-normal text-muted-foreground">
                   Ẩn dòng hết tồn hoặc đã bị DO khác giữ hết (Có thể giao &gt;
                   0).
                 </span>
               </Label>
               <Switch
                 id="do-picker-deliverable-only"
+                className="mt-0.5"
                 checked={filters.deliverableOnly ?? false}
                 onCheckedChange={(checked) =>
                   onChange({

@@ -16,15 +16,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { ClientCombobox } from "@/components/shared/composites/ClientCombobox"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { useGetClientOptions } from "@/features/clients/api"
 import { CreateDirectMenu } from "@/features/directs/components/composites/CreateDirectMenu"
 import { exportDirects } from "@/features/directs/api/server-functions/export-directs.api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import type { ItemStatus } from "@/lib/types/item.type"
-import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
+import { buildOptionsFromLabels } from "@/lib/utils"
 
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 
@@ -51,14 +50,6 @@ export function DirectsTableFilter() {
       }
     )
   }
-
-  // The route loader prefetches this hook's own q="" query, so `client.clients`
-  // already has data on first render — no separate suspense query needed just
-  // to seed the combobox's selected-label.
-  const client = useGetClientOptions()
-  const selectedClient = client.clients.find(
-    (option) => option.id === search.clientId
-  )
 
   // Filters as the user types, 300ms after the last keystroke — the same delay the
   // combobox option hooks use. An empty term becomes `undefined` so the search
@@ -133,22 +124,14 @@ export function DirectsTableFilter() {
 
           <div className="space-y-1.5">
             <Label
-              htmlFor="directs-client"
+              htmlFor="client-combobox"
               className="text-[11px] font-medium text-muted-foreground"
             >
               Khách hàng
             </Label>
-            <ComboboxField
-              id="directs-client"
-              value={search.clientId}
-              onValueChange={handleClientChange}
-              options={client.options}
-              onSearchChange={client.onSearchChange}
-              isPending={client.isFetching}
-              initialOption={buildSelectOption(selectedClient)}
-              emptyMessage="Không tìm thấy khách hàng"
-              placeholder="Tìm khách hàng..."
-              className="text-xs"
+            <ClientCombobox
+              selectedClientId={search.clientId}
+              onSelectClient={handleClientChange}
             />
           </div>
 

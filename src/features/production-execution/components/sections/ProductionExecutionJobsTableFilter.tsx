@@ -13,11 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { ClientCombobox } from "@/components/shared/composites/ClientCombobox"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { useGetClientOptions } from "@/features/clients/api"
 import { productionJobStatusLabels } from "@/lib/types/production-job.type"
-import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
+import { buildOptionsFromLabels } from "@/lib/utils"
 import type { ProductionJobStatus } from "@/lib/types/production-job.type"
 
 const statusFilterOptions = [
@@ -33,11 +32,6 @@ export function ProductionExecutionJobsTableFilter() {
   })
   const navigate = useNavigate({ from: "/manage/production-execution/" })
   const [q, setQ] = useState(search.q ?? "")
-
-  const client = useGetClientOptions()
-  const selectedClient = client.clients.find(
-    (option) => option.id === search.clientId
-  )
 
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
@@ -122,22 +116,14 @@ export function ProductionExecutionJobsTableFilter() {
 
           <div className="space-y-1.5">
             <Label
-              htmlFor="production-execution-client"
+              htmlFor="client-combobox"
               className="text-[11px] font-medium text-muted-foreground"
             >
               Khách hàng
             </Label>
-            <ComboboxField
-              id="production-execution-client"
-              value={search.clientId}
-              onValueChange={handleClientChange}
-              options={client.options}
-              onSearchChange={client.onSearchChange}
-              isPending={client.isFetching}
-              initialOption={buildSelectOption(selectedClient)}
-              emptyMessage="Không tìm thấy khách hàng"
-              placeholder="Tìm khách hàng..."
-              className="text-xs"
+            <ClientCombobox
+              selectedClientId={search.clientId}
+              onSelectClient={handleClientChange}
             />
           </div>
 

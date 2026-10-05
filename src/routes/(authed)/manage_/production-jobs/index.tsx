@@ -4,7 +4,7 @@ import { PagePending } from "@/components/shared/layouts/PagePending"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api/options"
 import { ProductionJobsPage } from "@/features/production-jobs/pages/ProductionJobsPage"
 import { productionJobsSearchSchema } from "@/features/production-jobs/schemas/production-jobs-search.schema"
-import { clientOptionsQueryOptions } from "@/features/clients/api"
+import { clientsQueryOptions } from "@/features/clients/api"
 
 export const Route = createFileRoute("/(authed)/manage_/production-jobs/")({
   validateSearch: productionJobsSearchSchema,
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/(authed)/manage_/production-jobs/")({
         staleTime: "static",
       }),
       context.queryClient.query({
-        ...clientOptionsQueryOptions(""),
+        ...clientsQueryOptions({ page: 1, limit: 20 }),
         staleTime: "static",
       }),
     ]),

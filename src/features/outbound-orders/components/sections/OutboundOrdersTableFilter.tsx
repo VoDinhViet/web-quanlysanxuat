@@ -16,18 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { ClientCombobox } from "@/components/shared/composites/ClientCombobox"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { useGetClientOptions } from "@/features/clients/api"
 import { exportOutboundOrders } from "@/features/outbound-orders/api/server-functions/export-outbound-orders.api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import {
   fulfillmentTypeLabels,
   outboundOrderStatusLabels,
 } from "@/lib/types/outbound-order.type"
-import { buildOptionsFromLabels, buildSelectOption } from "@/lib/utils"
+import { buildOptionsFromLabels } from "@/lib/utils"
 import type {
   FulfillmentType,
   OutboundOrderStatus,
@@ -63,17 +62,9 @@ export function OutboundOrdersTableFilter() {
         loading: "Đang xuất file Excel lệnh xuất kho...",
         success: "Đã xuất file Excel lệnh xuất kho",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
-
-  // Unlike production-jobs.tsx, this route's loader doesn't prefetch client options — so a
-  // `clientId` already in the URL gets its label from `client.clients` once this hook's own
-  // q="" query resolves, not on first render.
-  const client = useGetClientOptions()
-  const selectedClient = client.clients.find(
-    (option) => option.id === search.clientId
-  )
 
   const handleSearchDebounced = useDebounceCallback(() => {
     void navigate({
@@ -166,22 +157,14 @@ export function OutboundOrdersTableFilter() {
 
           <div className="space-y-1.5">
             <Label
-              htmlFor="do-client"
+              htmlFor="client-combobox"
               className="text-[11px] font-medium text-muted-foreground"
             >
               Khách hàng
             </Label>
-            <ComboboxField
-              id="do-client"
-              value={search.clientId}
-              onValueChange={handleClientChange}
-              options={client.options}
-              onSearchChange={client.onSearchChange}
-              isPending={client.isFetching}
-              initialOption={buildSelectOption(selectedClient)}
-              emptyMessage="Không tìm thấy khách hàng"
-              placeholder="Tìm khách hàng..."
-              className="text-xs"
+            <ClientCombobox
+              selectedClientId={search.clientId}
+              onSelectClient={handleClientChange}
             />
           </div>
 

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { PagePending } from "@/components/shared/layouts/PagePending"
-import { clientOptionsQueryOptions } from "@/features/clients/api"
+import { clientsQueryOptions } from "@/features/clients/api"
 import {
   productionJobsByOperationQueryOptions,
   productionExecutionOperationsQueryOptions,
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/(authed)/manage_/production-execution/")(
             })
           : Promise.resolve(),
         context.queryClient.query({
-          ...clientOptionsQueryOptions(""),
+          ...clientsQueryOptions({ page: 1, limit: 20 }),
           staleTime: "static",
         }),
       ])
