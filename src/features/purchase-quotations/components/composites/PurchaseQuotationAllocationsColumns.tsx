@@ -68,9 +68,7 @@ export const purchaseQuotationAllocationsColumns =
                 </span>
               }
             />
-            <TooltipContent>
-              {`Vượt SL đề xuất (+${diff})`}
-            </TooltipContent>
+            <TooltipContent>{`Vượt SL đề xuất (+${diff})`}</TooltipContent>
           </Tooltip>
         )
       },

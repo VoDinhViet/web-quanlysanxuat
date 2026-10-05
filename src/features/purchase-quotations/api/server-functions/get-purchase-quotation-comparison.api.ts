@@ -37,8 +37,6 @@ export const getPurchaseQuotationComparison = createServerFn({ method: "GET" })
     } catch (error) {
       logHttpError(error, "getPurchaseQuotationComparison")
 
-      throw new Error(
-        resolveGetPurchaseQuotationComparisonErrorMessage(error)
-      )
+      throw new Error(resolveGetPurchaseQuotationComparisonErrorMessage(error))
     }
   })

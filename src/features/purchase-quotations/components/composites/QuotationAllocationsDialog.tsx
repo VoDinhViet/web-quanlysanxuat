@@ -191,7 +191,7 @@ function QuotationAllocationsDialogForm({
                           className={cn(
                             "h-8 w-full bg-background text-right text-xs tabular-nums",
                             isOver &&
-                              "border-warning/70 pr-7 text-warning focus-visible:ring-warning/30 hover:border-warning"
+                              "border-warning/70 pr-7 text-warning hover:border-warning focus-visible:ring-warning/30"
                           )}
                           value={allocation.quantity ?? ""}
                           thousandSeparator="."

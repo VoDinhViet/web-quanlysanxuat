@@ -54,7 +54,9 @@ export function PurchaseQuotationDetailHeader({
           />
           <MetaField
             label="Số vật tư"
-            value={String(purchaseQuotation.items?.length ?? comparisonItems.length)}
+            value={String(
+              purchaseQuotation.items?.length ?? comparisonItems.length
+            )}
           />
           <MetaField label="Ghi chú" value={purchaseQuotation.note ?? "—"} />
         </div>

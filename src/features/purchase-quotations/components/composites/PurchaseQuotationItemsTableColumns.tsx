@@ -23,7 +23,10 @@ export const purchaseQuotationItemsColumns =
     purchaseQuotationItemColumnHelper.display({
       id: "index",
       header: "STT",
-      meta: { headerClassName: "w-10 text-center", cellClassName: "text-center" },
+      meta: {
+        headerClassName: "w-10 text-center",
+        cellClassName: "text-center",
+      },
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.index + 1}</span>
       ),

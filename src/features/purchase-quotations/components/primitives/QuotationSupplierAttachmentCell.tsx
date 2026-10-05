@@ -98,7 +98,7 @@ export function QuotationSupplierAttachmentCell({
   const fileCount = value.length
 
   if (disabled && !onChange && fileCount === 0) {
-    return <span className="text-muted-foreground text-xs">—</span>
+    return <span className="text-xs text-muted-foreground">—</span>
   }
 
   return (
@@ -112,7 +112,7 @@ export function QuotationSupplierAttachmentCell({
             className={cn(
               "h-7 px-2 text-xs font-normal",
               fileCount > 0
-                ? "font-medium text-primary bg-primary/10 hover:bg-primary/20"
+                ? "bg-primary/10 font-medium text-primary hover:bg-primary/20"
                 : "text-muted-foreground hover:text-foreground"
             )}
             title={
@@ -151,7 +151,7 @@ export function QuotationSupplierAttachmentCell({
                 role: "button",
                 "aria-label": "Tải file lên",
                 className: cn(
-                  "relative w-full outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg cursor-pointer",
+                  "relative w-full cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   disabled && "pointer-events-none opacity-50"
                 ),
               })}
@@ -190,7 +190,7 @@ export function QuotationSupplierAttachmentCell({
           )}
 
           {fileCount > 0 ? (
-            <div className="max-h-60 overflow-y-auto rounded-md border border-border/50 divide-y divide-border/40">
+            <div className="max-h-60 divide-y divide-border/40 overflow-y-auto rounded-md border border-border/50">
               {value.map((file) => (
                 <QcEvidenceThumbnail
                   key={file.id}
