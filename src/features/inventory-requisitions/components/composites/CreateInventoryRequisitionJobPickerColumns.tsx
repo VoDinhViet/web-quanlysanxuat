@@ -3,6 +3,7 @@ import type { appTableFeatures } from "@/lib/table-features"
 import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import { RadioGroupItem } from "@/components/ui/radio-group"
 import {
   productionJobStatusLabels,
@@ -73,6 +74,20 @@ export function buildCreateInventoryRequisitionJobPickerColumns({
         </div>
       ),
     }),
+    jobPickerColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: {
+        headerClassName: "w-20 text-center",
+        cellClassName: "py-2 text-center",
+      },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.item.name}
+        />
+      ),
+    }),
     jobPickerColumnHelper.accessor("code", {
       header: "Mã Job",
       meta: { headerClassName: "min-w-28" },
@@ -82,12 +97,12 @@ export function buildCreateInventoryRequisitionJobPickerColumns({
         </span>
       ),
     }),
-    jobPickerColumnHelper.accessor("orderCode", {
-      header: "Mã LSX",
+    jobPickerColumnHelper.accessor("buyerPoNo", {
+      header: "PO",
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue }) => (
         <span className="font-mono text-xs text-muted-foreground">
-          {getValue()}
+          {getValue() ?? "—"}
         </span>
       ),
     }),

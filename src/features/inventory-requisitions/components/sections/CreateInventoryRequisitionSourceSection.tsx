@@ -182,7 +182,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
 
                     <div className="relative max-w-sm">
                       <Input
-                        placeholder="Tìm Job theo mã..."
+                        placeholder="Tìm Job theo mã, PO..."
                         className="pr-9 text-xs placeholder:text-muted-foreground/75"
                         value={jobQ}
                         disabled={disabled}
