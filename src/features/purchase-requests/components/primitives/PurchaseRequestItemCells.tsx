@@ -192,6 +192,8 @@ type PurchaseRequestItemPurchasableSelectProps = {
   itemName: string
   requiresPurchase: boolean
   canUpdate: boolean
+  // Chỉ chọn được Mua/Không mua sau khi đề xuất đã duyệt (backend trả E298 nếu chưa).
+  isApproved: boolean
 }
 
 export function PurchaseRequestItemPurchasableSelect({
@@ -199,6 +201,7 @@ export function PurchaseRequestItemPurchasableSelect({
   itemName,
   requiresPurchase,
   canUpdate,
+  isApproved,
 }: PurchaseRequestItemPurchasableSelectProps) {
   const { purchaseRequestId } = useParams({
     from: "/(authed)/manage_/purchase-requests_/$purchaseRequestId",
@@ -307,7 +310,7 @@ export function PurchaseRequestItemPurchasableSelect({
     </Select>
   )
 
-  if (!canUpdate) {
+  if (!canUpdate || !isApproved) {
     return (
       <div className="flex items-center justify-center">
         <Tooltip>
@@ -333,7 +336,11 @@ export function PurchaseRequestItemPurchasableSelect({
               </span>
             }
           />
-          <TooltipContent>Bạn không có quyền sửa đề xuất mua hàng</TooltipContent>
+          <TooltipContent>
+            {canUpdate
+              ? "Chỉ chọn được Mua / Không mua sau khi đề xuất được duyệt"
+              : "Bạn không có quyền sửa đề xuất mua hàng"}
+          </TooltipContent>
         </Tooltip>
       </div>
     )
@@ -409,6 +416,7 @@ export function PurchaseRequestItemActionsCell({
       itemName={itemName}
       requiresPurchase={requiresPurchase}
       canUpdate={canUpdate}
+      isApproved={status === PurchaseRequestStatus.APPROVED}
     />
   )
 }

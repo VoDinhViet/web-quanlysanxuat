@@ -17,6 +17,8 @@ function resolveApprovePurchaseQuotationErrorMessage(error: unknown): string {
       return "Không tìm thấy báo giá."
     case "purchase_quotation.error.supplier_not_selected":
       return "Chưa chọn đủ NCC thắng thầu cho mọi vật tư. Vui lòng tải lại trang."
+    case "purchase_ledger.error.line_not_purchasable":
+      return "Báo giá có dòng vật tư đã bị đánh dấu không mua. Hãy bỏ dòng đó khỏi báo giá trước."
     case "purchase_quotation.error.invalid_status_transition":
       return "Báo giá đã đổi trạng thái. Vui lòng tải lại trang."
     case "auth.error.forbidden":

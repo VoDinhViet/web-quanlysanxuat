@@ -21,6 +21,8 @@ function resolveSendPurchaseQuotationErrorMessage(error: unknown): string {
       return "Có vật tư chưa chọn NCC."
     case "purchase_quotation.error.missing_unit_price":
       return "Có báo giá chưa nhập đơn giá."
+    case "purchase_ledger.error.line_not_purchasable":
+      return "Báo giá có dòng vật tư đã bị đánh dấu không mua. Hãy bỏ dòng đó khỏi báo giá trước."
     case "purchase_quotation.error.invalid_status_transition":
       return "Báo giá đã đổi trạng thái. Vui lòng tải lại trang."
     case "auth.error.forbidden":
