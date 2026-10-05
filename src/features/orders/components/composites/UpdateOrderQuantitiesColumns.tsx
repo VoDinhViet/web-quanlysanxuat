@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
+import { OrderItemProductCell } from "@/features/orders/components/primitives/OrderItemProductCell"
 import { estimateLineTotal } from "@/features/orders/constants/order-totals"
 import type { OrderItemFormValue } from "@/features/orders/schemas/order-item-form.schema"
 import { currencyFormatter } from "@/lib/currency"
@@ -55,8 +56,20 @@ export function buildUpdateOrderQuantitiesColumns({
         <span className="text-muted-foreground">{row.index + 1}</span>
       ),
     }),
-    updateOrderQuantitiesColumnHelper.accessor("itemLabel", {
+    updateOrderQuantitiesColumnHelper.display({
+      id: "product",
       header: "Sản phẩm",
+      meta: { headerClassName: "min-w-56" },
+      cell: ({ row }) => (
+        <OrderItemProductCell
+          name={row.original.itemLabel}
+          imageUrl={row.original.itemImageUrl}
+        />
+      ),
+    }),
+    updateOrderQuantitiesColumnHelper.accessor("itemRevision", {
+      header: "Rev",
+      meta: { cellClassName: "font-mono" },
       cell: ({ getValue }) => getValue() || "—",
     }),
     updateOrderQuantitiesColumnHelper.accessor("itemUnit", {

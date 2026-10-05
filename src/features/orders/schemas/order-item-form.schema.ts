@@ -21,6 +21,9 @@ export const orderItemFormFields = {
   // reaches the create/update server function.
   itemLabel: z.string(),
   itemUnit: z.string(),
+  // `.default("")` để bản nháp localStorage cũ (chưa có 2 khoá này) vẫn hợp lệ.
+  itemRevision: z.string().default(""),
+  itemImageUrl: z.string().default(""),
   quantity: z
     .number("Số lượng phải lớn hơn 0")
     .positive("Số lượng phải lớn hơn 0")
@@ -45,11 +48,13 @@ export const orderItemFormFields = {
   status: z.enum(OrderItemStatus),
 }
 
-// The object-level transform drops itemLabel/itemUnit from the OUTPUT
+// The object-level transform drops the UI-only item* fields from the OUTPUT
 // only — z.input (below) still sees them, so the row-editing state keeps
 // re-displaying the picked item without a second fetch.
 export const orderItemFormSchema = z
   .object(orderItemFormFields)
-  .transform(({ itemLabel, itemUnit, ...item }) => item)
+  .transform(
+    ({ itemLabel, itemUnit, itemRevision, itemImageUrl, ...item }) => item
+  )
 
 export type OrderItemFormValue = z.input<typeof orderItemFormSchema>

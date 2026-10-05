@@ -100,6 +100,8 @@ function getOrderDefaultValues(
       itemId: item.item.id,
       itemLabel: item.item.name,
       itemUnit: item.unit.name,
+      itemRevision: item.item.revision,
+      itemImageUrl: item.image?.url ?? "",
       quantity: item.quantity,
       unitPrice: item.unitPrice,
       discountPercent: item.discountPercent,
