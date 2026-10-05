@@ -50,8 +50,9 @@ export const PurchaseRequestCreateHeaderSection = withForm({
           <form.AppField name="note">
             {(field) => (
               <field.TextareaField
-                label="Lý do / Ghi chú"
-                placeholder="Nhập lý do đề xuất mua hàng hoặc ghi chú (nếu có)"
+                label="Lý do"
+                required
+                placeholder="Nhập lý do đề xuất mua hàng"
                 disabled={disabled}
                 className="sm:col-span-2"
               />
