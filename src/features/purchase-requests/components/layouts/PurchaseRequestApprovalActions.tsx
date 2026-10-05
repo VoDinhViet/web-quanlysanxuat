@@ -12,15 +12,22 @@ type PurchaseRequestApprovalActionsProps = {
   purchaseRequest: PurchaseRequestDetail
 }
 
-// The 3-button approval flow, mirroring OrderApprovalActions.tsx: DRAFT shows "Gửi duyệt"
-// (purchase-requests:update, same as any edit); PENDING_APPROVAL shows "Từ chối"/"Duyệt"
-// (purchase-requests:approve, director-level — seeded roles never hold both permissions, see
-// credentials.seed.ts). Every other status (APPROVED, or REJECTED not yet reopened by an item
-// edit) shows nothing — there's no direct action to take from there.
+// The 3-button approval flow, mirroring OrderApprovalActions.tsx: DRAFT shows "Gửi duyệt" and
+// REJECTED "Gửi duyệt lại" (purchase-requests:update, same as any edit); PENDING_APPROVAL shows
+// "Từ chối"/"Duyệt" (purchase-requests:approve, director-level — seeded roles never hold both
+// permissions, see credentials.seed.ts). APPROVED shows nothing — there's no action to take.
 export function PurchaseRequestApprovalActions({
   purchaseRequest,
 }: PurchaseRequestApprovalActionsProps) {
-  if (purchaseRequest.status === PurchaseRequestStatus.DRAFT) {
+  if (
+    purchaseRequest.status === PurchaseRequestStatus.DRAFT ||
+    purchaseRequest.status === PurchaseRequestStatus.REJECTED
+  ) {
+    const sendLabel =
+      purchaseRequest.status === PurchaseRequestStatus.REJECTED
+        ? "Gửi duyệt lại"
+        : "Gửi duyệt"
+
     return (
       <PermissionGate permission="purchase-requests:update">
         <SendPurchaseRequestDialog
@@ -28,7 +35,7 @@ export function PurchaseRequestApprovalActions({
           trigger={
             <Button type="button">
               <Send className="size-4" />
-              Gửi duyệt
+              {sendLabel}
             </Button>
           }
         />

@@ -32,11 +32,11 @@ export function PurchaseRequestItemsSection({
   canUpdate,
 }: PurchaseRequestItemsSectionProps) {
   const { items: rows, status } = purchaseRequest
-  const isDraft = status === PurchaseRequestStatus.DRAFT
-  const editable = canUpdate && isDraft
-  // Thêm dòng cùng cửa với sửa/xoá ở backend: Nháp hoặc Bị từ chối (Bị từ chối tự về Nháp).
-  const canCreateItems =
-    canUpdate && (isDraft || status === PurchaseRequestStatus.REJECTED)
+  // Sửa/xoá/thêm dòng cùng cửa ở backend: Nháp hoặc Bị từ chối (Bị từ chối tự về Nháp).
+  const editable =
+    canUpdate &&
+    (status === PurchaseRequestStatus.DRAFT ||
+      status === PurchaseRequestStatus.REJECTED)
 
   const columns = useMemo(
     () => buildPurchaseRequestItemColumns({ status, canUpdate }),
@@ -56,7 +56,7 @@ export function PurchaseRequestItemsSection({
           <PackageSearch className="size-3.5 text-muted-foreground" />
           Chi tiết vật tư
         </h3>
-        {canCreateItems && (
+        {editable && (
           <CreatePurchaseRequestItemsDialog
             purchaseRequest={purchaseRequest}
             trigger={
@@ -137,8 +137,10 @@ export function PurchaseRequestItemsSection({
             <TriangleAlert className="mt-0.5 size-3.5 shrink-0 text-warning" />
             <span>
               Sửa/xóa dòng được khi phiếu ở trạng thái{" "}
-              <span className="font-medium text-foreground">Nháp</span>; SL đề
-              xuất phải lớn hơn 0 và phiếu còn ít nhất 1 dòng vật tư.
+              <span className="font-medium text-foreground">
+                Nháp hoặc Bị từ chối
+              </span>
+              ; SL đề xuất phải lớn hơn 0 và phiếu còn ít nhất 1 dòng vật tư.
             </span>
           </p>
         )}

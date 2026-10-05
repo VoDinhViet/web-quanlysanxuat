@@ -254,7 +254,7 @@ export function PurchaseRequestItemPurchasableSelect({
       <SelectTrigger
         size="sm"
         className={cn(
-          "h-8 w-28 rounded-md px-2.5 text-xs font-medium shadow-none transition-all duration-150 justify-between",
+          "h-8 w-28 justify-between rounded-md px-2.5 text-xs font-medium shadow-none transition-all duration-150",
           currentRequiresPurchase
             ? "border-emerald-200/90 bg-emerald-50/90 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100/90 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50 [&_svg:last-child]:text-emerald-600/70 dark:[&_svg:last-child]:text-emerald-400/70"
             : "border-border/80 bg-muted/50 text-muted-foreground hover:border-border hover:bg-muted/90 hover:text-foreground dark:border-border/60 dark:bg-muted/30 dark:hover:bg-muted/60 [&_svg:last-child]:text-muted-foreground/70"
@@ -277,7 +277,9 @@ export function PurchaseRequestItemPurchasableSelect({
                 ) : (
                   <Ban className="size-3.5 shrink-0 text-muted-foreground/70" />
                 )}
-                <span className="truncate">{isPurchase ? "Mua" : "Không mua"}</span>
+                <span className="truncate">
+                  {isPurchase ? "Mua" : "Không mua"}
+                </span>
               </span>
             )
           }}
@@ -291,7 +293,9 @@ export function PurchaseRequestItemPurchasableSelect({
             </span>
             <span className="flex flex-col text-left">
               <span className="text-xs font-medium text-foreground">Mua</span>
-              <span className="text-[10px] text-muted-foreground">Cần mua cho đề xuất</span>
+              <span className="text-[10px] text-muted-foreground">
+                Cần mua cho đề xuất
+              </span>
             </span>
           </span>
         </SelectItem>
@@ -301,8 +305,12 @@ export function PurchaseRequestItemPurchasableSelect({
               <Ban className="size-3" />
             </span>
             <span className="flex flex-col text-left">
-              <span className="text-xs font-medium text-foreground">Không mua</span>
-              <span className="text-[10px] text-muted-foreground">Bỏ qua vật tư này</span>
+              <span className="text-xs font-medium text-foreground">
+                Không mua
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                Bỏ qua vật tư này
+              </span>
             </span>
           </span>
         </SelectItem>
@@ -319,7 +327,7 @@ export function PurchaseRequestItemPurchasableSelect({
               <span
                 tabIndex={0}
                 className={cn(
-                  "inline-flex h-8 w-28 cursor-not-allowed items-center justify-between gap-1.5 rounded-md border px-2.5 text-xs font-medium shadow-none select-none opacity-80",
+                  "inline-flex h-8 w-28 cursor-not-allowed items-center justify-between gap-1.5 rounded-md border px-2.5 text-xs font-medium opacity-80 shadow-none select-none",
                   requiresPurchase
                     ? "border-emerald-200/80 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/30 dark:text-emerald-300"
                     : "border-border/80 bg-muted/60 text-muted-foreground dark:border-border/60 dark:bg-muted/30"
@@ -368,8 +376,11 @@ export function PurchaseRequestItemActionsCell({
   canUpdate,
   isLastItem,
 }: PurchaseRequestItemActionsCellProps) {
-  // Chỉ trạng thái nháp mới hiển thị nút xóa
-  if (status === PurchaseRequestStatus.DRAFT) {
+  // Chỉ Nháp hoặc Bị từ chối (tự về Nháp khi xóa) mới hiển thị nút xóa
+  if (
+    status === PurchaseRequestStatus.DRAFT ||
+    status === PurchaseRequestStatus.REJECTED
+  ) {
     if (!canUpdate) {
       return null
     }
@@ -394,7 +405,9 @@ export function PurchaseRequestItemActionsCell({
       return (
         <Tooltip>
           <TooltipTrigger render={<span tabIndex={0}>{removeButton}</span>} />
-          <TooltipContent>Đề xuất phải còn ít nhất 1 dòng vật tư</TooltipContent>
+          <TooltipContent>
+            Đề xuất phải còn ít nhất 1 dòng vật tư
+          </TooltipContent>
         </Tooltip>
       )
     }
@@ -420,4 +433,3 @@ export function PurchaseRequestItemActionsCell({
     />
   )
 }
-

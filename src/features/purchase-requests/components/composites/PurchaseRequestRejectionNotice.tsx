@@ -8,9 +8,9 @@ type PurchaseRequestRejectionNoticeProps = {
 
 // Mirrors OrderRejectionNotice.tsx, but the status gate differs: rejecting an order sends it
 // straight back to DRAFT, so that notice only checks `status === DRAFT`. Rejecting a purchase
-// request lands on a distinct terminal REJECTED, and only an item edit/delete flips it back to
-// DRAFT (see docs/domains/purchase-requests.md) — so this notice stays visible through both
-// REJECTED and the reopened-but-not-yet-resent DRAFT. Once resent (PENDING_APPROVAL) or approved,
+// request lands on a distinct REJECTED, which can be resent directly, deleted, or flipped back to
+// DRAFT by an item edit/delete — so this notice stays visible through both REJECTED and the
+// reopened-but-not-yet-resent DRAFT. Once resent (PENDING_APPROVAL) or approved,
 // `rejectionReason` is stale history the backend never clears, so it's hidden past that point.
 export function PurchaseRequestRejectionNotice({
   purchaseRequest,
@@ -32,8 +32,8 @@ export function PurchaseRequestRejectionNotice({
       extra={
         purchaseRequest.status === PurchaseRequestStatus.REJECTED ? (
           <p className="text-xs text-muted-foreground">
-            Sửa hoặc xóa một dòng vật tư bên dưới để đưa đề xuất về trạng thái
-            Nháp và gửi duyệt lại.
+            Chỉnh sửa vật tư bên dưới rồi bấm "Gửi duyệt lại", hoặc xóa đề xuất
+            này.
           </p>
         ) : null
       }

@@ -29,8 +29,9 @@ export function buildPurchaseRequestItemColumns({
   status,
   canUpdate,
 }: BuildPurchaseRequestItemColumnsOptions) {
-  const isDraft = status === PRStatus.DRAFT
-  const editable = canUpdate && isDraft
+  const isEditableStatus =
+    status === PRStatus.DRAFT || status === PRStatus.REJECTED
+  const editable = canUpdate && isEditableStatus
   return purchaseRequestItemColumnHelper.columns([
     purchaseRequestItemColumnHelper.display({
       id: "index",
@@ -152,9 +153,11 @@ export function buildPurchaseRequestItemColumns({
     }),
     purchaseRequestItemColumnHelper.display({
       id: "actions",
-      header: isDraft ? "Thao tác" : "Mua hàng",
+      header: isEditableStatus ? "Thao tác" : "Mua hàng",
       meta: {
-        headerClassName: isDraft ? "w-24 text-center" : "w-32 text-center",
+        headerClassName: isEditableStatus
+          ? "w-24 text-center"
+          : "w-32 text-center",
         cellClassName: "text-center",
       },
       cell: ({ row, table }) => (
