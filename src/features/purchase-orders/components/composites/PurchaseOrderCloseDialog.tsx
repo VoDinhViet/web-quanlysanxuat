@@ -79,11 +79,12 @@ function PurchaseOrderCloseForm({
       isReduced: received > 0 && received < line.quantity,
     }
   })
-  const originalAmount = purchaseOrder.items.reduce(
-    (sum, line) => sum + line.quantity * (line.unitPrice ?? 0),
-    0
-  )
-  const closedAmount = previewRows.reduce((sum, row) => sum + row.amount, 0)
+  // Yêu cầu thanh toán tạo khi đóng sớm tính trên SL đã nhận: tiền hàng + VAT + chi phí khác.
+  const originalAmount = purchaseOrder.totalAmount
+  const closedSubtotal = previewRows.reduce((sum, row) => sum + row.amount, 0)
+  const closedAmount =
+    closedSubtotal * (1 + purchaseOrder.vatPercent / 100) +
+    purchaseOrder.otherCost
   const shortCount = previewRows.filter(
     (row) => row.isRemoved || row.isReduced
   ).length

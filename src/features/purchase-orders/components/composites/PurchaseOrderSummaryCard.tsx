@@ -1,5 +1,6 @@
 import { Calculator } from "lucide-react"
 
+import { currencyFormatter } from "@/lib/currency"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderSummaryCardProps = {
@@ -7,7 +8,6 @@ type PurchaseOrderSummaryCardProps = {
 }
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
-const amountFormatter = new Intl.NumberFormat("vi-VN")
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
@@ -75,15 +75,15 @@ export function PurchaseOrderSummaryCard({
         <div className="space-y-1.5 border-t border-border/50 pt-2">
           <SummaryRow
             label="Thành tiền (chưa thuế)"
-            value={amountFormatter.format(purchaseOrder.subtotal)}
+            value={currencyFormatter.format(purchaseOrder.subtotal)}
           />
           <SummaryRow
-            label={`Thuế VAT (${amountFormatter.format(purchaseOrder.vatPercent)}%)`}
-            value={amountFormatter.format(purchaseOrder.vatAmount)}
+            label={`Thuế VAT (${currencyFormatter.format(purchaseOrder.vatPercent)}%)`}
+            value={currencyFormatter.format(purchaseOrder.vatAmount)}
           />
           <SummaryRow
             label="Chi phí khác"
-            value={amountFormatter.format(purchaseOrder.otherCost)}
+            value={currencyFormatter.format(purchaseOrder.otherCost)}
           />
           {missingUnitPriceCount > 0 && (
             <p className="text-[11px] text-warning">
@@ -97,7 +97,7 @@ export function PurchaseOrderSummaryCard({
             Tổng tiền (VNĐ)
           </p>
           <p className="text-base font-semibold text-foreground tabular-nums">
-            {amountFormatter.format(purchaseOrder.totalAmount)}
+            {currencyFormatter.format(purchaseOrder.totalAmount)}
           </p>
         </div>
       </div>

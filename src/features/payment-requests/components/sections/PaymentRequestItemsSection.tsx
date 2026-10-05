@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { currencyFormatter } from "@/lib/currency"
 import { appTableFeatures } from "@/lib/table-features"
 import { cn } from "@/lib/utils"
 import type {
@@ -102,7 +103,7 @@ function FooterRow({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className="tabular-nums">{numberFmt.format(value)} VND</dd>
+      <dd className="tabular-nums">{currencyFormatter.format(value)} VND</dd>
     </div>
   )
 }
@@ -191,7 +192,7 @@ export function PaymentRequestItemsSection({
             value={paymentRequest.subtotal}
           />
           <FooterRow
-            label={`Thuế VAT (${numberFmt.format(paymentRequest.vatPercent)}%)`}
+            label={`Thuế VAT (${currencyFormatter.format(paymentRequest.vatPercent)}%)`}
             value={paymentRequest.vatAmount}
           />
           <FooterRow
@@ -207,7 +208,7 @@ export function PaymentRequestItemsSection({
               Tổng cộng
             </dt>
             <dd className="font-semibold text-foreground tabular-nums">
-              {numberFmt.format(paymentRequest.requestValue)} VND
+              {currencyFormatter.format(paymentRequest.requestValue)} VND
             </dd>
           </div>
         </dl>
