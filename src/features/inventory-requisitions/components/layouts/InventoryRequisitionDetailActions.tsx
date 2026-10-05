@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router"
 import {
+  ArrowRight,
   CircleCheck,
   CircleX,
   PackageSearch,
@@ -12,7 +13,6 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { ApproveRequisitionDialog } from "@/features/inventory-requisitions/components/composites/ApproveRequisitionDialog"
-import { CancelRequisitionDialog } from "@/features/inventory-requisitions/components/composites/CancelRequisitionDialog"
 import { DeleteRequisitionDialog } from "@/features/inventory-requisitions/components/composites/DeleteRequisitionDialog"
 import { RejectRequisitionDialog } from "@/features/inventory-requisitions/components/composites/RejectRequisitionDialog"
 import { SendRequisitionDialog } from "@/features/inventory-requisitions/components/composites/SendRequisitionDialog"
@@ -25,7 +25,7 @@ type InventoryRequisitionDetailActionsProps = {
 
 // Thao tác chuẩn theo luồng phê duyệt:
 // - DRAFT: Xoá phiếu (xác nhận) / Gửi duyệt
-// - REJECTED: Xoá phiếu / Hủy phiếu / Gửi duyệt lại (gửi thẳng, không bắt sửa dòng trước)
+// - REJECTED: Gửi duyệt lại (gửi thẳng, không bắt sửa dòng trước); không xoá, không huỷ
 // - PENDING_APPROVAL: Từ chối / Duyệt (người duyệt)
 // - APPROVED: Xem phiếu xuất kho (nếu đã có PXK tự sinh)
 // - In phiếu
@@ -43,40 +43,24 @@ export function InventoryRequisitionDetailActions({
     <div className="flex flex-wrap items-center gap-2 print:hidden">
       {(isDraft || isRejected) && (
         <>
-          <PermissionGate permission="inventory-requisitions:delete">
-            <DeleteRequisitionDialog
-              requisition={detail}
-              onDeleted={() => {
-                void navigate({
-                  to: "/manage/inventory-requisitions",
-                  search: { page: 1, limit: 10 },
-                })
-              }}
-              trigger={
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="border-destructive/40 text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="size-4" />
-                  Xoá phiếu
-                </Button>
-              }
-            />
-          </PermissionGate>
-
-          {isRejected && (
-            <PermissionGate permission="inventory-requisitions:update">
-              <CancelRequisitionDialog
-                detail={detail}
+          {isDraft && (
+            <PermissionGate permission="inventory-requisitions:delete">
+              <DeleteRequisitionDialog
+                requisition={detail}
+                onDeleted={() => {
+                  void navigate({
+                    to: "/manage/inventory-requisitions",
+                    search: { page: 1, limit: 10 },
+                  })
+                }}
                 trigger={
                   <Button
                     type="button"
                     variant="outline"
                     className="border-destructive/40 text-destructive hover:bg-destructive/10"
                   >
-                    <CircleX className="size-4" />
-                    Hủy phiếu
+                    <Trash2 className="size-4" />
+                    Xoá phiếu
                   </Button>
                 }
               />
@@ -130,9 +114,11 @@ export function InventoryRequisitionDetailActions({
           variant="outline"
           to="/manage/inventory-issues/$issueId"
           params={{ issueId: detail.inventoryIssue.id }}
+          className="group/link border-primary/30 text-primary hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
         >
           <PackageSearch className="size-4" />
-          Xem phiếu xuất kho
+          Phiếu xuất kho
+          <ArrowRight className="size-4 transition-transform group-hover/link:translate-x-0.5" />
         </LinkButton>
       )}
 
