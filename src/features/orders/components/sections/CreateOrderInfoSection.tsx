@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
-import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import { UserCombobox } from "@/components/shared/composites/UserCombobox"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Textarea } from "@/components/ui/textarea"
@@ -25,8 +25,6 @@ import { pickDefaultContactId } from "@/features/orders/constants/pick-default-c
 import { resolveExchangeRatePlaceholder } from "@/features/orders/constants/resolve-exchange-rate-placeholder"
 import { useClientContactOptions } from "@/features/orders/hooks/use-client-contact-options"
 import { createOrderFormDefaultValues } from "@/features/orders/schemas/create-order.schema"
-import { currentUserQueryOptions } from "@/features/auth/api"
-import { useGetUserOptions } from "@/features/users/api"
 import { withForm } from "@/hooks/use-app-form"
 import { Currency, currencyLabels } from "@/lib/types/order.type"
 import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
@@ -89,21 +87,6 @@ export const CreateOrderInfoSection = withForm({
   defaultValues: createOrderFormDefaultValues,
   props: { disabled: false },
   render: function Render({ form, disabled }) {
-    const user = useGetUserOptions()
-    // Người đăng nhập luôn có trong danh sách để nhãn của giá trị mặc định hiển thị đúng dù
-    // không nằm trong trang kết quả tìm kiếm.
-    const { data: profile } = useQuery(currentUserQueryOptions)
-    const userOptions =
-      profile?.userId && !user.options.some((o) => o.value === profile.userId)
-        ? [
-            {
-              value: profile.userId,
-              label: profile.fullName ?? profile.username,
-            },
-            ...user.options,
-          ]
-        : user.options
-
     // Auto-fills a starting rate on a non-VND currency pick (GET open.er-api.com via
     // get-exchange-rate.api.ts), but the field stays editable — this only seeds it.
     const currency = useField({ form, name: "currency" }).state.value
@@ -245,24 +228,21 @@ export const CreateOrderInfoSection = withForm({
 
               <form.Field name="assignedUserId">
                 {(field) => (
-                  <ComboboxField
-                    id={field.name}
-                    label="Nhân viên kinh doanh"
-                    placeholder="Chọn nhân viên kinh doanh"
-                    value={field.state.value || undefined}
-                    onValueChange={(next) => field.handleChange(next ?? "")}
-                    onBlur={field.handleBlur}
-                    isInvalid={
-                      field.state.meta.isTouched &&
-                      field.state.meta.errors.length > 0
-                    }
-                    errors={field.state.meta.errors}
-                    options={userOptions}
-                    onSearchChange={user.onSearchChange}
-                    isPending={user.isFetching}
-                    emptyMessage="Không tìm thấy nhân viên"
-                    disabled={disabled}
-                  />
+                  <Field>
+                    <FieldLabel
+                      htmlFor="user-combobox"
+                      className="text-xs font-medium text-foreground"
+                    >
+                      Nhân viên kinh doanh
+                    </FieldLabel>
+                    <UserCombobox
+                      selectedUserId={field.state.value || undefined}
+                      onSelectUser={(userId) =>
+                        field.handleChange(userId ?? "")
+                      }
+                      disabled={disabled}
+                    />
+                  </Field>
                 )}
               </form.Field>
 
