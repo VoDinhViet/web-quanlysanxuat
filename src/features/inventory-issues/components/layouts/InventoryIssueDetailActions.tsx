@@ -48,6 +48,8 @@ export function InventoryIssueDetailActions({
       queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
       queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
       queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
+      // Số "phiếu chờ xuất kho" ở menu Xuất kho giảm ngay khi phiếu được ghi sổ/huỷ.
+      queryClient.invalidateQueries({ queryKey: ["reports"] }),
     ])
 
   const postMutation = useMutation({

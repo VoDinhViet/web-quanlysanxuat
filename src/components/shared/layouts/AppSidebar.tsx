@@ -182,6 +182,8 @@ const menuGroups: MenuGroup[] = [
         label: "Xuất kho",
         icon: PackageMinus,
         href: "/manage/inventory-issues",
+        todoBadgeKey: "inventoryIssuesToPost",
+        todoBadgeLabel: "phiếu chờ xuất kho",
       },
       {
         label: "Tồn kho vật tư",
