@@ -13,16 +13,6 @@ export const approvePurchaseQuotationSchema = z.object({
       })
     )
     .min(1, "Cần chọn NCC thắng thầu cho ít nhất 1 vật tư"),
-  // Duyệt một phần: chỉ gửi dòng bị giảm SL (kèm lý do bắt buộc); bỏ trống = duyệt nguyên SL.
-  allocations: z
-    .array(
-      z.object({
-        allocationId: z.uuid(),
-        quantity: z.number().positive(),
-        reason: z.string().trim().min(1).max(400),
-      })
-    )
-    .optional(),
 })
 
 export type ApprovePurchaseQuotationSchema = z.infer<
