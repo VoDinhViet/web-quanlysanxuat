@@ -15,8 +15,9 @@ type PurchaseRequestNeededDateFieldProps = {
   status: PurchaseRequestStatus
 }
 
-// Đề xuất tự sinh từ Job có ngày cần = ngày tạo — cho sửa khi còn Nháp/Bị từ chối (cùng cửa với sửa
-// dòng vật tư). Lưu ngay khi chọn ngày (ô chọn ngày không có rủi ro mất focus như ô gõ).
+// Đề xuất tự sinh từ Job có ngày cần mặc định = ngày tạo — người dùng phải tự chọn lại ngày cần thật
+// (bắt buộc, không xoá trống được) khi còn Nháp/Bị từ chối (cùng cửa với sửa dòng vật tư). Lưu ngay
+// khi chọn ngày (ô chọn ngày không có rủi ro mất focus như ô gõ).
 export function PurchaseRequestNeededDateField({
   purchaseRequestId,
   neededDate,
@@ -70,7 +71,7 @@ export function PurchaseRequestNeededDateField({
   return (
     <div className="min-w-0 space-y-1">
       <label className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-        Ngày cần
+        Ngày cần <span className="text-destructive">*</span>
       </label>
       <DatePicker
         value={value}
