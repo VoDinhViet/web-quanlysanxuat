@@ -54,13 +54,19 @@ export const outboundOrdersColumns = col.columns([
     meta: { headerClassName: "min-w-36" },
   }),
 
-  col.accessor("buyerPoNos", {
+  // Số PO của khách — mảng (1 DO gộp nhiều đơn) nên cắt bằng `truncate`, danh sách đầy đủ nằm ở tooltip.
+  col.accessor((row) => row.buyerPoNos.join(", "), {
     id: "poOrReason",
     header: "PO / Lý do",
-    meta: { headerClassName: "min-w-32" },
+    meta: { headerClassName: "min-w-40" },
     cell: ({ getValue }) => {
       const buyerPoNos = getValue()
-      return buyerPoNos.length > 0 ? buyerPoNos.join(", ") : "—"
+
+      return (
+        <span className="block max-w-56 truncate text-xs" title={buyerPoNos}>
+          {buyerPoNos || "—"}
+        </span>
+      )
     },
   }),
 

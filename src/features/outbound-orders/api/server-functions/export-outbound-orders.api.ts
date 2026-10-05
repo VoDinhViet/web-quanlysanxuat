@@ -24,6 +24,9 @@ function resolveExportOutboundOrdersErrorMessage(error: unknown): string {
 const exportOutboundOrdersParamsSchema = outboundOrdersSearchSchema.pick({
   q: true,
   clientId: true,
+  poNo: true,
+  itemCode: true,
+  itemName: true,
   status: true,
   fulfillmentType: true,
   startDate: true,

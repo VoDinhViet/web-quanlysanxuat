@@ -1,284 +1,196 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
-import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
-import { useDebounceCallback } from "usehooks-ts"
-import { Download, Plus, Printer, RotateCw, Search } from "lucide-react"
-import { toast } from "sonner"
+import { RotateCw, Search } from "lucide-react"
 
-import { Button, LinkButton } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
 import { ClientCombobox } from "@/components/shared/composites/ClientCombobox"
-import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
-import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
-import { exportOutboundOrders } from "@/features/outbound-orders/api/server-functions/export-outbound-orders.api"
-import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
+import { DatePicker } from "@/components/shared/composites/DatePicker"
+import {
+  FilterField,
+  SelectFilterField,
+  TextFilterField,
+} from "@/features/outbound-orders/components/composites/OutboundOrdersFilterFields"
+import { OutboundOrdersTableActions } from "@/features/outbound-orders/components/composites/OutboundOrdersTableActions"
+import { outboundOrdersSearchSchema } from "@/features/outbound-orders/schemas/outbound-orders-search.schema"
+import type { OutboundOrdersSearchSchema } from "@/features/outbound-orders/schemas/outbound-orders-search.schema"
 import {
   fulfillmentTypeLabels,
   outboundOrderStatusLabels,
 } from "@/lib/types/outbound-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
-import type {
-  FulfillmentType,
-  OutboundOrderStatus,
-} from "@/lib/types/outbound-order.type"
 
-const statusFilterOptions = [
-  { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(outboundOrderStatusLabels),
-]
+const statusFilterOptions = buildOptionsFromLabels(outboundOrderStatusLabels)
+const fulfillmentTypeFilterOptions = buildOptionsFromLabels(
+  fulfillmentTypeLabels
+)
 
-const fulfillmentTypeFilterOptions = [
-  { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(fulfillmentTypeLabels),
-]
+// Giá trị các ô lọc trên form: ô chữ giữ chuỗi (rỗng = chưa nhập), ô chọn giữ `undefined` = "Tất cả".
+type OutboundOrdersFilters = {
+  q: string
+  clientId?: string
+  poNo: string
+  status?: string
+  fulfillmentType?: string
+  itemCode: string
+  itemName: string
+  startDate: string
+  endDate: string
+}
 
+const getFiltersFromSearch = (
+  search: Partial<OutboundOrdersSearchSchema>
+): OutboundOrdersFilters => ({
+  q: search.q ?? "",
+  clientId: search.clientId,
+  poNo: search.poNo ?? "",
+  status: search.status,
+  fulfillmentType: search.fulfillmentType,
+  itemCode: search.itemCode ?? "",
+  itemName: search.itemName ?? "",
+  startDate: search.startDate ?? "",
+  endDate: search.endDate ?? "",
+})
+
+const emptyFilters = getFiltersFromSearch({})
+
+// Sửa các ô xong bấm "Tìm kiếm" (hoặc Enter) mới đẩy lên URL và tải lại danh sách.
 export function OutboundOrdersTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/outbound-orders/" })
   const navigate = useNavigate({ from: "/manage/outbound-orders/" })
 
-  const [q, setQ] = useState(search.q ?? "")
+  const [filters, setFilters] = useState(() => getFiltersFromSearch(search))
 
-  const exportOutboundOrdersFn = useServerFn(exportOutboundOrders)
-  const { mutateAsync: exportExcel, isPending: isExporting } = useMutation({
-    mutationFn: () => exportOutboundOrdersFn({ data: search }),
-  })
+  const patchFilters = (patch: Partial<OutboundOrdersFilters>) =>
+    setFilters((prev) => ({ ...prev, ...patch }))
 
-  const handleExport = () => {
-    toast.promise(
-      exportExcel().then(({ base64, filename }) => {
-        downloadBase64File(base64, filename, XLSX_MIME_TYPE)
-      }),
-      {
-        loading: "Đang xuất file Excel lệnh xuất kho...",
-        success: "Đã xuất file Excel lệnh xuất kho",
-        error: (error) => error.message || "Xuất file thất bại",
-      }
-    )
-  }
-
-  const handleSearchDebounced = useDebounceCallback(() => {
+  // Đi qua chính schema search của route: chuỗi rỗng/giá trị lạ tự thành `undefined` (`.catch`), nên
+  // không cần ép kiểu enum hay tự trim từng ô.
+  const applyFilters = (values: OutboundOrdersFilters) => {
+    const parsed = outboundOrdersSearchSchema.parse(values)
     void navigate({
       search: (prev) => ({
         ...prev,
-        q: q.trim().length > 0 ? q.trim() : undefined,
-        page: 1,
-      }),
-      replace: true,
-    })
-  }, 300)
-
-  const handleClientChange = (value: string | undefined) => {
-    void navigate({
-      search: (prev) => ({ ...prev, clientId: value, page: 1 }),
-    })
-  }
-
-  const handleStatusChange = (value: string) => {
-    const status = value === "all" ? undefined : (value as OutboundOrderStatus)
-    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
-  }
-
-  const handleFulfillmentTypeChange = (value: string) => {
-    const fulfillmentType =
-      value === "all" ? undefined : (value as FulfillmentType)
-    void navigate({
-      search: (prev) => ({ ...prev, fulfillmentType, page: 1 }),
-    })
-  }
-
-  const handleDateRangeChange = (
-    startDate: string | undefined,
-    endDate: string | undefined
-  ) => {
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        startDate,
-        endDate,
+        q: parsed.q,
+        clientId: parsed.clientId,
+        poNo: parsed.poNo,
+        status: parsed.status,
+        fulfillmentType: parsed.fulfillmentType,
+        itemCode: parsed.itemCode,
+        itemName: parsed.itemName,
+        startDate: parsed.startDate,
+        endDate: parsed.endDate,
         page: 1,
       }),
     })
   }
 
   const resetFilters = () => {
-    handleSearchDebounced.cancel()
-    setQ("")
-    void navigate({
-      search: (prev) => {
-        const {
-          q: _q,
-          clientId: _clientId,
-          status: _status,
-          fulfillmentType: _fulfillmentType,
-          startDate: _startDate,
-          endDate: _endDate,
-          ...rest
-        } = prev
-        return { ...rest, page: 1 }
-      },
-    })
+    setFilters(emptyFilters)
+    applyFilters(emptyFilters)
   }
 
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(11rem,1fr)_minmax(14rem,1.3fr)_minmax(9rem,0.9fr)_minmax(9rem,0.9fr)_minmax(13rem,1.2fr)]">
-          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <Label
-              htmlFor="do-q"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Tìm kiếm
-            </Label>
-            <div className="relative">
-              <Input
-                id="do-q"
-                className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Mã DO..."
-                value={q}
-                onChange={(e) => {
-                  setQ(e.target.value)
-                  handleSearchDebounced()
-                }}
-              />
-              <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            </div>
-          </div>
+      <OutboundOrdersTableActions search={search} />
 
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="client-combobox"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Khách hàng
-            </Label>
+      <form
+        noValidate
+        className="flex flex-col gap-4"
+        onSubmit={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          applyFilters(filters)
+        }}
+      >
+        <div className="grid grid-cols-1 items-end gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-5">
+          <TextFilterField
+            id="do-q"
+            label="Mã DO"
+            placeholder="Nhập mã DO"
+            value={filters.q}
+            onValueChange={(q) => patchFilters({ q })}
+          />
+
+          <FilterField label="Khách hàng" htmlFor="client-combobox">
             <ClientCombobox
-              selectedClientId={search.clientId}
-              onSelectClient={handleClientChange}
+              selectedClientId={filters.clientId}
+              onSelectClient={(clientId) => patchFilters({ clientId })}
             />
-          </div>
+          </FilterField>
 
-          <div className="flex flex-col gap-1.5">
-            <Label
-              htmlFor="do-status"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Trạng thái
-            </Label>
-            <Select
-              items={statusFilterOptions}
-              value={search.status ?? "all"}
-              onValueChange={(value) =>
-                value !== null && handleStatusChange(value)
-              }
-            >
-              <SelectTrigger id="do-status" className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {statusFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <TextFilterField
+            id="do-po-no"
+            label="PO / Lý do"
+            placeholder="Nhập số PO"
+            value={filters.poNo}
+            onValueChange={(poNo) => patchFilters({ poNo })}
+          />
 
-          <div className="flex flex-col gap-1.5">
-            <Label
-              htmlFor="do-fulfillment-type"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Hình thức giao
-            </Label>
-            <Select
-              items={fulfillmentTypeFilterOptions}
-              value={search.fulfillmentType ?? "all"}
-              onValueChange={(value) =>
-                value !== null && handleFulfillmentTypeChange(value)
-              }
-            >
-              <SelectTrigger
-                id="do-fulfillment-type"
-                className="w-full text-xs"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {fulfillmentTypeFilterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <SelectFilterField
+            id="do-status"
+            label="Trạng thái"
+            options={statusFilterOptions}
+            value={filters.status}
+            onValueChange={(status) => patchFilters({ status })}
+          />
 
-          <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
-            <Label
-              htmlFor="do-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
-            >
-              Ngày giao
-            </Label>
-            <DateRangePicker
-              id="do-date-range"
-              from={search.startDate}
-              to={search.endDate}
-              onChange={handleDateRangeChange}
+          <SelectFilterField
+            id="do-fulfillment-type"
+            label="Hình thức giao"
+            options={fulfillmentTypeFilterOptions}
+            value={filters.fulfillmentType}
+            onValueChange={(fulfillmentType) =>
+              patchFilters({ fulfillmentType })
+            }
+          />
+
+          <TextFilterField
+            id="do-item-code"
+            label="Mã sản phẩm"
+            placeholder="Nhập mã sản phẩm"
+            value={filters.itemCode}
+            onValueChange={(itemCode) => patchFilters({ itemCode })}
+          />
+
+          <TextFilterField
+            id="do-item-name"
+            label="Tên sản phẩm"
+            placeholder="Nhập tên sản phẩm"
+            value={filters.itemName}
+            onValueChange={(itemName) => patchFilters({ itemName })}
+          />
+
+          <FilterField label="Từ ngày">
+            <DatePicker
+              value={filters.startDate}
+              onChange={(startDate) => patchFilters({ startDate })}
             />
+          </FilterField>
+
+          <FilterField label="Đến ngày">
+            <DatePicker
+              value={filters.endDate}
+              onChange={(endDate) => patchFilters({ endDate })}
+            />
+          </FilterField>
+
+          <div className="flex items-center gap-2 sm:col-span-2 xl:col-span-1">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 text-xs"
+              onClick={resetFilters}
+            >
+              <RotateCw className="size-4" />
+              Xóa bộ lọc
+            </Button>
+            <Button type="submit" className="flex-1 text-xs">
+              <Search className="size-4" />
+              Tìm kiếm
+            </Button>
           </div>
         </div>
-
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <Button
-            type="button"
-            variant="outline"
-            className="text-xs"
-            disabled={isExporting}
-            onClick={handleExport}
-          >
-            <Download className="size-4" />
-            {isExporting ? "Đang xuất..." : "Xuất Excel"}
-          </Button>
-
-          <PendingAction
-            label="In danh sách"
-            hint="Tính năng in danh sách sắp có"
-          >
-            <Printer className="size-4 text-muted-foreground" />
-            In danh sách
-          </PendingAction>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="text-xs"
-            onClick={resetFilters}
-          >
-            <RotateCw className="size-4" />
-            Xóa bộ lọc
-          </Button>
-
-          <RoutePermissionGate route="/manage/outbound-orders/create">
-            <LinkButton to="/manage/outbound-orders/create" className="text-xs">
-              <Plus className="size-4" />
-              Tạo DO mới
-            </LinkButton>
-          </RoutePermissionGate>
-        </div>
-      </div>
+      </form>
     </div>
   )
 }

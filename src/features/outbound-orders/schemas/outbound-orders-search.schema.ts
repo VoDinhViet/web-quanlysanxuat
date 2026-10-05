@@ -18,6 +18,9 @@ export const outboundOrdersSearchSchema = z.object({
   limit: z.union([z.literal(10), z.literal(20), z.literal(50)]).catch(20),
   q: z.string().trim().min(1).optional().catch(undefined), // Mã DO
   clientId: z.string().trim().min(1).optional().catch(undefined),
+  poNo: z.string().trim().min(1).optional().catch(undefined), // PO của khách hoặc mã SO
+  itemCode: z.string().trim().min(1).optional().catch(undefined),
+  itemName: z.string().trim().min(1).optional().catch(undefined),
   itemId: z.uuid().optional().catch(undefined),
   status: z.enum(OutboundOrderStatus).optional().catch(undefined),
   fulfillmentType: z.enum(FulfillmentType).optional().catch(undefined),
