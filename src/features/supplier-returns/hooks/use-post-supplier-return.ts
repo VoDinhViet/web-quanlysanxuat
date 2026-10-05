@@ -35,6 +35,8 @@ export function usePostSupplierReturn({
         queryClient.invalidateQueries({ queryKey: ["outsourcing-orders"] }),
         queryClient.invalidateQueries({ queryKey: ["outsourcing-receipts"] }),
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+        // Số "phiếu chờ xuất trả NCC" ở menu Trả NCC giảm ngay khi phiếu được ghi sổ.
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
       onSuccess()
     },

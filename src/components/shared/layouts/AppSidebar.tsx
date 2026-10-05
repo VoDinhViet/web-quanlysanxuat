@@ -163,6 +163,8 @@ const menuGroups: MenuGroup[] = [
         label: "Trả NCC",
         icon: Undo2,
         href: "/manage/supplier-returns",
+        todoBadgeKey: "supplierReturnsToPost",
+        todoBadgeLabel: "phiếu chờ xuất trả NCC",
       },
     ],
   },
