@@ -26,6 +26,8 @@ export type Direct = {
   unit: Unit
   client: ClientRef | null
   image: FileResource | null
+  /** Tồn thực tế (gộp mọi kho) — chỉ có khi gọi danh sách với `withOnHand`. */
+  onHand?: number
   note: string | null
   supplier: SupplierRef | null
   /** Định mức tồn tối thiểu — quyết định badge Bình thường/Cảnh báo ở màn Tồn kho vật tư. */

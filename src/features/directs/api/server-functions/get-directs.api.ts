@@ -32,6 +32,7 @@ const getDirectsSchema = z.object({
   q: optional(z.string().trim()),
   clientId: z.string().trim().min(1).optional(),
   status: z.enum(ItemStatus).optional(),
+  withOnHand: z.boolean().optional(),
   order: z.enum(["ASC", "DESC"]).optional(),
 })
 

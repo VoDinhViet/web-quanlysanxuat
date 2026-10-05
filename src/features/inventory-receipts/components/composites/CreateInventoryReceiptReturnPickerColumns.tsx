@@ -2,7 +2,10 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import type { Direct } from "@/lib/types/direct.type"
+
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 const inventoryReceiptReturnPickerColumnHelper = createColumnHelper<
   typeof appTableFeatures,
@@ -49,6 +52,14 @@ export function buildCreateInventoryReceiptReturnPickerColumns({
       ),
     }),
     inventoryReceiptReturnPickerColumnHelper.display({
+      id: "image",
+      header: "Ảnh",
+      meta: { headerClassName: "w-16 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell image={row.original.image} name={row.original.name} />
+      ),
+    }),
+    inventoryReceiptReturnPickerColumnHelper.display({
       id: "direct",
       header: "Vật tư",
       meta: { headerClassName: "min-w-56" },
@@ -68,6 +79,14 @@ export function buildCreateInventoryReceiptReturnPickerColumns({
       header: "ĐVT",
       meta: { headerClassName: "min-w-16" },
       cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
+    }),
+    inventoryReceiptReturnPickerColumnHelper.accessor("onHand", {
+      header: "Tồn thực tế",
+      meta: {
+        headerClassName: "min-w-24 text-right",
+        cellClassName: "text-right text-xs font-medium tabular-nums",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue() ?? 0),
     }),
   ])
 }

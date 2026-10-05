@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
@@ -60,6 +61,9 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
                 <TableHead id="index" className="w-14 text-center">
                   STT
                 </TableHead>
+                <TableHead id="image" className="w-16 text-center">
+                  Ảnh
+                </TableHead>
                 <TableHead id="code" className="min-w-32">
                   Mã vật tư
                 </TableHead>
@@ -68,6 +72,9 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
                 </TableHead>
                 <TableHead id="unit" className="w-20">
                   ĐVT
+                </TableHead>
+                <TableHead id="onHand" className="w-28 text-right">
+                  Tồn thực tế
                 </TableHead>
                 <TableHead id="quantity" className="w-28 text-right">
                   SL đặt
@@ -83,9 +90,9 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
             <TableBody>
               {lines.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7}>
+                  <TableCell colSpan={9}>
                     <TableEmpty
-                      colSpan={7}
+                      colSpan={9}
                       title={
                         isFetching
                           ? "Đang tải dòng đơn mua hàng..."
@@ -107,6 +114,12 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
                       <TableCell className="text-center text-muted-foreground">
                         {index + 1}
                       </TableCell>
+                      <TableCell>
+                        <ItemImageCell
+                          image={line.purchaseRequestItem.item.image}
+                          name={line.purchaseRequestItem.item.name}
+                        />
+                      </TableCell>
                       <TableCell className="font-mono font-semibold text-foreground">
                         {line.purchaseRequestItem.item.code}
                       </TableCell>
@@ -115,6 +128,9 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {line.purchaseRequestItem.item.unit.name}
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground tabular-nums">
+                        {quantityFormatter.format(line.onHand)}
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
                         {quantityFormatter.format(line.quantity)}

@@ -224,6 +224,8 @@ export function CreateInventoryReceiptFromPoForm() {
           itemId: line.purchaseRequestItem.item.id,
           itemLabel: `${line.purchaseRequestItem.item.code} — ${line.purchaseRequestItem.item.name}`,
           itemUnit: line.purchaseRequestItem.item.unit.name,
+          itemImage: line.purchaseRequestItem.item.image ?? null,
+          itemOnHand: line.onHand,
           requestedQuantity: line.quantity,
           remainingQuantity: remaining,
           quantity: remaining,

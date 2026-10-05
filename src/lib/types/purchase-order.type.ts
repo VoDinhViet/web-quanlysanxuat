@@ -137,6 +137,8 @@ export type PurchaseOrderItemDetail = {
   id: string
   quantity: number
   receivedQuantity: number
+  /** Tồn thực tế hiện tại của vật tư (gộp mọi kho). */
+  onHand: number
   quantityAdjustmentReason: string | null
   unitPrice: number | null
   note: string | null

@@ -11,6 +11,8 @@ import type { DirectsSearchSchema } from "@/features/directs/schemas/directs-sea
 // DirectsPickerTable.tsx — needs a shorter fixed page (6) than the route ever offers.
 type DirectsQuery = Omit<DirectsSearchSchema, "limit"> & {
   limit: number
+  // Kèm `onHand` (tồn thực tế) trên từng vật tư — chỉ các bộ chọn cần hiện tồn mới bật.
+  withOnHand?: boolean
 }
 
 export const directsQueryOptions = (search: DirectsQuery) =>

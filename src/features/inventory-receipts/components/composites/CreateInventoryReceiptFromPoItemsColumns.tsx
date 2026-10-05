@@ -9,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { InventoryReceiptFromPoItemValue } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
@@ -55,6 +56,17 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
         <span className="text-muted-foreground">{row.index + 1}</span>
       ),
     }),
+    inventoryReceiptFromPoItemColumnHelper.display({
+      id: "image",
+      header: "Ảnh",
+      meta: { headerClassName: "w-16 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.itemImage}
+          name={row.original.itemLabel}
+        />
+      ),
+    }),
     inventoryReceiptFromPoItemColumnHelper.accessor("itemLabel", {
       header: "Vật tư",
       meta: { cellClassName: "font-medium text-foreground" },
@@ -65,6 +77,14 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
         headerClassName: "w-16",
         cellClassName: "text-muted-foreground",
       },
+    }),
+    inventoryReceiptFromPoItemColumnHelper.accessor("itemOnHand", {
+      header: "Tồn thực tế",
+      meta: {
+        headerClassName: "w-28 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),
     inventoryReceiptFromPoItemColumnHelper.accessor("requestedQuantity", {
       header: "SL đặt",

@@ -62,6 +62,7 @@ export const CreateInventoryReceiptReturnPickerSection = withForm({
         q: debouncedQ.trim() || undefined,
         clientId: clientId || undefined,
         status: ItemStatus.ACTIVE,
+        withOnHand: true,
       }),
       placeholderData: keepPreviousData,
       enabled: Boolean(clientId),

@@ -58,6 +58,7 @@ export const CreateInventoryReceiptOtherPickerSection = withForm({
         limit: pageSize,
         q: debouncedQ.trim() || undefined,
         status: ItemStatus.ACTIVE,
+        withOnHand: true,
       }),
       placeholderData: keepPreviousData,
     })
