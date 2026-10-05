@@ -10,6 +10,7 @@ import { PurchaseOrderExpectedDateField } from "@/features/purchase-orders/compo
 import { PurchaseOrderNoteField } from "@/features/purchase-orders/components/composites/PurchaseOrderNoteField"
 import { PurchaseOrderPaymentTermField } from "@/features/purchase-orders/components/composites/PurchaseOrderPaymentTermField"
 import { PurchaseOrderProgressBadge } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
+import { cn } from "@/lib/utils"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderDetailHeaderProps = {
@@ -20,8 +21,8 @@ type PurchaseOrderDetailHeaderProps = {
 // Identity + info row, same shell as PurchaseQuotationDetailHeader.tsx / (purchase-requests' own
 // copy) — 5th duplicate of this MetaField tile idiom, per the repo's own "no abstraction until
 // 3rd use" convention already applied consistently at the other 4 sites. Top row: back/code/status
-// left, actions right. Below, a 4-column grid: hàng 1 chỉ đọc (NCC/RFQ/PR nguồn/ngày đặt), hàng 2
-// các trường chỉnh được (phụ trách/điều khoản TT/ngày giao), ghi chú chiếm trọn hàng cuối.
+// left, actions right. Below, a 12-column grid (từ lg): hàng 1 chỉ đọc (NCC 4/RFQ 3/PR 3/ngày đặt 2),
+// hàng 2 ba trường chỉnh được (mỗi ô 4 cột), ghi chú chiếm trọn hàng cuối.
 export function PurchaseOrderDetailHeader({
   purchaseOrder,
   editable,
@@ -59,9 +60,14 @@ export function PurchaseOrderDetailHeader({
         <PurchaseOrderDetailActions purchaseOrder={purchaseOrder} />
       </div>
 
-      <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MetaField label="NCC" value={purchaseOrder.supplier.name} />
+      <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-12">
         <MetaField
+          className="sm:col-span-2 lg:col-span-4"
+          label="NCC"
+          value={purchaseOrder.supplier.name}
+        />
+        <MetaField
+          className="lg:col-span-3"
           label="RFQ nguồn"
           value={
             purchaseOrder.quotation ? (
@@ -78,10 +84,11 @@ export function PurchaseOrderDetailHeader({
           }
         />
         <MetaField
+          className="lg:col-span-3"
           label="PR nguồn"
           value={
             purchaseRequests.length > 0 ? (
-              <span className="flex flex-col gap-0.5">
+              <span className="flex flex-wrap gap-x-3 gap-y-0.5">
                 {purchaseRequests.map((purchaseRequest) => (
                   <Link
                     key={purchaseRequest.id}
@@ -99,29 +106,36 @@ export function PurchaseOrderDetailHeader({
           }
         />
         <MetaField
+          className="lg:col-span-2"
           label="Ngày đặt"
           value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
             "dd/MM/yyyy"
           )}
         />
 
-        <PurchaseOrderAssignee
-          purchaseOrderId={purchaseOrder.id}
-          assignedUser={purchaseOrder.assignedUser}
-          editable={editable}
-        />
-        <PurchaseOrderPaymentTermField
-          purchaseOrderId={purchaseOrder.id}
-          paymentTerm={purchaseOrder.paymentTerm}
-          editable={editable}
-        />
-        <PurchaseOrderExpectedDateField
-          purchaseOrderId={purchaseOrder.id}
-          expectedDate={purchaseOrder.expectedDate}
-          editable={editable}
-        />
+        <div className="min-w-0 lg:col-span-4">
+          <PurchaseOrderAssignee
+            purchaseOrderId={purchaseOrder.id}
+            assignedUser={purchaseOrder.assignedUser}
+            editable={editable}
+          />
+        </div>
+        <div className="min-w-0 lg:col-span-4">
+          <PurchaseOrderPaymentTermField
+            purchaseOrderId={purchaseOrder.id}
+            paymentTerm={purchaseOrder.paymentTerm}
+            editable={editable}
+          />
+        </div>
+        <div className="min-w-0 sm:col-span-2 lg:col-span-4">
+          <PurchaseOrderExpectedDateField
+            purchaseOrderId={purchaseOrder.id}
+            expectedDate={purchaseOrder.expectedDate}
+            editable={editable}
+          />
+        </div>
 
-        <div className="sm:col-span-2 lg:col-span-4">
+        <div className="sm:col-span-2 lg:col-span-12">
           <PurchaseOrderNoteField
             purchaseOrderId={purchaseOrder.id}
             note={purchaseOrder.note}
@@ -136,15 +150,18 @@ export function PurchaseOrderDetailHeader({
 type MetaFieldProps = {
   label: string
   value: ReactNode
+  className?: string
 }
 
-function MetaField({ label, value }: MetaFieldProps) {
+function MetaField({ label, value, className }: MetaFieldProps) {
   return (
-    <div className="min-w-0 space-y-1">
+    <div className={cn("min-w-0 space-y-1", className)}>
       <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
         {label}
       </p>
-      <p className="truncate text-sm font-medium text-foreground">{value}</p>
+      <div className="text-sm font-medium break-words text-foreground">
+        {value}
+      </div>
     </div>
   )
 }

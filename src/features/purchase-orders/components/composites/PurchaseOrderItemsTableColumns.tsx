@@ -1,9 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
-import { Gallery } from "@solar-icons/react"
 
+import { PurchaseOrderItemProductCell } from "@/features/purchase-orders/components/primitives/PurchaseOrderItemProductCell"
 import type { appTableFeatures } from "@/lib/table-features"
-import { resolveFileUrl } from "@/lib/file-url"
 import { cn } from "@/lib/utils"
 import type { PurchaseOrderItemDetail } from "@/lib/types/purchase-order.type"
 
@@ -27,74 +25,11 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
       },
     }),
     purchaseOrderItemColumnHelper.display({
-      id: "image",
-      header: "Hình ảnh",
-      meta: {
-        headerClassName: "w-16 text-center",
-        cellClassName: "text-center py-2",
-      },
-      cell: ({ row }) => {
-        const item = row.original.purchaseRequestItem.item
-        const image = item.image
-        if (!image) {
-          return (
-            <div className="mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
-              <Gallery className="size-4 text-muted-foreground/50" />
-            </div>
-          )
-        }
-
-        const imageUrl = resolveFileUrl(image.url)
-
-        return (
-          <div className="group mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40 transition hover:border-primary/50">
-            <ZoomableImage
-              src={imageUrl}
-              alt={item.name}
-              className="transition group-hover:scale-105"
-            />
-          </div>
-        )
-      },
+      id: "product",
+      header: "Vật tư",
+      meta: { headerClassName: "min-w-64" },
+      cell: ({ row }) => <PurchaseOrderItemProductCell item={row.original} />,
     }),
-    // Vật tư trùng do gộp nhiều dòng ĐXMH ở RFQ vẫn tách lại thành nhiều dòng PO (1 dòng PO ↔ 1
-    // dòng ĐXMH — bất biến bắt buộc cho sổ cái mua hàng/nhập kho), nên 2 dòng cùng vật tư chỉ khác
-    // nhau ở Mã PR — cột này giúp phân biệt thay vì trông như bị trùng/lỗi.
-    purchaseOrderItemColumnHelper.accessor(
-      (row) => row.purchaseRequestItem.purchaseRequest.code,
-      {
-        id: "prCode",
-        header: "Mã PR",
-        meta: { headerClassName: "min-w-28" },
-        cell: ({ getValue }) => (
-          <span className="font-mono text-muted-foreground">{getValue()}</span>
-        ),
-      }
-    ),
-    purchaseOrderItemColumnHelper.accessor(
-      (row) => row.purchaseRequestItem.item.code,
-      {
-        id: "code",
-        header: "Mã vật tư",
-        meta: { headerClassName: "min-w-32" },
-        cell: ({ getValue }) => (
-          <span className="font-mono font-semibold text-foreground">
-            {getValue()}
-          </span>
-        ),
-      }
-    ),
-    purchaseOrderItemColumnHelper.accessor(
-      (row) => row.purchaseRequestItem.item.name,
-      {
-        id: "name",
-        header: "Tên vật tư",
-        meta: { headerClassName: "min-w-44" },
-        cell: ({ getValue }) => (
-          <span className="font-medium text-foreground">{getValue()}</span>
-        ),
-      }
-    ),
     purchaseOrderItemColumnHelper.accessor(
       (row) => row.purchaseRequestItem.item.unit.name,
       {
@@ -178,47 +113,28 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
         )
       },
     }),
-    purchaseOrderItemColumnHelper.accessor("quantityAdjustmentReason", {
-      id: "quantityAdjustmentReason",
-      header: "Lý do điều chỉnh SL",
-      meta: {
-        headerClassName: "min-w-44 max-w-64",
-        cellClassName: "max-w-64 py-2.5",
-      },
-      cell: ({ getValue }) => {
-        const reason = getValue()
-        if (!reason) {
-          return <span className="text-xs text-muted-foreground">—</span>
-        }
-        return (
-          <p
-            className="text-xs leading-relaxed break-words whitespace-normal text-muted-foreground"
-            title={reason}
-          >
-            {reason}
-          </p>
-        )
-      },
-    }),
-    purchaseOrderItemColumnHelper.accessor((row) => row.purchaseRequestItem.note, {
-      id: "note",
+    purchaseOrderItemColumnHelper.display({
+      id: "notes",
       header: "Ghi chú",
       meta: {
-        headerClassName: "min-w-44 max-w-64",
-        cellClassName: "max-w-64 py-2.5",
+        headerClassName: "min-w-56 max-w-72",
+        cellClassName: "max-w-72 py-2.5",
       },
-      cell: ({ getValue }) => {
-        const note = getValue()
-        if (!note) {
+      cell: ({ row }) => {
+        const note = row.original.purchaseRequestItem.note
+        const reason = row.original.quantityAdjustmentReason
+        if (!note && !reason) {
           return <span className="text-xs text-muted-foreground">—</span>
         }
         return (
-          <p
-            className="text-xs leading-relaxed break-words whitespace-normal text-muted-foreground"
-            title={note}
-          >
-            {note}
-          </p>
+          <div className="flex flex-col gap-1 text-xs leading-relaxed break-words whitespace-normal">
+            {note && <p className="text-muted-foreground">{note}</p>}
+            {reason && (
+              <p className="text-amber-600 dark:text-amber-400">
+                Điều chỉnh SL: {reason}
+              </p>
+            )}
+          </div>
         )
       },
     }),

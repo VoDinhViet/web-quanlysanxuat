@@ -48,29 +48,32 @@ export function PurchaseOrderDetailPage() {
         <PurchaseOrderCancellationNotice purchaseOrder={purchaseOrder} />
         <PurchaseOrderClosureNotice purchaseOrder={purchaseOrder} />
 
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        {/* minmax(0,1fr) keeps the header grid from blowing the row out horizontally. */}
+        <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
           <Surface>
             <PurchaseOrderDetailHeader
               purchaseOrder={purchaseOrder}
               editable={editable}
             />
-            <PurchaseOrderItemsSection
-              purchaseOrder={purchaseOrder}
-              editable={editable}
-            />
-            <PurchaseOrderCostsSection
-              key={purchaseOrder.updatedAt}
-              purchaseOrder={purchaseOrder}
-              editable={editable}
-            />
           </Surface>
+          <PurchaseOrderSummaryCard purchaseOrder={purchaseOrder} />
+        </div>
 
-          <div className="flex flex-col gap-4">
-            <PurchaseOrderDetailTimelineCard purchaseOrder={purchaseOrder} />
-            <PurchaseOrderSummaryCard purchaseOrder={purchaseOrder} />
-            <PurchaseOrderRelatedNotesCard purchaseOrderId={purchaseOrder.id} />
-            <PurchaseOrderStatusLegend />
-          </div>
+        <PurchaseOrderItemsSection
+          purchaseOrder={purchaseOrder}
+          editable={editable}
+        >
+          <PurchaseOrderCostsSection
+            key={purchaseOrder.updatedAt}
+            purchaseOrder={purchaseOrder}
+            editable={editable}
+          />
+        </PurchaseOrderItemsSection>
+
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <PurchaseOrderDetailTimelineCard purchaseOrder={purchaseOrder} />
+          <PurchaseOrderRelatedNotesCard purchaseOrderId={purchaseOrder.id} />
+          <PurchaseOrderStatusLegend />
         </div>
       </div>
     </main>
