@@ -1,0 +1,175 @@
+name: Deploy
+
+# Push to main -> typecheck (+ eslint as a warning) in parallel with building the image and pushing it to
+# GHCR -> deploy to the VPS. Deploy only runs when both jobs succeed. The Docker build runs `vite build`, so
+# a broken build also blocks the deploy. pull_request_target is deliberately not used: the repo is public
+# and the secrets must never reach a fork.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '.claude/**'
+      - '**/*.md'
+  workflow_dispatch:
+
+# Deploys queue up: they never overlap and are never cancelled half way.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      # package.json has no `packageManager` field, so pin pnpm here (same version as the Dockerfile).
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.4.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Typecheck blocks the deploy. ESLint still has known errors in the codebase, so it only reports
+      # a warning for now; remove the `|| echo` once the backlog is cleared to make it blocking.
+      - name: Typecheck (blocking) and eslint (warning only), in parallel
+        run: |
+          pnpm typecheck &
+          typecheck_pid=$!
+          (pnpm lint || echo "::warning::ESLint reported errors (not blocking the deploy yet)") &
+          lint_pid=$!
+          status=0
+          wait "$typecheck_pid" || status=1
+          wait "$lint_pid" || true
+          exit "$status"
+
+  # Runs in parallel with verify. A pushed image is not a deployed image: the deploy job needs both jobs.
+  build:
+    name: Build and push image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.name.outputs.image }}
+      version: ${{ steps.name.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+      # VITE_API_URL is inlined into the browser bundle at build time, so it has to exist before the build.
+      - name: Require VITE_API_URL
+        run: test -n "$VITE_API_URL" || { echo "::error::Set the repository variable VITE_API_URL (public API base URL)"; exit 1; }
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+      # GHCR needs a lowercase repository name. The version is v<run number>: it only goes up, so the
+      # biggest number is the newest. The commit is in the sha-<7 chars> tag and the revision label.
+      - id: name
+        run: |
+          {
+            echo "image=ghcr.io/${GITHUB_REPOSITORY,,}"
+            echo "version=v${GITHUB_RUN_NUMBER}"
+            echo "short_sha=${GITHUB_SHA::7}"
+          } >> "$GITHUB_OUTPUT"
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          build-args: |
+            VITE_API_URL=${{ vars.VITE_API_URL }}
+          tags: |
+            ${{ steps.name.outputs.image }}:${{ steps.name.outputs.version }}
+            ${{ steps.name.outputs.image }}:sha-${{ steps.name.outputs.short_sha }}
+            ${{ steps.name.outputs.image }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.version=${{ steps.name.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,scope=web,mode=max
+          provenance: false
+          sbom: false
+
+  deploy:
+    name: Deploy to the VPS
+    needs: [verify, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    permissions:
+      contents: read
+      packages: read
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+      IMAGE: ${{ needs.build.outputs.image }}:${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # One `vps` alias shares a single SSH connection (ControlMaster) between scp and ssh.
+      - name: Prepare SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host vps
+            HostName ${VPS_HOST}
+            User root
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile ~/.ssh/known_hosts
+            ControlMaster auto
+            ControlPath ~/.ssh/cm-%C
+            ControlPersist 120
+          EOF
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+
+      - name: Copy compose and script to the VPS
+        run: |
+          ssh vps 'mkdir -p /opt/qlsx-web'
+          scp deploy/docker-compose.yml deploy/remote-deploy.sh vps:/opt/qlsx-web/
+
+      # The GHCR token goes through stdin, never on the command line. The script rolls back by itself
+      # when the new version does not become healthy.
+      - name: Deploy
+        run: |
+          printf '%s' "$GITHUB_TOKEN" | ssh vps \
+            "GHCR_USER='${GITHUB_ACTOR}' bash /opt/qlsx-web/remote-deploy.sh '${IMAGE}'"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check the app on the VPS
+        run: ssh vps 'curl -fsS --retry 5 --retry-delay 2 --retry-connrefused -o /dev/null http://127.0.0.1:3000/login && echo "app answers on 127.0.0.1:3000"'
+
+      # Only when the public domain is configured (repository variable WEB_DOMAIN, e.g. app.example.com).
+      - name: Check the public HTTPS address
+        if: ${{ vars.WEB_DOMAIN != '' }}
+        run: curl -fsS --retry 5 --retry-delay 3 --retry-connrefused -o /dev/null "https://${WEB_DOMAIN}/login"
+        env:
+          WEB_DOMAIN: ${{ vars.WEB_DOMAIN }}
+
+      # Show the deployed version on the run page.
+      - name: Summary
+        run: |
+          {
+            echo "### Deployed \`${VERSION}\`"
+            echo "- Image: \`${IMAGE}\`"
+            echo "- Commit: \`${GITHUB_SHA::7}\` ($(git log -1 --format=%s))"
+          } >> "$GITHUB_STEP_SUMMARY"

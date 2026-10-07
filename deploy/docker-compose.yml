@@ -1,0 +1,36 @@
+# Compose file for the VPS (/opt/qlsx-web/). CI copies it there together with remote-deploy.sh.
+# The root docker-compose.yml is left as is: it targets a platform that proxies over the internal
+# Docker network, while here a Caddy reverse proxy (host network) reaches the app on loopback.
+#
+# Values come from /opt/qlsx-web/.env on the VPS:
+#   SESSION_SECRET  required, a long random string (openssl rand -hex 32)
+#   WEB_IMAGE       written by remote-deploy.sh after every successful deploy
+#   WEB_PORT        optional, loopback port on the host (default 3000)
+
+services:
+  web:
+    # Fixed name so `docker ps` is readable. The version is the image tag (v<run number>).
+    container_name: qlsx-frontend
+    image: ${WEB_IMAGE:?WEB_IMAGE is set by remote-deploy.sh}
+    restart: unless-stopped
+    environment:
+      # Server-only secret that signs the session cookie.
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in /opt/qlsx-web/.env}
+      NODE_ENV: production
+    # Loopback only (never 0.0.0.0): Caddy terminates HTTPS and proxies to 127.0.0.1:3000.
+    # The session cookie is `Secure`, so the app only works through HTTPS anyway.
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"
+    healthcheck:
+      # Any non-5xx answer from /login counts as healthy.
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/login').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+      # During start_period probe every 3 s so `up --wait` returns as soon as the app is ready.
+      start_interval: 3s
