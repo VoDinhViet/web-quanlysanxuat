@@ -10,7 +10,7 @@ type BadgeStyle = {
   dot: string
 }
 
-// Same DRAFT/PENDING_APPROVAL/APPROVED/CANCELLED lifecycle as PurchaseRequestBadges — reuse its
+// Same DRAFT/PENDING_APPROVAL/APPROVED/REJECTED/CANCELLED lifecycle as PurchaseRequestBadges — reuse its
 // palette so the two approval flows read consistently across the app. PurchaseQuotationLegend
 // also reads this map, to render the dot on its own without a badge.
 export const purchaseQuotationStatusStyles: Record<
@@ -30,6 +30,10 @@ export const purchaseQuotationStatusStyles: Record<
     badge:
       "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
     dot: "bg-emerald-500 dark:bg-emerald-400",
+  },
+  [PurchaseQuotationStatus.REJECTED]: {
+    badge: "bg-destructive/10 text-destructive dark:bg-destructive/15",
+    dot: "bg-destructive",
   },
   [PurchaseQuotationStatus.CANCELLED]: {
     badge: "bg-destructive/10 text-destructive dark:bg-destructive/15",

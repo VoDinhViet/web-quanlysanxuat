@@ -8,14 +8,15 @@ type PurchaseQuotationRejectionNoticeProps = {
   purchaseQuotation: PurchaseQuotationDetail
 }
 
-// Mirrors PurchaseRequestRejectionNotice.tsx. CANCELLED is a terminal status here (no route
-// accepts it back) — unlike purchase-requests' REJECTED, there's no "resend" path, so this only
-// ever needs to gate on `status === CANCELLED`, no DRAFT-carryover case.
+// Mirrors PurchaseRequestRejectionNotice.tsx. REJECTED and CANCELLED are terminal statuses here
+// (no route accepts them back) — unlike purchase-requests' REJECTED, there's no "resend" path, so
+// this only ever needs to gate on the status itself, no DRAFT-carryover case.
 export function PurchaseQuotationRejectionNotice({
   purchaseQuotation,
 }: PurchaseQuotationRejectionNoticeProps) {
   if (
-    purchaseQuotation.status !== PurchaseQuotationStatus.CANCELLED ||
+    (purchaseQuotation.status !== PurchaseQuotationStatus.REJECTED &&
+      purchaseQuotation.status !== PurchaseQuotationStatus.CANCELLED) ||
     !purchaseQuotation.cancellationReason
   ) {
     return null
@@ -26,9 +27,9 @@ export function PurchaseQuotationRejectionNotice({
       <TriangleAlert className="mt-0.5 size-5 shrink-0 text-destructive" />
       <div className="min-w-0 space-y-1">
         <p className="text-sm font-semibold text-destructive">
-          {purchaseQuotation.approvedAt
+          {purchaseQuotation.status === PurchaseQuotationStatus.CANCELLED
             ? "Báo giá đã bị huỷ"
-            : "Báo giá bị từ chối"}
+            : "Báo giá không được duyệt"}
         </p>
         <p className="text-sm text-foreground">
           {purchaseQuotation.cancellationReason}

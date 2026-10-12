@@ -5,12 +5,13 @@ import type { Unit } from "@/lib/types/unit.type"
 /** Mirrors the backend's `PurchaseQuotationStatus` (`be-quanlysanxuat/src/database/schemas/
  *  purchasing/purchase-quotations.ts`) exactly — an approval lifecycle, same shape as
  *  `PurchaseRequestStatus`: `DRAFT → (send) → PENDING_APPROVAL → (approve) → APPROVED`, or
- *  `PENDING_APPROVAL → (reject) → CANCELLED`. An `APPROVED` quotation can also be `CANCELLED` directly
+ *  `PENDING_APPROVAL → (reject) → REJECTED`. An `APPROVED` quotation can also be `CANCELLED` directly
  *  (`cancel`), or reopened to `DRAFT` when its purchase order is cancelled with `reopenQuotation`. */
 export const PurchaseQuotationStatus = {
   DRAFT: "DRAFT",
   PENDING_APPROVAL: "PENDING_APPROVAL",
   APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
   CANCELLED: "CANCELLED",
 } as const
 
@@ -24,6 +25,7 @@ export const purchaseQuotationStatusLabels: Record<
   [PurchaseQuotationStatus.DRAFT]: "Nháp",
   [PurchaseQuotationStatus.PENDING_APPROVAL]: "Chờ duyệt",
   [PurchaseQuotationStatus.APPROVED]: "Đã duyệt",
+  [PurchaseQuotationStatus.REJECTED]: "Không duyệt",
   [PurchaseQuotationStatus.CANCELLED]: "Đã hủy",
 }
 
@@ -36,7 +38,8 @@ export const purchaseQuotationStatusDescriptions: Record<
     "Đã gửi, chờ duyệt chọn NCC thắng thầu",
   [PurchaseQuotationStatus.APPROVED]:
     "Đã duyệt, đã tạo đơn mua nháp cho NCC thắng thầu",
-  [PurchaseQuotationStatus.CANCELLED]: "Báo giá đã bị từ chối/hủy",
+  [PurchaseQuotationStatus.REJECTED]: "Báo giá bị từ chối khi chờ duyệt",
+  [PurchaseQuotationStatus.CANCELLED]: "Báo giá đã duyệt nhưng bị hủy",
 }
 
 /** Mirrors the backend's `UserRefResDto` nested on `creatorBy`/`approverBy`, same shape as

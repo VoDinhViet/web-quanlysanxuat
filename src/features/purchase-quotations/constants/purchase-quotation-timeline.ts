@@ -12,10 +12,14 @@ export function buildQuotationTimeline(
 ): TimelineStep[] {
   const creatorName = purchaseQuotation.creatorBy?.fullName ?? "Hệ thống"
 
-  if (purchaseQuotation.status === PurchaseQuotationStatus.CANCELLED) {
-    // Cancelled after approval (its last PO was cancelled with "Không mua nữa") vs rejected while
-    // pending approval — `approvedAt` is only set on the former.
-    const wasApproved = purchaseQuotation.approvedAt !== null
+  if (
+    purchaseQuotation.status === PurchaseQuotationStatus.REJECTED ||
+    purchaseQuotation.status === PurchaseQuotationStatus.CANCELLED
+  ) {
+    // CANCELLED = cancelled after approval (its last PO was cancelled with "Không mua nữa");
+    // REJECTED = not approved while pending approval.
+    const isCancelled =
+      purchaseQuotation.status === PurchaseQuotationStatus.CANCELLED
 
     return [
       {
@@ -34,7 +38,7 @@ export function buildQuotationTimeline(
         actor: purchaseQuotation.senderBy?.fullName ?? null,
         detail: null,
       },
-      ...(wasApproved
+      ...(isCancelled
         ? [
             {
               key: "approved",
@@ -48,7 +52,7 @@ export function buildQuotationTimeline(
         : []),
       {
         key: "rejected",
-        label: wasApproved ? "Đã huỷ" : "Bị từ chối",
+        label: isCancelled ? "Đã huỷ" : "Không duyệt",
         state: "cancelled",
         timestamp: purchaseQuotation.cancelledAt,
         actor: purchaseQuotation.cancellerBy?.fullName ?? null,
