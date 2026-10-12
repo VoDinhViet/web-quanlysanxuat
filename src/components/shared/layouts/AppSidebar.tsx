@@ -150,7 +150,8 @@ const menuGroups: MenuGroup[] = [
         label: "Đơn mua hàng (PO)",
         icon: ReceiptText,
         href: "/manage/purchase-orders",
-        badgeKey: "purchaseOrders",
+        todoBadgeKey: "purchaseOrders",
+        todoBadgeLabel: "đơn chờ xác nhận",
       },
       {
         label: "Yêu cầu thanh toán",
