@@ -47,7 +47,7 @@ export function NcrsTable({ ncrs, pagination, isPending }: NcrsTableProps) {
           description="NCR được sinh tự động khi OQC sàng lọc có hàng NG, hoặc tạo tay cho lỗi nội bộ / khách hàng phản hồi."
         />
       ) : (
-        <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
+        <div className="overflow-x-auto rounded-lg bg-card shadow-card">
           <Table aria-label="Danh sách NCR">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
               <TableRow>

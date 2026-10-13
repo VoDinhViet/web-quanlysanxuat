@@ -194,7 +194,7 @@ export function NcrCostLinesCard({ ncr }: NcrCostLinesCardProps) {
         <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
           <p className="text-sm">
             Tổng dự toán:{" "}
-            <span className="font-semibold">
+            <span className="font-medium">
               {currencyFormatter.format(totalCost)} đ
             </span>
           </p>

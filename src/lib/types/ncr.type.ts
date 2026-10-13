@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type { ClientRef } from "@/lib/types/client.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { ProductionOrderStatus } from "@/lib/types/production-order.type"
@@ -157,6 +158,8 @@ export type NcrLog = {
 
 /** Mirrors the backend's NcrDetailResDto (GET /api/ncrs/:ncrId). */
 export type NcrDetail = Ncr & {
+  /** Detail only: the product carries its image (the list's `item` does not). */
+  item: ItemRef & { image: FileResource | null }
   reworkOperationIds: string[]
   costLines: NcrCostLine[]
   totalCost: number

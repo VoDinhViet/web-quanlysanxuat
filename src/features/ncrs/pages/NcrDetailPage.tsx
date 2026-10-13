@@ -3,7 +3,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { StatusNotice } from "@/components/shared/composites/StatusNotice"
-import { Surface } from "@/components/shared/layouts/Surface"
 import { ncrQueryOptions } from "@/features/ncrs/api/options"
 import { NcrInfoCard } from "@/features/ncrs/components/composites/NcrInfoCard"
 import { NcrLogsCard } from "@/features/ncrs/components/composites/NcrLogsCard"
@@ -33,9 +32,10 @@ export function NcrDetailPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <Surface>
+        <section className="overflow-hidden rounded-lg bg-card shadow-xs">
           <NcrDetailHeader ncr={ncr} />
-        </Surface>
+          <NcrSummaryCards ncr={ncr} />
+        </section>
 
         {ncr.status === NcrStatus.REJECTED && ncr.rejectionReason && (
           <StatusNotice
@@ -43,10 +43,6 @@ export function NcrDetailPage() {
             reason={ncr.rejectionReason}
           />
         )}
-
-        <NcrProgressCard status={ncr.status} />
-
-        <NcrSummaryCards ncr={ncr} />
 
         <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="flex flex-col gap-4">
@@ -56,6 +52,7 @@ export function NcrDetailPage() {
           </div>
 
           <div className="flex flex-col gap-4">
+            <NcrProgressCard status={ncr.status} />
             {ncr.productionOrders.length > 0 && (
               <NcrProductionOrdersCard
                 productionOrders={ncr.productionOrders}

@@ -76,7 +76,7 @@ function RejectNcrForm({ ncr, onClose }: RejectNcrFormProps) {
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+        <DialogTitle className="flex items-center gap-2 text-base font-medium">
           <CircleX className="size-4 text-destructive" />
           Không duyệt NCR {ncr.code}
         </DialogTitle>

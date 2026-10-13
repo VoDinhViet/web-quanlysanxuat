@@ -66,7 +66,7 @@ export function NcrsTableFilter() {
       <div className="w-56 space-y-1.5">
         <Label
           htmlFor="ncr-q"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Mã NCR
         </Label>
@@ -88,7 +88,7 @@ export function NcrsTableFilter() {
       <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="ncr-type"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Loại NCR
         </Label>
@@ -122,7 +122,7 @@ export function NcrsTableFilter() {
       <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="ncr-status"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Trạng thái
         </Label>
@@ -156,7 +156,7 @@ export function NcrsTableFilter() {
       <div className="flex w-48 flex-col gap-1.5">
         <Label
           htmlFor="ncr-department"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Bộ phận phát sinh
         </Label>

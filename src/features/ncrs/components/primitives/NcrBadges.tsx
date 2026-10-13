@@ -14,34 +14,31 @@ type BadgeStyle = {
 
 const statusStyles: Record<NcrStatus, BadgeStyle> = {
   [NcrStatus.OPEN]: {
-    badge: "bg-muted text-muted-foreground",
+    badge: "bg-neutral-soft text-neutral-ink",
     dot: "bg-muted-foreground/50",
   },
   [NcrStatus.PENDING_APPROVAL]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
-    dot: "bg-amber-500 dark:bg-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
+    dot: "bg-warning",
   },
   [NcrStatus.APPROVED]: {
-    badge:
-      "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
-    dot: "bg-emerald-500 dark:bg-emerald-400",
+    badge: "bg-success-soft text-success-ink",
+    dot: "bg-success",
   },
   [NcrStatus.IN_PROGRESS]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
-    dot: "bg-blue-500 dark:bg-blue-400",
+    badge: "bg-info-soft text-info-ink",
+    dot: "bg-info",
   },
   [NcrStatus.PENDING_QC]: {
-    badge:
-      "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
-    dot: "bg-violet-500 dark:bg-violet-400",
+    badge: "bg-violet-soft text-violet-ink",
+    dot: "bg-violet-ink",
   },
   [NcrStatus.CLOSED]: {
-    badge: "bg-success/10 text-success",
+    badge: "bg-success-soft text-success-ink",
     dot: "bg-success",
   },
   [NcrStatus.REJECTED]: {
-    badge: "bg-destructive/10 text-destructive dark:bg-destructive/15",
+    badge: "bg-destructive-soft text-destructive-ink",
     dot: "bg-destructive",
   },
 }
@@ -63,10 +60,8 @@ export function NcrStatusBadge({ status, className }: NcrStatusBadgeProps) {
 }
 
 const typeStyles: Record<NcrType, string> = {
-  [NcrType.INTERNAL]:
-    "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
-  [NcrType.CUSTOMER]:
-    "bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400",
+  [NcrType.INTERNAL]: "bg-info-soft text-info-ink",
+  [NcrType.CUSTOMER]: "bg-warning-soft text-warning-ink",
 }
 
 type NcrTypeBadgeProps = {

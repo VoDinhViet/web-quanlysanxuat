@@ -1,5 +1,15 @@
-import { Check } from "lucide-react"
+import {
+  CheckRead,
+  Flag,
+  Hourglass,
+  NotesMinimalistic,
+  Settings,
+  ShieldCheck,
+} from "@solar-icons/react"
+import type { IconProps } from "@solar-icons/react"
+import type { ComponentType } from "react"
 
+import { NcrSectionCard } from "@/features/ncrs/components/layouts/NcrSectionCard"
 import { NcrStatus } from "@/lib/types/ncr.type"
 import { cn } from "@/lib/utils"
 
@@ -10,14 +20,19 @@ type NcrProgressCardProps = {
 type ProgressStep = {
   label: string
   hint: string
+  icon: ComponentType<IconProps>
 }
 
 const progressSteps: ProgressStep[] = [
-  { label: "Phân tích", hint: "Nguyên nhân & biện pháp" },
-  { label: "Chờ duyệt", hint: "Giám đốc xem xét" },
-  { label: "Đã duyệt", hint: "Chọn hướng xử lý" },
-  { label: "Xử lý", hint: "LSX phụ / OQC lại" },
-  { label: "Đóng NCR", hint: "Hoàn tất" },
+  {
+    label: "Phân tích",
+    hint: "Nguyên nhân & biện pháp",
+    icon: NotesMinimalistic,
+  },
+  { label: "Chờ duyệt", hint: "Giám đốc xem xét", icon: Hourglass },
+  { label: "Đã duyệt", hint: "Chọn hướng xử lý", icon: ShieldCheck },
+  { label: "Xử lý", hint: "LSX phụ / OQC lại", icon: Settings },
+  { label: "Đóng NCR", hint: "Hoàn tất", icon: Flag },
 ]
 
 const currentStepByStatus: Record<NcrStatus, number> = {
@@ -30,68 +45,75 @@ const currentStepByStatus: Record<NcrStatus, number> = {
   [NcrStatus.CLOSED]: 4,
 }
 
+// Vertical stepper for the right-hand column: each step is an icon on a connector line with its
+// label and hint beside it.
 export function NcrProgressCard({ status }: NcrProgressCardProps) {
   const currentStep = currentStepByStatus[status]
   const isRejected = status === NcrStatus.REJECTED
   const isClosed = status === NcrStatus.CLOSED
 
   return (
-    <ol className="grid grid-cols-5 gap-2 rounded-lg bg-card p-4 shadow-card sm:p-5">
-      {progressSteps.map((step, index) => {
-        const isDone = index < currentStep || isClosed
-        const isCurrent = index === currentStep && !isClosed
+    <NcrSectionCard title="Tiến trình xử lý">
+      <ol>
+        {progressSteps.map((step, index) => {
+          const isDone = index < currentStep || isClosed
+          const isCurrent = index === currentStep && !isClosed
+          const isLast = index === progressSteps.length - 1
+          const StepIcon = isDone ? CheckRead : step.icon
 
-        return (
-          <li key={step.label} className="flex flex-col items-center gap-2">
-            <div className="flex w-full items-center">
-              <span
-                className={cn(
-                  "h-0.5 flex-1",
-                  index === 0 && "invisible",
-                  isDone || isCurrent ? "bg-primary" : "bg-border"
+          return (
+            <li
+              key={step.label}
+              aria-current={isCurrent ? "step" : undefined}
+              className="flex gap-3"
+            >
+              <div className="flex flex-col items-center">
+                <span
+                  className={cn(
+                    "flex size-8 shrink-0 items-center justify-center rounded-full",
+                    isDone && "bg-primary text-primary-foreground",
+                    isCurrent &&
+                      !isRejected &&
+                      "bg-primary/10 text-primary ring-2 ring-primary",
+                    isCurrent &&
+                      isRejected &&
+                      "bg-destructive/10 text-destructive ring-2 ring-destructive",
+                    !isDone && !isCurrent && "bg-muted text-muted-foreground"
+                  )}
+                >
+                  <StepIcon
+                    weight={isDone || isCurrent ? "Bold" : "Linear"}
+                    className="size-4"
+                  />
+                </span>
+                {!isLast && (
+                  <span
+                    className={cn(
+                      "my-1 w-0.5 flex-1",
+                      isDone ? "bg-primary" : "bg-border"
+                    )}
+                  />
                 )}
-              />
-              <span
-                className={cn(
-                  "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
-                  isDone && "bg-primary text-primary-foreground",
-                  isCurrent &&
-                    !isRejected &&
-                    "bg-primary/10 text-primary ring-2 ring-primary",
-                  isCurrent &&
-                    isRejected &&
-                    "bg-destructive/10 text-destructive ring-2 ring-destructive",
-                  !isDone && !isCurrent && "bg-muted text-muted-foreground"
-                )}
-              >
-                {isDone ? <Check className="size-4" /> : index + 1}
-              </span>
-              <span
-                className={cn(
-                  "h-0.5 flex-1",
-                  index === progressSteps.length - 1 && "invisible",
-                  isDone ? "bg-primary" : "bg-border"
-                )}
-              />
-            </div>
-            <div className="text-center">
-              <p
-                className={cn(
-                  "text-xs font-semibold",
-                  isCurrent && isRejected && "text-destructive",
-                  isCurrent && !isRejected && "text-primary",
-                  !isDone && !isCurrent && "text-muted-foreground"
-                )}
-              >
-                {isCurrent && isRejected ? "Không duyệt — sửa lại" : step.label}
-              </p>
-              <p className="hidden text-[11px] text-muted-foreground sm:block">
-                {step.hint}
-              </p>
-            </div>
-          </li>
-        )
-      })}
-    </ol>
+              </div>
+              <div className={cn("min-w-0 pt-1", !isLast && "pb-4")}>
+                <p
+                  className={cn(
+                    "text-sm font-medium",
+                    isCurrent && isRejected && "text-destructive",
+                    isCurrent && !isRejected && "text-primary",
+                    !isDone && !isCurrent && "text-muted-foreground"
+                  )}
+                >
+                  {isCurrent && isRejected
+                    ? "Không duyệt — sửa lại"
+                    : step.label}
+                </p>
+                <p className="text-xs text-muted-foreground">{step.hint}</p>
+              </div>
+            </li>
+          )
+        })}
+      </ol>
+    </NcrSectionCard>
   )
 }

@@ -89,7 +89,7 @@ function RequestNcrOqcForm({ ncr, onClose }: RequestNcrOqcFormProps) {
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+        <DialogTitle className="flex items-center gap-2 text-base font-medium">
           <ClipboardCheck className="size-4 text-primary" />
           Yêu cầu OQC lại cho {ncr.code}
         </DialogTitle>

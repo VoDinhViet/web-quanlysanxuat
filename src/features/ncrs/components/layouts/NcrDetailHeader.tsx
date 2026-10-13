@@ -27,7 +27,7 @@ export function NcrDetailHeader({ ncr }: NcrDetailHeaderProps) {
           <span className="hidden sm:inline">Quay lại</span>
         </LinkButton>
 
-        <span className="font-mono text-lg font-bold text-foreground">
+        <span className="font-mono text-lg font-medium text-foreground">
           {ncr.code}
         </span>
         <NcrTypeBadge type={ncr.type} />

@@ -155,7 +155,7 @@ export function NcrAnalysisForm({ ncr }: NcrAnalysisFormProps) {
             {({ ngQty, reworkQty, remakeQty }) => (
               <p className="rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
                 Chỉ ghi nhận (không xử lý):{" "}
-                <span className="font-semibold text-foreground">
+                <span className="font-medium text-foreground">
                   {quantityFormatter.format(
                     Math.max(0, ngQty - reworkQty - remakeQty)
                   )}

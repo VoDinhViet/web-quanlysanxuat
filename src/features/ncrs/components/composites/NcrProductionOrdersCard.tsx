@@ -23,7 +23,7 @@ export function NcrProductionOrdersCard({
             <Link
               to="/manage/production-orders/$productionOrderId"
               params={{ productionOrderId: productionOrder.id }}
-              className="font-mono font-semibold text-primary hover:underline"
+              className="font-mono font-medium text-primary hover:underline"
             >
               {productionOrder.code}
             </Link>

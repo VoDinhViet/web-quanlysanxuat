@@ -5,7 +5,7 @@ type NcrSummaryCardsProps = {
   ncr: NcrDetail
 }
 
-type SummaryCard = {
+type SummaryStat = {
   label: string
   value: string
   caption: string
@@ -14,27 +14,27 @@ type SummaryCard = {
 
 const numberFormatter = new Intl.NumberFormat("vi-VN")
 
-function buildSummaryCards(ncr: NcrDetail): SummaryCard[] {
+function buildSummaryStats(ncr: NcrDetail): SummaryStat[] {
   const recordOnlyQty = Math.max(0, ncr.ngQty - ncr.reworkQty - ncr.remakeQty)
 
   return [
     {
       label: "SL hàng lỗi",
       value: numberFormatter.format(ncr.ngQty),
-      caption: "Tổng số lượng không phù hợp",
+      caption: "Tổng số lượng NG",
       valueClassName: "text-destructive",
     },
     {
       label: "Sửa chữa",
       value: numberFormatter.format(ncr.reworkQty),
       caption: "Giữ hàng, sửa lại công đoạn đã chọn",
-      valueClassName: "text-amber-600 dark:text-amber-400",
+      valueClassName: "text-warning-ink",
     },
     {
       label: "Làm mới",
       value: numberFormatter.format(ncr.remakeQty),
       caption: "Huỷ hàng lỗi, sản xuất lại đủ routing",
-      valueClassName: "text-blue-600 dark:text-blue-400",
+      valueClassName: "text-info-ink",
     },
     {
       label: "Chỉ ghi nhận",
@@ -45,31 +45,33 @@ function buildSummaryCards(ncr: NcrDetail): SummaryCard[] {
       label: "Dự toán chi phí",
       value: `${numberFormatter.format(ncr.totalCost)} đ`,
       caption: `${ncr.costLines.length} dòng chi phí`,
+      valueClassName: "text-success-ink",
     },
   ]
 }
 
+// Stat row rendered inside the header surface: dividers only, no shell of its own.
 export function NcrSummaryCards({ ncr }: NcrSummaryCardsProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
-      {buildSummaryCards(ncr).map((card) => (
-        <div key={card.label} className="rounded-lg bg-card p-4 shadow-card">
-          <p className="text-[11px] font-medium text-muted-foreground uppercase">
-            {card.label}
-          </p>
-          <p
+    <dl className="grid grid-cols-2 gap-px border-t border-border bg-border sm:grid-cols-3 xl:grid-cols-5">
+      {buildSummaryStats(ncr).map((stat) => (
+        <div key={stat.label} className="space-y-1 bg-card px-4 py-4 sm:px-5">
+          <dt className="text-xs font-medium text-muted-foreground">
+            {stat.label}
+          </dt>
+          <dd
             className={cn(
-              "mt-1 text-2xl font-bold text-foreground tabular-nums",
-              card.valueClassName
+              "text-xl font-medium text-foreground tabular-nums",
+              stat.valueClassName
             )}
           >
-            {card.value}
-          </p>
-          <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-            {card.caption}
+            {stat.value}
+          </dd>
+          <p className="text-xs leading-snug text-muted-foreground">
+            {stat.caption}
           </p>
         </div>
       ))}
-    </div>
+    </dl>
   )
 }
