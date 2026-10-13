@@ -197,7 +197,7 @@ export function InventoryReceiptDetailActions({
               }
             />
             <DropdownMenuContent align="end" className="w-60 p-1.5">
-              <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+              <DropdownMenuLabel className="px-2 py-1 text-xs font-medium text-muted-foreground">
                 Tùy chọn xuất dữ liệu
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="my-1" />
@@ -211,7 +211,7 @@ export function InventoryReceiptDetailActions({
                   <span className="text-xs font-medium text-foreground">
                     Phiếu nhập kho
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     File tài liệu PDF
                   </span>
                 </div>
@@ -254,7 +254,7 @@ export function InventoryReceiptDetailActions({
       </div>
 
       {isPendingIqc && (
-        <p className="max-w-64 text-right text-[11px] text-muted-foreground">
+        <p className="max-w-64 text-right text-xs text-muted-foreground">
           Chỉ nhập kho được sau khi mọi phiếu IQC của phiếu này đã hoàn tất.
         </p>
       )}
@@ -274,7 +274,7 @@ export function InventoryReceiptDetailActions({
                 {confirmAction === "confirm" ? (
                   <>
                     Xác nhận phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
+                    <span className="font-mono font-medium text-foreground">
                       {inventoryReceipt.code}
                     </span>{" "}
                     — nếu phiếu yêu cầu QC sẽ chuyển sang chờ kiểm tra chất
@@ -284,7 +284,7 @@ export function InventoryReceiptDetailActions({
                 ) : confirmAction === "post" ? (
                   <>
                     Xác nhận phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
+                    <span className="font-mono font-medium text-foreground">
                       {inventoryReceipt.code}
                     </span>{" "}
                     sẽ cộng tồn kho theo các dòng vật tư đã khai báo. Sau khi
@@ -293,7 +293,7 @@ export function InventoryReceiptDetailActions({
                 ) : (
                   <>
                     Bạn chắc chắn muốn hủy phiếu{" "}
-                    <span className="font-mono font-semibold text-foreground">
+                    <span className="font-mono font-medium text-foreground">
                       {inventoryReceipt.code}
                     </span>
                     ? Phiếu chưa cộng tồn kho nên không ảnh hưởng tồn. Các phiếu

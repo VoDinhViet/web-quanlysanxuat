@@ -77,7 +77,7 @@ export function buildOutboundOrderEditItemColumns({
             <Link
               to="/manage/orders/$orderId"
               params={{ orderId: display.order.id }}
-              className="font-mono text-xs font-semibold text-primary hover:underline"
+              className="font-mono text-xs font-medium text-primary hover:underline"
             >
               {display.order.code}
             </Link>
@@ -86,12 +86,12 @@ export function buildOutboundOrderEditItemColumns({
                 to="/manage/production-jobs/$productionJobId"
                 params={{ productionJobId: display.job.id }}
                 search={{ tab: "info" }}
-                className="font-mono text-[11px] text-muted-foreground hover:text-primary hover:underline"
+                className="font-mono text-xs text-muted-foreground hover:text-primary hover:underline"
               >
                 {display.job.code}
               </Link>
             ) : (
-              <span className="text-[11px] text-muted-foreground">—</span>
+              <span className="text-xs text-muted-foreground">—</span>
             )}
           </div>
         )
@@ -124,7 +124,7 @@ export function buildOutboundOrderEditItemColumns({
             <span className="text-xs leading-tight font-medium text-foreground">
               {display.item.name}
             </span>
-            <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
               <span>{display.item.code}</span>
               <span>·</span>
               <span>ĐVT: {display.unit.name}</span>
@@ -174,7 +174,7 @@ export function buildOutboundOrderEditItemColumns({
       header: "Còn lại",
       meta: {
         headerClassName: "w-20 text-right",
-        cellClassName: "text-right tabular-nums font-semibold",
+        cellClassName: "text-right tabular-nums font-medium",
       },
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
@@ -200,7 +200,7 @@ export function buildOutboundOrderEditItemColumns({
           <div className="flex flex-col items-end gap-0.5">
             <span>{quantityFormatter.format(display.onHandQuantity)}</span>
             {display.heldQuantity > 0 ? (
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 (Giữ: {quantityFormatter.format(display.heldQuantity)})
               </span>
             ) : null}
@@ -215,7 +215,7 @@ export function buildOutboundOrderEditItemColumns({
       cell: ({ row }) => {
         const display = displayByOrderItemId.get(row.original.orderItemId)
         return (
-          <span className="font-semibold text-emerald-600 tabular-nums dark:text-emerald-400">
+          <span className="font-medium text-emerald-600 tabular-nums dark:text-emerald-400">
             {display
               ? quantityFormatter.format(display.availableQuantity)
               : "—"}
@@ -251,7 +251,7 @@ export function buildOutboundOrderEditItemColumns({
               }
             />
             {exceedsRemaining && (
-              <p className="mt-1 text-right text-[10px] text-destructive">
+              <p className="mt-1 text-right text-xs text-destructive">
                 Vượt SL còn lại ({quantityFormatter.format(remaining)})
               </p>
             )}

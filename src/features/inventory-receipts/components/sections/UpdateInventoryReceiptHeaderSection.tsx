@@ -67,12 +67,12 @@ export const UpdateInventoryReceiptHeaderSection = withForm({
     const isProduction = receiptType === InventoryReceiptType.PRODUCTION
 
     return (
-      <div className="drafting-title-block">
+      <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <div className="border-b border-border px-4 py-4 sm:px-5">
-          <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
+          <h2 className="font-heading text-base font-medium tracking-wide text-foreground uppercase">
             Phiếu nhập kho
           </h2>
-          <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+          <p className="mt-1 font-mono text-xs text-muted-foreground">
             Mã phiếu: {receiptCode}
           </p>
         </div>

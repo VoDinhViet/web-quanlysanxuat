@@ -21,7 +21,7 @@ export const supplierReturnsColumns = supplierReturnColumnHelper.columns([
     header: "Mã trả NCC",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
 
@@ -31,10 +31,10 @@ export const supplierReturnsColumns = supplierReturnColumnHelper.columns([
     meta: { headerClassName: "min-w-48" },
     cell: ({ row }) => (
       <div className="min-w-0">
-        <p className="truncate text-xs font-semibold text-foreground">
+        <p className="truncate text-xs font-medium text-foreground">
           {row.original.itemName}
         </p>
-        <p className="truncate font-mono text-[11px] text-muted-foreground">
+        <p className="truncate font-mono text-xs text-muted-foreground">
           {row.original.itemCode}
         </p>
       </div>
@@ -55,7 +55,7 @@ export const supplierReturnsColumns = supplierReturnColumnHelper.columns([
       cellClassName: "text-right",
     },
     cell: ({ row }) => (
-      <span className="font-semibold text-foreground tabular-nums">
+      <span className="font-medium text-foreground tabular-nums">
         {quantityFormatter.format(row.original.quantity)}{" "}
         {row.original.item ? (
           <span className="font-normal text-muted-foreground">

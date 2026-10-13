@@ -49,7 +49,7 @@ export function OqcTable({ rows, pagination, isPending }: OqcTableProps) {
           description="Phiếu OQC sẽ hiển thị tại đây sau khi Sản xuất yêu cầu QC cho một lô thành phẩm."
         />
       ) : (
-        <div className="overflow-x-auto rounded-md border border-border/50 bg-card">
+        <div className="overflow-x-auto rounded-lg bg-card shadow-card">
           <Table aria-label="Danh sách phiếu OQC">
             <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
               <TableRow>

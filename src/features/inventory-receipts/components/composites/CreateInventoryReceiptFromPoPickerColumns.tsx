@@ -23,16 +23,15 @@ const purchaseOrderProgressStyles: Record<
   ProgressBadgeStyle
 > = {
   [PurchaseOrderProgress.PENDING_CONFIRMATION]: {
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseOrderProgress.ORDERED]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   [PurchaseOrderProgress.RECEIVING]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseOrderProgress.COMPLETED]: {
@@ -84,9 +83,7 @@ export function buildCreateInventoryReceiptFromPoPickerColumns() {
       header: "Mã PO",
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue }) => (
-        <span className="font-mono font-semibold text-primary">
-          {getValue()}
-        </span>
+        <span className="font-mono font-medium text-primary">{getValue()}</span>
       ),
     }),
     purchaseOrderPickerColumnHelper.accessor((row) => row.supplier.name, {
@@ -118,7 +115,7 @@ export function buildCreateInventoryReceiptFromPoPickerColumns() {
       header: "Giá trị (VND)",
       meta: {
         headerClassName: "min-w-28 text-right",
-        cellClassName: "text-right font-semibold text-foreground tabular-nums",
+        cellClassName: "text-right font-medium text-foreground tabular-nums",
       },
       cell: ({ getValue }) => vndFormatter.format(getValue()),
     }),

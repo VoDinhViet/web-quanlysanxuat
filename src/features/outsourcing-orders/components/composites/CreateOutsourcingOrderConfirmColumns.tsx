@@ -36,7 +36,7 @@ export const createOutsourcingOrderConfirmColumns = confirmColumnHelper.columns(
           <p className="truncate font-medium text-foreground">
             {row.original.bomItem.name}
           </p>
-          <p className="truncate font-mono text-[10px] text-muted-foreground">
+          <p className="truncate font-mono text-xs text-muted-foreground">
             {row.original.bomItem.code}
           </p>
         </div>

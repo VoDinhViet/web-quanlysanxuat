@@ -41,20 +41,20 @@ export function DepartmentOverviewSection({
 
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <Buildings2 className="size-4 text-muted-foreground" />
         Tổng quan phòng ban
       </div>
 
       <div className="grid grid-cols-2 divide-x divide-border/60 border-b border-border/60">
         <div className="px-4 py-4 sm:px-5">
-          <p className="text-2xl font-bold text-foreground">
+          <p className="text-2xl font-semibold text-foreground">
             {department.positionCount}
           </p>
           <p className="text-xs text-muted-foreground">Chức vụ</p>
         </div>
         <div className="px-4 py-4 sm:px-5">
-          <p className="text-2xl font-bold text-foreground">
+          <p className="text-2xl font-semibold text-foreground">
             {department.employeeCount}
           </p>
           <p className="text-xs text-muted-foreground">Nhân sự</p>
@@ -62,7 +62,7 @@ export function DepartmentOverviewSection({
       </div>
 
       <div className="border-b border-border/60 px-4 py-4 sm:px-5">
-        <h3 className="mb-3 text-xs font-semibold text-foreground">
+        <h3 className="mb-3 text-xs font-medium text-foreground">
           Phân bổ nhân sự theo chức vụ
         </h3>
 
@@ -96,7 +96,7 @@ export function DepartmentOverviewSection({
                     }}
                   />
                 </span>
-                <span className="w-5 shrink-0 text-right text-xs font-semibold text-foreground tabular-nums">
+                <span className="w-5 shrink-0 text-right text-xs font-medium text-foreground tabular-nums">
                   {position.employeeCount}
                 </span>
               </li>
@@ -105,7 +105,7 @@ export function DepartmentOverviewSection({
         )}
 
         {positions.length > maxRankedPositions && (
-          <p className="mt-2.5 text-[11px] text-muted-foreground">
+          <p className="mt-2.5 text-xs text-muted-foreground">
             +{positions.length - maxRankedPositions} chức vụ khác
           </p>
         )}
@@ -167,7 +167,7 @@ type InfoRowProps = {
 function InfoRow({ label, value }: InfoRowProps) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </p>
       <p className="text-xs font-medium text-foreground">{value}</p>

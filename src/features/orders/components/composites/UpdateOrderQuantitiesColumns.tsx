@@ -269,7 +269,7 @@ export function buildUpdateOrderQuantitiesColumns({
                         "text-muted-foreground",
                         action.tone === "destructive"
                           ? "hover:border-destructive/30 hover:text-destructive"
-                          : "hover:border-primary/30 hover:text-primary"
+                          : "hover:border-border hover:text-primary"
                       )}
                       disabled={action.disabled}
                       onClick={action.onClick}

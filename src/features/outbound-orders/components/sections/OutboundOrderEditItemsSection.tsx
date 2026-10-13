@@ -131,7 +131,7 @@ export const OutboundOrderEditItemsSection = withForm({
     return (
       <div className="border-b border-border not-first:border-t">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-3 sm:px-5">
-          <h3 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+          <h3 className="text-xs font-medium tracking-wide text-foreground uppercase">
             Danh sách thành phẩm giao hàng
           </h3>
           <OutboundOrderAddItemsDialog
@@ -213,7 +213,7 @@ export const OutboundOrderEditItemsSection = withForm({
           <span>Tổng số dòng: {formItems.length}</span>
           <span>
             Tổng SL giao:{" "}
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {quantityFormatter.format(totalQuantity)}
             </span>
           </span>

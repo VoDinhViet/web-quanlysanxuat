@@ -51,13 +51,11 @@ export function IqcResultBadge({ result, className }: IqcResultBadgeProps) {
 // PurchaseOrderBadges uses for DRAFT.
 export const iqcDispositionStyles: Record<IqcDisposition, BadgeStyle> = {
   [IqcDisposition.CONCESSION]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [IqcDisposition.SORT]: {
-    badge:
-      "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
+    badge: "bg-violet-soft text-violet-ink",
     dot: "bg-violet-500 dark:bg-violet-400",
   },
   [IqcDisposition.RETURN]: {
@@ -94,12 +92,11 @@ export const iqcStatusStyles: Record<IqcStatus, BadgeStyle> = {
     dot: "bg-muted-foreground/60",
   },
   [IqcStatus.PENDING]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [IqcStatus.IN_PROGRESS]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   [IqcStatus.COMPLETED]: {

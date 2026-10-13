@@ -96,7 +96,7 @@ function RejectQuotationForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+        <DialogTitle className="flex items-center gap-2 text-base font-medium">
           <CloseCircle className="size-4 text-destructive" />
           Từ chối báo giá {purchaseQuotation.code}
         </DialogTitle>

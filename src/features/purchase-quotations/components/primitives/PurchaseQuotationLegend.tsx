@@ -13,7 +13,7 @@ const statusTones = Object.values(PurchaseQuotationStatus)
 export function PurchaseQuotationLegend() {
   return (
     <section className="rounded-lg bg-card px-4 py-4 shadow-card lg:px-5">
-      <h2 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground uppercase">
+      <h2 className="flex items-center gap-2 text-xs font-medium tracking-wide text-foreground uppercase">
         <Info className="size-4 text-muted-foreground" />
         Chú thích trạng thái
       </h2>
@@ -30,7 +30,7 @@ export function PurchaseQuotationLegend() {
               />
               {purchaseQuotationStatusLabels[status]}
             </dt>
-            <dd className="text-[11px] text-muted-foreground">
+            <dd className="text-xs text-muted-foreground">
               {purchaseQuotationStatusDescriptions[status]}
             </dd>
           </div>

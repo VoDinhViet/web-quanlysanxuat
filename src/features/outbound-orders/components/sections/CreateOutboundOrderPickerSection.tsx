@@ -199,7 +199,7 @@ export const CreateOutboundOrderPickerSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               ① Chọn PO/Job cần giao
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -209,7 +209,7 @@ export const CreateOutboundOrderPickerSection = withForm({
           </div>
           <div className="flex items-center gap-2">
             {items.length > 0 && (
-              <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
                 KH:{" "}
                 {lookupUnfulfilledOrderItem(items[0].orderItemId)?.client
                   .name ?? "—"}

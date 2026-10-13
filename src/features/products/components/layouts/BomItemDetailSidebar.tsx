@@ -85,7 +85,7 @@ export function BomItemDetailSidebar({
         {/* A note is free text that would wrap badly in the two-column rows, so
             it gets its own full-width block. */}
         <div className="border-t border-border px-4 py-3">
-          <p className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+          <p className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
             <Notes className="size-3.5 shrink-0" />
             Ghi chú
           </p>
@@ -157,7 +157,7 @@ function SidebarSection({
     // One panel, blocks separated by a rule — `not-first` keeps the top edge
     // clean so the divider only ever falls between two sections.
     <div className="not-first:border-t not-first:border-border">
-      <h2 className="flex items-center gap-2 border-b border-border px-4 py-3.5 text-xs font-semibold tracking-wide text-foreground uppercase">
+      <h2 className="flex items-center gap-2 border-b border-border px-4 py-3.5 text-xs font-medium tracking-wide text-foreground uppercase">
         <IconComponent className="size-4 text-muted-foreground" />
         {title}
       </h2>
@@ -175,7 +175,7 @@ type SummaryRowProps = {
 function SummaryRow({ icon: IconComponent, label, value }: SummaryRowProps) {
   return (
     <div className="grid grid-cols-[minmax(0,8rem)_minmax(0,1fr)] items-center gap-3 px-4 py-2.5">
-      <dt className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+      <dt className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
         <IconComponent className="size-3.5 shrink-0" />
         {label}
       </dt>
@@ -200,7 +200,7 @@ function BomItemImagePreview({ image, name }: BomItemImagePreviewProps) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
         <Gallery className="size-7 text-muted-foreground/40" />
-        <p className="text-[11px] font-medium text-muted-foreground">
+        <p className="text-xs font-medium text-muted-foreground">
           Chưa có hình ảnh
         </p>
       </div>
@@ -224,14 +224,14 @@ function BomItemImagePreview({ image, name }: BomItemImagePreviewProps) {
         />
 
         <span className="absolute inset-0 flex items-center justify-center bg-foreground/45 opacity-0 transition-opacity group-hover:opacity-100">
-          <span className="flex items-center gap-1.5 rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-foreground shadow-sm">
+          <span className="flex items-center gap-1.5 rounded-full bg-background px-2.5 py-1 text-xs font-medium text-foreground shadow-sm">
             <MagniferZoomIn className="size-3.5" />
             Xem ảnh gốc
           </span>
         </span>
       </a>
 
-      <p className="truncate text-[11px] text-muted-foreground">
+      <p className="truncate text-xs text-muted-foreground">
         {image.originalName}
       </p>
     </div>

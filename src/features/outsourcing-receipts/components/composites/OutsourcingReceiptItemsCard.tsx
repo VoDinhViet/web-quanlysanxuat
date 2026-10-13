@@ -95,16 +95,16 @@ export function OutsourcingReceiptItemsCard({
             </TableBody>
             <TableFooter>
               <TableRow className="h-12">
-                <TableCell colSpan={5} className="font-semibold">
+                <TableCell colSpan={5} className="font-medium">
                   Tổng
                 </TableCell>
-                <TableCell className="text-right font-semibold tabular-nums">
+                <TableCell className="text-right font-medium tabular-nums">
                   {quantityFormatter.format(totalQuantity)}
                 </TableCell>
-                <TableCell className="text-right font-semibold tabular-nums">
+                <TableCell className="text-right font-medium tabular-nums">
                   {decimalFormatter.format(totalWeight)}
                 </TableCell>
-                <TableCell className="text-right font-semibold tabular-nums">
+                <TableCell className="text-right font-medium tabular-nums">
                   {decimalFormatter.format(totalArea)}
                 </TableCell>
                 <TableCell />

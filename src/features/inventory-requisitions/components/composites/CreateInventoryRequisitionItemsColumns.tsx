@@ -65,10 +65,10 @@ export function buildCreateInventoryRequisitionItemColumns({
       meta: { headerClassName: "min-w-56" },
       cell: ({ row }) => (
         <div>
-          <p className="text-xs font-semibold text-foreground">
+          <p className="text-xs font-medium text-foreground">
             {row.original.line.itemName}
           </p>
-          <p className="font-mono text-[11px] text-muted-foreground">
+          <p className="font-mono text-xs text-muted-foreground">
             {row.original.line.itemCode}
           </p>
         </div>
@@ -166,13 +166,13 @@ export function buildCreateInventoryRequisitionItemColumns({
               }
             />
             {exceedsIssuable && (
-              <p className="mt-1 text-right text-[10px] text-destructive">
+              <p className="mt-1 text-right text-xs text-destructive">
                 Vượt SL có thể lãnh (
                 {quantityFormatter.format(issuableQuantity)})
               </p>
             )}
             {!exceedsIssuable && exceedsBom && (
-              <p className="mt-1 text-right text-[10px] text-destructive">
+              <p className="mt-1 text-right text-xs text-destructive">
                 Vượt SL BOM còn lại ({quantityFormatter.format(bomRemaining)})
               </p>
             )}

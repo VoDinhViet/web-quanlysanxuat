@@ -18,7 +18,7 @@ export function PurchaseOrderCloseOutcomes({
 }: PurchaseOrderCloseOutcomesProps) {
   return (
     <div className="flex flex-col gap-2.5 rounded-lg bg-muted/40 p-3">
-      <p className="text-xs font-semibold text-foreground">Sau khi đóng</p>
+      <p className="text-xs font-medium text-foreground">Sau khi đóng</p>
       <ol className="flex flex-col gap-2">
         <Outcome icon={CheckCircle} toneClassName="bg-success/10 text-success">
           Đơn chuyển sang <strong>"Hoàn tất"</strong> (đánh dấu Đóng sớm).

@@ -42,7 +42,7 @@ export const BomItemInfoTab = withForm({
             <LayersMinimalistic className="size-5" />
           </div>
           <div className="min-w-0">
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               Thông tin chung
             </h2>
             <p className="text-sm text-muted-foreground">

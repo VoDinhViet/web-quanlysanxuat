@@ -52,7 +52,7 @@ export function IqcStatusLegend({
               />
               {iqcStatusLabels[status]}
             </dt>
-            <dd className="space-y-1.5 text-[11px] text-muted-foreground">
+            <dd className="space-y-1.5 text-xs text-muted-foreground">
               <p>{iqcStatusDescriptions[status]}</p>
               {status === IqcStatus.IN_PROGRESS &&
                 (supplierReturn ? (
@@ -60,7 +60,7 @@ export function IqcStatusLegend({
                     to="/manage/supplier-returns/$supplierReturnId"
                     params={{ supplierReturnId: supplierReturn.id }}
                     variant="link"
-                    className="h-auto p-0 text-[11px]"
+                    className="h-auto p-0 text-xs"
                   >
                     Xem phiếu trả NCC ({supplierReturn.code}) →
                   </LinkButton>

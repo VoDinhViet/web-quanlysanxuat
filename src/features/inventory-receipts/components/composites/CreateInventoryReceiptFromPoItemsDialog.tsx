@@ -47,7 +47,7 @@ const columns = col.columns([
     header: "Mã vật tư",
     meta: {
       headerClassName: "min-w-28",
-      cellClassName: "font-mono font-semibold text-foreground",
+      cellClassName: "font-mono font-medium text-foreground",
     },
   }),
   col.accessor("name", {
@@ -81,7 +81,7 @@ const columns = col.columns([
     header: "Còn lại",
     meta: {
       headerClassName: "w-24 text-right",
-      cellClassName: "text-right font-semibold text-foreground tabular-nums",
+      cellClassName: "text-right font-medium text-foreground tabular-nums",
     },
     cell: ({ getValue }) => quantityFormatter.format(getValue()),
   }),

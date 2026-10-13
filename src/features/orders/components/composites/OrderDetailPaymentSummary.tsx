@@ -22,7 +22,7 @@ export function OrderDetailPaymentSummary({
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-muted-foreground">
               <FileText className="size-4" />
-              <span className="text-xs font-semibold tracking-wide uppercase">
+              <span className="text-xs font-medium tracking-wide uppercase">
                 Ghi chú & Điều khoản
               </span>
             </div>
@@ -104,18 +104,18 @@ export function OrderDetailPaymentSummary({
 
           <div className="border-t border-border/60 pt-3">
             <div className="flex items-baseline justify-between">
-              <span className="font-heading text-sm font-semibold text-foreground">
+              <span className="font-heading text-sm font-medium text-foreground">
                 Tổng thanh toán
               </span>
               <div className="text-right">
-                <span className="font-mono text-2xl font-bold tracking-tight text-primary tabular-nums">
+                <span className="font-mono text-2xl font-semibold tracking-tight text-primary tabular-nums">
                   {currencyFormatter.format(order.total)}
                 </span>
-                <span className="ml-1 text-xs font-semibold text-primary">
+                <span className="ml-1 text-xs font-medium text-primary">
                   {order.currency}
                 </span>
                 {order.currency !== Currency.VND && (
-                  <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">
+                  <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">
                     ≈ {vndFormatter.format(order.totalVnd)} VND
                   </p>
                 )}

@@ -75,7 +75,7 @@ export function OutsourcingOrdersTableFilter() {
       <div className="w-72 space-y-1.5">
         <Label
           htmlFor="os-out-q"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Tìm kiếm
         </Label>
@@ -97,7 +97,7 @@ export function OutsourcingOrdersTableFilter() {
       <div className="flex w-44 flex-col gap-1.5">
         <Label
           htmlFor="os-out-status"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Trạng thái
         </Label>

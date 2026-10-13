@@ -71,12 +71,17 @@ function OrderFormSection({
         <div>
           <div className="flex items-center gap-2">
             {Icon && <Icon className="size-4 text-primary" />}
-            <h3 className="text-sm font-semibold tracking-tight text-foreground">
+            <h3 className="text-sm font-medium tracking-tight text-foreground">
               {title}
             </h3>
           </div>
           {description ? (
-            <p className={cn("mt-0.5 text-xs text-muted-foreground", Icon && "pl-6")}>
+            <p
+              className={cn(
+                "mt-0.5 text-xs text-muted-foreground",
+                Icon && "pl-6"
+              )}
+            >
               {description}
             </p>
           ) : null}
@@ -165,22 +170,23 @@ export const UpdateOrderInfoSection = withForm({
             <FileSpreadsheet className="size-5 text-primary" />
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
+                <h2 className="font-heading text-base font-medium tracking-wide text-foreground uppercase">
                   Chỉnh sửa đơn hàng
                 </h2>
-                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                   Bước 1 / 3
                 </span>
               </div>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Cập nhật thông tin khách hàng, tiến độ giao hàng và điều kiện thanh toán
+                Cập nhật thông tin khách hàng, tiến độ giao hàng và điều kiện
+                thanh toán
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 px-3 py-1.5 font-mono text-xs text-foreground">
             <span className="text-muted-foreground">Mã đơn hàng:</span>
-            <span className="font-semibold text-primary">{orderCode}</span>
+            <span className="font-medium text-primary">{orderCode}</span>
           </div>
         </div>
 
@@ -206,9 +212,7 @@ export const UpdateOrderInfoSection = withForm({
                       </FieldLabel>
                       <ClientPicker
                         value={field.state.value || undefined}
-                        onValueChange={(next) =>
-                          field.handleChange(next ?? "")
-                        }
+                        onValueChange={(next) => field.handleChange(next ?? "")}
                         onClientSelect={(client) =>
                           clientContactField.handleChange(
                             pickDefaultContactId(client)
@@ -396,7 +400,7 @@ export const UpdateOrderInfoSection = withForm({
                       placeholder="Nhập địa chỉ giao hàng chi tiết..."
                       disabled={disabled}
                       maxLength={500}
-                      className="min-h-20 resize-none bg-background text-xs"
+                      className="min-h-20 resize-none bg-card text-xs"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -472,7 +476,7 @@ export const UpdateOrderInfoSection = withForm({
                     />
                   )}
                 </form.AppField>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Ghi chú này sẽ xuất hiện trên bản in chứng từ gửi đối tác.
                 </p>
               </div>
@@ -488,9 +492,10 @@ export const UpdateOrderInfoSection = withForm({
                     />
                   )}
                 </form.AppField>
-                <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                <p className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Lock className="size-3 text-amber-500" />
-                  Chỉ lưu hành nội bộ xưởng sản xuất và kế toán, không in gửi khách.
+                  Chỉ lưu hành nội bộ xưởng sản xuất và kế toán, không in gửi
+                  khách.
                 </p>
               </div>
             </div>
@@ -500,4 +505,3 @@ export const UpdateOrderInfoSection = withForm({
     )
   },
 })
-

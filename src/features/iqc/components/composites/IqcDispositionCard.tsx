@@ -24,8 +24,7 @@ const dispositionOptions: RadioCardOption<IqcDisposition>[] = [
     description: iqcDispositionDescriptions[IqcDisposition.CONCESSION],
     icon: DangerTriangle,
     activeClassName: "border-amber-500",
-    chipClassName:
-      "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
+    chipClassName: "bg-warning-soft text-warning-ink",
     badgeClassName: "bg-amber-500 text-white",
   },
   {
@@ -34,8 +33,7 @@ const dispositionOptions: RadioCardOption<IqcDisposition>[] = [
     description: iqcDispositionDescriptions[IqcDisposition.SORT],
     icon: Layers,
     activeClassName: "border-violet-500",
-    chipClassName:
-      "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400",
+    chipClassName: "bg-violet-soft text-violet-ink",
     badgeClassName: "bg-violet-500 text-white",
   },
   {

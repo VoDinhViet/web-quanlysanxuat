@@ -49,7 +49,7 @@ export const CreateOutsourcingOrderItemsSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h3 className="text-sm font-semibold text-foreground">
+          <h3 className="text-sm font-medium text-foreground">
             Danh sách chi tiết gửi gia công
           </h3>
           <p className="text-xs text-muted-foreground">
@@ -118,19 +118,19 @@ export const CreateOutsourcingOrderItemsSection = withForm({
           <div className="flex flex-wrap items-center gap-4">
             <span>
               Tổng SL gửi:{" "}
-              <span className="font-semibold text-foreground tabular-nums">
+              <span className="font-medium text-foreground tabular-nums">
                 {quantityFormatter.format(totalQuantity)}
               </span>
             </span>
             <span>
               Tổng trọng lượng:{" "}
-              <span className="font-semibold text-foreground tabular-nums">
+              <span className="font-medium text-foreground tabular-nums">
                 {decimalFormatter.format(totalWeight)} kg
               </span>
             </span>
             <span>
               Tổng diện tích:{" "}
-              <span className="font-semibold text-foreground tabular-nums">
+              <span className="font-medium text-foreground tabular-nums">
                 {decimalFormatter.format(totalArea)} m²
               </span>
             </span>
@@ -138,7 +138,7 @@ export const CreateOutsourcingOrderItemsSection = withForm({
         </div>
 
         <div className="mt-4 rounded-md bg-warning/10 p-4">
-          <p className="text-xs font-semibold text-foreground">Lưu ý</p>
+          <p className="text-xs font-medium text-foreground">Lưu ý</p>
           <ul className="mt-2 list-inside list-disc space-y-1 text-xs text-muted-foreground">
             <li>"Còn được phép gửi" = Định mức − Đã gửi.</li>
             <li>SL gửi lần này không được vượt "Còn được phép gửi".</li>

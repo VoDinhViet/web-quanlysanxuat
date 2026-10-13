@@ -98,7 +98,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             ① Nguồn lãnh
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -128,7 +128,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                       value={option.value}
                       className={cn(
                         "flex cursor-pointer items-start gap-3 rounded-lg border border-input p-4 transition-colors",
-                        "hover:border-primary/40 hover:bg-muted/30",
+                        "hover:border-border hover:bg-muted/30",
                         "data-disabled:cursor-not-allowed data-disabled:opacity-50",
                         isChecked && "border-primary bg-primary/5"
                       )}
@@ -142,7 +142,7 @@ export const CreateInventoryRequisitionSourceSection = withForm({
                         <option.icon className="size-5" />
                       </span>
                       <span className="flex-1 space-y-0.5">
-                        <span className="block text-sm font-semibold text-foreground">
+                        <span className="block text-sm font-medium text-foreground">
                           {option.title}
                         </span>
                         <span className="block text-xs text-muted-foreground">

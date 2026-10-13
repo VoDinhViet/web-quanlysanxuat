@@ -78,7 +78,7 @@ export function SupplierReturnDetailActions({
             <DialogTitle>Xác nhận xuất trả NCC</DialogTitle>
             <DialogDescription>
               Xác nhận phiếu{" "}
-              <span className="font-mono font-semibold text-foreground">
+              <span className="font-mono font-medium text-foreground">
                 {supplierReturn.code}
               </span>{" "}
               sẽ trừ tồn kho (nếu phiếu nhập kho liên quan đã nhập kho) và tự

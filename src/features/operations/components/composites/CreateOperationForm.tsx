@@ -67,7 +67,7 @@ export function CreateOperationForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           Tạo công đoạn
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">

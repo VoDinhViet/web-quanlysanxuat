@@ -39,14 +39,14 @@ export function DirectQuantityCell({
 }) {
   const colorClassName =
     variant === "blue"
-      ? "text-blue-600 dark:text-blue-400 font-semibold"
+      ? "text-blue-600 dark:text-blue-400 font-medium"
       : variant === "orange"
-        ? "text-amber-600 dark:text-amber-400 font-semibold"
+        ? "text-amber-600 dark:text-amber-400 font-medium"
         : variant === "green"
-          ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+          ? "text-emerald-600 dark:text-emerald-400 font-medium"
           : value < 0
-            ? "text-rose-600 dark:text-rose-400 font-bold"
-            : "text-foreground font-semibold"
+            ? "text-rose-600 dark:text-rose-400 font-semibold"
+            : "text-foreground font-medium"
 
   return (
     <span className={cn("text-xs tabular-nums", colorClassName)}>

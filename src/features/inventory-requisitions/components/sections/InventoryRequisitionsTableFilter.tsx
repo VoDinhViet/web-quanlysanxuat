@@ -69,7 +69,7 @@ export function InventoryRequisitionsTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="lv-code"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -91,7 +91,7 @@ export function InventoryRequisitionsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="lv-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>

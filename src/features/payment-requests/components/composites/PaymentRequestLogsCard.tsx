@@ -45,7 +45,7 @@ export function PaymentRequestLogsCard({
 
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <History className="size-4 text-muted-foreground" />
         Lịch sử thay đổi
       </div>

@@ -18,7 +18,7 @@ export function InventoryIssueDetailInfoCard({
 
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <History className="size-4 text-muted-foreground" />
         Nhật ký phiếu
       </div>
@@ -63,7 +63,7 @@ type InfoRowProps = {
 function InfoRow({ label, value }: InfoRowProps) {
   return (
     <div className="space-y-1">
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </p>
       <p className="text-sm font-medium text-foreground">{value}</p>

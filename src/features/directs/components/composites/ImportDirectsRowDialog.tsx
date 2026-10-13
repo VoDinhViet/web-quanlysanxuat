@@ -105,7 +105,7 @@ function ImportDirectsRowForm({
       className="flex min-h-0 flex-1 flex-col"
     >
       <DialogHeader className="gap-1 border-b border-border/60 px-6 py-4">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           Sửa vật tư — dòng {row.rowNumber}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
@@ -132,7 +132,7 @@ function ImportDirectsRowForm({
               <div className="mb-4 flex items-start gap-3">
                 <Icon className={cn("mt-0.5 size-5 shrink-0", iconClassName)} />
                 <div className="flex flex-col gap-0.5">
-                  <h3 className="text-sm font-semibold">{title}</h3>
+                  <h3 className="text-sm font-medium">{title}</h3>
                   <p className="text-xs text-muted-foreground">{description}</p>
                 </div>
               </div>

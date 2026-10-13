@@ -30,7 +30,7 @@ export function UpdateOrderPage() {
         { label: "Cập nhật" },
       ]}
     >
-      <PageBody className="order-drafting">
+      <PageBody>
         <UpdateOrderForm order={order} items={items} />
       </PageBody>
     </PageShell>

@@ -58,7 +58,7 @@ export function ClientPickerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+          <DialogTitle className="flex items-center gap-2 text-base font-medium">
             <Buildings2 className="size-4.5 text-primary" />
             <span>Chọn khách hàng</span>
           </DialogTitle>
@@ -71,7 +71,7 @@ export function ClientPickerDialog({
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <Input
-              className="pl-9 pr-8 text-xs placeholder:text-muted-foreground/75"
+              className="pr-8 pl-9 text-xs placeholder:text-muted-foreground/75"
               placeholder="Tìm theo tên, mã khách hàng, người liên hệ, SĐT..."
               value={q}
               onChange={(event) => {

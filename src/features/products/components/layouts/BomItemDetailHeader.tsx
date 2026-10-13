@@ -70,7 +70,7 @@ export function BomItemDetailHeader({
           <BomItemHeaderThumbnail image={bomItem.image} name={bomItem.name} />
 
           <div className="min-w-0">
-            <h2 className="min-w-0 truncate text-base leading-snug font-semibold text-foreground sm:text-lg">
+            <h2 className="min-w-0 truncate text-base leading-snug font-medium text-foreground sm:text-lg">
               {bomItem.name}
             </h2>
 

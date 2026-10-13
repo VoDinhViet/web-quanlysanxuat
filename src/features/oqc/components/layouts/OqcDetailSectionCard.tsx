@@ -23,7 +23,7 @@ export function OqcDetailSectionCard({
           <Icon className="size-5" />
         </div>
         <div className="min-w-0">
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             {title}
           </h2>
           {description ? (

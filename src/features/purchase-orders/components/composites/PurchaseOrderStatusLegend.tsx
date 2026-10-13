@@ -17,7 +17,7 @@ const statusTones = Object.values(PurchaseOrderStatus)
 export function PurchaseOrderStatusLegend() {
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <Info className="size-4 text-muted-foreground" />
         Chú thích trạng thái
       </div>
@@ -34,7 +34,7 @@ export function PurchaseOrderStatusLegend() {
               />
               {purchaseOrderStatusLabels[status]}
             </dt>
-            <dd className="text-[11px] text-muted-foreground">
+            <dd className="text-xs text-muted-foreground">
               {purchaseOrderStatusDescriptions[status]}
             </dd>
           </div>

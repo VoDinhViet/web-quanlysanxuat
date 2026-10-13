@@ -51,7 +51,7 @@ export const buildOperationColumns = ({ offset }: OperationColumnsOptions) =>
       header: "Mã công đoạn",
       meta: { headerClassName: "min-w-32" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-xs font-bold text-foreground">
+        <span className="font-mono text-xs font-semibold text-foreground">
           {getValue()}
         </span>
       ),
@@ -116,7 +116,7 @@ export const buildOperationColumns = ({ offset }: OperationColumnsOptions) =>
                       variant="outline"
                       size="icon-sm"
                       aria-label="Xem chi tiết công đoạn"
-                      className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                      className="text-muted-foreground hover:border-border hover:text-primary"
                     >
                       <Eye className="size-3.5" />
                     </LinkButton>

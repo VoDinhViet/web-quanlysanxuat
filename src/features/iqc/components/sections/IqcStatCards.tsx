@@ -59,10 +59,10 @@ export function IqcStatCards() {
           </div>
 
           <div className="min-w-0">
-            <p className="truncate text-xs font-semibold text-muted-foreground">
+            <p className="truncate text-xs font-medium text-muted-foreground">
               {tile.label}
             </p>
-            <p className="text-2xl font-bold text-foreground">
+            <p className="text-2xl font-semibold text-foreground">
               {tile.value}
               {tile.percent && (
                 <span className="ml-1.5 text-xs font-normal text-muted-foreground">

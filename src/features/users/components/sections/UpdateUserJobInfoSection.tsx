@@ -63,7 +63,7 @@ export const UpdateUserJobInfoSection = withForm({
     return (
       <div>
         <div className="px-4 py-4 sm:px-5">
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             Thông tin công việc
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -97,7 +97,7 @@ export const UpdateUserJobInfoSection = withForm({
                         id={field.name}
                         onBlur={field.handleBlur}
                         aria-invalid={isInvalid}
-                        className="h-9 w-full bg-background text-xs"
+                        className="h-9 w-full bg-card text-xs"
                       >
                         <SelectValue
                           placeholder={
@@ -163,7 +163,7 @@ export const UpdateUserJobInfoSection = withForm({
                         id={field.name}
                         onBlur={field.handleBlur}
                         aria-invalid={isInvalid}
-                        className="h-9 w-full bg-background text-xs"
+                        className="h-9 w-full bg-card text-xs"
                       >
                         <SelectValue
                           placeholder={

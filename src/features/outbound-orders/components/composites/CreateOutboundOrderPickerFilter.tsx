@@ -86,7 +86,7 @@ export function CreateOutboundOrderPickerFilter({
       <div className="space-y-1.5">
         <Label
           htmlFor="client-combobox"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Khách hàng
         </Label>
@@ -100,7 +100,7 @@ export function CreateOutboundOrderPickerFilter({
         <div key={field.key} className="space-y-1.5">
           <Label
             htmlFor={`do-picker-${field.key}`}
-            className="text-[11px] font-medium text-muted-foreground"
+            className="text-xs font-medium text-muted-foreground"
           >
             {field.label}
           </Label>
@@ -129,13 +129,13 @@ export function CreateOutboundOrderPickerFilter({
                 className={cn(
                   "gap-1.5 text-xs",
                   filters.deliverableOnly &&
-                    "border-primary/40 bg-primary/5 text-primary hover:bg-primary/10"
+                    "border-primary/40 bg-primary/5 text-primary hover:bg-muted"
                 )}
               >
                 <ListFilter className="size-4" />
                 Bộ lọc khác
                 {filters.deliverableOnly && (
-                  <span className="flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+                  <span className="flex size-4 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                     1
                   </span>
                 )}

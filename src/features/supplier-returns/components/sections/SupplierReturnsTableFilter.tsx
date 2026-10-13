@@ -151,7 +151,7 @@ export function SupplierReturnsTableFilter() {
                 <ListFilter className="size-3.5" />
                 Bộ lọc
                 {activeFilterCount > 0 && (
-                  <span className="rounded-full bg-primary/10 px-1.5 text-[10px] font-semibold text-primary">
+                  <span className="rounded-full bg-primary/10 px-1.5 text-xs font-medium text-primary">
                     {activeFilterCount}
                   </span>
                 )}
@@ -159,14 +159,14 @@ export function SupplierReturnsTableFilter() {
             }
           />
           <PopoverContent align="end" className="w-80 gap-3 sm:w-96">
-            <p className="text-xs font-semibold text-foreground">Bộ lọc</p>
+            <p className="text-xs font-medium text-foreground">Bộ lọc</p>
 
             <div className="grid grid-cols-2 gap-3">
               {/* Nhà cung cấp */}
               <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="supplier-returns-supplier"
-                  className="text-[11px] font-medium text-muted-foreground"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Nhà cung cấp
                 </Label>
@@ -204,7 +204,7 @@ export function SupplierReturnsTableFilter() {
               <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="supplier-returns-status"
-                  className="text-[11px] font-medium text-muted-foreground"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Trạng thái
                 </Label>
@@ -235,7 +235,7 @@ export function SupplierReturnsTableFilter() {
               <div className="space-y-1.5">
                 <Label
                   htmlFor="supplier-returns-po-code"
-                  className="text-[11px] font-medium text-muted-foreground"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   PO
                 </Label>
@@ -255,7 +255,7 @@ export function SupplierReturnsTableFilter() {
               <div className="space-y-1.5">
                 <Label
                   htmlFor="supplier-returns-iqc-code"
-                  className="text-[11px] font-medium text-muted-foreground"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Mã IQC
                 </Label>

@@ -46,7 +46,7 @@ export function CreateInventoryReceiptReturnHelpPanel() {
   return (
     <div className="space-y-4 rounded-lg bg-card p-4 shadow-card sm:p-5">
       <div>
-        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+        <div className="flex items-center gap-1.5 font-medium text-foreground">
           <Info className="size-4 text-primary" />
           <span>Hướng dẫn</span>
         </div>
@@ -65,7 +65,7 @@ export function CreateInventoryReceiptReturnHelpPanel() {
       </div>
 
       <div className="border-t border-border/60 pt-4">
-        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+        <div className="flex items-center gap-1.5 font-medium text-foreground">
           <CheckCircle className="size-4 text-success" />
           <span>Logic xử lý</span>
         </div>

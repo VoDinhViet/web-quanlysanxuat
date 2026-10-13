@@ -41,14 +41,14 @@ export const productionExecutionJobColumns = columnHelper.columns([
     header: "PO",
     meta: { headerClassName: "min-w-24" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
   columnHelper.accessor("jobCode", {
     header: "JOB",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
   // Chỉ hiện khi xem "Tất cả công đoạn" (ProductionExecutionJobsTable ẩn/hiện qua columnVisibility).

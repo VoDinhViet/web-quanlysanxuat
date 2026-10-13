@@ -76,7 +76,7 @@ export const supplierColumns = supplierColumnHelper.columns([
             {supplier.name}
           </p>
           {supplier.note ? (
-            <p className="truncate text-[11px] text-muted-foreground">
+            <p className="truncate text-xs text-muted-foreground">
               {supplier.note}
             </p>
           ) : null}
@@ -113,7 +113,7 @@ export const supplierColumns = supplierColumnHelper.columns([
               {getValue() ?? "—"}
             </p>
             {supplier.email ? (
-              <p className="truncate text-[11px] text-muted-foreground">
+              <p className="truncate text-xs text-muted-foreground">
                 {supplier.email}
               </p>
             ) : null}
@@ -165,7 +165,7 @@ export const supplierColumns = supplierColumnHelper.columns([
                     variant="outline"
                     size="icon-sm"
                     aria-label="Xem chi tiết"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    className="text-muted-foreground hover:border-border hover:text-primary"
                   >
                     <Eye className="size-3.5" />
                   </LinkButton>
@@ -184,7 +184,7 @@ export const supplierColumns = supplierColumnHelper.columns([
                     variant="outline"
                     size="icon-sm"
                     aria-label="Chỉnh sửa"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    className="text-muted-foreground hover:border-border hover:text-primary"
                   >
                     <Edit3 className="size-3.5" />
                   </LinkButton>

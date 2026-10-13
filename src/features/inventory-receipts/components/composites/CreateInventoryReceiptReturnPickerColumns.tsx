@@ -65,10 +65,10 @@ export function buildCreateInventoryReceiptReturnPickerColumns({
       meta: { headerClassName: "min-w-56" },
       cell: ({ row }) => (
         <div>
-          <p className="text-xs font-semibold text-foreground">
+          <p className="text-xs font-medium text-foreground">
             {row.original.name}
           </p>
-          <p className="font-mono text-[11px] text-muted-foreground">
+          <p className="font-mono text-xs text-muted-foreground">
             {row.original.code}
           </p>
         </div>

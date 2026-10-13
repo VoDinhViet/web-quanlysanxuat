@@ -15,8 +15,7 @@ export const supplierReturnStatusStyles: Record<
   BadgeStyle
 > = {
   [InventoryDocumentStatus.DRAFT]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [InventoryDocumentStatus.POSTED]: {

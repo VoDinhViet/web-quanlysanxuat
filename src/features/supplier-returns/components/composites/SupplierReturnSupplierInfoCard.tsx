@@ -50,7 +50,7 @@ type InfoFieldProps = {
 function InfoField({ label, value }: InfoFieldProps) {
   return (
     <div className="min-w-0 space-y-1">
-      <dt className="text-[11px] font-medium text-muted-foreground">{label}</dt>
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
       <dd className="text-sm font-medium break-words text-foreground">
         {value}
       </dd>

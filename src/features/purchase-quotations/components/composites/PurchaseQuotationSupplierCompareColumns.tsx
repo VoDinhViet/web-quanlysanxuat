@@ -31,7 +31,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
     purchaseQuotationSupplierColumnHelper.display({
       id: "select",
       header: "Trúng thầu",
-      meta: { headerClassName: "w-10 text-[10px]", cellClassName: "pl-3" },
+      meta: { headerClassName: "w-10 text-xs", cellClassName: "pl-3" },
       cell: ({ row }) => {
         const supplier = row.original
 
@@ -60,14 +60,14 @@ export function buildPurchaseQuotationSupplierCompareColumns({
       id: "supplierName",
       header: "Nhà cung cấp",
       meta: {
-        headerClassName: "text-[10px]",
+        headerClassName: "text-xs",
         cellClassName: "truncate font-medium",
       },
     }),
     purchaseQuotationSupplierColumnHelper.display({
       id: "lastPrice",
       header: "Giá gần nhất",
-      meta: { headerClassName: "w-40 text-[10px]" },
+      meta: { headerClassName: "w-40 text-xs" },
       cell: ({ row }) => {
         const lastPurchase = row.original.lastPurchase
         return lastPurchase ? (
@@ -80,7 +80,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
     purchaseQuotationSupplierColumnHelper.display({
       id: "lastPurchaseDate",
       header: "Ngày mua gần nhất",
-      meta: { headerClassName: "w-32 text-[10px]" },
+      meta: { headerClassName: "w-32 text-xs" },
       cell: ({ row }) => {
         const lastPurchase = row.original.lastPurchase
         return lastPurchase
@@ -91,7 +91,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
     purchaseQuotationSupplierColumnHelper.accessor("unitPrice", {
       header: "Giá báo (VNĐ)",
       meta: {
-        headerClassName: "w-44 text-[10px]",
+        headerClassName: "w-44 text-xs",
         cellClassName: "font-medium",
       },
       cell: ({ getValue }) => {
@@ -101,19 +101,19 @@ export function buildPurchaseQuotationSupplierCompareColumns({
     }),
     purchaseQuotationSupplierColumnHelper.accessor("leadTimeDays", {
       header: "Leadtime (ngày)",
-      meta: { headerClassName: "w-32 text-[10px]" },
+      meta: { headerClassName: "w-32 text-xs" },
       cell: ({ getValue }) => getValue() ?? "—",
     }),
     purchaseQuotationSupplierColumnHelper.accessor((row) => row.note ?? "—", {
       id: "note",
       header: "Ghi chú",
-      meta: { headerClassName: "text-[10px]", cellClassName: "truncate" },
+      meta: { headerClassName: "text-xs", cellClassName: "truncate" },
     }),
     purchaseQuotationSupplierColumnHelper.display({
       id: "files",
       header: "Tệp đính kèm",
       meta: {
-        headerClassName: "w-28 text-[10px] text-center",
+        headerClassName: "w-28 text-xs text-center",
         cellClassName: "text-center",
       },
       cell: ({ row }) => (

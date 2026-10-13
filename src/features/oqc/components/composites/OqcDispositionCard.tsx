@@ -32,10 +32,9 @@ const sortOption: RadioCardOption<OqcDisposition> = {
   label: oqcDispositionLabels[OqcDisposition.SORT],
   description: oqcDispositionDescriptions[OqcDisposition.SORT],
   icon: Filter,
-  activeClassName: "border-violet-500",
-  chipClassName:
-    "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400",
-  badgeClassName: "bg-violet-500 text-white",
+  activeClassName: "border-primary",
+  chipClassName: "bg-violet-soft text-violet-ink",
+  badgeClassName: "bg-primary text-primary-foreground",
 }
 
 const acceptOption: RadioCardOption<OqcDisposition> = {
@@ -43,10 +42,9 @@ const acceptOption: RadioCardOption<OqcDisposition> = {
   label: oqcDispositionLabels[OqcDisposition.ACCEPT],
   description: oqcDispositionDescriptions[OqcDisposition.ACCEPT],
   icon: DangerTriangle,
-  activeClassName: "border-amber-500",
-  chipClassName:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
-  badgeClassName: "bg-amber-500 text-white",
+  activeClassName: "border-primary",
+  chipClassName: "bg-warning-soft text-warning-ink",
+  badgeClassName: "bg-primary text-primary-foreground",
 }
 
 // REWORK/SCRAP only exist for lots confirmed before the SORT flow — new lots pick ACCEPT or SORT.
@@ -56,10 +54,9 @@ const legacyOptions: RadioCardOption<OqcDisposition>[] = [
     label: oqcDispositionLabels[OqcDisposition.REWORK],
     description: oqcDispositionDescriptions[OqcDisposition.REWORK],
     icon: Sledgehammer,
-    activeClassName: "border-blue-500",
-    chipClassName:
-      "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400",
-    badgeClassName: "bg-blue-500 text-white",
+    activeClassName: "border-primary",
+    chipClassName: "bg-info-soft text-info-ink",
+    badgeClassName: "bg-primary text-primary-foreground",
   },
   {
     value: OqcDisposition.SCRAP,
@@ -67,7 +64,7 @@ const legacyOptions: RadioCardOption<OqcDisposition>[] = [
     description: oqcDispositionDescriptions[OqcDisposition.SCRAP],
     icon: TrashBinTrash,
     activeClassName: "border-destructive",
-    chipClassName: "bg-destructive/15 text-destructive",
+    chipClassName: "bg-destructive-soft text-destructive-ink",
     badgeClassName: "bg-destructive text-destructive-foreground",
   },
 ]
@@ -119,7 +116,7 @@ export const OqcDispositionCard = withForm({
             {(disposition) => {
               if (disposition === OqcDisposition.ACCEPT) {
                 return (
-                  <p className="rounded-lg bg-amber-50 px-3 py-2.5 text-xs font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
+                  <p className="rounded-lg bg-warning-soft px-3 py-2.5 text-xs font-medium text-warning-ink">
                     ⚠ Hoàn thành ngay — không cần kiểm lại.
                   </p>
                 )
@@ -127,7 +124,7 @@ export const OqcDispositionCard = withForm({
 
               if (disposition === OqcDisposition.SORT) {
                 return (
-                  <div className="space-y-3 rounded-lg border border-violet-200 bg-violet-50/50 p-3.5 dark:border-violet-500/20 dark:bg-violet-500/5">
+                  <div className="space-y-3 rounded-lg bg-violet-soft/50 p-4">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <form.AppField
                         name="sortNgQty"
@@ -164,7 +161,7 @@ export const OqcDispositionCard = withForm({
                               {sortOkQty === undefined
                                 ? "—"
                                 : quantityFormatter.format(sortOkQty)}
-                              <span className="ml-1.5 text-[10px] font-normal">
+                              <span className="ml-1.5 text-xs font-normal">
                                 (tự tính)
                               </span>
                             </div>
@@ -182,7 +179,7 @@ export const OqcDispositionCard = withForm({
 
               if (disposition === OqcDisposition.REWORK) {
                 return (
-                  <p className="rounded-lg bg-blue-50 px-3 py-2.5 text-xs font-medium text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+                  <p className="rounded-lg bg-info-soft px-3 py-2.5 text-xs font-medium text-info-ink">
                     → Chuyển "Đang rework" — trả xưởng sửa lại, QC lấy mẫu và
                     xác nhận lại trên cùng phiếu này tới khi PASS.
                   </p>
@@ -191,7 +188,7 @@ export const OqcDispositionCard = withForm({
 
               if (disposition === OqcDisposition.SCRAP) {
                 return (
-                  <p className="rounded-lg bg-destructive/10 px-3 py-2.5 text-xs font-medium text-destructive">
+                  <p className="rounded-lg bg-destructive-soft px-3 py-2.5 text-xs font-medium text-destructive-ink">
                     ✗ Hoàn thành ngay — loại bỏ hẳn lô hàng, giải phóng lại
                     quota lô của công đoạn.
                   </p>

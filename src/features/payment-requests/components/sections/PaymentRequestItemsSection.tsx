@@ -71,8 +71,7 @@ const itemColumns = col.columns([
     cell: ({ getValue, row }) => (
       <span
         className={cn(
-          getValue() < row.original.orderedQty &&
-            "font-semibold text-destructive"
+          getValue() < row.original.orderedQty && "font-medium text-destructive"
         )}
       >
         {numberFmt.format(getValue())}
@@ -93,7 +92,7 @@ const itemColumns = col.columns([
     header: "Thành tiền (VND)",
     meta: {
       headerClassName: "min-w-32 text-right",
-      cellClassName: "text-right font-semibold tabular-nums",
+      cellClassName: "text-right font-medium tabular-nums",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
@@ -129,7 +128,7 @@ export function PaymentRequestItemsSection({
 
   return (
     <div className="border-b border-border not-first:border-t">
-      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-semibold tracking-wide text-foreground uppercase sm:px-5">
+      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-medium tracking-wide text-foreground uppercase sm:px-5">
         <PackageSearch className="size-3.5 text-muted-foreground" />
         Danh sách vật tư / hàng hóa
       </h3>
@@ -204,10 +203,10 @@ export function PaymentRequestItemsSection({
             value={paymentRequest.otherCost}
           />
           <div className="flex items-center justify-between gap-3 border-t border-border pt-2">
-            <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               Tổng cộng
             </dt>
-            <dd className="font-semibold text-foreground tabular-nums">
+            <dd className="font-medium text-foreground tabular-nums">
               {currencyFormatter.format(paymentRequest.requestValue)} VND
             </dd>
           </div>

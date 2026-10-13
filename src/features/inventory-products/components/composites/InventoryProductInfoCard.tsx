@@ -18,7 +18,7 @@ export function InventoryProductInfoCard({
 }: InventoryProductInfoCardProps) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         Thông tin thành phẩm
       </p>
 
@@ -59,14 +59,14 @@ function InfoField({ icon: Icon, label, value, mono }: InfoFieldProps) {
     <div className="flex items-start gap-2">
       <Icon className="mt-0.5 size-3.5 shrink-0 text-muted-foreground/70" />
       <div className="min-w-0">
-        <dt className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           {label}
         </dt>
         <dd
           className={
             mono
-              ? "mt-0.5 truncate font-mono text-sm font-semibold text-foreground"
-              : "mt-0.5 truncate text-sm font-semibold text-foreground"
+              ? "mt-0.5 truncate font-mono text-sm font-medium text-foreground"
+              : "mt-0.5 truncate text-sm font-medium text-foreground"
           }
         >
           {value}

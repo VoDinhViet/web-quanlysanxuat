@@ -139,6 +139,8 @@ export type PurchaseOrderItemDetail = {
   receivedQuantity: number
   /** Tồn thực tế hiện tại của vật tư (gộp mọi kho). */
   onHand: number
+  /** Ngày cần của ĐXMH nguồn của dòng này (suy ở BE, chỉ đọc). */
+  neededDate: string
   quantityAdjustmentReason: string | null
   unitPrice: number | null
   note: string | null

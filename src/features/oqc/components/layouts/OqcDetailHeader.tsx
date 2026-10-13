@@ -37,7 +37,7 @@ export function OqcDetailHeader({
           <span className="hidden sm:inline">Quay lại</span>
         </LinkButton>
 
-        <span className="font-mono text-lg font-bold text-foreground">
+        <span className="font-mono text-lg font-medium text-foreground">
           {oqc.code}
         </span>
         <OqcStatusBadge status={oqc.status} />

@@ -38,7 +38,7 @@ export function InventoryDirectStatusBadge({
     <Badge
       variant="outline"
       className={cn(
-        "inline-flex items-center gap-1.5 text-[11px] font-medium",
+        "inline-flex items-center gap-1.5 text-xs font-medium",
         badge,
         className
       )}

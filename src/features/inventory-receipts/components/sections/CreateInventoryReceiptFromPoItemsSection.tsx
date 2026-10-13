@@ -74,7 +74,7 @@ export const CreateInventoryReceiptFromPoItemsSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             ③ Nhập số lượng nhận lần này và chọn yêu cầu QC
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -202,7 +202,7 @@ export const CreateInventoryReceiptFromPoItemsSection = withForm({
           <span>Tổng số dòng: {items.length}</span>
           <span>
             Tổng số lượng nhận lần này:{" "}
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {quantityFormatter.format(totalQuantity)}
             </span>
           </span>

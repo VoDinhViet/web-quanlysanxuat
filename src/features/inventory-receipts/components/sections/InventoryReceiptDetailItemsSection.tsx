@@ -77,7 +77,7 @@ function buildInventoryReceiptDetailItemColumns({
       header: `Mã ${itemNoun}`,
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-xs font-semibold">{getValue()}</span>
+        <span className="font-mono text-xs font-medium">{getValue()}</span>
       ),
     }),
 
@@ -124,7 +124,7 @@ function buildInventoryReceiptDetailItemColumns({
           <Tooltip>
             <TooltipTrigger
               render={
-                <span className="inline-flex items-center gap-1 font-semibold text-destructive">
+                <span className="inline-flex items-center gap-1 font-medium text-destructive">
                   <AlertTriangle className="size-3 text-destructive" />
                   {numberFmt.format(returned)}
                 </span>
@@ -144,7 +144,7 @@ function buildInventoryReceiptDetailItemColumns({
       header: "SL thực nhập",
       meta: {
         headerClassName: "min-w-24 text-right",
-        cellClassName: "text-right tabular-nums font-semibold",
+        cellClassName: "text-right tabular-nums font-medium",
       },
       cell: ({ row }) => {
         const returned = row.original.returnedQuantity ?? 0
@@ -187,7 +187,7 @@ function buildInventoryReceiptDetailItemColumns({
       header: "Thành tiền",
       meta: {
         headerClassName: "min-w-28 text-right",
-        cellClassName: "text-right tabular-nums font-semibold",
+        cellClassName: "text-right tabular-nums font-medium",
       },
       cell: ({ row }) => {
         const returned = row.original.returnedQuantity ?? 0
@@ -254,7 +254,7 @@ export function InventoryReceiptDetailItemsSection({
 
   return (
     <div className="border-b border-border not-first:border-t">
-      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-semibold tracking-wide text-foreground uppercase sm:px-5">
+      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-medium tracking-wide text-foreground uppercase sm:px-5">
         <PackageSearch className="size-3.5 text-muted-foreground" />
         Danh sách {itemNoun} nhập kho
       </h3>
@@ -314,36 +314,36 @@ export function InventoryReceiptDetailItemsSection({
       {inventoryReceipt.items.length > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
           <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="font-medium tracking-wide text-muted-foreground uppercase">
               Tổng SL giao:
             </span>
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {numberFmt.format(totalQuantity)}
             </span>
           </div>
           {totalReturned > 0 && (
             <div className="flex items-center gap-2 text-xs">
-              <span className="font-semibold tracking-wide text-destructive uppercase">
+              <span className="font-medium tracking-wide text-destructive uppercase">
                 Tổng SL trả NCC:
               </span>
-              <span className="font-semibold text-destructive tabular-nums">
+              <span className="font-medium text-destructive tabular-nums">
                 {numberFmt.format(totalReturned)}
               </span>
             </div>
           )}
           <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="font-medium tracking-wide text-muted-foreground uppercase">
               Tổng SL thực nhập:
             </span>
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {numberFmt.format(totalActual)}
             </span>
           </div>
           <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="font-medium tracking-wide text-muted-foreground uppercase">
               Tổng thành tiền:
             </span>
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {vndFormatter.format(totalAmount)}
             </span>
           </div>

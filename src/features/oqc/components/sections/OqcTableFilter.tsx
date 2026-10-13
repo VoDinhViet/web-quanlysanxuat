@@ -133,7 +133,7 @@ export function OqcTableFilter() {
       <div className="w-56 space-y-1.5">
         <Label
           htmlFor="oqc-q"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Mã OQC
         </Label>
@@ -155,7 +155,7 @@ export function OqcTableFilter() {
       <div className="flex w-36 flex-col gap-1.5">
         <Label
           htmlFor="oqc-result"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Kết quả
         </Label>
@@ -180,7 +180,7 @@ export function OqcTableFilter() {
       <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="oqc-status"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Trạng thái
         </Label>
@@ -205,7 +205,7 @@ export function OqcTableFilter() {
       <div className="flex w-44 flex-col gap-1.5">
         <Label
           htmlFor="oqc-disposition"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Phương án xử lý
         </Label>
@@ -232,7 +232,7 @@ export function OqcTableFilter() {
       <div className="w-56 space-y-1.5">
         <Label
           htmlFor="oqc-daterange"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Từ ngày – Đến ngày
         </Label>

@@ -151,7 +151,7 @@ export function OutsourcingReceiptsTableFilter() {
       <div className="w-56 space-y-1.5">
         <Label
           htmlFor="os-in-q"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Tìm kiếm
         </Label>
@@ -173,7 +173,7 @@ export function OutsourcingReceiptsTableFilter() {
       <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="os-in-supplier"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Nhà cung cấp
         </Label>
@@ -207,7 +207,7 @@ export function OutsourcingReceiptsTableFilter() {
       <div className="flex w-36 flex-col gap-1.5">
         <Label
           htmlFor="os-in-status"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Trạng thái
         </Label>
@@ -232,7 +232,7 @@ export function OutsourcingReceiptsTableFilter() {
       <div className="flex w-40 flex-col gap-1.5">
         <Label
           htmlFor="os-in-requires-iqc"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Yêu cầu QC
         </Label>
@@ -263,7 +263,7 @@ export function OutsourcingReceiptsTableFilter() {
       <div className="w-56 space-y-1.5">
         <Label
           htmlFor="os-in-daterange"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Từ ngày – Đến ngày
         </Label>

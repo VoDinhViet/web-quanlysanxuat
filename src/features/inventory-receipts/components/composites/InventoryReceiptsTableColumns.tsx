@@ -35,7 +35,7 @@ export const inventoryReceiptsColumns = col.columns([
       <Link
         to="/manage/inventory-receipts/$inventoryReceiptId"
         params={{ inventoryReceiptId: row.original.id }}
-        className="font-mono text-xs font-semibold text-primary hover:underline"
+        className="font-mono text-xs font-medium text-primary hover:underline"
       >
         {getValue()}
       </Link>

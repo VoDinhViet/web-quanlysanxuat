@@ -49,7 +49,7 @@ export function PaymentRequestsTableFilter() {
         loading: "Đang xuất file Excel đề nghị thanh toán...",
         success: "Đã xuất file Excel đề nghị thanh toán",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -131,7 +131,7 @@ export function PaymentRequestsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="pr-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Từ ngày – Đến ngày
             </Label>
@@ -147,7 +147,7 @@ export function PaymentRequestsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="pr-supplier"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Nhà cung cấp
             </Label>
@@ -175,7 +175,7 @@ export function PaymentRequestsTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="pr-po-code"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Mã PO
             </Label>
@@ -195,7 +195,7 @@ export function PaymentRequestsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="pr-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -223,7 +223,7 @@ export function PaymentRequestsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="pr-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>

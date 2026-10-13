@@ -58,7 +58,7 @@ export function PurchaseOrderPaymentTermField({
   if (!editable) {
     return (
       <div className="min-w-0 space-y-1">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Điều khoản TT
         </p>
         <p className="truncate text-sm font-medium text-foreground">
@@ -72,7 +72,7 @@ export function PurchaseOrderPaymentTermField({
     <div className="min-w-0 space-y-1">
       <label
         htmlFor="purchase-order-payment-term"
-        className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+        className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
       >
         Điều khoản TT <span className="text-destructive">*</span>
       </label>
@@ -87,7 +87,7 @@ export function PurchaseOrderPaymentTermField({
       >
         <SelectTrigger
           id="purchase-order-payment-term"
-          className="h-9 w-full bg-background text-xs"
+          className="h-9 w-full bg-card text-xs"
         >
           <SelectValue />
         </SelectTrigger>

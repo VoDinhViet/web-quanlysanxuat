@@ -15,7 +15,7 @@ const purchaseQuotationAllocationColumnHelper = createColumnHelper<
 >()
 
 // Read-only, same header/cell classes as PurchaseQuotationSupplierCompareColumns.tsx's inner
-// columns (h-8 header, text-[10px] labels) — the two nested tables sit stacked in the same outer
+// columns (h-8 header, text-xs labels) — the two nested tables sit stacked in the same outer
 // row, so they read as one visual family.
 export const purchaseQuotationAllocationsColumns =
   purchaseQuotationAllocationColumnHelper.columns([
@@ -25,7 +25,7 @@ export const purchaseQuotationAllocationsColumns =
         id: "prCode",
         header: "Mã PR",
         meta: {
-          headerClassName: "w-32 text-[10px]",
+          headerClassName: "w-32 text-xs",
           cellClassName: "font-mono text-xs font-medium text-primary",
         },
       }
@@ -36,7 +36,7 @@ export const purchaseQuotationAllocationsColumns =
         id: "requestedQuantity",
         header: "SL đề xuất",
         meta: {
-          headerClassName: "w-28 text-right text-[10px]",
+          headerClassName: "w-28 text-right text-xs",
           cellClassName: "text-right tabular-nums",
         },
       }
@@ -45,7 +45,7 @@ export const purchaseQuotationAllocationsColumns =
       id: "quantity",
       header: "SL báo giá",
       meta: {
-        headerClassName: "w-28 text-right text-[10px]",
+        headerClassName: "w-28 text-right text-xs",
         cellClassName: "text-right tabular-nums font-medium",
       },
       cell: ({ row }) => {
@@ -62,7 +62,7 @@ export const purchaseQuotationAllocationsColumns =
           <Tooltip>
             <TooltipTrigger
               render={
-                <span className="inline-flex items-center justify-end gap-1 font-semibold text-warning">
+                <span className="inline-flex items-center justify-end gap-1 font-medium text-warning">
                   <DangerTriangle className="size-3 shrink-0" />
                   {row.original.quantity}
                 </span>
@@ -79,7 +79,7 @@ export const purchaseQuotationAllocationsColumns =
         id: "quantityAdjustmentReason",
         header: "Lý do điều chỉnh SL",
         meta: {
-          headerClassName: "text-[10px]",
+          headerClassName: "text-xs",
           cellClassName: "text-xs text-muted-foreground",
         },
         cell: ({ getValue }) => (
@@ -93,7 +93,7 @@ export const purchaseQuotationAllocationsColumns =
         id: "requestNote",
         header: "Ghi chú ĐXMH",
         meta: {
-          headerClassName: "text-[10px]",
+          headerClassName: "text-xs",
           cellClassName: "text-xs text-muted-foreground",
         },
         cell: ({ getValue }) => (

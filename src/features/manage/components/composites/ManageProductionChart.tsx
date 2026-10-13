@@ -59,13 +59,11 @@ export function ManageDonutChart({
           </RechartsPrimitive.PieChart>
         </ChartContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
+          <span className="text-xs font-medium text-muted-foreground">
             Tổng số
           </span>
-          <span className="text-3xl font-bold text-foreground">{total}</span>
-          <span className="text-[11px] text-muted-foreground">
-            {totalLabel}
-          </span>
+          <span className="text-2xl font-medium text-foreground">{total}</span>
+          <span className="text-xs text-muted-foreground">{totalLabel}</span>
         </div>
       </div>
 
@@ -87,7 +85,7 @@ export function ManageDonutChart({
                 <span className="truncate">{slice.label}</span>
               </span>
               <span className="flex shrink-0 items-center gap-2 tabular-nums">
-                <span className="w-6 text-right font-semibold text-foreground">
+                <span className="w-6 text-right font-medium text-foreground">
                   {slice.value}
                 </span>
                 <span className="w-10 text-right text-muted-foreground">

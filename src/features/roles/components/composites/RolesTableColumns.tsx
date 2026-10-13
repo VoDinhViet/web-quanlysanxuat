@@ -27,7 +27,7 @@ export const roleColumns = roleColumnHelper.columns([
     header: "Mã vai trò",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {getValue()}
       </span>
     ),
@@ -77,7 +77,7 @@ export const roleColumns = roleColumnHelper.columns([
                     variant="outline"
                     size="icon-sm"
                     aria-label="Chỉnh sửa"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    className="text-muted-foreground hover:border-border hover:text-primary"
                   >
                     <Edit3 className="size-3.5" />
                   </LinkButton>

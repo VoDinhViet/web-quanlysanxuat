@@ -129,7 +129,7 @@ export function ImageUploader({
         </span>
       </div>
 
-      <p className="text-[11px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         Kéo thả, dán hoặc bấm{" "}
         <Camera className="inline size-3 -translate-y-px" /> · JPG, PNG, WEBP,
         GIF · tối đa 5MB

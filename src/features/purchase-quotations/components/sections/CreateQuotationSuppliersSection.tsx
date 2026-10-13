@@ -87,7 +87,7 @@ export const CreateQuotationSuppliersSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               Khai báo NCC & báo giá
             </h2>
             <p className="text-sm text-muted-foreground">

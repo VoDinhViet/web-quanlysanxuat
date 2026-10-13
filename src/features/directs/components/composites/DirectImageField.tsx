@@ -125,7 +125,7 @@ export function DirectImageField({
             ) : (
               <>
                 <ImageUp className="size-6 text-muted-foreground/60" />
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Kéo thả, dán (Ctrl+V) ảnh vào đây hoặc{" "}
                   <span className="font-medium text-primary">chọn file</span>
                 </p>
@@ -156,7 +156,7 @@ export function DirectImageField({
         ) : null}
       </div>
 
-      <p className="text-[11px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         Định dạng: JPG, PNG, WEBP, GIF (tối đa 5MB)
       </p>
 

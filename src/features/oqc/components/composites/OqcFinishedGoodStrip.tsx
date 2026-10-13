@@ -73,10 +73,8 @@ type InfoFieldProps = {
 function InfoField({ label, value }: InfoFieldProps) {
   return (
     <div>
-      <dt className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-        {label}
-      </dt>
-      <dd className="mt-0.5 truncate text-sm font-semibold text-foreground">
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
+      <dd className="mt-0.5 truncate text-sm font-medium text-foreground">
         {value}
       </dd>
     </div>

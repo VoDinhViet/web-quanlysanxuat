@@ -41,7 +41,7 @@ export const outsourcingOrderItemsColumns = itemColumnHelper.columns([
         <p className="truncate font-medium text-foreground">
           {row.original.itemName}
         </p>
-        <p className="truncate font-mono text-[10px] text-muted-foreground">
+        <p className="truncate font-mono text-xs text-muted-foreground">
           {row.original.itemCode}
         </p>
       </div>
@@ -81,7 +81,7 @@ export const outsourcingOrderItemsColumns = itemColumnHelper.columns([
     header: "Còn lại",
     meta: {
       headerClassName: "w-20 text-right",
-      cellClassName: "text-right font-semibold tabular-nums",
+      cellClassName: "text-right font-medium tabular-nums",
     },
     cell: ({ row }) =>
       quantityFormatter.format(

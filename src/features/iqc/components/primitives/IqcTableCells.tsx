@@ -16,7 +16,7 @@ export function IqcPoOrReasonCell({
 }: IqcPoOrReasonCellProps) {
   if (purchaseOrder) {
     return (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {purchaseOrder.code}
       </span>
     )
@@ -45,7 +45,7 @@ export function IqcActionsCell({ iqcId }: IqcActionsCellProps) {
         variant="outline"
         size="icon-sm"
         aria-label="Xem chi tiết"
-        className="bg-background text-muted-foreground"
+        className="bg-card text-muted-foreground"
       >
         <Eye className="size-3.5" />
       </LinkButton>

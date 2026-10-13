@@ -49,7 +49,7 @@ export const unitColumns = unitColumnHelper.columns([
           >
             <TypeIcon className="size-4" />
           </span>
-          <span className="font-mono text-xs font-bold text-foreground">
+          <span className="font-mono text-xs font-semibold text-foreground">
             {getValue()}
           </span>
         </div>
@@ -123,7 +123,7 @@ export const unitColumns = unitColumnHelper.columns([
                         variant="outline"
                         size="icon-sm"
                         aria-label="Chỉnh sửa"
-                        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                        className="text-muted-foreground hover:border-border hover:text-primary"
                       >
                         <PenNewSquare className="size-3.5" />
                       </Button>

@@ -54,7 +54,7 @@ export const CreateOutsourcingReceiptItemsSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               ② Số lượng nhận thực tế
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -134,19 +134,19 @@ export const CreateOutsourcingReceiptItemsSection = withForm({
           <div className="flex flex-wrap items-center gap-4">
             <span>
               Tổng SL nhận:{" "}
-              <span className="font-semibold text-foreground tabular-nums">
+              <span className="font-medium text-foreground tabular-nums">
                 {quantityFormatter.format(totalQuantity)}
               </span>
             </span>
             <span>
               Tổng trọng lượng:{" "}
-              <span className="font-semibold text-foreground tabular-nums">
+              <span className="font-medium text-foreground tabular-nums">
                 {decimalFormatter.format(totalWeight)} kg
               </span>
             </span>
             <span>
               Tổng diện tích:{" "}
-              <span className="font-semibold text-foreground tabular-nums">
+              <span className="font-medium text-foreground tabular-nums">
                 {decimalFormatter.format(totalArea)} m²
               </span>
             </span>

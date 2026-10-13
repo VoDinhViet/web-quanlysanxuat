@@ -24,10 +24,10 @@ export const CreateOrderTotalsSummary = withForm({
     return (
       <div className="space-y-3">
         <div>
-          <span className="block text-sm font-semibold text-foreground">
+          <span className="block text-sm font-medium text-foreground">
             Thanh toán
           </span>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Áp dụng cho toàn bộ đơn hàng
           </p>
         </div>
@@ -152,7 +152,7 @@ const OrderTotalsPreview = withForm({
                   Tổng thanh toán
                 </span>
                 <span className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-semibold text-primary tabular-nums">
+                  <span className="text-2xl font-medium text-primary tabular-nums">
                     {currencyFormatter.format(totals.total)}
                   </span>
                   <span className="text-xs font-medium text-muted-foreground">
@@ -167,7 +167,7 @@ const OrderTotalsPreview = withForm({
                 </p>
               )}
 
-              <p className="mt-3 text-[11px] text-muted-foreground">
+              <p className="mt-3 text-xs text-muted-foreground">
                 Số liệu tạm tính, số cuối cùng lấy sau khi lưu đơn hàng.
               </p>
             </div>

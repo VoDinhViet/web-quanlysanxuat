@@ -24,7 +24,7 @@ export function OrderDetailFilesCard({ order }: OrderDetailFilesCardProps) {
                 href={resolveFileUrl(orderFile.file.url)}
                 target="_blank"
                 rel="noreferrer"
-                className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+                className="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground transition-colors hover:border-border hover:text-primary"
               >
                 <FileText className="size-4 shrink-0 text-muted-foreground" />
                 <span className="min-w-0 flex-1 truncate">
@@ -45,7 +45,7 @@ export function OrderDetailFilesCard({ order }: OrderDetailFilesCardProps) {
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
           <Documents className="size-7 text-muted-foreground/40" />
-          <p className="text-[11px] font-medium text-muted-foreground">
+          <p className="text-xs font-medium text-muted-foreground">
             Chưa có tài liệu đính kèm
           </p>
         </div>

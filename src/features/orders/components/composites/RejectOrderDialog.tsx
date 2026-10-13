@@ -81,7 +81,7 @@ function RejectOrderForm({ order, onClose }: RejectOrderFormProps) {
       className="flex flex-col gap-4"
     >
       <DialogHeader className="gap-1.5 text-left">
-        <DialogTitle className="text-base font-semibold text-foreground">
+        <DialogTitle className="text-base font-medium text-foreground">
           Từ chối đơn hàng {order.code}
         </DialogTitle>
         <DialogDescription className="text-xs text-muted-foreground">

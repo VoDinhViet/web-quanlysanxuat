@@ -64,7 +64,7 @@ export function UnitTypeSelect({
         id={id}
         onBlur={onBlur}
         aria-invalid={isInvalid}
-        className="h-9 w-full bg-background text-xs"
+        className="h-9 w-full bg-card text-xs"
       >
         <SelectValue>
           {(selected: UnitType | null) =>

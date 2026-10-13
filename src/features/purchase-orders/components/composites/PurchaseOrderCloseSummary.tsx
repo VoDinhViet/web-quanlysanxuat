@@ -68,7 +68,7 @@ function SummaryTile({ icon: Icon, tone, label, value }: SummaryTileProps) {
       </span>
       <span className="flex min-w-0 flex-col">
         <span className="text-xs text-muted-foreground">{label}</span>
-        <span className="truncate text-sm font-semibold tabular-nums">
+        <span className="truncate text-sm font-medium tabular-nums">
           {value}
         </span>
       </span>

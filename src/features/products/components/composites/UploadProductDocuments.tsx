@@ -121,7 +121,7 @@ export function UploadProductDocuments({
             Tài liệu đính kèm
           </label>
           {value.length > 0 && (
-            <span className="font-mono text-[11px] text-muted-foreground">
+            <span className="font-mono text-xs text-muted-foreground">
               ({value.length})
             </span>
           )}
@@ -129,14 +129,14 @@ export function UploadProductDocuments({
 
         {value.length > 0 && (
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] text-muted-foreground">
+            <span className="font-mono text-xs text-muted-foreground">
               {prettyBytes(totalBytes)}
             </span>
             {!disabled && (
               <button
                 type="button"
                 onClick={clearAllFiles}
-                className="text-[11px] text-muted-foreground transition-colors hover:text-destructive"
+                className="text-xs text-muted-foreground transition-colors hover:text-destructive"
               >
                 Xóa tất cả
               </button>
@@ -170,7 +170,7 @@ export function UploadProductDocuments({
               chọn tệp
             </span>
           </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground/70">
+          <p className="mt-0.5 text-xs text-muted-foreground/70">
             CAD, PDF, Word, Excel, ZIP (tối đa 10MB)
           </p>
         </div>
@@ -233,7 +233,7 @@ export function UploadProductDocuments({
                     >
                       {file.originalName}
                     </a>
-                    <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <span className="font-mono uppercase">
                         {docInfo.label}
                       </span>

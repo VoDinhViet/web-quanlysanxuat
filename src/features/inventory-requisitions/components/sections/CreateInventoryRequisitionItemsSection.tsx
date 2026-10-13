@@ -132,7 +132,7 @@ export const CreateInventoryRequisitionItemsSection = withForm({
           </div>
           <span>
             Tổng SL lãnh:{" "}
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {quantityFormatter.format(totalQuantity)}
             </span>
           </span>

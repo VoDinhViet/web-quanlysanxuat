@@ -77,9 +77,7 @@ export function IqcSortSplitFields({
                   )}
                 >
                   {okQty === undefined ? "—" : quantityFormatter.format(okQty)}
-                  <span className="ml-1.5 text-[10px] font-normal">
-                    (tự tính)
-                  </span>
+                  <span className="ml-1.5 text-xs font-normal">(tự tính)</span>
                 </div>
               </div>
             )

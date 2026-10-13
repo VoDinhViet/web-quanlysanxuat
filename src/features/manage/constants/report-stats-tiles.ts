@@ -60,8 +60,7 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
       value: stats.runningOrders,
       unit: "đơn",
       icon: Delivery,
-      iconClassName:
-        "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+      iconClassName: "bg-info-soft text-info-ink",
       trend: formatTrend(
         stats.runningOrdersTrendPercent,
         "tuần trước",
@@ -81,8 +80,7 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
       value: stats.upcomingDueOrders,
       unit: "đơn",
       icon: Box,
-      iconClassName:
-        "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+      iconClassName: "bg-warning-soft text-warning-ink",
       // upcomingDueWindowDays null khi có filter (endDate của filter thay cho cửa sổ cố định) —
       // FE đã tự biết khoảng ngày nó gửi lên nên không cần BE echo lại để hiện subtitle, chỉ ẩn
       // dòng này đi giống 5 thẻ kia.
@@ -104,8 +102,7 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
       value: stats.jobsWaitingQc,
       unit: "job",
       icon: Magnifer,
-      iconClassName:
-        "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
+      iconClassName: "bg-violet-soft text-violet-ink",
       trend: formatTrend(stats.jobsWaitingQcTrendCount, "hôm qua", formatCount),
     },
   ]

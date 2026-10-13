@@ -54,10 +54,10 @@ export function DepartmentPositionsSection({
     <Surface>
       <div className="flex flex-col gap-3 border-b border-border/60 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <div className="flex items-center gap-2">
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             Chức vụ trong phòng ban
           </h2>
-          <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground tabular-nums">
+          <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground tabular-nums">
             {positions.length}
           </span>
         </div>

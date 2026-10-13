@@ -90,7 +90,7 @@ export function PurchaseQuotationsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="purchase-quotations-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -120,7 +120,7 @@ export function PurchaseQuotationsTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="purchase-quotations-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Ngày lập
             </Label>
@@ -135,7 +135,7 @@ export function PurchaseQuotationsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="purchase-quotations-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>

@@ -103,7 +103,7 @@ export function InventoryIssuesTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="xk-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -126,7 +126,7 @@ export function InventoryIssuesTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="xk-issue-type"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Loại phiếu
             </Label>
@@ -154,7 +154,7 @@ export function InventoryIssuesTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="xk-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -182,7 +182,7 @@ export function InventoryIssuesTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="xk-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Từ ngày – Đến ngày
             </Label>

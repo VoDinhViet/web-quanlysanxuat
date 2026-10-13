@@ -29,10 +29,8 @@ export function PurchaseOrderItemProductCell({
       </div>
       <div className="flex min-w-0 flex-col gap-0.5">
         <span className="font-medium text-foreground">{product.name}</span>
-        <span className="flex flex-wrap items-center gap-x-2 font-mono text-[11px] text-muted-foreground">
-          <span className="font-semibold text-foreground/80">
-            {product.code}
-          </span>
+        <span className="flex flex-wrap items-center gap-x-2 font-mono text-xs text-muted-foreground">
+          <span className="font-medium text-foreground/80">{product.code}</span>
           <span>{purchaseRequest.code}</span>
         </span>
       </div>

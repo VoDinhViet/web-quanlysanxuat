@@ -38,7 +38,7 @@ function QuantityColumnHeader({
         {label}
         <HelpCircle className="size-3 text-muted-foreground/70" />
       </span>
-      <span className="text-[10px] font-normal text-muted-foreground/80">
+      <span className="text-xs font-normal text-muted-foreground/80">
         ({formula})
       </span>
     </div>
@@ -67,7 +67,7 @@ export const inventoryDirectColumns = inventoryColumnHelper.columns([
     header: "Mã vật tư",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {getValue()}
       </span>
     ),
@@ -131,7 +131,7 @@ export const inventoryDirectColumns = inventoryColumnHelper.columns([
       return (
         <div className="flex flex-col items-end gap-0.5">
           <DirectQuantityCell value={item.available} variant="available" />
-          <span className="text-[10px] whitespace-nowrap text-muted-foreground">
+          <span className="text-xs whitespace-nowrap text-muted-foreground">
             Đã giữ {stockFormatter.format(item.reserved)} · BOM{" "}
             {stockFormatter.format(item.bomDemand)}
           </span>
@@ -187,7 +187,7 @@ export const inventoryDirectColumns = inventoryColumnHelper.columns([
                 variant="outline"
                 size="icon-sm"
                 aria-label="Xem chi tiết"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                className="text-muted-foreground hover:border-border hover:text-primary"
               >
                 <Eye className="size-3.5" />
               </Button>

@@ -73,7 +73,7 @@ export function PurchaseOrderItemsSection({
 
   return (
     <section className="h-fit overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <Box className="size-4 text-muted-foreground" />
         Chi tiết vật tư ({items.length})
       </div>
@@ -131,11 +131,11 @@ export function PurchaseOrderItemsSection({
                   <TableRow className="h-11">
                     <TableCell
                       colSpan={4}
-                      className="font-semibold text-foreground"
+                      className="font-medium text-foreground"
                     >
                       Tổng cộng
                     </TableCell>
-                    <TableCell className="text-right font-semibold text-foreground tabular-nums">
+                    <TableCell className="text-right font-medium text-foreground tabular-nums">
                       {quantityFormatter.format(totalQuantity)}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
@@ -144,14 +144,14 @@ export function PurchaseOrderItemsSection({
                     <TableCell
                       className={cn(
                         "text-right tabular-nums",
-                        totalRemaining > 0 && "font-semibold text-foreground"
+                        totalRemaining > 0 && "font-medium text-foreground"
                       )}
                     >
                       {quantityFormatter.format(totalRemaining)}
                     </TableCell>
                     <TableCell />
                     <TableCell />
-                    <TableCell className="text-right text-sm font-semibold text-foreground tabular-nums">
+                    <TableCell className="text-right text-sm font-medium text-foreground tabular-nums">
                       {currencyFormatter.format(purchaseOrder.subtotal)}
                     </TableCell>
                   </TableRow>

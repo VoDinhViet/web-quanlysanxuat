@@ -20,7 +20,7 @@ export function IqcRulesCard() {
       <ul className="space-y-3">
         {rules.map((rule) => (
           <li key={rule} className="flex items-start gap-2.5 text-xs">
-            <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-amber-100 text-[9px] font-bold text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
+            <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-semibold text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
               !
             </span>
             <span className="text-muted-foreground">{rule}</span>

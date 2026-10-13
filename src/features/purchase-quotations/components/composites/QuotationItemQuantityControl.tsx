@@ -62,12 +62,12 @@ export function QuotationItemQuantityControl({
                       "border-warning/70 text-warning hover:border-warning"
                   )}
                 >
-                  <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                  <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
                     {item.allocations.length} dòng
                   </span>
                   <span
                     className={cn(
-                      "inline-flex items-center gap-1 font-semibold",
+                      "inline-flex items-center gap-1 font-medium",
                       isOver ? "text-warning" : "text-foreground"
                     )}
                   >

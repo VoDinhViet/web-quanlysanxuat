@@ -33,17 +33,15 @@ export const purchaseLedgerStatusStyles: Record<
     dot: "bg-muted-foreground/60",
   },
   [PurchaseLedgerStatus.QUOTING]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseLedgerStatus.ORDERED]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   [PurchaseLedgerStatus.RECEIVING]: {
-    badge:
-      "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
+    badge: "bg-violet-soft text-violet-ink",
     dot: "bg-violet-500 dark:bg-violet-400",
   },
   [PurchaseLedgerStatus.COMPLETED]: {
@@ -106,7 +104,7 @@ export function PurchaseLedgerWarningBadge({
         render={
           <span
             className={cn(
-              "inline-flex h-5.5 cursor-help items-center gap-1.25 rounded-full border px-2 text-[11px] leading-none font-medium whitespace-nowrap shadow-2xs transition-colors",
+              "inline-flex h-5.5 cursor-help items-center gap-1.25 rounded-full border px-2 text-xs leading-none font-medium whitespace-nowrap shadow-2xs transition-colors",
               badge,
               className
             )}

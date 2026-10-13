@@ -28,7 +28,7 @@ export function ProductIssuesTableFilter({
       <div className="max-w-sm space-y-1.5">
         <Label
           htmlFor="product-directs-search"
-          className="text-[11px] font-medium text-muted-foreground"
+          className="text-xs font-medium text-muted-foreground"
         >
           Tìm kiếm
         </Label>

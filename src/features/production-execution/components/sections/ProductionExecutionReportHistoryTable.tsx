@@ -115,7 +115,7 @@ export function ProductionExecutionReportHistoryTable({
           <span>Tổng số lượt báo cáo:</span>
           <Badge
             variant="secondary"
-            className="px-2 py-0.5 text-xs font-semibold"
+            className="px-2 py-0.5 text-xs font-medium"
           >
             {pagination?.totalRecords ?? 0}
           </Badge>
@@ -181,7 +181,7 @@ export function ProductionExecutionReportHistoryTable({
                           <span className="truncate text-xs font-medium text-foreground">
                             {report.creator.fullName}
                           </span>
-                          <span className="font-mono text-[10px] text-muted-foreground">
+                          <span className="font-mono text-xs text-muted-foreground">
                             {report.creator.code}
                           </span>
                         </div>
@@ -197,14 +197,14 @@ export function ProductionExecutionReportHistoryTable({
                         <span className="truncate text-xs font-medium text-foreground">
                           {report.bomItem.name}
                         </span>
-                        <span className="font-mono text-[11px] text-muted-foreground">
+                        <span className="font-mono text-xs text-muted-foreground">
                           {report.bomItem.code}
                         </span>
                       </div>
                     </TableCell>
 
                     <TableCell className="py-2.5 text-center">
-                      <span className="inline-flex items-center justify-center rounded-md bg-emerald-50 px-2 py-1 font-mono text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
+                      <span className="inline-flex items-center justify-center rounded-md bg-emerald-50 px-2 py-1 font-mono text-xs font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
                         +
                         {quantityFormatter.format(
                           report.completedQuantityDelta
@@ -215,7 +215,7 @@ export function ProductionExecutionReportHistoryTable({
 
                     <TableCell className="py-2.5 text-center">
                       {report.rejectedQuantityDelta > 0 ? (
-                        <span className="inline-flex items-center justify-center rounded-md bg-rose-50 px-2 py-1 font-mono text-xs font-semibold text-rose-700 dark:bg-rose-500/10 dark:text-rose-400">
+                        <span className="inline-flex items-center justify-center rounded-md bg-rose-50 px-2 py-1 font-mono text-xs font-medium text-rose-700 dark:bg-rose-500/10 dark:text-rose-400">
                           +
                           {quantityFormatter.format(
                             report.rejectedQuantityDelta

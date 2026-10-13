@@ -42,7 +42,7 @@ export function PurchaseOrderExpectedDateField({
   if (!editable) {
     return (
       <div className="min-w-0 space-y-1">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Ngày giao dự kiến
         </p>
         <p className="truncate text-sm font-medium text-foreground">
@@ -56,7 +56,7 @@ export function PurchaseOrderExpectedDateField({
 
   return (
     <div className="min-w-0 space-y-1">
-      <label className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         Ngày giao dự kiến <span className="text-destructive">*</span>
       </label>
       <DatePicker

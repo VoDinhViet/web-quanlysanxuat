@@ -193,7 +193,7 @@ export const CreateInventoryRequisitionPickerSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               ② Chọn vật tư
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -221,7 +221,7 @@ export const CreateInventoryRequisitionPickerSection = withForm({
         <div className="mt-4 max-w-sm space-y-1.5">
           <Label
             htmlFor="requisition-picker-search"
-            className="text-[11px] font-medium text-muted-foreground"
+            className="text-xs font-medium text-muted-foreground"
           >
             Tìm kiếm
           </Label>

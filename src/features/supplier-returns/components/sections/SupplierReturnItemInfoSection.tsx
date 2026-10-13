@@ -82,7 +82,7 @@ export function SupplierReturnItemInfoSection({
         </div>
 
         <div className="space-y-3 border-b border-border pb-5">
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             Tham chiếu
           </p>
           <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
@@ -136,7 +136,7 @@ type InfoFieldProps = {
 function InfoField({ label, value, className }: InfoFieldProps) {
   return (
     <div className={className}>
-      <dt className="text-[11px] font-medium text-muted-foreground">{label}</dt>
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
       <dd className="mt-0.5 text-sm font-medium break-words text-foreground">
         {value}
       </dd>
@@ -152,7 +152,7 @@ type ReferenceFieldProps = {
 function ReferenceField({ label, code }: ReferenceFieldProps) {
   return (
     <div>
-      <dt className="text-[11px] font-medium text-muted-foreground">{label}</dt>
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
       <dd className="mt-0.5">
         <SupplierReturnCodeCell code={code} />
       </dd>
@@ -170,9 +170,7 @@ function ItemImagePreview({ image, name }: ItemImagePreviewProps) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border bg-muted/30 text-center">
         <Gallery className="size-6 text-muted-foreground/40" />
-        <p className="text-[10px] font-medium text-muted-foreground">
-          Chưa có ảnh
-        </p>
+        <p className="text-xs font-medium text-muted-foreground">Chưa có ảnh</p>
       </div>
     )
   }

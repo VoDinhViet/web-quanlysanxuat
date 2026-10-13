@@ -28,7 +28,7 @@ export function OutsourcingReceiptActionsCell({
               variant="outline"
               size="icon-sm"
               aria-label="Xem chi tiết"
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              className="text-muted-foreground hover:border-border hover:text-primary"
             >
               <Eye className="size-3.5" />
             </LinkButton>

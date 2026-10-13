@@ -29,7 +29,7 @@ export const CreateSupplierInfoSection = withForm({
     return (
       <div>
         <div className="px-4 py-4 sm:px-5">
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             Thông tin nhà cung cấp
           </h2>
           <p className="text-sm text-muted-foreground">

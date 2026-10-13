@@ -53,7 +53,7 @@ export function PurchaseOrderLink({
     <Link
       to="/manage/purchase-orders/$purchaseOrderId"
       params={{ purchaseOrderId: purchaseOrder.id }}
-      className="font-mono text-xs font-semibold text-primary hover:underline"
+      className="font-mono text-xs font-medium text-primary hover:underline"
     >
       {purchaseOrder.code}
     </Link>
@@ -136,7 +136,7 @@ export function InventoryReceiptActionsCell({
                   variant="outline"
                   size="icon-sm"
                   aria-label="Xem chi tiết phiếu nhập kho"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <Eye className="size-3.5" />
                 </LinkButton>
@@ -157,7 +157,7 @@ export function InventoryReceiptActionsCell({
                     variant="outline"
                     size="icon-sm"
                     aria-label="Chỉnh sửa phiếu"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    className="text-muted-foreground hover:border-border hover:text-primary"
                   >
                     <Pencil className="size-3.5" />
                   </LinkButton>
@@ -222,7 +222,7 @@ export function InventoryReceiptActionsCell({
             <DialogTitle>Xóa phiếu nhập kho</DialogTitle>
             <DialogDescription>
               Bạn chắc chắn muốn xóa phiếu nhập kho{" "}
-              <span className="font-mono font-semibold text-foreground">
+              <span className="font-mono font-medium text-foreground">
                 {receipt.code}
               </span>
               ? Hành động này không thể hoàn tác.

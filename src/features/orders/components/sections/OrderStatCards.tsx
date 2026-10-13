@@ -63,7 +63,7 @@ export function OrderStatCards() {
               >
                 <tile.icon className="size-4" />
               </div>
-              <p className="truncate text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+              <p className="truncate text-xs font-medium tracking-wide text-muted-foreground uppercase">
                 {tile.label}
               </p>
             </div>
@@ -71,7 +71,7 @@ export function OrderStatCards() {
             <p className="flex items-baseline gap-1.5">
               <span
                 className={cn(
-                  "truncate font-bold text-foreground",
+                  "truncate font-semibold text-foreground",
                   tile.valueSizeClassName
                 )}
               >
@@ -87,7 +87,7 @@ export function OrderStatCards() {
             {tile.trend ? (
               <p
                 className={cn(
-                  "flex items-center gap-1 text-[11px]",
+                  "flex items-center gap-1 text-xs",
                   trendToneClassName[tile.trend.tone]
                 )}
               >

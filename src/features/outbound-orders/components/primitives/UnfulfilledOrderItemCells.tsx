@@ -33,7 +33,7 @@ export function AvailableQuantityCell({ value }: { value: number }) {
   return (
     <span
       className={cn(
-        "font-semibold tabular-nums",
+        "font-medium tabular-nums",
         value > 0 && "text-success",
         value === 0 && "text-warning",
         value < 0 && "text-destructive"
@@ -55,7 +55,7 @@ const legendItems = [
 
 export function AvailableQuantityLegend() {
   return (
-    <ul className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[11px] text-muted-foreground">
+    <ul className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-muted-foreground">
       {legendItems.map((item) => (
         <li key={item.label} className="flex items-center gap-1.5">
           <span className={cn("size-2 rounded-full", item.dotClassName)} />

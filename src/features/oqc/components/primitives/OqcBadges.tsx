@@ -15,7 +15,7 @@ type BadgeStyle = {
 
 const oqcResultStyles: Record<IqcResult, BadgeStyle> = {
   [IqcResult.PASS]: {
-    badge: "bg-success/10 text-success",
+    badge: "bg-success-soft text-success-ink",
     dot: "bg-success",
   },
   [IqcResult.FAIL]: {
@@ -47,22 +47,21 @@ export function OqcResultBadge({ result, className }: OqcResultBadgeProps) {
 
 export const oqcStatusStyles: Record<OqcStatus, BadgeStyle> = {
   [OqcStatus.DRAFT]: {
-    badge: "bg-muted text-muted-foreground",
+    badge: "bg-neutral-soft text-neutral-ink",
     dot: "bg-muted-foreground/60",
   },
   [OqcStatus.PENDING]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
-    dot: "bg-amber-500 dark:bg-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
+    dot: "bg-warning",
   },
   // Cùng tông xanh dương với IqcStatus.IN_PROGRESS — cả 2 đều là "FAIL, đã chọn hướng xử lý,
   // đang ở vòng lặp tiếp theo", phân biệt được với PENDING (FAIL, chưa chọn gì).
   [OqcStatus.IN_PROGRESS]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
-    dot: "bg-blue-500 dark:bg-blue-400",
+    badge: "bg-info-soft text-info-ink",
+    dot: "bg-info",
   },
   [OqcStatus.COMPLETED]: {
-    badge: "bg-success/10 text-success",
+    badge: "bg-success-soft text-success-ink",
     dot: "bg-success",
   },
 }
@@ -85,22 +84,20 @@ export function OqcStatusBadge({ status, className }: OqcStatusBadgeProps) {
 
 const oqcDispositionStyles: Record<OqcDisposition, BadgeStyle> = {
   [OqcDisposition.ACCEPT]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
-    dot: "bg-amber-500 dark:bg-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
+    dot: "bg-warning",
   },
   [OqcDisposition.REWORK]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
-    dot: "bg-blue-500 dark:bg-blue-400",
+    badge: "bg-info-soft text-info-ink",
+    dot: "bg-info",
   },
   [OqcDisposition.SCRAP]: {
     badge: "bg-destructive/10 text-destructive",
     dot: "bg-destructive",
   },
   [OqcDisposition.SORT]: {
-    badge:
-      "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
-    dot: "bg-violet-500 dark:bg-violet-400",
+    badge: "bg-violet-soft text-violet-ink",
+    dot: "bg-violet-ink",
   },
 }
 

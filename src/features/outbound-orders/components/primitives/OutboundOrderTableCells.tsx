@@ -31,7 +31,7 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
               variant="outline"
               size="icon-sm"
               aria-label="Xem chi tiết DO"
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              className="text-muted-foreground hover:border-border hover:text-primary"
             >
               <Eye className="size-3.5" />
             </LinkButton>
@@ -52,7 +52,7 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
                   variant="outline"
                   size="icon-sm"
                   aria-label="Chỉnh sửa DO"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <Pencil className="size-3.5" />
                 </LinkButton>

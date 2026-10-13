@@ -44,20 +44,20 @@ export function TreeGuideLine({ type }: { type: TreeGuideType }) {
 export function BomLevelBadge({ level }: { level: number }) {
   if (level === 0) {
     return (
-      <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-400">
+      <span className="inline-flex items-center gap-1.5 font-medium text-emerald-700 dark:text-emerald-400">
         <span className="size-2 rounded-full bg-emerald-500" />0
       </span>
     )
   }
   if (level === 1) {
     return (
-      <span className="inline-flex items-center gap-1.5 font-semibold text-blue-700 dark:text-blue-400">
+      <span className="inline-flex items-center gap-1.5 font-medium text-blue-700 dark:text-blue-400">
         <span className="size-2 rounded-full bg-blue-500" />1
       </span>
     )
   }
   return (
-    <span className="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-400">
+    <span className="inline-flex items-center gap-1.5 font-medium text-amber-700 dark:text-amber-400">
       <span className="size-2 rounded-full bg-amber-500" />
       {level}
     </span>
@@ -87,13 +87,13 @@ export function BomCodeCell({ row }: { row: BomTree }) {
       </div>
 
       {/* Mã bản vẽ */}
-      <span className="truncate font-mono font-bold text-foreground">
+      <span className="truncate font-mono font-semibold text-foreground">
         {row.revision ? `${row.code} · ${row.revision}` : row.code}
       </span>
 
       {/* Badge vật tư */}
       {row.bomItem?.isOffStructure && (
-        <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+        <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
           {bomItemTypeLabels.DIRECT}
         </span>
       )}

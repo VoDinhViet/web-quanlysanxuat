@@ -57,7 +57,7 @@ export function QuotationSupplierTreeRow({
           <p className="flex items-center gap-2 text-sm font-medium text-foreground">
             <span className="truncate">{name || "—"}</span>
             {code && (
-              <span className="shrink-0 rounded border border-border px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
+              <span className="shrink-0 rounded border border-border px-1.5 py-0.5 font-mono text-xs font-medium text-muted-foreground">
                 {code}
               </span>
             )}

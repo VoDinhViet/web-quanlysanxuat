@@ -152,7 +152,7 @@ export function OrdersTableFilter({
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="orders-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -174,7 +174,7 @@ export function OrdersTableFilter({
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="orders-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Ngày giao
             </Label>
@@ -189,7 +189,7 @@ export function OrdersTableFilter({
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="orders-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -220,7 +220,7 @@ export function OrdersTableFilter({
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="orders-assigned-user"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               NV kinh doanh
             </Label>
@@ -252,7 +252,7 @@ export function OrdersTableFilter({
                     variant="outline"
                     className={
                       hasSelectedOrders
-                        ? "border-primary/50 bg-primary/5 text-xs font-medium text-primary shadow-2xs hover:bg-primary/10"
+                        ? "border-primary/50 bg-primary/5 text-xs font-medium text-primary shadow-2xs hover:bg-muted"
                         : "text-xs text-muted-foreground hover:text-foreground"
                     }
                     disabled={isExporting}
@@ -264,7 +264,7 @@ export function OrdersTableFilter({
                     )}
                     <span>Xuất</span>
                     {hasSelectedOrders && (
-                      <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                      <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-xs font-medium text-primary">
                         {selectedOrderCount}
                       </span>
                     )}
@@ -273,7 +273,7 @@ export function OrdersTableFilter({
                 }
               />
               <DropdownMenuContent align="end" className="w-64 p-1.5">
-                <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+                <DropdownMenuLabel className="px-2 py-1 text-xs font-medium text-muted-foreground">
                   {hasSelectedOrders
                     ? `Xuất ${selectedOrderCount} đơn hàng đã chọn`
                     : "Tùy chọn xuất dữ liệu"}
@@ -289,7 +289,7 @@ export function OrdersTableFilter({
                     <span className="text-xs font-medium text-foreground">
                       Biểu mẫu đơn hàng (BM-03/KD)
                     </span>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       File tài liệu PDF
                       {hasSelectedOrders ? ` (${selectedOrderCount} đơn)` : ""}
                     </span>
@@ -305,7 +305,7 @@ export function OrdersTableFilter({
                     <span className="text-xs font-medium text-foreground">
                       Danh sách đơn hàng
                     </span>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       Bảng tính Excel (.xlsx)
                       {hasSelectedOrders ? ` (${selectedOrderCount} đơn)` : ""}
                     </span>

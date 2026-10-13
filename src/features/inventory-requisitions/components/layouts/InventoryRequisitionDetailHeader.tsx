@@ -34,7 +34,7 @@ export function InventoryRequisitionDetailHeader({
             <span className="hidden sm:inline">Quay lại</span>
           </LinkButton>
 
-          <span className="font-mono text-lg font-bold text-foreground">
+          <span className="font-mono text-lg font-semibold text-foreground">
             {detail.code}
           </span>
           <InventoryRequisitionStatusBadge status={detail.status} />
@@ -55,7 +55,7 @@ export function InventoryRequisitionDetailHeader({
                     <Link
                       to="/manage/orders/$orderId"
                       params={{ orderId: detail.productionOrder.order.id }}
-                      className="font-mono font-semibold text-primary hover:underline"
+                      className="font-mono font-medium text-primary hover:underline"
                     >
                       {detail.productionOrder.order.buyerPoNo ?? "—"}
                     </Link>
@@ -70,7 +70,7 @@ export function InventoryRequisitionDetailHeader({
                         params={{
                           productionOrderId: detail.productionOrder.id,
                         }}
-                        className="font-mono font-semibold text-primary hover:underline"
+                        className="font-mono font-medium text-primary hover:underline"
                       >
                         {detail.productionOrder.code}
                       </Link>
@@ -93,7 +93,7 @@ export function InventoryRequisitionDetailHeader({
                     to="/manage/production-jobs/$productionJobId"
                     params={{ productionJobId: detail.productionJob.id }}
                     search={{ tab: "info" }}
-                    className="font-mono font-semibold text-primary hover:underline"
+                    className="font-mono font-medium text-primary hover:underline"
                   >
                     {detail.productionJob.code}
                   </Link>
@@ -135,7 +135,7 @@ type MetaFieldProps = {
 function MetaField({ label, value }: MetaFieldProps) {
   return (
     <div className="min-w-0 space-y-1">
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </p>
       <p className="truncate text-sm font-medium text-foreground">{value}</p>

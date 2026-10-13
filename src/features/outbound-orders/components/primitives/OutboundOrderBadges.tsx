@@ -17,12 +17,11 @@ export const outboundOrderStatusStyles: Record<
     dot: "bg-muted-foreground/60",
   },
   PENDING_APPROVAL: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   PENDING_DELIVERY: {
-    badge: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-sky-500 dark:bg-sky-400",
   },
   DELIVERED: {

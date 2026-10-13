@@ -192,7 +192,7 @@ export const CreateQuotationItemsPickerSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               Chọn vật tư cần báo giá
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -208,7 +208,7 @@ export const CreateQuotationItemsPickerSection = withForm({
           <div className="max-w-sm flex-1 space-y-1.5">
             <Label
               htmlFor="quotation-picker-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -229,7 +229,7 @@ export const CreateQuotationItemsPickerSection = withForm({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium text-muted-foreground">
+            <Label className="text-xs font-medium text-muted-foreground">
               Trạng thái
             </Label>
             <div className="inline-flex rounded-lg border border-border/60 bg-muted/50 p-0.5">

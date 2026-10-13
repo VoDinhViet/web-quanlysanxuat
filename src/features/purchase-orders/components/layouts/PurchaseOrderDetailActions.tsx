@@ -91,7 +91,7 @@ export function PurchaseOrderDetailActions({
 
       {purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION &&
         !isConfirmable && (
-          <p className="max-w-64 text-right text-[11px] text-muted-foreground">
+          <p className="max-w-64 text-right text-xs text-muted-foreground">
             Cần nhập ngày giao dự kiến và đơn giá cho mọi dòng trước khi xác
             nhận.
           </p>

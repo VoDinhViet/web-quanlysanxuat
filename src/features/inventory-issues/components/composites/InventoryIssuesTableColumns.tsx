@@ -31,7 +31,7 @@ export const inventoryIssuesColumns = col.columns([
       <Link
         to="/manage/inventory-issues/$issueId"
         params={{ issueId: row.original.id }}
-        className="font-mono text-xs font-semibold text-primary hover:underline"
+        className="font-mono text-xs font-medium text-primary hover:underline"
       >
         {getValue()}
       </Link>
@@ -51,7 +51,7 @@ export const inventoryIssuesColumns = col.columns([
         <Link
           to="/manage/inventory-requisitions/$requisitionId"
           params={{ requisitionId: requisition.id }}
-          className="font-mono text-xs font-semibold text-primary hover:underline"
+          className="font-mono text-xs font-medium text-primary hover:underline"
         >
           {requisition.code}
         </Link>

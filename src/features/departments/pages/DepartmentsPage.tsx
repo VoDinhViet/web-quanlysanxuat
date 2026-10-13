@@ -76,7 +76,7 @@ export function DepartmentsPage() {
             <div className="space-y-1.5">
               <Label
                 htmlFor="departments-search"
-                className="text-[11px] font-medium text-muted-foreground"
+                className="text-xs font-medium text-muted-foreground"
               >
                 Tìm kiếm
               </Label>
@@ -98,7 +98,7 @@ export function DepartmentsPage() {
             <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="departments-status"
-                className="text-[11px] font-medium text-muted-foreground"
+                className="text-xs font-medium text-muted-foreground"
               >
                 Trạng thái
               </Label>

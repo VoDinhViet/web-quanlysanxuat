@@ -102,7 +102,7 @@ export function OutsourcingOrderDetailActions({
               <DialogTitle>Hủy phiếu gia công ngoài</DialogTitle>
               <DialogDescription>
                 Phiếu{" "}
-                <span className="font-mono font-semibold text-foreground">
+                <span className="font-mono font-medium text-foreground">
                   {order.code}
                 </span>{" "}
                 đã trừ tồn kho xuất — hủy sẽ đảo ngược bút toán và cộng lại tồn

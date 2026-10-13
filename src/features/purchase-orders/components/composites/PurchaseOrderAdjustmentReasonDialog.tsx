@@ -115,7 +115,7 @@ function PurchaseOrderAdjustmentReasonForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           Lý do điều chỉnh SL
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
@@ -133,7 +133,7 @@ function PurchaseOrderAdjustmentReasonForm({
         <Textarea
           id="po-adjustment-reason-textarea"
           placeholder="Nhập lý do điều chỉnh số lượng (nếu có)"
-          className="min-h-24 resize-none bg-background text-xs"
+          className="min-h-24 resize-none bg-card text-xs"
           value={value}
           disabled={isPending}
           onChange={(event) => setValue(event.target.value)}

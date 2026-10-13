@@ -23,7 +23,7 @@ export function ManageCardLink({
         <LinkButton
           to={to}
           variant="link"
-          className="h-auto p-0 text-[11px] font-medium"
+          className="h-auto p-0 text-xs font-medium"
         >
           {label}
         </LinkButton>

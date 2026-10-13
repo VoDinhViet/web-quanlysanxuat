@@ -19,7 +19,7 @@ export const purchaseRequestColumns = purchaseRequestColumnHelper.columns([
     header: "Mã phiếu",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
   purchaseRequestColumnHelper.accessor("createdAt", {

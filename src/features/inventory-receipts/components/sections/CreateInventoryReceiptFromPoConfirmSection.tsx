@@ -28,7 +28,7 @@ type PreviewFieldProps = {
 function PreviewField({ label, value }: PreviewFieldProps) {
   return (
     <div>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
       <p className="text-sm font-medium text-foreground">{value}</p>
     </div>
   )
@@ -68,7 +68,7 @@ export const CreateInventoryReceiptFromPoConfirmSection = withForm({
     return (
       <div className="border-t border-border px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             Lưu nháp hoặc xác nhận
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -103,7 +103,7 @@ export const CreateInventoryReceiptFromPoConfirmSection = withForm({
         </div>
 
         <div className="mt-4 rounded-md bg-muted/30 p-4">
-          <p className="text-xs font-semibold text-foreground">
+          <p className="text-xs font-medium text-foreground">
             Ý nghĩa trạng thái
           </p>
           <ul className="mt-2 space-y-1.5">
@@ -111,7 +111,7 @@ export const CreateInventoryReceiptFromPoConfirmSection = withForm({
               <li key={status} className="flex items-start gap-2 text-xs">
                 <InventoryReceiptStatusBadge
                   status={status}
-                  className="mt-0.5 shrink-0 text-[10px]"
+                  className="mt-0.5 shrink-0 text-xs"
                 />
                 <span className="text-muted-foreground">
                   {inventoryReceiptStatusDescriptions[status]}

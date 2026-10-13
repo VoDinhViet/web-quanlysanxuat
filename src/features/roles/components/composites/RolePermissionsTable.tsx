@@ -123,7 +123,7 @@ export function RolePermissionsTable({
                       className="size-3.5"
                     />
                     <BlockIcon className="size-5 text-muted-foreground" />
-                    <span className="text-sm font-semibold text-foreground">
+                    <span className="text-sm font-medium text-foreground">
                       {block.label}
                     </span>
                     <span className="text-xs text-muted-foreground">

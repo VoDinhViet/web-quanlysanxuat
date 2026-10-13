@@ -42,10 +42,10 @@ export const itemIssueColumns = col.columns([
             )}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-xs font-semibold text-foreground">
+            <p className="truncate text-xs font-medium text-foreground">
               {direct.name}
             </p>
-            <p className="truncate font-mono text-[11px] text-muted-foreground">
+            <p className="truncate font-mono text-xs text-muted-foreground">
               {direct.code}
             </p>
           </div>

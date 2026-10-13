@@ -48,7 +48,7 @@ export const rolePermissionsColumns = columnHelper.columns([
     header: "Phân hệ / Chức năng",
     meta: {
       headerClassName:
-        "sticky left-0 z-30 h-14 bg-card px-4 text-left align-middle text-sm font-semibold text-foreground normal-case",
+        "sticky left-0 z-30 h-14 bg-card px-4 text-left align-middle text-sm font-medium text-foreground normal-case",
       cellClassName:
         "sticky left-0 z-1 bg-card px-4 py-3 align-middle whitespace-normal",
     },
@@ -65,7 +65,7 @@ export const rolePermissionsColumns = columnHelper.columns([
       return (
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-sm font-medium text-foreground">
               {module.label}
             </p>
             {module.description && (
@@ -95,7 +95,7 @@ export const rolePermissionsColumns = columnHelper.columns([
           </div>
           <span
             className={cn(
-              "min-w-10 shrink-0 rounded-full px-2 py-0.5 text-center text-[11px] font-medium tabular-nums",
+              "min-w-10 shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium tabular-nums",
               grantedCount === 0 && "bg-muted text-muted-foreground",
               grantedCount > 0 &&
                 grantedCount < codes.length &&
@@ -121,10 +121,10 @@ export const rolePermissionsColumns = columnHelper.columns([
             className={cn("size-5 shrink-0", action.iconClassName)}
           />
           <span className="flex min-w-0 flex-col leading-tight">
-            <span className="text-xs font-bold tracking-wide text-foreground uppercase">
+            <span className="text-xs font-semibold tracking-wide text-foreground uppercase">
               {action.label}
             </span>
-            <span className="truncate text-[11px] font-normal text-muted-foreground normal-case">
+            <span className="truncate text-xs font-normal text-muted-foreground normal-case">
               {action.hint}
             </span>
           </span>

@@ -139,7 +139,7 @@ function CreatePartItemForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+        <DialogTitle className="flex items-center gap-2 text-base font-medium">
           <LayersMinimalistic className="size-4 text-primary" />
           Thêm Part
         </DialogTitle>
@@ -166,7 +166,7 @@ function CreatePartItemForm({
                 value={option.value}
                 className={cn(
                   "flex cursor-pointer items-start gap-3 rounded-lg border border-input p-3 text-start transition-colors",
-                  "hover:border-primary/40 hover:bg-muted/30",
+                  "hover:border-border hover:bg-muted/30",
                   "data-disabled:cursor-not-allowed data-disabled:opacity-50",
                   isChecked && "border-primary bg-primary/5"
                 )}
@@ -180,7 +180,7 @@ function CreatePartItemForm({
                   <Icon className="size-4" />
                 </span>
                 <span className="space-y-0.5">
-                  <span className="block text-sm font-semibold text-foreground">
+                  <span className="block text-sm font-medium text-foreground">
                     {option.title}
                   </span>
                   <span className="block text-xs text-muted-foreground">
@@ -196,7 +196,7 @@ function CreatePartItemForm({
         // dòng chữ đơn giản, không cần thẻ như `placementOptions`.
         <p className="text-sm text-muted-foreground">
           Thêm vào:{" "}
-          <span className="font-semibold text-foreground">
+          <span className="font-medium text-foreground">
             {childTarget.parentLabel ?? "Sản phẩm gốc"}
           </span>
         </p>

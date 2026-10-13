@@ -41,25 +41,23 @@ export function PaymentRequestAmountStrip({
   return (
     <div className="flex flex-wrap items-end justify-between gap-4 border-t border-border pt-4">
       <div className="space-y-1">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Số tiền đề nghị chi
         </p>
-        <p className="font-heading text-3xl font-semibold tracking-tight text-foreground tabular-nums">
+        <p className="font-heading text-3xl font-medium tracking-tight text-foreground tabular-nums">
           {vndFormatter.format(paymentRequest.requestValue)} ₫
         </p>
       </div>
 
       <div className="space-y-1 text-right">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Hạn thanh toán
         </p>
         <p className="text-sm font-medium text-foreground">
           {DateTime.fromISO(paymentRequest.dueDate).toFormat("dd/MM/yyyy")}
         </p>
         {dueDateNote && tone ? (
-          <p
-            className={cn("text-xs font-semibold", dueDateToneClassName[tone])}
-          >
+          <p className={cn("text-xs font-medium", dueDateToneClassName[tone])}>
             {dueDateNote}
           </p>
         ) : null}

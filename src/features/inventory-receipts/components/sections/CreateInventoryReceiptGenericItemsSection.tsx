@@ -69,7 +69,7 @@ export const CreateInventoryReceiptGenericItemsSection = withForm({
             <div className="px-4 py-5 sm:px-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h2 className="font-heading text-base font-semibold text-foreground">
+                  <h2 className="font-heading text-base font-medium text-foreground">
                     Danh sách {itemNoun}
                   </h2>
                   <p className="text-sm text-muted-foreground">
@@ -79,7 +79,7 @@ export const CreateInventoryReceiptGenericItemsSection = withForm({
                 <Button
                   type="button"
                   variant="outline"
-                  className="border-primary/40 text-xs text-primary hover:bg-primary/5 hover:text-primary"
+                  className="border-primary/40 text-xs text-primary hover:bg-muted hover:text-primary"
                   disabled={disabled}
                   onClick={openAdd}
                 >
@@ -162,7 +162,7 @@ export const CreateInventoryReceiptGenericItemsSection = withForm({
                                       variant="outline"
                                       size="icon-sm"
                                       aria-label={`Sửa dòng ${index + 1}`}
-                                      className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                                      className="text-muted-foreground hover:border-border hover:text-primary"
                                       disabled={disabled}
                                       onClick={() => openEdit(index)}
                                     >

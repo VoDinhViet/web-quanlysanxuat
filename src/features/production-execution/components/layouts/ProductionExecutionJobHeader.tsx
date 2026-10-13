@@ -73,10 +73,10 @@ export function ProductionExecutionJobHeader({
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className="rounded-md bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
+              <span className="rounded-md bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">
                 JOB
               </span>
-              <span className="font-mono text-2xl font-bold text-foreground">
+              <span className="font-mono text-2xl font-semibold text-foreground">
                 {job.code}
               </span>
             </div>
@@ -151,7 +151,7 @@ function HeaderField({ label, value, mono, className }: HeaderFieldProps) {
       <dd
         title={value}
         className={cn(
-          "mt-0.5 truncate text-base font-semibold text-foreground",
+          "mt-0.5 truncate text-base font-medium text-foreground",
           mono && "font-mono"
         )}
       >
@@ -190,7 +190,7 @@ function InfoCell({ icon: Icon, label, value, mono, isDanger }: InfoCellProps) {
       <div className="min-w-0">
         <p
           className={cn(
-            "truncate text-[11px]",
+            "truncate text-xs",
             isDanger ? "text-destructive" : "text-muted-foreground"
           )}
         >
@@ -199,7 +199,7 @@ function InfoCell({ icon: Icon, label, value, mono, isDanger }: InfoCellProps) {
         <p
           title={value}
           className={cn(
-            "truncate text-sm font-semibold",
+            "truncate text-sm font-medium",
             mono && "font-mono",
             isDanger ? "text-destructive" : "text-foreground"
           )}

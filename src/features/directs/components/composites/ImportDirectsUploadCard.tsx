@@ -66,7 +66,7 @@ export function ImportDirectsUploadCard({
           <div className="flex items-start gap-3 border-b border-border/60 px-4 py-3.5 sm:px-5">
             <CloudUpload className="mt-0.5 size-5 text-primary" />
             <div className="flex flex-col gap-0.5">
-              <h2 className="font-heading text-base font-semibold tracking-tight text-foreground">
+              <h2 className="font-heading text-base font-medium tracking-tight text-foreground">
                 Tải file lên
               </h2>
               <p className="text-xs text-muted-foreground">
@@ -79,7 +79,7 @@ export function ImportDirectsUploadCard({
             <div
               {...getRootProps({
                 className: cn(
-                  "flex w-full cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors hover:border-primary hover:bg-primary/5",
+                  "flex w-full cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors hover:border-primary hover:bg-muted",
                   isDragActive ? "border-primary bg-primary/5" : "bg-muted/30"
                 ),
               })}
@@ -89,7 +89,7 @@ export function ImportDirectsUploadCard({
                 <CloudUpload className="size-7" />
               </span>
               <span className="flex flex-col gap-1">
-                <span className="text-base font-semibold">
+                <span className="text-base font-medium">
                   Kéo thả file Excel vào đây
                 </span>
                 <span className="text-sm text-muted-foreground">

@@ -41,7 +41,7 @@ const itemColumns = col.columns([
           <Link
             to="/manage/orders/$orderId"
             params={{ orderId: row.original.order.id }}
-            className="font-mono text-xs font-semibold text-primary hover:underline"
+            className="font-mono text-xs font-medium text-primary hover:underline"
           >
             {row.original.order.code}
           </Link>
@@ -50,12 +50,12 @@ const itemColumns = col.columns([
               to="/manage/production-jobs/$productionJobId"
               params={{ productionJobId: job.id }}
               search={{ tab: "info" }}
-              className="font-mono text-[11px] text-muted-foreground hover:text-primary hover:underline"
+              className="font-mono text-xs text-muted-foreground hover:text-primary hover:underline"
             >
               {job.code}
             </Link>
           ) : (
-            <span className="text-[11px] text-muted-foreground">—</span>
+            <span className="text-xs text-muted-foreground">—</span>
           )}
         </div>
       )
@@ -83,7 +83,7 @@ const itemColumns = col.columns([
         <span className="text-xs leading-tight font-medium text-foreground">
           {row.original.item.name}
         </span>
-        <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+        <div className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
           <span>{row.original.item.code}</span>
           <span>·</span>
           <span>ĐVT: {row.original.unit.name}</span>
@@ -124,7 +124,7 @@ const itemColumns = col.columns([
     header: "Còn lại",
     meta: {
       headerClassName: "w-20 text-right",
-      cellClassName: "text-right tabular-nums font-semibold",
+      cellClassName: "text-right tabular-nums font-medium",
     },
     cell: ({ row }) => {
       const remaining = Math.max(
@@ -149,7 +149,7 @@ const itemColumns = col.columns([
         <div className="flex flex-col items-end gap-0.5">
           <span>{numberFmt.format(onHand)}</span>
           {held > 0 ? (
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               (Giữ: {numberFmt.format(held)})
             </span>
           ) : null}
@@ -163,7 +163,7 @@ const itemColumns = col.columns([
     meta: {
       headerClassName: "w-24 text-right",
       cellClassName:
-        "text-right tabular-nums font-semibold text-emerald-600 dark:text-emerald-400",
+        "text-right tabular-nums font-medium text-emerald-600 dark:text-emerald-400",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
@@ -175,7 +175,7 @@ const itemColumns = col.columns([
       cellClassName: "text-right tabular-nums",
     },
     cell: ({ getValue }) => (
-      <span className="inline-block rounded-md bg-primary/10 px-2 py-0.5 font-bold text-primary dark:bg-primary/20">
+      <span className="inline-block rounded-md bg-primary/10 px-2 py-0.5 font-semibold text-primary dark:bg-primary/20">
         {numberFmt.format(getValue())}
       </span>
     ),
@@ -207,7 +207,7 @@ export function OutboundOrderItemsSection({
 
   return (
     <div className="border-b border-border not-first:border-t">
-      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-semibold tracking-wide text-foreground uppercase sm:px-5">
+      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-medium tracking-wide text-foreground uppercase sm:px-5">
         <PackageSearch className="size-3.5 text-muted-foreground" />
         Danh sách thành phẩm giao hàng
       </h3>
@@ -252,10 +252,10 @@ export function OutboundOrderItemsSection({
           </TableBody>
           <TableFooter>
             <TableRow className="h-12">
-              <TableCell colSpan={8} className="text-right font-semibold">
+              <TableCell colSpan={8} className="text-right font-medium">
                 Tổng SL giao
               </TableCell>
-              <TableCell className="text-right font-bold text-primary tabular-nums">
+              <TableCell className="text-right font-semibold text-primary tabular-nums">
                 {numberFmt.format(totalQuantity)}
               </TableCell>
               <TableCell />

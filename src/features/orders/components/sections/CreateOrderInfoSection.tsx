@@ -56,7 +56,7 @@ function OrderFormSection({
         <div>
           <div className="flex items-center gap-2">
             {Icon && <Icon className="size-4 text-primary" />}
-            <h3 className="text-sm font-semibold tracking-tight text-foreground">
+            <h3 className="text-sm font-medium tracking-tight text-foreground">
               {title}
             </h3>
           </div>
@@ -148,10 +148,10 @@ export const CreateOrderInfoSection = withForm({
             <FileSpreadsheet className="size-5 text-primary" />
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
+                <h2 className="font-heading text-base font-medium tracking-wide text-foreground uppercase">
                   Thông tin đơn hàng
                 </h2>
-                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                   Bước 1 / 3
                 </span>
               </div>
@@ -367,7 +367,7 @@ export const CreateOrderInfoSection = withForm({
                       placeholder="Nhập địa chỉ giao hàng chi tiết..."
                       disabled={disabled}
                       maxLength={500}
-                      className="min-h-20 resize-none bg-background text-xs"
+                      className="min-h-20 resize-none bg-card text-xs"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -443,7 +443,7 @@ export const CreateOrderInfoSection = withForm({
                     />
                   )}
                 </form.AppField>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Ghi chú này sẽ xuất hiện trên bản in chứng từ gửi đối tác.
                 </p>
               </div>
@@ -459,7 +459,7 @@ export const CreateOrderInfoSection = withForm({
                     />
                   )}
                 </form.AppField>
-                <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Lock className="size-3 text-amber-500" />
                   Chỉ lưu hành nội bộ xưởng sản xuất và kế toán, không in gửi
                   khách.

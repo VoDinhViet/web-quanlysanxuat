@@ -31,7 +31,7 @@ export function PurchaseRequestSourceCell({
   const buyerPoNo = productionOrder?.buyerPoNo ?? null
   if (buyerPoNo) {
     return (
-      <span className="font-mono font-semibold text-primary">{buyerPoNo}</span>
+      <span className="font-mono font-medium text-primary">{buyerPoNo}</span>
     )
   }
 
@@ -62,7 +62,7 @@ export function PurchaseRequestActionsCell({
         params={{ purchaseRequestId: purchaseRequest.id }}
         variant="outline"
         size="icon-sm"
-        className="bg-background text-muted-foreground"
+        className="bg-card text-muted-foreground"
         aria-label="Xem chi tiết"
       >
         <Eye className="size-3.5" />

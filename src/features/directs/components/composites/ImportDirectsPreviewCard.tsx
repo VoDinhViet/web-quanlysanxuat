@@ -51,7 +51,7 @@ export function ImportDirectsPreviewCard({
         <div className="flex items-start gap-3">
           <ListCheck className="mt-0.5 size-5 text-primary" />
           <div className="flex flex-col gap-0.5">
-            <h2 className="font-heading text-base font-semibold tracking-tight text-foreground">
+            <h2 className="font-heading text-base font-medium tracking-tight text-foreground">
               Xem trước dữ liệu
             </h2>
             <p className="text-xs text-muted-foreground">
@@ -152,7 +152,7 @@ function PreviewEmpty() {
           <span
             key={field.key}
             className={cn(
-              "rounded-full border px-2.5 py-0.5 text-[11px]",
+              "rounded-full border px-2.5 py-0.5 text-xs",
               field.required
                 ? "border-primary/30 bg-primary/10 font-medium text-primary"
                 : "text-muted-foreground"
@@ -163,7 +163,7 @@ function PreviewEmpty() {
           </span>
         ))}
       </div>
-      <p className="text-[11px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         <span className="font-medium text-primary">*</span> là cột bắt buộc
       </p>
     </div>

@@ -51,7 +51,7 @@ export function PurchaseOrderDetailHeader({
             <span className="hidden sm:inline">Quay lại</span>
           </LinkButton>
 
-          <span className="font-mono text-lg font-bold text-foreground">
+          <span className="font-mono text-lg font-semibold text-foreground">
             {purchaseOrder.code}
           </span>
           <PurchaseOrderProgressBadge progress={purchaseOrder.progress} />
@@ -156,7 +156,7 @@ type MetaFieldProps = {
 function MetaField({ label, value, className }: MetaFieldProps) {
   return (
     <div className={cn("min-w-0 space-y-1", className)}>
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </p>
       <div className="text-sm font-medium break-words text-foreground">

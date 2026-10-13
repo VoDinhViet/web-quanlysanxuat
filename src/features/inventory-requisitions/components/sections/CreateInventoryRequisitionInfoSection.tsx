@@ -21,7 +21,7 @@ export const CreateInventoryRequisitionInfoSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             ③ Số lượng & thông tin phiếu
           </h2>
           <p className="text-sm text-muted-foreground">

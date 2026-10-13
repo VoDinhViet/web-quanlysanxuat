@@ -21,7 +21,7 @@ export function PaymentRequestStatusNotice({
       <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4 sm:p-5">
         <TriangleAlert className="mt-0.5 size-5 shrink-0 text-destructive" />
         <div className="min-w-0 space-y-1">
-          <p className="text-sm font-semibold text-destructive">
+          <p className="text-sm font-medium text-destructive">
             Yêu cầu thanh toán đã bị hủy
           </p>
           <p className="text-sm text-foreground">

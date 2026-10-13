@@ -37,7 +37,7 @@ export function SpecialPermissionChip({
         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors select-none",
         checked
           ? "border-primary/30 bg-primary/10 text-primary"
-          : "border-border bg-muted/40 text-muted-foreground hover:border-primary/40 hover:text-foreground",
+          : "border-border bg-muted/40 text-muted-foreground hover:border-border hover:text-foreground",
         disabled && "cursor-not-allowed opacity-50"
       )}
     >

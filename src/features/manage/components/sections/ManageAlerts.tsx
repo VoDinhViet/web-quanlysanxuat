@@ -50,8 +50,8 @@ export function ManageAlerts() {
       label: "DO sắp giao",
       icon: Delivery,
       cardClassName:
-        "border border-l-4 border-blue-300 border-l-blue-500 bg-blue-50 dark:border-blue-800/40 dark:border-l-blue-500 dark:bg-blue-500/10",
-      accentClassName: "text-blue-600 dark:text-blue-400",
+        "border border-l-4 border-info/30 border-l-info bg-info-soft",
+      accentClassName: "text-info-ink",
       subtitle: "Trong 3 ngày tới",
       count: alertsQuery.data?.upcomingDeliveries,
       isPending: alertsQuery.isPending,
@@ -61,7 +61,7 @@ export function ManageAlerts() {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-xs font-bold tracking-wide text-foreground uppercase">
+      <h2 className="text-xs font-medium text-foreground">
         Cảnh báo quan trọng
       </h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -82,7 +82,7 @@ export function ManageAlerts() {
               <div className="min-w-0">
                 <p
                   className={cn(
-                    "truncate text-xs font-bold uppercase",
+                    "truncate text-xs font-medium",
                     alert.accentClassName
                   )}
                 >
@@ -90,7 +90,7 @@ export function ManageAlerts() {
                   {alert.label}
                 </p>
                 {alert.subtitle && (
-                  <p className="text-[11px] font-medium text-foreground/80">
+                  <p className="text-xs font-medium text-foreground/80">
                     {alert.subtitle}
                   </p>
                 )}

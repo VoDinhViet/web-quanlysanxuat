@@ -52,7 +52,7 @@ export function PurchaseRequestItemsSection({
   return (
     <div className="not-first:border-t not-first:border-border">
       <div className="flex items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-2 sm:px-5">
-        <h3 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground uppercase">
+        <h3 className="flex items-center gap-2 text-xs font-medium tracking-wide text-foreground uppercase">
           <PackageSearch className="size-3.5 text-muted-foreground" />
           Chi tiết vật tư
         </h3>

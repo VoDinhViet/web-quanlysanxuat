@@ -118,13 +118,11 @@ export function SupplierStatCards() {
             <tile.icon className="size-5" />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-xs font-semibold text-muted-foreground">
+            <p className="truncate text-xs font-medium text-muted-foreground">
               {tile.label}
             </p>
-            <p className="text-2xl font-semibold text-foreground">
-              {tile.value}
-            </p>
-            <p className="text-[11px] font-medium text-muted-foreground">
+            <p className="text-2xl font-medium text-foreground">{tile.value}</p>
+            <p className="text-xs font-medium text-muted-foreground">
               {tile.subtitle}
             </p>
           </div>

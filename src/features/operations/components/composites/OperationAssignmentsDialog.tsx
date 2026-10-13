@@ -176,7 +176,7 @@ function OperationAssignmentsEditor({
   return (
     <>
       <DialogHeader className="gap-1">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           Phân công nhân sự — {operationName}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">

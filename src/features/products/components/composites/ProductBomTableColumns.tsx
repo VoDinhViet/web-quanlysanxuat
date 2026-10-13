@@ -53,10 +53,10 @@ export function createBomColumns(
         <span
           className={
             row.original.isRoot
-              ? "font-mono font-bold text-foreground text-sm"
+              ? "font-mono text-sm font-semibold text-foreground"
               : row.original.bomItem?.isOffStructure
-                ? "font-mono font-semibold text-amber-700 dark:text-amber-400 text-xs"
-                : "font-mono font-semibold text-muted-foreground text-xs"
+                ? "font-mono text-xs font-medium text-amber-700 dark:text-amber-400"
+                : "font-mono text-xs font-medium text-muted-foreground"
           }
         >
           {row.original.path}
@@ -76,8 +76,8 @@ export function createBomColumns(
         <span
           className={
             row.original.isRoot
-              ? "block truncate font-bold text-foreground"
-              : "block truncate font-semibold text-foreground"
+              ? "block truncate font-semibold text-foreground"
+              : "block truncate font-medium text-foreground"
           }
           title={row.original.name}
         >
@@ -94,7 +94,7 @@ export function createBomColumns(
       header: "SỐ LƯỢNG",
       meta: {
         headerClassName: "w-24 text-center",
-        cellClassName: "text-center font-semibold text-foreground tabular-nums",
+        cellClassName: "text-center font-medium text-foreground tabular-nums",
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue()),
     }),

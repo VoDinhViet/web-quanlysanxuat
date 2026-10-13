@@ -103,7 +103,7 @@ export function IqcDetailActions({
       </div>
 
       {isLocked && (
-        <p className="max-w-64 text-right text-[11px] text-muted-foreground">
+        <p className="max-w-64 text-right text-xs text-muted-foreground">
           Đã chốt đường trả NCC — không sửa được kết quả IQC nữa.
         </p>
       )}

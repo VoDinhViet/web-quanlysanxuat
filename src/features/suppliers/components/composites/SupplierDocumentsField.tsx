@@ -109,7 +109,7 @@ export function SupplierDocumentsField({
   return (
     <div className="space-y-3">
       <div>
-        <span className="block text-sm font-semibold text-foreground">
+        <span className="block text-sm font-medium text-foreground">
           Tài liệu đính kèm
           {value.length > 0 && (
             <span className="ml-1 font-normal text-muted-foreground">
@@ -117,7 +117,7 @@ export function SupplierDocumentsField({
             </span>
           )}
         </span>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           Hợp đồng, báo giá, chứng nhận chất lượng...
         </p>
       </div>
@@ -146,7 +146,7 @@ export function SupplierDocumentsField({
               Kéo thả file vào đây hoặc{" "}
               <span className="font-medium text-primary">chọn file</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Hỗ trợ: PDF, Word, Excel, PowerPoint, Bản vẽ, File nén... (tối đa
               10MB)
             </p>

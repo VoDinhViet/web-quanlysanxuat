@@ -17,7 +17,7 @@ export const outsourcingOrdersColumns = col.columns([
       <Link
         to="/manage/outsourcing-orders/$outsourcingOrderId"
         params={{ outsourcingOrderId: row.original.id }}
-        className="font-mono text-xs font-semibold text-primary hover:underline"
+        className="font-mono text-xs font-medium text-primary hover:underline"
       >
         {getValue()}
       </Link>
@@ -68,7 +68,7 @@ export const outsourcingOrdersColumns = col.columns([
     header: "Còn lại",
     meta: {
       headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right tabular-nums text-xs font-semibold",
+      cellClassName: "text-right tabular-nums text-xs font-medium",
     },
   }),
 

@@ -60,7 +60,7 @@ export function buildQuotationItemsPickerColumns({
         id: "purchaseRequestCode",
         header: "Mã PR",
         cell: ({ getValue }) => (
-          <span className="font-mono text-xs font-semibold text-primary">
+          <span className="font-mono text-xs font-medium text-primary">
             {getValue()}
           </span>
         ),
@@ -91,10 +91,10 @@ export function buildQuotationItemsPickerColumns({
       header: "Vật tư",
       cell: ({ row }) => (
         <div>
-          <p className="text-xs font-semibold text-foreground">
+          <p className="text-xs font-medium text-foreground">
             {row.original.item.name}
           </p>
-          <p className="font-mono text-[11px] text-muted-foreground">
+          <p className="font-mono text-xs text-muted-foreground">
             {row.original.item.code}
           </p>
         </div>
@@ -154,7 +154,7 @@ export function buildQuotationItemsPickerColumns({
         return (
           <span
             className={cn(
-              "text-xs font-semibold tabular-nums",
+              "text-xs font-medium tabular-nums",
               remaining > 0
                 ? "text-primary"
                 : "font-normal text-muted-foreground/60"

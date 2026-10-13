@@ -293,7 +293,7 @@ export function PurchaseRequestItemPurchasableSelect({
             </span>
             <span className="flex flex-col text-left">
               <span className="text-xs font-medium text-foreground">Mua</span>
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 Cần mua cho đề xuất
               </span>
             </span>
@@ -308,7 +308,7 @@ export function PurchaseRequestItemPurchasableSelect({
               <span className="text-xs font-medium text-foreground">
                 Không mua
               </span>
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 Bỏ qua vật tư này
               </span>
             </span>

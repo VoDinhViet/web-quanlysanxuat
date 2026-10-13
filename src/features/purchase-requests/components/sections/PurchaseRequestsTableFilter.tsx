@@ -105,7 +105,7 @@ export function PurchaseRequestsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="purchase-requests-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -135,7 +135,7 @@ export function PurchaseRequestsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="purchase-requests-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Ngày tạo
             </Label>
@@ -150,7 +150,7 @@ export function PurchaseRequestsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="purchase-requests-department"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Bộ phận
             </Label>
@@ -180,7 +180,7 @@ export function PurchaseRequestsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="purchase-requests-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>

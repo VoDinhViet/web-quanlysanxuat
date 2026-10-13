@@ -45,7 +45,7 @@ function ActivityCardShell({
       <Icon className={cn("size-5 shrink-0", iconClassName)} />
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="truncate text-xs font-medium tracking-wide text-muted-foreground uppercase">
           {label}
         </p>
 
@@ -58,14 +58,14 @@ function ActivityCardShell({
           <p className="mt-1 text-xs text-muted-foreground italic">Chưa có</p>
         ) : (
           <>
-            <p className="mt-0.5 truncate font-mono text-sm font-semibold">
+            <p className="mt-0.5 truncate font-mono text-sm font-medium">
               {code}
             </p>
             <div className="mt-0.5 space-y-0.5">
               {lines.map((line) => (
                 <p
                   key={line.label}
-                  className="truncate text-[11px] text-muted-foreground"
+                  className="truncate text-xs text-muted-foreground"
                 >
                   {line.label}:{" "}
                   <span className="text-foreground">{line.value}</span>

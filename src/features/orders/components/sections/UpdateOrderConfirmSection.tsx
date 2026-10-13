@@ -14,7 +14,7 @@ type RecapFieldProps = {
 function RecapField({ label, value }: RecapFieldProps) {
   return (
     <div>
-      <span className="block text-[11px] text-muted-foreground">{label}</span>
+      <span className="block text-xs text-muted-foreground">{label}</span>
       <span className="text-sm font-medium text-foreground">{value}</span>
     </div>
   )
@@ -31,7 +31,7 @@ export const UpdateOrderConfirmSection = withForm({
     return (
       <div>
         <div className="border-b border-border px-4 py-4 sm:px-5">
-          <h2 className="font-heading text-base font-semibold tracking-wide text-foreground uppercase">
+          <h2 className="font-heading text-base font-medium tracking-wide text-foreground uppercase">
             Xác nhận & tổng tiền
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">

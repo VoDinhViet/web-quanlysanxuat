@@ -12,7 +12,7 @@ export function CreateOrderPage() {
         { label: "Tạo đơn hàng" },
       ]}
     >
-      <PageBody className="order-drafting">
+      <PageBody>
         <CreateOrderForm />
       </PageBody>
     </PageShell>

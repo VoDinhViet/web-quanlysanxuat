@@ -75,7 +75,7 @@ export function BomItemDetailTabs({
                 // rules, so which one paints is generation-order luck. This
                 // compound variant is strictly more specific than either,
                 // so the selected tint reliably wins over the neutral hover.
-                "data-selected:hover:bg-primary/5",
+                "data-selected:hover:bg-muted",
                 // Indicator: the primitive parks it at `bottom-[-5px]`, sized
                 // for the list's default `p-[3px]`. This list is `p-0`, so drop
                 // it to -1px — the 2px bar then covers the wrapper's 1px bottom

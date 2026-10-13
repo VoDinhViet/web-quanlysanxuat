@@ -25,12 +25,9 @@ import { DateTime } from "luxon"
 
 const productionJobStatusStyles: Record<ProductionJobStatus, string> = {
   [ProductionJobStatus.PENDING]: "bg-muted text-muted-foreground",
-  [ProductionJobStatus.IN_PROGRESS]:
-    "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-  [ProductionJobStatus.WAITING_QC]:
-    "bg-cyan-100 text-cyan-700 dark:bg-cyan-500/15 dark:text-cyan-400",
-  [ProductionJobStatus.WAITING_DELIVERY]:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  [ProductionJobStatus.IN_PROGRESS]: "bg-info-soft text-info-ink",
+  [ProductionJobStatus.WAITING_QC]: "bg-info-soft text-info-ink",
+  [ProductionJobStatus.WAITING_DELIVERY]: "bg-warning-soft text-warning-ink",
   [ProductionJobStatus.COMPLETED]: "bg-success/15 text-success",
 }
 
@@ -106,7 +103,7 @@ export function ManageJobDueDateTable() {
               {table.getFlatHeaders().map((header) => (
                 <TableHead
                   key={header.id}
-                  className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
+                  className="text-xs font-normal tracking-normal text-muted-foreground"
                 >
                   {!header.isPlaceholder &&
                     flexRender(

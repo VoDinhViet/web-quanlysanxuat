@@ -36,7 +36,7 @@ export function OrderDetailSectionCard({
       )}
     >
       <div className="flex items-center justify-between gap-2 border-b border-border/60 px-4 py-3.5 sm:px-5">
-        <div className="flex items-center gap-2 font-heading text-base font-semibold tracking-tight text-foreground">
+        <div className="flex items-center gap-2 font-heading text-base font-medium tracking-tight text-foreground">
           <IconComponent className="size-4 text-muted-foreground" />
           {title}
         </div>

@@ -86,7 +86,7 @@ export function OutsourcingReceiptDetailActions({
               <DialogTitle>Hủy phiếu nhận gia công ngoài</DialogTitle>
               <DialogDescription>
                 Bạn chắc chắn muốn hủy phiếu{" "}
-                <span className="font-mono font-semibold text-foreground">
+                <span className="font-mono font-medium text-foreground">
                   {receipt.code}
                 </span>
                 ? Gia công ngoài không quản tồn theo kho nên thao tác này không

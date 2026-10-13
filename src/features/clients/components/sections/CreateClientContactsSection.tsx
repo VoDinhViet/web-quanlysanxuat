@@ -58,7 +58,7 @@ export const CreateClientContactsSection = withForm({
             <div className="px-4 py-5 sm:px-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h2 className="font-heading text-base font-semibold text-foreground">
+                  <h2 className="font-heading text-base font-medium text-foreground">
                     Người liên hệ
                   </h2>
                   <p className="text-sm text-muted-foreground">
@@ -68,7 +68,7 @@ export const CreateClientContactsSection = withForm({
                 <Button
                   type="button"
                   variant="outline"
-                  className="border-primary/40 text-xs text-primary hover:bg-primary/5 hover:text-primary"
+                  className="border-primary/40 text-xs text-primary hover:bg-muted hover:text-primary"
                   disabled={disabled}
                   onClick={openAdd}
                 >
@@ -131,7 +131,7 @@ export const CreateClientContactsSection = withForm({
                                       variant="outline"
                                       size="icon-sm"
                                       aria-label={`Sửa người liên hệ ${index + 1}`}
-                                      className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                                      className="text-muted-foreground hover:border-border hover:text-primary"
                                       disabled={disabled}
                                       onClick={() => openEdit(index)}
                                     >

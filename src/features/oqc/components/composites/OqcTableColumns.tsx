@@ -29,7 +29,7 @@ export const oqcColumns = oqcColumnHelper.columns([
     header: "Mã OQC",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {getValue()}
       </span>
     ),
@@ -39,7 +39,7 @@ export const oqcColumns = oqcColumnHelper.columns([
     id: "image",
     header: "Hình ảnh",
     meta: {
-      headerClassName: "w-20 text-center font-bold text-foreground",
+      headerClassName: "w-20 text-center text-foreground",
       cellClassName: "text-center py-2",
     },
     cell: ({ row }) => {
@@ -55,7 +55,7 @@ export const oqcColumns = oqcColumnHelper.columns([
       const imageUrl = resolveFileUrl(image.url)
 
       return (
-        <div className="group mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40 transition hover:border-primary/50">
+        <div className="group mx-auto flex size-10 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40 transition hover:border-border">
           <ZoomableImage
             src={imageUrl}
             alt={row.original.bomItem.name}
@@ -76,12 +76,12 @@ export const oqcColumns = oqcColumnHelper.columns([
       return (
         <div className="max-w-72 min-w-0">
           <p
-            className="line-clamp-2 text-xs font-semibold break-words text-foreground"
+            className="line-clamp-2 text-sm font-medium break-words text-foreground"
             title={bomItem.name}
           >
             {bomItem.name}
           </p>
-          <p className="truncate font-mono text-[11px] text-muted-foreground">
+          <p className="truncate font-mono text-xs text-muted-foreground">
             {bomItem.code}
           </p>
         </div>
@@ -108,7 +108,7 @@ export const oqcColumns = oqcColumnHelper.columns([
         <p className="truncate text-xs text-foreground">
           {row.original.operation.name}
         </p>
-        <p className="truncate font-mono text-[11px] text-muted-foreground">
+        <p className="truncate font-mono text-xs text-muted-foreground">
           {row.original.operation.code}
         </p>
       </div>
@@ -124,7 +124,7 @@ export const oqcColumns = oqcColumnHelper.columns([
         <p className="truncate font-mono text-xs font-medium text-foreground">
           {row.original.productionJob.code}
         </p>
-        <p className="truncate font-mono text-[11px] text-muted-foreground">
+        <p className="truncate font-mono text-xs text-muted-foreground">
           {row.original.buyerPoNo ?? "—"}
         </p>
       </div>
@@ -139,7 +139,7 @@ export const oqcColumns = oqcColumnHelper.columns([
       cellClassName: "text-right",
     },
     cell: ({ row }) => (
-      <span className="font-semibold text-foreground tabular-nums">
+      <span className="text-foreground tabular-nums">
         {quantityFormatter.format(row.original.quantity)}{" "}
         <span className="font-normal text-muted-foreground">
           ({row.original.unit.name})

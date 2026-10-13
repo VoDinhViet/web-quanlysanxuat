@@ -47,7 +47,7 @@ export function PurchaseLedgerTableFilter() {
         loading: "Đang xuất file Excel sổ theo dõi mua hàng...",
         success: "Đã xuất file Excel sổ theo dõi mua hàng",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -126,7 +126,7 @@ export function PurchaseLedgerTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="purchase-ledger-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -156,7 +156,7 @@ export function PurchaseLedgerTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="purchase-ledger-created-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Ngày tạo PR
             </Label>
@@ -171,7 +171,7 @@ export function PurchaseLedgerTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="purchase-ledger-needed-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Ngày cần
             </Label>
@@ -186,7 +186,7 @@ export function PurchaseLedgerTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="purchase-ledger-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>

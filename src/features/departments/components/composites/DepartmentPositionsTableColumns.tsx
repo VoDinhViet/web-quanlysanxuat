@@ -28,7 +28,7 @@ export const departmentPositionColumns = positionColumnHelper.columns([
     header: "Mã chức vụ",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {getValue()}
       </span>
     ),
@@ -83,7 +83,7 @@ export const departmentPositionColumns = positionColumnHelper.columns([
                   variant="outline"
                   size="icon-sm"
                   aria-label="Chỉnh sửa"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <PenNewSquare className="size-3.5" />
                 </Button>

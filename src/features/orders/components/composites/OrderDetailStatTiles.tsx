@@ -78,12 +78,12 @@ export function OrderDetailStatTiles({
           key={tile.label}
           className={cn("rounded-lg p-3", tile.toneClassName)}
         >
-          <p className="truncate text-[10px] font-semibold tracking-wide uppercase opacity-80">
+          <p className="truncate text-xs font-medium tracking-wide uppercase opacity-80">
             {tile.label}
           </p>
-          <p className="mt-1 truncate text-lg font-bold">{tile.value}</p>
+          <p className="mt-1 truncate text-lg font-semibold">{tile.value}</p>
           {tile.subtitle ? (
-            <p className="text-[11px] opacity-70">{tile.subtitle}</p>
+            <p className="text-xs opacity-70">{tile.subtitle}</p>
           ) : null}
         </div>
       ))}

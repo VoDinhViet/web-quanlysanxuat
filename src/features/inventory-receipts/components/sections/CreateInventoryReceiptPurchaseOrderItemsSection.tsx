@@ -104,7 +104,7 @@ export const CreateInventoryReceiptPurchaseOrderItemsSection = withForm({
             <div className="px-4 py-5 sm:px-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <h2 className="font-heading text-base font-semibold text-foreground">
+                  <h2 className="font-heading text-base font-medium text-foreground">
                     Dòng vật tư từ đơn mua hàng
                   </h2>
                   <p className="text-sm text-muted-foreground">

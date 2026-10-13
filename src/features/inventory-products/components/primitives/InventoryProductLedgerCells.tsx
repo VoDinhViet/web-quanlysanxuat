@@ -17,7 +17,7 @@ export function InventoryProductLedgerReferenceCell({
 }: {
   entry: ProductLedgerEntry
 }) {
-  const codeClassName = "font-mono text-xs font-semibold text-primary"
+  const codeClassName = "font-mono text-xs font-medium text-primary"
 
   if (entry.inventoryReceipt) {
     return (
@@ -66,7 +66,7 @@ export function InventoryProductLedgerDescriptionCell({
         {productLedgerMovementTypeLabels[movementType]}
       </span>
       {refParts.length > 0 && (
-        <span className="text-[11px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           {refParts.join(" · ")}
         </span>
       )}
@@ -89,7 +89,7 @@ export function InventoryProductLedgerQuantityCell({
   return (
     <span
       className={cn(
-        "font-semibold tabular-nums",
+        "font-medium tabular-nums",
         tone === "in" ? "text-success" : "text-destructive"
       )}
     >
@@ -104,7 +104,7 @@ export function InventoryProductLedgerBalanceCell({
   value: number
 }) {
   return (
-    <span className="font-semibold text-foreground tabular-nums">
+    <span className="font-medium text-foreground tabular-nums">
       {quantityFormatter.format(value)}
     </span>
   )

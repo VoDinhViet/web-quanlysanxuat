@@ -127,7 +127,7 @@ function PurchaseOrderCancelForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+        <DialogTitle className="flex items-center gap-2 text-base font-medium">
           <CloseCircle className="size-4 text-destructive" />
           Huỷ đơn mua hàng {purchaseOrder.code}
         </DialogTitle>
@@ -142,7 +142,7 @@ function PurchaseOrderCancelForm({
 
       {showQuotationChoice ? (
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-semibold">
+          <p className="text-sm font-medium">
             Xử lý báo giá <span className="font-mono">{quotation.code}</span>{" "}
             sau khi huỷ
           </p>
@@ -307,7 +307,7 @@ function QuotationChoice({
         <Icon weight="Bold" className="size-5" />
       </span>
       <span className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <span className="text-sm font-semibold uppercase">{title}</span>
+        <span className="text-sm font-medium uppercase">{title}</span>
         <span className="text-xs leading-normal text-muted-foreground">
           {description}
         </span>

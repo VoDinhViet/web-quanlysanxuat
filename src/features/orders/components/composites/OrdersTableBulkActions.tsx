@@ -49,7 +49,7 @@ export function OrdersTableBulkActions({
       <div className="flex items-center gap-2 rounded-full border border-border/80 bg-card/95 px-3 py-1.5 shadow-lg shadow-black/10 backdrop-blur-md">
         <span className="px-1 text-xs text-muted-foreground">
           Đã chọn{" "}
-          <strong className="font-semibold text-foreground">
+          <strong className="font-medium text-foreground">
             {selectedCount}
           </strong>
         </span>
@@ -91,7 +91,7 @@ export function OrdersTableBulkActions({
             sideOffset={8}
             className="w-60 p-1.5"
           >
-            <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+            <DropdownMenuLabel className="px-2 py-1 text-xs font-medium text-muted-foreground">
               Xuất {selectedCount} đơn hàng đã chọn
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="my-1" />
@@ -105,7 +105,7 @@ export function OrdersTableBulkActions({
                 <span className="text-xs font-medium text-foreground">
                   Biểu mẫu đơn hàng (BM-03/KD)
                 </span>
-                <span className="text-[11px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   File tài liệu PDF
                 </span>
               </div>
@@ -120,7 +120,7 @@ export function OrdersTableBulkActions({
                 <span className="text-xs font-medium text-foreground">
                   Danh sách đơn hàng
                 </span>
-                <span className="text-[11px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   Bảng tính Excel (.xlsx)
                 </span>
               </div>

@@ -33,13 +33,13 @@ function OperationCardShell({
       className={cn(
         "flex min-h-[58px] w-full min-w-0 cursor-pointer items-center gap-2.5 rounded-md border border-border bg-card px-3 py-2 text-left transition-colors outline-none hover:bg-muted/50 focus-visible:ring-3 focus-visible:ring-ring/50",
         isChecked &&
-          "border-primary bg-primary/5 ring-1 ring-primary hover:bg-primary/5"
+          "border-primary bg-primary/5 ring-1 ring-primary hover:bg-muted"
       )}
     >
       {leading && (
         <span
           className={cn(
-            "flex min-w-5 shrink-0 items-center justify-center text-xs font-semibold text-muted-foreground",
+            "flex min-w-5 shrink-0 items-center justify-center text-xs font-medium text-muted-foreground",
             isChecked && "text-primary"
           )}
         >
@@ -80,10 +80,7 @@ type OperationCardProps = {
   isChecked: boolean
 }
 
-export function OperationCard({
-  operation,
-  isChecked,
-}: OperationCardProps) {
+export function OperationCard({ operation, isChecked }: OperationCardProps) {
   return (
     <OperationCardShell
       value={operation.operationId}

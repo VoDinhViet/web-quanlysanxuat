@@ -150,7 +150,7 @@ function CreatePurchaseRequestItemsWizard({
   return (
     <div className="flex flex-col gap-5">
       <DialogHeader className="gap-1">
-        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+        <DialogTitle className="flex items-center gap-2 text-base font-medium">
           <Box className="size-4 text-primary" />
           Thêm vật tư vào đề xuất {purchaseRequest.code}
         </DialogTitle>

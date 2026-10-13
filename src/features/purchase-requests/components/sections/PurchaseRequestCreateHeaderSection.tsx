@@ -16,7 +16,7 @@ export const PurchaseRequestCreateHeaderSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             Thông tin đề xuất
           </h2>
           <p className="text-sm text-muted-foreground">

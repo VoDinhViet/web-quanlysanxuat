@@ -51,7 +51,7 @@ export function PurchaseOrderCloseTable({
             <TableRow key={row.id} className="h-14 bg-card hover:bg-muted/25">
               <TableCell
                 className={cn(
-                  "font-mono font-semibold text-foreground",
+                  "font-mono font-medium text-foreground",
                   row.isRemoved && "text-muted-foreground line-through"
                 )}
               >
@@ -76,7 +76,7 @@ export function PurchaseOrderCloseTable({
               </TableCell>
               <TableCell
                 className={cn(
-                  "text-right font-semibold tabular-nums",
+                  "text-right font-medium tabular-nums",
                   row.isReduced && "text-destructive",
                   row.isRemoved && "font-medium text-muted-foreground"
                 )}
@@ -87,7 +87,7 @@ export function PurchaseOrderCloseTable({
               </TableCell>
               <TableCell
                 className={cn(
-                  "text-right font-semibold text-foreground tabular-nums",
+                  "text-right font-medium text-foreground tabular-nums",
                   row.isRemoved && "text-muted-foreground"
                 )}
               >

@@ -16,7 +16,7 @@ export const purchaseQuotationsColumns = purchaseQuotationColumnHelper.columns([
     header: "Mã RFQ",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
 

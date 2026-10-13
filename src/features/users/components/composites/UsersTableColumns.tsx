@@ -131,7 +131,7 @@ export const userColumns = userColumnHelper.columns([
                     variant="outline"
                     size="icon-sm"
                     aria-label="Chỉnh sửa"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    className="text-muted-foreground hover:border-border hover:text-primary"
                   >
                     <Edit3 className="size-3.5" />
                   </LinkButton>
@@ -149,7 +149,7 @@ export const userColumns = userColumnHelper.columns([
                     variant="outline"
                     size="icon-sm"
                     aria-label="Phân quyền"
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    className="text-muted-foreground hover:border-border hover:text-primary"
                   >
                     <ShieldCheck className="size-3.5" />
                   </Button>
@@ -166,7 +166,7 @@ export const userColumns = userColumnHelper.columns([
                   variant="outline"
                   size="icon-sm"
                   aria-label="Thao tác khác"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <MoreHorizontal className="size-3.5" />
                 </Button>

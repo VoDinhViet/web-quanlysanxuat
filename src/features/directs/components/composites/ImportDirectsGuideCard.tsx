@@ -55,7 +55,7 @@ export function ImportDirectsGuideCard({
       <div className="flex items-start gap-3 border-b border-border/60 px-4 py-3.5 sm:px-5">
         <InfoCircle className="mt-0.5 size-5 text-info" />
         <div className="flex flex-col gap-0.5">
-          <h2 className="font-heading text-base font-semibold tracking-tight text-foreground">
+          <h2 className="font-heading text-base font-medium tracking-tight text-foreground">
             Hướng dẫn nhanh
           </h2>
           <p className="text-xs text-muted-foreground">

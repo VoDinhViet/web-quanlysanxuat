@@ -135,7 +135,7 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
               }}
             />
             {exceedsRemaining && (
-              <p className="mt-1 text-right text-[10px] text-destructive">
+              <p className="mt-1 text-right text-xs text-destructive">
                 Vượt SL còn lại ({quantityFormatter.format(maxAllowed)})
               </p>
             )}

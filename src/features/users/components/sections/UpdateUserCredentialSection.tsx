@@ -35,7 +35,7 @@ export const UpdateUserCredentialSection = withForm({
       <div>
         <div className="flex items-start justify-between gap-3 px-4 py-4 sm:px-5">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               Tài khoản ERP
             </h2>
             <p className="text-sm text-muted-foreground">

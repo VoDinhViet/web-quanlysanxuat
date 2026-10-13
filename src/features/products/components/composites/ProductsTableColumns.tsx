@@ -52,10 +52,10 @@ export const productColumns = productColumnHelper.columns([
             )}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-xs font-semibold text-foreground">
+            <p className="truncate text-xs font-medium text-foreground">
               {product.name}
             </p>
-            <p className="truncate font-mono text-[11px] text-muted-foreground">
+            <p className="truncate font-mono text-xs text-muted-foreground">
               {product.code}
             </p>
           </div>
@@ -131,7 +131,7 @@ export const productColumns = productColumnHelper.columns([
                   variant="outline"
                   size="icon-sm"
                   aria-label="Xem chi tiết"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <Eye className="size-3.5" />
                 </LinkButton>
@@ -151,7 +151,7 @@ export const productColumns = productColumnHelper.columns([
                         variant="outline"
                         size="icon-sm"
                         aria-label="Nhân bản"
-                        className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                        className="text-muted-foreground hover:border-border hover:text-primary"
                       >
                         <Copy className="size-3.5" />
                       </Button>

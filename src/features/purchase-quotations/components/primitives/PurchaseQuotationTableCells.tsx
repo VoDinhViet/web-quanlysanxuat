@@ -30,7 +30,7 @@ export function PurchaseQuotationActionsCell({
               variant="outline"
               size="icon-sm"
               aria-label="Xem chi tiết"
-              className="bg-background text-muted-foreground hover:border-primary/30 hover:text-primary"
+              className="bg-card text-muted-foreground hover:border-border hover:text-primary"
             >
               <Eye className="size-3.5" />
             </LinkButton>
@@ -50,7 +50,7 @@ export function PurchaseQuotationActionsCell({
                   variant="outline"
                   size="icon-sm"
                   aria-label="Sửa báo giá"
-                  className="bg-background text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="bg-card text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <Pencil className="size-3.5" />
                 </LinkButton>
@@ -74,7 +74,7 @@ export function PurchaseQuotationActionsCell({
                       variant="outline"
                       size="icon-sm"
                       aria-label="Xoá báo giá"
-                      className="bg-background text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                      className="bg-card text-muted-foreground hover:border-destructive/30 hover:text-destructive"
                     >
                       <Trash2 className="size-3.5" />
                     </Button>

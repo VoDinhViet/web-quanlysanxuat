@@ -112,7 +112,7 @@ export function QuotationSupplierAttachmentCell({
             className={cn(
               "h-7 px-2 text-xs font-normal",
               fileCount > 0
-                ? "bg-primary/10 font-medium text-primary hover:bg-primary/20"
+                ? "bg-primary/10 font-medium text-primary hover:bg-muted"
                 : "text-muted-foreground hover:text-foreground"
             )}
             title={
@@ -159,7 +159,7 @@ export function QuotationSupplierAttachmentCell({
               <input {...getInputProps()} />
               <div
                 className={cn(
-                  "flex min-h-20 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/30 px-4 py-3 transition-colors hover:border-primary/50 hover:bg-primary/5",
+                  "flex min-h-20 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/30 px-4 py-3 transition-colors hover:border-border hover:bg-muted",
                   isDragActive && "border-primary bg-primary/5"
                 )}
               >
@@ -171,7 +171,7 @@ export function QuotationSupplierAttachmentCell({
                     Kéo thả, dán (Ctrl+V) file vào đây hoặc{" "}
                     <span className="font-medium text-primary">chọn file</span>
                   </p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Hỗ trợ: PDF, Ảnh, Word, Excel (tối đa 10MB)
                   </p>
                 </div>

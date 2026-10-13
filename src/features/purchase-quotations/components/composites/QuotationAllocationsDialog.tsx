@@ -125,7 +125,7 @@ function QuotationAllocationsDialogForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           Phân bổ SL — {itemName}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
@@ -171,10 +171,10 @@ function QuotationAllocationsDialogForm({
                     className="h-12"
                   >
                     <TableCell>
-                      <span className="font-mono text-xs font-semibold text-primary">
+                      <span className="font-mono text-xs font-medium text-primary">
                         {allocation.prCode}
                       </span>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         Cần{" "}
                         {DateTime.fromISO(allocation.neededDate).toFormat(
                           "dd/MM/yyyy"
@@ -189,7 +189,7 @@ function QuotationAllocationsDialogForm({
                         <NumericFormat
                           customInput={Input}
                           className={cn(
-                            "h-8 w-full bg-background text-right text-xs tabular-nums",
+                            "h-8 w-full bg-card text-right text-xs tabular-nums",
                             isOver &&
                               "border-warning/70 pr-7 text-warning hover:border-warning focus-visible:ring-warning/30"
                           )}
@@ -230,7 +230,7 @@ function QuotationAllocationsDialogForm({
                       <Input
                         id={`allocation-reason-${allocation.purchaseRequestItemId}`}
                         className={cn(
-                          "h-8 bg-background text-xs",
+                          "h-8 bg-card text-xs",
                           needsReason &&
                             "border-warning/60 placeholder:text-warning/70 focus-visible:ring-warning/30"
                         )}
@@ -268,7 +268,7 @@ function QuotationAllocationsDialogForm({
           Tổng SL báo giá:{" "}
           <span
             className={cn(
-              "font-semibold",
+              "font-medium",
               totalOver ? "text-warning" : "text-primary"
             )}
           >

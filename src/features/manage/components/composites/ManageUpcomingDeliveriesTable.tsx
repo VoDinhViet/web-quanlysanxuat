@@ -43,7 +43,7 @@ const columns = columnHelper.columns([
     cell: ({ getValue }) => (
       <Badge
         variant="outline"
-        className="max-w-24 truncate bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
+        className="max-w-24 truncate bg-info-soft text-info-ink"
       >
         {outboundOrderStatusLabels[getValue()]}
       </Badge>
@@ -79,7 +79,7 @@ export function ManageUpcomingDeliveriesTable() {
             {table.getFlatHeaders().map((header) => (
               <TableHead
                 key={header.id}
-                className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
+                className="text-xs font-normal tracking-normal text-muted-foreground"
               >
                 {!header.isPlaceholder &&
                   flexRender(

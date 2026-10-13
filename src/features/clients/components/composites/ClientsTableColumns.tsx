@@ -109,7 +109,7 @@ export const clientColumns = clientColumnHelper.columns([
                   variant="outline"
                   size="icon-sm"
                   aria-label="Xem chi tiết"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <Eye className="size-3.5" />
                 </Button>
@@ -127,7 +127,7 @@ export const clientColumns = clientColumnHelper.columns([
                     aria-label="Chỉnh sửa"
                     className={cn(
                       buttonVariants({ variant: "outline", size: "icon-sm" }),
-                      "text-muted-foreground hover:border-primary/30 hover:text-primary"
+                      "text-muted-foreground hover:border-border hover:text-primary"
                     )}
                   >
                     <Edit3 className="size-3.5" />
@@ -168,7 +168,7 @@ export const clientColumns = clientColumnHelper.columns([
                   variant="outline"
                   size="icon-sm"
                   aria-label="Thao tác khác"
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <MoreHorizontal className="size-3.5" />
                 </Button>

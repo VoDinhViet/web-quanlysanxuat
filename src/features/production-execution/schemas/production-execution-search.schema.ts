@@ -11,11 +11,7 @@ import { ProductionJobStatus } from "@/lib/types/production-job.type"
 // để BE trả mọi Job × công đoạn người dùng được phép.
 export const ALL_OPERATIONS = "all"
 
-export const OPERATION_SORTS = [
-  "default",
-  "name",
-  "remainingJobCount",
-] as const
+export const OPERATION_SORTS = ["default", "name", "remainingJobCount"] as const
 
 export type OperationSort = (typeof OPERATION_SORTS)[number]
 

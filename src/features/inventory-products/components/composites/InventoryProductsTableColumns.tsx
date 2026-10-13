@@ -26,7 +26,7 @@ function QuantityColumnHeader({
         {label}
         <HelpCircle className="size-3 text-muted-foreground/70" />
       </span>
-      <span className="text-[10px] font-normal text-muted-foreground/80">
+      <span className="text-xs font-normal text-muted-foreground/80">
         ({formula})
       </span>
     </div>
@@ -58,7 +58,7 @@ export const inventoryProductsColumns = col.columns([
     header: "Mã thành phẩm",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {getValue()}
       </span>
     ),

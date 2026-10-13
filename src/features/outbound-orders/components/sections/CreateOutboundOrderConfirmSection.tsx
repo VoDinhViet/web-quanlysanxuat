@@ -33,7 +33,7 @@ type PreviewFieldProps = {
 function PreviewField({ label, value, className }: PreviewFieldProps) {
   return (
     <div className={className}>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
       <p className="text-sm font-medium text-foreground">{value}</p>
     </div>
   )
@@ -83,7 +83,7 @@ export const CreateOutboundOrderConfirmSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             ③ Xác nhận & tạo phiếu
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -96,10 +96,10 @@ export const CreateOutboundOrderConfirmSection = withForm({
             <div className="flex items-center gap-2">
               <FileText className="size-4 text-muted-foreground" />
               <div>
-                <p className="text-sm font-semibold text-foreground">
+                <p className="text-sm font-medium text-foreground">
                   Phiếu giao hàng (DO)
                 </p>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Mã phiếu cấp tự động khi tạo · Lập {today}
                 </p>
               </div>
@@ -136,10 +136,8 @@ export const CreateOutboundOrderConfirmSection = withForm({
               },
             ].map((stat) => (
               <div key={stat.label} className="px-4 py-3 text-center">
-                <p className="text-[11px] text-muted-foreground">
-                  {stat.label}
-                </p>
-                <p className="mt-0.5 text-sm font-semibold text-foreground tabular-nums">
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
+                <p className="mt-0.5 text-sm font-medium text-foreground tabular-nums">
                   {stat.value}
                 </p>
               </div>
@@ -194,10 +192,10 @@ export const CreateOutboundOrderConfirmSection = withForm({
               </TableBody>
               <TableFooter>
                 <TableRow className="h-12">
-                  <TableCell colSpan={6} className="font-semibold">
+                  <TableCell colSpan={6} className="font-medium">
                     Tổng
                   </TableCell>
-                  <TableCell className="text-right font-semibold tabular-nums">
+                  <TableCell className="text-right font-medium tabular-nums">
                     {quantityFormatter.format(totalQuantity)}
                   </TableCell>
                   <TableCell />

@@ -117,7 +117,7 @@ export function IqcEvidenceCard({
 
               <div
                 className={cn(
-                  "flex min-h-16 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-3 transition-colors hover:border-primary/50 hover:bg-primary/5",
+                  "flex min-h-16 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-3 transition-colors hover:border-border hover:bg-muted",
                   isDragActive && "border-primary bg-primary/5",
                   isPasteTarget && "border-primary bg-primary/5"
                 )}
@@ -130,9 +130,9 @@ export function IqcEvidenceCard({
                     Kéo thả, dán (Ctrl+V) file vào đây hoặc{" "}
                     <span className="font-medium text-primary">chọn file</span>
                   </p>
-                  <p className="text-[11px] text-muted-foreground">{hint}</p>
+                  <p className="text-xs text-muted-foreground">{hint}</p>
                   {isPasteTarget && (
-                    <p className="text-[11px] font-medium text-primary">
+                    <p className="text-xs font-medium text-primary">
                       Ctrl+V để dán vào đây
                     </p>
                   )}

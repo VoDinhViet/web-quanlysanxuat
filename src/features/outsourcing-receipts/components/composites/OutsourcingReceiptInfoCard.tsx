@@ -93,7 +93,7 @@ type InfoTileProps = {
 function InfoTile({ icon: Icon, label, value }: InfoTileProps) {
   return (
     <div className="min-w-0 space-y-1">
-      <dt className="flex items-center gap-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <dt className="flex items-center gap-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
         <Icon className="size-3" />
         {label}
       </dt>

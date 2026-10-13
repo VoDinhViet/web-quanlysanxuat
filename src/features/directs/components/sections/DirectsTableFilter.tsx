@@ -103,7 +103,7 @@ export function DirectsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="directs-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -125,7 +125,7 @@ export function DirectsTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="client-combobox"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Khách hàng
             </Label>
@@ -138,7 +138,7 @@ export function DirectsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="directs-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>

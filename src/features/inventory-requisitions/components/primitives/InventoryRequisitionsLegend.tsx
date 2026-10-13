@@ -20,7 +20,7 @@ export function InventoryRequisitionsLegend() {
           badge: (
             <InventoryRequisitionStatusBadge
               status={status}
-              className="mt-0.5 shrink-0 text-[10px]"
+              className="mt-0.5 shrink-0 text-xs"
             />
           ),
           description: inventoryRequisitionStatusDescriptions[status],
@@ -29,7 +29,7 @@ export function InventoryRequisitionsLegend() {
 
       {/* Tips */}
       <div className="space-y-2.5 border-t border-border/60 pt-3 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-5">
-        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+        <div className="flex items-center gap-1.5 font-medium text-foreground">
           <Lightbulb className="size-4 text-amber-500" />
           <span>Tips:</span>
         </div>

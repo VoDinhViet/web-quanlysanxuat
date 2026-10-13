@@ -114,7 +114,7 @@ export function InventoryRequisitionDetailActions({
           variant="outline"
           to="/manage/inventory-issues/$issueId"
           params={{ issueId: detail.inventoryIssue.id }}
-          className="group/link border-primary/30 text-primary hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+          className="group/link border-primary/30 text-primary hover:border-border hover:bg-muted hover:text-primary"
         >
           <PackageSearch className="size-4" />
           Phiếu xuất kho

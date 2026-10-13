@@ -13,7 +13,7 @@ export function PurchaseRequestNoteField({
   if (!draft.editable) {
     return (
       <div className="space-y-1">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Ghi chú
         </p>
         <p className="text-sm font-medium whitespace-pre-wrap text-foreground">
@@ -27,13 +27,13 @@ export function PurchaseRequestNoteField({
     <div className="space-y-1">
       <label
         htmlFor="purchase-request-note"
-        className="block text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+        className="block text-xs font-medium tracking-wide text-muted-foreground uppercase"
       >
         Ghi chú
       </label>
       <Textarea
         id="purchase-request-note"
-        className="min-h-16 w-full resize-y bg-background text-sm"
+        className="min-h-16 w-full resize-y bg-card text-sm"
         placeholder="Nhập ghi chú"
         maxLength={1000}
         disabled={draft.isPending}

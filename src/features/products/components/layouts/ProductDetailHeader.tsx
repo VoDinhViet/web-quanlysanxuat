@@ -54,7 +54,7 @@ export function ProductDetailHeader({
           <ProductHeaderThumbnail image={product.image} name={product.name} />
 
           <div className="min-w-0">
-            <h2 className="min-w-0 truncate text-base leading-snug font-semibold text-foreground sm:text-lg">
+            <h2 className="min-w-0 truncate text-base leading-snug font-medium text-foreground sm:text-lg">
               {product.name}
             </h2>
 

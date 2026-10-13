@@ -67,7 +67,7 @@ export function CreatePositionForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           Thêm chức vụ
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">

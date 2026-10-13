@@ -42,16 +42,16 @@ export function QuantityCell({
   let colorClass = "text-foreground font-medium"
 
   if (variant === "blue") {
-    colorClass = "text-blue-600 dark:text-blue-400 font-semibold"
+    colorClass = "text-blue-600 dark:text-blue-400 font-medium"
   } else if (variant === "orange") {
-    colorClass = "text-amber-600 dark:text-amber-400 font-semibold"
+    colorClass = "text-amber-600 dark:text-amber-400 font-medium"
   } else if (variant === "green") {
-    colorClass = "text-emerald-600 dark:text-emerald-400 font-semibold"
+    colorClass = "text-emerald-600 dark:text-emerald-400 font-medium"
   } else if (variant === "available") {
     colorClass =
       value < 0
-        ? "text-rose-600 dark:text-rose-400 font-bold"
-        : "text-foreground font-semibold"
+        ? "text-rose-600 dark:text-rose-400 font-semibold"
+        : "text-foreground font-medium"
   }
 
   return (
@@ -80,7 +80,7 @@ export function InventoryProductActionsCell({
               variant="outline"
               size="icon-sm"
               aria-label="Xem chi tiết"
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              className="text-muted-foreground hover:border-border hover:text-primary"
             >
               <Eye className="size-3.5" />
             </LinkButton>

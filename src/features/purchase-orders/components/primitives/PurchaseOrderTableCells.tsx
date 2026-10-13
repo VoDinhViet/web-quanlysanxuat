@@ -17,7 +17,7 @@ export function PurchaseOrderSourceCell({
   }
 
   return (
-    <span className="font-mono text-xs font-semibold text-primary">
+    <span className="font-mono text-xs font-medium text-primary">
       {codes[0]}
       {codes.length > 1 && (
         <span className="ml-1 font-sans font-normal text-muted-foreground">
@@ -38,7 +38,7 @@ export function PurchaseOrderAmountCell({
   value,
 }: PurchaseOrderAmountCellProps) {
   return (
-    <span className="font-semibold text-foreground tabular-nums">
+    <span className="font-medium text-foreground tabular-nums">
       {amountFormatter.format(value)}
     </span>
   )
@@ -59,7 +59,7 @@ export function PurchaseOrderActionsCell({
         params={{ purchaseOrderId }}
         variant="outline"
         size="icon-sm"
-        className="bg-background text-muted-foreground"
+        className="bg-card text-muted-foreground"
         aria-label="Xem chi tiết"
       >
         <Eye className="size-3.5" />

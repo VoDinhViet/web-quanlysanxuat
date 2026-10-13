@@ -78,10 +78,10 @@ export function buildCreateOutsourcingOrderPickerColumns({
       meta: { headerClassName: "min-w-48" },
       cell: ({ row }) => (
         <div>
-          <p className="text-xs font-semibold text-foreground">
+          <p className="text-xs font-medium text-foreground">
             {row.original.bomItem.name}
           </p>
-          <p className="font-mono text-[11px] text-muted-foreground">
+          <p className="font-mono text-xs text-muted-foreground">
             {row.original.bomItem.code}
           </p>
         </div>
@@ -125,11 +125,11 @@ export function buildCreateOutsourcingOrderPickerColumns({
       meta: { headerClassName: "w-36 text-right", cellClassName: "text-right" },
       cell: ({ row }) =>
         row.original.remainingQuantity > 0 ? (
-          <span className="font-semibold text-foreground tabular-nums">
+          <span className="font-medium text-foreground tabular-nums">
             {quantityFormatter.format(row.original.remainingQuantity)}
           </span>
         ) : (
-          <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+          <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
             Đã gửi đủ
           </span>
         ),

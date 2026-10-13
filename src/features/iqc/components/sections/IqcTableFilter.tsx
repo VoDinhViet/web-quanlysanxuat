@@ -78,7 +78,7 @@ export function IqcTableFilter() {
         loading: "Đang xuất file Excel IQC...",
         success: "Đã xuất file Excel IQC",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -135,7 +135,7 @@ export function IqcTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="iqc-supplier"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Nhà cung cấp
             </Label>
@@ -161,7 +161,7 @@ export function IqcTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="iqc-result"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Kết quả QC
             </Label>
@@ -187,7 +187,7 @@ export function IqcTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="iqc-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>

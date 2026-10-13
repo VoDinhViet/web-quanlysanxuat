@@ -61,7 +61,7 @@ export function SupplierReturnReasonField({
   if (!editable) {
     return (
       <div className="space-y-1.5">
-        <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Lý do trả
         </p>
         <p className="text-sm whitespace-pre-wrap text-foreground">
@@ -76,7 +76,7 @@ export function SupplierReturnReasonField({
       <div className="flex items-center justify-between">
         <label
           htmlFor="supplier-return-reason"
-          className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
         >
           Lý do trả
         </label>
@@ -91,7 +91,7 @@ export function SupplierReturnReasonField({
       <div className="relative">
         <Textarea
           id="supplier-return-reason"
-          className="min-h-20 resize-y bg-background text-sm leading-relaxed"
+          className="min-h-20 resize-y bg-card text-sm leading-relaxed"
           placeholder="Nhập lý do trả hàng (tự động lưu khi bấm ra ngoài)"
           value={localValue}
           maxLength={1000}

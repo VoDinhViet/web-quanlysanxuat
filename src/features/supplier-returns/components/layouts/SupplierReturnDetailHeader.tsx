@@ -39,7 +39,7 @@ export function SupplierReturnDetailHeader({
             <span className="hidden sm:inline">Quay lại</span>
           </LinkButton>
 
-          <span className="font-mono text-lg font-bold text-foreground">
+          <span className="font-mono text-lg font-semibold text-foreground">
             {supplierReturn.code}
           </span>
           <SupplierReturnStatusBadge status={supplierReturn.status} />
@@ -83,7 +83,7 @@ type MetaFieldProps = {
 function MetaField({ label, value }: MetaFieldProps) {
   return (
     <div className="min-w-0 space-y-1">
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </p>
       <p className="truncate text-sm font-medium text-foreground">{value}</p>

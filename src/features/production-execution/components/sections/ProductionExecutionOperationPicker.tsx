@@ -80,7 +80,7 @@ export function ProductionExecutionOperationPicker() {
             <span className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">
               <Layers className="size-4" />
             </span>
-            <h2 className="text-sm font-semibold text-foreground">
+            <h2 className="text-sm font-medium text-foreground">
               Công đoạn sản xuất
             </h2>
             {!isPending && !isError && (

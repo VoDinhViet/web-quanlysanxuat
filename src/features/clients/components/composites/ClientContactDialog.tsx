@@ -85,7 +85,7 @@ function ClientContactDialogForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           {isEditing ? "Sửa người liên hệ" : "Thêm người liên hệ"}
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">

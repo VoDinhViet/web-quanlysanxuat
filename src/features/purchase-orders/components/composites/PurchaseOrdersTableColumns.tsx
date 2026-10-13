@@ -21,7 +21,7 @@ export const purchaseOrdersColumns = purchaseOrderColumnHelper.columns([
     header: "Mã đơn mua",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
 
@@ -44,7 +44,7 @@ export const purchaseOrdersColumns = purchaseOrderColumnHelper.columns([
         <Link
           to="/manage/purchase-quotations/$purchaseQuotationId"
           params={{ purchaseQuotationId: quotation.id }}
-          className="font-mono text-xs font-semibold text-primary hover:underline"
+          className="font-mono text-xs font-medium text-primary hover:underline"
         >
           {quotation.code}
         </Link>
@@ -103,7 +103,7 @@ export const purchaseOrdersColumns = purchaseOrderColumnHelper.columns([
       <div className="flex flex-col items-center gap-1">
         <PurchaseOrderProgressBadge progress={getValue()} />
         {row.original.closedAt ? (
-          <span className="text-[10px] font-medium text-muted-foreground">
+          <span className="text-xs font-medium text-muted-foreground">
             Đóng sớm
           </span>
         ) : null}

@@ -95,7 +95,7 @@ export function InventoryDirectsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="inventory-directs-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -141,7 +141,7 @@ export function InventoryDirectsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="inventory-supplier"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Nhà cung cấp
             </Label>

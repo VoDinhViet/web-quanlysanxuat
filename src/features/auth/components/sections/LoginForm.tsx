@@ -60,7 +60,7 @@ export function LoginForm() {
   return (
     <div>
       <div className="mb-9">
-        <p className="mb-3.5 text-xs font-bold tracking-[0.2em] text-primary uppercase">
+        <p className="mb-3.5 text-xs font-semibold tracking-[0.2em] text-primary uppercase">
           Cổng xác thực
         </p>
         <h1 className="text-[40px] font-extrabold tracking-tight text-foreground">
@@ -91,7 +91,7 @@ export function LoginForm() {
                 <Field data-invalid={isInvalid}>
                   <FieldLabel
                     htmlFor={field.name}
-                    className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
+                    className="text-xs font-medium tracking-widest text-muted-foreground uppercase"
                   >
                     Email hoặc tên đăng nhập
                   </FieldLabel>
@@ -124,7 +124,7 @@ export function LoginForm() {
                 <Field data-invalid={isInvalid}>
                   <FieldLabel
                     htmlFor={field.name}
-                    className="text-xs font-semibold tracking-widest text-muted-foreground uppercase"
+                    className="text-xs font-medium tracking-widest text-muted-foreground uppercase"
                   >
                     Mật khẩu
                   </FieldLabel>
@@ -187,7 +187,7 @@ export function LoginForm() {
           <Button
             type="submit"
             size="lg"
-            className="h-13 w-full text-base font-semibold tracking-[0.04em]"
+            className="h-13 w-full text-base font-medium tracking-[0.04em]"
             disabled={isPending}
           >
             {isPending ? (

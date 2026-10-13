@@ -74,7 +74,7 @@ export function UpdatePositionForm({
       className="flex flex-col gap-5"
     >
       <DialogHeader className="gap-1">
-        <DialogTitle className="text-base font-semibold">
+        <DialogTitle className="text-base font-medium">
           Chỉnh sửa chức vụ
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">

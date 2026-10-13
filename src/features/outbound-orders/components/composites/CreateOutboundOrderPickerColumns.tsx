@@ -133,10 +133,10 @@ export function buildCreateOutboundOrderPickerColumns({
       meta: { headerClassName: "min-w-48" },
       cell: ({ row }) => (
         <div>
-          <p className="text-xs font-semibold text-foreground">
+          <p className="text-xs font-medium text-foreground">
             {row.original.item.name}
           </p>
-          <p className="font-mono text-[11px] text-muted-foreground">
+          <p className="font-mono text-xs text-muted-foreground">
             {row.original.item.code}
           </p>
         </div>

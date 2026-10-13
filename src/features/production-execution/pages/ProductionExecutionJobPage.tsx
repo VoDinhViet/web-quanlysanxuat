@@ -32,7 +32,7 @@ import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 
 const tabTriggerClassName =
-  "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5 hover:bg-muted/40 hover:text-foreground data-selected:bg-primary/5 data-selected:text-primary group-data-[variant=line]/tabs-list:data-selected:bg-primary/5 data-selected:hover:bg-primary/5"
+  "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5 hover:bg-muted/40 hover:text-foreground data-selected:bg-primary/5 data-selected:text-primary group-data-[variant=line]/tabs-list:data-selected:bg-primary/5 data-selected:hover:bg-muted"
 
 export function ProductionExecutionJobPage() {
   const { productionJobId } = useParams({
@@ -198,14 +198,14 @@ function ProductionExecutionJobContent({
                 <TabsTrigger value="parts" className={tabTriggerClassName}>
                   <Layers className="size-3.5" />
                   Chi tiết sản phẩm
-                  <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
+                  <Badge variant="secondary" className="h-5 px-1.5 text-xs">
                     {partRows.length}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="reports" className={tabTriggerClassName}>
                   <History className="size-3.5" />
                   Lịch sử báo cáo
-                  <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
+                  <Badge variant="secondary" className="h-5 px-1.5 text-xs">
                     {reportsQuery.data?.pagination.totalRecords ?? 0}
                   </Badge>
                 </TabsTrigger>

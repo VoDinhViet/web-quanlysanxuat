@@ -58,7 +58,7 @@ export function PurchaseRequestNeededDateField({
   if (!editable) {
     return (
       <div className="min-w-0 space-y-1">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Ngày cần
         </p>
         <p className="truncate text-sm font-medium text-foreground">
@@ -70,7 +70,7 @@ export function PurchaseRequestNeededDateField({
 
   return (
     <div className="min-w-0 space-y-1">
-      <label className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         Ngày cần <span className="text-destructive">*</span>
       </label>
       <DatePicker

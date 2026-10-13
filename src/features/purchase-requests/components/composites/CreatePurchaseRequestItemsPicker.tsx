@@ -126,17 +126,17 @@ export function CreatePurchaseRequestItemsPicker({
                       />
                     </TableCell>
                     <TableCell>
-                      <p className="text-xs font-semibold text-foreground">
+                      <p className="text-xs font-medium text-foreground">
                         {direct.name}
                       </p>
-                      <p className="font-mono text-[11px] text-muted-foreground">
+                      <p className="font-mono text-xs text-muted-foreground">
                         {direct.code}
                       </p>
                     </TableCell>
                     <TableCell>{direct.unit.name}</TableCell>
                     <TableCell>
                       {isExisting && (
-                        <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                           Đã có trong phiếu
                         </span>
                       )}

@@ -57,7 +57,7 @@ export const buildAssignableUserColumns = ({
       header: "Mã nhân viên",
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-xs font-semibold text-primary">
+        <span className="font-mono text-xs font-medium text-primary">
           {getValue()}
         </span>
       ),

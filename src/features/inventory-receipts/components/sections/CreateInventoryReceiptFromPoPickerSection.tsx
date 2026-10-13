@@ -83,7 +83,7 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             ① Chọn PO cần nhập
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -96,7 +96,7 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
           <div className="w-full max-w-xs space-y-1.5">
             <Label
               htmlFor="receipt-from-po-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Mã PO
             </Label>
@@ -119,7 +119,7 @@ export const CreateInventoryReceiptFromPoPickerSection = withForm({
           <div className="w-full max-w-xs space-y-1.5">
             <Label
               htmlFor="receipt-from-po-direct-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Vật tư
             </Label>

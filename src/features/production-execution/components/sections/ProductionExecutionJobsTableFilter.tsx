@@ -95,7 +95,7 @@ export function ProductionExecutionJobsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="production-execution-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -117,7 +117,7 @@ export function ProductionExecutionJobsTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="client-combobox"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Khách hàng
             </Label>
@@ -130,7 +130,7 @@ export function ProductionExecutionJobsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="production-execution-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Ngày giao hàng
             </Label>
@@ -145,7 +145,7 @@ export function ProductionExecutionJobsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="production-execution-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>

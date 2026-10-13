@@ -173,7 +173,7 @@ export function BomItemDirectsTable({
 
                 return (
                   <TableRow key={direct.id} id={direct.id} className="h-14">
-                    <TableCell className="font-mono font-bold text-muted-foreground">
+                    <TableCell className="font-mono font-semibold text-muted-foreground">
                       {(page - 1) * PAGE_SIZE + idx + 1}
                     </TableCell>
                     <TableCell>
@@ -189,7 +189,7 @@ export function BomItemDirectsTable({
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-mono text-xs font-bold text-foreground">
+                          <p className="font-mono text-xs font-semibold text-foreground">
                             {direct.code}
                           </p>
                           <p className="truncate text-xs text-muted-foreground">
@@ -213,7 +213,7 @@ export function BomItemDirectsTable({
                           disabled={bom.isSaving}
                         />
                       ) : (
-                        <span className="font-semibold text-foreground tabular-nums">
+                        <span className="font-medium text-foreground tabular-nums">
                           {quantityFormatter.format(direct.quantity)}
                         </span>
                       )}

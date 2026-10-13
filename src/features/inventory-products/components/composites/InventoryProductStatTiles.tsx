@@ -66,7 +66,7 @@ export function InventoryProductStatTiles({
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         Tổng quan tồn kho
       </p>
 
@@ -84,13 +84,13 @@ export function InventoryProductStatTiles({
               <tile.icon
                 className={cn("size-3.5 shrink-0", tile.toneClassName)}
               />
-              <p className="truncate text-[10px] leading-tight font-semibold tracking-wide text-muted-foreground uppercase">
+              <p className="truncate text-xs leading-tight font-medium tracking-wide text-muted-foreground uppercase">
                 {tile.label}
               </p>
             </div>
             <p
               className={cn(
-                "mt-1 truncate text-lg font-bold tabular-nums",
+                "mt-1 truncate text-lg font-semibold tabular-nums",
                 tile.toneClassName
               )}
             >
@@ -100,7 +100,7 @@ export function InventoryProductStatTiles({
         ))}
       </div>
 
-      <div className="flex items-center gap-1.5 pt-1 text-[11px] text-muted-foreground">
+      <div className="flex items-center gap-1.5 pt-1 text-xs text-muted-foreground">
         <span>
           Cập nhật đến{" "}
           {DateTime.fromMillis(query.dataUpdatedAt).toFormat(

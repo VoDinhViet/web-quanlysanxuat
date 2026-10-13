@@ -141,7 +141,7 @@ export function PurchaseOrderCostsSection({
             <>
               <Textarea
                 id="purchase-order-other-cost-note"
-                className="min-h-24 resize-y bg-background"
+                className="min-h-24 resize-y bg-card"
                 placeholder="Vd: Phí vận chuyển về kho"
                 maxLength={255}
                 value={otherCostNote}
@@ -250,17 +250,17 @@ export function PurchaseOrderCostsSection({
         </dl>
 
         <div className="flex items-center justify-between gap-3 pt-2">
-          <div className="flex items-center gap-2.5 font-heading text-sm font-semibold text-foreground">
+          <div className="flex items-center gap-2.5 font-heading text-sm font-medium text-foreground">
             <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
               <WalletMoney className="size-4" />
             </span>
             Tổng thanh toán
           </div>
           <div className="text-right">
-            <span className="font-mono text-2xl font-bold tracking-tight text-primary tabular-nums">
+            <span className="font-mono text-2xl font-semibold tracking-tight text-primary tabular-nums">
               {currencyFormatter.format(purchaseOrder.totalAmount)}
             </span>
-            <span className="ml-1 text-xs font-semibold text-primary">VNĐ</span>
+            <span className="ml-1 text-xs font-medium text-primary">VNĐ</span>
           </div>
         </div>
       </div>

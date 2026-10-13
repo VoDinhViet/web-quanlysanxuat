@@ -28,7 +28,7 @@ export function InventoryRequisitionSourceCell({
 }: InventoryRequisitionSourceCellProps) {
   if (productionOrder?.order.buyerPoNo) {
     return (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {productionOrder.order.buyerPoNo}
       </span>
     )
@@ -63,7 +63,7 @@ export function InventoryRequisitionActionsCell({
               variant="outline"
               size="icon-sm"
               aria-label="Xem chi tiết"
-              className="bg-background text-muted-foreground"
+              className="bg-card text-muted-foreground"
             >
               <Eye className="size-3.5" />
             </LinkButton>
@@ -89,7 +89,7 @@ export function InventoryRequisitionActionsCell({
                       variant="outline"
                       size="icon-sm"
                       aria-label="Xoá phiếu"
-                      className="bg-background text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                      className="bg-card text-muted-foreground hover:border-destructive/30 hover:text-destructive"
                     >
                       <Trash2 className="size-3.5" />
                     </Button>

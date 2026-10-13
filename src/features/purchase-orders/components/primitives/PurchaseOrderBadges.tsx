@@ -22,11 +22,11 @@ export const purchaseOrderStatusStyles: Record<
   BadgeStyle
 > = {
   [PurchaseOrderStatus.PENDING_CONFIRMATION]: {
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseOrderStatus.ORDERED]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   [PurchaseOrderStatus.CANCELLED]: {
@@ -62,16 +62,15 @@ export const purchaseOrderProgressStyles: Record<
   BadgeStyle
 > = {
   [PurchaseOrderProgress.PENDING_CONFIRMATION]: {
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseOrderProgress.ORDERED]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   [PurchaseOrderProgress.RECEIVING]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [PurchaseOrderProgress.COMPLETED]: {

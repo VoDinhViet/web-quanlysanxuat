@@ -79,7 +79,7 @@ export function OrderDetailSummaryCard({
 
             <div className="flex min-w-0 flex-col gap-1">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
-                <h2 className="min-w-0 truncate font-mono text-lg leading-snug font-semibold text-foreground sm:text-xl">
+                <h2 className="min-w-0 truncate font-mono text-lg leading-snug font-medium text-foreground sm:text-xl">
                   {order.code}
                 </h2>
                 <OrderStatusBadge tone={order.status} />
@@ -148,7 +148,7 @@ type MetaFieldProps = {
 function MetaField({ label, value }: MetaFieldProps) {
   return (
     <div className="space-y-1">
-      <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </p>
       <p className="text-sm font-medium text-foreground">{value}</p>

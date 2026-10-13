@@ -56,10 +56,10 @@ export function buildCreateOutsourcingOrderItemColumns({
       meta: { headerClassName: "min-w-40" },
       cell: ({ row }) => (
         <div>
-          <p className="text-xs font-semibold text-foreground">
+          <p className="text-xs font-medium text-foreground">
             {row.original.bomItem.name}
           </p>
-          <p className="font-mono text-[11px] text-muted-foreground">
+          <p className="font-mono text-xs text-muted-foreground">
             {row.original.bomItem.code}
           </p>
         </div>
@@ -131,7 +131,7 @@ export function buildCreateOutsourcingOrderItemColumns({
               }
             />
             {exceedsRemaining && (
-              <p className="mt-1 text-right text-[10px] text-destructive">
+              <p className="mt-1 text-right text-xs text-destructive">
                 Vượt còn được phép (
                 {quantityFormatter.format(item.remainingQuantity)})
               </p>

@@ -131,7 +131,7 @@ function PurchaseOrderCloseForm({
           <LockKeyhole weight="Bold" className="size-5" />
         </span>
         <div className="flex flex-col gap-1">
-          <DialogTitle className="text-base font-semibold">
+          <DialogTitle className="text-base font-medium">
             Đóng sớm đơn mua hàng {purchaseOrder.code}
           </DialogTitle>
           <DialogDescription className="text-xs leading-normal">

@@ -20,7 +20,7 @@ export const paymentRequestsColumns = col.columns([
       <Link
         to="/manage/payment-requests/$paymentRequestId"
         params={{ paymentRequestId: row.original.id }}
-        className="font-mono text-xs font-semibold text-primary hover:underline"
+        className="font-mono text-xs font-medium text-primary hover:underline"
       >
         {getValue()}
       </Link>
@@ -35,7 +35,7 @@ export const paymentRequestsColumns = col.columns([
       <Link
         to="/manage/purchase-orders/$purchaseOrderId"
         params={{ purchaseOrderId: row.original.purchaseOrder.id }}
-        className="font-mono text-xs font-semibold text-primary hover:underline"
+        className="font-mono text-xs font-medium text-primary hover:underline"
       >
         {row.original.purchaseOrder.code}
       </Link>

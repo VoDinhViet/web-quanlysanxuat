@@ -39,7 +39,7 @@ const columns = col.columns([
     header: "Mã hàng",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold">{getValue()}</span>
+      <span className="font-mono text-xs font-medium">{getValue()}</span>
     ),
   }),
 
@@ -52,7 +52,7 @@ const columns = col.columns([
     header: "Số lượng",
     meta: {
       headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums font-semibold",
+      cellClassName: "text-right tabular-nums font-medium",
     },
     cell: ({ getValue }) => numberFmt.format(getValue()),
   }),
@@ -89,7 +89,7 @@ export function InventoryIssueDetailItemsSection({
 
   return (
     <div className="border-b border-border not-first:border-t">
-      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-semibold tracking-wide text-foreground uppercase sm:px-5">
+      <h3 className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 text-xs font-medium tracking-wide text-foreground uppercase sm:px-5">
         <PackageSearch className="size-3.5 text-muted-foreground" />
         Danh sách hàng xuất kho
       </h3>
@@ -138,10 +138,10 @@ export function InventoryIssueDetailItemsSection({
       {inventoryIssue.items.length > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
           <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="font-medium tracking-wide text-muted-foreground uppercase">
               Tổng số lượng:
             </span>
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {numberFmt.format(totalQuantity)}
             </span>
           </div>

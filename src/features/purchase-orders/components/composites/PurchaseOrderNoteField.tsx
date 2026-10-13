@@ -47,7 +47,7 @@ export function PurchaseOrderNoteField({
   if (!editable) {
     return (
       <div className="min-w-0 space-y-1">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Ghi chú
         </p>
         <p className="truncate text-sm font-medium text-foreground">
@@ -61,13 +61,13 @@ export function PurchaseOrderNoteField({
     <div className="min-w-0 space-y-1">
       <label
         htmlFor="purchase-order-note"
-        className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+        className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
       >
         Ghi chú
       </label>
       <Textarea
         id="purchase-order-note"
-        className="min-h-16 resize-none bg-background text-xs"
+        className="min-h-16 resize-none bg-card text-xs"
         placeholder="Nhập ghi chú"
         value={localValue}
         onChange={(event) => setLocalValue(event.target.value)}

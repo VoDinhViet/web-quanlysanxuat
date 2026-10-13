@@ -71,7 +71,7 @@ export function OqcDetailActions({
       </div>
 
       {isLocked && (
-        <p className="max-w-64 text-right text-[11px] text-muted-foreground">
+        <p className="max-w-64 text-right text-xs text-muted-foreground">
           Đã hoàn tất — khoá vĩnh viễn, không thể sửa lại kết quả.
         </p>
       )}

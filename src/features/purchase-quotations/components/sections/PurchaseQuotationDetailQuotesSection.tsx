@@ -59,7 +59,7 @@ export function PurchaseQuotationDetailQuotesSection({
   return (
     <div className="not-first:border-t not-first:border-border">
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-        <h2 className="font-heading text-base font-semibold text-foreground">
+        <h2 className="font-heading text-base font-medium text-foreground">
           Bảng so sánh báo giá
         </h2>
         <span className="text-xs font-medium text-muted-foreground">
@@ -124,11 +124,11 @@ export function PurchaseQuotationDetailQuotesSection({
                       colSpan={row.getVisibleCells().length}
                       className="space-y-2 p-0 pb-3 shadow-[inset_3px_0_0_0_var(--color-primary)]"
                     >
-                      <p className="px-4 pt-3 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+                      <p className="px-4 pt-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                         Nguồn ĐXMH
                       </p>
                       <PurchaseQuotationAllocationsTable item={row.original} />
-                      <p className="px-4 pt-2 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+                      <p className="px-4 pt-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                         Báo giá NCC
                       </p>
                       <PurchaseQuotationSupplierCompareTable

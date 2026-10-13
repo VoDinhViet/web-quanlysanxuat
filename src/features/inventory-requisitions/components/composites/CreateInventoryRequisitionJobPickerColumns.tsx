@@ -29,8 +29,7 @@ function JobStatusBadge({ status }: { status: ProductionJobStatus }) {
       className={cn(
         "gap-1 text-xs",
         isPending && "bg-muted text-muted-foreground",
-        isInProgress &&
-          "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
+        isInProgress && "bg-info-soft text-info-ink"
       )}
     >
       <span
@@ -92,7 +91,7 @@ export function buildCreateInventoryRequisitionJobPickerColumns({
       header: "Mã Job",
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-xs font-semibold text-primary">
+        <span className="font-mono text-xs font-medium text-primary">
           {getValue()}
         </span>
       ),

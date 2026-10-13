@@ -72,8 +72,7 @@ export function OqcLotSummaryCard({
           <form.Field name="inspectionDate">
             {(field) => {
               const isInvalid =
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
 
               return (
                 <Field data-invalid={isInvalid}>
@@ -106,7 +105,7 @@ type InfoTileProps = {
 function InfoTile({ icon: Icon, label, value }: InfoTileProps) {
   return (
     <div className="min-w-0 space-y-1">
-      <dt className="flex items-center gap-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <dt className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
         <Icon className="size-3" />
         {label}
       </dt>

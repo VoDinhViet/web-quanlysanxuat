@@ -86,7 +86,7 @@ function SettingsLayout() {
                   <tab.icon className="size-4" />
                   {tab.label}
                   {tab.count !== undefined && (
-                    <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground tabular-nums">
+                    <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground tabular-nums">
                       {tab.count}
                     </span>
                   )}

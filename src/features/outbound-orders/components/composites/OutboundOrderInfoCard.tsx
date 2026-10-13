@@ -16,7 +16,7 @@ type OutboundOrderInfoCardProps = {
 export function OutboundOrderInfoCard({ order }: OutboundOrderInfoCardProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <Info className="size-4 text-muted-foreground" />
         Thông tin phiếu
       </div>
@@ -60,7 +60,7 @@ type InfoTileProps = {
 function InfoTile({ icon: Icon, label, value }: InfoTileProps) {
   return (
     <div className="space-y-1">
-      <p className="flex items-center gap-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+      <p className="flex items-center gap-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
         <Icon className="size-3" />
         {label}
       </p>

@@ -30,7 +30,7 @@ export function PurchaseLedgerSourceCell({
 }: PurchaseLedgerSourceCellProps) {
   if (buyerPoNo) {
     return (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {buyerPoNo}
       </span>
     )
@@ -93,7 +93,7 @@ export function PurchaseLedgerQuantityCell({
   return (
     <span
       className={cn(
-        "font-semibold tabular-nums",
+        "font-medium tabular-nums",
         resolveQuantityToneClassName(tone, value, comparisonTarget)
       )}
     >
@@ -136,23 +136,23 @@ export function PurchaseLedgerProgressCell({
           <div className="group flex cursor-default flex-col gap-0.5 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-muted/70">
             {/* Dòng 1: Số lượng cần mua */}
             <div className="flex items-baseline gap-1 text-xs">
-              <span className="font-semibold text-foreground tabular-nums transition-colors group-hover:text-primary">
+              <span className="font-medium text-foreground tabular-nums transition-colors group-hover:text-primary">
                 {quantityFormatter.format(quantity)}
               </span>
-              <span className="text-[11px] font-normal text-muted-foreground">
+              <span className="text-xs font-normal text-muted-foreground">
                 {unitName}
               </span>
             </div>
 
             {/* Dòng 2: Thực tế Đặt / Nhập */}
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground tabular-nums">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground tabular-nums">
               <span>
                 Đặt:{" "}
                 <span
                   className={cn(
                     "font-medium",
                     isOrdered
-                      ? "font-semibold text-blue-600 dark:text-blue-400"
+                      ? "font-medium text-blue-600 dark:text-blue-400"
                       : orderedQuantity > 0
                         ? "text-foreground"
                         : "text-muted-foreground/60"
@@ -168,7 +168,7 @@ export function PurchaseLedgerProgressCell({
                   className={cn(
                     "font-medium",
                     isCompleted
-                      ? "font-semibold text-emerald-600 dark:text-emerald-400"
+                      ? "font-medium text-emerald-600 dark:text-emerald-400"
                       : receivedQuantity > 0
                         ? "text-foreground"
                         : "text-muted-foreground/60"
@@ -189,11 +189,11 @@ export function PurchaseLedgerProgressCell({
         <div className="flex items-center justify-between border-b border-border/50 pb-2">
           <div className="flex items-center gap-1.5">
             <CartLargeMinimalistic className="size-3.5 text-muted-foreground" />
-            <span className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
+            <span className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
               Tiến độ mua hàng
             </span>
           </div>
-          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+          <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
             ĐVT: {unitName}
           </span>
         </div>
@@ -205,7 +205,7 @@ export function PurchaseLedgerProgressCell({
               <BoxMinimalistic className="size-3.5 text-muted-foreground/70" />
               <span>SL cần mua</span>
             </dt>
-            <dd className="font-semibold text-foreground tabular-nums">
+            <dd className="font-medium text-foreground tabular-nums">
               {quantityFormatter.format(quantity)} {unitName}
             </dd>
           </div>
@@ -226,7 +226,7 @@ export function PurchaseLedgerProgressCell({
               >
                 {quantityFormatter.format(orderedQuantity)}
               </span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 ({orderedPct}%)
               </span>
             </dd>
@@ -247,7 +247,7 @@ export function PurchaseLedgerProgressCell({
                 className={cn(
                   "font-medium",
                   isCompleted
-                    ? "font-semibold text-emerald-600 dark:text-emerald-400"
+                    ? "font-medium text-emerald-600 dark:text-emerald-400"
                     : receivedQuantity > 0
                       ? "text-foreground"
                       : "text-muted-foreground/60"
@@ -255,7 +255,7 @@ export function PurchaseLedgerProgressCell({
               >
                 {quantityFormatter.format(receivedQuantity)}
               </span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 ({receivedPct}%)
               </span>
             </dd>
@@ -264,11 +264,11 @@ export function PurchaseLedgerProgressCell({
 
         {/* Thanh tiến độ hoàn thành tinh tế */}
         <div className="mt-3 border-t border-border/50 pt-2.5">
-          <div className="mb-1.5 flex items-center justify-between text-[11px] text-muted-foreground">
+          <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
             <span>Tiến độ nhập kho</span>
             <span
               className={cn(
-                "font-semibold tabular-nums",
+                "font-medium tabular-nums",
                 isCompleted
                   ? "text-emerald-600 dark:text-emerald-400"
                   : "text-foreground"

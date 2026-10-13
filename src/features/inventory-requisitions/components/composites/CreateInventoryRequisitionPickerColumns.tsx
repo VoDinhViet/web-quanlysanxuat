@@ -123,24 +123,24 @@ export function buildCreateInventoryRequisitionPickerColumns({
             <div className="flex items-center gap-1.5">
               <p
                 className={cn(
-                  "text-xs font-semibold",
+                  "text-xs font-medium",
                   isUnpickable ? "text-muted-foreground" : "text-foreground"
                 )}
               >
                 {row.original.item.name}
               </p>
               {isFullyIssued && (
-                <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
                   Đã lãnh đủ
                 </span>
               )}
               {!isFullyIssued && isOutOfStock && (
-                <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-destructive">
+                <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-destructive">
                   Hết tồn kho
                 </span>
               )}
             </div>
-            <p className="font-mono text-[11px] text-muted-foreground">
+            <p className="font-mono text-xs text-muted-foreground">
               {row.original.item.code}
             </p>
           </div>
@@ -191,11 +191,11 @@ export function buildCreateInventoryRequisitionPickerColumns({
           <div>
             <span className="text-xs">{quantityFormatter.format(val)}</span>
             {remainingBom > 0 ? (
-              <p className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+              <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
                 Thiếu {quantityFormatter.format(remainingBom)}
               </p>
             ) : (
-              <p className="text-[10px] text-muted-foreground">Đủ định mức</p>
+              <p className="text-xs text-muted-foreground">Đủ định mức</p>
             )}
           </div>
         )
@@ -249,7 +249,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
               className={cn(
                 "text-xs font-medium tabular-nums",
                 isOutOfStock && isNeeded
-                  ? "font-semibold text-destructive"
+                  ? "font-medium text-destructive"
                   : isOutOfStock
                     ? "text-muted-foreground"
                     : "text-foreground"
@@ -258,7 +258,7 @@ export function buildCreateInventoryRequisitionPickerColumns({
               {quantityFormatter.format(value)}
             </span>
             {isOutOfStock && isNeeded && (
-              <p className="text-[10px] text-destructive">Hết tồn kho</p>
+              <p className="text-xs text-destructive">Hết tồn kho</p>
             )}
           </div>
         )

@@ -50,7 +50,7 @@ export const purchaseQuotationItemsColumns =
       header: "Mã VT",
       meta: {
         headerClassName: "w-32",
-        cellClassName: "font-mono text-xs font-semibold text-primary",
+        cellClassName: "font-mono text-xs font-medium text-primary",
       },
     }),
     purchaseQuotationItemColumnHelper.accessor((row) => row.item.name, {
@@ -100,7 +100,7 @@ export const purchaseQuotationItemsColumns =
           <Tooltip>
             <TooltipTrigger
               render={
-                <span className="inline-flex items-center justify-end gap-1 font-semibold text-warning">
+                <span className="inline-flex items-center justify-end gap-1 font-medium text-warning">
                   <DangerTriangle className="size-3.5 shrink-0" />
                   {row.original.quantity}
                 </span>

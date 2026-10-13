@@ -18,9 +18,7 @@ export const outsourcingReceiptsColumns =
       header: "Mã OS-IN",
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue }) => (
-        <span className="font-mono font-semibold text-primary">
-          {getValue()}
-        </span>
+        <span className="font-mono font-medium text-primary">{getValue()}</span>
       ),
     }),
 
@@ -49,10 +47,7 @@ export const outsourcingReceiptsColumns =
       },
       cell: ({ getValue }) =>
         getValue() ? (
-          <Badge
-            variant="outline"
-            className="bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
-          >
+          <Badge variant="outline" className="bg-info-soft text-info-ink">
             Có
           </Badge>
         ) : (

@@ -23,7 +23,7 @@ export function OrderDetailNotesCard({ order }: OrderDetailNotesCardProps) {
           <p className="text-sm text-foreground">
             {order.internalNote || "Chưa có ghi chú nội bộ"}
           </p>
-          <p className="mt-1 text-[11px] text-muted-foreground">
+          <p className="mt-1 text-xs text-muted-foreground">
             Không hiển thị cho khách hàng.
           </p>
         </NoteBlock>
@@ -41,7 +41,7 @@ type NoteBlockProps = {
 function NoteBlock({ icon: IconComponent, title, children }: NoteBlockProps) {
   return (
     <section>
-      <h3 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+      <h3 className="flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
         <IconComponent className="size-3.5" />
         {title}
       </h3>

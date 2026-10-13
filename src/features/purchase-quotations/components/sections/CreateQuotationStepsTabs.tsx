@@ -66,7 +66,7 @@ export function CreateQuotationStepsTabs({
                 // verbatim or tailwind-merge can't tell they're meant to replace the primitive's.
                 "data-selected:bg-primary/5 data-selected:text-primary",
                 "group-data-[variant=line]/tabs-list:data-selected:bg-primary/5",
-                "data-selected:hover:bg-primary/5",
+                "data-selected:hover:bg-muted",
                 "after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5",
                 disabled && "cursor-not-allowed opacity-60"
               )}

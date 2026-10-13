@@ -102,7 +102,7 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
         {/* A note is free text that would wrap badly in the two-column rows, so
             it gets its own full-width block. */}
         <div className="border-t border-border px-4 py-3">
-          <p className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+          <p className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
             <Notes className="size-3.5 shrink-0" />
             Ghi chú
           </p>
@@ -147,7 +147,7 @@ function SidebarSection({
     // One panel, blocks separated by a rule — `not-first` keeps the top edge
     // clean so the divider only ever falls between two sections.
     <div className="not-first:border-t not-first:border-border">
-      <h2 className="flex items-center gap-2 border-b border-border px-4 py-3.5 text-xs font-semibold tracking-wide text-foreground uppercase">
+      <h2 className="flex items-center gap-2 border-b border-border px-4 py-3.5 text-xs font-medium tracking-wide text-foreground uppercase">
         <IconComponent className="size-4 text-muted-foreground" />
         {title}
       </h2>
@@ -171,7 +171,7 @@ function SummaryRow({
 }: SummaryRowProps) {
   return (
     <div className="grid grid-cols-[minmax(0,8rem)_minmax(0,1fr)] items-center gap-3 px-4 py-2.5">
-      <dt className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+      <dt className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
         <IconComponent className="size-3.5 shrink-0" />
         {label}
       </dt>
@@ -199,7 +199,7 @@ function ProductDocumentsList({ files }: ProductDocumentsListProps) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-6 text-center">
         <Documents className="size-7 text-muted-foreground/40" />
-        <p className="text-[11px] font-medium text-muted-foreground">
+        <p className="text-xs font-medium text-muted-foreground">
           Chưa có tài liệu đính kèm
         </p>
       </div>
@@ -221,7 +221,7 @@ function ProductDocumentsList({ files }: ProductDocumentsListProps) {
               href={resolveFileUrl(itemFile.file.url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex min-w-0 items-center justify-between gap-2.5 rounded-lg border border-border/80 bg-background p-2 transition-all hover:border-primary/40 hover:bg-muted/30"
+              className="group flex min-w-0 items-center justify-between gap-2.5 rounded-lg border border-border/80 bg-background p-2 transition-all hover:border-border hover:bg-muted/30"
             >
               <div className="flex min-w-0 flex-1 items-center gap-2.5">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border/60 bg-muted/60 text-muted-foreground">
@@ -231,8 +231,8 @@ function ProductDocumentsList({ files }: ProductDocumentsListProps) {
                   <p className="truncate text-xs font-medium text-foreground transition-colors group-hover:text-primary">
                     {itemFile.file.originalName}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
-                    <span className="font-mono text-[9px] text-foreground/70 uppercase">
+                  <p className="text-xs text-muted-foreground">
+                    <span className="font-mono text-xs text-foreground/70 uppercase">
                       {docInfo.label}
                     </span>
                     <span> · </span>
@@ -270,7 +270,7 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/30 text-center">
         <Gallery className="size-7 text-muted-foreground/40" />
-        <p className="text-[11px] font-medium text-muted-foreground">
+        <p className="text-xs font-medium text-muted-foreground">
           Chưa có hình ảnh
         </p>
       </div>
@@ -294,14 +294,14 @@ function ProductImagePreview({ image, name }: ProductImagePreviewProps) {
         />
 
         <span className="absolute inset-0 flex items-center justify-center bg-foreground/45 opacity-0 transition-opacity group-hover:opacity-100">
-          <span className="flex items-center gap-1.5 rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-foreground shadow-sm">
+          <span className="flex items-center gap-1.5 rounded-full bg-background px-2.5 py-1 text-xs font-medium text-foreground shadow-sm">
             <MagniferZoomIn className="size-3.5" />
             Xem ảnh gốc
           </span>
         </span>
       </a>
 
-      <p className="truncate text-[11px] text-muted-foreground">
+      <p className="truncate text-xs text-muted-foreground">
         {image.originalName}
       </p>
     </div>

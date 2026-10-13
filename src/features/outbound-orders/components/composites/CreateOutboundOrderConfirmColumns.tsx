@@ -71,7 +71,7 @@ export function buildCreateOutboundOrderConfirmColumns(
             <p className="truncate font-medium text-foreground">
               {source?.item.name ?? "—"}
             </p>
-            <p className="truncate font-mono text-[10px] text-muted-foreground">
+            <p className="truncate font-mono text-xs text-muted-foreground">
               {source?.item.code}
             </p>
           </div>
@@ -86,7 +86,8 @@ export function buildCreateOutboundOrderConfirmColumns(
         cellClassName: "text-center font-mono text-xs",
       },
       cell: ({ row }) =>
-        lookupUnfulfilledOrderItem(row.original.orderItemId)?.item.revision ?? "—",
+        lookupUnfulfilledOrderItem(row.original.orderItemId)?.item.revision ??
+        "—",
     }),
     confirmColumnHelper.display({
       id: "unitName",
@@ -151,7 +152,7 @@ export function buildCreateOutboundOrderConfirmColumns(
       header: "SL giao",
       meta: {
         headerClassName: "w-20 text-right",
-        cellClassName: "text-right tabular-nums font-semibold text-foreground",
+        cellClassName: "text-right tabular-nums font-medium text-foreground",
       },
       cell: ({ getValue }) => quantityFormatter.format(getValue() ?? 0),
     }),

@@ -56,7 +56,7 @@ export function UsersTableFilter() {
         loading: "Đang xuất file Excel danh sách người dùng...",
         success: "Đã xuất file Excel danh sách người dùng",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -115,7 +115,7 @@ export function UsersTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="users-search-input"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -136,7 +136,7 @@ export function UsersTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="users-status-select"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -167,7 +167,7 @@ export function UsersTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="users-department-select"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Phòng ban
             </Label>

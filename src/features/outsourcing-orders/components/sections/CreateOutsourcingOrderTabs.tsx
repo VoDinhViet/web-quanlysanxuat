@@ -58,7 +58,7 @@ export function CreateOutsourcingOrderTabs({
                 "h-12 flex-none gap-2 rounded-none px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground",
                 "data-selected:bg-primary/5 data-selected:text-primary",
                 "group-data-[variant=line]/tabs-list:data-selected:bg-primary/5",
-                "data-selected:hover:bg-primary/5",
+                "data-selected:hover:bg-muted",
                 "after:bg-primary group-data-horizontal/tabs:after:-bottom-px group-data-horizontal/tabs:after:h-0.5",
                 disabled && "cursor-not-allowed opacity-60"
               )}

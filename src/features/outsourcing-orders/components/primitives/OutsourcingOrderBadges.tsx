@@ -13,17 +13,15 @@ export const outsourcingOrderStatusStyles: Record<
   BadgeStyle
 > = {
   SENT: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   PARTIAL: {
-    badge: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-sky-500 dark:bg-sky-400",
   },
   WAITING_QC: {
-    badge:
-      "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-yellow-500 dark:bg-yellow-400",
   },
   COMPLETED: {

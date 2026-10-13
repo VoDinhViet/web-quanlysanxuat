@@ -31,7 +31,7 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
     header: "Mã PR",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
 
@@ -80,14 +80,12 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
       return (
         <div className="min-w-0">
           <p
-            className="truncate text-xs font-semibold text-foreground"
+            className="truncate text-xs font-medium text-foreground"
             title={item.name}
           >
             {item.name}
           </p>
-          <p className="truncate font-mono text-[11px] text-primary">
-            {item.code}
-          </p>
+          <p className="truncate font-mono text-xs text-primary">{item.code}</p>
         </div>
       )
     },

@@ -158,10 +158,10 @@ export function ProductOperationsPanel({
           ) : (
             productOperations.map((step, idx) => (
               <TableRow key={step.id} id={step.id} className="h-14">
-                <TableCell className="font-mono font-bold text-muted-foreground">
+                <TableCell className="font-mono font-semibold text-muted-foreground">
                   {idx + 1}
                 </TableCell>
-                <TableCell className="font-semibold text-foreground">
+                <TableCell className="font-medium text-foreground">
                   {step.operation.name}
                 </TableCell>
                 <TableCell>

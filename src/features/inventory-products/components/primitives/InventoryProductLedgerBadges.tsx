@@ -30,13 +30,11 @@ const productLedgerMovementTypeStyles: Record<
     dot: "bg-success",
   },
   [ProductLedgerMovementType.DELIVERY]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [ProductLedgerMovementType.OTHER_ISSUE]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [ProductLedgerMovementType.ADJUSTMENT]: {
@@ -44,8 +42,7 @@ const productLedgerMovementTypeStyles: Record<
     dot: "bg-muted-foreground/60",
   },
   [ProductLedgerMovementType.REVERSAL]: {
-    badge:
-      "bg-slate-100 text-slate-600 dark:bg-slate-500/10 dark:text-slate-400",
+    badge: "bg-neutral-soft text-neutral-ink",
     dot: "bg-slate-400",
   },
 }

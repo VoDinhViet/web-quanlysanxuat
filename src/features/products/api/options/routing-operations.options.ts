@@ -9,7 +9,9 @@ export const itemOperationsQueryOptions = (productId: string) =>
   queryOptions({
     queryKey: ["items", "detail", productId, "operations"],
     queryFn: async () => {
-      const response = await getRoutingOperations({ data: { itemId: productId } })
+      const response = await getRoutingOperations({
+        data: { itemId: productId },
+      })
       return response.data
     },
   })

@@ -108,7 +108,7 @@ export function CreateActionsMenu({
           }
         />
         <DropdownMenuContent align="end" className="w-60 p-1.5">
-          <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+          <DropdownMenuLabel className="px-2 py-1 text-xs font-medium text-muted-foreground">
             Tùy chọn thêm mới
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="my-1" />
@@ -121,7 +121,7 @@ export function CreateActionsMenu({
               <span className="text-xs font-medium text-foreground">
                 Thêm {partLabel}
               </span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 Thành phần con hoặc cùng cấp
               </span>
             </div>
@@ -135,7 +135,7 @@ export function CreateActionsMenu({
               <span className="text-xs font-medium text-foreground">
                 Thêm {extraLabel.toLowerCase()}
               </span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 Vật tư ngoài cấu trúc
               </span>
             </div>
@@ -233,7 +233,7 @@ export function EditDirectAction({ row }: { row: BomTree }) {
               variant="outline"
               size="icon-sm"
               aria-label={label}
-              className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+              className="text-muted-foreground hover:border-border hover:text-primary"
             >
               <PenNewSquare className="size-3.5" />
             </LinkButton>
@@ -244,4 +244,3 @@ export function EditDirectAction({ row }: { row: BomTree }) {
     </RoutePermissionGate>
   )
 }
-

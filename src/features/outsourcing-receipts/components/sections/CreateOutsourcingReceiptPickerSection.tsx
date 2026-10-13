@@ -226,7 +226,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               ① Chọn hàng cần nhận
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -236,7 +236,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           </div>
           <div className="flex items-center gap-2">
             {items.length > 0 && (
-              <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
                 NCC: {items[0].supplierName}
               </span>
             )}
@@ -250,7 +250,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           <div className="space-y-1.5">
             <Label
               htmlFor="os-in-picker-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -273,7 +273,7 @@ export const CreateOutsourcingReceiptPickerSection = withForm({
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-in-picker-operation"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Công đoạn
             </Label>

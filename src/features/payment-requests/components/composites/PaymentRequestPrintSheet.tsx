@@ -32,13 +32,14 @@ export function PaymentRequestPrintSheet({
     >
       <div className="flex items-start justify-between border-b-2 border-black pb-3">
         <div>
-          <p className="text-sm font-bold uppercase">Công ty Cơ khí Tiến Huy</p>
+          <p className="text-sm font-semibold uppercase">
+            Công ty Cơ khí Tiến Huy
+          </p>
           <p className="text-xs">Bộ phận: Kế toán — Mua hàng</p>
         </div>
         <div className="text-right text-xs">
           <p>
-            Mã YCTT:{" "}
-            <span className="font-semibold">{paymentRequest.code}</span>
+            Mã YCTT: <span className="font-medium">{paymentRequest.code}</span>
           </p>
           <p>
             Ngày tạo:{" "}
@@ -47,32 +48,32 @@ export function PaymentRequestPrintSheet({
         </div>
       </div>
 
-      <h1 className="mt-4 text-center text-xl font-bold uppercase">
+      <h1 className="mt-4 text-center text-xl font-semibold uppercase">
         Đề nghị thanh toán
       </h1>
 
       <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
         <p>
-          <span className="font-semibold">Nhà cung cấp:</span>{" "}
+          <span className="font-medium">Nhà cung cấp:</span>{" "}
           {paymentRequest.supplier.name} ({paymentRequest.supplier.code})
         </p>
         <p>
-          <span className="font-semibold">PO liên quan:</span>{" "}
+          <span className="font-medium">PO liên quan:</span>{" "}
           {paymentRequest.purchaseOrder.code} —{" "}
           {DateTime.fromISO(paymentRequest.purchaseOrder.orderDate).toFormat(
             "dd/MM/yyyy"
           )}
         </p>
         <p className="col-span-2">
-          <span className="font-semibold">Địa chỉ:</span>{" "}
+          <span className="font-medium">Địa chỉ:</span>{" "}
           {paymentRequest.supplier.address}
         </p>
         <p>
-          <span className="font-semibold">Điện thoại:</span>{" "}
+          <span className="font-medium">Điện thoại:</span>{" "}
           {paymentRequest.supplier.phoneNumber}
         </p>
         <p>
-          <span className="font-semibold">Hạn thanh toán:</span>{" "}
+          <span className="font-medium">Hạn thanh toán:</span>{" "}
           {DateTime.fromISO(paymentRequest.dueDate).toFormat("dd/MM/yyyy")}
         </p>
       </div>
@@ -128,11 +129,11 @@ export function PaymentRequestPrintSheet({
           <tr>
             <td
               colSpan={6}
-              className="border border-black px-2 py-1 text-right font-semibold"
+              className="border border-black px-2 py-1 text-right font-medium"
             >
               Tổng cộng
             </td>
-            <td className="border border-black px-2 py-1 text-right font-semibold">
+            <td className="border border-black px-2 py-1 text-right font-medium">
               {vndFormatter.format(paymentRequest.requestValue)} đ
             </td>
           </tr>
@@ -140,20 +141,20 @@ export function PaymentRequestPrintSheet({
       </table>
 
       <p className="mt-3 text-xs">
-        <span className="font-semibold">Bằng chữ:</span>{" "}
+        <span className="font-medium">Bằng chữ:</span>{" "}
         {toVietnameseCurrencyWords(paymentRequest.requestValue)} chẵn.
       </p>
 
       {paymentRequest.note ? (
         <p className="mt-2 text-xs">
-          <span className="font-semibold">Ghi chú:</span> {paymentRequest.note}
+          <span className="font-medium">Ghi chú:</span> {paymentRequest.note}
         </p>
       ) : null}
 
       <div className="mt-10 grid grid-cols-4 gap-4 text-center text-xs">
         {signatureBoxes.map((label) => (
           <div key={label}>
-            <p className="font-semibold">{label}</p>
+            <p className="font-medium">{label}</p>
             <p className="text-[10px] text-neutral-600">(Ký, ghi rõ họ tên)</p>
             <div className="mt-14" />
           </div>

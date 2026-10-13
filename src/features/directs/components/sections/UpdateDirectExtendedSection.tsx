@@ -21,7 +21,7 @@ export const UpdateDirectExtendedSection = withForm({
       <div>
         <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
           <div className="min-w-0">
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               Thông tin mở rộng
             </h2>
             <p className="text-sm text-muted-foreground">

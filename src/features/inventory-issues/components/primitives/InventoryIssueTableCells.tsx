@@ -33,10 +33,10 @@ export function InventoryIssueJobLsxCell({
   return (
     <div className="flex flex-col gap-0.5 font-mono text-xs">
       {jobCode ? (
-        <span className="font-semibold text-foreground">{jobCode}</span>
+        <span className="font-medium text-foreground">{jobCode}</span>
       ) : null}
       {lsxCode ? (
-        <span className="text-[11px] text-muted-foreground">{lsxCode}</span>
+        <span className="text-xs text-muted-foreground">{lsxCode}</span>
       ) : null}
     </div>
   )
@@ -62,7 +62,7 @@ export function InventoryIssueActionsCell({
               variant="outline"
               size="icon-sm"
               aria-label="Xem chi tiết"
-              className="bg-background text-muted-foreground"
+              className="bg-card text-muted-foreground"
             >
               <Eye className="size-3.5" />
             </LinkButton>

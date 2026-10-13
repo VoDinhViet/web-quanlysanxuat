@@ -84,7 +84,7 @@ export function ManageOutsourcingDueDateTable() {
               {table.getFlatHeaders().map((header) => (
                 <TableHead
                   key={header.id}
-                  className="text-[11px] font-normal tracking-normal text-muted-foreground uppercase"
+                  className="text-xs font-normal tracking-normal text-muted-foreground"
                 >
                   {!header.isPlaceholder &&
                     flexRender(

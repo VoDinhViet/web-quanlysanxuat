@@ -7,6 +7,5 @@ export const purchaseOrderRelatedNotesQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ["purchase-orders", "related-notes", purchaseOrderId],
-    queryFn: () =>
-      getPurchaseOrderRelatedNotes({ data: { purchaseOrderId } }),
+    queryFn: () => getPurchaseOrderRelatedNotes({ data: { purchaseOrderId } }),
   })

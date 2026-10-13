@@ -65,7 +65,7 @@ export function PaymentRequestDetailActions({
                 <DialogTitle>Xác nhận thanh toán</DialogTitle>
                 <DialogDescription>
                   Xác nhận yêu cầu thanh toán{" "}
-                  <span className="font-mono font-semibold">
+                  <span className="font-mono font-medium">
                     {paymentRequest.code}
                   </span>{" "}
                   đã được chi? Hành động này không thể hoàn tác.

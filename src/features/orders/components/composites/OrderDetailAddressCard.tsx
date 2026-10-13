@@ -57,9 +57,7 @@ function AddressRow({ icon: IconComponent, label, value }: AddressRowProps) {
     <div className="flex gap-3">
       <IconComponent className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
       <div className="min-w-0 space-y-0.5">
-        <dt className="text-[11px] font-medium text-muted-foreground">
-          {label}
-        </dt>
+        <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
         <dd className="text-sm font-medium break-words text-foreground">
           {value}
         </dd>

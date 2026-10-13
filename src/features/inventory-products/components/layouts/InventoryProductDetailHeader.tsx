@@ -33,7 +33,7 @@ export function InventoryProductDetailHeader({
       <ItemHeaderThumbnail image={item.image} name={item.name} />
 
       <div className="min-w-0">
-        <h2 className="min-w-0 truncate text-base leading-snug font-semibold text-foreground sm:text-lg">
+        <h2 className="min-w-0 truncate text-base leading-snug font-medium text-foreground sm:text-lg">
           {item.name}
         </h2>
         <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">

@@ -105,7 +105,7 @@ export function SupplierReturnEvidenceField({
 
         <div
           className={cn(
-            "flex min-h-16 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-3 transition-colors hover:border-primary/50 hover:bg-primary/5",
+            "flex min-h-16 w-full items-center gap-3 rounded-lg border-2 border-dashed border-input bg-muted/40 px-4 py-3 transition-colors hover:border-border hover:bg-muted",
             isDragActive && "border-primary bg-primary/5"
           )}
         >
@@ -117,7 +117,7 @@ export function SupplierReturnEvidenceField({
               Kéo thả, dán (Ctrl+V) file vào đây hoặc{" "}
               <span className="font-medium text-primary">chọn file</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Hỗ trợ: Ảnh, PDF, Word, Excel, PowerPoint, File nén... (tối đa
               10MB)
             </p>

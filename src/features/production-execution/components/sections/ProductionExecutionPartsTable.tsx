@@ -61,34 +61,34 @@ export function ProductionExecutionPartsTable({
       <Table aria-label="Danh sách chi tiết sản phẩm trong Job">
         <TableHeader className="[&>tr]:h-12 [&>tr]:bg-muted/40 [&>tr]:hover:bg-muted/40">
           <TableRow>
-            <TableHead className="w-12 text-center font-bold text-foreground">
+            <TableHead className="w-12 text-center font-semibold text-foreground">
               #
             </TableHead>
-            <TableHead className="w-20 text-center font-bold text-foreground">
+            <TableHead className="w-20 text-center font-semibold text-foreground">
               Hình ảnh
             </TableHead>
-            <TableHead className="min-w-32 font-bold text-foreground">
+            <TableHead className="min-w-32 font-semibold text-foreground">
               Mã sản phẩm
             </TableHead>
-            <TableHead className="min-w-44 font-bold text-foreground">
+            <TableHead className="min-w-44 font-semibold text-foreground">
               Tên sản phẩm
             </TableHead>
-            <TableHead className="w-24 text-center font-bold text-foreground">
+            <TableHead className="w-24 text-center font-semibold text-foreground">
               SL KH
             </TableHead>
-            <TableHead className="w-32 text-center font-bold text-foreground">
+            <TableHead className="w-32 text-center font-semibold text-foreground">
               SL hoàn thành
             </TableHead>
-            <TableHead className="w-28 text-center font-bold text-foreground">
+            <TableHead className="w-28 text-center font-semibold text-foreground">
               SL không đạt
             </TableHead>
-            <TableHead className="w-36 text-center font-bold text-foreground">
+            <TableHead className="w-36 text-center font-semibold text-foreground">
               Ngày hoàn thành
             </TableHead>
-            <TableHead className="w-36 text-center font-bold text-foreground">
+            <TableHead className="w-36 text-center font-semibold text-foreground">
               Hạn hoàn thành
             </TableHead>
-            <TableHead className="w-44 text-center font-bold text-foreground">
+            <TableHead className="w-44 text-center font-semibold text-foreground">
               Thao tác
             </TableHead>
           </TableRow>
@@ -170,11 +170,11 @@ function PartTableRow({
         {quantityFormatter.format(operation.plannedQuantity)}
       </TableCell>
       <TableCell className="text-center tabular-nums">
-        <span className="font-semibold text-foreground">
+        <span className="font-medium text-foreground">
           {quantityFormatter.format(operation.completedQuantity)}
         </span>
         {outsourceable && (
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Đã gửi {quantityFormatter.format(outsourceable.sentQuantity)}/
             {quantityFormatter.format(operation.plannedQuantity)}
           </p>
@@ -184,7 +184,7 @@ function PartTableRow({
         className={cn(
           "text-center tabular-nums",
           operation.rejectedQuantity > 0
-            ? "font-semibold text-destructive"
+            ? "font-medium text-destructive"
             : "text-muted-foreground"
         )}
       >

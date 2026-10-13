@@ -106,7 +106,7 @@ export function InventoryReceiptsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="nk-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -129,7 +129,7 @@ export function InventoryReceiptsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="nk-receipt-type"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Loại phiếu
             </Label>
@@ -157,7 +157,7 @@ export function InventoryReceiptsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="nk-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -185,7 +185,7 @@ export function InventoryReceiptsTableFilter() {
           <div className="space-y-1.5">
             <Label
               htmlFor="nk-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Từ ngày – Đến ngày
             </Label>

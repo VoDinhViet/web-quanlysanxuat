@@ -25,7 +25,7 @@ export const iqcColumns = iqcColumnHelper.columns([
     header: "Mã IQC",
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
+      <span className="font-mono text-xs font-medium text-primary">
         {getValue()}
       </span>
     ),
@@ -38,12 +38,12 @@ export const iqcColumns = iqcColumnHelper.columns([
     cell: ({ row }) => (
       <div className="max-w-72 min-w-0">
         <p
-          className="line-clamp-2 text-xs font-semibold break-words text-foreground"
+          className="line-clamp-2 text-xs font-medium break-words text-foreground"
           title={row.original.itemName}
         >
           {row.original.itemName}
         </p>
-        <p className="truncate font-mono text-[11px] text-muted-foreground">
+        <p className="truncate font-mono text-xs text-muted-foreground">
           {row.original.itemCode}
         </p>
       </div>
@@ -70,7 +70,7 @@ export const iqcColumns = iqcColumnHelper.columns([
       cellClassName: "text-right",
     },
     cell: ({ row }) => (
-      <span className="font-semibold text-foreground tabular-nums">
+      <span className="font-medium text-foreground tabular-nums">
         {quantityFormatter.format(row.original.quantity)}{" "}
         {row.original.item ? (
           <span className="font-normal text-muted-foreground">

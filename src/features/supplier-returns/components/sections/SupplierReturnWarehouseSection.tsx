@@ -97,7 +97,7 @@ function EvidenceGallery({ files }: EvidenceGalleryProps) {
                 <FileText className="size-6" />
               </div>
             )}
-            <span className="w-full truncate text-center text-[10px] text-muted-foreground">
+            <span className="w-full truncate text-center text-xs text-muted-foreground">
               {file.originalName}
             </span>
           </a>
@@ -115,7 +115,7 @@ type InfoFieldProps = {
 function InfoField({ label, value }: InfoFieldProps) {
   return (
     <div className="min-w-0 space-y-1">
-      <dt className="text-[11px] font-medium text-muted-foreground">{label}</dt>
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
       <dd className="text-sm font-medium break-words text-foreground">
         {value}
       </dd>

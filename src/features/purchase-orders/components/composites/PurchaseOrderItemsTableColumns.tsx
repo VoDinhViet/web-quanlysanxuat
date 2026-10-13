@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { DateTime } from "luxon"
 
 import { PurchaseOrderItemProductCell } from "@/features/purchase-orders/components/primitives/PurchaseOrderItemProductCell"
 import type { appTableFeatures } from "@/lib/table-features"
@@ -50,6 +51,16 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
         cell: ({ getValue }) => quantityFormatter.format(getValue()),
       }
     ),
+    purchaseOrderItemColumnHelper.accessor("neededDate", {
+      id: "neededDate",
+      header: "Ngày cần",
+      meta: {
+        headerClassName: "w-28 text-center",
+        cellClassName: "text-center text-muted-foreground tabular-nums",
+      },
+      cell: ({ getValue }) =>
+        DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    }),
     purchaseOrderItemColumnHelper.accessor("quantity", {
       id: "quantity",
       header: "SL đặt",
@@ -75,9 +86,9 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
             className={cn(
               "font-medium",
               isCompleted
-                ? "font-semibold text-success"
+                ? "font-medium text-success"
                 : received > 0
-                  ? "font-semibold text-amber-600 dark:text-amber-400"
+                  ? "font-medium text-amber-600 dark:text-amber-400"
                   : "text-muted-foreground"
             )}
           >
@@ -104,7 +115,7 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
               remaining === 0
                 ? "text-muted-foreground"
                 : received > 0
-                  ? "font-semibold text-amber-600 dark:text-amber-400"
+                  ? "font-medium text-amber-600 dark:text-amber-400"
                   : "text-foreground"
             )}
           >
@@ -155,7 +166,7 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
       header: "Thành tiền",
       meta: {
         headerClassName: "w-36 text-right",
-        cellClassName: "text-right font-semibold text-foreground tabular-nums",
+        cellClassName: "text-right font-medium text-foreground tabular-nums",
       },
       cell: ({ row }) => {
         const { quantity, unitPrice } = row.original

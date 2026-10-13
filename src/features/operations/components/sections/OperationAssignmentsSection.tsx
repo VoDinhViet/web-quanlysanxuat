@@ -125,7 +125,7 @@ export function OperationAssignmentsSection({
     <Surface>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
         <div className="min-w-0">
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             Nhân sự công đoạn ({total})
           </h2>
           <p className="text-sm text-muted-foreground">

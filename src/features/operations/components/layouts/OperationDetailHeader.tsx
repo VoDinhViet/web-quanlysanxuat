@@ -65,10 +65,10 @@ export function OperationDetailHeader({
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <h2 className="min-w-0 truncate text-base leading-snug font-bold text-foreground sm:text-lg">
+            <h2 className="min-w-0 truncate text-base leading-snug font-semibold text-foreground sm:text-lg">
               {operation.name}
             </h2>
-            <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[11px] font-semibold text-foreground">
+            <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-xs font-medium text-foreground">
               {operation.code}
             </span>
             <Badge
@@ -92,7 +92,7 @@ export function OperationDetailHeader({
 
           <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
             <MetaItem icon={UsersGroupRounded}>
-              <strong className="font-semibold text-foreground tabular-nums">
+              <strong className="font-medium text-foreground tabular-nums">
                 {assignmentIds?.length ?? "—"}
               </strong>{" "}
               nhân sự

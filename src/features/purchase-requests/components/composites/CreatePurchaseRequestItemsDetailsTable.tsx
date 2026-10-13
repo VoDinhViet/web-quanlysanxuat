@@ -63,10 +63,10 @@ export function CreatePurchaseRequestItemsDetailsTable({
                 />
               </TableCell>
               <TableCell>
-                <p className="text-xs font-semibold text-foreground">
+                <p className="text-xs font-medium text-foreground">
                   {direct.name}
                 </p>
-                <p className="font-mono text-[11px] text-muted-foreground">
+                <p className="font-mono text-xs text-muted-foreground">
                   {direct.code}
                 </p>
               </TableCell>

@@ -43,7 +43,7 @@ export function OqcStatusProgressCard({ current }: OqcStatusProgressCardProps) {
               />
               {oqcStatusLabels[status]}
             </dt>
-            <dd className="text-[11px] text-muted-foreground">
+            <dd className="text-xs text-muted-foreground">
               {oqcStatusDescriptions[status]}
             </dd>
           </div>

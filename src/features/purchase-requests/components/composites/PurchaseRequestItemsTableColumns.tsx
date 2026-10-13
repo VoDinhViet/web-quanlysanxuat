@@ -61,7 +61,7 @@ export function buildPurchaseRequestItemColumns({
       header: "Mã vật tư",
       meta: { headerClassName: "min-w-32" },
       cell: ({ getValue }) => (
-        <span className="font-mono font-semibold text-foreground">
+        <span className="font-mono font-medium text-foreground">
           {getValue()}
         </span>
       ),
@@ -108,8 +108,8 @@ export function buildPurchaseRequestItemColumns({
           <span
             className={
               value < 0
-                ? "font-semibold text-destructive tabular-nums"
-                : "font-semibold text-success tabular-nums"
+                ? "font-medium text-destructive tabular-nums"
+                : "font-medium text-success tabular-nums"
             }
           >
             {quantityFormatter.format(value)}

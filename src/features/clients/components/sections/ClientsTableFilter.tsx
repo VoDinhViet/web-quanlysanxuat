@@ -78,7 +78,7 @@ export function ClientsTableFilter() {
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="clients-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -98,7 +98,7 @@ export function ClientsTableFilter() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label className="text-[11px] font-medium text-muted-foreground">
+            <Label className="text-xs font-medium text-muted-foreground">
               Nhóm khách hàng
             </Label>
             <Select
@@ -137,7 +137,7 @@ export function ClientsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="clients-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -167,7 +167,7 @@ export function ClientsTableFilter() {
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="clients-region"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Khu vực
             </Label>

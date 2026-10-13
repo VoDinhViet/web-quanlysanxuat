@@ -63,9 +63,7 @@ export function buildOrderColumns(options?: BuildOrderColumnsOptions) {
       header: "Mã đơn hàng",
       meta: { headerClassName: "min-w-32" },
       cell: ({ getValue }) => (
-        <span className="font-mono font-semibold text-primary">
-          {getValue()}
-        </span>
+        <span className="font-mono font-medium text-primary">{getValue()}</span>
       ),
     }),
     orderColumnHelper.accessor((row) => row.buyerPoNo ?? "--", {

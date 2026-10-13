@@ -131,7 +131,7 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
             }
           />
           <DropdownMenuContent align="end" className="w-60 p-1.5">
-            <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+            <DropdownMenuLabel className="px-2 py-1 text-xs font-medium text-muted-foreground">
               Tùy chọn xuất dữ liệu
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="my-1" />
@@ -145,7 +145,7 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
                 <span className="text-xs font-medium text-foreground">
                   Biểu mẫu đơn hàng (BM-01/KD)
                 </span>
-                <span className="text-[11px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   File tài liệu PDF
                 </span>
               </div>
@@ -160,7 +160,7 @@ export function OrderExportActions({ orderId }: OrderExportActionsProps) {
                 <span className="text-xs font-medium text-foreground">
                   Dữ liệu đơn hàng
                 </span>
-                <span className="text-[11px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   Bảng tính Excel (.xlsx)
                 </span>
               </div>

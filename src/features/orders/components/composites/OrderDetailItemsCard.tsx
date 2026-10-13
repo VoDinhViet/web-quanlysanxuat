@@ -96,16 +96,16 @@ export function OrderDetailItemsCard({
                 <TableRow className="h-11">
                   <TableCell
                     colSpan={3}
-                    className="font-semibold text-foreground"
+                    className="font-medium text-foreground"
                   >
                     Tổng cộng
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-foreground tabular-nums">
+                  <TableCell className="text-right font-medium text-foreground tabular-nums">
                     {quantityFormatter.format(totalQuantity)}
                   </TableCell>
                   <TableCell />
                   <TableCell />
-                  <TableCell className="text-right text-sm font-semibold text-foreground tabular-nums">
+                  <TableCell className="text-right text-sm font-medium text-foreground tabular-nums">
                     {currencyFormatter.format(order.subtotal)}
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
@@ -114,7 +114,7 @@ export function OrderDetailItemsCard({
                   <TableCell
                     className={cn(
                       "text-right tabular-nums",
-                      totalRemainingQty < 0 && "font-semibold text-destructive"
+                      totalRemainingQty < 0 && "font-medium text-destructive"
                     )}
                   >
                     {quantityFormatter.format(totalRemainingQty)}

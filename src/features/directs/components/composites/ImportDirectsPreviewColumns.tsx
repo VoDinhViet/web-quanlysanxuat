@@ -148,7 +148,7 @@ export function buildImportDirectColumns({
                     variant="outline"
                     size="icon-sm"
                     aria-label={`Sửa dòng ${rowNumber}`}
-                    className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    className="text-muted-foreground hover:border-border hover:text-primary"
                     onClick={() => onEdit(rowNumber)}
                   >
                     <Edit3 className="size-3.5" />

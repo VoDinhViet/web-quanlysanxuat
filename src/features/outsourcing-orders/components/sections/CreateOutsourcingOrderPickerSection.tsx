@@ -208,7 +208,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               ① Chọn chi tiết cần gia công
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -225,7 +225,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
           <div className="space-y-1.5">
             <Label
               htmlFor="os-out-picker-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -248,7 +248,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-out-picker-job"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Job
             </Label>
@@ -279,7 +279,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="os-out-picker-operation"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Công đoạn
             </Label>
@@ -322,7 +322,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
               disabled={disabled}
               aria-label={`Bỏ chọn công đoạn ${lockedItem.operation.name} để đổi công đoạn`}
               title="Bỏ chọn tất cả để đổi công đoạn"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 py-1 pr-2 pl-3 font-medium text-primary transition-colors hover:bg-primary/15 disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 py-1 pr-2 pl-3 font-medium text-primary transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
               onClick={() => itemsField.setValue([])}
             >
               {lockedItem.operation.name}

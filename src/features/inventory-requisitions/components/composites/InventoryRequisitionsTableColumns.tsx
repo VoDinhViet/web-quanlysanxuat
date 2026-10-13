@@ -33,7 +33,7 @@ export const inventoryRequisitionsColumns = col.columns([
       <Link
         to="/manage/inventory-requisitions/$requisitionId"
         params={{ requisitionId: row.original.id }}
-        className="font-mono text-xs font-semibold text-primary hover:underline"
+        className="font-mono text-xs font-medium text-primary hover:underline"
       >
         {getValue()}
       </Link>
@@ -76,7 +76,7 @@ export const inventoryRequisitionsColumns = col.columns([
           className={cn(
             "whitespace-nowrap",
             isProduction
-              ? "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
+              ? "bg-info-soft text-info-ink"
               : "bg-muted text-muted-foreground"
           )}
         >
@@ -99,10 +99,10 @@ export const inventoryRequisitionsColumns = col.columns([
       return (
         <div className="flex flex-col gap-0.5 font-mono text-xs">
           {jobCode ? (
-            <span className="font-semibold text-foreground">{jobCode}</span>
+            <span className="font-medium text-foreground">{jobCode}</span>
           ) : null}
           {lsxCode ? (
-            <span className="text-[11px] text-muted-foreground">{lsxCode}</span>
+            <span className="text-xs text-muted-foreground">{lsxCode}</span>
           ) : null}
         </div>
       )

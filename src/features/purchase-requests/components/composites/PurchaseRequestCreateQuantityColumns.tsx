@@ -105,7 +105,7 @@ export function buildPurchaseRequestQuantityColumns({
               }
             />
             {isBelowMinStock && (
-              <p className="mt-1 text-right text-[10px] text-warning">
+              <p className="mt-1 text-right text-xs text-warning">
                 Thấp hơn định mức tồn ({quantityFormatter.format(item.minStock)}
                 )
               </p>

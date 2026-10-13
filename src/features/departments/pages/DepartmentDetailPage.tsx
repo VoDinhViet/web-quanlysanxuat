@@ -62,13 +62,13 @@ export function DepartmentDetailPage() {
 
                   <span className="h-4 w-px shrink-0 bg-border" />
 
-                  <h1 className="min-w-0 truncate font-heading text-base font-bold text-foreground sm:text-lg">
+                  <h1 className="min-w-0 truncate font-heading text-base font-semibold text-foreground sm:text-lg">
                     {department.name}
                   </h1>
                   <Badge
                     variant="outline"
                     className={cn(
-                      "gap-1.5 text-[11px] font-medium",
+                      "gap-1.5 text-xs font-medium",
                       department.isActive !== false
                         ? "bg-success/10 text-success"
                         : "bg-muted text-muted-foreground"

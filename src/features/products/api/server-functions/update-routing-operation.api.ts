@@ -23,12 +23,10 @@ function resolveUpdateRoutingOperationErrorMessage(error: unknown): string {
   }
 }
 
-const updateRoutingOperationInputSchema = updateProductOperationSchema.extend(
-  {
-    itemId: z.uuid(),
-    stepId: z.uuid(),
-  }
-)
+const updateRoutingOperationInputSchema = updateProductOperationSchema.extend({
+  itemId: z.uuid(),
+  stepId: z.uuid(),
+})
 
 export const updateRoutingOperation = createServerFn({ method: "POST" })
   .validator(updateRoutingOperationInputSchema)

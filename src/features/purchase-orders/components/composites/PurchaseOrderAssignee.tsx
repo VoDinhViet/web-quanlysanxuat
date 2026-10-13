@@ -111,7 +111,7 @@ export function PurchaseOrderAssignee({
   if (!editable) {
     return (
       <div className="min-w-0 space-y-1">
-        <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Người phụ trách
         </p>
         <p className="truncate text-sm font-medium text-foreground">
@@ -133,7 +133,7 @@ export function PurchaseOrderAssignee({
     <div className="min-w-0 space-y-1">
       <label
         htmlFor="purchase-order-assignee"
-        className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+        className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
       >
         Người phụ trách
       </label>
@@ -155,7 +155,7 @@ export function PurchaseOrderAssignee({
         <ComboboxInput
           id="purchase-order-assignee"
           placeholder="Chọn người phụ trách"
-          className="h-9 w-full bg-background text-xs"
+          className="h-9 w-full bg-card text-xs"
         />
         <ComboboxContent>
           <ComboboxEmpty>
@@ -182,7 +182,7 @@ export function PurchaseOrderAssignee({
               >
                 Trước
               </Button>
-              <span className="text-[11px]">
+              <span className="text-xs">
                 {pagination.currentPage} / {pagination.totalPages}
               </span>
               <Button

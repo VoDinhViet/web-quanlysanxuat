@@ -146,7 +146,7 @@ export const PurchaseRequestCreateDirectPickerSection = withForm({
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-base font-semibold text-foreground">
+            <h2 className="font-heading text-base font-medium text-foreground">
               Danh mục vật tư
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -162,7 +162,7 @@ export const PurchaseRequestCreateDirectPickerSection = withForm({
           <div className="space-y-1.5">
             <Label
               htmlFor="purchase-request-picker-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -185,7 +185,7 @@ export const PurchaseRequestCreateDirectPickerSection = withForm({
           <div className="space-y-1.5">
             <Label
               htmlFor="purchase-request-picker-client"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Khách hàng
             </Label>

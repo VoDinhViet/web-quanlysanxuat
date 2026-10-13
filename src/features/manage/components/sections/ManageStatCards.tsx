@@ -62,10 +62,10 @@ export function ManageStatCards() {
               <stat.icon className="size-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-foreground uppercase">
+              <p className="text-xs font-medium text-foreground">
                 {stat.label}
               </p>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-xl font-medium text-foreground tabular-nums">
                 {stat.value}{" "}
                 <span className="text-xs font-normal text-muted-foreground">
                   {stat.unit}
@@ -74,7 +74,7 @@ export function ManageStatCards() {
               {stat.trend ? (
                 <p
                   className={cn(
-                    "flex items-center gap-1 text-[11px]",
+                    "flex items-center gap-1 text-xs",
                     stat.trend.direction === "up" && "text-success",
                     stat.trend.direction === "down" && "text-destructive",
                     !stat.trend.direction && "text-muted-foreground"

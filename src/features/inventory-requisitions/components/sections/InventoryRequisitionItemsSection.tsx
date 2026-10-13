@@ -66,7 +66,7 @@ function buildItemColumns(
       header: "Mã VT",
       meta: { headerClassName: "min-w-28" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-xs font-semibold">{getValue()}</span>
+        <span className="font-mono text-xs font-medium">{getValue()}</span>
       ),
     }),
 
@@ -129,7 +129,7 @@ function buildItemColumns(
       header: "Có thể lãnh",
       meta: {
         headerClassName: "min-w-24 text-right",
-        cellClassName: "text-right tabular-nums font-semibold text-foreground",
+        cellClassName: "text-right tabular-nums font-medium text-foreground",
       },
       cell: ({ row }) => (
         <IssuableQuantityCell
@@ -160,7 +160,7 @@ function buildItemColumns(
       header: "SL lãnh",
       meta: {
         headerClassName: "min-w-28 text-right",
-        cellClassName: "text-right tabular-nums font-semibold text-primary",
+        cellClassName: "text-right tabular-nums font-medium text-primary",
       },
       cell: ({ row }) => (
         <InventoryRequisitionQuantityCell
@@ -214,12 +214,12 @@ export function InventoryRequisitionItemsSection({
   return (
     <div className="border-b border-border not-first:border-t">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-muted/30 px-4 py-3 sm:px-5">
-        <h3 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground uppercase">
+        <h3 className="flex items-center gap-2 text-xs font-medium tracking-wide text-foreground uppercase">
           <PackageSearch className="size-3.5 text-muted-foreground" />
           Danh sách vật tư lãnh ({detail.items.length})
         </h3>
         {editable && (
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             * Bấm vào ô SL lãnh hoặc bấm số &quot;Có thể lãnh&quot; để điền
             nhanh
           </span>
@@ -278,10 +278,10 @@ export function InventoryRequisitionItemsSection({
       {detail.items.length > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border bg-muted/20 px-4 py-3 sm:px-5">
           <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="font-medium tracking-wide text-muted-foreground uppercase">
               Tổng SL lãnh:
             </span>
-            <span className="font-semibold text-foreground tabular-nums">
+            <span className="font-medium text-foreground tabular-nums">
               {numberFmt.format(totalQuantity)}
             </span>
           </div>
@@ -338,7 +338,7 @@ function IssuableQuantityCell({
       type="button"
       disabled={isPending}
       onClick={() => quickFill()}
-      className="inline-flex items-center gap-1 font-semibold text-foreground underline decoration-dotted underline-offset-2 hover:text-primary disabled:opacity-50"
+      className="inline-flex items-center gap-1 font-medium text-foreground underline decoration-dotted underline-offset-2 hover:text-primary disabled:opacity-50"
       title="Bấm để điền nhanh toàn bộ số lượng có thể lãnh"
     >
       {numberFmt.format(issuable)}
@@ -391,7 +391,7 @@ function InventoryRequisitionQuantityCell({
 
   if (!editable) {
     return (
-      <span className="font-semibold text-primary tabular-nums">
+      <span className="font-medium text-primary tabular-nums">
         {numberFmt.format(item.quantity)}
       </span>
     )
@@ -421,7 +421,7 @@ function InventoryRequisitionQuantityCell({
     <div className="flex items-center justify-end gap-1.5">
       <NumericFormat
         customInput={Input}
-        className="h-8 w-24 text-right text-xs font-semibold text-primary tabular-nums"
+        className="h-8 w-24 text-right text-xs font-medium text-primary tabular-nums"
         value={value}
         thousandSeparator="."
         decimalSeparator=","

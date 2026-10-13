@@ -86,10 +86,10 @@ export function buildCreateOutboundOrderItemColumns({
         const source = lookupUnfulfilledOrderItem(row.original.orderItemId)
         return (
           <div>
-            <p className="text-xs font-semibold text-foreground">
+            <p className="text-xs font-medium text-foreground">
               {source?.item.name ?? "—"}
             </p>
-            <p className="font-mono text-[11px] text-muted-foreground">
+            <p className="font-mono text-xs text-muted-foreground">
               {source?.item.code}
             </p>
           </div>
@@ -104,7 +104,8 @@ export function buildCreateOutboundOrderItemColumns({
         cellClassName: "text-center font-mono text-xs",
       },
       cell: ({ row }) =>
-        lookupUnfulfilledOrderItem(row.original.orderItemId)?.item.revision ?? "—",
+        lookupUnfulfilledOrderItem(row.original.orderItemId)?.item.revision ??
+        "—",
     }),
     createOutboundOrderItemColumnHelper.display({
       id: "unitName",
@@ -163,7 +164,7 @@ export function buildCreateOutboundOrderItemColumns({
           source.orderedQuantity - source.issuedQuantity
         )
         return (
-          <span className="font-semibold text-foreground">
+          <span className="font-medium text-foreground">
             {quantityFormatter.format(remaining)}
           </span>
         )
@@ -217,11 +218,11 @@ export function buildCreateOutboundOrderItemColumns({
               }
             />
             {exceedsRemaining ? (
-              <p className="mt-1 text-right text-[10px] text-destructive">
+              <p className="mt-1 text-right text-xs text-destructive">
                 Vượt SL còn lại ({quantityFormatter.format(remaining)})
               </p>
             ) : exceedsAvailable ? (
-              <p className="mt-1 text-right text-[10px] text-amber-600 dark:text-amber-400">
+              <p className="mt-1 text-right text-xs text-amber-600 dark:text-amber-400">
                 Vượt tồn khả dụng (
                 {quantityFormatter.format(source.availableQuantity)})
               </p>

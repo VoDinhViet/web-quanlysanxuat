@@ -38,35 +38,35 @@ export function PurchaseOrderSummaryCard({
 
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <Calculator className="size-4 text-muted-foreground" />
         Tóm tắt giá trị đơn
       </div>
 
       <div className="flex flex-col gap-3 px-4 py-3.5 sm:px-5">
         <div className="space-y-1">
-          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             Tổng SL đặt
           </p>
-          <p className="text-sm font-semibold text-foreground tabular-nums">
+          <p className="text-sm font-medium text-foreground tabular-nums">
             {quantityFormatter.format(totalQuantity)}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-2 border-t border-border/50 pt-2">
           <div className="space-y-0.5">
-            <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               Đã nhận
             </p>
-            <p className="text-sm font-semibold text-success tabular-nums">
+            <p className="text-sm font-medium text-success tabular-nums">
               {quantityFormatter.format(totalReceived)}
             </p>
           </div>
           <div className="space-y-0.5">
-            <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               Còn lại
             </p>
-            <p className="text-sm font-semibold text-foreground tabular-nums">
+            <p className="text-sm font-medium text-foreground tabular-nums">
               {quantityFormatter.format(totalRemaining)}
             </p>
           </div>
@@ -86,17 +86,17 @@ export function PurchaseOrderSummaryCard({
             value={currencyFormatter.format(purchaseOrder.otherCost)}
           />
           {missingUnitPriceCount > 0 && (
-            <p className="text-[11px] text-warning">
+            <p className="text-xs text-warning">
               Có {missingUnitPriceCount} dòng chưa nhập đơn giá
             </p>
           )}
         </div>
 
         <div className="space-y-1 border-t border-border/50 pt-2">
-          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             Tổng tiền (VNĐ)
           </p>
-          <p className="text-base font-semibold text-foreground tabular-nums">
+          <p className="text-base font-medium text-foreground tabular-nums">
             {currencyFormatter.format(purchaseOrder.totalAmount)}
           </p>
         </div>

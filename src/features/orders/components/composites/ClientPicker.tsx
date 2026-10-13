@@ -51,7 +51,7 @@ export function ClientPicker({
     <>
       {value ? (
         !selectedClient ? (
-          <div className="flex h-9 w-full items-center gap-2 rounded-md border border-input bg-background px-3">
+          <div className="flex h-9 w-full items-center gap-2 rounded-md border border-input bg-card px-3">
             <Skeleton className="size-4 rounded" />
             <Skeleton className="h-3.5 w-2/3" />
           </div>

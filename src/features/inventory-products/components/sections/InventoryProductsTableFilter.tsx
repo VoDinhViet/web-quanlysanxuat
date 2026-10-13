@@ -52,7 +52,7 @@ export function InventoryProductsTableFilter() {
         <div className="min-w-56 flex-1 space-y-1.5">
           <Label
             htmlFor="tp-q"
-            className="text-[11px] font-medium text-muted-foreground"
+            className="text-xs font-medium text-muted-foreground"
           >
             Mã / Tên thành phẩm
           </Label>

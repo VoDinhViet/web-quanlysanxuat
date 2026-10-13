@@ -37,12 +37,12 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
     return (
       <div className="px-4 py-5 sm:px-5">
         <div>
-          <h2 className="font-heading text-base font-semibold text-foreground">
+          <h2 className="font-heading text-base font-medium text-foreground">
             ② Xem trước nội dung đơn mua
           </h2>
           {purchaseOrder ? (
             <p className="text-sm text-muted-foreground">
-              <span className="font-mono font-semibold text-primary">
+              <span className="font-mono font-medium text-primary">
                 {purchaseOrder.code}
               </span>{" "}
               — {purchaseOrder.supplier.name}
@@ -120,7 +120,7 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
                           name={line.purchaseRequestItem.item.name}
                         />
                       </TableCell>
-                      <TableCell className="font-mono font-semibold text-foreground">
+                      <TableCell className="font-mono font-medium text-foreground">
                         {line.purchaseRequestItem.item.code}
                       </TableCell>
                       <TableCell className="font-medium text-foreground">
@@ -140,7 +140,7 @@ export const CreateInventoryReceiptFromPoPreviewSection = withForm({
                       </TableCell>
                       <TableCell
                         className={cn(
-                          "text-right font-semibold tabular-nums",
+                          "text-right font-medium tabular-nums",
                           remaining === 0
                             ? "font-normal text-muted-foreground"
                             : "text-foreground"

@@ -25,23 +25,21 @@ export const orderBadgeStyles: Record<OrderBadgeTone, OrderBadgeStyle> = {
     dot: "bg-muted-foreground/60",
   },
   [OrderStatus.PENDING_CONFIRMATION]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [OrderStatus.REJECTED]: {
     // Rose, not `destructive` — that tone is already overdueTone's, and a
     // rejected order is a distinct signal from an overdue one.
-    badge: "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
+    badge: "bg-destructive-soft text-destructive-ink",
     dot: "bg-rose-500 dark:bg-rose-400",
   },
   [OrderStatus.AWAITING_PRODUCTION]: {
-    badge:
-      "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
+    badge: "bg-violet-soft text-violet-ink",
     dot: "bg-violet-500",
   },
   [OrderStatus.IN_PROGRESS]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   [OrderStatus.COMPLETED]: {

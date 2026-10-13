@@ -52,7 +52,7 @@ export const orderDetailItemColumns = col.columns([
             >
               {item.name}
             </Link>
-            <p className="truncate font-mono text-[11px] text-muted-foreground">
+            <p className="truncate font-mono text-xs text-muted-foreground">
               {item.code}
             </p>
           </div>
@@ -91,7 +91,7 @@ export const orderDetailItemColumns = col.columns([
         <div>
           {quantityFormatter.format(quantity)}
           {adjusted && (
-            <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
+            <p className="mt-0.5 text-xs font-normal text-muted-foreground">
               LSX: {quantityFormatter.format(productionQuantity)}
             </p>
           )}
@@ -145,7 +145,7 @@ export const orderDetailItemColumns = col.columns([
         <div>
           {currencyFormatter.format(lineTotal)}
           {productionLineTotal !== null && (
-            <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
+            <p className="mt-0.5 text-xs font-normal text-muted-foreground">
               LSX: {currencyFormatter.format(productionLineTotal)}
             </p>
           )}
@@ -175,7 +175,7 @@ export const orderDetailItemColumns = col.columns([
           className={cn(
             "tabular-nums",
             remaining < 0
-              ? "font-semibold text-destructive"
+              ? "font-medium text-destructive"
               : "text-muted-foreground"
           )}
         >

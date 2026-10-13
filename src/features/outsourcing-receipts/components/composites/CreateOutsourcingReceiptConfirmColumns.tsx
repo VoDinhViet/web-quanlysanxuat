@@ -41,7 +41,7 @@ export const createOutsourcingReceiptConfirmColumns =
           <p className="truncate font-medium text-foreground">
             {row.original.itemName}
           </p>
-          <p className="truncate font-mono text-[10px] text-muted-foreground">
+          <p className="truncate font-mono text-xs text-muted-foreground">
             {row.original.itemCode}
           </p>
         </div>
