@@ -19,7 +19,7 @@ type JobOperationReportDialogProps = {
 //
 // Dùng chung bởi 2 màn (production-execution's "DANH SÁCH COMPONENT" và production-jobs' "Công đoạn
 // sản xuất") — cả hai render đúng 1 entity (`ProductionJobOperation`), 1 mutation, không có prop
-// biến thể nào giữa 2 nơi gọi (xem ghi chú trong .claude/rules/ui-kit.md). Data layer (schema/
+// biến thể nào giữa 2 nơi gọi. Data layer (schema/
 // server-function/mutation hook) ở lại `production-jobs` (chủ sở hữu entity); component này gọi
 // ngược qua `@/features/production-jobs/api` — đúng
 // `qlsx/shared-reads-features-through-the-barrel` (eslint.config.js), cùng khuôn `useLogout`

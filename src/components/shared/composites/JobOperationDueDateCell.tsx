@@ -26,8 +26,8 @@ export function formatJobOperationDueDate(dueDate: string | null): string {
 // Ô hạn hoàn thành công đoạn — DatePicker inline, commit ngay trong onChange (cùng lý do
 // PurchaseOrderExpectedDateField.tsx: date picker không có rủi ro mất focus theo từng phím).
 // Dùng chung bởi 2 màn (production-jobs' tab "Công đoạn sản xuất" và production-execution' màn
-// "Thực hiện sản xuất") — cùng entity, cùng mutation, không prop biến thể, xem
-// .claude/rules/ui-kit.md. `productionJobId` bắt buộc là prop (không useParams) vì 2 màn ở 2 route
+// "Thực hiện sản xuất") — cùng entity, cùng mutation, không prop biến thể.
+// `productionJobId` bắt buộc là prop (không useParams) vì 2 màn ở 2 route
 // khác nhau. `disabledReason` chỉ phản ánh trạng thái Job (PENDING/không còn IN_PROGRESS) — quyền
 // `production:update` được gate riêng ở call site qua PermissionGate, fallback render cùng dạng
 // chỉ đọc bằng formatJobOperationDueDate.

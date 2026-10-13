@@ -79,7 +79,7 @@ export function RadioCardField<TValue extends string>({
                 <Icon className="size-4" />
               </div>
               <div className="space-y-0.5 pt-0.5">
-                <p className="text-sm font-semibold text-foreground">
+                <p className="text-sm font-medium text-foreground">
                   {option.label}
                 </p>
                 <p className="text-xs text-muted-foreground">

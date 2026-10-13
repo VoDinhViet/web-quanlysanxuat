@@ -291,7 +291,7 @@ const menuGroups: MenuGroup[] = [
 ]
 
 const menuButtonClass =
-  "h-9 px-3 text-[13px] font-medium text-sidebar-foreground/82 hover:bg-sidebar-accent hover:text-sidebar-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-[0_8px_18px_-2px_color-mix(in_oklch,var(--sidebar-primary)_45%,transparent)] data-[active=true]:[&_svg]:text-sidebar-primary-foreground [&_svg]:size-[17px]"
+  "h-9 px-3 text-sm font-medium text-sidebar-foreground/82 hover:bg-sidebar-accent hover:text-sidebar-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-[0_8px_18px_-2px_color-mix(in_oklch,var(--sidebar-primary)_45%,transparent)] data-[active=true]:[&_svg]:text-sidebar-primary-foreground [&_svg]:size-[17px]"
 
 export function AppSidebar() {
   const location = useLocation()
@@ -367,10 +367,10 @@ function SidebarBrand() {
       </span>
 
       <span className="min-w-0">
-        <span className="block truncate text-base leading-5 font-bold tracking-tight text-sidebar-foreground">
+        <span className="block truncate text-base leading-5 font-semibold tracking-tight text-sidebar-foreground">
           CƠ KHÍ TIẾN HUY
         </span>
-        <span className="mt-1 block truncate text-[8px] leading-3.5 font-semibold tracking-widest text-sidebar-foreground/58 uppercase">
+        <span className="mt-1 block truncate text-xs leading-3.5 font-medium tracking-widest text-sidebar-foreground/58 uppercase">
           ERP - Hệ thống quản trị sản xuất
         </span>
       </span>
@@ -389,7 +389,7 @@ function MenuGroup({
 }) {
   return (
     <SidebarGroup className="gap-1 p-0">
-      <SidebarGroupLabel className="h-7 px-3 text-[10px] font-semibold tracking-[0.1em] text-sidebar-foreground/52 uppercase">
+      <SidebarGroupLabel className="h-7 px-3 text-xs font-medium tracking-[0.1em] text-sidebar-foreground/52 uppercase">
         {group.label}
       </SidebarGroupLabel>
 
@@ -464,7 +464,7 @@ function MenuButton({
       {hasTodoBadge && (
         <SidebarMenuBadge
           className={cn(
-            "top-2.5! h-4 min-w-4 bg-primary px-1 text-[10px] leading-none font-semibold text-primary-foreground",
+            "top-2.5! h-4 min-w-4 bg-primary px-1 text-xs leading-none font-medium text-primary-foreground",
             hasBadge ? "right-9" : "right-3"
           )}
         >
@@ -472,7 +472,7 @@ function MenuButton({
         </SidebarMenuBadge>
       )}
       {hasBadge && (
-        <SidebarMenuBadge className="top-2.5! right-3 h-4 min-w-4 bg-destructive px-1 text-[10px] leading-none font-semibold text-destructive-foreground">
+        <SidebarMenuBadge className="top-2.5! right-3 h-4 min-w-4 bg-destructive px-1 text-xs leading-none font-medium text-destructive-foreground">
           {badgeCount > 99 ? "99+" : badgeCount}
         </SidebarMenuBadge>
       )}

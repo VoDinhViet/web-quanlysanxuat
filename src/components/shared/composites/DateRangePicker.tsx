@@ -73,7 +73,7 @@ export function DateRangePicker({
             type="button"
             variant="outline"
             className={cn(
-              "h-9 w-full justify-start gap-2 bg-background text-xs font-normal",
+              "h-9 w-full justify-start gap-2 bg-card text-sm font-normal",
               !from && "text-muted-foreground"
             )}
           >

@@ -32,7 +32,7 @@ export function DisabledAction({
               type="button"
               variant="outline"
               size="icon-sm"
-              className="pointer-events-none bg-background text-muted-foreground"
+              className="pointer-events-none bg-card text-muted-foreground"
               aria-label={label}
               disabled
             >

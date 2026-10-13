@@ -61,14 +61,14 @@ export function RelatedNotesCard({ data, excludeId }: RelatedNotesCardProps) {
 
   return (
     <section className="overflow-hidden rounded-lg bg-card shadow-card">
-      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-semibold tracking-tight text-foreground sm:px-5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3.5 font-heading text-base font-medium tracking-tight text-foreground sm:px-5">
         <Notes className="size-4 text-muted-foreground" />
         Ghi chú liên quan
       </div>
       <div className="divide-y divide-border/60">
         {groups.map((group) => (
           <div key={group.key} className="px-4 py-3 sm:px-5">
-            <p className="mb-2 text-xs font-semibold text-muted-foreground">
+            <p className="mb-2 text-xs font-medium text-muted-foreground">
               {group.label}
             </p>
             <ul className="flex flex-col gap-2">
@@ -77,7 +77,7 @@ export function RelatedNotesCard({ data, excludeId }: RelatedNotesCardProps) {
                   <Link
                     to={group.toRoute}
                     params={{ [group.paramName]: item.id }}
-                    className="font-mono text-sm font-semibold text-primary hover:underline"
+                    className="font-mono text-sm font-medium text-primary hover:underline"
                   >
                     {item.code}
                   </Link>

@@ -60,4 +60,3 @@ export function printBase64Pdf(base64: string): void {
     }, 60_000)
   }
 }
-

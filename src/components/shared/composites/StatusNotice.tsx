@@ -52,7 +52,7 @@ export function StatusNotice({
       <div className="min-w-0 space-y-1">
         <p
           className={cn(
-            "text-sm font-semibold",
+            "text-sm font-medium",
             isNeutral ? "text-foreground" : "text-destructive"
           )}
         >

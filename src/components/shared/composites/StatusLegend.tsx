@@ -20,7 +20,7 @@ type StatusLegendProps = {
 // rows. The badge itself stays a slot (domains keep their own status→badge lookup) — see
 // InventoryRequisitionsLegend.tsx for a call site. Only 1 domain has migrated onto this so
 // far; the repo's other *Legend.tsx files use a visually different (`dl`/`dt`/`dd`) shape that
-// hasn't been reconciled with this one yet — see the ui-kit plan's Phase 2.4 note.
+// hasn't been reconciled with this one yet.
 export function StatusLegend({
   icon: IconComponent,
   title,
@@ -29,7 +29,7 @@ export function StatusLegend({
 }: StatusLegendProps) {
   return (
     <div className={cn("space-y-2.5", className)}>
-      <div className="flex items-center gap-1.5 font-semibold text-foreground">
+      <div className="flex items-center gap-1.5 font-medium text-foreground">
         <IconComponent className="size-4 text-primary" />
         <span>{title}</span>
       </div>

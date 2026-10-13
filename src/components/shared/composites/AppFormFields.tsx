@@ -61,7 +61,7 @@ export function TextField({
         name={field.name}
         type={type}
         placeholder={placeholder}
-        className="h-9 bg-background text-xs"
+        className="h-9 bg-card text-xs"
         value={field.state.value ?? ""}
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
@@ -118,7 +118,7 @@ export function NumberField({
         id={inputId}
         name={field.name}
         placeholder={placeholder}
-        className="h-9 bg-background text-xs"
+        className="h-9 bg-card text-xs"
         // `?? ""` chỉ để tránh cảnh báo controlled → uncontrolled của React khi ô trống.
         value={field.state.value ?? ""}
         thousandSeparator={thousandSeparator ? "." : undefined}
@@ -130,7 +130,7 @@ export function NumberField({
         disabled={disabled}
       />
       {description ? (
-        <FieldDescription className="text-[11px] tabular-nums">
+        <FieldDescription className="text-xs tabular-nums">
           {description}
         </FieldDescription>
       ) : null}
@@ -175,7 +175,7 @@ export function TextareaField({
         name={field.name}
         placeholder={placeholder}
         maxLength={maxLength}
-        className="min-h-20 resize-none bg-background text-xs"
+        className="min-h-20 resize-none bg-card text-xs"
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
@@ -184,7 +184,7 @@ export function TextareaField({
       <div className="flex items-center justify-between gap-2">
         <FieldError errors={field.state.meta.errors} />
         {maxLength ? (
-          <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
+          <span className="ml-auto shrink-0 text-xs text-muted-foreground">
             {field.state.value.length}/{maxLength}
           </span>
         ) : null}
@@ -224,7 +224,7 @@ export function PasswordField({
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
           autoComplete="new-password"
-          className="h-9 bg-background pr-9 text-xs"
+          className="h-9 bg-card pr-9 text-xs"
           value={field.state.value ?? ""}
           onBlur={field.handleBlur}
           onChange={(event) => field.handleChange(event.target.value)}
@@ -299,7 +299,7 @@ export function SelectField({
           id={field.name}
           onBlur={field.handleBlur}
           aria-invalid={isInvalid}
-          className="h-9 w-full bg-background text-xs"
+          className="h-9 w-full bg-card text-xs"
         >
           <SelectValue placeholder={isPending ? "Đang tải..." : placeholder} />
         </SelectTrigger>

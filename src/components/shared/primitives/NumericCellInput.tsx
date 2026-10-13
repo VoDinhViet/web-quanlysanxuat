@@ -63,7 +63,7 @@ export function NumericCellInput({
   return (
     <NumericFormat
       customInput={Input}
-      className={cn("h-8 w-full bg-background text-xs", className)}
+      className={cn("h-8 w-full bg-card text-xs", className)}
       value={localValue ?? ""}
       thousandSeparator="."
       decimalSeparator=","

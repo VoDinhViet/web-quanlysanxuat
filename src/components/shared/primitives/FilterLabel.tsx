@@ -22,7 +22,7 @@ export function FilterLabel({ label, htmlFor, tooltip }: FilterLabelProps) {
     <div className="flex items-center gap-1">
       <Label
         htmlFor={htmlFor}
-        className="text-[11px] font-medium text-muted-foreground"
+        className="text-xs font-medium text-muted-foreground"
       >
         {label}
       </Label>

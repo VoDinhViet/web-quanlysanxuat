@@ -7,14 +7,7 @@
 @import "tailwindcss" source(".");
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
-@import "@fontsource/cal-sans";
-/* Create/update-order pages only ("bản vẽ kỹ thuật" theme, see .order-drafting below) */
-@import "@fontsource-variable/space-grotesk";
-@import "@fontsource/ibm-plex-sans/400.css";
-@import "@fontsource/ibm-plex-sans/500.css";
-@import "@fontsource/ibm-plex-sans/600.css";
-@import "@fontsource/ibm-plex-sans/700.css";
+@import "@fontsource-variable/nunito-sans";
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/500.css";
 @import "@fontsource/ibm-plex-mono/600.css";
@@ -22,8 +15,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: "Cal Sans", var(--font-sans);
-  --font-sans: "Geist Variable", sans-serif;
+  --font-heading: var(--font-sans);
+  --font-sans: "Nunito Sans Variable", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -62,6 +56,18 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-success-ink: var(--success-ink);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-ink: var(--warning-ink);
+  --color-info-soft: var(--info-soft);
+  --color-info-ink: var(--info-ink);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-destructive-ink: var(--destructive-ink);
+  --color-violet-soft: var(--violet-soft);
+  --color-violet-ink: var(--violet-ink);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-neutral-ink: var(--neutral-ink);
   --color-chart-6: var(--chart-6);
   --color-chart-7: var(--chart-7);
   --shadow-card: var(--card-shadow);
@@ -76,84 +82,111 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.208 0.042 265.755);
+  --background: oklch(0.975 0.005 250);
+  --foreground: oklch(0.28 0.03 255);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.28 0.03 255);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.208 0.042 265.755);
-  --primary: oklch(0.489 0.282 265.038);
-  --primary-foreground: oklch(0.985 0.009 255.508);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.279 0.041 260.031);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.446 0.043 257.281);
-  --accent: oklch(0.932 0.032 255.585);
-  --accent-foreground: oklch(0.379 0.146 265.522);
-  --destructive: oklch(0.577 0.245 27.325);
+  --popover-foreground: oklch(0.28 0.03 255);
+  --primary: oklch(0.44 0.19 263);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: oklch(0.955 0.01 255);
+  --secondary-foreground: oklch(0.3 0.04 262);
+  --muted: oklch(0.955 0.01 255);
+  --muted-foreground: oklch(0.48 0.03 257);
+  --accent: oklch(0.955 0.006 255);
+  --accent-foreground: oklch(0.28 0.03 255);
+  --destructive: oklch(0.58 0.22 25);
   --destructive-foreground: oklch(0.985 0.009 255.508);
-  --border: oklch(0.918 0.018 255.508);
-  --input: oklch(0.895 0.021 255.508);
-  --ring: oklch(0.489 0.282 265.038);
-  --chart-1: oklch(0.489 0.282 265.038);
-  --chart-2: oklch(0.6 0.13 160);
-  --chart-3: oklch(0.68 0.15 65);
-  --chart-4: oklch(0.55 0.2 305);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --chart-6: oklch(0.68 0.19 40);
-  --chart-7: oklch(0.7 0.14 195);
-  --success: oklch(0.6 0.13 160);
+  --border: oklch(0.92 0.012 255);
+  --input: oklch(0.88 0.03 258);
+  --ring: oklch(0.44 0.19 263);
+  --chart-1: oklch(0.44 0.19 263);
+  --chart-2: oklch(0.62 0.15 162);
+  --chart-3: oklch(0.75 0.15 75);
+  --chart-4: oklch(0.58 0.2 300);
+  --chart-5: oklch(0.64 0.21 15);
+  --chart-6: oklch(0.68 0.17 45);
+  --chart-7: oklch(0.68 0.12 200);
+  --success: oklch(0.62 0.15 162);
   --success-foreground: oklch(0.985 0.01 160);
-  --warning: oklch(0.68 0.15 65);
-  --warning-foreground: oklch(0.27 0.05 65);
-  --info: oklch(0.58 0.17 250);
+  --warning: oklch(0.75 0.15 75);
+  --warning-foreground: oklch(0.27 0.05 70);
+  --info: oklch(0.62 0.14 235);
   --info-foreground: oklch(0.985 0.01 250);
-  --card-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  /* Soft tone pairs — tinted fill + readable ink, used by Badge tone variants and
+     status tints. Dark mode redefines the same names, so call sites need no dark: prefix. */
+  --success-soft: oklch(0.96 0.035 162);
+  --success-ink: oklch(0.44 0.11 162);
+  --warning-soft: oklch(0.965 0.05 85);
+  --warning-ink: oklch(0.48 0.11 65);
+  --info-soft: oklch(0.96 0.025 235);
+  --info-ink: oklch(0.42 0.12 245);
+  --destructive-soft: oklch(0.965 0.025 20);
+  --destructive-ink: oklch(0.5 0.19 27);
+  --violet-soft: oklch(0.96 0.03 305);
+  --violet-ink: oklch(0.45 0.17 305);
+  --neutral-soft: oklch(0.955 0.008 255);
+  --neutral-ink: oklch(0.42 0.03 257);
+  --card-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -8px rgba(15, 23, 42, 0.06);
   --popover-shadow: 0 18px 45px -24px rgba(15, 23, 42, 0.45);
-  --radius: 0.45rem;
-  --sidebar: oklch(0.18 0.036 264.695);
+  --radius: 0.375rem;
+  --sidebar: oklch(0.3 0.03 255);
   --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.489 0.282 265.038);
+  --sidebar-primary: oklch(0.52 0.19 263);
   --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent: oklch(0.37 0.035 255);
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.489 0.282 265.038);
+  --sidebar-ring: oklch(0.52 0.19 263);
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
+  --background: oklch(0.17 0.03 262);
   --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
+  --card: oklch(0.21 0.035 262);
   --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
+  --popover: oklch(0.21 0.035 262);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.62 0.2 264);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.279 0.041 260.031);
+  --primary: oklch(0.68 0.16 262);
+  --primary-foreground: oklch(0.15 0.03 262);
+  --secondary: oklch(0.28 0.035 262);
   --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
+  --muted: oklch(0.28 0.035 262);
+  --muted-foreground: oklch(0.72 0.03 258);
+  --accent: oklch(0.28 0.03 260);
   --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(0.7 0.19 22);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.62 0.2 264);
-  --chart-1: oklch(0.62 0.2 264);
-  --chart-2: oklch(0.75 0.15 162);
-  --chart-3: oklch(0.82 0.15 78);
-  --chart-4: oklch(0.7 0.19 305);
-  --chart-5: oklch(0.712 0.194 13.428);
-  --chart-6: oklch(0.75 0.17 40);
-  --chart-7: oklch(0.78 0.13 195);
-  --success: oklch(0.75 0.15 162);
+  --ring: oklch(0.68 0.16 262);
+  --chart-1: oklch(0.68 0.16 262);
+  --chart-2: oklch(0.76 0.15 162);
+  --chart-3: oklch(0.82 0.15 80);
+  --chart-4: oklch(0.72 0.17 300);
+  --chart-5: oklch(0.72 0.17 15);
+  --chart-6: oklch(0.76 0.15 45);
+  --chart-7: oklch(0.78 0.11 200);
+  --success: oklch(0.76 0.15 162);
   --success-foreground: oklch(0.22 0.04 162);
-  --warning: oklch(0.82 0.15 78);
+  --warning: oklch(0.82 0.15 80);
   --warning-foreground: oklch(0.24 0.04 78);
-  --info: oklch(0.72 0.15 250);
+  --info: oklch(0.76 0.12 235);
   --info-foreground: oklch(0.2 0.04 250);
+  --success-soft: oklch(0.3 0.055 162);
+  --success-ink: oklch(0.82 0.12 162);
+  --warning-soft: oklch(0.32 0.055 80);
+  --warning-ink: oklch(0.86 0.12 85);
+  --info-soft: oklch(0.3 0.055 235);
+  --info-ink: oklch(0.82 0.09 235);
+  --destructive-soft: oklch(0.3 0.07 22);
+  --destructive-ink: oklch(0.82 0.12 22);
+  --violet-soft: oklch(0.3 0.07 300);
+  --violet-ink: oklch(0.82 0.11 305);
+  --neutral-soft: oklch(0.3 0.02 260);
+  --neutral-ink: oklch(0.8 0.02 257);
   --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   --popover-shadow: 0 18px 45px -24px rgba(0, 0, 0, 0.7);
   /* Light mode locks the sidebar to a fixed dark navy rail (see :root) — in
@@ -185,66 +218,11 @@
   html {
     @apply font-sans;
   }
-}
-
-/* Create/update-order pages only — a "technical drawing" typographic identity
-   for /manage/orders/create and /manage/orders/$orderId/update (see
-   CreateOrderPage.tsx/UpdateOrderPage.tsx), scoped entirely behind this one
-   class so every other route is untouched. Colors stay the app's normal
-   theme — only type + the title-block decoration are distinct here. */
-.order-drafting {
-  --font-heading: "Space Grotesk Variable", var(--font-sans);
-  --font-sans: "IBM Plex Sans", sans-serif;
-
-  /* Subtle drafting-paper grid texture, in the theme's own primary color. */
-  background-image:
-    linear-gradient(
-      color-mix(in oklab, var(--primary) 6%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in oklab, var(--primary) 6%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 24px 24px;
-}
-
-.order-drafting .tabular-nums,
-.order-drafting .font-mono,
-.requisition-sheet .tabular-nums,
-.requisition-sheet .font-mono {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-}
-
-/* Signature element: renders a section like an engineering drawing's title
-   block — corner registration marks via pseudo-elements, no extra DOM. */
-.drafting-title-block {
-  position: relative;
-  border: 1px solid var(--border);
-}
-
-.drafting-title-block::before,
-.drafting-title-block::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border: 2px solid var(--primary);
-}
-
-.drafting-title-block::before {
-  top: -1px;
-  left: -1px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.drafting-title-block::after {
-  bottom: -1px;
-  right: -1px;
-  border-left: none;
-  border-top: none;
+  /* Document codes and figures share one mono face app-wide. */
+  .tabular-nums,
+  .font-mono {
+    font-family: var(--font-mono);
+  }
 }
 
 /* In chứng từ — mỗi trang chi tiết render sẵn một PaymentRequestPrintSheet ẩn (`.print-sheet`,

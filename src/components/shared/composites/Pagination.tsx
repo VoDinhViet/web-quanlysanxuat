@@ -82,7 +82,7 @@ export function Pagination({
               size="icon-sm"
               className={cn(
                 "text-xs font-medium",
-                pageNumber !== page && "bg-background text-foreground"
+                pageNumber !== page && "bg-card text-foreground"
               )}
               disabled={disabled}
               onClick={() => onPageChange(pageNumber)}
@@ -109,7 +109,7 @@ export function Pagination({
             onValueChange={(key) => onPageSizeChange(Number(key) as PageSize)}
             disabled={disabled}
           >
-            <SelectTrigger className="h-9 w-28 bg-background text-xs font-medium text-foreground">
+            <SelectTrigger className="h-9 w-28 bg-card text-xs font-medium text-foreground">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -142,7 +142,7 @@ function PaginationButton({
       type="button"
       variant="outline"
       size="icon-sm"
-      className="bg-background text-foreground"
+      className="bg-card text-foreground"
       aria-label={ariaLabel}
       disabled={disabled}
       onClick={onClick}

@@ -1,5 +1,12 @@
 import { useMemo, useRef, useState } from "react"
-import { addMinutes, format, isValid, parseISO, setHours, setMinutes } from "date-fns"
+import {
+  addMinutes,
+  format,
+  isValid,
+  parseISO,
+  setHours,
+  setMinutes,
+} from "date-fns"
 import { CalendarIcon, Check, Clock, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -24,7 +31,20 @@ const HOURS = Array.from({ length: 24 }, (_, i) =>
   i.toString().padStart(2, "0")
 )
 
-const MINUTE_STEPS = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"]
+const MINUTE_STEPS = [
+  "00",
+  "05",
+  "10",
+  "15",
+  "20",
+  "25",
+  "30",
+  "35",
+  "40",
+  "45",
+  "50",
+  "55",
+]
 
 const PRESET_TIMES = [
   { label: "08:00", hour: 8, minute: 0 },
@@ -237,7 +257,7 @@ export function DateTimePicker({
             variant="outline"
             disabled={disabled}
             className={cn(
-              "h-9 w-full justify-between bg-background text-xs font-normal",
+              "h-9 w-full justify-between bg-card text-sm font-normal",
               !selectedDate && "text-muted-foreground",
               className
             )}
@@ -251,11 +271,8 @@ export function DateTimePicker({
           </Button>
         }
       />
-      <PopoverContent
-        align="start"
-        className="w-auto p-0"
-      >
-        <div className="flex flex-col divide-y divide-border/50 sm:flex-row sm:divide-y-0 sm:divide-x sm:divide-border/50">
+      <PopoverContent align="start" className="w-auto p-0">
+        <div className="flex flex-col divide-y divide-border/50 sm:flex-row sm:divide-x sm:divide-y-0 sm:divide-border/50">
           {/* Lịch chọn ngày */}
           <div className="p-1 sm:p-2">
             <Calendar
@@ -269,11 +286,11 @@ export function DateTimePicker({
           {/* Phần chọn & nhập giờ trực quan (phẳng, phân tách bằng border mảnh) */}
           <div className="flex flex-col p-3 sm:w-[290px]">
             {/* Header thời gian & nút tăng giảm phút */}
-            <div className="flex items-center justify-between pb-2 border-b border-border/50">
+            <div className="flex items-center justify-between border-b border-border/50 pb-2">
               <div className="flex items-center gap-1.5">
                 <Clock className="size-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">Giờ:</span>
-                <div className="flex items-center gap-0.5 font-mono text-xs font-semibold">
+                <div className="flex items-center gap-0.5 font-mono text-xs font-medium">
                   <input
                     ref={hourInputRef}
                     type="text"
@@ -299,9 +316,9 @@ export function DateTimePicker({
                     }}
                     placeholder="00"
                     title="Gõ giờ (00-23), cuộn chuột hoặc phím Lên/Xuống"
-                    className="h-7 w-8.5 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                    className="h-7 w-8.5 rounded border border-border/60 bg-background text-center text-xs font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   />
-                  <span className="text-muted-foreground font-bold">:</span>
+                  <span className="font-semibold text-muted-foreground">:</span>
                   <input
                     ref={minuteInputRef}
                     type="text"
@@ -327,7 +344,7 @@ export function DateTimePicker({
                     }}
                     placeholder="00"
                     title="Gõ phút chính xác (00-59), cuộn chuột hoặc phím Lên/Xuống"
-                    className="h-7 w-8.5 rounded border border-border/60 bg-background text-center text-xs font-semibold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                    className="h-7 w-8.5 rounded border border-border/60 bg-background text-center text-xs font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   />
                 </div>
               </div>
@@ -348,7 +365,7 @@ export function DateTimePicker({
                   type="button"
                   variant="outline"
                   size="xs"
-                  className="h-7 w-7 p-0 font-mono text-xs border-border/60 hover:bg-muted"
+                  className="h-7 w-7 border-border/60 p-0 font-mono text-xs hover:bg-muted"
                   title="Giảm 1 phút"
                   onClick={() => handleAdjustMinute(-1)}
                 >
@@ -358,7 +375,7 @@ export function DateTimePicker({
                   type="button"
                   variant="outline"
                   size="xs"
-                  className="h-7 w-7 p-0 font-mono text-xs border-border/60 hover:bg-muted"
+                  className="h-7 w-7 border-border/60 p-0 font-mono text-xs hover:bg-muted"
                   title="Tăng 1 phút"
                   onClick={() => handleAdjustMinute(1)}
                 >
@@ -378,10 +395,10 @@ export function DateTimePicker({
             </div>
 
             {/* Phím tắt mốc thời gian nhanh & Hiện tại */}
-            <div className="flex items-center gap-1 py-2 border-b border-border/50">
+            <div className="flex items-center gap-1 border-b border-border/50 py-2">
               <button
                 type="button"
-                className="flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors select-none"
+                className="flex items-center gap-1 rounded bg-primary/10 px-2 py-1 text-xs font-medium text-primary transition-colors select-none hover:bg-muted"
                 onClick={handleSetNow}
                 title="Đặt theo ngày & giờ hiện tại"
               >
@@ -397,12 +414,14 @@ export function DateTimePicker({
                     key={preset.label}
                     type="button"
                     className={cn(
-                      "flex-1 rounded py-1 text-[11px] font-mono font-medium transition-colors select-none",
+                      "flex-1 rounded py-1 font-mono text-xs font-medium transition-colors select-none",
                       isPresetActive
-                        ? "bg-primary text-primary-foreground font-semibold"
+                        ? "bg-primary font-medium text-primary-foreground"
                         : "bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground"
                     )}
-                    onClick={() => handlePresetSelect(preset.hour, preset.minute)}
+                    onClick={() =>
+                      handlePresetSelect(preset.hour, preset.minute)
+                    }
                   >
                     {preset.label}
                   </button>
@@ -411,13 +430,13 @@ export function DateTimePicker({
             </div>
 
             {/* Lưới chọn Giờ (00 - 23: 4 hàng x 6 cột) */}
-            <div className="py-2 border-b border-border/50">
+            <div className="border-b border-border/50 py-2">
               <div className="flex items-center justify-between pb-1.5">
-                <span className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
+                <span className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
                   Giờ (00 - 23)
                 </span>
                 {currentHour && (
-                  <span className="font-mono text-[11px] font-semibold text-primary">
+                  <span className="font-mono text-xs font-medium text-primary">
                     {currentHour}h
                   </span>
                 )}
@@ -432,7 +451,7 @@ export function DateTimePicker({
                       className={cn(
                         "flex h-6.5 items-center justify-center rounded font-mono text-xs transition-colors select-none",
                         isSelected
-                          ? "bg-primary font-bold text-primary-foreground"
+                          ? "bg-primary font-semibold text-primary-foreground"
                           : "text-foreground hover:bg-muted"
                       )}
                       onClick={() => handleHourSelect(h)}
@@ -447,11 +466,11 @@ export function DateTimePicker({
             {/* Lưới chọn Phút (bước 5 phút: 2 hàng x 6 cột) */}
             <div className="pt-2">
               <div className="flex items-center justify-between pb-1.5">
-                <span className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
+                <span className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
                   Phút (bước 5p)
                 </span>
                 {currentMinute && (
-                  <span className="font-mono text-[11px] font-semibold text-primary">
+                  <span className="font-mono text-xs font-medium text-primary">
                     {currentMinute}p
                   </span>
                 )}
@@ -466,7 +485,7 @@ export function DateTimePicker({
                       className={cn(
                         "flex h-6.5 items-center justify-center rounded font-mono text-xs transition-colors select-none",
                         isSelected
-                          ? "bg-primary font-bold text-primary-foreground"
+                          ? "bg-primary font-semibold text-primary-foreground"
                           : "text-foreground hover:bg-muted"
                       )}
                       onClick={() => handleMinuteSelect(m)}
@@ -487,7 +506,7 @@ export function DateTimePicker({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 gap-1.5 px-3 text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              className="h-8 gap-1.5 px-3 text-xs font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
               onClick={handleClear}
             >
               <Trash2 className="size-3.5" />

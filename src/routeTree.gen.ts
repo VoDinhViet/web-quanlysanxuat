@@ -14,6 +14,7 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as authedRouteRouteImport } from './routes/(authed)/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authedManageRouteImport } from './routes/(authed)/manage'
+import { Route as authedUiGalleryRouteImport } from './routes/(authed)/ui-gallery'
 import { Route as authedManageClientsRouteRouteImport } from './routes/(authed)/manage_/clients/route'
 import { Route as authedManageDepartmentsRouteRouteImport } from './routes/(authed)/manage_/departments/route'
 import { Route as authedManageDirectsRouteRouteImport } from './routes/(authed)/manage_/directs/route'
@@ -155,6 +156,11 @@ const authLoginRoute = authLoginRouteImport.update({
 const authedManageRoute = authedManageRouteImport.update({
   id: '/manage',
   path: '/manage',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedUiGalleryRoute = authedUiGalleryRouteImport.update({
+  id: '/ui-gallery',
+  path: '/ui-gallery',
   getParentRoute: () => authedRouteRoute,
 } as any)
 const authedManageClientsRouteRoute =
@@ -857,6 +863,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
+  '/ui-gallery': typeof authedUiGalleryRoute
   '/manage/clients': typeof authedManageClientsRouteRouteWithChildren
   '/manage/departments': typeof authedManageDepartmentsRouteRouteWithChildren
   '/manage/directs': typeof authedManageDirectsRouteRouteWithChildren
@@ -981,6 +988,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/manage': typeof authedManageRoute
+  '/ui-gallery': typeof authedUiGalleryRoute
   '/manage/departments/$departmentId': typeof authedManageDepartmentsDepartmentIdRoute
   '/manage/inventory-issues/$issueId': typeof authedManageInventoryIssuesIssueIdRoute
   '/manage/inventory-products/$itemId': typeof authedManageInventoryProductsItemIdRoute
@@ -1071,6 +1079,7 @@ export interface FileRoutesById {
   '/(authed)': typeof authedRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(authed)/manage': typeof authedManageRoute
+  '/(authed)/ui-gallery': typeof authedUiGalleryRoute
   '/(authed)/manage_/clients': typeof authedManageClientsRouteRouteWithChildren
   '/(authed)/manage_/departments': typeof authedManageDepartmentsRouteRouteWithChildren
   '/(authed)/manage_/directs': typeof authedManageDirectsRouteRouteWithChildren
@@ -1197,6 +1206,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/manage'
+    | '/ui-gallery'
     | '/manage/clients'
     | '/manage/departments'
     | '/manage/directs'
@@ -1321,6 +1331,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/manage'
+    | '/ui-gallery'
     | '/manage/departments/$departmentId'
     | '/manage/inventory-issues/$issueId'
     | '/manage/inventory-products/$itemId'
@@ -1410,6 +1421,7 @@ export interface FileRouteTypes {
     | '/(authed)'
     | '/(auth)/login'
     | '/(authed)/manage'
+    | '/(authed)/ui-gallery'
     | '/(authed)/manage_/clients'
     | '/(authed)/manage_/departments'
     | '/(authed)/manage_/directs'
@@ -1572,6 +1584,13 @@ declare module '@tanstack/react-router' {
       path: '/manage'
       fullPath: '/manage'
       preLoaderRoute: typeof authedManageRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/ui-gallery': {
+      id: '/(authed)/ui-gallery'
+      path: '/ui-gallery'
+      fullPath: '/ui-gallery'
+      preLoaderRoute: typeof authedUiGalleryRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/clients': {
@@ -2968,6 +2987,7 @@ const authedManageSuppliersSupplierIdRouteWithChildren =
 
 interface authedRouteRouteChildren {
   authedManageRoute: typeof authedManageRoute
+  authedUiGalleryRoute: typeof authedUiGalleryRoute
   authedManageClientsRouteRoute: typeof authedManageClientsRouteRouteWithChildren
   authedManageDepartmentsRouteRoute: typeof authedManageDepartmentsRouteRouteWithChildren
   authedManageDirectsRouteRoute: typeof authedManageDirectsRouteRouteWithChildren
@@ -3051,6 +3071,7 @@ interface authedRouteRouteChildren {
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageRoute: authedManageRoute,
+  authedUiGalleryRoute: authedUiGalleryRoute,
   authedManageClientsRouteRoute: authedManageClientsRouteRouteWithChildren,
   authedManageDepartmentsRouteRoute:
     authedManageDepartmentsRouteRouteWithChildren,

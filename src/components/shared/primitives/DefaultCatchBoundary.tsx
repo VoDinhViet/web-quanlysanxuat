@@ -7,7 +7,7 @@ import { getErrorMessage } from "@/lib/utils"
 
 // Router-level fallback for every route without its own errorComponent — i.e.
 // everything outside (authed), which keeps AuthedErrorFallback. Deliberately a
-// second copy of that markup rather than a shared shell, see ui-kit.md.
+// second copy of that markup rather than a shared shell.
 export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
   const router = useRouter()
 

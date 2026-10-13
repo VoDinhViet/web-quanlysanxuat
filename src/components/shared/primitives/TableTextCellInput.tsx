@@ -38,7 +38,7 @@ export function TableTextCellInput({
   return (
     <Input
       id={id}
-      className={cn("h-8 bg-background text-xs", className)}
+      className={cn("h-8 bg-card text-xs", className)}
       placeholder={placeholder}
       value={localValue}
       disabled={disabled}

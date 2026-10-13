@@ -42,18 +42,18 @@ function DocTile({ mimetype }: { mimetype: string }) {
   let tint = "bg-muted text-muted-foreground"
 
   if (mimetype === "application/pdf") {
-    tint = "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400"
+    tint = "bg-destructive-soft text-destructive-ink"
   } else if (mimetype.includes("word")) {
-    tint = "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400"
+    tint = "bg-info-soft text-info-ink"
   } else if (
     mimetype.includes("spreadsheet") ||
     mimetype.includes("excel") ||
     mimetype.includes("csv")
   ) {
-    tint = "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400"
+    tint = "bg-success-soft text-success-ink"
     Icon = Document
   } else if (mimetype.includes("zip") || mimetype.includes("compressed")) {
-    tint = "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400"
+    tint = "bg-warning-soft text-warning-ink"
     Icon = Archive
   }
 
@@ -169,7 +169,7 @@ export function QcEvidenceThumbnail({
                   size="icon-sm"
                   aria-label={`Xem ${file.originalName}`}
                   onClick={() => setPreviewOpen(true)}
-                  className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
                 >
                   <Eye className="size-3.5" />
                 </Button>
@@ -181,7 +181,7 @@ export function QcEvidenceThumbnail({
                   aria-label={`Mở ${file.originalName}`}
                   className={cn(
                     buttonVariants({ variant: "outline", size: "icon-sm" }),
-                    "text-muted-foreground hover:border-primary/30 hover:text-primary"
+                    "text-muted-foreground hover:border-border hover:text-primary"
                   )}
                 >
                   <SquareArrowRightUp className="size-3.5" />

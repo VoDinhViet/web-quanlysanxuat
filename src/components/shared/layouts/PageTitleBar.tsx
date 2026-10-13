@@ -136,7 +136,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
             </Avatar>
 
             <span className="hidden min-w-0 text-left lg:block">
-              <span className="block truncate text-sm leading-tight font-bold">
+              <span className="block truncate text-sm leading-tight font-medium">
                 {profile?.fullName ?? "--"}
               </span>
               {profile?.role?.name && (
@@ -165,7 +165,7 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
           </Avatar>
 
           <div className="min-w-0 space-y-1">
-            <p className="truncate text-sm leading-tight font-semibold">
+            <p className="truncate text-sm leading-tight font-medium">
               {profile?.fullName ?? "--"}
             </p>
             {profile?.username && (
@@ -241,7 +241,7 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
         </Button>
 
         <div className="min-w-0 space-y-2">
-          <h1 className="truncate text-xl leading-6 font-bold capitalize sm:text-2xl">
+          <h1 className="truncate text-xl leading-6 font-semibold capitalize sm:text-2xl">
             {title}
           </h1>
 
