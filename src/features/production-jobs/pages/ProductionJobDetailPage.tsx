@@ -62,6 +62,7 @@ export function ProductionJobDetailPage() {
               <ProductionJobBomTab
                 productionJobId={productionJobId}
                 status={productionJob.status}
+                ncrAction={productionJob.ncrAction}
               />
             </TabsContent>
 

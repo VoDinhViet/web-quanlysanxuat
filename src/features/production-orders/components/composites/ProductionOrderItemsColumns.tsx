@@ -77,7 +77,7 @@ export function buildProductionOrderItemsColumns({
               >
                 {item.name}
               </Link>
-              <p className="truncate font-mono text-[11px] text-muted-foreground">
+              <p className="truncate font-mono text-xs text-muted-foreground">
                 {item.code}
               </p>
             </div>
@@ -171,7 +171,7 @@ function ProductDrawingsCell({ item }: ProductDrawingsCellProps) {
         href={resolveFileUrl(firstFile.file.url)}
         target="_blank"
         rel="noreferrer"
-        className="group inline-flex max-w-44 items-center gap-1.5 rounded-md border border-border/60 bg-muted/30 px-2 py-1 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-muted/70 hover:text-primary"
+        className="group inline-flex max-w-44 items-center gap-1.5 rounded-md border border-border/60 bg-muted/30 px-2 py-1 text-xs text-foreground transition-all hover:border-border hover:bg-muted/70 hover:text-primary"
         title={`${firstFile.file.originalName} (Nhấn để mở)`}
       >
         <FileText className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
@@ -187,7 +187,7 @@ function ProductDrawingsCell({ item }: ProductDrawingsCellProps) {
         href={resolveFileUrl(firstFile.file.url)}
         target="_blank"
         rel="noreferrer"
-        className="group inline-flex max-w-36 items-center gap-1.5 rounded-md border border-border/60 bg-muted/30 px-2 py-1 text-xs text-foreground transition-all hover:border-primary/40 hover:bg-muted/70 hover:text-primary"
+        className="group inline-flex max-w-36 items-center gap-1.5 rounded-md border border-border/60 bg-muted/30 px-2 py-1 text-xs text-foreground transition-all hover:border-border hover:bg-muted/70 hover:text-primary"
         title={`${firstFile.file.originalName} (Nhấn để mở)`}
       >
         <FileText className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
@@ -199,7 +199,7 @@ function ProductDrawingsCell({ item }: ProductDrawingsCellProps) {
           render={
             <button
               type="button"
-              className="inline-flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded-md border border-border/60 bg-muted/50 px-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="inline-flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded-md border border-border/60 bg-muted/50 px-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title={`Xem thêm ${extraCount} tài liệu khác`}
             >
               <span>+{extraCount}</span>
@@ -215,11 +215,11 @@ function ProductDrawingsCell({ item }: ProductDrawingsCellProps) {
           <div className="flex items-center justify-between border-b border-border/60 bg-muted/25 px-3 py-2.5">
             <div className="flex items-center gap-1.5">
               <FileText className="size-4 text-primary" />
-              <span className="text-xs font-semibold text-foreground">
+              <span className="text-xs font-medium text-foreground">
                 Bản vẽ & tài liệu
               </span>
             </div>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
               {files.length} file
             </span>
           </div>
@@ -242,7 +242,7 @@ function ProductDrawingsCell({ item }: ProductDrawingsCellProps) {
                       {itemFile.file.originalName}
                     </p>
                     {itemFile.file.size ? (
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {prettyBytes(itemFile.file.size)}
                       </p>
                     ) : null}

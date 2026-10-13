@@ -33,7 +33,7 @@ export function ProductionJobDetailHeader({
 
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <div className="flex min-w-0 items-center gap-3">
-            <h1 className="font-mono text-2xl font-bold text-foreground">
+            <h1 className="font-mono text-2xl font-semibold text-foreground">
               {productionJob.code}
             </h1>
             <ProductionJobStatusBadge status={productionJob.status} />

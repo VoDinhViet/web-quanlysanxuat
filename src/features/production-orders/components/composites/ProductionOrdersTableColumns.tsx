@@ -22,7 +22,7 @@ export const productionOrderColumns = productionOrderColumnHelper.columns([
     cell: ({ getValue }) => {
       const code = getValue()
       return code ? (
-        <span className="font-mono font-semibold text-primary">{code}</span>
+        <span className="font-mono font-medium text-primary">{code}</span>
       ) : (
         <span className="text-muted-foreground">—</span>
       )
@@ -44,7 +44,7 @@ export const productionOrderColumns = productionOrderColumnHelper.columns([
     header: "Số đơn hàng (SO)",
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
-      <span className="font-mono font-semibold text-primary">{getValue()}</span>
+      <span className="font-mono font-medium text-primary">{getValue()}</span>
     ),
   }),
   productionOrderColumnHelper.accessor((row) => row.order.buyerPoNo ?? "—", {

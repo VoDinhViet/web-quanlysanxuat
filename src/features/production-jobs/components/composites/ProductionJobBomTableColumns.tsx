@@ -35,7 +35,7 @@ export function buildProductionJobBomColumns({
       id: "index",
       header: "STT",
       meta: {
-        headerClassName: "w-14 text-center font-bold text-foreground",
+        headerClassName: "w-14 text-center font-semibold text-foreground",
         cellClassName: "py-3 text-center font-mono text-muted-foreground",
       },
       cell: ({ row }) => row.index + 1,
@@ -44,7 +44,7 @@ export function buildProductionJobBomColumns({
       id: "image",
       header: "Ảnh",
       meta: {
-        headerClassName: "w-16 font-bold text-foreground",
+        headerClassName: "w-16 font-semibold text-foreground",
         cellClassName: "py-3",
       },
       cell: ({ row }) => (
@@ -64,15 +64,15 @@ export function buildProductionJobBomColumns({
       id: "code",
       header: "Mã vật tư",
       meta: {
-        headerClassName: "w-32 font-bold text-foreground",
-        cellClassName: "py-3 font-mono font-semibold text-foreground",
+        headerClassName: "w-32 font-semibold text-foreground",
+        cellClassName: "py-3 font-mono font-medium text-foreground",
       },
     }),
     col.accessor((row) => row.item.name, {
       id: "name",
       header: "Tên vật tư",
       meta: {
-        headerClassName: "min-w-44 font-bold text-foreground",
+        headerClassName: "min-w-44 font-semibold text-foreground",
         cellClassName: "py-3 font-medium text-foreground",
       },
     }),
@@ -80,14 +80,14 @@ export function buildProductionJobBomColumns({
       id: "unit",
       header: "ĐVT",
       meta: {
-        headerClassName: "w-20 font-bold text-foreground",
+        headerClassName: "w-20 font-semibold text-foreground",
         cellClassName: "py-3 text-muted-foreground",
       },
     }),
     col.accessor("requiredQty", {
       header: "SL cần",
       meta: {
-        headerClassName: "w-32 text-right font-bold text-foreground",
+        headerClassName: "w-32 text-right font-semibold text-foreground",
         cellClassName: "py-3 text-right",
       },
       cell: ({ row }) => (
@@ -101,7 +101,7 @@ export function buildProductionJobBomColumns({
     col.accessor("onHand", {
       header: "Tồn kho",
       meta: {
-        headerClassName: "w-28 text-right font-bold text-foreground",
+        headerClassName: "w-28 text-right font-semibold text-foreground",
         cellClassName: "py-3 text-right tabular-nums",
       },
       cell: ({ getValue }) => (
@@ -113,7 +113,7 @@ export function buildProductionJobBomColumns({
     col.accessor("availableQuantity", {
       header: "Khả dụng",
       meta: {
-        headerClassName: "w-28 text-right font-bold text-foreground",
+        headerClassName: "w-28 text-right font-semibold text-foreground",
         cellClassName: "py-3 text-right tabular-nums",
       },
       cell: ({ getValue }) => {
@@ -123,7 +123,7 @@ export function buildProductionJobBomColumns({
           <span
             className={cn(
               "font-medium tabular-nums",
-              available <= 0 ? "font-semibold text-destructive" : "text-success"
+              available <= 0 ? "font-medium text-destructive" : "text-success"
             )}
           >
             {quantityFormatter.format(available)}
@@ -134,7 +134,7 @@ export function buildProductionJobBomColumns({
     col.accessor("issuedQuantity", {
       header: "Đã lãnh",
       meta: {
-        headerClassName: "w-28 text-right font-bold text-foreground",
+        headerClassName: "w-28 text-right font-semibold text-foreground",
         cellClassName: "py-3 text-right tabular-nums",
       },
       cell: ({ row, getValue }) => {
@@ -147,9 +147,9 @@ export function buildProductionJobBomColumns({
             className={cn(
               "font-medium tabular-nums",
               isFullyIssued
-                ? "font-semibold text-success"
+                ? "font-medium text-success"
                 : issued > 0
-                  ? "font-semibold text-amber-600 dark:text-amber-400"
+                  ? "font-medium text-amber-600 dark:text-amber-400"
                   : "text-muted-foreground"
             )}
           >
@@ -161,7 +161,7 @@ export function buildProductionJobBomColumns({
     col.accessor("remainingQuantity", {
       header: "Còn lại",
       meta: {
-        headerClassName: "w-28 text-right font-bold text-foreground",
+        headerClassName: "w-28 text-right font-semibold text-foreground",
         cellClassName: "py-3 text-right tabular-nums",
       },
       cell: ({ getValue }) => {
@@ -172,7 +172,7 @@ export function buildProductionJobBomColumns({
             className={cn(
               "font-medium tabular-nums",
               remaining > 0
-                ? "font-semibold text-amber-600 dark:text-amber-400"
+                ? "font-medium text-amber-600 dark:text-amber-400"
                 : "text-muted-foreground"
             )}
           >
@@ -185,7 +185,7 @@ export function buildProductionJobBomColumns({
       id: "status",
       header: "Trạng thái",
       meta: {
-        headerClassName: "w-36 text-center font-bold text-foreground",
+        headerClassName: "w-36 text-center font-semibold text-foreground",
         cellClassName: "py-3 text-center",
       },
       cell: ({ row }) => {
@@ -231,7 +231,7 @@ export function buildProductionJobBomColumns({
       id: "actions",
       header: "Thao tác",
       meta: {
-        headerClassName: "w-24 text-center font-bold text-foreground",
+        headerClassName: "w-24 text-center font-semibold text-foreground",
         cellClassName: "py-3",
       },
       cell: ({ row }) =>

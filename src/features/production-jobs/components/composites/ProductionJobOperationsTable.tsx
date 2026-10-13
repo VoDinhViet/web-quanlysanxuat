@@ -132,8 +132,8 @@ export function OperationTypeBadge({ type }: { type: OperationType }) {
       className={cn(
         "whitespace-nowrap",
         isInhouse
-          ? "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
-          : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
+          ? "bg-info-soft text-info-ink"
+          : "bg-warning-soft text-warning-ink"
       )}
     >
       <span
@@ -291,11 +291,11 @@ export function BomItemHeaderRow({
               <Package className="size-4" />
             )}
           </div>
-          <span className="font-mono font-semibold text-foreground">
+          <span className="font-mono font-medium text-foreground">
             {bomItem.code}
           </span>
           <span className="text-muted-foreground">-</span>
-          <span className="font-semibold text-foreground">{bomItem.name}</span>
+          <span className="font-medium text-foreground">{bomItem.name}</span>
           {bomItem.itemType === "FG" && (
             <Badge
               variant="outline"
@@ -349,7 +349,7 @@ function OperationRow({
     <TableRow id={operation.id} className="h-16 bg-card hover:bg-muted/20">
       <TableCell className="py-3">
         <div className="flex items-start gap-2.5">
-          <span className="mt-0.5 shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
+          <span className="mt-0.5 shrink-0 font-mono text-xs text-muted-foreground tabular-nums">
             {groupIndex + 1}.{operationIndex + 1}
           </span>
           <div className="min-w-0">
@@ -362,7 +362,7 @@ function OperationRow({
               </span>
             </div>
             {operation.note ? (
-              <p className="mt-1 text-[10px] text-muted-foreground">
+              <p className="mt-1 text-xs text-muted-foreground">
                 {operation.note}
               </p>
             ) : null}
@@ -485,59 +485,59 @@ export function ProductionJobOperationsTable({
     <div className="p-4 sm:p-5">
       <div className="overflow-x-auto rounded-md border border-border/50">
         <Table aria-label="Danh sách công đoạn">
-          <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+          <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-medium [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
             <TableRow>
               <TableHead
                 id="operation"
-                className="min-w-56 font-bold text-foreground"
+                className="min-w-56 font-semibold text-foreground"
               >
                 CÔNG ĐOẠN
               </TableHead>
               <TableHead
                 id="type"
-                className="w-32 text-center font-bold text-foreground"
+                className="w-32 text-center font-semibold text-foreground"
               >
                 LOẠI
               </TableHead>
               <TableHead
                 id="plannedQuantity"
-                className="w-24 text-center font-bold text-foreground"
+                className="w-24 text-center font-semibold text-foreground"
               >
                 SL KẾ HOẠCH
               </TableHead>
               <TableHead
                 id="completedQuantity"
-                className="w-40 text-center font-bold text-foreground"
+                className="w-40 text-center font-semibold text-foreground"
               >
                 SL HOÀN THÀNH
               </TableHead>
               <TableHead
                 id="sentQuantity"
-                className="w-28 text-center font-bold text-foreground"
+                className="w-28 text-center font-semibold text-foreground"
               >
                 SL ĐÃ GỬI
               </TableHead>
               <TableHead
                 id="status"
-                className="w-36 text-center font-bold text-foreground"
+                className="w-36 text-center font-semibold text-foreground"
               >
                 TRẠNG THÁI
               </TableHead>
               <TableHead
                 id="dueDate"
-                className="w-32 text-center font-bold text-foreground"
+                className="w-32 text-center font-semibold text-foreground"
               >
                 HẠN HOÀN THÀNH
               </TableHead>
               <TableHead
                 id="lastReportedAt"
-                className="w-32 text-center font-bold text-foreground"
+                className="w-32 text-center font-semibold text-foreground"
               >
                 THỜI GIAN CẬP NHẬT
               </TableHead>
               <TableHead
                 id="actions"
-                className="w-28 text-center font-bold text-foreground"
+                className="w-28 text-center font-semibold text-foreground"
               >
                 THAO TÁC
               </TableHead>

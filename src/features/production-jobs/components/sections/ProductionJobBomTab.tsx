@@ -16,11 +16,13 @@ import { ProductionJobBomTable } from "@/features/production-jobs/components/com
 import { ProductionJobPlanNotice } from "@/features/production-jobs/components/primitives/ProductionJobPlanNotice"
 import { productionJobBomQueryOptions } from "@/features/production-jobs/api/options"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
+import { NcrProductionAction } from "@/lib/types/ncr.type"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 
 type ProductionJobBomTabProps = {
   productionJobId: string
   status: ProductionJobStatus
+  ncrAction: NcrProductionAction | null
 }
 
 // Tab "BOM" — vật tư cần cho Job này, đọc trực tiếp GET /production-jobs/:jobId/bom
@@ -32,6 +34,7 @@ type ProductionJobBomTabProps = {
 export function ProductionJobBomTab({
   productionJobId,
   status,
+  ncrAction,
 }: ProductionJobBomTabProps) {
   const search = useSearch({
     from: "/(authed)/manage_/production-jobs_/$productionJobId",
@@ -65,6 +68,7 @@ export function ProductionJobBomTab({
       <ProductionJobBomFilter
         productionJobId={productionJobId}
         status={status}
+        ncrAction={ncrAction}
         q={search.q}
         onSearchChange={handleSearchChange}
       />
@@ -93,6 +97,7 @@ export function ProductionJobBomTab({
 type ProductionJobBomFilterProps = {
   productionJobId: string
   status: ProductionJobStatus
+  ncrAction: NcrProductionAction | null
   q: string | undefined
   onSearchChange: (q: string | undefined) => void
 }
@@ -103,6 +108,7 @@ type ProductionJobBomFilterProps = {
 function ProductionJobBomFilter({
   productionJobId,
   status,
+  ncrAction,
   q,
   onSearchChange,
 }: ProductionJobBomFilterProps) {
@@ -134,7 +140,8 @@ function ProductionJobBomFilter({
       </label>
 
       <div className="flex items-center gap-2">
-        {status === ProductionJobStatus.PENDING ? (
+        {/* Sửa chữa (REWORK) không cấp vật tư mới: không có phiếu lãnh để lập. */}
+        {ncrAction === NcrProductionAction.REWORK ? null : status === ProductionJobStatus.PENDING ? (
           <DisabledAction
             label="Lãnh vật tư cho Job"
             hint="Job chưa xác nhận kế hoạch"

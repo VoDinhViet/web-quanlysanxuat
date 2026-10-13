@@ -77,7 +77,7 @@ export function ProductionOrderActionsCell({ row }: { row: ProductionOrder }) {
                 variant="outline"
                 size="icon-sm"
                 aria-label="Sửa LSX"
-                className="text-muted-foreground hover:border-primary/30 hover:text-primary"
+                className="text-muted-foreground hover:border-border hover:text-primary"
               >
                 <Pencil className="size-3.5" />
               </LinkButton>

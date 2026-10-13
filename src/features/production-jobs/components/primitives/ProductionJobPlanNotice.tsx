@@ -7,7 +7,7 @@ export function ProductionJobPlanNotice() {
       <div className="flex items-center gap-2.5 rounded-md bg-warning/10 px-3 py-2 text-xs">
         <ClockCircle className="size-4 shrink-0 text-warning" />
         <p className="min-w-0 text-muted-foreground">
-          <span className="font-semibold text-foreground">
+          <span className="font-medium text-foreground">
             Kế hoạch chưa xác nhận.
           </span>{" "}
           Dữ liệu lấy từ sản phẩm lúc tạo Job; thay đổi ở sản phẩm không ảnh

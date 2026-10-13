@@ -127,7 +127,7 @@ export function ProductionJobsTableFilter({
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="production-jobs-search"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Tìm kiếm
             </Label>
@@ -149,7 +149,7 @@ export function ProductionJobsTableFilter({
           <div className="space-y-1.5">
             <Label
               htmlFor="client-combobox"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Khách hàng
             </Label>
@@ -162,7 +162,7 @@ export function ProductionJobsTableFilter({
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
               htmlFor="production-jobs-date-range"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Ngày giao
             </Label>
@@ -177,7 +177,7 @@ export function ProductionJobsTableFilter({
           <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="production-jobs-status"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Trạng thái
             </Label>
@@ -227,7 +227,7 @@ export function ProductionJobsTableFilter({
                 }
               />
               <DropdownMenuContent align="end" className="w-64 p-1.5">
-                <DropdownMenuLabel className="px-2 py-1 text-[11px] font-medium text-muted-foreground">
+                <DropdownMenuLabel className="px-2 py-1 text-xs font-medium text-muted-foreground">
                   Tùy chọn xuất dữ liệu
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="my-1" />
@@ -242,7 +242,7 @@ export function ProductionJobsTableFilter({
                       Biểu mẫu kế hoạch sản xuất
                       {selectedJobCount > 0 && ` (${selectedJobCount} Job)`}
                     </span>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       {exportHint}
                     </span>
                   </div>

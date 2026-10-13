@@ -64,7 +64,7 @@ export function ProductionJobOperationsLegend() {
     <div className="grid grid-cols-1 gap-4 rounded-lg bg-card p-3 text-xs shadow-card sm:p-4 lg:grid-cols-3">
       {/* Giải thích trạng thái */}
       <div className="space-y-2.5">
-        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+        <div className="flex items-center gap-1.5 font-medium text-foreground">
           <Info className="size-4 text-primary" />
           <span>Giải thích trạng thái:</span>
         </div>
@@ -90,7 +90,7 @@ export function ProductionJobOperationsLegend() {
 
       {/* Chức năng thao tác */}
       <div className="space-y-2.5 border-t border-border/60 pt-3 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-5">
-        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+        <div className="flex items-center gap-1.5 font-medium text-foreground">
           <MousePointerClick className="size-4 text-primary" />
           <span>Chức năng thao tác:</span>
         </div>
@@ -111,7 +111,7 @@ export function ProductionJobOperationsLegend() {
 
       {/* Ghi chú */}
       <div className="space-y-2.5 border-t border-border/60 pt-3 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-5">
-        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+        <div className="flex items-center gap-1.5 font-medium text-foreground">
           <Lightbulb className="size-4 text-amber-500" />
           <span>Ghi chú:</span>
         </div>

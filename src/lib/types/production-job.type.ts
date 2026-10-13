@@ -2,6 +2,7 @@ import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
 import type { ItemRef } from "@/lib/types/item.type"
+import type { NcrProductionAction } from "@/lib/types/ncr.type"
 import type { Unit } from "@/lib/types/unit.type"
 
 /** Mirrors the backend's real `production_jobs.status` column (`GET /production-jobs`,
@@ -69,6 +70,8 @@ export type ProductionJobDetail = {
   id: string
   code: string
   productionOrderId: string
+  // LSX phụ từ NCR: REWORK (sửa chữa) / REMAKE (làm mới); null = Job từ LSX đơn hàng.
+  ncrAction: NcrProductionAction | null
   order: OrderRef
   // Cùng một dòng `clients` với `order.client` (service leftJoin `clients` trên
   // `orders.client_id`) — backend expose ở cả 2 chỗ; UI đọc field top-level này.

@@ -112,7 +112,7 @@ function SortableScheduleRow({
             {row.name}
           </span>
           {row.code ? (
-            <span className="font-mono text-[11px] text-muted-foreground">
+            <span className="font-mono text-xs text-muted-foreground">
               ({row.code})
             </span>
           ) : null}
@@ -227,25 +227,25 @@ export function OperationScheduleTable({
           onDragEnd={handleDragEnd}
         >
           <Table aria-label="Kế hoạch công đoạn" className="min-w-[500px]">
-            <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+            <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-medium [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
               <TableRow>
-                <TableHead className="w-10 min-w-10 text-center font-bold text-foreground">
+                <TableHead className="w-10 min-w-10 text-center font-semibold text-foreground">
                   STT
                 </TableHead>
                 <TableHead
-                  className="w-10 min-w-10 text-center font-bold text-foreground"
+                  className="w-10 min-w-10 text-center font-semibold text-foreground"
                   title="Kéo thả đổi thứ tự"
                 >
                   <GripVertical className="mx-auto size-3.5 opacity-50" />
                   <span className="sr-only">Kéo thả thứ tự</span>
                 </TableHead>
-                <TableHead className="min-w-36 font-bold text-foreground">
+                <TableHead className="min-w-36 font-semibold text-foreground">
                   CÔNG ĐOẠN
                 </TableHead>
-                <TableHead className="w-28 min-w-28 text-center font-bold text-foreground">
+                <TableHead className="w-28 min-w-28 text-center font-semibold text-foreground">
                   LEADTIME (NGÀY)
                 </TableHead>
-                <TableHead className="w-38 min-w-38 text-center font-bold text-foreground">
+                <TableHead className="w-38 min-w-38 text-center font-semibold text-foreground">
                   HẠN HOÀN THÀNH
                 </TableHead>
               </TableRow>

@@ -125,7 +125,7 @@ function SectionTitle({
   return (
     <h3
       className={cn(
-        "mb-4 text-xs font-semibold tracking-wide text-muted-foreground uppercase",
+        "mb-4 text-xs font-medium tracking-wide text-muted-foreground uppercase",
         className
       )}
     >
@@ -162,10 +162,10 @@ type InfoFieldProps = {
 function InfoField({ label, value, mono, wrap, className }: InfoFieldProps) {
   return (
     <div className={cn("flex min-w-0 flex-col gap-0.5", className)}>
-      <dt className="text-[11px] font-medium text-muted-foreground">{label}</dt>
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
       <dd
         className={cn(
-          "text-sm font-semibold text-foreground",
+          "text-sm font-medium text-foreground",
           wrap ? "break-words" : "truncate",
           mono && "font-mono"
         )}

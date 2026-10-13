@@ -22,7 +22,10 @@ import { withForm } from "@/hooks/use-app-form"
 import { getChangedProductionItems } from "@/features/production-orders/constants/production-order-decision"
 import { buildProductionOrderItemsColumns } from "@/features/production-orders/components/composites/ProductionOrderItemsColumns"
 import { updateProductionOrderFormDefaultValues } from "@/features/production-orders/schemas/update-production-order.schema"
-import { ProductionOrderStatus } from "@/lib/types/production-order.type"
+import {
+  ProductionOrderSourceType,
+  ProductionOrderStatus,
+} from "@/lib/types/production-order.type"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
 
@@ -90,7 +93,7 @@ export const ProductionOrderItemsCard = withForm({
                       />
                       <FieldError
                         errors={field.state.meta.errors}
-                        className="text-right text-[11px]"
+                        className="text-right text-xs"
                       />
                     </div>
                   )}
@@ -121,7 +124,7 @@ export const ProductionOrderItemsCard = withForm({
       >
         <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4 sm:px-5">
           <div className="min-w-0">
-            <h2 className="flex items-center gap-2 font-heading text-base font-semibold text-foreground">
+            <h2 className="flex items-center gap-2 font-heading text-base font-medium text-foreground">
               <Box className="size-4 text-muted-foreground" />
               Quyết định sản xuất
             </h2>
@@ -133,11 +136,19 @@ export const ProductionOrderItemsCard = withForm({
 
         <div className="p-4 sm:p-5">
           {items.length === 0 ? (
-            <TableEmpty
-              icon={PackageSearch}
-              title="Đơn hàng không có dòng sản phẩm nào cần lập kế hoạch sản xuất"
-              description="Danh sách dòng sản phẩm cần lập kế hoạch sản xuất sẽ hiện ở đây khi có dữ liệu."
-            />
+            production.sourceType === ProductionOrderSourceType.NCR ? (
+              <TableEmpty
+                icon={PackageSearch}
+                title={`LSX phụ từ NCR ${production.ncrCode ?? ""} không có dòng đơn hàng`}
+                description="LSX này sản xuất theo Job đã tạo khi duyệt (sửa chữa / làm mới). Theo dõi tiến độ, báo cáo và yêu cầu OQC tại Quản lý sản xuất với cùng mã LSX."
+              />
+            ) : (
+              <TableEmpty
+                icon={PackageSearch}
+                title="Đơn hàng không có dòng sản phẩm nào cần lập kế hoạch sản xuất"
+                description="Danh sách dòng sản phẩm cần lập kế hoạch sản xuất sẽ hiện ở đây khi có dữ liệu."
+              />
+            )
           ) : (
             <div className="space-y-3">
               <div className="overflow-x-auto rounded-md border border-border/50">
@@ -217,7 +228,7 @@ export const ProductionOrderItemsCard = withForm({
                 </Table>
               </div>
 
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Công thức: Khả dụng = Tồn kho TP hiện có − số đã giữ chỗ bởi LSX
                 khác. Số lượng sản xuất được điền sẵn bằng SL theo đơn hàng −
                 Khả dụng (nếu Khả dụng ≥ 0, ngược lại bằng SL theo đơn hàng) tại

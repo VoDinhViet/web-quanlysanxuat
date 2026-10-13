@@ -143,7 +143,7 @@ export function ProductionOrderSignedFileCard({
           <div className="flex items-center gap-2">
             <FileCheck2 className="size-5 shrink-0 text-primary" />
             <div>
-              <h3 className="text-sm font-semibold text-foreground sm:text-base">
+              <h3 className="text-sm font-medium text-foreground sm:text-base">
                 File Lệnh sản xuất (LSX) đã ký
               </h3>
               <p className="text-xs text-muted-foreground">
@@ -167,7 +167,7 @@ export function ProductionOrderSignedFileCard({
             <div className="flex min-w-0 items-center gap-3">
               <div
                 className={cn(
-                  "flex size-10 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-bold",
+                  "flex size-10 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-semibold",
                   isPdf
                     ? "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400"
                     : "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400"
@@ -182,12 +182,12 @@ export function ProductionOrderSignedFileCard({
 
               <div className="min-w-0 flex-1">
                 <p
-                  className="truncate text-xs font-semibold text-foreground sm:text-sm"
+                  className="truncate text-xs font-medium text-foreground sm:text-sm"
                   title={signedFile.originalName}
                 >
                   {signedFile.originalName}
                 </p>
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px] text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-muted-foreground">
                   <span>{prettyBytes(signedFile.size)}</span>
                   <span>•</span>
                   <span>
@@ -319,7 +319,7 @@ export function ProductionOrderSignedFileCard({
             <div
               {...getRootProps()}
               className={cn(
-                "group flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-dashed border-border bg-muted/20 px-4 py-5 text-center transition-colors hover:border-primary/50 hover:bg-primary/5 sm:flex-row sm:text-left",
+                "group flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-dashed border-border bg-muted/20 px-4 py-5 text-center transition-colors hover:border-border hover:bg-muted sm:flex-row sm:text-left",
                 isDragActive && "border-primary bg-primary/5",
                 isBusy && "pointer-events-none opacity-60"
               )}
@@ -340,7 +340,7 @@ export function ProductionOrderSignedFileCard({
                       ? "Thả tệp vào đây..."
                       : "Kéo thả bản scan hoặc PDF LSX đã ký vào đây"}
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-1.5 text-[11px] text-muted-foreground sm:justify-start">
+                <div className="flex flex-wrap items-center justify-center gap-1.5 text-xs text-muted-foreground sm:justify-start">
                   {SIGNED_FILE_FORMAT_LABELS.map((format) => (
                     <span
                       key={format}

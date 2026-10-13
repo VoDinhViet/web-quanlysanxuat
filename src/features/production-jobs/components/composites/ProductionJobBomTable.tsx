@@ -47,7 +47,7 @@ export function ProductionJobBomTable({
   return (
     <div className="px-4 pb-4 lg:px-5">
       <Table aria-label="Danh sách vật tư đã lãnh">
-        <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-semibold [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
+        <TableHeader className="[&>tr]:h-11 [&>tr]:bg-muted/30 [&>tr]:font-medium [&>tr]:text-muted-foreground [&>tr]:hover:bg-muted/30">
           <TableRow>
             {table.getFlatHeaders().map((header) => (
               <TableHead

@@ -27,7 +27,10 @@ const exportProductionOrderPdfParamsSchema = z.object({
   productionOrderId: z.string().uuid(),
 })
 
-export type ExportProductionOrderPdfResult = { base64: string; filename: string }
+export type ExportProductionOrderPdfResult = {
+  base64: string
+  filename: string
+}
 
 export const exportProductionOrderPdf = createServerFn({ method: "GET" })
   .validator(exportProductionOrderPdfParamsSchema)

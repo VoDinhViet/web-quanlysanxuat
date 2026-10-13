@@ -25,7 +25,9 @@ function resolveUpdateSignedFileErrorMessage(error: unknown): string {
   }
 }
 
-export const updateProductionOrderSignedFile = createServerFn({ method: "POST" })
+export const updateProductionOrderSignedFile = createServerFn({
+  method: "POST",
+})
   .validator(updateProductionOrderSignedFileSchema)
   .handler(async ({ data }): Promise<ProductionOrderDetail> => {
     try {

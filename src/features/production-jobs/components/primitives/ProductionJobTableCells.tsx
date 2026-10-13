@@ -48,7 +48,7 @@ export function ProductionJobActionsCell({
               variant="outline"
               size="icon-sm"
               aria-label="Xem chi tiết"
-              className="bg-background text-muted-foreground"
+              className="bg-card text-muted-foreground"
             >
               <Eye className="size-3.5" />
             </LinkButton>

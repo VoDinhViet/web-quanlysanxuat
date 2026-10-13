@@ -102,7 +102,7 @@ export function ItemCell({ item }: ItemCellProps) {
         )}
       </div>
       <div className="min-w-0">
-        <p className="font-mono text-xs font-bold text-foreground">
+        <p className="font-mono text-xs font-semibold text-foreground">
           {item.code}
         </p>
         <p className="truncate text-xs text-muted-foreground">{item.name}</p>

@@ -16,11 +16,11 @@ export function ProductionJobsSelectionBar({
       <span className="size-1.5 shrink-0 rounded-full bg-primary" />
       <p className="min-w-0 flex-1 truncate">
         Đã chọn{" "}
-        <strong className="font-semibold text-foreground">
+        <strong className="font-medium text-foreground">
           {selectedCount} Job
         </strong>{" "}
         của{" "}
-        <strong className="font-semibold text-foreground">{clientName}</strong>
+        <strong className="font-medium text-foreground">{clientName}</strong>
       </p>
       <Button
         type="button"

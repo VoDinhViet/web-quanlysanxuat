@@ -15,12 +15,11 @@ type ToneBadgeStyle = {
 // both read the same column.
 const toneStyles: Record<ProductionOrderStatus, ToneBadgeStyle> = {
   [ProductionOrderStatus.PENDING]: {
-    badge:
-      "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+    badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
   },
   [ProductionOrderStatus.APPROVED]: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+    badge: "bg-info-soft text-info-ink",
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   [ProductionOrderStatus.COMPLETED]: {

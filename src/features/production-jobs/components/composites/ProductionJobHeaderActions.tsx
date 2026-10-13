@@ -72,7 +72,7 @@ function ReloadSnapshotButton({ job }: { job: ProductionJobDetail }) {
         <Button
           type="button"
           variant="outline"
-          className="gap-1.5 border-primary/30 bg-primary/5 text-primary hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+          className="gap-1.5 border-primary/30 bg-primary/5 text-primary hover:border-border hover:bg-muted hover:text-primary"
         >
           <Refresh className="size-4" />
           Tải lại

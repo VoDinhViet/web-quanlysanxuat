@@ -43,7 +43,7 @@ export function ProductionJobNotes({
         <ul className="space-y-3">
           {notes?.map((note) => (
             <li key={note.id} className="rounded-md border border-border p-3">
-              <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+              <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
                 <span className="font-medium text-foreground">
                   {note.creator?.fullName ?? "Hệ thống"}
                 </span>
