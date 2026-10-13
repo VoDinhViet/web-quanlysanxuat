@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ClipboardCheck } from "lucide-react"
+import { toast } from "sonner"
 import type { ReactElement } from "react"
 
 import {
@@ -52,7 +53,13 @@ export function RequestProductionJobQcDialog({
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
         queryClient.invalidateQueries({ queryKey: ["oqc"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["reports", "pending-approvals"],
+        }),
       ])
+      toast.success(
+        `Đã yêu cầu OQC cho Job ${job.code}: lô ${quantity} đang chờ QC kiểm tra`
+      )
     },
   })
 

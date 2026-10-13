@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { ClipboardCheck } from "lucide-react"
+import { toast } from "sonner"
 import type { ReactElement } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -62,7 +63,13 @@ function RequestNcrOqcForm({ ncr, onClose }: RequestNcrOqcFormProps) {
         queryClient.invalidateQueries({ queryKey: ["ncrs"] }),
         queryClient.invalidateQueries({ queryKey: ["oqc"] }),
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["reports", "pending-approvals"],
+        }),
       ])
+      toast.success(
+        `Đã yêu cầu OQC lại cho ${ncr.code}: phiếu OQC đang chờ QC kiểm tra`
+      )
     },
   })
 

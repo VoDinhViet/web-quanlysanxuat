@@ -132,7 +132,8 @@ const menuGroups: MenuGroup[] = [
         label: "Đề xuất mua hàng",
         icon: ClipboardList,
         href: "/manage/purchase-requests",
-        badgeKey: "purchaseRequests",
+        todoBadgeKey: "purchaseRequests",
+        todoBadgeLabel: "đề xuất chờ duyệt",
       },
       {
         label: "Báo giá NCC (RFQ)",
@@ -228,6 +229,8 @@ const menuGroups: MenuGroup[] = [
         label: "OQC",
         icon: PackageCheck,
         href: "/manage/oqc",
+        todoBadgeKey: "oqcToInspect",
+        todoBadgeLabel: "dòng chờ OQC",
       },
       {
         label: "NCR",
