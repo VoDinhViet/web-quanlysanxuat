@@ -23,6 +23,7 @@ import { Route as authedManageInventoryProductsRouteRouteImport } from './routes
 import { Route as authedManageInventoryReceiptsRouteRouteImport } from './routes/(authed)/manage_/inventory-receipts/route'
 import { Route as authedManageInventoryRequisitionsRouteRouteImport } from './routes/(authed)/manage_/inventory-requisitions/route'
 import { Route as authedManageIqcRouteRouteImport } from './routes/(authed)/manage_/iqc/route'
+import { Route as authedManageNcrsRouteRouteImport } from './routes/(authed)/manage_/ncrs/route'
 import { Route as authedManageOperationsRouteRouteImport } from './routes/(authed)/manage_/operations/route'
 import { Route as authedManageOqcRouteRouteImport } from './routes/(authed)/manage_/oqc/route'
 import { Route as authedManageOrdersRouteRouteImport } from './routes/(authed)/manage_/orders/route'
@@ -65,6 +66,9 @@ import { Route as authedManageInventoryRequisitionsRequisitionIdRouteImport } fr
 import { Route as authedManageInventoryRequisitionsCreateRouteImport } from './routes/(authed)/manage_/inventory-requisitions_/create'
 import { Route as authedManageIqcIndexRouteImport } from './routes/(authed)/manage_/iqc/index'
 import { Route as authedManageIqcIqcIdRouteImport } from './routes/(authed)/manage_/iqc_/$iqcId'
+import { Route as authedManageNcrsIndexRouteImport } from './routes/(authed)/manage_/ncrs/index'
+import { Route as authedManageNcrsNcrIdRouteImport } from './routes/(authed)/manage_/ncrs_/$ncrId'
+import { Route as authedManageNcrsCreateRouteImport } from './routes/(authed)/manage_/ncrs_/create'
 import { Route as authedManageOperationsIndexRouteImport } from './routes/(authed)/manage_/operations/index'
 import { Route as authedManageOperationsOperationIdRouteImport } from './routes/(authed)/manage_/operations_/$operationId'
 import { Route as authedManageOqcIndexRouteImport } from './routes/(authed)/manage_/oqc/index'
@@ -204,6 +208,11 @@ const authedManageInventoryRequisitionsRouteRoute =
 const authedManageIqcRouteRoute = authedManageIqcRouteRouteImport.update({
   id: '/manage_/iqc',
   path: '/manage/iqc',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageNcrsRouteRoute = authedManageNcrsRouteRouteImport.update({
+  id: '/manage_/ncrs',
+  path: '/manage/ncrs',
   getParentRoute: () => authedRouteRoute,
 } as any)
 const authedManageOperationsRouteRoute =
@@ -449,6 +458,21 @@ const authedManageIqcIndexRoute = authedManageIqcIndexRouteImport.update({
 const authedManageIqcIqcIdRoute = authedManageIqcIqcIdRouteImport.update({
   id: '/manage_/iqc_/$iqcId',
   path: '/manage/iqc/$iqcId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageNcrsIndexRoute = authedManageNcrsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedManageNcrsRouteRoute,
+} as any)
+const authedManageNcrsNcrIdRoute = authedManageNcrsNcrIdRouteImport.update({
+  id: '/manage_/ncrs_/$ncrId',
+  path: '/manage/ncrs/$ncrId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedManageNcrsCreateRoute = authedManageNcrsCreateRouteImport.update({
+  id: '/manage_/ncrs_/create',
+  path: '/manage/ncrs/create',
   getParentRoute: () => authedRouteRoute,
 } as any)
 const authedManageOperationsIndexRoute =
@@ -842,6 +866,7 @@ export interface FileRoutesByFullPath {
   '/manage/inventory-receipts': typeof authedManageInventoryReceiptsRouteRouteWithChildren
   '/manage/inventory-requisitions': typeof authedManageInventoryRequisitionsRouteRouteWithChildren
   '/manage/iqc': typeof authedManageIqcRouteRouteWithChildren
+  '/manage/ncrs': typeof authedManageNcrsRouteRouteWithChildren
   '/manage/operations': typeof authedManageOperationsRouteRouteWithChildren
   '/manage/oqc': typeof authedManageOqcRouteRouteWithChildren
   '/manage/orders': typeof authedManageOrdersRouteRouteWithChildren
@@ -878,6 +903,8 @@ export interface FileRoutesByFullPath {
   '/manage/inventory-requisitions/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
   '/manage/inventory-requisitions/create': typeof authedManageInventoryRequisitionsCreateRoute
   '/manage/iqc/$iqcId': typeof authedManageIqcIqcIdRoute
+  '/manage/ncrs/$ncrId': typeof authedManageNcrsNcrIdRoute
+  '/manage/ncrs/create': typeof authedManageNcrsCreateRoute
   '/manage/operations/$operationId': typeof authedManageOperationsOperationIdRoute
   '/manage/oqc/$oqcId': typeof authedManageOqcOqcIdRoute
   '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
@@ -912,6 +939,7 @@ export interface FileRoutesByFullPath {
   '/manage/inventory-receipts/': typeof authedManageInventoryReceiptsIndexRoute
   '/manage/inventory-requisitions/': typeof authedManageInventoryRequisitionsIndexRoute
   '/manage/iqc/': typeof authedManageIqcIndexRoute
+  '/manage/ncrs/': typeof authedManageNcrsIndexRoute
   '/manage/operations/': typeof authedManageOperationsIndexRoute
   '/manage/oqc/': typeof authedManageOqcIndexRoute
   '/manage/orders/': typeof authedManageOrdersIndexRoute
@@ -962,6 +990,8 @@ export interface FileRoutesByTo {
   '/manage/inventory-requisitions/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
   '/manage/inventory-requisitions/create': typeof authedManageInventoryRequisitionsCreateRoute
   '/manage/iqc/$iqcId': typeof authedManageIqcIqcIdRoute
+  '/manage/ncrs/$ncrId': typeof authedManageNcrsNcrIdRoute
+  '/manage/ncrs/create': typeof authedManageNcrsCreateRoute
   '/manage/operations/$operationId': typeof authedManageOperationsOperationIdRoute
   '/manage/oqc/$oqcId': typeof authedManageOqcOqcIdRoute
   '/manage/orders/$orderId': typeof authedManageOrdersOrderIdRoute
@@ -996,6 +1026,7 @@ export interface FileRoutesByTo {
   '/manage/inventory-receipts': typeof authedManageInventoryReceiptsIndexRoute
   '/manage/inventory-requisitions': typeof authedManageInventoryRequisitionsIndexRoute
   '/manage/iqc': typeof authedManageIqcIndexRoute
+  '/manage/ncrs': typeof authedManageNcrsIndexRoute
   '/manage/operations': typeof authedManageOperationsIndexRoute
   '/manage/oqc': typeof authedManageOqcIndexRoute
   '/manage/orders': typeof authedManageOrdersIndexRoute
@@ -1049,6 +1080,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/inventory-receipts': typeof authedManageInventoryReceiptsRouteRouteWithChildren
   '/(authed)/manage_/inventory-requisitions': typeof authedManageInventoryRequisitionsRouteRouteWithChildren
   '/(authed)/manage_/iqc': typeof authedManageIqcRouteRouteWithChildren
+  '/(authed)/manage_/ncrs': typeof authedManageNcrsRouteRouteWithChildren
   '/(authed)/manage_/operations': typeof authedManageOperationsRouteRouteWithChildren
   '/(authed)/manage_/oqc': typeof authedManageOqcRouteRouteWithChildren
   '/(authed)/manage_/orders': typeof authedManageOrdersRouteRouteWithChildren
@@ -1085,6 +1117,8 @@ export interface FileRoutesById {
   '/(authed)/manage_/inventory-requisitions_/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
   '/(authed)/manage_/inventory-requisitions_/create': typeof authedManageInventoryRequisitionsCreateRoute
   '/(authed)/manage_/iqc_/$iqcId': typeof authedManageIqcIqcIdRoute
+  '/(authed)/manage_/ncrs_/$ncrId': typeof authedManageNcrsNcrIdRoute
+  '/(authed)/manage_/ncrs_/create': typeof authedManageNcrsCreateRoute
   '/(authed)/manage_/operations_/$operationId': typeof authedManageOperationsOperationIdRoute
   '/(authed)/manage_/oqc_/$oqcId': typeof authedManageOqcOqcIdRoute
   '/(authed)/manage_/orders_/$orderId': typeof authedManageOrdersOrderIdRoute
@@ -1119,6 +1153,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/inventory-receipts/': typeof authedManageInventoryReceiptsIndexRoute
   '/(authed)/manage_/inventory-requisitions/': typeof authedManageInventoryRequisitionsIndexRoute
   '/(authed)/manage_/iqc/': typeof authedManageIqcIndexRoute
+  '/(authed)/manage_/ncrs/': typeof authedManageNcrsIndexRoute
   '/(authed)/manage_/operations/': typeof authedManageOperationsIndexRoute
   '/(authed)/manage_/oqc/': typeof authedManageOqcIndexRoute
   '/(authed)/manage_/orders/': typeof authedManageOrdersIndexRoute
@@ -1171,6 +1206,7 @@ export interface FileRouteTypes {
     | '/manage/inventory-receipts'
     | '/manage/inventory-requisitions'
     | '/manage/iqc'
+    | '/manage/ncrs'
     | '/manage/operations'
     | '/manage/oqc'
     | '/manage/orders'
@@ -1207,6 +1243,8 @@ export interface FileRouteTypes {
     | '/manage/inventory-requisitions/$requisitionId'
     | '/manage/inventory-requisitions/create'
     | '/manage/iqc/$iqcId'
+    | '/manage/ncrs/$ncrId'
+    | '/manage/ncrs/create'
     | '/manage/operations/$operationId'
     | '/manage/oqc/$oqcId'
     | '/manage/orders/$orderId'
@@ -1241,6 +1279,7 @@ export interface FileRouteTypes {
     | '/manage/inventory-receipts/'
     | '/manage/inventory-requisitions/'
     | '/manage/iqc/'
+    | '/manage/ncrs/'
     | '/manage/operations/'
     | '/manage/oqc/'
     | '/manage/orders/'
@@ -1291,6 +1330,8 @@ export interface FileRouteTypes {
     | '/manage/inventory-requisitions/$requisitionId'
     | '/manage/inventory-requisitions/create'
     | '/manage/iqc/$iqcId'
+    | '/manage/ncrs/$ncrId'
+    | '/manage/ncrs/create'
     | '/manage/operations/$operationId'
     | '/manage/oqc/$oqcId'
     | '/manage/orders/$orderId'
@@ -1325,6 +1366,7 @@ export interface FileRouteTypes {
     | '/manage/inventory-receipts'
     | '/manage/inventory-requisitions'
     | '/manage/iqc'
+    | '/manage/ncrs'
     | '/manage/operations'
     | '/manage/oqc'
     | '/manage/orders'
@@ -1377,6 +1419,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/inventory-receipts'
     | '/(authed)/manage_/inventory-requisitions'
     | '/(authed)/manage_/iqc'
+    | '/(authed)/manage_/ncrs'
     | '/(authed)/manage_/operations'
     | '/(authed)/manage_/oqc'
     | '/(authed)/manage_/orders'
@@ -1413,6 +1456,8 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/inventory-requisitions_/$requisitionId'
     | '/(authed)/manage_/inventory-requisitions_/create'
     | '/(authed)/manage_/iqc_/$iqcId'
+    | '/(authed)/manage_/ncrs_/$ncrId'
+    | '/(authed)/manage_/ncrs_/create'
     | '/(authed)/manage_/operations_/$operationId'
     | '/(authed)/manage_/oqc_/$oqcId'
     | '/(authed)/manage_/orders_/$orderId'
@@ -1447,6 +1492,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/inventory-receipts/'
     | '/(authed)/manage_/inventory-requisitions/'
     | '/(authed)/manage_/iqc/'
+    | '/(authed)/manage_/ncrs/'
     | '/(authed)/manage_/operations/'
     | '/(authed)/manage_/oqc/'
     | '/(authed)/manage_/orders/'
@@ -1589,6 +1635,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/iqc'
       fullPath: '/manage/iqc'
       preLoaderRoute: typeof authedManageIqcRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/ncrs': {
+      id: '/(authed)/manage_/ncrs'
+      path: '/manage/ncrs'
+      fullPath: '/manage/ncrs'
+      preLoaderRoute: typeof authedManageNcrsRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/operations': {
@@ -1883,6 +1936,27 @@ declare module '@tanstack/react-router' {
       path: '/manage/iqc/$iqcId'
       fullPath: '/manage/iqc/$iqcId'
       preLoaderRoute: typeof authedManageIqcIqcIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/ncrs/': {
+      id: '/(authed)/manage_/ncrs/'
+      path: '/'
+      fullPath: '/manage/ncrs/'
+      preLoaderRoute: typeof authedManageNcrsIndexRouteImport
+      parentRoute: typeof authedManageNcrsRouteRoute
+    }
+    '/(authed)/manage_/ncrs_/$ncrId': {
+      id: '/(authed)/manage_/ncrs_/$ncrId'
+      path: '/manage/ncrs/$ncrId'
+      fullPath: '/manage/ncrs/$ncrId'
+      preLoaderRoute: typeof authedManageNcrsNcrIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/ncrs_/create': {
+      id: '/(authed)/manage_/ncrs_/create'
+      path: '/manage/ncrs/create'
+      fullPath: '/manage/ncrs/create'
+      preLoaderRoute: typeof authedManageNcrsCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/operations/': {
@@ -2476,6 +2550,19 @@ const authedManageIqcRouteRouteChildren: authedManageIqcRouteRouteChildren = {
 const authedManageIqcRouteRouteWithChildren =
   authedManageIqcRouteRoute._addFileChildren(authedManageIqcRouteRouteChildren)
 
+interface authedManageNcrsRouteRouteChildren {
+  authedManageNcrsIndexRoute: typeof authedManageNcrsIndexRoute
+}
+
+const authedManageNcrsRouteRouteChildren: authedManageNcrsRouteRouteChildren = {
+  authedManageNcrsIndexRoute: authedManageNcrsIndexRoute,
+}
+
+const authedManageNcrsRouteRouteWithChildren =
+  authedManageNcrsRouteRoute._addFileChildren(
+    authedManageNcrsRouteRouteChildren,
+  )
+
 interface authedManageOperationsRouteRouteChildren {
   authedManageOperationsIndexRoute: typeof authedManageOperationsIndexRoute
 }
@@ -2890,6 +2977,7 @@ interface authedRouteRouteChildren {
   authedManageInventoryReceiptsRouteRoute: typeof authedManageInventoryReceiptsRouteRouteWithChildren
   authedManageInventoryRequisitionsRouteRoute: typeof authedManageInventoryRequisitionsRouteRouteWithChildren
   authedManageIqcRouteRoute: typeof authedManageIqcRouteRouteWithChildren
+  authedManageNcrsRouteRoute: typeof authedManageNcrsRouteRouteWithChildren
   authedManageOperationsRouteRoute: typeof authedManageOperationsRouteRouteWithChildren
   authedManageOqcRouteRoute: typeof authedManageOqcRouteRouteWithChildren
   authedManageOrdersRouteRoute: typeof authedManageOrdersRouteRouteWithChildren
@@ -2926,6 +3014,8 @@ interface authedRouteRouteChildren {
   authedManageInventoryRequisitionsRequisitionIdRoute: typeof authedManageInventoryRequisitionsRequisitionIdRoute
   authedManageInventoryRequisitionsCreateRoute: typeof authedManageInventoryRequisitionsCreateRoute
   authedManageIqcIqcIdRoute: typeof authedManageIqcIqcIdRoute
+  authedManageNcrsNcrIdRoute: typeof authedManageNcrsNcrIdRoute
+  authedManageNcrsCreateRoute: typeof authedManageNcrsCreateRoute
   authedManageOperationsOperationIdRoute: typeof authedManageOperationsOperationIdRoute
   authedManageOqcOqcIdRoute: typeof authedManageOqcOqcIdRoute
   authedManageOrdersOrderIdRoute: typeof authedManageOrdersOrderIdRoute
@@ -2976,6 +3066,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageInventoryRequisitionsRouteRoute:
     authedManageInventoryRequisitionsRouteRouteWithChildren,
   authedManageIqcRouteRoute: authedManageIqcRouteRouteWithChildren,
+  authedManageNcrsRouteRoute: authedManageNcrsRouteRouteWithChildren,
   authedManageOperationsRouteRoute:
     authedManageOperationsRouteRouteWithChildren,
   authedManageOqcRouteRoute: authedManageOqcRouteRouteWithChildren,
@@ -3039,6 +3130,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageInventoryRequisitionsCreateRoute:
     authedManageInventoryRequisitionsCreateRoute,
   authedManageIqcIqcIdRoute: authedManageIqcIqcIdRoute,
+  authedManageNcrsNcrIdRoute: authedManageNcrsNcrIdRoute,
+  authedManageNcrsCreateRoute: authedManageNcrsCreateRoute,
   authedManageOperationsOperationIdRoute:
     authedManageOperationsOperationIdRoute,
   authedManageOqcOqcIdRoute: authedManageOqcOqcIdRoute,

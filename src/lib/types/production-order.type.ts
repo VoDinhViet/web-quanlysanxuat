@@ -22,6 +22,15 @@ export const productionOrderStatusLabels: Record<
   [ProductionOrderStatus.COMPLETED]: "Hoàn thành",
 }
 
+/** `ORDER` = LSX từ đơn hàng; `NCR` = LSX phụ sửa chữa / làm mới sinh từ một NCR. */
+export const ProductionOrderSourceType = {
+  ORDER: "ORDER",
+  NCR: "NCR",
+} as const
+
+export type ProductionOrderSourceType =
+  (typeof ProductionOrderSourceType)[keyof typeof ProductionOrderSourceType]
+
 /** Mirrors the backend's ProductionOrderResDto — one row of `GET /production-orders`, the LSX
  *  queue screen. `id` is the production order's own id (used for `GET /production-orders/:id`);
  *  `order` is the order it belongs to. No `createdAt`/`creator` — the backend DTO doesn't expose
@@ -31,6 +40,9 @@ export type ProductionOrder = {
   code: string | null
   order: OrderRef
   status: ProductionOrderStatus
+  sourceType: ProductionOrderSourceType
+  // Mã NCR nguồn — chỉ có với LSX phụ (`sourceType = NCR`).
+  ncrCode: string | null
   productionOrderNote: string | null
 }
 
@@ -63,6 +75,8 @@ export type ProductionOrderDetail = {
   status: ProductionOrderStatus
   approvedAt: string | null
   order: OrderRef
+  sourceType: ProductionOrderSourceType
+  ncrCode: string | null
   items: ProductionOrderDetailItem[]
   // Bản scan/PDF của LSX đã ký tên đóng dấu
   signedFile?: FileResource | null

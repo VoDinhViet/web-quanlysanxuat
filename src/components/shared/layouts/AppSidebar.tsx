@@ -24,6 +24,7 @@ import {
   ReceiptText,
   Ruler,
   Send,
+  ShieldAlert,
   ShieldCheck,
   ShoppingCart,
   Truck,
@@ -227,6 +228,11 @@ const menuGroups: MenuGroup[] = [
         label: "OQC",
         icon: PackageCheck,
         href: "/manage/oqc",
+      },
+      {
+        label: "NCR",
+        icon: ShieldAlert,
+        href: "/manage/ncrs",
       },
     ],
   },
@@ -443,7 +449,7 @@ function MenuButton({
           menuButtonClass,
           hasBadge && "pr-11",
           hasBadge && hasTodoBadge && "pr-[4.5rem]",
-          !hasBadge && hasTodoBadge && "pr-11",
+          !hasBadge && hasTodoBadge && "pr-11"
         )}
       >
         <Icon />
@@ -459,7 +465,7 @@ function MenuButton({
         <SidebarMenuBadge
           className={cn(
             "top-2.5! h-4 min-w-4 bg-primary px-1 text-[10px] leading-none font-semibold text-primary-foreground",
-            hasBadge ? "right-9" : "right-3",
+            hasBadge ? "right-9" : "right-3"
           )}
         >
           {todoCount > 99 ? "99+" : todoCount}

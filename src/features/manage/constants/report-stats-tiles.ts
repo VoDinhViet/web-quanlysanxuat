@@ -3,7 +3,6 @@ import {
   Box,
   Buildings2,
   ClockCircle,
-  DangerTriangle,
   Delivery,
   Magnifer,
 } from "@solar-icons/react"
@@ -108,15 +107,6 @@ export function buildReportStatsTiles(stats: ReportStats): StatCard[] {
       iconClassName:
         "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
       trend: formatTrend(stats.jobsWaitingQcTrendCount, "hôm qua", formatCount),
-    },
-    {
-      label: "NCR chưa xử lý",
-      value: stats.openNcr,
-      unit: "ncr",
-      icon: DangerTriangle,
-      iconClassName:
-        "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
-      trend: formatTrend(stats.openNcrTrendCount, "hôm qua", formatCount),
     },
   ]
 }

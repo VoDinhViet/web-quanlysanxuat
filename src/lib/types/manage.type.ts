@@ -14,13 +14,3 @@ export type StatCard = {
     text: string
   } | null
 }
-
-// Type dưới đây phục vụ widget dashboard duy nhất còn ở mock (chờ BE — xem
-// src/features/manage/mock/manage-dashboard.mock.ts). Mọi type mock khác của trang /manage đã
-// xoá cùng lúc ghép API thật (xem src/features/manage/hooks/, src/features/reports/api/).
-
-export type NcrByTypeSlice = {
-  label: string
-  value: number
-  colorVar: string
-}

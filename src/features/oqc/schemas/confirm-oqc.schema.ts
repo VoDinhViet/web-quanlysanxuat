@@ -8,38 +8,81 @@ import { fileFieldSchema } from "@/lib/file-field.schema"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 import { emptyToUndefined, optionalEnum } from "@/lib/zod-transforms"
 
+// numeric(18,3) on the backend — comparing raw floats risks 0.1+0.2 !== 0.3 style mismatches.
+function scale(value: number): number {
+  return Math.round(value * 1000)
+}
+
 // Wire contract for POST /api/oqc/:oqcId/confirm — the single "Lưu" button of the whole detail
-// page.
-export const confirmOqcSchema = z.object({
-  oqcId: z.uuid(),
-  // `<input type="datetime-local">` value — parsed at the local zone, not `{zone:"utc"}`.
-  inspectionDate: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value.length === 0 || DateTime.fromISO(value).isValid,
-      "Ngày kiểm tra không hợp lệ"
-    )
-    .transform((value) =>
-      value.length > 0
-        ? DateTime.fromISO(value).toJSDate().toISOString()
-        : undefined
-    ),
-  result: z.enum(IqcResult),
-  resultNote: z
-    .string()
-    .trim()
-    .max(500, "Tối đa 500 ký tự")
-    .transform(emptyToUndefined),
-  qcEvidence: z.array(fileFieldSchema),
-  disposition: optionalEnum(OqcDisposition),
-  dispositionNote: z
-    .string()
-    .trim()
-    .max(500, "Tối đa 500 ký tự")
-    .transform(emptyToUndefined),
-  dispositionEvidence: z.array(fileFieldSchema),
-})
+// page. `totalQuantity` is FE-only (seeded from the lot's `quantity`, dropped by
+// confirm-oqc.api.ts) — carried so the SORT split check below can compare against it.
+export const confirmOqcSchema = z
+  .object({
+    oqcId: z.uuid(),
+    // `<input type="datetime-local">` value — parsed at the local zone, not `{zone:"utc"}`.
+    inspectionDate: z
+      .string()
+      .trim()
+      .refine(
+        (value) => value.length === 0 || DateTime.fromISO(value).isValid,
+        "Ngày kiểm tra không hợp lệ"
+      )
+      .transform((value) =>
+        value.length > 0
+          ? DateTime.fromISO(value).toJSDate().toISOString()
+          : undefined
+      ),
+    result: z.enum(IqcResult),
+    resultNote: z
+      .string()
+      .trim()
+      .max(500, "Tối đa 500 ký tự")
+      .transform(emptyToUndefined),
+    qcEvidence: z.array(fileFieldSchema),
+    disposition: optionalEnum(OqcDisposition),
+    sortOkQty: z.number().optional(),
+    sortNgQty: z.number().optional(),
+    dispositionNote: z
+      .string()
+      .trim()
+      .max(500, "Tối đa 500 ký tự")
+      .transform(emptyToUndefined),
+    dispositionEvidence: z.array(fileFieldSchema),
+    totalQuantity: z.number(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.disposition !== OqcDisposition.SORT) return
+
+    if (value.sortNgQty === undefined) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sortNgQty"],
+        message: "Vui lòng nhập SL NG",
+      })
+      return
+    }
+
+    if (value.sortNgQty > value.totalQuantity) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sortNgQty"],
+        message: "SL NG không được vượt quá SL lô",
+      })
+      return
+    }
+
+    // sortOkQty is derived (= totalQuantity − sortNgQty) by OqcDispositionCard on every NG change.
+    if (
+      value.sortOkQty === undefined ||
+      scale(value.sortOkQty + value.sortNgQty) !== scale(value.totalQuantity)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sortOkQty"],
+        message: "SL OK chưa được tính đúng — vui lòng nhập lại SL NG",
+      })
+    }
+  })
 
 // The wire payload `confirmOqcSchema` accepts — what the mutation sends to `confirmOqc`.
 export type ConfirmOqcSchema = z.input<typeof confirmOqcSchema>
@@ -55,8 +98,11 @@ export type ConfirmOqcFormValue = {
   resultNote: string
   qcEvidence: FileFieldValue[]
   disposition: OqcDisposition | ""
+  sortOkQty?: number
+  sortNgQty?: number
   dispositionNote: string
   dispositionEvidence: FileFieldValue[]
+  totalQuantity: number
 }
 
 // Blank shape for `withForm`'s templating only (OqcResultCard/OqcDispositionCard) — the real
@@ -71,6 +117,7 @@ export const confirmOqcFormDefaultValues: ConfirmOqcFormValue = {
   disposition: "",
   dispositionNote: "",
   dispositionEvidence: [],
+  totalQuantity: 0,
 }
 
 // The page is now a form that's always editable, seeded from the saved record (not a blank
@@ -88,9 +135,12 @@ export function getOqcDefaultValues(oqc: OqcDetail): ConfirmOqcFormValue {
       .filter((qcFile) => qcFile.kind === "QC_EVIDENCE")
       .map((qcFile) => qcFile.file),
     disposition: oqc.disposition ?? "",
+    sortOkQty: oqc.sortOkQty ?? undefined,
+    sortNgQty: oqc.sortNgQty ?? undefined,
     dispositionNote: oqc.dispositionNote ?? "",
     dispositionEvidence: oqc.files
       .filter((qcFile) => qcFile.kind === "DISPOSITION_EVIDENCE")
       .map((qcFile) => qcFile.file),
+    totalQuantity: oqc.quantity,
   }
 }

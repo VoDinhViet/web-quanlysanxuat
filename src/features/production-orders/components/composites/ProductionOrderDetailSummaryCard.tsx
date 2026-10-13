@@ -70,6 +70,12 @@ export function ProductionOrderDetailSummaryCard({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <MetaField label="Số đơn hàng (SO)" value={order.code} />
+          <MetaField
+            label="Nguồn"
+            value={
+              production.ncrCode ? `NCR ${production.ncrCode}` : "Đơn hàng"
+            }
+          />
           <MetaField label="Khách hàng" value={order.client?.name ?? "—"} />
           <MetaField
             label="Ngày đặt đơn"

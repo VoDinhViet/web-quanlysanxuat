@@ -8,7 +8,6 @@ import { upcomingDeliveriesQueryOptions } from "@/features/manage/hooks/use-upco
 import { manageSearchSchema } from "@/features/manage/schemas/manage-search.schema"
 import {
   jobDueDateQueryOptions,
-  openNcrQueryOptions,
   outsourcingOrderDueDateQueryOptions,
   productionProgressQueryOptions,
   qcPassRateQueryOptions,
@@ -52,7 +51,6 @@ export const Route = createFileRoute("/(authed)/manage")({
       .query(outsourcingOrderDueDateQueryOptions())
       .catch(noop)
     void context.queryClient.query(jobDueDateQueryOptions()).catch(noop)
-    void context.queryClient.query(openNcrQueryOptions()).catch(noop)
     void context.queryClient.query(qcPassRateQueryOptions()).catch(noop)
   },
   component: ManagePage,

@@ -58,7 +58,7 @@ const quickActions: QuickAction[] = [
     accentClassName: "text-red-600 dark:text-red-400",
     tileClassName:
       "border-red-200 bg-red-50 hover:bg-red-100 dark:border-red-800/40 dark:bg-red-500/10 dark:hover:bg-red-500/20",
-    hint: "Chưa có phân hệ NCR riêng — xem docs/domains/quality.md",
+    to: "/manage/ncrs/create",
   },
   {
     label: "Đề xuất mua",

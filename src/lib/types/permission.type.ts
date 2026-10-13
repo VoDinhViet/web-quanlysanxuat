@@ -101,6 +101,12 @@ export const PERMISSION_CODES = [
   "oqc:update",
   "oqc:delete",
 
+  "ncr:read",
+  "ncr:create",
+  "ncr:update",
+  "ncr:delete",
+  "ncr:approve",
+
   "outbound:read",
   "outbound:create",
   "outbound:update",

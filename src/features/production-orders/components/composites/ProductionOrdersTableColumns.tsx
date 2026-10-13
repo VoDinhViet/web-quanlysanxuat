@@ -28,6 +28,17 @@ export const productionOrderColumns = productionOrderColumnHelper.columns([
       )
     },
   }),
+  productionOrderColumnHelper.display({
+    id: "source",
+    header: "Nguồn",
+    meta: { headerClassName: "min-w-28" },
+    cell: ({ row }) =>
+      row.original.ncrCode ? (
+        <span className="font-mono text-xs">NCR {row.original.ncrCode}</span>
+      ) : (
+        <span className="text-xs text-muted-foreground">Đơn hàng</span>
+      ),
+  }),
   productionOrderColumnHelper.accessor((row) => row.order.code, {
     id: "orderCode",
     header: "Số đơn hàng (SO)",

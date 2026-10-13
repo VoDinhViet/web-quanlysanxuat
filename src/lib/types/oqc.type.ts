@@ -43,11 +43,13 @@ export const oqcStatusDescriptions: Record<OqcStatus, string> = {
 // Cách xử lý khi `result = FAIL` — riêng của OQC, không dùng chung `IqcDisposition`
 // (CONCESSION/SORT/RETURN, có khái niệm trả NCC) vì OQC là QC nội bộ sản xuất, không có NCC để trả
 // hàng. `ACCEPT` — chấp nhận đặc biệt, dùng tiếp dù có lỗi. `REWORK` — trả xưởng sửa lại, phiếu vẫn
-// mở (status → REWORK). `SCRAP` — loại bỏ hẳn, giải phóng lại quota lô của công đoạn.
+// mở (status → REWORK). `SCRAP` — loại bỏ hẳn, giải phóng lại quota lô của công đoạn. `SORT` —
+// sàng lọc OK/NG: phần OK nhập kho, phần NG sinh NCR-NB; thay thế REWORK/SCRAP cho lô mới.
 export const OqcDisposition = {
   ACCEPT: "ACCEPT",
   REWORK: "REWORK",
   SCRAP: "SCRAP",
+  SORT: "SORT",
 } as const
 
 export type OqcDisposition =
@@ -57,6 +59,7 @@ export const oqcDispositionLabels: Record<OqcDisposition, string> = {
   [OqcDisposition.ACCEPT]: "Chấp nhận đặc biệt",
   [OqcDisposition.REWORK]: "Trả xưởng sửa lại",
   [OqcDisposition.SCRAP]: "Loại bỏ (Scrap)",
+  [OqcDisposition.SORT]: "Sàng lọc OK/NG",
 }
 
 // OQC's own PASS/FAIL hint text for OqcResultCard's radio cards — `iqc.type.ts`'s
@@ -74,6 +77,8 @@ export const oqcDispositionDescriptions: Record<OqcDisposition, string> = {
     "Trả xưởng sửa lại, QC kiểm lại trên cùng phiếu này tới khi PASS.",
   [OqcDisposition.SCRAP]:
     "Loại bỏ hẳn lô hàng — giải phóng lại quota lô của công đoạn.",
+  [OqcDisposition.SORT]:
+    "Sàng lọc lô: phần OK nhập kho, phần NG tự sinh NCR nội bộ để xử lý.",
 }
 
 /** Mirrors the backend's PageOqcResDto (GET /api/oqc) — only the fields this list screen reads.
@@ -123,6 +128,9 @@ export type OqcDetail = Oqc & {
   createdAt: string
   resultNote: string | null
   dispositionNote: string | null
+  /** Chỉ có khi `disposition = SORT`. */
+  sortOkQty: number | null
+  sortNgQty: number | null
   files: QcFile[]
   confirmerBy: UserRef | null
   confirmedAt: string | null

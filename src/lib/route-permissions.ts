@@ -73,6 +73,10 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/operations": "operations:read",
   "/manage/operations/$operationId": "operations:read",
 
+  "/manage/ncrs": "ncr:read",
+  "/manage/ncrs/create": "ncr:create",
+  "/manage/ncrs/$ncrId": "ncr:read",
+
   "/manage/oqc": "oqc:read",
   "/manage/oqc/$oqcId": "oqc:read",
 

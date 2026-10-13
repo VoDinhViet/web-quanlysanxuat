@@ -24,7 +24,7 @@ import type {
 import { useAppForm } from "@/hooks/use-app-form"
 import { UploadType } from "@/lib/types/file.type"
 import { IqcResult } from "@/lib/types/iqc.type"
-import { OqcStatus } from "@/lib/types/oqc.type"
+import { OqcDisposition, OqcStatus } from "@/lib/types/oqc.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
 type OqcDetailFormProps = {
@@ -49,6 +49,7 @@ function useOqcDetailForm(oqc: OqcDetail) {
         queryClient.invalidateQueries({ queryKey: ["oqc"] }),
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
         queryClient.invalidateQueries({ queryKey: ["production-execution"] }),
+        queryClient.invalidateQueries({ queryKey: ["ncrs"] }),
       ])
       toast.success("Đã lưu kết quả QC")
     },
@@ -122,7 +123,16 @@ export function OqcDetailForm({ oqc }: OqcDetailFormProps) {
 
           {result === IqcResult.FAIL && (
             <>
-              <OqcDispositionCard form={form} disabled={disabled} />
+              <OqcDispositionCard
+                form={form}
+                disabled={disabled}
+                quantity={oqc.quantity}
+                unitName={oqc.unit.name}
+                showLegacyDispositions={
+                  oqc.disposition === OqcDisposition.REWORK ||
+                  oqc.disposition === OqcDisposition.SCRAP
+                }
+              />
               <OqcEvidenceCard
                 form={form}
                 name="dispositionEvidence"

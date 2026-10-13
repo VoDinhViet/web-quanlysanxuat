@@ -5,6 +5,7 @@ import { confirmOqcSchema } from "@/features/oqc/schemas/confirm-oqc.schema"
 import { resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import { IqcResult } from "@/lib/types/iqc.type"
+import { OqcDisposition } from "@/lib/types/oqc.type"
 import type { ApiErrorResponse } from "@/lib/http"
 
 // PASS force-drops disposition/dispositionNote/dispositionEvidence regardless of whatever the
@@ -18,14 +19,18 @@ const confirmOqcPayloadSchema = confirmOqcSchema.transform(
     dispositionNote,
     qcEvidence,
     dispositionEvidence,
+    totalQuantity,
     ...rest
   }) => {
     const isPass = rest.result === IqcResult.PASS
+    const isSort = !isPass && disposition === OqcDisposition.SORT
 
     return {
       ...rest,
       qcEvidenceFileIds: resolveApiFileIds(qcEvidence),
       disposition: isPass ? undefined : disposition,
+      sortOkQty: isSort ? rest.sortOkQty : undefined,
+      sortNgQty: isSort ? rest.sortNgQty : undefined,
       dispositionNote: isPass ? undefined : dispositionNote,
       dispositionEvidenceFileIds: isPass
         ? []
@@ -48,6 +53,12 @@ function resolveConfirmOqcErrorMessage(error: unknown): string {
       return "Phiếu đã hoàn tất — không thể sửa kết quả nữa."
     case "oqc_inspection.error.disposition_not_allowed_for_pass":
       return "Kết quả PASS thì không được chọn phương án xử lý."
+    case "iqc_inspection.error.sort_quantity_mismatch":
+      return "SL OK + SL NG phải bằng đúng SL lô."
+    case "iqc_inspection.error.sort_quantity_required":
+      return "Vui lòng nhập SL NG cho phương án Sàng lọc."
+    case "iqc_inspection.error.sort_quantity_not_allowed":
+      return "Chỉ nhập SL OK/NG khi chọn phương án Sàng lọc."
     case "file.error.not_found":
       return "File bằng chứng không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":

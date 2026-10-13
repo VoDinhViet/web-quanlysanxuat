@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Delivery, DangerTriangle, DocumentText } from "@solar-icons/react"
+import { Delivery, DangerTriangle } from "@solar-icons/react"
 import type { ComponentType } from "react"
 import type { IconProps } from "@solar-icons/react"
 
@@ -45,17 +45,6 @@ export function ManageAlerts() {
       count: alertsQuery.data?.outsourcingOrderDueDate,
       isPending: alertsQuery.isPending,
       to: "/manage/outsourcing-orders",
-    },
-    {
-      label: "NCR chưa xử lý",
-      icon: DocumentText,
-      cardClassName:
-        "border border-l-4 border-rose-300 border-l-rose-500 bg-rose-50 dark:border-rose-800/40 dark:border-l-rose-500 dark:bg-rose-500/10",
-      accentClassName: "text-rose-600 dark:text-rose-400",
-      subtitle: null,
-      count: alertsQuery.data?.openNcr,
-      isPending: alertsQuery.isPending,
-      to: "/manage/iqc",
     },
     {
       label: "DO sắp giao",

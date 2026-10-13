@@ -14,8 +14,6 @@ export type ReportStats = {
   runningJobsTrendCount: number | null
   jobsWaitingQc: number
   jobsWaitingQcTrendCount: number | null
-  openNcr: number
-  openNcrTrendCount: number | null
 }
 
 /** Mirrors the backend's ReportAlertsResDto (GET /api/reports/alerts) — no query params, no
@@ -23,7 +21,6 @@ export type ReportStats = {
 export type ReportAlerts = {
   jobDueDate: number
   outsourcingOrderDueDate: number
-  openNcr: number
   upcomingDeliveries: number
 }
 
@@ -47,19 +44,6 @@ export type OutsourcingOrderDueDate = {
   code: string
   supplierName: string
   expectedReturnDate: string
-}
-
-/** Mirrors the backend's OpenNcrResDto (GET /api/reports/open-ncr) — top 5 NCR chưa xử lý cũ nhất
- *  (createdAt tăng dần), no pagination, no filter. `status` chỉ phủ 2 giá trị "mở" thật sự xảy ra —
- *  PENDING (cả IQC/OQC), IN_PROGRESS (IQC: chờ trả NCC; OQC: đang rework — 2 giá trị cũ
- *  `WAITING_RETURN`/`REWORK` đã gộp 2026-08-29, `docs/decisions/quality-schema-rename.md` D2/D5 ở
- *  be-quanlysanxuat — `kind` là field duy nhất còn phân biệt được 2 trường hợp). */
-export type OpenNcr = {
-  id: string
-  code: string
-  kind: "INCOMING" | "OUTGOING"
-  createdAt: string
-  status: "PENDING" | "IN_PROGRESS"
 }
 
 /** Mirrors the backend's QcPassRateResDto (GET /api/reports/qc-pass-rate) — luôn đủ 7 điểm liên

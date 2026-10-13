@@ -97,6 +97,11 @@ const oqcDispositionStyles: Record<OqcDisposition, BadgeStyle> = {
     badge: "bg-destructive/10 text-destructive",
     dot: "bg-destructive",
   },
+  [OqcDisposition.SORT]: {
+    badge:
+      "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
+    dot: "bg-violet-500 dark:bg-violet-400",
+  },
 }
 
 type OqcDispositionBadgeProps = {

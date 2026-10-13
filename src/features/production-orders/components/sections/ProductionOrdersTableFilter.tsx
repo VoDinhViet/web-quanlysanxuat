@@ -6,7 +6,7 @@ import { useDebounceCallback } from "usehooks-ts"
 import { Download, Plus, RotateCw, Search } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
+import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -17,9 +17,11 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { exportProductionOrders } from "@/features/production-orders/api/server-functions/export-production-orders.api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
+import { NcrStatus } from "@/lib/types/ncr.type"
 import { productionOrderStatusLabels } from "@/lib/types/production-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 import type { ProductionOrderStatus } from "@/lib/types/production-order.type"
@@ -48,7 +50,7 @@ export function ProductionOrdersTableFilter() {
         loading: "Đang xuất file Excel lệnh sản xuất...",
         success: "Đã xuất file Excel lệnh sản xuất",
         error: (error) => error.message || "Xuất file thất bại",
-      },
+      }
     )
   }
 
@@ -198,6 +200,16 @@ export function ProductionOrdersTableFilter() {
             <RotateCw className="size-4" />
             Làm mới
           </Button>
+          <PermissionGate permission="ncr:read">
+            <LinkButton
+              to="/manage/ncrs"
+              search={{ page: 1, limit: 10, status: NcrStatus.APPROVED }}
+              variant="outline"
+              className="text-xs"
+            >
+              Tạo LSX từ NCR
+            </LinkButton>
+          </PermissionGate>
           <PendingAction label="Tạo LSX" hint="Màn hình tạo LSX sắp có">
             <Plus className="size-4" />
             Tạo LSX
