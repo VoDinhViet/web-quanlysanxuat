@@ -4,6 +4,7 @@ import type { AnyFieldApi } from "@tanstack/react-form"
 import { TrashBinTrash } from "@solar-icons/react"
 
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import {
   Tooltip,
   TooltipContent,
@@ -173,25 +174,68 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
           )
         }
 
+        const hasQuote =
+          Boolean(item.quotationUnit?.trim()) &&
+          item.orderedQuotationQuantity !== null &&
+          item.orderedQuotationQuantity !== undefined &&
+          item.requestedQuantity > 0
+        const expectedQty =
+          hasQuote && item.quantity !== undefined
+            ? Math.round(
+                ((item.orderedQuotationQuantity! * item.quantity) /
+                  item.requestedQuantity) *
+                  1000
+              ) / 1000
+            : undefined
+
+        const isShortage =
+          expectedQty !== undefined &&
+          item.quotationQuantity !== undefined &&
+          item.quotationQuantity < expectedQty
+        const isExcess =
+          expectedQty !== undefined &&
+          item.quotationQuantity !== undefined &&
+          item.quotationQuantity > expectedQty
+
         return (
-          <NumericCellInput
-            value={item.quotationQuantity}
-            min={0.001}
-            disabled={disabled}
-            placeholder="0"
-            onValueChange={(value) => {
-              const index = findItemIndex(
-                itemsField,
-                item.purchaseOrderItemId
-              )
-              if (index >= 0) {
-                itemsField.replaceValue(index, {
-                  ...item,
-                  quotationQuantity: value,
-                })
-              }
-            }}
-          />
+          <div>
+            <NumericCellInput
+              value={item.quotationQuantity}
+              min={0.001}
+              disabled={disabled}
+              placeholder="0"
+              className={cn(
+                isShortage &&
+                  "border-amber-500/80 text-amber-600 dark:text-amber-400 focus-visible:ring-amber-500/40 font-semibold",
+                isExcess &&
+                  "border-blue-500/80 text-blue-600 dark:text-blue-400 focus-visible:ring-blue-500/40"
+              )}
+              onValueChange={(value) => {
+                const index = findItemIndex(
+                  itemsField,
+                  item.purchaseOrderItemId
+                )
+                if (index >= 0) {
+                  itemsField.replaceValue(index, {
+                    ...item,
+                    quotationQuantity: value,
+                  })
+                }
+              }}
+            />
+            {isShortage && (
+              <p className="mt-1 text-right text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                Hụt {quantityFormatter.format(expectedQty - item.quotationQuantity!)}{" "}
+                {item.quotationUnit}
+              </p>
+            )}
+            {isExcess && (
+              <p className="mt-1 text-right text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                Vượt +{quantityFormatter.format(item.quotationQuantity! - expectedQty)}{" "}
+                {item.quotationUnit}
+              </p>
+            )}
+          </div>
         )
       },
     }),

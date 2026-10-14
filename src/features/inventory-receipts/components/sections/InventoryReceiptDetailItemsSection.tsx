@@ -13,11 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import type {
   InventoryReceiptDetail,
   InventoryReceiptItemDetail,
@@ -75,24 +70,26 @@ function buildInventoryReceiptDetailItemColumns({
       },
     }),
 
-    col.accessor("item.code", {
-      header: `Mã ${itemNoun}`,
-      meta: { headerClassName: "min-w-28" },
-      cell: ({ getValue }) => (
-        <span className="font-mono text-xs font-medium">{getValue()}</span>
-      ),
-    }),
-
-    col.accessor("item.name", {
-      header: `Tên ${itemNoun}`,
-      meta: { headerClassName: "min-w-48" },
+    col.display({
+      id: "item",
+      header: itemNoun === "thành phẩm" ? "Thành phẩm" : "Vật tư",
+      meta: { headerClassName: "min-w-44" },
+      cell: ({ row }) => {
+        const { name, code } = row.original.item
+        return (
+          <div className="space-y-0.5">
+            <p className="font-medium text-foreground">{name}</p>
+            <p className="font-mono text-xs text-muted-foreground">{code}</p>
+          </div>
+        )
+      },
     }),
 
     col.display({
       id: "purchaseOrderQuantity",
       header: "SL đặt (PO)",
       meta: {
-        headerClassName: "min-w-24 text-right",
+        headerClassName: "min-w-28 text-right",
         cellClassName: "text-right tabular-nums text-muted-foreground",
       },
       cell: ({ row }) => {
@@ -100,7 +97,14 @@ function buildInventoryReceiptDetailItemColumns({
         if (!item.purchaseOrderItem) return "—"
         return (
           <div className="space-y-0.5">
-            <div>{numberFmt.format(item.purchaseOrderItem.quantity)}</div>
+            <div>
+              <span className="font-medium text-foreground">
+                {numberFmt.format(item.purchaseOrderItem.quantity)}
+              </span>{" "}
+              <span className="text-xs text-muted-foreground">
+                {item.unit.name}
+              </span>
+            </div>
             {item.quotationUnit &&
               item.orderedQuotationQuantity !== null &&
               item.orderedQuotationQuantity !== undefined && (
@@ -114,75 +118,55 @@ function buildInventoryReceiptDetailItemColumns({
       },
     }),
 
-    col.accessor("quantity", {
-      header: "SL giao",
-      meta: {
-        headerClassName: "min-w-24 text-right",
-        cellClassName: "text-right tabular-nums text-muted-foreground",
-      },
-      cell: ({ getValue }) => numberFmt.format(getValue()),
-    }),
-
-    col.display({
-      id: "returnedQuantity",
-      header: "SL trả NCC",
-      meta: {
-        headerClassName: "min-w-24 text-right",
-        cellClassName: "text-right tabular-nums",
-      },
-      cell: ({ row }) => {
-        const returned = row.original.returnedQuantity ?? 0
-        if (returned <= 0) {
-          return <span className="text-muted-foreground">—</span>
-        }
-        return (
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <span className="inline-flex items-center gap-1 font-medium text-destructive">
-                  <AlertTriangle className="size-3 text-destructive" />
-                  {numberFmt.format(returned)}
-                </span>
-              }
-            />
-            <TooltipContent>
-              Đã xuất trả lại NCC do kiểm tra IQC không đạt (
-              {numberFmt.format(returned)} {row.original.unit.name})
-            </TooltipContent>
-          </Tooltip>
-        )
-      },
-    }),
-
     col.display({
       id: "actualQuantity",
       header: "SL thực nhập",
       meta: {
-        headerClassName: "min-w-24 text-right",
-        cellClassName: "text-right tabular-nums font-medium",
+        headerClassName: "min-w-28 text-right",
+        cellClassName: "text-right tabular-nums",
       },
       cell: ({ row }) => {
-        const returned = row.original.returnedQuantity ?? 0
+        const item = row.original
+        const returned = item.returnedQuantity ?? 0
         const actual =
-          row.original.actualQuantity ??
-          Math.max(row.original.quantity - returned, 0)
+          item.actualQuantity ?? Math.max(item.quantity - returned, 0)
+        const hasDifference = returned > 0 || actual !== item.quantity
+
         return (
-          <span
-            className={cn(
-              actual === 0 && returned > 0
-                ? "text-destructive line-through"
-                : "text-foreground"
+          <div className="space-y-0.5">
+            <div>
+              <span
+                className={cn(
+                  "font-semibold",
+                  actual === 0 && returned > 0
+                    ? "text-destructive line-through"
+                    : "text-foreground"
+                )}
+              >
+                {numberFmt.format(actual)}
+              </span>{" "}
+              <span className="text-xs text-muted-foreground">
+                {item.unit.name}
+              </span>
+            </div>
+
+            {hasDifference && (
+              <div className="flex flex-col items-end gap-0.5 text-[11px]">
+                {returned > 0 && (
+                  <span className="text-destructive font-medium">
+                    Trả NCC: {numberFmt.format(returned)} {item.unit.name}
+                  </span>
+                )}
+                {actual !== item.quantity && (
+                  <span className="text-muted-foreground">
+                    Giao: {numberFmt.format(item.quantity)}
+                  </span>
+                )}
+              </div>
             )}
-          >
-            {numberFmt.format(actual)}
-          </span>
+          </div>
         )
       },
-    }),
-
-    col.accessor("unit.name", {
-      header: "ĐVT",
-      meta: { headerClassName: "min-w-20" },
     }),
 
     ...(hasQuotation
@@ -192,17 +176,52 @@ function buildInventoryReceiptDetailItemColumns({
             header: "Qty BG",
             meta: {
               headerClassName: "min-w-24 text-right",
-              cellClassName: "text-right tabular-nums font-medium",
+              cellClassName: "text-right tabular-nums",
             },
             cell: ({ row }) => {
               const item = row.original
               if (!item.quotationUnit?.trim()) {
                 return <span className="text-muted-foreground">—</span>
               }
-              return item.quotationQuantity !== null &&
-                item.quotationQuantity !== undefined
-                ? numberFmt.format(item.quotationQuantity)
-                : "—"
+              const actual = item.quotationQuantity
+              const expected = item.orderedQuotationQuantity
+              if (actual === null || actual === undefined) {
+                return <span className="text-muted-foreground">—</span>
+              }
+
+              const isShortage =
+                expected !== null &&
+                expected !== undefined &&
+                actual < expected
+              const isExcess =
+                expected !== null &&
+                expected !== undefined &&
+                actual > expected
+
+              return (
+                <div className="space-y-0.5">
+                  <div
+                    className={cn(
+                      "font-semibold",
+                      isShortage && "text-amber-600 dark:text-amber-400",
+                      isExcess && "text-blue-600 dark:text-blue-400",
+                      !isShortage && !isExcess && "text-foreground"
+                    )}
+                  >
+                    {numberFmt.format(actual)}
+                  </div>
+                  {isShortage && (
+                    <div className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                      Hụt {numberFmt.format(expected - actual)}
+                    </div>
+                  )}
+                  {isExcess && (
+                    <div className="text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                      Vượt +{numberFmt.format(actual - expected)}
+                    </div>
+                  )}
+                </div>
+              )
             },
           }),
           col.accessor((row) => row.quotationUnit || "—", {
@@ -236,12 +255,18 @@ function buildInventoryReceiptDetailItemColumns({
         cellClassName: "text-right tabular-nums font-medium",
       },
       cell: ({ row }) => {
-        const returned = row.original.returnedQuantity ?? 0
+        const item = row.original
+        const returned = item.returnedQuantity ?? 0
         const actual =
-          row.original.actualQuantity ??
-          Math.max(row.original.quantity - returned, 0)
-        return row.original.unitPrice !== null
-          ? vndFormatter.format(actual * row.original.unitPrice)
+          item.actualQuantity ?? Math.max(item.quantity - returned, 0)
+        const qtyForAmount =
+          item.quotationUnit &&
+          item.quotationQuantity !== null &&
+          item.quotationQuantity !== undefined
+            ? item.quotationQuantity
+            : actual
+        return item.unitPrice !== null
+          ? vndFormatter.format(qtyForAmount * item.unitPrice)
           : "—"
       },
     }),
@@ -304,7 +329,13 @@ export function InventoryReceiptDetailItemsSection({
     const actual =
       item.actualQuantity ??
       Math.max(item.quantity - (item.returnedQuantity ?? 0), 0)
-    return sum + (item.unitPrice !== null ? actual * item.unitPrice : 0)
+    const qtyForAmount =
+      item.quotationUnit &&
+      item.quotationQuantity !== null &&
+      item.quotationQuantity !== undefined
+        ? item.quotationQuantity
+        : actual
+    return sum + (item.unitPrice !== null ? qtyForAmount * item.unitPrice : 0)
   }, 0)
 
   return (

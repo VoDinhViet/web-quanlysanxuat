@@ -34,22 +34,20 @@ export function InventoryReceiptDetailPage() {
       />
 
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-          {/* Main content */}
-          <Surface>
-            <InventoryReceiptDetailHeader inventoryReceipt={inventoryReceipt} />
-            <InventoryReceiptDetailItemsSection
-              inventoryReceipt={inventoryReceipt}
-            />
-          </Surface>
+        {/* Main content */}
+        <Surface>
+          <InventoryReceiptDetailHeader inventoryReceipt={inventoryReceipt} />
+          <InventoryReceiptDetailItemsSection
+            inventoryReceipt={inventoryReceipt}
+          />
+        </Surface>
 
-          {/* Sidebar */}
-          <div className="flex flex-col gap-4">
-            <InventoryReceiptDetailInfoCard
-              inventoryReceipt={inventoryReceipt}
-            />
-            <InventoryReceiptRelatedNotesCard receiptId={inventoryReceipt.id} />
-          </div>
+        {/* Thông tin phụ: Nhật ký phiếu và Ghi chú liên quan */}
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3 xl:grid-cols-4">
+          <InventoryReceiptDetailInfoCard
+            inventoryReceipt={inventoryReceipt}
+          />
+          <InventoryReceiptRelatedNotesCard receiptId={inventoryReceipt.id} />
         </div>
       </div>
     </main>

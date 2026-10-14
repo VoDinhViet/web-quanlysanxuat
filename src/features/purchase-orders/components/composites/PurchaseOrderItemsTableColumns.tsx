@@ -48,15 +48,15 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
       cell: ({ row }) => {
         const item = row.original
         const itemUnit = item.purchaseRequestItem.item.unit.name
-        const isSupplierUnit =
-          Boolean(item.quotationUnit?.trim()) &&
-          item.quotationUnit?.trim().toLowerCase() !== itemUnit.trim().toLowerCase()
+        const hasQuotation = Boolean(item.quotationUnit?.trim())
 
         const requested = item.purchaseRequestItem.quantity
         const ordered = item.quantity
         const received = item.receivedQuantity
         const remaining = Math.max(ordered - received, 0)
         const isCompleted = received >= ordered && ordered > 0
+        const isExcess = received > ordered
+        const isShortage = received > 0 && received < ordered
 
         return (
           <div className="space-y-1">
@@ -65,40 +65,41 @@ export function buildPurchaseOrderItemColumns(_editable?: boolean) {
               <span className="font-semibold text-foreground text-xs">
                 {quantityFormatter.format(ordered)} {itemUnit}
               </span>
-              {isSupplierUnit && (
-                <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+              {hasQuotation && (
+                <span className="text-[11px] font-medium text-muted-foreground">
                   ({quantityFormatter.format(item.quotationQuantity ?? 0)}{" "}
                   {item.quotationUnit})
                 </span>
               )}
             </div>
 
-            {/* Tầng 2: Tiến độ giao nhận + Ghi chú nếu SL đặt lệch SL yêu cầu */}
+            {/* Tầng 2: Tiến độ giao nhận + Cảnh báo màu sắc */}
             <div className="flex flex-col items-end gap-0.5 text-[11px] tabular-nums">
               <div className="flex items-center gap-1.5">
                 <span
                   className={cn(
-                    "font-medium",
-                    isCompleted
-                      ? "text-success"
-                      : received > 0
-                        ? "text-amber-600 dark:text-amber-400"
-                        : "text-muted-foreground"
+                    "font-semibold",
+                    isExcess
+                      ? "text-blue-600 dark:text-blue-400"
+                      : isCompleted
+                        ? "text-success"
+                        : isShortage
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-muted-foreground"
                   )}
                 >
-                  Nhận: {quantityFormatter.format(received)}
+                  {received === 0
+                    ? "Chưa nhận"
+                    : `Nhận: ${quantityFormatter.format(received)}`}
                 </span>
-                <span className="text-muted-foreground/40">•</span>
-                <span
-                  className={cn(
-                    "font-medium",
-                    remaining === 0
-                      ? "text-muted-foreground"
-                      : "text-foreground"
-                  )}
-                >
-                  Còn: {quantityFormatter.format(remaining)}
-                </span>
+                {remaining > 0 && (
+                  <>
+                    <span className="text-muted-foreground/40">•</span>
+                    <span className="font-medium text-foreground">
+                      Còn: {quantityFormatter.format(remaining)}
+                    </span>
+                  </>
+                )}
               </div>
 
               {requested !== ordered && (
