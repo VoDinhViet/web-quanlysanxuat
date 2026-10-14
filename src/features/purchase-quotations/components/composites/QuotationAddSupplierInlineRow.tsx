@@ -32,7 +32,7 @@ export function QuotationAddSupplierInlineRow({
   return (
     <TableRow className="h-12 bg-card hover:bg-card">
       <QuotationTreeGuide isLast />
-      <TableCell colSpan={10}>
+      <TableCell colSpan={9}>
         <div className="max-w-md">
           <div className="min-w-0 flex-1">
             <ComboboxField
@@ -51,6 +51,8 @@ export function QuotationAddSupplierInlineRow({
                   supplierId: supplier.id,
                   supplierLabel: supplier.name,
                   unitPrice: undefined,
+                  quotationUnit: undefined,
+                  quotationQuantity: undefined,
                   leadTimeDays: undefined,
                   note: "",
                   files: [],

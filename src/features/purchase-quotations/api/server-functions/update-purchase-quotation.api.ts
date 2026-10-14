@@ -30,6 +30,8 @@ const updateQuotationParamsSchema = z
         suppliers: item.suppliers.map((supplier) => ({
           supplierId: supplier.supplierId,
           unitPrice: supplier.unitPrice,
+          quotationUnit: emptyToUndefined(supplier.quotationUnit ?? ""),
+          quotationQuantity: supplier.quotationQuantity,
           leadTimeDays: supplier.leadTimeDays,
           note: emptyToUndefined(supplier.note),
           fileIds: resolveApiFileIds(supplier.files),
@@ -64,6 +66,8 @@ function resolveUpdatePurchaseQuotationErrorMessage(error: unknown): string {
       return "Có vật tư chưa gắn dòng đề xuất nào."
     case "purchase_quotation_item.error.quantity_exceeded":
       return "Số lượng báo giá vượt quá số lượng cần mua còn lại."
+    case "purchase_quotation.error.quotation_unit_invalid":
+      return "Đơn vị báo giá và số lượng báo giá không hợp lệ. Vui lòng nhập cả hai hoặc để trống."
     case "auth.error.forbidden":
       return "Bạn không có quyền cập nhật báo giá."
     default:

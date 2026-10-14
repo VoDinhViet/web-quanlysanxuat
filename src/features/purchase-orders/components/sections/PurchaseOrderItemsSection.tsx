@@ -16,7 +16,6 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { buildPurchaseOrderItemColumns } from "@/features/purchase-orders/components/composites/PurchaseOrderItemsTableColumns"
 import { currencyFormatter } from "@/lib/currency"
-import { cn } from "@/lib/utils"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderItemsSectionProps = {
@@ -128,30 +127,26 @@ export function PurchaseOrderItemsSection({
                   ))}
                 </TableBody>
                 <TableFooter>
-                  <TableRow className="h-11">
+                  <TableRow className="h-12 bg-muted/30 font-medium">
                     <TableCell
-                      colSpan={4}
-                      className="font-medium text-foreground"
+                      colSpan={2}
+                      className="font-medium text-foreground text-xs"
                     >
                       Tổng cộng
                     </TableCell>
-                    <TableCell className="text-right font-medium text-foreground tabular-nums">
-                      {quantityFormatter.format(totalQuantity)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {quantityFormatter.format(totalReceived)}
-                    </TableCell>
-                    <TableCell
-                      className={cn(
-                        "text-right tabular-nums",
-                        totalRemaining > 0 && "font-medium text-foreground"
-                      )}
-                    >
-                      {quantityFormatter.format(totalRemaining)}
+                    <TableCell className="text-right py-2 tabular-nums">
+                      <div className="space-y-0.5">
+                        <p className="font-semibold text-foreground text-xs">
+                          Đặt: {quantityFormatter.format(totalQuantity)}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground">
+                          Nhận: {quantityFormatter.format(totalReceived)} • Còn:{" "}
+                          {quantityFormatter.format(totalRemaining)}
+                        </p>
+                      </div>
                     </TableCell>
                     <TableCell />
-                    <TableCell />
-                    <TableCell className="text-right text-sm font-medium text-foreground tabular-nums">
+                    <TableCell className="text-right text-sm font-bold text-primary tabular-nums">
                       {currencyFormatter.format(purchaseOrder.subtotal)}
                     </TableCell>
                   </TableRow>

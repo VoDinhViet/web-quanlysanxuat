@@ -73,6 +73,8 @@ export type PurchaseQuotationItemSupplierDetail = {
   id: string
   supplier: SupplierRef
   unitPrice: number | null
+  quotationUnit: string | null
+  quotationQuantity: number | null
   leadTimeDays: number | null
   note: string | null
   lastPurchase: PurchaseQuotationItemSupplierLastPurchase | null

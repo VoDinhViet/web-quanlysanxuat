@@ -16,15 +16,19 @@ import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { purchaseQuotationLastPurchasesQueryOptions } from "@/features/purchase-quotations/api/options"
 import { QuotationAddSupplierInlineRow } from "@/features/purchase-quotations/components/composites/QuotationAddSupplierInlineRow"
 import { QuotationAdjustmentReasonRow } from "@/features/purchase-quotations/components/composites/QuotationAdjustmentReasonRow"
-import { buildQuotationItemsListColumns } from "@/features/purchase-quotations/components/composites/QuotationItemsListColumns"
+import { buildQuotationItemsColumns } from "@/features/purchase-quotations/components/composites/QuotationItemsColumns"
+import { QuotationSupplierQuoteDialog } from "@/features/purchase-quotations/components/composites/QuotationSupplierQuoteDialog"
 import { QuotationSupplierTreeRow } from "@/features/purchase-quotations/components/composites/QuotationSupplierTreeRow"
 import { getQuotationItemStatus } from "@/features/purchase-quotations/constants/quotation-item-status"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
+import type {
+  QuotationItemSupplierValue,
+} from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import type { PurchaseQuotationLastPurchase } from "@/lib/types/purchase-quotation.type"
 
-// `lastPurchases` đã sắp mới nhất trước: ưu tiên lần mua với chính NCC, không có thì lần mới nhất.
+// Tra cứu lần mua gần nhất của vật tư: ưu tiên lần mua với chính NCC đó, nếu chưa có thì lấy lần mua gần nhất chung.
 function findLastPurchase(
   lastPurchases: PurchaseQuotationLastPurchase[],
   itemId: string,
@@ -43,33 +47,93 @@ export const CreateQuotationSuppliersSection = withForm({
     const itemsField = useField({ form, name: "items" })
     const items = itemsField.state.value
 
-    // Giá mua gần nhất của mọi vật tư trong cây, tra một lần (mới nhất trước) — mỗi dòng NCC lấy
-    // lần mua với chính NCC đó, không có thì lần mua gần nhất của vật tư với NCC khác.
+    // Lịch sử giá mua gần nhất của các vật tư trong phiếu báo giá
     const { data: lastPurchases = [] } = useQuery(
       purchaseQuotationLastPurchasesQueryOptions(
         items.map((item) => item.itemId)
       )
     )
 
-    // Tree rows start expanded; only the ones the user folds are tracked.
-    const [collapsedIds, setCollapsedIds] = useState<ReadonlySet<string>>(
-      () => new Set()
-    )
+    // Trạng thái modal chi tiết báo giá NCC đang được chỉnh sửa
+    const [editingQuoteTarget, setEditingQuoteTarget] = useState<{
+      itemIndex: number
+      supplierIndex: number
+    } | null>(null)
+
+    // Quản lý đóng / mở cây vật tư (mặc định mở tất cả)
+    const [collapsedItemIds, setCollapsedItemIds] = useState<
+      ReadonlySet<string>
+    >(() => new Set())
+
+    const handleToggleItem = (itemId: string) => {
+      setCollapsedItemIds((previous) => {
+        const next = new Set(previous)
+        if (!next.delete(itemId)) next.add(itemId)
+        return next
+      })
+    }
+
+    // Các nghiệp vụ quản lý báo giá NCC (Business Operations)
+    const updateSupplierQuote = (
+      itemIndex: number,
+      supplierIndex: number,
+      patch: Partial<QuotationItemSupplierValue>
+    ) => {
+      const targetItem = items[itemIndex]
+      itemsField.replaceValue(itemIndex, {
+        ...targetItem,
+        suppliers: targetItem.suppliers.map((quote, idx) =>
+          idx === supplierIndex ? { ...quote, ...patch } : quote
+        ),
+      })
+    }
+
+    const removeSupplierQuote = (itemIndex: number, supplierIndex: number) => {
+      const targetItem = items[itemIndex]
+      itemsField.replaceValue(itemIndex, {
+        ...targetItem,
+        suppliers: targetItem.suppliers.filter(
+          (_, idx) => idx !== supplierIndex
+        ),
+      })
+    }
+
+    const addSupplierQuote = (
+      itemIndex: number,
+      newQuote: QuotationItemSupplierValue
+    ) => {
+      const targetItem = items[itemIndex]
+      const updatedSuppliers = [...targetItem.suppliers, newQuote]
+      itemsField.replaceValue(itemIndex, {
+        ...targetItem,
+        suppliers: updatedSuppliers,
+      })
+      // Tự động mở Dialog nhập chi tiết cho NCC vừa thêm
+      setEditingQuoteTarget({
+        itemIndex,
+        supplierIndex: updatedSuppliers.length - 1,
+      })
+    }
+
+    const updateAdjustmentReason = (itemIndex: number, reason: string) => {
+      const targetItem = items[itemIndex]
+      const allocation = targetItem.allocations[0]
+      if (!allocation) return
+      itemsField.replaceValue(itemIndex, {
+        ...targetItem,
+        allocations: [{ ...allocation, quantityAdjustmentReason: reason }],
+      })
+    }
 
     const columns = useMemo(
       () =>
-        buildQuotationItemsListColumns({
+        buildQuotationItemsColumns({
           itemsField,
           disabled,
-          collapsedIds,
-          onToggleItem: (itemId) =>
-            setCollapsedIds((previous) => {
-              const next = new Set(previous)
-              if (!next.delete(itemId)) next.add(itemId)
-              return next
-            }),
+          collapsedIds: collapsedItemIds,
+          onToggleItem: handleToggleItem,
         }),
-      [itemsField, disabled, collapsedIds]
+      [itemsField, disabled, collapsedItemIds]
     )
 
     const table = useTable({
@@ -83,6 +147,10 @@ export const CreateQuotationSuppliersSection = withForm({
     ).length
     const isComplete = items.length > 0 && suppliedCount === items.length
 
+    // Báo giá NCC đang chỉnh sửa trong Dialog
+    const editingItem = editingQuoteTarget ? items[editingQuoteTarget.itemIndex] : null
+    const editingSupplier = editingItem?.suppliers[editingQuoteTarget?.supplierIndex ?? -1]
+
     return (
       <div className="px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -92,8 +160,9 @@ export const CreateQuotationSuppliersSection = withForm({
             </h2>
             <p className="text-sm text-muted-foreground">
               Mỗi vật tư có các nhà cung cấp ngay bên dưới — chọn NCC ở dòng
-              cuối rồi nhập giá báo, leadtime tại chỗ. Giá gần nhất được hệ
-              thống tự động hiển thị từ lịch sử mua hàng.
+              cuối để thêm. Bạn có thể nhập nhanh giá tại bảng hoặc bấm{" "}
+              <strong>&ldquo;Chi tiết&rdquo;</strong> để mở hộp thoại nhập đầy
+              đủ quy cách riêng, lead time, ghi chú và tệp báo giá đính kèm.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -112,7 +181,7 @@ export const CreateQuotationSuppliersSection = withForm({
 
         <div className="mt-4 overflow-hidden rounded-md border border-border/40">
           <Table aria-label="Danh sách vật tư và nhà cung cấp báo giá">
-            <TableHeader className="bg-transparent [&>tr]:h-12 [&>tr]:hover:bg-transparent">
+            <TableHeader className="bg-muted/40 [&>tr]:h-11">
               <TableRow>
                 {table.getFlatHeaders().map((header) => (
                   <TableHead
@@ -143,18 +212,18 @@ export const CreateQuotationSuppliersSection = withForm({
                   const item = row.original
                   const itemIndex = row.index
                   const status = getQuotationItemStatus(item)
-                  const isExpanded = !collapsedIds.has(item.itemId)
+                  const isExpanded = !collapsedItemIds.has(item.itemId)
 
                   return (
                     <Fragment key={item.itemId}>
                       <TableRow className="h-14 bg-card hover:bg-card">
                         {row.getVisibleCells().map((cell) => {
                           const columnId = cell.column.id
-                          // The NCC summary spans the price/leadtime/note/files columns.
+                          // Tóm tắt tiến độ NCC trải rộng qua 4 cột (unitPrice, totalAmount, leadTime, note)
                           if (
+                            columnId === "totalAmount" ||
                             columnId === "leadTime" ||
-                            columnId === "note" ||
-                            columnId === "files"
+                            columnId === "note"
                           ) {
                             return null
                           }
@@ -183,19 +252,9 @@ export const CreateQuotationSuppliersSection = withForm({
                           isOver={status.isOver}
                           needsReason={status.needsReason}
                           disabled={disabled}
-                          onChange={(reason) => {
-                            const allocation = status.allocation
-                            if (!allocation) return
-                            itemsField.replaceValue(itemIndex, {
-                              ...item,
-                              allocations: [
-                                {
-                                  ...allocation,
-                                  quantityAdjustmentReason: reason,
-                                },
-                              ],
-                            })
-                          }}
+                          onChange={(reason) =>
+                            updateAdjustmentReason(itemIndex, reason)
+                          }
                         />
                       )}
 
@@ -203,38 +262,35 @@ export const CreateQuotationSuppliersSection = withForm({
                         item.suppliers.map((supplier, supplierIndex) => (
                           <QuotationSupplierTreeRow
                             key={supplier.supplierId}
+                            item={item}
                             supplier={supplier}
                             lastPurchase={findLastPurchase(
                               lastPurchases,
                               item.itemId,
                               supplier.supplierId
                             )}
-                            disabled={disabled}
-                            onChange={(patch) =>
-                              itemsField.replaceValue(itemIndex, {
-                                ...item,
-                                suppliers: item.suppliers.map(
-                                  (current, index) =>
-                                    index === supplierIndex
-                                      ? { ...current, ...patch }
-                                      : current
-                                ),
-                              })
-                            }
-                            onRemove={() =>
-                              itemsField.replaceValue(itemIndex, {
-                                ...item,
-                                suppliers: item.suppliers.filter(
-                                  (_, index) => index !== supplierIndex
-                                ),
-                              })
-                            }
-                          />
-                        ))}
+                              disabled={disabled}
+                              onChange={(patch) =>
+                                updateSupplierQuote(
+                                  itemIndex,
+                                  supplierIndex,
+                                  patch
+                                )
+                              }
+                              onRemove={() =>
+                                removeSupplierQuote(itemIndex, supplierIndex)
+                              }
+                              onOpenDetail={() =>
+                                setEditingQuoteTarget({
+                                  itemIndex,
+                                  supplierIndex,
+                                })
+                              }
+                            />
+                          ))}
 
                       {isExpanded && (
                         <QuotationAddSupplierInlineRow
-                          // Remount after each add so the combobox clears its typed/picked text.
                           key={`add-${item.suppliers.length}`}
                           itemIndex={itemIndex}
                           assignedSupplierIds={
@@ -242,11 +298,8 @@ export const CreateQuotationSuppliersSection = withForm({
                           }
                           hasSuppliers={item.suppliers.length > 0}
                           disabled={disabled}
-                          onAdd={(supplier) =>
-                            itemsField.replaceValue(itemIndex, {
-                              ...item,
-                              suppliers: [...item.suppliers, supplier],
-                            })
+                          onAdd={(newQuote) =>
+                            addSupplierQuote(itemIndex, newQuote)
                           }
                         />
                       )}
@@ -268,6 +321,38 @@ export const CreateQuotationSuppliersSection = withForm({
             />
           )}
         </form.AppField>
+
+        {/* Modal chi tiết báo giá NCC */}
+        {editingItem && editingSupplier && editingQuoteTarget && (
+          <QuotationSupplierQuoteDialog
+            open
+            onOpenChange={(open) => {
+              if (!open) setEditingQuoteTarget(null)
+            }}
+            supplier={editingSupplier}
+            item={editingItem}
+            lastPurchase={findLastPurchase(
+              lastPurchases,
+              editingItem.itemId,
+              editingSupplier.supplierId
+            )}
+            disabled={disabled}
+            onChange={(patch) =>
+              updateSupplierQuote(
+                editingQuoteTarget.itemIndex,
+                editingQuoteTarget.supplierIndex,
+                patch
+              )
+            }
+            onRemove={() => {
+              removeSupplierQuote(
+                editingQuoteTarget.itemIndex,
+                editingQuoteTarget.supplierIndex
+              )
+              setEditingQuoteTarget(null)
+            }}
+          />
+        )}
       </div>
     )
   },

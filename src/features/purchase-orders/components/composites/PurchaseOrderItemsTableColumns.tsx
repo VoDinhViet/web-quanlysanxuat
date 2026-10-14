@@ -1,5 +1,4 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { DateTime } from "luxon"
 
 import { PurchaseOrderItemProductCell } from "@/features/purchase-orders/components/primitives/PurchaseOrderItemProductCell"
 import type { appTableFeatures } from "@/lib/table-features"
@@ -16,163 +15,211 @@ const purchaseOrderItemColumnHelper = createColumnHelper<
 
 export function buildPurchaseOrderItemColumns(_editable?: boolean) {
   return purchaseOrderItemColumnHelper.columns([
+    // Cột 1: STT
     purchaseOrderItemColumnHelper.display({
       id: "index",
       header: "STT",
       cell: ({ row }) => row.index + 1,
       meta: {
-        headerClassName: "w-14 text-center",
-        cellClassName: "text-center text-muted-foreground",
+        headerClassName: "w-12 text-center text-xs",
+        cellClassName: "text-center text-xs text-muted-foreground",
       },
     }),
+
+    // Cột 2: Vật tư & Nguồn yêu cầu (ảnh + tên + mã vật tư + mã PR + ngày cần + ghi chú)
     purchaseOrderItemColumnHelper.display({
       id: "product",
-      header: "Vật tư",
-      meta: { headerClassName: "min-w-64" },
+      header: "Vật tư & Nguồn yêu cầu",
+      meta: {
+        headerClassName: "min-w-[260px] text-xs",
+        cellClassName: "py-2.5",
+      },
       cell: ({ row }) => <PurchaseOrderItemProductCell item={row.original} />,
     }),
-    purchaseOrderItemColumnHelper.accessor(
-      (row) => row.purchaseRequestItem.item.unit.name,
-      {
-        id: "unit",
-        header: "ĐVT",
-        meta: { headerClassName: "w-20 text-muted-foreground" },
-      }
-    ),
-    purchaseOrderItemColumnHelper.accessor(
-      (row) => row.purchaseRequestItem.quantity,
-      {
-        id: "requestedQuantity",
-        header: "SL yêu cầu",
-        meta: {
-          headerClassName: "w-28 text-center",
-          cellClassName: "text-center text-muted-foreground tabular-nums",
-        },
-        cell: ({ getValue }) => quantityFormatter.format(getValue()),
-      }
-    ),
-    purchaseOrderItemColumnHelper.accessor("neededDate", {
-      id: "neededDate",
-      header: "Ngày cần",
-      meta: {
-        headerClassName: "w-28 text-center",
-        cellClassName: "text-center text-muted-foreground tabular-nums",
-      },
-      cell: ({ getValue }) =>
-        DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
-    }),
-    purchaseOrderItemColumnHelper.accessor("quantity", {
-      id: "quantity",
-      header: "SL đặt",
-      meta: {
-        headerClassName: "w-28 text-right",
-        cellClassName: "text-right tabular-nums",
-      },
-      cell: ({ getValue }) => quantityFormatter.format(getValue()),
-    }),
-    purchaseOrderItemColumnHelper.accessor("receivedQuantity", {
-      id: "receivedQuantity",
-      header: "SL đã nhận",
-      meta: {
-        headerClassName: "w-28 text-right",
-        cellClassName: "text-right tabular-nums",
-      },
-      cell: ({ getValue, row }) => {
-        const received = getValue()
-        const ordered = row.original.quantity
-        const isCompleted = received >= ordered && ordered > 0
-        return (
-          <span
-            className={cn(
-              "font-medium",
-              isCompleted
-                ? "font-medium text-success"
-                : received > 0
-                  ? "font-medium text-amber-600 dark:text-amber-400"
-                  : "text-muted-foreground"
-            )}
-          >
-            {quantityFormatter.format(received)}
-          </span>
-        )
-      },
-    }),
+
+    // Cột 3: Số lượng đặt & Tiến độ giao nhận (2 tầng thông tin gộp SL đặt, ĐVT NCC, đã nhận, còn lại)
     purchaseOrderItemColumnHelper.display({
-      id: "remainingQuantity",
-      header: "Còn lại",
+      id: "quantityAndProgress",
+      header: "Số lượng & Giao nhận",
       meta: {
-        headerClassName: "w-28 text-right",
-        cellClassName: "text-right tabular-nums",
+        headerClassName: "w-56 text-right text-xs",
+        cellClassName: "text-right py-2.5",
       },
       cell: ({ row }) => {
-        const received = row.original.receivedQuantity
-        const ordered = row.original.quantity
+        const item = row.original
+        const itemUnit = item.purchaseRequestItem.item.unit.name
+        const isSupplierUnit =
+          Boolean(item.quotationUnit?.trim()) &&
+          item.quotationUnit?.trim().toLowerCase() !== itemUnit.trim().toLowerCase()
+
+        const requested = item.purchaseRequestItem.quantity
+        const ordered = item.quantity
+        const received = item.receivedQuantity
         const remaining = Math.max(ordered - received, 0)
+        const isCompleted = received >= ordered && ordered > 0
+
         return (
-          <span
-            className={cn(
-              "font-medium",
-              remaining === 0
-                ? "text-muted-foreground"
-                : received > 0
-                  ? "font-medium text-amber-600 dark:text-amber-400"
-                  : "text-foreground"
-            )}
-          >
-            {remaining === 0 ? "—" : quantityFormatter.format(remaining)}
-          </span>
-        )
-      },
-    }),
-    purchaseOrderItemColumnHelper.display({
-      id: "notes",
-      header: "Ghi chú",
-      meta: {
-        headerClassName: "min-w-56 max-w-72",
-        cellClassName: "max-w-72 py-2.5",
-      },
-      cell: ({ row }) => {
-        const note = row.original.purchaseRequestItem.note
-        const reason = row.original.quantityAdjustmentReason
-        if (!note && !reason) {
-          return <span className="text-xs text-muted-foreground">—</span>
-        }
-        return (
-          <div className="flex flex-col gap-1 text-xs leading-relaxed break-words whitespace-normal">
-            {note && <p className="text-muted-foreground">{note}</p>}
-            {reason && (
-              <p className="text-amber-600 dark:text-amber-400">
-                Điều chỉnh SL: {reason}
-              </p>
-            )}
+          <div className="space-y-1">
+            {/* Tầng 1: Số lượng đặt (theo ĐVT gốc và ĐVT NCC nếu có) */}
+            <div className="flex items-baseline justify-end gap-1.5 tabular-nums">
+              <span className="font-semibold text-foreground text-xs">
+                {quantityFormatter.format(ordered)} {itemUnit}
+              </span>
+              {isSupplierUnit && (
+                <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                  ({quantityFormatter.format(item.quotationQuantity ?? 0)}{" "}
+                  {item.quotationUnit})
+                </span>
+              )}
+            </div>
+
+            {/* Tầng 2: Tiến độ giao nhận + Ghi chú nếu SL đặt lệch SL yêu cầu */}
+            <div className="flex flex-col items-end gap-0.5 text-[11px] tabular-nums">
+              <div className="flex items-center gap-1.5">
+                <span
+                  className={cn(
+                    "font-medium",
+                    isCompleted
+                      ? "text-success"
+                      : received > 0
+                        ? "text-amber-600 dark:text-amber-400"
+                        : "text-muted-foreground"
+                  )}
+                >
+                  Nhận: {quantityFormatter.format(received)}
+                </span>
+                <span className="text-muted-foreground/40">•</span>
+                <span
+                  className={cn(
+                    "font-medium",
+                    remaining === 0
+                      ? "text-muted-foreground"
+                      : "text-foreground"
+                  )}
+                >
+                  Còn: {quantityFormatter.format(remaining)}
+                </span>
+              </div>
+
+              {requested !== ordered && (
+                <span className="text-muted-foreground/75">
+                  (Yêu cầu gốc: {quantityFormatter.format(requested)} {itemUnit})
+                </span>
+              )}
+            </div>
           </div>
         )
       },
     }),
-    purchaseOrderItemColumnHelper.accessor("unitPrice", {
-      id: "unitPrice",
-      header: "Đơn giá PO",
-      meta: {
-        headerClassName: "w-32 text-right",
-        cellClassName: "text-right tabular-nums",
-      },
-      cell: ({ getValue }) => {
-        const unitPrice = getValue()
-        return unitPrice === null ? "—" : priceFormatter.format(unitPrice)
-      },
-    }),
+
+    // Cột 4: Đơn giá PO & Quy cách (2 tầng thông tin)
     purchaseOrderItemColumnHelper.display({
-      id: "lineTotal",
-      header: "Thành tiền",
+      id: "unitPriceAndSpec",
+      header: "Đơn giá & Quy cách",
       meta: {
-        headerClassName: "w-36 text-right",
-        cellClassName: "text-right font-medium text-foreground tabular-nums",
+        headerClassName: "w-48 text-xs text-right",
+        cellClassName: "text-right py-2.5",
       },
       cell: ({ row }) => {
-        const { quantity, unitPrice } = row.original
-        return unitPrice === null
-          ? "—"
-          : priceFormatter.format(quantity * unitPrice)
+        const item = row.original
+        const unitPrice = item.unitPrice
+        const itemUnit = item.purchaseRequestItem.item.unit.name
+        const isSupplierUnit =
+          Boolean(item.quotationUnit?.trim()) &&
+          item.quotationUnit?.trim().toLowerCase() !== itemUnit.trim().toLowerCase()
+        const quoteUnit = item.quotationUnit || itemUnit
+
+        return (
+          <div className="space-y-0.5">
+            {/* Tầng 1: Đơn giá kèm ĐVT áp dụng */}
+            <p className="font-semibold text-foreground tabular-nums text-xs">
+              {unitPrice !== null && unitPrice !== undefined ? (
+                <>
+                  <span>{priceFormatter.format(unitPrice)} ₫</span>
+                  <span className="text-[11px] font-normal text-muted-foreground ml-1">
+                    / {quoteUnit}
+                  </span>
+                </>
+              ) : (
+                "—"
+              )}
+            </p>
+
+            {/* Tầng 2: Phân định ĐVT của NCC hay ĐVT gốc */}
+            <p className="text-[11px] tabular-nums">
+              {isSupplierUnit ? (
+                <span className="inline-flex items-center gap-1 font-medium text-amber-600 dark:text-amber-400">
+                  <span>Theo ĐVT NCC:</span>
+                  <strong>
+                    {quantityFormatter.format(item.quotationQuantity ?? 0)}{" "}
+                    {item.quotationUnit}
+                  </strong>
+                </span>
+              ) : (
+                <span className="text-muted-foreground">
+                  Theo ĐVT gốc: {quantityFormatter.format(item.quantity)}{" "}
+                  {itemUnit}
+                </span>
+              )}
+            </p>
+          </div>
+        )
+      },
+    }),
+
+    // Cột 5: Thành tiền quy đổi & Diễn giải cơ sở quy đổi
+    purchaseOrderItemColumnHelper.display({
+      id: "lineTotal",
+      header: "Thành tiền quy đổi",
+      meta: {
+        headerClassName: "w-52 text-xs text-right",
+        cellClassName: "text-right py-2.5",
+      },
+      cell: ({ row }) => {
+        const item = row.original
+        if (item.unitPrice === null || item.unitPrice === undefined) {
+          return <span className="text-muted-foreground text-xs">—</span>
+        }
+
+        const itemUnit = item.purchaseRequestItem.item.unit.name
+        const isSupplierUnit =
+          Boolean(item.quotationUnit?.trim()) &&
+          item.quotationUnit?.trim().toLowerCase() !== itemUnit.trim().toLowerCase()
+
+        const effectiveQty = item.quotationQuantity ?? item.quantity
+        const total = item.unitPrice * effectiveQty
+        const quoteUnit = item.quotationUnit || itemUnit
+
+        return (
+          <div className="space-y-0.5">
+            {/* Tầng 1: Tổng tiền nổi bật */}
+            <p className="font-bold text-primary tabular-nums text-xs">
+              {priceFormatter.format(total)} ₫
+            </p>
+
+            {/* Tầng 2: Diễn giải quy đổi chi tiết */}
+            {isSupplierUnit ? (
+              <div className="text-[10.5px] tabular-nums space-y-0.2">
+                <p className="text-muted-foreground">
+                  = {priceFormatter.format(item.unitPrice)} ×{" "}
+                  {quantityFormatter.format(effectiveQty)} {quoteUnit}
+                </p>
+                <p className="font-medium text-amber-600 dark:text-amber-400">
+                  (Quy đổi cho {quantityFormatter.format(item.quantity)}{" "}
+                  {itemUnit} gốc)
+                </p>
+              </div>
+            ) : (
+              <div className="text-[10.5px] tabular-nums">
+                <p className="text-muted-foreground">
+                  = {priceFormatter.format(item.unitPrice)} ×{" "}
+                  {quantityFormatter.format(effectiveQty)} {itemUnit}
+                </p>
+                <p className="text-muted-foreground/75">(Dựa trên ĐVT gốc)</p>
+              </div>
+            )}
+          </div>
+        )
       },
     }),
   ])

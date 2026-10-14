@@ -13,8 +13,6 @@ import { PurchaseOrderItemsSection } from "@/features/purchase-orders/components
 import { PurchaseOrderRelatedNotesCard } from "@/features/purchase-orders/components/composites/PurchaseOrderRelatedNotesCard"
 import { PurchaseOrderStatusLegend } from "@/features/purchase-orders/components/composites/PurchaseOrderStatusLegend"
 import { PurchaseOrderSummaryCard } from "@/features/purchase-orders/components/composites/PurchaseOrderSummaryCard"
-import { useHasPermission } from "@/hooks/use-permissions"
-import { PurchaseOrderStatus } from "@/lib/types/purchase-order.type"
 
 export function PurchaseOrderDetailPage() {
   const { purchaseOrderId } = useParams({
@@ -25,16 +23,9 @@ export function PurchaseOrderDetailPage() {
     purchaseOrderQueryOptions(purchaseOrderId)
   )
 
-  // Header fields (assignee/paymentTerm/note/expectedDate) chỉ sửa được khi còn DRAFT. Xác nhận
-  // đặt hàng/Huỷ PO (PurchaseOrderDetailActions.tsx) kiểm quyền riêng của chính mình, không phụ
-  // thuộc `editable`. Vật tư trong PO (SL đặt, đơn giá, lý do điều chỉnh) là chỉ xem (read-only).
-  const editable =
-    useHasPermission("purchasing:update") &&
-    purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION
-  // Tạm ứng NCC sửa được cả khi PO đã đặt (tới khi YCTT đã chi — BE chặn bằng E284).
-  const advancePaymentEditable =
-    useHasPermission("purchasing:update") &&
-    purchaseOrder.status !== PurchaseOrderStatus.CANCELLED
+  // Chi tiết đơn mua hàng ở chế độ chỉ xem/hiển thị (read-only), không cho phép chỉnh sửa.
+  const editable = false
+  const advancePaymentEditable = false
 
   return (
     <main className="min-h-svh bg-background text-foreground">

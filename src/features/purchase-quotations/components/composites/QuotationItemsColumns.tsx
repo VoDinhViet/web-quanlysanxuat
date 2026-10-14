@@ -14,29 +14,24 @@ const quotationItemColumnHelper = createColumnHelper<
   PickedQuotationItemValue
 >()
 
-type BuildQuotationItemsListColumnsArgs = {
+type BuildQuotationItemsColumnsArgs = {
   itemsField: AnyFieldApi
   disabled?: boolean
   collapsedIds: ReadonlySet<string>
   onToggleItem: (itemId: string) => void
 }
 
-// Columns of the vật tư level of the RFQ tree table in CreateQuotationSuppliersSection. The table
-// has 10 columns shared by three row kinds — vật tư (these columns), NCC and "add NCC" rows (see
-// QuotationSupplierTreeRow / QuotationAddSupplierInlineRow) — so header widths line up. The vật tư
-// row spans the price/leadtime/note columns with its NCC summary, hence `leadTime`/`note` exist
-// only as header slots (their cells are skipped by the section).
-export function buildQuotationItemsListColumns({
+export function buildQuotationItemsColumns({
   itemsField,
-  disabled,
+  disabled = false,
   collapsedIds,
   onToggleItem,
-}: BuildQuotationItemsListColumnsArgs) {
+}: BuildQuotationItemsColumnsArgs) {
   return quotationItemColumnHelper.columns([
     quotationItemColumnHelper.display({
       id: "index",
       header: "STT",
-      meta: { headerClassName: "w-16" },
+      meta: { headerClassName: "w-14" },
       cell: ({ row }) => {
         const isCollapsed = collapsedIds.has(row.original.itemId)
         const Chevron = isCollapsed ? AltArrowRight : AltArrowDown
@@ -64,43 +59,49 @@ export function buildQuotationItemsListColumns({
       header: "Mã vật tư / NCC",
       meta: {
         headerClassName: "w-36",
-        cellClassName: "font-mono text-primary",
+        cellClassName: "font-mono text-primary font-medium text-xs",
       },
     }),
     quotationItemColumnHelper.accessor("itemName", {
       header: "Tên vật tư",
-      meta: { headerClassName: "min-w-48", cellClassName: "font-medium" },
-    }),
-    quotationItemColumnHelper.accessor("unit", {
-      header: "ĐVT",
-      meta: { headerClassName: "w-16" },
-    }),
-    quotationItemColumnHelper.display({
-      id: "requestedQuantity",
-      header: "Cần mua",
-      meta: {
-        headerClassName: "w-24 text-right",
-        cellClassName: "text-right tabular-nums",
-      },
-      cell: ({ row }) => getQuotationItemStatus(row.original).requestedTotal,
+      meta: { headerClassName: "min-w-44", cellClassName: "font-medium" },
     }),
     quotationItemColumnHelper.display({
       id: "quantity",
-      header: "SL báo giá",
+      header: "Cần mua",
       meta: { headerClassName: "w-36 text-right", cellClassName: "text-right" },
       cell: ({ row }) => (
-        <QuotationItemQuantityControl
-          item={row.original}
-          itemIndex={row.index}
-          itemsField={itemsField}
-          disabled={disabled}
-        />
+        <div className="flex items-center justify-end gap-1.5">
+          <div className="w-20">
+            <QuotationItemQuantityControl
+              item={row.original}
+              itemIndex={row.index}
+              itemsField={itemsField}
+              disabled={disabled}
+            />
+          </div>
+          <span
+            className="w-8 shrink-0 truncate text-left text-xs font-semibold text-muted-foreground"
+            title={row.original.unit}
+          >
+            {row.original.unit}
+          </span>
+        </div>
       ),
     }),
     quotationItemColumnHelper.display({
+      id: "quotationSpec",
+      header: "SL & ĐV báo giá",
+      meta: {
+        headerClassName: "w-40 text-center",
+        cellClassName: "text-center text-muted-foreground text-xs",
+      },
+      cell: () => "—",
+    }),
+    quotationItemColumnHelper.display({
       id: "unitPrice",
-      header: "Giá báo (VNĐ) *",
-      meta: { headerClassName: "w-44 text-right" },
+      header: "Đơn giá (VNĐ)",
+      meta: { headerClassName: "w-36 text-right" },
       cell: ({ row }) => {
         const item = row.original
         const { pricedSupplierCount } = getQuotationItemStatus(item)
@@ -129,24 +130,24 @@ export function buildQuotationItemsListColumns({
       },
     }),
     quotationItemColumnHelper.display({
+      id: "totalAmount",
+      header: "Thành tiền (VNĐ)",
+      meta: { headerClassName: "w-36 text-right" },
+    }),
+    quotationItemColumnHelper.display({
       id: "leadTime",
-      header: "Leadtime (ngày)",
-      meta: { headerClassName: "w-32 text-right" },
-    }),
-    quotationItemColumnHelper.display({
-      id: "note",
-      header: "Ghi chú",
-      meta: { headerClassName: "min-w-44" },
-    }),
-    quotationItemColumnHelper.display({
-      id: "files",
-      header: "Tệp đính kèm",
+      header: "Leadtime",
       meta: { headerClassName: "w-28 text-center" },
     }),
     quotationItemColumnHelper.display({
+      id: "note",
+      header: "Ghi chú & Tệp",
+      meta: { headerClassName: "min-w-36" },
+    }),
+    quotationItemColumnHelper.display({
       id: "actions",
-      header: "",
-      meta: { headerClassName: "w-16", cellClassName: "text-center" },
+      header: "Thao tác",
+      meta: { headerClassName: "w-28 text-center", cellClassName: "text-center" },
       cell: ({ row }) => (
         <Button
           type="button"
@@ -154,7 +155,7 @@ export function buildQuotationItemsListColumns({
           size="icon-sm"
           aria-label={`Bỏ chọn vật tư ${row.original.itemCode}`}
           title="Bỏ chọn vật tư"
-          className="text-muted-foreground hover:text-destructive"
+          className="size-7 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
           disabled={disabled}
           onClick={() => itemsField.removeValue(row.index)}
         >

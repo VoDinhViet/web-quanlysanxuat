@@ -1,6 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
 import {
-  CloseCircle,
   PenNewSquare,
   SendSquare,
   TrashBinTrash,
@@ -8,7 +7,6 @@ import {
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
-import { CancelQuotationDialog } from "@/features/purchase-quotations/components/composites/CancelQuotationDialog"
 import { DeleteQuotationDialog } from "@/features/purchase-quotations/components/composites/DeleteQuotationDialog"
 import { SendQuotationDialog } from "@/features/purchase-quotations/components/composites/SendQuotationDialog"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
@@ -68,28 +66,6 @@ export function PurchaseQuotationDetailActions({
               <Button type="button">
                 <SendSquare className="size-4" />
                 Gửi duyệt
-              </Button>
-            }
-          />
-        </PermissionGate>
-      </div>
-    )
-  }
-
-  if (purchaseQuotation.status === PurchaseQuotationStatus.APPROVED) {
-    return (
-      <div className="flex flex-wrap items-center gap-2">
-        <PermissionGate permission="purchasing:approve">
-          <CancelQuotationDialog
-            purchaseQuotation={purchaseQuotation}
-            trigger={
-              <Button
-                type="button"
-                variant="outline"
-                className="border-destructive/40 text-destructive hover:bg-destructive/10"
-              >
-                <CloseCircle className="size-4" />
-                Hủy báo giá
               </Button>
             }
           />

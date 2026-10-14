@@ -143,6 +143,8 @@ export type PurchaseOrderItemDetail = {
   neededDate: string
   quantityAdjustmentReason: string | null
   unitPrice: number | null
+  quotationUnit: string | null
+  quotationQuantity: number | null
   note: string | null
   purchaseRequestItem: {
     id: string

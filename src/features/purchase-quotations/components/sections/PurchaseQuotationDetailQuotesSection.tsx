@@ -29,12 +29,6 @@ type PurchaseQuotationDetailQuotesSectionProps = {
   purchaseQuotation: PurchaseQuotationDetail
 }
 
-// Read-only twin of CreateQuotationSuppliersSection.tsx (same outer+nested table shell, same
-// left-ring accent marking which NCC block belongs to which vật tư) — with one live piece of
-// state layered on top: while PENDING_APPROVAL and the viewer can approve, the nested tables
-// grow a radio per supplier row (see PurchaseQuotationSupplierCompareTable), and this component
-// owns the resulting "which NCC won which vật tư" selection until it's submitted via
-// PurchaseQuotationApprovalBar.
 export function PurchaseQuotationDetailQuotesSection({
   purchaseQuotation,
 }: PurchaseQuotationDetailQuotesSectionProps) {
@@ -97,6 +91,7 @@ export function PurchaseQuotationDetailQuotesSection({
             <TableBody>
               {table.getRowModel().rows.map((row) => (
                 <Fragment key={row.original.id}>
+                  {/* Dòng tóm tắt vật tư */}
                   <TableRow className="h-14 bg-card hover:bg-muted/25">
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -111,24 +106,23 @@ export function PurchaseQuotationDetailQuotesSection({
                     ))}
                   </TableRow>
 
-                  {/* Same inset-shadow left accent as CreateQuotationSuppliersSection.tsx — see
-                      that file's comment for why it's a shadow, not border-l, and why it's set on
-                      the <td> rather than the <tr>. Two nested tables now stack here — one vật tư
-                      can merge several dòng ĐXMH (allocations), each still quoted as a single NCC
-                      block. */}
+                  {/* Dòng chi tiết: Nguồn ĐXMH ở trên, Báo giá NCC ở dưới (đúng vị trí cũ, phẳng và đồng bộ) */}
                   <TableRow
                     id={`${row.original.id}-detail`}
                     className="bg-card hover:bg-card"
                   >
                     <TableCell
                       colSpan={row.getVisibleCells().length}
-                      className="space-y-2 p-0 pb-3 shadow-[inset_3px_0_0_0_var(--color-primary)]"
+                      className="space-y-2 p-0 pb-4 shadow-[inset_3px_0_0_0_var(--color-primary)]"
                     >
+                      {/* 1. Nguồn ĐXMH (vị trí cũ) */}
                       <p className="px-4 pt-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                         Nguồn ĐXMH
                       </p>
                       <PurchaseQuotationAllocationsTable item={row.original} />
-                      <p className="px-4 pt-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+
+                      {/* 2. Báo giá NCC (vị trí cũ, 5 cột 2 tầng thông tin không tràn ngang) */}
+                      <p className="px-4 pt-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                         Báo giá NCC
                       </p>
                       <PurchaseQuotationSupplierCompareTable

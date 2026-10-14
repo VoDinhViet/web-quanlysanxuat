@@ -64,6 +64,7 @@ function buildPickedQuotationItem(
     itemId: row.item.id,
     itemCode: row.item.code,
     itemName: row.item.name,
+    unitId: row.unit.id,
     unit: row.unit.name,
     allocations: [buildAllocation(row)],
     suppliers: [],

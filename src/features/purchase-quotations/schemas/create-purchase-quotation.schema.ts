@@ -20,12 +20,31 @@ const quotationItemSupplierFields = {
     .min(0, "Giá báo không được âm")
     .optional()
     .pipe(z.number("Vui lòng nhập giá báo")),
+  quotationUnit: z.string().trim().max(50, "Đơn vị báo giá tối đa 50 ký tự").optional(),
+  quotationQuantity: z
+    .number()
+    .positive("Số lượng báo giá phải lớn hơn 0")
+    .optional(),
   leadTimeDays: z.number().min(0, "Leadtime không được âm").optional(),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
   files: z.array(fileFieldSchema).default([]),
 }
 
-export const quotationItemSupplierSchema = z.object(quotationItemSupplierFields)
+export const quotationItemSupplierSchema = z
+  .object(quotationItemSupplierFields)
+  .refine(
+    (val) => {
+      const hasUnit = Boolean(val.quotationUnit?.trim())
+      const hasQuantity =
+        val.quotationQuantity !== undefined && val.quotationQuantity !== null
+      return (hasUnit && hasQuantity) || (!hasUnit && !hasQuantity)
+    },
+    {
+      message:
+        "Vui lòng nhập cả đơn vị báo giá và số lượng báo giá riêng, hoặc để trống cả hai",
+      path: ["quotationQuantity"],
+    }
+  )
 export type QuotationItemSupplierValue = z.input<
   typeof quotationItemSupplierSchema
 >
@@ -68,6 +87,7 @@ const pickedQuotationItemFields = {
   itemId: z.string().trim().min(1),
   itemCode: z.string(),
   itemName: z.string(),
+  unitId: z.string().optional(),
   unit: z.string(),
   allocations: z.array(quotationItemAllocationSchema).min(1),
   suppliers: z.array(quotationItemSupplierSchema),
@@ -121,6 +141,7 @@ export function mapQuotationDetailToFormValues(
       itemId: item.item.id,
       itemCode: item.item.code,
       itemName: item.item.name,
+      unitId: item.item.unit.id,
       unit: item.item.unit.name,
       allocations: item.allocations.map((allocation) => ({
         purchaseRequestItemId: allocation.purchaseRequestItem.id,
@@ -134,6 +155,8 @@ export function mapQuotationDetailToFormValues(
         supplierId: supplier.supplier.id,
         supplierLabel: `${supplier.supplier.name} (${supplier.supplier.code})`,
         unitPrice: supplier.unitPrice ?? undefined,
+        quotationUnit: supplier.quotationUnit ?? undefined,
+        quotationQuantity: supplier.quotationQuantity ?? undefined,
         leadTimeDays: supplier.leadTimeDays ?? undefined,
         note: supplier.note ?? "",
         files: (supplier.files ?? []).map((file) => ({

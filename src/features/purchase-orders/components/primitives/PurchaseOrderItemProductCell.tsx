@@ -1,4 +1,5 @@
 import { Gallery } from "@solar-icons/react"
+import { DateTime } from "luxon"
 
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -8,15 +9,15 @@ type PurchaseOrderItemProductCellProps = {
   item: PurchaseOrderItemDetail
 }
 
-// Ô "Vật tư" của bảng chi tiết PO: ảnh + tên, mã vật tư và mã PR nguồn xếp dưới tên. Mã PR giữ lại
-// vì 2 dòng cùng vật tư (tách từ 1 dòng RFQ gộp) chỉ khác nhau ở đó.
 export function PurchaseOrderItemProductCell({
   item,
 }: PurchaseOrderItemProductCellProps) {
   const { item: product, purchaseRequest } = item.purchaseRequestItem
+  const note = item.purchaseRequestItem.note
+  const reason = item.quantityAdjustmentReason
 
   return (
-    <div className="flex min-w-0 items-center gap-3 py-1">
+    <div className="flex min-w-0 items-start gap-3 py-1">
       <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/40">
         {product.image ? (
           <ZoomableImage
@@ -28,11 +29,28 @@ export function PurchaseOrderItemProductCell({
         )}
       </div>
       <div className="flex min-w-0 flex-col gap-0.5">
-        <span className="font-medium text-foreground">{product.name}</span>
-        <span className="flex flex-wrap items-center gap-x-2 font-mono text-xs text-muted-foreground">
-          <span className="font-medium text-foreground/80">{product.code}</span>
-          <span>{purchaseRequest.code}</span>
-        </span>
+        <span className="font-medium text-foreground leading-snug">{product.name}</span>
+        <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground tabular-nums">
+          <span className="font-mono font-medium text-foreground/80">{product.code}</span>
+          <span>•</span>
+          <span className="font-mono">{purchaseRequest.code}</span>
+          {item.neededDate && (
+            <>
+              <span>•</span>
+              <span>Cần: {DateTime.fromISO(item.neededDate).toFormat("dd/MM/yyyy")}</span>
+            </>
+          )}
+        </div>
+        {(note || reason) && (
+          <div className="mt-0.5 flex flex-col gap-0.5 text-[11px] leading-tight text-muted-foreground">
+            {note && <p className="italic">"{note}"</p>}
+            {reason && (
+              <p className="font-medium text-amber-600 dark:text-amber-400">
+                Điều chỉnh SL: {reason}
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
