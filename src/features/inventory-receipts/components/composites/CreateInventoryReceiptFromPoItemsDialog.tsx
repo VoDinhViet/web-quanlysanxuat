@@ -111,7 +111,7 @@ export function CreateInventoryReceiptFromPoItemsDialog({
         if (!open) onClose()
       }}
     >
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="max-h-[90vh] w-[95vw] max-w-5xl overflow-y-auto sm:max-w-5xl">
         {purchaseOrderId !== null && (
           <PurchaseOrderItemsBody
             key={purchaseOrderId}
