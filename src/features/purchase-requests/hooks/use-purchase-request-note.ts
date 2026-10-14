@@ -39,7 +39,7 @@ export function usePurchaseRequestNote(
         data: { purchaseRequestId, note: nextNote || null },
       }),
     onSuccess: async () => {
-      toast.success("Đã lưu ghi chú")
+      toast.success("Đã lưu PO / Lý do")
       await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
     },
     onError: (error) => toast.error(error.message),

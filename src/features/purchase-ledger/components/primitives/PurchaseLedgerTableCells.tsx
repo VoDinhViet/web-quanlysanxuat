@@ -20,29 +20,31 @@ type PurchaseLedgerSourceCellProps = {
   requestNote: string | null
 }
 
-// "PO liên quan / Lý do" shows exactly one of the two, never both: the customer PO number
-// (`buyerPoNo`, via the linked LSX's order) when there is one, otherwise the reason on the request
-// header (`requestNote`), otherwise a dash. Same rule as PurchaseRequestSourceCell
+// "PO liên quan / Lý do" shows exactly one of the two, never both: the PO / reason on the request
+// header (`requestNote`, editable by the user) when there is one, otherwise the customer PO number
+// (`buyerPoNo`, via the linked LSX's order), otherwise a dash. Same rule as PurchaseRequestSourceCell
 // (purchase-requests feature). The LSX code is deliberately not shown here (PH-40).
 export function PurchaseLedgerSourceCell({
   buyerPoNo,
   requestNote,
 }: PurchaseLedgerSourceCellProps) {
-  if (buyerPoNo) {
+  if (requestNote) {
     return (
-      <span className="font-mono text-xs font-medium text-primary">
-        {buyerPoNo}
+      <span
+        className="line-clamp-2 text-xs text-muted-foreground"
+        title={requestNote}
+      >
+        {requestNote}
       </span>
     )
   }
 
-  return (
-    <span
-      className="line-clamp-2 text-xs text-muted-foreground"
-      title={requestNote ?? undefined}
-    >
-      {requestNote ?? "—"}
+  return buyerPoNo ? (
+    <span className="font-mono text-xs font-medium text-primary">
+      {buyerPoNo}
     </span>
+  ) : (
+    <span className="text-xs text-muted-foreground">—</span>
   )
 }
 

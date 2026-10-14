@@ -14,7 +14,7 @@ export function PurchaseRequestNoteField({
     return (
       <div className="space-y-1">
         <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          Ghi chú
+          PO / Lý do
         </p>
         <p className="text-sm font-medium whitespace-pre-wrap text-foreground">
           {note ?? "—"}
@@ -29,12 +29,12 @@ export function PurchaseRequestNoteField({
         htmlFor="purchase-request-note"
         className="block text-xs font-medium tracking-wide text-muted-foreground uppercase"
       >
-        Ghi chú
+        PO / Lý do
       </label>
       <Textarea
         id="purchase-request-note"
         className="min-h-16 w-full resize-y bg-card text-sm"
-        placeholder="Nhập ghi chú"
+        placeholder="Nhập số PO hoặc lý do"
         maxLength={1000}
         disabled={draft.isPending}
         value={draft.value}
