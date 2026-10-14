@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
@@ -46,6 +47,7 @@ export type OutsourcingReceiptItem = {
   itemName: string
   item: { id: string; code: string; name: string } | null
   unit: Unit | null
+  image: FileResource | null
   operationCode: string
   operationName: string
   quantity: number
@@ -109,6 +111,7 @@ export type PendingOrderItem = {
   itemName: string
   item: { code: string; name: string } | null
   unit: { name: string } | null
+  image: FileResource | null
   operationCode: string
   operationName: string
   quantity: number // SL đã gửi của dòng OS-OUT gốc

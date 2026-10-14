@@ -2,6 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import type { OutsourcingOrderItem } from "@/lib/types/outsourcing-order.type"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const decimalFormatter = new Intl.NumberFormat("vi-VN", {
@@ -31,6 +32,14 @@ export const outsourcingOrderItemsColumns = itemColumnHelper.columns([
       cellClassName: "truncate font-mono text-xs text-muted-foreground",
     },
     cell: ({ row }) => row.original.productionJob?.code ?? "—",
+  }),
+  itemColumnHelper.display({
+    id: "image",
+    header: "Hình ảnh",
+    meta: { headerClassName: "w-20 text-center" },
+    cell: ({ row }) => (
+      <ItemImageCell image={row.original.image} name={row.original.itemName} />
+    ),
   }),
   itemColumnHelper.display({
     id: "item",

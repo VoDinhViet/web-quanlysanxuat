@@ -57,6 +57,7 @@ function buildPickedOutsourcingReceiptItem(
     productionJobCode: row.jobCode,
     itemCode: row.itemCode,
     itemName: row.itemName,
+    image: row.image,
     unitName: row.unit?.name ?? "—",
     operationCode: row.operationCode,
     operationName: row.operationName,

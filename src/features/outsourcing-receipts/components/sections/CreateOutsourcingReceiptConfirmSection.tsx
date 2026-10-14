@@ -163,7 +163,7 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
                     <TableCell
                       colSpan={createOutsourcingReceiptConfirmColumns.length}
                     >
-                      <TableEmpty colSpan={9} title="Chưa có dòng nào" />
+                      <TableEmpty colSpan={10} title="Chưa có dòng nào" />
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -189,7 +189,7 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
               </TableBody>
               <TableFooter>
                 <TableRow className="h-12">
-                  <TableCell colSpan={5} className="font-medium">
+                  <TableCell colSpan={6} className="font-medium">
                     Tổng
                   </TableCell>
                   <TableCell className="text-right font-medium tabular-nums">

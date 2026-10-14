@@ -37,6 +37,8 @@ const createOutsourcingOrderItemFields = {
       name: z.string(),
     })
     .nullable(),
+  // UI-only: ảnh node BOM để hiển thị lại ở bước ①/③, không gửi lên BE.
+  image: z.object({ url: z.string() }).nullable().optional(),
   plannedQuantity: z.number(),
   sentQuantity: z.number(),
   remainingQuantity: z.number(),

@@ -102,7 +102,7 @@ export function OutsourcingOrderItemsCard({
             </TableBody>
             <TableFooter>
               <TableRow className="h-12">
-                <TableCell colSpan={5} className="font-medium">
+                <TableCell colSpan={6} className="font-medium">
                   Tổng
                 </TableCell>
                 <TableCell className="text-right font-medium tabular-nums">

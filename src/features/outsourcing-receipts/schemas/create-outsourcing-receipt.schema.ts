@@ -18,6 +18,8 @@ const createOutsourcingReceiptItemFields = {
   productionJobCode: z.string().nullable(),
   itemCode: z.string(),
   itemName: z.string(),
+  // UI-only: ảnh node BOM để hiển thị lại ở bước ①/③, không gửi lên BE.
+  image: z.object({ url: z.string() }).nullable().optional(),
   unitName: z.string(),
   operationCode: z.string(),
   operationName: z.string(),

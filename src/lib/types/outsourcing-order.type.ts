@@ -1,5 +1,6 @@
 // Domain types for Gia công ngoài — Xuất đi gia công (OS-OUT).
 
+import type { FileResource } from "@/lib/types/file.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
@@ -75,6 +76,7 @@ export type OutsourcingOrderItem = {
   itemName: string
   item: { id: string; code: string; name: string } | null
   unit: Unit | null
+  image: FileResource | null // ảnh node BOM của Job
   productionJob: { id: string; code: string } | null
   operationCode: string
   operationName: string
@@ -129,6 +131,7 @@ export type OutsourceableOperation = {
     name: string
   }
   unit: Unit | null // chỉ khi node là DIRECT
+  image: FileResource | null // ảnh node BOM của Job
   plannedQuantity: number // SL định mức (theo Job) — đóng băng lúc duyệt LSX
   sentQuantity: number // SL đã gửi (OS-OUT trước, POSTED)
   remainingQuantity: number // Còn được phép gửi = plannedQuantity − sentQuantity (BE tính SQL)

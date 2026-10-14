@@ -5,6 +5,7 @@ import { DateTime } from "luxon"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import type { PendingOrderItem } from "@/lib/types/outsourcing-receipt.type"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -104,6 +105,17 @@ export function buildCreateOutsourcingReceiptPickerColumns({
         cellClassName: "font-mono text-xs text-muted-foreground",
       },
       cell: ({ getValue }) => getValue() ?? "—",
+    }),
+    pendingOrderItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: { headerClassName: "w-20 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.itemName}
+        />
+      ),
     }),
     pendingOrderItemColumnHelper.display({
       id: "item",

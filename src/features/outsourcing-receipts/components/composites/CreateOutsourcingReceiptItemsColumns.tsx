@@ -13,6 +13,7 @@ import {
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { CreateOutsourcingReceiptItemValue } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -53,6 +54,17 @@ export function buildCreateOutsourcingReceiptItemColumns({
         >
           {getValue()}
         </Link>
+      ),
+    }),
+    createOutsourcingReceiptItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: { headerClassName: "w-20 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.itemName}
+        />
       ),
     }),
     createOutsourcingReceiptItemColumnHelper.display({

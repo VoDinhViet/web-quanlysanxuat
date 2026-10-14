@@ -12,6 +12,7 @@ import {
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import type { CreateOutsourcingOrderItemValue } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -49,6 +50,17 @@ export function buildCreateOutsourcingOrderItemColumns({
         headerClassName: "min-w-24",
         cellClassName: "font-mono text-xs text-muted-foreground",
       },
+    }),
+    createOutsourcingOrderItemColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: { headerClassName: "w-20 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.bomItem.name}
+        />
+      ),
     }),
     createOutsourcingOrderItemColumnHelper.display({
       id: "item",

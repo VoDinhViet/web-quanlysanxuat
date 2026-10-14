@@ -2,6 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import type { CreateOutsourcingOrderItemValue } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const confirmColumnHelper = createColumnHelper<
   typeof appTableFeatures,
@@ -26,6 +27,17 @@ export const createOutsourcingOrderConfirmColumns = confirmColumnHelper.columns(
         headerClassName: "w-24",
         cellClassName: "truncate font-mono text-xs text-muted-foreground",
       },
+    }),
+    confirmColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: { headerClassName: "w-20 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.bomItem.name}
+        />
+      ),
     }),
     confirmColumnHelper.display({
       id: "item",

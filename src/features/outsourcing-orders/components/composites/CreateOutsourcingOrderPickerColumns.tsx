@@ -3,6 +3,7 @@ import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -71,6 +72,17 @@ export function buildCreateOutsourcingOrderPickerColumns({
         headerClassName: "min-w-24",
         cellClassName: "font-mono text-xs text-muted-foreground",
       },
+    }),
+    outsourcingOrderPickerColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: { headerClassName: "w-20 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.bomItem.name}
+        />
+      ),
     }),
     outsourcingOrderPickerColumnHelper.display({
       id: "item",

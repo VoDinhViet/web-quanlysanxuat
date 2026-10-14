@@ -3,6 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import type { OutsourcingReceiptItem } from "@/lib/types/outsourcing-receipt.type"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const decimalFormatter = new Intl.NumberFormat("vi-VN", {
@@ -39,6 +40,14 @@ export const outsourcingReceiptItemsColumns = itemColumnHelper.columns([
       >
         {row.original.outsourcingOrder.code}
       </Link>
+    ),
+  }),
+  itemColumnHelper.display({
+    id: "image",
+    header: "Hình ảnh",
+    meta: { headerClassName: "w-20 text-center" },
+    cell: ({ row }) => (
+      <ItemImageCell image={row.original.image} name={row.original.itemName} />
     ),
   }),
   itemColumnHelper.display({

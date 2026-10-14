@@ -3,6 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import type { CreateOutsourcingReceiptItemValue } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
+import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
 const confirmColumnHelper = createColumnHelper<
   typeof appTableFeatures,
@@ -30,6 +31,17 @@ export const createOutsourcingReceiptConfirmColumns =
         >
           {getValue()}
         </Link>
+      ),
+    }),
+    confirmColumnHelper.display({
+      id: "image",
+      header: "Hình ảnh",
+      meta: { headerClassName: "w-20 text-center" },
+      cell: ({ row }) => (
+        <ItemImageCell
+          image={row.original.image}
+          name={row.original.itemName}
+        />
       ),
     }),
     confirmColumnHelper.display({
