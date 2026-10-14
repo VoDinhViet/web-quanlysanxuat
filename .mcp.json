@@ -14,15 +14,6 @@
         "@figwright/mcp@latest"
       ]
     },
-    "codegraph": {
-      "type": "stdio",
-      "command": "codegraph",
-      "args": [
-        "serve",
-        "--mcp"
-      ],
-      "env": {}
-    },
     "filesystem": {
       "type": "stdio",
       "command": "npx",

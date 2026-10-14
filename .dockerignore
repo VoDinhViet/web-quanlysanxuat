@@ -20,7 +20,6 @@ dist-ssr
 .codegraph
 .design-sync
 .ds-sync
-ds-bundle
 docs
 do
 README.md

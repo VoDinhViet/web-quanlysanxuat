@@ -14,3 +14,4 @@ Detailed conventions are split into topic files:
 @.claude/rules/architecture.md
 @.claude/rules/code-style.md
 @.claude/rules/type-safety-and-security.md
+@.claude/rules/design.md
