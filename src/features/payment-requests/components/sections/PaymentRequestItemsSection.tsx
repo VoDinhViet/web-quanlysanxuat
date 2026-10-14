@@ -10,9 +10,12 @@ import {
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { PaymentRequestInvoiceField } from "@/features/payment-requests/components/composites/PaymentRequestInvoiceField"
 import { currencyFormatter } from "@/lib/currency"
 import { appTableFeatures } from "@/lib/table-features"
 import { cn } from "@/lib/utils"
+import { PaymentRequestStatus } from "@/lib/types/payment-request.type"
+import { toVietnameseCurrencyWords } from "@/lib/vietnamese-number-words"
 import type {
   PaymentRequestDetail,
   PaymentRequestItem,
@@ -100,20 +103,14 @@ const itemColumns = col.columns([
 
 type FooterRowProps = {
   label: string
-  note?: string
   value: number
 }
 
-function FooterRow({ label, note, value }: FooterRowProps) {
+function FooterRow({ label, value }: FooterRowProps) {
   return (
-    <div className="flex items-start justify-between gap-4">
-      <dt className="text-muted-foreground">
-        {label}
-        {note && (
-          <span className="block text-xs text-muted-foreground/80">{note}</span>
-        )}
-      </dt>
-      <dd className="whitespace-nowrap tabular-nums">
+    <div className="flex items-center justify-between gap-4">
+      <dt>{label}</dt>
+      <dd className="font-medium whitespace-nowrap text-foreground tabular-nums">
         {currencyFormatter.format(value)} VND
       </dd>
     </div>
@@ -187,20 +184,66 @@ export function PaymentRequestItemsSection({
         </Table>
       )}
 
-      {/* Cảnh báo nhận thiếu SL */}
-      {shortageCount > 0 && (
-        <div className="flex items-center gap-2 border-t border-border bg-warning/10 px-4 py-2.5 text-xs font-medium text-warning sm:px-5">
-          <TriangleAlert className="size-3.5 shrink-0" />
-          Đã nhận thiếu {shortageCount}/{paymentRequest.items.length} dòng so
-          với đơn đặt.
-        </div>
-      )}
-
-      {/* Cách ra số đề nghị chi: tiền hàng + VAT + chi phí khác của PO − tạm ứng NCC */}
       {paymentRequest.items.length > 0 && (
-        <div className="flex justify-end border-t border-border px-4 py-4 sm:px-5">
-          <dl className="w-full max-w-md overflow-hidden rounded-lg border border-border bg-card text-sm">
-            <div className="flex flex-col gap-2 px-4 py-3">
+        <div className="grid grid-cols-1 gap-6 border-t border-border px-4 py-4 sm:px-5 lg:grid-cols-2 lg:gap-10">
+          {/* Cột trái: cảnh báo, ghi chú và số tiền bằng chữ */}
+          <div className="flex flex-col justify-between gap-4 text-xs">
+            <div className="space-y-4">
+              <div className="max-w-sm">
+                <PaymentRequestInvoiceField
+                  paymentRequestId={paymentRequest.id}
+                  supplierInvoiceNo={paymentRequest.supplierInvoiceNo}
+                  editable={
+                    paymentRequest.status !== PaymentRequestStatus.CANCELLED
+                  }
+                />
+              </div>
+              {shortageCount > 0 && (
+                <p className="flex items-start gap-2 rounded-lg bg-warning/10 px-3 py-2 font-medium text-warning">
+                  <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />
+                  Đã nhận thiếu {shortageCount}/{paymentRequest.items.length}{" "}
+                  dòng so với đơn đặt.
+                </p>
+              )}
+              {paymentRequest.otherCostNote && (
+                <p className="text-muted-foreground">
+                  <span className="font-medium text-foreground">
+                    Chi phí khác:
+                  </span>{" "}
+                  {paymentRequest.otherCostNote}
+                </p>
+              )}
+              {paymentRequest.advancePaymentNote && (
+                <p className="text-muted-foreground">
+                  <span className="font-medium text-foreground">
+                    Tạm ứng NCC:
+                  </span>{" "}
+                  {paymentRequest.advancePaymentNote}
+                </p>
+              )}
+              {paymentRequest.purchaseOrderNote && (
+                <p className="whitespace-pre-line text-muted-foreground">
+                  <span className="font-medium text-foreground">
+                    Ghi chú PO:
+                  </span>{" "}
+                  {paymentRequest.purchaseOrderNote}
+                </p>
+              )}
+            </div>
+
+            <p className="border-t border-border/40 pt-3">
+              <span className="text-muted-foreground">
+                Số tiền viết bằng chữ:{" "}
+              </span>
+              <span className="font-medium text-foreground italic">
+                {toVietnameseCurrencyWords(paymentRequest.requestedAmount)}
+              </span>
+            </p>
+          </div>
+
+          {/* Cột phải: cách ra số đề nghị chi = tiền hàng + VAT + chi phí khác của PO − tạm ứng NCC */}
+          <div className="flex flex-col gap-4 lg:border-l lg:border-border/60 lg:pl-10">
+            <dl className="space-y-2.5 text-xs text-muted-foreground">
               <FooterRow
                 label="Thành tiền (chưa thuế)"
                 value={paymentRequest.subtotal}
@@ -211,39 +254,34 @@ export function PaymentRequestItemsSection({
               />
               <FooterRow
                 label="Chi phí khác"
-                note={paymentRequest.otherCostNote || undefined}
                 value={paymentRequest.otherCost}
               />
-            </div>
-
-            <div className="flex flex-col gap-2 border-t border-border px-4 py-3">
-              <div className="flex items-center justify-between gap-4 font-medium text-foreground">
-                <dt>Tổng giá trị PO</dt>
-                <dd className="whitespace-nowrap tabular-nums">
-                  {currencyFormatter.format(
-                    paymentRequest.purchaseOrderTotalAmount
-                  )}{" "}
-                  VND
-                </dd>
-              </div>
+              <FooterRow
+                label="Tổng giá trị PO"
+                value={paymentRequest.purchaseOrderTotalAmount}
+              />
               {paymentRequest.advancePaymentAmount > 0 && (
                 <FooterRow
                   label="Đã tạm ứng NCC"
-                  note={paymentRequest.advancePaymentNote || undefined}
                   value={-paymentRequest.advancePaymentAmount}
                 />
               )}
-            </div>
+            </dl>
 
-            <div className="flex items-center justify-between gap-4 border-t border-border bg-primary/5 px-4 py-3">
-              <dt className="text-xs font-medium tracking-wide text-foreground uppercase">
+            <div className="flex items-baseline justify-between border-t border-border/60 pt-3">
+              <span className="font-heading text-sm font-medium text-foreground">
                 Còn lại phải thanh toán
-              </dt>
-              <dd className="text-sm font-semibold whitespace-nowrap text-foreground tabular-nums">
-                {currencyFormatter.format(paymentRequest.requestedAmount)} VND
-              </dd>
+              </span>
+              <div className="text-right">
+                <span className="font-mono text-2xl font-semibold tracking-tight text-primary tabular-nums">
+                  {currencyFormatter.format(paymentRequest.requestedAmount)}
+                </span>
+                <span className="ml-1 text-xs font-medium text-primary">
+                  VND
+                </span>
+              </div>
             </div>
-          </dl>
+          </div>
         </div>
       )}
     </div>

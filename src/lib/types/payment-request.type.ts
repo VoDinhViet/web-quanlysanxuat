@@ -58,6 +58,8 @@ export type PaymentRequest = {
   /** Tiền đã tạm ứng cho NCC, đã trừ khỏi `requestedAmount`. */
   advancePaymentAmount: number
   requestedAmount: number
+  /** Số hóa đơn NCC do người dùng nhập. */
+  supplierInvoiceNo: string | null
   status: PaymentRequestStatus
   createdAt: string
 }
@@ -89,6 +91,8 @@ export type PaymentRequestDetail = {
   /** Tiền đã tạm ứng cho NCC + diễn giải; `requestedAmount` = tổng tiền PO − tạm ứng. */
   advancePaymentAmount: number
   advancePaymentNote: string | null
+  purchaseOrderNote: string | null
+  supplierInvoiceNo: string | null
   /** Cách ra tổng tiền PO: tiền hàng + VAT + chi phí khác. */
   subtotal: number
   vatPercent: number

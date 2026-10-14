@@ -76,6 +76,12 @@ export function PaymentRequestPrintSheet({
           <span className="font-medium">Hạn thanh toán:</span>{" "}
           {DateTime.fromISO(paymentRequest.dueDate).toFormat("dd/MM/yyyy")}
         </p>
+        {paymentRequest.supplierInvoiceNo ? (
+          <p>
+            <span className="font-medium">Số hóa đơn:</span>{" "}
+            {paymentRequest.supplierInvoiceNo}
+          </p>
+        ) : null}
       </div>
 
       <table className="mt-4 w-full border-collapse text-xs">
@@ -175,6 +181,13 @@ export function PaymentRequestPrintSheet({
         <span className="font-medium">Bằng chữ:</span>{" "}
         {toVietnameseCurrencyWords(paymentRequest.requestedAmount)} chẵn.
       </p>
+
+      {paymentRequest.purchaseOrderNote ? (
+        <p className="mt-2 text-xs whitespace-pre-line">
+          <span className="font-medium">Ghi chú PO:</span>{" "}
+          {paymentRequest.purchaseOrderNote}
+        </p>
+      ) : null}
 
       {paymentRequest.note ? (
         <p className="mt-2 text-xs">

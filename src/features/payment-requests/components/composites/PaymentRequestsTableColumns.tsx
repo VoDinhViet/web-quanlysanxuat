@@ -76,6 +76,12 @@ export const paymentRequestsColumns = col.columns([
     cell: ({ getValue }) => <PaymentRequestAmountCell value={getValue()} />,
   }),
 
+  col.accessor("supplierInvoiceNo", {
+    header: "Số hóa đơn",
+    meta: { headerClassName: "min-w-32" },
+    cell: ({ getValue }) => getValue() ?? "—",
+  }),
+
   col.accessor("status", {
     header: "Trạng thái",
     meta: {

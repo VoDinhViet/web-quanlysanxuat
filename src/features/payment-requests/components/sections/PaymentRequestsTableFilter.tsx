@@ -231,7 +231,7 @@ export function PaymentRequestsTableFilter() {
               <Input
                 id="pr-search"
                 className="pr-9 text-xs placeholder:text-muted-foreground/75"
-                placeholder="Mã YCTT, Mã PO..."
+                placeholder="Mã YCTT, Mã PO, Số hóa đơn..."
                 value={q}
                 onChange={(event) => {
                   setQ(event.target.value)
