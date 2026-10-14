@@ -54,8 +54,10 @@ export type PaymentRequest = {
   code: string
   purchaseOrder: PaymentRequestPoRef
   supplier: PaymentRequestSupplierRef
-  poValue: number
-  requestValue: number
+  purchaseOrderTotalAmount: number
+  /** Tiền đã tạm ứng cho NCC, đã trừ khỏi `requestedAmount`. */
+  advancePaymentAmount: number
+  requestedAmount: number
   status: PaymentRequestStatus
   createdAt: string
 }
@@ -82,9 +84,12 @@ export type PaymentRequestDetail = {
   code: string
   purchaseOrder: PaymentRequestPoRef
   supplier: PaymentRequestSupplierRef
-  poValue: number
-  requestValue: number
-  /** Cách ra `requestValue`: tiền hàng + VAT + chi phí khác của PO. */
+  purchaseOrderTotalAmount: number
+  requestedAmount: number
+  /** Tiền đã tạm ứng cho NCC + diễn giải; `requestedAmount` = tổng tiền PO − tạm ứng. */
+  advancePaymentAmount: number
+  advancePaymentNote: string | null
+  /** Cách ra tổng tiền PO: tiền hàng + VAT + chi phí khác. */
   subtotal: number
   vatPercent: number
   vatAmount: number

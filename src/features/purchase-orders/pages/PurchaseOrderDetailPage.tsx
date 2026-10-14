@@ -31,6 +31,10 @@ export function PurchaseOrderDetailPage() {
   const editable =
     useHasPermission("purchasing:update") &&
     purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION
+  // Tạm ứng NCC sửa được cả khi PO đã đặt (tới khi YCTT đã chi — BE chặn bằng E284).
+  const advancePaymentEditable =
+    useHasPermission("purchasing:update") &&
+    purchaseOrder.status !== PurchaseOrderStatus.CANCELLED
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -67,6 +71,7 @@ export function PurchaseOrderDetailPage() {
             key={purchaseOrder.updatedAt}
             purchaseOrder={purchaseOrder}
             editable={editable}
+            advancePaymentEditable={advancePaymentEditable}
           />
         </PurchaseOrderItemsSection>
 

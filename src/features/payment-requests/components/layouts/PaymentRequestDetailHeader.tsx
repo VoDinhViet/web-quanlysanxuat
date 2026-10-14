@@ -72,7 +72,7 @@ export function PaymentRequestDetailHeader({
         />
         <MetaField
           label="Giá trị PO"
-          value={`${vndFormatter.format(paymentRequest.poValue)} ₫`}
+          value={`${vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} ₫`}
         />
         <MetaField
           label="Ngày tạo YCTT"

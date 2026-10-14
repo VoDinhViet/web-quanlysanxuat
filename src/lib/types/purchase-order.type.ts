@@ -187,8 +187,13 @@ export type PurchaseOrderDetail = {
   /** Chi phí khác của cả đơn (vận chuyển, bốc xếp...) + diễn giải. */
   otherCost: number
   otherCostNote: string | null
-  /** Tổng tiền = subtotal + vatAmount + otherCost — số mà yêu cầu thanh toán chốt. */
+  /** Tổng tiền = subtotal + vatAmount + otherCost. */
   totalAmount: number
+  /** Tiền đã tạm ứng/thanh toán trước cho NCC + diễn giải; trừ vào tổng tiền ra `balanceDue`. */
+  advancePaymentAmount: number
+  advancePaymentNote: string | null
+  /** Còn lại phải thanh toán = totalAmount − advancePaymentAmount (≥ 0) — số YCTT chốt. */
+  balanceDue: number
   quotation: { id: string; code: string } | null
   quotationStatus: PurchaseQuotationStatus | null
   /** True when cancelling can also reopen the source RFQ (`reopenQuotation`): the RFQ is

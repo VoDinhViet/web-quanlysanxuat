@@ -98,11 +98,24 @@ const itemColumns = col.columns([
   }),
 ])
 
-function FooterRow({ label, value }: { label: string; value: number }) {
+type FooterRowProps = {
+  label: string
+  note?: string
+  value: number
+}
+
+function FooterRow({ label, note, value }: FooterRowProps) {
   return (
-    <div className="flex items-center justify-between gap-3">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="tabular-nums">{currencyFormatter.format(value)} VND</dd>
+    <div className="flex items-start justify-between gap-4">
+      <dt className="text-muted-foreground">
+        {label}
+        {note && (
+          <span className="block text-xs text-muted-foreground/80">{note}</span>
+        )}
+      </dt>
+      <dd className="whitespace-nowrap tabular-nums">
+        {currencyFormatter.format(value)} VND
+      </dd>
     </div>
   )
 }
@@ -183,34 +196,55 @@ export function PaymentRequestItemsSection({
         </div>
       )}
 
-      {/* Cách ra số đề nghị chi: tiền hàng + VAT + chi phí khác của PO */}
+      {/* Cách ra số đề nghị chi: tiền hàng + VAT + chi phí khác của PO − tạm ứng NCC */}
       {paymentRequest.items.length > 0 && (
-        <dl className="ml-auto flex w-full max-w-sm flex-col gap-1.5 border-t border-border bg-muted/20 px-4 py-3 text-sm sm:px-5">
-          <FooterRow
-            label="Thành tiền (chưa thuế)"
-            value={paymentRequest.subtotal}
-          />
-          <FooterRow
-            label={`Thuế VAT (${currencyFormatter.format(paymentRequest.vatPercent)}%)`}
-            value={paymentRequest.vatAmount}
-          />
-          <FooterRow
-            label={
-              paymentRequest.otherCostNote
-                ? `Chi phí khác (${paymentRequest.otherCostNote})`
-                : "Chi phí khác"
-            }
-            value={paymentRequest.otherCost}
-          />
-          <div className="flex items-center justify-between gap-3 border-t border-border pt-2">
-            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              Tổng cộng
-            </dt>
-            <dd className="font-medium text-foreground tabular-nums">
-              {currencyFormatter.format(paymentRequest.requestValue)} VND
-            </dd>
-          </div>
-        </dl>
+        <div className="flex justify-end border-t border-border px-4 py-4 sm:px-5">
+          <dl className="w-full max-w-md overflow-hidden rounded-lg border border-border bg-card text-sm">
+            <div className="flex flex-col gap-2 px-4 py-3">
+              <FooterRow
+                label="Thành tiền (chưa thuế)"
+                value={paymentRequest.subtotal}
+              />
+              <FooterRow
+                label={`Thuế VAT (${currencyFormatter.format(paymentRequest.vatPercent)}%)`}
+                value={paymentRequest.vatAmount}
+              />
+              <FooterRow
+                label="Chi phí khác"
+                note={paymentRequest.otherCostNote || undefined}
+                value={paymentRequest.otherCost}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-border px-4 py-3">
+              <div className="flex items-center justify-between gap-4 font-medium text-foreground">
+                <dt>Tổng giá trị PO</dt>
+                <dd className="whitespace-nowrap tabular-nums">
+                  {currencyFormatter.format(
+                    paymentRequest.purchaseOrderTotalAmount
+                  )}{" "}
+                  VND
+                </dd>
+              </div>
+              {paymentRequest.advancePaymentAmount > 0 && (
+                <FooterRow
+                  label="Đã tạm ứng NCC"
+                  note={paymentRequest.advancePaymentNote || undefined}
+                  value={-paymentRequest.advancePaymentAmount}
+                />
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-4 border-t border-border bg-primary/5 px-4 py-3">
+              <dt className="text-xs font-medium tracking-wide text-foreground uppercase">
+                Còn lại phải thanh toán
+              </dt>
+              <dd className="text-sm font-semibold whitespace-nowrap text-foreground tabular-nums">
+                {currencyFormatter.format(paymentRequest.requestedAmount)} VND
+              </dd>
+            </div>
+          </dl>
+        </div>
       )}
     </div>
   )

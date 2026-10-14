@@ -58,7 +58,7 @@ export const paymentRequestsColumns = col.columns([
     cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
   }),
 
-  col.accessor("poValue", {
+  col.accessor("purchaseOrderTotalAmount", {
     header: "Giá trị PO (VND)",
     meta: {
       headerClassName: "min-w-36 text-right",
@@ -67,7 +67,7 @@ export const paymentRequestsColumns = col.columns([
     cell: ({ getValue }) => <PaymentRequestAmountCell value={getValue()} />,
   }),
 
-  col.accessor("requestValue", {
+  col.accessor("requestedAmount", {
     header: "Giá trị YCTT (VND)",
     meta: {
       headerClassName: "min-w-36 text-right",

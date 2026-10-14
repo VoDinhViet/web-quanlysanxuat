@@ -131,18 +131,49 @@ export function PaymentRequestPrintSheet({
               colSpan={6}
               className="border border-black px-2 py-1 text-right font-medium"
             >
-              Tổng cộng
+              {paymentRequest.advancePaymentAmount > 0
+                ? "Tổng giá trị PO"
+                : "Tổng cộng"}
             </td>
             <td className="border border-black px-2 py-1 text-right font-medium">
-              {vndFormatter.format(paymentRequest.requestValue)} đ
+              {vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} đ
             </td>
           </tr>
+          {paymentRequest.advancePaymentAmount > 0 && (
+            <>
+              <tr>
+                <td
+                  colSpan={6}
+                  className="border border-black px-2 py-1 text-right"
+                >
+                  Đã tạm ứng NCC
+                  {paymentRequest.advancePaymentNote
+                    ? ` (${paymentRequest.advancePaymentNote})`
+                    : ""}
+                </td>
+                <td className="border border-black px-2 py-1 text-right">
+                  − {vndFormatter.format(paymentRequest.advancePaymentAmount)} đ
+                </td>
+              </tr>
+              <tr>
+                <td
+                  colSpan={6}
+                  className="border border-black px-2 py-1 text-right font-medium"
+                >
+                  Còn lại phải thanh toán
+                </td>
+                <td className="border border-black px-2 py-1 text-right font-medium">
+                  {vndFormatter.format(paymentRequest.requestedAmount)} đ
+                </td>
+              </tr>
+            </>
+          )}
         </tfoot>
       </table>
 
       <p className="mt-3 text-xs">
         <span className="font-medium">Bằng chữ:</span>{" "}
-        {toVietnameseCurrencyWords(paymentRequest.requestValue)} chẵn.
+        {toVietnameseCurrencyWords(paymentRequest.requestedAmount)} chẵn.
       </p>
 
       {paymentRequest.note ? (

@@ -4,6 +4,7 @@ import {
   BillList,
   Delivery,
   FileText,
+  HandMoney,
   Notes,
   Sale,
   WalletMoney,
@@ -17,6 +18,7 @@ import { NumericFormat } from "react-number-format"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
+import { updatePurchaseOrderAdvancePayment } from "@/features/purchase-orders/api/server-functions/update-purchase-order-advance-payment.api"
 import { currencyFormatter } from "@/lib/currency"
 import { cn } from "@/lib/utils"
 import { toVietnameseCurrencyWords } from "@/lib/vietnamese-number-words"
@@ -25,6 +27,8 @@ import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 type PurchaseOrderCostsSectionProps = {
   purchaseOrder: PurchaseOrderDetail
   editable: boolean
+  // Tạm ứng NCC sửa được rộng hơn VAT/chi phí khác: cả khi PO đã đặt, tới khi YCTT đã chi.
+  advancePaymentEditable: boolean
 }
 
 type CostFieldsPayload = Partial<
@@ -98,9 +102,56 @@ function CostRow({
 export function PurchaseOrderCostsSection({
   purchaseOrder,
   editable,
+  advancePaymentEditable,
 }: PurchaseOrderCostsSectionProps) {
   const queryClient = useQueryClient()
   const updatePurchaseOrderFn = useServerFn(updatePurchaseOrder)
+  const updateAdvancePaymentFn = useServerFn(updatePurchaseOrderAdvancePayment)
+  const [advancePaymentAmount, setAdvancePaymentAmount] = useState<
+    number | undefined
+  >(purchaseOrder.advancePaymentAmount)
+  const [advancePaymentNote, setAdvancePaymentNote] = useState(
+    purchaseOrder.advancePaymentNote ?? ""
+  )
+  const hasAdvancePayment = purchaseOrder.advancePaymentAmount > 0
+  // Ẩn hẳn khối tạm ứng khi không sửa được và chưa có tạm ứng — giữ giao diện cũ cho PO không dùng.
+  const showAdvancePayment = advancePaymentEditable || hasAdvancePayment
+  const payableAmount = purchaseOrder.balanceDue
+
+  const { mutate: saveAdvancePayment } = useMutation({
+    mutationFn: (payload: {
+      advancePaymentAmount: number
+      advancePaymentNote: string | null
+    }) =>
+      updateAdvancePaymentFn({
+        data: { purchaseOrderId: purchaseOrder.id, ...payload },
+      }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["purchase-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["payment-requests"] }),
+      ])
+    },
+    onError: (error) => {
+      toast.error(error.message)
+      setAdvancePaymentAmount(purchaseOrder.advancePaymentAmount)
+      setAdvancePaymentNote(purchaseOrder.advancePaymentNote ?? "")
+    },
+  })
+
+  function submitAdvancePayment(next: { amount: number; note: string }) {
+    const nextNote = next.note.trim() || null
+    if (
+      next.amount === purchaseOrder.advancePaymentAmount &&
+      nextNote === purchaseOrder.advancePaymentNote
+    ) {
+      return
+    }
+    saveAdvancePayment({
+      advancePaymentAmount: next.amount,
+      advancePaymentNote: nextNote,
+    })
+  }
   const [vatPercent, setVatPercent] = useState<number | undefined>(
     purchaseOrder.vatPercent
   )
@@ -168,10 +219,43 @@ export function PurchaseOrderCostsSection({
           <p>
             <span className="text-muted-foreground">Bằng chữ: </span>
             <span className="font-medium text-foreground italic">
-              {toVietnameseCurrencyWords(purchaseOrder.totalAmount)}
+              {toVietnameseCurrencyWords(
+                showAdvancePayment ? payableAmount : purchaseOrder.totalAmount
+              )}
             </span>
           </p>
         </div>
+
+        {showAdvancePayment && (
+          <div className="space-y-2">
+            <label
+              htmlFor="purchase-order-advance-payment-note"
+              className="flex items-center gap-2 text-sm font-medium text-foreground"
+            >
+              <Notes className="size-4 text-muted-foreground" />
+              Diễn giải tạm ứng
+            </label>
+            {advancePaymentEditable ? (
+              <Input
+                id="purchase-order-advance-payment-note"
+                placeholder="Vd: Chuyển khoản đợt 1 ngày 10/10"
+                maxLength={255}
+                value={advancePaymentNote}
+                onChange={(event) => setAdvancePaymentNote(event.target.value)}
+                onBlur={() =>
+                  submitAdvancePayment({
+                    amount: advancePaymentAmount ?? 0,
+                    note: advancePaymentNote,
+                  })
+                }
+              />
+            ) : (
+              <p className="rounded-md bg-muted/40 px-3 py-2.5 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
+                {purchaseOrder.advancePaymentNote ?? "Không có diễn giải."}
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 lg:border-l lg:border-border/60 lg:pl-10">
@@ -263,6 +347,62 @@ export function PurchaseOrderCostsSection({
             <span className="ml-1 text-xs font-medium text-primary">VNĐ</span>
           </div>
         </div>
+
+        {showAdvancePayment && (
+          <>
+            <dl className="flex flex-col gap-3.5 border-t border-border/60 pt-4">
+              <CostRow
+                icon={HandMoney}
+                label="Tạm ứng NCC"
+                controlSpansAmount={advancePaymentEditable}
+                amount={
+                  advancePaymentEditable
+                    ? undefined
+                    : `− ${currencyFormatter.format(purchaseOrder.advancePaymentAmount)}`
+                }
+                control={
+                  advancePaymentEditable ? (
+                    <SuffixedInput suffix="VNĐ">
+                      <NumericFormat
+                        customInput={Input}
+                        className="pr-12 text-right tabular-nums"
+                        placeholder="0"
+                        value={advancePaymentAmount ?? ""}
+                        decimalSeparator=","
+                        thousandSeparator="."
+                        decimalScale={2}
+                        allowNegative={false}
+                        onValueChange={(values) =>
+                          setAdvancePaymentAmount(values.floatValue)
+                        }
+                        onBlur={() =>
+                          submitAdvancePayment({
+                            amount: advancePaymentAmount ?? 0,
+                            note: advancePaymentNote,
+                          })
+                        }
+                      />
+                    </SuffixedInput>
+                  ) : undefined
+                }
+              />
+            </dl>
+
+            <div className="flex items-center justify-between gap-3 rounded-md bg-primary/5 px-3 py-3">
+              <div className="font-heading text-sm font-medium text-foreground">
+                Còn lại phải thanh toán
+              </div>
+              <div className="text-right">
+                <span className="font-mono text-2xl font-semibold tracking-tight text-primary tabular-nums">
+                  {currencyFormatter.format(payableAmount)}
+                </span>
+                <span className="ml-1 text-xs font-medium text-primary">
+                  VNĐ
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

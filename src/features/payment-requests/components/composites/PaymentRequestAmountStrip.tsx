@@ -45,8 +45,16 @@ export function PaymentRequestAmountStrip({
           Số tiền đề nghị chi
         </p>
         <p className="font-heading text-3xl font-medium tracking-tight text-foreground tabular-nums">
-          {vndFormatter.format(paymentRequest.requestValue)} ₫
+          {vndFormatter.format(paymentRequest.requestedAmount)} ₫
         </p>
+        {paymentRequest.advancePaymentAmount > 0 && (
+          <p className="text-xs text-muted-foreground tabular-nums">
+            Tổng PO{" "}
+            {vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} ₫ ·
+            đã tạm ứng{" "}
+            {vndFormatter.format(paymentRequest.advancePaymentAmount)} ₫
+          </p>
+        )}
       </div>
 
       <div className="space-y-1 text-right">
