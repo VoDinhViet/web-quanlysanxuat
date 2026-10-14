@@ -21,6 +21,15 @@ const inventoryReceiptFromPoItemFields = {
     .positive("Số lượng nhận phải lớn hơn 0")
     .optional()
     .pipe(z.number("Số lượng nhận phải lớn hơn 0")),
+  // ĐVBG của dòng PO (null nếu báo theo đơn vị chính)
+  quotationUnit: z.string().nullable().optional(),
+  // Tổng SL theo ĐVBG ghi trên PO
+  orderedQuotationQuantity: z.number().nullable().optional(),
+  // SL thực tế theo ĐVBG do kho nhập lại lần này
+  quotationQuantity: z
+    .number("Số lượng báo giá phải lớn hơn 0")
+    .positive("Số lượng báo giá phải lớn hơn 0")
+    .optional(),
   note: z.string().trim().max(500, "Ghi chú tối đa 500 ký tự"),
 }
 

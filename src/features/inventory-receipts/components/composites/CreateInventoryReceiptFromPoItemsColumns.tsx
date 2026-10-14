@@ -130,7 +130,25 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
                   item.purchaseOrderItemId
                 )
                 if (index >= 0) {
-                  itemsField.replaceValue(index, { ...item, quantity: value })
+                  const hasQuote =
+                    Boolean(item.quotationUnit?.trim()) &&
+                    item.orderedQuotationQuantity !== null &&
+                    item.orderedQuotationQuantity !== undefined &&
+                    item.requestedQuantity > 0
+                  const autoQuotationQty =
+                    hasQuote && value !== undefined
+                      ? Math.round(
+                          ((item.orderedQuotationQuantity! * value) /
+                            item.requestedQuantity) *
+                            1000
+                        ) / 1000
+                      : item.quotationQuantity
+
+                  itemsField.replaceValue(index, {
+                    ...item,
+                    quantity: value,
+                    quotationQuantity: autoQuotationQty,
+                  })
                 }
               }}
             />
@@ -143,6 +161,51 @@ export function buildCreateInventoryReceiptFromPoItemColumns({
         )
       },
     }),
+    inventoryReceiptFromPoItemColumnHelper.display({
+      id: "quotationQuantity",
+      header: "Qty BG",
+      meta: { headerClassName: "w-32 text-right" },
+      cell: ({ row }) => {
+        const item = row.original
+        if (!item.quotationUnit?.trim()) {
+          return (
+            <div className="text-right text-muted-foreground">—</div>
+          )
+        }
+
+        return (
+          <NumericCellInput
+            value={item.quotationQuantity}
+            min={0.001}
+            disabled={disabled}
+            placeholder="0"
+            onValueChange={(value) => {
+              const index = findItemIndex(
+                itemsField,
+                item.purchaseOrderItemId
+              )
+              if (index >= 0) {
+                itemsField.replaceValue(index, {
+                  ...item,
+                  quotationQuantity: value,
+                })
+              }
+            }}
+          />
+        )
+      },
+    }),
+    inventoryReceiptFromPoItemColumnHelper.accessor(
+      (row) => row.quotationUnit || "—",
+      {
+        id: "quotationUnit",
+        header: "ĐVBG",
+        meta: {
+          headerClassName: "w-20",
+          cellClassName: "text-muted-foreground",
+        },
+      }
+    ),
     inventoryReceiptFromPoItemColumnHelper.display({
       id: "note",
       header: "Ghi chú",

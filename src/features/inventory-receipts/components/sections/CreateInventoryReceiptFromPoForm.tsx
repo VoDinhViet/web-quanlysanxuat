@@ -70,12 +70,33 @@ function buildCreateInventoryReceiptPayload(
         (line) => line.id === item.purchaseOrderItemId
       )
 
+      const hasQuotationUnit =
+        Boolean(poLine?.quotationUnit?.trim()) &&
+        poLine?.quotationQuantity !== null &&
+        poLine?.quotationQuantity !== undefined
+
+      let finalQuotationQty = item.quotationQuantity
+      if (
+        (finalQuotationQty === undefined || finalQuotationQty === null) &&
+        hasQuotationUnit &&
+        poLine &&
+        poLine.quantity > 0 &&
+        item.quantity !== undefined
+      ) {
+        finalQuotationQty =
+          Math.round(
+            ((poLine.quotationQuantity! * item.quantity) / poLine.quantity) *
+              1000
+          ) / 1000
+      }
+
       return {
         itemId: item.itemId,
         itemLabel: item.itemLabel,
         itemUnit: item.itemUnit,
         purchaseOrderItemId: item.purchaseOrderItemId,
         quantity: item.quantity,
+        quotationQuantity: finalQuotationQty,
         unitPrice: poLine?.unitPrice ?? undefined,
         note: item.note,
       }
@@ -98,7 +119,7 @@ export function CreateInventoryReceiptFromPoForm() {
 
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateInventoryReceiptFromPoFormSchema>(
-      "qlsx:draft:create-inventory-receipt-from-po-v2"
+      "qlsx:draft:create-inventory-receipt-from-po-v4"
     )
   const draftRestoredRef = useRef(false)
   // "Lưu nháp" và "Xác nhận" đều đi qua form.handleSubmit() (cùng cần validate) — ref giữ hành
@@ -107,7 +128,7 @@ export function CreateInventoryReceiptFromPoForm() {
   // luôn đọc giá trị mới nhất tại thời điểm gọi.
   const shouldConfirmRef = useRef(false)
 
-  const { mutate: submit, isPending } = useMutation({
+  const { mutate: createReceipt, isPending } = useMutation({
     mutationFn: async (value: CreateInventoryReceiptFromPoFormSchema) => {
       if (!purchaseOrder) {
         throw new Error("Chưa chọn đơn mua hàng — vui lòng chọn PO khác.")
@@ -151,7 +172,7 @@ export function CreateInventoryReceiptFromPoForm() {
     validators: {
       onDynamic: createInventoryReceiptFromPoFormSchema,
     },
-    onSubmit: ({ value }) => submit(value),
+    onSubmit: ({ value }) => createReceipt(value),
   })
 
   const [step, setStep] = useState<InventoryReceiptFromPoWizardStep>("po")
@@ -198,14 +219,36 @@ export function CreateInventoryReceiptFromPoForm() {
 
       const reconciledItems = form.state.values.items
         .map((item) => {
+          const poLine = purchaseOrder.items.find(
+            (line) => line.id === item.purchaseOrderItemId
+          )
           const remaining = remainingByLineId.get(item.purchaseOrderItemId) ?? 0
+          const hasQuotationUnit =
+            Boolean(poLine?.quotationUnit?.trim()) &&
+            poLine?.quotationQuantity !== null &&
+            poLine?.quotationQuantity !== undefined
+          const currentQty =
+            item.quantity === undefined
+              ? remaining
+              : Math.min(item.quantity, remaining)
+
+          const quotationQty =
+            item.quotationQuantity ??
+            (hasQuotationUnit && poLine && poLine.quantity > 0
+              ? Math.round(
+                  ((poLine.quotationQuantity! * currentQty) /
+                    poLine.quantity) *
+                    1000
+                ) / 1000
+              : undefined)
+
           return {
             ...item,
+            quotationUnit: poLine?.quotationUnit ?? null,
+            orderedQuotationQuantity: poLine?.quotationQuantity ?? null,
+            quotationQuantity: quotationQty,
             remainingQuantity: remaining,
-            quantity:
-              item.quantity === undefined
-                ? remaining
-                : Math.min(item.quantity, remaining),
+            quantity: currentQty,
           }
         })
         .filter((item) => item.remainingQuantity > 0)
@@ -219,6 +262,17 @@ export function CreateInventoryReceiptFromPoForm() {
     const items: InventoryReceiptFromPoItemValue[] = purchaseOrder.items
       .map((line) => {
         const remaining = remainingByLineId.get(line.id) ?? 0
+        const hasQuotationUnit =
+          Boolean(line.quotationUnit?.trim()) &&
+          line.quotationQuantity !== null &&
+          line.quotationQuantity !== undefined
+        const initialQuotationQty =
+          hasQuotationUnit && line.quantity > 0
+            ? Math.round(
+                ((line.quotationQuantity! * remaining) / line.quantity) * 1000
+              ) / 1000
+            : undefined
+
         return {
           purchaseOrderItemId: line.id,
           itemId: line.purchaseRequestItem.item.id,
@@ -229,6 +283,9 @@ export function CreateInventoryReceiptFromPoForm() {
           requestedQuantity: line.quantity,
           remainingQuantity: remaining,
           quantity: remaining,
+          quotationUnit: line.quotationUnit ?? null,
+          orderedQuotationQuantity: line.quotationQuantity ?? null,
+          quotationQuantity: initialQuotationQty,
           note: line.purchaseRequestItem.note ?? "",
         }
       })
@@ -266,7 +323,7 @@ export function CreateInventoryReceiptFromPoForm() {
         form.handleSubmit()
       }}
       noValidate
-      className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_20rem]"
+      className="w-full space-y-4"
     >
       <div className="overflow-hidden rounded-lg bg-card shadow-card">
         <Tabs

@@ -1,4 +1,6 @@
-import { CheckCircle, Info } from "lucide-react"
+import { useState } from "react"
+import { CheckCircle, ChevronDown, Info } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 type HelpStep = {
   title: string
@@ -38,45 +40,71 @@ const processingLogic = [
   "Thông tin phiếu (nguồn nhập, PO/lý do, loại tài sản, kho nhận) được điền tự động từ PO.",
 ]
 
-// Sidebar tĩnh cạnh wizard — thuần nội dung hướng dẫn, không đọc form state. Tách khỏi
-// CreateInventoryReceiptFromPoConfirmSection.tsx's "Ý nghĩa trạng thái" (cái đó giải thích trạng
-// thái phiếu, còn đây giải thích cách thao tác 3 bước + quy tắc nghiệp vụ).
+// Panel hướng dẫn & quy tắc nghiệp vụ tinh gọn đặt ở dưới cùng của form tạo phiếu nhập từ PO.
 export function CreateInventoryReceiptFromPoHelpPanel() {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <div className="space-y-4 rounded-lg bg-card p-4 shadow-card sm:p-5">
-      <div>
-        <div className="flex items-center gap-1.5 font-medium text-foreground">
-          <Info className="size-4 text-primary" />
-          <span>Hướng dẫn</span>
+    <div className="rounded-lg border border-border/60 bg-card">
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-muted/40 sm:px-5"
+      >
+        <div className="flex items-center gap-2 text-xs font-medium text-foreground">
+          <Info className="size-3.5 text-primary" />
+          <span>Hướng dẫn & Quy tắc nghiệp vụ nhập kho từ PO</span>
+          <span className="text-muted-foreground font-normal">
+            ({isOpen ? "Bấm để thu gọn" : "Bấm để xem"})
+          </span>
         </div>
-        <ul className="mt-3 space-y-3">
-          {helpSteps.map((step) => (
-            <li key={step.title} className="text-xs">
-              <p className="font-medium text-foreground">{step.title}</p>
-              <ul className="mt-1 list-inside list-disc space-y-0.5 text-muted-foreground">
-                {step.tips.map((tip) => (
-                  <li key={tip}>{tip}</li>
+        <ChevronDown
+          className={cn(
+            "size-4 shrink-0 text-muted-foreground transition-transform duration-200",
+            isOpen && "rotate-180"
+          )}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="border-t border-border/50 px-4 py-4 sm:px-5">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
+              <div className="flex items-center gap-1.5 font-medium text-foreground">
+                <Info className="size-4 text-primary" />
+                <span className="text-sm">Hướng dẫn 3 bước thao tác</span>
+              </div>
+              <ul className="mt-3 space-y-3">
+                {helpSteps.map((step) => (
+                  <li key={step.title} className="text-xs">
+                    <p className="font-medium text-foreground">{step.title}</p>
+                    <ul className="mt-1 list-inside list-disc space-y-0.5 text-muted-foreground">
+                      {step.tips.map((tip) => (
+                        <li key={tip}>{tip}</li>
+                      ))}
+                    </ul>
+                  </li>
                 ))}
               </ul>
-            </li>
-          ))}
-        </ul>
-      </div>
+            </div>
 
-      <div className="border-t border-border/60 pt-4">
-        <div className="flex items-center gap-1.5 font-medium text-foreground">
-          <CheckCircle className="size-4 text-success" />
-          <span>Logic xử lý</span>
+            <div>
+              <div className="flex items-center gap-1.5 font-medium text-foreground">
+                <CheckCircle className="size-4 text-success" />
+                <span className="text-sm">Logic xử lý</span>
+              </div>
+              <ul className="mt-3 space-y-2">
+                {processingLogic.map((rule) => (
+                  <li key={rule} className="flex items-start gap-2 text-xs">
+                    <CheckCircle className="mt-0.5 size-3.5 shrink-0 text-success" />
+                    <span className="text-muted-foreground">{rule}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
-        <ul className="mt-3 space-y-2">
-          {processingLogic.map((rule) => (
-            <li key={rule} className="flex items-start gap-2 text-xs">
-              <CheckCircle className="mt-0.5 size-3.5 shrink-0 text-success" />
-              <span className="text-muted-foreground">{rule}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      )}
     </div>
   )
 }

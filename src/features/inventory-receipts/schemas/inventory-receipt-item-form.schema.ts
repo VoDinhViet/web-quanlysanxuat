@@ -24,6 +24,11 @@ export const inventoryReceiptItemFormFields = {
     .number("Đơn giá không được âm")
     .min(0, "Đơn giá không được âm")
     .optional(),
+  // SL thực tế theo ĐVBG do kho nhập lại (PH-135)
+  quotationQuantity: z
+    .number("Số lượng báo giá phải lớn hơn 0")
+    .positive("Số lượng báo giá phải lớn hơn 0")
+    .optional(),
   note: z
     .string()
     .trim()
@@ -49,5 +54,6 @@ export const inventoryReceiptItemDefaultValue: InventoryReceiptItemFormValue = {
   purchaseOrderItemId: "",
   quantity: 1,
   unitPrice: undefined,
+  quotationQuantity: undefined,
   note: "",
 }

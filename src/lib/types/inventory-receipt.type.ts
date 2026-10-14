@@ -172,6 +172,9 @@ export type InventoryReceiptItem = {
   unit: Unit
   quantity: number
   unitPrice: number | null
+  quotationUnit?: string | null
+  quotationQuantity?: number | null
+  orderedQuotationQuantity?: number | null
   note: string | null
 }
 

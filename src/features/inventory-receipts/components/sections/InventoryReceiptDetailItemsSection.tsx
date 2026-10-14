@@ -38,8 +38,10 @@ const numberFmt = new Intl.NumberFormat("vi-VN")
 // resolveInventoryReceiptItemType(receiptType), cùng khuôn CreateInventoryReceiptGenericItemsSection.tsx.
 function buildInventoryReceiptDetailItemColumns({
   itemNoun,
+  hasQuotation,
 }: {
   itemNoun: string
+  hasQuotation: boolean
 }) {
   return col.columns([
     col.display({
@@ -93,10 +95,23 @@ function buildInventoryReceiptDetailItemColumns({
         headerClassName: "min-w-24 text-right",
         cellClassName: "text-right tabular-nums text-muted-foreground",
       },
-      cell: ({ row }) =>
-        row.original.purchaseOrderItem
-          ? numberFmt.format(row.original.purchaseOrderItem.quantity)
-          : "—",
+      cell: ({ row }) => {
+        const item = row.original
+        if (!item.purchaseOrderItem) return "—"
+        return (
+          <div className="space-y-0.5">
+            <div>{numberFmt.format(item.purchaseOrderItem.quantity)}</div>
+            {item.quotationUnit &&
+              item.orderedQuotationQuantity !== null &&
+              item.orderedQuotationQuantity !== undefined && (
+                <div className="text-[11px] text-muted-foreground">
+                  ({numberFmt.format(item.orderedQuotationQuantity)}{" "}
+                  {item.quotationUnit})
+                </div>
+              )}
+          </div>
+        )
+      },
     }),
 
     col.accessor("quantity", {
@@ -170,6 +185,37 @@ function buildInventoryReceiptDetailItemColumns({
       meta: { headerClassName: "min-w-20" },
     }),
 
+    ...(hasQuotation
+      ? [
+          col.display({
+            id: "quotationQuantity",
+            header: "Qty BG",
+            meta: {
+              headerClassName: "min-w-24 text-right",
+              cellClassName: "text-right tabular-nums font-medium",
+            },
+            cell: ({ row }) => {
+              const item = row.original
+              if (!item.quotationUnit?.trim()) {
+                return <span className="text-muted-foreground">—</span>
+              }
+              return item.quotationQuantity !== null &&
+                item.quotationQuantity !== undefined
+                ? numberFmt.format(item.quotationQuantity)
+                : "—"
+            },
+          }),
+          col.accessor((row) => row.quotationUnit || "—", {
+            id: "quotationUnit",
+            header: "ĐVBG",
+            meta: {
+              headerClassName: "w-20",
+              cellClassName: "text-muted-foreground",
+            },
+          }),
+        ]
+      : []),
+
     col.accessor("unitPrice", {
       header: "Đơn giá",
       meta: {
@@ -219,9 +265,18 @@ export function InventoryReceiptDetailItemsSection({
     resolveInventoryReceiptItemType(inventoryReceipt.receiptType) === "FG"
       ? "thành phẩm"
       : "vật tư"
+
+  const hasQuotation = useMemo(
+    () =>
+      inventoryReceipt.items.some((item) =>
+        Boolean(item.quotationUnit?.trim())
+      ),
+    [inventoryReceipt.items]
+  )
+
   const columns = useMemo(
-    () => buildInventoryReceiptDetailItemColumns({ itemNoun }),
-    [itemNoun]
+    () => buildInventoryReceiptDetailItemColumns({ itemNoun, hasQuotation }),
+    [itemNoun, hasQuotation]
   )
 
   const table = useTable({
