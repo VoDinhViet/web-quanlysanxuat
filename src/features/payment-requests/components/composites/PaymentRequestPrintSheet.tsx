@@ -84,98 +84,133 @@ export function PaymentRequestPrintSheet({
         ) : null}
       </div>
 
-      <table className="mt-4 w-full border-collapse text-xs">
-        <thead>
-          <tr>
-            <th className="border border-black px-2 py-1 text-center">STT</th>
-            <th className="border border-black px-2 py-1 text-left">
-              Mã vật tư
-            </th>
-            <th className="border border-black px-2 py-1 text-left">
-              Tên vật tư / hàng hóa
-            </th>
-            <th className="border border-black px-2 py-1 text-center">ĐVT</th>
-            <th className="border border-black px-2 py-1 text-right">SL đặt</th>
-            <th className="border border-black px-2 py-1 text-right">
-              Đơn giá
-            </th>
-            <th className="border border-black px-2 py-1 text-right">
-              Thành tiền
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {paymentRequest.items.map((item, index) => (
-            <tr key={item.id}>
-              <td className="border border-black px-2 py-1 text-center">
-                {index + 1}
-              </td>
-              <td className="border border-black px-2 py-1">
-                {item.directCode}
-              </td>
-              <td className="border border-black px-2 py-1">
-                {item.directName}
-              </td>
-              <td className="border border-black px-2 py-1 text-center">
-                {item.unit}
-              </td>
-              <td className="border border-black px-2 py-1 text-right">
-                {numberFmt.format(item.orderedQty)}
-              </td>
-              <td className="border border-black px-2 py-1 text-right">
-                {numberFmt.format(item.unitPrice)}
-              </td>
-              <td className="border border-black px-2 py-1 text-right">
-                {numberFmt.format(item.lineTotal)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td
-              colSpan={6}
-              className="border border-black px-2 py-1 text-right font-medium"
-            >
-              {paymentRequest.advancePaymentAmount > 0
-                ? "Tổng giá trị PO"
-                : "Tổng cộng"}
-            </td>
-            <td className="border border-black px-2 py-1 text-right font-medium">
-              {vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} đ
-            </td>
-          </tr>
-          {paymentRequest.advancePaymentAmount > 0 && (
-            <>
+      {(() => {
+        const hasQuotation = paymentRequest.items.some((item) =>
+          Boolean(item.quotationUnit?.trim())
+        )
+        const colSpanCount = hasQuotation ? 8 : 6
+
+        return (
+          <table className="mt-4 w-full border-collapse text-xs">
+            <thead>
               <tr>
-                <td
-                  colSpan={6}
-                  className="border border-black px-2 py-1 text-right"
-                >
-                  Đã tạm ứng NCC
-                  {paymentRequest.advancePaymentNote
-                    ? ` (${paymentRequest.advancePaymentNote})`
-                    : ""}
-                </td>
-                <td className="border border-black px-2 py-1 text-right">
-                  − {vndFormatter.format(paymentRequest.advancePaymentAmount)} đ
-                </td>
+                <th className="border border-black px-2 py-1 text-center">STT</th>
+                <th className="border border-black px-2 py-1 text-left">
+                  Mã vật tư
+                </th>
+                <th className="border border-black px-2 py-1 text-left">
+                  Tên vật tư / hàng hóa
+                </th>
+                <th className="border border-black px-2 py-1 text-center">ĐVT</th>
+                <th className="border border-black px-2 py-1 text-right">SL đặt</th>
+                {hasQuotation && (
+                  <>
+                    <th className="border border-black px-2 py-1 text-right">
+                      Qty BG
+                    </th>
+                    <th className="border border-black px-2 py-1 text-center">
+                      ĐVBG
+                    </th>
+                  </>
+                )}
+                <th className="border border-black px-2 py-1 text-right">
+                  Đơn giá
+                </th>
+                <th className="border border-black px-2 py-1 text-right">
+                  Thành tiền
+                </th>
               </tr>
+            </thead>
+            <tbody>
+              {paymentRequest.items.map((item, index) => {
+                const quoteUnit = item.quotationUnit || item.unit
+                return (
+                  <tr key={item.id}>
+                    <td className="border border-black px-2 py-1 text-center">
+                      {index + 1}
+                    </td>
+                    <td className="border border-black px-2 py-1">
+                      {item.directCode}
+                    </td>
+                    <td className="border border-black px-2 py-1">
+                      {item.directName}
+                    </td>
+                    <td className="border border-black px-2 py-1 text-center">
+                      {item.unit}
+                    </td>
+                    <td className="border border-black px-2 py-1 text-right">
+                      {numberFmt.format(item.orderedQty)}
+                    </td>
+                    {hasQuotation && (
+                      <>
+                        <td className="border border-black px-2 py-1 text-right font-medium">
+                          {item.receivedQuotationQty !== null &&
+                          item.receivedQuotationQty !== undefined
+                            ? numberFmt.format(item.receivedQuotationQty)
+                            : "—"}
+                        </td>
+                        <td className="border border-black px-2 py-1 text-center">
+                          {item.quotationUnit || "—"}
+                        </td>
+                      </>
+                    )}
+                    <td className="border border-black px-2 py-1 text-right">
+                      {numberFmt.format(item.unitPrice)} đ / {quoteUnit}
+                    </td>
+                    <td className="border border-black px-2 py-1 text-right font-medium">
+                      {numberFmt.format(item.lineTotal)} đ
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            <tfoot>
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={colSpanCount}
                   className="border border-black px-2 py-1 text-right font-medium"
                 >
-                  Còn lại phải thanh toán
+                  {paymentRequest.advancePaymentAmount > 0
+                    ? "Tổng giá trị PO"
+                    : "Tổng cộng"}
                 </td>
                 <td className="border border-black px-2 py-1 text-right font-medium">
-                  {vndFormatter.format(paymentRequest.requestedAmount)} đ
+                  {vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} đ
                 </td>
               </tr>
-            </>
-          )}
-        </tfoot>
-      </table>
+              {paymentRequest.advancePaymentAmount > 0 && (
+                <>
+                  <tr>
+                    <td
+                      colSpan={colSpanCount}
+                      className="border border-black px-2 py-1 text-right"
+                    >
+                      Đã tạm ứng NCC
+                      {paymentRequest.advancePaymentNote
+                        ? ` (${paymentRequest.advancePaymentNote})`
+                        : ""}
+                    </td>
+                    <td className="border border-black px-2 py-1 text-right">
+                      − {vndFormatter.format(paymentRequest.advancePaymentAmount)} đ
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colSpan={colSpanCount}
+                      className="border border-black px-2 py-1 text-right font-medium"
+                    >
+                      Còn lại phải thanh toán
+                    </td>
+                    <td className="border border-black px-2 py-1 text-right font-medium">
+                      {vndFormatter.format(paymentRequest.requestedAmount)} đ
+                    </td>
+                  </tr>
+                </>
+              )}
+            </tfoot>
+          </table>
+        )
+      })()}
 
       <p className="mt-3 text-xs">
         <span className="font-medium">Bằng chữ:</span>{" "}

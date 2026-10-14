@@ -73,6 +73,9 @@ export type PaymentRequestItem = {
   unit: string
   orderedQty: number
   receivedQty: number
+  quotationUnit?: string | null
+  orderedQuotationQty?: number | null
+  receivedQuotationQty?: number | null
   unitPrice: number
   lineTotal: number
 }

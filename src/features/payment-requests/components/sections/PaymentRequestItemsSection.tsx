@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { PackageSearch, TriangleAlert } from "lucide-react"
 
 import {
@@ -24,82 +25,206 @@ import type {
 const col = createColumnHelper<typeof appTableFeatures, PaymentRequestItem>()
 const numberFmt = new Intl.NumberFormat("vi-VN")
 
-const itemColumns = col.columns([
-  col.display({
-    id: "stt",
-    header: "STT",
-    meta: {
-      headerClassName: "w-12 text-center",
-      cellClassName: "text-center text-muted-foreground",
-    },
-    cell: ({ row }) => row.index + 1,
-  }),
+function buildItemColumns(hasQuotation: boolean) {
+  return col.columns([
+    col.display({
+      id: "stt",
+      header: "STT",
+      meta: {
+        headerClassName: "w-12 text-center",
+        cellClassName: "text-center text-muted-foreground",
+      },
+      cell: ({ row }) => row.index + 1,
+    }),
 
-  col.accessor("directCode", {
-    header: "Mã vật tư",
-    meta: { headerClassName: "min-w-24" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs">{getValue()}</span>
-    ),
-  }),
+    col.display({
+      id: "item",
+      header: "Vật tư / Hàng hóa",
+      meta: { headerClassName: "min-w-44" },
+      cell: ({ row }) => {
+        const { directName, directCode } = row.original
+        return (
+          <div className="space-y-0.5">
+            <p className="font-medium text-foreground">{directName}</p>
+            <p className="font-mono text-xs text-muted-foreground">{directCode}</p>
+          </div>
+        )
+      },
+    }),
 
-  col.accessor("directName", {
-    header: "Tên vật tư / hàng hóa",
-    meta: { headerClassName: "min-w-48" },
-  }),
+    col.display({
+      id: "orderedQty",
+      header: "SL đặt mua",
+      meta: {
+        headerClassName: "min-w-28 text-right",
+        cellClassName: "text-right tabular-nums text-muted-foreground",
+      },
+      cell: ({ row }) => {
+        const item = row.original
+        return (
+          <div className="space-y-0.5">
+            <div>
+              <span className="font-medium text-foreground">
+                {numberFmt.format(item.orderedQty)}
+              </span>{" "}
+              <span className="text-xs text-muted-foreground">{item.unit}</span>
+            </div>
+            {item.quotationUnit &&
+              item.orderedQuotationQty !== null &&
+              item.orderedQuotationQty !== undefined && (
+                <div className="text-[11px] text-muted-foreground">
+                  ({numberFmt.format(item.orderedQuotationQty)} {item.quotationUnit})
+                </div>
+              )}
+          </div>
+        )
+      },
+    }),
 
-  col.accessor("unit", {
-    header: "ĐVT",
-    meta: {
-      headerClassName: "min-w-16 text-center",
-      cellClassName: "text-center",
-    },
-  }),
+    col.display({
+      id: "receivedQty",
+      header: "SL đã nhập (OK)",
+      meta: {
+        headerClassName: "min-w-28 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ row }) => {
+        const item = row.original
+        const isShortage = item.receivedQty < item.orderedQty
+        return (
+          <div className="space-y-0.5">
+            <div>
+              <span
+                className={cn(
+                  "font-semibold",
+                  isShortage ? "text-destructive" : "text-foreground"
+                )}
+              >
+                {numberFmt.format(item.receivedQty)}
+              </span>{" "}
+              <span className="text-xs text-muted-foreground">{item.unit}</span>
+            </div>
+          </div>
+        )
+      },
+    }),
 
-  col.accessor("orderedQty", {
-    header: "SL đặt mua",
-    meta: {
-      headerClassName: "min-w-24 text-right",
-      cellClassName: "text-right tabular-nums",
-    },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
-  }),
+    ...(hasQuotation
+      ? [
+          col.display({
+            id: "receivedQuotationQty",
+            header: "Qty BG",
+            meta: {
+              headerClassName: "min-w-24 text-right",
+              cellClassName: "text-right tabular-nums",
+            },
+            cell: ({ row }) => {
+              const item = row.original
+              if (!item.quotationUnit?.trim()) {
+                return <span className="text-muted-foreground">—</span>
+              }
+              const actual = item.receivedQuotationQty
+              const expected = item.orderedQuotationQty
+              if (actual === null || actual === undefined) {
+                return <span className="text-muted-foreground">—</span>
+              }
 
-  col.accessor("receivedQty", {
-    header: "SL đã nhập (OK)",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right tabular-nums",
-    },
-    cell: ({ getValue, row }) => (
-      <span
-        className={cn(
-          getValue() < row.original.orderedQty && "font-medium text-destructive"
-        )}
-      >
-        {numberFmt.format(getValue())}
-      </span>
-    ),
-  }),
+              const isShortage =
+                expected !== null &&
+                expected !== undefined &&
+                actual < expected
+              const isExcess =
+                expected !== null &&
+                expected !== undefined &&
+                actual > expected
 
-  col.accessor("unitPrice", {
-    header: "Đơn giá (VND)",
-    meta: {
-      headerClassName: "min-w-28 text-right",
-      cellClassName: "text-right tabular-nums",
-    },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
-  }),
+              return (
+                <div className="space-y-0.5">
+                  <div
+                    className={cn(
+                      "font-semibold",
+                      isShortage && "text-amber-600 dark:text-amber-400",
+                      isExcess && "text-blue-600 dark:text-blue-400",
+                      !isShortage && !isExcess && "text-foreground"
+                    )}
+                  >
+                    {numberFmt.format(actual)}
+                  </div>
+                  {isShortage && (
+                    <div className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                      Hụt {numberFmt.format(expected - actual)}
+                    </div>
+                  )}
+                  {isExcess && (
+                    <div className="text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                      Vượt +{numberFmt.format(actual - expected)}
+                    </div>
+                  )}
+                </div>
+              )
+            },
+          }),
+          col.accessor((row) => row.quotationUnit || "—", {
+            id: "quotationUnit",
+            header: "ĐVBG",
+            meta: {
+              headerClassName: "w-20",
+              cellClassName: "text-muted-foreground",
+            },
+          }),
+        ]
+      : []),
 
-  col.accessor("lineTotal", {
-    header: "Thành tiền (VND)",
-    meta: {
-      headerClassName: "min-w-32 text-right",
-      cellClassName: "text-right font-medium tabular-nums",
-    },
-    cell: ({ getValue }) => numberFmt.format(getValue()),
-  }),
-])
+    col.display({
+      id: "unitPrice",
+      header: "Đơn giá",
+      meta: {
+        headerClassName: "min-w-28 text-right",
+        cellClassName: "text-right tabular-nums",
+      },
+      cell: ({ row }) => {
+        const item = row.original
+        const quoteUnit = item.quotationUnit || item.unit
+        return (
+          <div className="space-y-0.5">
+            <p className="font-medium text-foreground">
+              {currencyFormatter.format(item.unitPrice)} ₫
+            </p>
+            <p className="text-[11px] text-muted-foreground">/ {quoteUnit}</p>
+          </div>
+        )
+      },
+    }),
+
+    col.display({
+      id: "lineTotal",
+      header: "Thành tiền",
+      meta: {
+        headerClassName: "min-w-32 text-right",
+        cellClassName: "text-right font-medium tabular-nums",
+      },
+      cell: ({ row }) => {
+        const item = row.original
+        return (
+          <div className="space-y-0.5">
+            <p className="font-bold text-primary">
+              {currencyFormatter.format(item.lineTotal)} ₫
+            </p>
+            {item.quotationUnit &&
+              item.receivedQuotationQty !== null &&
+              item.receivedQuotationQty !== undefined && (
+                <p className="text-[10.5px] text-muted-foreground">
+                  = {numberFmt.format(item.receivedQuotationQty)}{" "}
+                  {item.quotationUnit} ×{" "}
+                  {currencyFormatter.format(item.unitPrice)}
+                </p>
+              )}
+          </div>
+        )
+      },
+    }),
+  ])
+}
 
 type FooterRowProps = {
   label: string
@@ -126,9 +251,15 @@ type PaymentRequestItemsSectionProps = {
 export function PaymentRequestItemsSection({
   paymentRequest,
 }: PaymentRequestItemsSectionProps) {
+  const hasQuotation = useMemo(
+    () => paymentRequest.items.some((item) => Boolean(item.quotationUnit?.trim())),
+    [paymentRequest.items]
+  )
+  const columns = useMemo(() => buildItemColumns(hasQuotation), [hasQuotation])
+
   const table = useTable({
     data: paymentRequest.items,
-    columns: itemColumns,
+    columns,
     features: appTableFeatures,
   })
 
