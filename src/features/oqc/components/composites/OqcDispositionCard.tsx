@@ -82,83 +82,53 @@ function resolveSortSplit({ quantity, sortNgQty }: SortSplitProps) {
     return null
   }
   const okQty = roundToScale(quantity - sortNgQty)
-  const okPercent = quantity > 0 ? (okQty / quantity) * 100 : 0
-  return { okQty, ngQty: sortNgQty, okPercent }
+  return { okQty, ngQty: sortNgQty }
 }
 
-function SortOkTile(props: SortSplitProps) {
-  const split = resolveSortSplit(props)
-
-  return (
-    <div className="space-y-2">
-      <p className="text-xs font-medium text-foreground">
-        SL OK ({props.unitName}) — nhập kho
-      </p>
-      <div className="flex h-9 items-center gap-1.5 rounded-md border border-border bg-background px-3 text-sm">
-        {split ? (
-          <>
-            <span className="font-semibold tabular-nums">
-              {quantityFormatter.format(split.okQty)}
-            </span>
-            <span className="text-xs text-muted-foreground">(tự tính)</span>
-          </>
-        ) : (
-          <span className="text-xs text-muted-foreground">
-            Nhập SL NG hợp lệ
-          </span>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// Thanh chia lô OK / NG và một dòng diễn giải điều sẽ xảy ra khi lưu.
+// Gợi ý dưới ô SL NG: hai chip OK (tự tính, nhập kho) / NG (sinh NCR). Render trong
+// FieldDescription (đã là <p>) nên chỉ trả về inline.
 function SortSplitPreview(props: SortSplitProps) {
   const split = resolveSortSplit(props)
   const { quantity, unitName } = props
 
   if (!split) {
     return (
-      <p
-        className={cn(
-          "text-xs",
-          props.sortNgQty === undefined
-            ? "text-muted-foreground"
-            : "text-destructive"
-        )}
-      >
-        SL NG phải từ 0 đến{" "}
-        <span className="tabular-nums">
-          {quantityFormatter.format(quantity)}
-        </span>{" "}
-        {unitName} (SL lô).
-      </p>
+      <span className={cn(props.sortNgQty !== undefined && "text-destructive")}>
+        SL NG phải từ 0 đến {quantityFormatter.format(quantity)} {unitName} (SL
+        lô).
+      </span>
     )
   }
 
   return (
-    <div className="space-y-2">
-      <div className="flex h-1.5 overflow-hidden rounded-full bg-background">
-        <div
-          className="bg-primary transition-[width] duration-200"
-          style={{ width: `${split.okPercent}%` }}
-        />
-        <div
-          className="bg-muted-foreground/25 transition-[width] duration-200"
-          style={{ width: `${100 - split.okPercent}%` }}
-        />
-      </div>
-      <p className="text-xs text-muted-foreground">
-        <span className="font-semibold text-foreground tabular-nums">
+    <span className="mt-1 flex flex-wrap gap-2">
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-success-ink">
+        <span className="size-1.5 rounded-full bg-success" />
+        <span className="font-semibold">
           {quantityFormatter.format(split.okQty)}
         </span>{" "}
-        {unitName} OK nhập kho thành phẩm ·{" "}
-        <span className="font-semibold text-foreground tabular-nums">
+        {unitName} OK nhập kho
+      </span>
+      <span
+        className={cn(
+          "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1",
+          split.ngQty > 0
+            ? "bg-destructive-soft text-destructive-ink"
+            : "bg-muted text-muted-foreground"
+        )}
+      >
+        <span
+          className={cn(
+            "size-1.5 rounded-full",
+            split.ngQty > 0 ? "bg-destructive" : "bg-muted-foreground/50"
+          )}
+        />
+        <span className="font-semibold">
           {quantityFormatter.format(split.ngQty)}
         </span>{" "}
         {unitName} NG {split.ngQty > 0 ? "sinh NCR nội bộ" : "không sinh NCR"}
-      </p>
-    </div>
+      </span>
+    </span>
   )
 }
 
@@ -217,55 +187,36 @@ export const OqcDispositionCard = withForm({
 
               if (disposition === OqcDisposition.SORT) {
                 return (
-                  <div className="space-y-4 rounded-lg bg-muted/40 p-4">
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <form.AppField
-                        name="sortNgQty"
-                        listeners={{
-                          onChange: ({ value }) =>
-                            form.setFieldValue(
-                              "sortOkQty",
-                              value === undefined
-                                ? undefined
-                                : roundToScale(quantity - value)
-                            ),
-                        }}
-                      >
-                        {(field) => (
-                          <field.NumberField
-                            label={`SL NG (${unitName}) — sinh NCR`}
-                            required
-                            placeholder="0"
-                            thousandSeparator={false}
-                            disabled={disabled}
-                          />
-                        )}
-                      </form.AppField>
-
-                      <form.Subscribe
-                        selector={(state) => state.values.sortNgQty}
-                      >
-                        {(sortNgQty) => (
-                          <SortOkTile
+                  <form.AppField
+                    name="sortNgQty"
+                    listeners={{
+                      onChange: ({ value }) =>
+                        form.setFieldValue(
+                          "sortOkQty",
+                          value === undefined
+                            ? undefined
+                            : roundToScale(quantity - value)
+                        ),
+                    }}
+                  >
+                    {(field) => (
+                      <field.NumberField
+                        className="max-w-xs"
+                        label={`SL NG (${unitName}) — sinh NCR`}
+                        required
+                        placeholder="0"
+                        thousandSeparator={false}
+                        disabled={disabled}
+                        description={
+                          <SortSplitPreview
                             quantity={quantity}
                             unitName={unitName}
-                            sortNgQty={sortNgQty}
+                            sortNgQty={field.state.value}
                           />
-                        )}
-                      </form.Subscribe>
-                    </div>
-                    <form.Subscribe
-                      selector={(state) => state.values.sortNgQty}
-                    >
-                      {(sortNgQty) => (
-                        <SortSplitPreview
-                          quantity={quantity}
-                          unitName={unitName}
-                          sortNgQty={sortNgQty}
-                        />
-                      )}
-                    </form.Subscribe>
-                  </div>
+                        }
+                      />
+                    )}
+                  </form.AppField>
                 )
               }
 
