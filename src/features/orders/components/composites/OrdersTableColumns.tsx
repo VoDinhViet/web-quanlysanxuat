@@ -38,8 +38,10 @@ export function buildOrderColumns(options?: BuildOrderColumnsOptions) {
             </div>
           ),
           meta: {
-            headerClassName: "w-10 px-2 text-center",
-            cellClassName: "w-10 px-2 text-center",
+            headerClassName:
+              "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
+            cellClassName:
+              "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
           },
           cell: ({ row }) => (
             <div

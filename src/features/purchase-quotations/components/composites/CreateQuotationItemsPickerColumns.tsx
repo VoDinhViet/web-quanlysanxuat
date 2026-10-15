@@ -35,7 +35,12 @@ export function buildQuotationItemsPickerColumns({
   return quotationItemsPickerColumnHelper.columns([
     quotationItemsPickerColumnHelper.display({
       id: "select",
-      meta: { headerClassName: "w-10" },
+      meta: {
+        headerClassName:
+          "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
+        cellClassName:
+          "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
+      },
       cell: ({ row }) => {
         const remaining = Math.max(
           0,

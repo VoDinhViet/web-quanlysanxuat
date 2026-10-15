@@ -49,8 +49,10 @@ export const buildAssignableUserColumns = ({
         />
       ),
       meta: {
-        headerClassName: "w-12 text-center",
-        cellClassName: "text-center",
+        headerClassName:
+          "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
+        cellClassName:
+          "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
       },
     }),
     assignableColumnHelper.accessor("code", {

@@ -79,7 +79,12 @@ export function buildCreateInventoryRequisitionPickerColumns({
           />
         </div>
       ),
-      meta: { headerClassName: "w-10" },
+      meta: {
+        headerClassName:
+          "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
+        cellClassName:
+          "w-14 min-w-14 px-2 text-center [&:has([role=checkbox])]:px-2",
+      },
       cell: ({ row }) => {
         const isUnpickable =
           row.original.isFullyIssued || row.original.issuableQuantity <= 0
