@@ -19,6 +19,33 @@ const dueDateToneClassName: Record<PaymentRequestDueDateTone, string> = {
   normal: "text-muted-foreground",
 }
 
+function formatAmountStripSubtitle(
+  paymentRequest: PaymentRequestDetail
+): string | null {
+  const hasAdvance = paymentRequest.advancePaymentAmount > 0
+  const hasExtra = (paymentRequest.extraCost ?? 0) > 0
+
+  if (!hasAdvance && !hasExtra) {
+    return null
+  }
+
+  const parts: string[] = [
+    `Tổng PO ${vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} ₫`,
+  ]
+
+  if (hasAdvance) {
+    parts.push(
+      `đã tạm ứng ${vndFormatter.format(paymentRequest.advancePaymentAmount)} ₫`
+    )
+  }
+
+  if (hasExtra) {
+    parts.push(`phát sinh +${vndFormatter.format(paymentRequest.extraCost!)} ₫`)
+  }
+
+  return parts.join(" · ")
+}
+
 // The one place on the page allowed to be loud — the amount this document exists to get
 // approved, at a size that appears nowhere else on the page, next to a due-date countdown coded
 // with the same status palette the rest of the page already uses. See "Chỗ duy nhất được phép
@@ -38,6 +65,8 @@ export function PaymentRequestAmountStrip({
     today
   )
 
+  const subtitle = formatAmountStripSubtitle(paymentRequest)
+
   return (
     <div className="flex flex-wrap items-end justify-between gap-4 border-t border-border pt-4">
       <div className="space-y-1">
@@ -47,12 +76,9 @@ export function PaymentRequestAmountStrip({
         <p className="font-heading text-3xl font-medium tracking-tight text-foreground tabular-nums">
           {vndFormatter.format(paymentRequest.requestedAmount)} ₫
         </p>
-        {paymentRequest.advancePaymentAmount > 0 && (
+        {subtitle && (
           <p className="text-xs text-muted-foreground tabular-nums">
-            Tổng PO{" "}
-            {vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} ₫ ·
-            đã tạm ứng{" "}
-            {vndFormatter.format(paymentRequest.advancePaymentAmount)} ₫
+            {subtitle}
           </p>
         )}
       </div>

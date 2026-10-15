@@ -165,35 +165,57 @@ export function PaymentRequestPrintSheet({
               })}
             </tbody>
             <tfoot>
-              <tr>
-                <td
-                  colSpan={colSpanCount}
-                  className="border border-black px-2 py-1 text-right font-medium"
-                >
-                  {paymentRequest.advancePaymentAmount > 0
-                    ? "Tổng giá trị PO"
-                    : "Tổng cộng"}
-                </td>
-                <td className="border border-black px-2 py-1 text-right font-medium">
-                  {vndFormatter.format(paymentRequest.purchaseOrderTotalAmount)} đ
-                </td>
-              </tr>
-              {paymentRequest.advancePaymentAmount > 0 && (
+              {paymentRequest.advancePaymentAmount > 0 ||
+              (paymentRequest.extraCost ?? 0) > 0 ? (
                 <>
                   <tr>
                     <td
                       colSpan={colSpanCount}
-                      className="border border-black px-2 py-1 text-right"
+                      className="border border-black px-2 py-1 text-right font-medium"
                     >
-                      Đã tạm ứng NCC
-                      {paymentRequest.advancePaymentNote
-                        ? ` (${paymentRequest.advancePaymentNote})`
-                        : ""}
+                      Tổng giá trị PO
                     </td>
-                    <td className="border border-black px-2 py-1 text-right">
-                      − {vndFormatter.format(paymentRequest.advancePaymentAmount)} đ
+                    <td className="border border-black px-2 py-1 text-right font-medium">
+                      {vndFormatter.format(
+                        paymentRequest.purchaseOrderTotalAmount
+                      )} đ
                     </td>
                   </tr>
+                  {paymentRequest.advancePaymentAmount > 0 && (
+                    <tr>
+                      <td
+                        colSpan={colSpanCount}
+                        className="border border-black px-2 py-1 text-right"
+                      >
+                        Đã tạm ứng NCC
+                        {paymentRequest.advancePaymentNote
+                          ? ` (${paymentRequest.advancePaymentNote})`
+                          : ""}
+                      </td>
+                      <td className="border border-black px-2 py-1 text-right">
+                        −{" "}
+                        {vndFormatter.format(
+                          paymentRequest.advancePaymentAmount
+                        )} đ
+                      </td>
+                    </tr>
+                  )}
+                  {(paymentRequest.extraCost ?? 0) > 0 && (
+                    <tr>
+                      <td
+                        colSpan={colSpanCount}
+                        className="border border-black px-2 py-1 text-right"
+                      >
+                        Chi phí phát sinh
+                        {paymentRequest.extraCostNote
+                          ? ` (${paymentRequest.extraCostNote})`
+                          : ""}
+                      </td>
+                      <td className="border border-black px-2 py-1 text-right">
+                        + {vndFormatter.format(paymentRequest.extraCost!)} đ
+                      </td>
+                    </tr>
+                  )}
                   <tr>
                     <td
                       colSpan={colSpanCount}
@@ -206,6 +228,18 @@ export function PaymentRequestPrintSheet({
                     </td>
                   </tr>
                 </>
+              ) : (
+                <tr>
+                  <td
+                    colSpan={colSpanCount}
+                    className="border border-black px-2 py-1 text-right font-medium"
+                  >
+                    Tổng cộng
+                  </td>
+                  <td className="border border-black px-2 py-1 text-right font-medium">
+                    {vndFormatter.format(paymentRequest.requestedAmount)} đ
+                  </td>
+                </tr>
               )}
             </tfoot>
           </table>

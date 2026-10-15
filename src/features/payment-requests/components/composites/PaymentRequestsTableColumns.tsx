@@ -8,6 +8,7 @@ import {
   PaymentRequestActionsCell,
   PaymentRequestAmountCell,
 } from "@/features/payment-requests/components/primitives/PaymentRequestTableCells"
+import { currencyFormatter } from "@/lib/currency"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"
 
 const col = createColumnHelper<typeof appTableFeatures, PaymentRequest>()
@@ -73,7 +74,19 @@ export const paymentRequestsColumns = col.columns([
       headerClassName: "min-w-36 text-right",
       cellClassName: "text-right",
     },
-    cell: ({ getValue }) => <PaymentRequestAmountCell value={getValue()} />,
+    cell: ({ row, getValue }) => {
+      const extraCost = row.original.extraCost ?? 0
+      return (
+        <div className="space-y-0.5">
+          <PaymentRequestAmountCell value={getValue()} />
+          {extraCost > 0 && (
+            <p className="text-[11px] font-medium text-primary">
+              (+{currencyFormatter.format(extraCost)} ₫)
+            </p>
+          )}
+        </div>
+      )
+    },
   }),
 
   col.accessor("supplierInvoiceNo", {

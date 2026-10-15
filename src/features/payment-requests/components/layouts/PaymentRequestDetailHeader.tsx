@@ -12,6 +12,10 @@ import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestDetailHeaderProps = {
   paymentRequest: PaymentRequestDetail
+  hasUnsavedChanges?: boolean
+  isSaving?: boolean
+  onSave?: () => void
+  onRevert?: () => void
 }
 
 // Nhà cung cấp đã dời sang PaymentRequestSupplierCard.tsx (sidebar) — header giờ chỉ còn 4 ô về
@@ -19,6 +23,10 @@ type PaymentRequestDetailHeaderProps = {
 // PaymentRequestAmountStrip (điểm nhấn chính của trang).
 export function PaymentRequestDetailHeader({
   paymentRequest,
+  hasUnsavedChanges,
+  isSaving,
+  onSave,
+  onRevert,
 }: PaymentRequestDetailHeaderProps) {
   return (
     <div className="flex flex-col gap-4 px-4 py-4 sm:px-5">
@@ -45,7 +53,13 @@ export function PaymentRequestDetailHeader({
           <PaymentRequestStatusBadge status={paymentRequest.status} />
         </div>
 
-        <PaymentRequestDetailActions paymentRequest={paymentRequest} />
+        <PaymentRequestDetailActions
+          paymentRequest={paymentRequest}
+          hasUnsavedChanges={hasUnsavedChanges}
+          isSaving={isSaving}
+          onSave={onSave}
+          onRevert={onRevert}
+        />
       </div>
 
       <PaymentRequestAmountStrip paymentRequest={paymentRequest} />

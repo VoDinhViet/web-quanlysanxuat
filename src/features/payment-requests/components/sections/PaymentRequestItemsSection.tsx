@@ -12,6 +12,7 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { PaymentRequestInvoiceField } from "@/features/payment-requests/components/composites/PaymentRequestInvoiceField"
+import { PaymentRequestExtraCostField } from "@/features/payment-requests/components/composites/PaymentRequestExtraCostField"
 import { currencyFormatter } from "@/lib/currency"
 import { appTableFeatures } from "@/lib/table-features"
 import { cn } from "@/lib/utils"
@@ -242,14 +243,54 @@ function FooterRow({ label, value }: FooterRowProps) {
   )
 }
 
+type ExtraCostRowProps = {
+  extraCost: number
+  extraCostNote?: string | null
+}
+
+function ExtraCostRow({ extraCost, extraCostNote }: ExtraCostRowProps) {
+  return (
+    <div className="flex items-center justify-between gap-4 text-primary">
+      <dt className="flex items-center gap-1.5 font-medium">
+        <span>Chi phí phát sinh</span>
+        {extraCostNote && (
+          <span className="font-normal text-[11px] text-muted-foreground">
+            ({extraCostNote})
+          </span>
+        )}
+      </dt>
+      <dd className="whitespace-nowrap font-semibold tabular-nums text-primary">
+        + {currencyFormatter.format(extraCost)} VND
+      </dd>
+    </div>
+  )
+}
+
 type PaymentRequestItemsSectionProps = {
   paymentRequest: PaymentRequestDetail
+  currentExtraCost: number
+  currentExtraCostNote: string
+  hasUnsavedChanges?: boolean
+  isSaving?: boolean
+  onExtraCostChange?: (next: {
+    extraCost: number
+    extraCostNote: string | null
+  }) => void
+  onSave?: () => void
+  onRevert?: () => void
 }
 
 // Section header + table — no pagination; PO line counts are small. Same "tiêu đề dải" idiom as
 // PurchaseOrderItemsSection.tsx.
 export function PaymentRequestItemsSection({
   paymentRequest,
+  currentExtraCost,
+  currentExtraCostNote,
+  hasUnsavedChanges,
+  isSaving,
+  onExtraCostChange,
+  onSave,
+  onRevert,
 }: PaymentRequestItemsSectionProps) {
   const hasQuotation = useMemo(
     () => paymentRequest.items.some((item) => Boolean(item.quotationUnit?.trim())),
@@ -317,7 +358,7 @@ export function PaymentRequestItemsSection({
 
       {paymentRequest.items.length > 0 && (
         <div className="grid grid-cols-1 gap-6 border-t border-border px-4 py-4 sm:px-5 lg:grid-cols-2 lg:gap-10">
-          {/* Cột trái: cảnh báo, ghi chú và số tiền bằng chữ */}
+          {/* Cột trái: cảnh báo, số hóa đơn, chi phí phát sinh và số tiền bằng chữ */}
           <div className="flex flex-col justify-between gap-4 text-xs">
             <div className="space-y-4">
               <div className="max-w-sm">
@@ -329,6 +370,25 @@ export function PaymentRequestItemsSection({
                   }
                 />
               </div>
+
+              {/* Chi phí phát sinh sau đặt hàng */}
+              <div className="max-w-md">
+                <PaymentRequestExtraCostField
+                  extraCost={paymentRequest.extraCost}
+                  extraCostNote={paymentRequest.extraCostNote}
+                  currentExtraCost={currentExtraCost}
+                  currentExtraCostNote={currentExtraCostNote}
+                  editable={
+                    paymentRequest.status === PaymentRequestStatus.PENDING
+                  }
+                  hasUnsavedChanges={hasUnsavedChanges}
+                  isSaving={isSaving}
+                  onExtraCostChange={onExtraCostChange ?? (() => {})}
+                  onSave={onSave}
+                  onRevert={onRevert}
+                />
+              </div>
+
               {shortageCount > 0 && (
                 <p className="flex items-start gap-2 rounded-lg bg-warning/10 px-3 py-2 font-medium text-warning">
                   <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />
@@ -372,7 +432,7 @@ export function PaymentRequestItemsSection({
             </p>
           </div>
 
-          {/* Cột phải: cách ra số đề nghị chi = tiền hàng + VAT + chi phí khác của PO − tạm ứng NCC */}
+          {/* Cột phải: cách ra số đề nghị chi = tiền hàng + VAT + chi phí khác của PO − tạm ứng NCC + chi phí phát sinh */}
           <div className="flex flex-col gap-4 lg:border-l lg:border-border/60 lg:pl-10">
             <dl className="space-y-2.5 text-xs text-muted-foreground">
               <FooterRow
@@ -395,6 +455,12 @@ export function PaymentRequestItemsSection({
                 <FooterRow
                   label="Đã tạm ứng NCC"
                   value={-paymentRequest.advancePaymentAmount}
+                />
+              )}
+              {(paymentRequest.extraCost ?? 0) > 0 && (
+                <ExtraCostRow
+                  extraCost={paymentRequest.extraCost!}
+                  extraCostNote={paymentRequest.extraCostNote}
                 />
               )}
             </dl>
