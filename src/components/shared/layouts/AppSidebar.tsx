@@ -370,10 +370,10 @@ function SidebarBrand() {
       </span>
 
       <span className="min-w-0">
-        <span className="block truncate text-base leading-5 font-semibold tracking-tight text-sidebar-foreground">
+        <span className="block text-sm leading-5 font-semibold tracking-tight text-sidebar-foreground">
           CƠ KHÍ TIẾN HUY
         </span>
-        <span className="mt-1 block truncate text-xs leading-3.5 font-medium tracking-widest text-sidebar-foreground/58 uppercase">
+        <span className="mt-1 block text-xs leading-4 font-medium text-sidebar-foreground/58">
           ERP - Hệ thống quản trị sản xuất
         </span>
       </span>
