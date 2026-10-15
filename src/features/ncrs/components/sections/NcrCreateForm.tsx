@@ -1,33 +1,55 @@
 import { revalidateLogic } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query"
-import { useDebounceValue } from "usehooks-ts"
+import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Layers, User } from "@solar-icons/react"
 import { toast } from "sonner"
 
-import { ComboboxField } from "@/components/shared/composites/ComboboxField"
-import { Surface } from "@/components/shared/layouts/Surface"
-import { Button, LinkButton } from "@/components/ui/button"
+import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
+import { RadioCardField } from "@/components/shared/composites/RadioCardField"
+import type { RadioCardOption } from "@/components/shared/composites/RadioCardField"
 import { useGetClientOptions } from "@/features/clients/api"
-import { departmentQueryOptions } from "@/features/departments/api"
 import { createNcr } from "@/features/ncrs/api/server-functions/create-ncr.api"
+import { NcrCreateStepCard } from "@/features/ncrs/components/layouts/NcrCreateStepCard"
+import { NcrItemStep } from "@/features/ncrs/components/sections/NcrItemStep"
+import { NcrOrderClientStep } from "@/features/ncrs/components/sections/NcrOrderClientStep"
+import { NcrDefectDetailsStep } from "@/features/ncrs/components/sections/NcrDefectDetailsStep"
+import { NcrCreateSummaryCard } from "@/features/ncrs/components/composites/NcrCreateSummaryCard"
 import {
   createNcrFormDefaultValues,
   createNcrSchema,
 } from "@/features/ncrs/schemas/create-ncr.schema"
 import type { CreateNcrSchema } from "@/features/ncrs/schemas/create-ncr.schema"
-import { ordersQueryOptions } from "@/features/orders/api"
-import { itemOptionsQueryOptions } from "@/features/products/api"
 import { useAppForm } from "@/hooks/use-app-form"
-import { ncrTypeLabels, NcrType } from "@/lib/types/ncr.type"
-import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
+import {
+  ncrTypeDescriptions,
+  ncrTypeLabels,
+  NcrType,
+} from "@/lib/types/ncr.type"
+import type { Item } from "@/lib/types/item.type"
+import type { Order } from "@/lib/types/order.type"
 
-const typeOptions = buildOptionsFromLabels(ncrTypeLabels)
+const typeCardOptions: RadioCardOption<NcrType>[] = [
+  {
+    value: NcrType.INTERNAL,
+    label: ncrTypeLabels[NcrType.INTERNAL],
+    description: ncrTypeDescriptions[NcrType.INTERNAL],
+    icon: Layers,
+    activeClassName: "border-primary",
+    chipClassName: "bg-info-soft text-info-ink",
+    badgeClassName: "bg-primary text-primary-foreground",
+  },
+  {
+    value: NcrType.CUSTOMER,
+    label: ncrTypeLabels[NcrType.CUSTOMER],
+    description: ncrTypeDescriptions[NcrType.CUSTOMER],
+    icon: User,
+    activeClassName: "border-primary",
+    chipClassName: "bg-warning-soft text-warning-ink",
+    badgeClassName: "bg-primary text-primary-foreground",
+  },
+]
 
 // Manual NCR-NB / NCR-KH. NCR-NB from an OQC sàng lọc is created by the backend, never here.
 export function NcrCreateForm() {
@@ -35,29 +57,10 @@ export function NcrCreateForm() {
   const queryClient = useQueryClient()
   const createNcrFn = useServerFn(createNcr)
 
-  const [itemQuery, setItemQuery] = useDebounceValue("", 300)
-  const [orderQuery, setOrderQuery] = useDebounceValue("", 300)
-  const { data: items = [], isFetching: isItemsFetching } = useQuery({
-    ...itemOptionsQueryOptions({ q: itemQuery, type: "FG" }),
-    placeholderData: keepPreviousData,
-  })
-  const { data: orders, isFetching: isOrdersFetching } = useQuery({
-    ...ordersQueryOptions({ page: 1, limit: 20, q: orderQuery || undefined }),
-    placeholderData: keepPreviousData,
-  })
-  const { data: departments = [], isPending: isDepartmentsPending } = useQuery(
-    departmentQueryOptions()
-  )
+  const [selectedItem, setSelectedItem] = useState<Item>()
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [selectedClient, setSelectedClient] = useState<ComboboxOption>()
   const client = useGetClientOptions()
-
-  const itemOptions = items.map((item) => ({
-    value: item.id,
-    label: `${item.code} — ${item.name}`,
-  }))
-  const orderOptions = (orders?.data ?? []).map((order) => ({
-    value: order.id,
-    label: order.code,
-  }))
 
   const { mutate: create, isPending } = useMutation({
     mutationFn: (value: CreateNcrSchema) => createNcrFn({ data: value }),
@@ -76,6 +79,27 @@ export function NcrCreateForm() {
     onSubmit: ({ value }) => create(value),
   })
 
+  function handleItemChange(item: Item | undefined) {
+    setSelectedItem(item)
+    // The order list belongs to one product, so a stale pick must not outlive it.
+    form.setFieldValue("orderId", "")
+    setSelectedOrder(null)
+  }
+
+  function handleOrderSelect(order: Order | null) {
+    form.setFieldValue("orderId", order?.id ?? "")
+    setSelectedOrder(order)
+    if (!order?.client) return
+    form.setFieldValue("clientId", order.client.id)
+    setSelectedClient({ value: order.client.id, label: order.client.name })
+  }
+
+  function handleClientChange(clientId: string) {
+    setSelectedClient(
+      client.options.find((option) => option.value === clientId)
+    )
+  }
+
   return (
     <form
       onSubmit={(event) => {
@@ -85,140 +109,78 @@ export function NcrCreateForm() {
         form.handleSubmit()
       }}
       noValidate
-      className="flex flex-col gap-4"
     >
-      <Surface>
-        <div className="space-y-5 p-4 sm:p-5">
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            <form.AppField name="type">
-              {(field) => (
-                <field.SelectField
-                  label="Loại NCR"
-                  required
-                  options={typeOptions}
-                  disabled={isPending}
-                />
-              )}
-            </form.AppField>
-
-            <form.Field name="itemId">
-              {(field) => (
-                <ComboboxField
-                  id={field.name}
-                  label="Sản phẩm"
-                  required
-                  placeholder="Chọn sản phẩm"
-                  value={field.state.value || undefined}
-                  onValueChange={(next) => field.handleChange(next ?? "")}
-                  onBlur={field.handleBlur}
-                  isInvalid={
-                    field.state.meta.isTouched &&
-                    field.state.meta.errors.length > 0
-                  }
-                  errors={field.state.meta.errors}
-                  options={itemOptions}
-                  onSearchChange={setItemQuery}
-                  isPending={isItemsFetching}
-                  emptyMessage="Không tìm thấy sản phẩm"
-                  disabled={isPending}
-                />
-              )}
-            </form.Field>
-
-            <form.Subscribe selector={(state) => state.values.type}>
-              {(type) => (
-                <form.Field name="clientId">
+      <form.Subscribe selector={(state) => state.values}>
+        {(values) => (
+          <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+            <div className="flex flex-col gap-4">
+              <NcrCreateStepCard
+                step={1}
+                title="Loại NCR"
+                description="NCR nội bộ hay phản hồi từ khách hàng"
+                isDone
+              >
+                <form.Field name="type">
                   {(field) => (
-                    <ComboboxField
-                      id={field.name}
-                      label="Khách hàng"
-                      required={type === NcrType.CUSTOMER}
-                      placeholder="Chọn khách hàng"
-                      value={field.state.value || undefined}
-                      onValueChange={(next) => field.handleChange(next ?? "")}
-                      onBlur={field.handleBlur}
-                      isInvalid={
-                        field.state.meta.isTouched &&
-                        field.state.meta.errors.length > 0
-                      }
-                      errors={field.state.meta.errors}
-                      options={client.options}
-                      onSearchChange={client.onSearchChange}
-                      isPending={client.isFetching}
-                      emptyMessage="Không tìm thấy khách hàng"
+                    <RadioCardField
+                      field={field}
+                      options={typeCardOptions}
                       disabled={isPending}
                     />
                   )}
                 </form.Field>
-              )}
-            </form.Subscribe>
+              </NcrCreateStepCard>
 
-            <form.Field name="orderId">
-              {(field) => (
-                <ComboboxField
-                  id={field.name}
-                  label="Đơn hàng (SO) — cần để tạo LSX"
-                  placeholder="Chọn đơn hàng"
-                  value={field.state.value || undefined}
-                  onValueChange={(next) => field.handleChange(next ?? "")}
-                  onBlur={field.handleBlur}
-                  options={orderOptions}
-                  onSearchChange={setOrderQuery}
-                  isPending={isOrdersFetching}
-                  emptyMessage="Không tìm thấy đơn hàng"
-                  disabled={isPending}
-                />
-              )}
-            </form.Field>
-
-            <form.AppField name="departmentId">
-              {(field) => (
-                <field.SelectField
-                  label="Bộ phận phát sinh"
-                  placeholder="Chọn bộ phận"
-                  options={buildSelectOptions(departments)}
-                  isPending={isDepartmentsPending}
-                  disabled={isPending}
-                />
-              )}
-            </form.AppField>
-
-            <form.AppField name="ngQty">
-              {(field) => (
-                <field.NumberField
-                  label="SL hàng lỗi"
-                  placeholder="0"
-                  disabled={isPending}
-                />
-              )}
-            </form.AppField>
-          </div>
-
-          <form.AppField name="defectDescription">
-            {(field) => (
-              <field.TextareaField
-                label="Mô tả lỗi"
-                placeholder="Mô tả lỗi / nội dung khách hàng phản hồi"
-                maxLength={1000}
+              <NcrItemStep
+                form={form}
                 disabled={isPending}
+                selectedItem={selectedItem}
+                onItemChange={handleItemChange}
               />
-            )}
-          </form.AppField>
-        </div>
-      </Surface>
 
-      <div className="flex justify-end gap-2">
-        <LinkButton
-          to="/manage/ncrs"
-          search={{ page: 1, limit: 10 }}
-          variant="outline"
-        >
-          Hủy
-        </LinkButton>
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Đang tạo..." : "Tạo NCR"}
-        </Button>
-      </div>
+              <NcrOrderClientStep
+                form={form}
+                disabled={isPending}
+                isCustomerNcr={values.type === NcrType.CUSTOMER}
+                selectedItem={selectedItem}
+                selectedClient={selectedClient}
+                orderId={values.orderId}
+                isDone={values.orderId !== "" || values.clientId !== ""}
+                clientPicker={client}
+                onOrderSelect={handleOrderSelect}
+                onClientChange={handleClientChange}
+              />
+
+              <NcrDefectDetailsStep
+                form={form}
+                disabled={isPending}
+                isCustomerNcr={values.type === NcrType.CUSTOMER}
+                unitName={selectedItem?.unit.name}
+                isDone={
+                  values.ngQty !== undefined ||
+                  values.departmentId !== "" ||
+                  values.defectDescription !== ""
+                }
+              />
+            </div>
+
+            <NcrCreateSummaryCard
+              typeLabel={ncrTypeLabels[values.type]}
+              itemLabel={
+                selectedItem && `${selectedItem.code} — ${selectedItem.name}`
+              }
+              orderCode={values.orderId ? selectedOrder?.code : undefined}
+              clientName={values.clientId ? selectedClient?.label : undefined}
+              ngQtyLabel={
+                values.ngQty === undefined
+                  ? undefined
+                  : `${values.ngQty} ${selectedItem?.unit.name ?? ""}`.trim()
+              }
+              isPending={isPending}
+            />
+          </div>
+        )}
+      </form.Subscribe>
     </form>
   )
 }

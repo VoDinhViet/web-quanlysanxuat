@@ -4,3 +4,4 @@
 // `api/options/` directly.
 export { itemQueryOptions } from "@/features/products/api/options"
 export { itemOptionsQueryOptions } from "@/features/products/api/options"
+export { itemsQueryOptions } from "@/features/products/api/options"

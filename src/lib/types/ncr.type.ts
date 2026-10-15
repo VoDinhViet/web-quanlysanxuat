@@ -20,6 +20,11 @@ export const ncrTypeLabels: Record<NcrType, string> = {
   [NcrType.CUSTOMER]: "NCR-KH (khách hàng)",
 }
 
+export const ncrTypeDescriptions: Record<NcrType, string> = {
+  [NcrType.INTERNAL]: "Lỗi phát hiện trong nội bộ xưởng, trước khi giao hàng.",
+  [NcrType.CUSTOMER]: "Khách hàng phản hồi lỗi sau khi nhận hàng.",
+}
+
 export const NcrOriginType = {
   OQC: "OQC",
   MANUAL: "MANUAL",
