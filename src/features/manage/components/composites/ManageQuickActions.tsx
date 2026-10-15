@@ -62,7 +62,7 @@ const quickActions: QuickAction[] = [
   {
     label: "Nhập kho",
     icon: Box,
-    to: "/manage/inventory-receipts/create",
+    to: "/manage/inventory-receipts/create-receipt",
   },
   {
     label: "Xuất kho",

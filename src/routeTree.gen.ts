@@ -60,7 +60,6 @@ import { Route as authedManageInventoryProductsIndexRouteImport } from './routes
 import { Route as authedManageInventoryProductsItemIdRouteImport } from './routes/(authed)/manage_/inventory-products_/$itemId'
 import { Route as authedManageInventoryReceiptsIndexRouteImport } from './routes/(authed)/manage_/inventory-receipts/index'
 import { Route as authedManageInventoryReceiptsInventoryReceiptIdRouteImport } from './routes/(authed)/manage_/inventory-receipts_/$inventoryReceiptId'
-import { Route as authedManageInventoryReceiptsCreateRouteImport } from './routes/(authed)/manage_/inventory-receipts_/create'
 import { Route as authedManageInventoryReceiptsCreateReceiptRouteImport } from './routes/(authed)/manage_/inventory-receipts_/create-receipt'
 import { Route as authedManageInventoryRequisitionsIndexRouteImport } from './routes/(authed)/manage_/inventory-requisitions/index'
 import { Route as authedManageInventoryRequisitionsRequisitionIdRouteImport } from './routes/(authed)/manage_/inventory-requisitions_/$requisitionId'
@@ -424,12 +423,6 @@ const authedManageInventoryReceiptsInventoryReceiptIdRoute =
   authedManageInventoryReceiptsInventoryReceiptIdRouteImport.update({
     id: '/manage_/inventory-receipts_/$inventoryReceiptId',
     path: '/manage/inventory-receipts/$inventoryReceiptId',
-    getParentRoute: () => authedRouteRoute,
-  } as any)
-const authedManageInventoryReceiptsCreateRoute =
-  authedManageInventoryReceiptsCreateRouteImport.update({
-    id: '/manage_/inventory-receipts_/create',
-    path: '/manage/inventory-receipts/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
 const authedManageInventoryReceiptsCreateReceiptRoute =
@@ -905,7 +898,6 @@ export interface FileRoutesByFullPath {
   '/manage/inventory-issues/$issueId': typeof authedManageInventoryIssuesIssueIdRoute
   '/manage/inventory-products/$itemId': typeof authedManageInventoryProductsItemIdRoute
   '/manage/inventory-receipts/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
-  '/manage/inventory-receipts/create': typeof authedManageInventoryReceiptsCreateRoute
   '/manage/inventory-receipts/create-receipt': typeof authedManageInventoryReceiptsCreateReceiptRoute
   '/manage/inventory-requisitions/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
   '/manage/inventory-requisitions/create': typeof authedManageInventoryRequisitionsCreateRoute
@@ -993,7 +985,6 @@ export interface FileRoutesByTo {
   '/manage/inventory-issues/$issueId': typeof authedManageInventoryIssuesIssueIdRoute
   '/manage/inventory-products/$itemId': typeof authedManageInventoryProductsItemIdRoute
   '/manage/inventory-receipts/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
-  '/manage/inventory-receipts/create': typeof authedManageInventoryReceiptsCreateRoute
   '/manage/inventory-receipts/create-receipt': typeof authedManageInventoryReceiptsCreateReceiptRoute
   '/manage/inventory-requisitions/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
   '/manage/inventory-requisitions/create': typeof authedManageInventoryRequisitionsCreateRoute
@@ -1121,7 +1112,6 @@ export interface FileRoutesById {
   '/(authed)/manage_/inventory-issues_/$issueId': typeof authedManageInventoryIssuesIssueIdRoute
   '/(authed)/manage_/inventory-products_/$itemId': typeof authedManageInventoryProductsItemIdRoute
   '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId': typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
-  '/(authed)/manage_/inventory-receipts_/create': typeof authedManageInventoryReceiptsCreateRoute
   '/(authed)/manage_/inventory-receipts_/create-receipt': typeof authedManageInventoryReceiptsCreateReceiptRoute
   '/(authed)/manage_/inventory-requisitions_/$requisitionId': typeof authedManageInventoryRequisitionsRequisitionIdRoute
   '/(authed)/manage_/inventory-requisitions_/create': typeof authedManageInventoryRequisitionsCreateRoute
@@ -1248,7 +1238,6 @@ export interface FileRouteTypes {
     | '/manage/inventory-issues/$issueId'
     | '/manage/inventory-products/$itemId'
     | '/manage/inventory-receipts/$inventoryReceiptId'
-    | '/manage/inventory-receipts/create'
     | '/manage/inventory-receipts/create-receipt'
     | '/manage/inventory-requisitions/$requisitionId'
     | '/manage/inventory-requisitions/create'
@@ -1336,7 +1325,6 @@ export interface FileRouteTypes {
     | '/manage/inventory-issues/$issueId'
     | '/manage/inventory-products/$itemId'
     | '/manage/inventory-receipts/$inventoryReceiptId'
-    | '/manage/inventory-receipts/create'
     | '/manage/inventory-receipts/create-receipt'
     | '/manage/inventory-requisitions/$requisitionId'
     | '/manage/inventory-requisitions/create'
@@ -1463,7 +1451,6 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/inventory-issues_/$issueId'
     | '/(authed)/manage_/inventory-products_/$itemId'
     | '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId'
-    | '/(authed)/manage_/inventory-receipts_/create'
     | '/(authed)/manage_/inventory-receipts_/create-receipt'
     | '/(authed)/manage_/inventory-requisitions_/$requisitionId'
     | '/(authed)/manage_/inventory-requisitions_/create'
@@ -1906,13 +1893,6 @@ declare module '@tanstack/react-router' {
       path: '/manage/inventory-receipts/$inventoryReceiptId'
       fullPath: '/manage/inventory-receipts/$inventoryReceiptId'
       preLoaderRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
-    '/(authed)/manage_/inventory-receipts_/create': {
-      id: '/(authed)/manage_/inventory-receipts_/create'
-      path: '/manage/inventory-receipts/create'
-      fullPath: '/manage/inventory-receipts/create'
-      preLoaderRoute: typeof authedManageInventoryReceiptsCreateRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/inventory-receipts_/create-receipt': {
@@ -3029,7 +3009,6 @@ interface authedRouteRouteChildren {
   authedManageInventoryIssuesIssueIdRoute: typeof authedManageInventoryIssuesIssueIdRoute
   authedManageInventoryProductsItemIdRoute: typeof authedManageInventoryProductsItemIdRoute
   authedManageInventoryReceiptsInventoryReceiptIdRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdRoute
-  authedManageInventoryReceiptsCreateRoute: typeof authedManageInventoryReceiptsCreateRoute
   authedManageInventoryReceiptsCreateReceiptRoute: typeof authedManageInventoryReceiptsCreateReceiptRoute
   authedManageInventoryRequisitionsRequisitionIdRoute: typeof authedManageInventoryRequisitionsRequisitionIdRoute
   authedManageInventoryRequisitionsCreateRoute: typeof authedManageInventoryRequisitionsCreateRoute
@@ -3142,8 +3121,6 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
     authedManageInventoryProductsItemIdRoute,
   authedManageInventoryReceiptsInventoryReceiptIdRoute:
     authedManageInventoryReceiptsInventoryReceiptIdRoute,
-  authedManageInventoryReceiptsCreateRoute:
-    authedManageInventoryReceiptsCreateRoute,
   authedManageInventoryReceiptsCreateReceiptRoute:
     authedManageInventoryReceiptsCreateReceiptRoute,
   authedManageInventoryRequisitionsRequisitionIdRoute:

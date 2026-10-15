@@ -52,7 +52,6 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/inventory-products/$itemId": "inventory:read",
 
   "/manage/inventory-receipts": "inventory:read",
-  "/manage/inventory-receipts/create": "inventory:create",
   "/manage/inventory-receipts/create-receipt": "inventory:create",
   "/manage/inventory-receipts/$inventoryReceiptId": "inventory:read",
   "/manage/inventory-receipts/$inventoryReceiptId/update": "inventory:update",
