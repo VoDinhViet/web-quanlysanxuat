@@ -55,11 +55,3 @@ schema>`, error styling gated on `field.state.meta.isTouched` (see
   (`src/components/shared/composites/Pagination.tsx`: flat `page`/`pageSize`/`total`/
   `onPageChange`/`onPageSizeChange?` props). Route-backed lists bind the callbacks via
   `useRoutePagination` (`src/hooks/use-route-pagination.ts`).
-
-## Styling & accessibility
-
-- Compose classes with `cn()` (`src/lib/utils.ts`), passing the class string straight in rather
-  than parking it in an intermediate `const` (see `ProductBadges.tsx`). Use semantic Tailwind
-  tokens (`text-foreground`, `bg-card`), not raw color utilities.
-- Icon-only buttons need `aria-label`; invalid inputs need `aria-invalid`; every `<button>`
-  inside a `<form>` has an explicit `type`.

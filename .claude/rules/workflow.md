@@ -13,9 +13,11 @@ There are no test files yet. Vitest is wired up (`vite.config.ts`); colocate new
 1. `pnpm typecheck` is clean.
 2. `pnpm exec eslint <changed-files>` is clean.
 3. `pnpm format` has been run.
-4. Re-read the full `git diff` — no stray `console.log`, temp files, or out-of-scope
+4. UI change: `.claude/skills/impeccable/scripts/impeccable detect <changed UI files>` exits 0
+   (see `design.md`).
+5. Re-read the full `git diff` — no stray `console.log`, temp files, or out-of-scope
    edits.
-5. Exercise the affected flow with `pnpm dev`. A green typecheck does not prove the
+6. Exercise the affected flow with `pnpm dev`. A green typecheck does not prove the
    feature works.
 
 ## Review agents
@@ -25,7 +27,9 @@ waiting to be asked, before the final typecheck and eslint and before any commit
 
 1. `ecc:code-simplifier` on the changed files.
 2. In parallel, `ecc:code-reviewer` and `ecc:react-reviewer` on the diff.
-3. `ecc:security-reviewer` when the change touches auth, permissions, user input sent to the
+3. `/impeccable audit <changed UI files>` when the change touches UI (a11y, responsive, theming);
+   fix P0/P1 findings, list the rest. Run `critique` only if the user asks for a UX review.
+4. `ecc:security-reviewer` when the change touches auth, permissions, user input sent to the
    API, or a server function that calls the backend.
 
 Brief each agent with the changed paths and the ticket, and pass `model` per the backend repo's

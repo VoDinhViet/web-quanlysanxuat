@@ -15,6 +15,18 @@ colors:
   warning: "oklch(0.75 0.15 75)"
   info: "oklch(0.62 0.14 235)"
   sidebar: "oklch(0.3 0.03 255)"
+  success-soft: "oklch(0.96 0.035 162)"
+  success-ink: "oklch(0.44 0.11 162)"
+  warning-soft: "oklch(0.965 0.05 85)"
+  warning-ink: "oklch(0.48 0.11 65)"
+  info-soft: "oklch(0.96 0.025 235)"
+  info-ink: "oklch(0.42 0.12 245)"
+  destructive-soft: "oklch(0.965 0.025 20)"
+  destructive-ink: "oklch(0.5 0.19 27)"
+  violet-soft: "oklch(0.96 0.03 305)"
+  violet-ink: "oklch(0.45 0.17 305)"
+  neutral-soft: "oklch(0.955 0.008 255)"
+  neutral-ink: "oklch(0.42 0.03 257)"
 typography:
   body:
     fontFamily: "Nunito Sans Variable, sans-serif"
@@ -46,7 +58,8 @@ badges with a leading dot. Copy is Vietnamese.
 - **Primary** blue (`--primary`, also `--ring`, sidebar primary) for the main action and focus.
 - **Neutrals** are slightly blue-tinted (`--secondary`, `--muted`, `--border`, `--input`).
 - **Semantic**: `--success`, `--warning`, `--info`, `--destructive`, each with a foreground token.
-  Status badges use `bg-<tone>-50 text-<tone>-700` in light and `bg-<tone>-500/10 text-<tone>-400` in dark.
+  Status tints use the soft/ink pairs (`bg-<tone>-soft text-<tone>-ink`, tones: success, warning,
+  info, destructive, violet, neutral). Dark mode redefines the same names, so no `dark:` prefix.
 - **Charts** `--chart-1…7`. Use semantic tokens (`text-foreground`, `bg-card`), not raw colours.
 
 ## Typography

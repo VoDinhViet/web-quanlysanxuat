@@ -2,36 +2,12 @@
   "mcpServers": {
     "shadcn": {
       "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ]
-    },
-    "figwright": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@figwright/mcp@latest"
-      ]
-    },
-    "filesystem": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "."
-      ],
-      "env": {}
+      "args": ["shadcn@latest", "mcp"]
     },
     "google-sheets": {
       "type": "stdio",
       "command": "uvx",
-      "args": [
-        "--with",
-        "mcp<2",
-        "mcp-google-sheets@latest"
-      ],
+      "args": ["--with", "mcp<2", "mcp-google-sheets@latest"],
       "env": {
         "CREDENTIALS_PATH": "${HOME}/.config/mcp-google-sheets/credentials.json",
         "TOKEN_PATH": "${HOME}/.config/mcp-google-sheets/token.json"

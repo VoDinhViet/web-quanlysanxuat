@@ -1,30 +1,22 @@
 {
   "detector": {
     "ignoreRules": [],
-    "ignoreFiles": [
-      "src/components/ui/**",
-      "src/routeTree.gen.ts"
-    ],
+    "ignoreFiles": ["src/components/ui/**", "src/routeTree.gen.ts"],
     "ignoreValues": [
       {
         "rule": "side-tab",
         "value": "*",
-        "files": [
-          "src/features/manage/components/sections/ManageAlerts.tsx"
-        ],
+        "files": ["src/features/manage/components/sections/ManageAlerts.tsx"],
         "createdAt": "2026-10-13T04:49:08.563Z",
         "reason": "Existing dashboard alert style, keep UI unchanged"
       },
       {
         "rule": "codex-grid-background",
         "value": "*",
-        "files": [
-          "src/styles.css"
-        ],
+        "files": ["src/styles.css"],
         "createdAt": "2026-10-13T04:49:08.580Z",
         "reason": "Existing decorative background, keep UI unchanged"
       }
     ]
-  },
-  "telemetry": false
+  }
 }

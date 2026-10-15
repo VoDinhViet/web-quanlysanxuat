@@ -1,8 +1,3 @@
-## Project
-
-Web QLSX — an internal ERP for manufacturing management ("Cơ khí Tiến Huy"). All UI text
-is Vietnamese; all code, identifiers, comments, and docs are English.
-
 Package manager: pnpm.
 
 ## Standard layout

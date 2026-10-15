@@ -1,21 +1,22 @@
-# TanStack Start + shadcn/ui
+# Web QLSX
 
-This is a template for a new TanStack Start project with React, TypeScript, and shadcn/ui.
+Internal ERP for manufacturing management ("Cơ khí Tiến Huy"): sales orders, production, purchasing,
+inventory, quality (IQC/OQC/NCR) and delivery. TanStack Start, React, TypeScript, Tailwind CSS v4,
+shadcn/ui. The backend is a separate NestJS service (`be-quanlysanxuat`).
 
-## Adding components
-
-To add components to your app, run the following command:
+## Getting started
 
 ```bash
-npx shadcn@latest add button
+pnpm install
+cp .env.example .env   # then fill in the values
+pnpm dev
 ```
 
-This will place the ui components in the `components` directory.
+Other commands: `pnpm typecheck`, `pnpm lint`, `pnpm format`, `pnpm build`.
 
-## Using components
+## Docs
 
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+- `CLAUDE.md` and `.claude/rules/` — coding conventions and workflow.
+- `PRODUCT.md` — users, purpose, principles. `DESIGN.md` — the visual system (source of truth is
+  `src/styles.css`).
+- `docs/ui-flow.md` — screen ↔ route ↔ status map.
