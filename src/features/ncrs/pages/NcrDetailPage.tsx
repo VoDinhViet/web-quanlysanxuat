@@ -7,8 +7,8 @@ import { ncrQueryOptions } from "@/features/ncrs/api/options"
 import { NcrInfoCard } from "@/features/ncrs/components/composites/NcrInfoCard"
 import { NcrLogsCard } from "@/features/ncrs/components/composites/NcrLogsCard"
 import { NcrProgressCard } from "@/features/ncrs/components/composites/NcrProgressCard"
-import { NcrProductionOrdersCard } from "@/features/ncrs/components/composites/NcrProductionOrdersCard"
 import { NcrSummaryCards } from "@/features/ncrs/components/composites/NcrSummaryCards"
+import { NcrTraceCard } from "@/features/ncrs/components/composites/NcrTraceCard"
 import { NcrDetailHeader } from "@/features/ncrs/components/layouts/NcrDetailHeader"
 import { NcrAnalysisForm } from "@/features/ncrs/components/sections/NcrAnalysisForm"
 import { NcrCostLinesCard } from "@/features/ncrs/components/sections/NcrCostLinesCard"
@@ -53,11 +53,7 @@ export function NcrDetailPage() {
 
           <div className="flex flex-col gap-4">
             <NcrProgressCard status={ncr.status} />
-            {ncr.productionOrders.length > 0 && (
-              <NcrProductionOrdersCard
-                productionOrders={ncr.productionOrders}
-              />
-            )}
+            <NcrTraceCard ncr={ncr} />
             <NcrLogsCard logs={ncr.logs} />
           </div>
         </div>

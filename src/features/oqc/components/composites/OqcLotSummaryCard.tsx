@@ -3,6 +3,7 @@ import {
   Bill,
   Checklist,
   ClipboardText,
+  DangerTriangle,
   Layers,
   User,
 } from "@solar-icons/react"
@@ -14,6 +15,7 @@ import { OqcFinishedGoodStrip } from "@/features/oqc/components/composites/OqcFi
 import { DateTimePicker } from "@/components/shared/composites/DateTimePicker"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
+import type { NcrRef } from "@/lib/types/ncr.type"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 
 type OqcLotSummaryCardProps = {
@@ -66,6 +68,26 @@ export function OqcLotSummaryCard({
             label="Người tạo"
             value={oqc.creatorBy?.fullName ?? "—"}
           />
+          {oqc.ncr && (
+            <InfoTile
+              icon={DangerTriangle}
+              label="OQC lại của NCR"
+              value={<NcrLink ncr={oqc.ncr} />}
+            />
+          )}
+          {oqc.spawnedNcrs && oqc.spawnedNcrs.length > 0 && (
+            <InfoTile
+              icon={DangerTriangle}
+              label="NCR phát sinh"
+              value={
+                <span className="flex flex-wrap gap-x-3">
+                  {oqc.spawnedNcrs.map((ncr) => (
+                    <NcrLink key={ncr.id} ncr={ncr} />
+                  ))}
+                </span>
+              }
+            />
+          )}
         </dl>
 
         <div className="border-t border-border pt-5 sm:max-w-xs">
@@ -93,6 +115,18 @@ export function OqcLotSummaryCard({
         </div>
       </div>
     </OqcDetailSectionCard>
+  )
+}
+
+function NcrLink({ ncr }: { ncr: NcrRef }) {
+  return (
+    <Link
+      to="/manage/ncrs/$ncrId"
+      params={{ ncrId: ncr.id }}
+      className="font-mono text-primary hover:underline"
+    >
+      {ncr.code}
+    </Link>
   )
 }
 

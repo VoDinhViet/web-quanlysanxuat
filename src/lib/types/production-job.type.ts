@@ -72,6 +72,9 @@ export type ProductionJobDetail = {
   productionOrderId: string
   // LSX phụ từ NCR: REWORK (sửa chữa) / REMAKE (làm mới); null = Job từ LSX đơn hàng.
   ncrAction: NcrProductionAction | null
+  // NCR nguồn của LSX phụ; null = Job từ LSX đơn hàng.
+  ncrId: string | null
+  ncrCode: string | null
   order: OrderRef
   // Cùng một dòng `clients` với `order.client` (service leftJoin `clients` trên
   // `orders.client_id`) — backend expose ở cả 2 chỗ; UI đọc field top-level này.

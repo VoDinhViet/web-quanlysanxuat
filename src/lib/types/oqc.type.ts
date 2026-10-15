@@ -2,6 +2,7 @@ import { IqcResult } from "@/lib/types/iqc.type"
 import type { QcFile } from "@/lib/types/iqc.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
+import type { NcrRef } from "@/lib/types/ncr.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
@@ -104,6 +105,10 @@ export type Oqc = {
   result: IqcResult | null
   status: OqcStatus
   disposition: OqcDisposition | null
+  /** NCR mà phiếu này là OQC lại; null = lô kiểm thường. */
+  ncr?: NcrRef | null
+  /** NCR sinh ra từ phiếu này khi sàng lọc có SL NG. */
+  spawnedNcrs?: NcrRef[]
   revision?: string | null
   image?: FileResource | null
 }

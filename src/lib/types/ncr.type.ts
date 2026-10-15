@@ -1,6 +1,8 @@
 import type { FileResource } from "@/lib/types/file.type"
 import type { ClientRef } from "@/lib/types/client.type"
+import type { IqcResult } from "@/lib/types/iqc.type"
 import type { ItemRef } from "@/lib/types/item.type"
+import type { OqcStatus } from "@/lib/types/oqc.type"
 import type { ProductionOrderStatus } from "@/lib/types/production-order.type"
 import type { UserRef } from "@/lib/types/user.type"
 
@@ -156,6 +158,22 @@ export type NcrLog = {
   createdAt: string
 }
 
+/** Tham chiếu NCR để truy vết (NCR cha / NCR con / NCR sinh từ một phiếu OQC). */
+export type NcrRef = {
+  id: string
+  code: string
+  status: NcrStatus
+}
+
+/** Tham chiếu phiếu OQC để truy vết: OQC nguồn của NCR hoặc OQC lại đã yêu cầu từ NCR. */
+export type NcrOqcRef = {
+  id: string
+  code: string
+  status: OqcStatus
+  result: IqcResult | null
+  quantity: number
+}
+
 /** Mirrors the backend's NcrDetailResDto (GET /api/ncrs/:ncrId). */
 export type NcrDetail = Ncr & {
   /** Detail only: the product carries its image (the list's `item` does not). */
@@ -165,6 +183,13 @@ export type NcrDetail = Ncr & {
   totalCost: number
   productionOrders: NcrProductionOrder[]
   logs: NcrLog[]
+  /** Phiếu OQC sàng lọc sinh ra NCR này; null = NCR tạo tay. */
+  qualityInspection: NcrOqcRef | null
+  /** NCR cha — NCR này sinh từ phiếu OQC lại của NCR cha; null = NCR gốc. */
+  parentNcr: NcrRef | null
+  childNcrs: NcrRef[]
+  /** Các phiếu OQC lại đã yêu cầu từ NCR này. */
+  reinspections: NcrOqcRef[]
 }
 
 /** Mirrors the backend's NcrOperationResDto (GET /api/ncrs/:ncrId/operations) — the routing

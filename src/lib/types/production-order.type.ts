@@ -77,6 +77,7 @@ export type ProductionOrderDetail = {
   order: OrderRef
   sourceType: ProductionOrderSourceType
   ncrCode: string | null
+  ncrId: string | null
   items: ProductionOrderDetailItem[]
   // Bản scan/PDF của LSX đã ký tên đóng dấu
   signedFile?: FileResource | null

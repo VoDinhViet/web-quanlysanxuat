@@ -73,7 +73,17 @@ export function ProductionOrderDetailSummaryCard({
           <MetaField
             label="Nguồn"
             value={
-              production.ncrCode ? `NCR ${production.ncrCode}` : "Đơn hàng"
+              production.ncrId && production.ncrCode ? (
+                <Link
+                  to="/manage/ncrs/$ncrId"
+                  params={{ ncrId: production.ncrId }}
+                  className="font-mono text-primary hover:underline"
+                >
+                  NCR {production.ncrCode}
+                </Link>
+              ) : (
+                "Đơn hàng"
+              )
             }
           />
           <MetaField label="Khách hàng" value={order.client?.name ?? "—"} />

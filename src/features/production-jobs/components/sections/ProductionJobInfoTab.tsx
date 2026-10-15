@@ -46,6 +46,21 @@ export function ProductionJobInfoTab({
               </Link>
             }
           />
+          {productionJob.ncrId && productionJob.ncrCode && (
+            <InfoField
+              label="NCR nguồn"
+              mono
+              value={
+                <Link
+                  to="/manage/ncrs/$ncrId"
+                  params={{ ncrId: productionJob.ncrId }}
+                  className="text-primary hover:underline"
+                >
+                  {productionJob.ncrCode}
+                </Link>
+              }
+            />
+          )}
           <InfoField
             label="Đơn hàng"
             mono

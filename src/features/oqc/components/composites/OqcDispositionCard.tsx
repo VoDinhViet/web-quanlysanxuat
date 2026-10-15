@@ -19,6 +19,7 @@ import {
   oqcDispositionLabels,
   OqcDisposition,
 } from "@/lib/types/oqc.type"
+import { cn } from "@/lib/utils"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -33,7 +34,7 @@ const sortOption: RadioCardOption<OqcDisposition> = {
   description: oqcDispositionDescriptions[OqcDisposition.SORT],
   icon: Filter,
   activeClassName: "border-primary",
-  chipClassName: "bg-violet-soft text-violet-ink",
+  chipClassName: "bg-info-soft text-info-ink",
   badgeClassName: "bg-primary text-primary-foreground",
 }
 
@@ -68,6 +69,98 @@ const legacyOptions: RadioCardOption<OqcDisposition>[] = [
     badgeClassName: "bg-destructive text-destructive-foreground",
   },
 ]
+
+type SortSplitProps = {
+  quantity: number
+  unitName: string
+  sortNgQty: number | undefined
+}
+
+// NG hợp lệ khi nằm trong [0, SL lô]; ngoài khoảng đó (hoặc chưa nhập) thì không có phần OK để hiển thị.
+function resolveSortSplit({ quantity, sortNgQty }: SortSplitProps) {
+  if (sortNgQty === undefined || sortNgQty < 0 || sortNgQty > quantity) {
+    return null
+  }
+  const okQty = roundToScale(quantity - sortNgQty)
+  const okPercent = quantity > 0 ? (okQty / quantity) * 100 : 0
+  return { okQty, ngQty: sortNgQty, okPercent }
+}
+
+function SortOkTile(props: SortSplitProps) {
+  const split = resolveSortSplit(props)
+
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-foreground">
+        SL OK ({props.unitName}) — nhập kho
+      </p>
+      <div className="flex h-9 items-center gap-1.5 rounded-md border border-border bg-background px-3 text-sm">
+        {split ? (
+          <>
+            <span className="font-semibold tabular-nums">
+              {quantityFormatter.format(split.okQty)}
+            </span>
+            <span className="text-xs text-muted-foreground">(tự tính)</span>
+          </>
+        ) : (
+          <span className="text-xs text-muted-foreground">
+            Nhập SL NG hợp lệ
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Thanh chia lô OK / NG và một dòng diễn giải điều sẽ xảy ra khi lưu.
+function SortSplitPreview(props: SortSplitProps) {
+  const split = resolveSortSplit(props)
+  const { quantity, unitName } = props
+
+  if (!split) {
+    return (
+      <p
+        className={cn(
+          "text-xs",
+          props.sortNgQty === undefined
+            ? "text-muted-foreground"
+            : "text-destructive"
+        )}
+      >
+        SL NG phải từ 0 đến{" "}
+        <span className="tabular-nums">
+          {quantityFormatter.format(quantity)}
+        </span>{" "}
+        {unitName} (SL lô).
+      </p>
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex h-1.5 overflow-hidden rounded-full bg-background">
+        <div
+          className="bg-primary transition-[width] duration-200"
+          style={{ width: `${split.okPercent}%` }}
+        />
+        <div
+          className="bg-muted-foreground/25 transition-[width] duration-200"
+          style={{ width: `${100 - split.okPercent}%` }}
+        />
+      </div>
+      <p className="text-xs text-muted-foreground">
+        <span className="font-semibold text-foreground tabular-nums">
+          {quantityFormatter.format(split.okQty)}
+        </span>{" "}
+        {unitName} OK nhập kho thành phẩm ·{" "}
+        <span className="font-semibold text-foreground tabular-nums">
+          {quantityFormatter.format(split.ngQty)}
+        </span>{" "}
+        {unitName} NG {split.ngQty > 0 ? "sinh NCR nội bộ" : "không sinh NCR"}
+      </p>
+    </div>
+  )
+}
 
 // QUYẾT ĐỊNH XỬ LÝ — chỉ được render khi `result` (live) = FAIL, OqcDetailForm.tsx quyết định
 // việc đó. Không chọn phương án nào vẫn lưu được (→ PENDING). Lô mới chọn ACCEPT hoặc SORT
@@ -117,14 +210,14 @@ export const OqcDispositionCard = withForm({
               if (disposition === OqcDisposition.ACCEPT) {
                 return (
                   <p className="rounded-lg bg-warning-soft px-3 py-2.5 text-xs font-medium text-warning-ink">
-                    ⚠ Hoàn thành ngay — không cần kiểm lại.
+                    Hoàn thành ngay — không cần kiểm lại.
                   </p>
                 )
               }
 
               if (disposition === OqcDisposition.SORT) {
                 return (
-                  <div className="space-y-3 rounded-lg bg-violet-soft/50 p-4">
+                  <div className="space-y-4 rounded-lg bg-muted/40 p-4">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <form.AppField
                         name="sortNgQty"
@@ -150,29 +243,28 @@ export const OqcDispositionCard = withForm({
                       </form.AppField>
 
                       <form.Subscribe
-                        selector={(state) => state.values.sortOkQty}
+                        selector={(state) => state.values.sortNgQty}
                       >
-                        {(sortOkQty) => (
-                          <div className="space-y-2">
-                            <p className="text-xs font-medium text-foreground">
-                              SL OK ({unitName})
-                            </p>
-                            <div className="flex h-9 items-center rounded-md border border-dashed border-border bg-muted/40 px-3 text-xs font-medium text-muted-foreground">
-                              {sortOkQty === undefined
-                                ? "—"
-                                : quantityFormatter.format(sortOkQty)}
-                              <span className="ml-1.5 text-xs font-normal">
-                                (tự tính)
-                              </span>
-                            </div>
-                          </div>
+                        {(sortNgQty) => (
+                          <SortOkTile
+                            quantity={quantity}
+                            unitName={unitName}
+                            sortNgQty={sortNgQty}
+                          />
                         )}
                       </form.Subscribe>
                     </div>
-                    <p className="rounded-md bg-background/60 px-2.5 py-2 text-xs font-medium text-muted-foreground">
-                      SL lô = {quantityFormatter.format(quantity)} {unitName} —
-                      phần OK nhập kho thành phẩm, phần NG tự sinh NCR nội bộ.
-                    </p>
+                    <form.Subscribe
+                      selector={(state) => state.values.sortNgQty}
+                    >
+                      {(sortNgQty) => (
+                        <SortSplitPreview
+                          quantity={quantity}
+                          unitName={unitName}
+                          sortNgQty={sortNgQty}
+                        />
+                      )}
+                    </form.Subscribe>
                   </div>
                 )
               }
@@ -180,8 +272,8 @@ export const OqcDispositionCard = withForm({
               if (disposition === OqcDisposition.REWORK) {
                 return (
                   <p className="rounded-lg bg-info-soft px-3 py-2.5 text-xs font-medium text-info-ink">
-                    → Chuyển "Đang rework" — trả xưởng sửa lại, QC lấy mẫu và
-                    xác nhận lại trên cùng phiếu này tới khi PASS.
+                    Chuyển "Đang rework" — trả xưởng sửa lại, QC lấy mẫu và xác
+                    nhận lại trên cùng phiếu này tới khi PASS.
                   </p>
                 )
               }
@@ -189,8 +281,8 @@ export const OqcDispositionCard = withForm({
               if (disposition === OqcDisposition.SCRAP) {
                 return (
                   <p className="rounded-lg bg-destructive-soft px-3 py-2.5 text-xs font-medium text-destructive-ink">
-                    ✗ Hoàn thành ngay — loại bỏ hẳn lô hàng, giải phóng lại
-                    quota lô của công đoạn.
+                    Hoàn thành ngay — loại bỏ hẳn lô hàng, giải phóng lại quota
+                    lô của công đoạn.
                   </p>
                 )
               }

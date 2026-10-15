@@ -66,7 +66,19 @@ export function NcrInfoCard({ ncr }: NcrInfoCardProps) {
 
           <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
             <InfoItem label="Khách hàng">{ncr.client?.name ?? "—"}</InfoItem>
-            <InfoItem label="Đơn hàng (SO)">{ncr.order?.code ?? "—"}</InfoItem>
+            <InfoItem label="Đơn hàng (SO)">
+              {ncr.order ? (
+                <Link
+                  to="/manage/orders/$orderId"
+                  params={{ orderId: ncr.order.id }}
+                  className="font-mono text-primary hover:underline"
+                >
+                  {ncr.order.code}
+                </Link>
+              ) : (
+                "—"
+              )}
+            </InfoItem>
             <InfoItem label="Job gốc">
               {ncr.productionJob ? (
                 <Link
@@ -87,7 +99,9 @@ export function NcrInfoCard({ ncr }: NcrInfoCardProps) {
             <InfoItem label="Nguồn">
               {ncrOriginTypeLabels[ncr.originType]}
             </InfoItem>
-            <InfoItem label="Ngày tạo">{formatDateTime(ncr.createdAt)}</InfoItem>
+            <InfoItem label="Ngày tạo">
+              {formatDateTime(ncr.createdAt)}
+            </InfoItem>
             <InfoItem label="Duyệt bởi">
               {ncr.approverBy ? (
                 <>

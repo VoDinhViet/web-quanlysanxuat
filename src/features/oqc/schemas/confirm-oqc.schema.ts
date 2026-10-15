@@ -62,6 +62,15 @@ export const confirmOqcSchema = z
       return
     }
 
+    if (value.sortNgQty < 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sortNgQty"],
+        message: "SL NG không được âm",
+      })
+      return
+    }
+
     if (value.sortNgQty > value.totalQuantity) {
       ctx.addIssue({
         code: "custom",
