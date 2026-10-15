@@ -105,8 +105,8 @@ const orderStatTileDefs: OrderStatTileDef[] = [
   {
     label: "Tổng đơn hàng",
     icon: BillList,
-    iconClassName: "bg-info/15 text-info",
-    valueSizeClassName: "text-2xl",
+    iconClassName: "bg-info-soft text-info-ink",
+    valueSizeClassName: "text-xl",
     unit: "đơn",
     positiveDirection: "up",
     selectValue: (stats) => countFormatter.format(stats.totalOrders),
@@ -135,8 +135,7 @@ const orderStatTileDefs: OrderStatTileDef[] = [
   {
     label: "Đã giao",
     icon: Delivery,
-    iconClassName:
-      "bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-400",
+    iconClassName: "bg-violet-soft text-violet-ink",
     valueSizeClassName: "text-lg",
     unit: "VND",
     positiveDirection: null,
@@ -150,8 +149,8 @@ const orderStatTileDefs: OrderStatTileDef[] = [
   {
     label: "Đang thực hiện",
     icon: Refresh,
-    iconClassName: "bg-warning/15 text-warning",
-    valueSizeClassName: "text-2xl",
+    iconClassName: "bg-warning-soft text-warning-ink",
+    valueSizeClassName: "text-xl",
     unit: "đơn",
     positiveDirection: null,
     selectValue: (stats) => countFormatter.format(stats.inProgress),
@@ -162,7 +161,7 @@ const orderStatTileDefs: OrderStatTileDef[] = [
     label: "Trễ hạn",
     icon: DangerTriangle,
     iconClassName: "bg-destructive/15 text-destructive",
-    valueSizeClassName: "text-2xl",
+    valueSizeClassName: "text-xl",
     unit: "đơn",
     // A drop in overdue orders is good news — tone follows meaning, not the
     // raw arrow direction.
@@ -175,7 +174,7 @@ const orderStatTileDefs: OrderStatTileDef[] = [
     label: "Hoàn thành",
     icon: CheckCircle,
     iconClassName: "bg-success/15 text-success",
-    valueSizeClassName: "text-2xl",
+    valueSizeClassName: "text-xl",
     unit: "đơn",
     positiveDirection: null,
     selectValue: (stats) => countFormatter.format(stats.completed),

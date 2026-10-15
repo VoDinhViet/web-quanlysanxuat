@@ -1,7 +1,6 @@
 import { ArrowDown, ArrowUp } from "@solar-icons/react"
 import { useQuery } from "@tanstack/react-query"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildOrderStatTiles } from "@/features/orders/constants/order-stat-tiles"
 import type { OrderStatTrendTone } from "@/features/orders/constants/order-stat-tiles"
@@ -29,13 +28,17 @@ export function OrderStatCards() {
     return (
       <div className={gridClassName}>
         {Array.from({ length: 6 }, (_, index) => (
-          <Card key={index} size="sm">
-            <CardContent className="flex flex-col gap-2">
+          <div
+            key={index}
+            className="flex items-start gap-3 rounded-lg bg-card p-4 shadow-card"
+          >
+            <Skeleton className="size-11 shrink-0 rounded-xl" />
+            <div className="min-w-0 flex-1 space-y-1.5">
               <Skeleton className="h-3 w-24" />
               <Skeleton className="h-7 w-20" />
               <Skeleton className="h-3 w-28" />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     )
@@ -52,32 +55,33 @@ export function OrderStatCards() {
   return (
     <div className={gridClassName}>
       {tiles.map((tile) => (
-        <Card key={tile.label} size="sm">
-          <CardContent className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <div
-                className={cn(
-                  "flex size-7 shrink-0 items-center justify-center rounded-lg",
-                  tile.iconClassName
-                )}
-              >
-                <tile.icon className="size-4" />
-              </div>
-              <p className="truncate text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                {tile.label}
-              </p>
-            </div>
+        <div
+          key={tile.label}
+          className="flex items-start gap-3 rounded-lg bg-card p-4 shadow-card"
+        >
+          <div
+            className={cn(
+              "flex size-11 shrink-0 items-center justify-center rounded-xl",
+              tile.iconClassName
+            )}
+          >
+            <tile.icon className="size-5" />
+          </div>
 
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-medium text-foreground">
+              {tile.label}
+            </p>
             <p className="flex items-baseline gap-1.5">
               <span
                 className={cn(
-                  "truncate font-semibold text-foreground",
+                  "truncate font-medium text-foreground tabular-nums",
                   tile.valueSizeClassName
                 )}
               >
                 {tile.value}
               </span>
-              <span className="shrink-0 text-xs text-muted-foreground">
+              <span className="shrink-0 text-xs font-normal text-muted-foreground">
                 {tile.unit}
               </span>
             </p>
@@ -101,8 +105,8 @@ export function OrderStatCards() {
                 <span className="truncate">{tile.trend.text}</span>
               </p>
             ) : null}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ))}
     </div>
   )
