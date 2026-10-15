@@ -12,6 +12,8 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
 import { PaymentRequestInvoiceField } from "@/features/payment-requests/components/composites/PaymentRequestInvoiceField"
+import { PaymentRequestFormSection } from "@/features/payment-requests/components/composites/PaymentRequestFormSection"
+import { PaymentRequestNoteField } from "@/features/payment-requests/components/composites/PaymentRequestNoteField"
 import { PaymentRequestExtraCostField } from "@/features/payment-requests/components/composites/PaymentRequestExtraCostField"
 import { currencyFormatter } from "@/lib/currency"
 import { appTableFeatures } from "@/lib/table-features"
@@ -47,7 +49,9 @@ function buildItemColumns(hasQuotation: boolean) {
         return (
           <div className="space-y-0.5">
             <p className="font-medium text-foreground">{directName}</p>
-            <p className="font-mono text-xs text-muted-foreground">{directCode}</p>
+            <p className="font-mono text-xs text-muted-foreground">
+              {directCode}
+            </p>
           </div>
         )
       },
@@ -74,7 +78,8 @@ function buildItemColumns(hasQuotation: boolean) {
               item.orderedQuotationQty !== null &&
               item.orderedQuotationQty !== undefined && (
                 <div className="text-[11px] text-muted-foreground">
-                  ({numberFmt.format(item.orderedQuotationQty)} {item.quotationUnit})
+                  ({numberFmt.format(item.orderedQuotationQty)}{" "}
+                  {item.quotationUnit})
                 </div>
               )}
           </div>
@@ -131,13 +136,9 @@ function buildItemColumns(hasQuotation: boolean) {
               }
 
               const isShortage =
-                expected !== null &&
-                expected !== undefined &&
-                actual < expected
+                expected !== null && expected !== undefined && actual < expected
               const isExcess =
-                expected !== null &&
-                expected !== undefined &&
-                actual > expected
+                expected !== null && expected !== undefined && actual > expected
 
               return (
                 <div className="space-y-0.5">
@@ -254,12 +255,12 @@ function ExtraCostRow({ extraCost, extraCostNote }: ExtraCostRowProps) {
       <dt className="flex items-center gap-1.5 font-medium">
         <span>Chi phí phát sinh</span>
         {extraCostNote && (
-          <span className="font-normal text-[11px] text-muted-foreground">
+          <span className="text-[11px] font-normal text-muted-foreground">
             ({extraCostNote})
           </span>
         )}
       </dt>
-      <dd className="whitespace-nowrap font-semibold tabular-nums text-primary">
+      <dd className="font-semibold whitespace-nowrap text-primary tabular-nums">
         + {currencyFormatter.format(extraCost)} VND
       </dd>
     </div>
@@ -293,7 +294,8 @@ export function PaymentRequestItemsSection({
   onRevert,
 }: PaymentRequestItemsSectionProps) {
   const hasQuotation = useMemo(
-    () => paymentRequest.items.some((item) => Boolean(item.quotationUnit?.trim())),
+    () =>
+      paymentRequest.items.some((item) => Boolean(item.quotationUnit?.trim())),
     [paymentRequest.items]
   )
   const columns = useMemo(() => buildItemColumns(hasQuotation), [hasQuotation])
@@ -361,33 +363,45 @@ export function PaymentRequestItemsSection({
           {/* Cột trái: cảnh báo, số hóa đơn, chi phí phát sinh và số tiền bằng chữ */}
           <div className="flex flex-col justify-between gap-4 text-xs">
             <div className="space-y-4">
-              <div className="max-w-sm">
-                <PaymentRequestInvoiceField
-                  paymentRequestId={paymentRequest.id}
-                  supplierInvoiceNo={paymentRequest.supplierInvoiceNo}
-                  editable={
-                    paymentRequest.status !== PaymentRequestStatus.CANCELLED
-                  }
-                />
-              </div>
+              {/* Mục 1: hóa đơn & ghi chú */}
+              <PaymentRequestFormSection
+                title="Hóa đơn & ghi chú"
+                description="Số hóa đơn NCC để đối chiếu; ghi chú hiển thị trên bản in (mặc định lấy từ đơn mua)."
+              >
+                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
+                  <PaymentRequestInvoiceField
+                    paymentRequestId={paymentRequest.id}
+                    supplierInvoiceNo={paymentRequest.supplierInvoiceNo}
+                    editable={
+                      paymentRequest.status !== PaymentRequestStatus.CANCELLED
+                    }
+                  />
+                  <PaymentRequestNoteField
+                    paymentRequestId={paymentRequest.id}
+                    note={paymentRequest.note}
+                    purchaseOrderNote={paymentRequest.purchaseOrderNote}
+                    editable={
+                      paymentRequest.status !== PaymentRequestStatus.CANCELLED
+                    }
+                  />
+                </div>
+              </PaymentRequestFormSection>
 
-              {/* Chi phí phát sinh sau đặt hàng */}
-              <div className="max-w-md">
-                <PaymentRequestExtraCostField
-                  extraCost={paymentRequest.extraCost}
-                  extraCostNote={paymentRequest.extraCostNote}
-                  currentExtraCost={currentExtraCost}
-                  currentExtraCostNote={currentExtraCostNote}
-                  editable={
-                    paymentRequest.status === PaymentRequestStatus.PENDING
-                  }
-                  hasUnsavedChanges={hasUnsavedChanges}
-                  isSaving={isSaving}
-                  onExtraCostChange={onExtraCostChange ?? (() => {})}
-                  onSave={onSave}
-                  onRevert={onRevert}
-                />
-              </div>
+              {/* Mục 2: chi phí phát sinh sau đặt hàng */}
+              <PaymentRequestExtraCostField
+                extraCost={paymentRequest.extraCost}
+                extraCostNote={paymentRequest.extraCostNote}
+                currentExtraCost={currentExtraCost}
+                currentExtraCostNote={currentExtraCostNote}
+                editable={
+                  paymentRequest.status === PaymentRequestStatus.PENDING
+                }
+                hasUnsavedChanges={hasUnsavedChanges}
+                isSaving={isSaving}
+                onExtraCostChange={onExtraCostChange ?? (() => {})}
+                onSave={onSave}
+                onRevert={onRevert}
+              />
 
               {shortageCount > 0 && (
                 <p className="flex items-start gap-2 rounded-lg bg-warning/10 px-3 py-2 font-medium text-warning">
@@ -410,14 +424,6 @@ export function PaymentRequestItemsSection({
                     Tạm ứng NCC:
                   </span>{" "}
                   {paymentRequest.advancePaymentNote}
-                </p>
-              )}
-              {paymentRequest.purchaseOrderNote && (
-                <p className="whitespace-pre-line text-muted-foreground">
-                  <span className="font-medium text-foreground">
-                    Ghi chú PO:
-                  </span>{" "}
-                  {paymentRequest.purchaseOrderNote}
                 </p>
               )}
             </div>

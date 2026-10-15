@@ -31,10 +31,10 @@ export const updatePaymentRequestExtraCost = createServerFn({
     z.object({
       paymentRequestId: z.uuid(),
       extraCost: z.number().min(0),
-      extraCostNote: z.string().trim().max(500).nullable(),
+      extraCostNote: z.string().trim().max(1000).nullable(),
     })
   )
-  .handler(async ({ data }): Promise<{ success: boolean; mocked?: boolean }> => {
+  .handler(async ({ data }): Promise<void> => {
     try {
       await http.patch(
         `/api/payment-requests/${data.paymentRequestId}/extra-cost`,
@@ -43,14 +43,7 @@ export const updatePaymentRequestExtraCost = createServerFn({
           extraCostNote: data.extraCostNote,
         }
       )
-      return { success: true }
     } catch (error) {
-      // Khi backend chưa kịp deploy endpoint /extra-cost (404),
-      // cho phép UI preview mượt mà không bị throw crash.
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        return { success: true, mocked: true }
-      }
-
       logHttpError(error, "updatePaymentRequestExtraCost")
       throw new Error(resolveUpdateExtraCostErrorMessage(error))
     }

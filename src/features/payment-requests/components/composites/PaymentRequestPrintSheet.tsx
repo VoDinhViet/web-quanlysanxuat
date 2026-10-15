@@ -94,15 +94,21 @@ export function PaymentRequestPrintSheet({
           <table className="mt-4 w-full border-collapse text-xs">
             <thead>
               <tr>
-                <th className="border border-black px-2 py-1 text-center">STT</th>
+                <th className="border border-black px-2 py-1 text-center">
+                  STT
+                </th>
                 <th className="border border-black px-2 py-1 text-left">
                   Mã vật tư
                 </th>
                 <th className="border border-black px-2 py-1 text-left">
                   Tên vật tư / hàng hóa
                 </th>
-                <th className="border border-black px-2 py-1 text-center">ĐVT</th>
-                <th className="border border-black px-2 py-1 text-right">SL đặt</th>
+                <th className="border border-black px-2 py-1 text-center">
+                  ĐVT
+                </th>
+                <th className="border border-black px-2 py-1 text-right">
+                  SL đặt
+                </th>
                 {hasQuotation && (
                   <>
                     <th className="border border-black px-2 py-1 text-right">
@@ -178,7 +184,8 @@ export function PaymentRequestPrintSheet({
                     <td className="border border-black px-2 py-1 text-right font-medium">
                       {vndFormatter.format(
                         paymentRequest.purchaseOrderTotalAmount
-                      )} đ
+                      )}{" "}
+                      đ
                     </td>
                   </tr>
                   {paymentRequest.advancePaymentAmount > 0 && (
@@ -196,7 +203,8 @@ export function PaymentRequestPrintSheet({
                         −{" "}
                         {vndFormatter.format(
                           paymentRequest.advancePaymentAmount
-                        )} đ
+                        )}{" "}
+                        đ
                       </td>
                     </tr>
                   )}
@@ -251,16 +259,10 @@ export function PaymentRequestPrintSheet({
         {toVietnameseCurrencyWords(paymentRequest.requestedAmount)} chẵn.
       </p>
 
-      {paymentRequest.purchaseOrderNote ? (
+      {(paymentRequest.note ?? paymentRequest.purchaseOrderNote) ? (
         <p className="mt-2 text-xs whitespace-pre-line">
-          <span className="font-medium">Ghi chú PO:</span>{" "}
-          {paymentRequest.purchaseOrderNote}
-        </p>
-      ) : null}
-
-      {paymentRequest.note ? (
-        <p className="mt-2 text-xs">
-          <span className="font-medium">Ghi chú:</span> {paymentRequest.note}
+          <span className="font-medium">Ghi chú:</span>{" "}
+          {paymentRequest.note ?? paymentRequest.purchaseOrderNote}
         </p>
       ) : null}
 

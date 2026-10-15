@@ -1,6 +1,10 @@
-import { useMemo, useState, useEffect } from "react"
+import { useMemo, useState } from "react"
 import { useParams } from "@tanstack/react-router"
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { useServerFn } from "@tanstack/react-start"
 import { toast } from "sonner"
 
@@ -47,19 +51,27 @@ export function PaymentRequestDetailPage() {
     paymentRequestQueryOptions(paymentRequestId)
   )
 
-  const [extraCost, setExtraCost] = useState<number>(
-    paymentRequest.extraCost ?? 0
-  )
+  const savedExtraCost = paymentRequest.extraCost ?? 0
+  const [extraCost, setExtraCost] = useState<number>(savedExtraCost)
   const [extraCostNote, setExtraCostNote] = useState<string | null>(
     paymentRequest.extraCostNote ?? null
   )
 
-  useEffect(() => {
-    setExtraCost(paymentRequest.extraCost ?? 0)
+  // Resync ngay trong render (không dùng useEffect) khi server trả giá trị đã lưu khác.
+  const [syncedExtraCost, setSyncedExtraCost] = useState(savedExtraCost)
+  const [syncedExtraCostNote, setSyncedExtraCostNote] = useState(
+    paymentRequest.extraCostNote ?? null
+  )
+  if (
+    savedExtraCost !== syncedExtraCost ||
+    (paymentRequest.extraCostNote ?? null) !== syncedExtraCostNote
+  ) {
+    setSyncedExtraCost(savedExtraCost)
+    setSyncedExtraCostNote(paymentRequest.extraCostNote ?? null)
+    setExtraCost(savedExtraCost)
     setExtraCostNote(paymentRequest.extraCostNote ?? null)
-  }, [paymentRequest.extraCost, paymentRequest.extraCostNote])
+  }
 
-  const savedExtraCost = paymentRequest.extraCost ?? 0
   const savedExtraCostNote = paymentRequest.extraCostNote?.trim() || null
   const currentNote = extraCostNote?.trim() || null
 
@@ -91,7 +103,12 @@ export function PaymentRequestDetailPage() {
   }
 
   const effectivePaymentRequest = useMemo(
-    () => calculateEffectivePaymentRequest(paymentRequest, extraCost, extraCostNote),
+    () =>
+      calculateEffectivePaymentRequest(
+        paymentRequest,
+        extraCost,
+        extraCostNote
+      ),
     [paymentRequest, extraCost, extraCostNote]
   )
 
@@ -130,7 +147,10 @@ export function PaymentRequestDetailPage() {
                 currentExtraCostNote={extraCostNote ?? ""}
                 hasUnsavedChanges={hasUnsavedChanges}
                 isSaving={isSavingExtraCost}
-                onExtraCostChange={({ extraCost: nextCost, extraCostNote: nextNote }) => {
+                onExtraCostChange={({
+                  extraCost: nextCost,
+                  extraCostNote: nextNote,
+                }) => {
                   setExtraCost(nextCost)
                   setExtraCostNote(nextNote)
                 }}
@@ -143,9 +163,13 @@ export function PaymentRequestDetailPage() {
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
-            <PaymentRequestSupplierCard paymentRequest={effectivePaymentRequest} />
+            <PaymentRequestSupplierCard
+              paymentRequest={effectivePaymentRequest}
+            />
             <PaymentRequestInfoCard paymentRequest={effectivePaymentRequest} />
-            <PaymentRequestStatusHistoryCard paymentRequest={effectivePaymentRequest} />
+            <PaymentRequestStatusHistoryCard
+              paymentRequest={effectivePaymentRequest}
+            />
           </div>
         </div>
       </div>
