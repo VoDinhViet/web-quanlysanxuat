@@ -18,6 +18,21 @@ There are no test files yet. Vitest is wired up (`vite.config.ts`); colocate new
 5. Exercise the affected flow with `pnpm dev`. A green typecheck does not prove the
    feature works.
 
+## Review agents
+
+When a coding unit is finished (a feature, a fix touching code, a PH ticket), run these without
+waiting to be asked, before the final typecheck and eslint and before any commit:
+
+1. `ecc:code-simplifier` on the changed files.
+2. In parallel, `ecc:code-reviewer` and `ecc:react-reviewer` on the diff.
+3. `ecc:security-reviewer` when the change touches auth, permissions, user input sent to the
+   API, or a server function that calls the backend.
+
+Brief each agent with the changed paths and the ticket, and pass `model` per the backend repo's
+`model-routing.md`. Reviewers are read-only: fix CRITICAL and HIGH findings, list the rest for the
+user. Do not apply a simplifier rewrite that adds abstraction or breaks the rules in this folder.
+Skip for typo, comment, doc, and config-only edits. This does not grant permission to commit.
+
 ## Commits
 
 Conventional Commits, scoped: `type(scope): imperative subject`, lowercase, no trailing
