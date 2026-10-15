@@ -4,10 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ClipboardList, Documents } from "@solar-icons/react"
 import { toast } from "sonner"
 
-import { Surface } from "@/components/shared/layouts/Surface"
 import { confirmOqc } from "@/features/oqc/api/server-functions/confirm-oqc.api"
 import { OqcActivityLogCard } from "@/features/oqc/components/composites/OqcActivityLogCard"
-import { OqcDetailHeader } from "@/features/oqc/components/layouts/OqcDetailHeader"
 import { OqcDispositionCard } from "@/features/oqc/components/composites/OqcDispositionCard"
 import { OqcEvidenceCard } from "@/features/oqc/components/composites/OqcEvidenceCard"
 import { OqcLotSummaryCard } from "@/features/oqc/components/composites/OqcLotSummaryCard"
@@ -79,7 +77,7 @@ function useOqcDetailForm(oqc: OqcDetail) {
 // every section-card component below imports this instead of accepting `form: AnyFormApi`.
 export type OqcDetailFormApi = ReturnType<typeof useOqcDetailForm>["form"]
 
-// One <form> for the whole detail page — "Lưu" (OqcDetailActions, inside OqcDetailHeader) is a
+// One <form> for the whole detail page — "Lưu" (OqcDetailActions, inside OqcLotSummaryCard header) is a
 // plain `type="submit"` button. Locked (`isLocked`) once `status` reaches COMPLETED — mirrors
 // IqcDetailForm.tsx, but the lock here is permanent (no un-complete route on the backend, unlike
 // IQC's WAITING_RETURN → COMPLETED path). Body is a 2-column grid: left column is the QC input
@@ -102,13 +100,14 @@ export function OqcDetailForm({ oqc }: OqcDetailFormProps) {
       noValidate
       className="flex flex-col gap-4"
     >
-      <Surface>
-        <OqcDetailHeader form={form} oqc={oqc} isPending={mutation.isPending} />
-      </Surface>
-
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex flex-col gap-4">
-          <OqcLotSummaryCard form={form} oqc={oqc} disabled={disabled} />
+          <OqcLotSummaryCard
+            form={form}
+            oqc={oqc}
+            disabled={disabled}
+            isPending={mutation.isPending}
+          />
           <OqcResultCard form={form} disabled={disabled} />
           <OqcEvidenceCard
             form={form}

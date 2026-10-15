@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import {
+  AltArrowLeft,
   Bill,
   Checklist,
   ClipboardText,
@@ -10,8 +11,14 @@ import {
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
+import { LinkButton } from "@/components/ui/button"
+import { OqcDetailActions } from "@/features/oqc/components/layouts/OqcDetailActions"
 import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
 import { OqcFinishedGoodStrip } from "@/features/oqc/components/composites/OqcFinishedGoodStrip"
+import {
+  OqcResultBadge,
+  OqcStatusBadge,
+} from "@/features/oqc/components/primitives/OqcBadges"
 import { DateTimePicker } from "@/components/shared/composites/DateTimePicker"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import type { OqcDetailFormApi } from "@/features/oqc/components/sections/OqcDetailForm"
@@ -22,20 +29,47 @@ type OqcLotSummaryCardProps = {
   form: OqcDetailFormApi
   oqc: OqcDetail
   disabled?: boolean
+  isPending: boolean
 }
 
-// §1 LÔ KIỂM TRA — dải thành phẩm (xem OqcFinishedGoodStrip.tsx) + tham chiếu (PO, Job, Công
+// §1 LÔ KIỂM TRA — header mang luôn danh tính phiếu (mã + 2 badge) và hành động (quay lại, xoá,
+// lưu); thân gồm dải thành phẩm (xem OqcFinishedGoodStrip.tsx) + tham chiếu (PO, Job, Công
 // đoạn, người tạo) + Ngày kiểm tra (field user tự chọn, cùng idiom IqcGeneralInfoCard.tsx).
 export function OqcLotSummaryCard({
   form,
   oqc,
   disabled,
+  isPending,
 }: OqcLotSummaryCardProps) {
   return (
     <OqcDetailSectionCard
       icon={Layers}
       title="Lô kiểm tra"
       description="Thành phẩm, nguồn gốc và thời điểm lấy mẫu"
+      titleExtra={
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="font-mono text-sm font-medium text-foreground">
+            {oqc.code}
+          </span>
+          <OqcStatusBadge status={oqc.status} />
+          <OqcResultBadge result={oqc.result} />
+        </span>
+      }
+      action={
+        <div className="flex flex-wrap items-start gap-2">
+          <LinkButton
+            to="/manage/oqc"
+            search={{ page: 1, limit: 10 }}
+            variant="ghost"
+            className="gap-1.5 text-muted-foreground hover:text-foreground"
+            aria-label="Quay lại danh sách OQC"
+          >
+            <AltArrowLeft className="size-4" />
+            <span className="hidden sm:inline">Quay lại</span>
+          </LinkButton>
+          <OqcDetailActions form={form} oqc={oqc} isPending={isPending} />
+        </div>
+      }
     >
       <div className="space-y-5">
         <div className="border-b border-border pb-5">
