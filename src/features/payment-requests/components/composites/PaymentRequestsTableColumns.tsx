@@ -3,7 +3,10 @@ import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
-import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/primitives/PaymentRequestBadges"
+import {
+  PaymentRequestStatusBadge,
+  PaymentRequestUrgentBadge,
+} from "@/features/payment-requests/components/primitives/PaymentRequestBadges"
 import {
   PaymentRequestActionsCell,
   PaymentRequestAmountCell,
@@ -18,13 +21,16 @@ export const paymentRequestsColumns = col.columns([
     header: "Mã yêu cầu TT",
     meta: { headerClassName: "min-w-36" },
     cell: ({ getValue, row }) => (
-      <Link
-        to="/manage/payment-requests/$paymentRequestId"
-        params={{ paymentRequestId: row.original.id }}
-        className="font-mono text-xs font-medium text-primary hover:underline"
-      >
-        {getValue()}
-      </Link>
+      <div className="flex items-center gap-2">
+        <Link
+          to="/manage/payment-requests/$paymentRequestId"
+          params={{ paymentRequestId: row.original.id }}
+          className="font-mono text-xs font-medium text-primary hover:underline"
+        >
+          {getValue()}
+        </Link>
+        {row.original.isUrgent && <PaymentRequestUrgentBadge />}
+      </div>
     ),
   }),
 

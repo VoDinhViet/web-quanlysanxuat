@@ -29,6 +29,17 @@ const statusOptions = [
   ...buildOptionsFromLabels(paymentRequestStatusLabels),
 ]
 
+const urgencyOptions = [
+  { value: "all", label: "Tất cả" },
+  { value: "urgent", label: "Gấp" },
+  { value: "normal", label: "Bình thường" },
+]
+
+function urgencyFilterValue(isUrgent: boolean | undefined): string {
+  if (isUrgent === undefined) return "all"
+  return isUrgent ? "urgent" : "normal"
+}
+
 export function PaymentRequestsTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/payment-requests/" })
   const navigate = useNavigate({ from: "/manage/payment-requests/" })
@@ -83,6 +94,11 @@ export function PaymentRequestsTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
   }
 
+  const handleUrgencyChange = (value: string) => {
+    const isUrgent = value === "all" ? undefined : value === "urgent"
+    void navigate({ search: (prev) => ({ ...prev, isUrgent, page: 1 }) })
+  }
+
   const handleSupplierChange = (value: string) => {
     const supplierId = value === "all" ? undefined : value
     void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
@@ -112,6 +128,7 @@ export function PaymentRequestsTableFilter() {
         const {
           q: _q,
           status: _status,
+          isUrgent: _isUrgent,
           supplierId: _supplierId,
           poCode: _poCode,
           startDate: _startDate,
@@ -126,7 +143,7 @@ export function PaymentRequestsTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_minmax(11rem,1fr)_minmax(9rem,0.8fr)_minmax(9rem,0.8fr)_minmax(12rem,1.2fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.2fr)_minmax(11rem,1fr)_minmax(9rem,0.8fr)_minmax(9rem,0.8fr)_minmax(8rem,0.7fr)_minmax(12rem,1.2fr)]">
           {/* Từ ngày / Đến ngày */}
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
@@ -211,6 +228,34 @@ export function PaymentRequestsTableFilter() {
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Mức độ */}
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="pr-urgency"
+              className="text-xs font-medium text-muted-foreground"
+            >
+              Mức độ
+            </Label>
+            <Select
+              items={urgencyOptions}
+              value={urgencyFilterValue(search.isUrgent)}
+              onValueChange={(value) =>
+                value !== null && handleUrgencyChange(value)
+              }
+            >
+              <SelectTrigger id="pr-urgency" className="w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {urgencyOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>

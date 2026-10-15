@@ -1,3 +1,5 @@
+import { Flame } from "lucide-react"
+
 import { Badge } from "@/components/ui/badge"
 import type { PaymentRequestStatus } from "@/lib/types/payment-request.type"
 import { paymentRequestStatusLabels } from "@/lib/types/payment-request.type"
@@ -42,6 +44,24 @@ export function PaymentRequestStatusBadge({
     <Badge variant="outline" className={cn(badge, className)}>
       <span className={cn("size-1.5 rounded-full", dot)} />
       {paymentRequestStatusLabels[status]}
+    </Badge>
+  )
+}
+
+type PaymentRequestUrgentBadgeProps = {
+  className?: string
+}
+
+export function PaymentRequestUrgentBadge({
+  className,
+}: PaymentRequestUrgentBadgeProps) {
+  return (
+    <Badge
+      variant="outline"
+      className={cn("bg-destructive/10 text-destructive", className)}
+    >
+      <Flame className="size-3 fill-current" />
+      Gấp
     </Badge>
   )
 }

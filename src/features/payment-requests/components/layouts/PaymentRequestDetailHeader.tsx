@@ -4,7 +4,9 @@ import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
+import { PaymentRequestStatus } from "@/lib/types/payment-request.type"
 import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/primitives/PaymentRequestBadges"
+import { PaymentRequestUrgencyToggle } from "@/features/payment-requests/components/composites/PaymentRequestUrgencyToggle"
 import { PaymentRequestAmountStrip } from "@/features/payment-requests/components/composites/PaymentRequestAmountStrip"
 import { PaymentRequestDetailActions } from "@/features/payment-requests/components/layouts/PaymentRequestDetailActions"
 import { vndFormatter } from "@/lib/currency"
@@ -51,6 +53,11 @@ export function PaymentRequestDetailHeader({
             {paymentRequest.code}
           </span>
           <PaymentRequestStatusBadge status={paymentRequest.status} />
+          <PaymentRequestUrgencyToggle
+            paymentRequestId={paymentRequest.id}
+            isUrgent={paymentRequest.isUrgent}
+            editable={paymentRequest.status === PaymentRequestStatus.PENDING}
+          />
         </div>
 
         <PaymentRequestDetailActions

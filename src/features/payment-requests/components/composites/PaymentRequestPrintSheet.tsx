@@ -82,6 +82,11 @@ export function PaymentRequestPrintSheet({
             {paymentRequest.supplierInvoiceNo}
           </p>
         ) : null}
+        {paymentRequest.isUrgent ? (
+          <p>
+            <span className="font-medium">Mức độ:</span> Gấp
+          </p>
+        ) : null}
       </div>
 
       {(() => {

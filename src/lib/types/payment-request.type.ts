@@ -63,6 +63,8 @@ export type PaymentRequest = {
   extraCostNote?: string | null
   /** Số hóa đơn NCC do người dùng nhập. */
   supplierInvoiceNo: string | null
+  /** Yêu cầu thanh toán gấp (true) hay bình thường (false). */
+  isUrgent: boolean
   status: PaymentRequestStatus
   createdAt: string
 }
@@ -102,6 +104,7 @@ export type PaymentRequestDetail = {
   advancePaymentNote: string | null
   purchaseOrderNote: string | null
   supplierInvoiceNo: string | null
+  isUrgent: boolean
   /** Cách ra tổng tiền PO: tiền hàng + VAT + chi phí khác. */
   subtotal: number
   vatPercent: number

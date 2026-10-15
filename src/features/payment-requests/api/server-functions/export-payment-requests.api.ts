@@ -26,6 +26,7 @@ const exportPaymentRequestsParamsSchema = paymentRequestsSearchSchema.pick({
   supplierId: true,
   poCode: true,
   status: true,
+  isUrgent: true,
   startDate: true,
   endDate: true,
 })
