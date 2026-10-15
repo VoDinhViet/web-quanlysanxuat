@@ -1,7 +1,9 @@
 import type { PaymentTerm } from "@/lib/types/payment-term.type"
 
 export const PaymentRequestStatus = {
+  DRAFT: "DRAFT",
   PENDING: "PENDING",
+  REJECTED: "REJECTED",
   PAID: "PAID",
   CANCELLED: "CANCELLED",
 } as const
@@ -11,7 +13,9 @@ export type PaymentRequestStatus =
 
 export const paymentRequestStatusLabels: Record<PaymentRequestStatus, string> =
   {
+    [PaymentRequestStatus.DRAFT]: "Nháp",
     [PaymentRequestStatus.PENDING]: "Chờ thanh toán",
+    [PaymentRequestStatus.REJECTED]: "Bị từ chối",
     [PaymentRequestStatus.PAID]: "Đã thanh toán",
     [PaymentRequestStatus.CANCELLED]: "Đã hủy",
   }
@@ -117,6 +121,11 @@ export type PaymentRequestDetail = {
   note: string | null
   createdBy: PaymentRequestUserRef | null
   createdAt: string
+  sentBy: PaymentRequestUserRef | null
+  sentAt: string | null
+  rejectedBy: PaymentRequestUserRef | null
+  rejectedAt: string | null
+  rejectionReason: string | null
   paidBy: PaymentRequestUserRef | null
   paidAt: string | null
   cancelledBy: PaymentRequestUserRef | null
@@ -130,6 +139,8 @@ export enum PaymentRequestLogAction {
   CREATED = "CREATED",
   PAID = "PAID",
   CANCELLED = "CANCELLED",
+  SENT = "SENT",
+  REJECTED = "REJECTED",
 }
 
 export const paymentRequestLogActionLabels: Record<
@@ -137,8 +148,10 @@ export const paymentRequestLogActionLabels: Record<
   string
 > = {
   [PaymentRequestLogAction.CREATED]: "Tạo YCTT",
-  [PaymentRequestLogAction.PAID]: "Đánh dấu đã TT",
+  [PaymentRequestLogAction.PAID]: "Xác nhận thanh toán",
   [PaymentRequestLogAction.CANCELLED]: "Hủy YCTT",
+  [PaymentRequestLogAction.SENT]: "Đề nghị thanh toán",
+  [PaymentRequestLogAction.REJECTED]: "Từ chối thanh toán",
 }
 
 /** Mirrors the backend's `PaymentRequestLogResDto` — one row of

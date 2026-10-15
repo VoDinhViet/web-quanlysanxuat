@@ -24,7 +24,7 @@ function resolveCancelPaymentRequestErrorMessage(error: unknown): string {
   }
 }
 
-// PENDING → CANCELLED, reason required — see PaymentRequestCancelDialog.tsx.
+// DRAFT / PENDING / REJECTED → CANCELLED, reason required — see PaymentRequestCancelDialog.tsx.
 export const cancelPaymentRequest = createServerFn({ method: "POST" })
   .validator(cancelPaymentRequestSchema)
   .handler(async ({ data }): Promise<void> => {

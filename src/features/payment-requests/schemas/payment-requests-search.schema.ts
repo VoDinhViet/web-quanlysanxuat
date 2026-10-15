@@ -12,7 +12,10 @@ export const paymentRequestsSearchSchema = z.object({
   // Filter by PO code (plain string, not an id — matches the mockup filter)
   poCode: z.string().trim().min(1).optional().catch(undefined),
   // Status filter
-  status: z.enum(["PENDING", "PAID", "CANCELLED"]).optional().catch(undefined),
+  status: z
+    .enum(["DRAFT", "PENDING", "REJECTED", "PAID", "CANCELLED"])
+    .optional()
+    .catch(undefined),
   // Urgency filter: true = gấp, false = bình thường
   isUrgent: z.boolean().optional().catch(undefined),
   // Date range (ISO yyyy-MM-dd) — matches the "Từ ngày / Đến ngày" DateRangePicker pair

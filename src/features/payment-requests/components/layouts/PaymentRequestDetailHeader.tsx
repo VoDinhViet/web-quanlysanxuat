@@ -56,7 +56,10 @@ export function PaymentRequestDetailHeader({
           <PaymentRequestUrgencyToggle
             paymentRequestId={paymentRequest.id}
             isUrgent={paymentRequest.isUrgent}
-            editable={paymentRequest.status === PaymentRequestStatus.PENDING}
+            editable={
+              paymentRequest.status !== PaymentRequestStatus.PAID &&
+              paymentRequest.status !== PaymentRequestStatus.CANCELLED
+            }
           />
         </div>
 

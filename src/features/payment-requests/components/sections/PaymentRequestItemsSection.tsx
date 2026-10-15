@@ -394,7 +394,8 @@ export function PaymentRequestItemsSection({
                 currentExtraCost={currentExtraCost}
                 currentExtraCostNote={currentExtraCostNote}
                 editable={
-                  paymentRequest.status === PaymentRequestStatus.PENDING
+                  paymentRequest.status === PaymentRequestStatus.DRAFT ||
+                  paymentRequest.status === PaymentRequestStatus.REJECTED
                 }
                 hasUnsavedChanges={hasUnsavedChanges}
                 isSaving={isSaving}

@@ -18,7 +18,7 @@ function resolveUpdatePaymentRequestUrgencyErrorMessage(
     case "payment_request.error.not_found":
       return "Không tìm thấy yêu cầu thanh toán."
     case "payment_request.error.invalid_status_transition":
-      return "Chỉ đổi được mức độ khi yêu cầu thanh toán đang chờ thanh toán."
+      return "Không đổi được mức độ khi yêu cầu thanh toán đã thanh toán hoặc đã hủy."
     case "auth.error.forbidden":
       return "Bạn không có quyền đổi mức độ yêu cầu thanh toán."
     default:

@@ -15,14 +15,17 @@ const nearDueDays = 3
 // DateTime.now() called inside, so a server-rendered and a client-rendered pass agree — same
 // SSR-safety idiom as resolveDeliveryTone (order.type.ts).
 //
-// Returns `null` once the request has left PENDING — a countdown on an already-paid or
-// already-cancelled document is noise, not signal.
+// Returns `null` once the request is PAID or CANCELLED — a countdown on a settled document is
+// noise, not signal. DRAFT / REJECTED still count down: the buyer is the one who must act.
 export function resolvePaymentRequestDueDateTone(
   dueDate: string,
   status: PaymentRequestStatusType,
   today: DateTime
 ): PaymentRequestDueDateTone | null {
-  if (status !== PaymentRequestStatus.PENDING) {
+  if (
+    status === PaymentRequestStatus.PAID ||
+    status === PaymentRequestStatus.CANCELLED
+  ) {
     return null
   }
 
@@ -38,7 +41,7 @@ export function resolvePaymentRequestDueDateTone(
 }
 
 // Paired display string for the tone above — `null` mirrors resolvePaymentRequestDueDateTone's
-// `null` (nothing to show once the request isn't PENDING anymore).
+// `null` (nothing to show once the request is PAID or CANCELLED).
 export function formatPaymentRequestDueDateNote(
   dueDate: string,
   status: PaymentRequestStatusType,

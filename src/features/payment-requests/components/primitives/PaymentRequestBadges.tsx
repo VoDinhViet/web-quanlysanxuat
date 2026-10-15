@@ -15,9 +15,17 @@ export const paymentRequestStatusStyles: Record<
   PaymentRequestStatus,
   BadgeStyle
 > = {
+  DRAFT: {
+    badge: "bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground",
+  },
   PENDING: {
     badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",
+  },
+  REJECTED: {
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
   },
   PAID: {
     badge: "bg-success/10 text-success",

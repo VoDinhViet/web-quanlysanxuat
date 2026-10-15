@@ -16,7 +16,7 @@ function resolveUpdateExtraCostErrorMessage(error: unknown): string {
     case "payment_request.error.not_found":
       return "Không tìm thấy yêu cầu thanh toán."
     case "payment_request.error.invalid_status_transition":
-      return "Yêu cầu thanh toán không ở trạng thái chờ thanh toán."
+      return "Chỉ sửa được chi phí phát sinh khi yêu cầu thanh toán ở trạng thái nháp hoặc bị từ chối."
     case "auth.error.forbidden":
       return "Bạn không có quyền sửa chi phí phát sinh."
     default:

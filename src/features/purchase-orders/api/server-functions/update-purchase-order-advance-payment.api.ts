@@ -21,13 +21,15 @@ function resolveUpdateAdvancePaymentErrorMessage(error: unknown): string {
       return "Đơn mua đã huỷ, không thể sửa tiền tạm ứng."
     case "payment_request.error.already_paid":
       return "Yêu cầu thanh toán của đơn này đã chi, không thể sửa tiền tạm ứng."
+    case "payment_request.error.pending_approval":
+      return "Yêu cầu thanh toán đã gửi kế toán, không thể sửa tiền tạm ứng. Hãy chờ kế toán xử lý hoặc từ chối."
     default:
       return GENERIC_ERROR_MESSAGE
   }
 }
 
-// Tiền tạm ứng/thanh toán trước cho NCC (PH-128): sửa được tới khi YCTT của PO đã chi. BE tự cập
-// nhật số đề nghị chi của YCTT đang chờ nên FE chỉ cần tải lại PO và YCTT.
+// Tiền tạm ứng/thanh toán trước cho NCC (PH-128): sửa được tới khi YCTT của PO đã chi hoặc đã gửi kế
+// toán. BE tự cập nhật số đề nghị chi của YCTT nháp/bị từ chối nên FE chỉ cần tải lại PO và YCTT.
 export const updatePurchaseOrderAdvancePayment = createServerFn({
   method: "POST",
 })

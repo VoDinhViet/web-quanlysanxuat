@@ -25,7 +25,7 @@ type PaymentRequestCancelDialogProps = {
   trigger: ReactElement
 }
 
-// PENDING → CANCELLED (terminal), reason required — mirrors PurchaseOrderCancelDialog.tsx. A
+// DRAFT / PENDING / REJECTED → CANCELLED (terminal), reason required — mirrors PurchaseOrderCancelDialog.tsx. A
 // Dialog (not AlertDialog) because it needs a text field.
 export function PaymentRequestCancelDialog({
   paymentRequest,
