@@ -6,6 +6,7 @@ import {
   NcrStatusBadge,
   NcrTypeBadge,
 } from "@/features/ncrs/components/primitives/NcrBadges"
+import { NcrActionsCell } from "@/features/ncrs/components/primitives/NcrTableCells"
 import type { appTableFeatures } from "@/lib/table-features"
 import type { Ncr } from "@/lib/types/ncr.type"
 
@@ -110,5 +111,15 @@ export const ncrColumns = ncrColumnHelper.columns([
         {DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm")}
       </span>
     ),
+  }),
+
+  ncrColumnHelper.display({
+    id: "actions",
+    header: "Thao tác",
+    meta: {
+      headerClassName: "min-w-20 text-center",
+      cellClassName: "font-normal",
+    },
+    cell: ({ row }) => <NcrActionsCell ncr={row.original} />,
   }),
 ])
