@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { PERMISSION_CODES } from "@/lib/types/permission.type"
+import type { PermissionCode } from "@/lib/types/permission.type"
 import { emptyToNull } from "@/lib/zod-transforms"
 
 // Wire contract for PATCH /api/roles/:roleId — also the client-side onSubmit validator for
@@ -24,8 +24,14 @@ export const updateRoleSchema = z.object({
     .trim()
     .max(500, "Mô tả tối đa 500 ký tự")
     .transform(emptyToNull),
+  // Không dùng z.enum(PERMISSION_CODES): BE là nguồn sự thật (E031 khi mã sai), nên mã quyền mới
+  // thêm ở BE tick được ngay mà không phải đồng bộ danh sách này trước.
   permissions: z
-    .array(z.enum(PERMISSION_CODES))
+    .array(
+      z.custom<PermissionCode>(
+        (value) => typeof value === "string" && value.length > 0
+      )
+    )
     .min(1, "Vui lòng chọn ít nhất một quyền"),
 })
 

@@ -16,7 +16,7 @@ type SpecialPermissionChipProps = {
 }
 
 /** A permission whose action isn't one of the matrix's 5 CRUD columns (`items:copy`,
- *  `items:bom-manage`, `inventory-requisitions:issue`, …) — rendered as a toggle chip on its
+ *  `items:bom-manage`, `production-execution:report`, …) — rendered as a toggle chip on its
  *  module's row instead of forcing it into a column it doesn't semantically belong to. */
 export function SpecialPermissionChip({
   label,
