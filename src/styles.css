@@ -189,18 +189,16 @@
   --neutral-ink: oklch(0.8 0.02 257);
   --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   --popover-shadow: 0 18px 45px -24px rgba(0, 0, 0, 0.7);
-  /* Light mode locks the sidebar to a fixed dark navy rail (see :root) — in
-     dark mode that same fixed navy sits awkwardly between --background and
-     --card instead of reading as part of the same surface hierarchy. Here it
-     adopts the theme's own dark tokens instead, so the sidebar blends with
-     the header/cards around it rather than clashing as a mismatched hue. */
-  --sidebar: var(--background);
+  /* Light mode locks the sidebar to a fixed dark navy rail (see :root). In dark
+     mode the rail shares the card surface, so sidebar and cards read as one tone,
+     and hover lifts one step above it (--muted). */
+  --sidebar: var(--card);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent: var(--muted);
   --sidebar-accent-foreground: var(--foreground);
-  --sidebar-border: var(--border);
+  --sidebar-border: oklch(1 0 0 / 6%);
   --sidebar-ring: var(--ring);
 }
 
