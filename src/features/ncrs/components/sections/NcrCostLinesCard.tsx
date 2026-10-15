@@ -1,44 +1,48 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Plus, Trash2 } from "lucide-react"
+import { Plus } from "lucide-react"
+import { Wallet } from "@solar-icons/react"
 import { toast } from "sonner"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
 import { saveNcrCostLines } from "@/features/ncrs/api/server-functions/save-ncr-cost-lines.api"
+import {
+  costLineGridClass,
+  NcrCostLineRow,
+} from "@/features/ncrs/components/composites/NcrCostLineRow"
+import type { NcrCostLineDraft } from "@/features/ncrs/components/composites/NcrCostLineRow"
 import { NcrSectionCard } from "@/features/ncrs/components/layouts/NcrSectionCard"
 import { ncrCostKindLabels, NcrCostKind, NcrStatus } from "@/lib/types/ncr.type"
 import type { NcrDetail } from "@/lib/types/ncr.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 type NcrCostLinesCardProps = {
   ncr: NcrDetail
 }
 
-// Editable cost line (the `id`/`amount` of a saved line are server-owned; `key` is only a React
-// key for rows the user adds before saving).
-type CostLineDraft = {
-  key: string
-  kind: NcrCostKind
-  description: string
-  itemId: string | null
-  quantity: number
-  unitPrice: number
+const currencyFormatter = new Intl.NumberFormat("vi-VN")
+const kindBadgeVariants: Record<
+  NcrCostKind,
+  "info" | "success" | "violet" | "neutral"
+> = {
+  [NcrCostKind.MATERIAL]: "info",
+  [NcrCostKind.LABOR]: "success",
+  [NcrCostKind.OUTSOURCING]: "violet",
+  [NcrCostKind.OTHER]: "neutral",
 }
 
-const currencyFormatter = new Intl.NumberFormat("vi-VN")
-const kindOptions = buildOptionsFromLabels(ncrCostKindLabels)
+const columnHeaders = [
+  { label: "Loại chi phí", className: "" },
+  { label: "Diễn giải", className: "" },
+  { label: "Số lượng", className: "text-right" },
+  { label: "Đơn giá (đ)", className: "text-right" },
+  { label: "Thành tiền (đ)", className: "text-right" },
+]
 
-function toDrafts(ncr: NcrDetail): CostLineDraft[] {
+function toDrafts(ncr: NcrDetail): NcrCostLineDraft[] {
   return ncr.costLines.map((line) => ({
     key: line.id,
     kind: line.kind,
@@ -78,7 +82,7 @@ export function NcrCostLinesCard({ ncr }: NcrCostLinesCardProps) {
     onError: (error) => toast.error(error.message),
   })
 
-  const updateDraft = (key: string, patch: Partial<CostLineDraft>) =>
+  const updateDraft = (key: string, patch: Partial<NcrCostLineDraft>) =>
     setDrafts((current) =>
       current.map((draft) =>
         draft.key === key ? { ...draft, ...patch } : draft
@@ -102,110 +106,90 @@ export function NcrCostLinesCard({ ncr }: NcrCostLinesCardProps) {
     (sum, draft) => sum + draft.quantity * draft.unitPrice,
     0
   )
+  const subtotalByKind = drafts.reduce<Partial<Record<NcrCostKind, number>>>(
+    (subtotals, draft) => ({
+      ...subtotals,
+      [draft.kind]:
+        (subtotals[draft.kind] ?? 0) + draft.quantity * draft.unitPrice,
+    }),
+    {}
+  )
+  const usedKinds = Object.values(NcrCostKind).filter(
+    (kind) => (subtotalByKind[kind] ?? 0) > 0
+  )
 
   return (
     <NcrSectionCard
+      icon={Wallet}
+      tone="success"
       title="Dự toán chi phí"
       description="Vật tư, nhân công, gia công ngoài và chi phí khác của phương án xử lý"
+      action={
+        !isLocked && (
+          <PermissionGate permission="ncr:update">
+            <Button type="button" variant="outline" onClick={addDraft}>
+              <Plus className="size-4" />
+              Thêm dòng
+            </Button>
+          </PermissionGate>
+        )
+      }
     >
-      <div className="space-y-3">
-        {drafts.length === 0 && (
-          <p className="text-xs text-muted-foreground">
-            Chưa có dòng dự toán nào.
+      <div className="space-y-4">
+        {drafts.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border px-3 py-6 text-center text-xs text-foreground/70">
+            Chưa có dòng dự toán nào. Bấm &quot;Thêm dòng&quot; để nhập vật tư,
+            nhân công hoặc chi phí gia công ngoài.
           </p>
+        ) : (
+          <div className="space-y-3">
+            <div
+              className={cn(
+                "hidden gap-x-2 px-0 text-xs font-medium text-foreground/70 sm:grid",
+                costLineGridClass
+              )}
+            >
+              {columnHeaders.map((column) => (
+                <span key={column.label} className={column.className}>
+                  {column.label}
+                </span>
+              ))}
+              <span />
+            </div>
+            {drafts.map((draft) => (
+              <NcrCostLineRow
+                key={draft.key}
+                draft={draft}
+                isLocked={isLocked}
+                onChange={(patch) => updateDraft(draft.key, patch)}
+                onRemove={() =>
+                  setDrafts((current) =>
+                    current.filter((item) => item.key !== draft.key)
+                  )
+                }
+              />
+            ))}
+          </div>
         )}
 
-        {drafts.map((draft) => (
-          <div
-            key={draft.key}
-            className="grid grid-cols-2 items-center gap-2 sm:grid-cols-[9rem_1fr_6rem_8rem_auto]"
-          >
-            <Select
-              items={kindOptions}
-              value={draft.kind}
-              disabled={isLocked}
-              onValueChange={(value) =>
-                value !== null && updateDraft(draft.key, { kind: value })
-              }
-            >
-              <SelectTrigger className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {kindOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input
-              className="col-span-2 text-xs sm:col-span-1"
-              placeholder="Diễn giải"
-              value={draft.description}
-              disabled={isLocked}
-              onChange={(event) =>
-                updateDraft(draft.key, { description: event.target.value })
-              }
-            />
-            <Input
-              type="number"
-              min={0}
-              className="text-xs"
-              placeholder="SL"
-              value={draft.quantity}
-              disabled={isLocked}
-              onChange={(event) =>
-                updateDraft(draft.key, {
-                  quantity: Number(event.target.value),
-                })
-              }
-            />
-            <Input
-              type="number"
-              min={0}
-              className="text-xs"
-              placeholder="Đơn giá"
-              value={draft.unitPrice}
-              disabled={isLocked}
-              onChange={(event) =>
-                updateDraft(draft.key, {
-                  unitPrice: Number(event.target.value),
-                })
-              }
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label="Xóa dòng dự toán"
-              disabled={isLocked}
-              onClick={() =>
-                setDrafts((current) =>
-                  current.filter((item) => item.key !== draft.key)
-                )
-              }
-            >
-              <Trash2 className="size-4" />
-            </Button>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {usedKinds.map((kind) => (
+              <Badge key={kind} variant={kindBadgeVariants[kind]}>
+                {ncrCostKindLabels[kind]}{" "}
+                {currencyFormatter.format(subtotalByKind[kind] ?? 0)}
+              </Badge>
+            ))}
           </div>
-        ))}
-
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
-          <p className="text-sm">
-            Tổng dự toán:{" "}
-            <span className="font-medium">
-              {currencyFormatter.format(totalCost)} đ
-            </span>
-          </p>
-
-          {!isLocked && (
-            <PermissionGate permission="ncr:update">
-              <div className="flex gap-2">
-                <Button type="button" variant="outline" onClick={addDraft}>
-                  <Plus className="size-4" />
-                  Thêm dòng
-                </Button>
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="text-sm text-foreground/70">
+              Tổng dự toán:{" "}
+              <span className="text-base font-semibold text-foreground tabular-nums">
+                {currencyFormatter.format(totalCost)} đ
+              </span>
+            </p>
+            {!isLocked && (
+              <PermissionGate permission="ncr:update">
                 <Button
                   type="button"
                   disabled={isPending}
@@ -213,9 +197,9 @@ export function NcrCostLinesCard({ ncr }: NcrCostLinesCardProps) {
                 >
                   {isPending ? "Đang lưu..." : "Lưu dự toán"}
                 </Button>
-              </div>
-            </PermissionGate>
-          )}
+              </PermissionGate>
+            )}
+          </div>
         </div>
       </div>
     </NcrSectionCard>

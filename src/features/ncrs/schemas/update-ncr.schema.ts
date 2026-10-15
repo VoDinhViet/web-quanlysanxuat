@@ -66,3 +66,17 @@ export function getNcrDefaultValues(ncr: NcrDetail): UpdateNcrFormValue {
     reworkOperationIds: ncr.reworkOperationIds,
   }
 }
+
+// Empty shape handed to `withForm` so sub-forms can type against the form's values.
+export const updateNcrFormDefaultValues: UpdateNcrFormValue = {
+  ncrId: "",
+  defectDescription: "",
+  rootCause: "",
+  correctiveAction: "",
+  preventiveAction: "",
+  departmentId: "",
+  ngQty: 0,
+  reworkQty: 0,
+  remakeQty: 0,
+  reworkOperationIds: [],
+}
