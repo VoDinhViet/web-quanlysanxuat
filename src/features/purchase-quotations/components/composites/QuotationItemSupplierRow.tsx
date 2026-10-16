@@ -1,6 +1,10 @@
 import { DateTime } from "luxon"
 import { TrashBinTrash } from "@solar-icons/react"
-import { IconEdit, IconFileDescription, IconPaperclip } from "@tabler/icons-react"
+import {
+  IconEdit,
+  IconFileDescription,
+  IconPaperclip,
+} from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
@@ -18,7 +22,9 @@ const priceFormatter = new Intl.NumberFormat("vi-VN", {
   currency: "VND",
 })
 
-type QuotationSupplierTreeRowProps = {
+const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
+type QuotationItemSupplierRowProps = {
   item: PickedQuotationItemValue
   supplier: QuotationItemSupplierValue
   lastPurchase?: PurchaseQuotationLastPurchase
@@ -28,7 +34,7 @@ type QuotationSupplierTreeRowProps = {
   onOpenDetail: () => void
 }
 
-export function QuotationSupplierTreeRow({
+export function QuotationItemSupplierRow({
   item,
   supplier,
   lastPurchase,
@@ -36,16 +42,16 @@ export function QuotationSupplierTreeRow({
   onChange,
   onRemove,
   onOpenDetail,
-}: QuotationSupplierTreeRowProps) {
+}: QuotationItemSupplierRowProps) {
   const itemQuantity = item.allocations.reduce(
     (sum, a) => sum + (a.quantity ?? a.requestedQuantity),
     0
   )
   const effectiveQuantity = supplier.quotationQuantity ?? itemQuantity
+  const quotedUnit = supplier.quotationUnit || item.unit
+  const { unitPrice } = supplier
   const effectiveTotal =
-    supplier.unitPrice !== undefined && supplier.unitPrice !== null
-      ? supplier.unitPrice * effectiveQuantity
-      : undefined
+    unitPrice === undefined ? undefined : unitPrice * effectiveQuantity
 
   const hasCustomSpec =
     Boolean(supplier.quotationUnit?.trim()) ||
@@ -62,12 +68,12 @@ export function QuotationSupplierTreeRow({
     lastPurchase.supplier.id !== supplier.supplierId
 
   return (
-    <TableRow className="h-14 border-b-0 bg-card/60 transition-colors hover:bg-muted/15">
+    <TableRow className="h-14 border-b border-border/50 bg-card/60 transition-colors hover:bg-muted/15">
       <QuotationTreeGuide />
       {/* Cột 1 & 2: Mã VT / NCC + Tên VT */}
       <TableCell colSpan={2}>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-foreground truncate">
+          <p className="truncate text-sm font-medium text-foreground">
             {supplier.supplierLabel || "—"}
           </p>
           <p className="text-xs text-muted-foreground tabular-nums">
@@ -95,51 +101,62 @@ export function QuotationSupplierTreeRow({
         —
       </TableCell>
 
-      {/* Cột 5: SL & ĐV báo giá riêng */}
-      <TableCell className="text-center text-xs">
+      {/* Cột 5: SL & ĐV báo giá — chỉ hiện khi NCC báo khác đơn vị gốc, kèm SL gốc để đối chiếu */}
+      <TableCell className="py-2 text-center tabular-nums">
         {hasCustomSpec ? (
-          <span className="font-medium text-foreground tabular-nums">
-            {supplier.quotationQuantity?.toLocaleString("vi-VN") ?? "—"}{" "}
-            {supplier.quotationUnit || item.unit}
-          </span>
+          <>
+            <p className="text-sm font-semibold text-foreground">
+              {quantityFormatter.format(effectiveQuantity)} {quotedUnit}
+            </p>
+            <p className="text-xs font-normal text-muted-foreground">
+              Gốc: {quantityFormatter.format(itemQuantity)} {item.unit}
+            </p>
+          </>
         ) : (
-          <span className="text-muted-foreground">—</span>
+          <span className="text-xs text-muted-foreground">—</span>
         )}
       </TableCell>
 
       {/* Cột 6: Đơn giá (VNĐ) - Cho phép nhập nhanh hoặc mở Dialog */}
-      <TableCell>
+      <TableCell className="py-2">
         <NumericCellInput
-          value={supplier.unitPrice}
+          value={unitPrice}
           placeholder="Nhập giá"
           min={0}
           disabled={disabled}
           className={cn(
             "text-right tabular-nums",
-            supplier.unitPrice === undefined &&
+            unitPrice === undefined &&
               "border-warning/60 placeholder:text-warning/70"
           )}
           onValueChange={(value) => onChange({ unitPrice: value })}
         />
+        {hasCustomSpec && (
+          <p className="mt-0.5 text-right text-xs text-muted-foreground">
+            ₫ / {quotedUnit}
+          </p>
+        )}
       </TableCell>
 
-      {/* Cột 7: Thành tiền (VNĐ) */}
-      <TableCell
-        className="text-right font-semibold tabular-nums text-foreground"
-        title={
-          effectiveTotal !== undefined
-            ? `Thành tiền = ${supplier.unitPrice?.toLocaleString("vi-VN")} × ${effectiveQuantity.toLocaleString("vi-VN")} ${supplier.quotationUnit || item.unit}`
-            : undefined
-        }
-      >
-        {effectiveTotal !== undefined
-          ? priceFormatter.format(effectiveTotal)
-          : "—"}
+      {/* Cột 7: Thành tiền (VNĐ) — khi báo khác đơn vị gốc, thêm giá quy đổi về đơn vị gốc */}
+      <TableCell className="py-2 text-right text-foreground tabular-nums">
+        <p className="font-semibold">
+          {effectiveTotal === undefined
+            ? "—"
+            : priceFormatter.format(effectiveTotal)}
+        </p>
+        {hasCustomSpec && effectiveTotal !== undefined && itemQuantity > 0 && (
+          <p className="text-xs text-muted-foreground">
+            ≈ {priceFormatter.format(effectiveTotal / itemQuantity)} /{" "}
+            {item.unit} gốc
+          </p>
+        )}
       </TableCell>
 
       {/* Cột 8: Leadtime (ngày) */}
-      <TableCell className="text-center text-xs tabular-nums text-foreground">
-        {supplier.leadTimeDays !== undefined && supplier.leadTimeDays !== null ? (
+      <TableCell className="text-center text-xs text-foreground tabular-nums">
+        {supplier.leadTimeDays !== undefined &&
+        supplier.leadTimeDays !== null ? (
           <span>{supplier.leadTimeDays} ngày</span>
         ) : (
           <span className="text-muted-foreground">—</span>

@@ -18,14 +18,12 @@ import { QuotationAddSupplierInlineRow } from "@/features/purchase-quotations/co
 import { QuotationAdjustmentReasonRow } from "@/features/purchase-quotations/components/composites/QuotationAdjustmentReasonRow"
 import { buildQuotationItemsColumns } from "@/features/purchase-quotations/components/composites/QuotationItemsColumns"
 import { QuotationSupplierQuoteDialog } from "@/features/purchase-quotations/components/composites/QuotationSupplierQuoteDialog"
-import { QuotationSupplierTreeRow } from "@/features/purchase-quotations/components/composites/QuotationSupplierTreeRow"
+import { QuotationItemSupplierRow } from "@/features/purchase-quotations/components/composites/QuotationItemSupplierRow"
 import { getQuotationItemStatus } from "@/features/purchase-quotations/constants/quotation-item-status"
 import { createQuotationFormDefaultValues } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import { withForm } from "@/hooks/use-app-form"
 import { cn } from "@/lib/utils"
-import type {
-  QuotationItemSupplierValue,
-} from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
+import type { QuotationItemSupplierValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 import type { PurchaseQuotationLastPurchase } from "@/lib/types/purchase-quotation.type"
 
 // Tra cứu lần mua gần nhất của vật tư: ưu tiên lần mua với chính NCC đó, nếu chưa có thì lấy lần mua gần nhất chung.
@@ -148,8 +146,11 @@ export const CreateQuotationSuppliersSection = withForm({
     const isComplete = items.length > 0 && suppliedCount === items.length
 
     // Báo giá NCC đang chỉnh sửa trong Dialog
-    const editingItem = editingQuoteTarget ? items[editingQuoteTarget.itemIndex] : null
-    const editingSupplier = editingItem?.suppliers[editingQuoteTarget?.supplierIndex ?? -1]
+    const editingItem = editingQuoteTarget
+      ? items[editingQuoteTarget.itemIndex]
+      : null
+    const editingSupplier =
+      editingItem?.suppliers[editingQuoteTarget?.supplierIndex ?? -1]
 
     return (
       <div className="px-4 py-5 sm:px-5">
@@ -260,7 +261,7 @@ export const CreateQuotationSuppliersSection = withForm({
 
                       {isExpanded &&
                         item.suppliers.map((supplier, supplierIndex) => (
-                          <QuotationSupplierTreeRow
+                          <QuotationItemSupplierRow
                             key={supplier.supplierId}
                             item={item}
                             supplier={supplier}
@@ -269,25 +270,25 @@ export const CreateQuotationSuppliersSection = withForm({
                               item.itemId,
                               supplier.supplierId
                             )}
-                              disabled={disabled}
-                              onChange={(patch) =>
-                                updateSupplierQuote(
-                                  itemIndex,
-                                  supplierIndex,
-                                  patch
-                                )
-                              }
-                              onRemove={() =>
-                                removeSupplierQuote(itemIndex, supplierIndex)
-                              }
-                              onOpenDetail={() =>
-                                setEditingQuoteTarget({
-                                  itemIndex,
-                                  supplierIndex,
-                                })
-                              }
-                            />
-                          ))}
+                            disabled={disabled}
+                            onChange={(patch) =>
+                              updateSupplierQuote(
+                                itemIndex,
+                                supplierIndex,
+                                patch
+                              )
+                            }
+                            onRemove={() =>
+                              removeSupplierQuote(itemIndex, supplierIndex)
+                            }
+                            onOpenDetail={() =>
+                              setEditingQuoteTarget({
+                                itemIndex,
+                                supplierIndex,
+                              })
+                            }
+                          />
+                        ))}
 
                       {isExpanded && (
                         <QuotationAddSupplierInlineRow
