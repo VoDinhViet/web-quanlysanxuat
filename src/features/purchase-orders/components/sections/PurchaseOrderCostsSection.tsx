@@ -73,9 +73,7 @@ function CostRow({
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_7rem_8.5rem] items-center gap-x-3">
       <dt className="flex items-center gap-2.5 text-sm font-medium text-foreground">
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-          <Icon className="size-4" />
-        </span>
+        <Icon className="size-4 shrink-0 text-muted-foreground" />
         {label}
       </dt>
       <dd
@@ -236,8 +234,9 @@ export function PurchaseOrderCostsSection({
               Diễn giải tạm ứng
             </label>
             {advancePaymentEditable ? (
-              <Input
+              <Textarea
                 id="purchase-order-advance-payment-note"
+                className="min-h-24 resize-y bg-card"
                 placeholder="Vd: Chuyển khoản đợt 1 ngày 10/10"
                 maxLength={255}
                 value={advancePaymentNote}
@@ -335,9 +334,7 @@ export function PurchaseOrderCostsSection({
 
         <div className="flex items-center justify-between gap-3 pt-2">
           <div className="flex items-center gap-2.5 font-heading text-sm font-medium text-foreground">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-              <WalletMoney className="size-4" />
-            </span>
+            <WalletMoney className="size-4 shrink-0 text-muted-foreground" />
             Tổng thanh toán
           </div>
           <div className="text-right">

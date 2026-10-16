@@ -25,14 +25,16 @@ export function PurchaseOrderDetailPage() {
     purchaseOrderQueryOptions(purchaseOrderId)
   )
 
-  // Chỉ phần đầu (người phụ trách, điều khoản thanh toán, ngày giao dự kiến, ghi chú) sửa được, và chỉ
-  // khi PO còn chờ xác nhận: BE bắt các trường này trước khi xác nhận đặt hàng. Vật tư và chi phí
-  // vẫn chỉ xem.
+  // Phần đầu (người phụ trách, điều khoản thanh toán, ngày giao dự kiến, ghi chú) và chi phí (VAT,
+  // chi phí khác) chỉ sửa được khi PO còn chờ xác nhận: BE bắt các trường này trước khi xác nhận đặt
+  // hàng. Vật tư (SL đặt, đơn giá) vẫn chỉ xem.
   const orderInfoEditable =
     useHasPermission("purchasing:update") &&
     purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION
-  const editable = false
-  const advancePaymentEditable = false
+  // Tạm ứng NCC sửa được cả khi PO đã đặt (tới khi YCTT đã chi — BE chặn bằng E284).
+  const advancePaymentEditable =
+    useHasPermission("purchasing:update") &&
+    purchaseOrder.status !== PurchaseOrderStatus.CANCELLED
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -63,12 +65,12 @@ export function PurchaseOrderDetailPage() {
 
         <PurchaseOrderItemsSection
           purchaseOrder={purchaseOrder}
-          editable={editable}
+          editable={false}
         >
           <PurchaseOrderCostsSection
             key={purchaseOrder.updatedAt}
             purchaseOrder={purchaseOrder}
-            editable={editable}
+            editable={orderInfoEditable}
             advancePaymentEditable={advancePaymentEditable}
           />
         </PurchaseOrderItemsSection>
