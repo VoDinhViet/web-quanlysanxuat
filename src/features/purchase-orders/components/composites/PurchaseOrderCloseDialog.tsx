@@ -41,7 +41,7 @@ export function PurchaseOrderCloseDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={trigger} />
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-4xl">
         {/* The dialog unmounts content while closed, so the form (and its mutation state)
             re-mounts fresh each time the dialog opens. */}
         <PurchaseOrderCloseForm
@@ -67,6 +67,11 @@ function PurchaseOrderCloseForm({
 
   const previewRows = purchaseOrder.items.map((line) => {
     const received = Math.min(line.receivedQuantity, line.quantity)
+    // Dòng có ĐVBG tính tiền theo SL báo giá, quy theo tỉ lệ SL đã nhận / SL đặt.
+    const billedQuantity =
+      line.quotationQuantity === null
+        ? received
+        : (line.quotationQuantity * received) / line.quantity
     return {
       id: line.id,
       itemCode: line.purchaseRequestItem.item.code,
@@ -74,7 +79,7 @@ function PurchaseOrderCloseForm({
       unitName: line.purchaseRequestItem.item.unit.name,
       ordered: line.quantity,
       received,
-      amount: received * (line.unitPrice ?? 0),
+      amount: billedQuantity * (line.unitPrice ?? 0),
       isRemoved: received === 0,
       isReduced: received > 0 && received < line.quantity,
     }
@@ -124,7 +129,7 @@ function PurchaseOrderCloseForm({
         form.handleSubmit()
       }}
       noValidate
-      className="flex flex-col gap-5"
+      className="flex min-w-0 flex-col gap-5"
     >
       <DialogHeader className="flex-row items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">

@@ -38,7 +38,7 @@ export function PurchaseOrderCloseTable({
         <TableHeader className="[&>tr]:h-12 [&>tr]:hover:bg-muted/45">
           <TableRow>
             <TableHead className="min-w-32">Mã vật tư</TableHead>
-            <TableHead className="min-w-44">Tên vật tư</TableHead>
+            <TableHead className="min-w-36">Tên vật tư</TableHead>
             <TableHead className="w-20">ĐVT</TableHead>
             <TableHead className="w-24 text-right">SL đặt</TableHead>
             <TableHead className="w-24 text-right">SL đã nhận</TableHead>
@@ -59,7 +59,7 @@ export function PurchaseOrderCloseTable({
               </TableCell>
               <TableCell
                 className={cn(
-                  "font-medium text-foreground",
+                  "font-medium whitespace-normal text-foreground",
                   row.isRemoved && "text-muted-foreground line-through"
                 )}
               >
