@@ -39,14 +39,20 @@ import { buildOptionsFromLabels, cn } from "@/lib/utils"
 
 const currencyOptions = buildOptionsFromLabels(currencyLabels)
 const paymentTermOptions = buildOptionsFromLabels(paymentTermShortLabels)
-// AWAITING_PRODUCTION/REJECTED excluded: only reachable via the "Duyệt"/"Từ chối" actions
-// (approve-order.api.ts/reject-order.api.ts), never settable directly through this form
-// (order.error.status_not_settable_directly) — see the matching drop in update-order.api.ts.
-const orderStatusOptions = buildOptionsFromLabels(orderStatusLabels).filter(
-  (option) =>
-    option.value !== OrderStatus.AWAITING_PRODUCTION &&
-    option.value !== OrderStatus.REJECTED
-)
+// Only the current status and "Đã hủy" are selectable: every other transition goes through the
+// "Gửi duyệt"/"Duyệt"/"Từ chối" actions, the production order or delivery (the backend rejects a
+// PATCH that sets them: order.error.status_not_settable_directly).
+function buildStatusOptions(currentStatus: OrderStatus) {
+  const selectableStatuses =
+    currentStatus === OrderStatus.CANCELLED
+      ? [currentStatus]
+      : [currentStatus, OrderStatus.CANCELLED]
+  return buildOptionsFromLabels(
+    Object.fromEntries(
+      selectableStatuses.map((status) => [status, orderStatusLabels[status]])
+    )
+  )
+}
 
 type OrderFormSectionProps = {
   icon?: React.ComponentType<{ className?: string }>
@@ -99,12 +105,14 @@ export const UpdateOrderInfoSection = withForm({
   props: {
     disabled: false,
     orderCode: "",
+    currentStatus: OrderStatus.DRAFT as OrderStatus,
     initialAssigneeOption: undefined as ComboboxOption | undefined,
   },
   render: function Render({
     form,
     disabled,
     orderCode,
+    currentStatus,
     initialAssigneeOption,
   }) {
     const user = useGetUserOptions()
@@ -360,7 +368,7 @@ export const UpdateOrderInfoSection = withForm({
                     <field.SelectField
                       label="Trạng thái đơn hàng"
                       required
-                      options={orderStatusOptions}
+                      options={buildStatusOptions(currentStatus)}
                       disabled={disabled}
                     />
                   )}

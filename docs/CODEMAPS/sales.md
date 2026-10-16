@@ -92,7 +92,7 @@ any editable --status select in update form (update-order)--> CANCELLED
 ```
 - "Gửi duyệt": DRAFT or REJECTED, `orders:update`. "Từ chối" + "Duyệt": PENDING_CONFIRMATION, `orders:approve`.
 - "Chỉnh sửa": only when `canUpdateOrder(status)` (false for PENDING_CONFIRMATION, AWAITING_PRODUCTION, IN_PROGRESS, COMPLETED, CANCELLED), else disabled with hint. "Xoá": DRAFT or REJECTED, `orders:delete`.
-- CANCELLED has no own button: only via the status select (options exclude AWAITING_PRODUCTION and REJECTED). UpdateOrderForm seeds DRAFT when the order is REJECTED.
+- CANCELLED has no own button: only via the status select, whose options are the current status plus CANCELLED (`buildStatusOptions` in UpdateOrderInfoSection; BE `ensureStatusTransitionAllowed` rejects other targets with E075). UpdateOrderForm seeds DRAFT when the order is REJECTED.
 - Approve invalidates `["orders"]`, `["production-orders"]`, `["reports"]`.
 
 Outbound order:

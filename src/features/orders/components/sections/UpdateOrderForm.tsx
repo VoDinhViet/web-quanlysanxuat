@@ -227,6 +227,11 @@ export function UpdateOrderForm({ order, items }: UpdateOrderFormProps) {
             form={form}
             disabled={isPending}
             orderCode={order.code}
+            currentStatus={
+              order.status === OrderStatus.REJECTED
+                ? OrderStatus.DRAFT
+                : order.status
+            }
             initialAssigneeOption={initialAssigneeOption}
           />
         </TabsContent>
