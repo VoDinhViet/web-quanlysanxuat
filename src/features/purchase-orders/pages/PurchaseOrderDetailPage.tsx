@@ -13,6 +13,8 @@ import { PurchaseOrderItemsSection } from "@/features/purchase-orders/components
 import { PurchaseOrderRelatedNotesCard } from "@/features/purchase-orders/components/composites/PurchaseOrderRelatedNotesCard"
 import { PurchaseOrderStatusLegend } from "@/features/purchase-orders/components/composites/PurchaseOrderStatusLegend"
 import { PurchaseOrderSummaryCard } from "@/features/purchase-orders/components/composites/PurchaseOrderSummaryCard"
+import { useHasPermission } from "@/hooks/use-permissions"
+import { PurchaseOrderStatus } from "@/lib/types/purchase-order.type"
 
 export function PurchaseOrderDetailPage() {
   const { purchaseOrderId } = useParams({
@@ -23,7 +25,12 @@ export function PurchaseOrderDetailPage() {
     purchaseOrderQueryOptions(purchaseOrderId)
   )
 
-  // Chi tiết đơn mua hàng ở chế độ chỉ xem/hiển thị (read-only), không cho phép chỉnh sửa.
+  // Chỉ phần đầu (người phụ trách, điều khoản thanh toán, ngày giao dự kiến, ghi chú) sửa được, và chỉ
+  // khi PO còn chờ xác nhận: BE bắt các trường này trước khi xác nhận đặt hàng. Vật tư và chi phí
+  // vẫn chỉ xem.
+  const orderInfoEditable =
+    useHasPermission("purchasing:update") &&
+    purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION
   const editable = false
   const advancePaymentEditable = false
 
@@ -48,7 +55,7 @@ export function PurchaseOrderDetailPage() {
           <Surface>
             <PurchaseOrderDetailHeader
               purchaseOrder={purchaseOrder}
-              editable={editable}
+              editable={orderInfoEditable}
             />
           </Surface>
           <PurchaseOrderSummaryCard purchaseOrder={purchaseOrder} />
