@@ -8,9 +8,10 @@ nghiệp vụ có bị đứt/thiếu ở tầng giao diện hay không.
 Nó **không thay**:
 
 - Swagger (`:8000/api-docs`) — không liệt kê endpoint/DTO.
-- `be-quanlysanxuat/docs/domains/*.md` — không lặp lại business rule/invariant; chỉ trỏ link.
-- `be-quanlysanxuat/docs/workflows/*.md` — không lặp lại transaction boundary/side effect phía
-  service; chỉ lấy đủ thông tin trigger/state để vẽ màn hình theo đúng thứ tự.
+- `be-quanlysanxuat/docs/CODEMAPS/*.md` — không lặp lại business rule/invariant, route, bảng và
+  transaction boundary/side effect phía service; chỉ trỏ link.
+- `docs/CODEMAPS/system-flow.md` — chuỗi nghiệp vụ xuyên UI/BE; mục 7 liệt kê các chỗ tài liệu này lệch code.
+  Tài liệu này chỉ lấy đủ thông tin trigger/state để vẽ màn hình theo đúng thứ tự.
 
 Phạm vi: 3 chuỗi nghiệp vụ chính (Bán hàng, Mua vật tư, Sản xuất) xuyên tới lúc giao hàng. Các màn
 danh mục/hệ thống (khách hàng, NCC, sản phẩm, vật tư, đơn vị tính, công đoạn, nhân sự, phân quyền)
@@ -281,13 +282,9 @@ là phát hiện quan trọng nhất của đợt test đó. **Đã xử lý 202
 
 ## Related docs
 
-- Trạng thái/vòng đời chi tiết từng domain: `be-quanlysanxuat/docs/domains/{orders,purchasing,
-production,inventory,quality-iqc,quality-oqc,partners}.md`.
-- Trình tự nghiệp vụ đầy đủ (trigger/precondition/side effect/transaction boundary):
-  `be-quanlysanxuat/docs/workflows/{order-approval,production-order-approval,
-production-job-execution,rfq-approval,purchase-to-payment,receipt-confirmation,
-outsourcing-round-trip,outgoing-qc,inventory-requisition,outbound-delivery,
-supplier-return}.md`.
-- Quyết định "đóng Job tự động": `be-quanlysanxuat/docs/decisions/production-lifecycle-closing.md`.
+- Trạng thái, route, bảng và quy tắc từng domain phía BE: `be-quanlysanxuat/docs/CODEMAPS/INDEX.md`
+  (`sales`, `purchasing`, `inventory`, `product-structure`, `production`, `quality`, `identity-access`).
+- Trình tự xuyên UI/BE (trigger, server fn, endpoint, trạng thái): `docs/CODEMAPS/system-flow.md`;
+  tra theo màn hình: `docs/CODEMAPS/INDEX.md`.
 - Quy ước tầng route/feature của repo này: `.claude/rules/architecture.md`,
-  `.claude/rules/project-and-commands.md`.
+  `.claude/rules/project-structure.md`.

@@ -17,8 +17,12 @@ There are no test files yet. Vitest is wired up (`vite.config.ts`); colocate new
    (see `design.md`).
 5. Re-read the full `git diff` — no stray `console.log`, temp files, or out-of-scope
    edits.
-6. Exercise the affected flow with `pnpm dev`. A green typecheck does not prove the
-   feature works.
+6. A green typecheck does not prove the feature works. Static checks are the default; drive the
+   flow in a browser (`pnpm dev`) only when the user asks.
+
+## When a bug report arrives
+
+For a PH row or a user-described wrong result: read the report, reproduce it on the local stack, trace the root cause in code, make the smallest fix, verify, then log it. The full six steps are in `be-quanlysanxuat/.claude/rules/project-overrides.md` ("When a bug report arrives"); the skills are `ecc:browser-qa`, `ecc:orch-fix-defect` (no tests here either unless the user asks) and `ecc:verification-loop` (`pnpm typecheck`, `pnpm exec eslint <files>`, read the diff). Drive the browser only when the user asked for a browser check or the report cannot be confirmed statically. Many "UI shows the wrong value" bugs start in the BE response DTO, so compare the network payload with the screen before editing UI code.
 
 ## Review agents
 
@@ -32,10 +36,39 @@ waiting to be asked, before the final typecheck and eslint and before any commit
 4. `ecc:security-reviewer` when the change touches auth, permissions, user input sent to the
    API, or a server function that calls the backend.
 
-Brief each agent with the changed paths and the ticket, and pass `model` per the backend repo's
-`model-routing.md`. Reviewers are read-only: fix CRITICAL and HIGH findings, list the rest for the
-user. Do not apply a simplifier rewrite that adds abstraction or breaks the rules in this folder.
-Skip for typo, comment, doc, and config-only edits. This does not grant permission to commit.
+When a change adds or edits a route, a server function, a permission gate or a status-driven button,
+update the matching file in `docs/CODEMAPS/` (by hand or with `/ecc:update-codemaps`) and refresh its
+`Generated:` header. Skip for pure styling edits.
+
+Brief each agent with the changed paths and the ticket. `Explore` and `Plan` inherit the main
+model, so pass `model` on every Agent call:
+
+| Tier     | Use for                                                                          |
+| -------- | -------------------------------------------------------------------------------- |
+| `haiku`  | `Explore`, finding or reading code, running commands and summarizing output      |
+| `sonnet` | Implementation, `ecc:code-simplifier`, `ecc:code-reviewer`, `ecc:react-reviewer` |
+| `opus`   | `ecc:security-reviewer` on auth/permissions, root-cause debugging across files   |
+
+Reviewers are read-only: fix CRITICAL and HIGH findings, list the rest for the user. Do not apply
+a simplifier rewrite that adds abstraction or breaks the rules in this folder. Skip for typo,
+comment, doc, and config-only edits. This does not grant permission to commit.
+
+## Decisions
+
+When the work reaches a choice that is the user's to make, ask with `AskUserQuestion` right
+then (recommended option first) — don't pick silently and don't end the turn with a "needs
+your decision" list. Ask before:
+
+- adding a dependency, or bumping one whose release notes or migration guide show a breaking
+  change;
+- changing user-visible behaviour (e.g. forcing everyone to sign in again), stored data, or the
+  API contract;
+- any destructive or hard-to-reverse command (`git checkout --`, `git reset`, deletes), or a
+  repo-wide one that touches files outside the task;
+- choosing between approaches with different trade-offs.
+
+Otherwise take the conventional default and say so. If a tool call is denied, stop that path
+and ask — don't retry variants.
 
 ## Commits
 
