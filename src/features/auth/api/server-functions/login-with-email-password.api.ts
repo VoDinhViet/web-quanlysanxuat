@@ -3,8 +3,8 @@ import axios from "axios"
 
 import { loginSchema } from "@/features/auth/schemas/login.schema"
 import { http, logHttpError } from "@/lib/http"
-import { decodeJwtExpiry } from "@/lib/jwt"
-import { useAppSession } from "@/lib/session"
+import { decodeJwtExpiry } from "@/lib/jwt.server"
+import { SESSION_MAX_AGE_SECONDS, getAppSession } from "@/lib/session.server"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { AuthLoginResponse } from "@/lib/types/login.type"
 
@@ -38,14 +38,15 @@ export const loginWithEmailPassword = createServerFn({ method: "POST" })
       )
       const auth = response.data
 
-      const session = await useAppSession({ persist: keepSignedIn })
+      const session = await getAppSession({ persist: keepSignedIn })
 
-      await session.update({
-        userId: auth.userId,
-        accessToken: auth.accessToken,
-        refreshToken: auth.refreshToken,
-        tokenExpires: decodeJwtExpiry(auth.accessToken) ?? Date.now(),
-      })
+      session.userId = auth.userId
+      session.accessToken = auth.accessToken
+      session.refreshToken = auth.refreshToken
+      session.tokenExpires = decodeJwtExpiry(auth.accessToken) ?? Date.now()
+      session.persist = keepSignedIn
+      session.sessionExpires = Date.now() + SESSION_MAX_AGE_SECONDS * 1000
+      await session.save()
     } catch (error) {
       logHttpError(error, "loginWithEmailPassword")
 

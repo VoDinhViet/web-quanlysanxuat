@@ -1,8 +1,8 @@
 import axios from "axios"
 
 import { API_BASE_URL, HTTP_TIMEOUT_MS } from "@/lib/constants"
-import { decodeJwtExpiry } from "@/lib/jwt"
-import { useAppSession } from "@/lib/session"
+import { decodeJwtExpiry } from "@/lib/jwt.server"
+import { getAppSession, isSessionExpired } from "@/lib/session.server"
 
 // Refresh this long before the access token actually lapses, so a token with
 // only seconds left doesn't pass the guard and then 401 on the very next call.
@@ -39,13 +39,12 @@ async function requestRefresh(refreshToken: string): Promise<void> {
     { refreshToken }
   )
   const refreshed = response.data
-  const session = await useAppSession()
+  const session = await getAppSession()
 
-  await session.update({
-    accessToken: refreshed.accessToken,
-    refreshToken: refreshed.refreshToken,
-    tokenExpires: decodeJwtExpiry(refreshed.accessToken) ?? Date.now(),
-  })
+  session.accessToken = refreshed.accessToken
+  session.refreshToken = refreshed.refreshToken
+  session.tokenExpires = decodeJwtExpiry(refreshed.accessToken) ?? Date.now()
+  await session.save()
 }
 
 /**
@@ -56,10 +55,10 @@ async function requestRefresh(refreshToken: string): Promise<void> {
  * session. Throws when there is no refresh token or the backend rejects it.
  */
 export async function refreshAccessToken(): Promise<void> {
-  const session = await useAppSession()
-  const { userId, refreshToken } = session.data
+  const session = await getAppSession()
+  const { userId, refreshToken } = session
 
-  if (!refreshToken) {
+  if (!refreshToken || isSessionExpired(session)) {
     throw new Error("Phiên đăng nhập không hợp lệ.")
   }
 

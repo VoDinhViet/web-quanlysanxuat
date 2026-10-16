@@ -1,9 +1,9 @@
 import axios from "axios"
 import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios"
 
-import { refreshAccessToken } from "@/lib/auth-token"
+import { refreshAccessToken } from "@/lib/access-token.server"
 import { API_BASE_URL, HTTP_TIMEOUT_MS } from "@/lib/constants"
-import { useAppSession } from "@/lib/session"
+import { getAppSession, isSessionExpired } from "@/lib/session.server"
 
 export type ApiErrorDetail = {
   property: string
@@ -42,10 +42,10 @@ export const http = createHttpClient()
 // token is attached here once instead of being read from the session and passed as
 // headers at every call site.
 http.interceptors.request.use(async (config) => {
-  const session = await useAppSession()
-  const { accessToken } = session.data
+  const session = await getAppSession()
+  const { accessToken } = session
 
-  if (accessToken) {
+  if (accessToken && !isSessionExpired(session)) {
     config.headers.Authorization = `Bearer ${accessToken}`
   }
 

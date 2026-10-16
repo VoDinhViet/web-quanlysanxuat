@@ -1,9 +1,12 @@
 import { createServerFn } from "@tanstack/react-start"
 import { setResponseHeader } from "@tanstack/react-start/server"
 
-import { isAccessTokenExpired, refreshAccessToken } from "@/lib/auth-token"
+import {
+  isAccessTokenExpired,
+  refreshAccessToken,
+} from "@/lib/access-token.server"
 import { logHttpError } from "@/lib/http"
-import { useAppSession } from "@/lib/session"
+import { getAppSession, isSessionExpired } from "@/lib/session.server"
 import type { CurrentSession } from "@/lib/types/login.type"
 
 export const getCurrentSession = createServerFn({ method: "GET" }).handler(
@@ -13,31 +16,33 @@ export const getCurrentSession = createServerFn({ method: "GET" }).handler(
     // khoản mà không F5 (BUG-005).
     setResponseHeader("Cache-Control", "no-store")
 
-    let session = await useAppSession()
+    let session = await getAppSession()
 
     // Renew ahead of the loaders rather than letting each of their requests
     // 401 first. `isAccessTokenExpired` keeps a safety margin, so a token with
     // seconds left is treated as spent. A failed refresh is swallowed — the
     // session data is re-validated below and reported as invalid either way.
-    if (
-      isAccessTokenExpired(session.data.tokenExpires) &&
-      session.data.refreshToken
-    ) {
+    if (isAccessTokenExpired(session.tokenExpires) && session.refreshToken) {
       try {
         await refreshAccessToken()
-        session = await useAppSession()
+        session = await getAppSession()
       } catch (error) {
         logHttpError(error, "getCurrentSession")
       }
     }
 
-    const { userId, tokenExpires } = session.data
+    const { userId, tokenExpires } = session
 
     // No safety margin here — a token that is genuinely still valid is no
     // reason to sign someone out. A browser-session cookie (keepSignedIn
     // unchecked) carries no maxAge, so this server-side expiry is the only
     // bound that always holds.
-    if (!userId || !tokenExpires || tokenExpires <= Date.now()) {
+    if (
+      !userId ||
+      !tokenExpires ||
+      tokenExpires <= Date.now() ||
+      isSessionExpired(session)
+    ) {
       throw new Error("Phiên đăng nhập không hợp lệ.")
     }
 

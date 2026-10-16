@@ -16,8 +16,8 @@
 
 ## Security (non-negotiable)
 
-- Tokens live only in the httpOnly session cookie (`src/lib/session.ts`,
-  `useAppSession`). Never in localStorage, sessionStorage, React state, or props.
+- Tokens live only in the httpOnly session cookie (`src/lib/session.server.ts`,
+  `getAppSession`). Never in localStorage, sessionStorage, React state, or props.
 - Never put secrets behind a `VITE_` prefix — `VITE_*` vars are bundled into the client.
   `SESSION_SECRET` is server-only; `VITE_API_URL` is intentionally public.
 - Every route under `(authed)` must be reachable only through the `beforeLoad` session

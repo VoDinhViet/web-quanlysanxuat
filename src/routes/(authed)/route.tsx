@@ -43,6 +43,8 @@ export const Route = createFileRoute("/(authed)")({
 
     return { user, permissions }
   },
+  // The SSR document embeds the signed-in user's shell — never let a proxy/CDN cache it.
+  headers: () => ({ "Cache-Control": "private, no-store" }),
   component: AuthedLayout,
   // `beforeLoad` above re-runs on every navigation, but every read in it (including
   // requireSession, via currentSessionQueryOptions) is a `query({ ..., staleTime: "static" })`

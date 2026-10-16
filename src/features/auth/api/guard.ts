@@ -2,6 +2,7 @@ import { redirect } from "@tanstack/react-router"
 
 import { currentSessionQueryOptions } from "@/features/auth/api/options"
 import { hasPermission } from "@/lib/permissions"
+import { resolveInternalRedirect } from "@/lib/redirect"
 import { requiredPermissionForPath } from "@/lib/route-permissions"
 import type { CurrentSession } from "@/lib/types/login.type"
 import type { QueryClient } from "@tanstack/react-query"
@@ -32,6 +33,29 @@ export async function requireSession(
       search: { redirectTo: location.href },
     })
   }
+}
+
+/**
+ * `/login` for someone who already holds a valid session: send them on instead of showing the
+ * form again. Revalidates (`staleTime: 0`) rather than reading through the cache like
+ * `requireSession` — the idle-tab watchdog redirects here on expiry without touching that cache
+ * entry, so a cached read would bounce an expired session straight back into the app.
+ */
+export async function redirectIfAuthenticated(
+  redirectTo: string | undefined,
+  queryClient: QueryClient
+): Promise<void> {
+  try {
+    await queryClient.query({
+      ...currentSessionQueryOptions,
+      staleTime: 0,
+      retry: false,
+    })
+  } catch {
+    return
+  }
+
+  throw redirect({ href: resolveInternalRedirect(redirectTo) })
 }
 
 /**

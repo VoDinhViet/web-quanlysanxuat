@@ -1,12 +1,12 @@
 import { createServerFn } from "@tanstack/react-start"
 
 import { http, logHttpError } from "@/lib/http"
-import { useAppSession } from "@/lib/session"
+import { getAppSession } from "@/lib/session.server"
 
 export const logout = createServerFn({ method: "POST" }).handler(
   async (): Promise<void> => {
-    const session = await useAppSession()
-    const { accessToken } = session.data
+    const session = await getAppSession()
+    const { accessToken } = session
 
     if (accessToken) {
       try {
@@ -19,7 +19,7 @@ export const logout = createServerFn({ method: "POST" }).handler(
     }
 
     try {
-      await session.clear()
+      session.destroy()
     } catch (error) {
       logHttpError(error, "logout")
       throw new Error("Đã có lỗi xảy ra. Vui lòng thử lại.")
