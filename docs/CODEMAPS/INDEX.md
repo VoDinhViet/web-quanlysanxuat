@@ -23,7 +23,7 @@ Entry point for tracing the web app (TanStack Start). A codemap is a map; the co
 | `production.md` | production-orders (LSX), production-jobs (JOB), production-execution, outsourcing-orders, outsourcing-receipts |
 | `quality.md` | iqc, oqc, ncrs (OQC Fail -> Sort -> NCR -> secondary LSX -> re-OQC from the UI side) |
 | `identity-access.md` | auth/session, users, roles, departments, positions, permission model in the UI |
-| `integration.md` | reports (dashboard), file upload/download path, `/api/v1/integration/*` (external only, no FE caller) |
+| `integration.md` | reports (dashboard), file upload/download path, `/api/v1/integration/*` (external only, no FE caller), Ask bubble (ai-platform embed) |
 
 ## Naming traps
 - FE feature folders differ from BE domains: BE `items` is FE `products` (type FG) and `directs` (type DIRECT); `production-jobs` server fns also call `production-execution`; `auth` calls BE `auth` and `users`; `departments` calls `departments` and `positions`.

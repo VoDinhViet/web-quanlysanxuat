@@ -15,6 +15,7 @@ import {
   requireRoutePermissions,
   requireSession,
 } from "@/features/auth/api/guard"
+import { useAskEmbed } from "@/features/ask/hooks/use-ask-embed"
 import { useSessionWatchdog } from "@/features/auth/hooks/use-session-watchdog"
 import { getSidebarDefaultOpen } from "@/lib/sidebar-state"
 import { getErrorMessage } from "@/lib/utils"
@@ -108,6 +109,7 @@ function AuthedShell({ children }: AuthedShellProps) {
 
 function AuthedLayout() {
   useSessionWatchdog()
+  useAskEmbed()
 
   return (
     <AuthedShell>

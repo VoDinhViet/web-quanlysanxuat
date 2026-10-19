@@ -17,6 +17,10 @@ services:
     environment:
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in /opt/qlsx-staging-web/.env}
       NODE_ENV: production
+      # Optional Ask (ai-platform) bubble; empty AI_PLATFORM_URL turns it off.
+      AI_PLATFORM_URL: ${AI_PLATFORM_URL:-}
+      AI_PLATFORM_EMBED_APP_ID: ${AI_PLATFORM_EMBED_APP_ID:-}
+      AI_PLATFORM_EMBED_APP_KEY: ${AI_PLATFORM_EMBED_APP_KEY:-}
     mem_limit: 200m
     oom_score_adj: 500
     # Loopback only: Caddy terminates HTTPS and proxies to 127.0.0.1:3010.

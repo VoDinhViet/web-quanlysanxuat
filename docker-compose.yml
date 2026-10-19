@@ -20,6 +20,10 @@ services:
       # Compose errors out if it is unset or empty.
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env (a long random string)}
       NODE_ENV: production
+      # Optional Ask (ai-platform) bubble; empty AI_PLATFORM_URL turns it off.
+      AI_PLATFORM_URL: ${AI_PLATFORM_URL:-}
+      AI_PLATFORM_EMBED_APP_ID: ${AI_PLATFORM_EMBED_APP_ID:-}
+      AI_PLATFORM_EMBED_APP_KEY: ${AI_PLATFORM_EMBED_APP_KEY:-}
     # Not mapped to a host port: the app is reached only over the internal Docker
     # network (by the platform's reverse proxy / another service on the same
     # network), so it is never bound to 0.0.0.0 on the host — no clash with
