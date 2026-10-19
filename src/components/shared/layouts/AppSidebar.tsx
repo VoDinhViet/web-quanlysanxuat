@@ -342,7 +342,7 @@ export function AppSidebar() {
       <SidebarContent className="gap-3 px-2.5 py-4">
         {visibleMenuGroups.map((group) => (
           <MenuGroup
-            key={group.label}
+            key={`${group.label}-${group.items[0]?.href}`}
             group={group}
             pathname={location.pathname}
             pendingApprovals={pendingApprovals}

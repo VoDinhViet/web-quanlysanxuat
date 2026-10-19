@@ -19,7 +19,7 @@ import {
   createInventoryReceiptOtherFormDefaultValues,
   createInventoryReceiptOtherSchema,
 } from "@/features/inventory-receipts/schemas/create-inventory-receipt-other.schema"
-import { useSubmitInventoryReceipt } from "@/features/inventory-receipts/hooks/use-submit-inventory-receipt"
+import { useCreateInventoryReceipt } from "@/features/inventory-receipts/hooks/use-create-inventory-receipt"
 import { useAppForm } from "@/hooks/use-app-form"
 import { getStepNav } from "@/lib/wizard-steps"
 import type { InventoryReceiptOtherWizardStep } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptOtherStepsTabs"
@@ -31,7 +31,7 @@ export function CreateInventoryReceiptOtherForm() {
   const navigate = useNavigate({
     from: "/manage/inventory-receipts/create-receipt",
   })
-  const { submit, isPending, actionRef } = useSubmitInventoryReceipt()
+  const { submit, isPending, shouldConfirmRef } = useCreateInventoryReceipt()
 
   const form = useAppForm({
     defaultValues: createInventoryReceiptOtherFormDefaultValues,
@@ -73,6 +73,8 @@ export function CreateInventoryReceiptOtherForm() {
         event.preventDefault()
         event.stopPropagation()
         if (form.state.isSubmitting) return
+        // Enter trong ô nhập chỉ lưu nháp, không xác nhận phiếu.
+        shouldConfirmRef.current = false
         form.handleSubmit()
       }}
       noValidate
@@ -158,7 +160,7 @@ export function CreateInventoryReceiptOtherForm() {
                 variant="outline"
                 disabled={isPending}
                 onClick={() => {
-                  actionRef.current = "draft"
+                  shouldConfirmRef.current = false
                   if (form.state.isSubmitting) return
                   form.handleSubmit()
                 }}
@@ -175,7 +177,7 @@ export function CreateInventoryReceiptOtherForm() {
                     type="button"
                     disabled={!canSubmit || isSubmitting || isPending}
                     onClick={() => {
-                      actionRef.current = requiresIqc ? "confirm" : "post"
+                      shouldConfirmRef.current = true
                       if (form.state.isSubmitting) return
                       form.handleSubmit()
                     }}
@@ -190,7 +192,7 @@ export function CreateInventoryReceiptOtherForm() {
                         <CheckCircle className="size-4" />
                         {requiresIqc
                           ? "Xác nhận (Chờ IQC)"
-                          : "Xác nhận & Nhập kho (Không qua IQC)"}
+                          : "Xác nhận (Chờ nhập kho)"}
                       </>
                     )}
                   </Button>

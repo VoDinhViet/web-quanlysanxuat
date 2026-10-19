@@ -23,7 +23,7 @@ const helpSteps: HelpStep[] = [
       "Nhập số lượng thực tế nhận được cho từng vật tư đã chọn.",
       "Lưu nháp: phiếu ở trạng thái Draft.",
       "Xác nhận (Chờ IQC): chuyển sang bước kiểm tra chất lượng.",
-      "Xác nhận & Nhập kho (Không qua IQC): nhập kho trực tiếp.",
+      "Xác nhận (Chờ nhập kho): kho bấm “Xác nhận nhập kho” ở trang chi tiết để cộng tồn.",
     ],
   },
 ]

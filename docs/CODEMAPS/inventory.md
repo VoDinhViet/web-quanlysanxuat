@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: ~190 | Token estimate: ~4800 -->
+<!-- Generated: 2026-10-19 | Files scanned: ~190 | Token estimate: ~4800 -->
 # Inventory codemap (web)
 Receipts (PNK), issues (PXK), material requisitions, supplier returns, stock screens. BE twin: `be-quanlysanxuat/docs/CODEMAPS/inventory.md` (sections 2 Routes, 3 State flows, 4 Key rules). Screens and button labels: `docs/ui-flow.md` (see section 5 for stale parts).
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. No server fn checks permissions; the BE controller does. BE paths are relative to `be-quanlysanxuat/`.
@@ -45,7 +45,7 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 | Edit form (DRAFT) save | updateInventoryReceipt | PATCH /inventory-receipts/:receiptId | inventory:update | updateInventoryReceipt (:85) |
 | List row "Xóa phiếu" (DRAFT; FE gate inventory:delete) | deleteInventoryReceipt | DELETE /inventory-receipts/:receiptId | inventory:delete | deleteInventoryReceipt (:101) |
 | Detail "Xác nhận" (DRAFT) and wizard step 2 | confirmInventoryReceipt | POST /inventory-receipts/:receiptId/confirm | inventory:update | confirmInventoryReceipt (:114) |
-| Detail "Xác nhận nhập kho" and wizard step 3 (Return/Other lanes) | postInventoryReceipt | POST /inventory-receipts/:receiptId/post | inventory:update | postInventoryReceipt (:131) |
+| Detail "Xác nhận nhập kho" (the only place stock is posted from the UI) | postInventoryReceipt | POST /inventory-receipts/:receiptId/post | inventory:update | postInventoryReceipt (:131) |
 | Detail "Hủy phiếu" | cancelInventoryReceipt | POST /inventory-receipts/:receiptId/cancel | inventory:update | cancelInventoryReceipt (:148) |
 | Detail "Xuất" menu "Phiếu nhập kho" / "File tài liệu PDF" (FE gate inventory:read) | exportInventoryReceiptPdf | GET /inventory-receipts/:receiptId/export-pdf | inventory:read | exportInventoryReceiptPdf (:160) |
 ### inventory-issues (BE codemap "State flows" issue)
@@ -91,7 +91,7 @@ Receipt (`InventoryReceiptDetailActions.tsx`):
 - PENDING_IQC --(BE, last IQC completes)--> IQC_COMPLETED
 - any status except POSTED/CANCELLED --"Hủy phiếu" (cancel)--> CANCELLED (linked IQC cancelled too)
 - Edit and "Xóa phiếu" visible only in DRAFT (list row cells); query keys invalidated on action: inventory-receipts, inventory-products, iqc, production-orders, production-jobs, purchase-orders, purchase-ledger, payment-requests, reports.
-- Wizard (`use-submit-inventory-receipt.ts`, Return/Other lanes): create -> DRAFT; "Xác nhận (Chờ IQC)" = create+confirm; "Xác nhận & Nhập kho (Không qua IQC)" = create+confirm+post. PO lane (`CreateInventoryReceiptFromPoForm.tsx`): "Lưu nháp", "Xác nhận & Gửi IQC" or "Xác nhận (Chờ nhập kho)" = create+confirm only. If create succeeds but confirm/post fails the receipt stays and the user is sent to the list with a toast.
+- Wizard (`use-create-inventory-receipt.ts`, Return/Other lanes): create -> DRAFT ("Lưu nháp"); "Xác nhận (Chờ IQC)" or "Xác nhận (Chờ nhập kho)" = create+confirm -> PENDING_IQC / PENDING_RECEIPT. PO lane (`CreateInventoryReceiptFromPoForm.tsx`) does the same. No lane posts: stock goes up only from the detail page "Xác nhận nhập kho" (PH-119). If create succeeds but confirm fails the receipt stays and the user is sent to the list with a toast.
 Issue (`InventoryIssueDetailActions.tsx`): DRAFT --"Xuất kho"--> POSTED; DRAFT --"Hủy phiếu"--> CANCELLED. Dialog adds "Phiếu lãnh vật tư liên quan sẽ chuyển sang Đã xuất" when the PXK came from a requisition (invalidates inventory-requisitions).
 Requisition (`InventoryRequisitionDetailActions.tsx`):
 - DRAFT --"Gửi duyệt"--> PENDING_APPROVAL; REJECTED --"Gửi duyệt lại"--> PENDING_APPROVAL (no re-edit required)

@@ -26,7 +26,7 @@ const helpSteps: HelpStep[] = [
       "Nhập số lượng thực tế nhận được cho từng vật tư, có thể bỏ bớt vật tư khỏi danh sách.",
       "Lưu nháp: phiếu ở trạng thái Draft.",
       "Xác nhận (Chờ IQC): chuyển sang bước kiểm tra chất lượng.",
-      "Xác nhận & Nhập kho (Không qua IQC): nhập kho trực tiếp.",
+      "Xác nhận (Chờ nhập kho): kho bấm “Xác nhận nhập kho” ở trang chi tiết để cộng tồn.",
     ],
   },
 ]
@@ -34,7 +34,7 @@ const helpSteps: HelpStep[] = [
 const processingLogic = [
   "Lưu phiếu ở trạng thái Draft khi chọn “Lưu nháp”.",
   "Nếu chọn “Xác nhận (Chờ IQC)” → phiếu chuyển sang trạng thái “Chờ IQC”.",
-  "Nếu chọn “Xác nhận & Nhập kho (Không qua IQC)” → hệ thống ghi tăng tồn kho ngay.",
+  "Nếu chọn “Xác nhận (Chờ nhập kho)” → phiếu chuyển sang trạng thái “Chờ nhập kho”, tồn kho chỉ tăng khi kho bấm “Xác nhận nhập kho”.",
   "Vật tư khách hàng cung cấp bị FAIL QC chỉ xử lý được “Chấp nhận có điều kiện” — chưa có phương án trả lại khách.",
   "Không cho lưu nếu chưa có ít nhất 1 dòng vật tư.",
   "Số lượng nhập được phép là số dương (> 0).",
