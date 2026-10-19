@@ -1,4 +1,4 @@
-name: Deploy staging
+name: Staging
 
 # Push to develop -> typecheck (+ eslint as a warning) in parallel with building the image and pushing it to
 # GHCR -> deploy to the test environment on the VPS (/opt/qlsx-staging-web). Fully separate from production:

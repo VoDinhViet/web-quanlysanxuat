@@ -1,4 +1,4 @@
-name: Deploy
+name: Production
 
 # Push to main -> typecheck (+ eslint as a warning) in parallel with building the image and pushing it to
 # GHCR -> deploy to the VPS. Deploy only runs when both jobs succeed. The Docker build runs `vite build`, so
