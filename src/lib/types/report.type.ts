@@ -57,11 +57,13 @@ export type QcPassRatePoint = {
 
 /** Mirrors the backend's PendingApprovalsResDto (GET /api/reports/pending-approvals) — mỗi field
  *  chỉ > 0 khi user hiện tại có quyền xử lý module đó (approve; riêng `purchaseQuotationsToQuote` là
- *  create), ngược lại backend luôn trả 0; riêng các "việc chờ" của kho/IQC/thanh toán
+ *  create), ngược lại backend luôn trả 0; `purchaseRequestsToSubmit` là việc chờ của người tạo
+ *  (đề xuất Nháp/Bị từ chối của chính họ, cần quyền create); riêng các "việc chờ" của kho/IQC/thanh toán
  *  (`inventoryReceiptsToPost`, `paymentRequestsPending`, `supplierReturnsToPost`,
  *  `inventoryIssuesToPost`, `iqcToInspect`, `oqcToInspect`) thì ai cũng thấy. */
 export type PendingApprovals = {
   purchaseRequests: number
+  purchaseRequestsToSubmit: number
   purchaseQuotations: number
   purchaseQuotationsToQuote: number
   purchaseOrders: number
