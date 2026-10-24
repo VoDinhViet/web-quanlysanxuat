@@ -46,10 +46,11 @@ Server fn file = kebab-case of the fn name + `.api.ts`. BE column is the handler
 | Detail logs panel | `getProductionOrderLogs` | GET /api/production-orders/:productionOrdersId/logs | production:read | :155 |
 | Detail "Duyệt LSX" -> `ApproveProductionOrderDialog` | `approveProductionOrder` | POST /api/production-orders/:productionOrdersId/approve | production:approve | :171 |
 
-### production-jobs (19)
+### production-jobs (20)
 | Action / screen trigger | Server fn | Endpoint | Permission | BE line |
 |---|---|---|---|---|
 | JOB list | `getProductionJobs` | GET /api/production-jobs | production:read | :60 (`getProductionJobs`) |
+| JOB list stat tiles (`ProductionJobStatCards`; loader prefetch not awaited; `refetchInterval` 60s; a tile click writes `status` into the URL) | `getProductionJobStats` | GET /api/production-jobs/stats | production:read | `getProductionJobStats` |
 | Pickers (OS-OUT create, inventory-receipts header, inventory-requisitions source); default status IN_PROGRESS | `getProductionJobOptions` | GET /api/production-jobs | production:read | :60 (same handler as above) |
 | List "Xuất" -> "Biểu mẫu kế hoạch sản xuất (N Job)" (selected jobs, same client; `jobIds=a,b`) | `exportProductionJobsPlanPdf` | GET /api/production-jobs/export-plan-pdf | production:read | :73 (`exportProductionPlanPdf`) |
 | JOB detail load | `getProductionJob` | GET /api/production-jobs/:jobId | production:read | :85 |

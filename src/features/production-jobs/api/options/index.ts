@@ -12,3 +12,4 @@ export {
 } from "@/features/production-jobs/api/options/production-job-notes.options"
 export { productionJobLogsQueryOptions } from "@/features/production-jobs/api/options/production-job-logs.options"
 export { productionJobOptionsQueryOptions } from "@/features/production-jobs/api/options/production-job-options.options"
+export { productionJobStatsQueryOptions } from "@/features/production-jobs/api/options/production-job-stats.options"

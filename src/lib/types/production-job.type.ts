@@ -42,6 +42,17 @@ export const productionJobStatusLabels: Record<ProductionJobStatus, string> = {
   [ProductionJobStatus.COMPLETED]: "Hoàn thành",
 }
 
+/** Mirrors the backend's ProductionJobStatsResDto (GET /api/production-jobs/stats): Job counts per
+ *  status under the list's filters, status itself excluded. */
+export type ProductionJobStats = {
+  total: number
+  pending: number
+  inProgress: number
+  waitingQc: number
+  waitingDelivery: number
+  completed: number
+}
+
 /** Mirrors the backend's ProductionJobResDto — one row of `GET /production-jobs`, the "Quản lý
  *  sản xuất" screen. Split off from the detail shape 2026-07-31: the list only carries the columns
  *  the table needs, not the full Job (no `product` object, `startedAt` — those are

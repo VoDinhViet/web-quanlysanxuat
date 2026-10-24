@@ -31,6 +31,8 @@ export function useIqcDetailForm(iqc: IqcDetail) {
         queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
         queryClient.invalidateQueries({ queryKey: ["supplier-returns"] }),
         queryClient.invalidateQueries({ queryKey: ["reports"] }),
+        // The last QC line of an outsourced operation moves its Job to WAITING_DELIVERY.
+        queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
       ])
       toast.success("Đã lưu kết quả QC")
     },
