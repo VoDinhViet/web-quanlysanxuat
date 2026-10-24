@@ -2,7 +2,7 @@ import { IqcResult } from "@/lib/types/iqc.type"
 import type { QcFile } from "@/lib/types/iqc.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
-import type { NcrRef } from "@/lib/types/ncr.type"
+import type { NcrProductionAction, NcrRef } from "@/lib/types/ncr.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
@@ -96,6 +96,8 @@ export type Oqc = {
   orderCode: string | null
   /** Số PO của khách (orders.buyerPoNo); `orderCode` là mã SO nội bộ. */
   buyerPoNo: string | null
+  // LSX phụ từ NCR: REWORK (sửa chữa) / REMAKE (làm mới); null = Job từ LSX đơn hàng.
+  ncrAction: NcrProductionAction | null
   operation: { code: string; name: string }
   bomItem: { code: string; name: string }
   item: ItemRef
@@ -126,8 +128,9 @@ export type Oqc = {
  *  `item`/`creatorBy`/`createdAt` only exist on this detail response — the list response (`Oqc`
  *  above) doesn't send them, no list column reads them. `unit` is a sibling of `item`, NOT
  *  nested inside it — OQC's `item` is `ItemRefResDto` (no `unit`), unlike IQC's `ItemUnitRefResDto`
- *  (`unit` nested). Don't copy IQC's `item.unit` shape here again. */
-export type OqcDetail = Oqc & {
+ *  (`unit` nested). Don't copy IQC's `item.unit` shape here again. `ncrAction` is list-only:
+ *  OqcResDto doesn't send it. */
+export type OqcDetail = Omit<Oqc, "ncrAction"> & {
   item: { id: string; code: string; name: string }
   creatorBy: UserRef | null
   createdAt: string

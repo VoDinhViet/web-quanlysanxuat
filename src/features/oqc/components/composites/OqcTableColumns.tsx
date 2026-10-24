@@ -12,6 +12,7 @@ import {
 import { OqcActionsCell } from "@/features/oqc/components/primitives/OqcTableCells"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { Oqc } from "@/lib/types/oqc.type"
+import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -127,6 +128,11 @@ export const oqcColumns = oqcColumnHelper.columns([
         <p className="truncate font-mono text-xs text-muted-foreground">
           {row.original.buyerPoNo ?? "—"}
         </p>
+        {row.original.ncrAction && (
+          <p className="text-xs font-medium text-destructive">
+            {formatNcrJobMarker(row.original.ncrAction)}
+          </p>
+        )}
       </div>
     ),
   }),

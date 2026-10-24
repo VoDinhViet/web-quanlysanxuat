@@ -79,7 +79,11 @@ export function ProductionExecutionJobsTable({
               {table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="h-14 bg-card hover:bg-muted/25"
+                  className={cn(
+                    "h-14 bg-card hover:bg-muted/25",
+                    row.original.ncrAction &&
+                      "[&>td:first-child]:shadow-[inset_3px_0_0_0_var(--color-destructive)]"
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

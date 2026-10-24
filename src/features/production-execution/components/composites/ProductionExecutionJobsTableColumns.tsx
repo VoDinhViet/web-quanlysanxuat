@@ -10,6 +10,7 @@ import {
   ProductionExecutionJobStatusBadge,
 } from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
 import type { ProductionJobByOperation } from "@/lib/types/production-job.type"
+import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -40,8 +41,15 @@ export const productionExecutionJobColumns = columnHelper.columns([
     id: "buyerPoNo",
     header: "PO",
     meta: { headerClassName: "min-w-24" },
-    cell: ({ getValue }) => (
-      <span className="font-mono font-medium text-primary">{getValue()}</span>
+    cell: ({ getValue, row }) => (
+      <div className="flex flex-col">
+        <span className="font-mono font-medium text-primary">{getValue()}</span>
+        {row.original.ncrAction && (
+          <span className="text-xs font-medium text-destructive">
+            {formatNcrJobMarker(row.original.ncrAction)}
+          </span>
+        )}
+      </div>
     ),
   }),
   columnHelper.accessor("jobCode", {

@@ -60,6 +60,8 @@ export type ProductionJob = {
   orderDate: string
   dueDate: string | null
   status: ProductionJobStatus
+  // LSX phụ từ NCR: REWORK (sửa chữa) / REMAKE (làm mới); null = Job từ LSX đơn hàng.
+  ncrAction: NcrProductionAction | null
 }
 
 /** Mirrors the backend's ProductionJobDetailResDto (`GET /production-jobs/:jobId`) — joins in
@@ -334,6 +336,8 @@ export type ProductionJobByOperation = {
   operationName: string
   orderCode: string
   buyerPoNo: string | null
+  // LSX phụ từ NCR: REWORK (sửa chữa) / REMAKE (làm mới); null = Job từ LSX đơn hàng.
+  ncrAction: NcrProductionAction | null
   item: { code: string; name: string; revision: string }
   image: FileResource | null
   quantity: number

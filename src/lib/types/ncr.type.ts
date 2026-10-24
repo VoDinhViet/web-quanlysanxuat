@@ -73,6 +73,11 @@ export const ncrProductionActionLabels: Record<NcrProductionAction, string> = {
   [NcrProductionAction.REMAKE]: "Làm mới",
 }
 
+// Red line under the PO cell of a Job that came from an NCR, e.g. "(sửa chữa)".
+export function formatNcrJobMarker(action: NcrProductionAction): string {
+  return `(${ncrProductionActionLabels[action].toLocaleLowerCase("vi")})`
+}
+
 export const NcrCostKind = {
   MATERIAL: "MATERIAL",
   LABOR: "LABOR",

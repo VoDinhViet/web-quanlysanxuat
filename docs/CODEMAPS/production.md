@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: ~120 | Token estimate: ~5000 -->
+<!-- Generated: 2026-10-24 | Files scanned: ~120 | Token estimate: ~5000 -->
 # Production codemap (web)
 
 Production orders (LSX), production jobs (JOB), shop-floor execution, outsourcing OS-OUT and OS-IN. BE twin: `be-quanlysanxuat/docs/CODEMAPS/production.md` (sections 1 Modules, 2 Routes, 3 State flows, 4 Key rules, 5 Cross-domain links). Screen and button map: `docs/ui-flow.md`. Quality-side screens (OQC request, NCR): `docs/CODEMAPS/quality.md`.
@@ -117,6 +117,7 @@ WAITING_QC -> WAITING_DELIVERY -> COMPLETED: BE only (closeJobIfQcCovered, close
 - "Nhập báo cáo" is disabled for: JOB PENDING, JOB not IN_PROGRESS, OUTSOURCE operation type, assembly blocked.
 - OUTSOURCE operation rows show "Gửi gia công ngoài" (link to OS-OUT create with `productionJobId`, `operationId`), disabled "Đã gửi đủ định mức" when fully sent.
 - "Lãnh vật tư cho Job" link to `/manage/inventory-requisitions/create`: disabled while PENDING, hidden when `ncrAction === REWORK`.
+- NCR marker: a JOB whose LSX has `ncrAction` shows a red "(sửa chữa)"/"(làm mới)" (`formatNcrJobMarker`, `src/lib/types/ncr.type.ts`) under the PO in the JOB list, the execution list and the JOB detail header, and the list rows get a red left edge (inset shadow on the first cell). The plan PDF prints the same marker.
 - Execution screen: "Cập nhật" per part (`production-execution:report`). Report form: "✓ SL đạt" capped at planned minus completed, NG uncapped, note, images (uploaded as `UploadType.PRODUCTION_OPERATION_EVIDENCE`). Invalidates production-execution and production-jobs.
 
 OS-OUT (`OutsourcingOrderStatus`: SENT "Đang gia công", PARTIAL "Về 1 phần", WAITING_QC "Chờ QC", COMPLETED "Hoàn thành", CANCELLED "Đã hủy")

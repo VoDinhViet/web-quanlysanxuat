@@ -4,6 +4,7 @@ import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
 import { itemQueryOptions } from "@/features/products/api"
+import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 import { cn } from "@/lib/utils"
 
@@ -46,17 +47,24 @@ export function ProductionJobHeaderFacts({
         label="PO khách hàng"
         mono
         value={
-          job.order.buyerPoNo ? (
-            <Link
-              to="/manage/orders/$orderId"
-              params={{ orderId: job.order.id }}
-              className="text-primary hover:underline"
-            >
-              {job.order.buyerPoNo}
-            </Link>
-          ) : (
-            "—"
-          )
+          <span className="flex flex-col">
+            {job.order.buyerPoNo ? (
+              <Link
+                to="/manage/orders/$orderId"
+                params={{ orderId: job.order.id }}
+                className="text-primary hover:underline"
+              >
+                {job.order.buyerPoNo}
+              </Link>
+            ) : (
+              "—"
+            )}
+            {job.ncrAction && (
+              <span className="font-sans text-xs font-medium text-destructive">
+                {formatNcrJobMarker(job.ncrAction)}
+              </span>
+            )}
+          </span>
         }
       />
       <InfoField

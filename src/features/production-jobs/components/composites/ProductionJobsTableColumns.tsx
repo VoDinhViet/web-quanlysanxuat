@@ -12,6 +12,7 @@ import {
   ProductionJobActionsCell,
 } from "@/features/production-jobs/components/primitives/ProductionJobTableCells"
 import type { ProductionJob } from "@/lib/types/production-job.type"
+import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 
 const productionJobColumnHelper = createColumnHelper<
   typeof appTableFeatures,
@@ -34,7 +35,16 @@ const baseProductionJobColumns = [
     id: "buyerPoNo",
     header: "PO",
     meta: { headerClassName: "min-w-24" },
-    cell: ({ getValue }) => <span className="font-mono">{getValue()}</span>,
+    cell: ({ getValue, row }) => (
+      <div className="flex flex-col">
+        <span className="font-mono">{getValue()}</span>
+        {row.original.ncrAction && (
+          <span className="text-xs font-medium text-destructive">
+            {formatNcrJobMarker(row.original.ncrAction)}
+          </span>
+        )}
+      </div>
+    ),
   }),
   productionJobColumnHelper.accessor("code", {
     header: "JOB",

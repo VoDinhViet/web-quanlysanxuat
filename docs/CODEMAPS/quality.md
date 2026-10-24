@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: ~75 | Token estimate: ~4500 -->
+<!-- Generated: 2026-10-24 | Files scanned: ~75 | Token estimate: ~4500 -->
 # Quality codemap (web)
 
 IQC (incoming), OQC (outgoing) and NCR (non-conformance), including the OQC Fail -> Sort -> NCR -> secondary LSX -> re-OQC flow seen from the UI. BE twin: `be-quanlysanxuat/docs/CODEMAPS/quality.md` (sections 1 Modules, 2 Routes, 3 State flows incl. "PH-136 flow", 4 Key rules, 5 Cross-domain links). Screen and button map: `docs/ui-flow.md`. Job and LSX screens: `docs/CODEMAPS/production.md`.
@@ -119,6 +119,7 @@ PENDING_QC --re-OQC confirmed COMPLETED (BE closeNcrAfterOqc)--> CLOSED
 | 6 | `/manage/production-jobs/$productionJobId` (secondary JOB) | same JOB buttons as above ("Xác nhận kế hoạch", "Nhập báo cáo"); REWORK JOB hides "Lãnh vật tư cho Job" | production-jobs fns | JOB PENDING -> ... ; on LSX COMPLETED the BE closes the NCR |
 | 7 | `/manage/ncrs/$ncrId` | "Yêu cầu OQC lại" (only at PENDING_QC) | `requestNcrOqc` | new OQC DRAFT with `ncrId`; shown in OQC lot summary as link `ncr` |
 | 8 | `/manage/oqc/$oqcId` (the re-OQC) | "Lưu" with PASS or FAIL + ACCEPT/SORT | `confirmOqc` | OQC COMPLETED -> NCR PENDING_QC -> CLOSED; a SORT with NG left spawns a child NCR (`parentNcrId`) |
+OQC list rows of a secondary JOB carry the same red "(sửa chữa)"/"(làm mới)" marker and left edge (`OqcTableColumns`, `OqcTable`).
 Trace: `NcrTraceCard` links source OQC, parent NCR, secondary LSX (`/manage/production-orders/$id`), "OQC lại" rows and child NCRs; `OqcLotSummaryCard` shows `ncr` and `spawnedNcrs`.
 
 ## 5. Gaps and quirks

@@ -120,6 +120,8 @@ export function ProductionJobsTable({
                   key={row.id}
                   className={cn(
                     "h-14 bg-card transition-colors hover:bg-muted/25",
+                    row.original.ncrAction &&
+                      "[&>td:first-child]:shadow-[inset_3px_0_0_0_var(--color-destructive)]",
                     selectedJobIds.has(row.original.id) &&
                       "bg-primary/[0.04] hover:bg-primary/[0.08]",
                     selectedClientId !== undefined &&
