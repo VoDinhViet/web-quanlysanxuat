@@ -35,6 +35,8 @@ export enum UploadType {
   PRODUCTION_ORDER_SIGNED_DOCUMENT = "PRODUCTION_ORDER_SIGNED_DOCUMENT",
   // File báo giá / chứng từ / catalogue đính kèm của nhà cung cấp trong phiếu báo giá
   QUOTATION_SUPPLIER_EVIDENCE = "QUOTATION_SUPPLIER_EVIDENCE",
+  // Photos/files proving the receiver got the goods, attached when a stock issue is posted.
+  INVENTORY_ISSUE_EVIDENCE = "INVENTORY_ISSUE_EVIDENCE",
 }
 
 export enum FileKind {

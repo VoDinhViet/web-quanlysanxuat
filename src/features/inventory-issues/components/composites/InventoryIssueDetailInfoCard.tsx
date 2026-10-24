@@ -1,7 +1,10 @@
-import { History } from "lucide-react"
+import { FileText, History } from "lucide-react"
 import { DateTime } from "luxon"
 
+import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
+import { resolveFileUrl } from "@/lib/file-url"
 import { InventoryIssueType } from "@/lib/types/inventory-issue.type"
+import type { FileResource } from "@/lib/types/file.type"
 import type { InventoryIssueDetail } from "@/lib/types/inventory-issue.type"
 
 type InventoryIssueDetailInfoCardProps = {
@@ -36,6 +39,19 @@ export function InventoryIssueDetailInfoCard({
           />
         )}
 
+        {inventoryIssue.postNote && (
+          <InfoRow label="Ghi chú xuất kho" value={inventoryIssue.postNote} />
+        )}
+
+        {inventoryIssue.files.length > 0 && (
+          <div className="space-y-1.5">
+            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              Ảnh / file bằng chứng
+            </p>
+            <EvidenceGallery files={inventoryIssue.files} />
+          </div>
+        )}
+
         <InfoRow
           label="Cập nhật lần cuối"
           value={DateTime.fromISO(inventoryIssue.updatedAt).toFormat(
@@ -52,6 +68,42 @@ export function InventoryIssueDetailInfoCard({
         </p>
       )}
     </section>
+  )
+}
+
+type EvidenceGalleryProps = {
+  files: FileResource[]
+}
+
+// Images zoom in place (a phone photo is the usual proof); scanned slips open in a new tab.
+function EvidenceGallery({ files }: EvidenceGalleryProps) {
+  return (
+    <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+      {files.map((file) => (
+        <li
+          key={file.id}
+          title={file.originalName}
+          className="aspect-square overflow-hidden rounded-md border border-border bg-muted/30"
+        >
+          {file.mimetype.startsWith("image/") ? (
+            <ZoomableImage
+              src={resolveFileUrl(file.url)}
+              alt={file.originalName}
+            />
+          ) : (
+            <a
+              href={resolveFileUrl(file.url)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Mở ${file.originalName} trong tab mới`}
+              className="flex size-full items-center justify-center text-muted-foreground hover:text-foreground"
+            >
+              <FileText className="size-5" aria-hidden />
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
   )
 }
 

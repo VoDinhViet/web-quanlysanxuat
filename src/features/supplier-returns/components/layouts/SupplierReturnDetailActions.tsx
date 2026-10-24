@@ -13,12 +13,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { SupplierReturnEvidenceField } from "@/features/supplier-returns/components/composites/SupplierReturnEvidenceField"
+import { EvidenceUploadField } from "@/components/shared/composites/EvidenceUploadField"
 import { usePostSupplierReturn } from "@/features/supplier-returns/hooks/use-post-supplier-return"
 import { postSupplierReturnSchema } from "@/features/supplier-returns/schemas/post-supplier-return.schema"
 import { useAppForm } from "@/hooks/use-app-form"
 import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { FileFieldValue } from "@/lib/file-field.schema"
+import { UploadType } from "@/lib/types/file.type"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 
 type SupplierReturnDetailActionsProps = {
@@ -34,6 +35,7 @@ export function SupplierReturnDetailActions({
   supplierReturn,
 }: SupplierReturnDetailActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   const postMutation = usePostSupplierReturn({
     supplierReturnId: supplierReturn.id,
@@ -49,7 +51,11 @@ export function SupplierReturnDetailActions({
 
   const isDraft = supplierReturn.status === InventoryDocumentStatus.DRAFT
 
+  const isBusy = postMutation.isPending || isUploading
+
   const closeConfirm = (open: boolean) => {
+    // Closing mid-upload would drop the file into a form that was already reset.
+    if (!open && isUploading) return
     setConfirmOpen(open)
     if (!open) {
       postMutation.reset()
@@ -91,7 +97,7 @@ export function SupplierReturnDetailActions({
             onSubmit={(event) => {
               event.preventDefault()
               event.stopPropagation()
-              if (form.state.isSubmitting) return
+              if (form.state.isSubmitting || isUploading) return
               void form.handleSubmit()
             }}
             noValidate
@@ -110,10 +116,12 @@ export function SupplierReturnDetailActions({
 
             <form.AppField name="files">
               {(field) => (
-                <SupplierReturnEvidenceField
+                <EvidenceUploadField
                   value={field.state.value}
                   onChange={field.handleChange}
+                  uploadType={UploadType.SUPPLIER_RETURN_EVIDENCE}
                   disabled={postMutation.isPending}
+                  onUploadingChange={setIsUploading}
                 />
               )}
             </form.AppField>
@@ -129,11 +137,11 @@ export function SupplierReturnDetailActions({
                 type="button"
                 variant="outline"
                 onClick={() => closeConfirm(false)}
-                disabled={postMutation.isPending}
+                disabled={isBusy}
               >
                 Đóng
               </Button>
-              <Button type="submit" disabled={postMutation.isPending}>
+              <Button type="submit" disabled={isBusy}>
                 {postMutation.isPending ? "Đang xử lý…" : "Xác nhận"}
               </Button>
             </DialogFooter>

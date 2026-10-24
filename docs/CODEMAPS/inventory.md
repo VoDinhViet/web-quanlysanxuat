@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-19 | Files scanned: ~190 | Token estimate: ~4800 -->
+<!-- Generated: 2026-10-24 | Files scanned: ~190 | Token estimate: ~4800 -->
 # Inventory codemap (web)
 Receipts (PNK), issues (PXK), material requisitions, supplier returns, stock screens. BE twin: `be-quanlysanxuat/docs/CODEMAPS/inventory.md` (sections 2 Routes, 3 State flows, 4 Key rules). Screens and button labels: `docs/ui-flow.md` (see section 5 for stale parts).
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. No server fn checks permissions; the BE controller does. BE paths are relative to `be-quanlysanxuat/`.
@@ -53,7 +53,7 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 |---|---|---|---|---|
 | List (loader) | getInventoryIssues | GET /inventory-issues | inventory:read | getInventoryIssues (src/api/inventory-issues/inventory-issues.controller.ts:40) |
 | Detail (loader) | getInventoryIssue | GET /inventory-issues/:issueId | inventory:read | getInventoryIssue (:52) |
-| Detail "Xuất kho" (DRAFT; FE gate inventory:update) | postInventoryIssue | POST /inventory-issues/:issueId/post | inventory:update | postInventoryIssue (:104) |
+| Detail "Xuất kho" (DRAFT; FE gate inventory:update; `PostInventoryIssueDialog`: optional note + photos/files, camera on phone, photos >2MB downscaled) | postInventoryIssue | POST /inventory-issues/:issueId/post | inventory:update | postInventoryIssue (:104) |
 | Detail "Hủy phiếu" (DRAFT) | cancelInventoryIssue | POST /inventory-issues/:issueId/cancel | inventory:update | cancelInventoryIssue (:121) |
 ### inventory-requisitions (BE codemap "State flows" requisition)
 | Action / trigger | Server fn | Endpoint | Permission | BE Controller.method (file:line) |

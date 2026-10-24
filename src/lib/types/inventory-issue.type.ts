@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -123,8 +124,9 @@ export type InventoryIssue = {
   updatedAt: string
 }
 
-/** Mirrors the backend's `InventoryIssueResDto` (`GET /inventory-issues/:id`) — field-for-field
- *  identical to `InventoryIssue` (unlike receipts, an issue line carries no PO-derived extra
- *  data, so list and detail never diverged enough to need separate shapes). Aliased anyway so
- *  detail-page call sites read as detail types, not list types. */
-export type InventoryIssueDetail = InventoryIssue
+/** Mirrors the backend's `InventoryIssueResDto` (`GET /inventory-issues/:id`) — the list row plus
+ *  the evidence recorded when the issue was posted (`postNote`, `files`; empty until POSTED). */
+export type InventoryIssueDetail = InventoryIssue & {
+  postNote: string | null
+  files: FileResource[]
+}

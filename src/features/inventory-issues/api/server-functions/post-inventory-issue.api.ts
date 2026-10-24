@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 import { z } from "zod"
 
+import { fileFieldSchema, resolveApiFileIds } from "@/lib/file-field.schema"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 
@@ -21,6 +22,8 @@ function resolvePostInventoryIssueErrorMessage(error: unknown): string {
       return "Tồn kho không đủ để xuất."
     case "inventory_issue.error.iqc_pending":
       return "Còn vật tư chưa hoàn tất kiểm tra chất lượng (IQC), chưa thể xuất kho."
+    case "file.error.not_found":
+      return "Có file đính kèm không còn tồn tại. Vui lòng tải lại ảnh."
     case "auth.error.forbidden":
       return "Bạn không có quyền xuất kho phiếu này."
     default:
@@ -28,11 +31,24 @@ function resolvePostInventoryIssueErrorMessage(error: unknown): string {
   }
 }
 
+// `note`/`files` are optional posting evidence; `files` goes over the wire as `fileIds`.
+const postInventoryIssueParamsSchema = z
+  .object({
+    issueId: z.uuid(),
+    note: z.string().trim().max(500).optional(),
+    files: z.array(fileFieldSchema).default([]),
+  })
+  .transform(({ files, ...rest }) => ({
+    ...rest,
+    fileIds: resolveApiFileIds(files),
+  }))
+
 export const postInventoryIssue = createServerFn({ method: "POST" })
-  .validator(z.object({ issueId: z.uuid() }))
+  .validator(postInventoryIssueParamsSchema)
   .handler(async ({ data }): Promise<void> => {
     try {
-      await http.post(`/api/inventory-issues/${data.issueId}/post`)
+      const { issueId, ...body } = data
+      await http.post(`/api/inventory-issues/${issueId}/post`, body)
     } catch (error) {
       logHttpError(error, "postInventoryIssue")
 

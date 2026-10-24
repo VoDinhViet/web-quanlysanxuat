@@ -1,41 +1,54 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
 import { useDropzone } from "react-dropzone"
-import { Loader2, Paperclip } from "lucide-react"
+import { Camera, Loader2, Paperclip } from "lucide-react"
+import type { ChangeEvent } from "react"
 
+import { Button } from "@/components/ui/button"
 import {
   QcEvidenceThumbnail,
   resolveDropRejectionMessage,
 } from "@/components/shared/composites/QcEvidenceThumbnail"
+import { compressImageIfLarge, isCompressibleImage } from "@/lib/compress-image"
 import {
   ACCEPTED_EVIDENCE_TYPES,
   MAX_DOCUMENT_SIZE_BYTES,
-  UploadType,
 } from "@/lib/types/file.type"
+import type { UploadType } from "@/lib/types/file.type"
 import { uploadFile } from "@/lib/upload-file"
 import { usePasteToDropzone } from "@/hooks/use-paste-to-dropzone"
 import { cn } from "@/lib/utils"
 import type { FileFieldValue } from "@/lib/file-field.schema"
 
-type SupplierReturnEvidenceFieldProps = {
+type EvidenceUploadFieldProps = {
   value: FileFieldValue[]
   onChange: (
     value: FileFieldValue[] | ((prev: FileFieldValue[]) => FileFieldValue[])
   ) => void
+  // Must map to FileKind.EVIDENCE on the backend (images + documents).
+  uploadType: UploadType
   disabled?: boolean
+  // Lets the parent block submit/close while a photo is still uploading.
+  onUploadingChange?: (isUploading: boolean) => void
 }
 
-// "File đính kèm (nếu có)" của dialog "Xác nhận xuất trả" — cùng khuôn
-// JobOperationReportEvidenceField.tsx, nhận cả ảnh lẫn tài liệu (ACCEPTED_EVIDENCE_TYPES, khớp
-// backend's FileKind.EVIDENCE cho UploadType.SUPPLIER_RETURN_EVIDENCE) thay vì chỉ ảnh — "xuất
-// trả" gần với bàn giao chứng từ vật lý (biên bản, phiếu giao nhận) hơn ảnh báo cáo xưởng.
-export function SupplierReturnEvidenceField({
+// Photos are downscaled before upload, so the picker accepts bigger originals than the backend cap;
+// other files must already fit it.
+const MAX_PHOTO_PICK_BYTES = 30 * 1024 * 1024
+
+// Optional evidence attached when a warehouse document is confirmed (supplier return, stock issue):
+// images and documents, same shape as JobOperationReportEvidenceField. "Chụp ảnh" opens the rear
+// camera on a phone; large photos are downscaled before upload (compressImageIfLarge).
+export function EvidenceUploadField({
   value,
   onChange,
+  uploadType,
   disabled,
-}: SupplierReturnEvidenceFieldProps) {
+  onUploadingChange,
+}: EvidenceUploadFieldProps) {
   const [clientError, setClientError] = useState<string | null>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
   const uploadFileFn = useServerFn(uploadFile)
 
   const {
@@ -43,43 +56,63 @@ export function SupplierReturnEvidenceField({
     error,
     isPending,
   } = useMutation({
-    mutationFn: (file: File) => {
+    mutationFn: async (file: File) => {
       const formData = new FormData()
-      formData.append("file", file)
-      formData.append("type", UploadType.SUPPLIER_RETURN_EVIDENCE)
+      formData.append("file", await compressImageIfLarge(file))
+      formData.append("type", uploadType)
       return uploadFileFn({ data: formData })
     },
   })
 
+  const uploadFiles = async (files: File[]) => {
+    setClientError(null)
+    const uploadable = files.filter(
+      (file) =>
+        isCompressibleImage(file) || file.size <= MAX_DOCUMENT_SIZE_BYTES
+    )
+    const oversizedCount = files.length - uploadable.length
+
+    onUploadingChange?.(true)
+    try {
+      const results = await Promise.allSettled(
+        uploadable.map((file) => upload(file))
+      )
+      const uploaded = results
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value)
+
+      if (uploaded.length > 0) {
+        onChange((prev) => [...prev, ...uploaded])
+      }
+
+      const failedCount = results.length - uploaded.length + oversizedCount
+      if (failedCount > 0) {
+        setClientError(
+          `${failedCount} file tải lên thất bại (file tài liệu tối đa 10MB). Vui lòng thử lại.`
+        )
+      }
+    } finally {
+      onUploadingChange?.(false)
+    }
+  }
+
   const { getRootProps, getInputProps, isDragActive, rootRef, inputRef } =
     useDropzone({
       accept: ACCEPTED_EVIDENCE_TYPES,
-      maxSize: MAX_DOCUMENT_SIZE_BYTES,
+      maxSize: MAX_PHOTO_PICK_BYTES,
       multiple: true,
       disabled,
-      onDropAccepted: async (files) => {
-        setClientError(null)
-        const results = await Promise.allSettled(
-          files.map((file) => upload(file))
-        )
-        const uploaded = results
-          .filter((result) => result.status === "fulfilled")
-          .map((result) => result.value)
-
-        if (uploaded.length > 0) {
-          onChange((prev) => [...prev, ...uploaded])
-        }
-
-        const failedCount = results.length - uploaded.length
-        if (failedCount > 0) {
-          setClientError(
-            `${failedCount} file tải lên thất bại. Vui lòng thử lại.`
-          )
-        }
-      },
+      onDropAccepted: uploadFiles,
       onDropRejected: (rejections) =>
         setClientError(resolveDropRejectionMessage(rejections)),
     })
+
+  const handleCameraCapture = (event: ChangeEvent<HTMLInputElement>) => {
+    const photos = Array.from(event.target.files ?? [])
+    // Reset so taking the same shot again still fires `change`.
+    event.target.value = ""
+    if (photos.length > 0) void uploadFiles(photos)
+  }
 
   const errorMessage = clientError ?? error?.message
 
@@ -87,9 +120,32 @@ export function SupplierReturnEvidenceField({
 
   return (
     <div className="space-y-3">
-      <span className="block text-xs font-medium text-foreground">
-        File đính kèm (nếu có)
-      </span>
+      <div className="flex items-center justify-between gap-2">
+        <span className="block text-xs font-medium text-foreground">
+          Ảnh / file đính kèm (nếu có)
+        </span>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="gap-1.5 text-xs"
+          disabled={disabled || isPending}
+          onClick={() => cameraInputRef.current?.click()}
+        >
+          <Camera className="size-3.5" aria-hidden />
+          Chụp ảnh
+        </Button>
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          tabIndex={-1}
+          aria-hidden
+          onChange={handleCameraCapture}
+        />
+      </div>
 
       <div
         {...getRootProps({
