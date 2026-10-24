@@ -1,9 +1,13 @@
 import { withForm } from "@/hooks/use-app-form"
 import { updateOperationFormDefaultValues } from "@/features/operations/schemas/update-operation.schema"
-import { operationStatusLabels } from "@/lib/types/operation.type"
+import {
+  operationStatusLabels,
+  operationTypeLabels,
+} from "@/lib/types/operation.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const statusOptions = buildOptionsFromLabels(operationStatusLabels)
+const typeOptions = buildOptionsFromLabels(operationTypeLabels)
 
 // The form instance is owned by OperationDetailPage, because the header's "Lưu" button sits
 // outside this panel and submits the same form.
@@ -29,7 +33,7 @@ export const OperationInfoSection = withForm({
               Thông tin công đoạn
             </h2>
             <p className="text-sm text-muted-foreground">
-              Mã, tên, trạng thái và ghi chú của công đoạn
+              Mã, tên, loại, trạng thái và ghi chú của công đoạn
             </p>
           </div>
         </div>
@@ -52,6 +56,17 @@ export const OperationInfoSection = withForm({
                 label="Tên công đoạn"
                 required
                 placeholder="Nhập tên công đoạn"
+                disabled={disabled}
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="type">
+            {(field) => (
+              <field.RadioPillField
+                label="Loại công đoạn"
+                required
+                options={typeOptions}
                 disabled={disabled}
               />
             )}

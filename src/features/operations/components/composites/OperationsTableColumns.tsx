@@ -16,12 +16,22 @@ import { DeleteOperationDialog } from "@/features/operations/components/composit
 import {
   operationStatusLabels,
   OperationStatus,
+  OperationType,
+  operationTypeLabels,
 } from "@/lib/types/operation.type"
 import type { OperationDetail } from "@/lib/types/operation.type"
 
 const statusStyles: Record<OperationStatus, string> = {
   [OperationStatus.ACTIVE]: "bg-success/15 text-success",
   [OperationStatus.INACTIVE]: "bg-muted text-muted-foreground",
+}
+
+// Tints copied from the product routing's type badge (features may not import each other's
+// components); the catalog column drops its icon to stay compact.
+const typeStyles: Record<OperationType, string> = {
+  [OperationType.INHOUSE]: "bg-primary/15 text-primary",
+  [OperationType.OUTSOURCE]:
+    "bg-amber-500/15 text-amber-700 dark:text-amber-400",
 }
 
 const operationColumnHelper = createColumnHelper<
@@ -64,6 +74,19 @@ export const buildOperationColumns = ({ offset }: OperationColumnsOptions) =>
           {getValue()}
         </p>
       ),
+    }),
+    operationColumnHelper.accessor("type", {
+      header: "Loại",
+      meta: { headerClassName: "min-w-32" },
+      cell: ({ getValue }) => {
+        const type = getValue()
+
+        return (
+          <Badge variant="outline" className={typeStyles[type]}>
+            {operationTypeLabels[type]}
+          </Badge>
+        )
+      },
     }),
     operationColumnHelper.accessor("note", {
       header: "Ghi chú",

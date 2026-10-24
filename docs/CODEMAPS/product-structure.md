@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: ~210 | Token estimate: ~5000 -->
+<!-- Generated: 2026-10-24 | Files scanned: ~210 | Token estimate: ~5000 -->
 # Product-structure codemap (web)
 Items (FG products and DIRECT materials), BOM tree, routing and BOM operations, operation catalog, units. BE twin: `be-quanlysanxuat/docs/CODEMAPS/product-structure.md` (sections 2 Routes, 3 Data model and flows, 4 Key rules and error codes). Screens and button labels: `docs/ui-flow.md`.
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. Server fns carry no permission; BE controllers do. BE paths are relative to `be-quanlysanxuat/`.
@@ -9,7 +9,7 @@ There is no `src/features/items/`: the BE `items` table is split on the FE by a 
 |---|---|---|---|---|
 | products | FG list/create/detail; BOM tree, routing, BOM-node detail, "issues" rollup | ProductsPage, CreateProductPage, ProductDetailPage, BomItemDetailPage | `item.type.ts`: ItemStatus ACTIVE "Đang sử dụng", INACTIVE "Ngừng sử dụng"; ItemType FG "Thành phẩm"; `bom-item.type.ts`: BomItemType COMPONENT/DIRECT, `isOffStructure` | create/update product, copy, create/update bom-item, create/update product-operation, search x3 |
 | directs | DIRECT material master data: list, create, edit, status toggle, copy, Excel import/export | DirectsPage, CreateDirectPage, UpdateDirectPage, ImportDirectsPage | `direct.type.ts` (import field/preview types), status via `ItemStatus` | create/update, copy, update-status, import-direct-row, search |
-| operations | Production-operation catalog and its assigned workers | OperationsPage, OperationDetailPage | `operation.type.ts`: OperationStatus ACTIVE "Đang dùng", INACTIVE "Ngừng dùng"; OperationType INHOUSE "Nội bộ", OUTSOURCE "Gia công ngoài" (chosen per BOM attachment, not on the catalog row) | create/update, set-assignments, search |
+| operations | Production-operation catalog and its assigned workers | OperationsPage, OperationDetailPage | `operation.type.ts`: OperationStatus ACTIVE "Đang dùng", INACTIVE "Ngừng dùng"; OperationType INHOUSE "Nội bộ", OUTSOURCE "Gia công ngoài" (the catalog row holds a default that pre-fills the type when the operation is attached to a product or BOM item; each attachment keeps its own `type`) | create/update, set-assignments, search |
 | units | Unit-of-measure catalog (reference data) | UnitsPage | `unit.type.ts`: UnitType QUANTITY "Số lượng", WEIGHT "Khối lượng", LENGTH "Chiều dài", VOLUME "Thể tích"; UnitStatus ACTIVE/INACTIVE | create/update, search |
 
 ## 2. Screens

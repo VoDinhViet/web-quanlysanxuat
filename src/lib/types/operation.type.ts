@@ -23,9 +23,8 @@ export const operationStatusLabels: Record<OperationStatus, string> = {
 }
 
 /**
- * Mirrors backend's OperationResDto / OperationRefResDto — the master catalog operation entity.
- * No `type` here — Inhouse/Outsource isn't a fixed catalog attribute, it's chosen per BOM
- * attachment (see `ProductOperation` below).
+ * Nested ref in a routing/BOM step. It carries no type: the step's own `type` applies (see
+ * `ProductOperation`). The catalog type lives on `OperationRef` and `OperationDetail`.
  */
 export type Operation = {
   id: string
@@ -33,8 +32,10 @@ export type Operation = {
   name: string
 }
 
-/** Legacy alias for backward compatibility */
-export type OperationRef = Operation
+/** Mirrors backend's OperationRefResDto (GET /operations/options), the picker row. */
+export type OperationRef = Operation & {
+  type: OperationType
+}
 
 /**
  * Mirrors backend's OperationResDto (GET/POST/PATCH /operations) — the full catalogue record for
@@ -46,6 +47,7 @@ export type OperationDetail = {
   id: string
   code: string
   name: string
+  type: OperationType
   note: string | null
   status: OperationStatus
   creatorBy: UserRef | null

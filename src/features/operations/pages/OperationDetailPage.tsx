@@ -27,6 +27,7 @@ function getOperationDefaultValues(
     operationId: operation.id,
     code: operation.code,
     name: operation.name,
+    type: operation.type,
     note: operation.note ?? "",
     status: operation.status,
   }

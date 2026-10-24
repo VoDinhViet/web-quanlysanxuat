@@ -19,10 +19,14 @@ import {
   createOperationSchema,
 } from "@/features/operations/schemas/create-operation.schema"
 import type { CreateOperationSchema } from "@/features/operations/schemas/create-operation.schema"
-import { operationStatusLabels } from "@/lib/types/operation.type"
+import {
+  operationStatusLabels,
+  operationTypeLabels,
+} from "@/lib/types/operation.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const operationStatusOptions = buildOptionsFromLabels(operationStatusLabels)
+const operationTypeOptions = buildOptionsFromLabels(operationTypeLabels)
 
 type CreateOperationFormProps = {
   onSuccess: () => void
@@ -71,7 +75,7 @@ export function CreateOperationForm({
           Tạo công đoạn
         </DialogTitle>
         <DialogDescription className="text-xs leading-normal">
-          Mã, tên và trạng thái của công đoạn
+          Mã, tên, loại và trạng thái của công đoạn
         </DialogDescription>
       </DialogHeader>
 
@@ -93,6 +97,18 @@ export function CreateOperationForm({
               label="Tên công đoạn"
               required
               placeholder="Nhập tên công đoạn, vd. Cắt laser"
+              disabled={isPending}
+            />
+          )}
+        </form.AppField>
+
+        <form.AppField name="type">
+          {(field) => (
+            <field.SelectField
+              label="Loại công đoạn"
+              required
+              placeholder="Chọn loại"
+              options={operationTypeOptions}
               disabled={isPending}
             />
           )}

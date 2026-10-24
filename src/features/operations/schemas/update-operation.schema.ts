@@ -1,13 +1,13 @@
 import { z } from "zod"
 
-import { OperationStatus } from "@/lib/types/operation.type"
+import { OperationStatus, OperationType } from "@/lib/types/operation.type"
 import { emptyToNull } from "@/lib/zod-transforms"
 
 // Wire contract for PATCH /api/operations/:operationId — also the client-side onSubmit validator
 // for UpdateOperationForm. `operationId` lives directly in the form's own state, so mutationFn
-// receives the form value as-is — no manual id merge at the call site. No `type` — Inhouse/Outsource
-// is chosen per BOM attachment, not on the catalog entry. Deliberately shares no field definitions
-// with create-operation.schema.ts: the two flows evolve independently.
+// receives the form value as-is — no manual id merge at the call site. Changing `type` only changes
+// the default for future attachments; existing product steps keep their own type. Deliberately
+// shares no field definitions with create-operation.schema.ts: the two flows evolve independently.
 export const updateOperationSchema = z.object({
   operationId: z.uuid(),
   code: z
@@ -20,6 +20,7 @@ export const updateOperationSchema = z.object({
     .trim()
     .min(1, "Vui lòng nhập tên công đoạn")
     .max(255, "Tên công đoạn tối đa 255 ký tự"),
+  type: z.enum(OperationType),
   note: z
     .string()
     .trim()
@@ -35,6 +36,7 @@ export const updateOperationFormDefaultValues: UpdateOperationSchema = {
   operationId: "",
   code: "",
   name: "",
+  type: OperationType.INHOUSE,
   note: "",
   status: OperationStatus.ACTIVE,
 }

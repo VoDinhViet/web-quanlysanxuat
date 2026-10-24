@@ -52,8 +52,8 @@ type OperationTypeContent = {
 }
 
 // Tint recipe mirrors SuppliersTableColumns' status badges: shadcn Badge
-// (variant="outline") + a bg-<token>/15 text-<token> tint. `type` is chosen per
-// routing step at attach time below, not a master catalog attribute.
+// (variant="outline") + a bg-<token>/15 text-<token> tint. `type` belongs to the
+// routing step: the catalog type only pre-fills it at attach time below.
 const operationTypeStyles: Record<OperationType, string> = {
   [OperationType.INHOUSE]: "bg-primary/15 text-primary",
   [OperationType.OUTSOURCE]:
@@ -113,10 +113,20 @@ export function ProductOperationsPanel({
   )
   const [note, setNote] = useState("")
 
+  // The catalog type is only a pre-fill: the Select next to it still overrides it for this step.
+  function handleSelectOperation(operationId: string | undefined) {
+    setSelectedOperationId(operationId)
+    const catalogType = operationId
+      ? operationPicker.typeByOperationId?.get(operationId)
+      : undefined
+    if (catalogType) setSelectedType(catalogType)
+  }
+
   function handleAdd() {
     if (!selectedOperationId) return
     create(selectedOperationId, selectedType, note.trim() || undefined)
     setSelectedOperationId(undefined)
+    setSelectedType(OperationType.INHOUSE)
     setNote("")
   }
 
@@ -242,7 +252,7 @@ export function ProductOperationsPanel({
               <TableCell>
                 <ComboboxField
                   value={selectedOperationId}
-                  onValueChange={setSelectedOperationId}
+                  onValueChange={handleSelectOperation}
                   options={operationPicker.options}
                   onSearchChange={operationPicker.onSearchChange}
                   isPending={operationPicker.isFetching}
