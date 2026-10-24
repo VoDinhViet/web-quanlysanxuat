@@ -119,6 +119,7 @@ WAITING_QC -> WAITING_DELIVERY -> COMPLETED: BE only (closeJobIfQcCovered, close
 - OUTSOURCE operation rows show "Gửi gia công ngoài" (link to OS-OUT create with `productionJobId`, `operationId`), disabled "Đã gửi đủ định mức" when fully sent.
 - "Lãnh vật tư cho Job" link to `/manage/inventory-requisitions/create`: disabled while PENDING, hidden when `ncrAction === REWORK`.
 - NCR marker: a JOB whose LSX has `ncrAction` shows a red "(sửa chữa)"/"(làm mới)" (`formatNcrJobMarker`, `src/lib/types/ncr.type.ts`) under the PO in the JOB list, the execution list and the JOB detail header, and the list rows get a red left edge (inset shadow on the first cell). The plan PDF prints the same marker.
+- Drawings: the JOB "Thông tin chung" tab section "Bản vẽ / Tài liệu" and the execution screen tab "Bản vẽ / Tài liệu" render `productFiles` with the shared `ProductDocumentList` (images zoom, other files open in a new tab, no upload).
 - Execution screen: "Cập nhật" per part (`production-execution:report`). Report form: "✓ SL đạt" capped at planned minus completed, NG uncapped, note, images (uploaded as `UploadType.PRODUCTION_OPERATION_EVIDENCE`). Invalidates production-execution and production-jobs.
 
 OS-OUT (`OutsourcingOrderStatus`: SENT "Đang gia công", PARTIAL "Về 1 phần", WAITING_QC "Chờ QC", COMPLETED "Hoàn thành", CANCELLED "Đã hủy")

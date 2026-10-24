@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react"
 import { Navigate, useParams, useSearch } from "@tanstack/react-router"
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
-import { History, Layers, Magnifer } from "@solar-icons/react"
+import { DocumentText, History, Layers, Magnifer } from "@solar-icons/react"
 import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ProductDocumentList } from "@/components/shared/composites/ProductDocumentList"
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
@@ -209,6 +210,13 @@ function ProductionExecutionJobContent({
                     {reportsQuery.data?.pagination.totalRecords ?? 0}
                   </Badge>
                 </TabsTrigger>
+                <TabsTrigger value="documents" className={tabTriggerClassName}>
+                  <DocumentText className="size-3.5" />
+                  Bản vẽ / Tài liệu
+                  <Badge variant="secondary" className="h-5 px-1.5 text-xs">
+                    {job.productFiles.length}
+                  </Badge>
+                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -271,6 +279,13 @@ function ProductionExecutionJobContent({
                   setReportPage(1)
                 }}
               />
+            </TabsContent>
+
+            <TabsContent
+              value="documents"
+              className="m-0 p-4 outline-none sm:p-5"
+            >
+              <ProductDocumentList productFiles={job.productFiles} />
             </TabsContent>
           </Tabs>
         </Surface>

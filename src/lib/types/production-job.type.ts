@@ -1,7 +1,7 @@
 import type { FileResource } from "@/lib/types/file.type"
 import type { OperationType } from "@/lib/types/operation.type"
 import type { OrderClientRef, OrderRef } from "@/lib/types/order.type"
-import type { ItemRef } from "@/lib/types/item.type"
+import type { ItemFile, ItemRef } from "@/lib/types/item.type"
 import type { NcrProductionAction } from "@/lib/types/ncr.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -112,6 +112,8 @@ export type ProductionJobDetail = {
   // SL thành phẩm đã hoàn thành ở công đoạn cuối mà chưa xin OQC (OQC theo lô một phần) — bằng 0
   // thì nút "Yêu cầu OQC" ở ProductionJobHeaderActions.tsx khoá lại; BE chặn SL lô vượt số này (E198).
   oqcRequestableQuantity: number
+  // Drawings/documents attached to the product revision this Job builds.
+  productFiles: ItemFile[]
   createdAt: string
   updatedAt: string
 }

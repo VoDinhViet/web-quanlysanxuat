@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
+import { ProductDocumentList } from "@/components/shared/composites/ProductDocumentList"
 import { productionOrderQueryOptions } from "@/features/production-orders/api"
 import { ProductionJobLogSection } from "@/features/production-jobs/components/sections/ProductionJobLogSection"
 import { ProductionJobNotesSection } from "@/features/production-jobs/components/sections/ProductionJobNotesSection"
@@ -91,6 +92,11 @@ export function ProductionJobInfoTab({
             value={order.note || "Chưa có ghi chú"}
           />
         </InfoSection>
+
+        <section className="px-4 py-5 sm:px-5">
+          <SectionTitle>Bản vẽ / Tài liệu</SectionTitle>
+          <ProductDocumentList productFiles={productionJob.productFiles} />
+        </section>
 
         {client && (
           <InfoSection title="Liên hệ khách hàng">
