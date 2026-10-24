@@ -13,4 +13,5 @@ when they disagree, trust the code and fix the codemap.
 Detailed conventions live in `.claude/rules/` and load automatically: `project-structure`,
 `workflow`, `architecture`, `code-style`, `type-safety-and-security`, `design` (UI workflow),
 `forms-and-ui`, `ui-kit`, `data-layer`. UI work also reads `PRODUCT.md` and `DESIGN.md`
-(Impeccable context).
+(Impeccable context). `ecc/` is the unmodified ECC 2.2.3 base (`common`, `typescript`, `react`);
+`project-overrides` lists where this project departs from it and wins on conflict.
