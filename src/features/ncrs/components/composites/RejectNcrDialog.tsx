@@ -53,7 +53,12 @@ function RejectNcrForm({ ncr, onClose }: RejectNcrFormProps) {
       rejectNcrFn({ data: { ncrId: ncr.id, reason } }),
     onSuccess: async () => {
       onClose()
-      await queryClient.invalidateQueries({ queryKey: ["ncrs"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["ncrs"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["reports", "pending-approvals"],
+        }),
+      ])
     },
   })
 

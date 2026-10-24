@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-19 | Files scanned: 54 | Token estimate: ~3300 -->
+<!-- Generated: 2026-10-24 | Files scanned: 54 | Token estimate: ~3380 -->
 
 # Integration, reports & files codemap (web)
 
@@ -46,7 +46,7 @@ Widgets (each does its own `useQuery`, skeleton + error state, none blocks the p
 | Outsourcing due-date table | `get-outsourcing-order-due-date.api.ts` | GET /api/reports/outsourcing-order-due-date | `reports:read` | `getOutsourcingOrderDueDate` (:66) |
 | QC pass-rate chart | `get-qc-pass-rate.api.ts` | GET /api/reports/qc-pass-rate | `reports:read` | `getQcPassRate` (:78) |
 | Production donut | `get-production-progress.api.ts` | GET /api/reports/production-progress | `reports:read` | `getProductionProgress` (:89) |
-| Sidebar badges (red `badgeKey` = awaiting approval, blue `todoBadgeKey` = work to do, e.g. purchase requests: red `purchaseRequests`, blue `purchaseRequestsToSubmit` = my DRAFT/REJECTED) | `get-pending-approvals.api.ts` | GET /api/reports/pending-approvals | JWT only (BE zeroes counts the caller cannot act on) | `getPendingApprovals` (:101) |
+| Sidebar badges (red `badgeKey` = awaiting approval, blue `todoBadgeKey` = work to do, e.g. purchase requests: red `purchaseRequests`, blue `purchaseRequestsToSubmit` = my DRAFT/REJECTED; YCTT: red `paymentRequestsPending`, blue `paymentRequestsToSubmit`; NCR: red `ncrsPending`, blue `ncrsToProcess`). NCR mutations also invalidate `["reports","pending-approvals"]` so the badge moves at once instead of waiting for the 60 s poll | `get-pending-approvals.api.ts` | GET /api/reports/pending-approvals | JWT only (BE zeroes counts the caller cannot act on) | `getPendingApprovals` (:101) |
 
 **files** (`src/lib/`, not a feature)
 | Action | Code | Endpoint | Permission | BE handler (`src/api/files/files.controller.ts`) |

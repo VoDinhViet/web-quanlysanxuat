@@ -65,7 +65,12 @@ export function NcrCreateForm() {
   const { mutate: create, isPending } = useMutation({
     mutationFn: (value: CreateNcrSchema) => createNcrFn({ data: value }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["ncrs"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["ncrs"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["reports", "pending-approvals"],
+        }),
+      ])
       toast.success("Đã tạo NCR")
       await navigate({ to: "/manage/ncrs", search: { page: 1, limit: 10 } })
     },

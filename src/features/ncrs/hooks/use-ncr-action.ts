@@ -23,6 +23,9 @@ export function useNcrAction({
         queryClient.invalidateQueries({ queryKey: ["production-orders"] }),
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
         queryClient.invalidateQueries({ queryKey: ["oqc"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["reports", "pending-approvals"],
+        }),
       ])
       toast.success(successMessage)
     },
