@@ -48,6 +48,9 @@ function useOqcDetailForm(oqc: OqcDetail) {
         queryClient.invalidateQueries({ queryKey: ["production-jobs"] }),
         queryClient.invalidateQueries({ queryKey: ["production-execution"] }),
         queryClient.invalidateQueries({ queryKey: ["ncrs"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["reports", "pending-approvals"],
+        }),
       ])
       toast.success("Đã lưu kết quả QC")
     },
