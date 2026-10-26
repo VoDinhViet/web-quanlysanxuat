@@ -2,11 +2,13 @@ import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
+import { OperationType } from "@/lib/types/operation.type"
 import type { OperationRef } from "@/lib/types/operation.type"
 import { optional } from "@/lib/zod-transforms"
 
 const getOperationOptionsSchema = z.object({
   q: optional(z.string().trim()),
+  type: z.enum(OperationType).optional(),
 })
 
 // `q` drives the backend's search so the combobox can look up operations
@@ -25,6 +27,7 @@ export const getOperationOptions = createServerFn({ method: "GET" })
         {
           params: {
             q: data.q,
+            type: data.type,
             status: "ACTIVE",
           },
         }

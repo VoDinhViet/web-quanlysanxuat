@@ -96,6 +96,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   // detail siblings already require `outsourcing:*`; this closes that gap.
   "/manage/outsourcing-orders": "outsourcing:read",
   "/manage/outsourcing-orders/create": "outsourcing:create",
+  "/manage/outsourcing-orders/create-standalone": "outsourcing:create",
   "/manage/outsourcing-orders/$outsourcingOrderId": "outsourcing:read",
   "/manage/outsourcing-orders/$outsourcingOrderId/update": "outsourcing:update",
 

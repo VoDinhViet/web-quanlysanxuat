@@ -7,8 +7,11 @@ import {
   outsourcingOrderItemsQueryOptions,
   outsourcingOrderQueryOptions,
 } from "@/features/outsourcing-orders/api/options"
+import { StandaloneOutsourcingOrderForm } from "@/features/outsourcing-orders/components/sections/StandaloneOutsourcingOrderForm"
 import { OutsourcingOrderForm } from "@/features/outsourcing-orders/components/sections/OutsourcingOrderForm"
 import type { CreateOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
+import type { StandaloneOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/standalone-outsourcing-order.schema"
+import { OutsourcingOrderOrigin } from "@/lib/types/outsourcing-order.type"
 import type {
   OutsourcingOrderDetail,
   OutsourcingOrderItem,
@@ -71,6 +74,31 @@ function toFormValues(
   }
 }
 
+// Phiếu thủ công: công đoạn là của cả phiếu nên lấy từ dòng đầu, mỗi dòng giữ nguyên mã/tên/SL đã nhập.
+function toStandaloneFormValues(
+  order: OutsourcingOrderDetail,
+  orderItems: OutsourcingOrderItem[]
+): StandaloneOutsourcingOrderSchema {
+  return {
+    supplierId: order.supplier.id,
+    operationId: orderItems.at(0)?.operationId ?? "",
+    sendDate: toDateInputValue(order.sendDate),
+    expectedReturnDate: order.expectedReturnDate
+      ? toDateInputValue(order.expectedReturnDate)
+      : "",
+    note: order.note ?? "",
+    items: orderItems.map((orderItem) => ({
+      itemCode: orderItem.itemCode,
+      itemName: orderItem.itemName,
+      unitId: orderItem.unit?.id ?? "",
+      quantity: orderItem.quantity,
+      weight: orderItem.weight ?? undefined,
+      area: orderItem.area ?? undefined,
+      note: orderItem.note ?? "",
+    })),
+  }
+}
+
 export function UpdateOutsourcingOrderPage() {
   const { outsourcingOrderId } = useParams({
     from: "/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId_/update",
@@ -82,6 +110,17 @@ export function UpdateOutsourcingOrderPage() {
   const { data: orderItems } = useSuspenseQuery(
     outsourcingOrderItemsQueryOptions(outsourcingOrderId)
   )
+
+  const supplierOption = {
+    value: order.supplier.id,
+    label: order.supplier.name,
+  }
+  // Công đoạn chung của phiếu thủ công, lấy từ dòng đầu.
+  const firstOrderItem = orderItems.at(0)
+  const operationOption = {
+    value: firstOrderItem?.operationId ?? "",
+    label: firstOrderItem?.operationName ?? "",
+  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -100,16 +139,24 @@ export function UpdateOutsourcingOrderPage() {
       />
 
       <div className="w-full p-4 sm:p-5 lg:p-6">
-        <OutsourcingOrderForm
-          editing={{
-            outsourcingOrderId,
-            defaultValues: toFormValues(order, orderItems),
-            supplierOption: {
-              value: order.supplier.id,
-              label: order.supplier.name,
-            },
-          }}
-        />
+        {order.origin === OutsourcingOrderOrigin.MANUAL ? (
+          <StandaloneOutsourcingOrderForm
+            editing={{
+              outsourcingOrderId,
+              defaultValues: toStandaloneFormValues(order, orderItems),
+              supplierOption,
+              operationOption,
+            }}
+          />
+        ) : (
+          <OutsourcingOrderForm
+            editing={{
+              outsourcingOrderId,
+              defaultValues: toFormValues(order, orderItems),
+              supplierOption,
+            }}
+          />
+        )}
       </div>
     </main>
   )

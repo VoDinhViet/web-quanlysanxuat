@@ -28,11 +28,11 @@ function toOperationPickerData(
 // (OperationRef) to the {value, label} pairs ComboboxField expects, plus the
 // catalog type of each so a picker can pre-fill it; `onSearchChange` is the
 // debounced setter.
-export function useGetOperationOptions() {
+export function useGetOperationOptions(type?: OperationType) {
   const [q, setQ] = useDebounceValue("", 300)
 
   const { data, isFetching } = useQuery({
-    ...operationOptionsQueryOptions(q),
+    ...operationOptionsQueryOptions(q, type),
     select: toOperationPickerData,
     placeholderData: keepPreviousData,
   })

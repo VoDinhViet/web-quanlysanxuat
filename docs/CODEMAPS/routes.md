@@ -82,6 +82,7 @@ All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`.
 | `/manage/outsourcing-orders` | `outsourcing-orders/index.tsx` | OutsourcingOrdersPage | outsourcing-orders | outsourcingOrders | outsourcing:read |
 | `/manage/outsourcing-orders/$outsourcingOrderId` | `outsourcing-orders_/$outsourcingOrderId.tsx` | OutsourcingOrderDetailPage | outsourcing-orders | outsourcingOrderItems, outsourcingOrder | outsourcing:read |
 | `/manage/outsourcing-orders/create` | `outsourcing-orders_/create.tsx` | CreateOutsourcingOrderPage | outsourcing-orders | - | outsourcing:create |
+| `/manage/outsourcing-orders/create-standalone` | `outsourcing-orders_/create-standalone.tsx` | CreateStandaloneOutsourcingOrderPage | outsourcing-orders | - | outsourcing:create |
 | `/manage/outsourcing-orders/$outsourcingOrderId/update` | `outsourcing-orders_/$outsourcingOrderId_.update.tsx` | UpdateOutsourcingOrderPage | outsourcing-orders | outsourcingOrderItems, outsourcingOrder | outsourcing:update (redirects unless DRAFT/REJECTED) |
 | `/manage/outsourcing-receipts` | `outsourcing-receipts/index.tsx` | OutsourcingReceiptsPage | outsourcing-receipts | outsourcingReceipts, supplierOptions | outsourcing:read |
 | `/manage/outsourcing-receipts/$outsourcingReceiptId` | `outsourcing-receipts_/$outsourcingReceiptId.tsx` | OutsourcingReceiptDetailPage | outsourcing-receipts | outsourcingReceiptItems, outsourcingReceipt | outsourcing:read |

@@ -71,6 +71,16 @@ export function OutsourcingOrdersTableFilter() {
           Tạo phiếu gia công ngoài (OS-OUT)
         </LinkButton>
       </RoutePermissionGate>
+      <RoutePermissionGate route="/manage/outsourcing-orders/create-standalone">
+        <LinkButton
+          to="/manage/outsourcing-orders/create-standalone"
+          variant="outline"
+          className="gap-1.5"
+        >
+          <Plus className="size-4" />
+          Tạo thủ công
+        </LinkButton>
+      </RoutePermissionGate>
 
       <div className="w-72 space-y-1.5">
         <Label

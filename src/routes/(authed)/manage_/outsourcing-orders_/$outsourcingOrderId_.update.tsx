@@ -5,6 +5,7 @@ import {
   outsourcingOrderItemsQueryOptions,
   outsourcingOrderQueryOptions,
 } from "@/features/outsourcing-orders/api/options"
+import { unitOptionsQueryOptions } from "@/features/units/api"
 import { UpdateOutsourcingOrderPage } from "@/features/outsourcing-orders/pages/UpdateOutsourcingOrderPage"
 import { canUpdateOutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
@@ -24,6 +25,8 @@ export const Route = createFileRoute(
         ...outsourcingOrderItemsQueryOptions(params.outsourcingOrderId),
         staleTime: "static",
       }),
+      // Form phiếu thủ công cần tên đơn vị ngay khi mở, tránh hiện UUID trong lúc chờ tải.
+      context.queryClient.query(unitOptionsQueryOptions()),
     ])
 
     // Backend chỉ nhận PATCH khi phiếu còn DRAFT/REJECTED — quay về trang chi tiết thay vì hiện

@@ -82,6 +82,7 @@ import { Route as authedManageOutboundOrdersCreateRouteImport } from './routes/(
 import { Route as authedManageOutsourcingOrdersIndexRouteImport } from './routes/(authed)/manage_/outsourcing-orders/index'
 import { Route as authedManageOutsourcingOrdersOutsourcingOrderIdRouteImport } from './routes/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId'
 import { Route as authedManageOutsourcingOrdersCreateRouteImport } from './routes/(authed)/manage_/outsourcing-orders_/create'
+import { Route as authedManageOutsourcingOrdersCreateStandaloneRouteImport } from './routes/(authed)/manage_/outsourcing-orders_/create-standalone'
 import { Route as authedManageOutsourcingReceiptsIndexRouteImport } from './routes/(authed)/manage_/outsourcing-receipts/index'
 import { Route as authedManageOutsourcingReceiptsOutsourcingReceiptIdRouteImport } from './routes/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId'
 import { Route as authedManageOutsourcingReceiptsCreateRouteImport } from './routes/(authed)/manage_/outsourcing-receipts_/create'
@@ -550,6 +551,12 @@ const authedManageOutsourcingOrdersCreateRoute =
     path: '/manage/outsourcing-orders/create',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageOutsourcingOrdersCreateStandaloneRoute =
+  authedManageOutsourcingOrdersCreateStandaloneRouteImport.update({
+    id: '/manage_/outsourcing-orders_/create-standalone',
+    path: '/manage/outsourcing-orders/create-standalone',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageOutsourcingReceiptsIndexRoute =
   authedManageOutsourcingReceiptsIndexRouteImport.update({
     id: '/',
@@ -919,6 +926,7 @@ export interface FileRoutesByFullPath {
   '/manage/outbound-orders/create': typeof authedManageOutboundOrdersCreateRoute
   '/manage/outsourcing-orders/$outsourcingOrderId': typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
   '/manage/outsourcing-orders/create': typeof authedManageOutsourcingOrdersCreateRoute
+  '/manage/outsourcing-orders/create-standalone': typeof authedManageOutsourcingOrdersCreateStandaloneRoute
   '/manage/outsourcing-receipts/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   '/manage/outsourcing-receipts/create': typeof authedManageOutsourcingReceiptsCreateRoute
   '/manage/payment-requests/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
@@ -1007,6 +1015,7 @@ export interface FileRoutesByTo {
   '/manage/outbound-orders/create': typeof authedManageOutboundOrdersCreateRoute
   '/manage/outsourcing-orders/$outsourcingOrderId': typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
   '/manage/outsourcing-orders/create': typeof authedManageOutsourcingOrdersCreateRoute
+  '/manage/outsourcing-orders/create-standalone': typeof authedManageOutsourcingOrdersCreateStandaloneRoute
   '/manage/outsourcing-receipts/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   '/manage/outsourcing-receipts/create': typeof authedManageOutsourcingReceiptsCreateRoute
   '/manage/payment-requests/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
@@ -1135,6 +1144,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/outbound-orders_/create': typeof authedManageOutboundOrdersCreateRoute
   '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId': typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
   '/(authed)/manage_/outsourcing-orders_/create': typeof authedManageOutsourcingOrdersCreateRoute
+  '/(authed)/manage_/outsourcing-orders_/create-standalone': typeof authedManageOutsourcingOrdersCreateStandaloneRoute
   '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId': typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   '/(authed)/manage_/outsourcing-receipts_/create': typeof authedManageOutsourcingReceiptsCreateRoute
   '/(authed)/manage_/payment-requests_/$paymentRequestId': typeof authedManagePaymentRequestsPaymentRequestIdRoute
@@ -1262,6 +1272,7 @@ export interface FileRouteTypes {
     | '/manage/outbound-orders/create'
     | '/manage/outsourcing-orders/$outsourcingOrderId'
     | '/manage/outsourcing-orders/create'
+    | '/manage/outsourcing-orders/create-standalone'
     | '/manage/outsourcing-receipts/$outsourcingReceiptId'
     | '/manage/outsourcing-receipts/create'
     | '/manage/payment-requests/$paymentRequestId'
@@ -1350,6 +1361,7 @@ export interface FileRouteTypes {
     | '/manage/outbound-orders/create'
     | '/manage/outsourcing-orders/$outsourcingOrderId'
     | '/manage/outsourcing-orders/create'
+    | '/manage/outsourcing-orders/create-standalone'
     | '/manage/outsourcing-receipts/$outsourcingReceiptId'
     | '/manage/outsourcing-receipts/create'
     | '/manage/payment-requests/$paymentRequestId'
@@ -1477,6 +1489,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/outbound-orders_/create'
     | '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId'
     | '/(authed)/manage_/outsourcing-orders_/create'
+    | '/(authed)/manage_/outsourcing-orders_/create-standalone'
     | '/(authed)/manage_/outsourcing-receipts_/$outsourcingReceiptId'
     | '/(authed)/manage_/outsourcing-receipts_/create'
     | '/(authed)/manage_/payment-requests_/$paymentRequestId'
@@ -2060,6 +2073,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/outsourcing-orders/create'
       fullPath: '/manage/outsourcing-orders/create'
       preLoaderRoute: typeof authedManageOutsourcingOrdersCreateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/outsourcing-orders_/create-standalone': {
+      id: '/(authed)/manage_/outsourcing-orders_/create-standalone'
+      path: '/manage/outsourcing-orders/create-standalone'
+      fullPath: '/manage/outsourcing-orders/create-standalone'
+      preLoaderRoute: typeof authedManageOutsourcingOrdersCreateStandaloneRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/outsourcing-receipts/': {
@@ -3043,6 +3063,7 @@ interface authedRouteRouteChildren {
   authedManageOutboundOrdersCreateRoute: typeof authedManageOutboundOrdersCreateRoute
   authedManageOutsourcingOrdersOutsourcingOrderIdRoute: typeof authedManageOutsourcingOrdersOutsourcingOrderIdRoute
   authedManageOutsourcingOrdersCreateRoute: typeof authedManageOutsourcingOrdersCreateRoute
+  authedManageOutsourcingOrdersCreateStandaloneRoute: typeof authedManageOutsourcingOrdersCreateStandaloneRoute
   authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute: typeof authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute
   authedManageOutsourcingReceiptsCreateRoute: typeof authedManageOutsourcingReceiptsCreateRoute
   authedManagePaymentRequestsPaymentRequestIdRoute: typeof authedManagePaymentRequestsPaymentRequestIdRoute
@@ -3163,6 +3184,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
     authedManageOutsourcingOrdersOutsourcingOrderIdRoute,
   authedManageOutsourcingOrdersCreateRoute:
     authedManageOutsourcingOrdersCreateRoute,
+  authedManageOutsourcingOrdersCreateStandaloneRoute:
+    authedManageOutsourcingOrdersCreateStandaloneRoute,
   authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute:
     authedManageOutsourcingReceiptsOutsourcingReceiptIdRoute,
   authedManageOutsourcingReceiptsCreateRoute:

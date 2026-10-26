@@ -40,6 +40,15 @@ export const outsourcingOrderStatusLabels: Record<
   [OutsourcingOrderStatus.CANCELLED]: "Đã hủy",
 }
 
+// Khớp `OutsourcingOrderOrigin` bên BE: phiếu lập từ công đoạn của Job hay lập thủ công.
+export const OutsourcingOrderOrigin = {
+  FROM_JOB: "FROM_JOB",
+  MANUAL: "MANUAL",
+} as const
+
+export type OutsourcingOrderOrigin =
+  (typeof OutsourcingOrderOrigin)[keyof typeof OutsourcingOrderOrigin]
+
 // Chỉ phiếu nháp hoặc bị từ chối mới sửa và gửi duyệt được (khớp `EDITABLE_STATUSES` bên BE).
 export function canUpdateOutsourcingOrder(
   status: OutsourcingOrderStatus
@@ -79,6 +88,7 @@ export type OutsourcingOrder = {
   supplier: SupplierRef
   sendDate: string
   expectedReturnDate: string | null // có thể chưa đặt
+  origin: OutsourcingOrderOrigin
   status: OutsourcingOrderStatus
   note: string | null
   creatorBy: UserRef | null
@@ -126,6 +136,7 @@ export type OutsourcingOrderDetail = {
   supplier: SupplierRef
   sendDate: string
   expectedReturnDate: string | null
+  origin: OutsourcingOrderOrigin
   status: OutsourcingOrderStatus
   totalQuantity: number
   receivedQuantity: number
