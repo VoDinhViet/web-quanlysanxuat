@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { PurchaseOrderCancelDialog } from "@/features/purchase-orders/components/composites/PurchaseOrderCancelDialog"
 import { PurchaseOrderCloseDialog } from "@/features/purchase-orders/components/composites/PurchaseOrderCloseDialog"
 import { PurchaseOrderConfirmDialog } from "@/features/purchase-orders/components/composites/PurchaseOrderConfirmDialog"
+import { PurchaseOrderExportActions } from "@/features/purchase-orders/components/layouts/PurchaseOrderExportActions"
 import {
   PurchaseOrderProgress,
   PurchaseOrderStatus,
@@ -29,6 +30,8 @@ export function PurchaseOrderDetailActions({
   return (
     <div className="flex shrink-0 flex-col items-end gap-1.5">
       <div className="flex items-center gap-2">
+        <PurchaseOrderExportActions purchaseOrderId={purchaseOrder.id} />
+
         {purchaseOrder.status === PurchaseOrderStatus.PENDING_CONFIRMATION && (
           <PermissionGate permission="purchasing:update">
             <PurchaseOrderConfirmDialog

@@ -86,7 +86,8 @@ Server fn: `src/features/<feature>/api/server-functions/<name>.api.ts`. BE: `src
 | "Huỷ PO" | cancel-purchase-order | POST /purchase-orders/:id/cancel | approve | cancelPurchaseOrder :141 |
 | "Đóng sớm PO" | close-purchase-order | POST /:id/close | approve | closePurchaseOrder :160 |
 | "Xác nhận đặt hàng" | confirm-purchase-order | POST /:id/confirm | update | confirmPurchaseOrder :124 |
-| Related notes card | get-purchase-order-related-notes | GET /:id/related-notes | read | getRelatedNotes :179 |
+| Detail "In" / "Xuất" > PDF (`PurchaseOrderExportActions`) | export-purchase-order-pdf | GET /:id/export-pdf | read | exportPurchaseOrderPdf :181 |
+| Related notes card | get-purchase-order-related-notes | GET /:id/related-notes | read | getRelatedNotes :194 |
 | Detail loader | get-purchase-order | GET /:id | read | getPurchaseOrder :57 |
 | Quotation "generated orders" card | get-purchase-orders-by-quotation | GET /purchase-orders (quotationId filter) | read | getPurchaseOrders :45 |
 | List, receipts wizard picker | get-purchase-orders | GET /purchase-orders | read | getPurchaseOrders :45 |
