@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: 307 | Token estimate: ~4800 -->
+<!-- Generated: 2026-10-26 | Files scanned: 307 | Token estimate: ~4800 -->
 # Purchasing codemap (web)
 
 Scope: FE features `purchase-requests` (PR), `purchase-quotations` (RFQ), `purchase-orders` (PO/DMH), `purchase-ledger`, `payment-requests` (YCTT), `suppliers` (+ supplier-groups call). BE twin: `be-quanlysanxuat/docs/CODEMAPS/purchasing.md` (state flow sections "RFQ -> DMH" and "Payment request"); screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts` (enforced once in `src/routes/(authed)/route.tsx`); `PermissionGate` only hides buttons, BE is the real check.
@@ -53,7 +53,8 @@ Server fn: `src/features/<feature>/api/server-functions/<name>.api.ts`. BE: `src
 | Create form | create-purchase-request | POST /purchase-requests | create | createPurchaseRequest :73 |
 | Line "Xóa" | delete-purchase-request-item | DELETE /:id/items/:itemId | update | deletePurchaseRequestItem :193 |
 | "Xóa đề xuất" | delete-purchase-request | DELETE /:id | delete | deletePurchaseRequest :90 |
-| Related notes card | get-purchase-request-related-notes | GET /:id/related-notes | read | getRelatedNotes :264 |
+| Detail "In" / "Xuất" > PDF (`PurchaseRequestExportActions`) | export-purchase-request-pdf | GET /:id/export-pdf | read | exportPurchaseRequestPdf :264 |
+| Related notes card | get-purchase-request-related-notes | GET /:id/related-notes | read | getRelatedNotes :279 |
 | Detail loader | get-purchase-request | GET /:id | read | getPurchaseRequest :60 |
 | List | get-purchase-requests | GET /purchase-requests | read | getPurchaseRequests :48 |
 | "Từ chối" (reason) | reject-purchase-request | POST /:id/reject | approve | rejectPurchaseRequest :138 |
