@@ -11,7 +11,6 @@ import { Button, LinkButton } from "@/components/ui/button"
 import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/composites/OutboundOrderApproveDialog"
 import { OutboundOrderCancelDialog } from "@/features/outbound-orders/components/composites/OutboundOrderCancelDialog"
-import { OutboundOrderDeliverDialog } from "@/features/outbound-orders/components/composites/OutboundOrderDeliverDialog"
 import { OutboundOrderRejectDialog } from "@/features/outbound-orders/components/composites/OutboundOrderRejectDialog"
 import { OutboundOrderSendDialog } from "@/features/outbound-orders/components/composites/OutboundOrderSendDialog"
 import {
@@ -24,14 +23,14 @@ type OutboundOrderDetailActionsProps = {
   order: OutboundOrderDetail
 }
 
-// BE outbound-orders có 4 route chuyển trạng thái: POST :id/send (DRAFT/REJECTED →
+// BE outbound-orders có 3 route chuyển trạng thái: POST :id/send (DRAFT/REJECTED →
 // PENDING_APPROVAL, gate OQC E205), POST :id/approve (PENDING_APPROVAL → PENDING_DELIVERY, cũng
-// gate E205), POST :id/reject (PENDING_APPROVAL → REJECTED, lý do bắt buộc) và POST :id/deliver
-// (PENDING_DELIVERY → DELIVERED, tự trừ tồn + đóng đơn) — xem docs/domains/inventory.md mục "Giao
-// hàng". send/deliver gated bằng outbound:update (người lập/kho), approve/reject bằng
-// outbound:approve (Giám đốc). "Sửa"/"Hủy đơn DO" (BUG-090) cũng gated outbound:update — chỉ
-// render khi component này render (xem OutboundOrderDetailHeader.tsx, ẩn hẳn khi đang Sửa). "In
-// phiếu DO" vẫn PendingAction — BE chưa có tính năng in phiếu, không liên quan BUG-090.
+// gate E205, sinh phiếu xuất kho SALES nháp) và POST :id/reject (PENDING_APPROVAL → REJECTED, lý
+// do bắt buộc). Giao xong DO do thủ kho ghi sổ phiếu xuất kho, không còn nút ở đây. send gated
+// bằng outbound:update (người lập), approve/reject bằng outbound:approve (Giám đốc).
+// "Sửa"/"Hủy đơn DO" (BUG-090) cũng gated outbound:update — chỉ render khi component này render
+// (xem OutboundOrderDetailHeader.tsx, ẩn hẳn khi đang Sửa). "In phiếu DO" vẫn PendingAction — BE
+// chưa có tính năng in phiếu, không liên quan BUG-090.
 export function OutboundOrderDetailActions({
   order,
 }: OutboundOrderDetailActionsProps) {
@@ -106,20 +105,6 @@ export function OutboundOrderDetailActions({
               <Button type="button">
                 <CheckCircle className="size-4" />
                 Duyệt
-              </Button>
-            }
-          />
-        </PermissionGate>
-      )}
-
-      {status === OutboundOrderStatus.PENDING_DELIVERY && (
-        <PermissionGate permission="outbound:update">
-          <OutboundOrderDeliverDialog
-            order={order}
-            trigger={
-              <Button type="button">
-                <CheckCircle className="size-4" />
-                Xác nhận đã giao
               </Button>
             }
           />

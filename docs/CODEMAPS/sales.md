@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: 205 | Token estimate: ~3600 -->
+<!-- Generated: 2026-10-26 | Files scanned: 205 | Token estimate: ~3600 -->
 # Sales codemap (web)
 
 Scope: FE features `orders`, `outbound-orders`, `clients` (+ client-groups call), `countries`. BE twin: `be-quanlysanxuat/docs/CODEMAPS/sales.md`; screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts`, enforced once in `src/routes/(authed)/route.tsx` (redirect to `/manage`); in-page `PermissionGate` / `RoutePermissionGate` only hide buttons, BE is the real check.
@@ -8,7 +8,7 @@ Scope: FE features `orders`, `outbound-orders`, `clients` (+ client-groups call)
 | Feature folder | Role | Screens (pages/) | Types & status labels | Schemas |
 |---|---|---|---|---|
 | `src/features/orders` | Sales order (SO) CRUD, approval, exports | OrdersPage, CreateOrderPage, OrderDetailPage, UpdateOrderPage | `src/lib/types/order.type.ts`: `OrderStatus` DRAFT "Nháp", PENDING_CONFIRMATION "Chờ xác nhận", REJECTED "Từ chối", AWAITING_PRODUCTION "Chờ sản xuất", IN_PROGRESS "Đang thực hiện", COMPLETED "Hoàn thành", CANCELLED "Đã hủy"; derived "Trễ hạn"; item NORMAL/CANCELLED | create-order, order-item-form, orders-search, reject-order, update-order |
-| `src/features/outbound-orders` | Delivery order (DO) lifecycle | OutboundOrdersPage, CreateOutboundOrderPage, OutboundOrderDetailPage | `outbound-order.type.ts`: DRAFT "Nháp", PENDING_APPROVAL "Chờ duyệt", PENDING_DELIVERY "Chờ xác nhận giao", DELIVERED "Đã giao", CANCELLED "Đã hủy", REJECTED "Bị từ chối" | create-outbound-order, outbound-order-detail-search, outbound-orders-search, reject-outbound-order, update-outbound-order |
+| `src/features/outbound-orders` | Delivery order (DO) lifecycle | OutboundOrdersPage, CreateOutboundOrderPage, OutboundOrderDetailPage | `outbound-order.type.ts`: DRAFT "Nháp", PENDING_APPROVAL "Chờ duyệt", PENDING_DELIVERY "Chờ xuất kho", DELIVERED "Đã giao", CANCELLED "Đã hủy", REJECTED "Bị từ chối" | create-outbound-order, outbound-order-detail-search, outbound-orders-search, reject-outbound-order, update-outbound-order |
 | `src/features/clients` | Customer master data | ClientsPage, CreateClientPage, UpdateClientPage | `client.type.ts`: ACTIVE "Hoạt động", PAUSED "Tạm ngưng"; `ClientGroupRef`, `ClientRef` | client-contact, clients-search, create-client, update-client |
 | `src/features/countries` | api-only (country options, key `["countries","options"]`, staleTime 5 min) | none | `CountryRef` lives in `supplier.type.ts` | none |
 
@@ -67,11 +67,10 @@ Server fn files are `src/features/<feature>/api/server-functions/<name>.api.ts`.
 ### outbound-orders
 | Action / trigger | Server fn | Endpoint | Permission | BE handler |
 |---|---|---|---|---|
-| "Duyệt" | approve-outbound-order | POST /outbound-orders/:outboundOrderId/approve | outbound:approve | approveOutboundOrder (outbound-orders:162) |
-| "Hủy đơn DO" (CancelDialog) | cancel-outbound-order | POST .../:outboundOrderId/cancel | outbound:update | cancelOutboundOrder (:214) |
+| "Duyệt" | approve-outbound-order | POST /outbound-orders/:outboundOrderId/approve | outbound:approve | approveOutboundOrder (outbound-orders:155) |
+| "Hủy đơn DO" (CancelDialog) | cancel-outbound-order | POST .../:outboundOrderId/cancel | outbound:update | cancelOutboundOrder (:190) |
 | Create wizard confirm | create-outbound-order | POST /outbound-orders | outbound:create | createOutboundOrder (:112) |
-| "Xóa DO" (DeleteOutboundOrderDialog) | delete-outbound-order | DELETE .../:outboundOrderId | outbound:delete | deleteOutboundOrder (:226) |
-| "Xác nhận đã giao" (DeliverDialog) | deliver-outbound-order | POST .../:outboundOrderId/deliver | outbound:update | postOutboundOrder (:197) |
+| "Xóa DO" (DeleteOutboundOrderDialog) | delete-outbound-order | DELETE .../:outboundOrderId | outbound:delete | deleteOutboundOrder (:203) |
 | "Xuất Excel" | export-outbound-orders | GET /outbound-orders/export | outbound:read | exportOutboundOrders (:74) |
 | Detail lines | get-outbound-order-items | GET .../:outboundOrderId/items | outbound:read | getOutboundOrderItems (:99) |
 | Detail / edit loader | get-outbound-order | GET .../:outboundOrderId | outbound:read | getOutboundOrder (:86) |
@@ -97,12 +96,12 @@ any editable --status select in update form (update-order)--> CANCELLED
 
 Outbound order:
 ```
-DRAFT --"Gửi duyệt DO" send--> PENDING_APPROVAL --"Duyệt" approve--> PENDING_DELIVERY --"Xác nhận đã giao" deliver--> DELIVERED
+DRAFT --"Gửi duyệt DO" send--> PENDING_APPROVAL --"Duyệt" approve (BE creates a DRAFT SALES issue)--> PENDING_DELIVERY "Chờ xuất kho" --warehouse "Xuất kho" on that issue (inventory-issues)--> DELIVERED
 DRAFT|REJECTED --send--> PENDING_APPROVAL ; PENDING_APPROVAL --"Từ chối" reject--> REJECTED
 DRAFT|PENDING_APPROVAL|PENDING_DELIVERY --"Hủy đơn DO" cancel--> CANCELLED ; DRAFT --"Xóa DO"--> deleted
 ```
 - "Sửa" (`?mode=edit`) and row "Chỉnh sửa DO": DRAFT only, `outbound:update`. "Xóa DO": DRAFT, `outbound:delete`. "Gửi duyệt DO": DRAFT or REJECTED.
-- Deliver invalidates outbound-orders, orders, inventory-products, inventory-issues. Create navigates to the DO list, not detail.
+- No deliver button any more: the DO detail card links to its issue (`order.inventoryIssue`). Approve and cancel invalidate outbound-orders, inventory-issues, reports; posting the issue (`PostInventoryIssueDialog`) invalidates outbound-orders, orders, inventory-products. Create navigates to the DO list, not detail.
 - BE codes surfaced: not_deliverable E237, not_sendable E239, invalid_approval_state E240, not_cancellable E257, not_deletable E258, not_editable E259, quantity_exceeds_deliverable E194.
 
 ## 5. Gaps and quirks

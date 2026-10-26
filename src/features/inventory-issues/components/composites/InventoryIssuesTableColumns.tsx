@@ -59,6 +59,33 @@ export const inventoryIssuesColumns = col.columns([
     },
   }),
 
+  col.display({
+    id: "outboundOrder",
+    header: "DO / Khách hàng",
+    meta: { headerClassName: "min-w-44" },
+    cell: ({ row }) => {
+      const outboundOrder = row.original.outboundOrder
+      if (!outboundOrder) {
+        return <span className="text-muted-foreground">—</span>
+      }
+      return (
+        <div className="flex flex-col gap-0.5">
+          <Link
+            to="/manage/outbound-orders/$outboundOrderId"
+            params={{ outboundOrderId: outboundOrder.id }}
+            search={{ mode: "view" }}
+            className="font-mono text-xs font-medium text-primary hover:underline"
+          >
+            {outboundOrder.code}
+          </Link>
+          <span className="text-xs text-muted-foreground">
+            {outboundOrder.client.name}
+          </span>
+        </div>
+      )
+    },
+  }),
+
   col.accessor("issueDate", {
     header: "Thời gian xuất",
     meta: {

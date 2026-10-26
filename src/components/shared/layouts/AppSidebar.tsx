@@ -11,6 +11,7 @@ import {
   ClipboardList,
   ClipboardMinus,
   Cog,
+  Container,
   CreditCard,
   Factory,
   FileText,
@@ -189,6 +190,13 @@ const menuGroups: MenuGroup[] = [
         href: "/manage/inventory-issues",
         todoBadgeKey: "inventoryIssuesToPost",
         todoBadgeLabel: "phiếu chờ xuất kho",
+      },
+      {
+        label: "Xuất kho thành phẩm",
+        icon: Container,
+        href: "/manage/finished-goods-issues",
+        todoBadgeKey: "salesIssuesToPost",
+        todoBadgeLabel: "phiếu giao hàng chờ xuất kho",
       },
       {
         label: "Tồn kho vật tư",

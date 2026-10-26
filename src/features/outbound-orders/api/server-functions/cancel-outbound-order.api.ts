@@ -25,7 +25,7 @@ function resolveCancelOutboundOrderErrorMessage(error: unknown): string {
 }
 
 // DRAFT/PENDING_APPROVAL/PENDING_DELIVERY → CANCELLED — giải phóng giữ chỗ thành phẩm (BUG-090),
-// không đụng tồn kho thật (ba trạng thái này chưa deliver). Không có body, không idempotent.
+// không đụng tồn kho thật (ba trạng thái này chưa xuất kho). Không có body, không idempotent.
 export const cancelOutboundOrder = createServerFn({ method: "POST" })
   .validator(z.object({ outboundOrderId: z.uuid() }))
   .handler(async ({ data }): Promise<void> => {

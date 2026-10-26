@@ -101,6 +101,14 @@ export type InventoryIssueRequisitionRef = {
   code: string
 }
 
+/** Mirrors the backend's `OutboundOrderClientRefResDto` — DO sinh ra phiếu xuất SALES này, kèm
+ *  khách hàng để cột "DO / Khách hàng" hiển thị không phải gọi thêm. */
+export type InventoryIssueOutboundOrderRef = {
+  id: string
+  code: string
+  client: { id: string; code: string; name: string }
+}
+
 export type InventoryIssue = {
   id: string
   code: string
@@ -108,6 +116,7 @@ export type InventoryIssue = {
   status: InventoryIssueStatus
   issueDate: string
   requisition: InventoryIssueRequisitionRef | null
+  outboundOrder: InventoryIssueOutboundOrderRef | null
   productionOrder: InventoryIssueProductionOrderRef | null
   productionJob: InventoryIssueProductionJobRef | null
   department: InventoryIssueDepartmentRef | null

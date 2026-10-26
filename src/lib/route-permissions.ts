@@ -42,6 +42,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/departments": "departments:read",
   "/manage/departments/$departmentId": "departments:read",
 
+  "/manage/finished-goods-issues": "inventory:read",
   "/manage/inventory-issues": "inventory:read",
   "/manage/inventory-issues/$issueId": "inventory:read",
 

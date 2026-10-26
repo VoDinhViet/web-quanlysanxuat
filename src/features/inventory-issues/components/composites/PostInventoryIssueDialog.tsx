@@ -25,6 +25,7 @@ import type { InventoryIssueDetail } from "@/lib/types/inventory-issue.type"
 type PostInventoryIssueDialogProps = {
   inventoryIssue: InventoryIssueDetail
   isFromRequisition: boolean
+  isFromOutboundOrder: boolean
 }
 
 // "Xuất kho" with optional proof the receiver got the goods: a note plus photos (camera on a phone)
@@ -32,6 +33,7 @@ type PostInventoryIssueDialogProps = {
 export function PostInventoryIssueDialog({
   inventoryIssue,
   isFromRequisition,
+  isFromOutboundOrder,
 }: PostInventoryIssueDialogProps) {
   const [open, setOpen] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -46,10 +48,13 @@ export function PostInventoryIssueDialog({
     onSuccess: async () => {
       setOpen(false)
       toast.success("Đã xuất kho")
-      // Posting moves stock and closes the requisition the issue was raised from.
+      // Posting moves stock, closes the requisition the issue was raised from and delivers the
+      // delivery order (and its sales order once fully delivered).
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
         queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
+        queryClient.invalidateQueries({ queryKey: ["outbound-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["orders"] }),
         queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
         queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
@@ -96,6 +101,8 @@ export function PostInventoryIssueDialog({
               đó.
               {isFromRequisition &&
                 " Phiếu lãnh vật tư liên quan sẽ chuyển sang Đã xuất."}
+              {isFromOutboundOrder &&
+                " Phiếu giao hàng (DO) liên quan sẽ chuyển sang Đã giao, đơn hàng hoàn thành nếu đã giao đủ."}
             </DialogDescription>
           </DialogHeader>
 

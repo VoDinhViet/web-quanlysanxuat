@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import { FileText, History } from "lucide-react"
 import { DateTime } from "luxon"
 
@@ -27,6 +28,25 @@ export function InventoryIssueDetailInfoCard({
       </div>
 
       <div className="flex flex-col gap-3 px-4 py-3.5 sm:px-5">
+        {inventoryIssue.outboundOrder && (
+          <div className="space-y-1">
+            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              Phiếu giao hàng (DO)
+            </p>
+            <Link
+              to="/manage/outbound-orders/$outboundOrderId"
+              params={{ outboundOrderId: inventoryIssue.outboundOrder.id }}
+              search={{ mode: "view" }}
+              className="font-mono text-sm font-medium text-primary hover:underline"
+            >
+              {inventoryIssue.outboundOrder.code}
+            </Link>
+            <p className="text-xs text-muted-foreground">
+              {inventoryIssue.outboundOrder.client.name}
+            </p>
+          </div>
+        )}
+
         <InfoRow
           label="Tạo lúc"
           value={`${DateTime.fromISO(inventoryIssue.createdAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryIssue.creatorBy ? ` · ${inventoryIssue.creatorBy.fullName}` : ""}`}

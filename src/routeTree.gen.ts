@@ -18,6 +18,7 @@ import { Route as authedUiGalleryRouteImport } from './routes/(authed)/ui-galler
 import { Route as authedManageClientsRouteRouteImport } from './routes/(authed)/manage_/clients/route'
 import { Route as authedManageDepartmentsRouteRouteImport } from './routes/(authed)/manage_/departments/route'
 import { Route as authedManageDirectsRouteRouteImport } from './routes/(authed)/manage_/directs/route'
+import { Route as authedManageFinishedGoodsIssuesRouteRouteImport } from './routes/(authed)/manage_/finished-goods-issues/route'
 import { Route as authedManageInventoryDirectsRouteRouteImport } from './routes/(authed)/manage_/inventory-directs/route'
 import { Route as authedManageInventoryIssuesRouteRouteImport } from './routes/(authed)/manage_/inventory-issues/route'
 import { Route as authedManageInventoryProductsRouteRouteImport } from './routes/(authed)/manage_/inventory-products/route'
@@ -53,6 +54,7 @@ import { Route as authedManageDepartmentsDepartmentIdRouteImport } from './route
 import { Route as authedManageDirectsIndexRouteImport } from './routes/(authed)/manage_/directs/index'
 import { Route as authedManageDirectsCreateRouteRouteImport } from './routes/(authed)/manage_/directs_/create/route'
 import { Route as authedManageDirectsImportRouteRouteImport } from './routes/(authed)/manage_/directs_/import/route'
+import { Route as authedManageFinishedGoodsIssuesIndexRouteImport } from './routes/(authed)/manage_/finished-goods-issues/index'
 import { Route as authedManageInventoryDirectsIndexRouteImport } from './routes/(authed)/manage_/inventory-directs/index'
 import { Route as authedManageInventoryIssuesIndexRouteImport } from './routes/(authed)/manage_/inventory-issues/index'
 import { Route as authedManageInventoryIssuesIssueIdRouteImport } from './routes/(authed)/manage_/inventory-issues_/$issueId'
@@ -180,6 +182,12 @@ const authedManageDirectsRouteRoute =
   authedManageDirectsRouteRouteImport.update({
     id: '/manage_/directs',
     path: '/manage/directs',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageFinishedGoodsIssuesRouteRoute =
+  authedManageFinishedGoodsIssuesRouteRouteImport.update({
+    id: '/manage_/finished-goods-issues',
+    path: '/manage/finished-goods-issues',
     getParentRoute: () => authedRouteRoute,
   } as any)
 const authedManageInventoryDirectsRouteRoute =
@@ -384,6 +392,12 @@ const authedManageDirectsImportRouteRoute =
     id: '/manage_/directs_/import',
     path: '/manage/directs/import',
     getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedManageFinishedGoodsIssuesIndexRoute =
+  authedManageFinishedGoodsIssuesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authedManageFinishedGoodsIssuesRouteRoute,
   } as any)
 const authedManageInventoryDirectsIndexRoute =
   authedManageInventoryDirectsIndexRouteImport.update({
@@ -874,6 +888,7 @@ export interface FileRoutesByFullPath {
   '/manage/clients': typeof authedManageClientsRouteRouteWithChildren
   '/manage/departments': typeof authedManageDepartmentsRouteRouteWithChildren
   '/manage/directs': typeof authedManageDirectsRouteRouteWithChildren
+  '/manage/finished-goods-issues': typeof authedManageFinishedGoodsIssuesRouteRouteWithChildren
   '/manage/inventory-directs': typeof authedManageInventoryDirectsRouteRouteWithChildren
   '/manage/inventory-issues': typeof authedManageInventoryIssuesRouteRouteWithChildren
   '/manage/inventory-products': typeof authedManageInventoryProductsRouteRouteWithChildren
@@ -947,6 +962,7 @@ export interface FileRoutesByFullPath {
   '/manage/clients/': typeof authedManageClientsIndexRoute
   '/manage/departments/': typeof authedManageDepartmentsIndexRoute
   '/manage/directs/': typeof authedManageDirectsIndexRoute
+  '/manage/finished-goods-issues/': typeof authedManageFinishedGoodsIssuesIndexRoute
   '/manage/inventory-directs/': typeof authedManageInventoryDirectsIndexRoute
   '/manage/inventory-issues/': typeof authedManageInventoryIssuesIndexRoute
   '/manage/inventory-products/': typeof authedManageInventoryProductsIndexRoute
@@ -1036,6 +1052,7 @@ export interface FileRoutesByTo {
   '/manage/clients': typeof authedManageClientsIndexRoute
   '/manage/departments': typeof authedManageDepartmentsIndexRoute
   '/manage/directs': typeof authedManageDirectsIndexRoute
+  '/manage/finished-goods-issues': typeof authedManageFinishedGoodsIssuesIndexRoute
   '/manage/inventory-directs': typeof authedManageInventoryDirectsIndexRoute
   '/manage/inventory-issues': typeof authedManageInventoryIssuesIndexRoute
   '/manage/inventory-products': typeof authedManageInventoryProductsIndexRoute
@@ -1092,6 +1109,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/clients': typeof authedManageClientsRouteRouteWithChildren
   '/(authed)/manage_/departments': typeof authedManageDepartmentsRouteRouteWithChildren
   '/(authed)/manage_/directs': typeof authedManageDirectsRouteRouteWithChildren
+  '/(authed)/manage_/finished-goods-issues': typeof authedManageFinishedGoodsIssuesRouteRouteWithChildren
   '/(authed)/manage_/inventory-directs': typeof authedManageInventoryDirectsRouteRouteWithChildren
   '/(authed)/manage_/inventory-issues': typeof authedManageInventoryIssuesRouteRouteWithChildren
   '/(authed)/manage_/inventory-products': typeof authedManageInventoryProductsRouteRouteWithChildren
@@ -1165,6 +1183,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/clients/': typeof authedManageClientsIndexRoute
   '/(authed)/manage_/departments/': typeof authedManageDepartmentsIndexRoute
   '/(authed)/manage_/directs/': typeof authedManageDirectsIndexRoute
+  '/(authed)/manage_/finished-goods-issues/': typeof authedManageFinishedGoodsIssuesIndexRoute
   '/(authed)/manage_/inventory-directs/': typeof authedManageInventoryDirectsIndexRoute
   '/(authed)/manage_/inventory-issues/': typeof authedManageInventoryIssuesIndexRoute
   '/(authed)/manage_/inventory-products/': typeof authedManageInventoryProductsIndexRoute
@@ -1220,6 +1239,7 @@ export interface FileRouteTypes {
     | '/manage/clients'
     | '/manage/departments'
     | '/manage/directs'
+    | '/manage/finished-goods-issues'
     | '/manage/inventory-directs'
     | '/manage/inventory-issues'
     | '/manage/inventory-products'
@@ -1293,6 +1313,7 @@ export interface FileRouteTypes {
     | '/manage/clients/'
     | '/manage/departments/'
     | '/manage/directs/'
+    | '/manage/finished-goods-issues/'
     | '/manage/inventory-directs/'
     | '/manage/inventory-issues/'
     | '/manage/inventory-products/'
@@ -1382,6 +1403,7 @@ export interface FileRouteTypes {
     | '/manage/clients'
     | '/manage/departments'
     | '/manage/directs'
+    | '/manage/finished-goods-issues'
     | '/manage/inventory-directs'
     | '/manage/inventory-issues'
     | '/manage/inventory-products'
@@ -1437,6 +1459,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/clients'
     | '/(authed)/manage_/departments'
     | '/(authed)/manage_/directs'
+    | '/(authed)/manage_/finished-goods-issues'
     | '/(authed)/manage_/inventory-directs'
     | '/(authed)/manage_/inventory-issues'
     | '/(authed)/manage_/inventory-products'
@@ -1510,6 +1533,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/clients/'
     | '/(authed)/manage_/departments/'
     | '/(authed)/manage_/directs/'
+    | '/(authed)/manage_/finished-goods-issues/'
     | '/(authed)/manage_/inventory-directs/'
     | '/(authed)/manage_/inventory-issues/'
     | '/(authed)/manage_/inventory-products/'
@@ -1625,6 +1649,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/directs'
       fullPath: '/manage/directs'
       preLoaderRoute: typeof authedManageDirectsRouteRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/finished-goods-issues': {
+      id: '/(authed)/manage_/finished-goods-issues'
+      path: '/manage/finished-goods-issues'
+      fullPath: '/manage/finished-goods-issues'
+      preLoaderRoute: typeof authedManageFinishedGoodsIssuesRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/(authed)/manage_/inventory-directs': {
@@ -1871,6 +1902,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/manage/directs/import'
       preLoaderRoute: typeof authedManageDirectsImportRouteRouteImport
       parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/manage_/finished-goods-issues/': {
+      id: '/(authed)/manage_/finished-goods-issues/'
+      path: '/'
+      fullPath: '/manage/finished-goods-issues/'
+      preLoaderRoute: typeof authedManageFinishedGoodsIssuesIndexRouteImport
+      parentRoute: typeof authedManageFinishedGoodsIssuesRouteRoute
     }
     '/(authed)/manage_/inventory-directs/': {
       id: '/(authed)/manage_/inventory-directs/'
@@ -2503,6 +2541,21 @@ const authedManageDirectsRouteRouteWithChildren =
     authedManageDirectsRouteRouteChildren,
   )
 
+interface authedManageFinishedGoodsIssuesRouteRouteChildren {
+  authedManageFinishedGoodsIssuesIndexRoute: typeof authedManageFinishedGoodsIssuesIndexRoute
+}
+
+const authedManageFinishedGoodsIssuesRouteRouteChildren: authedManageFinishedGoodsIssuesRouteRouteChildren =
+  {
+    authedManageFinishedGoodsIssuesIndexRoute:
+      authedManageFinishedGoodsIssuesIndexRoute,
+  }
+
+const authedManageFinishedGoodsIssuesRouteRouteWithChildren =
+  authedManageFinishedGoodsIssuesRouteRoute._addFileChildren(
+    authedManageFinishedGoodsIssuesRouteRouteChildren,
+  )
+
 interface authedManageInventoryDirectsRouteRouteChildren {
   authedManageInventoryDirectsIndexRoute: typeof authedManageInventoryDirectsIndexRoute
 }
@@ -3011,6 +3064,7 @@ interface authedRouteRouteChildren {
   authedManageClientsRouteRoute: typeof authedManageClientsRouteRouteWithChildren
   authedManageDepartmentsRouteRoute: typeof authedManageDepartmentsRouteRouteWithChildren
   authedManageDirectsRouteRoute: typeof authedManageDirectsRouteRouteWithChildren
+  authedManageFinishedGoodsIssuesRouteRoute: typeof authedManageFinishedGoodsIssuesRouteRouteWithChildren
   authedManageInventoryDirectsRouteRoute: typeof authedManageInventoryDirectsRouteRouteWithChildren
   authedManageInventoryIssuesRouteRoute: typeof authedManageInventoryIssuesRouteRouteWithChildren
   authedManageInventoryProductsRouteRoute: typeof authedManageInventoryProductsRouteRouteWithChildren
@@ -3097,6 +3151,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageDepartmentsRouteRoute:
     authedManageDepartmentsRouteRouteWithChildren,
   authedManageDirectsRouteRoute: authedManageDirectsRouteRouteWithChildren,
+  authedManageFinishedGoodsIssuesRouteRoute:
+    authedManageFinishedGoodsIssuesRouteRouteWithChildren,
   authedManageInventoryDirectsRouteRoute:
     authedManageInventoryDirectsRouteRouteWithChildren,
   authedManageInventoryIssuesRouteRoute:

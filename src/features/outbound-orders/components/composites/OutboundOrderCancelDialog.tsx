@@ -25,9 +25,9 @@ type OutboundOrderCancelDialogProps = {
 }
 
 // DRAFT/PENDING_APPROVAL/PENDING_DELIVERY → CANCELLED (BUG-090) — cùng khuôn
-// OutboundOrderApproveDialog.tsx. Không đụng tồn kho thật (cả ba trạng thái cho phép huỷ đều
-// chưa `deliver`) — giữ chỗ FG tự hết vì HOLDING_STATUSES không còn khớp CANCELLED, xem
-// docs/domains/inventory.md mục "Giao hàng".
+// OutboundOrderApproveDialog.tsx. Không đụng tồn kho thật (cả ba trạng thái cho phép huỷ đều chưa
+// xuất kho) — giữ chỗ FG tự hết vì HOLDING_STATUSES không còn khớp CANCELLED; phiếu xuất kho nháp
+// BE sinh lúc duyệt huỷ theo.
 export function OutboundOrderCancelDialog({
   order,
   trigger,
@@ -41,7 +41,11 @@ export function OutboundOrderCancelDialog({
       cancelOutboundOrderFn({ data: { outboundOrderId: order.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ["outbound-orders"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["outbound-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 

@@ -24,8 +24,8 @@ type OutboundOrderApproveDialogProps = {
   trigger: ReactElement
 }
 
-// PENDING_APPROVAL → PENDING_DELIVERY — director-level, cần outbound:approve. Chưa trừ tồn kho,
-// bước trừ tồn thật là OutboundOrderDeliverDialog.tsx.
+// PENDING_APPROVAL → PENDING_DELIVERY ("Chờ xuất kho") — director-level, cần outbound:approve. BE sinh
+// phiếu xuất kho SALES nháp; chưa trừ tồn kho, thủ kho ghi sổ phiếu đó mới trừ tồn và giao xong DO.
 export function OutboundOrderApproveDialog({
   order,
   trigger,
@@ -39,7 +39,11 @@ export function OutboundOrderApproveDialog({
       approveOutboundOrderFn({ data: { outboundOrderId: order.id } }),
     onSuccess: async () => {
       setOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ["outbound-orders"] })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["outbound-orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ])
     },
   })
 
@@ -59,7 +63,7 @@ export function OutboundOrderApproveDialog({
           </AlertDialogMedia>
           <AlertDialogTitle>Duyệt phiếu giao hàng này?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`Phiếu ${order.code} sẽ chuyển sang trạng thái "Chờ xác nhận giao" — chưa trừ tồn kho.`}
+            {`Phiếu ${order.code} sẽ chuyển sang trạng thái "Chờ xuất kho" và tự sinh phiếu xuất kho thành phẩm cho thủ kho — chưa trừ tồn kho.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

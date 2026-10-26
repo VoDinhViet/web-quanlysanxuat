@@ -20,6 +20,8 @@ function resolvePostInventoryIssueErrorMessage(error: unknown): string {
       return "Phiếu không ở trạng thái phù hợp để xuất kho."
     case "inventory_document.error.insufficient_stock":
       return "Tồn kho không đủ để xuất."
+    case "outbound_order.error.not_deliverable":
+      return "Phiếu giao hàng liên quan đã đổi trạng thái. Vui lòng tải lại trang."
     case "inventory_issue.error.iqc_pending":
       return "Còn vật tư chưa hoàn tất kiểm tra chất lượng (IQC), chưa thể xuất kho."
     case "file.error.not_found":

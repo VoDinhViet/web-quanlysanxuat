@@ -45,11 +45,12 @@ export function InventoryIssueDetailActions({
       cancelInventoryIssueFn({ data: { issueId: inventoryIssue.id } }),
     onSuccess: async () => {
       setIsCancelOpen(false)
-      // Cancelling an issue also cancels the requisition it was raised from and frees any stock
-      // its draft held.
+      // Cancelling an issue also cancels the requisition or delivery order it was raised from and
+      // frees any stock its draft held.
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["inventory-issues"] }),
         queryClient.invalidateQueries({ queryKey: ["inventory-requisitions"] }),
+        queryClient.invalidateQueries({ queryKey: ["outbound-orders"] }),
         queryClient.invalidateQueries({ queryKey: ["inventory-products"] }),
         queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
@@ -60,6 +61,7 @@ export function InventoryIssueDetailActions({
   const isDraft = inventoryIssue.status === InventoryIssueStatus.DRAFT
   const isFromRequisition =
     inventoryIssue.issueType === InventoryIssueType.PRODUCTION
+  const isFromOutboundOrder = inventoryIssue.outboundOrder !== null
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
@@ -68,12 +70,19 @@ export function InventoryIssueDetailActions({
           <PostInventoryIssueDialog
             inventoryIssue={inventoryIssue}
             isFromRequisition={isFromRequisition}
+            isFromOutboundOrder={isFromOutboundOrder}
           />
         </PermissionGate>
       )}
 
       {isDraft && (
-        <PermissionGate permission="inventory:update">
+        <PermissionGate
+          permission={
+            isFromOutboundOrder
+              ? ["inventory:update", "outbound:update"]
+              : "inventory:update"
+          }
+        >
           <Button
             type="button"
             variant="outline"
@@ -105,7 +114,7 @@ export function InventoryIssueDetailActions({
             </AlertDialogMedia>
             <AlertDialogTitle>Hủy phiếu xuất kho này?</AlertDialogTitle>
             <AlertDialogDescription>
-              {`Phiếu "${inventoryIssue.code}" sẽ bị hủy. Hành động này không thể hoàn tác.${isFromRequisition ? " Phiếu lãnh vật tư liên quan cũng sẽ bị hủy theo." : ""}`}
+              {`Phiếu "${inventoryIssue.code}" sẽ bị hủy. Hành động này không thể hoàn tác.${isFromRequisition ? " Phiếu lãnh vật tư liên quan cũng sẽ bị hủy theo." : ""}${isFromOutboundOrder ? " Phiếu giao hàng (DO) liên quan cũng sẽ bị hủy theo." : ""}`}
             </AlertDialogDescription>
           </AlertDialogHeader>
 

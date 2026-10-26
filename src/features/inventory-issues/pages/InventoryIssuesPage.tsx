@@ -1,4 +1,4 @@
-import { useSearch } from "@tanstack/react-router"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { Surface } from "@/components/shared/layouts/Surface"
@@ -11,6 +11,7 @@ import { InventoryIssuesLegend } from "@/features/inventory-issues/components/pr
 
 export function InventoryIssuesPage() {
   const search = useSearch({ from: "/(authed)/manage_/inventory-issues/" })
+  const navigate = useNavigate({ from: "/manage/inventory-issues/" })
 
   const inventoryIssuesQuery = useQuery({
     ...inventoryIssuesQueryOptions(search),
@@ -20,7 +21,15 @@ export function InventoryIssuesPage() {
   return (
     <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
       <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-        <InventoryIssuesTableFilter />
+        <InventoryIssuesTableFilter
+          search={search}
+          onSearchChange={(filters, replace) =>
+            void navigate({
+              search: (prev) => ({ ...prev, ...filters, page: 1 }),
+              replace,
+            })
+          }
+        />
 
         {inventoryIssuesQuery.isPending ? (
           <TableQueryLoading rows={search.limit} />

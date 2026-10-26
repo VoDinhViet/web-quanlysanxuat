@@ -1,8 +1,17 @@
-import { CalendarCheck, Info, StickyNote, User, UserCheck } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import {
+  CalendarCheck,
+  Info,
+  PackageMinus,
+  StickyNote,
+  User,
+  UserCheck,
+} from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
+import { inventoryIssueStatusLabels } from "@/lib/types/inventory-issue.type"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
 type OutboundOrderInfoCardProps = {
@@ -28,6 +37,27 @@ export function OutboundOrderInfoCard({ order }: OutboundOrderInfoCardProps) {
           label="Người tạo"
           value={order.creatorBy?.fullName ?? "—"}
         />
+
+        {order.inventoryIssue && (
+          <InfoTile
+            icon={PackageMinus}
+            label="Phiếu xuất kho"
+            value={
+              <span className="flex flex-wrap items-center gap-2">
+                <Link
+                  to="/manage/inventory-issues/$issueId"
+                  params={{ issueId: order.inventoryIssue.id }}
+                  className="font-mono text-primary hover:underline"
+                >
+                  {order.inventoryIssue.code}
+                </Link>
+                <span className="text-xs font-normal text-muted-foreground">
+                  {inventoryIssueStatusLabels[order.inventoryIssue.status]}
+                </span>
+              </span>
+            }
+          />
+        )}
 
         {order.approverBy && (
           <InfoTile

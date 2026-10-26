@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-24 | Files scanned: ~190 | Token estimate: ~4800 -->
+<!-- Generated: 2026-10-26 | Files scanned: ~190 | Token estimate: ~4800 -->
 # Inventory codemap (web)
 Receipts (PNK), issues (PXK), material requisitions, supplier returns, stock screens. BE twin: `be-quanlysanxuat/docs/CODEMAPS/inventory.md` (sections 2 Routes, 3 State flows, 4 Key rules). Screens and button labels: `docs/ui-flow.md` (see section 5 for stale parts).
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. No server fn checks permissions; the BE controller does. BE paths are relative to `be-quanlysanxuat/`.
@@ -7,7 +7,7 @@ Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query f
 | Feature folder (src/features/) | Role | Screens (pages/) | Types & status labels (src/lib/types/) | Schemas |
 |---|---|---|---|---|
 | inventory-receipts | Receipt list, detail, 3-lane create, edit DRAFT | InventoryReceiptsPage, InventoryReceiptDetailPage, CreateInventoryReceiptReceiptPage, UpdateInventoryReceiptPage | `inventory-receipt.type.ts`: status DRAFT "Nháp", PENDING_RECEIPT "Chờ nhập kho", PENDING_IQC "Chờ IQC", IQC_COMPLETED "Đã xong IQC", POSTED "Đã nhập kho", CANCELLED "Đã huỷ"; type PURCHASE/PRODUCTION/RETURN/OTHER | create (generic, -from-po, -return, -other, lane-search), update, item-form, search |
-| inventory-issues | Issue (PXK) list and detail, post/cancel | InventoryIssuesPage, InventoryIssueDetailPage | `inventory-issue.type.ts`: DRAFT "Nháp", POSTED "Đã xuất kho", CANCELLED "Đã huỷ"; type PRODUCTION/SALES/RETURN | search only |
+| inventory-issues | Issue (PXK) list and detail, post/cancel; finished-goods list pinned to SALES | InventoryIssuesPage, FinishedGoodsIssuesPage, InventoryIssueDetailPage | `inventory-issue.type.ts`: DRAFT "Nháp", POSTED "Đã xuất kho", CANCELLED "Đã huỷ"; type PRODUCTION/SALES/RETURN | search only |
 | inventory-requisitions | Material requisition ("Phiếu lãnh vật tư") with approval | InventoryRequisitionsPage, InventoryRequisitionDetailPage, InventoryRequisitionCreatePage | `inventory-requisition.type.ts`: DRAFT "Nháp", PENDING_APPROVAL "Chờ duyệt", APPROVED "Đã duyệt", ISSUED "Đã xuất", REJECTED "Từ chối", CANCELLED "Đã hủy"; type PRODUCTION/OTHER | create, reject, search |
 | inventory-adjustments | Orphan: schemas only, no api/pages/components | none | `inventory-adjustment.type.ts` (DRAFT/POSTED "Đã ghi sổ"/CANCELLED) | 4 unused zod schemas |
 | inventory-products | Finished-goods stock list, per-item detail, ledger tab | InventoryProductsPage, InventoryProductDetailPage | `inventory-product.type.ts`, `product-ledger.type.ts` (movement labels derived on FE, e.g. "Nhập từ sản xuất", "Giao hàng (DO)", "Đảo bút toán (huỷ phiếu)") | search, detail-search |
@@ -23,6 +23,7 @@ Permission gate = entry in `src/lib/route-permissions.ts` (checked in `(authed)`
 | /manage/inventory-receipts/$inventoryReceiptId/update | inventory-receipts_/$inventoryReceiptId_.update.tsx | UpdateInventoryReceiptPage | inventoryReceiptQueryOptions | inventory:update | list row "Chỉnh sửa" (DRAFT only) |
 | /manage/inventory-receipts/create-receipt?lane=po\|return\|other | inventory-receipts_/create-receipt.tsx | CreateInventoryReceiptReceiptPage | none | inventory:create | list "Tạo phiếu nhập"; ManageQuickActions |
 | /manage/inventory-issues | inventory-issues/index.tsx | InventoryIssuesPage | inventoryIssuesQueryOptions | inventory:read | Sidebar "Xuất kho" (todo badge) |
+| /manage/finished-goods-issues | finished-goods-issues/index.tsx | FinishedGoodsIssuesPage (same table/filter as above, `issueType=SALES` fixed) | inventoryIssuesQueryOptions | inventory:read | Sidebar "Xuất kho thành phẩm" (todo badge `salesIssuesToPost`) |
 | /manage/inventory-issues/$issueId | inventory-issues_/$issueId.tsx | InventoryIssueDetailPage | inventoryIssueQueryOptions | inventory:read | list "Xem chi tiết"; requisition detail "Phiếu xuất kho" |
 | /manage/inventory-requisitions | inventory-requisitions/index.tsx | InventoryRequisitionsPage | inventoryRequisitionsQueryOptions | inventory-requisitions:read | Sidebar "Phiếu lãnh vật tư" (badge) |
 | /manage/inventory-requisitions/$requisitionId | inventory-requisitions_/$requisitionId.tsx | InventoryRequisitionDetailPage | inventoryRequisitionQueryOptions | inventory-requisitions:read | list row |
@@ -54,7 +55,7 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 | List (loader) | getInventoryIssues | GET /inventory-issues | inventory:read | getInventoryIssues (src/api/inventory-issues/inventory-issues.controller.ts:40) |
 | Detail (loader) | getInventoryIssue | GET /inventory-issues/:issueId | inventory:read | getInventoryIssue (:52) |
 | Detail "Xuất kho" (DRAFT; FE gate inventory:update; `PostInventoryIssueDialog`: optional note + photos/files, camera on phone, photos >2MB downscaled) | postInventoryIssue | POST /inventory-issues/:issueId/post | inventory:update | postInventoryIssue (:104) |
-| Detail "Hủy phiếu" (DRAFT) | cancelInventoryIssue | POST /inventory-issues/:issueId/cancel | inventory:update | cancelInventoryIssue (:121) |
+| Detail "Hủy phiếu" (DRAFT; FE gate also `outbound:update` when the issue has `outboundOrder`, the DO is cancelled too) | cancelInventoryIssue | POST /inventory-issues/:issueId/cancel | inventory:update (+ outbound:update for DO-linked) | cancelInventoryIssue (:121) |
 ### inventory-requisitions (BE codemap "State flows" requisition)
 | Action / trigger | Server fn | Endpoint | Permission | BE Controller.method (file:line) |
 |---|---|---|---|---|
@@ -105,7 +106,7 @@ Stock screens are read-only (no actions).
 ## 5. Gaps and quirks
 13 BE routes have no FE caller (verified by reading the feature folders, not mocks):
 - inventory-adjustments (7 routes: list, detail, create, patch, delete, post, cancel): no UI at all. `features/inventory-adjustments/` holds 4 orphan zod schemas and `lib/types/inventory-adjustment.type.ts`; no api/pages/components/route, no sidebar entry. `docs/ui-flow.md` F3 already flags this folder as dead code.
-- inventory-issues POST/PATCH/DELETE (3): no server fn. PXK are created by the BE on requisition approve or DO delivery; the UI only lists, views, posts and cancels them.
+- inventory-issues POST/PATCH/DELETE (3): no server fn. PXK are created by the BE on requisition approve or DO approve (DRAFT SALES issue; PATCH/DELETE blocked E319); the UI only lists, views, posts and cancels them.
 - inventory-requisitions POST :id/cancel (1): no server fn or button; a requisition becomes CANCELLED only through its PXK cancel.
 - GET /inventory/balances and /inventory/transactions (2): no FE caller. FE stock screens use /inventory-products and /inventory-directs instead.
 Other quirks:

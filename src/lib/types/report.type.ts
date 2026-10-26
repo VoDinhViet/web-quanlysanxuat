@@ -62,8 +62,8 @@ export type QcPassRatePoint = {
  *  `outsourcingOrdersPending` cần quyền `outsourcing:approve`, `outsourcingOrdersToProcess` cần quyền
  *  `outsourcing:update`;
  *  riêng các "việc chờ" của kho/IQC/thanh toán (`inventoryReceiptsToPost`, `paymentRequestsToSubmit`,
- *  `paymentRequestsPending`, `supplierReturnsToPost`, `inventoryIssuesToPost`, `iqcToInspect`,
- *  `oqcToInspect`) thì ai cũng thấy. */
+ *  `paymentRequestsPending`, `supplierReturnsToPost`, `inventoryIssuesToPost`, `salesIssuesToPost`,
+ *  `iqcToInspect`, `oqcToInspect`) thì ai cũng thấy. */
 export type PendingApprovals = {
   purchaseRequests: number
   purchaseRequestsToSubmit: number
@@ -83,6 +83,7 @@ export type PendingApprovals = {
   outsourcingOrdersToProcess: number
   supplierReturnsToPost: number
   inventoryIssuesToPost: number
+  salesIssuesToPost: number
   iqcToInspect: number
   oqcToInspect: number
 }

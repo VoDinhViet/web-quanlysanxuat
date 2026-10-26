@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, RotateCw, Search } from "lucide-react"
 
@@ -23,7 +22,8 @@ import {
   inventoryIssueStatusLabels,
   inventoryIssueTypeLabels,
 } from "@/lib/types/inventory-issue.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import type { InventoryIssuesSearchSchema } from "@/features/inventory-issues/schemas/inventory-issues-search.schema"
+import { buildOptionsFromLabels, cn } from "@/lib/utils"
 
 const issueTypeOptions = [
   { value: "all", label: "Tất cả" },
@@ -35,70 +35,75 @@ const statusOptions = [
   ...buildOptionsFromLabels(inventoryIssueStatusLabels),
 ]
 
-export function InventoryIssuesTableFilter() {
-  const search = useSearch({ from: "/(authed)/manage_/inventory-issues/" })
-  const navigate = useNavigate({ from: "/manage/inventory-issues/" })
+type InventoryIssuesFilters = Pick<
+  InventoryIssuesSearchSchema,
+  "q" | "issueType" | "status" | "startDate" | "endDate"
+>
+
+type InventoryIssuesTableFilterProps = {
+  search: InventoryIssuesFilters
+  // The page owns the route, so it applies the patch to its own search params (and resets `page`).
+  onSearchChange: (
+    patch: Partial<InventoryIssuesFilters>,
+    replace?: boolean
+  ) => void
+  // Finished-goods issues are always SALES, so that page hides the type filter.
+  showIssueType?: boolean
+}
+
+export function InventoryIssuesTableFilter({
+  search,
+  onSearchChange,
+  showIssueType = true,
+}: InventoryIssuesTableFilterProps) {
   const [q, setQ] = useState(search.q ?? "")
 
   const handleSearch = useDebounceCallback((term: string) => {
     const trimmed = term.trim()
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        q: trimmed.length > 0 ? trimmed : undefined,
-        page: 1,
-      }),
-      replace: true,
-    })
+    onSearchChange({ q: trimmed.length > 0 ? trimmed : undefined }, true)
   }, 300)
 
   const handleIssueTypeChange = (value: string) => {
-    const issueType =
-      value === "all" ? undefined : (value as InventoryIssueType)
-    void navigate({ search: (prev) => ({ ...prev, issueType, page: 1 }) })
+    onSearchChange({
+      issueType: value === "all" ? undefined : (value as InventoryIssueType),
+    })
   }
 
   const handleStatusChange = (value: string) => {
-    const status = value === "all" ? undefined : (value as InventoryIssueStatus)
-    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+    onSearchChange({
+      status: value === "all" ? undefined : (value as InventoryIssueStatus),
+    })
   }
 
   const handleDateRangeChange = (
     startDate: string | undefined,
     endDate: string | undefined
   ) => {
-    void navigate({
-      search: (prev) => ({
-        ...prev,
-        startDate,
-        endDate,
-        page: 1,
-      }),
-    })
+    onSearchChange({ startDate, endDate })
   }
 
   const resetFilters = () => {
     handleSearch.cancel()
     setQ("")
-    void navigate({
-      search: (prev) => {
-        const {
-          q: _q,
-          issueType: _issueType,
-          status: _status,
-          startDate: _startDate,
-          endDate: _endDate,
-          ...rest
-        } = prev
-        return { ...rest, page: 1 }
-      },
+    onSearchChange({
+      q: undefined,
+      issueType: undefined,
+      status: undefined,
+      startDate: undefined,
+      endDate: undefined,
     })
   }
 
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(10rem,1fr)_minmax(10rem,1fr)_minmax(12rem,1.2fr)]">
+        <div
+          className={cn(
+            "grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.4fr)_minmax(10rem,1fr)_minmax(10rem,1fr)_minmax(12rem,1.2fr)]",
+            !showIssueType &&
+              "xl:grid-cols-[minmax(14rem,1.4fr)_minmax(10rem,1fr)_minmax(12rem,1.2fr)]"
+          )}
+        >
           {/* Tìm kiếm */}
           <div className="space-y-1.5 sm:col-span-2 xl:col-span-1">
             <Label
@@ -123,32 +128,34 @@ export function InventoryIssuesTableFilter() {
           </div>
 
           {/* Loại phiếu */}
-          <div className="flex flex-col gap-1.5">
-            <Label
-              htmlFor="xk-issue-type"
-              className="text-xs font-medium text-muted-foreground"
-            >
-              Loại phiếu
-            </Label>
-            <Select
-              items={issueTypeOptions}
-              value={search.issueType ?? "all"}
-              onValueChange={(value) =>
-                value !== null && handleIssueTypeChange(value)
-              }
-            >
-              <SelectTrigger id="xk-issue-type" className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {issueTypeOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {showIssueType && (
+            <div className="flex flex-col gap-1.5">
+              <Label
+                htmlFor="xk-issue-type"
+                className="text-xs font-medium text-muted-foreground"
+              >
+                Loại phiếu
+              </Label>
+              <Select
+                items={issueTypeOptions}
+                value={search.issueType ?? "all"}
+                onValueChange={(value) =>
+                  value !== null && handleIssueTypeChange(value)
+                }
+              >
+                <SelectTrigger id="xk-issue-type" className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {issueTypeOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Trạng thái */}
           <div className="flex flex-col gap-1.5">

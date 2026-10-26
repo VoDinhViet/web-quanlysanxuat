@@ -17,8 +17,10 @@ function resolveCancelInventoryIssueErrorMessage(error: unknown): string {
       return "Không tìm thấy phiếu xuất kho."
     case "inventory_document.error.invalid_status_transition":
       return "Phiếu đã được xuất kho trước đó hoặc đã bị hủy."
+    case "outbound_order.error.not_deliverable":
+      return "Phiếu giao hàng liên quan đã đổi trạng thái. Vui lòng tải lại trang."
     case "auth.error.forbidden":
-      return "Bạn không có quyền hủy phiếu này."
+      return "Bạn không có quyền hủy phiếu này (phiếu sinh từ giao hàng cần thêm quyền sửa phiếu giao hàng)."
     default:
       return GENERIC_ERROR_MESSAGE
   }

@@ -25,7 +25,7 @@ type OutboundOrderSendDialogProps = {
 }
 
 // DRAFT/REJECTED → PENDING_APPROVAL. Không tự pre-check gate OQC phía client — cùng nguyên tắc
-// OutboundOrderDeliverDialog.tsx/ApproveRequisitionDialog.tsx: chỉ hiện lỗi backend trả về.
+// OutboundOrderApproveDialog.tsx/ApproveRequisitionDialog.tsx: chỉ hiện lỗi backend trả về.
 export function OutboundOrderSendDialog({
   order,
   trigger,

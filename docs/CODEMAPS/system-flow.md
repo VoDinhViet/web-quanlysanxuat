@@ -18,7 +18,8 @@ Conventions: FE fn = `<feature>/<file>` under `src/features/<feature>/api/server
 | OutsourcingReceiptsService.create | IqcService.createInspectionsFromOutsourcingReceipt (:404), recomputeOutsourcingOrderStatus (:427), recomputeOutsourcedOperationProgress (:437) | `outsourcing-receipts.service.ts` |
 | IqcService.confirmIqc | SupplierReturnsService.createFromIqcDisposition (:840), closeJobIfQcCovered (:798), recomputeOutsourcingOrderStatus (:879) | `iqc.service.ts` |
 | SupplierReturnsService.postSupplierReturn | InventoryPostingService.postDocument (:356), completeIqcAfterSupplierReturn (:399), recompute OS-OUT/op progress (:437/:448) | `supplier-returns.service.ts` |
-| OutboundOrdersService.send / deliver | ensureAllJobsQcCompleted (:583, reads OQC coverage); postDocument (:808) + inventory_issues, closeOrdersIfFullyDelivered (:821, writes `orders`) | `outbound-orders.service.ts` |
+| OutboundOrdersService.send / approve | ensureAllJobsQcCompleted (reads OQC coverage, send); approve inserts a DRAFT SALES `inventory_issues` (`createSalesIssueDraft`) | `outbound-orders.service.ts` |
+| InventoryIssuesService.post (DO-linked issue) | postDocument + DO = DELIVERED + closeOrdersIfFullyDelivered (writes `orders`, `outbound-orders.query.ts`); cancel cancels the DO | `inventory-issues.service.ts` |
 | PurchaseQuotationsService.approveQuotation | PurchaseOrdersService.createPendingOrdersFromQuotation (:652) | `purchase-quotations.service.ts` |
 | PurchaseOrdersService.cancel / close / advance | PaymentRequestsService.cancelForOrder (:778), revertQuotationToDraft (:822); createIfOrderCompleted (:953, on close); applyAdvancePayment (:650) | `purchase-orders.service.ts` |
 | NcrsService.createProductionOrder | ProductionJobsService.createJobs (:390) | `ncrs.service.ts` |
@@ -29,7 +30,7 @@ Conventions: FE fn = `<feature>/<file>` under `src/features/<feature>/api/server
 SO create (DRAFT) --"Gửi duyệt"--> PENDING_CONFIRMATION --"Duyệt"--> AWAITING_PRODUCTION  (+LSX PENDING seeded, X-DOMAIN)
         |                               \--"Từ chối"--> REJECTED --"Gửi duyệt"--> PENDING_CONFIRMATION
         v   (LSX approve, chain 2: SO -> IN_PROGRESS)
-DO create (DRAFT) --"Gửi duyệt DO"--> PENDING_APPROVAL --"Duyệt"--> PENDING_DELIVERY --"Xác nhận đã giao"--> DELIVERED
+DO create (DRAFT) --"Gửi duyệt DO"--> PENDING_APPROVAL --"Duyệt"--> PENDING_DELIVERY "Chờ xuất kho" --warehouse "Xuất kho" on the DRAFT SALES issue--> DELIVERED
                                        \--"Từ chối"--> REJECTED           (stock out + SO IN_PROGRESS -> COMPLETED when fully delivered)
 ```
 
@@ -42,11 +43,11 @@ DO create (DRAFT) --"Gửi duyệt DO"--> PENDING_APPROVAL --"Duyệt"--> PENDIN
 | 1.5 | `/manage/outbound-orders/create` wizard ③ "Xác nhận & tạo phiếu" (picker = GET /outbound-orders/unfulfilled-order-items) | createOutboundOrder (`outbound-orders/create-outbound-order.api.ts`) | POST /outbound-orders | outbound:create | ctrl:112 -> svc:430 | outbound_orders, outbound_order_items, document_sequences | -> DRAFT (holds FG, `ensureOutboundLinesIssuable`) | E009 E194 |
 | 1.6 | `/manage/outbound-orders/$outboundOrderId` "Sửa" (`?mode=edit`) | updateOutboundOrder | PATCH /outbound-orders/:id | outbound:update | ctrl:128 -> svc:455 | outbound_orders, outbound_order_items | DRAFT only | E259 E194 |
 | 1.7 | same page "Gửi duyệt DO" | sendOutboundOrder (`send-outbound-order.api.ts`) | POST .../:id/send | outbound:update | ctrl:145 -> svc:566 | outbound_orders; X-DOMAIN reads OQC coverage (`ensureAllJobsQcCompleted`) | DRAFT\|REJECTED -> PENDING_APPROVAL | E239 E205 E194 |
-| 1.8 | same page "Duyệt" / "Từ chối" | approveOutboundOrder / rejectOutboundOrder | POST .../:id/approve, /reject | outbound:approve | ctrl:162 -> svc:601; ctrl:178 -> svc:682 | outbound_orders | PENDING_APPROVAL -> PENDING_DELIVERY / REJECTED | E240 E194 (approve) |
-| 1.9 | same page "Xác nhận đã giao" | deliverOutboundOrder (`deliver-outbound-order.api.ts`) | POST .../:id/deliver | outbound:update | ctrl:197 postOutboundOrder -> svc:747 | outbound_orders, inv_issues (SALES, POSTED, PXK-), inv_issue_items, inv_transactions, inv_balances; X-DOMAIN orders (:847) | PENDING_DELIVERY -> DELIVERED; SO IN_PROGRESS -> COMPLETED if every NORMAL line delivered | E237 E106 |
-| 1.10 | same page "Hủy đơn DO" | cancelOutboundOrder | POST .../:id/cancel | outbound:update | ctrl:214 -> svc:486 | outbound_orders | DRAFT\|PENDING_APPROVAL\|PENDING_DELIVERY -> CANCELLED (releases hold) | E257 |
+| 1.8 | same page "Duyệt" / "Từ chối" | approveOutboundOrder / rejectOutboundOrder | POST .../:id/approve, /reject | outbound:approve | ctrl:155 -> svc:616; ctrl:172 -> svc:699 | outbound_orders, inv_issues + inv_issue_items (approve: DRAFT SALES issue, PXK-) | PENDING_APPROVAL -> PENDING_DELIVERY / REJECTED | E240 E194 (approve) |
+| 1.9 | issue detail "Xuất kho" (menu "Xuất kho thành phẩm"; DO detail links to it) | postInventoryIssue | POST /inventory-issues/:id/post | inventory:update | InventoryIssuesService.postInventoryIssue (:378) | inv_issues (POSTED), inv_transactions, inv_balances, outbound_orders; X-DOMAIN orders (`closeOrdersIfFullyDelivered`) | issue DRAFT -> POSTED, DO PENDING_DELIVERY -> DELIVERED; SO IN_PROGRESS -> COMPLETED if every NORMAL line delivered | E237 E098 E106 |
+| 1.10 | same page "Hủy đơn DO" | cancelOutboundOrder | POST .../:id/cancel | outbound:update | ctrl:190 -> svc:491 | outbound_orders, inv_issues (DRAFT -> CANCELLED) | DRAFT\|PENDING_APPROVAL\|PENDING_DELIVERY -> CANCELLED (releases hold) | E257 |
 
-Notes: BE has no submit route; 1.2 is a plain PATCH. SO only closes from IN_PROGRESS (`outbound-orders.service.ts:847+`), so a DO delivered while SO is AWAITING_PRODUCTION does not complete it. Source: BE sales.md section 3.
+Notes: BE has no submit route; 1.2 is a plain PATCH. SO only closes from IN_PROGRESS (`outbound-orders.query.ts:168+`), so a DO delivered while SO is AWAITING_PRODUCTION does not complete it. Source: BE sales.md section 3.
 
 ## 2. Production: SO -> LSX -> JOB -> reports -> OQC -> FG receipt
 
@@ -167,7 +168,7 @@ Ledger writer is only `InventoryPostingService.postDocument` (`inventory-posting
 |---|---|---|---|---|
 | Purchase / return / other / FG receipt post | 2.8, 4.11 | `inventory-receipts.service.ts:669` | RECEIPT (+), PRODUCTION_IN (+); net of POSTED supplier returns | E153 IQC done |
 | Requisition PXK post "Xuất kho" (`/manage/inventory-issues/$issueId`) | 6.3 | `inventory-issues.service.ts:367` | PRODUCTION_OUT (-) | E203 pending IQC, E106 |
-| DO deliver | 1.9 | `outbound-orders.service.ts:808` | ISSUE (-) with orderItemId | E237, E106 |
+| DO issue post | 1.9 | `inventory-issues.service.ts:378` (`postInventoryIssue`) | ISSUE (-) with orderItemId | E237, E106 |
 | Supplier return post | 3.4 | `supplier-returns.service.ts:356` | ISSUE (-); skipped if OS-IN origin or source receipt not POSTED | E106 |
 | Adjustment post / cancel (reversal) | BE only, no FE server fn | `inventory-adjustments.service.ts:212 / :251` | ADJUSTMENT_IN / OUT | E106 |
 | Outsourcing OS-OUT / OS-IN | 5.2, 5.3 | none | no ledger write | - |
@@ -188,7 +189,7 @@ Reservation map (available = onHand - held - remaining BOM demand, `available-qu
 
 | Holds stock | While | Released by |
 |---|---|---|
-| FG: DO (`HOLDING_STATUSES`, `outbound-orders.query.ts:16`) | DRAFT, PENDING_APPROVAL, PENDING_DELIVERY | deliver (becomes ISSUE), cancel, delete |
+| FG: DO (`HOLDING_STATUSES`, `outbound-orders.query.ts:16`) | DRAFT, PENDING_APPROVAL, PENDING_DELIVERY | post of its SALES issue (becomes ISSUE), cancel, delete |
 | DIRECT: requisition (`HOLDING_STATUS`, `inventory-requisitions.query.ts:16`) | APPROVED only | PXK post (ISSUED) or cancel |
 | DIRECT: remaining JOB BOM demand (`production_job_issues`) | JOB PENDING/IN_PROGRESS minus issued | issuing via 6.4 |
 | none (read-only plan) | SO approve `getInitialPlanItems` sizes LSX qty from stock, writes no hold | - |
@@ -204,8 +205,8 @@ BE routes with no FE server fn (cannot be triggered from UI): `POST /inventory-r
 | D3 | ui-flow Flow 1 step 6 | "Hủy LSX" button | Absent: `ProductionOrderDetailActions.tsx:51` states no cancel endpoint |
 | D4 | ui-flow Flow 3 step 1 | "Bắt đầu SX" | Header button "Xác nhận kế hoạch", confirm dialog "Xác nhận" (`ProductionJobHeaderActions.tsx`, `StartProductionJobDialog.tsx`); "Bắt đầu SX" is only a job-log label |
 | D5 | ui-flow Flow 3 step 4 / F10 | "Duyệt công đoạn" inline, NOT_STARTED -> DONE | No such string in `src`; reporting is "Nhập báo cáo" dialog -> "Lưu báo cáo" (2.5) |
-| D6 | ui-flow Flow 1 step 9 | DO buttons "Gửi duyệt" -> "Duyệt" -> "Giao hàng" | "Gửi duyệt DO" -> "Duyệt" -> "Xác nhận đã giao" |
-| D7 | ui-flow Flow 1 step 10 | SO `AWAITING_PRODUCTION`/`IN_PROGRESS` -> COMPLETED on full delivery | BE `closeOrdersIfFullyDelivered` updates only `IN_PROGRESS` (`outbound-orders.service.ts:847+`, BE sales.md agrees) |
+| D6 | ui-flow Flow 1 step 9 | DO buttons "Gửi duyệt" -> "Duyệt" -> "Giao hàng" | "Gửi duyệt DO" -> "Duyệt" -> warehouse "Xuất kho" on the generated issue |
+| D7 | ui-flow Flow 1 step 10 | SO `AWAITING_PRODUCTION`/`IN_PROGRESS` -> COMPLETED on full delivery | BE `closeOrdersIfFullyDelivered` updates only `IN_PROGRESS` (`outbound-orders.query.ts:168+`, BE sales.md agrees) |
 | D8 | ui-flow F6 and screen map ("không có route chi tiết") | `/manage/inventory-issues` list-only | Route `/manage/inventory-issues/$issueId` exists; "Xuất kho"/"Hủy phiếu" live there (`InventoryIssueDetailActions.tsx`) |
 | D9 | ui-flow Flow 3 step 3 | requisition detail has "Xuất kho" | Requisition detail only links to the PXK; "Xuất kho" is on the issue detail (6.4) |
 | D10 | ui-flow Flow 2 diagram, Flow 3 steps 7, 10 | "Xác nhận kết quả" (OQC), "PASS -> Hoàn thành" / "Kho xuất trả NCC" (IQC), OS-IN "Xác nhận" | Single submit "Lưu" for OQC and IQC; supplier-return button "Xác nhận xuất"; OS-IN "Xác nhận nhập"; OS-OUT "Xác nhận tạo phiếu" (create already yields SENT, no separate "Gửi gia công ngoài" send call) |

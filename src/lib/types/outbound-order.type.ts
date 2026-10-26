@@ -2,16 +2,17 @@
 
 import type { ClientRef } from "@/lib/types/client.type"
 import type { FileResource } from "@/lib/types/file.type"
+import type { InventoryIssueStatus } from "@/lib/types/inventory-issue.type"
 import type { ItemRef } from "@/lib/types/item.type"
 import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
 // Khớp đúng `OutboundOrderStatus` bên BE (be-quanlysanxuat/src/database/schemas/inventory/
 // outbound-orders.ts). Vòng đời: DRAFT --send--> PENDING_APPROVAL --approve--> PENDING_DELIVERY
-// --deliver--> DELIVERED (điểm cuối), nhánh PENDING_APPROVAL --reject--> REJECTED --send-->
-// PENDING_APPROVAL. Gate OQC (E205) chạy ở cả send và approve. Xem docs/domains/inventory.md,
-// mục "Giao hàng". DRAFT/PENDING_APPROVAL/PENDING_DELIVERY --cancel--> CANCELLED (điểm cuối,
-// BUG-090); DRAFT có thêm đường xoá hẳn (không qua CANCELLED).
+// ("Chờ xuất kho", BE sinh phiếu xuất kho SALES nháp) --kho ghi sổ phiếu xuất--> DELIVERED (điểm
+// cuối), nhánh PENDING_APPROVAL --reject--> REJECTED --send--> PENDING_APPROVAL. Gate OQC (E205)
+// chạy ở cả send và approve. DRAFT/PENDING_APPROVAL/PENDING_DELIVERY --cancel--> CANCELLED (điểm
+// cuối, BUG-090); DRAFT có thêm đường xoá hẳn (không qua CANCELLED).
 export const OutboundOrderStatus = {
   DRAFT: "DRAFT",
   PENDING_APPROVAL: "PENDING_APPROVAL",
@@ -27,7 +28,7 @@ export type OutboundOrderStatus =
 export const outboundOrderStatusLabels: Record<OutboundOrderStatus, string> = {
   [OutboundOrderStatus.DRAFT]: "Nháp",
   [OutboundOrderStatus.PENDING_APPROVAL]: "Chờ duyệt",
-  [OutboundOrderStatus.PENDING_DELIVERY]: "Chờ xác nhận giao",
+  [OutboundOrderStatus.PENDING_DELIVERY]: "Chờ xuất kho",
   [OutboundOrderStatus.DELIVERED]: "Đã giao",
   [OutboundOrderStatus.CANCELLED]: "Đã hủy",
   [OutboundOrderStatus.REJECTED]: "Bị từ chối",
@@ -104,6 +105,12 @@ export type OutboundOrderDetail = {
   rejecterBy: UserRef | null
   rejectedAt: string | null
   rejectionReason: string | null
+  // Phiếu xuất kho SALES BE sinh khi duyệt; null khi DO chưa được duyệt.
+  inventoryIssue: {
+    id: string
+    code: string
+    status: InventoryIssueStatus
+  } | null
   createdAt: string
   updatedAt: string
 }

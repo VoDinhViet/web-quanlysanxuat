@@ -70,6 +70,7 @@ All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`.
 | `/manage/inventory-receipts/$inventoryReceiptId` | `inventory-receipts_/$inventoryReceiptId.tsx` | InventoryReceiptDetailPage | inventory-receipts | inventoryReceipt | inventory:read |
 | `/manage/inventory-receipts/$inventoryReceiptId/update` | `inventory-receipts_/$inventoryReceiptId_.update.tsx` | UpdateInventoryReceiptPage | inventory-receipts | inventoryReceipt | inventory:update |
 | `/manage/inventory-receipts/create-receipt` | `inventory-receipts_/create-receipt.tsx` | CreateInventoryReceiptReceiptPage | inventory-receipts | - | inventory:create |
+| `/manage/finished-goods-issues` | `finished-goods-issues/index.tsx` | FinishedGoodsIssuesPage | inventory-issues | inventoryIssues (SALES) | inventory:read |
 | `/manage/inventory-issues` | `inventory-issues/index.tsx` | InventoryIssuesPage | inventory-issues | inventoryIssues | inventory:read |
 | `/manage/inventory-issues/$issueId` | `inventory-issues_/$issueId.tsx` | InventoryIssueDetailPage | inventory-issues | inventoryIssue | inventory:read |
 | `/manage/inventory-directs` | `inventory-directs/index.tsx` | InventoryDirectsPage | inventory-directs | directInventory, supplierOptions | inventory:read |
