@@ -83,7 +83,9 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 | FG stock list (loader) | getProductInventory | GET /inventory-products | inventory:read | getInventoryProducts (src/api/inventory-products/inventory-products.controller.ts:28) |
 | FG detail stat tiles (loader) | getItemInventory | GET /inventory-products | inventory:read | getInventoryProducts (:28), same route as above, filtered by item |
 | Detail "ledger" tab | getProductLedger | GET /inventory-products/:itemId/ledger | inventory:read | getProductLedger (:42) |
-| Material stock list (loader) | getDirectInventory | GET /inventory-directs | inventory:read | getInventoryDirects (src/api/inventory-directs/inventory-directs.controller.ts:25) |
+| Material stock list (loader) | getDirectInventory | GET /inventory-directs | inventory:read | getInventoryDirects (src/api/inventory-directs/inventory-directs.controller.ts:39) |
+| "Nhập tồn" dialog > template card "Tải về" (`InventoryImportDialog`, gate inventory:import) | downloadInventoryImportTemplate | GET /inventory-directs/import-template | inventory:import | downloadImportTemplate (:51) |
+| Same dialog > "Nhập tồn kho" (drop / pick / Ctrl+V a .xlsx; file parsed in the server fn, blank "Tồn thực tế" rows skipped) | importInventoryFile | POST /inventory-directs/import | inventory:import | importStock (:62); invalidates inventory-directs + inventory-requisitions |
 
 Rows above: 31 (30 distinct BE routes).
 

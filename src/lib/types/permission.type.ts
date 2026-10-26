@@ -57,6 +57,7 @@ export const PERMISSION_CODES = [
   "inventory:create",
   "inventory:update",
   "inventory:delete",
+  "inventory:import",
 
   "inventory-requisitions:read",
   "inventory-requisitions:create",

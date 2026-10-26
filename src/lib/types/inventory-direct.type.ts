@@ -51,3 +51,14 @@ export type DirectInventoryItem = {
   /** Định mức tồn tối thiểu */
   minStock: number
 }
+
+/** Mirrors BE `InventoryDirectImportResDto` (POST /api/inventory-directs/import). */
+export type InventoryImportResult = {
+  documents: {
+    id: string
+    code: string
+    adjustmentType: "INCREASE" | "DECREASE"
+    itemCount: number
+  }[]
+  unchangedCount: number
+}

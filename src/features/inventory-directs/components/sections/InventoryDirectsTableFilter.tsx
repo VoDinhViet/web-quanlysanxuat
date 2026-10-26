@@ -16,6 +16,8 @@ import {
 import { Label } from "@/components/ui/label"
 import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { FilterLabel } from "@/components/shared/primitives/FilterLabel"
+import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
+import { InventoryImportDialog } from "@/features/inventory-directs/components/composites/InventoryImportDialog"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { InventoryStatus } from "@/lib/types/inventory-direct.type"
 import { inventoryStatusLabels } from "@/lib/types/inventory-direct.type"
@@ -218,16 +220,22 @@ export function InventoryDirectsTableFilter() {
           </div>
         </div>
 
-        <Button
-          id="inventory-reset-filters"
-          type="button"
-          variant="outline"
-          className="shrink-0 gap-1.5 text-xs"
-          onClick={resetFilters}
-        >
-          <RotateCw className="size-3.5" />
-          Xóa bộ lọc
-        </Button>
+        <div className="flex shrink-0 items-center gap-2">
+          <Button
+            id="inventory-reset-filters"
+            type="button"
+            variant="outline"
+            className="gap-1.5 text-xs"
+            onClick={resetFilters}
+          >
+            <RotateCw className="size-3.5" />
+            Xóa bộ lọc
+          </Button>
+          <PermissionGate permission="inventory:import">
+            <span aria-hidden className="h-6 w-px bg-border" />
+            <InventoryImportDialog />
+          </PermissionGate>
+        </div>
       </div>
     </div>
   )

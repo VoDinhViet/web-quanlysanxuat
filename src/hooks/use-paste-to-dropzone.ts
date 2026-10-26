@@ -4,6 +4,8 @@ import type { RefObject } from "react"
 type PasteSlot = {
   rootRef: RefObject<HTMLElement | null>
   inputRef: RefObject<HTMLInputElement | null>
+  // Which clipboard files this zone takes; images by default (a screenshot or "Copy image").
+  acceptsFile?: (file: File) => boolean
 }
 
 type UsePasteToDropzoneOptions = PasteSlot & {
@@ -56,10 +58,14 @@ function pickTarget(candidates: PasteSlot[]): PasteSlot | undefined {
     : candidates[0]
 }
 
+function isImageFile(file: File) {
+  return file.type.startsWith("image/")
+}
+
 function handlePaste(event: ClipboardEvent) {
-  const files = Array.from(event.clipboardData?.files ?? []).filter((file) =>
-    file.type.startsWith("image/")
-  )
+  const target = pickTarget(candidatesInScope())
+  const acceptsFile = target?.acceptsFile ?? isImageFile
+  const files = Array.from(event.clipboardData?.files ?? []).filter(acceptsFile)
   if (files.length === 0) return
 
   // Copying spreadsheet cells puts both text and a PNG on the clipboard — pasting into a text
@@ -68,7 +74,7 @@ function handlePaste(event: ClipboardEvent) {
     document.activeElement?.matches(TEXT_FIELD_SELECTOR) === true
   if (isInTextField && event.clipboardData?.types.includes("text/plain")) return
 
-  const input = pickTarget(candidatesInScope())?.inputRef.current
+  const input = target?.inputRef.current
   if (!input) return
 
   event.preventDefault()
@@ -100,15 +106,17 @@ function isTarget(slot: PasteSlot) {
   return candidates.length > 1 && pickTarget(candidates) === slot
 }
 
-// Lets an image on the clipboard (Ctrl+V after a screenshot or "Copy image") drop into a
-// react-dropzone zone from anywhere on the page. Pass the `rootRef`/`inputRef` that
+// Lets an image on the clipboard (Ctrl+V after a screenshot or "Copy image"), or a file copied in
+// the file explorer when the zone passes `acceptsFile`, drop into a react-dropzone zone from
+// anywhere on the page. Pass the `rootRef`/`inputRef` that
 // `useDropzone` already returns.
 export function usePasteToDropzone({
   rootRef,
   inputRef,
+  acceptsFile,
   disabled = false,
 }: UsePasteToDropzoneOptions): UsePasteToDropzoneResult {
-  const [slot] = useState<PasteSlot>(() => ({ rootRef, inputRef }))
+  const [slot] = useState<PasteSlot>(() => ({ rootRef, inputRef, acceptsFile }))
 
   useEffect(() => {
     if (disabled) return
