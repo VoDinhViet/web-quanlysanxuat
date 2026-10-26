@@ -19,9 +19,25 @@ cd "$APP_DIR"
 exec 9>/var/lock/qlsx-staging-web-deploy.lock
 flock -n 9 || { echo "Another staging deploy is already running, stopping." >&2; exit 1; }
 
+# Keep the 1 newest staging images (by the run number in the `staging-v<n>` tag) and remove older ones.
+# Filtering by tag leaves production (`v<n>`) images alone; `docker rmi` without -f skips an image a container still uses.
+prune_old_images() {
+  local repo="${1%:*}"
+  docker images "$repo" --format '{{.Tag}}' \
+    | sed -nE 's/^staging-v([0-9]+)$/\1/p' | sort -nr | tail -n +2 \
+    | while read -r run; do docker rmi "$repo:staging-v$run" >/dev/null 2>&1 || true; done
+}
+
 if [[ -n "${GHCR_USER:-}" ]]; then
   trap 'docker logout ghcr.io >/dev/null 2>&1 || true' EXIT
   docker login ghcr.io -u "$GHCR_USER" --password-stdin >/dev/null
+fi
+
+# A pull needs ~2GB and Postgres shares this disk: stop below 3GB free rather than let the pull eat the DB's room.
+if (( $(df --output=avail / | tail -1) < 3 * 1024 * 1024 )); then
+  echo "!!! Less than 3GB free on the disk, stopping. Remove old images, then deploy again." >&2
+  df -h / >&2
+  exit 1
 fi
 
 echo "==> Pulling $IMAGE"
@@ -40,7 +56,8 @@ if WEB_IMAGE="$IMAGE" docker compose up -d --no-build --wait --wait-timeout "$WA
   grep -v '^WEB_IMAGE=' .env > .env.tmp || true
   echo "WEB_IMAGE=$IMAGE" >> .env.tmp
   mv .env.tmp .env
-  # No machine-wide image prune: production images live in the same Docker daemon and must not be touched.
+  echo "==> Removing old staging images, keeping only the running one"
+  prune_old_images "$IMAGE"
   echo "==> Deployed: $IMAGE"
   exit 0
 fi
