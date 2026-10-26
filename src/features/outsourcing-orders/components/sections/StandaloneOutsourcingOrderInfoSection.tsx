@@ -4,7 +4,6 @@ import { useGetOperationOptions } from "@/features/operations/api"
 import { standaloneOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/standalone-outsourcing-order.schema"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { withForm } from "@/hooks/use-app-form"
-import { OperationType } from "@/lib/types/operation.type"
 
 // Thông tin phiếu thủ công: NCC, công đoạn gia công (áp cho cả phiếu), ngày gửi/nhận và ghi chú.
 export const StandaloneOutsourcingOrderInfoSection = withForm({
@@ -22,8 +21,8 @@ export const StandaloneOutsourcingOrderInfoSection = withForm({
     initialOperationOption,
   }) {
     const supplierPicker = useGetSupplierOptions()
-    // Phiếu này chỉ gửi công đoạn gia công ngoài; BE kiểm lại khi lưu.
-    const operationPicker = useGetOperationOptions(OperationType.OUTSOURCE)
+    // Phiếu thủ công không gắn Job nên chọn được mọi công đoạn đang hoạt động.
+    const operationPicker = useGetOperationOptions()
 
     return (
       <div className="px-4 py-5 sm:px-5">
@@ -74,7 +73,7 @@ export const StandaloneOutsourcingOrderInfoSection = withForm({
                 options={operationPicker.options}
                 onSearchChange={operationPicker.onSearchChange}
                 isPending={operationPicker.isFetching}
-                emptyMessage="Không tìm thấy công đoạn gia công ngoài"
+                emptyMessage="Không tìm thấy công đoạn"
                 isInvalid={
                   field.state.meta.isTouched &&
                   field.state.meta.errors.length > 0

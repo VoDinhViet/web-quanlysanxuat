@@ -8,7 +8,7 @@ import {
 
 // Phiếu thủ công: người dùng tự nhập từng dòng, công đoạn chọn từ danh mục gia công ngoài và áp cho
 // cả phiếu. Mirrors CreateStandaloneOutsourcingOrderReqDto.
-const standaloneOutsourcingOrderItemSchema = z.object({
+export const standaloneOutsourcingOrderItemSchema = z.object({
   itemCode: z
     .string()
     .trim()

@@ -9,6 +9,9 @@ type TableTextCellInputProps = {
   disabled?: boolean
   placeholder?: string
   id?: string
+  // Chặn ngay lúc gõ: ô trong bảng không có chỗ hiện lỗi "tối đa N ký tự" của schema.
+  maxLength?: number
+  "aria-label"?: string
   className?: string
 }
 
@@ -24,6 +27,8 @@ export function TableTextCellInput({
   disabled,
   placeholder,
   id,
+  maxLength,
+  "aria-label": ariaLabel,
   className,
 }: TableTextCellInputProps) {
   const [localValue, setLocalValue] = useState(value)
@@ -40,6 +45,8 @@ export function TableTextCellInput({
       id={id}
       className={cn("h-8 bg-card text-xs", className)}
       placeholder={placeholder}
+      maxLength={maxLength}
+      aria-label={ariaLabel}
       value={localValue}
       disabled={disabled}
       onChange={(event) => setLocalValue(event.target.value)}

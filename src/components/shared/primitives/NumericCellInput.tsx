@@ -17,6 +17,7 @@ type NumericCellInputProps = {
   // Override the default h-8/text-xs sizing for a caller whose row has more room (e.g. a
   // 2-input picker step) — omit to keep every other caller's compact grid-cell sizing unchanged.
   className?: string
+  "aria-label"?: string
 }
 
 // Bare version of AppFormFields.tsx's NumberField — same NumericFormat recipe, no Field/Label
@@ -38,6 +39,7 @@ export function NumericCellInput({
   min,
   max,
   className,
+  "aria-label": ariaLabel,
 }: NumericCellInputProps) {
   const [localValue, setLocalValue] = useState(value)
   // Re-sync local state from an external value change (draft restore, reset) without an effect —
@@ -75,6 +77,7 @@ export function NumericCellInput({
         return true
       }}
       placeholder={placeholder}
+      aria-label={ariaLabel}
       onValueChange={(values) => setLocalValue(values.floatValue)}
       onBlur={commit}
       disabled={disabled}

@@ -6,11 +6,17 @@ export type OutsourcingOrderItemTotals = {
   totalArea: number
 }
 
+// Chỉ cần 3 cột số đo nên dòng phiếu thủ công (không có snapshot Job) cũng cộng được.
+type OutsourcingOrderItemMeasures = Pick<
+  CreateOutsourcingOrderItemValue,
+  "quantity" | "weight" | "area"
+>
+
 // Shared by the items/confirm steps and the post-submit success dialog — all three summed the
 // same 3 fields off the same item shape before this was extracted (see order-totals.ts for the
 // same pattern elsewhere in the repo).
 export function sumOutsourcingOrderItemTotals(
-  items: CreateOutsourcingOrderItemValue[]
+  items: OutsourcingOrderItemMeasures[]
 ): OutsourcingOrderItemTotals {
   return items.reduce(
     (totals, item) => ({

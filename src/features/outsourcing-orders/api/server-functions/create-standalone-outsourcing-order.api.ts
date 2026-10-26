@@ -19,8 +19,8 @@ export function resolveStandaloneOutsourcingOrderErrorMessage(
       return "Nhà cung cấp gia công không tồn tại."
     case "operation.error.not_found":
       return "Công đoạn gia công không tồn tại."
-    case "outsourcing_order.error.operation_not_outsource":
-      return "Công đoạn đã chọn không phải công đoạn gia công ngoài đang hoạt động."
+    case "operation.error.inactive":
+      return "Công đoạn đã chọn đã ngừng sử dụng, vui lòng chọn công đoạn khác."
     case "outsourcing_order.error.items_required":
       return "Phiếu cần ít nhất một dòng hàng gửi gia công."
     case "outsourcing_order.error.duplicate_operation":
