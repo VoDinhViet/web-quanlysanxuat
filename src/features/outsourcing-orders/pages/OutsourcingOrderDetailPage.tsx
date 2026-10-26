@@ -8,6 +8,7 @@ import {
   outsourcingOrderQueryOptions,
 } from "@/features/outsourcing-orders/api/options"
 import { OutsourcingOrderDetailHeader } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailHeader"
+import { OutsourcingOrderRejectionNotice } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderRejectionNotice"
 import { OutsourcingOrderInfoCard } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderInfoCard"
 import { OutsourcingOrderItemsCard } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderItemsCard"
 
@@ -43,6 +44,7 @@ export function OutsourcingOrderDetailPage() {
           <OutsourcingOrderDetailHeader order={order} />
         </Surface>
 
+        <OutsourcingOrderRejectionNotice order={order} />
         <OutsourcingOrderInfoCard order={order} />
         <OutsourcingOrderItemsCard items={items} />
       </div>

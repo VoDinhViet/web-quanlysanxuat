@@ -8,10 +8,11 @@ import {
 } from "@/lib/types/outsourcing-order.type"
 import { cn } from "@/lib/utils"
 
-// 5 giá trị status thật sự (đã gộp tiến độ nhận hàng, docs/decisions/outsourcing-order-status-progress-merge.md
-// phía be-quanlysanxuat) — không có DRAFT, OS-OUT không còn trạng thái nháp
-// (docs/decisions/outsourcing-no-draft.md phía be-quanlysanxuat).
 const statusValues = [
+  OutsourcingOrderStatus.DRAFT,
+  OutsourcingOrderStatus.PENDING_APPROVAL,
+  OutsourcingOrderStatus.APPROVED,
+  OutsourcingOrderStatus.REJECTED,
   OutsourcingOrderStatus.SENT,
   OutsourcingOrderStatus.PARTIAL,
   OutsourcingOrderStatus.WAITING_QC,

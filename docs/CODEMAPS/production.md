@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-24 | Files scanned: ~120 | Token estimate: ~5000 -->
+<!-- Generated: 2026-10-26 | Files scanned: ~120 | Token estimate: ~5000 -->
 # Production codemap (web)
 
 Production orders (LSX), production jobs (JOB), shop-floor execution, outsourcing OS-OUT and OS-IN. BE twin: `be-quanlysanxuat/docs/CODEMAPS/production.md` (sections 1 Modules, 2 Routes, 3 State flows, 4 Key rules, 5 Cross-domain links). Screen and button map: `docs/ui-flow.md`. Quality-side screens (OQC request, NCR): `docs/CODEMAPS/quality.md`.
@@ -11,7 +11,7 @@ Server fns live in `src/features/<feature>/api/server-functions/<name>.api.ts`. 
 | `production-orders` | LSX list, edit lines, approve, signed file, PDF/Excel | `ProductionOrdersPage`, `ProductionOrderDetailPage` | `production-order.type.ts` (`ProductionOrderStatus`) | production-orders-search, update-production-order, update-production-order-signed-file |
 | `production-jobs` | JOB list/detail: plan, BOM issues, operations, notes, OQC request | `ProductionJobsPage`, `ProductionJobDetailPage` | `production-job.type.ts` (`ProductionJobStatus`, operation progress, warnings) | production-jobs-search, production-job-detail-search (`tab`), create-production-job-issues, update-production-job-issue, create-production-job-note |
 | `production-execution` | Shop-floor view of operations per job; reads only (report is written by a production-jobs server fn) | `ProductionExecutionPage`, `ProductionExecutionJobPage` | `production-job.type.ts` (execution types) | production-execution-search (`operationId`, `all`), production-execution-job-search |
-| `outsourcing-orders` | OS-OUT: send operations to a supplier | `OutsourcingOrdersPage`, `OutsourcingOrderDetailPage`, `CreateOutsourcingOrderPage` | `outsourcing-order.type.ts` (`OutsourcingOrderStatus`) | create-outsourcing-order, create-outsourcing-order-search (`productionJobId`, `operationId`), outsourcing-orders-search |
+| `outsourcing-orders` | OS-OUT: send operations to a supplier | `OutsourcingOrdersPage`, `OutsourcingOrderDetailPage`, `CreateOutsourcingOrderPage`, `UpdateOutsourcingOrderPage` | `outsourcing-order.type.ts` (`OutsourcingOrderStatus`) | create-outsourcing-order, create-outsourcing-order-search (`productionJobId`, `operationId`), outsourcing-orders-search |
 | `outsourcing-receipts` | OS-IN: receive goods back, optional IQC | `OutsourcingReceiptsPage`, `OutsourcingReceiptDetailPage`, `CreateOutsourcingReceiptPage` | `outsourcing-receipt.type.ts` (reuses `InventoryDocumentStatus`) | create-outsourcing-receipt, outsourcing-receipts-search |
 
 ## 2. Screens
@@ -26,6 +26,7 @@ Permission gate = `routePermissions` entry (read unless noted). Sidebar labels f
 | `/manage/production-execution/$productionJobId?operationId=` | `manage_/production-execution_/$productionJobId.tsx` | `ProductionExecutionJobPage` | productionExecutionJobOperationsQueryOptions, productionExecutionJobQueryOptions | `production-execution:read` | Execution list row "Xem chi tiết"; missing `operationId` redirects back to the list |
 | `/manage/outsourcing-orders` | `manage_/outsourcing-orders/index.tsx` | `OutsourcingOrdersPage` | outsourcingOrdersQueryOptions | `outsourcing:read` | Sidebar "Xuất đi gia công (OS-OUT)" |
 | `/manage/outsourcing-orders/create` | `manage_/outsourcing-orders_/create.tsx` | `CreateOutsourcingOrderPage` | none (queries run in component) | `outsourcing:create` | List "Tạo phiếu gia công ngoài (OS-OUT)"; JOB operations tab and execution parts "Gửi gia công ngoài" (`?productionJobId&operationId`) |
+| `/manage/outsourcing-orders/$outsourcingOrderId/update` | `manage_/outsourcing-orders_/$outsourcingOrderId_.update.tsx` | `UpdateOutsourcingOrderPage` | outsourcingOrderQueryOptions, outsourcingOrderItemsQueryOptions | `outsourcing:update` | Detail "Sửa phiếu" (DRAFT/REJECTED only; same `OutsourcingOrderForm` as create) |
 | `/manage/outsourcing-orders/$outsourcingOrderId` | `manage_/outsourcing-orders_/$outsourcingOrderId.tsx` | `OutsourcingOrderDetailPage` | outsourcingOrderItemsQueryOptions, outsourcingOrderQueryOptions | `outsourcing:read` | OS-OUT list row |
 | `/manage/outsourcing-receipts` | `manage_/outsourcing-receipts/index.tsx` | `OutsourcingReceiptsPage` | outsourcingReceiptsQueryOptions, supplierOptionsQueryOptions | `outsourcing:read` | Sidebar "Nhập về (OS-IN)" |
 | `/manage/outsourcing-receipts/create` | `manage_/outsourcing-receipts_/create.tsx` | `CreateOutsourcingReceiptPage` | none | `outsourcing:create` | List "Lập phiếu OS-IN" |
@@ -79,14 +80,19 @@ Server fn file = kebab-case of the fn name + `.api.ts`. BE column is the handler
 | Job page "parts" tab | `getProductionExecutionJobOperations` | GET /api/production-execution/jobs/:productionJobId/operations | production-execution:read | :86 (`getJobOperations`) |
 | Job page "reports" tab ("Lịch sử báo cáo") | `getJobOperationReports` | GET /api/production-execution/jobs/:productionJobId/reports | production-execution:read | :106 |
 
-### outsourcing-orders (6)
+### outsourcing-orders (11)
 | Action / screen trigger | Server fn | Endpoint | Permission | BE line |
 |---|---|---|---|---|
 | OS-OUT list | `getOutsourcingOrders` | GET /api/outsourcing-orders | outsourcing:read | :35 |
 | Create wizard picker; execution parts (only when JOB IN_PROGRESS and user has `outsourcing:read`) | `getOutsourceableOperations` | GET /api/outsourcing-orders/outsourceable-operations | outsourcing:read | :49 |
 | Detail header | `getOutsourcingOrder` | GET /api/outsourcing-orders/:outsourcingOrderId | outsourcing:read | :67 |
 | Detail lines | `getOutsourcingOrderItems` | GET /api/outsourcing-orders/:outsourcingOrderId/items | outsourcing:read | :82 (`getOrderItems`) |
-| Create wizard "Xác nhận tạo phiếu" (tab "3. Xác nhận & tạo phiếu"), then back to list | `createOutsourcingOrder` | POST /api/outsourcing-orders | outsourcing:create | :95 |
+| Create wizard "Xác nhận tạo phiếu" (tab "3. Xác nhận & tạo phiếu"): saves a DRAFT, then back to list | `createOutsourcingOrder` | POST /api/outsourcing-orders | outsourcing:create | - |
+| Update page "Lưu thay đổi" | `updateOutsourcingOrder` | PATCH /api/outsourcing-orders/:outsourcingOrderId | outsourcing:update | - |
+| Detail "Gửi duyệt" / "Gửi duyệt lại" | `submitOutsourcingOrder` | POST .../:outsourcingOrderId/submit | outsourcing:update | - |
+| Detail "Duyệt phiếu" | `approveOutsourcingOrder` | POST .../:outsourcingOrderId/approve | outsourcing:approve | - |
+| Detail "Từ chối" (reason dialog) | `rejectOutsourcingOrder` | POST .../:outsourcingOrderId/reject | outsourcing:approve | - |
+| Detail "Xác nhận xuất gia công" | `confirmSendOutsourcingOrder` | POST .../:outsourcingOrderId/confirm-send | outsourcing:update | - |
 | Detail "Hủy phiếu" | `cancelOutsourcingOrder` | POST /api/outsourcing-orders/:outsourcingOrderId/cancel | outsourcing:update | :111 |
 
 ### outsourcing-receipts (6)

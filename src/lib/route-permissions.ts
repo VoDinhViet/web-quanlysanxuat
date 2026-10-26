@@ -97,6 +97,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   "/manage/outsourcing-orders": "outsourcing:read",
   "/manage/outsourcing-orders/create": "outsourcing:create",
   "/manage/outsourcing-orders/$outsourcingOrderId": "outsourcing:read",
+  "/manage/outsourcing-orders/$outsourcingOrderId/update": "outsourcing:update",
 
   "/manage/outsourcing-receipts": "outsourcing:read",
   "/manage/outsourcing-receipts/create": "outsourcing:create",

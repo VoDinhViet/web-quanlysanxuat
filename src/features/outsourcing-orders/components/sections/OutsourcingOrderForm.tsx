@@ -19,6 +19,7 @@ import {
   wizardTabs,
 } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderTabs"
 import { createOutsourcingOrder } from "@/features/outsourcing-orders/api/server-functions/create-outsourcing-order.api"
+import { updateOutsourcingOrder } from "@/features/outsourcing-orders/api/server-functions/update-outsourcing-order.api"
 import {
   createOutsourcingOrderFormDefaultValues,
   createOutsourcingOrderSchema,
@@ -26,27 +27,37 @@ import {
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
+import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 import type { CreateOutsourcingOrderWizardTab } from "@/features/outsourcing-orders/components/sections/CreateOutsourcingOrderTabs"
 import type { CreateOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 
-type CreateOutsourcingOrderFormProps = {
+type OutsourcingOrderFormProps = {
   // Deep-link tuỳ chọn từ nút "Gửi gia công ngoài" trên bảng công đoạn của 1 Job
   // (ProductionJobOperationsTable.tsx) — chỉ seed giá trị khởi tạo cho 2 filter của picker, không
   // đổi hành vi chọn dòng nào khác.
   initialProductionJobId?: string
   initialOperationId?: string
+  // Có giá trị = sửa phiếu nháp/bị từ chối: form nạp sẵn dữ liệu phiếu, mở thẳng tab số lượng và
+  // không dùng bản nháp localStorage của luồng tạo mới.
+  editing?: {
+    outsourcingOrderId: string
+    defaultValues: CreateOutsourcingOrderSchema
+    supplierOption: ComboboxOption
+  }
 }
 
-// Vỏ wizard "Tạo phiếu OS-OUT" — rập khuôn CreateInventoryReceiptFromPoForm.tsx/
-// PurchaseRequestCreateForm.tsx, 3 tab, không có "Lưu nháp" riêng (chỉ 1 hành động submit —
-// POST /outsourcing-orders luôn tạo ở trạng thái DRAFT).
-export function CreateOutsourcingOrderForm({
+// Vỏ wizard "Tạo/Sửa phiếu OS-OUT" — rập khuôn CreateInventoryReceiptFromPoForm.tsx/
+// PurchaseRequestCreateForm.tsx, 3 tab, chỉ 1 hành động submit: POST /outsourcing-orders luôn tạo
+// phiếu ở trạng thái DRAFT, PATCH chỉ sửa được phiếu DRAFT/REJECTED. Gửi duyệt làm ở trang chi tiết.
+export function OutsourcingOrderForm({
   initialProductionJobId,
   initialOperationId,
-}: CreateOutsourcingOrderFormProps) {
-  const navigate = useNavigate({ from: "/manage/outsourcing-orders/create" })
+  editing,
+}: OutsourcingOrderFormProps) {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const createOutsourcingOrderFn = useServerFn(createOutsourcingOrder)
+  const updateOutsourcingOrderFn = useServerFn(updateOutsourcingOrder)
 
   const { draft, saveDraft, clearDraft } =
     useFormDraft<CreateOutsourcingOrderSchema>(
@@ -54,42 +65,72 @@ export function CreateOutsourcingOrderForm({
     )
   const draftRestoredRef = useRef(false)
 
-  const [tab, setTab] = useState<CreateOutsourcingOrderWizardTab>("picker")
+  // Thoát và lưu xong đều về chi tiết phiếu khi đang sửa, về danh sách khi đang tạo.
+  const leaveForm = () =>
+    editing
+      ? navigate({
+          to: "/manage/outsourcing-orders/$outsourcingOrderId",
+          params: { outsourcingOrderId: editing.outsourcingOrderId },
+        })
+      : navigate({
+          to: "/manage/outsourcing-orders",
+          search: { page: 1, limit: 10 },
+        })
 
-  const { mutate: create, isPending } = useMutation({
+  const [tab, setTab] = useState<CreateOutsourcingOrderWizardTab>(
+    editing ? "items" : "picker"
+  )
+
+  const { mutate: save, isPending } = useMutation({
     mutationFn: (value: CreateOutsourcingOrderSchema) =>
-      createOutsourcingOrderFn({ data: value }),
+      editing
+        ? updateOutsourcingOrderFn({
+            data: {
+              outsourcingOrderId: editing.outsourcingOrderId,
+              order: value,
+            },
+          })
+        : createOutsourcingOrderFn({ data: value }),
     onSuccess: async () => {
-      clearDraft()
+      void queryClient.invalidateQueries({ queryKey: ["reports"] })
       await queryClient.invalidateQueries({ queryKey: ["outsourcing-orders"] })
-      toast.success("Đã tạo phiếu xuất đi gia công (OS-OUT)")
-      await navigate({
-        to: "/manage/outsourcing-orders",
-        search: { page: 1, limit: 10 },
-      })
+
+      if (editing) {
+        toast.success("Đã lưu phiếu gia công ngoài")
+      } else {
+        clearDraft()
+        toast.success(
+          "Đã lưu nháp phiếu xuất đi gia công (OS-OUT), cần gửi duyệt"
+        )
+      }
+      await leaveForm()
     },
     onError: (error) => toast.error(error.message),
   })
 
   const form = useAppForm({
-    defaultValues: createOutsourcingOrderFormDefaultValues,
+    defaultValues: editing
+      ? editing.defaultValues
+      : createOutsourcingOrderFormDefaultValues,
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: createOutsourcingOrderSchema,
     },
-    onSubmit: ({ value }) => create(value),
+    onSubmit: ({ value }) => save(value),
   })
 
   useEffect(() => {
-    if (!draftRestoredRef.current && draft) {
+    if (!editing && !draftRestoredRef.current && draft) {
       draftRestoredRef.current = true
       restoreFormDraft(form, draft)
     }
-  }, [draft, form])
+  }, [draft, editing, form])
 
   function handleTabChange(nextTab: CreateOutsourcingOrderWizardTab) {
     setTab(nextTab)
-    saveDraft(form.state.values)
+    if (!editing) {
+      saveDraft(form.state.values)
+    }
   }
 
   // RAC's onSelectionChange returns a `Key` (string | number); `find` narrows it back
@@ -149,12 +190,14 @@ export function CreateOutsourcingOrderForm({
               disabled={isPending}
               initialProductionJobId={initialProductionJobId}
               initialOperationId={initialOperationId}
+              editingOutsourcingOrderId={editing?.outsourcingOrderId}
             />
           </TabsContent>
           <TabsContent value="items" className="m-0 outline-none">
             <CreateOutsourcingOrderInfoSection
               form={form}
               disabled={isPending}
+              initialSupplierOption={editing?.supplierOption}
             />
             <div className="border-t border-border">
               <CreateOutsourcingOrderItemsSection
@@ -186,12 +229,7 @@ export function CreateOutsourcingOrderForm({
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
               disabled={isPending}
-              onClick={() =>
-                void navigate({
-                  to: "/manage/outsourcing-orders",
-                  search: { page: 1, limit: 10 },
-                })
-              }
+              onClick={() => void leaveForm()}
             >
               Thoát
             </Button>
@@ -241,12 +279,12 @@ export function CreateOutsourcingOrderForm({
                   {isSubmitting || isPending ? (
                     <>
                       <Loader2 className="animate-spin" />
-                      Đang tạo phiếu
+                      Đang lưu phiếu
                     </>
                   ) : (
                     <>
                       <CheckCircle className="size-4" />
-                      Xác nhận tạo phiếu
+                      {editing ? "Lưu thay đổi" : "Lưu nháp phiếu"}
                     </>
                   )}
                 </Button>

@@ -209,6 +209,9 @@ const menuGroups: MenuGroup[] = [
         label: "Xuất đi gia công (OS-OUT)",
         icon: Send,
         href: "/manage/outsourcing-orders",
+        badgeKey: "outsourcingOrdersPending",
+        todoBadgeKey: "outsourcingOrdersToProcess",
+        todoBadgeLabel: "phiếu chờ sửa, gửi duyệt hoặc xác nhận xuất",
       },
       {
         label: "Nhập về (OS-IN)",

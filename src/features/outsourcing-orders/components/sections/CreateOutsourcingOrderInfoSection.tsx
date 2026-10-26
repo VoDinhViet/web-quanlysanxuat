@@ -1,4 +1,5 @@
 import { ComboboxField } from "@/components/shared/composites/ComboboxField"
+import type { ComboboxOption } from "@/components/shared/composites/ComboboxField"
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { withForm } from "@/hooks/use-app-form"
@@ -6,8 +7,12 @@ import { withForm } from "@/hooks/use-app-form"
 // Nửa đầu bước ② — thông tin phiếu (NCC/ngày gửi/ngày cần/ghi chú).
 export const CreateOutsourcingOrderInfoSection = withForm({
   defaultValues: createOutsourcingOrderFormDefaultValues,
-  props: { disabled: false },
-  render: function Render({ form, disabled }) {
+  props: {
+    disabled: false,
+    // Nhà cung cấp đã chọn khi sửa phiếu — để ô hiện tên trước khi danh sách NCC tải xong.
+    initialSupplierOption: undefined as ComboboxOption | undefined,
+  },
+  render: function Render({ form, disabled, initialSupplierOption }) {
     const supplier = useGetSupplierOptions()
 
     return (
@@ -32,6 +37,7 @@ export const CreateOutsourcingOrderInfoSection = withForm({
                 value={field.state.value || undefined}
                 onValueChange={(next) => field.handleChange(next ?? "")}
                 onBlur={field.handleBlur}
+                initialOption={initialSupplierOption}
                 options={supplier.options}
                 onSearchChange={supplier.onSearchChange}
                 isPending={supplier.isFetching}

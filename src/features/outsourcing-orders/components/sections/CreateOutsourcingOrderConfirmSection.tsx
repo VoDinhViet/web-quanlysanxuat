@@ -255,8 +255,9 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
           <p className="text-xs text-muted-foreground">
             Phiếu sẽ ở trạng thái{" "}
             <strong className="font-medium text-foreground">Nháp</strong> sau
-            khi tạo, chưa trừ tồn kho. Bấm "Xác nhận đã gửi" trên phiếu để trừ
-            kho — khi còn Nháp, phiếu vẫn sửa/xoá được.
+            khi lưu, hàng chưa coi là rời xưởng. Bấm "Gửi duyệt" trên phiếu để
+            người có quyền duyệt xem xét; sau khi được duyệt, bấm "Xác nhận xuất
+            gia công". Khi còn Nháp hoặc bị từ chối, phiếu vẫn sửa được.
           </p>
         </div>
 

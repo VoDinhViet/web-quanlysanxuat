@@ -59,6 +59,8 @@ export type QcPassRatePoint = {
  *  chỉ > 0 khi user hiện tại có quyền xử lý module đó (approve; riêng `purchaseQuotationsToQuote` là
  *  create), ngược lại backend luôn trả 0; `purchaseRequestsToSubmit` là việc chờ của người tạo
  *  (đề xuất Nháp/Bị từ chối của chính họ, cần quyền create); `ncrsToProcess` cần quyền `ncr:update`;
+ *  `outsourcingOrdersPending` cần quyền `outsourcing:approve`, `outsourcingOrdersToProcess` cần quyền
+ *  `outsourcing:update`;
  *  riêng các "việc chờ" của kho/IQC/thanh toán (`inventoryReceiptsToPost`, `paymentRequestsToSubmit`,
  *  `paymentRequestsPending`, `supplierReturnsToPost`, `inventoryIssuesToPost`, `iqcToInspect`,
  *  `oqcToInspect`) thì ai cũng thấy. */
@@ -77,6 +79,8 @@ export type PendingApprovals = {
   paymentRequestsPending: number
   ncrsPending: number
   ncrsToProcess: number
+  outsourcingOrdersPending: number
+  outsourcingOrdersToProcess: number
   supplierReturnsToPost: number
   inventoryIssuesToPost: number
   iqcToInspect: number

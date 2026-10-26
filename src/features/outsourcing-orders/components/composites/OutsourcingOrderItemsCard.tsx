@@ -52,15 +52,15 @@ export function OutsourcingOrderItemsCard({
     <OutsourcingOrderDetailSectionCard
       icon={ListChecks}
       title="Danh sách chi tiết gửi gia công"
-      description="Hệ thống chưa trả về danh sách dòng cho phiếu này"
+      description="Các công đoạn và số lượng gửi đi gia công ngoài"
       contentClassName="p-0"
     >
       <div className="overflow-x-auto">
         {items.length === 0 ? (
           <TableEmpty
             icon={PackageSearch}
-            title="Chưa thể hiển thị chi tiết dòng"
-            description="Hệ thống hiện chưa trả về danh sách dòng cho phiếu này."
+            title="Phiếu chưa có dòng chi tiết"
+            description="Phiếu này chưa có công đoạn nào được gửi đi gia công."
           />
         ) : (
           <Table

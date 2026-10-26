@@ -29,6 +29,7 @@ const getOutsourceableOperationsSchema = z.object({
   q: optional(z.string().trim()),
   productionJobId: optional(z.string().trim()),
   operationId: optional(z.string().trim()),
+  excludeOutsourcingOrderId: optional(z.string().trim()),
 })
 
 export const getOutsourceableOperations = createServerFn({ method: "GET" })

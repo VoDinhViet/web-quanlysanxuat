@@ -10,10 +10,9 @@ type OutsourcingOrderInfoCardProps = {
   order: OutsourcingOrderDetail
 }
 
-// Ghi chú + người tạo + người/ngày xác nhận gửi — mọi phiếu đều có `postedAt` ngay lúc tạo, không
-// có trạng thái nháp (docs/decisions/outsourcing-no-draft.md phía be-quanlysanxuat), nên không cần
-// điều kiện ẩn/hiện như OutsourcingReceiptInfoCard.tsx's `isPosted &&` block. NCC/kho xuất/ngày đã
-// có ở header's meta grid nên không lặp lại ở đây.
+// Ghi chú + người tạo + người duyệt + người/ngày xác nhận xuất. Người duyệt và xác nhận xuất chỉ có
+// từ khi phiếu đi qua các bước đó nên hiện "—" ở phiếu nháp. NCC/ngày đã có ở header's meta grid nên
+// không lặp lại ở đây.
 export function OutsourcingOrderInfoCard({
   order,
 }: OutsourcingOrderInfoCardProps) {
@@ -21,7 +20,7 @@ export function OutsourcingOrderInfoCard({
     <OutsourcingOrderDetailSectionCard
       icon={Info}
       title="Thông tin phiếu"
-      description="Ghi chú và trạng thái xác nhận"
+      description="Ghi chú, người duyệt và xác nhận xuất"
     >
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
         <InfoTile icon={StickyNote} label="Ghi chú" value={order.note ?? "—"} />
@@ -32,21 +31,33 @@ export function OutsourcingOrderInfoCard({
         />
         <InfoTile
           icon={User}
-          label="Người xác nhận"
+          label="Người duyệt"
+          value={order.approverBy?.fullName ?? "—"}
+        />
+        <InfoTile
+          icon={Calendar}
+          label="Ngày duyệt"
+          value={formatDateTime(order.approvedAt)}
+        />
+        <InfoTile
+          icon={User}
+          label="Người xác nhận xuất"
           value={order.posterBy?.fullName ?? "—"}
         />
         <InfoTile
           icon={Calendar}
-          label="Ngày xác nhận"
-          value={
-            order.postedAt
-              ? DateTime.fromISO(order.postedAt).toFormat("dd/MM/yyyy HH:mm")
-              : "—"
-          }
+          label="Ngày xác nhận xuất"
+          value={formatDateTime(order.postedAt)}
         />
       </dl>
     </OutsourcingOrderDetailSectionCard>
   )
+}
+
+function formatDateTime(isoDateTime: string | null): string {
+  return isoDateTime
+    ? DateTime.fromISO(isoDateTime).toFormat("dd/MM/yyyy HH:mm")
+    : "—"
 }
 
 type InfoTileProps = {

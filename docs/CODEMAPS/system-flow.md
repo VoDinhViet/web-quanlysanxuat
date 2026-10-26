@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: ~75 (BE codemaps x7, ui-flow, FE input JSON x5, BE services/controllers, FE action components) | Token estimate: ~8500 -->
+<!-- Generated: 2026-10-26 | Files scanned: ~75 (BE codemaps x7, ui-flow, FE input JSON x5, BE services/controllers, FE action components) | Token estimate: ~8500 -->
 # System flow codemap (cross-stack)
 
 Trace one business chain UI -> FE server fn -> BE endpoint -> service -> tables -> status. Per-domain detail: FE `docs/CODEMAPS/{sales,purchasing,inventory,production,quality}.md`, BE `be-quanlysanxuat/docs/CODEMAPS/{sales,purchasing,inventory,production,quality}.md`, screens `docs/ui-flow.md`.
@@ -143,14 +143,15 @@ Read-only chain views: purchase notes = `PurchaseNotesService` (no controller), 
 
 ```
 JOB tab operations "Gửi gia công ngoài" (OUTSOURCE op, JOB IN_PROGRESS) -> /manage/outsourcing-orders/create (prefilled)
- OS-OUT "Xác nhận tạo phiếu" --> SENT (no stock move) -> OS-IN create "Xác nhận nhập" --> POSTED
+ OS-OUT "Xác nhận tạo phiếu" --> DRAFT -> "Gửi duyệt" PENDING_APPROVAL -> "Duyệt phiếu" APPROVED (or "Từ chối" REJECTED -> edit -> resubmit)
+   -> "Xác nhận xuất gia công" SENT (no stock move) -> OS-IN create "Xác nhận nhập" --> POSTED
  OS-OUT SENT -> PARTIAL (received < sent) | WAITING_QC (full, IQC open) | COMPLETED;  op completedQuantity += received; FG op done -> JOB WAITING_QC
 ```
 
 | # | UI route + button | FE server fn | METHOD /api/... | Perm | BE handler -> service | Tables written | Status | Blocking errors |
 |---|---|---|---|---|---|---|---|---|
 | 5.1 | wizard picker (GET /outsourcing-orders/outsourceable-operations) | getOutsourceableOperations | GET | outsourcing:read | ctrl:49 -> svc:228 | - | JOB IN_PROGRESS + OUTSOURCE ops only | - |
-| 5.2 | `/manage/outsourcing-orders/create` "Xác nhận tạo phiếu" | createOutsourcingOrder (`outsourcing-orders/create-outsourcing-order.api.ts`) | POST /outsourcing-orders | outsourcing:create | ctrl:95 -> svc:358 | outsourcing_orders, outsourcing_order_items | -> SENT | E019 E182 E183 E280 |
+| 5.2 | `/manage/outsourcing-orders/create` "Xác nhận tạo phiếu" | createOutsourcingOrder (`outsourcing-orders/create-outsourcing-order.api.ts`) | POST /outsourcing-orders | outsourcing:create | createOutsourcingOrder | outsourcing_orders, outsourcing_order_items | -> DRAFT (approval steps: see production.md outsourcing-orders) | E019 E182 E183 E280 E184 |
 | 5.3 | `/manage/outsourcing-receipts/create` (picker GET .../pending-order-items) "Xác nhận nhập" | createOutsourcingReceipt (`outsourcing-receipts/create-outsourcing-receipt.api.ts`) | POST /outsourcing-receipts | outsourcing:create | ctrl:89 -> svc:355 | outsourcing_receipts(+items); X-DOMAIN quality_inspections (IQC if requiresIqc), outsourcing_orders.status (:427), production_job_operations progress (:437); FG op -> production_jobs | OS-IN -> POSTED; OS-OUT SENT -> PARTIAL\|WAITING_QC\|COMPLETED; JOB IN_PROGRESS -> WAITING_QC when no FG op pending | E185 E186 E187 E171 E172 |
 | 5.4 | IQC for the OS-IN line: `/manage/iqc/$iqcId` "Lưu" | confirmIqc | POST /iqc/:iqcId/confirm | iqc:update | ctrl:104 -> svc:673 (:879 recompute) | quality_inspections, outsourcing_orders, production_jobs | OS-OUT WAITING_QC -> COMPLETED | E159 |
 | 5.5 | OS-IN return to supplier: supplier-return post (3.4) | postSupplierReturn | POST .../post | inventory:update | ctrl:82 -> svc:336 (:437/:448) | outsourcing_orders, production_job_operations | OS-OUT and op progress can regress (COMPLETED -> PARTIAL\|SENT) | E137 |

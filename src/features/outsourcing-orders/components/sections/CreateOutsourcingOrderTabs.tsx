@@ -13,7 +13,7 @@ type WizardTab = {
   icon: ComponentType<LucideProps>
 }
 
-// Nguồn duy nhất cho thứ tự + nhãn của 3 tab — CreateOutsourcingOrderForm.tsx suy tab
+// Nguồn duy nhất cho thứ tự + nhãn của 3 tab — OutsourcingOrderForm.tsx suy tab
 // trước/sau theo vị trí trong mảng này thay vì tự khai một danh sách nav riêng.
 export const wizardTabs: WizardTab[] = [
   { value: "picker", label: "1. Chọn chi tiết cần gia công", icon: Box },
@@ -27,9 +27,9 @@ type CreateOutsourcingOrderTabsProps = {
 }
 
 // Chỉ vẽ dải trigger — Tabs root (selectedKey/onSelectionChange) + TabsContent panel sống ở
-// CreateOutsourcingOrderForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers — the
+// OutsourcingOrderForm.tsx, cùng cách tách ProductDetailTabs.tsx ("Only the triggers — the
 // panels live in the page"). Tab ②/③ khoá tới khi có điều kiện tương ứng (xem
-// CreateOutsourcingOrderForm.tsx's canGoToX). Tab ① luôn mở được để quay lại đổi lựa chọn.
+// OutsourcingOrderForm.tsx's canGoToX). Tab ① luôn mở được để quay lại đổi lựa chọn.
 export function CreateOutsourcingOrderTabs({
   canGoToItems,
   canGoToConfirm,

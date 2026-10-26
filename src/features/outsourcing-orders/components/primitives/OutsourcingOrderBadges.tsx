@@ -12,6 +12,22 @@ export const outsourcingOrderStatusStyles: Record<
   OutsourcingOrderStatus,
   BadgeStyle
 > = {
+  DRAFT: {
+    badge: "bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground/60",
+  },
+  PENDING_APPROVAL: {
+    badge: "bg-warning-soft text-warning-ink",
+    dot: "bg-amber-500 dark:bg-amber-400",
+  },
+  APPROVED: {
+    badge: "bg-info-soft text-info-ink",
+    dot: "bg-sky-500 dark:bg-sky-400",
+  },
+  REJECTED: {
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
+  },
   SENT: {
     badge: "bg-warning-soft text-warning-ink",
     dot: "bg-amber-500 dark:bg-amber-400",

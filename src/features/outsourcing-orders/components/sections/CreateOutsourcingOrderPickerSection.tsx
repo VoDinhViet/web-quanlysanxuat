@@ -60,16 +60,19 @@ export const CreateOutsourcingOrderPickerSection = withForm({
   defaultValues: createOutsourcingOrderFormDefaultValues,
   props: {
     disabled: false,
-    // Deep-link tuỳ chọn (xem CreateOutsourcingOrderForm.tsx) — chỉ seed giá trị khởi tạo cho 2
+    // Deep-link tuỳ chọn (xem OutsourcingOrderForm.tsx) — chỉ seed giá trị khởi tạo cho 2
     // filter bên dưới, không tự động tick chọn dòng nào.
     initialProductionJobId: undefined as string | undefined,
     initialOperationId: undefined as string | undefined,
+    // Phiếu đang sửa: SL của chính nó không bị trừ khỏi "còn được gửi" ở picker.
+    editingOutsourcingOrderId: undefined as string | undefined,
   },
   render: function Render({
     form,
     disabled,
     initialProductionJobId,
     initialOperationId,
+    editingOutsourcingOrderId,
   }) {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState<PageSize>(10)
@@ -102,6 +105,7 @@ export const CreateOutsourcingOrderPickerSection = withForm({
         q: debouncedQ.trim() || undefined,
         productionJobId,
         operationId,
+        excludeOutsourcingOrderId: editingOutsourcingOrderId,
       }),
       placeholderData: keepPreviousData,
     })

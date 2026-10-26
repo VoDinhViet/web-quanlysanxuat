@@ -26,7 +26,7 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
 import type { CreateOutsourcingReceiptWizardTab } from "@/features/outsourcing-receipts/components/sections/CreateOutsourcingReceiptTabs"
 
-// Vỏ wizard "Nhập hàng gia công về" (OS-IN) — rập khuôn CreateOutsourcingOrderForm.tsx, 3 tab.
+// Vỏ wizard "Nhập hàng gia công về" (OS-IN) — rập khuôn OutsourcingOrderForm.tsx, 3 tab.
 // POST /outsourcing-receipts trả về void (không có mã phiếu để hiện lại), nên không có dialog
 // thành công — chỉ toast rồi điều hướng thẳng về danh sách, cùng pattern
 // CreateInventoryReceiptFromPoForm.tsx (POST không trả dữ liệu hữu ích để dừng lại xem).

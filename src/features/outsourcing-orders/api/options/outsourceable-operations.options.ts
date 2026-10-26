@@ -8,6 +8,7 @@ type OutsourceableOperationsParams = {
   q?: string
   productionJobId?: string
   operationId?: string
+  excludeOutsourcingOrderId?: string
 }
 
 export const outsourceableOperationsQueryOptions = (

@@ -6,12 +6,15 @@ import type { Unit } from "@/lib/types/unit.type"
 import type { UserRef } from "@/lib/types/user.type"
 
 // Khớp `OutsourcingOrderStatus` bên BE (be-quanlysanxuat/src/database/schemas/inventory/
-// outsourcing-orders.ts) — vừa là trạng thái chứng từ vừa là tiến độ nhận hàng, gộp làm một cột
-// DB (`docs/decisions/outsourcing-order-status-progress-merge.md` phía be-quanlysanxuat), không
-// còn 2 khái niệm tách riêng. `SENT` set thẳng lúc tạo (không có nháp,
-// `docs/decisions/outsourcing-no-draft.md`) — không có DRAFT trong enum này. BE cũng không tính
-// "quá hạn" thành 1 giá trị riêng nên không có OVERDUE.
+// outsourcing-orders.ts) — vừa là trạng thái chứng từ vừa là tiến độ nhận hàng, gộp làm một cột DB.
+// Phiếu đi DRAFT → PENDING_APPROVAL → APPROVED (hoặc REJECTED, sửa rồi gửi lại) → SENT khi xác nhận
+// xuất gia công; từ SENT trở đi mới nhận hàng về được. BE không tính "quá hạn" thành giá trị riêng
+// nên không có OVERDUE.
 export const OutsourcingOrderStatus = {
+  DRAFT: "DRAFT",
+  PENDING_APPROVAL: "PENDING_APPROVAL",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
   SENT: "SENT",
   PARTIAL: "PARTIAL",
   WAITING_QC: "WAITING_QC",
@@ -26,11 +29,25 @@ export const outsourcingOrderStatusLabels: Record<
   OutsourcingOrderStatus,
   string
 > = {
+  [OutsourcingOrderStatus.DRAFT]: "Nháp",
+  [OutsourcingOrderStatus.PENDING_APPROVAL]: "Chờ duyệt",
+  [OutsourcingOrderStatus.APPROVED]: "Đã duyệt",
+  [OutsourcingOrderStatus.REJECTED]: "Bị từ chối",
   [OutsourcingOrderStatus.SENT]: "Đang gia công",
   [OutsourcingOrderStatus.PARTIAL]: "Về 1 phần",
   [OutsourcingOrderStatus.WAITING_QC]: "Chờ QC",
   [OutsourcingOrderStatus.COMPLETED]: "Hoàn thành",
   [OutsourcingOrderStatus.CANCELLED]: "Đã hủy",
+}
+
+// Chỉ phiếu nháp hoặc bị từ chối mới sửa và gửi duyệt được (khớp `EDITABLE_STATUSES` bên BE).
+export function canUpdateOutsourcingOrder(
+  status: OutsourcingOrderStatus
+): boolean {
+  return (
+    status === OutsourcingOrderStatus.DRAFT ||
+    status === OutsourcingOrderStatus.REJECTED
+  )
 }
 
 // Mô tả dài cho Legend (OutsourcingOrderLegend.tsx) — cùng khuôn `purchaseOrderProgressDescriptions`
@@ -39,7 +56,13 @@ export const outsourcingOrderStatusDescriptions: Record<
   OutsourcingOrderStatus,
   string
 > = {
-  [OutsourcingOrderStatus.SENT]: "Đã gửi, chưa nhận được dòng nào",
+  [OutsourcingOrderStatus.DRAFT]: "Đang soạn, chưa gửi duyệt",
+  [OutsourcingOrderStatus.PENDING_APPROVAL]: "Đã gửi duyệt, chờ người có quyền",
+  [OutsourcingOrderStatus.APPROVED]:
+    "Đã duyệt, chờ xác nhận xuất gia công (hàng chưa rời xưởng)",
+  [OutsourcingOrderStatus.REJECTED]:
+    "Bị từ chối kèm lý do, sửa rồi gửi duyệt lại",
+  [OutsourcingOrderStatus.SENT]: "Đã xuất đi, chưa nhận được dòng nào",
   [OutsourcingOrderStatus.PARTIAL]: "Đã nhận một phần, còn dòng chưa đủ",
   [OutsourcingOrderStatus.WAITING_QC]: "Đã nhận đủ, còn IQC chưa xong",
   [OutsourcingOrderStatus.COMPLETED]:
@@ -68,10 +91,14 @@ export type OutsourcingOrder = {
 
 // Mirrors OutsourcingOrderItemResDto (1 dòng của phiếu — mỗi dòng 1 công đoạn/part).
 // `itemCode`/`itemName` là snapshot bắt buộc và là nguồn hiển thị chính; `item`/`unit` chỉ có khi
-// node gửi đi là DIRECT (node COMPONENT không phải một item → null). plannedQuantity/sentBeforeQuantity là
-// snapshot lúc gửi, chỉ để hiển thị/in — không dùng để validate lại.
+// node gửi đi là DIRECT (node COMPONENT không phải một item → null). `plannedQuantity` và
+// `sentByOtherOrdersQuantity` tính lại lúc đọc, dùng để dựng form sửa phiếu nháp (còn được gửi =
+// định mức − đã gửi ở phiếu khác).
 export type OutsourcingOrderItem = {
   id: string
+  productionJobOperationId: string | null
+  productionJobBomItemId: string | null
+  operationId: string | null
   itemCode: string
   itemName: string
   item: { id: string; code: string; name: string } | null
@@ -83,7 +110,7 @@ export type OutsourcingOrderItem = {
   quantity: number // SL gửi dòng này
   receivedQuantity: number // SL đã nhận (Σ dòng OS-IN POSTED trỏ dòng này)
   plannedQuantity: number | null
-  sentBeforeQuantity: number | null
+  sentByOtherOrdersQuantity: number
   weight: number | null
   area: number | null
   note: string | null
@@ -91,8 +118,8 @@ export type OutsourcingOrderItem = {
 
 // Mirrors OutsourcingOrderResDto (GET /outsourcing-orders/:id) — riêng biệt với OutsourcingOrder
 // ở trên (xem comment tại đó). BE hiện chưa join warehouse/items cho endpoint chi tiết (trang chi
-// tiết đọc items qua route riêng, `GET /outsourcing-orders/:id/items`). `posterBy`/`postedAt` luôn
-// có giá trị — mọi phiếu đều `postedAt` ngay lúc tạo, không có trạng thái nháp.
+// tiết đọc items qua route riêng, `GET /outsourcing-orders/:id/items`). `posterBy`/`postedAt` chỉ có
+// từ khi xác nhận xuất (SENT); `rejectionReason` chỉ có khi đang REJECTED.
 export type OutsourcingOrderDetail = {
   id: string
   code: string
@@ -107,6 +134,12 @@ export type OutsourcingOrderDetail = {
   creatorBy: UserRef | null
   posterBy: UserRef | null
   postedAt: string | null
+  submittedAt: string | null
+  approverBy: UserRef | null
+  approvedAt: string | null
+  rejecterBy: UserRef | null
+  rejectedAt: string | null
+  rejectionReason: string | null
   createdAt: string
   updatedAt: string
 }

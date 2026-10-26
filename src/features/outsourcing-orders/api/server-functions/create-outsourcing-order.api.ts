@@ -1,46 +1,9 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
 
-import { createOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
+import { outsourcingOrderPayloadSchema } from "@/features/outsourcing-orders/schemas/outsourcing-order-payload.schema"
 import { http, logHttpError } from "@/lib/http"
-import {
-  emptyToUndefined,
-  emptyToUndefinedIsoDate,
-  toIsoDate,
-} from "@/lib/zod-transforms"
 import type { ApiErrorResponse } from "@/lib/http"
-
-// Mirrors CreateOutsourcingOrderReqDto — chained onto the form's own schema (not a hand-written
-// parallel one) so `data` inside `.handler()` is already wire-ready, same pattern as
-// create-purchase-quotation.api.ts. Item's `job`/`bomItem`/`operation`/`unit` are display-nested
-// refs the picker copied in as-is from the popup (see CreateOutsourcingOrderPickerSection.tsx) —
-// this is the one place they flatten back into OutsourcingOrderItemReqDto's flat wire fields,
-// straight passthrough (server does not resolve/re-validate any of it,
-// docs/decisions/outsourcing-no-draft.md).
-const createOutsourcingOrderPayloadSchema =
-  createOutsourcingOrderSchema.transform(
-    ({ items, sendDate, expectedReturnDate, note, ...rest }) => ({
-      ...rest,
-      sendDate: toIsoDate(sendDate),
-      expectedReturnDate: emptyToUndefinedIsoDate(expectedReturnDate),
-      note: emptyToUndefined(note),
-      items: items.map((item) => ({
-        productionJobOperationId: item.productionJobOperationId,
-        productionJobBomItemId: item.productionJobBomItemId,
-        productionJobId: item.job.id,
-        itemId: item.itemId,
-        itemCode: item.bomItem.code,
-        itemName: item.bomItem.name,
-        operationId: item.operation.operationId,
-        operationCode: item.operation.code,
-        operationName: item.operation.name,
-        quantity: item.quantity,
-        weight: item.weight,
-        area: item.area,
-        note: emptyToUndefined(item.note),
-      })),
-    })
-  )
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
 
@@ -58,6 +21,8 @@ function resolveCreateOutsourcingOrderErrorMessage(error: unknown): string {
       return "Có chi tiết bị chọn trùng công đoạn."
     case "outsourcing_order.error.mixed_operations":
       return "Mỗi phiếu chỉ được gửi gia công cùng một công đoạn."
+    case "outsourcing_order.error.planned_quantity_exceeded":
+      return "Số lượng gửi vượt định mức còn lại của công đoạn. Vui lòng kiểm tra lại số lượng."
     case "auth.error.forbidden":
       return "Bạn không có quyền tạo phiếu gia công ngoài."
     default:
@@ -66,15 +31,10 @@ function resolveCreateOutsourcingOrderErrorMessage(error: unknown): string {
 }
 
 export const createOutsourcingOrder = createServerFn({ method: "POST" })
-  .validator(createOutsourcingOrderPayloadSchema)
-  .handler(async ({ data }): Promise<{ id: string; code: string }> => {
+  .validator(outsourcingOrderPayloadSchema)
+  .handler(async ({ data }): Promise<void> => {
     try {
-      const response = await http.post<{ id: string; code: string }>(
-        "/api/outsourcing-orders",
-        data
-      )
-
-      return { id: response.data.id, code: response.data.code }
+      await http.post("/api/outsourcing-orders", data)
     } catch (error) {
       logHttpError(error, "createOutsourcingOrder")
 

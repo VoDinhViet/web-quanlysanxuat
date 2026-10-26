@@ -125,6 +125,7 @@ import { Route as authedManageDirectsCreateIndexRouteImport } from './routes/(au
 import { Route as authedManageDirectsImportIndexRouteImport } from './routes/(authed)/manage_/directs_/import/index'
 import { Route as authedManageInventoryReceiptsInventoryReceiptIdUpdateRouteImport } from './routes/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_.update'
 import { Route as authedManageOrdersOrderIdUpdateRouteImport } from './routes/(authed)/manage_/orders_/$orderId_.update'
+import { Route as authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRouteImport } from './routes/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId_.update'
 import { Route as authedManageProductsCreateIndexRouteImport } from './routes/(authed)/manage_/products_/create/index'
 import { Route as authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRouteImport } from './routes/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_.update'
 import { Route as authedManageRolesRoleIdUpdateRouteImport } from './routes/(authed)/manage_/roles_/$roleId.update'
@@ -803,6 +804,12 @@ const authedManageOrdersOrderIdUpdateRoute =
     path: '/manage/orders/$orderId/update',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute =
+  authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRouteImport.update({
+    id: '/manage_/outsourcing-orders_/$outsourcingOrderId_/update',
+    path: '/manage/outsourcing-orders/$outsourcingOrderId/update',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 const authedManageProductsCreateIndexRoute =
   authedManageProductsCreateIndexRouteImport.update({
     id: '/',
@@ -964,6 +971,7 @@ export interface FileRoutesByFullPath {
   '/manage/directs/$directId/update': typeof authedManageDirectsDirectIdUpdateRoute
   '/manage/inventory-receipts/$inventoryReceiptId/update': typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   '/manage/orders/$orderId/update': typeof authedManageOrdersOrderIdUpdateRoute
+  '/manage/outsourcing-orders/$outsourcingOrderId/update': typeof authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute
   '/manage/purchase-quotations/$purchaseQuotationId/update': typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
   '/manage/roles/$roleId/update': typeof authedManageRolesRoleIdUpdateRoute
   '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
@@ -1051,6 +1059,7 @@ export interface FileRoutesByTo {
   '/manage/directs/$directId/update': typeof authedManageDirectsDirectIdUpdateRoute
   '/manage/inventory-receipts/$inventoryReceiptId/update': typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   '/manage/orders/$orderId/update': typeof authedManageOrdersOrderIdUpdateRoute
+  '/manage/outsourcing-orders/$outsourcingOrderId/update': typeof authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute
   '/manage/purchase-quotations/$purchaseQuotationId/update': typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
   '/manage/roles/$roleId/update': typeof authedManageRolesRoleIdUpdateRoute
   '/manage/suppliers/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
@@ -1178,6 +1187,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/directs_/$directId/update': typeof authedManageDirectsDirectIdUpdateRoute
   '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update': typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   '/(authed)/manage_/orders_/$orderId_/update': typeof authedManageOrdersOrderIdUpdateRoute
+  '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId_/update': typeof authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute
   '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_/update': typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
   '/(authed)/manage_/roles_/$roleId/update': typeof authedManageRolesRoleIdUpdateRoute
   '/(authed)/manage_/suppliers_/$supplierId/update': typeof authedManageSuppliersSupplierIdUpdateRoute
@@ -1304,6 +1314,7 @@ export interface FileRouteTypes {
     | '/manage/directs/$directId/update'
     | '/manage/inventory-receipts/$inventoryReceiptId/update'
     | '/manage/orders/$orderId/update'
+    | '/manage/outsourcing-orders/$outsourcingOrderId/update'
     | '/manage/purchase-quotations/$purchaseQuotationId/update'
     | '/manage/roles/$roleId/update'
     | '/manage/suppliers/$supplierId/update'
@@ -1391,6 +1402,7 @@ export interface FileRouteTypes {
     | '/manage/directs/$directId/update'
     | '/manage/inventory-receipts/$inventoryReceiptId/update'
     | '/manage/orders/$orderId/update'
+    | '/manage/outsourcing-orders/$outsourcingOrderId/update'
     | '/manage/purchase-quotations/$purchaseQuotationId/update'
     | '/manage/roles/$roleId/update'
     | '/manage/suppliers/$supplierId/update'
@@ -1517,6 +1529,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/directs_/$directId/update'
     | '/(authed)/manage_/inventory-receipts_/$inventoryReceiptId_/update'
     | '/(authed)/manage_/orders_/$orderId_/update'
+    | '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId_/update'
     | '/(authed)/manage_/purchase-quotations_/$purchaseQuotationId_/update'
     | '/(authed)/manage_/roles_/$roleId/update'
     | '/(authed)/manage_/suppliers_/$supplierId/update'
@@ -2350,6 +2363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageOrdersOrderIdUpdateRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId_/update': {
+      id: '/(authed)/manage_/outsourcing-orders_/$outsourcingOrderId_/update'
+      path: '/manage/outsourcing-orders/$outsourcingOrderId/update'
+      fullPath: '/manage/outsourcing-orders/$outsourcingOrderId/update'
+      preLoaderRoute: typeof authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/manage_/products_/create/': {
       id: '/(authed)/manage_/products_/create/'
       path: '/'
@@ -3042,6 +3062,7 @@ interface authedRouteRouteChildren {
   authedManageDirectsDirectIdUpdateRoute: typeof authedManageDirectsDirectIdUpdateRoute
   authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute: typeof authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute
   authedManageOrdersOrderIdUpdateRoute: typeof authedManageOrdersOrderIdUpdateRoute
+  authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute: typeof authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute
   authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute: typeof authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute
   authedManageRolesRoleIdUpdateRoute: typeof authedManageRolesRoleIdUpdateRoute
   authedManageUsersUserIdUpdateRoute: typeof authedManageUsersUserIdUpdateRoute
@@ -3177,6 +3198,8 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute:
     authedManageInventoryReceiptsInventoryReceiptIdUpdateRoute,
   authedManageOrdersOrderIdUpdateRoute: authedManageOrdersOrderIdUpdateRoute,
+  authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute:
+    authedManageOutsourcingOrdersOutsourcingOrderIdUpdateRoute,
   authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute:
     authedManagePurchaseQuotationsPurchaseQuotationIdUpdateRoute,
   authedManageRolesRoleIdUpdateRoute: authedManageRolesRoleIdUpdateRoute,

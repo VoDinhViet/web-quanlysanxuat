@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: 125 | Token estimate: ~5000 -->
+<!-- Generated: 2026-10-26 | Files scanned: 125 | Token estimate: ~5000 -->
 # Routes codemap (web)
 
 All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`. Screen/button maps: `docs/ui-flow.md`. Gate model: `identity-access.md`.
@@ -82,6 +82,7 @@ All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`.
 | `/manage/outsourcing-orders` | `outsourcing-orders/index.tsx` | OutsourcingOrdersPage | outsourcing-orders | outsourcingOrders | outsourcing:read |
 | `/manage/outsourcing-orders/$outsourcingOrderId` | `outsourcing-orders_/$outsourcingOrderId.tsx` | OutsourcingOrderDetailPage | outsourcing-orders | outsourcingOrderItems, outsourcingOrder | outsourcing:read |
 | `/manage/outsourcing-orders/create` | `outsourcing-orders_/create.tsx` | CreateOutsourcingOrderPage | outsourcing-orders | - | outsourcing:create |
+| `/manage/outsourcing-orders/$outsourcingOrderId/update` | `outsourcing-orders_/$outsourcingOrderId_.update.tsx` | UpdateOutsourcingOrderPage | outsourcing-orders | outsourcingOrderItems, outsourcingOrder | outsourcing:update (redirects unless DRAFT/REJECTED) |
 | `/manage/outsourcing-receipts` | `outsourcing-receipts/index.tsx` | OutsourcingReceiptsPage | outsourcing-receipts | outsourcingReceipts, supplierOptions | outsourcing:read |
 | `/manage/outsourcing-receipts/$outsourcingReceiptId` | `outsourcing-receipts_/$outsourcingReceiptId.tsx` | OutsourcingReceiptDetailPage | outsourcing-receipts | outsourcingReceiptItems, outsourcingReceipt | outsourcing:read |
 | `/manage/outsourcing-receipts/create` | `outsourcing-receipts_/create.tsx` | CreateOutsourcingReceiptPage | outsourcing-receipts | - | outsourcing:create |
