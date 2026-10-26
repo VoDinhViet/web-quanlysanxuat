@@ -4,18 +4,17 @@ import {
   CircleCheck,
   CircleX,
   PackageSearch,
-  Printer,
   Send,
   Trash2,
 } from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { ApproveRequisitionDialog } from "@/features/inventory-requisitions/components/composites/ApproveRequisitionDialog"
 import { DeleteRequisitionDialog } from "@/features/inventory-requisitions/components/composites/DeleteRequisitionDialog"
 import { RejectRequisitionDialog } from "@/features/inventory-requisitions/components/composites/RejectRequisitionDialog"
 import { SendRequisitionDialog } from "@/features/inventory-requisitions/components/composites/SendRequisitionDialog"
+import { InventoryRequisitionExportActions } from "@/features/inventory-requisitions/components/layouts/InventoryRequisitionExportActions"
 import { InventoryRequisitionStatus } from "@/lib/types/inventory-requisition.type"
 import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisition.type"
 
@@ -122,10 +121,7 @@ export function InventoryRequisitionDetailActions({
         </LinkButton>
       )}
 
-      <PendingAction label="In" hint="chưa hỗ trợ in phiếu">
-        <Printer className="size-4" />
-        In
-      </PendingAction>
+      <InventoryRequisitionExportActions requisitionId={detail.id} />
     </div>
   )
 }

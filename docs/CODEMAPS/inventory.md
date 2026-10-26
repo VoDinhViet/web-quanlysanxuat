@@ -52,22 +52,24 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 ### inventory-issues (BE codemap "State flows" issue)
 | Action / trigger | Server fn | Endpoint | Permission | BE Controller.method (file:line) |
 |---|---|---|---|---|
-| List (loader) | getInventoryIssues | GET /inventory-issues | inventory:read | getInventoryIssues (src/api/inventory-issues/inventory-issues.controller.ts:40) |
-| Detail (loader) | getInventoryIssue | GET /inventory-issues/:issueId | inventory:read | getInventoryIssue (:52) |
-| Detail "Xuất kho" (DRAFT; FE gate inventory:update; `PostInventoryIssueDialog`: optional note + photos/files, camera on phone, photos >2MB downscaled) | postInventoryIssue | POST /inventory-issues/:issueId/post | inventory:update | postInventoryIssue (:104) |
-| Detail "Hủy phiếu" (DRAFT; FE gate also `outbound:update` when the issue has `outboundOrder`, the DO is cancelled too) | cancelInventoryIssue | POST /inventory-issues/:issueId/cancel | inventory:update (+ outbound:update for DO-linked) | cancelInventoryIssue (:121) |
+| List (loader) | getInventoryIssues | GET /inventory-issues | inventory:read | getInventoryIssues (src/api/inventory-issues/inventory-issues.controller.ts:45) |
+| Detail (loader) | getInventoryIssue | GET /inventory-issues/:issueId | inventory:read | getInventoryIssue (:57) |
+| Detail "In" / "Xuất" > PDF (`InventoryIssueExportActions`) | exportInventoryIssuePdf | GET /inventory-issues/:issueId/export-pdf | inventory:read | exportInventoryIssuePdf (:69) |
+| Detail "Xuất kho" (DRAFT; FE gate inventory:update; `PostInventoryIssueDialog`: optional note + photos/files, camera on phone, photos >2MB downscaled) | postInventoryIssue | POST /inventory-issues/:issueId/post | inventory:update | postInventoryIssue (:123) |
+| Detail "Hủy phiếu" (DRAFT; FE gate also `outbound:update` when the issue has `outboundOrder`, the DO is cancelled too) | cancelInventoryIssue | POST /inventory-issues/:issueId/cancel | inventory:update (+ outbound:update for DO-linked) | cancelInventoryIssue (:142) |
 ### inventory-requisitions (BE codemap "State flows" requisition)
 | Action / trigger | Server fn | Endpoint | Permission | BE Controller.method (file:line) |
 |---|---|---|---|---|
-| List (loader) | getInventoryRequisitions | GET /inventory-requisitions | inventory-requisitions:read | getInventoryRequisitions (src/api/inventory-requisitions/inventory-requisitions.controller.ts:45) |
-| Create picker (job BOM lines / other items) | getRequisitionLines | GET /inventory-requisitions/lines | inventory-requisitions:read | getRequisitionLines (:62) |
-| Detail (loader) | getInventoryRequisition | GET /inventory-requisitions/:requisitionId | inventory-requisitions:read | getInventoryRequisition (:74) |
-| Create form submit | createInventoryRequisition | POST /inventory-requisitions | inventory-requisitions:create | createInventoryRequisition (:88) |
-| Edit lines on detail (DRAFT/REJECTED; useHasPermission update) | updateInventoryRequisition | PATCH /inventory-requisitions/:requisitionId | inventory-requisitions:update | updateInventoryRequisition (:105) |
-| Detail "Xoá phiếu" (DRAFT) | deleteInventoryRequisition | DELETE /inventory-requisitions/:requisitionId | inventory-requisitions:delete | deleteInventoryRequisition (:121) |
-| Detail "Gửi duyệt" / "Gửi duyệt lại" | sendInventoryRequisition | POST /inventory-requisitions/:requisitionId/send | inventory-requisitions:update | sendInventoryRequisition (:135) |
-| Detail "Duyệt" | approveInventoryRequisition | POST /inventory-requisitions/:requisitionId/approve | inventory-requisitions:approve | approveInventoryRequisition (:153) |
-| Detail "Từ chối" (reason dialog) | rejectInventoryRequisition | POST /inventory-requisitions/:requisitionId/reject | inventory-requisitions:approve | rejectInventoryRequisition (:169) |
+| List (loader) | getInventoryRequisitions | GET /inventory-requisitions | inventory-requisitions:read | getInventoryRequisitions (src/api/inventory-requisitions/inventory-requisitions.controller.ts:48) |
+| Create picker (job BOM lines / other items) | getRequisitionLines | GET /inventory-requisitions/lines | inventory-requisitions:read | getRequisitionLines (:65) |
+| Detail (loader) | getInventoryRequisition | GET /inventory-requisitions/:requisitionId | inventory-requisitions:read | getInventoryRequisition (:77) |
+| Create form submit | createInventoryRequisition | POST /inventory-requisitions | inventory-requisitions:create | createInventoryRequisition (:105) |
+| Edit lines on detail (DRAFT/REJECTED; useHasPermission update) | updateInventoryRequisition | PATCH /inventory-requisitions/:requisitionId | inventory-requisitions:update | updateInventoryRequisition (:122) |
+| Detail "Xoá phiếu" (DRAFT) | deleteInventoryRequisition | DELETE /inventory-requisitions/:requisitionId | inventory-requisitions:delete | deleteInventoryRequisition (:138) |
+| Detail "Gửi duyệt" / "Gửi duyệt lại" | sendInventoryRequisition | POST /inventory-requisitions/:requisitionId/send | inventory-requisitions:update | sendInventoryRequisition (:152) |
+| Detail "Duyệt" | approveInventoryRequisition | POST /inventory-requisitions/:requisitionId/approve | inventory-requisitions:approve | approveInventoryRequisition (:170) |
+| Detail "Từ chối" (reason dialog) | rejectInventoryRequisition | POST /inventory-requisitions/:requisitionId/reject | inventory-requisitions:approve | rejectInventoryRequisition (:186) |
+| Detail "In" / "Xuất" > PDF (`InventoryRequisitionExportActions`) | exportInventoryRequisitionPdf | GET /inventory-requisitions/:requisitionId/export-pdf | inventory-requisitions:read | exportInventoryRequisitionPdf (:91) |
 ### supplier-returns (BE codemap "State flows" supplier return)
 | Action / trigger | Server fn | Endpoint | Permission | BE Controller.method (file:line) |
 |---|---|---|---|---|

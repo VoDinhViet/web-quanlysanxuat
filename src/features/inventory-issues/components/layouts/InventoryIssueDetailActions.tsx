@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { CircleX, Printer } from "lucide-react"
+import { CircleX } from "lucide-react"
 
 import {
   AlertDialog,
@@ -16,10 +16,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { cancelInventoryIssue } from "@/features/inventory-issues/api/server-functions/cancel-inventory-issue.api"
 import { PostInventoryIssueDialog } from "@/features/inventory-issues/components/composites/PostInventoryIssueDialog"
+import { InventoryIssueExportActions } from "@/features/inventory-issues/components/layouts/InventoryIssueExportActions"
 import {
   InventoryIssueStatus,
   InventoryIssueType,
@@ -95,10 +95,7 @@ export function InventoryIssueDetailActions({
         </PermissionGate>
       )}
 
-      <PendingAction label="In" hint="chưa hỗ trợ in phiếu">
-        <Printer className="size-4" />
-        In
-      </PendingAction>
+      <InventoryIssueExportActions issueId={inventoryIssue.id} />
 
       <AlertDialog
         open={isCancelOpen}
