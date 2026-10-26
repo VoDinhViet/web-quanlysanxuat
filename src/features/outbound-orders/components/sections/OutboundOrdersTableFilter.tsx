@@ -14,12 +14,17 @@ import { OutboundOrdersTableActions } from "@/features/outbound-orders/component
 import { outboundOrdersSearchSchema } from "@/features/outbound-orders/schemas/outbound-orders-search.schema"
 import type { OutboundOrdersSearchSchema } from "@/features/outbound-orders/schemas/outbound-orders-search.schema"
 import {
+  OutboundOrderStatus,
   fulfillmentTypeLabels,
+  outboundOrderInvoiceStatusLabels,
   outboundOrderStatusLabels,
 } from "@/lib/types/outbound-order.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
 
 const statusFilterOptions = buildOptionsFromLabels(outboundOrderStatusLabels)
+const invoiceStatusFilterOptions = buildOptionsFromLabels(
+  outboundOrderInvoiceStatusLabels
+)
 const fulfillmentTypeFilterOptions = buildOptionsFromLabels(
   fulfillmentTypeLabels
 )
@@ -30,6 +35,7 @@ type OutboundOrdersFilters = {
   clientId?: string
   poNo: string
   status?: string
+  invoiceStatus?: string
   fulfillmentType?: string
   itemCode: string
   itemName: string
@@ -44,6 +50,7 @@ const getFiltersFromSearch = (
   clientId: search.clientId,
   poNo: search.poNo ?? "",
   status: search.status,
+  invoiceStatus: search.invoiceStatus,
   fulfillmentType: search.fulfillmentType,
   itemCode: search.itemCode ?? "",
   itemName: search.itemName ?? "",
@@ -73,7 +80,12 @@ export function OutboundOrdersTableFilter() {
         q: parsed.q,
         clientId: parsed.clientId,
         poNo: parsed.poNo,
-        status: parsed.status,
+        // Chỉ DO đã giao mới có hóa đơn: chọn lọc hóa đơn mà bỏ trống trạng thái thì ngầm lọc "Đã giao",
+        // để danh sách khớp con số ở thẻ "DO chưa xuất hóa đơn".
+        status:
+          parsed.status ??
+          (parsed.invoiceStatus ? OutboundOrderStatus.DELIVERED : undefined),
+        invoiceStatus: parsed.invoiceStatus,
         fulfillmentType: parsed.fulfillmentType,
         itemCode: parsed.itemCode,
         itemName: parsed.itemName,
@@ -132,6 +144,14 @@ export function OutboundOrdersTableFilter() {
             options={statusFilterOptions}
             value={filters.status}
             onValueChange={(status) => patchFilters({ status })}
+          />
+
+          <SelectFilterField
+            id="do-invoice-status"
+            label="Hóa đơn"
+            options={invoiceStatusFilterOptions}
+            value={filters.invoiceStatus}
+            onValueChange={(invoiceStatus) => patchFilters({ invoiceStatus })}
           />
 
           <SelectFilterField

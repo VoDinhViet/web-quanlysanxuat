@@ -3,10 +3,16 @@ import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
-import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
+import {
+  OutboundOrderInvoiceStatusBadge,
+  OutboundOrderStatusBadge,
+} from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
 import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/primitives/OutboundOrderTableCells"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
-import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
+import {
+  OutboundOrderStatus,
+  fulfillmentTypeLabels,
+} from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
@@ -95,6 +101,42 @@ export const outboundOrdersColumns = col.columns([
       cellClassName: "text-center",
     },
     cell: ({ getValue }) => <OutboundOrderStatusBadge status={getValue()} />,
+  }),
+
+  // DO chưa giao chưa có hóa đơn để nhập nên chỉ hiện huy hiệu khi đã giao; còn lại để "—".
+  col.accessor("invoiceStatus", {
+    header: "Hóa đơn",
+    meta: {
+      headerClassName: "min-w-32 text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ getValue, row }) =>
+      row.original.status === OutboundOrderStatus.DELIVERED ? (
+        <OutboundOrderInvoiceStatusBadge invoiceStatus={getValue()} />
+      ) : (
+        <span className="text-xs text-muted-foreground">—</span>
+      ),
+  }),
+
+  col.accessor("invoiceNo", {
+    header: "Số hóa đơn",
+    meta: { headerClassName: "min-w-32", cellClassName: "font-mono text-xs" },
+    cell: ({ getValue }) => getValue() ?? "—",
+  }),
+
+  col.accessor("invoiceDate", {
+    header: "Ngày hóa đơn",
+    meta: {
+      headerClassName: "min-w-28 text-center",
+      cellClassName: "text-center text-xs",
+    },
+    cell: ({ getValue }) => {
+      const invoiceDate = getValue()
+
+      return invoiceDate
+        ? DateTime.fromISO(invoiceDate, { zone: "utc" }).toFormat("dd/MM/yyyy")
+        : "—"
+    },
   }),
 
   col.display({

@@ -34,6 +34,24 @@ export const outboundOrderStatusLabels: Record<OutboundOrderStatus, string> = {
   [OutboundOrderStatus.REJECTED]: "Bị từ chối",
 }
 
+// Hóa đơn xuất ở hệ thống khác, DO chỉ ghi lại để theo dõi. Mặc định NOT_ISSUED; lưu số + ngày hóa
+// đơn (chỉ khi DO đã giao) thì BE tự chuyển ISSUED.
+export const OutboundOrderInvoiceStatus = {
+  NOT_ISSUED: "NOT_ISSUED",
+  ISSUED: "ISSUED",
+} as const
+
+export type OutboundOrderInvoiceStatus =
+  (typeof OutboundOrderInvoiceStatus)[keyof typeof OutboundOrderInvoiceStatus]
+
+export const outboundOrderInvoiceStatusLabels: Record<
+  OutboundOrderInvoiceStatus,
+  string
+> = {
+  [OutboundOrderInvoiceStatus.NOT_ISSUED]: "Chưa xuất",
+  [OutboundOrderInvoiceStatus.ISSUED]: "Đã xuất",
+}
+
 // Sửa (PATCH) chỉ hợp lệ khi còn DRAFT (BE gate E259) — khuôn canUpdateInventoryReceipt.
 export function canUpdateOutboundOrder(status: OutboundOrderStatus): boolean {
   return status === OutboundOrderStatus.DRAFT
@@ -75,9 +93,19 @@ export type OutboundOrder = {
   buyerPoNos: string[]
   totalQuantity: number
   note: string | null
+  invoiceStatus: OutboundOrderInvoiceStatus
+  invoiceNo: string | null
+  invoiceDate: string | null
   creatorBy: UserRef | null
   createdAt: string
   updatedAt: string
+}
+
+// Mirrors OutboundOrderStatsResDto (GET /outbound-orders/stats).
+export type OutboundOrderStats = {
+  total: number
+  // Số DO đã giao (DELIVERED) mà chưa xuất hóa đơn.
+  notInvoiced: number
 }
 
 // Mirrors OutboundOrderResDto (GET /outbound-orders/:id) — khai riêng theo đúng nguyên tắc
@@ -105,6 +133,11 @@ export type OutboundOrderDetail = {
   rejecterBy: UserRef | null
   rejectedAt: string | null
   rejectionReason: string | null
+  invoiceStatus: OutboundOrderInvoiceStatus
+  invoiceNo: string | null
+  invoiceDate: string | null
+  invoicerBy: UserRef | null
+  invoicedAt: string | null
   // Phiếu xuất kho SALES BE sinh khi duyệt; null khi DO chưa được duyệt.
   inventoryIssue: {
     id: string

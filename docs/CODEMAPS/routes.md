@@ -28,7 +28,7 @@ All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`.
 | `/manage/orders/$orderId` | `orders_/$orderId.tsx` | OrderDetailPage | orders | orderItems, order | orders:read |
 | `/manage/orders/$orderId/update` | `orders_/$orderId_.update.tsx` | UpdateOrderPage | orders | orderItems, order | orders:update |
 | `/manage/orders/create` | `orders_/create.tsx` | CreateOrderPage | orders | - | orders:create |
-| `/manage/outbound-orders` | `outbound-orders/index.tsx` | OutboundOrdersPage | outbound-orders | outboundOrders | outbound:read |
+| `/manage/outbound-orders` | `outbound-orders/index.tsx` | OutboundOrdersPage | outbound-orders | outboundOrders (stat tiles query stats client-side) | outbound:read |
 | `/manage/outbound-orders/$outboundOrderId` | `outbound-orders_/$outboundOrderId.tsx` | OutboundOrderDetailPage | outbound-orders | outboundOrderItems, outboundOrder | outbound:read |
 | `/manage/outbound-orders/create` | `outbound-orders_/create.tsx` | CreateOutboundOrderPage | outbound-orders | - | outbound:create |
 

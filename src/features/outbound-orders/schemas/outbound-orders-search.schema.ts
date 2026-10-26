@@ -2,6 +2,7 @@ import { z } from "zod"
 
 import {
   FulfillmentType,
+  OutboundOrderInvoiceStatus,
   OutboundOrderStatus,
 } from "@/lib/types/outbound-order.type"
 
@@ -24,6 +25,7 @@ export const outboundOrdersSearchSchema = z.object({
   itemId: z.uuid().optional().catch(undefined),
   status: z.enum(OutboundOrderStatus).optional().catch(undefined),
   fulfillmentType: z.enum(FulfillmentType).optional().catch(undefined),
+  invoiceStatus: z.enum(OutboundOrderInvoiceStatus).optional().catch(undefined),
   startDate: z.iso.date().optional().catch(undefined),
   endDate: z.iso.date().optional().catch(undefined),
 })

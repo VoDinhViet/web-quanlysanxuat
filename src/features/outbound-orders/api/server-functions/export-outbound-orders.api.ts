@@ -29,6 +29,7 @@ const exportOutboundOrdersParamsSchema = outboundOrdersSearchSchema.pick({
   itemName: true,
   status: true,
   fulfillmentType: true,
+  invoiceStatus: true,
   startDate: true,
   endDate: true,
 })

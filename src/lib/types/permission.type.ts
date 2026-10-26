@@ -111,6 +111,7 @@ export const PERMISSION_CODES = [
   "outbound:create",
   "outbound:update",
   "outbound:approve",
+  "outbound:invoice",
   "outbound:delete",
 
   "reports:read",

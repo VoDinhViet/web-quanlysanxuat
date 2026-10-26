@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-26 | Files scanned: 205 | Token estimate: ~3600 -->
+<!-- Generated: 2026-10-26 | Files scanned: 214 | Token estimate: ~3600 -->
 # Sales codemap (web)
 
 Scope: FE features `orders`, `outbound-orders`, `clients` (+ client-groups call), `countries`. BE twin: `be-quanlysanxuat/docs/CODEMAPS/sales.md`; screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts`, enforced once in `src/routes/(authed)/route.tsx` (redirect to `/manage`); in-page `PermissionGate` / `RoutePermissionGate` only hide buttons, BE is the real check.
@@ -8,7 +8,7 @@ Scope: FE features `orders`, `outbound-orders`, `clients` (+ client-groups call)
 | Feature folder | Role | Screens (pages/) | Types & status labels | Schemas |
 |---|---|---|---|---|
 | `src/features/orders` | Sales order (SO) CRUD, approval, exports | OrdersPage, CreateOrderPage, OrderDetailPage, UpdateOrderPage | `src/lib/types/order.type.ts`: `OrderStatus` DRAFT "Nháp", PENDING_CONFIRMATION "Chờ xác nhận", REJECTED "Từ chối", AWAITING_PRODUCTION "Chờ sản xuất", IN_PROGRESS "Đang thực hiện", COMPLETED "Hoàn thành", CANCELLED "Đã hủy"; derived "Trễ hạn"; item NORMAL/CANCELLED | create-order, order-item-form, orders-search, reject-order, update-order |
-| `src/features/outbound-orders` | Delivery order (DO) lifecycle | OutboundOrdersPage, CreateOutboundOrderPage, OutboundOrderDetailPage | `outbound-order.type.ts`: DRAFT "Nháp", PENDING_APPROVAL "Chờ duyệt", PENDING_DELIVERY "Chờ xuất kho", DELIVERED "Đã giao", CANCELLED "Đã hủy", REJECTED "Bị từ chối" | create-outbound-order, outbound-order-detail-search, outbound-orders-search, reject-outbound-order, update-outbound-order |
+| `src/features/outbound-orders` | Delivery order (DO) lifecycle | OutboundOrdersPage, CreateOutboundOrderPage, OutboundOrderDetailPage | `outbound-order.type.ts` (+ `outboundOrderInvoiceStatusLabels` NOT_ISSUED "Chưa xuất", ISSUED "Đã xuất"): DRAFT "Nháp", PENDING_APPROVAL "Chờ duyệt", PENDING_DELIVERY "Chờ xuất kho", DELIVERED "Đã giao", CANCELLED "Đã hủy", REJECTED "Bị từ chối" | create-outbound-order, outbound-order-detail-search, outbound-orders-search, outbound-order-stats-search, reject-outbound-order, update-outbound-order, update-outbound-order-invoice |
 | `src/features/clients` | Customer master data | ClientsPage, CreateClientPage, UpdateClientPage | `client.type.ts`: ACTIVE "Hoạt động", PAUSED "Tạm ngưng"; `ClientGroupRef`, `ClientRef` | client-contact, clients-search, create-client, update-client |
 | `src/features/countries` | api-only (country options, key `["countries","options"]`, staleTime 5 min) | none | `CountryRef` lives in `supplier.type.ts` | none |
 
@@ -25,7 +25,7 @@ Client groups have no feature: `getClientGroups` sits in `clients/api` and feeds
 | `/manage/orders/create` | `manage_/orders_/create.tsx` | CreateOrderPage | none | orders:create | "Tạo đơn hàng" |
 | `/manage/orders/$orderId` | `manage_/orders_/$orderId.tsx` | OrderDetailPage | orderQueryOptions, orderItemsQueryOptions | orders:read | row eye icon, create success |
 | `/manage/orders/$orderId/update` | `manage_/orders_/$orderId_.update.tsx` | UpdateOrderPage | same as detail; loader redirects to detail when `!canUpdateOrder(status)` | orders:update | "Chỉnh sửa" |
-| `/manage/outbound-orders` | `manage_/outbound-orders/index.tsx` | OutboundOrdersPage | outboundOrdersQueryOptions | outbound:read | sidebar |
+| `/manage/outbound-orders` | `manage_/outbound-orders/index.tsx` | OutboundOrdersPage (+ `OutboundOrderStatCards`, tiles also read `outboundOrderStatsQueryOptions`) | outboundOrdersQueryOptions | outbound:read | sidebar |
 | `/manage/outbound-orders/create` | `manage_/outbound-orders_/create.tsx` | CreateOutboundOrderPage | none | outbound:create | "Tạo DO mới" |
 | `/manage/outbound-orders/$outboundOrderId` | `manage_/outbound-orders_/$outboundOrderId.tsx` | OutboundOrderDetailPage (`?mode=edit\|view`) | outboundOrderQueryOptions, outboundOrderItemsQueryOptions | outbound:read | row "Xem chi tiết DO" |
 
@@ -74,7 +74,9 @@ Server fn files are `src/features/<feature>/api/server-functions/<name>.api.ts`.
 | "Xuất Excel" | export-outbound-orders | GET /outbound-orders/export | outbound:read | exportOutboundOrders (:74) |
 | Detail lines | get-outbound-order-items | GET .../:outboundOrderId/items | outbound:read | getOutboundOrderItems (:99) |
 | Detail / edit loader | get-outbound-order | GET .../:outboundOrderId | outbound:read | getOutboundOrder (:86) |
-| List page | get-outbound-orders | GET /outbound-orders | outbound:read | getOutboundOrders (:45) |
+| List page | get-outbound-orders | GET /outbound-orders | outbound:read | getOutboundOrders (:48) |
+| Stat tiles "Tổng DO" / "DO chưa xuất hóa đơn" (`OutboundOrderStatCards`; second tile sets `status=DELIVERED` + `invoiceStatus=NOT_ISSUED`) | get-outbound-order-stats | GET /outbound-orders/stats | outbound:read | getOutboundOrderStats (:62) |
+| "Cập nhật hóa đơn" (`OutboundOrderInvoiceCard` -> `OutboundOrderInvoiceDialog`, DELIVERED only, `PermissionGate outbound:invoice`) | update-outbound-order-invoice | PATCH .../:outboundOrderId/invoice | outbound:invoice | updateOutboundOrderInvoice (:214) |
 | Create picker, "Thêm từ PO/Job" | get-unfulfilled-order-items | GET /outbound-orders/unfulfilled-order-items | outbound:read | getUnfulfilledOrderItems (:59) |
 | "Từ chối" (body `{reason}`) | reject-outbound-order | POST .../:outboundOrderId/reject | outbound:approve | rejectOutboundOrder (:178) |
 | "Gửi duyệt DO" (SendDialog) | send-outbound-order | POST .../:outboundOrderId/send | outbound:update | sendOutboundOrder (:145) |

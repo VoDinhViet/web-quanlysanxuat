@@ -11,6 +11,7 @@ import { OutboundOrderDetailHeader } from "@/features/outbound-orders/components
 import { OutboundOrderEditForm } from "@/features/outbound-orders/components/sections/OutboundOrderEditForm"
 import { OutboundOrderItemsSection } from "@/features/outbound-orders/components/sections/OutboundOrderItemsSection"
 import { OutboundOrderInfoCard } from "@/features/outbound-orders/components/composites/OutboundOrderInfoCard"
+import { OutboundOrderInvoiceCard } from "@/features/outbound-orders/components/composites/OutboundOrderInvoiceCard"
 import { OutboundOrderRejectionNotice } from "@/features/outbound-orders/components/composites/OutboundOrderRejectionNotice"
 import { canUpdateOutboundOrder } from "@/lib/types/outbound-order.type"
 
@@ -64,6 +65,7 @@ export function OutboundOrderDetailPage() {
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
             <OutboundOrderInfoCard order={order} />
+            <OutboundOrderInvoiceCard order={order} />
           </div>
         </div>
       </div>

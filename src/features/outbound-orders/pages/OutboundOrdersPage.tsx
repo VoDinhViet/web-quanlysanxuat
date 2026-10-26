@@ -5,6 +5,7 @@ import { Surface } from "@/components/shared/layouts/Surface"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { outboundOrdersQueryOptions } from "@/features/outbound-orders/api/options"
+import { OutboundOrderStatCards } from "@/features/outbound-orders/components/sections/OutboundOrderStatCards"
 import { OutboundOrdersTable } from "@/features/outbound-orders/components/sections/OutboundOrdersTable"
 import { OutboundOrdersTableFilter } from "@/features/outbound-orders/components/sections/OutboundOrdersTableFilter"
 
@@ -18,8 +19,12 @@ export function OutboundOrdersPage() {
 
   return (
     <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:p-6">
+      <OutboundOrderStatCards />
+
       <Surface contentClassName="min-h-[calc(100svh-13rem)]">
-        <OutboundOrdersTableFilter />
+        <OutboundOrdersTableFilter
+          key={`${search.status}-${search.invoiceStatus}`}
+        />
 
         {outboundOrdersQuery.isPending ? (
           <TableQueryLoading rows={search.limit} />

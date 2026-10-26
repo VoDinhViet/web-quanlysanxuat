@@ -5,3 +5,4 @@ export { outboundOrdersQueryOptions } from "@/features/outbound-orders/api/optio
 export { outboundOrderQueryOptions } from "@/features/outbound-orders/api/options/outbound-order.options"
 export { outboundOrderItemsQueryOptions } from "@/features/outbound-orders/api/options/outbound-order-items.options"
 export { unfulfilledOrderItemsQueryOptions } from "@/features/outbound-orders/api/options/unfulfilled-order-items.options"
+export { outboundOrderStatsQueryOptions } from "@/features/outbound-orders/api/options/outbound-order-stats.options"
