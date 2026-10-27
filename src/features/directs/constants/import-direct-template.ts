@@ -10,6 +10,7 @@ const headerByKey: Record<DirectImportKey, string> = {
   unitCode: "Mã đơn vị tính",
   supplierCode: "Mã nhà cung cấp",
   clientCode: "Mã khách hàng",
+  itemCategoryCode: "Mã nhóm vật tư",
   minStock: "Định mức tồn tối thiểu",
   specificWeight: "Trọng lượng riêng",
   directGrade: "Mác vật tư",

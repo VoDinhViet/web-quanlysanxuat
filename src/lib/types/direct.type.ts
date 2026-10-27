@@ -53,6 +53,7 @@ export type DirectImportKey =
   | "unitCode"
   | "supplierCode"
   | "clientCode"
+  | "itemCategoryCode"
   | "minStock"
   | "specificWeight"
   | "directGrade"
@@ -78,6 +79,7 @@ export const directImportFields: DirectImportField[] = [
   { key: "unitCode", label: "Mã ĐVT", required: true },
   { key: "supplierCode", label: "Mã NCC" },
   { key: "clientCode", label: "Mã khách hàng" },
+  { key: "itemCategoryCode", label: "Mã nhóm VT" },
   { key: "minStock", label: "Tồn tối thiểu" },
   { key: "specificWeight", label: "Trọng lượng riêng" },
   { key: "directGrade", label: "Mác vật tư" },

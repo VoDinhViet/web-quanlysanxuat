@@ -29,6 +29,7 @@ export const fieldGroups: FieldGroup[] = [
       "unitCode",
       "supplierCode",
       "clientCode",
+      "itemCategoryCode",
     ],
   },
   {
@@ -61,6 +62,7 @@ export const placeholders: Record<DirectImportKey, string> = {
   unitCode: "VD: KG",
   supplierCode: "Mã nhà cung cấp",
   clientCode: "Mã khách hàng",
+  itemCategoryCode: "Mã nhóm vật tư",
   minStock: "VD: 100",
   specificWeight: "VD: 7.85",
   directGrade: "VD: SS400",

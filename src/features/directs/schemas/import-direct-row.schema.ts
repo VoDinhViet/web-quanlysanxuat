@@ -43,6 +43,7 @@ export const importDirectRowSchema = z.object({
   unitCode: requiredText(50),
   supplierCode: optionalText(50),
   clientCode: optionalText(50),
+  itemCategoryCode: optionalText(50),
   minStock: optionalNumber,
   specificWeight: optionalNumber,
   directGrade: optionalText(255),

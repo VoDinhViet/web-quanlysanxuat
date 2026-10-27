@@ -26,6 +26,7 @@ import {
   ClientCodeCombobox,
   SupplierCodeCombobox,
 } from "@/features/directs/components/composites/ImportDirectsCodeComboboxes"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { importDirectRowSchema } from "@/features/directs/schemas/import-direct-row.schema"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -92,6 +93,34 @@ function ImportDirectsRowForm({
 
     return options
   }, [units, row.values])
+
+  const { data: itemCategories = [], isPending: isItemCategoriesPending } =
+    useQuery(itemCategoryOptionsQueryOptions())
+  const itemCategoryOptions = useMemo(() => {
+    // The empty value lets the user clear the optional group again.
+    const options = [
+      { value: "", label: "Không có nhóm" },
+      ...itemCategories.map((itemCategory) => ({
+        value: itemCategory.code,
+        label: `${itemCategory.code} — ${itemCategory.name}`,
+      })),
+    ]
+    const { itemCategoryCode } = row.values
+
+    if (
+      itemCategoryCode &&
+      !itemCategories.some(
+        (itemCategory) => itemCategory.code === itemCategoryCode
+      )
+    ) {
+      options.splice(1, 0, {
+        value: itemCategoryCode,
+        label: `${itemCategoryCode} (không có trong hệ thống)`,
+      })
+    }
+
+    return options
+  }, [itemCategories, row.values])
   const currentErrors = Object.values(getRowErrors(row))
 
   return (
@@ -172,6 +201,13 @@ function ImportDirectsRowForm({
                             placeholder="Chọn đơn vị tính"
                             options={unitOptions}
                             isPending={isUnitsPending}
+                          />
+                        ) : key === "itemCategoryCode" ? (
+                          <field.SelectField
+                            label={getImportField(key).label}
+                            placeholder="Không có nhóm"
+                            options={itemCategoryOptions}
+                            isPending={isItemCategoriesPending}
                           />
                         ) : textareaKeys.includes(key) ? (
                           <field.TextareaField
