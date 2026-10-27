@@ -4,6 +4,7 @@ import { PagePending } from "@/components/shared/layouts/PagePending"
 import { InventoryDirectsPage } from "@/features/inventory-directs/pages/InventoryDirectsPage"
 import { directInventoryQueryOptions } from "@/features/inventory-directs/api/options"
 import { inventoryDirectsSearchSchema } from "@/features/inventory-directs/schemas/inventory-directs-search.schema"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 
 export const Route = createFileRoute("/(authed)/manage_/inventory-directs/")({
@@ -19,6 +20,10 @@ export const Route = createFileRoute("/(authed)/manage_/inventory-directs/")({
         ...directInventoryQueryOptions(
           inventoryDirectsSearchSchema.parse(location.search)
         ),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...itemCategoryOptionsQueryOptions(),
         staleTime: "static",
       }),
       context.queryClient.query({

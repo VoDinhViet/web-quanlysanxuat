@@ -31,6 +31,7 @@ export const updateDirectSchema = z.object({
     .max(255, "Tên vật tư tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
   clientId: z.string().trim().transform(emptyToNull),
+  itemCategoryId: z.string().trim().transform(emptyToNull),
   image: imageFieldSchema,
   status: z.enum(ItemStatus),
   note: z
@@ -100,6 +101,7 @@ export const updateDirectFormDefaultValues: UpdateDirectSchema = {
   name: "",
   unitId: "",
   clientId: "",
+  itemCategoryId: "",
   image: null,
   status: ItemStatus.ACTIVE,
   note: "",

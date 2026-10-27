@@ -66,6 +66,11 @@ export const directColumns = directColumnHelper.columns([
       )
     },
   }),
+  directColumnHelper.accessor((direct) => direct.itemCategory?.name ?? "—", {
+    id: "itemCategory",
+    header: "Nhóm vật tư",
+    meta: { headerClassName: "min-w-32" },
+  }),
   directColumnHelper.accessor((row) => row.unit.name, {
     id: "unit",
     header: "ĐVT",

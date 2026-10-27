@@ -46,6 +46,7 @@ const getDirectInventorySchema = z
     limit: z.number().int().min(1).optional(),
     q: optional(z.string().trim()),
     supplierId: z.string().trim().min(1).optional(),
+    itemCategoryId: z.string().trim().min(1).optional(),
     status: z.enum(["NORMAL", "WARNING", "SHORTAGE"]).optional(),
     asOfDate: z.string().trim().min(1).optional(),
   })

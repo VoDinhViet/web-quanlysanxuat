@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { PagePending } from "@/components/shared/layouts/PagePending"
 import { CreateDirectPage } from "@/features/directs/pages/CreateDirectPage"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 
@@ -10,6 +11,10 @@ export const Route = createFileRoute("/(authed)/manage_/directs_/create/")({
     Promise.all([
       context.queryClient.query({
         ...unitOptionsQueryOptions(),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...itemCategoryOptionsQueryOptions(),
         staleTime: "static",
       }),
       context.queryClient.query({

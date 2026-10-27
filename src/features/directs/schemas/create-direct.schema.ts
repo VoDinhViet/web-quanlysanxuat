@@ -26,6 +26,7 @@ export const createDirectSchema = z.object({
     .max(255, "Tên vật tư tối đa 255 ký tự"),
   unitId: z.string().trim().min(1, "Vui lòng chọn đơn vị tính"),
   clientId: z.string().trim().transform(emptyToUndefined),
+  itemCategoryId: z.string().trim().transform(emptyToUndefined),
   image: imageFieldSchema,
   status: z.enum(ItemStatus),
   note: z
@@ -88,6 +89,7 @@ export const createDirectFormDefaultValues: CreateDirectSchema = {
   name: "",
   unitId: "",
   clientId: "",
+  itemCategoryId: "",
   image: null,
   status: ItemStatus.ACTIVE,
   note: "",

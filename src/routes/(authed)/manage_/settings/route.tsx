@@ -1,11 +1,12 @@
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
-import { Routing, Ruler } from "@solar-icons/react"
+import { Routing, Ruler, Tag } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType } from "react"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import { currentPermissionsQueryOptions } from "@/features/auth/api/options"
+import { itemCategoriesQueryOptions } from "@/features/item-categories/api/options"
 import { operationsQueryOptions } from "@/features/operations/api/options"
 import { operationsSearchSchema } from "@/features/operations/schemas/operations-search.schema"
 import { unitsQueryOptions } from "@/features/units/api/options"
@@ -17,7 +18,10 @@ export const Route = createFileRoute("/(authed)/manage_/settings")({
 })
 
 type SettingsTab = {
-  to: "/manage/settings/units" | "/manage/settings/operations"
+  to:
+    | "/manage/settings/units"
+    | "/manage/settings/item-categories"
+    | "/manage/settings/operations"
   label: string
   icon: ComponentType<IconProps>
   permission: PermissionCode
@@ -41,6 +45,10 @@ function SettingsLayout() {
     ...unitsQueryOptions({}),
     enabled: canReadUnits,
   })
+  const itemCategoriesQuery = useQuery({
+    ...itemCategoriesQueryOptions({}),
+    enabled: canReadUnits,
+  })
   const operationsQuery = useQuery({
     ...operationsQueryOptions(operationsSearchSchema.parse({})),
     enabled: canReadOperations,
@@ -53,6 +61,13 @@ function SettingsLayout() {
       icon: Ruler,
       permission: "items:read",
       count: unitsQuery.data?.length,
+    },
+    {
+      to: "/manage/settings/item-categories",
+      label: "Nhóm vật tư",
+      icon: Tag,
+      permission: "items:read",
+      count: itemCategoriesQuery.data?.length,
     },
     {
       to: "/manage/settings/operations",

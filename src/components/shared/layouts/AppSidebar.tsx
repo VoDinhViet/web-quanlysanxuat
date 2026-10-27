@@ -24,6 +24,7 @@ import {
   PackageSearch,
   ReceiptText,
   Ruler,
+  Tags,
   Send,
   ShieldAlert,
   ShieldCheck,
@@ -287,6 +288,11 @@ const menuGroups: MenuGroup[] = [
         label: "Đơn vị tính",
         icon: Ruler,
         href: "/manage/settings/units",
+      },
+      {
+        label: "Nhóm vật tư",
+        icon: Tags,
+        href: "/manage/settings/item-categories",
       },
       {
         label: "Công đoạn sản xuất",

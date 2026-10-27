@@ -23,6 +23,7 @@ function getDirectDefaultValues(direct: Direct): UpdateDirectSchema {
     name: direct.name,
     unitId: direct.unit.id,
     clientId: direct.client?.id ?? "",
+    itemCategoryId: direct.itemCategory?.id ?? "",
     image: direct.image,
     status: direct.status,
     note: direct.note ?? "",

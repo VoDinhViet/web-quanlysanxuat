@@ -111,6 +111,7 @@ import { Route as authedManagePurchaseRequestsCreateRouteImport } from './routes
 import { Route as authedManageRolesIndexRouteImport } from './routes/(authed)/manage_/roles/index'
 import { Route as authedManageRolesCreateRouteImport } from './routes/(authed)/manage_/roles_/create'
 import { Route as authedManageSettingsIndexRouteImport } from './routes/(authed)/manage_/settings/index'
+import { Route as authedManageSettingsItemCategoriesRouteImport } from './routes/(authed)/manage_/settings/item-categories'
 import { Route as authedManageSettingsOperationsRouteImport } from './routes/(authed)/manage_/settings/operations'
 import { Route as authedManageSettingsUnitsRouteImport } from './routes/(authed)/manage_/settings/units'
 import { Route as authedManageSupplierReturnsIndexRouteImport } from './routes/(authed)/manage_/supplier-returns/index'
@@ -725,6 +726,12 @@ const authedManageSettingsIndexRoute =
     path: '/',
     getParentRoute: () => authedManageSettingsRouteRoute,
   } as any)
+const authedManageSettingsItemCategoriesRoute =
+  authedManageSettingsItemCategoriesRouteImport.update({
+    id: '/item-categories',
+    path: '/item-categories',
+    getParentRoute: () => authedManageSettingsRouteRoute,
+  } as any)
 const authedManageSettingsOperationsRoute =
   authedManageSettingsOperationsRouteImport.update({
     id: '/operations',
@@ -955,6 +962,7 @@ export interface FileRoutesByFullPath {
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/manage/purchase-requests/create': typeof authedManagePurchaseRequestsCreateRoute
   '/manage/roles/create': typeof authedManageRolesCreateRoute
+  '/manage/settings/item-categories': typeof authedManageSettingsItemCategoriesRoute
   '/manage/settings/operations': typeof authedManageSettingsOperationsRoute
   '/manage/settings/units': typeof authedManageSettingsUnitsRoute
   '/manage/supplier-returns/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
@@ -1045,6 +1053,7 @@ export interface FileRoutesByTo {
   '/manage/purchase-requests/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/manage/purchase-requests/create': typeof authedManagePurchaseRequestsCreateRoute
   '/manage/roles/create': typeof authedManageRolesCreateRoute
+  '/manage/settings/item-categories': typeof authedManageSettingsItemCategoriesRoute
   '/manage/settings/operations': typeof authedManageSettingsOperationsRoute
   '/manage/settings/units': typeof authedManageSettingsUnitsRoute
   '/manage/supplier-returns/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
@@ -1176,6 +1185,7 @@ export interface FileRoutesById {
   '/(authed)/manage_/purchase-requests_/$purchaseRequestId': typeof authedManagePurchaseRequestsPurchaseRequestIdRoute
   '/(authed)/manage_/purchase-requests_/create': typeof authedManagePurchaseRequestsCreateRoute
   '/(authed)/manage_/roles_/create': typeof authedManageRolesCreateRoute
+  '/(authed)/manage_/settings/item-categories': typeof authedManageSettingsItemCategoriesRoute
   '/(authed)/manage_/settings/operations': typeof authedManageSettingsOperationsRoute
   '/(authed)/manage_/settings/units': typeof authedManageSettingsUnitsRoute
   '/(authed)/manage_/supplier-returns_/$supplierReturnId': typeof authedManageSupplierReturnsSupplierReturnIdRoute
@@ -1306,6 +1316,7 @@ export interface FileRouteTypes {
     | '/manage/purchase-requests/$purchaseRequestId'
     | '/manage/purchase-requests/create'
     | '/manage/roles/create'
+    | '/manage/settings/item-categories'
     | '/manage/settings/operations'
     | '/manage/settings/units'
     | '/manage/supplier-returns/$supplierReturnId'
@@ -1396,6 +1407,7 @@ export interface FileRouteTypes {
     | '/manage/purchase-requests/$purchaseRequestId'
     | '/manage/purchase-requests/create'
     | '/manage/roles/create'
+    | '/manage/settings/item-categories'
     | '/manage/settings/operations'
     | '/manage/settings/units'
     | '/manage/supplier-returns/$supplierReturnId'
@@ -1526,6 +1538,7 @@ export interface FileRouteTypes {
     | '/(authed)/manage_/purchase-requests_/$purchaseRequestId'
     | '/(authed)/manage_/purchase-requests_/create'
     | '/(authed)/manage_/roles_/create'
+    | '/(authed)/manage_/settings/item-categories'
     | '/(authed)/manage_/settings/operations'
     | '/(authed)/manage_/settings/units'
     | '/(authed)/manage_/supplier-returns_/$supplierReturnId'
@@ -2302,6 +2315,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedManageSettingsIndexRouteImport
       parentRoute: typeof authedManageSettingsRouteRoute
     }
+    '/(authed)/manage_/settings/item-categories': {
+      id: '/(authed)/manage_/settings/item-categories'
+      path: '/item-categories'
+      fullPath: '/manage/settings/item-categories'
+      preLoaderRoute: typeof authedManageSettingsItemCategoriesRouteImport
+      parentRoute: typeof authedManageSettingsRouteRoute
+    }
     '/(authed)/manage_/settings/operations': {
       id: '/(authed)/manage_/settings/operations'
       path: '/operations'
@@ -2884,6 +2904,7 @@ const authedManageRolesRouteRouteWithChildren =
   )
 
 interface authedManageSettingsRouteRouteChildren {
+  authedManageSettingsItemCategoriesRoute: typeof authedManageSettingsItemCategoriesRoute
   authedManageSettingsOperationsRoute: typeof authedManageSettingsOperationsRoute
   authedManageSettingsUnitsRoute: typeof authedManageSettingsUnitsRoute
   authedManageSettingsIndexRoute: typeof authedManageSettingsIndexRoute
@@ -2891,6 +2912,8 @@ interface authedManageSettingsRouteRouteChildren {
 
 const authedManageSettingsRouteRouteChildren: authedManageSettingsRouteRouteChildren =
   {
+    authedManageSettingsItemCategoriesRoute:
+      authedManageSettingsItemCategoriesRoute,
     authedManageSettingsOperationsRoute: authedManageSettingsOperationsRoute,
     authedManageSettingsUnitsRoute: authedManageSettingsUnitsRoute,
     authedManageSettingsIndexRoute: authedManageSettingsIndexRoute,

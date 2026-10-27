@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { Download, RotateCw, Search } from "lucide-react"
 import { toast } from "sonner"
@@ -19,11 +19,12 @@ import { Label } from "@/components/ui/label"
 import { ClientCombobox } from "@/components/shared/composites/ClientCombobox"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { CreateDirectMenu } from "@/features/directs/components/composites/CreateDirectMenu"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 import { exportDirects } from "@/features/directs/api/server-functions/export-directs.api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import type { ItemStatus } from "@/lib/types/item.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 
 const statusOptions = buildOptionsFromLabels(itemStatusLabels)
 
@@ -32,6 +33,15 @@ export function DirectsTableFilter() {
   const navigate = useNavigate({ from: "/manage/directs/" })
 
   const [q, setQ] = useState(search.q ?? "")
+
+  // The route loader prefetches this — resolves synchronously off cache.
+  const { data: itemCategories } = useSuspenseQuery(
+    itemCategoryOptionsQueryOptions()
+  )
+  const itemCategoryFilterOptions = [
+    { value: "all", label: "Tất cả" },
+    ...buildSelectOptions(itemCategories),
+  ]
 
   const exportDirectsFn = useServerFn(exportDirects)
   const { mutateAsync: exportExcel, isPending: isExporting } = useMutation({
@@ -72,6 +82,13 @@ export function DirectsTableFilter() {
     })
   }
 
+  const handleItemCategoryChange = (value: string) => {
+    const itemCategoryId = value === "all" ? undefined : value
+    void navigate({
+      search: (prev) => ({ ...prev, itemCategoryId, page: 1 }),
+    })
+  }
+
   const handleStatusChange = (value: string) => {
     const status = value === "all" ? undefined : (value as ItemStatus)
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
@@ -87,6 +104,7 @@ export function DirectsTableFilter() {
         const {
           q: _q,
           clientId: _clientId,
+          itemCategoryId: _itemCategoryId,
           status: _status,
           order: _order,
           ...rest
@@ -99,7 +117,7 @@ export function DirectsTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(14rem,1.4fr)_minmax(9rem,1fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.6fr)_minmax(14rem,1.4fr)_minmax(10rem,1fr)_minmax(9rem,1fr)]">
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="directs-search"
@@ -133,6 +151,36 @@ export function DirectsTableFilter() {
               selectedClientId={search.clientId}
               onSelectClient={handleClientChange}
             />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="directs-item-category"
+              className="text-xs font-medium text-muted-foreground"
+            >
+              Nhóm vật tư
+            </Label>
+            <Select
+              items={itemCategoryFilterOptions}
+              value={search.itemCategoryId ?? "all"}
+              onValueChange={(value) =>
+                value !== null && handleItemCategoryChange(value)
+              }
+            >
+              <SelectTrigger
+                id="directs-item-category"
+                className="w-full text-xs"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {itemCategoryFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex flex-col gap-1.5">

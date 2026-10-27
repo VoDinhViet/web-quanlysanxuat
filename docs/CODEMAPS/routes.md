@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-26 | Files scanned: 125 | Token estimate: ~5000 -->
+<!-- Generated: 2026-10-27 | Files scanned: 125 | Token estimate: ~5000 -->
 # Routes codemap (web)
 
 All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`. Screen/button maps: `docs/ui-flow.md`. Gate model: `identity-access.md`.
@@ -122,9 +122,10 @@ All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`.
 ### Danh mục (second sidebar group, settings)
 | URL | File | Page | Feature | Preloads | Gate |
 |---|---|---|---|---|---|
-| `/manage/settings` | `settings/route.tsx` | SettingsLayout (tab strip "Đơn vị tính" / "Công đoạn sản xuất", tabs filtered by permission) | auth, operations, units | currentPermissions, operations, units | any (`canAccessRoute`: `items:read` or `operations:read`) |
+| `/manage/settings` | `settings/route.tsx` | SettingsLayout (tab strip "Đơn vị tính" / "Nhóm vật tư" / "Công đoạn sản xuất", tabs filtered by permission) | auth, operations, units | currentPermissions, operations, units | any (`canAccessRoute`: `items:read` or `operations:read`) |
 | `/manage/settings` (index) | `settings/index.tsx` | redirect to `/manage/settings/units`, or `/operations` when only `operations:read` | - | - | any |
 | `/manage/settings/units` | `settings/units.tsx` | UnitsPage | units | units | items:read |
+| `/manage/settings/item-categories` | `settings/item-categories.tsx` | ItemCategoriesPage | item-categories | item-categories | items:read |
 | `/manage/settings/operations` | `settings/operations.tsx` | OperationsPage | operations | operations | operations:read |
 | `/manage/operations/$operationId` | `operations_/$operationId.tsx` | OperationDetailPage | operations | operation | operations:read |
 | `/manage/units`, `/manage/operations` | `units/`, `operations/` (`route.tsx` + `index.tsx`) | redirect to `/manage/settings/units`, `/manage/settings/operations?page=1&limit=10` | - | - | items:read, operations:read |

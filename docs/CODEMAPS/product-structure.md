@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-24 | Files scanned: ~210 | Token estimate: ~5000 -->
+<!-- Generated: 2026-10-27 | Files scanned: ~210 | Token estimate: ~5000 -->
 # Product-structure codemap (web)
 Items (FG products and DIRECT materials), BOM tree, routing and BOM operations, operation catalog, units. BE twin: `be-quanlysanxuat/docs/CODEMAPS/product-structure.md` (sections 2 Routes, 3 Data model and flows, 4 Key rules and error codes). Screens and button labels: `docs/ui-flow.md`.
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. Server fns carry no permission; BE controllers do. BE paths are relative to `be-quanlysanxuat/`.
@@ -10,6 +10,7 @@ There is no `src/features/items/`: the BE `items` table is split on the FE by a 
 | products | FG list/create/detail; BOM tree, routing, BOM-node detail, "issues" rollup | ProductsPage, CreateProductPage, ProductDetailPage, BomItemDetailPage | `item.type.ts`: ItemStatus ACTIVE "Đang sử dụng", INACTIVE "Ngừng sử dụng"; ItemType FG "Thành phẩm"; `bom-item.type.ts`: BomItemType COMPONENT/DIRECT, `isOffStructure` | create/update product, copy, create/update bom-item, create/update product-operation, search x3 |
 | directs | DIRECT material master data: list, create, edit, status toggle, copy, Excel import/export | DirectsPage, CreateDirectPage, UpdateDirectPage, ImportDirectsPage | `direct.type.ts` (import field/preview types), status via `ItemStatus` | create/update, copy, update-status, import-direct-row, search |
 | operations | Production-operation catalog and its assigned workers | OperationsPage, OperationDetailPage | `operation.type.ts`: OperationStatus ACTIVE "Đang dùng", INACTIVE "Ngừng dùng"; OperationType INHOUSE "Nội bộ", OUTSOURCE "Gia công ngoài" (the catalog row holds a default that pre-fills the type when the operation is attached to a product or BOM item; each attachment keeps its own `type`) | create/update, set-assignments, search |
+| item-categories | Nhóm vật tư catalog (user-managed; optional field on directs) | ItemCategoriesPage | `item-category.type.ts`: ItemCategory {code, name, description}, ItemCategoryRef | create/update, search |
 | units | Unit-of-measure catalog (reference data) | UnitsPage | `unit.type.ts`: UnitType QUANTITY "Số lượng", WEIGHT "Khối lượng", LENGTH "Chiều dài", VOLUME "Thể tích"; UnitStatus ACTIVE/INACTIVE | create/update, search |
 
 ## 2. Screens
@@ -25,6 +26,7 @@ Permission gate = entry in `src/lib/route-permissions.ts` (checked in `(authed)`
 | /manage/directs/import | directs_/import/index.tsx | ImportDirectsPage | none | items:create | list menu "Nhập từ Excel" |
 | /manage/directs/$directId/update | directs_/$directId.update.tsx | UpdateDirectPage | directQueryOptions, supplierOptionsQueryOptions, unitOptionsQueryOptions | items:update | list row "Chỉnh sửa" |
 | /manage/settings/units | settings/units.tsx | UnitsPage | unitsQueryOptions | items:read (units reuse `items:*`, no `units:*`) | Sidebar "Đơn vị tính" |
+| /manage/settings/item-categories | settings/item-categories.tsx | ItemCategoriesPage | itemCategoriesQueryOptions | items:read (reuses `items:*`) | Sidebar "Nhóm vật tư" |
 | /manage/settings/operations | settings/operations.tsx | OperationsPage | operationsQueryOptions | operations:read | Sidebar "Công đoạn sản xuất" |
 | /manage/operations/$operationId | operations_/$operationId.tsx | OperationDetailPage | operationQueryOptions | operations:read | settings/operations row |
 | /manage/settings | settings/route.tsx (+index.tsx) | SettingsLayout | currentPermissionsQueryOptions, operationsQueryOptions, unitsQueryOptions | null (children gate themselves); index redirects to units, or operations if only operations:read | direct URL |
@@ -82,6 +84,17 @@ All paths prefixed `/api`. BE file paths below are `src/api/<domain>/<domain>.co
 | Detail header save (FE gate operations:update) | updateOperation | PATCH /operations/:operationId | operations:update | updateOperation (operations:123) |
 | Assign dialog save; RemoveOperationAssignmentDialog (FE gate operations:update) | setOperationAssignments | PUT /operations/:operationId/assignments | operations:update | setOperationAssignments (operations:137) |
 | List row delete (FE gate operations:delete) | deleteOperation | DELETE /operations/:operationId | operations:delete | deleteOperation (operations:151) |
+### item-categories (BE codemap section 2 Routes: item-categories)
+
+| UI | Server function | Endpoint | Permission | BE |
+| --- | --- | --- | --- | --- |
+| List (loader) and options (`itemCategoryOptionsQueryOptions`, read by directs form/filter and inventory-directs filter) | getItemCategories | GET /item-categories | public | getItemCategories |
+| "Thêm nhóm vật tư" (FE gate items:create) | createItemCategory | POST /item-categories | items:create | createItemCategory |
+| Row edit (FE gate items:update) | updateItemCategory | PATCH /item-categories/:itemCategoryId | items:update | updateItemCategory |
+| Row delete (FE gate items:update) | deleteItemCategory | DELETE /item-categories/:itemCategoryId | items:update | deleteItemCategory (409 when in use) |
+
+Directs: form field "Nhóm vật tư" (option "Không có nhóm" clears it), list column and filter, export filter, and a filter on Tồn kho vật tư. Excel import is unchanged.
+
 ### units (BE codemap section 2 Routes: units)
 | Action / trigger | Server fn | Endpoint | Permission | BE Controller.method (file:line) |
 |---|---|---|---|---|
@@ -98,7 +111,7 @@ Rows above: 46 (45 call a BE route, 38 distinct routes; `previewImportDirects` h
 - BOM build-up (see BE codemap section 3 for the node model: Level 0 root operations + `bom_items` COMPONENT/DIRECT nodes + node operations):
   create product (`createItem`) -> detail tab "Cấu trúc & Công đoạn" -> root operations (`createRoutingOperation`) and nodes (`createBomItem`) -> open node (`/bom/$bomItemId`) -> node operations (`createBomOperation`) and node materials (read-only `getBomDirects`).
 - Order of operations is a `sortOrder` integer; move up/down swaps two steps with parallel PATCHes (`updateRoutingOperation` for Level 0, `updateBomOperation` for a node).
-- Cache keys: BOM and operation mutations invalidate `["items"]`; units `["units"]`; operation catalog `["operations"]`.
+- Cache keys: BOM and operation mutations invalidate `["items"]`; units `["units"]`; item categories `["item-categories"]`; operation catalog `["operations"]`.
 - Product detail is a form with 3 tabs (`?tab=`): "info" saves with the header "Lưu" (`updateItem`); BOM tab actions write immediately ("Thay đổi ở tab này được lưu ngay").
 
 ## 5. Gaps and quirks

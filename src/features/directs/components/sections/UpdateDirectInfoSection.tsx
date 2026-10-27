@@ -5,6 +5,7 @@ import { ComboboxField } from "@/components/shared/composites/ComboboxField"
 import { DirectImageField } from "@/features/directs/components/composites/DirectImageField"
 import { updateDirectFormDefaultValues } from "@/features/directs/schemas/update-direct.schema"
 import { useGetClientOptions } from "@/features/clients/api"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { itemStatusLabels } from "@/lib/types/item.type"
 import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
@@ -23,7 +24,16 @@ export const UpdateDirectInfoSection = withForm({
     // The route loader already prefetches this — resolves synchronously off cache.
     const { data: unitOptions } = useSuspenseQuery(unitOptionsQueryOptions())
 
+    const { data: itemCategoryOptions } = useSuspenseQuery(
+      itemCategoryOptionsQueryOptions()
+    )
+
     const unitSelectOptions = buildSelectOptions(unitOptions)
+    // The empty value lets the user clear the optional group again.
+    const itemCategorySelectOptions = [
+      { value: "", label: "Không có nhóm" },
+      ...buildSelectOptions(itemCategoryOptions),
+    ]
 
     return (
       <div>
@@ -70,6 +80,17 @@ export const UpdateDirectInfoSection = withForm({
                     required
                     placeholder="Chọn đơn vị tính"
                     options={unitSelectOptions}
+                    disabled={disabled}
+                  />
+                )}
+              </form.AppField>
+
+              <form.AppField name="itemCategoryId">
+                {(field) => (
+                  <field.SelectField
+                    label="Nhóm vật tư"
+                    placeholder="Không có nhóm"
+                    options={itemCategorySelectOptions}
                     disabled={disabled}
                   />
                 )}

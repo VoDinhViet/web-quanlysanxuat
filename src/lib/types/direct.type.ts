@@ -1,5 +1,6 @@
 import type { ClientRef } from "@/lib/types/client.type"
 import type { FileResource } from "@/lib/types/file.type"
+import type { ItemCategoryRef } from "@/lib/types/item-category.type"
 import type { ItemStatus } from "@/lib/types/item.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
@@ -14,9 +15,9 @@ import type { Unit } from "@/lib/types/unit.type"
 /** Mirrors the backend's DirectResDto (GET /api/items?type=DIRECT, GET /api/items/:id) narrowed to
  *  the DIRECT-only fields this feature reads — `id`/`code`/`name`/`status`/`unit`/`client`/`image`/
  *  `note` are shared with FG (see `Item` in item.type.ts); `supplier`/`minStock`/8 extended
- *  fields below are always null/default on a non-DIRECT row and only meaningful here. No `group`/
- *  `type` (INTERNAL/CLIENT) — both concepts were dropped when products+directs merged into
- *  `items` (nhóm hàng hoá bỏ hẳn; ownership giờ suy từ `clientId` có set hay không). No
+ *  fields below are always null/default on a non-DIRECT row and only meaningful here.
+ *  `itemCategory` is the user-managed nhóm vật tư (optional). No `type` (INTERNAL/CLIENT) — dropped
+ *  when products+directs merged into `items` (ownership giờ suy từ `clientId` có set hay không). No
  *  `attachments` — `direct_attachments` was dropped too, only `image` remains. */
 export type Direct = {
   id: string
@@ -30,6 +31,7 @@ export type Direct = {
   onHand?: number
   note: string | null
   supplier: SupplierRef | null
+  itemCategory: ItemCategoryRef | null
   /** Định mức tồn tối thiểu — quyết định badge Bình thường/Cảnh báo ở màn Tồn kho vật tư. */
   minStock: number
   directGrade: string | null

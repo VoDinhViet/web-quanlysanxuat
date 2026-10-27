@@ -5,6 +5,7 @@ import { DirectsPage } from "@/features/directs/pages/DirectsPage"
 import { directsQueryOptions } from "@/features/directs/api/options"
 import { directsSearchSchema } from "@/features/directs/schemas/directs-search.schema"
 import { clientsQueryOptions } from "@/features/clients/api"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 
 export const Route = createFileRoute("/(authed)/manage_/directs/")({
   validateSearch: directsSearchSchema,
@@ -22,6 +23,10 @@ export const Route = createFileRoute("/(authed)/manage_/directs/")({
       }),
       context.queryClient.query({
         ...clientsQueryOptions({ page: 1, limit: 20 }),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...itemCategoryOptionsQueryOptions(),
         staleTime: "static",
       }),
     ]),

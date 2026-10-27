@@ -18,10 +18,11 @@ import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { FilterLabel } from "@/components/shared/primitives/FilterLabel"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { InventoryImportDialog } from "@/features/inventory-directs/components/composites/InventoryImportDialog"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import type { InventoryStatus } from "@/lib/types/inventory-direct.type"
 import { inventoryStatusLabels } from "@/lib/types/inventory-direct.type"
-import { buildOptionsFromLabels } from "@/lib/utils"
+import { buildOptionsFromLabels, buildSelectOptions } from "@/lib/utils"
 import type { SelectOption } from "@/lib/utils"
 
 const statusOptions: SelectOption[] = [
@@ -39,6 +40,13 @@ export function InventoryDirectsTableFilter() {
   const { data: supplierOptions } = useSuspenseQuery(
     supplierOptionsQueryOptions()
   )
+  const { data: itemCategories } = useSuspenseQuery(
+    itemCategoryOptionsQueryOptions()
+  )
+  const itemCategoryFilterOptions = [
+    { value: "all", label: "Tất cả" },
+    ...buildSelectOptions(itemCategories),
+  ]
   const [q, setQ] = useState(search.q ?? "")
 
   // Debounced keystrokes push many entries into history very fast; `replace`
@@ -61,6 +69,13 @@ export function InventoryDirectsTableFilter() {
     void navigate({ search: (prev) => ({ ...prev, supplierId, page: 1 }) })
   }
 
+  const handleItemCategoryChange = (value: string) => {
+    const itemCategoryId = value === "all" ? undefined : value
+    void navigate({
+      search: (prev) => ({ ...prev, itemCategoryId, page: 1 }),
+    })
+  }
+
   const handleStatusChange = (value: string) => {
     const status = value === "all" ? undefined : (value as InventoryStatus)
     void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
@@ -80,6 +95,7 @@ export function InventoryDirectsTableFilter() {
         const {
           q: _q,
           supplierId: _supplierId,
+          itemCategoryId: _itemCategoryId,
           status: _status,
           asOfDate: _asOfDate,
           ...rest
@@ -92,7 +108,7 @@ export function InventoryDirectsTableFilter() {
   return (
     <div className="flex flex-col gap-3 bg-card px-4 py-3.5 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.5fr)_minmax(8rem,1fr)_minmax(8rem,1fr)_minmax(9rem,1fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1.5fr)_minmax(8rem,1fr)_minmax(8rem,1fr)_minmax(8rem,1fr)_minmax(9rem,1fr)]">
           {/* Tìm kiếm */}
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
@@ -168,6 +184,37 @@ export function InventoryDirectsTableFilter() {
                 {supplierOptions.map((option) => (
                   <SelectItem key={option.id} value={option.id}>
                     {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Nhóm vật tư */}
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="inventory-item-category"
+              className="text-xs font-medium text-muted-foreground"
+            >
+              Nhóm vật tư
+            </Label>
+            <Select
+              items={itemCategoryFilterOptions}
+              value={search.itemCategoryId ?? "all"}
+              onValueChange={(value) =>
+                value !== null && handleItemCategoryChange(value)
+              }
+            >
+              <SelectTrigger
+                id="inventory-item-category"
+                className="w-full text-xs"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {itemCategoryFilterOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>

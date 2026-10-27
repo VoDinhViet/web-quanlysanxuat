@@ -161,6 +161,7 @@ const routePermissions: Record<ManageRoutePath, PermissionCode | null> = {
   // Child routes gate themselves with items:read / operations:read.
   "/manage/settings": null,
   "/manage/settings/units": "items:read",
+  "/manage/settings/item-categories": "items:read",
   "/manage/settings/operations": "operations:read",
 
   // No `users:read` exists in the backend catalogue — reading the staff list is gated on

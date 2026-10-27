@@ -25,6 +25,7 @@ const exportDirectsParamsSchema = directsSearchSchema.pick({
   q: true,
   status: true,
   clientId: true,
+  itemCategoryId: true,
 })
 
 export type ExportDirectsResult = { base64: string; filename: string }

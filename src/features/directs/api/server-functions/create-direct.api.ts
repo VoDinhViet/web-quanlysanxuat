@@ -35,6 +35,8 @@ function resolveCreateDirectErrorMessage(error: unknown): string {
       return "Đơn vị tính không tồn tại."
     case "client.error.not_found":
       return "Khách hàng không tồn tại."
+    case "item_category.error.not_found":
+      return "Nhóm vật tư không tồn tại."
     case "supplier.error.not_found":
       return "Nhà cung cấp không tồn tại."
     case "auth.error.forbidden":

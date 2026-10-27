@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { LayoutPagePending } from "@/components/shared/layouts/LayoutPagePending"
 import { UpdateDirectPage } from "@/features/directs/pages/UpdateDirectPage"
 import { directQueryOptions } from "@/features/directs/api/options"
+import { itemCategoryOptionsQueryOptions } from "@/features/item-categories/api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 
@@ -17,6 +18,10 @@ export const Route = createFileRoute(
       }),
       context.queryClient.query({
         ...unitOptionsQueryOptions(),
+        staleTime: "static",
+      }),
+      context.queryClient.query({
+        ...itemCategoryOptionsQueryOptions(),
         staleTime: "static",
       }),
       context.queryClient.query({
