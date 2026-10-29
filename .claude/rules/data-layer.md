@@ -72,9 +72,16 @@ export const doThing = createServerFn({ method: "POST" })
   (`src/lib/file-field.schema.ts`): `undefined` on create (omit the key), explicit `null` on
   update (PATCH treats a missing key as "no change"). See
   `src/features/users/api/server-functions/create-user.api.ts` and `update-user.api.ts`.
-- Dates use **luxon** directly at call sites (`DateTime.fromISO(...).toFormat("dd/MM/yyyy")`
-  for display, `"yyyy-MM-dd"` for date-picker values) — no wrapper helpers, no second date
-  library. Numbers/percentages use `Intl.NumberFormat("vi-VN", ...)` at call sites, not
+- Dates use **date-fns** directly at call sites, pinned to Vietnam time with `vnZone` from
+  `src/lib/time.ts` (the DB stores UTC; the app shows and filters in `Asia/Ho_Chi_Minh`):
+  `format(parseISO(value, { in: vnZone }), "dd/MM/yyyy")` for display, `"yyyy-MM-dd"` for
+  date-picker values, `format(new Date(), pattern, { in: vnZone })` for "now", and
+  `differenceInCalendarDays`/`startOfDay` on a `TZDate` for day math — no wrapper helpers. Without
+  `vnZone` the server (UTC) and browser (+07:00) print different text and hydration breaks.
+  `format` throws on an invalid date, so guard a value that may be empty or unparsable with
+  `isValid(parseISO(value))`. A date-only `yyyy-MM-dd` sent to the API as an ISO instant is
+  `new Date(value).toISOString()` (00:00 UTC, matching the BE `date` columns), not parsed in
+  `vnZone`. Numbers/percentages use `Intl.NumberFormat("vi-VN", ...)` at call sites, not
   `toFixed`/string concatenation (see `src/features/suppliers/components/SupplierStatCards.tsx`).
 
 ## Loaders don't catch — errors bubble to a shared `errorComponent`

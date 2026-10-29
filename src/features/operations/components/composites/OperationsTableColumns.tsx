@@ -1,7 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Eye, TrashBinTrash } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { Badge } from "@/components/ui/badge"
 import { Button, LinkButton } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import {
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteOperationDialog } from "@/features/operations/components/composites/DeleteOperationDialog"
+import { vnZone } from "@/lib/time"
 import {
   operationStatusLabels,
   OperationStatus,
@@ -114,7 +115,7 @@ export const buildOperationColumns = ({ offset }: OperationColumnsOptions) =>
     operationColumnHelper.accessor("createdAt", {
       header: "Ngày tạo",
       cell: ({ getValue }) =>
-        DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+        format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
       meta: { headerClassName: "min-w-28" },
     }),
     operationColumnHelper.display({

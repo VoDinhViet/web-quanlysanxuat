@@ -2,7 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { Copy, Eye, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
@@ -16,6 +16,7 @@ import { CopyProductDialog } from "@/features/products/components/composites/Cop
 import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
 import { ProductStatusBadge } from "@/features/products/components/primitives/ProductBadges"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import type { Item } from "@/lib/types/item.type"
 
 const productColumnHelper = createColumnHelper<typeof appTableFeatures, Item>()
@@ -104,7 +105,8 @@ export const productColumns = productColumnHelper.columns([
   }),
   productColumnHelper.accessor("createdAt", {
     header: "Ngày tạo",
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
     meta: { headerClassName: "min-w-28" },
   }),
   productColumnHelper.display({

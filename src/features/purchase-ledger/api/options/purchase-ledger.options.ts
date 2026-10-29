@@ -1,5 +1,4 @@
 import { queryOptions } from "@tanstack/react-query"
-import { DateTime } from "luxon"
 
 import { getPurchaseLedger } from "@/features/purchase-ledger/api/server-functions/get-purchase-ledger.api"
 import { resolvePurchaseLedgerWarnings } from "@/features/purchase-ledger/constants/resolve-purchase-ledger-warnings"
@@ -15,7 +14,7 @@ export const purchaseLedgerQueryOptions = (
     queryKey: ["purchase-ledger", "list", search],
     queryFn: async () => {
       const response = await getPurchaseLedger({ data: search })
-      const today = DateTime.now()
+      const today = new Date()
 
       return {
         ...response,

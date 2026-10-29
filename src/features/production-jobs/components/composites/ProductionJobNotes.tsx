@@ -1,8 +1,9 @@
-import { DateTime } from "luxon"
 import { Notes } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 
 import { Spinner } from "@/components/ui/spinner"
 import { Pagination } from "@/components/shared/composites/Pagination"
+import { vnZone } from "@/lib/time"
 import type { ProductionJobNote } from "@/lib/types/production-job.type"
 import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 
@@ -48,7 +49,8 @@ export function ProductionJobNotes({
                   {note.creator?.fullName ?? "Hệ thống"}
                 </span>
                 <span>
-                  {DateTime.fromISO(note.createdAt).toFormat(
+                  {format(
+                    parseISO(note.createdAt, { in: vnZone }),
                     "dd/MM/yyyy HH:mm"
                   )}
                 </span>

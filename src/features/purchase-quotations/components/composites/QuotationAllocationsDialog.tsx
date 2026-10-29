@@ -1,6 +1,6 @@
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { DangerTriangle, Diskette } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import { NumericFormat } from "react-number-format"
 import type { ReactElement } from "react"
 
@@ -28,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { vnZone } from "@/lib/time"
 import { cn } from "@/lib/utils"
 import type { QuotationItemAllocationValue } from "@/features/purchase-quotations/schemas/create-purchase-quotation.schema"
 
@@ -176,7 +177,8 @@ function QuotationAllocationsDialogForm({
                       </span>
                       <p className="text-xs text-muted-foreground">
                         Cần{" "}
-                        {DateTime.fromISO(allocation.neededDate).toFormat(
+                        {format(
+                          parseISO(allocation.neededDate, { in: vnZone }),
                           "dd/MM/yyyy"
                         )}
                       </p>

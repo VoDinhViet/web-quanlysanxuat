@@ -1,10 +1,11 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Badge } from "@/components/ui/badge"
 import { OutsourcingReceiptDocStatusBadge } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptBadges"
 import { OutsourcingReceiptActionsCell } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptTableCells"
+import { vnZone } from "@/lib/time"
 import type { OutsourcingReceipt } from "@/lib/types/outsourcing-receipt.type"
 
 const outsourcingReceiptColumnHelper = createColumnHelper<
@@ -73,7 +74,7 @@ export const outsourcingReceiptsColumns =
         cellClassName: "text-center",
       },
       cell: ({ getValue }) =>
-        DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+        format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
     }),
 
     outsourcingReceiptColumnHelper.display({

@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format } from "date-fns"
 import { RefreshCw } from "lucide-react"
 
 import { reportStatsQueryOptions } from "@/features/reports/api"
+import { vnZone } from "@/lib/time"
 
 export function ManageFooter() {
   // Mượn mốc thời gian fetch xong của reportStats (query đầu tiên/chính của trang, cũng là query
@@ -15,9 +16,9 @@ export function ManageFooter() {
       <RefreshCw className="size-3.5" />
       Dữ liệu cập nhật lần cuối:{" "}
       {statsQuery.dataUpdatedAt
-        ? DateTime.fromMillis(statsQuery.dataUpdatedAt).toFormat(
-            "dd/MM/yyyy HH:mm:ss"
-          )
+        ? format(new Date(statsQuery.dataUpdatedAt), "dd/MM/yyyy HH:mm:ss", {
+            in: vnZone,
+          })
         : "—"}
     </div>
   )

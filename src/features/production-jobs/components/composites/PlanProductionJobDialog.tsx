@@ -1,6 +1,11 @@
+import {
+  differenceInCalendarDays,
+  format,
+  parseISO,
+  startOfDay,
+} from "date-fns"
 import { useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
 import {
   AlertTriangle,
   Calendar,
@@ -27,6 +32,7 @@ import { useUpdateProductionJobPlan } from "@/features/production-jobs/api"
 import { useOperationSchedule } from "@/features/production-jobs/hooks/use-operation-schedule"
 import type { OperationScheduleRow } from "@/features/production-jobs/hooks/use-operation-schedule"
 import { OperationScheduleTable } from "@/features/production-jobs/components/composites/OperationScheduleTable"
+import { vnZone } from "@/lib/time"
 import { cn } from "@/lib/utils"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 
@@ -53,8 +59,8 @@ export function PlanProductionJobDialog({
   const startDateStr = useMemo(() => {
     const raw = job.order.orderDate || job.startedAt
     return raw
-      ? DateTime.fromISO(raw).toFormat("yyyy-MM-dd")
-      : DateTime.now().toFormat("yyyy-MM-dd")
+      ? format(parseISO(raw, { in: vnZone }), "yyyy-MM-dd")
+      : format(new Date(), "yyyy-MM-dd", { in: vnZone })
   }, [job.order.orderDate, job.startedAt])
 
   const {
@@ -180,18 +186,20 @@ function PlanJobProgressHeader({
   schedule: OperationScheduleRow[]
 }) {
   const orderDueDate = job.order.dueDate
-    ? DateTime.fromISO(job.order.dueDate).startOf("day")
+    ? startOfDay(parseISO(job.order.dueDate, { in: vnZone }))
     : null
   const finalPlannedDueDate =
     schedule.length > 0
-      ? DateTime.fromISO(schedule[schedule.length - 1].dueDate).startOf("day")
+      ? startOfDay(
+          parseISO(schedule[schedule.length - 1].dueDate, { in: vnZone })
+        )
       : null
 
   const isLate =
     orderDueDate && finalPlannedDueDate && finalPlannedDueDate > orderDueDate
   const daysDiff =
     isLate && orderDueDate && finalPlannedDueDate
-      ? Math.round(finalPlannedDueDate.diff(orderDueDate, "days").days)
+      ? differenceInCalendarDays(finalPlannedDueDate, orderDueDate)
       : 0
 
   const totalLeadtime = schedule.reduce((sum, r) => sum + r.leadtime, 0)
@@ -206,7 +214,7 @@ function PlanJobProgressHeader({
         </div>
         <div className="mt-1.5 sm:mt-2">
           <div className="text-xs font-medium text-foreground sm:text-sm">
-            {DateTime.fromISO(startDateStr).toFormat("dd/MM/yyyy")}
+            {format(parseISO(startDateStr, { in: vnZone }), "dd/MM/yyyy")}
           </div>
           <div className="mt-0.5 truncate text-xs text-muted-foreground">
             PO: {job.order.buyerPoNo ?? job.order.code}
@@ -223,7 +231,7 @@ function PlanJobProgressHeader({
         <div className="mt-1.5 sm:mt-2">
           <div className="text-xs font-medium text-foreground sm:text-sm">
             {finalPlannedDueDate
-              ? finalPlannedDueDate.toFormat("dd/MM/yyyy")
+              ? format(finalPlannedDueDate, "dd/MM/yyyy")
               : "—"}
           </div>
           <div className="mt-0.5 text-xs text-muted-foreground">
@@ -240,7 +248,7 @@ function PlanJobProgressHeader({
         </div>
         <div className="mt-1.5 sm:mt-2">
           <div className="text-xs font-medium text-foreground sm:text-sm">
-            {orderDueDate ? orderDueDate.toFormat("dd/MM/yyyy") : "—"}
+            {orderDueDate ? format(orderDueDate, "dd/MM/yyyy") : "—"}
           </div>
           <div className="mt-0.5 text-xs text-muted-foreground">
             Theo đơn hàng

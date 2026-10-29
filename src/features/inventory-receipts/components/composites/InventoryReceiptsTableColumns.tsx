@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import {
@@ -12,6 +12,7 @@ import {
   PurchaseOrderLink,
   SupplierLink,
 } from "@/features/inventory-receipts/components/primitives/InventoryReceiptTableCells"
+import { vnZone } from "@/lib/time"
 import type { InventoryReceipt } from "@/lib/types/inventory-receipt.type"
 import { inventoryReceiptTypeLabels } from "@/lib/types/inventory-receipt.type"
 
@@ -81,7 +82,7 @@ export const inventoryReceiptsColumns = col.columns([
     // `receiptDate` là cột `date` thuần (không có giờ) — đọc theo zone "utc" để tránh lùi/lên
     // một ngày do offset múi giờ cục bộ, cùng cách UpdateOrderForm.tsx đọc orderDate/dueDate.
     cell: ({ getValue }) =>
-      DateTime.fromISO(getValue(), { zone: "utc" }).toFormat("dd/MM/yyyy"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   col.accessor("receiptType", {

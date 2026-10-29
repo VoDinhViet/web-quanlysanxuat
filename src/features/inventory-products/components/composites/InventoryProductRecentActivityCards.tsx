@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { Bill, Checklist, ClipboardText, Delivery } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ComponentType, ReactNode } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -11,6 +11,7 @@ import { oqcsQueryOptions } from "@/features/oqc/api"
 import { outboundOrdersQueryOptions } from "@/features/outbound-orders/api"
 import { productionJobsQueryOptions } from "@/features/production-jobs/api"
 import { ordersQueryOptions } from "@/features/orders/api"
+import { vnZone } from "@/lib/time"
 import { IqcResult } from "@/lib/types/iqc.type"
 import { cn } from "@/lib/utils"
 
@@ -124,7 +125,8 @@ function QcPassActivityCard({ itemId }: CardProps) {
           ? [
               {
                 label: "Ngày",
-                value: DateTime.fromISO(oqc.inspectionDate).toFormat(
+                value: format(
+                  parseISO(oqc.inspectionDate, { in: vnZone }),
                   "dd/MM/yyyy"
                 ),
               },
@@ -174,7 +176,8 @@ function DeliveryActivityCard({ itemId }: CardProps) {
           ? [
               {
                 label: "Ngày giao",
-                value: DateTime.fromISO(outboundOrder.fulfillmentDate).toFormat(
+                value: format(
+                  parseISO(outboundOrder.fulfillmentDate, { in: vnZone }),
                   "dd/MM/yyyy"
                 ),
               },
@@ -224,7 +227,10 @@ function ProductionJobActivityCard({ itemId }: CardProps) {
           ? [
               {
                 label: "Ngày sản xuất",
-                value: DateTime.fromISO(job.orderDate).toFormat("dd/MM/yyyy"),
+                value: format(
+                  parseISO(job.orderDate, { in: vnZone }),
+                  "dd/MM/yyyy"
+                ),
               },
               {
                 label: "SL LSX",
@@ -273,7 +279,10 @@ function OrderActivityCard({ itemId }: CardProps) {
               },
               {
                 label: "Ngày đặt",
-                value: DateTime.fromISO(order.orderDate).toFormat("dd/MM/yyyy"),
+                value: format(
+                  parseISO(order.orderDate, { in: vnZone }),
+                  "dd/MM/yyyy"
+                ),
               },
             ]
           : []

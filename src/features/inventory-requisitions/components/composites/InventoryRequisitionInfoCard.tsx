@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router"
+import { format, parseISO } from "date-fns"
 import { History } from "lucide-react"
-import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
+import { vnZone } from "@/lib/time"
 import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisition.type"
 
 type InventoryRequisitionInfoCardProps = {
@@ -26,20 +27,20 @@ export function InventoryRequisitionInfoCard({
       <div className="flex flex-col gap-3 px-4 py-3.5 sm:px-5">
         <InfoRow
           label="Tạo lúc"
-          value={`${DateTime.fromISO(detail.createdAt).toFormat("dd/MM/yyyy HH:mm")}${detail.creatorBy ? ` · ${detail.creatorBy.fullName}` : ""}`}
+          value={`${format(parseISO(detail.createdAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${detail.creatorBy ? ` · ${detail.creatorBy.fullName}` : ""}`}
         />
 
         {detail.sentAt && (
           <InfoRow
             label="Gửi duyệt lúc"
-            value={`${DateTime.fromISO(detail.sentAt).toFormat("dd/MM/yyyy HH:mm")}${detail.senderBy ? ` · ${detail.senderBy.fullName}` : ""}`}
+            value={`${format(parseISO(detail.sentAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${detail.senderBy ? ` · ${detail.senderBy.fullName}` : ""}`}
           />
         )}
 
         {detail.approvedAt && (
           <InfoRow
             label="Duyệt lúc"
-            value={`${DateTime.fromISO(detail.approvedAt).toFormat("dd/MM/yyyy HH:mm")}${detail.approverBy ? ` · ${detail.approverBy.fullName}` : ""}`}
+            value={`${format(parseISO(detail.approvedAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${detail.approverBy ? ` · ${detail.approverBy.fullName}` : ""}`}
           />
         )}
 
@@ -47,7 +48,7 @@ export function InventoryRequisitionInfoCard({
           <>
             <InfoRow
               label="Từ chối lúc"
-              value={`${DateTime.fromISO(detail.rejectedAt).toFormat("dd/MM/yyyy HH:mm")}${detail.rejecterBy ? ` · ${detail.rejecterBy.fullName}` : ""}`}
+              value={`${format(parseISO(detail.rejectedAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${detail.rejecterBy ? ` · ${detail.rejecterBy.fullName}` : ""}`}
             />
             {detail.rejectionReason && (
               <InfoRow label="Lý do từ chối" value={detail.rejectionReason} />
@@ -58,7 +59,7 @@ export function InventoryRequisitionInfoCard({
         {detail.issuedAt && (
           <InfoRow
             label="Xuất kho lúc"
-            value={`${DateTime.fromISO(detail.issuedAt).toFormat("dd/MM/yyyy HH:mm")}${detail.issuerBy ? ` · ${detail.issuerBy.fullName}` : ""}`}
+            value={`${format(parseISO(detail.issuedAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${detail.issuerBy ? ` · ${detail.issuerBy.fullName}` : ""}`}
           />
         )}
 
@@ -79,7 +80,8 @@ export function InventoryRequisitionInfoCard({
 
         <InfoRow
           label="Cập nhật lần cuối"
-          value={DateTime.fromISO(detail.updatedAt).toFormat(
+          value={format(
+            parseISO(detail.updatedAt, { in: vnZone }),
             "dd/MM/yyyy HH:mm"
           )}
         />

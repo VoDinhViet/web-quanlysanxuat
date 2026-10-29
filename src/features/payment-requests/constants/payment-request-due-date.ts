@@ -1,5 +1,6 @@
-import { DateTime } from "luxon"
+import { differenceInCalendarDays, parseISO } from "date-fns"
 
+import { vnZone } from "@/lib/time"
 import { PaymentRequestStatus } from "@/lib/types/payment-request.type"
 import type { PaymentRequestStatus as PaymentRequestStatusType } from "@/lib/types/payment-request.type"
 
@@ -12,7 +13,7 @@ const nearDueDays = 3
 // Duplicated (not imported) from orders'/production-orders' due-date tone logic — a feature may
 // only read another feature's data through its api/index.ts barrel, never its components/logic
 // (see .claude/rules/architecture.md "Layer boundaries"). `today` is a parameter rather than
-// DateTime.now() called inside, so a server-rendered and a client-rendered pass agree — same
+// new Date() called inside, so a server-rendered and a client-rendered pass agree — same
 // SSR-safety idiom as resolveDeliveryTone (order.type.ts).
 //
 // Returns `null` once the request is PAID or CANCELLED — a countdown on a settled document is
@@ -20,7 +21,7 @@ const nearDueDays = 3
 export function resolvePaymentRequestDueDateTone(
   dueDate: string,
   status: PaymentRequestStatusType,
-  today: DateTime
+  today: Date
 ): PaymentRequestDueDateTone | null {
   if (
     status === PaymentRequestStatus.PAID ||
@@ -29,9 +30,10 @@ export function resolvePaymentRequestDueDateTone(
     return null
   }
 
-  const daysLeft = DateTime.fromISO(dueDate)
-    .startOf("day")
-    .diff(today.startOf("day"), "days").days
+  const daysLeft = differenceInCalendarDays(
+    parseISO(dueDate, { in: vnZone }),
+    today
+  )
 
   if (daysLeft < 0) {
     return "overdue"
@@ -45,15 +47,15 @@ export function resolvePaymentRequestDueDateTone(
 export function formatPaymentRequestDueDateNote(
   dueDate: string,
   status: PaymentRequestStatusType,
-  today: DateTime
+  today: Date
 ): string | null {
   if (resolvePaymentRequestDueDateTone(dueDate, status, today) === null) {
     return null
   }
 
-  const daysLeft = Math.ceil(
-    DateTime.fromISO(dueDate).startOf("day").diff(today.startOf("day"), "days")
-      .days
+  const daysLeft = differenceInCalendarDays(
+    parseISO(dueDate, { in: vnZone }),
+    today
   )
 
   if (daysLeft < 0) {

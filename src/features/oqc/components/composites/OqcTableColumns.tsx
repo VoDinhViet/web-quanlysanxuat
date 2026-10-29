@@ -1,7 +1,7 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 
 import type { appTableFeatures } from "@/lib/table-features"
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/features/oqc/components/primitives/OqcBadges"
 import { OqcActionsCell } from "@/features/oqc/components/primitives/OqcTableCells"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import type { Oqc } from "@/lib/types/oqc.type"
 import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 
@@ -160,7 +161,8 @@ export const oqcColumns = oqcColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   oqcColumnHelper.accessor("result", {

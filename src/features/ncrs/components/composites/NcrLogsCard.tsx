@@ -1,6 +1,7 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { NcrSectionCard } from "@/features/ncrs/components/layouts/NcrSectionCard"
+import { vnZone } from "@/lib/time"
 import type { NcrLog } from "@/lib/types/ncr.type"
 
 type NcrLogsCardProps = {
@@ -19,7 +20,10 @@ export function NcrLogsCard({ logs }: NcrLogsCardProps) {
               <p className="font-medium text-foreground">{log.content}</p>
               <p className="text-muted-foreground">
                 {log.performerBy?.fullName ?? "Hệ thống"} ·{" "}
-                {DateTime.fromISO(log.createdAt).toFormat("dd/MM/yyyy HH:mm")}
+                {format(
+                  parseISO(log.createdAt, { in: vnZone }),
+                  "dd/MM/yyyy HH:mm"
+                )}
               </p>
             </li>
           ))}

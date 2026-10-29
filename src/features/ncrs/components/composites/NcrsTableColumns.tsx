@@ -1,6 +1,6 @@
-import { DateTime } from "luxon"
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 
 import {
   NcrStatusBadge,
@@ -8,6 +8,7 @@ import {
 } from "@/features/ncrs/components/primitives/NcrBadges"
 import { NcrActionsCell } from "@/features/ncrs/components/primitives/NcrTableCells"
 import type { appTableFeatures } from "@/lib/table-features"
+import { vnZone } from "@/lib/time"
 import type { Ncr } from "@/lib/types/ncr.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -108,7 +109,7 @@ export const ncrColumns = ncrColumnHelper.columns([
     meta: { headerClassName: "min-w-28" },
     cell: ({ getValue }) => (
       <span className="text-xs text-muted-foreground">
-        {DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm")}
+        {format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm")}
       </span>
     ),
   }),

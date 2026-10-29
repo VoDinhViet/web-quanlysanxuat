@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { InventoryIssueStatusBadge } from "@/features/inventory-issues/components/primitives/InventoryIssueBadges"
@@ -8,6 +8,7 @@ import {
   InventoryIssueActionsCell,
   InventoryIssueJobLsxCell,
 } from "@/features/inventory-issues/components/primitives/InventoryIssueTableCells"
+import { vnZone } from "@/lib/time"
 import type { InventoryIssue } from "@/lib/types/inventory-issue.type"
 import { inventoryIssueTypeLabels } from "@/lib/types/inventory-issue.type"
 
@@ -95,7 +96,7 @@ export const inventoryIssuesColumns = col.columns([
     // `issueDate` là cột `date` thuần (không có giờ) — đọc theo zone "utc" để tránh lùi/lên
     // một ngày do offset múi giờ cục bộ, cùng cách InventoryReceiptsTableColumns đọc receiptDate.
     cell: ({ getValue }) =>
-      DateTime.fromISO(getValue(), { zone: "utc" }).toFormat("dd/MM/yyyy"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   col.accessor("issueType", {

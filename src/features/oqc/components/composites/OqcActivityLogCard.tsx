@@ -1,7 +1,8 @@
 import { History } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { OqcDetailSectionCard } from "@/features/oqc/components/layouts/OqcDetailSectionCard"
+import { vnZone } from "@/lib/time"
 import type { OqcDetail } from "@/lib/types/oqc.type"
 import { cn } from "@/lib/utils"
 
@@ -58,7 +59,10 @@ export function OqcActivityLogCard({ oqc }: OqcActivityLogCardProps) {
               {entry.at ? (
                 <p className="text-muted-foreground">
                   {entry.actorName ?? "—"} ·{" "}
-                  {DateTime.fromISO(entry.at).toFormat("dd/MM/yyyy HH:mm")}
+                  {format(
+                    parseISO(entry.at, { in: vnZone }),
+                    "dd/MM/yyyy HH:mm"
+                  )}
                 </p>
               ) : (
                 <p className="text-muted-foreground/60">Chưa thực hiện</p>

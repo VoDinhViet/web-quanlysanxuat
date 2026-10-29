@@ -1,7 +1,8 @@
+import { differenceInCalendarDays, parseISO } from "date-fns"
 import { AlertCircle, AlertTriangle, Check, CheckCircle2 } from "lucide-react"
-import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
+import { vnZone } from "@/lib/time"
 import {
   productionJobStatusLabels,
   productionJobWarningLabels,
@@ -68,11 +69,10 @@ export function getProductionJobWarning(job: {
     return null
   }
 
-  const today = DateTime.now().setZone("Asia/Ho_Chi_Minh").startOf("day")
-  const due = DateTime.fromISO(job.dueDate)
-    .setZone("Asia/Ho_Chi_Minh")
-    .startOf("day")
-  const diffDays = Math.round(due.diff(today, "days").days)
+  const diffDays = differenceInCalendarDays(
+    parseISO(job.dueDate, { in: vnZone }),
+    new Date()
+  )
 
   if (diffDays < 0) return ProductionJobWarning.OVERDUE
   if (diffDays <= 2) return ProductionJobWarning.URGENT

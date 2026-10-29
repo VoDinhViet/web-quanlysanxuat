@@ -1,9 +1,10 @@
 import { useField } from "@tanstack/react-form"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import { createInventoryReceiptOtherFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-other.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 import {
   InventoryReceiptStatus,
   inventoryReceiptStatusDescriptions,
@@ -56,7 +57,7 @@ export const CreateInventoryReceiptOtherConfirmSection = withForm({
             label="Ngày nhập"
             value={
               receiptDate
-                ? DateTime.fromISO(receiptDate).toFormat("dd/MM/yyyy")
+                ? format(parseISO(receiptDate, { in: vnZone }), "dd/MM/yyyy")
                 : "—"
             }
           />

@@ -1,6 +1,6 @@
 import { PenNewSquare, TrashBinTrash } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,7 @@ import {
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteItemCategoryDialog } from "@/features/item-categories/components/composites/DeleteItemCategoryDialog"
 import { UpdateItemCategoryDialog } from "@/features/item-categories/components/composites/UpdateItemCategoryDialog"
+import { vnZone } from "@/lib/time"
 import type { ItemCategory } from "@/lib/types/item-category.type"
 
 const itemCategoryColumnHelper = createColumnHelper<
@@ -51,7 +52,7 @@ export const itemCategoryColumns = itemCategoryColumnHelper.columns([
     header: "Cập nhật lúc",
     meta: { headerClassName: "min-w-36" },
     cell: ({ getValue }) =>
-      DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm"),
   }),
   itemCategoryColumnHelper.display({
     id: "actions",

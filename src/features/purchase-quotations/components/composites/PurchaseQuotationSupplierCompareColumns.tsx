@@ -1,12 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
 import { CheckCircle } from "@solar-icons/react"
 import { IconClock, IconFileDescription } from "@tabler/icons-react"
+import { format, parseISO } from "date-fns"
 
 import { Badge } from "@/components/ui/badge"
 import { RadioGroupItem } from "@/components/ui/radio-group"
 import { QuotationSupplierAttachmentCell } from "@/features/purchase-quotations/components/primitives/QuotationSupplierAttachmentCell"
+import { vnZone } from "@/lib/time"
 import type { PurchaseQuotationItemSupplierDetail } from "@/lib/types/purchase-quotation.type"
 
 const purchaseQuotationSupplierColumnHelper = createColumnHelper<
@@ -69,7 +70,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
           )
         }
 
-        return <span className="text-muted-foreground text-xs">—</span>
+        return <span className="text-xs text-muted-foreground">—</span>
       },
     }),
 
@@ -101,7 +102,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
                 <Badge
                   variant="info"
                   appearance="soft"
-                  className="text-[10px] font-semibold tracking-wide uppercase px-1.5 py-0"
+                  className="px-1.5 py-0 text-[10px] font-semibold tracking-wide uppercase"
                 >
                   Giá thấp nhất
                 </Badge>
@@ -119,7 +120,8 @@ export function buildPurchaseQuotationSupplierCompareColumns({
                   <span>
                     {" "}
                     (
-                    {DateTime.fromISO(lastPurchase.orderDate).toFormat(
+                    {format(
+                      parseISO(lastPurchase.orderDate, { in: vnZone }),
                       "dd/MM/yyyy"
                     )}
                     )
@@ -156,11 +158,11 @@ export function buildPurchaseQuotationSupplierCompareColumns({
         return (
           <div className="space-y-0.5">
             {/* Tầng 1: Đơn giá báo kèm ĐVT áp dụng */}
-            <p className="font-semibold text-foreground tabular-nums text-xs">
+            <p className="text-xs font-semibold text-foreground tabular-nums">
               {unitPrice !== null && unitPrice !== undefined ? (
                 <>
                   <span>{priceFormatter.format(unitPrice)} ₫</span>
-                  <span className="text-[11px] font-normal text-muted-foreground ml-1">
+                  <span className="ml-1 text-[11px] font-normal text-muted-foreground">
                     / {quoteUnit}
                   </span>
                 </>
@@ -202,7 +204,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
       cell: ({ row }) => {
         const supplier = row.original
         if (supplier.unitPrice === null || supplier.unitPrice === undefined) {
-          return <span className="text-muted-foreground text-xs">—</span>
+          return <span className="text-xs text-muted-foreground">—</span>
         }
 
         const isSupplierUnit =
@@ -217,13 +219,13 @@ export function buildPurchaseQuotationSupplierCompareColumns({
         return (
           <div className="space-y-0.5">
             {/* Tầng 1: Tổng tiền nổi bật */}
-            <p className="font-bold text-primary tabular-nums text-xs">
+            <p className="text-xs font-bold text-primary tabular-nums">
               {priceFormatter.format(total)} ₫
             </p>
 
             {/* Tầng 2: Diễn giải quy đổi chi tiết */}
             {isSupplierUnit ? (
-              <div className="text-[10.5px] tabular-nums space-y-0.2">
+              <div className="space-y-0.2 text-[10.5px] tabular-nums">
                 <p className="text-muted-foreground">
                   = {priceFormatter.format(supplier.unitPrice)} ×{" "}
                   {effectiveQty.toLocaleString("vi-VN")} {quoteUnit}
@@ -269,8 +271,8 @@ export function buildPurchaseQuotationSupplierCompareColumns({
           <div className="space-y-1">
             {/* Tầng 1: Leadtime + Badge Giao nhanh nhất (isShortestLeadTime) */}
             <div className="flex flex-wrap items-center gap-1.5 text-xs text-foreground">
-              <IconClock className="size-3.5 text-muted-foreground shrink-0" />
-              <span className="tabular-nums font-medium">
+              <IconClock className="size-3.5 shrink-0 text-muted-foreground" />
+              <span className="font-medium tabular-nums">
                 {leadTime !== null && leadTime !== undefined
                   ? `Giao: ${leadTime} ngày`
                   : "Chưa rõ tiến độ"}
@@ -279,7 +281,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
                 <Badge
                   variant="success"
                   appearance="soft"
-                  className="text-[10px] font-semibold tracking-wide uppercase px-1.5 py-0"
+                  className="px-1.5 py-0 text-[10px] font-semibold tracking-wide uppercase"
                 >
                   Nhanh nhất
                 </Badge>
@@ -296,7 +298,7 @@ export function buildPurchaseQuotationSupplierCompareColumns({
 
               {hasNote && (
                 <span
-                  className="inline-flex max-w-[140px] items-center gap-1 truncate text-muted-foreground text-[11px]"
+                  className="inline-flex max-w-[140px] items-center gap-1 truncate text-[11px] text-muted-foreground"
                   title={supplier.note ?? undefined}
                 >
                   <IconFileDescription className="size-3 shrink-0" />

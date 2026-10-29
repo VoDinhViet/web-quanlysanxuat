@@ -1,3 +1,4 @@
+import { format } from "date-fns"
 import { useEffect, useRef, useState } from "react"
 import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
@@ -10,7 +11,6 @@ import {
   Diskette,
 } from "@solar-icons/react"
 import { Loader2 } from "lucide-react"
-import { DateTime } from "luxon"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -33,6 +33,7 @@ import {
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { useAppForm } from "@/hooks/use-app-form"
 import { restoreFormDraft, useFormDraft } from "@/hooks/use-form-draft"
+import { vnZone } from "@/lib/time"
 import { InventoryReceiptType } from "@/lib/types/inventory-receipt.type"
 import { getStepNav } from "@/lib/wizard-steps"
 import type { InventoryReceiptFromPoWizardStep } from "@/features/inventory-receipts/components/sections/CreateInventoryReceiptFromPoStepsTabs"
@@ -134,7 +135,7 @@ export function CreateInventoryReceiptFromPoForm() {
         throw new Error("Chưa chọn đơn mua hàng — vui lòng chọn PO khác.")
       }
 
-      const receiptDate = DateTime.now().toFormat("yyyy-MM-dd")
+      const receiptDate = format(new Date(), "yyyy-MM-dd", { in: vnZone })
       const payload = buildCreateInventoryReceiptPayload(
         value,
         purchaseOrder,
@@ -236,8 +237,7 @@ export function CreateInventoryReceiptFromPoForm() {
             item.quotationQuantity ??
             (hasQuotationUnit && poLine && poLine.quantity > 0
               ? Math.round(
-                  ((poLine.quotationQuantity! * currentQty) /
-                    poLine.quantity) *
+                  ((poLine.quotationQuantity! * currentQty) / poLine.quantity) *
                     1000
                 ) / 1000
               : undefined)

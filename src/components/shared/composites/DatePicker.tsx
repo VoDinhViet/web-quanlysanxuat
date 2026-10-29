@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils"
 // to react-hook-form's <Controller> fields in the `orders` feature's Create/Update sections
 // (which pass onBlur/disabled — validation state stays on the surrounding `Field`/`FieldError`,
 // same as the RadioGroup fields next to it). Parse/format is date-fns (Calendar wraps
-// react-day-picker, which works in plain `Date`, not luxon `DateTime`) — value stays an ISO
+// react-day-picker, which works in plain `Date`) — value stays an ISO
 // `yyyy-MM-dd` string at the public boundary so call sites don't move.
 type DatePickerProps = {
   value: string

@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
 import type { ZodString } from "zod"
 
@@ -39,10 +39,11 @@ export function emptyToUndefined(value: string): string | undefined {
 
 /**
  * Chuỗi date-only (yyyy-MM-dd) từ date picker → ISO datetime.
- * Bắt buộc `{zone:"utc"}`: parse ở zone local (+07:00) rồi đọc lại theo UTC sẽ lệch 1 ngày.
+ * `new Date("yyyy-MM-dd")` luôn là 00:00 UTC, khớp cột `date` của BE. Không parse theo giờ VN:
+ * 00:00 +07:00 là 17:00 UTC của ngày hôm trước, lệch 1 ngày.
  */
 export function toIsoDate(value: string): string {
-  return DateTime.fromISO(value, { zone: "utc" }).toJSDate().toISOString()
+  return new Date(value).toISOString()
 }
 
 /** Bản optional của `toIsoDate` cho ô ngày không bắt buộc. */
@@ -74,7 +75,7 @@ export function optionalEmail() {
  * (orders/production-orders/purchase-requests/...) tự khai lại khối này. */
 export const isoDateFilter = z
   .string()
-  .refine((value) => DateTime.fromISO(value).isValid, {
+  .refine((value) => isValid(parseISO(value)), {
     message: "Ngày không hợp lệ",
   })
   .optional()

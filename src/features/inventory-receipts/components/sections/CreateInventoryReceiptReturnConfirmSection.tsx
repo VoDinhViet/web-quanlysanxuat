@@ -1,11 +1,12 @@
 import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import { createInventoryReceiptReturnFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-return.schema"
 import { clientQueryOptions } from "@/features/clients/api"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 import {
   InventoryReceiptAssetType,
   InventoryReceiptStatus,
@@ -77,7 +78,7 @@ export const CreateInventoryReceiptReturnConfirmSection = withForm({
             label="Ngày nhập"
             value={
               receiptDate
-                ? DateTime.fromISO(receiptDate).toFormat("dd/MM/yyyy")
+                ? format(parseISO(receiptDate, { in: vnZone }), "dd/MM/yyyy")
                 : "—"
             }
           />

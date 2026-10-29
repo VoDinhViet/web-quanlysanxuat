@@ -1,6 +1,6 @@
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { Loader2 } from "lucide-react"
 import {
   AltArrowLeft,
@@ -18,6 +18,7 @@ import { ProductStatusBadge } from "@/features/products/components/primitives/Pr
 import { ProductDetailTabs } from "@/features/products/components/layouts/ProductDetailTabs"
 import { resolveFileUrl } from "@/lib/file-url"
 import type { ProductDetailTab } from "@/features/products/schemas/product-detail-search.schema"
+import { vnZone } from "@/lib/time"
 import type { Item } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -83,7 +84,10 @@ export function ProductDetailHeader({
               <Dot />
               <span>
                 Cập nhật{" "}
-                {DateTime.fromISO(product.updatedAt).toFormat("dd/MM/yyyy")}
+                {format(
+                  parseISO(product.updatedAt, { in: vnZone }),
+                  "dd/MM/yyyy"
+                )}
               </span>
             </div>
           </div>

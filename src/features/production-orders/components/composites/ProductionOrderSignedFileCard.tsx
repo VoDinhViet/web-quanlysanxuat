@@ -1,7 +1,7 @@
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useServerFn } from "@tanstack/react-start"
-import { DateTime } from "luxon"
 import prettyBytes from "pretty-bytes"
 import { ErrorCode, useDropzone } from "react-dropzone"
 import {
@@ -26,6 +26,7 @@ import {
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { updateProductionOrderSignedFile } from "@/features/production-orders/api/server-functions/update-production-order-signed-file.api"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import { UploadType } from "@/lib/types/file.type"
 import { uploadFile } from "@/lib/upload-file"
 import { cn } from "@/lib/utils"
@@ -192,7 +193,8 @@ export function ProductionOrderSignedFileCard({
                   <span>•</span>
                   <span>
                     Đã tải lên{" "}
-                    {DateTime.fromISO(signedFile.createdAt).toFormat(
+                    {format(
+                      parseISO(signedFile.createdAt, { in: vnZone }),
                       "dd/MM/yyyy HH:mm"
                     )}
                   </span>

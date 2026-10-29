@@ -1,12 +1,13 @@
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { toast } from "sonner"
 
 import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { updatePurchaseRequestNeededDate } from "@/features/purchase-requests/api/server-functions/update-purchase-request-needed-date.api"
 import { useHasPermission } from "@/hooks/use-permissions"
+import { vnZone } from "@/lib/time"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 
 type PurchaseRequestNeededDateFieldProps = {
@@ -30,9 +31,7 @@ export function PurchaseRequestNeededDateField({
       status === PurchaseRequestStatus.REJECTED)
   const queryClient = useQueryClient()
   const updateNeededDateFn = useServerFn(updatePurchaseRequestNeededDate)
-  const serverValue = DateTime.fromISO(neededDate, { zone: "utc" }).toFormat(
-    "yyyy-MM-dd"
-  )
+  const serverValue = format(parseISO(neededDate, { in: vnZone }), "yyyy-MM-dd")
   const [value, setValue] = useState(serverValue)
   const [syncedValue, setSyncedValue] = useState(serverValue)
   if (serverValue !== syncedValue) {
@@ -62,7 +61,7 @@ export function PurchaseRequestNeededDateField({
           Ngày cần
         </p>
         <p className="truncate text-sm font-medium text-foreground">
-          {DateTime.fromISO(neededDate, { zone: "utc" }).toFormat("dd/MM/yyyy")}
+          {format(parseISO(neededDate, { in: vnZone }), "dd/MM/yyyy")}
         </p>
       </div>
     )

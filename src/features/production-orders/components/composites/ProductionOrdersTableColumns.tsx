@@ -1,5 +1,5 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { ProductionOrderStatusBadge } from "@/features/production-orders/components/primitives/ProductionOrderBadges"
@@ -7,6 +7,7 @@ import {
   DueDateCell,
   ProductionOrderActionsCell,
 } from "@/features/production-orders/components/primitives/ProductionOrderTableCells"
+import { vnZone } from "@/lib/time"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 
 const productionOrderColumnHelper = createColumnHelper<
@@ -65,7 +66,8 @@ export const productionOrderColumns = productionOrderColumnHelper.columns([
       headerClassName: "min-w-32 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
   productionOrderColumnHelper.accessor((row) => row.order.dueDate, {
     id: "dueDate",

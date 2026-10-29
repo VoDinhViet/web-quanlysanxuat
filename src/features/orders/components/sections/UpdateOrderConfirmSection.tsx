@@ -1,9 +1,10 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { UpdateOrderTotalsSummary } from "@/features/orders/components/composites/UpdateOrderTotalsSummary"
 import { UploadOrderDocuments } from "@/features/orders/components/composites/UploadOrderDocuments"
 import { updateOrderFormDefaultValues } from "@/features/orders/schemas/update-order.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
 
 type RecapFieldProps = {
@@ -53,7 +54,7 @@ export const UpdateOrderConfirmSection = withForm({
                 label="Ngày đặt hàng"
                 value={
                   orderDate
-                    ? DateTime.fromISO(orderDate).toFormat("dd/MM/yyyy")
+                    ? format(parseISO(orderDate, { in: vnZone }), "dd/MM/yyyy")
                     : "—"
                 }
               />
@@ -61,7 +62,7 @@ export const UpdateOrderConfirmSection = withForm({
                 label="Ngày giao hàng yêu cầu"
                 value={
                   dueDate
-                    ? DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
+                    ? format(parseISO(dueDate, { in: vnZone }), "dd/MM/yyyy")
                     : "—"
                 }
               />

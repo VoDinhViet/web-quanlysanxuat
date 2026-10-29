@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { PurchaseRequestDetailActions } from "@/features/purchase-requests/compo
 import { PurchaseRequestNeededDateField } from "@/features/purchase-requests/components/composites/PurchaseRequestNeededDateField"
 import { PurchaseRequestNoteField } from "@/features/purchase-requests/components/composites/PurchaseRequestNoteField"
 import { usePurchaseRequestNote } from "@/features/purchase-requests/hooks/use-purchase-request-note"
+import { vnZone } from "@/lib/time"
 import { PurchaseRequestStatus } from "@/lib/types/purchase-request.type"
 import type { PurchaseRequestDetail } from "@/lib/types/purchase-request.type"
 
@@ -40,7 +41,8 @@ function getApprovalMeta(purchaseRequest: PurchaseRequestDetail): {
             {purchaseRequest.approvedAt && (
               <span className="ml-1 text-xs text-muted-foreground">
                 (
-                {DateTime.fromISO(purchaseRequest.approvedAt).toFormat(
+                {format(
+                  parseISO(purchaseRequest.approvedAt, { in: vnZone }),
                   "dd/MM/yyyy HH:mm"
                 )}
                 )
@@ -60,7 +62,8 @@ function getApprovalMeta(purchaseRequest: PurchaseRequestDetail): {
             {purchaseRequest.sentAt && (
               <span className="ml-1 text-xs text-muted-foreground">
                 (
-                {DateTime.fromISO(purchaseRequest.sentAt).toFormat(
+                {format(
+                  parseISO(purchaseRequest.sentAt, { in: vnZone }),
                   "dd/MM/yyyy HH:mm"
                 )}
                 )
@@ -80,7 +83,8 @@ function getApprovalMeta(purchaseRequest: PurchaseRequestDetail): {
             {purchaseRequest.rejectedAt && (
               <span className="ml-1 text-xs text-muted-foreground">
                 (
-                {DateTime.fromISO(purchaseRequest.rejectedAt).toFormat(
+                {format(
+                  parseISO(purchaseRequest.rejectedAt, { in: vnZone }),
                   "dd/MM/yyyy HH:mm"
                 )}
                 )
@@ -205,7 +209,8 @@ export function PurchaseRequestDetailHeader({
         />
         <MetaField
           label="Ngày tạo"
-          value={DateTime.fromISO(purchaseRequest.createdAt).toFormat(
+          value={format(
+            parseISO(purchaseRequest.createdAt, { in: vnZone }),
             "dd/MM/yyyy HH:mm"
           )}
         />

@@ -1,10 +1,11 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { OutsourcingOrderDetailActions } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailActions"
 import { OutsourcingOrderStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
+import { vnZone } from "@/lib/time"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderDetailHeaderProps = {
@@ -42,13 +43,17 @@ export function OutsourcingOrderDetailHeader({
           <MetaField label="Nhà cung cấp" value={order.supplier.name} />
           <MetaField
             label="Ngày gửi"
-            value={DateTime.fromISO(order.sendDate).toFormat("dd/MM/yyyy")}
+            value={format(
+              parseISO(order.sendDate, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           />
           <MetaField
             label="Ngày hẹn về"
             value={
               order.expectedReturnDate
-                ? DateTime.fromISO(order.expectedReturnDate).toFormat(
+                ? format(
+                    parseISO(order.expectedReturnDate, { in: vnZone }),
                     "dd/MM/yyyy"
                   )
                 : "—"

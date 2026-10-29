@@ -1,7 +1,7 @@
 import { Box, CheckCircle, Lock, Refresh, Target } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import type { UseQueryResult } from "@tanstack/react-query"
 import type { IconProps } from "@solar-icons/react"
+import { format } from "date-fns"
 import type { ComponentType } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { vnZone } from "@/lib/time"
 import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 import { cn } from "@/lib/utils"
 
@@ -103,9 +104,9 @@ export function InventoryProductStatTiles({
       <div className="flex items-center gap-1.5 pt-1 text-xs text-muted-foreground">
         <span>
           Cập nhật đến{" "}
-          {DateTime.fromMillis(query.dataUpdatedAt).toFormat(
-            "HH:mm · dd/MM/yyyy"
-          )}
+          {format(new Date(query.dataUpdatedAt), "HH:mm · dd/MM/yyyy", {
+            in: vnZone,
+          })}
         </span>
         <Tooltip>
           <TooltipTrigger

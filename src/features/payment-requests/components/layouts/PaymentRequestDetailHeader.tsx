@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
+import { vnZone } from "@/lib/time"
 import { PaymentRequestStatus } from "@/lib/types/payment-request.type"
 import { PaymentRequestStatusBadge } from "@/features/payment-requests/components/primitives/PaymentRequestBadges"
 import { PaymentRequestUrgencyToggle } from "@/features/payment-requests/components/composites/PaymentRequestUrgencyToggle"
@@ -90,9 +91,10 @@ export function PaymentRequestDetailHeader({
         />
         <MetaField
           label="Ngày PO"
-          value={DateTime.fromISO(
-            paymentRequest.purchaseOrder.orderDate
-          ).toFormat("dd/MM/yyyy")}
+          value={format(
+            parseISO(paymentRequest.purchaseOrder.orderDate, { in: vnZone }),
+            "dd/MM/yyyy"
+          )}
         />
         <MetaField
           label="Giá trị PO"
@@ -100,7 +102,8 @@ export function PaymentRequestDetailHeader({
         />
         <MetaField
           label="Ngày tạo YCTT"
-          value={DateTime.fromISO(paymentRequest.createdAt).toFormat(
+          value={format(
+            parseISO(paymentRequest.createdAt, { in: vnZone }),
             "dd/MM/yyyy"
           )}
         />

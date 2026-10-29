@@ -1,7 +1,7 @@
+import { format, parseISO } from "date-fns"
 import { useMemo, useState } from "react"
 import { revalidateLogic } from "@tanstack/react-form"
 import type { DeepKeys } from "@tanstack/react-form"
-import { DateTime } from "luxon"
 import { useNavigate } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -21,6 +21,7 @@ import {
 } from "@/features/orders/components/sections/UpdateOrderStepsTabs"
 import { updateOrder } from "@/features/orders/api/server-functions/update-order.api"
 import { updateOrderSchema } from "@/features/orders/schemas/update-order.schema"
+import { vnZone } from "@/lib/time"
 import { getStepNav } from "@/lib/wizard-steps"
 import type { UpdateOrderWizardStep } from "@/features/orders/components/sections/UpdateOrderStepsTabs"
 import type { UpdateOrderSchema } from "@/features/orders/schemas/update-order.schema"
@@ -61,9 +62,9 @@ const stepFields: Record<UpdateOrderWizardStep, DeepKeys<UpdateOrderSchema>[]> =
   }
 
 // OrderDetail → raw form values: nullable fields become "", ISO datetimes become the
-// yyyy-MM-dd strings the date pickers work with. {zone:"utc"} is the exact inverse of
-// toIsoDate (which writes out midnight UTC) — without it, reading back in a negative
-// offset loses a day. `items`/`files` carry the UI-only display fields
+// yyyy-MM-dd strings the date pickers work with. Parsing in vnZone reads back the same calendar
+// day toIsoDate wrote (midnight UTC is 07:00 in Vietnam, still the same day), so no day is lost
+// whatever the browser's own offset. `items`/`files` carry the UI-only display fields
 // (itemLabel/itemUnit, file metadata) that orderItemFormSchema/the update server
 // function strip back out before the payload reaches the wire.
 function getOrderDefaultValues(
@@ -75,11 +76,9 @@ function getOrderDefaultValues(
     clientId: order.client?.id ?? "",
     clientContactId: order.clientContact?.id ?? "",
     assignedUserId: order.assignedUser?.id ?? "",
-    orderDate: DateTime.fromISO(order.orderDate, { zone: "utc" }).toFormat(
-      "yyyy-MM-dd"
-    ),
+    orderDate: format(parseISO(order.orderDate, { in: vnZone }), "yyyy-MM-dd"),
     dueDate: order.dueDate
-      ? DateTime.fromISO(order.dueDate, { zone: "utc" }).toFormat("yyyy-MM-dd")
+      ? format(parseISO(order.dueDate, { in: vnZone }), "yyyy-MM-dd")
       : "",
     buyerPoNo: order.buyerPoNo ?? "",
     consigneeAddress: order.consigneeAddress ?? "",

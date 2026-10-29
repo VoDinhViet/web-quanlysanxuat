@@ -1,6 +1,7 @@
+import { format, parseISO } from "date-fns"
 import { History } from "lucide-react"
-import { DateTime } from "luxon"
 
+import { vnZone } from "@/lib/time"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
 type InventoryReceiptDetailInfoCardProps = {
@@ -27,19 +28,20 @@ export function InventoryReceiptDetailInfoCard({
 
         <InfoRow
           label="Tạo lúc"
-          value={`${DateTime.fromISO(inventoryReceipt.createdAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryReceipt.creatorBy ? ` · ${inventoryReceipt.creatorBy.fullName}` : ""}`}
+          value={`${format(parseISO(inventoryReceipt.createdAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${inventoryReceipt.creatorBy ? ` · ${inventoryReceipt.creatorBy.fullName}` : ""}`}
         />
 
         {inventoryReceipt.postedAt && (
           <InfoRow
             label="Xác nhận nhập kho lúc"
-            value={`${DateTime.fromISO(inventoryReceipt.postedAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryReceipt.posterBy ? ` · ${inventoryReceipt.posterBy.fullName}` : ""}`}
+            value={`${format(parseISO(inventoryReceipt.postedAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${inventoryReceipt.posterBy ? ` · ${inventoryReceipt.posterBy.fullName}` : ""}`}
           />
         )}
 
         <InfoRow
           label="Cập nhật lần cuối"
-          value={DateTime.fromISO(inventoryReceipt.updatedAt).toFormat(
+          value={format(
+            parseISO(inventoryReceipt.updatedAt, { in: vnZone }),
             "dd/MM/yyyy HH:mm"
           )}
         />

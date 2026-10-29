@@ -1,10 +1,11 @@
-import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { OutboundOrderStatusBadge } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
 import { OutboundOrderDetailActions } from "@/features/outbound-orders/components/layouts/OutboundOrderDetailActions"
+import { vnZone } from "@/lib/time"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 
@@ -50,7 +51,8 @@ export function OutboundOrderDetailHeader({
             <MetaField label="Khách hàng" value={order.client.name} />
             <MetaField
               label="Ngày giao"
-              value={DateTime.fromISO(order.fulfillmentDate).toFormat(
+              value={format(
+                parseISO(order.fulfillmentDate, { in: vnZone }),
                 "dd/MM/yyyy"
               )}
             />

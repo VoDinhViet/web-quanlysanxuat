@@ -1,11 +1,12 @@
+import { format, parseISO } from "date-fns"
 import { Receipt } from "lucide-react"
-import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import { OutboundOrderInvoiceStatusBadge } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
 import { OutboundOrderInvoiceDialog } from "@/features/outbound-orders/components/composites/OutboundOrderInvoiceDialog"
+import { vnZone } from "@/lib/time"
 import { OutboundOrderStatus } from "@/lib/types/outbound-order.type"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
@@ -37,9 +38,7 @@ export function OutboundOrderInvoiceCard({
         <InvoiceField label="Số hóa đơn">{order.invoiceNo ?? "—"}</InvoiceField>
         <InvoiceField label="Ngày xuất hóa đơn">
           {order.invoiceDate
-            ? DateTime.fromISO(order.invoiceDate, { zone: "utc" }).toFormat(
-                "dd/MM/yyyy"
-              )
+            ? format(parseISO(order.invoiceDate, { in: vnZone }), "dd/MM/yyyy")
             : "—"}
         </InvoiceField>
         {order.invoicerBy && (

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { format, parseISO } from "date-fns"
 import * as RechartsPrimitive from "recharts"
 
 import {
@@ -9,7 +10,7 @@ import {
 import type { ChartConfig } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { qcPassRateQueryOptions } from "@/features/reports/api"
-import { DateTime } from "luxon"
+import { vnZone } from "@/lib/time"
 
 const iqcColor = "var(--color-chart-1)"
 const oqcColor = "var(--color-chart-2)"
@@ -25,7 +26,7 @@ const qcRateSeries = [
 ]
 
 function formatDay(value: string): string {
-  return DateTime.fromISO(value).toFormat("dd/MM")
+  return format(parseISO(value, { in: vnZone }), "dd/MM")
 }
 
 export function ManageQcRateChart() {

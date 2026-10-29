@@ -1,10 +1,11 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
-import { DateTime } from "luxon"
+import { endOfDay, isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import { vnZone } from "@/lib/time"
 import type { PaginatedResponse } from "@/lib/types/pagination.type"
 import type { DirectInventoryItem } from "@/lib/types/inventory-direct.type"
 import { optional } from "@/lib/zod-transforms"
@@ -28,16 +29,13 @@ function resolveGetDirectInventoryErrorMessage(error: unknown): string {
 // "yyyy-MM-dd" would parse as UTC midnight and drop same-(Vietnam-)day transactions, so the
 // end-of-day instant has to be built here, in Asia/Ho_Chi_Minh, before it goes on the wire.
 function toEndOfDayUtcIso(value: string): string {
-  const iso = DateTime.fromISO(value, { zone: "Asia/Ho_Chi_Minh" })
-    .endOf("day")
-    .toUTC()
-    .toISO()
+  const endOfVnDay = endOfDay(parseISO(value, { in: vnZone }))
 
-  if (!iso) {
+  if (!isValid(endOfVnDay)) {
     throw new Error("Invalid asOfDate")
   }
 
-  return iso
+  return new Date(endOfVnDay).toISOString()
 }
 
 const getDirectInventorySchema = z

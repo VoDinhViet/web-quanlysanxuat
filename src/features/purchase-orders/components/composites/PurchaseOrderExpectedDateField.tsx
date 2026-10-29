@@ -1,11 +1,12 @@
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { toast } from "sonner"
 
 import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { updatePurchaseOrder } from "@/features/purchase-orders/api/server-functions/update-purchase-order.api"
+import { vnZone } from "@/lib/time"
 
 type PurchaseOrderExpectedDateFieldProps = {
   purchaseOrderId: string
@@ -47,7 +48,7 @@ export function PurchaseOrderExpectedDateField({
         </p>
         <p className="truncate text-sm font-medium text-foreground">
           {expectedDate
-            ? DateTime.fromISO(expectedDate).toFormat("dd/MM/yyyy")
+            ? format(parseISO(expectedDate, { in: vnZone }), "dd/MM/yyyy")
             : "—"}
         </p>
       </div>

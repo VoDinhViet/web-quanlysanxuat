@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { History } from "lucide-react"
 import { useState } from "react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
@@ -15,6 +15,7 @@ import {
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { paymentRequestLogsQueryOptions } from "@/features/payment-requests/api/options/payment-request-logs.options"
+import { vnZone } from "@/lib/time"
 import { paymentRequestLogActionLabels } from "@/lib/types/payment-request.type"
 import { cn } from "@/lib/utils"
 import type { PageSize } from "@/components/shared/composites/Pagination"
@@ -92,7 +93,8 @@ export function PaymentRequestLogsCard({
                   className="h-14 bg-card hover:bg-muted/25"
                 >
                   <TableCell className="whitespace-nowrap tabular-nums">
-                    {DateTime.fromISO(log.createdAt).toFormat(
+                    {format(
+                      parseISO(log.createdAt, { in: vnZone }),
                       "dd/MM/yyyy HH:mm"
                     )}
                   </TableCell>

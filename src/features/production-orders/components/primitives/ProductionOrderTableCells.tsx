@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { differenceInCalendarDays, format, parseISO } from "date-fns"
 import { Pencil } from "lucide-react"
 
 import { LinkButton } from "@/components/ui/button"
@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
+import { vnZone } from "@/lib/time"
 import type { DeliveryTone } from "@/lib/types/order.type"
 import type { ProductionOrder } from "@/lib/types/production-order.type"
 import { cn } from "@/lib/utils"
@@ -33,9 +34,10 @@ function resolveProductionDueDateTone(dueDate: string | null): DeliveryTone {
     return "normal"
   }
 
-  const daysLeft = DateTime.fromISO(dueDate)
-    .startOf("day")
-    .diff(DateTime.now().startOf("day"), "days").days
+  const daysLeft = differenceInCalendarDays(
+    parseISO(dueDate, { in: vnZone }),
+    vnZone(Date.now())
+  )
 
   if (daysLeft < 0) {
     return "overdue"
@@ -58,7 +60,7 @@ export function DueDateCell({
     >
       {dueDate === null
         ? "—"
-        : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")}
+        : format(parseISO(dueDate, { in: vnZone }), "dd/MM/yyyy")}
     </span>
   )
 }

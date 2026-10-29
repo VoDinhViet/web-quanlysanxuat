@@ -1,5 +1,5 @@
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
-import { DateTime } from "luxon"
 import { History } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -25,6 +25,7 @@ import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { TableQueryError } from "@/components/shared/primitives/TableQueryError"
 import { TableQueryLoading } from "@/components/shared/primitives/TableQueryLoading"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
 import type { ProductionExecutionReport } from "@/lib/types/production-job.type"
 
@@ -159,7 +160,8 @@ export function ProductionExecutionReportHistoryTable({
             <TableBody className="divide-y divide-border/40">
               {reports.map((report) => {
                 const formattedCreatedAt = report.createdAt
-                  ? DateTime.fromISO(report.createdAt).toFormat(
+                  ? format(
+                      parseISO(report.createdAt, { in: vnZone }),
                       "dd/MM/yyyy HH:mm"
                     )
                   : "—"

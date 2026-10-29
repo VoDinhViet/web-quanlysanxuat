@@ -1,7 +1,7 @@
 import { useField, useSelector } from "@tanstack/react-form"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { FileText } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -20,6 +20,7 @@ import { createOutsourcingOrderConfirmColumns } from "@/features/outsourcing-ord
 import { sumOutsourcingOrderItemTotals } from "@/features/outsourcing-orders/constants/outsourcing-order-item-totals"
 import { createOutsourcingOrderFormDefaultValues } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const decimalFormatter = new Intl.NumberFormat("vi-VN", {
@@ -44,8 +45,7 @@ function PreviewField({ label, value, className }: PreviewFieldProps) {
 // Bước ③ — xem lại toàn bộ phiếu trước khi tạo, trình bày như một chứng từ hoàn chỉnh (header
 // phiếu → lưới thông tin → dải số liệu → bảng chi tiết có dòng tổng), khớp aesthetic "phiếu kho"
 // của các trang confirm khác (CreateInventoryReceiptFromPoConfirmSection.tsx). `sendDate`/
-// `expectedReturnDate` là chuỗi yyyy-MM-dd từ date picker — bắt buộc `{zone:"utc"}` khi parse,
-// nếu không sẽ lệch 1 ngày ở múi giờ +07:00 (xem project_luxon_date_utc_bug). Không dùng
+// `expectedReturnDate` là chuỗi yyyy-MM-dd từ date picker, parse và hiển thị theo giờ VN. Không dùng
 // `OutsourcingOrderStatusBadge` cho badge "Nháp": enum FE (`OutsourcingOrderStatus`) suy từ mock
 // của trang list, chưa có state DRAFT — badge tĩnh ở đây tránh phải sửa enum đó ngoài phạm vi.
 // Bảng chi tiết dùng column defs riêng (CreateOutsourcingOrderConfirmColumns.tsx), tự dựng bằng
@@ -76,7 +76,7 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
     ).join(", ")
     const { totalQuantity, totalWeight, totalArea } =
       sumOutsourcingOrderItemTotals(items)
-    const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")
+    const today = format(new Date(), "dd/MM/yyyy HH:mm", { in: vnZone })
 
     const table = useTable({
       data: items,
@@ -126,9 +126,7 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
               label="Ngày gửi đi"
               value={
                 sendDate
-                  ? DateTime.fromISO(sendDate, { zone: "utc" }).toFormat(
-                      "dd/MM/yyyy"
-                    )
+                  ? format(parseISO(sendDate, { in: vnZone }), "dd/MM/yyyy")
                   : "—"
               }
             />
@@ -136,9 +134,10 @@ export const CreateOutsourcingOrderConfirmSection = withForm({
               label="Ngày cần nhận về"
               value={
                 expectedReturnDate
-                  ? DateTime.fromISO(expectedReturnDate, {
-                      zone: "utc",
-                    }).toFormat("dd/MM/yyyy")
+                  ? format(
+                      parseISO(expectedReturnDate, { in: vnZone }),
+                      "dd/MM/yyyy"
+                    )
                   : "—"
               }
             />

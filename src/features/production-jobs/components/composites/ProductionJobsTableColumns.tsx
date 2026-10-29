@@ -1,5 +1,5 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -11,6 +11,7 @@ import {
   ProductImageCell,
   ProductionJobActionsCell,
 } from "@/features/production-jobs/components/primitives/ProductionJobTableCells"
+import { vnZone } from "@/lib/time"
 import type { ProductionJob } from "@/lib/types/production-job.type"
 import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 
@@ -85,7 +86,8 @@ const baseProductionJobColumns = [
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
   productionJobColumnHelper.accessor("dueDate", {
     header: "Ngày giao hàng",
@@ -98,7 +100,7 @@ const baseProductionJobColumns = [
 
       return dueDate === null
         ? "—"
-        : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
+        : format(parseISO(dueDate, { in: vnZone }), "dd/MM/yyyy")
     },
   }),
   productionJobColumnHelper.display({

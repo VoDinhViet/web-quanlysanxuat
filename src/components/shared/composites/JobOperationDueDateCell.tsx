@@ -1,5 +1,5 @@
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
-import { DateTime } from "luxon"
 
 import { DatePicker } from "@/components/shared/composites/DatePicker"
 import {
@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useUpdateJobOperationDueDate } from "@/features/production-jobs/api"
+import { vnZone } from "@/lib/time"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 
 type JobOperationDueDateCellProps = {
@@ -20,7 +21,7 @@ type JobOperationDueDateCellProps = {
 export function formatJobOperationDueDate(dueDate: string | null): string {
   return dueDate === null
     ? "—"
-    : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
+    : format(parseISO(dueDate, { in: vnZone }), "dd/MM/yyyy")
 }
 
 // Ô hạn hoàn thành công đoạn — DatePicker inline, commit ngay trong onChange (cùng lý do

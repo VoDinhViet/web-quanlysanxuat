@@ -9,7 +9,7 @@
 |---|---|
 | `vite.config.ts` | plugins `tanstackStart()`, `viteReact()`, tailwind, devtools; `@/*` -> `src/*` via tsconfig paths |
 | `src/router.tsx` | `getRouter()`: the only `QueryClient` (staleTime 30s, gcTime 15min, retry 1, no refetch on focus), `setupRouterSsrQueryIntegration`, `defaultPreload: "intent"`, `defaultStaleTime: 0`, shared pending/error/not-found components |
-| `src/routes/__root.tsx` | `createRootRouteWithContext<{queryClient}>`; `shellComponent` = `<html lang="vi">`, `ThemeProvider`, react-aria `I18nProvider vi-VN`, `Toaster`, devtools; imports `@/lib/luxon-config` |
+| `src/routes/__root.tsx` | `createRootRouteWithContext<{queryClient}>`; `shellComponent` = `<html lang="vi">`, `ThemeProvider`, react-aria `I18nProvider vi-VN`, `Toaster`, devtools |
 | `src/routes/index.tsx` | `/` -> redirect `/manage` |
 | `server.mjs` | production Node server: static `dist/client` (hashed `/assets/` immutable) + forwards everything else to `dist/server/server.js` fetch handler (SSR + server-fn RPC) |
 
@@ -30,6 +30,7 @@ BE JSON error = ApiErrorResponse {timestamp, statusCode, error, errorCode "<doma
 | `src/lib/access-token.server.ts` | `refreshAccessToken()` with its own interceptor-free client, per-session in-flight map; `isAccessTokenExpired` (60 s skew) |
 | `src/lib/session.server.ts` | `getAppSession()`: `iron-session` `getIronSession` over Start's `getCookie`/`setCookie` (Start 1.169 removed `useSession`), cookie `app-session`, httpOnly, sameSite lax, `secure` in production, 7 d ttl, session cookie when `persist: false` (flag stored in the session, so refresh preserves it), absolute `sessionExpires` enforced in `getCurrentSession`, `refreshAccessToken` and the http interceptor (`isSessionExpired`); same-request writes are mirrored so a re-read after refresh is fresh; needs `SESSION_SECRET` |
 | `src/lib/jwt.server.ts` | `decodeJwtExpiry` (no signature check; used only to schedule refresh) |
+| `src/lib/time.ts` | `vnZone = tz("Asia/Ho_Chi_Minh")` (`@date-fns/tz`); every `parseISO`/`format`/"now" at a call site passes `{ in: vnZone }` so the server (UTC) and browser (+07:00) print the same text — the DB stores UTC, the UI shows Vietnam time |
 | `src/lib/types/session.type.ts` | `AppSessionData {userId, accessToken, refreshToken, tokenExpires}` |
 
 Rules each server fn follows (`.claude/rules/data-layer.md`): validate input with Zod, explicit return type, try/catch with `logHttpError` + clean message, own `resolve<Fn>ErrorMessage` switching on `errorCode` with `default`, never surface raw BE strings. Details of login/refresh/logout in `identity-access.md`.

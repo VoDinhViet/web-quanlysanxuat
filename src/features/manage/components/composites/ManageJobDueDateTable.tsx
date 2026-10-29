@@ -15,13 +15,14 @@ import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
 import { ManageCardTitle } from "@/features/manage/components/primitives/ManageCardTitle"
 import { jobDueDateQueryOptions } from "@/features/reports/api"
+import { vnZone } from "@/lib/time"
 import {
   ProductionJobStatus,
   productionJobStatusLabels,
 } from "@/lib/types/production-job.type"
 import type { JobDueDate } from "@/lib/types/report.type"
 import { cn } from "@/lib/utils"
-import { DateTime } from "luxon"
+import { differenceInDays, format, parseISO } from "date-fns"
 
 const productionJobStatusStyles: Record<ProductionJobStatus, string> = {
   [ProductionJobStatus.PENDING]: "bg-muted text-muted-foreground",
@@ -34,7 +35,7 @@ const productionJobStatusStyles: Record<ProductionJobStatus, string> = {
 function daysSinceDueDate(dueDate: string): number {
   return Math.max(
     0,
-    Math.floor(DateTime.now().diff(DateTime.fromISO(dueDate), "days").days)
+    differenceInDays(vnZone(Date.now()), parseISO(dueDate, { in: vnZone }))
   )
 }
 
@@ -52,7 +53,8 @@ const columns = columnHelper.columns([
   columnHelper.accessor("dueDate", {
     header: "Ngày giao",
     meta: { cellClassName: "text-xs" },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
   columnHelper.display({
     id: "daysSinceDueDate",

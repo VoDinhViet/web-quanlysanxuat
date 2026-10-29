@@ -1,10 +1,11 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import {
   formatPaymentRequestDueDateNote,
   resolvePaymentRequestDueDateTone,
 } from "@/features/payment-requests/constants/payment-request-due-date"
 import { vndFormatter } from "@/lib/currency"
+import { vnZone } from "@/lib/time"
 import { cn } from "@/lib/utils"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 import type { PaymentRequestDueDateTone } from "@/features/payment-requests/constants/payment-request-due-date"
@@ -53,7 +54,7 @@ function formatAmountStripSubtitle(
 export function PaymentRequestAmountStrip({
   paymentRequest,
 }: PaymentRequestAmountStripProps) {
-  const today = DateTime.now()
+  const today = new Date()
   const tone = resolvePaymentRequestDueDateTone(
     paymentRequest.dueDate,
     paymentRequest.status,
@@ -88,7 +89,10 @@ export function PaymentRequestAmountStrip({
           Hạn thanh toán
         </p>
         <p className="text-sm font-medium text-foreground">
-          {DateTime.fromISO(paymentRequest.dueDate).toFormat("dd/MM/yyyy")}
+          {format(
+            parseISO(paymentRequest.dueDate, { in: vnZone }),
+            "dd/MM/yyyy"
+          )}
         </p>
         {dueDateNote && tone ? (
           <p className={cn("text-xs font-medium", dueDateToneClassName[tone])}>

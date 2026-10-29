@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Badge } from "@/components/ui/badge"
@@ -9,6 +9,7 @@ import {
   InventoryRequisitionActionsCell,
   InventoryRequisitionSourceCell,
 } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionTableCells"
+import { vnZone } from "@/lib/time"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import type { InventoryRequisition } from "@/lib/types/inventory-requisition.type"
 import { cn } from "@/lib/utils"
@@ -47,7 +48,7 @@ export const inventoryRequisitionsColumns = col.columns([
       cellClassName: "text-center",
     },
     cell: ({ getValue }) =>
-      DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm"),
   }),
 
   col.accessor("creatorBy", {

@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router"
 import { Gallery } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { NcrSectionCard } from "@/features/ncrs/components/layouts/NcrSectionCard"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import { ncrOriginTypeLabels } from "@/lib/types/ncr.type"
 import type { NcrDetail } from "@/lib/types/ncr.type"
 
@@ -30,7 +31,9 @@ function InfoItem({ label, children }: InfoItemProps) {
 }
 
 function formatDateTime(isoDate: string | null): string {
-  return isoDate ? DateTime.fromISO(isoDate).toFormat("dd/MM/yyyy HH:mm") : "—"
+  return isoDate
+    ? format(parseISO(isoDate, { in: vnZone }), "dd/MM/yyyy HH:mm")
+    : "—"
 }
 
 export function NcrInfoCard({ ncr }: NcrInfoCardProps) {

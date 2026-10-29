@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { Navigate, useParams, useSearch } from "@tanstack/react-router"
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { DocumentText, History, Layers, Magnifer } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format } from "date-fns"
 
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -29,6 +29,7 @@ import {
 } from "@/features/production-execution/constants/production-execution-parts"
 import { outsourceableOperationsQueryOptions } from "@/features/outsourcing-orders/api"
 import { useHasPermission } from "@/hooks/use-permissions"
+import { vnZone } from "@/lib/time"
 import { ProductionJobStatus } from "@/lib/types/production-job.type"
 import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 
@@ -146,8 +147,7 @@ function ProductionExecutionJobContent({
   const isDueDateOverdue =
     latestDueDate !== null &&
     !isAllPartsCompleted(partRows) &&
-    latestDueDate <
-      DateTime.now().setZone("Asia/Ho_Chi_Minh").toFormat("yyyy-MM-dd")
+    latestDueDate < format(new Date(), "yyyy-MM-dd", { in: vnZone })
 
   const partOptions = useMemo(
     () =>

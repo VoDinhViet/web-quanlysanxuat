@@ -1,10 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
 import { RadioGroupItem } from "@/components/ui/radio-group"
 import { vndFormatter } from "@/lib/currency"
+import { vnZone } from "@/lib/time"
 import {
   purchaseOrderProgressLabels,
   PurchaseOrderProgress,
@@ -98,7 +99,7 @@ export function buildCreateInventoryReceiptFromPoPickerColumns() {
         cellClassName: "text-center",
       },
       cell: ({ getValue }) =>
-        DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+        format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
     }),
     purchaseOrderPickerColumnHelper.accessor("expectedDate", {
       header: "Ngày giao dự kiến",
@@ -108,7 +109,9 @@ export function buildCreateInventoryReceiptFromPoPickerColumns() {
       },
       cell: ({ getValue }) => {
         const value = getValue()
-        return value ? DateTime.fromISO(value).toFormat("dd/MM/yyyy") : "—"
+        return value
+          ? format(parseISO(value, { in: vnZone }), "dd/MM/yyyy")
+          : "—"
       },
     }),
     purchaseOrderPickerColumnHelper.accessor("totalAmount", {

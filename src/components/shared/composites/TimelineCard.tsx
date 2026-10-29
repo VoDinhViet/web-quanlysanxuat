@@ -1,8 +1,9 @@
 import { CheckCircle, CloseCircle } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ComponentType } from "react"
 
+import { vnZone } from "@/lib/time"
 import type { TimelineStep, TimelineStepState } from "@/lib/types/timeline.type"
 import { cn } from "@/lib/utils"
 
@@ -111,7 +112,8 @@ export function TimelineCard({
                     </p>
                     {step.timestamp ? (
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {DateTime.fromISO(step.timestamp).toFormat(
+                        {format(
+                          parseISO(step.timestamp, { in: vnZone }),
                           "dd/MM/yyyy HH:mm"
                         )}
                         {step.actor ? ` · ${step.actor}` : ""}
@@ -162,7 +164,8 @@ export function TimelineCard({
                   </p>
                   {step.timestamp ? (
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      {DateTime.fromISO(step.timestamp).toFormat(
+                      {format(
+                        parseISO(step.timestamp, { in: vnZone }),
                         "dd/MM/yyyy HH:mm"
                       )}
                       {step.actor ? ` · ${step.actor}` : ""}

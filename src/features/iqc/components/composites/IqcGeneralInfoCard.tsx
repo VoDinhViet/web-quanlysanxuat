@@ -5,8 +5,8 @@ import {
   InfoCircle,
   User,
 } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ComponentType, ReactNode } from "react"
 
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
@@ -15,6 +15,7 @@ import { IqcPoOrReasonCell } from "@/features/iqc/components/primitives/IqcTable
 import { DateTimePicker } from "@/components/shared/composites/DateTimePicker"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import type { IqcDetailFormApi } from "@/features/iqc/hooks/use-iqc-detail-form"
+import { vnZone } from "@/lib/time"
 import type { IqcDetail } from "@/lib/types/iqc.type"
 
 type IqcGeneralInfoCardProps = {
@@ -71,7 +72,8 @@ export function IqcGeneralInfoCard({
             <InfoTile
               icon={Calendar}
               label="Ngày tạo"
-              value={DateTime.fromISO(iqc.createdAt).toFormat(
+              value={format(
+                parseISO(iqc.createdAt, { in: vnZone }),
                 "dd/MM/yyyy HH:mm"
               )}
             />

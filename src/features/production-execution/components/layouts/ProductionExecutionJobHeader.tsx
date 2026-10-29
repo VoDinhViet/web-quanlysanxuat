@@ -1,4 +1,3 @@
-import { DateTime } from "luxon"
 import {
   AltArrowLeft,
   Buildings2,
@@ -8,6 +7,7 @@ import {
   Flag,
 } from "@solar-icons/react"
 import type { IconProps } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ComponentType } from "react"
 
 import { LinkButton } from "@/components/ui/button"
@@ -16,6 +16,7 @@ import {
   ProductionExecutionImageCell,
   ProductionExecutionJobLifecycleBadge,
 } from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
+import { vnZone } from "@/lib/time"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 import type { FileResource } from "@/lib/types/file.type"
 import { cn } from "@/lib/utils"
@@ -57,7 +58,7 @@ export function ProductionExecutionJobHeader({
         </LinkButton>
         <span className="text-xs text-muted-foreground">
           Cập nhật lần cuối:{" "}
-          {DateTime.fromISO(job.updatedAt).toFormat("dd/MM/yyyy HH:mm")}
+          {format(parseISO(job.updatedAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}
         </span>
       </div>
 

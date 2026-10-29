@@ -1,12 +1,13 @@
-import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationBadges"
 import { purchaseQuotationComparisonQueryOptions } from "@/features/purchase-quotations/api/options"
 import { PurchaseQuotationDetailActions } from "@/features/purchase-quotations/components/layouts/PurchaseQuotationDetailActions"
+import { vnZone } from "@/lib/time"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type PurchaseQuotationDetailHeaderProps = {
@@ -48,7 +49,8 @@ export function PurchaseQuotationDetailHeader({
           />
           <MetaField
             label="Ngày tạo"
-            value={DateTime.fromISO(purchaseQuotation.createdAt).toFormat(
+            value={format(
+              parseISO(purchaseQuotation.createdAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           />

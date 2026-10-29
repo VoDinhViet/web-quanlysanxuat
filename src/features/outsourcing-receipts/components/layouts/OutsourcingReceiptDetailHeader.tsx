@@ -1,10 +1,11 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { OutsourcingReceiptDetailActions } from "@/features/outsourcing-receipts/components/layouts/OutsourcingReceiptDetailActions"
 import { OutsourcingReceiptDocStatusBadge } from "@/features/outsourcing-receipts/components/primitives/OutsourcingReceiptBadges"
+import { vnZone } from "@/lib/time"
 import type {
   OutsourcingReceiptDetail,
   OutsourcingReceiptItem,
@@ -58,7 +59,10 @@ export function OutsourcingReceiptDetailHeader({
           />
           <MetaField
             label="Ngày nhận"
-            value={DateTime.fromISO(receipt.receiptDate).toFormat("dd/MM/yyyy")}
+            value={format(
+              parseISO(receipt.receiptDate, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           />
         </div>
       </div>

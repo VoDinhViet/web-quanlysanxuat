@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
 
 import { ProductLedgerMovementTypeBadge } from "@/features/inventory-products/components/primitives/InventoryProductLedgerBadges"
 import {
@@ -9,6 +9,7 @@ import {
   InventoryProductLedgerQuantityCell,
   InventoryProductLedgerReferenceCell,
 } from "@/features/inventory-products/components/primitives/InventoryProductLedgerCells"
+import { vnZone } from "@/lib/time"
 import type { ProductLedgerEntry } from "@/lib/types/product-ledger.type"
 import { resolveProductLedgerMovementType } from "@/lib/types/product-ledger.type"
 
@@ -36,7 +37,8 @@ export const inventoryProductLedgerColumns = productLedgerColumnHelper.columns([
   productLedgerColumnHelper.accessor("transactionDate", {
     header: "Ngày",
     meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   productLedgerColumnHelper.display({

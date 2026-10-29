@@ -1,6 +1,6 @@
 import { useSelector } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { FileText } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -11,6 +11,7 @@ import { standaloneOutsourcingOrderFormDefaultValues } from "@/features/outsourc
 import { useGetSupplierOptions } from "@/features/suppliers/api"
 import { unitOptionsQueryOptions } from "@/features/units/api"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const decimalFormatter = new Intl.NumberFormat("vi-VN", {
@@ -19,9 +20,7 @@ const decimalFormatter = new Intl.NumberFormat("vi-VN", {
 
 // Giá trị date picker là yyyy-MM-dd: parse theo UTC để không lệch 1 ngày ở múi giờ +07:00.
 function formatPickerDate(value: string) {
-  return value
-    ? DateTime.fromISO(value, { zone: "utc" }).toFormat("dd/MM/yyyy")
-    : "—"
+  return value ? format(parseISO(value, { in: vnZone }), "dd/MM/yyyy") : "—"
 }
 
 type PreviewFieldProps = {

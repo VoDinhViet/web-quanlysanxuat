@@ -1,9 +1,10 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { Calendar, Info, StickyNote, User } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { OutsourcingOrderDetailSectionCard } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderDetailSectionCard"
+import { vnZone } from "@/lib/time"
 import type { OutsourcingOrderDetail } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderInfoCardProps = {
@@ -56,7 +57,7 @@ export function OutsourcingOrderInfoCard({
 
 function formatDateTime(isoDateTime: string | null): string {
   return isoDateTime
-    ? DateTime.fromISO(isoDateTime).toFormat("dd/MM/yyyy HH:mm")
+    ? format(parseISO(isoDateTime, { in: vnZone }), "dd/MM/yyyy HH:mm")
     : "—"
 }
 

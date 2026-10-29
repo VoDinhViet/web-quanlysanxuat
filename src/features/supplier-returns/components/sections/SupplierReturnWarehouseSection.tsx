@@ -1,9 +1,10 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { FileText, PackageCheck } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { SupplierReturnDetailSectionCard } from "@/features/supplier-returns/components/layouts/SupplierReturnDetailSectionCard"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import { InventoryDocumentStatus } from "@/lib/types/supplier-return.type"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 import type { FileResource } from "@/lib/types/file.type"
@@ -36,7 +37,8 @@ export function SupplierReturnWarehouseSection({
             />
             <InfoField
               label="Ngày xuất trả"
-              value={DateTime.fromISO(supplierReturn.postedAt).toFormat(
+              value={format(
+                parseISO(supplierReturn.postedAt, { in: vnZone }),
                 "dd/MM/yyyy HH:mm"
               )}
             />

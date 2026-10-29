@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { addDays, format } from "date-fns"
 
 import { outboundOrdersQueryOptions } from "@/features/outbound-orders/api"
+import { vnZone } from "@/lib/time"
 import { OutboundOrderStatus } from "@/lib/types/outbound-order.type"
 
 const UPCOMING_WINDOW_DAYS = 3
@@ -9,14 +10,15 @@ const UPCOMING_WINDOW_DAYS = 3
 // Export riêng để route loader (manage.tsx) prefetch đúng query key này — không tự tính lại
 // tham số ở loader.
 export function upcomingDeliveriesQueryOptions() {
-  const today = DateTime.now()
+  const today = vnZone(Date.now())
+  const windowEnd = addDays(today, UPCOMING_WINDOW_DAYS)
 
   return outboundOrdersQueryOptions({
     page: 1,
     limit: 50,
     status: OutboundOrderStatus.PENDING_DELIVERY,
-    startDate: today.toFormat("yyyy-MM-dd"),
-    endDate: today.plus({ days: UPCOMING_WINDOW_DAYS }).toFormat("yyyy-MM-dd"),
+    startDate: format(today, "yyyy-MM-dd"),
+    endDate: format(windowEnd, "yyyy-MM-dd"),
   })
 }
 

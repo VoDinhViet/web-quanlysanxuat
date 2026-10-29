@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import {
   Building2,
   Calendar,
@@ -11,6 +11,7 @@ import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { OutsourcingReceiptDetailSectionCard } from "@/features/outsourcing-receipts/components/layouts/OutsourcingReceiptDetailSectionCard"
+import { vnZone } from "@/lib/time"
 import { InventoryDocumentStatus } from "@/lib/types/outsourcing-receipt.type"
 import type { OutsourcingReceiptDetail } from "@/lib/types/outsourcing-receipt.type"
 
@@ -71,7 +72,8 @@ export function OutsourcingReceiptInfoCard({
               label="Ngày xác nhận"
               value={
                 receipt.postedAt
-                  ? DateTime.fromISO(receipt.postedAt).toFormat(
+                  ? format(
+                      parseISO(receipt.postedAt, { in: vnZone }),
                       "dd/MM/yyyy HH:mm"
                     )
                   : "—"

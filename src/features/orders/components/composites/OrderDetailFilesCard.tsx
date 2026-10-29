@@ -1,9 +1,10 @@
 import { Documents, FileText, Paperclip } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import prettyBytes from "pretty-bytes"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import type { OrderDetail } from "@/lib/types/order.type"
 
 type OrderDetailFilesCardProps = {
@@ -34,7 +35,8 @@ export function OrderDetailFilesCard({ order }: OrderDetailFilesCardProps) {
                   {prettyBytes(orderFile.file.size)}
                 </span>
                 <span className="hidden shrink-0 text-muted-foreground sm:inline">
-                  {DateTime.fromISO(orderFile.file.createdAt).toFormat(
+                  {format(
+                    parseISO(orderFile.file.createdAt, { in: vnZone }),
                     "dd/MM/yyyy"
                   )}
                 </span>

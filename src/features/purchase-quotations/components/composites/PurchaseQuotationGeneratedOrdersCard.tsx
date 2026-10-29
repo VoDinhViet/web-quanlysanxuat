@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
 import { Bill } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 
 import { purchaseOrdersByQuotationOptions } from "@/features/purchase-orders/api"
+import { vnZone } from "@/lib/time"
 import { purchaseOrderStatusLabels } from "@/lib/types/purchase-order.type"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
@@ -58,7 +59,7 @@ export function PurchaseQuotationGeneratedOrdersCard({
             </div>
             <p className="text-xs text-muted-foreground">
               {order.supplier.name} · {order.itemCount} dòng ·{" "}
-              {DateTime.fromISO(order.orderDate).toFormat("dd/MM/yyyy")}
+              {format(parseISO(order.orderDate, { in: vnZone }), "dd/MM/yyyy")}
             </p>
           </li>
         ))}

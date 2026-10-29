@@ -1,8 +1,8 @@
-import { DateTime } from "luxon"
 import { useNavigate } from "@tanstack/react-router"
 import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { format, parseISO } from "date-fns"
 import { Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -14,6 +14,7 @@ import { UpdateSupplierPaymentSection } from "@/features/suppliers/components/se
 import { updateSupplierSchema } from "@/features/suppliers/schemas/update-supplier.schema"
 import { updateSupplier } from "@/features/suppliers/api/server-functions/update-supplier.api"
 import type { UpdateSupplierSchema } from "@/features/suppliers/schemas/update-supplier.schema"
+import { vnZone } from "@/lib/time"
 import { getPrimaryRepresentative } from "@/lib/types/supplier.type"
 import type { Supplier } from "@/lib/types/supplier.type"
 
@@ -57,7 +58,10 @@ export function getSupplierDefaultValues(
       defaultPaymentTerm: payment.defaultPaymentTerm ?? "",
       creditLimit: payment.creditLimit ?? undefined,
       creditLimitStartDate: payment.creditLimitStartDate
-        ? DateTime.fromISO(payment.creditLimitStartDate).toFormat("yyyy-MM-dd")
+        ? format(
+            parseISO(payment.creditLimitStartDate, { in: vnZone }),
+            "yyyy-MM-dd"
+          )
         : "",
     },
   }

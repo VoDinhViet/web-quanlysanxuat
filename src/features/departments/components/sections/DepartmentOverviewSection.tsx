@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { Buildings2 } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { positionOptionsQueryOptions } from "@/features/positions/api"
+import { vnZone } from "@/lib/time"
 import type { DepartmentDetail } from "@/lib/types/department.type"
 import { cn } from "@/lib/utils"
 
@@ -141,7 +142,8 @@ export function DepartmentOverviewSection({
         {department.createdAt && (
           <InfoRow
             label="Ngày tạo"
-            value={DateTime.fromISO(department.createdAt).toFormat(
+            value={format(
+              parseISO(department.createdAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           />
@@ -149,7 +151,8 @@ export function DepartmentOverviewSection({
         {department.updatedAt && (
           <InfoRow
             label="Cập nhật lần cuối"
-            value={DateTime.fromISO(department.updatedAt).toFormat(
+            value={format(
+              parseISO(department.updatedAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           />

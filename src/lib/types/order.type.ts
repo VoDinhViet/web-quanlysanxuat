@@ -1,5 +1,6 @@
-import { DateTime } from "luxon"
+import { differenceInCalendarDays, parseISO } from "date-fns"
 
+import { vnZone } from "@/lib/time"
 import type { ClientContact } from "@/lib/types/client.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { ItemFile, ItemRef } from "@/lib/types/item.type"
@@ -319,9 +320,10 @@ export function resolveDeliveryTone(order: Order): DeliveryTone {
     return "normal"
   }
 
-  const daysLeft = DateTime.fromISO(order.dueDate)
-    .startOf("day")
-    .diff(DateTime.now().startOf("day"), "days").days
+  const daysLeft = differenceInCalendarDays(
+    parseISO(order.dueDate, { in: vnZone }),
+    new Date()
+  )
 
   return daysLeft <= nearDueDays ? "near-due" : "normal"
 }

@@ -1,10 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
 
 import { Badge } from "@/components/ui/badge"
 import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 import { RadioGroupItem } from "@/components/ui/radio-group"
+import { vnZone } from "@/lib/time"
 import {
   productionJobStatusLabels,
   ProductionJobStatus,
@@ -17,7 +18,7 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 function formatDueDate(dueDate: string | null): string {
   return dueDate === null
     ? "—"
-    : DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy")
+    : format(parseISO(dueDate, { in: vnZone }), "dd/MM/yyyy")
 }
 
 function JobStatusBadge({ status }: { status: ProductionJobStatus }) {

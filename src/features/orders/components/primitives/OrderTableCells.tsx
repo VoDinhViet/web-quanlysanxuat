@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { DeleteOrderDialog } from "@/features/orders/components/composites/DeleteOrderDialog"
+import { vnZone } from "@/lib/time"
 import {
   canUpdateOrder,
   OrderStatus,
@@ -35,7 +36,7 @@ export function MoneyCell({ value }: { value: number }) {
 }
 
 export function DateCell({ value }: { value: string }) {
-  return <>{DateTime.fromISO(value).toFormat("dd/MM/yyyy")}</>
+  return <>{format(parseISO(value, { in: vnZone }), "dd/MM/yyyy")}</>
 }
 
 export function DueDateCell({ order }: { order: Order }) {
@@ -48,7 +49,7 @@ export function DueDateCell({ order }: { order: Order }) {
     >
       {order.dueDate === null
         ? "—"
-        : DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")}
+        : format(parseISO(order.dueDate, { in: vnZone }), "dd/MM/yyyy")}
     </span>
   )
 }

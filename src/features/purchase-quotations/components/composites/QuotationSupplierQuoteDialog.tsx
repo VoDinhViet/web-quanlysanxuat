@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { format, isValid, parseISO } from "date-fns"
 import { IconCheck, IconTrash } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { TableTextCellInput } from "@/components/shared/primitives/TableTextCellInput"
 import { QuotationSupplierAttachment } from "@/features/purchase-quotations/components/composites/QuotationSupplierAttachment"
+import { vnZone } from "@/lib/time"
 import { cn } from "@/lib/utils"
 import type {
   PickedQuotationItemValue,
@@ -64,10 +65,12 @@ export function QuotationSupplierQuoteDialog({
   const isIncompleteSpec =
     Boolean(supplier.quotationUnit?.trim()) !==
     (supplier.quotationQuantity != null)
+  const lastPurchaseDate =
+    lastPurchase && parseISO(lastPurchase.orderDate, { in: vnZone })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl gap-5">
+      <DialogContent className="gap-5 sm:max-w-2xl">
         {/* Header: Đệm pr-8 để không va chạm nút Close X */}
         <DialogHeader className="gap-2 pr-8">
           <div className="flex flex-wrap items-center gap-2">
@@ -89,12 +92,12 @@ export function QuotationSupplierQuoteDialog({
             </Badge>
           </div>
 
-          <DialogDescription className="text-xs text-muted-foreground flex flex-wrap items-center gap-1.5 leading-relaxed">
+          <DialogDescription className="flex flex-wrap items-center gap-1.5 text-xs leading-relaxed text-muted-foreground">
             <span>Vật tư:</span>
             <span className="font-mono font-medium text-primary">
               {item.itemCode}
             </span>
-            <span className="text-foreground font-medium">{item.itemName}</span>
+            <span className="font-medium text-foreground">{item.itemName}</span>
             <span>· Cần mua:</span>
             <strong className="text-foreground">
               {baseQuantity.toLocaleString("vi-VN")} {item.unit}
@@ -105,8 +108,9 @@ export function QuotationSupplierQuoteDialog({
                 <strong className="text-foreground">
                   {priceFormatter.format(lastPurchase.unitPrice)}
                 </strong>
-                {DateTime.fromISO(lastPurchase.orderDate).isValid &&
-                  ` (${DateTime.fromISO(lastPurchase.orderDate).toFormat("dd/MM/yyyy")})`}
+                {lastPurchaseDate &&
+                  isValid(lastPurchaseDate) &&
+                  ` (${format(lastPurchaseDate, "dd/MM/yyyy")})`}
                 {lastPurchase.supplier.id !== supplier.supplierId &&
                   ` · ${lastPurchase.supplier.name}`}
               </>
@@ -115,10 +119,13 @@ export function QuotationSupplierQuoteDialog({
         </DialogHeader>
 
         {/* Form Controls: Bố trí 2 cột cân đối, phẳng, không bọc card */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* 1. Đơn giá báo */}
           <div className="space-y-1.5">
-            <Label htmlFor="supplier-unit-price" className="text-xs font-medium">
+            <Label
+              htmlFor="supplier-unit-price"
+              className="text-xs font-medium"
+            >
               Đơn giá báo (VNĐ) <span className="text-destructive">*</span>
             </Label>
             <NumericCellInput
@@ -140,12 +147,12 @@ export function QuotationSupplierQuoteDialog({
               Thành tiền tạm tính
             </Label>
             <div className="flex h-9 items-center justify-between rounded-md bg-muted/40 px-3 text-xs">
-              <span className="text-muted-foreground truncate">
+              <span className="truncate text-muted-foreground">
                 {total != null
                   ? `= ${priceFormatter.format(supplier.unitPrice!)} × ${quantity.toLocaleString("vi-VN")} ${supplier.quotationUnit || item.unit}`
                   : "Chưa có giá"}
               </span>
-              <span className="font-semibold text-primary tabular-nums text-sm shrink-0">
+              <span className="shrink-0 text-sm font-semibold text-primary tabular-nums">
                 {total != null ? priceFormatter.format(total) : "0 ₫"}
               </span>
             </div>
@@ -165,7 +172,7 @@ export function QuotationSupplierQuoteDialog({
                 className="h-9 w-full pr-12 text-right tabular-nums"
                 onValueChange={(leadTimeDays) => onChange({ leadTimeDays })}
               />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+              <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-muted-foreground">
                 ngày
               </span>
             </div>
@@ -231,7 +238,7 @@ export function QuotationSupplierQuoteDialog({
               value={supplier.note ?? ""}
               placeholder="Điều khoản thanh toán, bảo hành, chính sách giao hàng..."
               disabled={disabled}
-              className="min-h-24 text-xs resize-none"
+              className="min-h-24 resize-none text-xs"
               onChange={(e) => onChange({ note: e.target.value })}
             />
           </div>
@@ -257,7 +264,7 @@ export function QuotationSupplierQuoteDialog({
         </div>
 
         {/* Footer */}
-        <DialogFooter className="gap-2 sm:justify-between border-t border-border/50 pt-3">
+        <DialogFooter className="gap-2 border-t border-border/50 pt-3 sm:justify-between">
           <div>
             {onRemove && (
               <Button

@@ -1,10 +1,11 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { SupplierReturnDetailActions } from "@/features/supplier-returns/components/layouts/SupplierReturnDetailActions"
 import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/primitives/SupplierReturnBadges"
+import { vnZone } from "@/lib/time"
 import type { SupplierReturnDetail } from "@/lib/types/supplier-return.type"
 
 type SupplierReturnDetailHeaderProps = {
@@ -63,7 +64,8 @@ export function SupplierReturnDetailHeader({
           />
           <MetaField
             label="Ngày tạo phiếu"
-            value={DateTime.fromISO(supplierReturn.createdAt).toFormat(
+            value={format(
+              parseISO(supplierReturn.createdAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           />

@@ -1,17 +1,19 @@
-import { DateTime } from "luxon"
+import { addDays, format, getISODay, parseISO, startOfDay } from "date-fns"
+
+import { vnZone } from "@/lib/time"
 
 /**
  * Thêm số ngày làm việc vào chuỗi ngày yyyy-MM-dd (bỏ qua Chủ nhật).
  */
 export function addWorkDays(startDateStr: string, days: number): string {
-  let dt = DateTime.fromISO(startDateStr).startOf("day")
+  let currentDay = startOfDay(parseISO(startDateStr, { in: vnZone }))
   let added = 0
   const target = Math.max(1, days)
   while (added < target) {
-    dt = dt.plus({ days: 1 })
-    if (dt.weekday !== 7) added++
+    currentDay = addDays(currentDay, 1)
+    if (getISODay(currentDay) !== 7) added++
   }
-  return dt.toFormat("yyyy-MM-dd")
+  return format(currentDay, "yyyy-MM-dd")
 }
 
 /**
@@ -21,15 +23,15 @@ export function countWorkDays(
   startDateStr: string,
   endDateStr: string
 ): number {
-  const start = DateTime.fromISO(startDateStr).startOf("day")
-  const end = DateTime.fromISO(endDateStr).startOf("day")
+  const start = startOfDay(parseISO(startDateStr, { in: vnZone }))
+  const end = startOfDay(parseISO(endDateStr, { in: vnZone }))
   if (end <= start) return 1
 
   let current = start
   let count = 0
   while (current < end) {
-    current = current.plus({ days: 1 })
-    if (current.weekday !== 7) count++
+    current = addDays(current, 1)
+    if (getISODay(current) !== 7) count++
   }
   return Math.max(1, count)
 }
@@ -96,7 +98,7 @@ export function buildOperationSchedule<T extends { dueDate: string | null }>(
 
   for (const { dueDate: savedDueDate, ...rest } of items) {
     const dueDate = savedDueDate
-      ? DateTime.fromISO(savedDueDate).toFormat("yyyy-MM-dd")
+      ? format(parseISO(savedDueDate, { in: vnZone }), "yyyy-MM-dd")
       : addWorkDays(prevDate, 1)
     const leadtime = savedDueDate ? countWorkDays(prevDate, dueDate) : 1
 

@@ -1,12 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 import { Gallery } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Checkbox } from "@/components/ui/checkbox"
 import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import { PurchaseLedgerStatus } from "@/lib/types/purchase-ledger.type"
 import { cn } from "@/lib/utils"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
@@ -190,7 +191,7 @@ export function buildQuotationItemsPickerColumns({
       },
       cell: ({ getValue }) => (
         <span className="text-xs">
-          {DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy")}
+          {format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy")}
         </span>
       ),
     }),

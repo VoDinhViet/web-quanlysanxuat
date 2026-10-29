@@ -1,9 +1,10 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { Badge } from "@/components/ui/badge"
 import { RadioGroupItem } from "@/components/ui/radio-group"
 import type { appTableFeatures } from "@/lib/table-features"
+import { vnZone } from "@/lib/time"
 import { orderStatusLabels } from "@/lib/types/order.type"
 import type { Order } from "@/lib/types/order.type"
 
@@ -53,7 +54,9 @@ export function buildNcrOrderPickerColumns() {
       },
       cell: ({ getValue }) => {
         const dueDate = getValue()
-        return dueDate ? DateTime.fromISO(dueDate).toFormat("dd/MM/yyyy") : "—"
+        return dueDate
+          ? format(parseISO(dueDate, { in: vnZone }), "dd/MM/yyyy")
+          : "—"
       },
     }),
     orderPickerColumnHelper.accessor("status", {

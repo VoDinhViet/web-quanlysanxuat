@@ -1,9 +1,9 @@
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useServerFn } from "@tanstack/react-start"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Edit3, Eye, Trash2 } from "lucide-react"
-import { DateTime } from "luxon"
 import { toast } from "sonner"
 import type { appTableFeatures } from "@/lib/table-features"
 
@@ -20,6 +20,7 @@ import { DeleteDepartmentDialog } from "@/features/departments/components/compos
 import { UpdateDepartmentDialog } from "@/features/departments/components/composites/UpdateDepartmentDialog"
 import { updateDepartmentStatus } from "@/features/departments/api/server-functions/update-department-status.api"
 import { useHasPermission } from "@/hooks/use-permissions"
+import { vnZone } from "@/lib/time"
 import type { Department } from "@/lib/types/department.type"
 
 type DepartmentStatusProps = {
@@ -209,7 +210,7 @@ export const departmentColumns = departmentColumnHelper.columns([
       return (
         <span className="text-xs text-muted-foreground">
           {updatedAt
-            ? DateTime.fromISO(updatedAt).toFormat("dd/MM/yyyy HH:mm")
+            ? format(parseISO(updatedAt, { in: vnZone }), "dd/MM/yyyy HH:mm")
             : "—"}
         </span>
       )

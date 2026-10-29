@@ -1,4 +1,3 @@
-import { DateTime } from "luxon"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
@@ -7,6 +6,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query"
+import { format, parseISO } from "date-fns"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -19,6 +19,7 @@ import { userQueryOptions } from "@/features/users/api/options"
 import { updateUser } from "@/features/users/api/server-functions/update-user.api"
 import { updateUserSchema } from "@/features/users/schemas/update-user.schema"
 import type { UpdateUserSchema } from "@/features/users/schemas/update-user.schema"
+import { vnZone } from "@/lib/time"
 import type { User } from "@/lib/types/user.type"
 
 // User → raw form values: nullable fields become "", ISO datetimes become the yyyy-MM-dd
@@ -31,7 +32,7 @@ function getUserDefaultValues(user: User): UpdateUserSchema {
     fullName: user.fullName,
     gender: user.gender,
     dateOfBirth: user.dateOfBirth
-      ? DateTime.fromISO(user.dateOfBirth).toFormat("yyyy-MM-dd")
+      ? format(parseISO(user.dateOfBirth, { in: vnZone }), "yyyy-MM-dd")
       : "",
     idNumber: user.idNumber ?? "",
     phoneNumber: user.phoneNumber ?? "",
@@ -39,7 +40,7 @@ function getUserDefaultValues(user: User): UpdateUserSchema {
     avatar: user.avatar,
     departmentId: user.department.id,
     positionId: user.position.id,
-    hireDate: DateTime.fromISO(user.hireDate).toFormat("yyyy-MM-dd"),
+    hireDate: format(parseISO(user.hireDate, { in: vnZone }), "yyyy-MM-dd"),
     note: user.note ?? "",
     status: user.status,
     credential: user.credential

@@ -1,6 +1,6 @@
 import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { PageTitleBar } from "@/components/shared/layouts/PageTitleBar"
 import {
@@ -11,6 +11,7 @@ import { StandaloneOutsourcingOrderForm } from "@/features/outsourcing-orders/co
 import { OutsourcingOrderForm } from "@/features/outsourcing-orders/components/sections/OutsourcingOrderForm"
 import type { CreateOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/create-outsourcing-order.schema"
 import type { StandaloneOutsourcingOrderSchema } from "@/features/outsourcing-orders/schemas/standalone-outsourcing-order.schema"
+import { vnZone } from "@/lib/time"
 import { OutsourcingOrderOrigin } from "@/lib/types/outsourcing-order.type"
 import type {
   OutsourcingOrderDetail,
@@ -18,7 +19,7 @@ import type {
 } from "@/lib/types/outsourcing-order.type"
 
 function toDateInputValue(isoDate: string): string {
-  return DateTime.fromISO(isoDate, { zone: "utc" }).toFormat("yyyy-MM-dd")
+  return format(parseISO(isoDate, { in: vnZone }), "yyyy-MM-dd")
 }
 
 // Dựng lại giá trị form từ phiếu đã lưu. Dòng không gắn Job (không có công đoạn Job) không dựng

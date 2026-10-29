@@ -1,6 +1,7 @@
-import { DateTime } from "luxon"
+import { format, isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
+import { vnZone } from "@/lib/time"
 import { IqcDisposition, IqcResult } from "@/lib/types/iqc.type"
 import { fileFieldSchema } from "@/lib/file-field.schema"
 import { emptyToUndefined, optionalEnum } from "@/lib/zod-transforms"
@@ -23,18 +24,18 @@ function scale(value: number): number {
 export const confirmIqcSchema = z
   .object({
     iqcId: z.uuid(),
-    // `<input type="datetime-local">` value — parsed at the local zone, not `{zone:"utc"}` (see
-    // the original comment this was copied from, still accurate).
+    // `<input type="datetime-local">` value — a Vietnam wall-clock time, sent as a UTC instant.
     inspectionDate: z
       .string()
       .trim()
       .refine(
-        (value) => value.length === 0 || DateTime.fromISO(value).isValid,
+        (value) =>
+          value.length === 0 || isValid(parseISO(value, { in: vnZone })),
         "Ngày kiểm tra không hợp lệ"
       )
       .transform((value) =>
         value.length > 0
-          ? DateTime.fromISO(value).toJSDate().toISOString()
+          ? new Date(parseISO(value, { in: vnZone })).toISOString()
           : undefined
       ),
     result: z.enum(IqcResult),
@@ -125,7 +126,8 @@ export type ConfirmIqcFormValue = {
 export function getIqcDefaultValues(iqc: IqcDetail): ConfirmIqcFormValue {
   return {
     iqcId: iqc.id,
-    inspectionDate: DateTime.fromISO(iqc.inspectionDate).toFormat(
+    inspectionDate: format(
+      parseISO(iqc.inspectionDate, { in: vnZone }),
       "yyyy-MM-dd'T'HH:mm"
     ),
     result: iqc.result ?? "",

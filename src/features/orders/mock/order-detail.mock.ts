@@ -1,5 +1,6 @@
-import { DateTime } from "luxon"
+import { addDays, parseISO } from "date-fns"
 
+import { vnZone } from "@/lib/time"
 import { roundMoney } from "@/lib/utils"
 import { OrderStatus } from "@/lib/types/order.type"
 import type {
@@ -17,13 +18,6 @@ import type {
 // the backend ships DO tracking. (Payment history used to be mock too — now real, see
 // get-order-payments.api.ts. The approval timeline used to live here too — it's now real data,
 // see order-timeline.ts.)
-
-// DateTime#toISO() types as `string | null` (it only returns null for an
-// invalid DateTime) — every caller here builds off an already-valid ISO
-// string via .plus(), so the fallback never actually fires.
-function toIso(dateTime: DateTime, fallback: string): string {
-  return dateTime.toISO() ?? fallback
-}
 
 function hashOrderId(order: OrderDetail): number {
   let hash = 0
@@ -75,7 +69,7 @@ export function buildMockDeliveryHistory(
   }
 
   const hash = hashOrderId(order)
-  const orderDate = DateTime.fromISO(order.orderDate)
+  const orderDate = parseISO(order.orderDate, { in: vnZone })
   const rowCount = order.status === OrderStatus.COMPLETED ? 2 : 1
 
   return Array.from({ length: rowCount }, (_, index) => {
@@ -83,10 +77,7 @@ export function buildMockDeliveryHistory(
 
     return {
       code: `${order.code}-DO${String(index + 1).padStart(2, "0")}`,
-      deliveredAt: toIso(
-        orderDate.plus({ days: 2 + index * 3 }),
-        order.orderDate
-      ),
+      deliveredAt: addDays(orderDate, 2 + index * 3).toISOString(),
       quantity: Math.round(progress.deliveredQuantity * share),
       valueVnd: roundMoney(progress.deliveredVnd * share),
       vehicle: deliveryVehicles[(hash + index) % deliveryVehicles.length],

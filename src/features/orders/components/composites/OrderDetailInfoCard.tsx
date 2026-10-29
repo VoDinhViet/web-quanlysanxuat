@@ -1,10 +1,11 @@
-import { DateTime } from "luxon"
 import { InfoCircle } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
 import { OrderStatusBadge } from "@/features/orders/components/primitives/OrderBadges"
 import { currencyFormatter } from "@/lib/currency"
+import { vnZone } from "@/lib/time"
 import { OrderDiscountType } from "@/lib/types/order.type"
 import { paymentTermShortLabels } from "@/lib/types/payment-term.type"
 import type { OrderDetail } from "@/lib/types/order.type"
@@ -46,13 +47,16 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
         <div className="space-y-3">
           <InfoRow
             label="Ngày đặt hàng"
-            value={DateTime.fromISO(order.orderDate).toFormat("dd/MM/yyyy")}
+            value={format(
+              parseISO(order.orderDate, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           />
           <InfoRow
             label="Ngày giao hàng"
             value={
               order.dueDate
-                ? DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")
+                ? format(parseISO(order.dueDate, { in: vnZone }), "dd/MM/yyyy")
                 : "--"
             }
           />

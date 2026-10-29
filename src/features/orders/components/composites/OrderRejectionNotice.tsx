@@ -1,7 +1,8 @@
 import { DangerTriangle } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { vnZone } from "@/lib/time"
 import { OrderStatus } from "@/lib/types/order.type"
 import type { OrderDetail } from "@/lib/types/order.type"
 
@@ -31,7 +32,10 @@ export function OrderRejectionNotice({ order }: OrderRejectionNoticeProps) {
         {order.rejecterBy && order.rejectedAt ? (
           <span className="mt-1 block text-xs text-muted-foreground">
             {order.rejecterBy.fullName} ·{" "}
-            {DateTime.fromISO(order.rejectedAt).toFormat("dd/MM/yyyy HH:mm")}
+            {format(
+              parseISO(order.rejectedAt, { in: vnZone }),
+              "dd/MM/yyyy HH:mm"
+            )}
           </span>
         ) : null}
       </AlertDescription>

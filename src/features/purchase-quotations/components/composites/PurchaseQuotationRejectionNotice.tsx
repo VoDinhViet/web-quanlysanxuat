@@ -1,6 +1,7 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { TriangleAlert } from "lucide-react"
 
+import { vnZone } from "@/lib/time"
 import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
@@ -37,7 +38,8 @@ export function PurchaseQuotationRejectionNotice({
         {purchaseQuotation.cancellerBy && purchaseQuotation.cancelledAt ? (
           <p className="text-xs text-muted-foreground">
             {purchaseQuotation.cancellerBy.fullName} ·{" "}
-            {DateTime.fromISO(purchaseQuotation.cancelledAt).toFormat(
+            {format(
+              parseISO(purchaseQuotation.cancelledAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           </p>

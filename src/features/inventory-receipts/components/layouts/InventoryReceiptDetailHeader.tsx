@@ -1,5 +1,5 @@
-import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import {
 } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import { InventoryReceiptSourceCell } from "@/features/inventory-receipts/components/primitives/InventoryReceiptTableCells"
 import { InventoryReceiptDetailActions } from "@/features/inventory-receipts/components/layouts/InventoryReceiptDetailActions"
+import { vnZone } from "@/lib/time"
 import {
   inventoryReceiptAssetTypeLabels,
   inventoryReceiptTypeLabels,
@@ -84,9 +85,10 @@ export function InventoryReceiptDetailHeader({
           <div className="flex flex-col gap-4">
             <MetaField
               label="Ngày nhập"
-              value={DateTime.fromISO(inventoryReceipt.receiptDate, {
-                zone: "utc",
-              }).toFormat("dd/MM/yyyy")}
+              value={format(
+                parseISO(inventoryReceipt.receiptDate, { in: vnZone }),
+                "dd/MM/yyyy"
+              )}
             />
             <MetaField
               label="Người tạo"

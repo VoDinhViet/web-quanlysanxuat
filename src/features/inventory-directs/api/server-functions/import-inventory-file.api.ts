@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import axios from "axios"
+import { format } from "date-fns"
 import type { Cell } from "exceljs"
-import { DateTime } from "luxon"
 
 import {
   INVENTORY_IMPORT_MAX_FILE_BYTES,
@@ -10,6 +10,7 @@ import {
 } from "@/features/inventory-directs/constants/inventory-import-template"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
+import { vnZone } from "@/lib/time"
 import type { InventoryImportResult } from "@/lib/types/inventory-direct.type"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
@@ -144,9 +145,7 @@ export const importInventoryFile = createServerFn({ method: "POST" })
         "/api/inventory-directs/import",
         {
           rows: importRows,
-          adjustmentDate: DateTime.now()
-            .setZone("Asia/Ho_Chi_Minh")
-            .toISODate(),
+          adjustmentDate: format(new Date(), "yyyy-MM-dd", { in: vnZone }),
           note: "Nhập tồn kho từ Excel",
         }
       )

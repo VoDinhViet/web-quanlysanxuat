@@ -1,5 +1,5 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseRequestStatusBadge } from "@/features/purchase-requests/components/primitives/PurchaseRequestBadges"
@@ -7,6 +7,7 @@ import {
   PurchaseRequestActionsCell,
   PurchaseRequestSourceCell,
 } from "@/features/purchase-requests/components/primitives/PurchaseRequestTableCells"
+import { vnZone } from "@/lib/time"
 import type { PurchaseRequest } from "@/lib/types/purchase-request.type"
 
 const purchaseRequestColumnHelper = createColumnHelper<
@@ -28,7 +29,8 @@ export const purchaseRequestColumns = purchaseRequestColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
   purchaseRequestColumnHelper.accessor("neededDate", {
     header: "Ngày cần",
@@ -36,7 +38,8 @@ export const purchaseRequestColumns = purchaseRequestColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
   purchaseRequestColumnHelper.accessor(
     (row) => row.requesterBy?.fullName ?? "—",

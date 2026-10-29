@@ -8,8 +8,8 @@ import {
   UserRounded,
   UsersGroupRounded,
 } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import { Loader2 } from "lucide-react"
-import { DateTime } from "luxon"
 import type { IconProps } from "@solar-icons/react"
 import type { ComponentType, ReactNode } from "react"
 
@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button, LinkButton } from "@/components/ui/button"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { operationAssignmentIdsQueryOptions } from "@/features/operations/api/options"
+import { vnZone } from "@/lib/time"
 import {
   OperationStatus,
   operationStatusLabels,
@@ -102,13 +103,15 @@ export function OperationDetailHeader({
             </MetaItem>
             <MetaItem icon={CalendarDate}>
               Tạo{" "}
-              {DateTime.fromISO(operation.createdAt).toFormat(
+              {format(
+                parseISO(operation.createdAt, { in: vnZone }),
                 "dd/MM/yyyy HH:mm"
               )}
             </MetaItem>
             <MetaItem icon={ClockCircle}>
               Cập nhật{" "}
-              {DateTime.fromISO(operation.updatedAt).toFormat(
+              {format(
+                parseISO(operation.updatedAt, { in: vnZone }),
                 "dd/MM/yyyy HH:mm"
               )}
             </MetaItem>

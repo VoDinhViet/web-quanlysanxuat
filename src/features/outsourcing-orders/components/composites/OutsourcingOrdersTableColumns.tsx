@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { OutsourcingOrderStatusBadge } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderBadges"
 import { OutsourcingOrderActionsCell } from "@/features/outsourcing-orders/components/primitives/OutsourcingOrderTableCells"
+import { vnZone } from "@/lib/time"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
 const col = createColumnHelper<typeof appTableFeatures, OutsourcingOrder>()
@@ -30,7 +31,8 @@ export const outsourcingOrdersColumns = col.columns([
       headerClassName: "min-w-24 text-center",
       cellClassName: "text-center text-xs",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   col.accessor("sendDate", {
@@ -39,7 +41,8 @@ export const outsourcingOrdersColumns = col.columns([
       headerClassName: "min-w-24 text-center",
       cellClassName: "text-center text-xs",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   col.accessor((row) => row.supplier.name, {
@@ -89,7 +92,7 @@ export const outsourcingOrdersColumns = col.columns([
     },
     cell: ({ getValue }) => {
       const value = getValue()
-      return value ? DateTime.fromISO(value).toFormat("dd/MM/yyyy") : "—"
+      return value ? format(parseISO(value, { in: vnZone }), "dd/MM/yyyy") : "—"
     },
   }),
 

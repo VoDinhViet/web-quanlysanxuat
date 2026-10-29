@@ -1,15 +1,16 @@
-import { DateTime } from "luxon"
 import { TrashBinTrash } from "@solar-icons/react"
 import {
   IconEdit,
   IconFileDescription,
   IconPaperclip,
 } from "@tabler/icons-react"
+import { format, isValid, parseISO } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { NumericCellInput } from "@/components/shared/primitives/NumericCellInput"
 import { QuotationTreeGuide } from "@/features/purchase-quotations/components/composites/QuotationTreeGuide"
+import { vnZone } from "@/lib/time"
 import { cn } from "@/lib/utils"
 import type {
   PickedQuotationItemValue,
@@ -62,7 +63,7 @@ export function QuotationItemSupplierRow({
   const hasNote = Boolean(supplier.note?.trim())
 
   const lastPurchaseDate =
-    lastPurchase && DateTime.fromISO(lastPurchase.orderDate)
+    lastPurchase && parseISO(lastPurchase.orderDate, { in: vnZone })
   const isOtherSupplier =
     lastPurchase !== undefined &&
     lastPurchase.supplier.id !== supplier.supplierId
@@ -85,8 +86,9 @@ export function QuotationItemSupplierRow({
                 <span className="font-medium text-foreground">
                   {priceFormatter.format(lastPurchase.unitPrice)}
                 </span>
-                {lastPurchaseDate?.isValid &&
-                  ` · ${lastPurchaseDate.toFormat("dd/MM/yyyy")}`}
+                {lastPurchaseDate &&
+                  isValid(lastPurchaseDate) &&
+                  ` · ${format(lastPurchaseDate, "dd/MM/yyyy")}`}
                 {isOtherSupplier && ` · ${lastPurchase.supplier.name}`}
               </>
             ) : (

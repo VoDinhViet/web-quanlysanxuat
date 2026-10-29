@@ -1,7 +1,8 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
+import { vnZone } from "@/lib/time"
 import { productionJobLogActionLabels } from "@/lib/types/production-job.type"
 import type { ProductionJobLog } from "@/lib/types/production-job.type"
 
@@ -16,7 +17,7 @@ export const productionJobLogColumns = columnHelper.columns([
     meta: { headerClassName: "min-w-32" },
     cell: ({ getValue }) => (
       <span className="whitespace-nowrap tabular-nums">
-        {DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm")}
+        {format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm")}
       </span>
     ),
   }),

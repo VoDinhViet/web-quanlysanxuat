@@ -1,6 +1,6 @@
+import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import {
   Buildings2,
   CalendarAdd,
@@ -29,6 +29,7 @@ import {
 } from "@/features/products/components/primitives/ProductBadges"
 import { getDocumentTypeInfo } from "@/lib/document-type"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import type { Item, ItemFile } from "@/lib/types/item.type"
 import type { FileResource } from "@/lib/types/file.type"
 
@@ -90,12 +91,18 @@ export function ProductDetailSidebar({ product }: ProductDetailSidebarProps) {
           <SummaryRow
             icon={CalendarAdd}
             label="Ngày tạo"
-            value={DateTime.fromISO(product.createdAt).toFormat("dd/MM/yyyy")}
+            value={format(
+              parseISO(product.createdAt, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           />
           <SummaryRow
             icon={ClockCircle}
             label="Ngày cập nhật"
-            value={DateTime.fromISO(product.updatedAt).toFormat("dd/MM/yyyy")}
+            value={format(
+              parseISO(product.updatedAt, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           />
         </dl>
 

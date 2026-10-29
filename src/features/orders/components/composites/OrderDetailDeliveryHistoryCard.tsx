@@ -1,5 +1,5 @@
 import { Delivery } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { Truck } from "lucide-react"
 
 import {
@@ -14,6 +14,7 @@ import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
 import { buildMockDeliveryHistory } from "@/features/orders/mock/order-detail.mock"
 import { vndFormatter } from "@/lib/currency"
+import { vnZone } from "@/lib/time"
 import type { OrderDetail, OrderItem } from "@/lib/types/order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -60,7 +61,10 @@ export function OrderDetailDeliveryHistoryCard({
                     {row.code}
                   </TableCell>
                   <TableCell>
-                    {DateTime.fromISO(row.deliveredAt).toFormat("dd/MM/yyyy")}
+                    {format(
+                      parseISO(row.deliveredAt, { in: vnZone }),
+                      "dd/MM/yyyy"
+                    )}
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
                     {quantityFormatter.format(row.quantity)}

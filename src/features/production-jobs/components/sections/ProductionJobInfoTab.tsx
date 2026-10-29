@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { ProductDocumentList } from "@/components/shared/composites/ProductDocumentList"
 import { productionOrderQueryOptions } from "@/features/production-orders/api"
 import { ProductionJobLogSection } from "@/features/production-jobs/components/sections/ProductionJobLogSection"
 import { ProductionJobNotesSection } from "@/features/production-jobs/components/sections/ProductionJobNotesSection"
+import { vnZone } from "@/lib/time"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 import { cn } from "@/lib/utils"
 
@@ -77,11 +78,15 @@ export function ProductionJobInfoTab({
           />
           <InfoField
             label="Ngày đặt hàng"
-            value={DateTime.fromISO(order.orderDate).toFormat("dd/MM/yyyy")}
+            value={format(
+              parseISO(order.orderDate, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           />
           <InfoField
             label="Cập nhật lần cuối"
-            value={DateTime.fromISO(productionJob.updatedAt).toFormat(
+            value={format(
+              parseISO(productionJob.updatedAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           />

@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
 import { InventoryRequisitionStatusBadge } from "@/features/inventory-requisitions/components/primitives/InventoryRequisitionBadges"
 import { InventoryRequisitionDetailActions } from "@/features/inventory-requisitions/components/layouts/InventoryRequisitionDetailActions"
+import { vnZone } from "@/lib/time"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import type { InventoryRequisitionDetail } from "@/lib/types/inventory-requisition.type"
 
@@ -103,7 +104,8 @@ export function InventoryRequisitionDetailHeader({
             <MetaField label="Bộ phận" value={detail.department?.name ?? "—"} />
             <MetaField
               label="Ngày lãnh"
-              value={DateTime.fromISO(detail.requisitionDate).toFormat(
+              value={format(
+                parseISO(detail.requisitionDate, { in: vnZone }),
                 "dd/MM/yyyy HH:mm"
               )}
             />

@@ -1,5 +1,6 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
+import { vnZone } from "@/lib/time"
 import { toVietnameseCurrencyWords } from "@/lib/vietnamese-number-words"
 import { vndFormatter } from "@/lib/currency"
 import { cn } from "@/lib/utils"
@@ -43,7 +44,10 @@ export function PaymentRequestPrintSheet({
           </p>
           <p>
             Ngày tạo:{" "}
-            {DateTime.fromISO(paymentRequest.createdAt).toFormat("dd/MM/yyyy")}
+            {format(
+              parseISO(paymentRequest.createdAt, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           </p>
         </div>
       </div>
@@ -60,7 +64,8 @@ export function PaymentRequestPrintSheet({
         <p>
           <span className="font-medium">PO liên quan:</span>{" "}
           {paymentRequest.purchaseOrder.code} —{" "}
-          {DateTime.fromISO(paymentRequest.purchaseOrder.orderDate).toFormat(
+          {format(
+            parseISO(paymentRequest.purchaseOrder.orderDate, { in: vnZone }),
             "dd/MM/yyyy"
           )}
         </p>
@@ -74,7 +79,10 @@ export function PaymentRequestPrintSheet({
         </p>
         <p>
           <span className="font-medium">Hạn thanh toán:</span>{" "}
-          {DateTime.fromISO(paymentRequest.dueDate).toFormat("dd/MM/yyyy")}
+          {format(
+            parseISO(paymentRequest.dueDate, { in: vnZone }),
+            "dd/MM/yyyy"
+          )}
         </p>
         {paymentRequest.supplierInvoiceNo ? (
           <p>

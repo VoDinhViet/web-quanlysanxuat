@@ -1,6 +1,6 @@
-import { DateTime } from "luxon"
 import { formatJobOperationDueDate } from "@/components/shared/composites/JobOperationDueDateCell"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import {
@@ -9,6 +9,7 @@ import {
   ProductionExecutionJobActionsCell,
   ProductionExecutionJobStatusBadge,
 } from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
+import { vnZone } from "@/lib/time"
 import type { ProductionJobByOperation } from "@/lib/types/production-job.type"
 import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 
@@ -101,7 +102,8 @@ export const productionExecutionJobColumns = columnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
   columnHelper.accessor("dueDate", {
     header: "Ngày giao",

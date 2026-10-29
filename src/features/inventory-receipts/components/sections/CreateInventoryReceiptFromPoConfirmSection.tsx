@@ -1,12 +1,13 @@
 import { useField } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
-import { DateTime } from "luxon"
+import { format } from "date-fns"
 
 import { InventoryReceiptStatusBadge } from "@/features/inventory-receipts/components/primitives/InventoryReceiptBadges"
 import { createInventoryReceiptFromPoFormDefaultValues } from "@/features/inventory-receipts/schemas/create-inventory-receipt-from-po.schema"
 import { purchaseOrderQueryOptions } from "@/features/purchase-orders/api"
 import { supplierQueryOptions } from "@/features/suppliers/api"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 import {
   InventoryReceiptStatus,
   inventoryReceiptAssetTypeLabels,
@@ -63,7 +64,7 @@ export const CreateInventoryReceiptFromPoConfirmSection = withForm({
       ? getPrimaryRepresentative(supplier.representatives)
       : undefined
 
-    const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")
+    const today = format(new Date(), "dd/MM/yyyy HH:mm", { in: vnZone })
 
     return (
       <div className="border-t border-border px-4 py-5 sm:px-5">

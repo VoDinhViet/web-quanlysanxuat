@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { AltArrowLeft } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { LinkButton } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { PurchaseOrderExpectedDateField } from "@/features/purchase-orders/compo
 import { PurchaseOrderNoteField } from "@/features/purchase-orders/components/composites/PurchaseOrderNoteField"
 import { PurchaseOrderPaymentTermField } from "@/features/purchase-orders/components/composites/PurchaseOrderPaymentTermField"
 import { PurchaseOrderProgressBadge } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
+import { vnZone } from "@/lib/time"
 import { cn } from "@/lib/utils"
 import type { PurchaseOrderDetail } from "@/lib/types/purchase-order.type"
 
@@ -108,7 +109,8 @@ export function PurchaseOrderDetailHeader({
         <MetaField
           className="lg:col-span-2"
           label="Ngày đặt"
-          value={DateTime.fromISO(purchaseOrder.orderDate).toFormat(
+          value={format(
+            parseISO(purchaseOrder.orderDate, { in: vnZone }),
             "dd/MM/yyyy"
           )}
         />

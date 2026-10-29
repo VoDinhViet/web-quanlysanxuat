@@ -1,5 +1,5 @@
-import { DateTime } from "luxon"
 import { History } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 
 import { Spinner } from "@/components/ui/spinner"
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
+import { vnZone } from "@/lib/time"
 import { productionOrderLogActionLabels } from "@/lib/types/production-order.type"
 import type { ProductionOrderLog } from "@/lib/types/production-order.type"
 import type { Pagination as PaginationMeta } from "@/lib/types/pagination.type"
@@ -81,7 +82,8 @@ export function ProductionOrderLogsCard({
                   className="h-14 bg-card hover:bg-muted/25"
                 >
                   <TableCell className="whitespace-nowrap tabular-nums">
-                    {DateTime.fromISO(log.createdAt).toFormat(
+                    {format(
+                      parseISO(log.createdAt, { in: vnZone }),
                       "dd/MM/yyyy HH:mm"
                     )}
                   </TableCell>

@@ -1,8 +1,8 @@
-import { DateTime } from "luxon"
 import { useNavigate } from "@tanstack/react-router"
 import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { format, parseISO } from "date-fns"
 import { Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -13,6 +13,7 @@ import { OutboundOrderEditItemsSection } from "@/features/outbound-orders/compon
 import { updateOutboundOrderSchema } from "@/features/outbound-orders/schemas/update-outbound-order.schema"
 import { useAppForm } from "@/hooks/use-app-form"
 import type { UpdateOutboundOrderSchema } from "@/features/outbound-orders/schemas/update-outbound-order.schema"
+import { vnZone } from "@/lib/time"
 import type {
   OutboundOrderDetail,
   OutboundOrderItem,
@@ -24,9 +25,10 @@ function getOutboundOrderEditDefaultValues(
 ): UpdateOutboundOrderSchema {
   return {
     outboundOrderId: order.id,
-    fulfillmentDate: DateTime.fromISO(order.fulfillmentDate, {
-      zone: "utc",
-    }).toFormat("yyyy-MM-dd"),
+    fulfillmentDate: format(
+      parseISO(order.fulfillmentDate, { in: vnZone }),
+      "yyyy-MM-dd"
+    ),
     fulfillmentType: order.fulfillmentType,
     note: order.note ?? "",
     deliveryAddress: order.deliveryAddress ?? "",

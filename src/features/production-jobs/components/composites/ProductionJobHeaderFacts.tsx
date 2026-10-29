@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
 import { itemQueryOptions } from "@/features/products/api"
+import { vnZone } from "@/lib/time"
 import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 import type { ProductionJobDetail } from "@/lib/types/production-job.type"
 import { cn } from "@/lib/utils"
@@ -13,7 +14,9 @@ type ProductionJobHeaderFactsProps = {
 }
 
 function formatDate(value: string | null) {
-  return value === null ? "—" : DateTime.fromISO(value).toFormat("dd/MM/yyyy")
+  return value === null
+    ? "—"
+    : format(parseISO(value, { in: vnZone }), "dd/MM/yyyy")
 }
 
 // Two aligned rows of four columns: the long fields (product, customer) take two columns each.

@@ -1,5 +1,5 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import {
@@ -11,6 +11,7 @@ import {
   IqcActionsCell,
   IqcPoOrReasonCell,
 } from "@/features/iqc/components/primitives/IqcTableCells"
+import { vnZone } from "@/lib/time"
 import type { Iqc } from "@/lib/types/iqc.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -99,7 +100,8 @@ export const iqcColumns = iqcColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   iqcColumnHelper.accessor("result", {

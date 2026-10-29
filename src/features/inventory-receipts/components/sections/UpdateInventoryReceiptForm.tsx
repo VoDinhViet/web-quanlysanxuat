@@ -1,8 +1,8 @@
-import { DateTime } from "luxon"
 import { useNavigate } from "@tanstack/react-router"
 import { revalidateLogic } from "@tanstack/react-form"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { format, parseISO } from "date-fns"
 import { ArrowLeft, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
@@ -13,6 +13,7 @@ import { UpdateInventoryReceiptItemsSection } from "@/features/inventory-receipt
 import { updateInventoryReceipt } from "@/features/inventory-receipts/api/server-functions/update-inventory-receipt.api"
 import { updateInventoryReceiptSchema } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"
 import type { UpdateInventoryReceiptSchema } from "@/features/inventory-receipts/schemas/update-inventory-receipt.schema"
+import { vnZone } from "@/lib/time"
 import type { InventoryReceiptDetail } from "@/lib/types/inventory-receipt.type"
 
 function getInventoryReceiptDefaultValues(
@@ -21,9 +22,10 @@ function getInventoryReceiptDefaultValues(
   return {
     receiptId: inventoryReceipt.id,
     receiptType: inventoryReceipt.receiptType,
-    receiptDate: DateTime.fromISO(inventoryReceipt.receiptDate, {
-      zone: "utc",
-    }).toFormat("yyyy-MM-dd"),
+    receiptDate: format(
+      parseISO(inventoryReceipt.receiptDate, { in: vnZone }),
+      "yyyy-MM-dd"
+    ),
     supplierId: inventoryReceipt.supplier?.id ?? "",
     clientId: inventoryReceipt.client?.id ?? "",
     purchaseRequestId: inventoryReceipt.purchaseRequest?.id ?? "",

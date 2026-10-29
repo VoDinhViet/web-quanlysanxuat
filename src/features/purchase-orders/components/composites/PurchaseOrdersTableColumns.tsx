@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseOrderProgressBadge } from "@/features/purchase-orders/components/primitives/PurchaseOrderBadges"
@@ -9,6 +9,7 @@ import {
   PurchaseOrderAmountCell,
   PurchaseOrderSourceCell,
 } from "@/features/purchase-orders/components/primitives/PurchaseOrderTableCells"
+import { vnZone } from "@/lib/time"
 import type { PurchaseOrder } from "@/lib/types/purchase-order.type"
 
 const purchaseOrderColumnHelper = createColumnHelper<
@@ -69,7 +70,8 @@ export const purchaseOrdersColumns = purchaseOrderColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   purchaseOrderColumnHelper.accessor("expectedDate", {
@@ -80,7 +82,7 @@ export const purchaseOrdersColumns = purchaseOrderColumnHelper.columns([
     },
     cell: ({ getValue }) => {
       const value = getValue()
-      return value ? DateTime.fromISO(value).toFormat("dd/MM/yyyy") : "—"
+      return value ? format(parseISO(value, { in: vnZone }), "dd/MM/yyyy") : "—"
     },
   }),
 

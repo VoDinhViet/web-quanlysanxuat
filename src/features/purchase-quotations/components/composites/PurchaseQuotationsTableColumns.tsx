@@ -1,9 +1,10 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseQuotationStatusBadge } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationBadges"
 import { PurchaseQuotationActionsCell } from "@/features/purchase-quotations/components/primitives/PurchaseQuotationTableCells"
+import { vnZone } from "@/lib/time"
 import type { PurchaseQuotationRow } from "@/lib/types/purchase-quotation.type"
 
 const purchaseQuotationColumnHelper = createColumnHelper<
@@ -26,7 +27,8 @@ export const purchaseQuotationsColumns = purchaseQuotationColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   purchaseQuotationColumnHelper.accessor(
@@ -65,7 +67,9 @@ export const purchaseQuotationsColumns = purchaseQuotationColumnHelper.columns([
     },
     cell: ({ getValue }) => {
       const sentAt = getValue()
-      return sentAt ? DateTime.fromISO(sentAt).toFormat("dd/MM/yyyy") : "—"
+      return sentAt
+        ? format(parseISO(sentAt, { in: vnZone }), "dd/MM/yyyy")
+        : "—"
     },
   }),
 
@@ -78,7 +82,7 @@ export const purchaseQuotationsColumns = purchaseQuotationColumnHelper.columns([
     cell: ({ getValue }) => {
       const approvedAt = getValue()
       return approvedAt
-        ? DateTime.fromISO(approvedAt).toFormat("dd/MM/yyyy")
+        ? format(parseISO(approvedAt, { in: vnZone }), "dd/MM/yyyy")
         : "—"
     },
   }),

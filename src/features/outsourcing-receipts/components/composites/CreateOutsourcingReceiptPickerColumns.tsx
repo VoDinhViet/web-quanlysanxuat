@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import { vnZone } from "@/lib/time"
 import type { PendingOrderItem } from "@/lib/types/outsourcing-receipt.type"
 import { ItemImageCell } from "@/components/shared/primitives/ItemImageCell"
 
@@ -100,7 +101,7 @@ export function buildCreateOutsourcingReceiptPickerColumns({
           cellClassName: "text-center text-xs text-muted-foreground",
         },
         cell: ({ getValue }) =>
-          DateTime.fromISO(getValue(), { zone: "utc" }).toFormat("dd/MM/yyyy"),
+          format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
       }
     ),
     pendingOrderItemColumnHelper.accessor("jobCode", {

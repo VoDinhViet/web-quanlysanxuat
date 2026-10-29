@@ -1,6 +1,7 @@
+import { format, parseISO } from "date-fns"
 import { FileText } from "lucide-react"
-import { DateTime } from "luxon"
 
+import { vnZone } from "@/lib/time"
 import type { PaymentRequestDetail } from "@/lib/types/payment-request.type"
 
 type PaymentRequestInfoCardProps = {
@@ -25,7 +26,8 @@ export function PaymentRequestInfoCard({
             Ngày tạo
           </p>
           <p className="text-sm font-medium text-foreground">
-            {DateTime.fromISO(paymentRequest.createdAt).toFormat(
+            {format(
+              parseISO(paymentRequest.createdAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           </p>

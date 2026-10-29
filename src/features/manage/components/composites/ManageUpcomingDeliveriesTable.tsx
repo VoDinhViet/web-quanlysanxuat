@@ -1,4 +1,5 @@
 import { createColumnHelper, flexRender, useTable } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import { appTableFeatures } from "@/lib/table-features"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -14,9 +15,9 @@ import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { ManageCardLink } from "@/features/manage/components/primitives/ManageCardLink"
 import { ManageCardTitle } from "@/features/manage/components/primitives/ManageCardTitle"
 import { useUpcomingDeliveries } from "@/features/manage/hooks/use-upcoming-deliveries"
+import { vnZone } from "@/lib/time"
 import { outboundOrderStatusLabels } from "@/lib/types/outbound-order.type"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
-import { DateTime } from "luxon"
 
 const columnHelper = createColumnHelper<
   typeof appTableFeatures,
@@ -36,7 +37,8 @@ const columns = columnHelper.columns([
   columnHelper.accessor("fulfillmentDate", {
     header: "Ngày giao",
     meta: { cellClassName: "text-xs" },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
   columnHelper.accessor("status", {
     header: "Trạng thái",

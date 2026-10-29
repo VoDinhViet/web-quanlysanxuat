@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router"
+import { format, parseISO } from "date-fns"
 import { FileText, History } from "lucide-react"
-import { DateTime } from "luxon"
 
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import { InventoryIssueType } from "@/lib/types/inventory-issue.type"
 import type { FileResource } from "@/lib/types/file.type"
 import type { InventoryIssueDetail } from "@/lib/types/inventory-issue.type"
@@ -49,13 +50,13 @@ export function InventoryIssueDetailInfoCard({
 
         <InfoRow
           label="Tạo lúc"
-          value={`${DateTime.fromISO(inventoryIssue.createdAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryIssue.creatorBy ? ` · ${inventoryIssue.creatorBy.fullName}` : ""}`}
+          value={`${format(parseISO(inventoryIssue.createdAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${inventoryIssue.creatorBy ? ` · ${inventoryIssue.creatorBy.fullName}` : ""}`}
         />
 
         {inventoryIssue.postedAt && (
           <InfoRow
             label="Xuất kho lúc"
-            value={`${DateTime.fromISO(inventoryIssue.postedAt).toFormat("dd/MM/yyyy HH:mm")}${inventoryIssue.posterBy ? ` · ${inventoryIssue.posterBy.fullName}` : ""}`}
+            value={`${format(parseISO(inventoryIssue.postedAt, { in: vnZone }), "dd/MM/yyyy HH:mm")}${inventoryIssue.posterBy ? ` · ${inventoryIssue.posterBy.fullName}` : ""}`}
           />
         )}
 
@@ -74,7 +75,8 @@ export function InventoryIssueDetailInfoCard({
 
         <InfoRow
           label="Cập nhật lần cuối"
-          value={DateTime.fromISO(inventoryIssue.updatedAt).toFormat(
+          value={format(
+            parseISO(inventoryIssue.updatedAt, { in: vnZone }),
             "dd/MM/yyyy HH:mm"
           )}
         />

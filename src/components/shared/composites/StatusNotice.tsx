@@ -1,7 +1,8 @@
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { TriangleAlert } from "lucide-react"
 import type { ReactNode } from "react"
 
+import { vnZone } from "@/lib/time"
 import { cn } from "@/lib/utils"
 
 type StatusNoticeProps = {
@@ -62,7 +63,7 @@ export function StatusNotice({
         {actorName && timestamp ? (
           <p className="text-xs text-muted-foreground">
             {actorName} ·{" "}
-            {DateTime.fromISO(timestamp).toFormat("dd/MM/yyyy HH:mm")}
+            {format(parseISO(timestamp, { in: vnZone }), "dd/MM/yyyy HH:mm")}
           </p>
         ) : null}
         {extra}

@@ -1,7 +1,7 @@
 import { useField } from "@tanstack/react-form"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { FileText } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +19,7 @@ import { createOutsourcingReceiptConfirmColumns } from "@/features/outsourcing-r
 import { sumOutsourcingReceiptItemTotals } from "@/features/outsourcing-receipts/constants/outsourcing-receipt-item-totals"
 import { createOutsourcingReceiptFormDefaultValues } from "@/features/outsourcing-receipts/schemas/create-outsourcing-receipt.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 const decimalFormatter = new Intl.NumberFormat("vi-VN", {
@@ -56,7 +57,7 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
 
     const { totalQuantity, totalWeight, totalArea } =
       sumOutsourcingReceiptItemTotals(items)
-    const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")
+    const today = format(new Date(), "dd/MM/yyyy HH:mm", { in: vnZone })
 
     const table = useTable({
       data: items,
@@ -99,9 +100,7 @@ export const CreateOutsourcingReceiptConfirmSection = withForm({
               label="Ngày nhận"
               value={
                 receiptDate
-                  ? DateTime.fromISO(receiptDate, { zone: "utc" }).toFormat(
-                      "dd/MM/yyyy"
-                    )
+                  ? format(parseISO(receiptDate, { in: vnZone }), "dd/MM/yyyy")
                   : "—"
               }
             />

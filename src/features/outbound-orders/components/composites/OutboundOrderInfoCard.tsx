@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { format, parseISO } from "date-fns"
 import {
   CalendarCheck,
   Info,
@@ -8,9 +9,9 @@ import {
   UserCheck,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
-import { DateTime } from "luxon"
 import type { ReactNode } from "react"
 
+import { vnZone } from "@/lib/time"
 import { inventoryIssueStatusLabels } from "@/lib/types/inventory-issue.type"
 import type { OutboundOrderDetail } from "@/lib/types/outbound-order.type"
 
@@ -71,7 +72,8 @@ export function OutboundOrderInfoCard({ order }: OutboundOrderInfoCardProps) {
           <InfoTile
             icon={CalendarCheck}
             label="Ngày duyệt"
-            value={DateTime.fromISO(order.approvedAt).toFormat(
+            value={format(
+              parseISO(order.approvedAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
           />

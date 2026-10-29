@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import {
@@ -12,6 +12,7 @@ import {
   PaymentRequestAmountCell,
 } from "@/features/payment-requests/components/primitives/PaymentRequestTableCells"
 import { currencyFormatter } from "@/lib/currency"
+import { vnZone } from "@/lib/time"
 import type { PaymentRequest } from "@/lib/types/payment-request.type"
 
 const col = createColumnHelper<typeof appTableFeatures, PaymentRequest>()
@@ -62,7 +63,8 @@ export const paymentRequestsColumns = col.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   col.accessor("purchaseOrderTotalAmount", {
@@ -117,7 +119,7 @@ export const paymentRequestsColumns = col.columns([
       cellClassName: "text-center",
     },
     cell: ({ getValue }) =>
-      DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm"),
   }),
 
   col.display({

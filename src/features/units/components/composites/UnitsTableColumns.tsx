@@ -1,6 +1,6 @@
 import { PenNewSquare, TrashBinTrash } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +14,7 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { unitTypeStyles } from "@/features/units/constants/unit-type-styles"
 import { DeleteUnitDialog } from "@/features/units/components/composites/DeleteUnitDialog"
 import { UpdateUnitDialog } from "@/features/units/components/composites/UpdateUnitDialog"
+import { vnZone } from "@/lib/time"
 import {
   UnitStatus,
   unitStatusLabels,
@@ -97,7 +98,7 @@ export const unitColumns = unitColumnHelper.columns([
     header: "Cập nhật lúc",
     meta: { headerClassName: "min-w-36" },
     cell: ({ getValue }) =>
-      DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm"),
   }),
   unitColumnHelper.display({
     id: "actions",

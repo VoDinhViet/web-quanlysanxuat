@@ -1,5 +1,6 @@
-import { DateTime } from "luxon"
+import { addDays, parseISO, subDays } from "date-fns"
 
+import { vnZone } from "@/lib/time"
 import {
   PurchaseLedgerStatus,
   PurchaseLedgerWarning,
@@ -12,21 +13,17 @@ import type { PurchaseLedgerApiRow } from "@/lib/types/purchase-ledger.type"
 // URGENT: less than 1 day left (or already past) until neededDate and not yet COMPLETED.
 export function resolvePurchaseLedgerWarnings(
   row: PurchaseLedgerApiRow,
-  today: DateTime
+  today: Date
 ): PurchaseLedgerWarning[] {
   const warnings: PurchaseLedgerWarning[] = []
   const isActive = row.status !== PurchaseLedgerStatus.COMPLETED
-  const createdAt = DateTime.fromISO(row.createdAt)
-  const neededDate = DateTime.fromISO(row.neededDate)
+  const createdAt = parseISO(row.createdAt, { in: vnZone })
+  const neededDate = parseISO(row.neededDate, { in: vnZone })
 
-  if (
-    isActive &&
-    row.orderedQuantity === 0 &&
-    today > createdAt.plus({ days: 1 })
-  ) {
+  if (isActive && row.orderedQuantity === 0 && today > addDays(createdAt, 1)) {
     warnings.push(PurchaseLedgerWarning.NO_PO)
   }
-  if (isActive && today >= neededDate.minus({ days: 1 })) {
+  if (isActive && today >= subDays(neededDate, 1)) {
     warnings.push(PurchaseLedgerWarning.URGENT)
   }
 

@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { ProductionOrderDetailActions } from "@/features/production-orders/components/layouts/ProductionOrderDetailActions"
 import { ProductionOrderStatusBadge } from "@/features/production-orders/components/primitives/ProductionOrderBadges"
+import { vnZone } from "@/lib/time"
 import type { ProductionOrderDetail } from "@/lib/types/production-order.type"
 
 type ProductionOrderDetailSummaryCardProps = {
@@ -89,13 +90,16 @@ export function ProductionOrderDetailSummaryCard({
           <MetaField label="Khách hàng" value={order.client?.name ?? "—"} />
           <MetaField
             label="Ngày đặt đơn"
-            value={DateTime.fromISO(order.orderDate).toFormat("dd/MM/yyyy")}
+            value={format(
+              parseISO(order.orderDate, { in: vnZone }),
+              "dd/MM/yyyy"
+            )}
           />
           <MetaField
             label="Ngày giao"
             value={
               order.dueDate
-                ? DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")
+                ? format(parseISO(order.dueDate, { in: vnZone }), "dd/MM/yyyy")
                 : "Chưa xác định"
             }
           />
@@ -103,7 +107,8 @@ export function ProductionOrderDetailSummaryCard({
             label="Ngày duyệt LSX"
             value={
               production.approvedAt
-                ? DateTime.fromISO(production.approvedAt).toFormat(
+                ? format(
+                    parseISO(production.approvedAt, { in: vnZone }),
                     "dd/MM/yyyy HH:mm"
                   )
                 : "Chưa duyệt"

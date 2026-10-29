@@ -1,8 +1,9 @@
 import { Gallery } from "@solar-icons/react"
-import { DateTime } from "luxon"
+import { format, parseISO } from "date-fns"
 
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import type { PurchaseOrderItemDetail } from "@/lib/types/purchase-order.type"
 
 type PurchaseOrderItemProductCellProps = {
@@ -29,15 +30,25 @@ export function PurchaseOrderItemProductCell({
         )}
       </div>
       <div className="flex min-w-0 flex-col gap-0.5">
-        <span className="font-medium text-foreground leading-snug">{product.name}</span>
+        <span className="leading-snug font-medium text-foreground">
+          {product.name}
+        </span>
         <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground tabular-nums">
-          <span className="font-mono font-medium text-foreground/80">{product.code}</span>
+          <span className="font-mono font-medium text-foreground/80">
+            {product.code}
+          </span>
           <span>•</span>
           <span className="font-mono">{purchaseRequest.code}</span>
           {item.neededDate && (
             <>
               <span>•</span>
-              <span>Cần: {DateTime.fromISO(item.neededDate).toFormat("dd/MM/yyyy")}</span>
+              <span>
+                Cần:{" "}
+                {format(
+                  parseISO(item.neededDate, { in: vnZone }),
+                  "dd/MM/yyyy"
+                )}
+              </span>
             </>
           )}
         </div>

@@ -1,8 +1,8 @@
+import { format, parseISO } from "date-fns"
 import { useMemo } from "react"
 import { useField } from "@tanstack/react-form"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
-import { DateTime } from "luxon"
 import { FileText } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -20,6 +20,7 @@ import { buildCreateOutboundOrderConfirmColumns } from "@/features/outbound-orde
 import { useUnfulfilledOrderItemLookup } from "@/features/outbound-orders/hooks/use-unfulfilled-order-item-lookup"
 import { createOutboundOrderFormDefaultValues } from "@/features/outbound-orders/schemas/create-outbound-order.schema"
 import { withForm } from "@/hooks/use-app-form"
+import { vnZone } from "@/lib/time"
 import { fulfillmentTypeLabels } from "@/lib/types/outbound-order.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -67,7 +68,7 @@ export const CreateOutboundOrderConfirmSection = withForm({
       (sum, item) => sum + (item.quantity ?? 0),
       0
     )
-    const today = DateTime.now().toFormat("dd/MM/yyyy HH:mm")
+    const today = format(new Date(), "dd/MM/yyyy HH:mm", { in: vnZone })
 
     const columns = useMemo(
       () => buildCreateOutboundOrderConfirmColumns(lookupUnfulfilledOrderItem),
@@ -115,9 +116,10 @@ export const CreateOutboundOrderConfirmSection = withForm({
               label="Ngày giao"
               value={
                 fulfillmentDate
-                  ? DateTime.fromISO(fulfillmentDate, {
-                      zone: "utc",
-                    }).toFormat("dd/MM/yyyy")
+                  ? format(
+                      parseISO(fulfillmentDate, { in: vnZone }),
+                      "dd/MM/yyyy"
+                    )
                   : "—"
               }
             />

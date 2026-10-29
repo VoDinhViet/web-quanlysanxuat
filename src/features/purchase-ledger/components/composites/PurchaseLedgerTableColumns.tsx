@@ -1,6 +1,6 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Gallery } from "@solar-icons/react"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
@@ -12,6 +12,7 @@ import {
 } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerTableCells"
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { resolveFileUrl } from "@/lib/file-url"
+import { vnZone } from "@/lib/time"
 import type { PurchaseLedgerRow } from "@/lib/types/purchase-ledger.type"
 
 const purchaseLedgerColumnHelper = createColumnHelper<
@@ -131,7 +132,8 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   purchaseLedgerColumnHelper.accessor("neededDate", {
@@ -140,7 +142,8 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   purchaseLedgerColumnHelper.accessor("status", {

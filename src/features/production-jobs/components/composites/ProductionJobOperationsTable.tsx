@@ -1,8 +1,8 @@
+import { format, parseISO } from "date-fns"
 import { Fragment, useMemo } from "react"
 import { useParams } from "@tanstack/react-router"
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { ClipboardCheck, SendSquare } from "@solar-icons/react"
-import { DateTime } from "luxon"
 import { Package } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -32,6 +32,7 @@ import {
   formatJobOperationDueDate,
   resolveJobOperationDueDateDisabledReason,
 } from "@/components/shared/composites/JobOperationDueDateCell"
+import { vnZone } from "@/lib/time"
 import type {
   ProductionJobBomItem,
   ProductionJobOperation,
@@ -407,7 +408,8 @@ function OperationRow({
       <TableCell className="text-center text-muted-foreground">
         {operation.lastReportedAt === null
           ? "—"
-          : DateTime.fromISO(operation.lastReportedAt).toFormat(
+          : format(
+              parseISO(operation.lastReportedAt, { in: vnZone }),
               "dd/MM/yyyy HH:mm"
             )}
       </TableCell>

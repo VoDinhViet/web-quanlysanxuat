@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
+import { differenceInCalendarDays, format, parseISO } from "date-fns"
 import { AltArrowLeft } from "@solar-icons/react"
 import type { ReactNode } from "react"
 
 import { OrderDetailActions } from "@/features/orders/components/layouts/OrderDetailActions"
 import { OrderDetailStatTiles } from "@/features/orders/components/composites/OrderDetailStatTiles"
 import { OrderStatusBadge } from "@/features/orders/components/primitives/OrderBadges"
+import { vnZone } from "@/lib/time"
 import {
   overdueTone,
   OrderStatus,
@@ -33,10 +34,9 @@ function formatDueDateNote(order: OrderDetail): string | null {
     return null
   }
 
-  const daysLeft = Math.ceil(
-    DateTime.fromISO(order.dueDate)
-      .startOf("day")
-      .diff(DateTime.now().startOf("day"), "days").days
+  const daysLeft = differenceInCalendarDays(
+    parseISO(order.dueDate, { in: vnZone }),
+    new Date()
   )
 
   if (daysLeft < 0) {
@@ -91,7 +91,10 @@ export function OrderDetailSummaryCard({
                   {order.creatorBy?.fullName ?? "Hệ thống"}
                 </span>{" "}
                 ·{" "}
-                {DateTime.fromISO(order.createdAt).toFormat("dd/MM/yyyy HH:mm")}
+                {format(
+                  parseISO(order.createdAt, { in: vnZone }),
+                  "dd/MM/yyyy HH:mm"
+                )}
               </p>
             </div>
           </div>
@@ -108,14 +111,20 @@ export function OrderDetailSummaryCard({
             />
             <MetaField
               label="Ngày đặt hàng"
-              value={DateTime.fromISO(order.orderDate).toFormat("dd/MM/yyyy")}
+              value={format(
+                parseISO(order.orderDate, { in: vnZone }),
+                "dd/MM/yyyy"
+              )}
             />
             <MetaField
               label="Ngày giao hàng"
               value={
                 order.dueDate ? (
                   <span className={deliveryToneClassName[deliveryTone]}>
-                    {DateTime.fromISO(order.dueDate).toFormat("dd/MM/yyyy")}
+                    {format(
+                      parseISO(order.dueDate, { in: vnZone }),
+                      "dd/MM/yyyy"
+                    )}
                     {dueDateNote ? ` (${dueDateNote})` : ""}
                   </span>
                 ) : (

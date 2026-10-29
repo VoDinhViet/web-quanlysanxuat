@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import {
@@ -8,6 +8,7 @@ import {
   OutboundOrderStatusBadge,
 } from "@/features/outbound-orders/components/primitives/OutboundOrderBadges"
 import { OutboundOrderActionsCell } from "@/features/outbound-orders/components/primitives/OutboundOrderTableCells"
+import { vnZone } from "@/lib/time"
 import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 import {
   OutboundOrderStatus,
@@ -51,7 +52,7 @@ export const outboundOrdersColumns = col.columns([
       cellClassName: "text-center text-xs",
     },
     cell: ({ getValue }) =>
-      DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy HH:mm"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm"),
   }),
 
   col.accessor((row) => row.client.name, {
@@ -134,7 +135,7 @@ export const outboundOrdersColumns = col.columns([
       const invoiceDate = getValue()
 
       return invoiceDate
-        ? DateTime.fromISO(invoiceDate, { zone: "utc" }).toFormat("dd/MM/yyyy")
+        ? format(parseISO(invoiceDate, { in: vnZone }), "dd/MM/yyyy")
         : "—"
     },
   }),

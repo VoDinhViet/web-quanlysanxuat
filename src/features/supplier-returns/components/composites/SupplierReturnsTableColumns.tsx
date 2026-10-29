@@ -1,9 +1,10 @@
-import { DateTime } from "luxon"
 import { createColumnHelper } from "@tanstack/react-table"
+import { format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import { SupplierReturnStatusBadge } from "@/features/supplier-returns/components/primitives/SupplierReturnBadges"
 import { SupplierReturnActionsCell } from "@/features/supplier-returns/components/primitives/SupplierReturnTableCells"
+import { vnZone } from "@/lib/time"
 import type { SupplierReturn } from "@/lib/types/supplier-return.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
@@ -81,7 +82,8 @@ export const supplierReturnsColumns = supplierReturnColumnHelper.columns([
       headerClassName: "min-w-28 text-center",
       cellClassName: "text-center",
     },
-    cell: ({ getValue }) => DateTime.fromISO(getValue()).toFormat("dd/MM/yyyy"),
+    cell: ({ getValue }) =>
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   supplierReturnColumnHelper.display({
