@@ -10,7 +10,7 @@ import {
 } from "@/lib/export"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
-const defaultExportFilename = "Ke_Hoach_San_Xuat.pdf"
+const defaultExportFilename = "ke-hoach-san-xuat.pdf"
 
 function resolveExportProductionJobsPlanPdfErrorMessage(
   error: unknown

@@ -10,7 +10,7 @@ import {
 } from "@/lib/export"
 
 const GENERIC_ERROR_MESSAGE = "Đã có lỗi xảy ra. Vui lòng thử lại."
-const defaultExportFilename = "Don_Dat_Hang.pdf"
+const defaultExportFilename = "don-dat-hang.pdf"
 
 function resolveExportPurchaseOrderPdfErrorMessage(error: unknown): string {
   if (!axios.isAxiosError<ApiErrorResponse>(error)) {
