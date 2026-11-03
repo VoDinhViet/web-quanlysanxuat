@@ -38,8 +38,11 @@ export function usePurchaseRequestNote(
       updatePurchaseRequestNoteFn({
         data: { purchaseRequestId, note: nextNote || null },
       }),
-    onSuccess: async () => {
+    onSuccess: async (_, nextNote) => {
       toast.success("Đã lưu PO / Lý do")
+      // Xoá trắng thì `note` về null và ô quay lại số PO của đơn, giá trị truyền vào không đổi nên
+      // nhánh resync ở trên không chạy.
+      if (!nextNote) setValue(note ?? "")
       await queryClient.invalidateQueries({ queryKey: ["purchase-requests"] })
     },
     onError: (error) => toast.error(error.message),

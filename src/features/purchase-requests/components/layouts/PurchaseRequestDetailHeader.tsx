@@ -115,10 +115,11 @@ export function PurchaseRequestDetailHeader({
 }: PurchaseRequestDetailHeaderProps) {
   const source = getSourceLabel(purchaseRequest)
   const approvalMeta = getApprovalMeta(purchaseRequest)
-  const noteDraft = usePurchaseRequestNote(
-    purchaseRequest.id,
-    purchaseRequest.note
-  )
+  // Ô "PO / Lý do" hiện số PO của đơn khi chưa ai nhập `note`; số này chỉ được ghi vào `note` khi
+  // người dùng sửa và bấm Lưu, nên đơn đổi PO thì ô đổi theo.
+  const poOrReason =
+    purchaseRequest.note ?? purchaseRequest.productionOrder?.buyerPoNo ?? null
+  const noteDraft = usePurchaseRequestNote(purchaseRequest.id, poOrReason)
 
   const totalQuantity = purchaseRequest.items.reduce(
     (sum, item) => sum + (item.quantity ?? 0),
@@ -225,10 +226,7 @@ export function PurchaseRequestDetailHeader({
         <MetaField label="Số loại vật tư" value={`${itemCount} loại`} />
         <MetaField label="Tổng SL đề xuất" value={formattedTotalQuantity} />
         <div className="sm:col-span-2 lg:col-span-2">
-          <PurchaseRequestNoteField
-            note={purchaseRequest.note}
-            draft={noteDraft}
-          />
+          <PurchaseRequestNoteField note={poOrReason} draft={noteDraft} />
         </div>
       </div>
     </div>

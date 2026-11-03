@@ -18,9 +18,8 @@ import type {
   PurchaseRequestProductionOrderRef,
 } from "@/lib/types/purchase-request.type"
 
-// "PO liên quan / Lý do": ưu tiên giá trị người dùng nhập/sửa (note; đề xuất tự sinh khởi tạo note
-// bằng số PO của đơn); chưa có note thì hiện số PO khách hàng (buyerPoNo, qua LSX gắn với đề xuất —
-// đề xuất cũ chưa có note); không có cả hai thì "—". Không bao giờ hiện cả hai.
+// "PO liên quan / Lý do": ưu tiên giá trị người dùng nhập/sửa (note); chưa có note thì hiện số PO
+// khách hàng (buyerPoNo, qua LSX gắn với đề xuất); không có cả hai thì "—". Không bao giờ hiện cả hai.
 export function PurchaseRequestSourceCell({
   productionOrder,
   note,
