@@ -52,14 +52,16 @@ export function OrderBuyerPoInlineEdit({ order }: OrderBuyerPoInlineEditProps) {
   const mutation = useMutation({
     mutationFn: (buyerPoNo: string) =>
       updateOrderBuyerPoFn({ data: { orderId: order.id, buyerPoNo } }),
+    // Refetch before closing so the card never shows the old PO next to a success toast; the
+    // mutation stays pending meanwhile, which keeps the input disabled and the spinner on.
     onSuccess: async () => {
-      setIsEditing(false)
-      toast.success("Đã cập nhật số PO")
       await Promise.all(
         BUYER_PO_QUERY_ROOTS.map((queryRoot) =>
           queryClient.invalidateQueries({ queryKey: [queryRoot] })
         )
       )
+      setIsEditing(false)
+      toast.success("Đã cập nhật số PO")
     },
     onError: (error) => setErrorMessage(error.message),
   })
