@@ -7,6 +7,7 @@ import { inventoryReceiptQueryOptions } from "@/features/inventory-receipts/api/
 import { InventoryReceiptDetailHeader } from "@/features/inventory-receipts/components/layouts/InventoryReceiptDetailHeader"
 import { InventoryReceiptDetailItemsSection } from "@/features/inventory-receipts/components/sections/InventoryReceiptDetailItemsSection"
 import { InventoryReceiptDetailInfoCard } from "@/features/inventory-receipts/components/composites/InventoryReceiptDetailInfoCard"
+import { InventoryReceiptFilesCard } from "@/features/inventory-receipts/components/composites/InventoryReceiptFilesCard"
 import { InventoryReceiptRelatedNotesCard } from "@/features/inventory-receipts/components/composites/InventoryReceiptRelatedNotesCard"
 
 export function InventoryReceiptDetailPage() {
@@ -42,12 +43,15 @@ export function InventoryReceiptDetailPage() {
           />
         </Surface>
 
-        {/* Thông tin phụ: Nhật ký phiếu và Ghi chú liên quan */}
-        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3 xl:grid-cols-4">
-          <InventoryReceiptDetailInfoCard
-            inventoryReceipt={inventoryReceipt}
-          />
-          <InventoryReceiptRelatedNotesCard receiptId={inventoryReceipt.id} />
+        {/* Thông tin phụ: Nhật ký phiếu, Ghi chú liên quan và File đính kèm */}
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="flex flex-col gap-4">
+            <InventoryReceiptDetailInfoCard
+              inventoryReceipt={inventoryReceipt}
+            />
+            <InventoryReceiptRelatedNotesCard receiptId={inventoryReceipt.id} />
+          </div>
+          <InventoryReceiptFilesCard inventoryReceipt={inventoryReceipt} />
         </div>
       </div>
     </main>

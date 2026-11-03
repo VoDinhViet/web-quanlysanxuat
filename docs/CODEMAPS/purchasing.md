@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-26 | Files scanned: 307 | Token estimate: ~4800 -->
+<!-- Generated: 2026-11-03 | Files scanned: 307 | Token estimate: ~4800 -->
 # Purchasing codemap (web)
 
 Scope: FE features `purchase-requests` (PR), `purchase-quotations` (RFQ), `purchase-orders` (PO/DMH), `purchase-ledger`, `payment-requests` (YCTT), `suppliers` (+ supplier-groups call). BE twin: `be-quanlysanxuat/docs/CODEMAPS/purchasing.md` (state flow sections "RFQ -> DMH" and "Payment request"); screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts` (enforced once in `src/routes/(authed)/route.tsx`); `PermissionGate` only hides buttons, BE is the real check.
@@ -111,6 +111,7 @@ Server fn: `src/features/<feature>/api/server-functions/<name>.api.ts`. BE: `src
 | "Lưu phát sinh" | update-payment-request-extra-cost | PATCH /:id/extra-cost | update | updatePaymentRequestExtraCost :189 |
 | Invoice field | update-payment-request-invoice | PATCH /:id/invoice | update | updatePaymentRequestInvoice :138 |
 | Note field | update-payment-request-note | PATCH /:id/note | update | updatePaymentRequestNote :155 |
+| PaymentRequestFilesCard (main column; `DocumentFilesCard`, saves on upload or removal, read-only when CANCELLED or without the permission) | update-payment-request-files | PATCH /:id/files | update | updatePaymentRequestFiles |
 | Urgency toggle | update-payment-request-urgency | PATCH /:id/urgency | update | updatePaymentRequestUrgency :172 |
 
 ### suppliers (+ supplier-groups; perm prefix `suppliers:`)

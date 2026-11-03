@@ -37,6 +37,9 @@ export enum UploadType {
   QUOTATION_SUPPLIER_EVIDENCE = "QUOTATION_SUPPLIER_EVIDENCE",
   // Photos/files proving the receiver got the goods, attached when a stock issue is posted.
   INVENTORY_ISSUE_EVIDENCE = "INVENTORY_ISSUE_EVIDENCE",
+  // Attachments of the document itself, editable until it is cancelled (DocumentFilesCard).
+  PAYMENT_REQUEST_DOCUMENT = "PAYMENT_REQUEST_DOCUMENT",
+  INVENTORY_RECEIPT_DOCUMENT = "INVENTORY_RECEIPT_DOCUMENT",
 }
 
 export enum FileKind {

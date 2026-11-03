@@ -14,6 +14,7 @@ import { paymentRequestQueryOptions } from "@/features/payment-requests/api/opti
 import { updatePaymentRequestExtraCost } from "@/features/payment-requests/api/server-functions/update-payment-request-extra-cost.api"
 import { PaymentRequestDetailHeader } from "@/features/payment-requests/components/layouts/PaymentRequestDetailHeader"
 import { PaymentRequestItemsSection } from "@/features/payment-requests/components/sections/PaymentRequestItemsSection"
+import { PaymentRequestFilesCard } from "@/features/payment-requests/components/composites/PaymentRequestFilesCard"
 import { PaymentRequestInfoCard } from "@/features/payment-requests/components/composites/PaymentRequestInfoCard"
 import { PaymentRequestLogsCard } from "@/features/payment-requests/components/composites/PaymentRequestLogsCard"
 import { PaymentRequestPrintSheet } from "@/features/payment-requests/components/composites/PaymentRequestPrintSheet"
@@ -158,6 +159,7 @@ export function PaymentRequestDetailPage() {
                 onRevert={handleRevert}
               />
             </Surface>
+            <PaymentRequestFilesCard paymentRequest={effectivePaymentRequest} />
             <PaymentRequestLogsCard paymentRequestId={paymentRequest.id} />
           </div>
 

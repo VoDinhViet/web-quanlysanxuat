@@ -224,4 +224,5 @@ export type InventoryReceipt = {
  *  shape, same header fields as `InventoryReceipt` but full line items (`InventoryReceiptItemDetail`). */
 export type InventoryReceiptDetail = Omit<InventoryReceipt, "items"> & {
   items: InventoryReceiptItemDetail[]
+  files: FileResource[]
 }

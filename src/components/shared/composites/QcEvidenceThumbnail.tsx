@@ -77,7 +77,8 @@ function resolveExtension(fileName: string): string {
 
 type QcEvidenceThumbnailProps = {
   file: FileFieldValue
-  onRemove: (id: string) => void
+  // Omit for a read-only row: the remove button is not rendered.
+  onRemove?: (id: string) => void
   disabled?: boolean
 }
 
@@ -191,24 +192,26 @@ export function QcEvidenceThumbnail({
           />
           <TooltipContent>{canPreview ? "Xem ảnh" : "Mở tệp"}</TooltipContent>
         </Tooltip>
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                disabled={disabled}
-                aria-label={`Xóa ${file.originalName}`}
-                onClick={() => onRemove(file.id)}
-                className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
-              >
-                <TrashBinTrash className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipContent>Xóa</TooltipContent>
-        </Tooltip>
+        {onRemove && (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  disabled={disabled}
+                  aria-label={`Xóa ${file.originalName}`}
+                  onClick={() => onRemove(file.id)}
+                  className="text-muted-foreground hover:border-destructive/30 hover:text-destructive"
+                >
+                  <TrashBinTrash className="size-3.5" />
+                </Button>
+              }
+            />
+            <TooltipContent>Xóa</TooltipContent>
+          </Tooltip>
+        )}
       </div>
     </li>
   )

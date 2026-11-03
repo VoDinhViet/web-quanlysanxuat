@@ -119,7 +119,7 @@ export function EvidenceUploadField({
   usePasteToDropzone({ rootRef, inputRef, disabled })
 
   return (
-    <div className="space-y-3">
+    <div className="@container space-y-3">
       <div className="flex items-center justify-between gap-2">
         <span className="block text-xs font-medium text-foreground">
           Ảnh / file đính kèm (nếu có)
@@ -192,7 +192,7 @@ export function EvidenceUploadField({
       )}
 
       {value.length > 0 && (
-        <ul>
+        <ul className="grid @2xl:grid-cols-2 @2xl:gap-x-6">
           {value.map((file) => (
             <QcEvidenceThumbnail
               key={file.id}

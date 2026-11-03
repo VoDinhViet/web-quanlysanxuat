@@ -1,3 +1,4 @@
+import type { FileResource } from "@/lib/types/file.type"
 import type { PaymentTerm } from "@/lib/types/payment-term.type"
 
 export const PaymentRequestStatus = {
@@ -118,6 +119,7 @@ export type PaymentRequestDetail = {
   dueDate: string
   status: PaymentRequestStatus
   items: PaymentRequestItem[]
+  files: FileResource[]
   note: string | null
   createdBy: PaymentRequestUserRef | null
   createdAt: string

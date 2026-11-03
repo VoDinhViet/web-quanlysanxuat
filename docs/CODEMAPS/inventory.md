@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-26 | Files scanned: ~190 | Token estimate: ~4800 -->
+<!-- Generated: 2026-11-03 | Files scanned: ~190 | Token estimate: ~4800 -->
 # Inventory codemap (web)
 Receipts (PNK), issues (PXK), material requisitions, supplier returns, stock screens. BE twin: `be-quanlysanxuat/docs/CODEMAPS/inventory.md` (sections 2 Routes, 3 State flows, 4 Key rules). Screens and button labels: `docs/ui-flow.md` (see section 5 for stale parts).
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. No server fn checks permissions; the BE controller does. BE paths are relative to `be-quanlysanxuat/`.
@@ -44,6 +44,7 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 | Related notes card on detail | getInventoryReceiptRelatedNotes | GET /inventory-receipts/:receiptId/related-notes | inventory:read | getRelatedNotes (:173) |
 | Wizard "Lưu nháp" / "Xác nhận ..." (step 1 of create) | createInventoryReceipt | POST /inventory-receipts | inventory:create | createInventoryReceipt (:69) |
 | Edit form (DRAFT) save | updateInventoryReceipt | PATCH /inventory-receipts/:receiptId | inventory:update | updateInventoryReceipt (:85) |
+| InventoryReceiptFilesCard on detail (`DocumentFilesCard`, saves on upload or removal, read-only when CANCELLED or without the permission) | updateInventoryReceiptFiles | PATCH /inventory-receipts/:receiptId/files | inventory:update | updateInventoryReceiptFiles |
 | List row "Xóa phiếu" (DRAFT; FE gate inventory:delete) | deleteInventoryReceipt | DELETE /inventory-receipts/:receiptId | inventory:delete | deleteInventoryReceipt (:101) |
 | Detail "Xác nhận" (DRAFT) and wizard step 2 | confirmInventoryReceipt | POST /inventory-receipts/:receiptId/confirm | inventory:update | confirmInventoryReceipt (:114) |
 | Detail "Xác nhận nhập kho" (the only place stock is posted from the UI) | postInventoryReceipt | POST /inventory-receipts/:receiptId/post | inventory:update | postInventoryReceipt (:131) |
