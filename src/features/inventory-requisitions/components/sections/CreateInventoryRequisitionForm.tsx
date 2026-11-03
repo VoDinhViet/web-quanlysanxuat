@@ -17,6 +17,7 @@ import {
   CreateInventoryRequisitionStepsTabs,
   createInventoryRequisitionStepItems,
 } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionStepsTabs"
+import { currentUserQueryOptions } from "@/features/auth/api"
 import { createInventoryRequisition } from "@/features/inventory-requisitions/api/server-functions/create-inventory-requisition.api"
 import {
   createInventoryRequisitionFormDefaultValues,
@@ -50,6 +51,10 @@ export function CreateInventoryRequisitionForm() {
     search.productionJobId ??
     createInventoryRequisitionFormDefaultValues.productionJobId
 
+  // Bộ phận mặc định = bộ phận của người đang đăng nhập (hồ sơ đã được nạp sẵn ở layout
+  // `(authed)`), vẫn đổi được ở ô Bộ phận.
+  const { data: currentUser } = useQuery(currentUserQueryOptions)
+
   const { mutate: create, isPending } = useMutation({
     mutationFn: (value: CreateInventoryRequisitionSchema) =>
       createInventoryRequisitionFn({ data: value }),
@@ -70,6 +75,7 @@ export function CreateInventoryRequisitionForm() {
     defaultValues: {
       ...createInventoryRequisitionFormDefaultValues,
       type: initialType,
+      departmentId: currentUser?.departmentId ?? "",
       productionJobId: initialJobId,
     },
     validationLogic: revalidateLogic(),
