@@ -149,6 +149,7 @@ export type ProductionJobOperation = {
   type: OperationType
   sortOrder: number
   note: string | null
+  nextOperationName: string | null
   plannedQuantity: number
   completedQuantity: number
   rejectedQuantity: number

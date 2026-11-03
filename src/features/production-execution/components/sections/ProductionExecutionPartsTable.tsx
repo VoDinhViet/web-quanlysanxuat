@@ -30,7 +30,7 @@ import type { OutsourceableOperation } from "@/lib/types/outsourcing-order.type"
 import type { ProductionJobStatus } from "@/lib/types/production-job.type"
 import { cn } from "@/lib/utils"
 
-const columnCount = 10
+const columnCount = 11
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
 
 type ProductionExecutionPartsTableProps = {
@@ -87,6 +87,9 @@ export function ProductionExecutionPartsTable({
             </TableHead>
             <TableHead className="w-36 text-center font-semibold text-foreground">
               Hạn hoàn thành
+            </TableHead>
+            <TableHead className="w-36 text-center font-semibold text-foreground">
+              Công đoạn tiếp theo
             </TableHead>
             <TableHead className="w-44 text-center font-semibold text-foreground">
               Thao tác
@@ -195,6 +198,9 @@ function PartTableRow({
       </TableCell>
       <TableCell className="text-center text-muted-foreground">
         {formatJobOperationDueDate(operation.dueDate)}
+      </TableCell>
+      <TableCell className="text-center">
+        {operation.nextOperationName ?? "—"}
       </TableCell>
       <TableCell className="text-center">
         <PartActionCell
