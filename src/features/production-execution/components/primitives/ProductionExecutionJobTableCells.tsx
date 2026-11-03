@@ -9,6 +9,7 @@ import {
   ProductionJobStatus,
   productionJobStatusLabels,
   productionOperationEvaluationLabels,
+  productionOperationProgressStatusBadgeClassNames,
   productionOperationProgressStatusLabels,
 } from "@/lib/types/production-job.type"
 import type { FileResource } from "@/lib/types/file.type"
@@ -49,14 +50,6 @@ export function ProductionExecutionImageCell({
   )
 }
 
-const statusBadgeClassNames: Record<ProductionOperationProgressStatus, string> =
-  {
-    OVERDUE: "bg-destructive/10 text-destructive",
-    NOT_STARTED: "bg-muted text-muted-foreground",
-    IN_PROGRESS: "bg-info/10 text-info",
-    DONE: "bg-success/10 text-success",
-  }
-
 export function ProductionExecutionJobStatusBadge({
   status,
 }: {
@@ -67,7 +60,7 @@ export function ProductionExecutionJobStatusBadge({
       variant="outline"
       className={cn(
         "border-transparent whitespace-nowrap",
-        statusBadgeClassNames[status]
+        productionOperationProgressStatusBadgeClassNames[status]
       )}
     >
       {productionOperationProgressStatusLabels[status]}

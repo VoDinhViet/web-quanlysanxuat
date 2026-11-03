@@ -13,7 +13,7 @@ type OperationCardShellProps = {
   title: string
   remainingJobCount: number
   overdueJobCount: number
-  inProgressJobCount: number
+  notDoneJobCount: number
 }
 
 // Thẻ chọn công đoạn: tên + số liệu, dấu check khi được chọn. Cả thẻ
@@ -25,7 +25,7 @@ function OperationCardShell({
   title,
   remainingJobCount,
   overdueJobCount,
-  inProgressJobCount,
+  notDoneJobCount,
 }: OperationCardShellProps) {
   return (
     <Radio.Root
@@ -55,7 +55,7 @@ function OperationCardShell({
         </span>
         <span className="truncate text-xs text-muted-foreground tabular-nums">
           {remainingJobCount} job
-          {inProgressJobCount > 0 && ` · ${inProgressJobCount} đang chạy`}
+          {notDoneJobCount > 0 && ` · ${notDoneJobCount} chưa thực hiện`}
           {overdueJobCount > 0 && (
             <span className="font-medium text-destructive">
               {` · ${overdueJobCount} quá hạn`}
@@ -87,7 +87,7 @@ export function OperationCard({ operation, isChecked }: OperationCardProps) {
       isChecked={isChecked}
       title={operation.name}
       remainingJobCount={operation.remainingJobCount}
-      inProgressJobCount={operation.inProgressJobCount}
+      notDoneJobCount={operation.notDoneJobCount}
       overdueJobCount={operation.overdueJobCount}
     />
   )
@@ -113,7 +113,7 @@ export function AllOperationsCard({
       leading={<Layers className="size-4" />}
       title="Tất cả công đoạn"
       remainingJobCount={sumBy(operations, "remainingJobCount")}
-      inProgressJobCount={sumBy(operations, "inProgressJobCount")}
+      notDoneJobCount={sumBy(operations, "notDoneJobCount")}
       overdueJobCount={sumBy(operations, "overdueJobCount")}
     />
   )

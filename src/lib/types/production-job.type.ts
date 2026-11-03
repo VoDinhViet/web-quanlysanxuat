@@ -298,8 +298,8 @@ export type ProductionExecutionOperation = {
   type: OperationType
   /** Số Job còn công đoạn này chưa xong (`operationStatus` khác DONE) — về 0 khi mọi Job đã xong công đoạn. */
   remainingJobCount: number
-  /** Số Job có công đoạn này đang thực hiện (`operationStatus` IN_PROGRESS) — không tính Job đã xong công đoạn. */
-  inProgressJobCount: number
+  /** Số Job có công đoạn này chưa thực hiện (`operationStatus` NOT_DONE) — không tính Job đã xong công đoạn. */
+  notDoneJobCount: number
   /** Số Job có công đoạn này quá hạn chưa xong (`operationStatus` OVERDUE). */
   overdueJobCount: number
 }
@@ -312,7 +312,7 @@ export type ProductionExecutionOperation = {
 export type ProductionOperationProgressStatus =
   | "OVERDUE"
   | "NOT_STARTED"
-  | "IN_PROGRESS"
+  | "NOT_DONE"
   | "DONE"
 
 export const productionOperationProgressStatusLabels: Record<
@@ -321,9 +321,33 @@ export const productionOperationProgressStatusLabels: Record<
 > = {
   OVERDUE: "Quá hạn",
   NOT_STARTED: "Chưa bắt đầu",
-  IN_PROGRESS: "Đang thực hiện",
+  NOT_DONE: "Chưa thực hiện",
   DONE: "Hoàn thành",
 }
+
+// Ngưỡng đằng sau badge "Trạng thái" — dùng cho khung "GHI CHÚ" của màn Thực hiện sản xuất.
+export const productionOperationProgressStatusDescriptions: Record<
+  ProductionOperationProgressStatus,
+  string
+> = {
+  OVERDUE: "Chưa hoàn thành và đã qua hạn hoàn thành của công đoạn.",
+  NOT_DONE: "Job đang sản xuất, công đoạn chưa đủ định mức.",
+  DONE: "Đã đủ số lượng theo định mức.",
+  NOT_STARTED: "Chưa có báo cáo nào và Job chưa ở trạng thái đang sản xuất.",
+}
+
+export const productionOperationProgressStatusBadgeClassNames: Record<
+  ProductionOperationProgressStatus,
+  string
+> = {
+  OVERDUE: "bg-destructive/10 text-destructive",
+  NOT_STARTED: "bg-muted text-muted-foreground",
+  NOT_DONE: "bg-info/10 text-info",
+  DONE: "bg-success/10 text-success",
+}
+
+export const productionOperationProgressStatusOrder: ProductionOperationProgressStatus[] =
+  ["OVERDUE", "NOT_DONE", "DONE", "NOT_STARTED"]
 
 /** Đúng/trễ hạn của công đoạn đã xong trên một Job — `null` (ở `ProductionJobByOperation`) khi
  *  chưa xong hoặc không có hạn hoàn thành để so. */
