@@ -1,7 +1,9 @@
 import { InfoCircle } from "@solar-icons/react"
+import { cn } from "cn"
 import { format, parseISO } from "date-fns"
 import type { ReactNode } from "react"
 
+import { OrderBuyerPoInlineEdit } from "@/features/orders/components/composites/OrderBuyerPoInlineEdit"
 import { OrderDetailSectionCard } from "@/features/orders/components/layouts/OrderDetailSectionCard"
 import { OrderStatusBadge } from "@/features/orders/components/primitives/OrderBadges"
 import { currencyFormatter } from "@/lib/currency"
@@ -25,7 +27,10 @@ export function OrderDetailInfoCard({ order }: OrderDetailInfoCardProps) {
       <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
         <div className="space-y-3">
           <InfoRow label="Mã đơn hàng" value={order.code} />
-          <InfoRow label="PO" value={order.buyerPoNo ?? "--"} />
+          <InfoRow
+            label="PO"
+            value={<OrderBuyerPoInlineEdit order={order} />}
+          />
           <InfoRow label="Khách hàng" value={order.client?.name ?? "--"} />
           <InfoRow
             label="Người liên hệ"
@@ -105,7 +110,15 @@ function InfoRow({ label, value }: InfoRowProps) {
   return (
     <div className="grid grid-cols-[8.5rem_1fr] items-baseline gap-2 text-sm">
       <dt className="truncate text-muted-foreground">{label}</dt>
-      <dd className="min-w-0 truncate font-medium text-foreground">{value}</dd>
+      {/* `truncate` hides overflow, which would clip the focus ring of an input passed as value. */}
+      <dd
+        className={cn(
+          "min-w-0 font-medium text-foreground",
+          typeof value === "string" && "truncate"
+        )}
+      >
+        {value}
+      </dd>
     </div>
   )
 }

@@ -63,6 +63,16 @@ export function canUpdateOrder(status: OrderStatus): boolean {
   return !notUpdatableStatuses.has(status)
 }
 
+// The one field editable after approval: PATCH /orders/:orderId/buyer-po writes only the PO
+// number. DRAFT/REJECTED use the full edit form; PENDING_CONFIRMATION, COMPLETED and CANCELLED
+// stay locked.
+export function canUpdateOrderBuyerPo(status: OrderStatus): boolean {
+  return (
+    status === OrderStatus.AWAITING_PRODUCTION ||
+    status === OrderStatus.IN_PROGRESS
+  )
+}
+
 // Only meaningful when canUpdateOrder(status) is false — callers only read this inside that
 // branch (see OrderDetailActions.tsx / OrderTableCells.tsx).
 export function resolveOrderUpdateDisabledHint(status: OrderStatus): string {

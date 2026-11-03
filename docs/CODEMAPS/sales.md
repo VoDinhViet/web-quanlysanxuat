@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-26 | Files scanned: 214 | Token estimate: ~3600 -->
+<!-- Generated: 2026-11-03 | Files scanned: 214 | Token estimate: ~3600 -->
 # Sales codemap (web)
 
 Scope: FE features `orders`, `outbound-orders`, `clients` (+ client-groups call), `countries`. BE twin: `be-quanlysanxuat/docs/CODEMAPS/sales.md`; screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts`, enforced once in `src/routes/(authed)/route.tsx` (redirect to `/manage`); in-page `PermissionGate` / `RoutePermissionGate` only hide buttons, BE is the real check.
@@ -50,19 +50,20 @@ Server fn files are `src/features/<feature>/api/server-functions/<name>.api.ts`.
 ### orders
 | Action / trigger | Server fn | Endpoint | Permission | BE handler |
 |---|---|---|---|---|
-| "Duyệt" (ApproveOrderDialog) | approve-order | POST /orders/:orderId/approve | orders:approve | approveOrder (orders:168) |
-| "Tạo đơn hàng" submit | create-order | POST /orders | orders:create | createOrder (orders:140) |
-| "Xoá" (DeleteOrderDialog) | delete-order | DELETE /orders/:orderId | orders:delete | deleteOrder (orders:196) |
-| "In" / "Biểu mẫu đơn hàng (BM-01/KD)" | export-order-pdf | GET /orders/:orderId/export-pdf | orders:read | exportOrderPdf (orders:114) |
-| Bulk "Danh sách đơn hàng" (Excel) | export-orders-excel | GET /orders/export-excel | orders:read | exportOrdersExcel (orders:68) |
-| Bulk "Biểu mẫu đơn hàng (BM-03/KD)" | export-orders-summary-pdf | GET /orders/export-summary-pdf | orders:read | exportOrdersSummaryPdf (orders:91) |
-| Detail lines | get-order-items | GET /orders/:orderId/items | orders:read | getOrderItems (orders:127) |
-| List stat cards | get-order-stats | GET /orders/stats | orders:read | getOrderStats (orders:58) |
-| Detail / update loader | get-order | GET /orders/:orderId | orders:read | getOrder (orders:104) |
-| List page | get-orders | GET /orders | orders:read | getOrders (orders:44) |
-| "Từ chối" (RejectOrderDialog, body `{reason}`) | reject-order | POST /orders/:orderId/reject | orders:approve | rejectOrder (orders:182) |
-| "Gửi duyệt" (body `{status: PENDING_CONFIRMATION}`) | req-order-approval | PATCH /orders/:orderId | orders:update | updateOrder (orders:154) |
-| Update form submit | update-order | PATCH /orders/:orderId | orders:update | updateOrder (orders:154) |
+| "Duyệt" (ApproveOrderDialog) | approve-order | POST /orders/:orderId/approve | orders:approve | approveOrder (orders:183) |
+| "Tạo đơn hàng" submit | create-order | POST /orders | orders:create | createOrder (orders:141) |
+| "Xoá" (DeleteOrderDialog) | delete-order | DELETE /orders/:orderId | orders:delete | deleteOrder (orders:211) |
+| "In" / "Biểu mẫu đơn hàng (BM-01/KD)" | export-order-pdf | GET /orders/:orderId/export-pdf | orders:read | exportOrderPdf (orders:115) |
+| Bulk "Danh sách đơn hàng" (Excel) | export-orders-excel | GET /orders/export-excel | orders:read | exportOrdersExcel (orders:69) |
+| Bulk "Biểu mẫu đơn hàng (BM-03/KD)" | export-orders-summary-pdf | GET /orders/export-summary-pdf | orders:read | exportOrdersSummaryPdf (orders:92) |
+| Detail lines | get-order-items | GET /orders/:orderId/items | orders:read | getOrderItems (orders:128) |
+| List stat cards | get-order-stats | GET /orders/stats | orders:read | getOrderStats (orders:59) |
+| Detail / update loader | get-order | GET /orders/:orderId | orders:read | getOrder (orders:105) |
+| List page | get-orders | GET /orders | orders:read | getOrders (orders:45) |
+| "Từ chối" (RejectOrderDialog, body `{reason}`) | reject-order | POST /orders/:orderId/reject | orders:approve | rejectOrder (orders:197) |
+| "Gửi duyệt" (body `{status: PENDING_CONFIRMATION}`) | req-order-approval | PATCH /orders/:orderId | orders:update | updateOrder (orders:155) |
+| Update form submit | update-order | PATCH /orders/:orderId | orders:update | updateOrder (orders:155) |
+| "Sửa" beside the PO value in `OrderDetailInfoCard` (`OrderBuyerPoInlineEdit`, AWAITING_PRODUCTION and IN_PROGRESS only) | update-order-buyer-po | PATCH /orders/:orderId/buyer-po | orders:update | updateOrderBuyerPo (orders:169) |
 
 ### outbound-orders
 | Action / trigger | Server fn | Endpoint | Permission | BE handler |
@@ -108,7 +109,7 @@ DRAFT|PENDING_APPROVAL|PENDING_DELIVERY --"Hủy đơn DO" cancel--> CANCELLED ;
 
 ## 5. Gaps and quirks
 
-- BE-only routes (no server fn): `GET /api/clients/:clientId/contacts` (clients:read, clients:77; FE reads contacts embedded in getClient) and `GET /api/orders/export` (orders:80, alias; FE uses `/export-excel`).
+- BE-only routes (no server fn): `GET /api/clients/:clientId/contacts` (clients:read, clients:77; FE reads contacts embedded in getClient) and `GET /api/orders/export` (orders:81, alias; FE uses `/export-excel`).
 - `getOrders` renames `orderDateFrom/To` to `startDate/endDate`, which BE filters on dueDate (unverified whether intended).
 - `getClientOptions` swallows errors and returns `[]`; `get-exchange-rate` is not BE: it calls `https://open.er-api.com` directly (null on failure) for non-VND currency in Create/UpdateOrderInfoSection.
 - Dead or wrong mappings: `get-orders.api.ts` maps `order.error.invalid_date_range`, absent in BE. `approve-outbound-order.api.ts` maps `outbound_order.error.oqc_not_completed` (E205), but BE runs the OQC gate in send only (`ensureAllJobsQcCompleted`), approve runs `ensureOutboundLinesIssuable` (E194). FE comments in `order.type.ts` (`canUpdateOrder`) say PENDING_CONFIRMATION edit is "front-end only"; BE `ensureOrderEditable` throws E090 (`order.error.locked_pending_confirmation`) and FE has no mapping for it (generic message).
