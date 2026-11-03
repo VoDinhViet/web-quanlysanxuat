@@ -1,6 +1,7 @@
 import { Info } from "lucide-react"
 
 import {
+  PRODUCTION_OPERATION_DUE_SOON_DAYS,
   productionOperationProgressStatusDescriptions,
   productionOperationProgressStatusLabels,
   productionOperationProgressStatusOrder,
@@ -23,6 +24,14 @@ export function ProductionExecutionLegend() {
             {productionOperationProgressStatusDescriptions[status]}
           </li>
         ))}
+        <li>
+          •{" "}
+          <strong className="font-medium text-warning-ink">
+            Hạn hoàn thành màu vàng:
+          </strong>{" "}
+          công đoạn chưa xong có hạn hoàn thành rơi vào hôm nay hoặc trong{" "}
+          {PRODUCTION_OPERATION_DUE_SOON_DAYS} ngày tới.
+        </li>
       </ul>
     </div>
   )

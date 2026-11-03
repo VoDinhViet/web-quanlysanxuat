@@ -346,6 +346,9 @@ export const productionOperationProgressStatusBadgeClassNames: Record<
   DONE: "bg-success/10 text-success",
 }
 
+// Công đoạn chưa xong có hạn rơi vào hôm nay hoặc trong ngần này ngày tới thì báo vàng.
+export const PRODUCTION_OPERATION_DUE_SOON_DAYS = 2
+
 export const productionOperationProgressStatusOrder: ProductionOperationProgressStatus[] =
   ["OVERDUE", "NOT_DONE", "DONE", "NOT_STARTED"]
 

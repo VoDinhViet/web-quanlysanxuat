@@ -1,6 +1,6 @@
 import { formatJobOperationDueDate } from "@/components/shared/composites/JobOperationDueDateCell"
 import { createColumnHelper } from "@tanstack/react-table"
-import { format, parseISO } from "date-fns"
+import { differenceInCalendarDays, format, parseISO } from "date-fns"
 import type { appTableFeatures } from "@/lib/table-features"
 
 import {
@@ -10,10 +10,29 @@ import {
   ProductionExecutionJobStatusBadge,
 } from "@/features/production-execution/components/primitives/ProductionExecutionJobTableCells"
 import { vnZone } from "@/lib/time"
+import { PRODUCTION_OPERATION_DUE_SOON_DAYS } from "@/lib/types/production-job.type"
 import type { ProductionJobByOperation } from "@/lib/types/production-job.type"
 import { formatNcrJobMarker } from "@/lib/types/ncr.type"
 
 const quantityFormatter = new Intl.NumberFormat("vi-VN")
+
+// Trả ngày hết hạn (dd/MM) khi công đoạn sắp hết hạn, ngược lại null. Công đoạn `DONE` hoặc
+// `OVERDUE` có trạng thái riêng nên không báo "sắp hết hạn".
+function resolveDueSoonDate(job: ProductionJobByOperation): string | null {
+  if (job.operationDueDate === null) return null
+  if (
+    job.operationStatus !== "NOT_STARTED" &&
+    job.operationStatus !== "NOT_DONE"
+  )
+    return null
+
+  const dueDate = parseISO(job.operationDueDate, { in: vnZone })
+  const daysUntilDue = differenceInCalendarDays(dueDate, vnZone(Date.now()))
+  if (daysUntilDue < 0 || daysUntilDue > PRODUCTION_OPERATION_DUE_SOON_DAYS)
+    return null
+
+  return format(dueDate, "dd/MM")
+}
 
 const columnHelper = createColumnHelper<
   typeof appTableFeatures,
@@ -120,6 +139,17 @@ export const productionExecutionJobColumns = columnHelper.columns([
       cellClassName: "text-center",
     },
     cell: ({ getValue, row }) => {
+      const dueSoonDate = resolveDueSoonDate(row.original)
+
+      if (dueSoonDate !== null) {
+        return (
+          <div className="flex flex-col font-medium text-warning-ink">
+            <span>{formatJobOperationDueDate(getValue())}</span>
+            <span className="text-xs">Hết hạn {dueSoonDate}</span>
+          </div>
+        )
+      }
+
       return (
         <span
           className={
