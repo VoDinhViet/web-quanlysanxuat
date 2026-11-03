@@ -6,15 +6,14 @@ import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 import type { ProductionExecutionOperation } from "@/lib/types/production-job.type"
 
-// Same filter set as get-production-jobs-by-operation.api.ts minus pagination/operationId —
-// "CHỌN CÔNG ĐOẠN" tile row needs the count per operation across the same filtered set the job
-// table below it reads. `dueDateFrom`/`dueDateTo` rename to `startDate`/`endDate` on the wire,
-// same as get-production-jobs.api.ts.
+// Same filter set as get-production-jobs-by-operation.api.ts minus pagination, operationId and
+// operationStatus — "CHỌN CÔNG ĐOẠN" tile row shows the status breakdown per operation over the
+// same search/client/date set the job table below it reads. `dueDateFrom`/`dueDateTo` rename to
+// `startDate`/`endDate` on the wire, same as get-production-jobs.api.ts.
 const getProductionExecutionOperationsParamsSchema =
   productionExecutionSearchSchema
     .pick({
       q: true,
-      status: true,
       clientId: true,
       dueDateFrom: true,
       dueDateTo: true,

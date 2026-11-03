@@ -24,7 +24,6 @@ export function ProductionExecutionPage() {
     operationId,
     limit,
     q,
-    status,
     clientId,
     dueDateFrom,
     dueDateTo,
@@ -37,7 +36,6 @@ export function ProductionExecutionPage() {
   const operationsQuery = useQuery(
     productionExecutionOperationsQueryOptions({
       q,
-      status,
       clientId,
       dueDateFrom,
       dueDateTo,

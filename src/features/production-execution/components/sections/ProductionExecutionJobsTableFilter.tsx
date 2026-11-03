@@ -15,13 +15,13 @@ import {
 import { Label } from "@/components/ui/label"
 import { ClientCombobox } from "@/components/shared/composites/ClientCombobox"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { productionJobStatusLabels } from "@/lib/types/production-job.type"
+import { productionOperationProgressStatusLabels } from "@/lib/types/production-job.type"
 import { buildOptionsFromLabels } from "@/lib/utils"
-import type { ProductionJobStatus } from "@/lib/types/production-job.type"
+import type { ProductionOperationProgressStatus } from "@/lib/types/production-job.type"
 
 const statusFilterOptions = [
   { value: "all", label: "Tất cả" },
-  ...buildOptionsFromLabels(productionJobStatusLabels),
+  ...buildOptionsFromLabels(productionOperationProgressStatusLabels),
 ]
 
 // Cùng khuôn ProductionJobsTableFilter.tsx — reset chỉ xoá filter, giữ nguyên `operationId` (thẻ
@@ -66,8 +66,9 @@ export function ProductionExecutionJobsTableFilter() {
   }
 
   const handleStatusChange = (value: string) => {
-    const status = value === "all" ? undefined : (value as ProductionJobStatus)
-    void navigate({ search: (prev) => ({ ...prev, status, page: 1 }) })
+    const operationStatus =
+      value === "all" ? undefined : (value as ProductionOperationProgressStatus)
+    void navigate({ search: (prev) => ({ ...prev, operationStatus, page: 1 }) })
   }
 
   const resetFilters = () => {
@@ -77,7 +78,7 @@ export function ProductionExecutionJobsTableFilter() {
       search: (prev) => {
         const {
           q: _q,
-          status: _status,
+          operationStatus: _operationStatus,
           clientId: _clientId,
           dueDateFrom: _dueDateFrom,
           dueDateTo: _dueDateTo,
@@ -151,7 +152,7 @@ export function ProductionExecutionJobsTableFilter() {
             </Label>
             <Select
               items={statusFilterOptions}
-              value={search.status ?? "all"}
+              value={search.operationStatus ?? "all"}
               onValueChange={(value) =>
                 value !== null && handleStatusChange(value)
               }

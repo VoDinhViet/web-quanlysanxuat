@@ -22,7 +22,6 @@ export const Route = createFileRoute("/(authed)/manage_/production-execution/")(
         context.queryClient.query({
           ...productionExecutionOperationsQueryOptions({
             q: search.q,
-            status: search.status,
             clientId: search.clientId,
             dueDateFrom: search.dueDateFrom,
             dueDateTo: search.dueDateTo,

@@ -49,7 +49,6 @@ export function ProductionExecutionOperationPicker() {
   } = useQuery(
     productionExecutionOperationsQueryOptions({
       q: search.q,
-      status: search.status,
       clientId: search.clientId,
       dueDateFrom: search.dueDateFrom,
       dueDateTo: search.dueDateTo,

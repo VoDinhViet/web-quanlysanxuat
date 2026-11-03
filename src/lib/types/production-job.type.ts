@@ -304,16 +304,20 @@ export type ProductionExecutionOperation = {
   overdueJobCount: number
 }
 
+export const productionOperationProgressStatusOrder = [
+  "OVERDUE",
+  "NOT_DONE",
+  "DONE",
+  "NOT_STARTED",
+] as const
+
 /** Trạng thái tiến độ của MỘT công đoạn trên MỘT Job — gộp qua mọi part của Job có công đoạn đó
  *  (`ProductionJobByOperation.operationStatus` bên dưới). Khác `OperationProgressStatus` cục bộ
  *  của `ProductionJobOperationsTable.tsx` (trạng thái một dòng công đoạn/part đơn lẻ, nhãn khác:
  *  "Chưa bắt đầu"/"Đang thực hiện"/"Hoàn thành") — đây là mức Job, các nhãn trong khung "GHI
  *  CHÚ" của màn "Thực hiện sản xuất". */
 export type ProductionOperationProgressStatus =
-  | "OVERDUE"
-  | "NOT_STARTED"
-  | "NOT_DONE"
-  | "DONE"
+  (typeof productionOperationProgressStatusOrder)[number]
 
 export const productionOperationProgressStatusLabels: Record<
   ProductionOperationProgressStatus,
@@ -348,9 +352,6 @@ export const productionOperationProgressStatusBadgeClassNames: Record<
 
 // Công đoạn chưa xong có hạn rơi vào hôm nay hoặc trong ngần này ngày tới thì báo vàng.
 export const PRODUCTION_OPERATION_DUE_SOON_DAYS = 2
-
-export const productionOperationProgressStatusOrder: ProductionOperationProgressStatus[] =
-  ["OVERDUE", "NOT_DONE", "DONE", "NOT_STARTED"]
 
 /** Đúng/trễ hạn của công đoạn đã xong trên một Job — `null` (ở `ProductionJobByOperation`) khi
  *  chưa xong hoặc không có hạn hoàn thành để so. */

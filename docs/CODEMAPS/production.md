@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-26 | Files scanned: ~120 | Token estimate: ~5000 -->
+<!-- Generated: 2026-11-03 | Files scanned: ~120 | Token estimate: ~5000 -->
 # Production codemap (web)
 
 Production orders (LSX), production jobs (JOB), shop-floor execution, outsourcing OS-OUT and OS-IN. BE twin: `be-quanlysanxuat/docs/CODEMAPS/production.md` (sections 1 Modules, 2 Routes, 3 State flows, 4 Key rules, 5 Cross-domain links). Screen and button map: `docs/ui-flow.md`. Quality-side screens (OQC request, NCR): `docs/CODEMAPS/quality.md`.
@@ -10,7 +10,7 @@ Server fns live in `src/features/<feature>/api/server-functions/<name>.api.ts`. 
 |---|---|---|---|---|
 | `production-orders` | LSX list, edit lines, approve, signed file, PDF/Excel | `ProductionOrdersPage`, `ProductionOrderDetailPage` | `production-order.type.ts` (`ProductionOrderStatus`) | production-orders-search, update-production-order, update-production-order-signed-file |
 | `production-jobs` | JOB list/detail: plan, BOM issues, operations, notes, OQC request | `ProductionJobsPage`, `ProductionJobDetailPage` | `production-job.type.ts` (`ProductionJobStatus`, operation progress, warnings) | production-jobs-search, production-job-detail-search (`tab`), create-production-job-issues, update-production-job-issue, create-production-job-note |
-| `production-execution` | Shop-floor view of operations per job; reads only (report is written by a production-jobs server fn) | `ProductionExecutionPage`, `ProductionExecutionJobPage` | `production-job.type.ts` (execution types) | production-execution-search (`operationId`, `all`), production-execution-job-search |
+| `production-execution` | Shop-floor view of operations per job; reads only (report is written by a production-jobs server fn) | `ProductionExecutionPage`, `ProductionExecutionJobPage` | `production-job.type.ts` (execution types) | production-execution-search (`operationId`, `all`, `operationStatus` filters the table only, not the tiles), production-execution-job-search |
 | `outsourcing-orders` | OS-OUT: send operations to a supplier | `OutsourcingOrdersPage`, `OutsourcingOrderDetailPage`, `CreateOutsourcingOrderPage`, `UpdateOutsourcingOrderPage`, `CreateStandaloneOutsourcingOrderPage` | `outsourcing-order.type.ts` (`OutsourcingOrderStatus`) | create-outsourcing-order, create-outsourcing-order-search (`productionJobId`, `operationId`), outsourcing-orders-search |
 | `outsourcing-receipts` | OS-IN: receive goods back, optional IQC | `OutsourcingReceiptsPage`, `OutsourcingReceiptDetailPage`, `CreateOutsourcingReceiptPage` | `outsourcing-receipt.type.ts` (reuses `InventoryDocumentStatus`) | create-outsourcing-receipt, outsourcing-receipts-search |
 
