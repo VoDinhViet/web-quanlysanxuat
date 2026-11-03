@@ -4,7 +4,7 @@ import axios from "axios"
 import {
   arrayBufferToBase64,
   getFilenameFromContentDisposition,
-} from "@/lib/export.util"
+} from "@/lib/export"
 import { http, logHttpError } from "@/lib/http"
 import type { ApiErrorResponse } from "@/lib/http"
 
