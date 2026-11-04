@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-27 | Files scanned: 125 | Token estimate: ~5000 -->
+<!-- Generated: 2026-11-04 | Files scanned: 125 | Token estimate: ~5000 -->
 # Routes codemap (web)
 
 All 125 files under `src/routes/`. Tree shape and guard flow: `architecture.md`. Screen/button maps: `docs/ui-flow.md`. Gate model: `identity-access.md`.

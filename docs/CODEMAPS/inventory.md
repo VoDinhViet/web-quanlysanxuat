@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-03 | Files scanned: ~190 | Token estimate: ~4800 -->
+<!-- Generated: 2026-11-04 | Files scanned: ~190 | Token estimate: ~4800 -->
 # Inventory codemap (web)
 Receipts (PNK), issues (PXK), material requisitions, supplier returns, stock screens. BE twin: `be-quanlysanxuat/docs/CODEMAPS/inventory.md` (sections 2 Routes, 3 State flows, 4 Key rules). Screens and button labels: `docs/ui-flow.md` (see section 5 for stale parts).
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. No server fn checks permissions; the BE controller does. BE paths are relative to `be-quanlysanxuat/`.
@@ -85,6 +85,7 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 | FG detail stat tiles (loader) | getItemInventory | GET /inventory-products | inventory:read | getInventoryProducts (:28), same route as above, filtered by item |
 | Detail "ledger" tab | getProductLedger | GET /inventory-products/:itemId/ledger | inventory:read | getProductLedger (:42) |
 | Material stock list (loader) | getDirectInventory | GET /inventory-directs | inventory:read | getInventoryDirects (src/api/inventory-directs/inventory-directs.controller.ts:39) |
+| Material list > eye button or "Đã giữ X" link opens `HeldRequisitionsDialog` ("Chi tiết số lượng đã giữ"; filters and paging are local state, item numbers come from the list row) | getHeldRequisitions | GET /inventory-directs/:itemId/held-requisitions | inventory:read | getHeldRequisitions (:55) |
 | "Nhập tồn" dialog > template card "Tải về" (`InventoryImportDialog`, gate inventory:import) | downloadInventoryImportTemplate | GET /inventory-directs/import-template | inventory:import | downloadImportTemplate (:51) |
 | Same dialog > "Nhập tồn kho" (drop / pick / Ctrl+V a .xlsx; file parsed in the server fn, blank "Tồn thực tế" rows skipped) | importInventoryFile | POST /inventory-directs/import | inventory:import | importStock (:62); invalidates inventory-directs + inventory-requisitions |
 

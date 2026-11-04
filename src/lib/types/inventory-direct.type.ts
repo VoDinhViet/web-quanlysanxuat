@@ -1,3 +1,4 @@
+import type { ItemCategoryRef } from "@/lib/types/item-category.type"
 import type { SupplierRef } from "@/lib/types/supplier.type"
 import type { Unit } from "@/lib/types/unit.type"
 
@@ -39,6 +40,7 @@ export type DirectInventoryItem = {
   name: string
   unit: Unit
   supplier: SupplierRef | null
+  itemCategory: ItemCategoryRef | null
   image: { url: string } | null
   /** Tồn thực tế: Σ nhập − Σ xuất trên các phiếu chưa xoá */
   onHand: number

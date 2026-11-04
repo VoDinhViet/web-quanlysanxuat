@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { flexRender, useTable } from "@tanstack/react-table"
 import { appTableFeatures } from "@/lib/table-features"
 import { Warehouse } from "lucide-react"
@@ -13,7 +14,8 @@ import {
 import { TableEmpty } from "@/components/shared/primitives/TableEmpty"
 import { Pagination } from "@/components/shared/composites/Pagination"
 import { useRoutePagination } from "@/hooks/use-route-pagination"
-import { inventoryDirectColumns } from "@/features/inventory-directs/components/composites/InventoryDirectsTableColumns"
+import { HeldRequisitionsDialog } from "@/features/inventory-directs/components/composites/HeldRequisitionsDialog"
+import { buildInventoryDirectColumns } from "@/features/inventory-directs/components/composites/InventoryDirectsTableColumns"
 import { cn } from "@/lib/utils"
 import type { DirectInventoryItem } from "@/lib/types/inventory-direct.type"
 import { resolveInventoryStatus } from "@/lib/types/inventory-direct.type"
@@ -40,9 +42,13 @@ export function InventoryDirectsTable({
   pagination,
   isPending,
 }: InventoryDirectsTableProps) {
+  // Lưu id thay vì cả dòng để hộp thoại luôn lấy số mới nhất khi danh sách được đọc lại.
+  const [heldItemId, setHeldItemId] = useState<string | null>(null)
+  const heldItem = rows.find((item) => item.id === heldItemId) ?? null
+
   const table = useTable({
     data: rows,
-    columns: inventoryDirectColumns,
+    columns: buildInventoryDirectColumns((item) => setHeldItemId(item.id)),
     features: appTableFeatures,
   })
 
@@ -114,6 +120,11 @@ export function InventoryDirectsTable({
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}
         className="pt-4"
+      />
+
+      <HeldRequisitionsDialog
+        item={heldItem}
+        onClose={() => setHeldItemId(null)}
       />
     </div>
   )

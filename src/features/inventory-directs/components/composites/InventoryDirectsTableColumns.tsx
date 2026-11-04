@@ -23,6 +23,31 @@ const inventoryColumnHelper = createColumnHelper<
   DirectInventoryItem
 >()
 
+// "Đã giữ X" mở hộp thoại các phiếu lĩnh đang giữ; X = 0 thì không có gì để xem nên chỉ là chữ.
+function HeldQuantityButton({
+  item,
+  onViewHeld,
+}: {
+  item: DirectInventoryItem
+  onViewHeld: (item: DirectInventoryItem) => void
+}) {
+  const label = `Đã giữ ${stockFormatter.format(item.reserved)}`
+
+  if (item.reserved <= 0) {
+    return <span>{label}</span>
+  }
+
+  return (
+    <button
+      type="button"
+      className="underline-offset-2 hover:text-primary hover:underline"
+      onClick={() => onViewHeld(item)}
+    >
+      {label}
+    </button>
+  )
+}
+
 // A right-aligned header with a decorative ⓘ + a static formula sub-line — mirrors
 // inventory-products' header shape exactly (no hover tooltip, the formula is just printed).
 function QuantityColumnHeader({
@@ -45,157 +70,169 @@ function QuantityColumnHeader({
   )
 }
 
-export const inventoryDirectColumns = inventoryColumnHelper.columns([
-  inventoryColumnHelper.display({
-    id: "index",
-    header: "STT",
-    cell: ({ row }) => row.index + 1,
-    meta: {
-      headerClassName: "w-12 text-center",
-      cellClassName: "text-center text-muted-foreground",
-    },
-  }),
+// `onViewHeld` mở hộp thoại các phiếu lĩnh đang giữ của một vật tư.
+export function buildInventoryDirectColumns(
+  onViewHeld: (item: DirectInventoryItem) => void
+) {
+  return inventoryColumnHelper.columns([
+    inventoryColumnHelper.display({
+      id: "index",
+      header: "STT",
+      cell: ({ row }) => row.index + 1,
+      meta: {
+        headerClassName: "w-12 text-center",
+        cellClassName: "text-center text-muted-foreground",
+      },
+    }),
 
-  inventoryColumnHelper.display({
-    id: "image",
-    header: "Ảnh",
-    meta: { headerClassName: "w-14 text-center", cellClassName: "text-center" },
-    cell: ({ row }) => <DirectImageCell item={row.original} />,
-  }),
+    inventoryColumnHelper.display({
+      id: "image",
+      header: "Ảnh",
+      meta: {
+        headerClassName: "w-14 text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => <DirectImageCell item={row.original} />,
+    }),
 
-  inventoryColumnHelper.accessor("code", {
-    header: "Mã vật tư",
-    meta: { headerClassName: "min-w-28" },
-    cell: ({ getValue }) => (
-      <span className="font-mono text-xs font-medium text-primary">
-        {getValue()}
-      </span>
-    ),
-  }),
+    inventoryColumnHelper.accessor("code", {
+      header: "Mã vật tư",
+      meta: { headerClassName: "min-w-28" },
+      cell: ({ getValue }) => (
+        <span className="font-mono text-xs font-medium text-primary">
+          {getValue()}
+        </span>
+      ),
+    }),
 
-  inventoryColumnHelper.accessor("name", {
-    header: "Tên vật tư",
-    meta: { headerClassName: "min-w-48" },
-    cell: ({ getValue }) => (
-      <span className="truncate text-xs font-medium text-foreground">
-        {getValue()}
-      </span>
-    ),
-  }),
+    inventoryColumnHelper.accessor("name", {
+      header: "Tên vật tư",
+      meta: { headerClassName: "min-w-48" },
+      cell: ({ getValue }) => (
+        <span className="truncate text-xs font-medium text-foreground">
+          {getValue()}
+        </span>
+      ),
+    }),
 
-  inventoryColumnHelper.accessor((row) => row.unit.name, {
-    id: "unit",
-    header: "ĐVT",
-    meta: { headerClassName: "min-w-16" },
-  }),
+    inventoryColumnHelper.accessor((row) => row.unit.name, {
+      id: "unit",
+      header: "ĐVT",
+      meta: { headerClassName: "min-w-16" },
+    }),
 
-  inventoryColumnHelper.accessor("onHand", {
-    header: () => (
-      <QuantityColumnHeader label="Tồn thực tế" formula="Σ nhập - Σ xuất" />
-    ),
-    meta: { headerClassName: "min-w-32", cellClassName: "text-right" },
-    cell: ({ getValue }) => (
-      <DirectQuantityCell value={getValue()} variant="blue" />
-    ),
-  }),
+    inventoryColumnHelper.accessor("onHand", {
+      header: () => (
+        <QuantityColumnHeader label="Tồn thực tế" formula="Σ nhập - Σ xuất" />
+      ),
+      meta: { headerClassName: "min-w-32", cellClassName: "text-right" },
+      cell: ({ getValue }) => (
+        <DirectQuantityCell value={getValue()} variant="blue" />
+      ),
+    }),
 
-  // `issuable` — không phải field API, tự tính onHand - reserved (đúng công thức đã ghi ở dòng
-  // phụ header, cùng công thức inventory-products đang dùng cho cột này).
-  inventoryColumnHelper.display({
-    id: "issuable",
-    header: () => (
-      <QuantityColumnHeader
-        label="Có thể xuất"
-        formula="Tồn thực tế - Đã giữ"
-      />
-    ),
-    meta: { headerClassName: "min-w-32", cellClassName: "text-right" },
-    cell: ({ row }) => (
-      <DirectQuantityCell
-        value={row.original.onHand - row.original.reserved}
-        variant="green"
-      />
-    ),
-  }),
+    // `issuable` — không phải field API, tự tính onHand - reserved (đúng công thức đã ghi ở dòng
+    // phụ header, cùng công thức inventory-products đang dùng cho cột này).
+    inventoryColumnHelper.display({
+      id: "issuable",
+      header: () => (
+        <QuantityColumnHeader
+          label="Có thể xuất"
+          formula="Tồn thực tế - Đã giữ"
+        />
+      ),
+      meta: { headerClassName: "min-w-32", cellClassName: "text-right" },
+      cell: ({ row }) => (
+        <DirectQuantityCell
+          value={row.original.onHand - row.original.reserved}
+          variant="green"
+        />
+      ),
+    }),
 
-  // "Đã giữ"/"Tổng nhu cầu BOM" giờ là số thật (be-quanlysanxuat BUG-031/032, xem
-  // inventory-direct.type.ts) — vẫn gộp thành dòng phụ nhỏ dưới số Tồn khả dụng thay vì tách
-  // cột riêng, giữ nguyên layout cũ.
-  inventoryColumnHelper.accessor("available", {
-    header: () => (
-      <QuantityColumnHeader label="Tồn khả dụng" formula="TT - Đã giữ - BOM" />
-    ),
-    meta: { headerClassName: "min-w-40", cellClassName: "text-right" },
-    cell: ({ row }) => {
-      const item = row.original
-      return (
-        <div className="flex flex-col items-end gap-0.5">
-          <DirectQuantityCell value={item.available} variant="available" />
-          <span className="text-xs whitespace-nowrap text-muted-foreground">
-            Đã giữ {stockFormatter.format(item.reserved)} · BOM{" "}
-            {stockFormatter.format(item.bomDemand)}
-          </span>
+    // "Đã giữ"/"Tổng nhu cầu BOM" giờ là số thật (be-quanlysanxuat BUG-031/032, xem
+    // inventory-direct.type.ts) — vẫn gộp thành dòng phụ nhỏ dưới số Tồn khả dụng thay vì tách
+    // cột riêng, giữ nguyên layout cũ.
+    inventoryColumnHelper.accessor("available", {
+      header: () => (
+        <QuantityColumnHeader
+          label="Tồn khả dụng"
+          formula="TT - Đã giữ - BOM"
+        />
+      ),
+      meta: { headerClassName: "min-w-40", cellClassName: "text-right" },
+      cell: ({ row }) => {
+        const item = row.original
+        return (
+          <div className="flex flex-col items-end gap-0.5">
+            <DirectQuantityCell value={item.available} variant="available" />
+            <span className="text-xs whitespace-nowrap text-muted-foreground">
+              <HeldQuantityButton item={item} onViewHeld={onViewHeld} /> · BOM{" "}
+              {stockFormatter.format(item.bomDemand)}
+            </span>
+          </div>
+        )
+      },
+    }),
+
+    inventoryColumnHelper.accessor("minStock", {
+      header: "Min",
+      meta: {
+        headerClassName: "min-w-20 text-right",
+        cellClassName: "text-right",
+      },
+      cell: ({ getValue }) => (
+        <span className="text-xs text-muted-foreground tabular-nums">
+          {stockFormatter.format(getValue())}
+        </span>
+      ),
+    }),
+
+    inventoryColumnHelper.display({
+      id: "status",
+      header: "Trạng thái",
+      meta: {
+        headerClassName: "min-w-28 text-center",
+        cellClassName: "text-center",
+      },
+      cell: ({ row }) => (
+        <InventoryDirectStatusBadge
+          status={resolveInventoryStatus(
+            row.original.available,
+            row.original.minStock
+          )}
+        />
+      ),
+    }),
+
+    inventoryColumnHelper.display({
+      id: "actions",
+      header: "Thao tác",
+      meta: {
+        headerClassName: "min-w-20 text-center",
+        cellClassName: "font-normal",
+      },
+      cell: ({ row }) => (
+        <div className="flex items-center justify-center">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Xem chi tiết"
+                  className="text-muted-foreground hover:border-border hover:text-primary"
+                  onClick={() => onViewHeld(row.original)}
+                >
+                  <Eye className="size-3.5" />
+                </Button>
+              }
+            />
+            <TooltipContent>Xem chi tiết</TooltipContent>
+          </Tooltip>
         </div>
-      )
-    },
-  }),
-
-  inventoryColumnHelper.accessor("minStock", {
-    header: "Min",
-    meta: {
-      headerClassName: "min-w-20 text-right",
-      cellClassName: "text-right",
-    },
-    cell: ({ getValue }) => (
-      <span className="text-xs text-muted-foreground tabular-nums">
-        {stockFormatter.format(getValue())}
-      </span>
-    ),
-  }),
-
-  inventoryColumnHelper.display({
-    id: "status",
-    header: "Trạng thái",
-    meta: {
-      headerClassName: "min-w-28 text-center",
-      cellClassName: "text-center",
-    },
-    cell: ({ row }) => (
-      <InventoryDirectStatusBadge
-        status={resolveInventoryStatus(
-          row.original.available,
-          row.original.minStock
-        )}
-      />
-    ),
-  }),
-
-  inventoryColumnHelper.display({
-    id: "actions",
-    header: "Thao tác",
-    meta: {
-      headerClassName: "min-w-20 text-center",
-      cellClassName: "font-normal",
-    },
-    cell: () => (
-      <div className="flex items-center justify-center">
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                aria-label="Xem chi tiết"
-                className="text-muted-foreground hover:border-border hover:text-primary"
-              >
-                <Eye className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipContent>Xem chi tiết</TooltipContent>
-        </Tooltip>
-      </div>
-    ),
-  }),
-])
+      ),
+    }),
+  ])
+}

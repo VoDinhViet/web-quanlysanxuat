@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-03 | Files scanned: ~77 (BE codemaps x7, ui-flow, FE input JSON x5, BE services/controllers, FE action components) | Token estimate: ~8500 -->
+<!-- Generated: 2026-11-04 | Files scanned: ~77 (BE codemaps x7, ui-flow, FE input JSON x5, BE services/controllers, FE action components) | Token estimate: ~8500 -->
 # System flow codemap (cross-stack)
 
 Trace one business chain UI -> FE server fn -> BE endpoint -> service -> tables -> status. Per-domain detail: FE `docs/CODEMAPS/{sales,purchasing,inventory,production,quality}.md`, BE `be-quanlysanxuat/docs/CODEMAPS/{sales,purchasing,inventory,production,quality}.md`, screens `docs/ui-flow.md`.
@@ -173,7 +173,7 @@ Ledger writer is only `InventoryPostingService.postDocument` (`inventory-posting
 | Supplier return post | 3.4 | `supplier-returns.service.ts:356` | ISSUE (-); skipped if OS-IN origin or source receipt not POSTED | E106 |
 | Adjustment post / cancel (reversal) | BE only, no FE server fn | `inventory-adjustments.service.ts:212 / :251` | ADJUSTMENT_IN / OUT | E106 |
 | Outsourcing OS-OUT / OS-IN | 5.2, 5.3 | none | no ledger write | - |
-| Directs list `/manage/inventory-directs` | - | read-only | - | - |
+| Directs list `/manage/inventory-directs` (+ held-requisitions dialog) | - | read-only | - | - |
 
 Requisition steps (stock-reservation chain):
 
