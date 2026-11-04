@@ -23,7 +23,10 @@ export const Route = createFileRoute(
       }),
     ])
 
-    if (quotation.status !== PurchaseQuotationStatus.DRAFT) {
+    const isEditable =
+      quotation.status === PurchaseQuotationStatus.DRAFT ||
+      quotation.status === PurchaseQuotationStatus.REJECTED
+    if (!isEditable) {
       throw redirect({
         to: "/manage/purchase-quotations/$purchaseQuotationId",
         params: { purchaseQuotationId: params.purchaseQuotationId },

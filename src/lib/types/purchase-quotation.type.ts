@@ -38,7 +38,8 @@ export const purchaseQuotationStatusDescriptions: Record<
     "Đã gửi, chờ duyệt chọn NCC thắng thầu",
   [PurchaseQuotationStatus.APPROVED]:
     "Đã duyệt, đã tạo đơn mua nháp cho NCC thắng thầu",
-  [PurchaseQuotationStatus.REJECTED]: "Báo giá bị từ chối khi chờ duyệt",
+  [PurchaseQuotationStatus.REJECTED]:
+    "Báo giá bị từ chối khi chờ duyệt, sửa hoặc gửi duyệt lại được",
   [PurchaseQuotationStatus.CANCELLED]: "Báo giá đã duyệt nhưng bị hủy",
 }
 

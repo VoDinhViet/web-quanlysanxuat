@@ -116,7 +116,7 @@ Not covered by FE: `POST /iqc`, `PATCH/DELETE /iqc/:id` (BE only, no server fn).
 
 ```
 PR DRAFT --"Gửi duyệt"--> PENDING_APPROVAL --"Duyệt"--> APPROVED     (or startJob shortage PR, chain 2)
-RFQ DRAFT --"Gửi duyệt"--> PENDING_APPROVAL --"Duyệt & tạo đơn mua"--> APPROVED + DMH per supplier PENDING_CONFIRMATION (X-DOMAIN)
+RFQ DRAFT|REJECTED --"Gửi duyệt"/"Gửi duyệt lại"--> PENDING_APPROVAL --"Duyệt & tạo đơn mua"--> APPROVED + DMH per supplier PENDING_CONFIRMATION (X-DOMAIN)
 DMH --"Xác nhận đặt hàng"--> ORDERED --receipt create-from-PO "Xác nhận & Gửi IQC"--> IQC (chain 3) --"Xác nhận nhập kho"--> POSTED
 receipt POSTED + DMH fully received --(auto)--> YCTT DRAFT --"Đề nghị thanh toán"--> PENDING --"Xác nhận thanh toán"--> PAID
 ```
@@ -127,7 +127,7 @@ receipt POSTED + DMH fully received --(auto)--> YCTT DRAFT --"Đề nghị thanh
 | 4.2 | `/manage/purchase-requests/$purchaseRequestId` "Gửi duyệt" | sendPurchaseRequest | POST .../:id/send | purchase-requests:update | ctrl:105 -> svc:537 | purchase_requests | DRAFT\|REJECTED -> PENDING_APPROVAL | E114 E112 |
 | 4.3 | same "Duyệt" / reject | approvePurchaseRequest / rejectPurchaseRequest | POST .../approve, /reject | purchase-requests:approve | ctrl:121 -> svc:553; ctrl:138 -> svc:571 | purchase_requests | PENDING_APPROVAL -> APPROVED / REJECTED | E116 E112 |
 | 4.4 | `/manage/purchase-quotations/create` "Tạo RFQ" | createPurchaseQuotation (`purchase-quotations/create-purchase-quotation.api.ts`) | POST /purchase-quotations | purchasing:create | ctrl:101 createQuotation -> svc:407 | purchase_quotations, _items, _item_allocations, _item_suppliers | -> DRAFT | E150 E128 E125 E149 E265 E129 E019 |
-| 4.5 | `/manage/purchase-quotations/$purchaseQuotationId` "Gửi duyệt" | sendPurchaseQuotation | POST .../:id/send | purchasing:update | ctrl:142 -> svc:470 | purchase_quotations | DRAFT -> PENDING_APPROVAL | E118 E131 E130 E120 |
+| 4.5 | `/manage/purchase-quotations/$purchaseQuotationId` "Gửi duyệt" | sendPurchaseQuotation | POST .../:id/send | purchasing:update | ctrl:142 -> svc:470 | purchase_quotations | DRAFT or REJECTED -> PENDING_APPROVAL | E118 E131 E130 E120 |
 | 4.6 | same "Duyệt & tạo đơn mua" (needs comparison view, GET .../:id/comparison) | approvePurchaseQuotation | POST .../:id/approve | purchasing:approve | ctrl:159 approveQuotation -> svc:519 | item_suppliers.selected*, purchase_quotations; X-DOMAIN purchase_orders, purchase_order_items via createPendingOrdersFromQuotation (`purchase-orders.service.ts:548`) | RFQ PENDING_APPROVAL -> APPROVED; DMH -> PENDING_CONFIRMATION (one per supplier) | E118 E132 |
 | 4.7 | same "Từ chối" / "Hủy báo giá" | rejectPurchaseQuotation / cancelPurchaseQuotation | POST .../reject, /cancel | purchasing:approve | ctrl:177 -> svc:660; ctrl:196 -> svc:683 | purchase_quotations; cancel also deletes pending DMH | PENDING_APPROVAL -> REJECTED (terminal); APPROVED -> CANCELLED | E118 E133 |
 | 4.8 | `/manage/purchase-orders/$purchaseOrderId` "Xác nhận đặt hàng" | confirmPurchaseOrder | POST .../:id/confirm | purchasing:update | ctrl:124 -> svc:702 | purchase_orders | DMH PENDING_CONFIRMATION -> ORDERED | E122 E134 E156 E135 |
@@ -202,7 +202,7 @@ BE routes with no FE server fn (cannot be triggered from UI): `POST /inventory-r
 | # | Where | Statement A | Statement B (verified) |
 |---|---|---|---|
 | D1 | ui-flow Flow 2 steps 4-5 and screen map | PO "tự sinh `DRAFT`", "DRAFT -> ORDERED", "Tạo PO thủ công", `/purchase-orders/create` | BE enum PENDING_CONFIRMATION (FE `purchase-order.type.ts` has no DRAFT); no create route, no manual button, no `POST /purchase-orders` |
-| D2 | ui-flow Flow 2 step 4 | RFQ reject -> `CANCELLED` | BE and FE enum: reject -> REJECTED (terminal); CANCELLED only via "Hủy báo giá" from APPROVED |
+| D2 | ui-flow Flow 2 step 4 | RFQ reject -> `CANCELLED` | BE and FE enum: reject -> REJECTED (editable and resendable); CANCELLED only via "Hủy báo giá" from APPROVED |
 | D3 | ui-flow Flow 1 step 6 | "Hủy LSX" button | Absent: `ProductionOrderDetailActions.tsx:51` states no cancel endpoint |
 | D4 | ui-flow Flow 3 step 1 | "Bắt đầu SX" | Header button "Xác nhận kế hoạch", confirm dialog "Xác nhận" (`ProductionJobHeaderActions.tsx`, `StartProductionJobDialog.tsx`); "Bắt đầu SX" is only a job-log label |
 | D5 | ui-flow Flow 3 step 4 / F10 | "Duyệt công đoạn" inline, NOT_STARTED -> DONE | No such string in `src`; reporting is "Nhập báo cáo" dialog -> "Lưu báo cáo" (2.5) |

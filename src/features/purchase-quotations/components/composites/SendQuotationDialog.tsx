@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { sendPurchaseQuotation } from "@/features/purchase-quotations/api/server-functions/send-purchase-quotation.api"
+import { PurchaseQuotationStatus } from "@/lib/types/purchase-quotation.type"
 import type { PurchaseQuotationDetail } from "@/lib/types/purchase-quotation.type"
 
 type SendQuotationDialogProps = {
@@ -24,7 +25,7 @@ type SendQuotationDialogProps = {
   trigger: ReactElement
 }
 
-// DRAFT → PENDING_APPROVAL — the backend validates every vật tư has ≥1 NCC and every NCC has a
+// DRAFT or REJECTED (resend) → PENDING_APPROVAL — the backend validates every vật tư has ≥1 NCC and every NCC has a
 // non-null unitPrice (purchase_quotation.error.item_without_supplier/missing_unit_price); this
 // dialog surfaces those as mutation.error.message rather than pre-computing the same check
 // client-side.
@@ -33,6 +34,7 @@ export function SendQuotationDialog({
   trigger,
 }: SendQuotationDialogProps) {
   const [open, setOpen] = useState(false)
+  const isResend = purchaseQuotation.status === PurchaseQuotationStatus.REJECTED
   const queryClient = useQueryClient()
   const sendPurchaseQuotationFn = useServerFn(sendPurchaseQuotation)
 
@@ -45,6 +47,7 @@ export function SendQuotationDialog({
       setOpen(false)
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["purchase-quotations"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchase-ledger"] }),
         queryClient.invalidateQueries({ queryKey: ["reports"] }),
       ])
     },
@@ -64,7 +67,9 @@ export function SendQuotationDialog({
           <AlertDialogMedia>
             <SendSquare />
           </AlertDialogMedia>
-          <AlertDialogTitle>Gửi duyệt báo giá này?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {isResend ? "Gửi duyệt lại báo giá này?" : "Gửi duyệt báo giá này?"}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {`Báo giá ${purchaseQuotation.code} sẽ chuyển sang trạng thái "Chờ duyệt" và không sửa được nữa.`}
           </AlertDialogDescription>
@@ -82,7 +87,11 @@ export function SendQuotationDialog({
             disabled={mutation.isPending}
             onClick={() => mutation.mutate()}
           >
-            {mutation.isPending ? "Đang xử lý..." : "Gửi duyệt"}
+            {mutation.isPending
+              ? "Đang xử lý..."
+              : isResend
+                ? "Gửi duyệt lại"
+                : "Gửi duyệt"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

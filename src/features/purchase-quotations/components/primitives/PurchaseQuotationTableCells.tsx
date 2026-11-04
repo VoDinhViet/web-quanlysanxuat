@@ -19,6 +19,10 @@ type PurchaseQuotationActionsCellProps = {
 export function PurchaseQuotationActionsCell({
   row,
 }: PurchaseQuotationActionsCellProps) {
+  const isEditable =
+    row.status === PurchaseQuotationStatus.DRAFT ||
+    row.status === PurchaseQuotationStatus.REJECTED
+
   return (
     <div className="flex items-center justify-center gap-1.5">
       <Tooltip>
@@ -39,7 +43,7 @@ export function PurchaseQuotationActionsCell({
         <TooltipContent>Xem chi tiết</TooltipContent>
       </Tooltip>
 
-      {row.status === PurchaseQuotationStatus.DRAFT && (
+      {isEditable && (
         <RoutePermissionGate route="/manage/purchase-quotations/$purchaseQuotationId/update">
           <Tooltip>
             <TooltipTrigger

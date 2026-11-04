@@ -1,9 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
-import {
-  PenNewSquare,
-  SendSquare,
-  TrashBinTrash,
-} from "@solar-icons/react"
+import { PenNewSquare, SendSquare, TrashBinTrash } from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
@@ -24,30 +20,36 @@ export function PurchaseQuotationDetailActions({
 }: PurchaseQuotationDetailActionsProps) {
   const navigate = useNavigate()
 
-  if (purchaseQuotation.status === PurchaseQuotationStatus.DRAFT) {
+  const isDraft = purchaseQuotation.status === PurchaseQuotationStatus.DRAFT
+  const isRejected =
+    purchaseQuotation.status === PurchaseQuotationStatus.REJECTED
+
+  if (isDraft || isRejected) {
     return (
       <div className="flex flex-wrap items-center gap-2">
-        <PermissionGate permission="purchasing:delete">
-          <DeleteQuotationDialog
-            purchaseQuotation={purchaseQuotation}
-            onDeleted={() => {
-              void navigate({
-                to: "/manage/purchase-quotations",
-                search: { page: 1, limit: 10 },
-              })
-            }}
-            trigger={
-              <Button
-                type="button"
-                variant="outline"
-                className="border-destructive/40 text-destructive hover:bg-destructive/10"
-              >
-                <TrashBinTrash className="size-4" />
-                Xoá báo giá
-              </Button>
-            }
-          />
-        </PermissionGate>
+        {isDraft && (
+          <PermissionGate permission="purchasing:delete">
+            <DeleteQuotationDialog
+              purchaseQuotation={purchaseQuotation}
+              onDeleted={() => {
+                void navigate({
+                  to: "/manage/purchase-quotations",
+                  search: { page: 1, limit: 10 },
+                })
+              }}
+              trigger={
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-destructive/40 text-destructive hover:bg-destructive/10"
+                >
+                  <TrashBinTrash className="size-4" />
+                  Xoá báo giá
+                </Button>
+              }
+            />
+          </PermissionGate>
+        )}
 
         <PermissionGate permission="purchasing:update">
           <LinkButton
@@ -65,7 +67,7 @@ export function PurchaseQuotationDetailActions({
             trigger={
               <Button type="button">
                 <SendSquare className="size-4" />
-                Gửi duyệt
+                {isRejected ? "Gửi duyệt lại" : "Gửi duyệt"}
               </Button>
             }
           />

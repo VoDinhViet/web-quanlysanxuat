@@ -25,7 +25,7 @@ type RejectQuotationDialogProps = {
   trigger: ReactElement
 }
 
-// PENDING_APPROVAL → CANCELLED (terminal), reason required — mirrors
+// PENDING_APPROVAL → REJECTED (sửa hoặc gửi duyệt lại được), reason required — mirrors
 // RejectPurchaseRequestDialog.tsx. A Dialog (not AlertDialog) because it needs an input field.
 export function RejectQuotationDialog({
   purchaseQuotation,

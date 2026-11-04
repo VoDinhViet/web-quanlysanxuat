@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-03 | Files scanned: 307 | Token estimate: ~4800 -->
+<!-- Generated: 2026-11-04 | Files scanned: 307 | Token estimate: ~4800 -->
 # Purchasing codemap (web)
 
 Scope: FE features `purchase-requests` (PR), `purchase-quotations` (RFQ), `purchase-orders` (PO/DMH), `purchase-ledger`, `payment-requests` (YCTT), `suppliers` (+ supplier-groups call). BE twin: `be-quanlysanxuat/docs/CODEMAPS/purchasing.md` (state flow sections "RFQ -> DMH" and "Payment request"); screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts` (enforced once in `src/routes/(authed)/route.tsx`); `PermissionGate` only hides buttons, BE is the real check.
@@ -28,7 +28,7 @@ Routes under `src/routes/(authed)/manage_/`; each feature folder has a `route.ts
 | `/manage/purchase-quotations` ("Báo giá NCC") | `purchase-quotations/index.tsx` | PurchaseQuotationsPage | list only | purchasing:read | sidebar |
 | `/manage/purchase-quotations/create` | `purchase-quotations_/create.tsx` | CreateQuotationPage | none | purchasing:create | list create button |
 | `/manage/purchase-quotations/$purchaseQuotationId` | `purchase-quotations_/$purchaseQuotationId.tsx` | PurchaseQuotationDetailPage | quotation + comparison | purchasing:read | row "Xem chi tiết" |
-| `/manage/purchase-quotations/$purchaseQuotationId/update` | `purchase-quotations_/$purchaseQuotationId_.update.tsx` | UpdateQuotationPage | quotation + comparison; redirects to detail unless DRAFT | purchasing:update | "Chỉnh sửa", row "Sửa báo giá" |
+| `/manage/purchase-quotations/$purchaseQuotationId/update` | `purchase-quotations_/$purchaseQuotationId_.update.tsx` | UpdateQuotationPage | quotation + comparison; redirects to detail unless DRAFT or REJECTED | purchasing:update | "Chỉnh sửa", row "Sửa báo giá" |
 | `/manage/purchase-orders` ("Đơn mua hàng") | `purchase-orders/index.tsx` | PurchaseOrdersPage | list, supplierOptions | purchasing:read | sidebar |
 | `/manage/purchase-orders/$purchaseOrderId` | `purchase-orders_/$purchaseOrderId.tsx` | PurchaseOrderDetailPage | purchase order | purchasing:read | row, quotation "generated orders" card |
 | `/manage/purchase-ledger` ("Danh mục mua hàng") | `purchase-ledger/index.tsx` | PurchaseLedgerPage | ledger list | purchasing:read | sidebar |
@@ -139,11 +139,11 @@ REJECTED --"Gửi duyệt lại"--> PENDING_APPROVAL ; PENDING_APPROVAL --"Từ 
 RFQ to PO:
 ```
 RFQ DRAFT --"Gửi duyệt"--> PENDING_APPROVAL --"Duyệt & tạo đơn mua"--> APPROVED (one PO per supplier, PENDING_CONFIRMATION)
-PENDING_APPROVAL --"Từ chối"--> REJECTED ; APPROVED --cancel (no UI)--> CANCELLED
+PENDING_APPROVAL --"Từ chối"--> REJECTED --"Gửi duyệt lại"--> PENDING_APPROVAL (or "Chỉnh sửa" saves it back to DRAFT) ; APPROVED --cancel (no UI)--> CANCELLED
 PO PENDING_CONFIRMATION --"Xác nhận đặt hàng"--> ORDERED ; PENDING_CONFIRMATION|ORDERED --"Huỷ PO"--> CANCELLED
 ORDERED --"Đóng sớm PO"--> closed (status stays ORDERED)
 ```
-- RFQ DRAFT actions: "Xoá báo giá" (`purchasing:delete`, also list row), "Chỉnh sửa" and "Gửi duyệt" (`purchasing:update`). PENDING_APPROVAL with `purchasing:approve`: selectable compare table plus sticky approval bar; "Duyệt & tạo đơn mua" disabled until every vật tư has a selected NCC. Approve invalidates quotations, purchase-orders, purchase-requests, purchase-ledger, reports.
+- RFQ REJECTED actions: "Chỉnh sửa" and "Gửi duyệt lại" (`purchasing:update`; no delete). The rejection reason stays on the DRAFT until the next send. RFQ DRAFT actions: "Xoá báo giá" (`purchasing:delete`, also list row), "Chỉnh sửa" and "Gửi duyệt" (`purchasing:update`). PENDING_APPROVAL with `purchasing:approve`: selectable compare table plus sticky approval bar; "Duyệt & tạo đơn mua" disabled until every vật tư has a selected NCC. Approve invalidates quotations, purchase-orders, purchase-requests, purchase-ledger, reports.
 - PO "Xác nhận đặt hàng" disabled unless `expectedDate` and every `unitPrice` are set. "Đóng sớm PO" shown when `canClose` or `closeBlockedBy` non-empty, disabled when `!canClose`. "Huỷ PO" when status != CANCELLED and progress != COMPLETED; reason required, `reopenQuotation` choice only if quotation APPROVED.
 - Receipts (RECEIVING, COMPLETED) come from inventory-receipts, created at `/manage/inventory-receipts/create-receipt?lane=po` (see inventory codemap).
 
