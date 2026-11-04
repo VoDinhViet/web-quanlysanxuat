@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-24 | Files scanned: ~75 | Token estimate: ~4500 -->
+<!-- Generated: 2026-11-04 | Files scanned: ~75 | Token estimate: ~4500 -->
 # Quality codemap (web)
 
 IQC (incoming), OQC (outgoing) and NCR (non-conformance), including the OQC Fail -> Sort -> NCR -> secondary LSX -> re-OQC flow seen from the UI. BE twin: `be-quanlysanxuat/docs/CODEMAPS/quality.md` (sections 1 Modules, 2 Routes, 3 State flows incl. "PH-136 flow", 4 Key rules, 5 Cross-domain links). Screen and button map: `docs/ui-flow.md`. Job and LSX screens: `docs/CODEMAPS/production.md`.
@@ -124,7 +124,7 @@ Trace: `NcrTraceCard` links source OQC, parent NCR, secondary LSX (`/manage/prod
 
 ## 5. Gaps and quirks
 - BE `POST /api/iqc` (`createIqc`, iqc.controller.ts:89), `PATCH /api/iqc/:iqcId` (:119) and `DELETE /api/iqc/:iqcId` (:132) have no FE caller. Verified: no server fn, `/api/iqc` appears only in the five matched fns. "Thêm IQC" is a disabled placeholder ("Tính năng tạo phiếu IQC sắp có"); IQC rows are created by BE flows from inventory receipt confirm and OS-IN `requiresIqc` (BE quality.md section 3). No IQC delete or edit button exists.
-- Other disabled placeholders: IQC "In phiếu", `IqcStatusLegend` "Xuất trả NCC →" (when no linked supplier return).
+- `IqcStatusLegend` shows "Xuất trả NCC →" only when a supplier return is linked; no placeholder is rendered otherwise.
 - OQC has no create route; NCR create is manual only (NCR-NB / NCR-KH), the OQC-origin NCR is BE-generated.
 - UI reaches NCR PENDING_QC only through "Không tạo LSX"; BE `requestOqc` also accepts APPROVED, which the UI never offers. After an LSX path the NCR is closed by the BE on LSX completion, so a re-OQC is only requested on the "no LSX" branch.
 - "Yêu cầu OQC lại" also needs `ncr.productionJob`; otherwise the button is not shown (BE E311).

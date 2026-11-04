@@ -1,9 +1,7 @@
 import { useState } from "react"
 import { revalidateLogic } from "@tanstack/react-form"
-import { Printer } from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -72,11 +70,6 @@ export function SupplierReturnDetailActions({
           </Button>
         </PermissionGate>
       )}
-
-      <PendingAction label="In phiếu" hint="tính năng sắp có">
-        <Printer className="size-4" />
-        In phiếu
-      </PendingAction>
 
       <Dialog open={confirmOpen} onOpenChange={closeConfirm}>
         <DialogContent>

@@ -1,4 +1,4 @@
-import { Eye, Printer } from "lucide-react"
+import { Eye } from "lucide-react"
 
 import { LinkButton } from "@/components/ui/button"
 import {
@@ -6,7 +6,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { RowActions } from "@/components/shared/primitives/RowActions"
 import type {
   InventoryIssue,
@@ -70,10 +69,6 @@ export function InventoryIssueActionsCell({
         />
         <TooltipContent>Xem chi tiết</TooltipContent>
       </Tooltip>
-
-      <DisabledAction label="In phiếu">
-        <Printer className="size-3.5" />
-      </DisabledAction>
     </RowActions>
   )
 }

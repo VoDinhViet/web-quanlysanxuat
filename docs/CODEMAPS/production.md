@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-03 | Files scanned: ~120 | Token estimate: ~5000 -->
+<!-- Generated: 2026-11-04 | Files scanned: ~120 | Token estimate: ~5000 -->
 # Production codemap (web)
 
 Production orders (LSX), production jobs (JOB), shop-floor execution, outsourcing OS-OUT and OS-IN. BE twin: `be-quanlysanxuat/docs/CODEMAPS/production.md` (sections 1 Modules, 2 Routes, 3 State flows, 4 Key rules, 5 Cross-domain links). Screen and button map: `docs/ui-flow.md`. Quality-side screens (OQC request, NCR): `docs/CODEMAPS/quality.md`.
@@ -132,7 +132,7 @@ WAITING_QC -> WAITING_DELIVERY -> COMPLETED: BE only (closeJobIfQcCovered, close
 - Execution screen: "Cập nhật" per part (`production-execution:report`). Report form: "✓ SL đạt" capped at planned minus completed, NG uncapped, note, images (uploaded as `UploadType.PRODUCTION_OPERATION_EVIDENCE`). Invalidates production-execution and production-jobs.
 
 OS-OUT (`OutsourcingOrderStatus`: SENT "Đang gia công", PARTIAL "Về 1 phần", WAITING_QC "Chờ QC", COMPLETED "Hoàn thành", CANCELLED "Đã hủy")
-- Create -> SENT. PARTIAL / WAITING_QC / COMPLETED are recomputed by BE from OS-IN and IQC (BE production.md section 3). The only FE-driven move is "Hủy phiếu" -> CANCELLED (hidden when already CANCELLED). "In phiếu" is disabled.
+- Create -> SENT. PARTIAL / WAITING_QC / COMPLETED are recomputed by BE from OS-IN and IQC (BE production.md section 3). The only FE-driven move is "Hủy phiếu" -> CANCELLED (hidden when already CANCELLED).
 
 OS-IN (`InventoryDocumentStatus`, labels "Chờ nhận" DRAFT / "Đã nhận" POSTED / "Đã huỷ" CANCELLED)
 - "Xác nhận nhập" creates it as POSTED (DRAFT is unreachable). "Hủy phiếu" -> CANCELLED (hidden when CANCELLED; BE refuses once an IQC exists, E173).

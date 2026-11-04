@@ -1,4 +1,4 @@
-import { EllipsisVertical, Eye, Printer } from "lucide-react"
+import { Eye } from "lucide-react"
 
 import { LinkButton } from "@/components/ui/button"
 import {
@@ -6,7 +6,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import type { OutsourcingOrder } from "@/lib/types/outsourcing-order.type"
 
 type OutsourcingOrderActionsCellProps = {
@@ -14,8 +13,7 @@ type OutsourcingOrderActionsCellProps = {
 }
 
 // "Xem chi tiết" dẫn tới trang chi tiết thật (post/cancel/xoá nằm ở đó, không phải hành động ở
-// dòng danh sách — cùng idiom OutsourcingReceiptActionsCell.tsx). In phiếu và Sửa/Nhân bản chưa
-// có tính năng, giữ DisabledAction.
+// dòng danh sách — cùng idiom OutsourcingReceiptActionsCell.tsx).
 export function OutsourcingOrderActionsCell({
   outsourcingOrder,
 }: OutsourcingOrderActionsCellProps) {
@@ -38,12 +36,6 @@ export function OutsourcingOrderActionsCell({
         />
         <TooltipContent>Xem chi tiết</TooltipContent>
       </Tooltip>
-      <DisabledAction label="In phiếu xuất" hint="chưa có tính năng in phiếu">
-        <Printer className="size-3.5" />
-      </DisabledAction>
-      <DisabledAction label="Khác" hint="Sửa, Nhân bản — tính năng sắp có">
-        <EllipsisVertical className="size-3.5" />
-      </DisabledAction>
     </div>
   )
 }

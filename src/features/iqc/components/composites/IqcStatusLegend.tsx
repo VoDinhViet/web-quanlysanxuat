@@ -1,6 +1,5 @@
 import { InfoCircle } from "@solar-icons/react"
 
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { LinkButton } from "@/components/ui/button"
 import { IqcDetailSectionCard } from "@/features/iqc/components/layouts/IqcDetailSectionCard"
 import { iqcStatusStyles } from "@/features/iqc/components/primitives/IqcBadges"
@@ -21,9 +20,8 @@ type IqcStatusLegendProps = {
 
 // Modeled on PurchaseOrderStatusLegend.tsx — lists all 4 IqcStatus values, highlighting the row
 // matching this record's own status. PENDING now has a real inline action (IqcDispositionCard on
-// this same page), so no hint needed there anymore. The WAITING_RETURN row links to the real
-// auto-generated phiếu trả NCC once one exists; a PendingAction placeholder is still the fallback
-// for the rare case a WAITING_RETURN row predates the auto-generation flow.
+// this same page), so no hint needed there anymore. The row links to the real auto-generated
+// phiếu trả NCC once one exists.
 export function IqcStatusLegend({
   current,
   supplierReturn,
@@ -54,25 +52,16 @@ export function IqcStatusLegend({
             </dt>
             <dd className="space-y-1.5 text-xs text-muted-foreground">
               <p>{iqcStatusDescriptions[status]}</p>
-              {status === IqcStatus.IN_PROGRESS &&
-                (supplierReturn ? (
-                  <LinkButton
-                    to="/manage/supplier-returns/$supplierReturnId"
-                    params={{ supplierReturnId: supplierReturn.id }}
-                    variant="link"
-                    className="h-auto p-0 text-xs"
-                  >
-                    Xem phiếu trả NCC ({supplierReturn.code}) →
-                  </LinkButton>
-                ) : (
-                  <PendingAction
-                    label="Xuất trả NCC"
-                    hint="Dòng này chưa có phiếu trả NCC liên kết"
-                    variant="ghost"
-                  >
-                    Xuất trả NCC →
-                  </PendingAction>
-                ))}
+              {status === IqcStatus.IN_PROGRESS && supplierReturn && (
+                <LinkButton
+                  to="/manage/supplier-returns/$supplierReturnId"
+                  params={{ supplierReturnId: supplierReturn.id }}
+                  variant="link"
+                  className="h-auto p-0 text-xs"
+                >
+                  Xem phiếu trả NCC ({supplierReturn.code}) →
+                </LinkButton>
+              )}
             </dd>
           </div>
         ))}

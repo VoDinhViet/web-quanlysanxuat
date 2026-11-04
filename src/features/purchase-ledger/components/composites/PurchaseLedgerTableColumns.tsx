@@ -5,7 +5,6 @@ import type { appTableFeatures } from "@/lib/table-features"
 
 import { PurchaseLedgerStatusBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import {
-  PurchaseLedgerActionsCell,
   PurchaseLedgerQuantityCell,
   PurchaseLedgerSourceCell,
   PurchaseLedgerWarningCell,
@@ -162,15 +161,5 @@ export const purchaseLedgerColumns = purchaseLedgerColumnHelper.columns([
       cellClassName: "text-center",
     },
     cell: ({ getValue }) => <PurchaseLedgerWarningCell warnings={getValue()} />,
-  }),
-
-  purchaseLedgerColumnHelper.display({
-    id: "actions",
-    header: "Thao tác",
-    meta: {
-      headerClassName: "min-w-20 text-center",
-      cellClassName: "font-normal",
-    },
-    cell: () => <PurchaseLedgerActionsCell />,
   }),
 ])

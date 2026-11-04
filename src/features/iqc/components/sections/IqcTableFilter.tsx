@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
-import { Download, Plus, RotateCw } from "lucide-react"
+import { Download, RotateCw } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { exportIqc } from "@/features/iqc/api/server-functions/export-iqc.api"
 import { supplierOptionsQueryOptions } from "@/features/suppliers/api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
@@ -231,15 +230,6 @@ export function IqcTableFilter() {
             <RotateCw className="size-3.5" />
             Xóa bộ lọc
           </Button>
-
-          <PendingAction
-            label="Thêm IQC"
-            hint="Tính năng tạo phiếu IQC sắp có"
-            variant="default"
-          >
-            <Plus className="size-4" />
-            Thêm IQC
-          </PendingAction>
         </div>
       </div>
     </div>

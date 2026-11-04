@@ -3,7 +3,7 @@ import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { Download, RotateCw, Search } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button, LinkButton } from "@/components/ui/button"
@@ -18,7 +18,6 @@ import {
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { exportProductionOrders } from "@/features/production-orders/api/server-functions/export-production-orders.api"
 import { downloadBase64File, XLSX_MIME_TYPE } from "@/lib/download-file"
 import { NcrStatus } from "@/lib/types/ncr.type"
@@ -210,10 +209,6 @@ export function ProductionOrdersTableFilter() {
               Tạo LSX từ NCR
             </LinkButton>
           </PermissionGate>
-          <PendingAction label="Tạo LSX" hint="Màn hình tạo LSX sắp có">
-            <Plus className="size-4" />
-            Tạo LSX
-          </PendingAction>
         </div>
       </div>
     </div>

@@ -2,13 +2,11 @@ import {
   CheckCircle,
   CloseCircle,
   PenNewSquare,
-  Printer,
   SendSquare,
 } from "@solar-icons/react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/composites/OutboundOrderApproveDialog"
 import { OutboundOrderCancelDialog } from "@/features/outbound-orders/components/composites/OutboundOrderCancelDialog"
 import { OutboundOrderRejectDialog } from "@/features/outbound-orders/components/composites/OutboundOrderRejectDialog"
@@ -29,8 +27,7 @@ type OutboundOrderDetailActionsProps = {
 // do bắt buộc). Giao xong DO do thủ kho ghi sổ phiếu xuất kho, không còn nút ở đây. send gated
 // bằng outbound:update (người lập), approve/reject bằng outbound:approve (Giám đốc).
 // "Sửa"/"Hủy đơn DO" (BUG-090) cũng gated outbound:update — chỉ render khi component này render
-// (xem OutboundOrderDetailHeader.tsx, ẩn hẳn khi đang Sửa). "In phiếu DO" vẫn PendingAction — BE
-// chưa có tính năng in phiếu, không liên quan BUG-090.
+// (xem OutboundOrderDetailHeader.tsx, ẩn hẳn khi đang Sửa).
 export function OutboundOrderDetailActions({
   order,
 }: OutboundOrderDetailActionsProps) {
@@ -38,11 +35,6 @@ export function OutboundOrderDetailActions({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <PendingAction label="In phiếu DO" hint="chưa có tính năng in phiếu">
-        <Printer className="size-4" />
-        In phiếu DO
-      </PendingAction>
-
       {canUpdateOutboundOrder(status) && (
         <PermissionGate permission="outbound:update">
           <LinkButton

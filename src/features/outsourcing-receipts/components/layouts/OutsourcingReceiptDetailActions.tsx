@@ -1,9 +1,8 @@
 import { useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CircleX, Printer } from "lucide-react"
+import { CircleX } from "lucide-react"
 
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
@@ -73,11 +72,6 @@ export function OutsourcingReceiptDetailActions({
           </Button>
         </PermissionGate>
       )}
-
-      <PendingAction label="In phiếu" hint="tính năng sắp có">
-        <Printer className="size-4" />
-        In phiếu
-      </PendingAction>
 
       {confirmAction && (
         <Dialog open onOpenChange={closeConfirm}>

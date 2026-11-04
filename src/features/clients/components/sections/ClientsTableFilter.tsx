@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { useDebounceCallback } from "usehooks-ts"
-import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { Plus, RotateCw, Search } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { clientGroupOptionsQueryOptions } from "@/features/clients/api/options"
 import { clientStatusLabels } from "@/lib/types/client.type"
@@ -74,7 +73,7 @@ export function ClientsTableFilter() {
   return (
     <div className="flex flex-col gap-4 bg-card px-4 py-4 lg:px-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.8fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
+        <div className="grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,1.8fr)_minmax(9rem,1fr)_minmax(9rem,1fr)]">
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
             <Label
               htmlFor="clients-search"
@@ -161,36 +160,9 @@ export function ClientsTableFilter() {
               </SelectContent>
             </Select>
           </div>
-
-          {/* Khu vực is a visual placeholder — the backend has no region field
-                on clients yet, so the filter is disabled until that exists. */}
-          <div className="flex flex-col gap-1.5">
-            <Label
-              htmlFor="clients-region"
-              className="text-xs font-medium text-muted-foreground"
-            >
-              Khu vực
-            </Label>
-            <Select
-              items={[{ value: "all", label: "Tất cả" }]}
-              value="all"
-              disabled
-            >
-              <SelectTrigger id="clients-region" className="w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
-            <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
           <Button
             type="button"
             variant="outline"

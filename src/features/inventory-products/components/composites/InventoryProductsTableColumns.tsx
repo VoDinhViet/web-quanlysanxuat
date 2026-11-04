@@ -1,4 +1,3 @@
-import { HelpCircle } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
 
@@ -11,8 +10,8 @@ import type { ProductInventoryItem } from "@/lib/types/inventory-product.type"
 
 const col = createColumnHelper<typeof appTableFeatures, ProductInventoryItem>()
 
-// A right-aligned header with a decorative ⓘ + a static formula sub-line — same shape
-// inventory-directs uses for its own quantity columns.
+// A right-aligned header with a static formula sub-line — same shape inventory-directs uses for
+// its own quantity columns.
 function QuantityColumnHeader({
   label,
   formula,
@@ -22,10 +21,7 @@ function QuantityColumnHeader({
 }) {
   return (
     <div className="flex flex-col items-end text-right">
-      <span className="inline-flex items-center gap-1">
-        {label}
-        <HelpCircle className="size-3 text-muted-foreground/70" />
-      </span>
+      <span>{label}</span>
       <span className="text-xs font-normal text-muted-foreground/80">
         ({formula})
       </span>

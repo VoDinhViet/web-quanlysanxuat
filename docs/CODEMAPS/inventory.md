@@ -119,6 +119,6 @@ Other quirks:
 - `getProductInventory` (list) and `getItemInventory` (detail) hit the same `GET /inventory-products`; they differ only in filters and query key (`["inventory-products","list"|"detail"]`).
 - Receipt create route is only `create-receipt?lane=po|return|other` (default `po`); there is no `/create`. The PO is picked inside the PO-lane wizard, not from the PO detail page.
 - `ui-flow.md` stale items: `/manage/inventory-issues/$issueId` exists; stock-materials URL is `/manage/inventory-directs` ("Tồn kho vật tư"); requisition create is deep-linked from the Job BOM tab ("Lãnh vật tư cho Job").
-- Print: receipt export works; issue, requisition and supplier-return "In"/"In phiếu" are `PendingAction` placeholders.
+- Print: receipt export works; issue, requisition and supplier-return have no print button (the disabled placeholders were removed).
 - Supplier return reason edit has no PermissionGate in `SupplierReturnReasonField.tsx`; the BE enforces inventory:update. Unverified: whether the field is read-only after POSTED.
 - Sidebar badge counts (`inventoryRequisitions`, `inventoryReceiptsToPost`, `inventoryIssuesToPost`) come from the reports/integration domain; origin endpoint unverified here.

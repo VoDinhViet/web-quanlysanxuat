@@ -1,10 +1,9 @@
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation } from "@tanstack/react-query"
-import { Download, Plus, Printer } from "lucide-react"
+import { Download, Plus } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import { exportOutboundOrders } from "@/features/outbound-orders/api/server-functions/export-outbound-orders.api"
 import type { OutboundOrdersSearchSchema } from "@/features/outbound-orders/schemas/outbound-orders-search.schema"
@@ -48,11 +47,6 @@ export function OutboundOrdersTableActions({
         <Download className="size-4" />
         {isExporting ? "Đang xuất..." : "Xuất Excel"}
       </Button>
-
-      <PendingAction label="In danh sách" hint="Tính năng in danh sách sắp có">
-        <Printer className="size-4 text-muted-foreground" />
-        In danh sách
-      </PendingAction>
 
       <RoutePermissionGate route="/manage/outbound-orders/create">
         <LinkButton to="/manage/outbound-orders/create" className="text-xs">

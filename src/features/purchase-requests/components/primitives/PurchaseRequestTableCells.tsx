@@ -1,4 +1,4 @@
-import { CircleCheck, CircleX, Eye, Printer, Send } from "lucide-react"
+import { CircleCheck, CircleX, Eye, Send } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import {
@@ -7,7 +7,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { ApprovePurchaseRequestDialog } from "@/features/purchase-requests/components/composites/ApprovePurchaseRequestDialog"
 import { RejectPurchaseRequestDialog } from "@/features/purchase-requests/components/composites/RejectPurchaseRequestDialog"
 import { SendPurchaseRequestDialog } from "@/features/purchase-requests/components/composites/SendPurchaseRequestDialog"
@@ -49,7 +48,7 @@ type PurchaseRequestActionsCellProps = {
 }
 
 // "Xem chi tiết" links to the real detail route; Gửi duyệt/Duyệt/Từ chối follow the same
-// status/permission rules as PurchaseRequestApprovalActions.tsx, and In has no backend route yet.
+// status/permission rules as PurchaseRequestApprovalActions.tsx.
 // No "Chỉnh sửa" — the backend has no generic header-update endpoint (no PATCH
 // /purchase-requests/:id) to power an edit screen.
 export function PurchaseRequestActionsCell({
@@ -126,9 +125,6 @@ export function PurchaseRequestActionsCell({
           </Tooltip>
         </PermissionGate>
       )}
-      <DisabledAction label="In" hint="chưa hỗ trợ in phiếu">
-        <Printer className="size-3.5" />
-      </DisabledAction>
     </div>
   )
 }

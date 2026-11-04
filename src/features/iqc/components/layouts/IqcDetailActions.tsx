@@ -1,6 +1,5 @@
-import { Diskette, MenuDots, Printer } from "@solar-icons/react"
+import { Diskette, MenuDots } from "@solar-icons/react"
 
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,7 +18,7 @@ type IqcDetailActionsProps = {
   isPending: boolean
 }
 
-// "In phiếu" + "Khác" (link sang PNK/PO/phiếu trả NCC liên quan, chỉ hiện mục nào thật sự có) +
+// "Khác" (link sang PNK/PO/phiếu trả NCC liên quan, chỉ hiện mục nào thật sự có) +
 // "Lưu" (`type="submit"`, nằm trong <form> bọc cả trang ở IqcDetailForm.tsx). Ẩn hẳn nút Lưu khi
 // `isLocked` (status = WAITING_RETURN, đã chốt đường trả NCC — E159 nếu vẫn cố lưu).
 export function IqcDetailActions({
@@ -35,11 +34,6 @@ export function IqcDetailActions({
   return (
     <div className="flex flex-col items-end gap-2">
       <div className="flex flex-wrap items-center gap-2">
-        <PendingAction label="In phiếu" hint="tính năng sắp có">
-          <Printer className="size-4" />
-          In phiếu
-        </PendingAction>
-
         {hasOtherLinks && (
           <DropdownMenu>
             <DropdownMenuTrigger

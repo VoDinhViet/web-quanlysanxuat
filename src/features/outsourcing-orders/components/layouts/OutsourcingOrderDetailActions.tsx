@@ -1,14 +1,9 @@
 import { useState } from "react"
-import { CloseCircle, Printer } from "@solar-icons/react"
+import { CloseCircle } from "@solar-icons/react"
 import { CheckCheck, Pencil, Send, Truck, Undo2 } from "lucide-react"
 
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { OutsourcingOrderActionConfirmDialog } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderActionConfirmDialog"
 import type { OutsourcingOrderConfirmAction } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderActionConfirmDialog"
 import { RejectOutsourcingOrderDialog } from "@/features/outsourcing-orders/components/composites/RejectOutsourcingOrderDialog"
@@ -105,25 +100,6 @@ export function OutsourcingOrderDetailActions({
           </Button>
         </PermissionGate>
       )}
-
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <span tabIndex={0}>
-              <Button
-                type="button"
-                variant="outline"
-                className="pointer-events-none"
-                disabled
-              >
-                <Printer className="size-4" />
-                In phiếu
-              </Button>
-            </span>
-          }
-        />
-        <TooltipContent>In phiếu — chưa có tính năng in phiếu</TooltipContent>
-      </Tooltip>
 
       {confirmAction && (
         <OutsourcingOrderActionConfirmDialog

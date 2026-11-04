@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Eye, Pencil, Printer, Trash2 } from "lucide-react"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
@@ -174,10 +174,6 @@ export function InventoryReceiptActionsCell({
             <Pencil className="size-3.5" />
           </DisabledAction>
         )}
-
-        <DisabledAction label="In phiếu" hint="chưa có tính năng in phiếu">
-          <Printer className="size-3.5" />
-        </DisabledAction>
 
         {isDraft ? (
           <PermissionGate permission="inventory:delete">

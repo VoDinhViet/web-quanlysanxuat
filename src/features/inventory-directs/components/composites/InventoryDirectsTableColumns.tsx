@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { appTableFeatures } from "@/lib/table-features"
-import { Eye, HelpCircle } from "lucide-react"
+import { Eye } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -48,8 +48,7 @@ function HeldQuantityButton({
   )
 }
 
-// A right-aligned header with a decorative ⓘ + a static formula sub-line — mirrors
-// inventory-products' header shape exactly (no hover tooltip, the formula is just printed).
+// Tiêu đề cột số căn phải, kèm dòng công thức in sẵn bên dưới.
 function QuantityColumnHeader({
   label,
   formula,
@@ -59,10 +58,7 @@ function QuantityColumnHeader({
 }) {
   return (
     <div className="flex flex-col items-end text-right">
-      <span className="inline-flex items-center gap-1">
-        {label}
-        <HelpCircle className="size-3 text-muted-foreground/70" />
-      </span>
+      <span>{label}</span>
       <span className="text-xs font-normal text-muted-foreground/80">
         ({formula})
       </span>

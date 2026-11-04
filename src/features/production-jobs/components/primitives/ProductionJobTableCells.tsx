@@ -1,8 +1,7 @@
 import { ZoomableImage } from "@/components/shared/composites/ZoomableImage"
 import { Gallery } from "@solar-icons/react"
-import { Eye, Pencil } from "lucide-react"
+import { Eye } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { LinkButton } from "@/components/ui/button"
 import {
   Tooltip,
@@ -56,9 +55,6 @@ export function ProductionJobActionsCell({
         />
         <TooltipContent>Xem chi tiết</TooltipContent>
       </Tooltip>
-      <DisabledAction label="Chỉnh sửa" hint="chưa được xây dựng">
-        <Pencil className="size-3.5" />
-      </DisabledAction>
     </div>
   )
 }

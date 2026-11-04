@@ -1,7 +1,6 @@
-import { EllipsisVertical, Loader2, Save, Trash2 } from "lucide-react"
+import { Loader2, Save, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeletePurchaseRequestDialog } from "@/features/purchase-requests/components/composites/DeletePurchaseRequestDialog"
 import { PurchaseRequestApprovalActions } from "@/features/purchase-requests/components/layouts/PurchaseRequestApprovalActions"
@@ -58,9 +57,6 @@ export function PurchaseRequestDetailActions({
         </Button>
       )}
       <PurchaseRequestExportActions purchaseRequestId={purchaseRequest.id} />
-      <DisabledAction label="Thêm thao tác" hint="chưa có thao tác nào khác">
-        <EllipsisVertical className="size-3.5" />
-      </DisabledAction>
     </div>
   )
 }

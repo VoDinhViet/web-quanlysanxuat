@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-03 | Files scanned: 214 | Token estimate: ~3600 -->
+<!-- Generated: 2026-11-04 | Files scanned: 214 | Token estimate: ~3600 -->
 # Sales codemap (web)
 
 Scope: FE features `orders`, `outbound-orders`, `clients` (+ client-groups call), `countries`. BE twin: `be-quanlysanxuat/docs/CODEMAPS/sales.md`; screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts`, enforced once in `src/routes/(authed)/route.tsx` (redirect to `/manage`); in-page `PermissionGate` / `RoutePermissionGate` only hide buttons, BE is the real check.
@@ -113,7 +113,7 @@ DRAFT|PENDING_APPROVAL|PENDING_DELIVERY --"Hủy đơn DO" cancel--> CANCELLED ;
 - `getOrders` renames `orderDateFrom/To` to `startDate/endDate`, which BE filters on dueDate (unverified whether intended).
 - `getClientOptions` swallows errors and returns `[]`; `get-exchange-rate` is not BE: it calls `https://open.er-api.com` directly (null on failure) for non-VND currency in Create/UpdateOrderInfoSection.
 - Dead or wrong mappings: `get-orders.api.ts` maps `order.error.invalid_date_range`, absent in BE. `approve-outbound-order.api.ts` maps `outbound_order.error.oqc_not_completed` (E205), but BE runs the OQC gate in send only (`ensureAllJobsQcCompleted`), approve runs `ensureOutboundLinesIssuable` (E194). FE comments in `order.type.ts` (`canUpdateOrder`) say PENDING_CONFIRMATION edit is "front-end only"; BE `ensureOrderEditable` throws E090 (`order.error.locked_pending_confirmation`) and FE has no mapping for it (generic message).
-- Placeholders: clients row "Xem chi tiết" and "Thao tác khác" have no handler; "In phiếu DO" and "In danh sách" are PendingAction (disabled). "Lưu nháp" in the order wizard is localStorage only (`qlsx:draft:create-order-v3`).
+- Placeholders: clients row "Xem chi tiết" and "Thao tác khác" have no handler; the disabled "In phiếu DO" and "In danh sách" were removed. "Lưu nháp" in the order wizard is localStorage only (`qlsx:draft:create-order-v3`).
 - `OrderDetailDeliveryHistoryCard` imports `features/orders/mock/order-detail.mock.ts` but OrderDetailPage does not render it (dead component; ui-flow.md F9 "Lịch sử giao hàng" is stale).
 - DO create button label: list "Tạo DO mới", wizard title "Tạo phiếu giao hàng" (ui-flow.md uses the latter).
 - Cross-feature consumers of the clients barrel: orders pickers, outbound-orders CreateOutboundOrderForm (default delivery info via `select-default-delivery-info.ts`), products, directs, suppliers filter, ncrs, inventory-receipts. `orderQueryOptions` is also preloaded by production-orders detail.

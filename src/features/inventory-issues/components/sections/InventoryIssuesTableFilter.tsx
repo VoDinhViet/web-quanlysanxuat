@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useDebounceCallback } from "usehooks-ts"
-import { Download, RotateCw, Search } from "lucide-react"
+import { RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import type {
   InventoryIssueStatus,
   InventoryIssueType,
@@ -203,11 +202,6 @@ export function InventoryIssuesTableFilter({
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
-            <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
-
           <Button
             type="button"
             variant="outline"

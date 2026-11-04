@@ -1,14 +1,6 @@
 import { Fragment } from "react"
 import { useQuery } from "@tanstack/react-query"
-import {
-  Bell,
-  ChevronDown,
-  CircleHelp,
-  LogOut,
-  Menu,
-  Settings,
-  User,
-} from "lucide-react"
+import { ChevronDown, LogOut, Menu } from "lucide-react"
 import { Gallery } from "@solar-icons/react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -31,11 +23,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/shared/layouts/ThemeToggle"
 import { currentUserQueryOptions, useLogout } from "@/features/auth/api"
 import { resolveFileUrl } from "@/lib/file-url"
@@ -186,30 +173,6 @@ export function UserMenu({ isLoggingOut, onLogout }: UserMenuProps) {
           </div>
         </div>
         <DropdownMenuSeparator />
-        {[
-          { label: "Hồ sơ cá nhân", icon: User },
-          { label: "Cài đặt tài khoản", icon: Settings },
-          { label: "Trợ giúp", icon: CircleHelp },
-        ].map(({ label, icon: Icon }) => (
-          <Tooltip key={label}>
-            <TooltipTrigger
-              render={
-                <DropdownMenuItem
-                  aria-disabled="true"
-                  className="text-muted-foreground"
-                  closeOnClick={false}
-                >
-                  <Icon />
-                  {label}
-                </DropdownMenuItem>
-              }
-            />
-            <TooltipContent side="left">
-              {label} — tính năng sắp có
-            </TooltipContent>
-          </Tooltip>
-        ))}
-        <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
           disabled={isLoggingOut}
@@ -250,44 +213,6 @@ export function PageTitleBar({ title, breadcrumbs }: PageTitleBarProps) {
       </div>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <span tabIndex={0}>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  disabled
-                  aria-label="Thông báo"
-                >
-                  <Bell />
-                </Button>
-              </span>
-            }
-          />
-          <TooltipContent>Thông báo — tính năng sắp có</TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <span tabIndex={0} className="hidden sm:inline-flex">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  disabled
-                  aria-label="Trợ giúp"
-                >
-                  <CircleHelp />
-                </Button>
-              </span>
-            }
-          />
-          <TooltipContent>Trợ giúp — tính năng sắp có</TooltipContent>
-        </Tooltip>
-
         <ThemeToggle />
 
         <UserMenu isLoggingOut={isLoggingOut} onLogout={() => logout()} />

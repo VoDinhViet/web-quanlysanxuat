@@ -1,6 +1,5 @@
-import { Edit3, Eye } from "lucide-react"
+import { Eye } from "lucide-react"
 
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { LinkButton } from "@/components/ui/button"
 
 // "PO / Lý do" — theo docs/domains/quality.md: có PO thì hiện mã PO, không thì hiện lý do tự do
@@ -33,9 +32,8 @@ type IqcActionsCellProps = {
   iqcId: string
 }
 
-// "Xem chi tiết" now has a real route (GET /iqc/:iqcId) — see IqcDetailPage. "Chỉnh sửa" stays
-// disabled: the only way to change a row after creation is the confirm-QC flow on the detail
-// page itself, not a free-form edit.
+// The only way to change a row after creation is the confirm-QC flow on the detail page, so there
+// is no free-form edit action here.
 export function IqcActionsCell({ iqcId }: IqcActionsCellProps) {
   return (
     <div className="flex items-center justify-center gap-1.5">
@@ -49,9 +47,6 @@ export function IqcActionsCell({ iqcId }: IqcActionsCellProps) {
       >
         <Eye className="size-3.5" />
       </LinkButton>
-      <DisabledAction label="Chỉnh sửa" hint="tính năng sắp có">
-        <Edit3 className="size-3.5" />
-      </DisabledAction>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { Download, Plus, RotateCw, Search } from "lucide-react"
+import { Plus, RotateCw, Search } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DateRangePicker } from "@/components/shared/composites/DateRangePicker"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { RoutePermissionGate } from "@/components/shared/primitives/RoutePermissionGate"
 import type {
   InventoryReceiptStatus,
@@ -199,11 +198,6 @@ export function InventoryReceiptsTableFilter() {
         </div>
 
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 lg:ml-auto lg:w-auto lg:self-end">
-          <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
-            <Download className="size-4" />
-            Xuất Excel
-          </PendingAction>
-
           <Button
             type="button"
             variant="outline"

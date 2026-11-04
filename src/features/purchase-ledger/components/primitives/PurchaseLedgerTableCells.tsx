@@ -1,11 +1,9 @@
-import { Eye } from "lucide-react"
 import {
   ArchiveDownMinimalistic,
   BoxMinimalistic,
   CartLargeMinimalistic,
 } from "@solar-icons/react"
 
-import { DisabledAction } from "@/components/shared/primitives/DisabledAction"
 import { PurchaseLedgerWarningBadge } from "@/features/purchase-ledger/components/primitives/PurchaseLedgerBadges"
 import {
   HoverCard,
@@ -316,17 +314,6 @@ export function PurchaseLedgerWarningCell({
       {sortedWarnings.map((warning) => (
         <PurchaseLedgerWarningBadge key={warning} warning={warning} />
       ))}
-    </div>
-  )
-}
-
-// No route/API for a detail screen yet — disabled, not linked.
-export function PurchaseLedgerActionsCell() {
-  return (
-    <div className="flex items-center justify-center">
-      <DisabledAction label="Xem chi tiết">
-        <Eye className="size-3.5" />
-      </DisabledAction>
     </div>
   )
 }

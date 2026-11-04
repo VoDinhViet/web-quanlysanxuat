@@ -1,4 +1,4 @@
-import { Eye, Pencil, Printer, Trash2 } from "lucide-react"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import {
@@ -14,8 +14,7 @@ import type { OutboundOrder } from "@/lib/types/outbound-order.type"
 
 // "Sửa"/"Xóa" chỉ hoạt động khi order.status === DRAFT (BE gate E259/E258, BUG-090) — không có
 // route /update riêng, "Sửa" là Link sang chính trang chi tiết với ?mode=edit (edit-inline). Dòng
-// khác DRAFT giữ DisabledAction. "In phiếu DO" vẫn DisabledAction ở mọi trạng thái — không liên
-// quan BUG-090, BE chưa có tính năng in phiếu.
+// khác DRAFT giữ DisabledAction.
 export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
   const isDraft = order.status === OutboundOrderStatus.DRAFT
 
@@ -69,10 +68,6 @@ export function OutboundOrderActionsCell({ order }: { order: OutboundOrder }) {
           <Pencil className="size-3.5" />
         </DisabledAction>
       )}
-
-      <DisabledAction label="In phiếu DO" hint="chưa có tính năng in phiếu">
-        <Printer className="size-3.5" />
-      </DisabledAction>
 
       {isDraft ? (
         <PermissionGate permission="outbound:delete">

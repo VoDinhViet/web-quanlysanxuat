@@ -1,4 +1,4 @@
-import { Eye, Printer, Trash2 } from "lucide-react"
+import { Eye, Trash2 } from "lucide-react"
 
 import { Button, LinkButton } from "@/components/ui/button"
 import {
@@ -71,10 +71,6 @@ export function InventoryRequisitionActionsCell({
         />
         <TooltipContent>Xem chi tiết</TooltipContent>
       </Tooltip>
-
-      <DisabledAction label="In phiếu" hint="chưa được xây dựng">
-        <Printer className="size-3.5" />
-      </DisabledAction>
 
       {isDraft ? (
         <PermissionGate permission="inventory-requisitions:delete">

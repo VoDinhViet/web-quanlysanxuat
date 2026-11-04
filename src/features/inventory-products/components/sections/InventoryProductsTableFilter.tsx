@@ -1,14 +1,13 @@
 import { useState } from "react"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useDebounceCallback } from "usehooks-ts"
-import { Download, RotateCw, Search } from "lucide-react"
+import { RotateCw, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { DatePicker } from "@/components/shared/composites/DatePicker"
 import { FilterLabel } from "@/components/shared/primitives/FilterLabel"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 
 export function InventoryProductsTableFilter() {
   const search = useSearch({ from: "/(authed)/manage_/inventory-products/" })
@@ -91,11 +90,6 @@ export function InventoryProductsTableFilter() {
           <RotateCw className="size-3.5" />
           Xóa bộ lọc
         </Button>
-
-        <PendingAction label="Xuất Excel" hint="Tính năng xuất Excel sắp có">
-          <Download className="size-4" />
-          Xuất Excel
-        </PendingAction>
       </div>
     </div>
   )

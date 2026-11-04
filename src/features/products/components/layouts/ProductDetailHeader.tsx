@@ -2,16 +2,9 @@ import { format, parseISO } from "date-fns"
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { Loader2 } from "lucide-react"
-import {
-  AltArrowLeft,
-  Box,
-  Diskette,
-  Printer,
-  TrashBinTrash,
-} from "@solar-icons/react"
+import { AltArrowLeft, Box, Diskette, TrashBinTrash } from "@solar-icons/react"
 
 import { Button, LinkButton } from "@/components/ui/button"
-import { PendingAction } from "@/components/shared/primitives/PendingAction"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { DeleteProductDialog } from "@/features/products/components/composites/DeleteProductDialog"
 import { ProductStatusBadge } from "@/features/products/components/primitives/ProductBadges"
@@ -122,11 +115,6 @@ export function ProductDetailHeader({
               Thay đổi ở tab này được lưu ngay
             </p>
           )}
-
-          <PendingAction label="In" hint="tính năng sắp có">
-            <Printer className="size-4" />
-            In
-          </PendingAction>
 
           <PermissionGate permission="items:delete">
             <DeleteProductDialog
