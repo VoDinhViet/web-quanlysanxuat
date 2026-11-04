@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: 41 | Token estimate: ~4300 -->
+<!-- Generated: 2026-11-04 | Files scanned: 42 | Token estimate: ~4350 -->
 # Architecture codemap (web)
 
 **Stack:** TanStack Start (SSR, Vite) + TanStack Router (file-based) + TanStack Query v5 + TanStack Form/Table v9, Zod 4, axios, Tailwind 4, pnpm, Node 24. All UI text Vietnamese, all code English. BE twin: `be-quanlysanxuat/docs/CODEMAPS/architecture.md`. Domain maps: `identity-access.md`, `integration.md`, routes in `routes.md`. Rules: `CLAUDE.md`, `.claude/rules/*.md`.
@@ -84,7 +84,7 @@ Query keys: `[<feature>]` root, `[<f>,"list",search]`, `[<f>,"detail",id]`, `[<f
 | Tables | TanStack Table v9, one shared feature set `appTableFeatures` in `src/lib/table-features.ts`; sorting/filter/pagination are server-driven via URL; states via `TableQueryBoundary`, `TableQueryLoading`, `TableQueryError`, `TableEmpty` |
 | Forms | `useAppForm`/`withForm` from `src/hooks/use-app-form.ts` (TanStack Form `createFormHook`; fields in `composites/AppFormFields.tsx`: Text, Number, Textarea, Date, Password, RadioPill, Select, Switch); `revalidateLogic()` + schema on `validators.onDynamic`; only `orders` (`CreateOrderForm`/`UpdateOrderForm`) uses react-hook-form (trial; `forms-and-ui.md` also names `users`, but `src/features/users` has no react-hook-form import) |
 | Schemas | `create-x.schema.ts` and `update-x.schema.ts` are separate; the same schema validates the form and the server fn; wire mapping via `.transform()` in the server fn; file ids via `src/lib/file-field.schema.ts` |
-| Drafts | `src/hooks/use-form-draft.ts` (zustand persist -> localStorage, hydrated after mount) |
+| Drafts | `src/hooks/use-form-draft.ts` (zustand persist -> localStorage, hydrated after mount; stores `expiresAt` = last save + `FORM_DRAFT_TTL_DAYS` 30; `draft` stays null until the stored draft is checked: expired -> dropped with a toast, legacy or file-bearing -> files held and dead ones stripped via `src/lib/draft-files.ts`) |
 | Shared UI | `src/components/ui` (shadcn), `src/components/shared/{layouts,composites,primitives,sections}`, permission gates in `primitives/` |
 
 ## Feature folder convention

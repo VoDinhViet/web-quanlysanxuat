@@ -68,6 +68,8 @@ function resolveUpdatePurchaseQuotationErrorMessage(error: unknown): string {
       return "Số lượng báo giá vượt quá số lượng cần mua còn lại."
     case "purchase_quotation.error.quotation_unit_invalid":
       return "Đơn vị báo giá và số lượng báo giá không hợp lệ. Vui lòng nhập cả hai hoặc để trống."
+    case "file.error.not_found":
+      return "Tệp đính kèm báo giá không còn tồn tại. Vui lòng gỡ và tải lên lại."
     case "auth.error.forbidden":
       return "Bạn không có quyền cập nhật báo giá."
     default:

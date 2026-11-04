@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-24 | Files scanned: 54 | Token estimate: ~3380 -->
+<!-- Generated: 2026-11-04 | Files scanned: 55 | Token estimate: ~3450 -->
 
 # Integration, reports & files codemap (web)
 
@@ -14,7 +14,7 @@ External-caller note: the 22 BE `/api/v1/integration/*` routes (read-only gatewa
 | `manage`       | Dashboard UI; no `api/` of its own, reads `reports/api` and `outbound-orders/api` barrels                     | `ManagePage`                                                     | `manage.type.ts`; `production-job.type.ts` status labels for the donut | `manage-search.schema.ts` (`startDate`, `endDate`) |
 | `ask`          | Floating Ask bubble (ai-platform embed) in the signed-in layout; server-side config + session only, no screen | none (`hooks/use-ask-embed.ts`, mounted by `(authed)/route.tsx`) | `src/lib/types/ask.type.ts` (`AskConfig`, `AskSession`)                | none                                               |
 
-Files plumbing (no feature): `src/lib/upload-file.ts`, `download-file.ts`, `file-url.ts`, `file-field.schema.ts`, `types/file.type.ts` (`UploadType`, `FileKind`, `FileResource`, size limits, accepted MIME maps).
+Files plumbing (no feature): `src/lib/upload-file.ts`, `draft-files.ts` (`holdDraftFiles` / `releaseDraftFiles` server fns for form drafts, `collectDraftFileIds`, `removeDraftFiles`), `download-file.ts`, `file-url.ts`, `file-field.schema.ts`, `types/file.type.ts` (`UploadType`, `FileKind`, `FileResource`, size limits, accepted MIME maps).
 
 ## 2. Screens
 
@@ -51,7 +51,8 @@ Widgets (each does its own `useQuery`, skeleton + error state, none blocks the p
 **files** (`src/lib/`, not a feature)
 | Action | Code | Endpoint | Permission | BE handler (`src/api/files/files.controller.ts`) |
 |---|---|---|---|---|
-| Any file picker/dropzone | `uploadFile` server fn, `src/lib/upload-file.ts` | POST /api/files?type= (multipart `file`) | JWT, no permission (any `UploadType`) | `upload` (:28) |
+| Any file picker/dropzone | `uploadFile` server fn, `src/lib/upload-file.ts` | POST /api/files?type= (multipart `file`) | JWT, no permission (any `UploadType`) | `upload` (:31) |
+| "Lưu nháp" / "Đặt lại" / open of any create form with files in its draft | `holdDraftFiles` / `releaseDraftFiles` server fns, `src/lib/draft-files.ts`, called by `use-form-draft.ts` | POST /api/files/drafts/hold, POST /api/files/drafts/release | JWT, no permission (own uploads only) | `holdDraftFiles` (:59), `releaseDraftFiles` (:73) |
 | Excel/PDF export buttons | per-feature export server fns (16 files return base64, e.g. `export-users.api.ts`) -> `downloadBase64File` / `printBase64Pdf` in `download-file.ts` | each domain's own GET export route | see domain codemaps | see domain codemaps |
 | Image/attachment links | `resolveFileUrl(url)` in `file-url.ts` | none (static GET `<BE origin>/<storageKey>`) | none | BE `ServeStaticModule` |
 
