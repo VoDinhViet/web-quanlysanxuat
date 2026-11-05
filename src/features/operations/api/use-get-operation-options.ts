@@ -26,7 +26,7 @@ function toOperationPickerData(
 // term and reads operationOptionsQueryOptions (GET /api/operations/options?q=...)
 // from the shared query cache. `select` maps each master operation ref
 // (OperationRef) to the {value, label} pairs ComboboxField expects, plus the
-// catalog type of each so a picker can pre-fill it; `onSearchChange` is the
+// catalog type of each so a picker can show it; `onSearchChange` is the
 // debounced setter.
 export function useGetOperationOptions(type?: OperationType) {
   const [q, setQ] = useDebounceValue("", 300)

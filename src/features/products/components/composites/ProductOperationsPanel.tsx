@@ -15,13 +15,6 @@ import { ClipboardList } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
@@ -52,8 +45,8 @@ type OperationTypeContent = {
 }
 
 // Tint recipe mirrors SuppliersTableColumns' status badges: shadcn Badge
-// (variant="outline") + a bg-<token>/15 text-<token> tint. `type` belongs to the
-// routing step: the catalog type only pre-fills it at attach time below.
+// (variant="outline") + a bg-<token>/15 text-<token> tint. The backend copies a step's
+// `type` from the operation catalog when the step is added, so it is read-only here.
 const operationTypeStyles: Record<OperationType, string> = {
   [OperationType.INHOUSE]: "bg-primary/15 text-primary",
   [OperationType.OUTSOURCE]:
@@ -108,25 +101,15 @@ export function ProductOperationsPanel({
   const [selectedOperationId, setSelectedOperationId] = useState<
     string | undefined
   >(undefined)
-  const [selectedType, setSelectedType] = useState<OperationType>(
-    OperationType.INHOUSE
-  )
   const [note, setNote] = useState("")
-
-  // The catalog type is only a pre-fill: the Select next to it still overrides it for this step.
-  function handleSelectOperation(operationId: string | undefined) {
-    setSelectedOperationId(operationId)
-    const catalogType = operationId
-      ? operationPicker.typeByOperationId?.get(operationId)
-      : undefined
-    if (catalogType) setSelectedType(catalogType)
-  }
+  const selectedCatalogType = selectedOperationId
+    ? operationPicker.typeByOperationId?.get(selectedOperationId)
+    : undefined
 
   function handleAdd() {
     if (!selectedOperationId) return
-    create(selectedOperationId, selectedType, note.trim() || undefined)
+    create(selectedOperationId, note.trim() || undefined)
     setSelectedOperationId(undefined)
-    setSelectedType(OperationType.INHOUSE)
     setNote("")
   }
 
@@ -252,7 +235,7 @@ export function ProductOperationsPanel({
               <TableCell>
                 <ComboboxField
                   value={selectedOperationId}
-                  onValueChange={handleSelectOperation}
+                  onValueChange={setSelectedOperationId}
                   options={operationPicker.options}
                   onSearchChange={operationPicker.onSearchChange}
                   isPending={operationPicker.isFetching}
@@ -261,23 +244,11 @@ export function ProductOperationsPanel({
                 />
               </TableCell>
               <TableCell>
-                <Select
-                  items={operationTypeLabels}
-                  value={selectedType}
-                  onValueChange={(key) => key !== null && setSelectedType(key)}
-                >
-                  <SelectTrigger className="h-9 w-full text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={OperationType.INHOUSE}>
-                      {operationTypeLabels[OperationType.INHOUSE]}
-                    </SelectItem>
-                    <SelectItem value={OperationType.OUTSOURCE}>
-                      {operationTypeLabels[OperationType.OUTSOURCE]}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                {selectedCatalogType ? (
+                  <OperationTypeBadge type={selectedCatalogType} />
+                ) : (
+                  "—"
+                )}
               </TableCell>
               <TableCell>
                 <Input

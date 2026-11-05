@@ -8,10 +8,7 @@ import { deleteBomOperation } from "@/features/products/api/server-functions/del
 import { deleteRoutingOperation } from "@/features/products/api/server-functions/delete-routing-operation.api"
 import { updateBomOperation } from "@/features/products/api/server-functions/update-bom-operation.api"
 import { updateRoutingOperation } from "@/features/products/api/server-functions/update-routing-operation.api"
-import type {
-  OperationType,
-  ProductOperation,
-} from "@/lib/types/operation.type"
+import type { ProductOperation } from "@/lib/types/operation.type"
 
 // `bomItemId` omit = công đoạn Cấp 0 (route riêng `items/:itemId/operations`, bảng
 // `routing_operations` — Cấp 0 không phải một node `bom_items`, không có id nào để truyền cho
@@ -26,7 +23,6 @@ export type MoveDirection = "up" | "down"
 
 export type CreateOperationInput = {
   operationId: string
-  type: OperationType
   sortOrder: number
   note?: string
 }
@@ -54,7 +50,6 @@ function useCreateOperation(target: OperationsTarget) {
               itemId: target.productId,
               bomItemId: target.bomItemId,
               operationId: input.operationId,
-              type: input.type,
               sortOrder: input.sortOrder,
               note: input.note,
             },
@@ -63,7 +58,6 @@ function useCreateOperation(target: OperationsTarget) {
             data: {
               itemId: target.productId,
               operationId: input.operationId,
-              type: input.type,
               sortOrder: input.sortOrder,
               note: input.note,
             },
@@ -174,7 +168,7 @@ function useDeleteOperation(target: OperationsTarget) {
 }
 
 export interface UseProductOperationsResult {
-  create: (operationId: string, type: OperationType, note?: string) => void
+  create: (operationId: string, note?: string) => void
   update: (stepId: string, input: UpdateOperationInput) => void
   move: (index: number, direction: MoveDirection) => void
   remove: (stepId: string) => void
@@ -195,7 +189,7 @@ export function useProductOperations(
   const moveOperation = useMoveOperation(target)
   const deleteOperation = useDeleteOperation(target)
 
-  function create(operationId: string, type: OperationType, note?: string) {
+  function create(operationId: string, note?: string) {
     const nextSortOrder =
       productOperations.reduce(
         (max, item) => Math.max(max, item.sortOrder),
@@ -204,7 +198,6 @@ export function useProductOperations(
 
     createOperation.mutate({
       operationId,
-      type,
       sortOrder: nextSortOrder,
       note,
     })
