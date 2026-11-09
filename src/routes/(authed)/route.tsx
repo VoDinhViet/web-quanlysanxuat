@@ -16,7 +16,7 @@ import {
   requireSession,
 } from "@/features/auth/api/guard"
 import { useAskEmbed } from "@/features/ask/hooks/use-ask-embed"
-import { useSessionWatchdog } from "@/features/auth/hooks/use-session-watchdog"
+import { useSessionWatchdog } from "@/features/auth/api"
 import { getSidebarDefaultOpen } from "@/lib/sidebar-state"
 import { getErrorMessage } from "@/lib/utils"
 
@@ -64,6 +64,9 @@ export const Route = createFileRoute("/(authed)")({
 function AuthedErrorFallback({ error }: ErrorComponentProps) {
   const router = useRouter()
   const message = getErrorMessage(error)
+  // This screen replaces the layout (and its watchdog), so a dead session would otherwise leave
+  // the user here with no way back to /login.
+  useSessionWatchdog()
 
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-4 bg-background p-6 text-center text-foreground">

@@ -1,4 +1,4 @@
-<!-- Generated: 2026-10-16 | Files scanned: 62 | Token estimate: ~3600 -->
+<!-- Generated: 2026-11-09 | Files scanned: 62 | Token estimate: ~3600 -->
 # Identity & access codemap (web)
 
 Scope: FE features `auth`, `users`, `roles`, `departments`, `positions` plus the login/session/permission plumbing in `src/lib`. BE twin: `be-quanlysanxuat/docs/CODEMAPS/identity-access.md`. Screens: `docs/ui-flow.md` (its sidebar section is stale for this group, see section 5). Platform view: `architecture.md`.
@@ -96,8 +96,9 @@ any navigation into (authed): beforeLoad  [document sent with Cache-Control: pri
 any server fn -> http (axios) request interceptor adds Bearer from session
    BE 401 (not /api/auth/*, first time) -> refreshAccessToken() -> POST /api/auth/refresh -> replay once
    refresh fails -> original 401 surfaces; fn maps it to its own message; next watchdog tick/navigation bounces to /login
+   refresh answered 403 (account disabled/resigned) -> requestRefresh destroys the session cookie so the guard stops trusting it (a refresh 401 is NOT cleared: it can be a harmless rotation race)
 
-useSessionWatchdog (in AuthedLayout): getCurrentSession every 5 min + on window focus; error -> toast
+useSessionWatchdog (`features/auth/api/use-session-watchdog.ts`, exported by the auth api barrel; runs in AuthedLayout, in AuthedErrorFallback and in DefaultCatchBoundary when inside (authed), the boundaries that replace the page content on an error): getCurrentSession every 5 min + on window focus + on mount; error -> toast
    "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại." + navigate /login?redirectTo
 
 "Đăng xuất" -> useLogout -> logout fn -> POST /api/auth/logout (failure ignored) -> session.clear()

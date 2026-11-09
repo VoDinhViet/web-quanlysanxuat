@@ -49,7 +49,7 @@ export function getRouter() {
     defaultPendingComponent: LoadingScreen,
     // Routes outside (authed) have no boundary of their own — without these
     // they'd fall through to the router's built-in English fallbacks.
-    // (authed)/route.tsx keeps its own errorComponent, which still wins.
+    // (authed)/route.tsx keeps its own errorComponent, which still wins for its own errors.
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: DefaultNotFound,
     context: { queryClient },

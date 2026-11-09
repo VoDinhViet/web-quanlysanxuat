@@ -34,10 +34,23 @@ export function isAccessTokenExpired(tokenExpires?: number): boolean {
 }
 
 async function requestRefresh(refreshToken: string): Promise<void> {
-  const response = await refreshClient.post<RefreshResponse>(
-    "/api/auth/refresh",
-    { refreshToken }
-  )
+  let response
+  try {
+    response = await refreshClient.post<RefreshResponse>("/api/auth/refresh", {
+      refreshToken,
+    })
+  } catch (error) {
+    // 403 = the account is disabled or resigned: terminal. Keeping the cookie would leave the
+    // guard trusting a dead session, so the user is stuck on error pages and `/login` bounces
+    // them back. Not 401: that also means "this request carried an already-rotated refresh
+    // token", a normal race between parallel requests or tabs, and clearing the cookie there
+    // would log out a healthy user. Network/5xx errors may be transient and keep the session.
+    if (axios.isAxiosError(error) && error.response?.status === 403) {
+      const staleSession = await getAppSession()
+      staleSession.destroy()
+    }
+    throw error
+  }
   const refreshed = response.data
   const session = await getAppSession()
 

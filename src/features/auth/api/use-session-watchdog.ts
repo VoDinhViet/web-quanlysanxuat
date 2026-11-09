@@ -12,7 +12,7 @@ import { getCurrentSession } from "@/features/auth/api/server-functions/get-curr
 // `beforeLoad` uses so an idle tab gets bounced to /login proactively instead.
 const POLL_INTERVAL_MS = 5 * 60_000
 
-export function useSessionWatchdog() {
+export function useSessionWatchdog(enabled = true) {
   const router = useRouter()
   const getCurrentSessionFn = useServerFn(getCurrentSession)
   const hasRedirectedRef = useRef(false)
@@ -24,15 +24,25 @@ export function useSessionWatchdog() {
     refetchOnWindowFocus: true,
     retry: false,
     staleTime: 0,
+    enabled,
   })
 
   useEffect(() => {
-    if (!isError || hasRedirectedRef.current) {
+    // Another watchdog instance (layout vs error screen) may already have sent the user to /login;
+    // redirecting again from there would nest `redirectTo` inside itself.
+    if (
+      !isError ||
+      hasRedirectedRef.current ||
+      router.state.location.pathname === "/login"
+    ) {
       return
     }
     hasRedirectedRef.current = true
 
-    toast.error("Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.")
+    // Fixed id: two mounted watchdogs must show one toast, not two.
+    toast.error("Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.", {
+      id: "session-expired",
+    })
     void router.navigate({
       to: "/login",
       search: { redirectTo: router.state.location.href },

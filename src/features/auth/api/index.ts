@@ -5,3 +5,4 @@
 export { currentUserQueryOptions } from "@/features/auth/api/options"
 export { currentPermissionsQueryOptions } from "@/features/auth/api/options"
 export { useLogout } from "@/features/auth/api/use-logout"
+export { useSessionWatchdog } from "@/features/auth/api/use-session-watchdog"
