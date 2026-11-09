@@ -36,6 +36,8 @@ function resolveCreateOrderErrorMessage(error: unknown): string {
       return "Nhân viên kinh doanh không tồn tại."
     case "order.error.item_not_found":
       return "Một sản phẩm trong đơn hàng không tồn tại."
+    case "order.error.discount_exceeds_subtotal":
+      return "Chiết khấu không được lớn hơn tạm tính của đơn hàng."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":

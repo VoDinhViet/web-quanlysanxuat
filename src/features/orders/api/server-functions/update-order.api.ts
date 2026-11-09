@@ -53,6 +53,8 @@ function resolveUpdateOrderErrorMessage(error: unknown): string {
       return "Đơn hàng đã có lệnh sản xuất được duyệt, không thể huỷ."
     case "order.error.items_locked_by_production":
       return "Đơn hàng đã có lệnh sản xuất, không thể chỉnh sửa danh sách mặt hàng."
+    case "order.error.discount_exceeds_subtotal":
+      return "Chiết khấu không được lớn hơn tạm tính của đơn hàng."
     case "file.error.not_found":
       return "Tài liệu đính kèm không còn tồn tại. Vui lòng tải lên lại."
     case "auth.error.forbidden":
