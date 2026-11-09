@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-04 | Files scanned: 214 | Token estimate: ~3600 -->
+<!-- Generated: 2026-11-09 | Files scanned: 214 | Token estimate: ~3600 -->
 # Sales codemap (web)
 
 Scope: FE features `orders`, `outbound-orders`, `clients` (+ client-groups call), `countries`. BE twin: `be-quanlysanxuat/docs/CODEMAPS/sales.md`; screens and button labels: `docs/ui-flow.md`. Permission gate source: `src/lib/route-permissions.ts`, enforced once in `src/routes/(authed)/route.tsx` (redirect to `/manage`); in-page `PermissionGate` / `RoutePermissionGate` only hide buttons, BE is the real check.
@@ -53,7 +53,7 @@ Server fn files are `src/features/<feature>/api/server-functions/<name>.api.ts`.
 | "Duyệt" (ApproveOrderDialog) | approve-order | POST /orders/:orderId/approve | orders:approve | approveOrder (orders:183) |
 | "Tạo đơn hàng" submit | create-order | POST /orders | orders:create | createOrder (orders:141) |
 | "Xoá" (DeleteOrderDialog) | delete-order | DELETE /orders/:orderId | orders:delete | deleteOrder (orders:211) |
-| "In" / "Biểu mẫu đơn hàng (BM-01/KD)" | export-order-pdf | GET /orders/:orderId/export-pdf | orders:read | exportOrderPdf (orders:115) |
+| "In" / "Biểu mẫu đơn hàng (BM 10-03)" | export-order-pdf | GET /orders/:orderId/export-pdf | orders:read | exportOrderPdf (orders:115) |
 | Bulk "Danh sách đơn hàng" (Excel) | export-orders-excel | GET /orders/export-excel | orders:read | exportOrdersExcel (orders:69) |
 | Bulk "Biểu mẫu đơn hàng (BM-03/KD)" | export-orders-summary-pdf | GET /orders/export-summary-pdf | orders:read | exportOrdersSummaryPdf (orders:92) |
 | Detail lines | get-order-items | GET /orders/:orderId/items | orders:read | getOrderItems (orders:128) |
@@ -74,6 +74,7 @@ Server fn files are `src/features/<feature>/api/server-functions/<name>.api.ts`.
 | "Xóa DO" (DeleteOutboundOrderDialog) | delete-outbound-order | DELETE .../:outboundOrderId | outbound:delete | deleteOutboundOrder (:203) |
 | "Xuất Excel" | export-outbound-orders | GET /outbound-orders/export | outbound:read | exportOutboundOrders (:74) |
 | Detail lines | get-outbound-order-items | GET .../:outboundOrderId/items | outbound:read | getOutboundOrderItems (:99) |
+| Detail "In" / "Xuất" > PDF phiếu giao hàng (`OutboundOrderExportActions`) | export-outbound-order-pdf | GET .../:outboundOrderId/export-pdf | outbound:read | exportOutboundOrderPdf |
 | Detail / edit loader | get-outbound-order | GET .../:outboundOrderId | outbound:read | getOutboundOrder (:86) |
 | List page | get-outbound-orders | GET /outbound-orders | outbound:read | getOutboundOrders (:48) |
 | Stat tiles "Tổng DO" / "DO chưa xuất hóa đơn" (`OutboundOrderStatCards`; second tile sets `status=DELIVERED` + `invoiceStatus=NOT_ISSUED`) | get-outbound-order-stats | GET /outbound-orders/stats | outbound:read | getOutboundOrderStats (:62) |

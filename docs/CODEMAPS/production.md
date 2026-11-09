@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-04 | Files scanned: ~120 | Token estimate: ~5000 -->
+<!-- Generated: 2026-11-09 | Files scanned: ~120 | Token estimate: ~5000 -->
 # Production codemap (web)
 
 Production orders (LSX), production jobs (JOB), shop-floor execution, outsourcing OS-OUT and OS-IN. BE twin: `be-quanlysanxuat/docs/CODEMAPS/production.md` (sections 1 Modules, 2 Routes, 3 State flows, 4 Key rules, 5 Cross-domain links). Screen and button map: `docs/ui-flow.md`. Quality-side screens (OQC request, NCR): `docs/CODEMAPS/quality.md`.
@@ -42,7 +42,6 @@ Server fn file = kebab-case of the fn name + `.api.ts`. BE column is the handler
 | LSX list, filters | `getProductionOrders` | GET /api/production-orders | production:read | :45 (`getProductionOrders`) |
 | List "Xuất Excel" | `exportProductionOrders` | GET /api/production-orders/export | production:read | :59 |
 | Detail load | `getProductionOrder` | GET /api/production-orders/:productionOrdersId | production:read | :71 (`getProductionOrdersById`) |
-| Detail "In" / "Xuất" -> "Biểu mẫu lệnh sản xuất" | `exportProductionOrderPdf` | GET /api/production-orders/:productionOrdersId/export-pdf | production:read | :85 |
 | Detail "Lưu thay đổi" (PENDING only; sends changed lines) | `updateProductionOrder` | PATCH /api/production-orders/:productionOrdersId | production:update | :100 |
 | Signed-file card "Chọn tệp" / "Thay thế" / "Xóa" (upload first via `src/lib/upload-file.ts`, `UploadType.PRODUCTION_ORDER_SIGNED_DOCUMENT`) | `updateProductionOrderSignedFile` | PATCH /api/production-orders/:productionOrdersId/signed-file | production:update | :136 |
 | Detail logs panel | `getProductionOrderLogs` | GET /api/production-orders/:productionOrdersId/logs | production:read | :155 |
@@ -56,6 +55,7 @@ Server fn file = kebab-case of the fn name + `.api.ts`. BE column is the handler
 | Pickers (OS-OUT create, inventory-receipts header, inventory-requisitions source); default status IN_PROGRESS | `getProductionJobOptions` | GET /api/production-jobs | production:read | :60 (same handler as above) |
 | List "Xuất" -> "Biểu mẫu kế hoạch sản xuất (N Job)" (selected jobs, same client; `jobIds=a,b`) | `exportProductionJobsPlanPdf` | GET /api/production-jobs/export-plan-pdf | production:read | :73 (`exportProductionPlanPdf`) |
 | JOB detail load | `getProductionJob` | GET /api/production-jobs/:jobId | production:read | :85 |
+| JOB detail header "In" / "Xuất" -> "Lệnh sản xuất" (`ProductionJobExportActions`) | `exportProductionJobPdf` | GET /api/production-jobs/:jobId/export-pdf | production:read | `exportProductionJobPdf` |
 | BOM tab list | `getProductionJobBom` | GET /api/production-jobs/:jobId/bom | production:read | :98 |
 | Operations tab list | `getProductionJobOperations` | GET /api/production-jobs/:jobId/operations | production:read | :116 |
 | Notes section list | `getProductionJobNotes` | GET /api/production-jobs/:jobId/notes | production:read | :139 |
@@ -88,6 +88,7 @@ Server fn file = kebab-case of the fn name + `.api.ts`. BE column is the handler
 | Create wizard picker; execution parts (only when JOB IN_PROGRESS and user has `outsourcing:read`) | `getOutsourceableOperations` | GET /api/outsourcing-orders/outsourceable-operations | outsourcing:read | :49 |
 | Detail header | `getOutsourcingOrder` | GET /api/outsourcing-orders/:outsourcingOrderId | outsourcing:read | :67 |
 | Detail lines | `getOutsourcingOrderItems` | GET /api/outsourcing-orders/:outsourcingOrderId/items | outsourcing:read | :82 (`getOrderItems`) |
+| Detail "In" / "Xuất" > PDF (`OutsourcingOrderExportActions`) | `exportOutsourcingOrderPdf` | GET /api/outsourcing-orders/:outsourcingOrderId/export-pdf | outsourcing:read | `exportOutsourcingOrderPdf` |
 | Create wizard "Xác nhận tạo phiếu" (tab "3. Xác nhận & tạo phiếu"): saves a DRAFT, then back to list | `createOutsourcingOrder` | POST /api/outsourcing-orders | outsourcing:create | - |
 | Standalone form "Lưu nháp phiếu" | `createStandaloneOutsourcingOrder` | POST /api/outsourcing-orders/standalone | outsourcing:create | - |
 | Update page "Lưu thay đổi" (origin MANUAL) | `updateStandaloneOutsourcingOrder` | PATCH /api/outsourcing-orders/:outsourcingOrderId/standalone | outsourcing:update | - |
@@ -98,13 +99,14 @@ Server fn file = kebab-case of the fn name + `.api.ts`. BE column is the handler
 | Detail "Xác nhận xuất gia công" | `confirmSendOutsourcingOrder` | POST .../:outsourcingOrderId/confirm-send | outsourcing:update | - |
 | Detail "Hủy phiếu" | `cancelOutsourcingOrder` | POST /api/outsourcing-orders/:outsourcingOrderId/cancel | outsourcing:update | :111 |
 
-### outsourcing-receipts (6)
+### outsourcing-receipts (7)
 | Action / screen trigger | Server fn | Endpoint | Permission | BE line |
 |---|---|---|---|---|
 | OS-IN list | `getOutsourcingReceipts` | GET /api/outsourcing-receipts | outsourcing:read | :33 |
 | Create wizard picker of open OS-OUT lines | `getPendingOrderItems` | GET /api/outsourcing-receipts/pending-order-items | outsourcing:read | :47 |
 | Detail header | `getOutsourcingReceipt` | GET /api/outsourcing-receipts/:outsourcingReceiptId | outsourcing:read | :59 |
 | Detail lines | `getOutsourcingReceiptItems` | GET /api/outsourcing-receipts/:outsourcingReceiptId/items | outsourcing:read | :74 (`getReceiptItems`) |
+| Detail "In" / "Xuất" > PDF (`OutsourcingReceiptExportActions`) | `exportOutsourcingReceiptPdf` | GET /api/outsourcing-receipts/:outsourcingReceiptId/export-pdf | outsourcing:read | `exportOutsourcingReceiptPdf` |
 | Create wizard "Xác nhận nhập" (step 2 switch "Yêu cầu QC" = `requiresIqc`), then back to list | `createOutsourcingReceipt` | POST /api/outsourcing-receipts | outsourcing:create | :89 |
 | Detail "Hủy phiếu" | `cancelOutsourcingReceipt` | POST /api/outsourcing-receipts/:outsourcingReceiptId/cancel | outsourcing:update | :105 |
 

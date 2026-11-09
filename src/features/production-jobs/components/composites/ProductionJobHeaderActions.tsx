@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tooltip"
 import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { PlanProductionJobDialog } from "@/features/production-jobs/components/composites/PlanProductionJobDialog"
+import { ProductionJobExportActions } from "@/features/production-jobs/components/composites/ProductionJobExportActions"
 import { ReloadProductionJobSnapshotDialog } from "@/features/production-jobs/components/composites/ReloadProductionJobSnapshotDialog"
 import { RequestProductionJobQcDialog } from "@/features/production-jobs/components/composites/RequestProductionJobQcDialog"
 import { StartProductionJobDialog } from "@/features/production-jobs/components/composites/StartProductionJobDialog"
@@ -34,6 +35,8 @@ export function ProductionJobHeaderActions({
         <StartJobButton job={job} />
         <PlanJobButton job={job} />
       </PermissionGate>
+
+      <ProductionJobExportActions productionJobId={job.id} />
 
       <PermissionGate permission="oqc:create">
         <RequestOqcButton job={job} />

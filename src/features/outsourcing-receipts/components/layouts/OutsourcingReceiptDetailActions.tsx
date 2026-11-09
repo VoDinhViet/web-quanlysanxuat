@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { cancelOutsourcingReceipt } from "@/features/outsourcing-receipts/api/server-functions/cancel-outsourcing-receipt.api"
+import { OutsourcingReceiptExportActions } from "@/features/outsourcing-receipts/components/layouts/OutsourcingReceiptExportActions"
 import { InventoryDocumentStatus } from "@/lib/types/outsourcing-receipt.type"
 import type { OutsourcingReceiptDetail } from "@/lib/types/outsourcing-receipt.type"
 
@@ -72,6 +73,8 @@ export function OutsourcingReceiptDetailActions({
           </Button>
         </PermissionGate>
       )}
+
+      <OutsourcingReceiptExportActions outsourcingReceiptId={receipt.id} />
 
       {confirmAction && (
         <Dialog open onOpenChange={closeConfirm}>

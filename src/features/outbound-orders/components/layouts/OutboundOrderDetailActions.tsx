@@ -9,6 +9,7 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
 import { OutboundOrderApproveDialog } from "@/features/outbound-orders/components/composites/OutboundOrderApproveDialog"
 import { OutboundOrderCancelDialog } from "@/features/outbound-orders/components/composites/OutboundOrderCancelDialog"
+import { OutboundOrderExportActions } from "@/features/outbound-orders/components/layouts/OutboundOrderExportActions"
 import { OutboundOrderRejectDialog } from "@/features/outbound-orders/components/composites/OutboundOrderRejectDialog"
 import { OutboundOrderSendDialog } from "@/features/outbound-orders/components/composites/OutboundOrderSendDialog"
 import {
@@ -102,6 +103,8 @@ export function OutboundOrderDetailActions({
           />
         </PermissionGate>
       )}
+
+      <OutboundOrderExportActions outboundOrderId={order.id} />
     </div>
   )
 }

@@ -6,6 +6,7 @@ import { PermissionGate } from "@/components/shared/primitives/PermissionGate"
 import { Button, LinkButton } from "@/components/ui/button"
 import { OutsourcingOrderActionConfirmDialog } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderActionConfirmDialog"
 import type { OutsourcingOrderConfirmAction } from "@/features/outsourcing-orders/components/composites/OutsourcingOrderActionConfirmDialog"
+import { OutsourcingOrderExportActions } from "@/features/outsourcing-orders/components/layouts/OutsourcingOrderExportActions"
 import { RejectOutsourcingOrderDialog } from "@/features/outsourcing-orders/components/composites/RejectOutsourcingOrderDialog"
 import {
   canUpdateOutsourcingOrder,
@@ -100,6 +101,8 @@ export function OutsourcingOrderDetailActions({
           </Button>
         </PermissionGate>
       )}
+
+      <OutsourcingOrderExportActions outsourcingOrderId={order.id} />
 
       {confirmAction && (
         <OutsourcingOrderActionConfirmDialog

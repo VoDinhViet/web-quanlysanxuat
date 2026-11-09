@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { EvidenceUploadField } from "@/components/shared/composites/EvidenceUploadField"
+import { SupplierReturnExportActions } from "@/features/supplier-returns/components/layouts/SupplierReturnExportActions"
 import { usePostSupplierReturn } from "@/features/supplier-returns/hooks/use-post-supplier-return"
 import { postSupplierReturnSchema } from "@/features/supplier-returns/schemas/post-supplier-return.schema"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -70,6 +71,8 @@ export function SupplierReturnDetailActions({
           </Button>
         </PermissionGate>
       )}
+
+      <SupplierReturnExportActions supplierReturnId={supplierReturn.id} />
 
       <Dialog open={confirmOpen} onOpenChange={closeConfirm}>
         <DialogContent>

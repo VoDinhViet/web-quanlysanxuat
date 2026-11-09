@@ -1,4 +1,4 @@
-<!-- Generated: 2026-11-04 | Files scanned: ~190 | Token estimate: ~4800 -->
+<!-- Generated: 2026-11-09 | Files scanned: ~190 | Token estimate: ~4800 -->
 # Inventory codemap (web)
 Receipts (PNK), issues (PXK), material requisitions, supplier returns, stock screens. BE twin: `be-quanlysanxuat/docs/CODEMAPS/inventory.md` (sections 2 Routes, 3 State flows, 4 Key rules). Screens and button labels: `docs/ui-flow.md` (see section 5 for stale parts).
 Server fns: `src/features/<feature>/api/server-functions/<name>.api.ts`; query factories in `api/options/`. No server fn checks permissions; the BE controller does. BE paths are relative to `be-quanlysanxuat/`.
@@ -76,6 +76,7 @@ All paths prefixed `/api`. Permission = BE `@Permissions`. "FE gate" in the trig
 |---|---|---|---|---|
 | List (loader) | getSupplierReturns | GET /supplier-returns | inventory:read | getSupplierReturns (src/api/supplier-returns/supplier-returns.controller.ts:39) |
 | Detail (loader) | getSupplierReturn | GET /supplier-returns/:supplierReturnId | inventory:read | getSupplierReturn (:51) |
+| Detail "In" / "Xuất" > PDF (`SupplierReturnExportActions`) | export-supplier-return-pdf | GET /supplier-returns/:supplierReturnId/export-pdf | inventory:read | exportSupplierReturnPdf |
 | Detail return-reason field (toast "Đã cập nhật lý do trả hàng") | updateSupplierReturn | PATCH /supplier-returns/:supplierReturnId | inventory:update | updateSupplierReturn (:64) |
 | Detail "Xác nhận xuất" (DRAFT; FE gate inventory:update; optional note + attachments) | postSupplierReturn | POST /supplier-returns/:supplierReturnId/post | inventory:update | postSupplierReturn (:82) |
 ### inventory-products and inventory-directs
