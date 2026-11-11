@@ -48,7 +48,7 @@ export const inventoryRequisitionsColumns = col.columns([
       cellClassName: "text-center",
     },
     cell: ({ getValue }) =>
-      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy HH:mm"),
+      format(parseISO(getValue(), { in: vnZone }), "dd/MM/yyyy"),
   }),
 
   col.accessor("creatorBy", {

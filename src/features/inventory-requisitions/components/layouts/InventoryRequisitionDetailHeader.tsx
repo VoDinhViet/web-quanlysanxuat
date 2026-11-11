@@ -106,7 +106,7 @@ export function InventoryRequisitionDetailHeader({
               label="Ngày lãnh"
               value={format(
                 parseISO(detail.requisitionDate, { in: vnZone }),
-                "dd/MM/yyyy HH:mm"
+                "dd/MM/yyyy"
               )}
             />
           </div>
