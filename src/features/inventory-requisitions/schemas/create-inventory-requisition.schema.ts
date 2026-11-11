@@ -1,7 +1,9 @@
+import { isValid, parseISO } from "date-fns"
 import { z } from "zod"
 
+import { vnZone } from "@/lib/time"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
-import { emptyToNull, emptyToUndefined, toIsoDate } from "@/lib/zod-transforms"
+import { emptyToNull, emptyToUndefined } from "@/lib/zod-transforms"
 
 // Snapshot dòng picker giữ trong form. Không chỉ để hiển thị: 2 `.refine` bên dưới đọc chính nó
 // để chặn E231/E232 ngay trên client thay vì round-trip lên server. Gom một key thay vì rải phẳng
@@ -58,10 +60,18 @@ export type InventoryRequisitionItemFormValue = z.input<
 // thiếu key nghĩa là "không nhập"); riêng `note` là `nullable: true` ở DTO nên dùng `emptyToNull`.
 export const createInventoryRequisitionSchema = z
   .object({
+    // Giá trị của DateTimePicker là giờ tường Việt Nam (`yyyy-MM-dd'T'HH:mm`), lên wire là mốc UTC.
     requisitionDate: z
       .string()
-      .min(1, "Vui lòng chọn ngày lãnh")
-      .transform(toIsoDate),
+      .trim()
+      .min(1, "Vui lòng chọn ngày giờ lãnh")
+      .refine(
+        (value) => isValid(parseISO(value, { in: vnZone })),
+        "Ngày giờ lãnh không hợp lệ"
+      )
+      .transform((value) =>
+        new Date(parseISO(value, { in: vnZone })).toISOString()
+      ),
     type: z.enum(InventoryRequisitionType),
     departmentId: z.string().trim().transform(emptyToUndefined),
     productionOrderId: z.string().trim().transform(emptyToUndefined),

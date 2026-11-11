@@ -33,7 +33,11 @@ export const CreateInventoryRequisitionInfoSection = withForm({
         <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
           <form.AppField name="requisitionDate">
             {(field) => (
-              <field.DateField label="Ngày lãnh" required disabled={disabled} />
+              <field.DateTimeField
+                label="Ngày giờ lãnh"
+                required
+                disabled={disabled}
+              />
             )}
           </form.AppField>
 

@@ -3,6 +3,7 @@ import { revalidateLogic, useField } from "@tanstack/react-form"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { format } from "date-fns"
 import { ArrowLeft, ArrowRight, Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 import type { Key } from "react-aria-components"
@@ -26,6 +27,7 @@ import {
 import { productionJobQueryOptions } from "@/features/production-jobs/api"
 import { useAppForm } from "@/hooks/use-app-form"
 import { useAutoFocusFirstField } from "@/hooks/use-autofocus-first-field"
+import { vnZone } from "@/lib/time"
 import { InventoryRequisitionType } from "@/lib/types/inventory-requisition.type"
 import { getStepNav } from "@/lib/wizard-steps"
 import type { CreateInventoryRequisitionWizardStep } from "@/features/inventory-requisitions/components/sections/CreateInventoryRequisitionStepsTabs"
@@ -74,6 +76,9 @@ export function CreateInventoryRequisitionForm() {
   const form = useAppForm({
     defaultValues: {
       ...createInventoryRequisitionFormDefaultValues,
+      requisitionDate: format(new Date(), "yyyy-MM-dd'T'HH:mm", {
+        in: vnZone,
+      }),
       type: initialType,
       departmentId: currentUser?.departmentId ?? "",
       productionJobId: initialJobId,

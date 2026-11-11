@@ -23,6 +23,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { DatePicker } from "@/components/shared/composites/DatePicker"
+import { DateTimePicker } from "@/components/shared/composites/DateTimePicker"
 import { useFieldContext } from "@/hooks/use-app-form-context"
 import { cn } from "@/lib/utils"
 
@@ -337,6 +338,27 @@ export function DateField({ label, required, disabled }: DateFieldProps) {
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
       <DatePicker
+        value={field.state.value}
+        onChange={field.handleChange}
+        onBlur={field.handleBlur}
+        disabled={disabled}
+      />
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
+  )
+}
+
+export function DateTimeField({ label, required, disabled }: DateFieldProps) {
+  const field = useFieldContext<string>()
+  const isInvalid =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <Field data-invalid={isInvalid}>
+      <FieldLabel className="text-xs font-medium text-foreground">
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
+      <DateTimePicker
         value={field.state.value}
         onChange={field.handleChange}
         onBlur={field.handleBlur}
