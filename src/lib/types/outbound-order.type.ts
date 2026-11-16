@@ -155,7 +155,7 @@ export type OutboundOrderDetail = {
 // phiếu đang xem/sửa (BE truyền `excludeOutboundOrderId = outboundOrderId`).
 export type OutboundOrderItem = {
   id: string
-  order: { id: string; code: string }
+  order: { id: string; code: string; buyerPoNo: string | null }
   // Dòng PO nguồn (order_items) — round-trip nguyên vẹn khi Sửa (BUG-090), không hiển thị/sửa
   // trực tiếp trên UI.
   orderItemId: string

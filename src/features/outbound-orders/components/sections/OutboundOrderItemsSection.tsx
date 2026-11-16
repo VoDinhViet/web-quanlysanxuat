@@ -43,7 +43,7 @@ const itemColumns = col.columns([
             params={{ orderId: row.original.order.id }}
             className="font-mono text-xs font-medium text-primary hover:underline"
           >
-            {row.original.order.code}
+            {row.original.order.buyerPoNo ?? "—"}
           </Link>
           {job ? (
             <Link

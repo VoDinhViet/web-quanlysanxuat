@@ -25,7 +25,7 @@ const quantityFormatter = new Intl.NumberFormat("vi-VN")
 // sẵn lúc tải trang (OutboundOrderItem) hoặc dòng vừa thêm qua popup (UnfulfilledOrderItem) —
 // OutboundOrderEditItemsSection.tsx build Map này, khớp theo `orderItemId`.
 export type OutboundOrderItemDisplay = {
-  order: { id: string; code: string }
+  order: { id: string; code: string; buyerPoNo: string | null }
   job: { id: string; code: string } | null
   item: ItemRef
   image: FileResource | null
@@ -79,7 +79,7 @@ export function buildOutboundOrderEditItemColumns({
               params={{ orderId: display.order.id }}
               className="font-mono text-xs font-medium text-primary hover:underline"
             >
-              {display.order.code}
+              {display.order.buyerPoNo ?? "—"}
             </Link>
             {display.job ? (
               <Link
