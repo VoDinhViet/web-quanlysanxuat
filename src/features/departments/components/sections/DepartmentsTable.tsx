@@ -35,6 +35,7 @@ export function DepartmentsTable({
   const table = useTable({
     data: rows,
     columns: departmentColumns,
+    getRowId: (department) => department.id,
     features: appTableFeatures,
   })
 

@@ -70,6 +70,7 @@ export function PurchaseQuotationSupplierCompareTable({
   const table = useTable({
     data: item.suppliers,
     columns,
+    getRowId: (quotationSupplier) => quotationSupplier.id,
     features: appTableFeatures,
   })
 
@@ -107,7 +108,7 @@ export function PurchaseQuotationSupplierCompareTable({
                 key={row.id}
                 className={cn(
                   "h-auto min-h-[50px] transition-colors",
-                  isWon && "bg-success/5 hover:bg-success/10 font-medium",
+                  isWon && "bg-success/5 font-medium hover:bg-success/10",
                   isSelected && "bg-primary/5 hover:bg-primary/10",
                   !isWon && !isSelected && "hover:bg-muted/15"
                 )}

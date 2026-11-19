@@ -46,6 +46,7 @@ export function PurchaseRequestItemsSection({
   const table = useTable({
     data: rows,
     columns,
+    getRowId: (purchaseRequestItem) => purchaseRequestItem.id,
     features: appTableFeatures,
   })
 

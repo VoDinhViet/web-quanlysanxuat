@@ -39,6 +39,7 @@ export function ProductionJobBomTable({
   const table = useTable({
     data: rows,
     columns,
+    getRowId: (productionJobIssue) => productionJobIssue.id,
     features: appTableFeatures,
   })
 

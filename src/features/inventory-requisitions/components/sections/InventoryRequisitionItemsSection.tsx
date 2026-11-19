@@ -203,6 +203,7 @@ export function InventoryRequisitionItemsSection({
   const table = useTable({
     data: detail.items,
     columns,
+    getRowId: (requisitionItem) => requisitionItem.id,
     features: appTableFeatures,
   })
 

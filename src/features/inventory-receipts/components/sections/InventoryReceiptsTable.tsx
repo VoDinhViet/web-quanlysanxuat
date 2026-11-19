@@ -34,6 +34,7 @@ export function InventoryReceiptsTable({
   const table = useTable({
     data: rows,
     columns: inventoryReceiptsColumns,
+    getRowId: (inventoryReceipt) => inventoryReceipt.id,
     features: appTableFeatures,
   })
 
